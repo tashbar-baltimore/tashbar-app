@@ -1,0 +1,619 @@
+<script>
+/* CoreDataC45H32.html: Core Growth job C45, helper piece "Books B2 and B5" (claim #445), file 2: chapters 4-7, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md).
+   Keep this file under 150 KB. Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written
+   'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]} (the server finds a lesson by that exact shape).
+   BOOK CLUB lessons: one lesson per chapter of Book B2 "Lost on the Ridge Trail" (Grade 4, READ.LIT.L05.30+) and Book B5
+   "Shabbos at the Lighthouse" (Grade 5, READ.LIT.L06.30+). Plans: docs/core-growth/texts/C45/B2-plan.md and B5-plan.md.
+   Each lesson: Watch me shows the unit's skill on a short passage, Do 1 opens the chapter in the Reader (read), then the boy uses the
+   skill on the chapter (proof, plus other kinds). Show me (check) is on a SHORT COLD PASSAGE about the same world that is never printed
+   earlier in the lesson. Passages go in PASS under c45h3_ keys. The E45 passage-card style lives in CoreDataC451.html.
+   Cast: the Glen Avenue Crew (docs/core-growth/C45-map.md section 5). No double slash in this file (HtmlService rule). */
+(function () {
+  var P = {
+    c45h3_b2c4: { title: 'Lost on the Ridge Trail, Chapter 4 in Short', text: 'The crashing in the bushes was only a young deer, as scared as the boys. They laughed, and the hollow felt less scary.\nAvrumi remembered STOP: Stop, Think, Observe, Plan. They laid out everything they had: a little water, trail mix, two squashed rugelach, a flashlight, a compass, two whistles and two ponchos.\nNobody could see them under the trees, so they hung the bright orange poncho high on a branch, like a flag. That was Tzvi Hirsch\'s idea. Avrumi drew a new map from memory and wrote the plan: stay by the rock ledge, blow three blasts every few minutes, and wait to be found.\nThey davened Mincha facing east, using the compass. As the sun sank behind the ridge, Avrumi tried the flashlight. It flickered and went out.' },
+    c45h3_b2k4: { title: 'Avrumi\'s Notebook: Race Day', text: 'Thursday, 9:00. The big canoe race is at 2:00. Dark clouds have been piling up over the lake all morning. Dovid said, "I think the race will be called off." Reb Akiva is checking the sky every hour.\n12:00. A strong west wind came up and blew the clouds away over the hills. The sky turned bright blue.\n2:00. The race started right on time. Dovid laughed. "So much for my prediction," he said. "Next time I will keep checking the sky." Bunk Daled came in second, only one canoe length behind Bunk Hei.' },
+    c45h3_b2c5: { title: 'Lost on the Ridge Trail, Chapter 5 in Short', text: 'The flashlight was dead, so the boys got ready for the night under the rock ledge. The forest was darker than any place they had ever been, and full of strange sounds.\nIn the dark, Tzvi Hirsch admitted that he was scared, and that it was all his fault. Avrumi said he was scared too. He told how his Abba fixes a mistake in a sefer Torah: he stops, looks carefully, and fixes it one letter at a time. A mistake is the part where you learn to be careful.\nThey said Shema together. Then the clouds cleared, and Avrumi showed Tzvi Hirsch the Big Dipper and the North Star, which always shows north. Far below, a light blinked three times, then three more.' },
+    c45h3_b2k5: { title: 'The Pine Lake Ripple: The Owl Who Moved In', text: 'Campers in Bunk Gimmel have a new neighbor. Last week, a barred owl began sleeping every day in the tall oak tree behind the dining hall. It is about as big as a basketball, with brown and white stripes and dark eyes.\nBarred owls hunt at night. They eat mice, frogs and even fish. The dining hall kitchen throws out food scraps each evening, and the camp nurse says mice have been seen near the garbage cans.\nThe owl calls after dark. Campers say it sounds like someone asking, "Who cooks for you?"\nRabbi Weiss has asked all campers to stay away from the oak tree so the owl is not frightened away.' },
+    c45h3_b2c6: { title: 'Lost on the Ridge Trail, Chapter 6 in Short', text: 'The boys blew three whistle blasts, and the far-off light blinked three times again. Then it was gone. Tzvi Hirsch started toward it in the dark, but he stopped himself. Walking in the dark could make them fall or get more lost. So they stayed, took turns keeping watch, and kept signaling.\nIn the morning, thick fog hid everything. Avrumi remembered his nature notes: fog is a cloud that touches the ground, and when the sun warms the air, the fog lifts. He found a bare stone patch near the ledge, the only place anyone could see from above. The boys spent an hour building a giant arrow of white rocks pointing to the ledge. Then a high buzzing sound came closer above the fog.' },
+    c45h3_b2k6: { title: 'Camp Nature Book: Cairns', text: 'High on a mountain, above the tree line, there are no trees to paint blue marks on. So hikers watch for cairns. A cairn is a neat pile of flat stones stacked on a rock beside the path. Each one is placed where a hiker standing beside it can just see the next.\nOn an unmarked trail, cairns may be the only signs of the way. That is why hikers have a rule: never knock a cairn down, and never build a new one just for fun. A false cairn could lead the next hiker the wrong way.' },
+    c45h3_b2c7: { title: 'Lost on the Ridge Trail, Chapter 7 in Short', text: 'The fog lifted, and a small gray drone flew over the stone arrow and the orange poncho. The boys waved and blew their whistles. The drone hovered, dipped once like a nod, and flew away. Had it seen them? Nobody could be sure.\nTzvi Hirsch wanted to follow it, but he looked at Avrumi and stayed. If the drone saw them, the searchers would come to this spot. So the boys waited. They ate the last trail mix, shared the last water and davened Shacharis. Avrumi told how his Abba writes a sefer Torah with patience, letter by letter.\nAt last, a big brown dog in an orange vest burst out of the bushes, and a man\'s voice called their names.' },
+    c45h3_b2k7: { title: 'The Pine Lake Ripple: The Mystery Trumpet', text: 'Every Friday, the lost-and-found table outside the dining hall was piled high: sneakers, towels, a trumpet and forty-two flashlights. This week, Nosson decided to do something about it. He made a sign that said FIND YOUR THINGS BEFORE SHABBOS. Then he took a photo of every item and posted the pictures on the bunk board.\nBy Friday afternoon, almost everything was gone. The only thing left was the trumpet. Nobody at camp played the trumpet, and nobody knew where it came from.' },
+    c45h3_b5c4: { title: 'Shabbos at the Lighthouse, Chapter 4 in Short', text: 'After the big wave, Reb Shimon and the four boys greeted Shabbos in the little cottage. They sang Kabbalas Shabbos over the howling wind. In Lecha Dodi, Tzvi Hirsch heard the order of the verses in a new way.\nReb Shimon made Kiddush on grape juice in a plastic cup, and they ate the round challos from Gold\'s Bakery, Ima\'s cold chicken and the babka. Dovid cut the babka into five exactly equal pieces. They sang zemiros in three different tunes.\nThen Nosson asked why Reb Shimon loves the lighthouse. Reb Shimon began: "When I was a young man, I worked on a ship. One night, there was a fog..." Then he stopped and said, "Another time."\nTzvi Hirsch watched the beam flash past the window every six seconds. Then he counted to ten, and it did not come back.' },
+    c45h3_b5c5: { title: 'Shabbos at the Lighthouse, Chapter 5 in Short', text: 'Scene 1: The beacon has failed. The lighthouse is dark except for the Shabbos candles.\nScene 2: On the radio, the Coast Guard warns all boats. Then the fishing boat Miss Ellie calls: the engine is dead, two people are aboard, and the captain cannot see the light.\nScene 3: Reb Shimon explains pikuach nefesh: to save a life, we do what is needed, even on Shabbos. Years ago his Rav told him what to do in exactly this case.\nScene 4: The Coast Guard asks for the light. Reb Shimon climbs to the lantern room. The boys wait without touching anything. The backup lamp comes on, one flash every six seconds.\nScene 5: At the window, Nosson sees a tiny green light, low on the water, moving toward the shoal.' },
+    c45h3_b5c6: { title: 'Shabbos at the Lighthouse, Chapter 6 in Short', text: 'The green light belongs to a boat. Binyamin explains that a boat\'s right side shows green and its left side shows red. Seeing only green, he works out that the boat is drifting north and west, toward the shoal. Reb Shimon tells the Coast Guard, who say their rescue boat is fifteen minutes away.\nThe boys watch and call out every change. The light slides closer to the white water. They whisper Tehillim together.\nReb Shimon suggests the anchor. The green light slides, and slides, and then stops. The anchor is holding.\nA searchlight sweeps in from the north and finds the small white fishing boat. Then a huge wave rises between the boats. When the searchlight swings back, the green light is gone.' },
+    c45h3_b5c7: { title: 'Shabbos at the Lighthouse, Chapter 7 in Short', text: 'Reb Shimon wrote his keeper\'s log on Motzaei Shabbos. Each entry starts with a time: the beacon failed at 8:52, the backup lamp was lit at 9:15, the green light was seen at 9:20, the anchor held at 9:39, and at 9:46 the Coast Guard had the Miss Ellie. The captain and his son were safe. At 11:40 the four boys were asleep in a row on the floor.\nThen the chapter tells the morning as a story. Tzvi Hirsch wakes up with Dovid\'s elbow in his ear and hears the silence. The bay is flat and gray, full of floating logs. Reb Shimon davens at the window as the sun rises.\nLater, Nosson finds an old keeper\'s log from 1904, with a pencil note in the margin: "S.G. 1971. This light saved my life."' },
+    c45h3_b5k4: { title: 'The Missing Lantern Key (a short chapter book)', text: 'Chapter 1, The Locked Door: The museum opens the lighthouse to visitors tomorrow. But the key to the lantern room is not on its hook. Without it, nobody can show visitors the great lamp. Under the hook lies a black feather.\nChapter 2, The Fog Rolls In: Thick fog rolls over the bay. The museum boat will arrive at noon, and the boys still have no key. Now they cannot even see the roof to look for anything up there.\nChapter 3, Feathers on the Gallery: At eleven, the fog thins. On the gallery, Binyamin finds more black feathers and a shiny bottle cap stuck in a crack. Crows love shiny things.\nChapter 4, The Nest: Tzvi Hirsch looks up at the roof and spots a messy nest. In it, shining in the sun, is the brass key. The visitors climb to the lantern room right on time.' },
+    c45h3_b5k5: { title: 'Storm at the Dock (a short play in four scenes)', text: 'SCENE 1. The camp dock, evening. Mr. Katz\'s rowboat has come untied and is floating away from the dock.\nSHLOIMY: Zeidy! The boat is getting away!\nSCENE 2. The same dock. The wind grows stronger, and the boat drifts farther out, rocking.\nSHLOIMY (pulling off his sneakers): I can swim out and grab it!\nSCENE 3. The same dock. Zeidy holds Shloimy\'s arm.\nZEIDY: Never jump into cold, windy water after a boat. A boat can be replaced. A person cannot. When you lose something on the water, you call for help and use a tool.\nSCENE 4. The same dock, a minute later. Zeidy takes the long boat hook from its rack. He stretches out over the edge, hooks the rowboat\'s rope and pulls it in, hand over hand.\nSHLOIMY: You got it, Zeidy!\nZEIDY: We got it. With our heads, not our feet.' },
+    c45h3_b5k6: { title: 'The Last Out (a short story)', text: 'It was the last inning of the camp championship. Bunk Daled was losing by three runs. There were two outs, the bases were loaded, and Dovid Lerner was walking up to bat.\nThe first pitch flew past him. Strike one. The second pitch, strike two. The whole camp leaned forward on the benches. Dovid fouled off the next pitch. Then another. Then another. His hands were sweating on the bat.\nOn the sixth pitch, Dovid swung with everything he had. Crack! The ball soared high and far, toward the fence at the edge of the field, and all three runners took off.\nThe ball floated higher, and higher, and then, with the ball still in the air, every light on the camp field went out.' },
+    c45h3_b5k7: { title: 'Two Texts About the Foggy Ferry', text: 'TEXT A, Tuesday\n7:05 a.m. Left the dock. 14 passengers.\n7:30 a.m. Thick fog. Slowed to half speed.\n7:52 a.m. Sounded the horn every two minutes.\n8:20 a.m. Arrived at the island dock, 25 minutes late. All safe.\nTEXT B\nThe fog swallowed the ferry like a giant gray mouth. Cody gripped the cold rail and could not even see the front of the boat. Every two minutes, the horn let out a deep moan that made him jump. Nobody talked. Then, out of the gray, the island dock appeared, and everyone on the deck cheered as if they had won a prize.' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+    'READ.LIT.L05.33':{name:'Ridge Trail 4: What We Have',
+      teach:[
+        {p:'c45h3_b2c4', q:'The flashlight flickers and goes out. What can you predict?', o:['The night will be hard and dark.', 'The boys will reach camp soon.', 'The deer will come back.'], how:'Use the clue and what you know about a night in the woods with no light.'},
+        {p:'c45h3_b2c4', q:'Why did the boys hang the orange poncho high?', o:['So searchers could see them', 'To dry it in the sun', 'To scare the deer away'], how:'Find what the boys say about being seen under the trees.'},
+        {p:'c45h3_b2c4', q:'Which clue helps you predict that the boys will stay by the ledge?', o:['Avrumi wrote a plan to stay there.', 'They ate the rugelach.', 'The deer ran away.'], how:'Look for what the boys decided to do next.'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b2c4', q:'Put the STOP steps in order.', tiles:['Stop', 'Think', 'Observe', 'Plan'], h:'What do you do first when you are lost?', how:'Each letter of the word STOP is one step.'},
+        {t:'pairs', p:'c45h3_b2c4', q:'Match each clue to a prediction it supports.', pairs:[['The orange poncho hangs high', 'Searchers may spot it'], ['Avrumi drew a new map', 'He can show where they are'], ['The sun sinks behind the ridge', 'Night will come soon']], h:'Ask: if this is true, what will likely happen?', how:'A prediction uses a clue plus what you know.'},
+        {t:'sort', p:'c45h3_b2c4', q:'Mistake Detective. A prediction from clues, or only a wish?', bins:[{id:'c', label:'Uses clues'}, {id:'m', label:'Mistake: only a wish'}], items:[{label:'The poncho will help searchers find them.', bin:'c'}, {label:'Night will be cold and dark.', bin:'c'}, {label:'They want to go home, so they will be home tonight.', bin:'m'}, {label:'They are hungry, so food will show up.', bin:'m'}], h:'Can you point to a clue? Or is it only what they hope?', how:'A wish is not a prediction. A prediction rests on clues.'},
+        {t:'spotall', p:'c45h3_b2c4', q:'Tap every clue that the night will be hard.', cells:[{label:'The flashlight went out', ok:true}, {label:'The sun sank behind the ridge', ok:true}, {label:'Only a little water was left', ok:true}, {label:'A deer ran away', ok:false}], h:'Which clues point to trouble after dark?', how:'Look for clues about light, water and the coming night.'},
+        {t:'sort', p:'c45h3_b2c4', q:'Clue or prediction?', bins:[{id:'c', label:'Clue (in the text)'}, {id:'p', label:'Prediction (what may happen)'}], items:[{label:'The flashlight went out.', bin:'c'}, {label:'They hung the poncho high.', bin:'c'}, {label:'Searchers will see the poncho.', bin:'p'}, {label:'They will spend the night by the ledge.', bin:'p'}], h:'Did it already happen, or might it happen next?', how:'A clue is in the text. A prediction is your best guess about what comes next.'},
+        {t:'pairs', p:'c45h3_b2c4', q:'Match each step to the chapter.', pairs:[['Clue', 'The flashlight goes out'], ['Prediction', 'The night will be dark'], ['Check', 'Read on to see what happens']], h:'Clue, prediction, check.', how:'A prediction starts with a clue and ends with a check.'}
+      ],
+      check:[
+        {p:'c45h3_b2k4', q:'At 9:00, Dovid sees dark clouds piling up and predicts the race will be called off. The dark clouds are...', o:['a clue', 'a wish', 'the title'], how:'Did Dovid see them, or just hope for them? What do we call something you see that points to what comes next?'},
+        {p:'c45h3_b2k4', q:'Read on to 12:00. The sky turned blue. What would you tell Dovid?', o:['change your prediction', 'keep it anyway', 'stop reading'], how:'Compare the new clue at 12:00 with his prediction.'},
+        {p:'c45h3_b2k4', q:'At 2:00, the race starts on time. For Dovid\'s prediction, this is the part where you...', o:['check it', 'make it', 'skip it'], how:'A prediction is made first, then tested against what really happens.'}
+      ],
+      re:[
+        {p:'c45h3_b2c4', q:'A prediction is...', o:['a smart guess about what will happen next', 'a list of what happened', 'the title of a chapter'], how:'Clue plus what you know.'},
+        {p:'c45h3_b2c4', q:'After you predict, you...', o:['read on and check it', 'stop reading', 'never change it'], how:'Was the guess right?'},
+        {p:'c45h3_b2c4', q:'A prediction that rests only on what you want is...', o:['a wish, not a prediction', 'the best prediction', 'a clue'], how:'Can you point to a clue?'}
+      ]},
+    'READ.LIT.L05.34':{name:'Ridge Trail 5: The Longest Night',
+      teach:[
+        {p:'c45h3_b2c5', q:'"What did the boys say together in the dark?" What kind of question is it?', o:['A thin question: the answer is right there', 'A thick question: you must think', 'Not a question'], how:'Can you put your finger on the answer in one place?'},
+        {p:'c45h3_b2c5', q:'"Why did Tzvi Hirsch feel better after Avrumi\'s story?" What kind of question is it?', o:['A thick question: you must think', 'A thin question: the answer is right there', 'Not a question'], how:'Is the answer in one sentence, or do you put clues together?'},
+        {p:'c45h3_b2c5', q:'Which question would help you understand Tzvi Hirsch best?', o:['Why did he say it was his fault?', 'What did they say together?', 'How many stars are in the Big Dipper?'], how:'A thick question about a character helps you understand him.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45h3_b2c5', q:'Thin question or thick question?', bins:[{id:'n', label:'Thin question'}, {id:'k', label:'Thick question'}], items:[{label:'What star always shows north?', bin:'n'}, {label:'What blinked far below?', bin:'n'}, {label:'Why did Avrumi tell about his Abba?', bin:'k'}, {label:'How did the night change Tzvi Hirsch?', bin:'k'}], h:'Is the answer right there, or must you think?', how:'Thin: one place in the text. Thick: put clues together.'},
+        {t:'pairs', p:'c45h3_b2c5', q:'Match each thin question to its answer.', pairs:[['What went dark?', 'the flashlight'], ['What did they say together?', 'Shema'], ['What star stays in place?', 'the North Star']], h:'Find each answer right there in the text.', how:'A thin question has a short answer you can point to.'},
+        {t:'sort', p:'c45h3_b2c5', q:'Mistake Detective. Is it really a thick question?', bins:[{id:'k', label:'Thick question'}, {id:'m', label:'Mistake: it is thin'}], items:[{label:'Why did Tzvi Hirsch blame himself?', bin:'k'}, {label:'How did Shema change how they felt?', bin:'k'}, {label:'What star always shows north?', bin:'m'}, {label:'What did the owl say?', bin:'m'}], h:'Does it start with "why" or "how", and make you think?', how:'A long question is not always thick. Ask: is the answer just one fact?'},
+        {t:'spotall', p:'c45h3_b2c5', q:'Tap every thick question.', cells:[{label:'Why was Tzvi Hirsch scared?', ok:true}, {label:'How did Avrumi help him?', ok:true}, {label:'What did they say together?', ok:false}, {label:'What blinked three times?', ok:false}], h:'Which ones need you to think?', how:'Thick questions ask why or how, and the answer is not in one place.'},
+        {t:'order', p:'c45h3_b2c5', q:'Put the events of the night in order.', tiles:['The flashlight dies', 'Tzvi Hirsch says he is scared', 'They say Shema', 'They find the North Star', 'A light blinks far below'], h:'Start when the light goes out.', how:'Follow the night from dark to the blinking light.'},
+        {t:'pairs', p:'c45h3_b2c5', q:'Match each kind of question to where its answer is.', pairs:[['Thin question', 'right there in one place'], ['Thick question', 'think and put clues together']], h:'Can you point to the answer?', how:'Thin answers sit in one place. Thick answers need thinking.'}
+      ],
+      check:[
+        {p:'c45h3_b2k5', q:'"What does the owl eat?" This question is a...', o:['thin question', 'thick question', 'summary'], how:'Can you find the answer in one place?'},
+        {p:'c45h3_b2k5', q:'"Why might the owl stay near the dining hall?" This question is a...', o:['thick question', 'thin question', 'summary'], how:'Is the answer in one place, or must you join two parts of the article?'},
+        {p:'c45h3_b2k5', q:'"What has Rabbi Weiss asked campers to do?" This question is a...', o:['thin question', 'thick question', 'summary'], how:'Can you find the answer in one place in the article?'}
+      ],
+      re:[
+        {p:'c45h3_b2c5', q:'A thin question...', o:['has an answer right there in the text', 'needs you to put clues together', 'is always about feelings'], how:'Point to one place.'},
+        {p:'c45h3_b2c5', q:'A thick question often starts with...', o:['why or how', 'what color', 'how many'], how:'It asks you to think.'},
+        {p:'c45h3_b2c5', q:'Good readers ask questions...', o:['while they read', 'only after the test', 'never'], how:'Questions keep your mind awake.'}
+      ]},
+    'READ.LIT.L05.35':{name:'Ridge Trail 6: Signals',
+      teach:[
+        {p:'c45h3_b2c6', q:'You do not know what fog is. Which fix-up does Avrumi\'s note give you?', o:['Read on: the next words explain it.', 'Skip it.', 'Close the book.'], how:'Look right after the word fog.'},
+        {p:'c45h3_b2c6', q:'"Signaling" is long. How can you work it out?', o:['Split it into word parts: signal + ing.', 'Guess any meaning.', 'Skip the sentence.'], how:'Look for a smaller word you know inside it.'},
+        {p:'c45h3_b2c6', q:'You forgot why they stayed. What should you do?', o:['Reread the part about walking in the dark.', 'Read the last line only.', 'Make up a reason.'], how:'Go back to where Tzvi Hirsch stops himself.'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b2c6', q:'Put the clarify steps in order.', tiles:['Notice that you are confused', 'Stop at the confusing part', 'Pick a fix-up', 'Check that it makes sense'], h:'First you notice. Last you check.', how:'Clarifying is a routine: notice, stop, fix, check.'},
+        {t:'pairs', p:'c45h3_b2c6', q:'Match each problem to a fix-up.', pairs:[['A long word', 'Split it into word parts'], ['A new word explained later', 'Read on'], ['You lost track of what happened', 'Reread']], h:'Which fix-up fits each problem?', how:'Different problems need different fix-ups.'},
+        {t:'sort', p:'c45h3_b2c6', q:'Mistake Detective. Good fix-up, or mistake?', bins:[{id:'g', label:'Good fix-up'}, {id:'m', label:'Mistake'}], items:[{label:'Reread the part about the fog', bin:'g'}, {label:'Read on to see what the arrow is for', bin:'g'}, {label:'Skip the hard word and never find out', bin:'m'}, {label:'Guess a meaning and never check it', bin:'m'}], h:'Does it help you understand, or leave you confused?', how:'Skipping or guessing without checking leaves the confusing part confusing.'},
+        {t:'spotall', p:'c45h3_b2c6', q:'Tap every fix-up a good reader uses.', cells:[{label:'reread', ok:true}, {label:'read on', ok:true}, {label:'word parts', ok:true}, {label:'skip it', ok:false}], h:'Which ones fix a confusing part?', how:'There are three fix-ups in this lesson.'},
+        {t:'sort', p:'c45h3_b2c6', q:'Which fix-up would you use?', bins:[{id:'w', label:'Word parts'}, {id:'r', label:'Read on'}], items:[{label:'retie', bin:'w'}, {label:'signaling', bin:'w'}, {label:'fog (explained next)', bin:'r'}], h:'Is it a long word with parts, or a word the text explains?', how:'Split long words. Read on when the text explains a word.'},
+        {t:'pairs', p:'c45h3_b2c6', q:'Match each fix-up to what you do.', pairs:[['reread', 'go back'], ['read on', 'go forward'], ['word parts', 'split the word']], h:'Back, forward, or split?', how:'Each fix-up is a different move.'}
+      ],
+      check:[
+        {p:'c45h3_b2k6', q:'You do not know the word "cairns". Where does the card give its meaning?', o:['in the next sentence', 'before the word', 'nowhere in the card'], how:'Read around the word. Is the meaning before it, after it, or missing?'},
+        {p:'c45h3_b2k6', q:'Split "unmarked" into word parts: un + mark + ed. What does un- mean?', o:['not', 'again', 'before'], how:'Think of other un- words you know.'},
+        {p:'c45h3_b2k6', q:'At the last line, you forget what a cairn is made of. Which fix-up finds it again?', o:['reread', 'read on', 'word parts'], how:'Is that part ahead of you or behind you?'}
+      ],
+      re:[
+        {p:'c45h3_b2c6', q:'When a part confuses you, first...', o:['notice and stop', 'read faster', 'turn the page'], how:'You cannot fix what you do not notice.'},
+        {p:'c45h3_b2c6', q:'Read on means...', o:['keep reading to find a clue', 'go back to the start', 'stop reading'], how:'The next sentences may explain it.'},
+        {p:'c45h3_b2c6', q:'Word parts help with...', o:['long words', 'pictures', 'page numbers'], how:'Split it: re + tie.'}
+      ]},
+    'READ.LIT.L05.36':{name:'Ridge Trail 7: The Hum in the Sky',
+      teach:[
+        {p:'c45h3_b2c7', q:'Which is the best summary of Chapter 7?', o:['A drone flew over; the boys stayed and waited, and a search dog found them.', 'A drone flew.', 'A drone the size of a pizza box with four propellers and a red light flew over.'], how:'Just right: the most important events, short.'},
+        {p:'c45h3_b2c7', q:'"A drone flew." What is wrong with this summary?', o:['It is too short.', 'It is too long.', 'It is just right.'], how:'Does it tell the big events of the chapter?'},
+        {p:'c45h3_b2c7', q:'Which detail does NOT belong in a summary?', o:['A lizard sat on the arrow.', 'Tzvi Hirsch chose to stay.', 'A search dog found them.'], how:'Would the story change without it?'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b2c7', q:'Put the big events in order.', tiles:['The drone flies over the arrow', 'It nods and flies away', 'Tzvi Hirsch chooses to stay', 'A search dog bursts out'], h:'Start when the fog lifts.', how:'A summary tells the big events in order.'},
+        {t:'pairs', p:'c45h3_b2c7', q:'Match each summary to what is wrong or right.', pairs:[['A drone flew.', 'too short'], ['A drone came, they stayed, a dog found them.', 'just right'], ['Every raisin, every peanut, every sip...', 'too long']], h:'Is it missing things, stuffed with things, or just right?', how:'A summary is not too long and not too short.'},
+        {t:'sort', p:'c45h3_b2c7', q:'Mistake Detective. Belongs in the summary, or a small detail?', bins:[{id:'b', label:'Belongs in the summary'}, {id:'m', label:'Mistake: small detail'}], items:[{label:'The drone flies over the arrow', bin:'b'}, {label:'Tzvi Hirsch chooses to stay', bin:'b'}, {label:'A lizard sits on the arrow', bin:'m'}, {label:'The drone is the size of a pizza box', bin:'m'}], h:'Would the story change without it?', how:'A summary keeps only the big events.'},
+        {t:'spotall', p:'c45h3_b2c7', q:'Tap every big event.', cells:[{label:'The drone nods', ok:true}, {label:'They decide to wait', ok:true}, {label:'A dog finds them', ok:true}, {label:'They eat raisins', ok:false}], h:'Which events move the story forward?', how:'Big events change what happens next.'},
+        {t:'sort', p:'c45h3_b2c7', q:'Too short, or just right?', bins:[{id:'s', label:'too short'}, {id:'j', label:'just right'}], items:[{label:'They waited.', bin:'s'}, {label:'A dog came.', bin:'s'}, {label:'A drone spotted the arrow, the boys stayed, and a dog found them.', bin:'j'}], h:'Does it tell the big events?', how:'Just right tells the main events in a sentence or two.'},
+        {t:'pairs', p:'c45h3_b2c7', q:'Match each kind of summary to what is wrong or right.', pairs:[['too short', 'leaves out big events'], ['too long', 'full of small details'], ['just right', 'big events in order']], h:'Missing, stuffed, or just right?', how:'A good summary keeps the big events and drops the small ones.'}
+      ],
+      check:[
+        {p:'c45h3_b2k7', q:'"Nosson posted photos of the lost things, and by Friday only a mystery trumpet was left." Is this summary too short, too long or just right?', o:['just right', 'too short', 'too long'], how:'Does it keep the big events and drop the small ones?'},
+        {p:'c45h3_b2k7', q:'"There were forty-two flashlights." For a summary of the article, this is a...', o:['small detail', 'big event', 'the main idea'], how:'Would the article change without it?'},
+        {p:'c45h3_b2k7', q:'"Nosson made a sign, took a photo of every sneaker, towel and flashlight, posted them on the bunk board, and by Friday only the trumpet was left." Is this summary too short, too long or just right?', o:['too long', 'too short', 'just right'], how:'Does it keep the big events? Is it also stuffed with small details?'}
+      ],
+      re:[
+        {p:'c45h3_b2c7', q:'A summary that leaves out the big events is...', o:['too short', 'too long', 'just right'], how:'"A drone flew."'},
+        {p:'c45h3_b2c7', q:'A summary full of small details is...', o:['too long', 'too short', 'just right'], how:'Every raisin, every sip...'},
+        {p:'c45h3_b2c7', q:'A just right summary...', o:['tells the most important events in order', 'tells everything', 'tells only the ending'], how:'Short, but nothing big left out.'}
+      ]},
+    'READ.LIT.L06.33':{name:'Lighthouse 4: A Lighthouse Shabbos',
+      teach:[
+        {p:'c45h3_b5c4', q:'Reb Shimon begins a story about a ship in fog, then stops. What job does that do for the book?', o:['It adds a clue for later.', 'It solves the problem.', 'It sets up the storm.'], how:'Ask: does this answer something, or leave a question the book will come back to?'},
+        {p:'c45h3_b5c4', q:'The chapter ends when the beam does not come back. What job does that ending do?', o:['It makes the problem harder.', 'It solves the problem.', 'It adds a joke.'], how:'Is the night getting safer or more dangerous at the end?'},
+        {p:'c45h3_b5c4', q:'Most of the chapter is a calm Shabbos meal. Why would the author put a calm chapter here?', o:['So the sudden dark light feels like a shock', 'Because nothing else happens in the book', 'To end the book early'], how:'Think about how a quiet moment changes how the next scary moment feels.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45h3_b5c4', q:'Mistake Detective. Does it name the chapter\'s job, or only retell?', bins:[{id:'j', label:'Names its job'}, {id:'m', label:'Mistake: only retells'}],
+          items:[{label:'It adds a clue: Reb Shimon\'s unfinished fog story.', bin:'j'}, {label:'Its ending makes the problem harder.', bin:'j'}, {label:'They eat chicken and babka.', bin:'m'}, {label:'They sing zemiros in three tunes.', bin:'m'}],
+          h:'Does it say what the chapter DOES for the book?', how:'Retelling says what happens. A job says what the chapter adds to the whole book.'},
+        {t:'pairs', p:'c45h3_b5c4', q:'Match each part of Chapter 4 to its job.', pairs:[['The calm Shabbos meal', 'a quiet moment before the danger'], ['Reb Shimon\'s fog story stops', 'adds a clue for later'], ['The beam does not come back', 'makes the problem harder']],
+          h:'Ask of each part: what does it add to the whole book?', how:'Every part of a chapter has a job, even the calm parts.'},
+        {t:'order', p:'c45h3_b5c4', q:'Put Chapter 4 in order.', tiles:['Kabbalas Shabbos over the wind', 'Kiddush and the challos', 'Zemiros in three tunes', 'Reb Shimon starts his fog story', 'The beam does not come back'],
+          h:'The chapter moves from evening davening to the meal to the end.', how:'Each part leads into the next one.'},
+        {t:'spotall', p:'c45h3_b5c4', q:'Tap every part that leaves a question for later chapters.', cells:[{label:'"One night, there was a fog..."', ok:true}, {label:'"Another time."', ok:true}, {label:'The beam does not come back', ok:true}, {label:'Dovid cuts the babka', ok:false}, {label:'Kiddush on grape juice', ok:false}],
+          h:'Which parts make you ask "what happens next?" or "what happened then?"', how:'A clue or a hook leaves a question open.'},
+        {t:'sort', p:'c45h3_b5c4', q:'Solved in Chapter 4, or left open?', bins:[{id:'s', label:'Settled in Chapter 4'}, {id:'o', label:'Left open for later'}],
+          items:[{label:'Can they make Shabbos out here?', bin:'s'}, {label:'Will there be food for Shabbos?', bin:'s'}, {label:'What happened on the ship in the fog?', bin:'o'}, {label:'Why did the beam go dark?', bin:'o'}],
+          h:'Did the chapter answer it, or stop before the answer?', how:'A book keeps some questions open to pull you forward.'},
+        {t:'pairs', p:'c45h3_b5c4', q:'Match each chapter to its job.', pairs:[['Chapter 1: the barometer falls', 'sets up the problem'], ['Chapter 2: the Coast Guard says stay', 'makes the problem harder'], ['Chapter 4: the fog story stops', 'adds a clue']], h:'What does each chapter add?', how:'Name the job, not what happens.'}
+      ],
+      check:[
+        {p:'c45h3_b5k4', q:'In the key book, fog rolls in and the boat comes at noon. What job does Chapter 2 do?', o:['Makes the problem harder', 'Adds a clue', 'Solves the problem'], how:'Is the search getting easier, or is something now in the way?'},
+        {p:'c45h3_b5k4', q:'Binyamin finds black feathers and a bottle cap. What job does Chapter 3 do?', o:['Adds a clue', 'Makes the problem harder', 'Solves the problem'], how:'Do the boys learn something new that helps the search?'},
+        {p:'c45h3_b5k4', q:'The key is found in a nest, just in time. What job does Chapter 4 do?', o:['Solves the problem', 'Adds a clue', 'Makes the problem harder'], how:'What happens to the search in this chapter?'}
+      ],
+      re:[
+        {p:'c45h3_b5c4', q:'A chapter that leaves a question for later...', o:['adds a clue or a hook', 'always solves the problem', 'repeats Chapter 1'], how:'Think of Reb Shimon\'s fog story.'},
+        {p:'c45h3_b5c4', q:'A calm chapter in a scary book can...', o:['make the next scary part feel stronger', 'never have a job', 'end the book'], how:'Think of the Shabbos meal, then the dark beam.'},
+        {p:'c45h3_b5c4', q:'To name a chapter\'s job, you say...', o:['what it adds to the whole book', 'every event in it', 'how long it is'], how:'Job, not retelling.'}
+      ]},
+    'READ.LIT.L06.34':{name:'Lighthouse 5: The Dark Light',
+      teach:[
+        {p:'c45h3_b5c5', q:'What job does Scene 1 (the dark beacon) do?', o:['Brings the problem', 'Explains the rule', 'Turns it around'], how:'Is this where trouble starts, or where it gets fixed?'},
+        {p:'c45h3_b5c5', q:'What job does Scene 3 (Reb Shimon\'s talk) do?', o:['Explains the rule', 'Brings the problem', 'Ends on a hook'], how:'What does the reader learn in this scene that helps the next scene make sense?'},
+        {p:'c45h3_b5c5', q:'How does Scene 4 connect to Scene 3?', o:['Scene 3 explains why; Scene 4 shows him doing it.', 'Scene 4 starts a new story.', 'Scene 4 says Scene 3 again.'], how:'Read the end of Scene 3 and the start of Scene 4. What does Reb Shimon do with what he said?'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b5c5', q:'Put the scenes in order.', tiles:['The beacon has failed', 'The Miss Ellie calls on the radio', 'Reb Shimon explains pikuach nefesh', 'The backup lamp comes on', 'Nosson sees a green light'],
+          h:'Follow the chapter, scene by scene.', how:'Each scene builds on the one before it.'},
+        {t:'pairs', p:'c45h3_b5c5', q:'Match each scene to its job.', pairs:[['The beacon has failed', 'Brings the problem'], ['The Miss Ellie\'s call', 'Makes it more dangerous'], ['Reb Shimon\'s talk', 'Explains the rule'], ['The green light', 'Ends on a hook']],
+          h:'Ask of each scene: what does it add?', how:'A scene\'s job is what it does for the chapter, not what it is about.'},
+        {t:'sort', p:'c45h3_b5c5', q:'Mistake Detective. Does it name the scene\'s job?', bins:[{id:'j', label:'Names the scene\'s job'}, {id:'m', label:'Mistake: only says what it is about'}],
+          items:[{label:'The radio scene makes it more dangerous: a boat is out there.', bin:'j'}, {label:'Reb Shimon\'s talk explains the rule.', bin:'j'}, {label:'The radio scene is about a radio.', bin:'m'}, {label:'The last scene is about a window.', bin:'m'}],
+          h:'Does it say what the scene DOES?', how:'"It is about..." names a topic. A job says what the scene adds.'},
+        {t:'spotall', p:'c45h3_b5c5', q:'Tap every scene that makes things worse for the boat.', cells:[{label:'The beacon has failed', ok:true}, {label:'The Miss Ellie cannot see the light', ok:true}, {label:'A green light moves toward the shoal', ok:true}, {label:'The backup lamp comes on', ok:false}],
+          h:'Which scenes make things worse?', how:'One scene makes things better. Find the others.'},
+        {t:'sort', p:'c45h3_b5c5', q:'Worse or better for the boat?', bins:[{id:'w', label:'Makes it worse'}, {id:'b', label:'Makes it better'}],
+          items:[{label:'The beacon fails', bin:'w'}, {label:'The engine is dead', bin:'w'}, {label:'The backup lamp flashes', bin:'b'}, {label:'The Coast Guard is coming', bin:'b'}],
+          h:'Does it help the boat find its way, or not?', how:'Think about the captain who cannot see the light.'},
+        {t:'order', p:'c45h3_b5c5', q:'Put the scene jobs in the order they come in Chapter 5.', tiles:['Brings the problem', 'Makes it more dangerous', 'Explains the rule', 'Turns it around', 'Ends on a hook'], h:'Start with the dark beacon.', how:'Follow the scenes, and name each one\'s job.'}
+      ],
+      check:[
+        {p:'c45h3_b5k5', q:'In the play, the rowboat floats away. What job does Scene 1 do?', o:['Brings the problem', 'Explains the rule', 'Turns it around', 'Makes it more dangerous'], how:'Is this where the trouble starts?'},
+        {p:'c45h3_b5k5', q:'The wind grows, and Shloimy wants to swim out. What job does Scene 2 do?', o:['Makes it more dangerous', 'Brings the problem', 'Turns it around', 'Explains the rule'], how:'Is the problem the same, or is someone now at risk?'},
+        {p:'c45h3_b5k5', q:'Zeidy says never to jump into the water after a boat. What job does Scene 3 do?', o:['Explains the rule', 'Brings the problem', 'Makes it more dangerous', 'Ends on a hook'], how:'Does this scene add danger, fix it, or teach something?'}
+      ],
+      re:[
+        {p:'c45h3_b5c5', q:'A scene\'s job is...', o:['what it adds to the chapter', 'what it is about', 'how long it is'], how:'Think of Reb Shimon\'s talk: it explains the rule.'},
+        {p:'c45h3_b5c5', q:'A scene that explains a rule often comes...', o:['just before a character acts on it', 'at the very end only', 'in a different book'], how:'Think of pikuach nefesh, then the lamp.'},
+        {p:'c45h3_b5c5', q:'A last scene that leaves a big question...', o:['ends on a hook', 'solves everything', 'explains the rule'], how:'Think of the green light.'}
+      ]},
+    'READ.LIT.L06.35':{name:'Lighthouse 6: Green Light on the Water',
+      teach:[
+        {p:'c45h3_b5c6', q:'Which part is the problem of this chapter?', o:['A boat is drifting toward the shoal.', 'The anchor holds.', 'The green light is gone.'], how:'The problem comes near the start. What is in danger?'},
+        {p:'c45h3_b5c6', q:'The boys call out each change, and they whisper Tehillim. What does that part build?', o:['Rising tension', 'The solution', 'The title'], how:'Does the reader feel calmer or more worried as the boys watch?'},
+        {p:'c45h3_b5c6', q:'Why does the chapter end the moment the green light is gone?', o:['It is a cliffhanger, so you read on.', 'The book is over.', 'The boat is safe.'], how:'Does the last line answer the question, or leave it hanging?'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b5c6', q:'Put the chapter\'s parts in order.', tiles:['Binyamin works out the boat\'s direction', 'The boys watch and call out changes', 'The anchor holds', 'The searchlight finds the boat', 'A wave hides the boat'],
+          h:'Follow the chapter from the green light to the wave.', how:'Each part comes right after the one before it.'},
+        {t:'pairs', p:'c45h3_b5c6', q:'Match each part to its place in the suspense.', pairs:[['The boat drifts toward the shoal', 'the problem'], ['The light slides closer; Tehillim', 'rising tension'], ['The anchor holds', 'the turn'], ['The green light is gone', 'the cliffhanger']],
+          h:'Where does the worry start, grow, ease and jump back?', how:'Suspense has a shape: problem, rising, turn, cliffhanger.'},
+        {t:'sort', p:'c45h3_b5c6', q:'Mistake Detective. Is the part labeled right?', bins:[{id:'r', label:'Labeled right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'The anchor holds: the turn', bin:'r'}, {label:'The green light is gone: the cliffhanger', bin:'r'}, {label:'The anchor holds: the problem', bin:'m'}, {label:'The boat drifts toward the shoal: the cliffhanger', bin:'m'}],
+          h:'The problem is near the start; the cliffhanger is the very end.', how:'Check where each part comes in the chapter.'},
+        {t:'spotall', p:'c45h3_b5c6', q:'Tap every detail that builds the tension.', cells:[{label:'The light slides closer to the white water', ok:true}, {label:'The rescue boat is fifteen minutes away', ok:true}, {label:'A white light moves on the deck', ok:true}, {label:'Binyamin likes chess', ok:false}],
+          h:'Which details make you more worried?', how:'Tension grows when danger gets closer and help is still far.'},
+        {t:'sort', p:'c45h3_b5c6', q:'Green or red?', bins:[{id:'g', label:'Green light'}, {id:'r', label:'Red light'}],
+          items:[{label:'the right side of a boat', bin:'g'}, {label:'starboard', bin:'g'}, {label:'the left side of a boat', bin:'r'}, {label:'port', bin:'r'}],
+          h:'Binyamin explains the two side lights.', how:'Right side is one color, left side the other.'},
+        {t:'sort', p:'c45h3_b5c6', q:'Does it make the worry grow, or ease?', bins:[{id:'g', label:'Worry grows'}, {id:'e', label:'Worry eases'}], items:[{label:'The light slides closer to the shoal', bin:'g'}, {label:'Help is fifteen minutes away', bin:'g'}, {label:'The anchor holds', bin:'e'}, {label:'The searchlight finds the boat', bin:'e'}], h:'Is the boat closer to danger, or to safety?', how:'Rising tension grows the worry; the turn eases it.'}
+      ],
+      check:[
+        {p:'c45h3_b5k6', q:'Two outs, bases loaded, and Dovid is up, losing by three. That part is...', o:['the problem', 'the turn', 'the cliffhanger', 'rising tension'], how:'What is the hard situation at the start?'},
+        {p:'c45h3_b5k6', q:'Two strikes, then three fouls in a row, and sweaty hands. That part is...', o:['rising tension', 'the problem', 'the turn', 'the cliffhanger'], how:'Is the worry getting bigger, pitch by pitch?'},
+        {p:'c45h3_b5k6', q:'Crack! Dovid hits a long fly ball and the runners take off. That part is...', o:['the turn', 'the problem', 'rising tension', 'the cliffhanger'], how:'Where does the story change direction?'}
+      ],
+      re:[
+        {p:'c45h3_b5c6', q:'Rising tension is when...', o:['the worry grows, step by step', 'the problem is solved', 'the book ends'], how:'Think of the boys calling out each change.'},
+        {p:'c45h3_b5c6', q:'The turn is where...', o:['the story changes direction', 'the story starts', 'the title is'], how:'Think of the anchor holding.'},
+        {p:'c45h3_b5c6', q:'A cliffhanger...', o:['ends a chapter with a big question', 'answers every question', 'comes at the start'], how:'Think of the green light gone.'}
+      ]},
+    'READ.LIT.L06.36':{name:'Lighthouse 7: The Keeper\'s Log',
+      teach:[
+        {p:'c45h3_b5c7', q:'How does each log entry start?', o:['With a time', 'With a feeling', 'With a question'], how:'Look at the first words of each entry.'},
+        {p:'c45h3_b5c7', q:'How is the morning part built?', o:['As a story, with a scene and feelings', 'As a list of times', 'As a poem'], how:'Does it have times, or a boy waking up and noticing things?'},
+        {p:'c45h3_b5c7', q:'Why does the chapter use both a log and a story?', o:['Each shows something the other leaves out', 'The log is wrong', 'To make the chapter longer'], how:'What does the log show best? What does the story show best?'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b5c7', q:'Put the log entries in time order.', tiles:['8:52 Beacon failed', '9:15 Backup lamp lit', '9:20 Green light seen', '9:39 Anchor holding', '9:46 Coast Guard has the Miss Ellie'],
+          h:'Use the times.', how:'A log is in time order, earliest first.'},
+        {t:'pairs', p:'c45h3_b5c7', q:'Match each feature to what it does.', pairs:[['Exact times', 'show when each thing happened'], ['Short lines of facts', 'keep a careful record'], ['A boy\'s feelings at sunrise', 'help you feel the morning']],
+          h:'Why would a writer use each one?', how:'Each way of building a text has a job.'},
+        {t:'sort', p:'c45h3_b5c7', q:'Mistake Detective. True about how the log is built?', bins:[{id:'t', label:'True'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Each entry starts with a time.', bin:'t'}, {label:'The entries go in time order.', bin:'t'}, {label:'The log tells the night in scenes with talking.', bin:'m'}, {label:'The log describes how the boys felt in detail.', bin:'m'}],
+          h:'Look at the shape of the log entries.', how:'A log is short entries with times, in time order.'},
+        {t:'spotall', p:'c45h3_b5c7', q:'Tap every line built like a story, not a log.', cells:[{label:'Dovid\'s elbow was in his ear', ok:true}, {label:'The bay was flat and gray', ok:true}, {label:'9:15 Backup lamp lit', ok:false}, {label:'11:15 Wind easing', ok:false}],
+          h:'Story lines show a scene. Log lines start with a time.', how:'Look for a time at the start.'},
+        {t:'sort', p:'c45h3_b5c7', q:'Log or story?', bins:[{id:'l', label:'Built like the log'}, {id:'s', label:'Built like the story'}],
+          items:[{label:'6:45 a.m. First light.', bin:'l'}, {label:'1:00 a.m. Backup lamp steady.', bin:'l'}, {label:'He heard the silence.', bin:'s'}, {label:'The sun rose out of the bay, pink and gold.', bin:'s'}],
+          h:'Does it start with a time?', how:'Log lines are short facts with times.'},
+        {t:'pairs', p:'c45h3_b5c7', q:'Match each kind of line to its shape.', pairs:[['A log line', 'starts with a time'], ['A story line', 'shows a person and a feeling']], h:'Look at how each line starts.', how:'Log lines start with times. Story lines show a scene.'}
+      ],
+      check:[
+        {p:'c45h3_b5k7', q:'"The fog swallowed the ferry like a giant gray mouth." This line comes from the text built as...', o:['a story', 'a log', 'a newspaper report'], how:'Look at the shape of the line: a time and a fact, or a picture and a feeling?'},
+        {p:'c45h3_b5k7', q:'What does Text A tell that Text B leaves out?', o:['when each thing happened', 'how Cody felt', 'that there was fog'], how:'Find something Text A says that Text B never says.'},
+        {p:'c45h3_b5k7', q:'What does Text B show that Text A leaves out?', o:['how the people felt', 'when the ferry left', 'how many passengers were aboard'], how:'Find something Text B has that Text A never says.'}
+      ],
+      re:[
+        {p:'c45h3_b5c7', q:'A log is built with...', o:['short entries with times, in time order', 'scenes with talking', 'rhyming lines'], how:'Think of Reb Shimon\'s log.'},
+        {p:'c45h3_b5c7', q:'A story is built with...', o:['scenes, details and feelings', 'only times', 'only numbers'], how:'Think of Tzvi Hirsch waking up.'},
+        {p:'c45h3_b5c7', q:'Two texts about one event can...', o:['be built two different ways', 'never be compared', 'only be a log'], how:'Think of the log and the morning story.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.LIT.L05.33':{
+      hook:'A good hiker reads the sky and guesses the weather. A good reader reads the clues and guesses what comes next.',
+      big:'A prediction is a smart guess built on clues in the text plus what you know. Then read on and check it. If it was wrong, change your prediction. A wish is not a prediction.',
+      intro:['Find a clue.', 'Add what you know.', 'Make a prediction.', 'Read on and check it. Change your prediction if the text shows something new.'],
+      ex:[{q:'Ridge Trail, Chapter 4: the poncho', steps:['Clue: the boys hang the orange poncho high.', 'What I know: orange is easy to see from far away.', 'Prediction: searchers may spot it.', 'Read on to check.'], a:'Clue + what I know = prediction.'}],
+      oops:{q:'Tzvi Hirsch is hungry. What will happen?', wrong:'A pizza will arrive, because he wants one.', right:'He will have to make the trail mix last.', why:'A wish is not a prediction. Use clues: they have only a little food.'},
+      idea:['A prediction is a bridge: one end on a clue, the other on what you know.'],
+      try:{q:'"The clouds grew dark, and the wind blew cold." What can you predict?', o:['A storm is coming.', 'A sunny day is coming.', 'Nothing will happen.'], a:'A storm is coming.', steps:['Find the clue.', 'Add what you know about dark clouds.']}
+    },
+    'READ.LIT.L05.34':{
+      hook:'A detective asks questions. So does a strong reader.',
+      big:'Good readers ask questions while they read. A thin question has its answer right there in the text. A thick question makes you think and put clues together. Thick questions help you understand the most.',
+      intro:['Read a part of the chapter.', 'Ask a question about it.', 'Ask: is the answer right there in the text? Then it is a thin question.', 'Is it a why or how question that makes you think? Then it is a thick question.'],
+      ex:[{q:'Ridge Trail, Chapter 5', steps:['Thin: What did the boys say together? (Shema, right there.)', 'Thick: Why did Tzvi Hirsch feel better after Avrumi\'s story?', 'To answer it, put clues together: Abba fixes a mistake one letter at a time, and Tzvi Hirsch had already stopped and stayed.'], a:'Ask both kinds. Thick questions go deeper.'}],
+      oops:{q:'"What did the boys say together?" Is this a thick question?', wrong:'Yes, because it is about the chapter.', right:'No, it is a thin question: the answer, Shema, is right there.', why:'A thick question makes you think. One fact you can point to is thin.'},
+      idea:['Thin questions skim the top. Thick questions dig.'],
+      try:{q:'"Why did Avrumi tell about his Abba?" Thin or thick?', o:['thick question', 'thin question', 'not a question'], a:'thick question', steps:['Is the answer in one place?', 'Or must you think about why?']}
+    },
+    'READ.LIT.L05.35':{
+      hook:'Even a good reader gets lost sometimes. What matters is how he finds his way back.',
+      big:'When a part confuses you, notice and stop. Then pick a fix-up: reread, read on (the meaning may come in the next sentence), or split a long word into word parts. Check that it makes sense. Clarifying means fixing a part that confuses you.',
+      intro:['Notice: I am confused.', 'Stop at the confusing part.', 'Pick a fix-up: reread, read on, or word parts.', 'Check: does it make sense now?'],
+      ex:[{q:'Ridge Trail, Chapter 6: fog', steps:['Confusing: why will the fog lift?', 'Read on: fog is a cloud that touches the ground.', 'When the sun warms the air, the fog lifts.', 'Check: it makes sense now.'], a:'Read on fixed it.'}],
+      oops:{q:'You do not know a word. What should you do?', wrong:'Skip it and keep going, even if the sentence makes no sense.', right:'Reread, read on, or split it into word parts.', why:'Skipping leaves the confusing part confusing. Pick a fix-up.'},
+      idea:['A fix-up is a flashlight. Point it at the dark part of the page.'],
+      try:{q:'"Unsafe." Which fix-up helps?', o:['word parts', 'read faster', 'skip it'], a:'word parts', steps:['Split it: un + safe.', 'Un means not.']}
+    },
+    'READ.LIT.L05.36':{
+      hook:'Your friend asks, "What happened in that chapter?" You have ten seconds. What do you say?',
+      big:'A summary tells the most important events in order, in a few words. Too short leaves out big events. Too long is stuffed with small details. Just right is in the middle.',
+      intro:['Read the chapter.', 'List the big events, the ones that change what happens.', 'Leave out the small details.', 'Put the big events in order in a sentence or two.'],
+      ex:[{q:'Ridge Trail, Chapter 7', steps:['Big: a drone flies over the arrow.', 'Big: Tzvi Hirsch chooses to stay.', 'Big: a search dog finds them.', 'Small: a lizard on the arrow. Leave it out.'], a:'Just right: a drone flew over, the boys stayed, and a dog found them.'}],
+      oops:{q:'Which is a good summary?', wrong:'They ate every raisin and every peanut and drank every sip and a lizard came.', right:'A drone spotted them, they stayed put, and a search dog found them.', why:'Small details make a summary too long. Keep only the big events.'},
+      idea:['A summary is a suitcase. Pack only what you really need.'],
+      try:{q:'"They waited." Is this summary too short, too long or just right?', o:['too short', 'too long', 'just right'], a:'too short', steps:['Does it tell the big events?', 'What is missing?']}
+    },
+    'READ.LIT.L06.33':{
+      hook:'A book is a building, and every chapter is a floor. Even a quiet floor holds up the next one.',
+      big:'Every chapter has a job in the whole book: it sets up the problem, adds a clue, makes the problem harder, or solves the problem. Its ending is often a hook that pulls you into the next chapter.',
+      intro:['Read the chapter.', 'Ask: what does this chapter add that the book did not have before?', 'Name its job: sets up the problem, adds a clue, makes the problem harder, or solves the problem.', 'Look at the ending: is it a hook? What question does it pass on?'],
+      ex:[{q:'Lighthouse, Chapter 4: the calm meal', steps:['Shabbos comes in; they eat and sing.', 'The calm makes the next shock feel stronger.'], a:'A quiet chapter can set up the danger that comes next.'},
+          {q:'Lighthouse, Chapter 4: the fog story', steps:['Reb Shimon starts a story about a ship in fog.', 'He stops: "Another time."', 'The book will come back to it.'], a:'It adds a clue for later.'}],
+      oops:{q:'What job does Chapter 4 do?', wrong:'They make Kiddush and eat challah and babka.', right:'It adds a clue (the fog story), and its ending makes the problem harder.', why:'That only retells. Name what the chapter does for the whole book.'},
+      idea:['A hook at the end of a chapter is a rope that pulls you into the next one.'],
+      try:{q:'A chapter ends: "Then the phone rang. It was the hospital." What is that ending?', o:['a hook', 'a solution', 'a title'], a:'a hook', steps:['Does it answer a question?', 'Or does it make you want to read on?']}
+    },
+    'READ.LIT.L06.34':{
+      hook:'A chapter is like a play. Each scene walks on stage with one job to do.',
+      big:'A chapter is built from scenes. Each scene has a job: it brings the problem, makes it more dangerous, explains the rule, turns it around, or ends on a hook. Each scene builds on the one before it.',
+      intro:['Read the chapter.', 'Split it into scenes: where does the place, the time or the action change?', 'For each scene ask: what job does it do?', 'Ask how it connects to the scene before and after.'],
+      ex:[{q:'Lighthouse, Chapter 5', steps:['Scene 1: the beacon fails. It brings the problem.', 'Scene 2: the Miss Ellie calls. It makes it more dangerous.', 'Scene 3: Reb Shimon\'s talk. It explains the rule.', 'Scene 4: the lamp comes on. It turns it around.'], a:'Each scene does one job, and each builds on the last.'}],
+      oops:{q:'What job does the radio scene do?', wrong:'It is about a radio.', right:'It makes it more dangerous: a boat with two people is out there.', why:'"It is about..." is the topic. The job is what the scene adds.'},
+      idea:['Scenes are steps on a staircase. Each one lifts the story a little higher.'],
+      try:{q:'Scene 1: a cat is stuck up a tree. Scene 2: a storm starts. What job does Scene 2 do?', o:['Makes it more dangerous', 'Brings the problem', 'Turns it around'], a:'Makes it more dangerous', steps:['Was the problem already there?', 'Did this scene make it worse?']}
+    },
+    'READ.LIT.L06.35':{
+      hook:'Why can\'t you put a good book down? Because the author built the suspense, piece by piece.',
+      big:'Suspense has a shape: the problem, rising tension (the worry grows), the turn (things change direction), and the cliffhanger (the chapter stops on a big question).',
+      intro:['Read the chapter.', 'Find the problem near the start.', 'Find the details that make the worry grow: that is rising tension.', 'Find the turn, then the cliffhanger at the very end.'],
+      ex:[{q:'Lighthouse, Chapter 6', steps:['The problem: a boat drifts toward the shoal.', 'Rising tension: the light slides closer; help is fifteen minutes away.', 'The turn: the anchor holds.', 'The cliffhanger: a wave hides the boat, and the green light is gone.'], a:'Problem, rising tension, the turn, the cliffhanger.'}],
+      oops:{q:'Which part is the cliffhanger?', wrong:'The boat drifting toward the shoal.', right:'The green light is gone, at the very end.', why:'The problem comes at the start. The cliffhanger is the last line that leaves you asking "what now?"'},
+      idea:['Rising tension is a rubber band stretching. The turn lets it go, and the cliffhanger stretches it again.'],
+      try:{q:'A story ends: "He opened the box, and gasped." What is that ending?', o:['the cliffhanger', 'the problem', 'the turn'], a:'the cliffhanger', steps:['Is it at the end?', 'Does it leave a question?']}
+    },
+    'READ.LIT.L06.36':{
+      hook:'Two people can build a house with the same bricks and get two very different houses. Two texts can tell one night in two different ways.',
+      big:'A log is short entries with times, in time order, mostly facts. A story is built with scenes, details and feelings. Comparing how two texts are built shows what each one is best at: the log tells exactly when things happened; the story shows how the people felt.',
+      intro:['Read both parts.', 'Look at the shape: times and short facts, or scenes and feelings?', 'Name how each is built: a log or a story.', 'Ask what each one shows best, and what it leaves out.'],
+      ex:[{q:'Lighthouse, Chapter 7', steps:['The log: 8:52, 9:15, 9:20, 9:39, 9:46, in time order.', 'Short facts: beacon failed, lamp lit, anchor holding.', 'The story: Tzvi Hirsch wakes up and hears the silence.', 'Scenes and feelings: the flat bay, the sunrise, Modeh Ani.'], a:'The log tells exactly when; the story helps you feel the morning.'}],
+      oops:{q:'How is the log built?', wrong:'Like a story, because it tells about the same night.', right:'As a log: short entries with times, in time order.', why:'The topic is the same. Look at the shape of the text, not what it is about.'},
+      idea:['A log is a ruler: exact and plain. A story is a painting: it shows how it felt.'],
+      try:{q:'"8:00 Bus left. 8:25 Arrived at school." How is this built?', o:['a log', 'a story', 'a poem'], a:'a log', steps:['Does each line start with a time?', 'Are there feelings?']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var TELL = 'Read every page. Tap a blue word to see what it means. Tap Next at the end.';
+  var BITE = {
+    'READ.LIT.L05.33':{ band:'E45', pic:'🔦', today:'Read Chapter 4, and predict what comes next, then check',
+      why:'Predicting keeps your mind racing ahead with the story. Then checking keeps you honest.',
+      ready:[{q:'A clue is...', o:['a hint in the text','the last page','the title'], a:'a hint in the text'},
+             {q:'In Chapter 3, what did Avrumi say when Tzvi Hirsch wanted to walk down?', o:['Stop','Run','Hurry'], a:'Stop'}],
+      bridge:'READ.COMP.L05.17', bridgeName:'Predict and Check',
+      watch:{ q:'The Extra Ropes (a short passage)', m:{type:'scene', e:'🛶', t:'Before the canoe trip, Reb Akiva packed three extra ropes. "Where we are going," he said, "there is a portage. We carry the canoes over land."'}, steps:[
+        {t:'Find a clue: three extra ropes.'},
+        {t:'Add what I know: at a portage, you carry the canoe.'},
+        {t:'Predict: they will tie things down and carry the canoes.'},
+        {t:'Read on, then check. Change your prediction if you need to.'}],
+        a:'Clue plus what I know makes a prediction. Then check it.' },
+      oops:{ q:'What will Reb Akiva do with the ropes?', wrong:'Have a tug-of-war, because that is fun.', right:'Tie down gear for carrying the canoes over land.', why:'A prediction rests on clues. "That is fun" is a wish, not a clue.' },
+      ways:['real book (the Reader)','predict and check','reading coach','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 4 and predicted with clues! Tell your chavrusa your prediction for tonight, and the clue behind it.',
+      board:{ one:'A prediction is a clue plus what I know. Read on and check it. A wish is not a prediction.', activity:'Prediction cards: before Chapter 5, each boy writes one prediction and its clue on a card. After reading, he marks it "right", "partly" or "changed", with the sentence that shows it.', mistakes:['Predicting from a wish instead of a clue','Never checking the prediction','Refusing to change a prediction when the text shows something new'] },
+      do:[
+        {type:'read', text:'C45.B2.04', say:'Open the book. Read Chapter 4.', how:TELL},
+        {type:'storymap', slots:['Clue','What I know','My prediction'], cards:['The flashlight flickers and goes out','A night in the woods is very dark','The night will be long and hard'], extra:['They will be home for supper'],
+          say:'Build a prediction: clue, what I know, prediction.', how:'Start with the clue at the end of the chapter.',
+          why:{q:'Why does "home for supper" not fit?', o:['No clue in the chapter points to it','It is too short','It already happened'], a:'No clue in the chapter points to it'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Uses clues','Mistake: only a wish'], cards:[['Searchers may spot the orange poncho',0],['The night will be cold and dark',0],['They want to go home, so they will be home tonight',1],['They are hungry, so food will show up',1]],
+          say:'Mistake Detective: a prediction from clues, or only a wish?', how:'Can you point to a clue in the chapter? A wish has none.',
+          why:{q:'Why is "food will show up" a mistake?', o:['Nothing in the chapter points to it','Food is not important','They had pizza'], a:'Nothing in the chapter points to it'}},
+        {type:'match', pairs:[['The orange poncho hangs high','Searchers may spot it'],['Avrumi drew a new map','He can show where they are'],['The sun sinks behind the ridge','Night will come soon'],['Only a little water is left','They must share it carefully']],
+          say:'Match each clue to a prediction it supports.', how:'Ask of each clue: if this is true, what will likely happen?'},
+        {type:'proof', text:'C45.B2.04', q:'Find the clue at the very end that tonight they will have no light.', proof:'Then it went out', look:'what happened to the flashlight',
+          say:'Open the book. Find the clue at the end.', how:'Go to the last page. What happens to their only light?'},
+        {type:'listen', q:'Challenge: predict with the clues.', hear:'The flashlight is dead and night is coming. What will the boys most likely do?', o:['Stay together by the ledge','Walk down the mountain in the dark','Go back to the creek'], a:'Stay together by the ledge',
+          say:'Challenge! What will the boys most likely do?', how:'Use their plan and what you know about walking in the dark.',
+          why:{q:'Which clue helps most?', o:['They wrote a plan to stay by the ledge','They ate the rugelach','A deer ran away'], a:'They wrote a plan to stay by the ledge'}},
+        {type:'cloze', t:'A good reader makes a prediction, reads on, and then ___ it.', o:['checks','forgets','hides'], a:'checks',
+          say:'Which word fits? Tap it into the gap.', how:'What do you do with a guess after you read more?',
+          why:{q:'Why check a prediction?', o:['To see if the clues led you right','To finish faster','To skip pages'], a:'To see if the clues led you right'}}] },
+
+    'READ.LIT.L05.34':{ band:'E45', pic:'🌌', today:'Read Chapter 5 and ask thin and thick questions',
+      why:'Questions keep your mind awake while you read. Thick questions take you deepest into the story.',
+      ready:[{q:'In Chapter 4, what happened to the flashlight?', o:['It went out','It broke a window','It was lost'], a:'It went out'},
+             {q:'A question that starts with "why" usually asks for...', o:['a reason','a number','a color'], a:'a reason'}],
+      bridge:'READ.COMP.L05.18', bridgeName:'Ask a Good Question',
+      watch:{ q:'The Kitchen Light (a short passage)', m:{type:'scene', e:'💡', t:'Every night, the camp cook left one light on in the kitchen. One night the light was off, and the back door stood open. In the morning, a whole tray of rugelach was gone.'}, steps:[
+        {t:'Thin question: was the kitchen light on? No. Right there.'},
+        {t:'Thick question: why was the back door open?'},
+        {t:'The answer is not in one place. I must think.'},
+        {t:'Put clues together: the light off, the door open, the rugelach gone.'}],
+        a:'Thin: the answer is right there. Thick: you think and put clues together.' },
+      oops:{ q:'"How many trays were gone?" Is this a thick question?', wrong:'Yes, it starts with "how".', right:'No, it is thin: the answer, one tray, is right there.', why:'"How many" asks for one fact. A thick question makes you think.' },
+      ways:['real book (the Reader)','question the text','reading coach','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 5 and asked thick questions! Ask your chavrusa your best thick question, and listen to his answer.',
+      board:{ one:'Thin questions have answers right there. Thick questions make you think and put clues together. Ask both while you read.', activity:'Question ball: boys toss a soft ball; whoever catches it asks a question about Chapter 5, and the class calls out "thin" or "thick".', mistakes:['Thinking a long question is always thick','Asking only thin questions','Asking questions only after reading, not during'] },
+      do:[
+        {type:'read', text:'C45.B2.05', say:'Open the book. Read Chapter 5.', how:TELL},
+        {type:'sort', bins:['Thin question','Thick question'], cards:[['What star always shows north?',0],['What blinked far below?',0],['Why did Avrumi tell about his Abba?',1],['How did the night change Tzvi Hirsch?',1]],
+          say:'Thin question, or thick question?', how:'Can you point to the answer in one place? Then it is thin.',
+          why:{q:'Why is "why did Avrumi tell about his Abba?" thick?', o:['You must think about it','It is the longest','It has a name'], a:'You must think about it'}}],
+      your:[
+        {type:'evidence', mis:true, q:'Mistake Detective: which one is NOT a thick question?', p:['Why did Tzvi Hirsch say it was his fault?','How did Avrumi\'s story help Tzvi Hirsch?','What did the boys spread on the sand?','Why did saying Shema make the fear smaller?'], a:2, look:'a question with one fact for its answer',
+          say:'Mistake Detective! Which one is not thick?', how:'Which question has a short answer you can point to?',
+          why:{q:'What makes it thin?', o:['Its answer is one fact, right there','It has no question mark','It is about Shema'], a:'Its answer is one fact, right there'}},
+        {type:'listen', q:'Challenge: pick the best thick question.', hear:'Which question would help you understand Tzvi Hirsch the most?', o:['Why did he tell Avrumi he was scared?','What did he use as a pillow?','How many stars did he see?'], a:'Why did he tell Avrumi he was scared?',
+          say:'Challenge! Which question helps you understand him most?', how:'Which one makes you think about his feelings and choices?',
+          why:{q:'Why that one?', o:['It digs into why he did something','It is the shortest','It has a number'], a:'It digs into why he did something'}},
+        {type:'proof', text:'C45.B2.05', q:'Find the sentence that answers this thin question: how does Avrumi\'s Abba fix a mistake?', proof:'one careful letter at a time', look:'what Avrumi\'s Abba does to fix it',
+          say:'Open the book. Find the answer, right there.', how:'Find Avrumi\'s story about his Abba. Which sentence says how he fixes it?'},
+        {type:'combine', a:'Tzvi Hirsch\'s voice sounded steadier.', b:'Avrumi reminded him the poncho was his idea.', o:['because','but','until'], j:'because',
+          say:'Answer the thick question: join the two ideas.', how:'Which idea is the reason for the other?',
+          why:{q:'Why is this a thick answer?', o:['It puts two clues together','It is one word','It is in the title'], a:'It puts two clues together'}},
+        {type:'match', pairs:[['What went dark?','the flashlight'],['What did they say together?','Shema'],['What star stays in place?','the North Star'],['What do the pointer stars belong to?','the Big Dipper']],
+          say:'Match each thin question to its answer.', how:'Thin answers are right there. Find each one in the chapter.'}] },
+
+    'READ.LIT.L05.35':{ band:'E45', pic:'🌫️', today:'Read Chapter 6, and fix any part that confuses you',
+      why:'Every reader gets confused sometimes. A strong reader knows how to fix it and keep going.',
+      ready:[{q:'In Chapter 5, what blinked far below?', o:['A light','A star','A deer'], a:'A light'},
+             {q:'"Re" at the start of a word often means...', o:['again','not','before'], a:'again'}],
+      bridge:'READ.COMP.L05.19', bridgeName:'Clarify It',
+      watch:{ q:'The Closed Trail (a short passage)', m:{type:'scene', e:'🚧', t:'After the storm, the ranger said Ridge Trail was impassable. A tree had fallen right across it, and the creek had flooded the bridge.'}, steps:[
+        {t:'Notice: what does "impassable" mean? I am confused.'},
+        {t:'Fix-up: word parts. im + pass + able.'},
+        {t:'Im means not, like un in unsafe. So: NOT able to pass.'},
+        {t:'Read on to check: a tree blocks it, and the bridge is flooded.'},
+        {t:'It makes sense now!'}],
+        a:'Notice, stop, fix up, check.' },
+      oops:{ q:'You do not know "impassable". What should you do?', wrong:'Skip it. The rest of the story will be fine.', right:'Split it, or read on: a tree blocks the trail.', why:'Skipping leaves you confused. Pick a fix-up and check it.' },
+      ways:['real book (the Reader)','clarify (fix-up strategies)','word parts','reading coach','worked example','Mistake Detective','tap the reason'],
+      done:'You read Chapter 6 and fixed the confusing parts! Teach your chavrusa the three fix-ups.',
+      board:{ one:'When a part confuses you: notice, stop, fix up (reread, read on, word parts), and check.', activity:'Fix-up hands: the class holds up 1 finger for reread, 2 for read on and 3 for word parts as the teacher reads tricky lines from Chapter 6.', mistakes:['Skipping a confusing part and never fixing it','Guessing a meaning and not checking it','Using only one fix-up for every problem'] },
+      do:[
+        {type:'read', text:'C45.B2.06', say:'Open the book. Read Chapter 6.', how:TELL},
+        {type:'order', steps:['Notice that you are confused','Stop at the confusing part','Pick a fix-up','Check that it makes sense'],
+          say:'Put the clarify steps in order.', how:'First you notice. Last you check.',
+          why:{q:'Why check at the end?', o:['To be sure the fix worked','To finish faster','To skip a page'], a:'To be sure the fix worked'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Good fix-up','Mistake'], cards:[['Reread the part about the fog',0],['Read on to see what the arrow is for',0],['Skip the hard word and never find out',1],['Guess a meaning and never check it',1]],
+          say:'Mistake Detective: good fix-up, or mistake?', how:'Does it help you understand, or leave you confused?',
+          why:{q:'Why is guessing without checking a mistake?', o:['The guess may be wrong','Guessing is too slow','Words never change'], a:'The guess may be wrong'}},
+        {type:'parts', parts:['re','tie'], extra:['un'], mean:'to tie again',
+          say:'Build the word for what Tzvi Hirsch did to the poncho.', how:'Re means again. Snap it onto the root word.'},
+        {type:'listen', q:'Challenge: name the fix-up.', hear:'You forgot why the boys stayed instead of walking toward the light. Which fix-up helps most?', o:['reread','read on','word parts'], a:'reread',
+          say:'Challenge! Which fix-up is it?', how:'Did you go back, go forward, or split a word?',
+          why:{q:'Why did reread work here?', o:['The reason was earlier in the chapter','The word was long','The answer came later'], a:'The reason was earlier in the chapter'}},
+        {type:'proof', text:'C45.B2.06', q:'Find the sentence that clarifies what fog is.', proof:'fog is a cloud that touches the ground', look:'what Avrumi copied from his nature book',
+          say:'Open the book. Find the sentence that clarifies it.', how:'Find where Avrumi remembers his camp nature book.'},
+        {type:'cloze', t:'When a new word is explained later, you can read ___ to find the clue.', o:['on','faster','backward'], a:'on',
+          say:'Which word fits? Tap it into the gap.', how:'Where is the clue: before the word, or after it?',
+          why:{q:'When does read on work best?', o:['When the text explains the word next','When the word is long','When there is a picture'], a:'When the text explains the word next'}}] },
+
+    'READ.LIT.L05.36':{ band:'E45', pic:'🐕', today:'Read Chapter 7 and sum it up just right',
+      why:'A good summary shows you understood the whole chapter. It is the most useful thing a reader can say.',
+      ready:[{q:'In Chapter 6, what did the boys build on the bare rock?', o:['A giant stone arrow','A fire','A tent'], a:'A giant stone arrow'},
+             {q:'A summary tells...', o:['the most important events','every word','only the title'], a:'the most important events'}],
+      bridge:'READ.COMP.L05.20', bridgeName:'The Best Summary',
+      watch:{ q:'The Lost Siddur (a short passage)', m:{type:'scene', e:'📘', t:'Shimmy left his blue siddur in shul after Maariv. He looked everywhere at home. His brother Yossi found it on the bench and brought it back, and Shimmy thanked him.'}, steps:[
+        {t:'Too short: "Shimmy had a siddur." What happened?'},
+        {t:'Too long: every room, every drawer, every bench.'},
+        {t:'Just right: keep only the big events.'},
+        {t:'Shimmy lost his siddur, Yossi found it, and Shimmy thanked him.'}],
+        a:'Just right: the big events, in order, in a sentence.' },
+      oops:{ q:'Is "Shimmy\'s siddur had a blue cover" good for the summary?', wrong:'Yes, it is in the story.', right:'No, it is a small detail. It does not change what happens.', why:'Being in the story is not enough. A summary keeps only the big events.' },
+      ways:['real book (the Reader)','summarize','reading coach','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 7 and summed it up just right! Tell your chavrusa Chapter 7 in one sentence.',
+      board:{ one:'A summary tells the most important events in order. Too short leaves out big events; too long is full of small details.', activity:'Ten-second summary: pairs take turns telling Chapter 7 in ten seconds while the partner counts the big events they named.', mistakes:['A summary so short it leaves out the big events','A summary full of small details','Putting the events out of order'] },
+      do:[
+        {type:'read', text:'C45.B2.07', say:'Open the book. Read Chapter 7.', how:TELL},
+        {type:'storymap', slots:['too short','too long','just right'], cards:['A drone flew.','A pizza-box drone with four propellers and a red light buzzed, and a lizard watched, and they ate every raisin.','A drone spotted the arrow, the boys stayed put, and a search dog found them.'],
+          say:'Put each summary in its box.', how:'Is it missing the big events, stuffed with small ones, or just right?',
+          why:{q:'Why is the last one just right?', o:['It has the big events in order','It is the longest','It has a number'], a:'It has the big events in order'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Belongs in the summary','Mistake: small detail'], cards:[['A drone flies over the arrow',0],['Tzvi Hirsch chooses to stay',0],['A lizard sits on the arrow',1],['The drone is the size of a pizza box',1]],
+          say:'Mistake Detective: big event, or small detail?', how:'Would the story change without it?',
+          why:{q:'Why leave out the lizard?', o:['It does not change what happens','Lizards are small','It came last'], a:'It does not change what happens'}},
+        {type:'order', steps:['The drone flies over the arrow','It dips and flies away','Tzvi Hirsch chooses to stay','They wait, eat and daven','A search dog bursts out of the bushes'],
+          say:'Put the big events in order.', how:'Start when the fog lifts. End with the dog.',
+          why:{q:'Why does order matter in a summary?', o:['It shows how one event led to the next','It makes it longer','It does not matter'], a:'It shows how one event led to the next'}},
+        {type:'listen', q:'Challenge: judge a summary.', hear:'"The boys waited." Is this summary too short, too long, or just right?', o:['too short','too long','just right'], a:'too short',
+          say:'Challenge! Too short, too long, or just right?', how:'Does it tell the big events of Chapter 7?',
+          why:{q:'What is missing?', o:['The drone and the search dog','The lizard','The raisins'], a:'The drone and the search dog'}},
+        {type:'combine', a:'The drone flew right over the arrow.', b:'The boys could not be sure it saw them.', o:['but','so','because'], j:'but',
+          say:'Join the two ideas for your summary.', how:'Do the ideas agree, or does the second one go against the first?'},
+        {type:'proof', text:'C45.B2.07', q:'A summary needs the last big event. Find the sentence where the dog arrives.', proof:'out came a big brown dog', look:'what burst out of the bushes',
+          say:'Open the book. Find the last big event.', how:'Go to the last page. What comes out of the bushes?'}] },
+    'READ.LIT.L06.33':{ band:'E45', pic:'🍞', today:'Read Chapter 4 and find its job in the book',
+      why:'Every chapter does a job, even a calm one. See the job, and you see how the whole book is built.',
+      ready:[{q:'A hook at the end of a chapter...', o:['makes you want to read on','ends the whole book','repeats the title'], a:'makes you want to read on'},
+             {q:'In Chapter 3, what did Reb Shimon light?', o:['the Shabbos candles','the beacon','the stove'], a:'the Shabbos candles'}],
+      bridge:'READ.LIT.L06.10', bridgeName:'One Chapter, Whole Book',
+      watch:{ q:'The Lost Lunch Box (a short chapter book)', m:{type:'scene', e:'🥪', t:'Ch. 1: Shimmy\'s lunch box is gone. Ch. 2: crumbs lead to the coat room. Ch. 3: the coat room is locked, and recess is over. Ch. 4: the janitor opens it; the box fell behind a bench.'}, steps:[
+        {t:'Ask of each chapter: what job does it do?'},
+        {t:'Chapter 1 sets up the problem: the box is gone.'},
+        {t:'Chapter 2 adds a clue: the crumbs.'},
+        {t:'Chapter 3 makes the problem harder: locked, and no time.'},
+        {t:'Chapter 4 solves the problem.'}],
+        a:'Name the job, not just what happens.' },
+      oops:{ q:'What job does Chapter 2 (the crumbs) do?', wrong:'Shimmy follows crumbs to the coat room.', right:'It adds a clue that moves the search forward.', why:'That only retells. Say what the chapter DOES for the book.' },
+      ways:['real book (the Reader)','book map','worked example','Mistake Detective','tap the reason','evidence in the text','predict'],
+      done:'You read Chapter 4 and named its job! Tell your chavrusa what question its ending leaves.',
+      board:{ one:'Every chapter has a job: sets up the problem, adds a clue, makes the problem harder, or solves the problem. Its ending is often a hook.', activity:'Job cards: pairs get one chapter of the book so far, write its job on a card, and the class lines the cards up into a book map.', mistakes:['Retelling a chapter instead of naming its job','Thinking a calm chapter has no job','Missing the clue planted in a quiet moment'] },
+      do:[
+        {type:'read', text:'C45.B5.04', say:'Open the book. Read Chapter 4 of Shabbos at the Lighthouse.', how:'Read every page. Tap a blue word to see what it means. Tap Next at the end.'},
+        {type:'evidence', q:'Which line from Chapter 4 plants a clue for later?', p:['They ate Ima\'s cold chicken off paper plates.','"When I was a young man, I worked on a ship. One night, there was a fog..."','Dovid cut the babka into five equal pieces.'], a:1, look:'a story that stops before the end',
+          say:'Tap the line that plants a clue for later.', how:'Which line starts something the chapter does not finish?',
+          why:{q:'Why is it a clue?', o:['The story stops, so the book must come back to it','It is the longest line','It is about food'], a:'The story stops, so the book must come back to it'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Names its job','Mistake: only retells'], cards:[['It adds a clue: Reb Shimon\'s unfinished fog story.',0],['Its ending makes the problem harder: the light goes out.',0],['In Chapter 4 they eat chicken and babka.',1],['In Chapter 4 they sing zemiros.',1]],
+          say:'Mistake Detective: does it name the job, or only retell?', how:'A job says what the chapter adds to the book. Retelling only says what happens.',
+          why:{q:'Why is "they eat chicken and babka" a mistake here?', o:['It retells but does not name a job','It did not happen','It is too short'], a:'It retells but does not name a job'}},
+        {type:'order', steps:['The barometer falls fast','The Coast Guard says to stay','Reb Shimon lights the candles','Reb Shimon starts his fog story','The beacon goes dark'],
+          say:'Put these moments from four chapters in book order.', how:'Chapter 1 first, then one chapter at a time.',
+          why:{q:'Why does the beacon going dark come last?', o:['It is the hook that pulls into Chapter 5','It is the shortest event','It happens on Friday morning'], a:'It is the hook that pulls into Chapter 5'}},
+        {type:'proof', text:'C45.B5.04', q:'Find the sentence where Reb Shimon stops his story and saves it for later.', proof:'Another time', look:'what Reb Shimon says when he stops',
+          say:'Open the book. Find where he stops his story.', how:'Find Nosson\'s question, then Reb Shimon\'s answer.'},
+        {type:'listen', q:'Challenge: predict the next chapter\'s job.', hear:'The light just went out. What will Chapter 5 most likely be about?', o:['What they do about the dark light','Friday morning on the boat','The end of the whole book'], a:'What they do about the dark light',
+          say:'Challenge! What will Chapter 5 most likely be about?', how:'A hook is picked up by the next chapter.',
+          why:{q:'Why?', o:['A hook is picked up by the next chapter','Chapters are in any order','Chapter 5 is the last chapter'], a:'A hook is picked up by the next chapter'}},
+        {type:'cloze', t:'Reb Shimon says "Another time." That ___ a question the book will answer later.', o:['plants','solves','ends'], a:'plants',
+          say:'Which word fits? Tap it into the gap.', how:'Does stopping the story answer the question, or leave it for later?'}] },
+    'READ.LIT.L06.34':{ band:'E45', pic:'🔦', today:'Read Chapter 5, and see the job of each scene',
+      why:'A chapter is built from scenes, like a play. See each scene\'s job, and you see how the chapter works.',
+      ready:[{q:'A scene changes when...', o:['the place, time or action changes','a new word starts','the page ends'], a:'the place, time or action changes'},
+             {q:'At the end of Chapter 4, what happened?', o:['The beam did not come back','The boat came home','Shabbos ended'], a:'The beam did not come back'}],
+      bridge:'READ.LIT.L06.11', bridgeName:'Stanzas and Scenes',
+      watch:{ q:'The Flat Tire (a play in three scenes)', m:{type:'scene', e:'🚲', t:'Scene 1: Moishe\'s bike has a flat tire before cheder. Scene 2: it starts to rain, and cheder is far. Scene 3: Zeidy pulls up in his car and waves.'}, steps:[
+        {t:'Ask of each scene: what job does it do?'},
+        {t:'Scene 1 brings the problem: a flat tire.'},
+        {t:'Scene 2 makes it harder: rain, and cheder is far.'},
+        {t:'Scene 3 turns it around: Zeidy comes.'},
+        {t:'Each scene builds on the one before it.'}],
+        a:'Every scene has one job, and the jobs build on each other.' },
+      oops:{ q:'What job does Scene 2 (the rain) do?', wrong:'It tells about the weather.', right:'It makes the problem harder: now Moishe is late AND wet.', why:'Naming what a scene is about is not naming its job.' },
+      ways:['real book (the Reader)','scene map','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 5 and named each scene\'s job! Tell your chavrusa which scene turns it around.',
+      board:{ one:'A chapter is built from scenes. Each scene has a job: brings the problem, makes it more dangerous, explains the rule, turns it around, or ends on a hook.', activity:'Scene line: five boys each hold one scene card from Chapter 5. The class puts them in order, and each boy says his scene\'s job.', mistakes:['Saying what a scene is about instead of its job','Missing the scene that explains why a character acts','Thinking every scene makes things worse'] },
+      do:[
+        {type:'read', text:'C45.B5.05', say:'Open the book. Read Chapter 5 of Shabbos at the Lighthouse.', how:'Read every page. Tap a blue word to see what it means. Tap Next at the end.'},
+        {type:'storymap', slots:['Scene 1: the dark window','Scene 2: the radio call','Scene 3: Reb Shimon\'s talk','Scene 4: up to the lantern room','Scene 5: Nosson at the window'], cards:['Brings the problem','Makes it more dangerous','Explains the rule','Turns it around','Ends on a hook'], extra:['Solves the problem'],
+          say:'Give each scene its job.', how:'Does the scene start trouble, add danger, teach a rule, or leave a question?',
+          why:{q:'Why does no scene get "Solves the problem"?', o:['The danger is not over yet','It is too long','Every chapter solves it'], a:'The danger is not over yet'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Names the scene\'s job','Mistake: only says what it is about'], cards:[['The radio scene makes it more dangerous: a boat is out there.',0],['Reb Shimon\'s talk explains the rule of pikuach nefesh.',0],['The radio scene is about a radio.',1],['The last scene is about a window.',1]],
+          say:'Mistake Detective: a job, or only what it is about?', how:'A job says what the scene adds. "It is about..." names a topic.',
+          why:{q:'Why is "the radio scene is about a radio" a mistake?', o:['It names a topic, not a job','The radio was broken','There is no radio'], a:'It names a topic, not a job'}},
+        {type:'order', steps:['The beam does not come back','The Miss Ellie calls on the radio','Reb Shimon explains pikuach nefesh','Reb Shimon lights the backup lamp','Nosson sees a green light'],
+          say:'Put the scenes in order.', how:'Follow the chapter scene by scene.',
+          why:{q:'Why does the talk come before the lamp is lit?', o:['It explains why he may light it on Shabbos','It is shorter','The radio broke'], a:'It explains why he may light it on Shabbos'}},
+        {type:'listen', q:'Challenge: find the turning point.', hear:'Which scene is the turning point, where things start to get better?', o:['When Reb Shimon lights the backup lamp','When the beam goes dark','When the radio first crackles'], a:'When Reb Shimon lights the backup lamp',
+          say:'Challenge! Which scene turns it around?', how:'Find the scene after which the boat has a light to steer by.',
+          why:{q:'Why that scene?', o:['After it, the boat has a light to steer by','It is the longest scene','It happens first'], a:'After it, the boat has a light to steer by'}},
+        {type:'proof', text:'C45.B5.05', q:'Which sentence gives the Rav\'s two steps: who to call, and when to light?', proof:'You call the Coast Guard', look:'what the Rav told him to do',
+          say:'Open the book. Find the Rav\'s two steps.', how:'Find where Reb Shimon tells what his Rav taught him.'},
+        {type:'combine', a:'Reb Shimon turned on the backup lamp on Shabbos.', b:'A boat\'s crew might be in danger.', o:['because','but','so'], j:'because',
+          say:'Join the action to its reason.', how:'Which idea is the reason for the other?'}] },
+    'READ.LIT.L06.35':{ band:'E45', pic:'🟢', today:'Read Chapter 6, and see how the author builds suspense',
+      why:'Suspense keeps you turning pages. See how it is built, and you can spot it in any book.',
+      ready:[{q:'A cliffhanger comes...', o:['at the very end of a chapter','at the start','in the title'], a:'at the very end of a chapter'},
+             {q:'At the end of Chapter 5, what did Nosson see?', o:['a tiny green light on the water','the Coast Guard boat','the sunrise'], a:'a tiny green light on the water'}],
+      bridge:'READ.LIT.L06.11', bridgeName:'Stanzas and Scenes',
+      watch:{ q:'The Runaway Kite (a short passage)', m:{type:'scene', e:'🪁', t:'Avi\'s kite string snaps. The kite drifts toward the tall oak, dipping lower and lower. A gust lifts it over the branches! It lands on the roof of the shul.'}, steps:[
+        {t:'The problem: the string snaps.'},
+        {t:'Rising tension: it drifts toward the oak, lower and lower.'},
+        {t:'The turn: a gust lifts it over the branches!'},
+        {t:'The cliffhanger: it lands on the shul roof. Now what?'},
+        {t:'Problem, rising tension, the turn, the cliffhanger.'}],
+        a:'Suspense has a shape you can find.' },
+      oops:{ q:'Which part of the kite story is the cliffhanger?', wrong:'The kite string snaps.', right:'It lands on the roof of the shul.', why:'The start is the problem. A cliffhanger is the last line that leaves you asking "what now?"' },
+      ways:['real book (the Reader)','suspense map','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 6 and found how the suspense is built! Tell your chavrusa where the turn is.',
+      board:{ one:'Suspense has a shape: the problem, rising tension, the turn, and the cliffhanger.', activity:'Suspense rope: the class holds a rope. Each boy reads one part of Chapter 6, and the rope is pulled tighter for rising tension, let loose at the turn, and pulled hard at the cliffhanger.', mistakes:['Calling the problem the cliffhanger','Missing the small details that build tension','Thinking the turn is always the end'] },
+      do:[
+        {type:'read', text:'C45.B5.06', say:'Open the book. Read Chapter 6 of Shabbos at the Lighthouse.', how:'Read every page. Tap a blue word to see what it means. Tap Next at the end.'},
+        {type:'storymap', slots:['The problem','Rising tension','The turn','The cliffhanger'], cards:['The green light drifts toward the shoal','The boys call out each change; Tehillim','The anchor holds','A wave hides the boat; the light is gone'], extra:['The boys eat babka'],
+          say:'Put each part in its place in the suspense.', how:'The problem comes first, the cliffhanger last. Where does the worry grow, and where does it ease?',
+          why:{q:'Why does "the boys eat babka" not fit?', o:['It is not in this chapter\'s suspense','It is too long','It is the cliffhanger'], a:'It is not in this chapter\'s suspense'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Labeled right','Mistake'], cards:[['The anchor holds: the turn',0],['The green light is gone: the cliffhanger',0],['The anchor holds: the problem',1],['The boat drifts toward the shoal: the cliffhanger',1]],
+          say:'Mistake Detective: is each part labeled right?', how:'The problem is near the start. The cliffhanger is the very end.',
+          why:{q:'Why is "the boat drifts: the cliffhanger" a mistake?', o:['The drifting is the problem at the start','The boat never drifts','It is the turn'], a:'The drifting is the problem at the start'}},
+        {type:'evidence', q:'Which detail lets Binyamin work out the boat\'s direction?', p:['They can see only the green light, not the red.','The boat is small and white.','The rain is very heavy.','A searchlight sweeps the water.'], a:0, look:'which side light the boys see',
+          say:'Tap the detail Binyamin uses.', how:'Think about what each side light color means.',
+          why:{q:'What does seeing only green tell him?', o:['The boat\'s right side faces them','The boat is close to shore','The engine works'], a:'The boat\'s right side faces them'}},
+        {type:'listen', q:'Challenge: why stop there?', hear:'The chapter ends with the green light gone. Why does the author stop right there?', o:['So you want to read the next chapter','Because the story is over','To show the boat is safe'], a:'So you want to read the next chapter',
+          say:'Challenge! Why does the chapter stop right there?', how:'Does the last line answer the question, or leave it hanging?',
+          why:{q:'What is that kind of ending called?', o:['a cliffhanger','a summary','a title'], a:'a cliffhanger'}},
+        {type:'proof', text:'C45.B5.06', q:'Which sentence tells how long until the rescue boat would arrive?', proof:'fifteen minutes out', look:'what the Coast Guard said',
+          say:'Open the book. Find how long help would take.', how:'Find the Coast Guard\'s answer to Reb Shimon.'},
+        {type:'cloze', t:'The rescue boat is fifteen minutes out. The clock makes the reader ___.', o:['worry more','relax','laugh'], a:'worry more',
+          say:'Which words fit? Tap them into the gap.', how:'The boat is drifting toward the shoal. Is fifteen minutes fast enough?',
+          why:{q:'Worry that grows, step by step, is called...', o:['rising tension','the turn','the problem'], a:'rising tension'}}] },
+    'READ.LIT.L06.36':{ band:'E45', pic:'📓', today:'Read Chapter 7: compare the log and the story',
+      why:'One night can be told two ways. See how each is built, and you know what each one is best at.',
+      ready:[{q:'A log is a book where you write...', o:['what happens, with the time','a poem','a letter to a friend'], a:'what happens, with the time'},
+             {q:'At the end of Chapter 6, what was gone?', o:['the green light','the lighthouse','the candles'], a:'the green light'}],
+      bridge:'READ.COMP.L06.13', bridgeName:'Built Two Ways',
+      watch:{ q:'Two Texts About a Snowy Morning', m:{type:'scene', e:'❄️', t:'Text A, a log: "6:00 a.m. Snow began. 9:00 a.m. Six inches. School closed." Text B, a story: "Yossi pressed his nose to the cold window. Snow! He whooped so loud the baby woke up."'}, steps:[
+        {t:'Same morning, same snow. Now look at the shape.'},
+        {t:'Text A: each line starts with a time. Short facts.'},
+        {t:'That is a log, in time order.'},
+        {t:'Text B: a boy, a cold window, a whoop. A scene with feelings.'},
+        {t:'That is a story. The log tells when; the story helps you feel it.'}],
+        a:'One event, built two ways.' },
+      oops:{ q:'How is Text A built?', wrong:'Like a story, because it is about snow.', right:'As a log: times in order, short facts.', why:'The topic is the same. Look at the shape of the text, not what it is about.' },
+      ways:['real book (the Reader)','compare two texts','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You compared the log and the story! Tell your chavrusa what the log shows best, and what the story shows best.',
+      board:{ one:'A log is short entries with times, in time order. A story is built with scenes, details and feelings. Each shows something the other leaves out.', activity:'Two ways: each pair writes yesterday\'s Mincha two ways, as a log with times and as a short story with one feeling, then reads both aloud.', mistakes:['Thinking two texts on one topic are built the same way','Missing the times that show a log','Forgetting what each way leaves out'] },
+      do:[
+        {type:'read', text:'C45.B5.07', say:'Open the book. Read Chapter 7 of Shabbos at the Lighthouse.', how:'Read every page. Tap a blue word to see what it means. Tap Next at the end.'},
+        {type:'order', steps:['Main beacon failed','Backup lamp lit','Green light sighted','Anchor holding','Coast Guard has the Miss Ellie'],
+          say:'Put the log entries in order.', how:'A log is in time order. Use the times in the chapter.',
+          why:{q:'Which log time first shows the anchor holding?', o:['9:39 p.m.','9:36 p.m.','9:15 p.m.'], a:'9:39 p.m.'}}],
+      your:[
+        {type:'sort', mis:true, bins:['True about the log','Mistake'], cards:[['Each entry starts with a time',0],['The entries go in time order',0],['The log tells the night in scenes with talking',1],['The log describes how each boy felt',1]],
+          say:'Mistake Detective: true about the log, or a mistake?', how:'Look at the shape of the entries: times and short facts.',
+          why:{q:'Why is "scenes with talking" a mistake?', o:['That is how the story part is built','The log has no times','The log is a poem'], a:'That is how the story part is built'}},
+        {type:'evidence', q:'Which line is built like a story, not a log?', p:['9:22 p.m. Coast Guard rescue boat about 15 minutes away.','He got up and went to the window.','6:45 a.m. First light.'], a:1, look:'a line with no time, showing a scene',
+          say:'Tap the line built like a story.', how:'Log lines start with a time. Story lines show someone doing something.'},
+        {type:'listen', q:'Challenge: why two ways?', hear:'The log and the chapters tell the same night. Why tell it two ways?', o:['Each way shows something the other leaves out','To make the book longer','Because the log is wrong'], a:'Each way shows something the other leaves out',
+          say:'Challenge! Why tell one night two ways?', how:'Think of what the log shows best, and what the story shows best.',
+          why:{q:'What does the log show best?', o:['The time of each event','How the boys felt','What the bay smelled like'], a:'The time of each event'}},
+        {type:'match', pairs:[['Exact times','show when each thing happened'],['Short lines of facts','keep a careful record'],['A boy waking with an elbow in his ear','help you feel the morning']],
+          say:'Match each feature to what it does.', how:'Ask: why would a writer use this?'},
+        {type:'proof', text:'C45.B5.07', q:'Which sentence tells why the log was written after Shabbos?', proof:'did not write in his log on Shabbos', look:'why he waited',
+          say:'Open the book. Find why he waited.', how:'Find what the chapter says about writing on Shabbos.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

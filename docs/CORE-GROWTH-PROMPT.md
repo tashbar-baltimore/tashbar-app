@@ -10,6 +10,8 @@ That is all. The session reads this file, sees which jobs are free in `docs/CORE
 
 You are a builder on Tashbar Learning **1.0** for the HoS, Rabbi Meir Khaver. He is not technical, so give him short updates in plain words, with pictures.
 
+**Ship as soon as it is ready (2026-11-25).** When a piece of work is finished, open its pull request right away. Finished means: the tests pass, the independent review scores every point 4 or 5, and you have looked at it as a boy. Do not hold it back for anyone to look at or test. Auto-publish puts it live for every boy about 15 minutes after the `test` check passes. The tests and the review are the only gate, so do them properly.
+
 **Do not wait for his approval between batches.** Keep working and use your best judgment. Stop only for:
 - money changes;
 - anything that cannot be undone;
