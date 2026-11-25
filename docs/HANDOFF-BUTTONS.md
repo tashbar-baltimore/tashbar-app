@@ -45,5 +45,14 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - Mistake Detective end (`src/Review.html`): "New cases" = `TLK.main`, "Done" = `TLK.quiet`, words only. Enter/focus use `.mdkit .tlk-main`.
 - Pictures: `docs/screens/info-before-*.jpg`, `info-after-*.jpg`. Check: `node tools/screens/info.js OUT TAG GRADE` (+ `pages.js`, `arena.js`).
 
+## Done: step 6, the Store pop-up's buttons on the kit (25 Nov 2026)
+- `src/StoreKid.html`: tabs are words only; the open tab is a `now` label (you are here), the others kit quiet buttons; on a phone they wrap.
+- Each card: "Buy it", "Make it my goal", "Use it" are kit quiet buttons (many cards, so no main); "My goal" and "In use" are labels with a quiet "Not my goal" / "Stop using it".
+- "Go to the canteen" quiet; gift amounts quiet (the chosen one a money label); "Send $…" main.
+- "Buy …?" question: main "Buy it" / "Send" / "Give it" + quiet "Not now" (title now readable: it was light text on white). Done card: main "Yay!". Paycheck: main "Put it in my bank".
+- CSS like `.sttabs button` / `.stcard button` / `.amts button` (and GameMap's `body.gm-nav .sttabs button`) now use `:not(.tlk)`.
+- Pictures: `docs/screens/store-buttons-before-*.jpg`, `store-buttons-after-*.jpg`. Check: `node tools/screens/info.js OUT TAG 5 storepop,storegive,storeask`.
+- Not changed: the old home's goal bar and store button (`goalBar`, `.stbtn`), which only show on the old home.
+
 ## Next
-- Not yet on kit labels: Mistake Detective's points and case dots, the old Trophies/My week rooms, Canteen, lesson screens. The Store pop-up's own buttons (Buy it, Make it my goal, tabs) and the Chumash/Workbook/Arena buttons are not on the kit yet.
+- Not yet on kit labels: Mistake Detective's points and case dots, the old Trophies/My week rooms, Canteen, lesson screens. The Chumash/Workbook/Arena buttons are not on the kit yet.
