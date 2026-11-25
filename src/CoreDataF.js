@@ -99,5 +99,10 @@ CORE_SKILLS.F = [
   ["READ.PHON.L01.09", "Nnn Like Nest", "Know the sound of n and tell it from m and h", { after: "READ.PHON.L01.08", std: "RF.K.3a", file: "CoreDataF2", min: 4 }],
   ["READ.PHON.L01.10", "Pin, Tap, Nap", "Read and build words with a and i", { after: "READ.PA.L01.06", std: "RF.K.3b", file: "CoreDataF2", min: 5 }],
   ["READ.FLU.L01.03", "Heart Words: I, is", "Read the heart words I and is by sight", { after: "READ.PHON.L01.10", std: "RF.K.3c", file: "CoreDataF2", min: 4 }],
-  ["WRIT.HAND.L01.06", "Write p, i, n", "Say it, trace it, write it: p, i and n", { after: "WRIT.HAND.L01.05", std: "L.K.1a", file: "CoreDataF2", min: 5 }]
+  ["WRIT.HAND.L01.06", "Write p, i, n", "Say it, trace it, write it: p, i and n", { after: "WRIT.HAND.L01.05", std: "L.K.1a", file: "CoreDataF2", min: 5 }],
+  ["READ.FLU.L03.05", "Poem Beat", "Read a poem with its beat, its rhyme and its line breaks", { after: "READ.FLU.L03.04", std: "RF.2.4b", file: "CoreDataFH4", min: 7 }],
+  ["READ.FLU.L03.06", "Readers' Theatre", "Read your part in a play: on cue, in the right voice", { after: "READ.FLU.L03.05", std: "RF.2.4b", file: "CoreDataFH4", min: 8 }],
+  ["READ.FLU.L03.07", "Fix It As You Go", "Notice when a word does not look right or make sense, and fix it", { after: "READ.FLU.L03.06", std: "RF.2.4c", file: "CoreDataFH4", min: 7 }],
+  ["READ.PHON.L03.18", "Spell It Back", "Hear a sentence and spell its Grade 2 pattern words", { after: "READ.FLU.L03.07", std: "L.2.2d", file: "CoreDataFH4", min: 7 }],
+  ["WRIT.HAND.L03.01", "Neat Paragraph", "The rules of a neat paragraph: indent, spaces, letters on the line", { after: "LANG.MECH.L03.01", file: "CoreDataFH4", min: 6 }]
 ];
