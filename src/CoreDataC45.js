@@ -116,5 +116,14 @@ CORE_SKILLS.C45 = [
   ["READ.FLU.L06.22", "Read It 3 Times: From the Deep Ocean", "Read a letter, with big facts that sink in", { std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }],
   ["READ.FLU.L06.23", "Read It 3 Times: Galileo Looks Up", "Read a history talk, building to the big discovery", { after: "READ.FLU.L06.04", std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }],
   ["READ.FLU.L06.24", "Read It 3 Times: The Eagle Has Landed", "Read a tense play at the right pace", { std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }],
-  ["READ.FLU.L06.25", "Read It 3 Times: Footprints on the Moon", "Read a poem that turns from playful to still", { std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }]
+  ["READ.FLU.L06.25", "Read It 3 Times: Footprints on the Moon", "Read a poem that turns from playful to still", { std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }],
+  ["READ.FLU.L05.26", "Read It 3 Times: Twelve Seconds", "Read a play about the first flight, with rising excitement", { after: "READ.FLU.L05.05", std: "RF.4.4b", file: "CoreDataC45H5", min: 6 }],
+  ["READ.FLU.L05.27", "Read It 3 Times: If I Could Fly", "Read a poem that speeds up, then lands gently", { std: "RF.4.4b", file: "CoreDataC45H5", min: 6 }],
+  ["READ.FLU.L05.28", "Read It 3 Times: Fourteen Years", "Read a history talk with dates and names clearly", { after: "READ.LIT.L05.08", std: "RF.4.4b", file: "CoreDataC45H5", min: 6 }],
+  ["READ.FLU.L05.29", "Read It 3 Times: Bridges", "Read a poem with its beat and its pictures", { std: "RF.4.4b", file: "CoreDataC45H5", min: 6 }],
+  ["READ.FLU.L06.26", "Read It 3 Times: Hoses That Did Not Fit", "Read a play about the 1904 fire with rising urgency", { after: "READ.COMP.L06.15", std: "RF.5.4b", file: "CoreDataC45H6", min: 6 }],
+  ["READ.FLU.L06.27", "Read It 3 Times: Extra! Extra!", "Read a newsboy's call: loud, clear and quick", { std: "RF.5.4b", file: "CoreDataC45H6", min: 6 }],
+  ["READ.FLU.L06.28", "Read It 3 Times: The Firemen's Train", "Read a poem with the rhythm of a train", { std: "RF.5.4b", file: "CoreDataC45H6", min: 6 }],
+  ["READ.FLU.L06.29", "Read It 3 Times: The Bulb That Lasted", "Read a history talk, building to success", { after: "READ.LIT.L06.14", std: "RF.5.4b", file: "CoreDataC45H6", min: 6 }],
+  ["READ.FLU.L06.30", "Read It 3 Times: Dovid's Windmill", "Read a letter with its hopes, problems and fixes", { std: "RF.5.4b", file: "CoreDataC45H6", min: 6 }]
 ];
