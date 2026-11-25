@@ -20,3 +20,4 @@ The 7 existing Grade 2–3 lessons (section 1 of the map) are inside these count
 
 ## Log
 - 2026-11-25 · Map written. Built: 0 hours.
+- 2026-11-25 · Unit 2.1 "Story Detectives": 3 new lessons (`READ.COMP.L03.04`–`.06`, 3 × 8), Book C1 ch. 1–2 (2 × 15), 2 stories (2 × 12) and unit check `C23.U21` (10). `READ.LIT.L03.01` Retell It already has a One Bite lesson and is used as it is. Built: 88 min ≈ 1.5 h for Grade 2.

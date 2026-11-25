@@ -39,7 +39,7 @@ None of the 153 Grade 4–8 skills has a One Bite lesson. The topics are good an
 
 This matches the "science and social studies readings ≈ 10 hours" in C45's split of a Grade 4–5 boy's time. **Over the full year:** all 6 Science units and both Social Studies units.
 
-**Social Studies units** have the same shape. The hands-on piece is a **map or timeline he builds**. Its texts are history and geography readings. **No unit check yet:** the unit checks need a skill-by-skill path, and Social Studies has none (`TLCORE.units` takes READ, WRIT or SCI). The pre-check and boss check come when a Social Studies path exists. I will raise that as an issue, not build it on my own.
+**Social Studies units** have the same shape. The hands-on piece is a **map or timeline he builds**. Its texts are history and geography readings. **Unit checks (HoS decision 2026-11-25, issue 432):** Social Studies now has a skill path (`c: 'SS'` in `TLCORE.units`). Every Unit 1 (Grades 4–8) has a pre-check, a unit check with its own 3-choice questions, and its map or timeline project in the Writing Workshop: `src/CoreDataS11.html`, units `S.U06`–`S.U10`. A new Social Studies unit adds its check the same way.
 
 ## 3. The units (first half year), in the order I build them
 
@@ -104,7 +104,7 @@ Pictures follow job T's style sheets (E45 for Grades 4–5, M68 for Grades 6–8
 - **T** (done; I wrote it): `TLCORE.add` for a One Bite lesson on an existing skill, as above.
 - **C45 and C68:** permission to use their topic sets (Oceans 5.4, Energy and electricity 5.7, Volcanoes and earthquakes 6.3, Coming to America 7.3, Founding America 8.3). Both maps already offer them to S. Their texts stay in their folders and S's lessons name them by id.
 - **D** (the daily plan): Science and Social Studies come after core on a boy's list. Nothing to change.
-- **HoS:** a Social Studies path, so Social Studies units can have test-out and a unit check. This is an issue, not urgent.
+- **HoS:** a Social Studies path, so Social Studies units can have test-out and a unit check. Decided yes on 2026-11-25 (issue 432); built under gap D1.
 
 ## 8. Ledger
 
