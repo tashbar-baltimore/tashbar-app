@@ -1,0 +1,592 @@
+<script>
+/* CoreDataC68H2.html: Core Growth job C68, helper piece "Grade 8, Units 8.5-8.8" (docs/core-growth/C68-map.md, section 3). Keep this file under 150 KB.
+   Unit 8.5 "Point of view and irony": new skills READ.LIT.L09.09 (dramatic irony), READ.COMP.L09.14 (answer the other side),
+   READ.LIT.L09.10 (the narrator shapes the mystery), READ.FLU.L09.02 (Readers' Theatre: a mystery scene) with TLCORE.add,
+   and the existing READ.LIT.L09.01 "Why It Was Written" rebuilt as a One Bite lesson (TLCORE.upgrade: its own questions stay as practice and Show me).
+   Texts: texts/C68/C68.MYS.01 (play "The Missing Proofs"), C68.ARG.01 (editorial "Keep The Beacon on Paper" and Eli's reply).
+   The Watson passages are short adaptations of "The Red-Headed League" by Arthur Conan Doyle (1891, public domain).
+   Cast: The Beacon newsroom (docs/core-growth/W48-map.md, section 7). No double slash in this file. */
+(function () {
+  var LESSONS = {
+
+    /* ===== Unit 8.5, skill 2: dramatic irony ===== */
+    'READ.LIT.L09.09':{name:'Dramatic Irony',
+      teach:[
+        {q:'In a play, the audience knows something a character does not. What is that called?', o:['dramatic irony','a flashback','foreshadowing'], how:'Dramatic irony: we know more than the character on stage.'},
+        {q:'Why does an author use dramatic irony?', o:['to build tension while we wait for the character to find out','to hide the ending from the reader','to make the play shorter'], how:'We see a mistake coming that the character cannot see. That gap is the tension.'},
+        {q:'How do you spot dramatic irony?', o:['ask: what do I know that this character does not?','look for a funny word','count the characters'], how:'Compare what the audience knows with what the character knows.'}
+      ],
+      practice:[
+        {t:'sort', q:'Scene: the boys hid in the dark to honor Rabbi Rosen\'s 25 years as menahel. He walks in and sighs, "Nobody remembered." Who knows each fact?', bins:[{id:'a',label:'Only the audience and the boys'},{id:'r',label:'Rabbi Rosen knows it too'}], items:[{label:'A surprise is waiting in the dark.',bin:'a'},{label:'Everyone remembered.',bin:'a'},{label:'The room is dark and quiet.',bin:'r'},{label:'It is his 25th year as menahel.',bin:'r'}], h:'What can Rabbi Rosen see? What is hidden from him?'},
+        {t:'pairs', q:'Match each tool an author uses to what it does.', pairs:[['dramatic irony','the audience knows more than the character'],['foreshadowing','a hint of what comes later'],['flashback','a jump back in time'],['suspense','we worry about what will happen']], h:'Which one is about who knows more?'},
+        {t:'sort', q:'Who knows more in each scene?', bins:[{id:'a',label:'the audience'},{id:'s',label:'the same'}], items:[{label:'We saw Mr. Gross take the folder. Eli blames Benny.',bin:'a'},{label:'We saw the boys hide for a surprise. Rabbi Rosen sighs.',bin:'a'},{label:'Eli tells everyone he lost his pen.',bin:'s'},{label:'Gavriel shows everyone the photo.',bin:'s'}], h:'Did the audience see something the character did not?'},
+        {t:'order', q:'Put the steps for finding dramatic irony in order.', tiles:['Find what the audience is told.','Find what the character believes.','Spot the gap between them.','Ask how the gap builds tension.'], h:'Start with what you know. End with why it matters.'},
+        {t:'pairs', q:'Match each scene to what the gap makes you feel.', pairs:[['We know the dog slipped out the open gate. The boys keep playing.','tension'],['We know Abba hid a new bike behind the door. Yitzy sighs, "No bike for me."','a smile: good news is coming']], h:'Is the secret bad news or good news?'},
+        {t:'spotall', q:'Tap every scene with dramatic irony.', cells:[{label:'We saw the key fall into the snow. Avi says, "It is in my pocket."',ok:true},{label:'We know the cake is a surprise. Dovid says, "Nobody bakes for me."',ok:true},{label:'Avi tells his brother he lost the key.',ok:false},{label:'Dovid bakes a cake with his father.',ok:false}], h:'Does the audience know something the speaker does not?'}
+      ],
+      check:[
+        {q:'Play: we saw Dovi hide the cake in the fridge. Moshe opens the cupboard: "No cake. Dovi forgot." What is the author using?', o:['dramatic irony','a flashback','foreshadowing']},
+        {q:'Story: the reader knows the bridge ahead washed away. The wagon driver whistles, "Home by supper!" What does the gap give the reader?', o:['tension','boredom','relief']},
+        {q:'Play: we watched Shloimy fix the bike at night. In the morning his brother grumbles, "Nobody ever fixes anything here." Who knows more?', o:['the audience','the brother','nobody']}
+      ],
+      re:[
+        {q:'Play: we saw the boys hide the lost puppy in the shed to keep it warm. The owner cries, "It must have run away for good." What is the author using?', o:['dramatic irony','a flashback','foreshadowing']},
+        {q:'Story: the reader knows the ice on the pond is thin. Two boys skate toward the middle, laughing. What does the gap give the reader?', o:['tension','boredom','relief']},
+        {q:'Play: we know the prize is in the blue box. Chaim picks the red box and says, "I chose well." Who knows more?', o:['the audience','Chaim','nobody']}
+      ]},
+
+    /* ===== Unit 8.5, skill 3: how an author answers the other side ===== */
+    'READ.COMP.L09.14':{name:'Answer the Other Side',
+      teach:[
+        {q:'An author writes the other side\'s reason. What is it called?', o:['a counterclaim','a claim','a fact'], how:'The other side\'s view is a counterclaim. A fair author states it before he answers it.'},
+        {q:'"I agree that we waste too many copies." What is the author doing?', o:['conceding a point','refuting a point','changing the topic'], how:'To concede is to agree with part of the other side.'},
+        {q:'"That is true, but faster is not always better." What is the author doing?', o:['refuting a point','conceding a point','stating a fact'], how:'To refute is to answer a point: show it is wrong, or that it matters less.'}
+      ],
+      practice:[
+        {t:'sort', q:'Concede or refute?', bins:[{id:'c',label:'Concede (agree with part)'},{id:'r',label:'Refute (answer it)'}], items:[{label:'He has a point about the cost.',bin:'c'},{label:'Granted, the trip is long.',bin:'c'},{label:'Still, the cost is worth it.',bin:'r'},{label:'But that does not prove it is unsafe.',bin:'r'}], h:'Agreeing words: granted, he has a point. Answering words: but, still.'},
+        {t:'pairs', q:'Match each move to its signal words.', pairs:[['a counterclaim','Some people say...'],['conceding a point','It is true that...'],['refuting a point','But that misses...'],['the author\'s claim','I believe...']], h:'Who is talking: the other side, or the author?'},
+        {t:'order', q:'Put the moves of a fair argument in order.', tiles:['State your claim.','State the other side fairly.','Concede what is true.','Refute the rest with reasons.'], h:'Your claim first. The answer to the other side comes after you state it.'},
+        {t:'sort', q:'Some say the trip is too far. Sort each sentence.', bins:[{id:'c',label:'a counterclaim'},{id:'k',label:'conceding a point'},{id:'r',label:'refuting a point'}], items:[{label:'Some say the trip is too far.',bin:'c'},{label:'It is far.',bin:'k'},{label:'But the long ride is when the boys learn together.',bin:'r'}], h:'Who is talking? Does he agree, or answer?'},
+        {t:'spotall', q:'Why does a fair author concede a true point? Tap every good reason.', cells:[{label:'so his answer sounds fair and is easier to trust',ok:true},{label:'it shows he listened to the other side',ok:true},{label:'because he changed his mind',ok:false},{label:'to make the piece longer',ok:false}], h:'A fair author admits what is true first.'},
+        {t:'spotall', q:'Tap every signal that an author is about to refute.', cells:[{label:'But',ok:true},{label:'Still',ok:true},{label:'That misses the point',ok:true},{label:'Granted',ok:false},{label:'Some people say',ok:false}], h:'Refuting words turn against the other side.'}
+      ],
+      check:[
+        {q:'"Some say recess should be shorter. It is true that time is short. But boys who run at recess listen better." What does the second sentence do?', o:['conceding a point','refuting a point','stating the claim']},
+        {q:'"Critics say a bigger shul costs too much. A full shul turns families away every Yom Tov." What does the second sentence do?', o:['refuting a point','conceding a point','a counterclaim']},
+        {q:'"Many parents say homework should end at eighth grade." In an essay that disagrees, what is this sentence?', o:['a counterclaim','a concession','the author\'s claim']}
+      ],
+      re:[
+        {q:'"Some say the bus is too slow. Granted, it stops often. But it is the only safe way home." What does "Granted, it stops often" do?', o:['conceding a point','refuting a point','stating the claim']},
+        {q:'"Some say a garden is too much work. But the boys already water it every day." What does the second sentence do?', o:['refuting a point','conceding a point','a counterclaim']},
+        {q:'"Some readers say the paper is too long." In an article that disagrees, what is this sentence?', o:['a counterclaim','a concession','the author\'s claim']}
+      ]},
+
+    /* ===== Unit 8.5, skill 4: the narrator shapes the mystery (Watson) ===== */
+    'READ.LIT.L09.10':{name:'Watson Tells It',
+      teach:[
+        {q:'Who tells "The Red-Headed League"?', o:['Dr. Watson, Holmes\'s friend','Sherlock Holmes himself','the criminal'], how:'Watson tells it in first person: I. He is a helper, not the detective.'},
+        {q:'Why does the author let Watson tell it, and not Holmes?', o:['to keep the reader guessing','to make Holmes look foolish','to make the story shorter'], how:'Watson is a narrator who knows less. If Holmes told it, the answer would come at once.'},
+        {q:'"I could see nothing remarkable about the man." What does this line show?', o:['Watson misses the clues that Holmes sees','Watson is lying','the visitor does not matter'], how:'We see through Watson\'s eyes. He sees the same man, but not the clues.'}
+      ],
+      practice:[
+        {t:'sort', q:'Watson tells about the visitor. Sort each detail.', bins:[{id:'w',label:'Watson noticed it'},{id:'h',label:'Only Holmes saw it'}], items:[{label:'He has fiery red hair.',bin:'w'},{label:'He looks ordinary.',bin:'w'},{label:'He has done hard work with his hands.',bin:'h'},{label:'He has done a lot of writing lately.',bin:'h'}], h:'Watson says what he saw. Holmes says what it means.'},
+        {t:'pairs', q:'Match each kind of narrator to what the reader gets.', pairs:[['a narrator who knows less','we are kept guessing with him'],['a narrator who knows everything','we can see into every mind'],['the detective telling it','the answer comes too soon']], h:'How much does the narrator know?'},
+        {t:'sort', q:'Holmes: "His left sleeve is worn smooth where it rests on a desk." Sort what Watson writes.', bins:[{id:'m',label:'he misses a clue'},{id:'s',label:'he tells a plain detail'}], items:[{label:'I had looked at that sleeve a dozen times.',bin:'m'},{label:'I could see nothing remarkable about him.',bin:'m'},{label:'Our visitor had fiery red hair.',bin:'s'},{label:'He wore an old brown coat.',bin:'s'}], h:'Did Watson see it AND understand it?'},
+        {t:'order', q:'Put the steps of a Watson scene in order.', tiles:['Watson describes what he sees.','Holmes states a surprising fact.','Holmes explains the clue.','Watson is amazed, and so are we.'], h:'Watson sees first. Holmes explains later.'},
+        {t:'pairs', q:'Match each line to who is telling it.', pairs:[['I followed my uncle. I had no idea what he saw.','first person: a helper who knows less'],['He followed his uncle to the dock.','third person: a narrator outside the story'],['You follow your uncle to the dock.','second person']], h:'Look for I, he or you.'},
+        {t:'spotall', q:'Tap every effect of letting Watson tell the story.', cells:[{label:'The answer stays hidden longer.',ok:true},{label:'We are amazed along with Watson.',ok:true},{label:'We admire Holmes through Watson\'s eyes.',ok:true},{label:'We learn the answer on page one.',ok:false}], h:'What does a narrator who knows less do to a mystery?'}
+      ],
+      check:[
+        {q:'"I watched my cousin read the old letter. He gasped and folded it. He would not tell me why." What kind of narrator is this?', o:['a narrator who knows less','a narrator who knows everything','the detective telling it']},
+        {q:'A mystery is told by the detective\'s young helper: "He smiled at the gate. I could not guess why." What does this narrator do to the answer?', o:['the answer stays hidden longer','the answer comes on page one','there is no answer']},
+        {q:'"The inspector looked at the muddy boots and smiled. To me, they were only boots." What does the last sentence show about the narrator?', o:['he misses a clue','he solved it','he is lying']}
+      ],
+      re:[
+        {q:'"I held the lamp while Uncle Leib studied the broken lock. He whistled softly. I saw only a lock." What kind of narrator is this?', o:['a narrator who knows less','a narrator who knows everything','the detective telling it']},
+        {q:'A mystery is told by the detective\'s friend: "He tapped the window twice. I saw nothing there." What does this narrator do to the answer?', o:['the answer stays hidden longer','the answer comes on page one','there is no answer']},
+        {q:'"Zaidy picked up the torn ticket and nodded. To me, it was only trash." What does the last sentence show about the narrator?', o:['he misses a clue','he solved it','he is lying']}
+      ]},
+
+    /* ===== Unit 8.5 fluency: Readers' Theatre, a mystery scene ===== */
+    'READ.FLU.L09.02':{name:'Theatre: A Mystery Scene',
+      teach:[
+        {q:'In a mystery scene, when should you pause the longest?', o:['right before the big reveal','after every word','never'], how:'A pause before the reveal makes the audience lean in.'},
+        {q:'"ELI: (sharply) Two minutes is enough." How should the line sound?', o:['quick and hard','soft and slow','happy and loud'], how:'The ( ) word sets the voice. Sharply means quick and hard.'},
+        {q:'What is a reader\'s best practice for a scene?', o:['listen, read along, then read it alone','read it once, fast','read only your own lines'], how:'Hear it, read with it, then read it alone. Each time it sounds more like talking.'}
+      ],
+      practice:[
+        {t:'pairs', q:'Match each stage direction to the voice.', pairs:[['(sharply)','quick and hard'],['(hurt)','low and quiet'],['(relieved)','a breath out, then lighter'],['(suspicious)','slow, with doubt']], h:'Say the line the way the ( ) word feels.'},
+        {t:'sort', q:'Speed up, or slow down?', bins:[{id:'f',label:'Speed up'},{id:'s',label:'Slow down'}], items:[{label:'an argument getting hot',bin:'f'},{label:'a search in a hurry',bin:'f'},{label:'the big reveal',bin:'s'},{label:'an apology',bin:'s'}], h:'Hot feelings go faster. Big moments go slower.'},
+        {t:'sort', q:'After each line: pause, or keep going?', bins:[{id:'p',label:'pause, so everyone listens'},{id:'g',label:'keep going'}], items:[{label:'GAVRIEL: (quietly) There is something else.',bin:'p'},{label:'AKIVA: Who else has a key to this room?',bin:'p'},{label:'YONI: The table is empty.',bin:'g'},{label:'ELI: (sharply) Two minutes is enough.',bin:'g'}], h:'A clue or a big question is coming? Let it land.'},
+        {t:'order', q:'Put the three reads in order.', tiles:['Listen to the scene read well.','Read along with it.','Read your part alone.','Check: did it sound like talking?'], h:'Hear it first. Then read with it. Then alone.'},
+        {t:'pairs', q:'You read Benny. Match each script to your cue.', pairs:[['ELI: Two minutes is enough. / AKIVA: Eli, slow down. / BENNY: I said I wished it.','Akiva\'s line'],['AKIVA: Who was here? / ELI: Ask Benny. / BENNY: Me?','Eli\'s line']], h:'Find BENNY. Which line comes right before it?'},
+        {t:'spotall', q:'Tap every habit of a strong actor in a mystery scene.', cells:[{label:'pause before a clue',ok:true},{label:'follow along the whole time',ok:true},{label:'use the voice in ( )',ok:true},{label:'read the names out loud',ok:false},{label:'race to the end',ok:false}], h:'What helps the audience follow the mystery?'}
+      ],
+      check:[
+        {q:'"YONI: (suspicious) You were the last one here?" How should Yoni\'s line sound?', o:['slow, with doubt','bright and cheerful','loud and silly']},
+        {q:'In a scene, the detective says, "The thief is..." What should the actor do next?', o:['pause','speed up','skip the line']},
+        {q:'You read Eli. GAVRIEL: The folder is gone. / AKIVA: Look under the table. / ELI: It is not here. Which line is Eli\'s cue?', o:['Akiva\'s line','Gavriel\'s line','his own line']}
+      ],
+      re:[
+        {q:'"BENNY: (hurt) You really think I took it?" How should Benny\'s line sound?', o:['low and quiet','bright and cheerful','loud and silly']},
+        {q:'The narrator says, "And the one who took it was..." What should the narrator do next?', o:['pause','speed up','skip the line']},
+        {q:'You read Yoni. GAVRIEL: Who has a key? / AKIVA: Only us. / YONI: And Mr. Gross! Which line is Yoni\'s cue?', o:['Akiva\'s line','Gavriel\'s line','his own line']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.LIT.L09.09':{ hook:'You can see the trouble coming. The character cannot. That is the hook of a great scene.',
+      big:'Dramatic irony happens when the audience knows something a character does not. In "The Missing Proofs", the narrator shows us Mr. Gross putting the folder in his briefcase. Then Eli blames Benny. We know Eli is wrong, and he does not. That gap between what we know and what he believes is the irony. It builds tension: we lean in and wait for him to find out. To spot it, ask: what do I know that this character does not? Then ask what the gap makes you feel.',
+      intro:['Find what the audience is told.','Find what the character believes.','Spot the gap between them.','Ask what the gap makes you feel.'],
+      ex:[{q:'We saw Mr. Gross take the folder. Eli: "Now the front page is gone."', steps:['The audience knows: Mr. Gross took it.','Eli believes: Benny took it.','The gap: Eli blames the wrong person.','We feel tension, waiting for him to learn the truth.'], a:'dramatic irony'},
+          {q:'We know the boys wait in the dark to surprise him. Rabbi Rosen: "Nobody remembered."', steps:['We know: everyone remembered.','He believes: nobody did.','The gap makes us smile, waiting for the lights.'], a:'dramatic irony that makes us smile'}],
+      oops:{ q:'Eli says, "Now the front page is gone." Is that dramatic irony because Eli is upset?', wrong:'Yes, because he is upset', right:'Yes, because WE know Mr. Gross has it', why:'Irony is about what the audience knows that the character does not, not about how the character feels.' },
+      idea:['Dramatic irony can make us worry, or make us smile. Either way, we lean in.'],
+      'try':{ q:'How do you spot dramatic irony?', o:['ask: what do I know that this character does not?','look for a funny word'], a:'ask: what do I know that this character does not?', steps:['Think about what the audience was shown.','Compare it with what the character says.'] } },
+    'READ.COMP.L09.14':{ hook:'The strongest arguments do not ignore the other side. They answer it.',
+      big:'A fair author states the other side\'s view, called a counterclaim, before he answers it. Then he makes two moves. He concedes: he agrees with the part that is true ("I agree that we waste too many copies"). He refutes: he answers the rest, showing it is wrong or matters less ("That is true, but faster is not always better"). Signal words help: some people say (the counterclaim), granted or it is true that (a concession), but or still (a refutation). Conceding makes an author easier to trust. Refuting keeps his claim standing.',
+      intro:['Find the counterclaim: some people say.','Find what he concedes: granted, it is true.','Find how he refutes: but, still.','Ask: is his answer fair and strong?'],
+      ex:[{q:'"I agree with Eli on one point completely: we waste too many copies."', steps:['Eli\'s point: printing wastes paper.','Akiva agrees with that part.','That move is conceding a point.'], a:'conceding a point'},
+          {q:'"Eli says online is faster. That is true, but faster is not always better."', steps:['The counterclaim: online is faster.','"That is true" concedes the fact.','"but faster is not always better" answers it.'], a:'refuting a point'}],
+      oops:{ q:'"Granted, the trip is long." Is the author refuting?', wrong:'Yes, he is arguing against the trip', right:'No, he is conceding a point', why:'Granted means he agrees with part of the other side. The answer comes after but.' },
+      idea:['Concede what is true, refute the rest: that is how fair arguers win.'],
+      'try':{ q:'"Still, the cost is worth it." What is the author doing?', o:['refuting a point','conceding a point'], a:'refuting a point', steps:['Find the signal word: still.','Does it agree, or answer?'] } },
+    'READ.LIT.L09.10':{ hook:'Why does the world\'s greatest detective need a friend to tell his stories?',
+      big:'Almost every Sherlock Holmes story is told by Dr. Watson, Holmes\'s friend, in first person. Watson is a narrator who knows less than the detective. He sees the same people and rooms, but he misses what the clues mean. Because we see through his eyes, the answer stays hidden until Holmes explains it. We are amazed along with Watson. If Holmes told the story, he would solve it on page one. So the narrator the author chooses shapes the whole mystery: what we notice, what we miss, and when we learn the truth.',
+      intro:['Find who tells the story: I, or he?','Ask: does the narrator know more or less than the detective?','Find what the narrator notices, and what he misses.','Ask how that keeps the reader guessing.'],
+      ex:[{q:'"I could see nothing remarkable about the man, except his fiery red head."', steps:['The narrator is I: Watson.','He sees red hair and nothing else.','Holmes will see much more.','So we are kept guessing with Watson.'], a:'Watson misses the clues Holmes sees'},
+          {q:'Holmes: "He has done hard work with his hands, and much writing lately."', steps:['Holmes states facts Watson did not see.','He explains the clues after.','The surprise works because Watson missed them.'], a:'the detective sees what the narrator misses'}],
+      oops:{ q:'"I could see nothing remarkable." Who is speaking?', wrong:'Sherlock Holmes', right:'Dr. Watson, the narrator', why:'The stories are told by Watson, his friend. Holmes is the one who sees the clues.' },
+      idea:['A narrator who knows less keeps the secret for the author.'],
+      'try':{ q:'Why does the author let Watson tell it?', o:['to keep the reader guessing','to make Holmes look foolish'], a:'to keep the reader guessing', steps:['How much does Watson know?','When do we learn the answer?'] } },
+    'READ.FLU.L09.02':{ hook:'A mystery scene lives or dies on timing: one pause can hold a whole room.',
+      big:'In Readers\' Theatre, the actors read a play aloud, scripts in hand. In a mystery, timing is everything. Speed up when an argument gets hot or a search is in a hurry. Slow down for an apology or a big reveal. Pause right before a clue lands, so everyone listens. The ( ) words tell you the voice: sharply is quick and hard, hurt is low and quiet. Practice in three reads: listen to the scene read well, read along with it, then read your part alone. Then ask: did it sound like real people talking?',
+      intro:['Mark your lines and your cue.','Read the ( ) word: what voice?','Decide where to speed up and where to pause.','Read it three times: listen, along, alone.'],
+      ex:[{q:'GAVRIEL: (quietly) There is something else.', steps:['(quietly): a low, calm voice.','A clue is coming next.','Pause after the line, so everyone listens.'], a:'quietly, then a pause'},
+          {q:'ELI: (sharply) Two minutes is enough to pick up a folder.', steps:['(sharply): quick and hard.','The argument is getting hot.','Keep the pace up.'], a:'quick and hard'}],
+      oops:{ q:'ELI: (relieved, then embarrassed) Mr. Gross!', wrong:'"Relieved then embarrassed Mister Gross!"', right:'"Mr. Gross!" with a breath out, then a softer voice', why:'The ( ) words are notes for the actor, not words to read aloud.' },
+      idea:['The pause is part of the line.'],
+      'try':{ q:'In a mystery scene, when should you pause the longest?', o:['right before the big reveal','after every word'], a:'right before the big reveal', steps:['Find where the secret comes out.','Let the room wait for it.'] } }
+  };
+
+  var HOWTO = {
+    'READ.LIT.L09.09':{ s:'Find what the audience is told.\nFind what the character believes.\nThe gap between them is the irony.',
+      q:{ 'Play: we saw Dovi hide the cake in the fridge. Moshe opens the cupboard: "No cake. Dovi forgot." What is the author using?':'What did WE see that Moshe did not?',
+          'Story: the reader knows the bridge ahead washed away. The wagon driver whistles, "Home by supper!" What does the gap give the reader?':'You see trouble coming. He does not.\nHow does that feel?',
+          'Play: we watched Shloimy fix the bike at night. In the morning his brother grumbles, "Nobody ever fixes anything here." Who knows more?':'Who saw the bike being fixed?',
+          'Play: we saw the boys hide the lost puppy in the shed to keep it warm. The owner cries, "It must have run away for good." What is the author using?':'What did WE see that the owner did not?',
+          'Story: the reader knows the ice on the pond is thin. Two boys skate toward the middle, laughing. What does the gap give the reader?':'You see danger. They do not.\nHow does that feel?',
+          'Play: we know the prize is in the blue box. Chaim picks the red box and says, "I chose well." Who knows more?':'Who knows where the prize is?' } },
+    'READ.COMP.L09.14':{ s:'Find the other side: some people say.\nAgreeing words (granted, it is true) concede.\nAnswering words (but, still) refute.',
+      q:{ '"Some say recess should be shorter. It is true that time is short. But boys who run at recess listen better." What does the second sentence do?':'Find the signal: it is true.\nDoes it agree, or answer?',
+          '"Critics say a bigger shul costs too much. A full shul turns families away every Yom Tov." What does the second sentence do?':'No signal word here.\nDoes it agree with the cost worry, or answer it?',
+          '"Many parents say homework should end at eighth grade." In an essay that disagrees, what is this sentence?':'Whose view is it: the author\'s, or the other side\'s?',
+          '"Some say the bus is too slow. Granted, it stops often. But it is the only safe way home." What does "Granted, it stops often" do?':'Find the signal: granted.\nDoes it agree, or answer?',
+          '"Some say a garden is too much work. But the boys already water it every day." What does the second sentence do?':'Find the signal: but.\nDoes it agree, or answer?',
+          '"Some readers say the paper is too long." In an article that disagrees, what is this sentence?':'Whose view is it: the author\'s, or the other side\'s?' } },
+    'READ.LIT.L09.10':{ s:'Find who tells the story.\nAsk: does he know more or less than the detective?\nNotice what he sees, and what he misses.',
+      q:{ '"I watched my cousin read the old letter. He gasped and folded it. He would not tell me why." What kind of narrator is this?':'Does the narrator know what the letter says?',
+          'A mystery is told by the detective\'s young helper: "He smiled at the gate. I could not guess why." What does this narrator do to the answer?':'Does this narrator know the answer yet?',
+          '"The inspector looked at the muddy boots and smiled. To me, they were only boots." What does the last sentence show about the narrator?':'Who saw a clue in the boots?\nWho did not?',
+          '"I held the lamp while Uncle Leib studied the broken lock. He whistled softly. I saw only a lock." What kind of narrator is this?':'Does the narrator understand the lock?',
+          'A mystery is told by the detective\'s friend: "He tapped the window twice. I saw nothing there." What does this narrator do to the answer?':'Does this narrator know the answer yet?',
+          '"Zaidy picked up the torn ticket and nodded. To me, it was only trash." What does the last sentence show about the narrator?':'Who saw a clue in the ticket?\nWho did not?' } },
+    'READ.FLU.L09.02':{ s:'Read the ( ) word: it sets the voice.\nSpeed up when it gets hot. Slow down for big moments.\nPause right before a reveal.',
+      q:{ '"YONI: (suspicious) You were the last one here?" How should Yoni\'s line sound?':'Read the ( ) word.\nHow does that feeling sound?',
+          'In a scene, the detective says, "The thief is..." What should the actor do next?':'The secret is about to come out.\nWhat makes the room lean in?',
+          'You read Eli. GAVRIEL: The folder is gone. / AKIVA: Look under the table. / ELI: It is not here. Which line is Eli\'s cue?':'Find ELI.\nWhich line comes right before it?',
+          '"BENNY: (hurt) You really think I took it?" How should Benny\'s line sound?':'Read the ( ) word.\nHow does that feeling sound?',
+          'The narrator says, "And the one who took it was..." What should the narrator do next?':'The secret is about to come out.\nWhat makes the room lean in?',
+          'You read Yoni. GAVRIEL: Who has a key? / AKIVA: Only us. / YONI: And Mr. Gross! Which line is Yoni\'s cue?':'Find YONI.\nWhich line comes right before it?' } }
+  };
+
+  var BITE = {
+    'READ.LIT.L09.09':{ band:'M68', pic:'🎭', today:'Dramatic irony: when we know more than the character',
+      why:'Authors use the gap between what you know and what a character knows to make you lean in. Spot it, and you read like a writer.',
+      ready:[{q:'In a play, who is the audience?', o:['the people watching','the actors','the author'], a:'the people watching'}],
+      bridge:'READ.LIT.L08.02', bridgeName:'Whose View?',
+      watch:{ q:'The Missing Proofs', m:{type:'scene', e:'📁', t:'NARRATOR: ...he slipped the folder into his briefcase. Then he went home. ... ELI: (insisting) Benny said last week that he wished his story were on the front page instead of mine.'}, steps:[
+        {t:'First, what are we told? The narrator shows Mr. Gross taking the folder home.'},
+        {t:'Next, what does Eli believe? That Benny took it.'},
+        {t:'Find the gap: we know where the folder is. Eli does not.'},
+        {t:'That gap is dramatic irony: the audience knows more than the character.'},
+        {t:'Feel it: every time Eli blames Benny, we wince. That is the tension.'},
+        {t:'Teach it back: tell your chavrusa what we know, what Eli believes, and why the gap matters.'}], a:'We know Mr. Gross has it. Eli does not. The gap builds tension.' },
+      oops:{ q:'"Eli is angry, so this is dramatic irony." Right?', wrong:'Yes: strong feelings make irony', right:'No: irony is what WE know that Eli does not', why:'Dramatic irony is about knowledge, not feelings. Ask what the audience knows that the character does not.' },
+      ways:['worked example','read the whole play','Readers\' Theatre','tap the reason','find the proof','challenge round','teach it back'], done:'You can spot dramatic irony and tell what it does to a scene!',
+      board:{ one:'Dramatic irony: the audience knows something a character does not. Find what we know, what he believes, and the gap. The gap builds tension.', activity:'Two columns on the board: "What we know" and "What Eli believes". Boys fill each from the play, then draw arrows to the moments where the gap hurts most.', mistakes:['Calling any strong feeling "irony"','Mixing up dramatic irony with a surprise ending','Forgetting to ask what the gap makes the audience feel'] },
+      do:[
+        {type:'read', text:'C68.MYS.01', say:'Read the play "The Missing Proofs" to the end.', how:'Watch for what the audience learns before the boys do.'},
+        {type:'evidence', mis:true, q:'Which moment is dramatic irony?', p:['ELI: (insisting) Now the front page is gone.','GAVRIEL: (puzzled) I left them right here on the long table.','ALL: (laughing with relief) Thank you, Mr. Gross!'], a:0, look:'a line where we know more than the speaker', say:'Detective! Which line is ironic?', how:'Which speaker is wrong about something we were shown?'}],
+      your:[
+        {type:'proof', text:'C68.MYS.01', q:'Which sentence tells the audience where the proofs really are?', proof:'slipped the folder into his briefcase', look:'what Mr. Gross did with the folder', say:'Find the proof in the play.', how:'Read the narrator\'s part on page 2.'},
+        {type:'sort', bins:['Only the audience knows','The boys know too'], cards:[['Mr. Gross has the folder.',0],['The table is empty.',1],['Mr. Gross came in at five.',0],['The printer comes tomorrow.',1]], say:'Who knows each fact?', how:'Ask: did the boys see it, or only us?'},
+        {type:'match', pairs:[['dramatic irony','we know more than the character'],['foreshadowing','a hint of what is coming'],['suspense','we worry about what will happen']], say:'Match each tool to what it does.', how:'Which one is about who knows more?'},
+        {type:'listen', hear:'We watched Avrumi hide the medal in his drawer. Now his brother searches the whole house and says, "It is lost forever."', o:['we know where the medal is, and he does not','he knows more than we do','nobody knows where it is'], a:'we know where the medal is, and he does not', cap:'Why is the brother\'s line ironic?', say:'Listen. Tap the reason the line is ironic.', how:'What did we see that his brother did not?'},
+        {type:'cloze', t:'When the audience knows more than the character, the gap builds ___.', o:['tension','boredom','rhyme'], a:'tension', say:'Challenge! Tap the word that fits.', how:'How do you feel when you see trouble coming?'}] },
+    'READ.COMP.L09.14':{ band:'M68', pic:'⚖️', today:'See how an author answers the other side',
+      why:'A strong argument does not hide the other side. It states it fairly, admits what is true, and answers the rest.',
+      ready:[{q:'Which sentence is a claim?', o:['The Beacon should stay on paper.','The Beacon has twelve pages.','Eli writes sports.'], a:'The Beacon should stay on paper.'}],
+      bridge:'READ.COMP.L09.01', bridgeName:'Argument Judge',
+      watch:{ q:'Keep The Beacon on Paper', m:{type:'scene', e:'📰', t:'"I agree with Eli on one point completely: we waste too many copies. ... But I do not agree that the answer is to give up paper altogether."'}, steps:[
+        {t:'Find the other side first. Eli\'s counterclaim: stop printing and go online.'},
+        {t:'Find what Akiva concedes. "I agree with Eli on one point": too many copies are wasted.'},
+        {t:'Find the turn. "But I do not agree": now he refutes.'},
+        {t:'Find his reasons: grandparents read it on Shabbos, careful checking, and the cost.'},
+        {t:'Judge it: conceding the true part makes the refuting easier to trust.'},
+        {t:'Teach it back: tell your chavrusa the three moves: state the other side, concede, refute.'}], a:'Counterclaim, then concede, then refute with reasons.' },
+      oops:{ q:'"Granted, printing costs a lot." Is Akiva refuting here?', wrong:'Yes: he is arguing for paper', right:'No: he is conceding a point', why:'Granted means he agrees with part of the other side. His answer comes after but.' },
+      ways:['worked example','read the whole editorial','debate','find the proof','Mistake Detective','teach it back'], done:'You can see how an author answers the other side, and judge if it is fair!',
+      board:{ one:'Counterclaim (some people say) → concede (granted, it is true) → refute (but, still) → his reasons.', activity:'Debate: half the class argues for an online Beacon, half for paper. Each side must concede one true point before it refutes.', mistakes:['Taking a concession for the author\'s claim','Missing the turn word after the concession','Thinking a fair author never disagrees'] },
+      do:[
+        {type:'read', text:'C68.ARG.01', say:'Read Akiva\'s editorial and Eli\'s reply.', how:'Mark where each writer agrees, and where he turns to answer.'},
+        {type:'sort', mis:true, bins:['Concedes','Refutes'], cards:[['I agree with Eli on one point.',0],['That is true, but faster is not always better.',1],['So I accept this point.',0],['Here I disagree.',1]], say:'Watch the trap! Concede or refute?', how:'Agreeing words concede. Answering words refute.'}],
+      your:[
+        {type:'proof', text:'C68.ARG.01', q:'Which sentence shows Akiva conceding a point to Eli?', proof:'I agree with Eli on one point completely', look:'where Akiva agrees with Eli', say:'Find the proof in the editorial.', how:'Read the end of page 1.'},
+        {type:'match', pairs:[['Some people say...','a counterclaim'],['It is true that...','conceding a point'],['But that misses...','refuting a point']], say:'Match each signal to its move.', how:'Does it state the other side, agree, or answer?'},
+        {type:'proof', text:'C68.ARG.01', q:'Which sentence shows Eli conceding a point to Akiva?', proof:'So I accept this point', look:'where Eli agrees with Akiva', say:'Find Eli\'s concession.', how:'Read Eli\'s answer about the grandparents.'},
+        {type:'order', steps:['Akiva states Eli\'s three reasons.','He concedes the waste.','He refutes the rest.','He offers a plan.'], say:'Put Akiva\'s moves in order.', how:'Follow the editorial from start to end.'},
+        {type:'evidence', q:'Which reply refutes "A website is cheaper"?', p:['A website costs money too: about six hundred dollars a year.','Websites are popular.','Eli writes about sports.'], a:0, look:'an answer that shows the point is weaker', say:'Challenge! Tap the refutation.', how:'Which one answers the money point?'}] },
+    'READ.LIT.L09.10':{ band:'M68', pic:'🔍', today:'How the narrator shapes a mystery',
+      why:'Who tells a story decides what you notice, what you miss, and when you learn the truth.',
+      ready:[{q:'"I picked up the key." Who is telling this?', o:['first person: I','third person: he','second person: you'], a:'first person: I'}],
+      bridge:'READ.LIT.L09.01', bridgeName:'Why It Was Written',
+      watch:{ q:'Watson meets the red-headed man', m:{type:'scene', e:'🎩', t:'"I took a good look at our visitor. I could see nothing remarkable about the man, except his fiery red head." (adapted from Arthur Conan Doyle)'}, steps:[
+        {t:'Find the narrator: I. It is Dr. Watson, Holmes\'s friend.'},
+        {t:'What does Watson see? Red hair, an ordinary coat. Nothing more.'},
+        {t:'Now Holmes speaks: "He has done hard work with his hands, and a lot of writing lately."'},
+        {t:'Holmes explains: a bigger right hand, a shiny cuff, a sleeve worn smooth at the elbow.'},
+        {t:'Watson saw the same sleeve and missed it. So did we, because we see through his eyes.'},
+        {t:'That is the author\'s plan: a narrator who knows less keeps us guessing.'},
+        {t:'Teach it back: tell your chavrusa why the story is better told by Watson than by Holmes.'}], a:'Watson knows less, so the answer stays hidden until Holmes explains.' },
+      oops:{ q:'"I could see nothing remarkable." Who is speaking?', wrong:'Sherlock Holmes', right:'Dr. Watson, the narrator', why:'Watson tells the stories. Holmes sees the clues; Watson tells us what he saw.' },
+      ways:['worked example','close reading','chavrusa','Mistake Detective','sort','challenge round','teach it back'], done:'You can explain how the narrator shapes a mystery!',
+      board:{ one:'Who tells it shapes it. A narrator who knows less keeps the reader guessing; we see what he sees and miss what he misses.', activity:'Retell one Watson scene as Holmes. Boys hear how the mystery falls flat when the detective tells it, then explain why.', mistakes:['Mixing up Watson and Holmes','Thinking the narrator must know the answer','Missing that we only see what the narrator sees'] },
+      do:[
+        {type:'evidence', mis:true, q:'Which line shows Watson missing a clue?', p:['"I had looked at that sleeve a dozen times and seen nothing."','"He has done a lot of writing lately," said Holmes.','"How did you know that?" asked our visitor.'], a:0, look:'Watson saying he saw something without seeing what it meant', say:'Detective! Which line shows Watson missing it?', how:'Which line is Watson talking about himself?'},
+        {type:'sort', bins:['Watson noticed it','Only Holmes saw it'], cards:[['fiery red hair',0],['an ordinary coat',0],['a sleeve worn smooth from writing',1],['a hand made strong by work',1]], say:'Who noticed each detail?', how:'Watson says what he saw. Holmes says what it means.'}],
+      your:[
+        {type:'match', pairs:[['a narrator who knows less','we are kept guessing'],['a narrator who knows everything','we see into every mind'],['the detective telling it','the answer comes too soon']], say:'Match each narrator to what the reader gets.', how:'How much does the narrator know?'},
+        {type:'listen', hear:'My brother studied the footprints by the gate and laughed. I only saw mud.', o:['the narrator knows less than his brother','the narrator solved it','the brother is confused'], a:'the narrator knows less than his brother', cap:'What does the last sentence tell you?', say:'Listen to a new mystery. What does the narrator know?', how:'Who saw something in the footprints?'},
+        {type:'order', steps:['Watson describes what he sees.','Holmes states a surprising fact.','Holmes explains the clue.','Watson is amazed, and so are we.'], say:'Put the steps of a Watson scene in order.', how:'Watson sees first. Holmes explains later.'},
+        {type:'cloze', t:'The author lets Watson tell the story to keep the reader ___.', o:['guessing','bored','asleep'], a:'guessing', say:'Tap the word that fits.', how:'Does Watson know the answer early?'},
+        {type:'evidence', q:'Challenge: the thief tells the story and tells us everything he did. What changes?', p:['We know the answer from the start, so the puzzle is gone.','Nothing changes.','The story gets more mysterious.'], a:0, look:'what the reader knows when the narrator knows everything', say:'Challenge! Tap the best answer.', how:'How much does a thief know about his own crime?'}] },
+    'READ.FLU.L09.02':{ band:'M68', pic:'🎬', today:'Read a mystery scene with timing and voice',
+      why:'In a mystery, timing tells the story. A pause or a sharp line can make a whole room lean in.',
+      ready:[{q:'In a play, what is your cue?', o:['the line right before yours','your own first line','the title'], a:'the line right before yours'}],
+      bridge:'READ.FLU.L06.03', bridgeName:'Pace It',
+      watch:{ q:'The Missing Proofs, page 2', m:{type:'scene', e:'🎙️', t:'GAVRIEL: (quietly) There is something else. The folder was on the table at four thirty.'}, steps:[
+        {t:'Read the ( ) word first. Quietly: a low, calm voice.'},
+        {t:'A clue is coming. Pause after "There is something else."'},
+        {t:'Then give the clue clearly, so everyone hears it.'},
+        {t:'Earlier, ELI: (sharply). That line goes quick and hard: the argument is hot.'},
+        {t:'Three reads: listen to it read well, read along, then read alone.'},
+        {t:'Teach it back: tell your chavrusa where you will pause, and why.'}], a:'Voice from the ( ) word, speed from the feeling, and a pause before the clue.' },
+      oops:{ q:'ELI: (relieved, then embarrassed) Mr. Gross!', wrong:'Read: "Relieved, then embarrassed, Mr. Gross!"', right:'Read: "Mr. Gross!" with a breath out, then softer', why:'The ( ) words are notes for the actor. Only the voice shows them.' },
+      ways:['Readers\' Theatre','listen, along, alone','chavrusa','find your cue','Mistake Detective','teach it back'], done:'You can read a mystery scene with timing and voice!',
+      board:{ one:'The ( ) word sets the voice. Hot moments go faster; reveals go slower. Pause right before a clue.', activity:'Readers\' Theatre: seven boys take the parts of "The Missing Proofs" (Narrator, Akiva, Gavriel, Yoni, Eli, Benny, Mr. Gross). Each marks his cue and his pauses, then the group reads it twice, switching parts.', mistakes:['Reading the ( ) words aloud','Rushing through the reveal','Losing the place and missing a cue'] },
+      do:[
+        {type:'read', text:'C68.MYS.01', say:'Read the whole play aloud with a partner.', how:'One part each, with your chavrusa. Use the voice in ( ).'},
+        {type:'listen', mis:true, hear:'Eli read: "Relieved, then embarrassed, Mr. Gross!"', o:['Mr. Gross!','Relieved Mr. Gross!','Embarrassed, Mr. Gross!'], a:'Mr. Gross!', cap:'What should Eli say out loud?', say:'Mistake Detective! What should he say?', how:'The ( ) words stay quiet.'}],
+      your:[
+        {type:'evidence', q:'You read Yoni. Which line is your cue for "And Benny left at four"?', p:['GAVRIEL: I am sure of it, because I wrote the time on the last page.','ELI: Are you certain?','AKIVA: Who else has a key to this room?'], a:0, look:'the line right before Yoni\'s', say:'Tap your cue.', how:'Which line comes just before Yoni speaks?'},
+        {type:'match', pairs:[['(sharply)','quick and hard'],['(hurt)','low and quiet'],['(relieved)','a breath out, then lighter']], say:'Match each ( ) word to the voice.', how:'Say the line the way the word feels.'},
+        {type:'proof', text:'C68.MYS.01', q:'Which line shows Eli admitting the real reason he blamed Benny?', proof:'I accused you because I was angry', look:'Eli\'s apology to Benny', say:'Find the proof in the play.', how:'Read Eli\'s apology on page 3.'},
+        {type:'sort', bins:['Speed up','Slow down'], cards:[['Eli and Benny argue',0],['the boys search fast',0],['Eli says sorry',1],['the phone call reveal',1]], say:'Speed up, or slow down?', how:'Hot feelings go faster. Big moments go slower.'},
+        {type:'order', steps:['Listen to the scene read well.','Read along with it.','Read your part alone.','Check: did it sound like talking?'], say:'Put the three reads in order.', how:'Hear it first. Then with it. Then alone.'}] }
+  };
+
+  /* The existing skill "Why It Was Written" (READ.LIT.L09.01), rebuilt as a One Bite lesson. Its own questions stay as practice and Show me. */
+  var UP = {
+    'READ.LIT.L09.01':{ band:'M68', pic:'🧭', today:'Find why it was written, and who tells it',
+      why:'Every text has a purpose and a point of view. Know them, and nobody can sell you an idea without your noticing.',
+      ready:[{q:'"Our yeshiva should start a woodshop." What is this?', o:['an opinion','a fact','a question'], a:'an opinion'}],
+      bridge:'READ.LIT.L08.02', bridgeName:'Whose View?',
+      watch:{ q:'Keep The Beacon on Paper', m:{type:'scene', e:'📰', t:'"Should The Beacon stop printing on paper and appear only online? Eli Mizrahi, our sports editor, says yes. I say no."'}, steps:[
+        {t:'Purpose first: why was it written? Ask the PIE question: persuade, inform or entertain?'},
+        {t:'It is an editorial that asks the school to keep paper. So the main purpose is to persuade.'},
+        {t:'Point of view next: who tells it? "I say no." First person: Akiva, the editor.'},
+        {t:'His viewpoint: The Beacon should stay on paper.'},
+        {t:'Check the words he picks: "ready for the Shabbos table", "checked twice". Warm words show his viewpoint.'},
+        {t:'Teach it back: tell your chavrusa the purpose, the point of view and the viewpoint, with one proof each.'}], a:'Persuade; first person (Akiva); keep The Beacon on paper.' },
+      oops:{ q:'"The editorial gives facts about cost, so its purpose is to inform." Right?', wrong:'Yes: it has numbers, so it informs', right:'No: the facts serve his opinion, so it persuades', why:'Ask why the author used the facts. Akiva uses them to win you to his side.' },
+      ways:['worked example','read the whole editorial','PIE test','find the proof','Mistake Detective','teach it back'], done:'You can find an author\'s purpose, point of view and viewpoint!',
+      board:{ one:'Purpose: persuade, inform or entertain (PIE). Point of view: who tells it (I, you, he). Viewpoint: what the author thinks.', activity:'Boys bring three texts from home (an ad, a news report, a funny story) and sort them on the board by purpose, then circle the words that give the viewpoint away.', mistakes:['Calling a piece "inform" because it has numbers','Mixing up point of view (who tells it) with viewpoint (what he thinks)','Taking a character\'s view for the author\'s'] },
+      do:[
+        {type:'read', text:'C68.ARG.01', say:'Read Akiva\'s editorial and Eli\'s reply.', how:'Ask why each writer wrote, and who is telling it.'},
+        {type:'sort', mis:true, bins:['Persuade','Inform','Entertain'], cards:[['an editorial asking to keep paper',0],['the schedule of the next game',1],['a funny poem about a lost hat',2],['a poster: vote for Yoni!',0]], say:'Watch the trap! Sort each text by its purpose.', how:'Ask why it was written, not what it has in it.'}],
+      your:[
+        {type:'proof', text:'C68.ARG.01', q:'Which sentence shows who Akiva thinks the paper is for?', proof:'We write for the whole yeshiva family', look:'who Akiva says the paper is for', say:'Find the proof in the editorial.', how:'Read the end of page 2.'},
+        {type:'match', pairs:[['I, me, we','first person'],['you, your','second person'],['he, she, they','third person']], say:'Match the pronouns to the point of view.', how:'Who is telling it: I, you, or he?'},
+        {type:'evidence', q:'Which sentence shows Eli\'s viewpoint, not just a fact?', p:['Speed and care are not enemies.','The game ended, and the numbers are known.','He says a website costs about six hundred dollars a year.'], a:0, look:'what Eli thinks, not what happened', say:'Tap Eli\'s viewpoint.', how:'Which one could people argue about?'},
+        {type:'listen', hear:'The bakery opened in 1952 and sells bread, rolls and challah every Friday.', o:['to inform','to persuade','to entertain'], a:'to inform', cap:'Why was this written?', say:'Listen. What is the purpose?', how:'Does it ask you to do anything, or just tell?'},
+        {type:'cloze', t:'Akiva writes as "I", so the editorial is told in ___ person.', o:['first','second','third'], a:'first', say:'Tap the word that fits.', how:'I, me, we: which point of view?'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C68', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('C68', { bite: UP });
+
+  if (window.TLCORE && TLCORE.units && TLCORE.units.add) TLCORE.units.add({ id:'C68.U85', title:'Point of View and Irony', c:'READ', grade:8,
+    skills:['READ.LIT.L09.01','READ.LIT.L09.09','READ.COMP.L09.14','READ.LIT.L09.10','READ.FLU.L09.02'],
+    review:['READ.LIT.L08.02','READ.VOC.L09.01'], n:10,
+    items:[
+      {type:'evidence', skill:'READ.LIT.L09.09', q:'Which line is dramatic irony? (We saw Yanky put the ring in the challah cover.)', p:['FATHER: The ring is lost. We will never find it.','YANKY: Let us set the table.','MOTHER: The guests are here.'], a:0, look:'a speaker who is wrong about what we saw', how:'Who is wrong about something the audience saw?'},
+      {type:'cloze', skill:'READ.COMP.L09.14', t:'"Granted, the field trip costs money." This sentence is ___ a point.', o:['conceding','refuting','ignoring'], a:'conceding', how:'Granted: does the author agree, or answer?'},
+      {type:'evidence', skill:'READ.LIT.L09.10', q:'Which narrator keeps the reader guessing?', p:['"I watched the detective study the map. I could not tell what he saw."','"The detective knew at once that the clerk had lied."','"Everyone in the room was thinking about the money."'], a:0, look:'a narrator who knows less', how:'Which narrator does not know the answer?'},
+      {type:'cloze', skill:'READ.FLU.L09.02', t:'"AKIVA: (firmly) One last look." Akiva\'s voice should be ___.', o:['steady and strong','soft and sleepy','silly'], a:'steady and strong', how:'Read the ( ) word. How does firmly sound?'},
+      {type:'cloze', skill:'READ.LIT.L09.01', t:'"Come to our siyum! It will be the best night of the year." The purpose is to ___.', o:['persuade','inform','entertain'], a:'persuade', how:'Does it ask you to do something?'}
+    ] });
+})();
+/* Unit 8.6 "Judge the Argument" (topic set: Money and trust, texts/C68/C68.MON.01-05): new skills READ.COMP.L09.15 (evidence that does not belong),
+   READ.COMP.L09.16 (same facts, different reading), READ.FLU.L09.04 (read a dense paragraph twice) with TLCORE.add, and the existing
+   READ.COMP.L09.01 "Argument Judge" and READ.COMP.L09.03 "Fact Checker" rebuilt as One Bite lessons (TLCORE.upgrade). */
+(function () {
+  var LESSONS = {
+
+    /* ===== Unit 8.6, skill 2: evidence that does not belong ===== */
+    'READ.COMP.L09.15':{name:'Evidence That Does Not Belong',
+      teach:[
+        {q:'A fact is true. Does that make it good evidence?', o:['only if it supports this claim','yes, every true fact helps','no, facts never help'], how:'Good evidence is true AND speaks to the claim.'},
+        {q:'Claim: young adults should have credit cards. "The first card was made in 1950." What is wrong with this evidence?', o:['it is true, but it does not support the claim','it is false','it is too short'], how:'A history fact can be true and still be off topic.'},
+        {q:'How do you test one piece of evidence?', o:['take it away: is the claim any weaker?','ask if it is interesting','ask if it is long'], how:'If the claim stands just as well without it, the evidence does not belong.'}
+      ],
+      practice:[
+        {t:'sort', q:'Claim: our shul needs a ramp. Sort each piece of evidence.', bins:[{id:'b',label:'belongs: it supports the claim'},{id:'o',label:'true but off topic'}], items:[{label:'Three members use wheelchairs.',bin:'b'},{label:'Older members find the steps hard.',bin:'b'},{label:'The shul was built in 1952.',bin:'o'},{label:'The shul has a beautiful aron kodesh.',bin:'o'}], h:'Take each one away. Is the claim any weaker?'},
+        {t:'pairs', q:'Match each problem to its name.', pairs:[['a true fact about something else','true but off topic'],['"It worked for my neighbor."','one person\'s story, not proof'],['"Everyone knows it is right."','a feeling, not a fact'],['a careful study about this claim','strong evidence']], h:'Ask: is it about the claim? Is it more than one story?'},
+        {t:'spotall', q:'Claim: the yeshiva should plant a garden. Tap every piece of evidence that belongs.', cells:[{label:'Boys who garden eat more vegetables.',ok:true},{label:'The empty lot gets six hours of sun.',ok:true},{label:'A parent offered free seeds.',ok:true},{label:'Gardens were popular in ancient Bavel.',ok:false},{label:'The principal likes the color green.',ok:false}], h:'Does it help prove a garden here is a good idea?'},
+        {t:'order', q:'Put the steps for testing evidence in order.', tiles:['Find the claim.','Read one piece of evidence.','Ask: is it true?','Ask: does it speak to THIS claim?','Keep it, or set it aside.'], h:'Claim first. Then test each piece.'},
+        {t:'sort', q:'Eli\'s credit card piece. Sort his evidence.', bins:[{id:'b',label:'belongs: it supports the claim'},{id:'o',label:'true but off topic'}], items:[{label:'Paying on time builds a credit history.',bin:'b'},{label:'A lost card can be shut off.',bin:'b'},{label:'The first card was made in 1950.',bin:'o'},{label:'Cards let you pay by phone.',bin:'b'}], h:'Does it show a young adult should have a card?'},
+        {t:'spotall', q:'Tap every question that helps you spot evidence that does not belong.', cells:[{label:'Is it about this claim?',ok:true},{label:'Would the claim be weaker without it?',ok:true},{label:'Is it one person\'s story?',ok:true},{label:'Is it a long sentence?',ok:false},{label:'Is it a surprising fact?',ok:false}], h:'Which questions test the link to the claim?'}
+      ],
+      check:[
+        {q:'Claim: the town should build a library. "Libraries have existed for over 2,000 years." This evidence is...', o:['true but off topic','strong evidence','a counterclaim']},
+        {q:'Claim: buses should have seat belts. "In crashes, seat belts cut injuries by about half." This evidence...', o:['belongs: it supports the claim','true but off topic','a feeling, not a fact']},
+        {q:'Claim: every boy should eat breakfast. "My cousin never eats breakfast, and he runs fast." What is wrong with it?', o:['one person\'s story, not proof','true but off topic','nothing']}
+      ],
+      re:[
+        {q:'Claim: the yeshiva needs a bigger lunchroom. "Our lunchroom serves hot food every day." This evidence is...', o:['true but off topic','strong evidence','a counterclaim']},
+        {q:'Claim: boys should learn to swim. "Young children who take swimming lessons are less likely to drown." This evidence...', o:['belongs: it supports the claim','true but off topic','a feeling, not a fact']},
+        {q:'Claim: phones should stay home. "My friend brought his phone and nothing bad happened." What is wrong with it?', o:['one person\'s story, not proof','true but off topic','nothing']}
+      ]},
+
+    /* ===== Unit 8.6, skill 4: same facts, different reading ===== */
+    'READ.COMP.L09.16':{name:'Same Facts, Different Reading',
+      teach:[
+        {q:'Two writers agree on a fact but want different plans. What do they disagree about?', o:['what the fact means for the plan','whether the fact is true','nothing'], how:'An interpretation is what a writer decides a fact means.'},
+        {q:'Eli: "Unpaid cards cost interest, so teach boys to pay in full." Gavriel: "Unpaid cards cost interest, so wait for a card." What is the same?', o:['the fact','the plan','the writer'], how:'Find the shared fact first. Then find where the readings split.'},
+        {q:'How do you judge two readings of the same fact?', o:['choose the one that fits all the facts','choose the longer one','choose the one you like'], how:'A strong reading explains every fact, not just one.'}
+      ],
+      practice:[
+        {t:'sort', q:'Fact, or interpretation?', bins:[{id:'f',label:'a fact'},{id:'i',label:'an interpretation'}], items:[{label:'The average card rate was over 20 percent.',bin:'f'},{label:'Cards are a trap for young people.',bin:'i'},{label:'A lost card can be shut off.',bin:'f'},{label:'Cards are a useful tool.',bin:'i'}], h:'A fact can be checked. An interpretation is what someone decides it means.'},
+        {t:'pairs', q:'Same fact: "The shul is full every Yom Tov." Match each reading to its plan.', pairs:[['Too many people for the room.','build a bigger room'],['Too many people at one time.','add a second minyan'],['Crowded only on Yom Tov.','set up extra chairs on Yom Tov']], h:'Each reading of the same fact leads to a different plan.'},
+        {t:'order', q:'Put the steps for comparing two readings in order.', tiles:['Find the fact both writers use.','Find what each writer says it means.','Check other facts.','Choose the one that fits all the facts.'], h:'Shared fact first. Judge last.'},
+        {t:'spotall', q:'Tap every sign that two writers share a fact but read it differently.', cells:[{label:'Both say "that is true".',ok:true},{label:'They agree on the number.',ok:true},{label:'They want different plans.',ok:true},{label:'One says the fact is false.',ok:false}], h:'Do they agree on the fact, but not on what to do?'},
+        {t:'sort', q:'Fact: a lost card can be shut off. Whose reading is it?', bins:[{id:'e',label:'Eli: so cards are safer'},{id:'g',label:'Gavriel: theft is not the big danger'}], items:[{label:'You lose nothing if a thief takes it.',bin:'e'},{label:'Cash is gone forever when lost.',bin:'e'},{label:'The real danger is your own spending.',bin:'g'},{label:'Safe from thieves, not from yourself.',bin:'g'}], h:'Eli likes the fact. Gavriel says it misses the point.'},
+        {t:'pairs', q:'Fact: Beacon sales fell this year. We also printed fewer copies. Match each reading to its strength.', pairs:[['"We printed fewer, so we sold fewer."','the one that fits all the facts'],['"Boys stopped reading."','fits only one fact']], h:'Which reading explains both facts?'}
+      ],
+      check:[
+        {q:'Fact: the lunchroom is crowded. Writer A: "Build a bigger lunchroom." Writer B: "Eat in two shifts." What do they disagree about?', o:['what the fact means for the plan','whether the fact is true','nothing']},
+        {q:'Rebbe counted: 9 boys asked to repeat a question before recess, 3 after. "Recess is what helped them focus." This sentence is...', o:['an interpretation','a counted fact','a counterclaim']},
+        {q:'Fact: fewer boys came to night seder. Also: the night bus stopped running. Reading A: boys stopped caring. Reading B: boys could not get there. Which is stronger?', o:['Reading B','Reading A','neither']}
+      ],
+      re:[
+        {q:'Fact: the library is empty at night. Writer A: "Close it at five." Writer B: "Add better lights." What do they disagree about?', o:['what the fact means for the plan','whether the fact is true','nothing']},
+        {q:'The class voted 18 to 6 for the new schedule. "The boys are happier with it." This sentence is...', o:['an interpretation','a counted fact','a counterclaim']},
+        {q:'Fact: the bake sale earned less. Also: it rained all day. Reading A: the rain kept buyers home. Reading B: the cakes were worse. Which is stronger?', o:['Reading A','Reading B','neither']}
+      ]},
+
+    /* ===== Unit 8.6 fluency: a dense paragraph, read twice ===== */
+    'READ.FLU.L09.04':{name:'Read It Twice',
+      teach:[
+        {q:'A paragraph is packed with facts. What is your first read for?', o:['the big idea','every number','the hardest word'], how:'Read 1 is for sense: what is this paragraph about?'},
+        {q:'What is your second read for?', o:['the details that prove the big idea','a new topic','skipping ahead'], how:'Read 2 is slower. Catch each detail and see how it fits.'},
+        {q:'Reading aloud, where should you slow down?', o:['at numbers, names and new words','at every comma','nowhere'], how:'Numbers, names and new words carry the facts. Give them time.'}
+      ],
+      practice:[
+        {t:'sort', q:'Which read is it for?', bins:[{id:'1',label:'Read 1: sense'},{id:'2',label:'Read 2: detail'}], items:[{label:'What is this about?',bin:'1'},{label:'What is the main point?',bin:'1'},{label:'Which year?',bin:'2'},{label:'How much silver?',bin:'2'}], h:'First the big idea. Then the details.'},
+        {t:'order', q:'Put the steps for a dense paragraph in order.', tiles:['Read it once for the big idea.','Say the big idea in one sentence.','Read it again, slowly, for detail.','Check each detail against the big idea.'], h:'Sense first. Detail second.'},
+        {t:'spotall', q:'"About 2,600 years ago, in the kingdom of Lydia, rulers began to stamp metal." Tap what to read slowly.', cells:[{label:'the numbers',ok:true},{label:'the names',ok:true},{label:'"in the"',ok:false},{label:'"began to"',ok:false}], h:'Numbers and names carry the facts.'},
+        {t:'pairs', q:'Match each problem to the fix.', pairs:[['I got the idea but no details.','read it again, slowly, for detail'],['I got details but no big idea.','read it once more, for sense'],['I tripped on a name.','say it slowly, then reread the sentence']], h:'What is missing: the sense, or the detail?'},
+        {t:'sort', q:'Barter paragraph. Big idea, or detail?', bins:[{id:'b',label:'the big idea'},{id:'d',label:'a detail'}], items:[{label:'Barter is hard because both sides must want a trade.',bin:'b'},{label:'Fish spoil in a few days.',bin:'d'},{label:'Nobody gives change in pieces of cow.',bin:'d'},{label:'It hardly works between strangers.',bin:'d'}], h:'The big idea is what the whole paragraph says.'},
+        {t:'spotall', q:'Tap every habit of a strong reader with a hard paragraph.', cells:[{label:'read it twice',ok:true},{label:'slow down at numbers',ok:true},{label:'say the big idea in your own words',ok:true},{label:'read fast to get it over with',ok:false},{label:'skip the numbers',ok:false}], h:'What helps you understand AND remember?'}
+      ],
+      check:[
+        {q:'"In 1913, Congress created the Federal Reserve, with twelve regional banks, to lend to banks in trouble and stop panics." Read 1: what is the big idea?', o:['A central bank was made to keep banks steady.','There are twelve regional banks.','It happened in 1913.']},
+        {q:'"The bridge, finished in 1883, is 1,595 feet long." Reading aloud, what should you read slowest?', o:['the numbers','"The bridge"','"finished in"']},
+        {q:'After two reads, Yitzy knows the big idea but no details. What should he do?', o:['read it again, slowly, for detail','stop, he is done','read only the title']}
+      ],
+      re:[
+        {q:'"Before 1863, hundreds of American banks printed their own paper money, so a bank\'s dollar might be worth less in the next town." Read 1: what is the big idea?', o:['Many banks printed money, so its worth was uncertain.','It was before 1863.','There were hundreds of banks.']},
+        {q:'"In 1869, the first railroad crossed the whole country." Reading aloud, what should you read slowest?', o:['the numbers','"the first"','"the whole"']},
+        {q:'Moshe read a hard paragraph once and remembers no details. What should he do?', o:['read it again, slowly, for detail','stop, he is done','read only the title']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L09.15':{ hook:'A fact can be true and still be the wrong fact. Catch it, and you cannot be fooled.',
+      big:'Good evidence has two jobs: it must be true, and it must speak to the claim. Some evidence is true but off topic. In Eli\'s piece on credit cards, he writes that the first card was made in 1950, and tells the story its makers liked to tell. The date is true, but it does not show that a young adult should have a card today. Other evidence is one person\'s story ("my brother never paid interest"), which shows that something CAN happen, not that it usually does. To test any piece of evidence, take it away and ask: is the claim any weaker? If not, it does not belong.',
+      intro:['Find the claim.','Take one piece of evidence.','Ask: is it true, and is it about THIS claim?','Take it away: is the claim any weaker?'],
+      ex:[{q:'Eli: "The first card of this kind was made in 1950."', steps:['Claim: a young adult should get a card.','The 1950 date is true.','Does it show a young adult today should get one? No.','So it is true but off topic.'], a:'true but off topic'},
+          {q:'Eli: "My brother has never paid a cent of interest."', steps:['It is about the claim.','But it is one person.','It shows paying in full CAN work, not that most boys will do it.'], a:'one person\'s story, not proof'}],
+      oops:{ q:'"The 1950 date is true, so it is good evidence." Right?', wrong:'Yes: true facts always help', right:'No: it is true but off topic', why:'Evidence must speak to the claim. A true fact about something else does not prove anything.' },
+      idea:['True is not enough. Evidence must be true AND on topic.'],
+      'try':{ q:'How do you test one piece of evidence?', o:['take it away: is the claim any weaker?','ask if it is interesting'], a:'take it away: is the claim any weaker?', steps:['Picture the argument without it.','Is it still just as strong?'] } },
+    'READ.COMP.L09.16':{ hook:'Two smart people can look at the same fact and walk away with opposite plans. Who is right?',
+      big:'Writers often agree on the facts and still disagree. The fact is the same; the interpretation, what the fact means, is different. In the credit card debate, Eli and Gavriel agree that an unpaid card costs a lot of interest. Eli reads that fact as: so teach boys to pay in full. Gavriel reads it as: so make them wait until they can keep a budget. To judge two readings, first find the shared fact, then find where the readings split, then check the other facts. The stronger reading is the one that fits all the facts, not just the one it started with.',
+      intro:['Find the fact both writers use.','Find what each writer says it means.','Check the other facts.','Choose the reading that fits all the facts.'],
+      ex:[{q:'Both: "An unpaid card costs a lot of interest."', steps:['Shared fact: unpaid cards cost interest.','Eli: so pay in full.','Gavriel: so wait until you can budget.','Same fact, two readings.'], a:'the same fact, read two ways'},
+          {q:'Fact: Beacon sales fell. Also: we printed fewer copies.', steps:['Reading A: boys stopped reading.','Reading B: we printed fewer, so we sold fewer.','B explains both facts.'], a:'Reading B fits all the facts'}],
+      oops:{ q:'Eli and Gavriel disagree. So one of them got the facts wrong. Right?', wrong:'Yes: if they disagree, one is lying', right:'No: they share the fact and read it differently', why:'Disagreement is often about what a fact means, not whether it is true.' },
+      idea:['Same facts, different reading: judge the reading by how many facts it explains.'],
+      'try':{ q:'How do you judge two readings of the same fact?', o:['choose the one that fits all the facts','choose the one you like'], a:'choose the one that fits all the facts', steps:['List the other facts.','Which reading explains them all?'] } },
+    'READ.FLU.L09.04':{ hook:'Some paragraphs are so packed that one read is not enough. Strong readers read twice, on purpose.',
+      big:'A dense paragraph is full of facts: numbers, names, places and new words. If you read it once, fast, you may get a blur. So strong readers read it twice. The first read is for sense: what is this paragraph about? Say the big idea in one sentence. The second read is slower, for detail: which facts prove the big idea, and how do they fit? Reading aloud, slow down at numbers, names and new words, because they carry the facts. If you finish with the big idea but no details, read it again for detail. If you have details but no big idea, read it once more for sense.',
+      intro:['Read 1: for sense. What is it about?','Say the big idea in one sentence.','Read 2: slowly, for detail.','Slow down at numbers, names and new words.'],
+      ex:[{q:'"Economists call this the double coincidence of wants."', steps:['Read 1: barter needs both people to want a trade.','Read 2: "double coincidence of wants" is the name for it.','Slow down on the new words.'], a:'big idea first, then the name for it'},
+          {q:'"About 2,600 years ago, in the kingdom of Lydia..."', steps:['Read 1: the first coins.','Read 2: when (2,600 years ago) and where (Lydia).'], a:'the first coins: when and where'}],
+      oops:{ q:'Yanky read a hard paragraph once, fast, and remembers nothing. What went wrong?', wrong:'The paragraph was too hard for him', right:'He needed two reads: first for sense, then for detail', why:'Dense paragraphs are meant to be read twice. That is not a weakness; it is a skill.' },
+      idea:['Read for sense, then read for detail.'],
+      'try':{ q:'A paragraph is packed with facts. What is your first read for?', o:['the big idea','every number'], a:'the big idea', steps:['Ask: what is this about?','Say it in one sentence.'] } }
+  };
+
+  var HOWTO = {
+    'READ.COMP.L09.15':{ s:'Find the claim.\nAsk: is this evidence true AND about this claim?\nTake it away: is the claim any weaker?',
+      q:{ 'Claim: the town should build a library. "Libraries have existed for over 2,000 years." This evidence is...':'Does the history of libraries show THIS town needs one?',
+          'Claim: buses should have seat belts. "In crashes, seat belts cut injuries by about half." This evidence...':'Take it away. Is the claim weaker?',
+          'Claim: every boy should eat breakfast. "My cousin never eats breakfast, and he runs fast." What is wrong with it?':'How many people is it about?',
+          'Claim: the yeshiva needs a bigger lunchroom. "Our lunchroom serves hot food every day." This evidence is...':'Does hot food show the room is too small?',
+          'Claim: boys should learn to swim. "Young children who take swimming lessons are less likely to drown." This evidence...':'Take it away. Is the claim weaker?',
+          'Claim: phones should stay home. "My friend brought his phone and nothing bad happened." What is wrong with it?':'How many people is it about?' } },
+    'READ.COMP.L09.16':{ s:'Find the fact both writers use.\nFind what each one says it means.\nThe stronger reading fits all the facts.',
+      q:{ 'Fact: the lunchroom is crowded. Writer A: "Build a bigger lunchroom." Writer B: "Eat in two shifts." What do they disagree about?':'Do they both agree it is crowded?',
+          'Rebbe counted: 9 boys asked to repeat a question before recess, 3 after. "Recess is what helped them focus." This sentence is...':'Which part was counted? Which part says what it means?',
+          'Fact: fewer boys came to night seder. Also: the night bus stopped running. Reading A: boys stopped caring. Reading B: boys could not get there. Which is stronger?':'Which reading explains the bus fact too?',
+          'Fact: the library is empty at night. Writer A: "Close it at five." Writer B: "Add better lights." What do they disagree about?':'Do they both agree it is empty?',
+          'The class voted 18 to 6 for the new schedule. "The boys are happier with it." This sentence is...':'Which part was counted? Which part says what it means?',
+          'Fact: the bake sale earned less. Also: it rained all day. Reading A: the rain kept buyers home. Reading B: the cakes were worse. Which is stronger?':'Which reading explains the rain too?' } },
+    'READ.FLU.L09.04':{ s:'Read 1: for sense, the big idea.\nRead 2: slowly, for detail.\nSlow down at numbers, names and new words.',
+      q:{ '"In 1913, Congress created the Federal Reserve, with twelve regional banks, to lend to banks in trouble and stop panics." Read 1: what is the big idea?':'Read 1: what is the whole sentence about?',
+          '"The bridge, finished in 1883, is 1,595 feet long." Reading aloud, what should you read slowest?':'Which words carry the facts?',
+          'After two reads, Yitzy knows the big idea but no details. What should he do?':'What is he missing: sense or detail?',
+          '"Before 1863, hundreds of American banks printed their own paper money, so a bank\'s dollar might be worth less in the next town." Read 1: what is the big idea?':'Read 1: what is the whole sentence about?',
+          '"In 1869, the first railroad crossed the whole country." Reading aloud, what should you read slowest?':'Which words carry the facts?',
+          'Moshe read a hard paragraph once and remembers no details. What should he do?':'What is he missing: sense or detail?' } }
+  };
+
+  var BITE = {
+    'READ.COMP.L09.15':{ band:'M68', pic:'🧩', today:'Spot evidence that does not belong',
+      why:'Writers sometimes fill an argument with facts that sound good but prove nothing. Spot them, and you judge the argument by what really counts.',
+      ready:[{q:'Which is evidence for "We need a new heater"?', o:['The classroom is 55 degrees in winter.','Heaters come in many colors.','I like warm rooms.'], a:'The classroom is 55 degrees in winter.'}],
+      bridge:'READ.COMP.L09.01', bridgeName:'Argument Judge',
+      watch:{ q:'Credit Cards: Help or Trap?', m:{type:'scene', e:'💳', t:'Eli: "The first card of this kind was made in 1950."'}, steps:[
+        {t:'Start with the claim. Eli: a young adult should get a credit card.'},
+        {t:'Read one piece of evidence: the first card, in 1950.'},
+        {t:'Is it true? Yes. Is it about THIS claim? No: it is about how cards began.'},
+        {t:'Take it away. Is Eli\'s claim any weaker? No. So it does not belong.'},
+        {t:'Now his brother: "never paid a cent of interest." On topic, but one person\'s story.'},
+        {t:'Teach it back: tell your chavrusa the two tests: is it about the claim, and is it more than one story?'}], a:'The 1950 date is true but off topic. The brother is one person\'s story.' },
+      oops:{ q:'"The 1950 date is a true fact, so it makes Eli\'s argument stronger." Right?', wrong:'Yes: more facts make it stronger', right:'No: a true fact that is off topic adds nothing', why:'Evidence must be true AND about the claim. Extra facts that miss the point only fill space.' },
+      ways:['worked example','read the whole debate','Mistake Detective','tap the reason','sort','teach it back'], done:'You can spot evidence that does not belong!',
+      board:{ one:'Good evidence is true AND speaks to the claim. Test: take it away. Is the claim any weaker?', activity:'Write a claim on the board and ten "facts" on cards. Boys vote on each card: belongs, off topic, or one person\'s story, and must explain the vote.', mistakes:['Keeping a fact because it is true','Trusting one person\'s story as proof','Counting more facts as a stronger argument'] },
+      do:[
+        {type:'read', text:'C68.MON.04', say:'Read the whole credit card debate.', how:'Mark each piece of evidence. Is it about the question?'},
+        {type:'evidence', mis:true, q:'Which of Eli\'s sentences does NOT help his claim?', p:['The first card of this kind was made in 1950.','A person who has paid on time for five years has proved that he can be trusted.','If a credit card is lost or stolen, the card is shut off.'], a:0, look:'a true fact that is about something else', say:'Watch the trap! Which one is off topic?', how:'Take each one away. Which one does Eli not need?'}],
+      your:[
+        {type:'proof', text:'C68.MON.04', q:'Which sentence in Akiva\'s note asks you to check if evidence is on topic?', proof:'Which reasons speak to the question', look:'Akiva\'s question about the reasons', say:'Find the proof in the editor\'s note.', how:'Read the editor\'s note at the end.'},
+        {type:'sort', bins:['Belongs','Does not belong'], cards:[['Card rates were over 20 percent.',0],['People spend more with cards.',0],['Some cards have a picture on the front.',1],['Card companies began in New York.',1]], say:'Gavriel\'s claim: cards are a trap. Sort the evidence.', how:'Does it help show cards are dangerous for young people?'},
+        {type:'match', pairs:[['a true fact about something else','true but off topic'],['"It worked for my brother."','one person\'s story'],['a careful study about the claim','strong evidence']], say:'Match each piece to its name.', how:'Is it on topic? Is it more than one story?'},
+        {type:'order', steps:['Find the claim.','Read one piece of evidence.','Ask: is it about THIS claim?','Take it away: is the claim weaker?'], say:'Put the test in order.', how:'Claim first. Then test each piece.'},
+        {type:'cloze', t:'If you take evidence away and the claim is just as strong, the evidence does not ___.', o:['belong','matter to anyone','exist'], a:'belong', say:'Challenge! Tap the word that fits.', how:'What does it mean if nothing changes?'}] },
+    'READ.COMP.L09.16':{ band:'M68', pic:'🔀', today:'Same facts, two readings: judge which fits best',
+      why:'Most arguments are not about the facts. They are about what the facts mean. Learn to see that, and you can judge any debate.',
+      ready:[{q:'Which is a fact you could check?', o:['The rate was over 20 percent.','Cards are a trap.','Cards are great.'], a:'The rate was over 20 percent.'}],
+      bridge:'READ.COMP.L09.15', bridgeName:'Evidence That Does Not Belong',
+      watch:{ q:'Two editors, one fact', m:{type:'scene', e:'⚖️', t:'Eli: "A card that is not paid in full costs a lot of interest. But the answer is simple: pay the whole bill." Gavriel: "The danger is interest... Teach him first. Give him the keys later."'}, steps:[
+        {t:'Find the fact both writers use: an unpaid card costs a lot of interest.'},
+        {t:'Eli\'s reading: so teach boys to pay in full, and give them the card.'},
+        {t:'Gavriel\'s reading: so make them keep a budget first, then give the card.'},
+        {t:'Neither one says the fact is false. They split on what it means.'},
+        {t:'Now check other facts: people spend more with a card. Which reading fits that too? Gavriel\'s.'},
+        {t:'Teach it back: tell your chavrusa the shared fact, the two readings, and which fits more facts.'}], a:'Same fact, two readings. The stronger reading fits all the facts.' },
+      oops:{ q:'"Eli and Gavriel disagree, so one of them has the facts wrong." Right?', wrong:'Yes: one of them must be lying', right:'No: they share the fact and read it two ways', why:'Most debates are about what a fact means. Check the reading, not just the fact.' },
+      ways:['worked example','read two texts','debate','chavrusa','sort','challenge round','teach it back'], done:'You can see two readings of the same facts, and judge which is stronger!',
+      board:{ one:'Fact: can be checked. Interpretation: what someone says it means. The stronger reading fits all the facts.', activity:'Debate: give two teams the same fact ("The shul is full every Yom Tov"). Each team writes a different reading and a plan. The class judges which reading fits the extra facts the rebbe reveals.', mistakes:['Thinking a disagreement means someone lied','Calling an interpretation a fact','Judging a reading by how strongly it is said'] },
+      do:[
+        {type:'read', text:'C68.MON.04', say:'Read the debate again. Find the facts both editors use.', how:'Look for "That is true" and "I will admit".'},
+        {type:'sort', mis:true, bins:['A fact','An interpretation'], cards:[['Unpaid cards cost interest.',0],['Cards are a trap.',1],['A lost card can be shut off.',0],['Cards are a useful tool.',1]], say:'Watch the trap! Fact or interpretation?', how:'Can it be checked, or is it what someone thinks it means?'}],
+      your:[
+        {type:'proof', text:'C68.MON.04', q:'Which sentence shows Gavriel accepting Eli\'s fact about theft?', proof:'That is true about theft', look:'where Gavriel agrees with a fact of Eli\'s', say:'Find the proof in the debate.', how:'Read Gavriel\'s answer about cash.'},
+        {type:'match', pairs:[['Eli','pay in full, and get the card'],['Gavriel','keep a budget first, then the card'],['both','unpaid cards cost interest']], say:'Match each editor to his reading.', how:'Who says what the fact means?'},
+        {type:'evidence', q:'Which extra fact fits Gavriel\'s reading better?', p:['People tend to spend more when they pay with a card.','Credit cards were first made in 1950.','A card can be used to pay by phone.'], a:0, look:'a fact that supports waiting', say:'Tap the fact that fits his reading.', how:'Which fact shows the danger of spending?'},
+        {type:'listen', hear:'Fact: The Beacon got fewer letters this month. Also, the letter box was broken. Writer A says readers stopped caring. Writer B says the broken box lost the letters.', o:['Writer B: it fits both facts','Writer A: it is more dramatic','neither'], a:'Writer B: it fits both facts', cap:'Which reading is stronger?', say:'Listen. Which reading fits all the facts?', how:'Which reading explains the broken box?'},
+        {type:'cloze', t:'Two writers can share a fact and still disagree about what it ___.', o:['means','costs','weighs'], a:'means', say:'Challenge! Tap the word that fits.', how:'What do they argue about, if not the fact?'}] },
+    'READ.FLU.L09.04':{ band:'M68', pic:'🔁', today:'Read a dense paragraph twice: for sense, then detail',
+      why:'Hard articles pack many facts into a few lines. Two smart reads beat one fast blur, every time.',
+      ready:[{q:'What is the big idea of a paragraph?', o:['what the whole paragraph is about','its first word','its longest sentence'], a:'what the whole paragraph is about'}],
+      bridge:'READ.FLU.L06.03', bridgeName:'Pace It',
+      watch:{ q:'From Barter to Coins', m:{type:'scene', e:'🪙', t:'"Barter has a big problem. Both people must want what the other one has, at the same time. Economists call this the double coincidence of wants."'}, steps:[
+        {t:'Read 1, for sense: barter only works if both people want a trade.'},
+        {t:'Say it in one sentence: barter needs two people who want each other\'s things.'},
+        {t:'Read 2, slowly, for detail: a farmer with a cow, a fisherman whose fish spoil.'},
+        {t:'Slow down for the new words: "double coincidence of wants".'},
+        {t:'Check: does each detail prove the big idea? Yes: each shows a trade that fails.'},
+        {t:'Teach it back: read the paragraph to your chavrusa twice, and tell him what each read was for.'}], a:'Read 1: barter needs both sides to want a trade. Read 2: the cow, the fish, the name.' },
+      oops:{ q:'"I read it once, fast, and got the gist. That is enough." Right?', wrong:'Yes: the gist is all you need', right:'No: read it again, slowly, for the details', why:'A dense paragraph hides its proof in the details. The second read finds them.' },
+      ways:['worked example','close reading','read twice','read aloud','chavrusa','teach it back'], done:'You can read a dense paragraph twice: for sense, then for detail!',
+      board:{ one:'Read 1: sense (the big idea, in one sentence). Read 2: slowly, for detail. Slow down at numbers, names and new words.', activity:'Chavrusa reading: one boy reads a dense paragraph aloud while the other listens for the big idea. Then they switch, and the listener names three details.', mistakes:['Reading once, fast, and calling it done','Racing past numbers and names','Remembering details without the big idea'] },
+      do:[
+        {type:'read', text:'C68.MON.01', say:'Read "From Barter to Coins" to the end.', how:'For each page, say the big idea in one sentence.'},
+        {type:'listen', mis:true, hear:'Shimmy read the barter paragraph once, fast. He said: "It is about a cow."', o:['he got a detail, not the big idea','he got the big idea','he read it perfectly'], a:'he got a detail, not the big idea', cap:'What did Shimmy miss?', say:'Mistake Detective! What did Shimmy miss?', how:'Is a cow the big idea, or one detail?'}],
+      your:[
+        {type:'proof', text:'C68.MON.01', q:'Which sentence gives the economists\' name for barter\'s problem?', proof:'double coincidence of wants', look:'the special name economists use', say:'Find the proof in the article.', how:'Read the second paragraph slowly.'},
+        {type:'sort', bins:['Read 1: sense','Read 2: detail'], cards:[['What is this page about?',0],['What is the main point?',0],['Which kingdom?',1],['How many years ago?',1]], say:'Which read is each question for?', how:'Big idea first, then details.'},
+        {type:'order', steps:['Read it once for the big idea.','Say the big idea in one sentence.','Read it again, slowly, for detail.','Check each detail against the big idea.'], say:'Put the two-read steps in order.', how:'Sense first. Detail second.'},
+        {type:'match', pairs:[['I got the idea but no details.','read it again, slowly, for detail'],['I tripped on a name.','say it slowly, then reread'],['I got details but no big idea.','read once more, for sense']], say:'Match each problem to its fix.', how:'What is missing: the sense, or the detail?'},
+        {type:'cloze', t:'Reading aloud, slow down at numbers, names and new ___.', o:['words','pages','books'], a:'words', say:'Tap the word that fits.', how:'What carries the facts in a sentence?'}] }
+  };
+
+  /* Existing skills rebuilt as One Bite lessons. Their own questions stay as practice and Show me. */
+  var UP = {
+    'READ.COMP.L09.01':{ band:'M68', pic:'🗺️', today:'Judge an argument: map the claim and test the evidence',
+      why:'Every ad, editorial and speech wants you to agree. Map the argument and test the evidence, and you decide for yourself.',
+      ready:[{q:'Which sentence is a claim?', o:['Young people should wait for credit cards.','Card rates were over 20 percent.','Eli writes about sports.'], a:'Young people should wait for credit cards.'}],
+      bridge:'READ.COMP.L09.14', bridgeName:'Answer the Other Side',
+      watch:{ q:'A Trap With a Smile', m:{type:'scene', e:'🗺️', t:'Gavriel: "According to the Federal Reserve, the average interest rate on credit cards in 2024 was more than twenty percent a year."'}, steps:[
+        {t:'Find the claim: a young person should wait for a credit card.'},
+        {t:'Map the reasons: high interest, easy spending, rewards are not free.'},
+        {t:'Test each piece of evidence. Is it relevant? Is it from someone who knows?'},
+        {t:'The Federal Reserve number: relevant and from a careful source. Strong.'},
+        {t:'"Studies have found" with no study named: relevant, but we cannot check it. Weaker.'},
+        {t:'Teach it back: tell your chavrusa Gavriel\'s claim, his best evidence, and his weakest.'}], a:'Claim, reasons, evidence: strongest is the Federal Reserve number.' },
+      oops:{ q:'"Gavriel\'s argument is longer, so it is stronger." Right?', wrong:'Yes: more words, more proof', right:'No: judge the evidence, not the length', why:'A strong argument has relevant evidence from careful sources. Length proves nothing.' },
+      ways:['argument map','read the whole debate','find the proof','retrieval','Mistake Detective','teach it back'], done:'You can map an argument and judge its evidence!',
+      board:{ one:'Argument map: claim → reasons → evidence. Test each piece: relevant? reliable? Then judge: strong or weak?', activity:'Draw Eli\'s and Gavriel\'s argument maps side by side on the board. Boys put a star on each strong piece of evidence and an X on each weak one, then decide which map is stronger.', mistakes:['Judging by length or loudness','Counting a feeling as evidence','Forgetting to ask who the source is'] },
+      do:[
+        {type:'read', text:'C68.MON.04', say:'Read the credit card debate.', how:'Find each writer\'s claim and his evidence.'},
+        {type:'sort', mis:true, bins:['Strong evidence','Weak evidence'], cards:[['the Federal Reserve rate for 2024',0],['my cousin\'s half-price flight',1],['by law, you usually owe nothing for a thief\'s charges',0],['my brother never paid interest',1]], say:'Watch the trap! Strong or weak evidence?', how:'Is it from a careful source, or one person?'}],
+      your:[
+        {type:'storymap', slots:['Claim','Reason about cost','Reason about habits','Plan'], cards:['Young people should wait for a card.','Interest is very high.','Cards make spending easy.','Keep a budget for six months first.'], extra:['Cards were first made in 1950.'], say:'Build Gavriel\'s argument map.', how:'Claim first, then his reasons, then his plan.'},
+        {type:'proof', text:'C68.MON.04', q:'Which sentence gives Gavriel\'s strongest evidence?', proof:'According to the Federal Reserve', look:'a number from a careful source', say:'Find the proof in the debate.', how:'Look for a source that is named.'},
+        {type:'match', pairs:[['relevant','it speaks to the claim'],['reliable','it comes from someone who knows'],['a feeling','not evidence at all']], say:'Match each word to its meaning.', how:'Two tests for evidence: relevant and reliable.'},
+        {type:'evidence', q:'Which of Eli\'s pieces of evidence is weakest?', p:['My cousin flew to Eretz Yisrael for half price with points from his card.','If a credit card is lost or stolen, the card is shut off.','A person who has paid on time has proved that he can be trusted.'], a:0, look:'one person\'s story', say:'Tap the weakest evidence.', how:'Which one is only about one person?'},
+        {type:'cloze', t:'Evidence from a careful, named source is more ___.', o:['reliable','relevant','exciting'], a:'reliable', say:'Challenge! Tap the word that fits.', how:'Which test is about who says it?'}] },
+    'READ.COMP.L09.03':{ band:'M68', pic:'🔎', today:'Two sources disagree on a fact: find who is right',
+      why:'Sources do not always agree. A careful reader checks the date, the author and a third source before he trusts a number.',
+      ready:[{q:'Which source is more likely to be careful?', o:['a government report','a sign in a store window','a post with no author'], a:'a government report'}],
+      bridge:'READ.COMP.L09.01', bridgeName:'Argument Judge',
+      watch:{ q:'How much is insured?', m:{type:'scene', e:'🏦', t:'"How a Bank Lends" (this year): up to $250,000 at each bank. A bank pamphlet from 2005: up to $100,000.'}, steps:[
+        {t:'Two sources, two numbers. Do not pick one yet.'},
+        {t:'Check the dates: one is from this year, one from 2005. Rules can change.'},
+        {t:'Check the authors: a careful article, and a bank\'s old pamphlet.'},
+        {t:'Check a third source: the government\'s own insurance website says $250,000 today.'},
+        {t:'Decide: the newer number is right now. The old pamphlet was right in its time.'},
+        {t:'Teach it back: tell your chavrusa the three checks: date, author, third source.'}], a:'Check the date, the author and a third source. Today it is $250,000.' },
+      oops:{ q:'"The two sources disagree, so neither one can be trusted." Right?', wrong:'Yes: ignore them both', right:'No: check date, author and a third source', why:'A disagreement is a signal to check, not a reason to give up.' },
+      ways:['worked example','read the topic set','debate','find the proof','Mistake Detective','teach it back'], done:'You can decide which source to trust when two disagree!',
+      board:{ one:'When sources disagree: check the date, check the author, check a third source. Then decide.', activity:'Give pairs two short "sources" that disagree (an old almanac and a new report). Each pair writes which one they trust and the reason, then checks a third source the rebbe holds up.', mistakes:['Picking the first source you saw','Giving up because they disagree','Forgetting that old facts can change'] },
+      do:[
+        {type:'read', text:'C68.MON.02', say:'Read "How a Bank Lends".', how:'Mark each number and date. Who could check it?'},
+        {type:'sort', mis:true, bins:['More reliable','Less reliable'], cards:[['a government report from 2024',0],['a bank pamphlet from 2005',1],['a careful article with dates',0],['a post with no author',1]], say:'Watch the trap! Which sources are more reliable?', how:'Check the date and the author.'}],
+      your:[
+        {type:'proof', text:'C68.MON.02', q:'Which sentence gives today\'s insurance limit?', proof:'up to two hundred fifty thousand dollars', look:'the amount each family gets back', say:'Find the proof in the article.', how:'Read the part about 1933 and today.'},
+        {type:'order', steps:['Notice the two sources disagree.','Check each source\'s date and author.','Check a third source.','Decide which to trust.'], say:'Put the fact-check steps in order.', how:'Notice first. Decide last.'},
+        {type:'match', pairs:[['an old number','check if the rule changed'],['no author','find who wrote it'],['someone selling something','look for a source with no reason to bend it']], say:'Match each warning sign to its check.', how:'What would you check first?'},
+        {type:'evidence', q:'Two sources disagree on when the first coins were made. Which is more reliable?', p:['a history museum guide that names the kingdom of Lydia','a restaurant placemat with fun facts','a comment under a video'], a:0, look:'a careful source that gives details', say:'Tap the more reliable source.', how:'Who would check the facts most carefully?'},
+        {type:'cloze', t:'When two sources disagree, check the date, the author and a ___ source.', o:['third','louder','longer'], a:'third', say:'Challenge! Tap the word that fits.', how:'What breaks a tie between two sources?'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C68', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('C68', { bite: UP });
+
+  if (window.TLCORE && TLCORE.units && TLCORE.units.add) TLCORE.units.add({ id:'C68.U86', title:'Judge the Argument', c:'READ', grade:8,
+    skills:['READ.COMP.L09.01','READ.COMP.L09.15','READ.COMP.L09.03','READ.COMP.L09.16','READ.FLU.L09.04'],
+    review:['READ.COMP.L09.14','READ.LIT.L09.09'], n:10,
+    items:[
+      {type:'evidence', skill:'READ.COMP.L09.15', q:'Claim: the yeshiva needs a new van. Which evidence does NOT belong?', p:['The van was painted blue in 2015.','The old van broke down three times this month.','Two more classes now go on trips.'], a:0, look:'a true fact that is off topic', how:'Take each one away. Which one does the claim not need?'},
+      {type:'cloze', skill:'READ.COMP.L09.16', t:'"The new shul will be too small in five years." This is an ___.', o:['interpretation','official count','exact measurement'], a:'interpretation', how:'Can it be checked today, or is it what someone thinks?'},
+      {type:'evidence', skill:'READ.COMP.L09.03', q:'Two sources disagree on a town\'s population. Which do you trust?', p:['the town\'s 2023 official report','a 1998 newspaper ad','a sign at the town fair'], a:0, look:'the newest careful source', how:'Check the date and who counted.'},
+      {type:'cloze', skill:'READ.COMP.L09.01', t:'Strong evidence is relevant and ___.', o:['reliable','surprising','repeated'], a:'reliable', how:'The two tests: is it about the claim, and is it from someone who knows?'},
+      {type:'evidence', skill:'READ.FLU.L09.04', q:'Which is the best first step with a dense paragraph?', p:['Read it once for the big idea.','Memorize every number first.','Skip to the last sentence.'], a:0, look:'read for sense first', how:'Sense first, then detail.'}
+    ] });
+})();
+</script>

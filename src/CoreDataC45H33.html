@@ -1,0 +1,594 @@
+<script>
+/* CoreDataC45H33.html: Core Growth job C45, helper piece "Books B2 and B5" (claim #445), file 3: chapters 8-12, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md).
+   Keep this file under 150 KB. Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written
+   'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]} (the server finds a lesson by that exact shape).
+   BOOK CLUB lessons: one lesson per chapter of Book B2 "Lost on the Ridge Trail" (Grade 4, READ.LIT.L05.30+) and Book B5
+   "Shabbos at the Lighthouse" (Grade 5, READ.LIT.L06.30+). Plans: docs/core-growth/texts/C45/B2-plan.md and B5-plan.md.
+   Each lesson: Watch me shows the unit's skill on a short passage, Do 1 opens the chapter in the Reader (read), then the boy uses the
+   skill on the chapter (proof, plus other kinds). Show me (check) is on a SHORT COLD PASSAGE about the same world that is never printed
+   earlier in the lesson. Passages go in PASS under c45h3_ keys. The E45 passage-card style lives in CoreDataC451.html.
+   Cast: the Glen Avenue Crew (docs/core-growth/C45-map.md section 5). No double slash in this file (HtmlService rule). */
+(function () {
+  var P = {
+    c45h3_b2c8: { title: 'Lost on the Ridge Trail, Chapter 8 in Short', text: 'Chapter 8 is Tzvi Hirsch\'s own account, written in his camp notebook the night after. He says he can only tell what he saw and heard and felt.\nHe tells how Scout knocked him over and licked his face, how Ranger Morales radioed "Found. Both boys. Both okay," and how the walk down took more than an hour. He tells how Reb Akiva hugged them, and how his mother cried on the phone.\nHe writes what he learned: when you are lost, you stop; Avrumi is braver than he thinks; and you can be scared and still do the right thing. He ends with a question he cannot answer: how did the searchers know to look on the west side of the ridge?' },
+    c45h3_b2k8: { title: 'From Nosson\'s Notebook, Monday Night', text: 'I could not sleep. I kept thinking about the red cap. I saw it fly over the edge on the left side of the trail, but I did not see where the boys went after it. Reb Akiva told me that what I saw helped the rangers. I hope he is right.\nI do not know if Tzvi Hirsch and Avrumi are warm tonight. I do not know if they found any water. I only know that I said Tehillim for them twice, and that Dovid is still awake in the bunk above me.' },
+    c45h3_b2c9: { title: 'Lost on the Ridge Trail, Chapter 9 in Short', text: 'Chapter 9 goes back to Monday and follows Reb Akiva. When he counted eight boys, not ten, Nosson told him he saw the red cap blow off to the west. Reb Akiva took the eight boys safely down and called for help.\nRanger Morales and his dog Scout began the search on the west slope. The whole camp said Tehillim. At night, a searcher named Carl heard faint whistle blasts, three at a time, but it was too dark and steep to climb. At dawn, a drone flew over the slope while Dovid watched the screen, and they saw the stone arrow and the orange poncho.\nOn Wednesday, the camp newspaper printed an article by a boy who slept through the whole night. It said the boys wandered for miles.' },
+    c45h3_b2k9: { title: 'Two Accounts of the Rope Pull', text: 'A LETTER HOME FROM MENDY: Dear Abba and Ima, today was the big rope pull. I was third on the rope. My hands burned, and my feet slid in the mud, but we held on, and Bunk Daled won! I could hardly lift my fork at supper.\nFROM THE PINE LAKE RIPPLE, by Shmuly Rosen, who was at the dentist that day: Bunk Daled won the rope pull on Tuesday. Campers say it lasted more than an hour. Everyone cheered.' },
+    c45h3_b2c10: { title: 'Lost on the Ridge Trail, Chapter 10 in Short', text: 'At the campfire, Tzvi Hirsch read the line from the camp newspaper that said they wandered for miles. "That\'s not what happened," he said. He told the true story: he ran after his cap without thinking, Avrumi followed him, and Avrumi said "Stop." They stayed in one spot all night, and that is why they were found.\nThen Avrumi said Tzvi Hirsch left something out: he admitted he was scared, he stopped himself twice, and the orange poncho was his idea. Ranger Morales taught the whole camp four words: Stop. Stay. Signal. Wait. Then he held up the red cap that Scout had found.\nOn Friday, Gold\'s Bakery sent rugelach for the whole camp. Avrumi drew a new map and marked one spot: "Where we stayed put. Together."' },
+    c45h3_b2k10: { title: 'Two Accounts of the Rugelach', text: 'A NOTE FROM RABBI WEISS TO THE GOLD FAMILY: Thank you for the beautiful box of rugelach that arrived on Friday. Every camper and counselor had a piece at the oneg Shabbos. We are so grateful that the boys are safe.\nA LETTER HOME FROM DOVID: Dear Abba, a giant box came on Friday from Gold\'s Bakery! I ate four rugelach, two chocolate and two raspberry. Tzvi Hirsch called them "thank-you rugelach." I think they were the best thing that happened all summer, except the boys coming back.' },
+    c45h3_b5c8: { title: 'Shabbos at the Lighthouse, Chapter 8 in Short', text: 'In the old log, the boys find a pencil note: "S.G. 1971. This light saved my life." S.G. is Shimon Gold. On Shabbos afternoon, Reb Shimon tells his own story.\nIn 1971 he was nineteen, working in the hot engine room of a cargo ship, the Atlantic Star. He loved the engines; they were like a great, beating heart. One October night a thick fog came, the radar was broken, and the captain guessed wrong about where they were. Down below, Reb Shimon did not know any of this. He only knew the men on deck were very quiet.\nThen the lookout heard the Kettle Shoal bell and saw its flash. The captain turned hard and called for full reverse, and Reb Shimon pulled the lever with shaking hands. The ship missed the shoal. Thirty-two men went home.\nHis father taught him: if someone does good for you, even if he never knows it, you owe him gratitude. So Reb Shimon cares for the light. "It is an old friend," he says.' },
+    c45h3_b5k8: { title: 'My First Night Watch (from a young sailor\'s diary, 1958)', text: 'Tonight the captain trusted me with the night watch for the first time. I stood on the deck alone from midnight to four, with only the stars and the hum of the engines for company. I told myself I was not nervous, but my coffee went cold because I forgot to drink it.\nAt two o\'clock I saw a light flashing far off to the west. My heart jumped. I counted: one flash every ten seconds. I checked the chart with my flashlight. It was Sandy Point Light, right where it should be. I let out my breath.\nI think the cook was worried about me, because a warm biscuit appeared next to my elbow at three. I never saw who left it.' },
+    c45h3_b5c9: { title: 'Shabbos at the Lighthouse, Chapter 9 in Short', text: 'After Havdalah, Captain Ray Turner and his son Cody climb up to thank the boys. The captain tells Friday night his way.\nHe stayed out too late fishing. At about 8:30 his engine quit, and the wind pushed the Miss Ellie toward the shoal. He looked for the light he had seen all his life, and it was gone. He was scared, and he tried not to let Cody see it. Cody put on his life jacket, and the captain called the Coast Guard.\nThen he saw one white flash, and another six seconds later: Kettle Shoal. Now he knew where he was. He dropped the anchor, and it caught. When the rescue boat came, a huge wave knocked the boat on its side and smashed the green light, but the boat came back up, and Cody was taken aboard first.\nAt the door, the captain says the light came back at 9:30. But Reb Shimon\'s log says 9:15.' },
+    c45h3_b5k9: { title: 'The Bakery Van, Told Twice', text: 'TOLD BY TZVI HIRSCH: The snow was coming down hard, and Abba was late with the Friday deliveries. I watched from the bakery window. When the van finally turned the corner, I cheered so loudly that the twins woke up. Abba looked calm when he walked in, like it was nothing.\nTOLD BY ABBA: The snow was coming down hard, and I was late with the Friday deliveries. The van slid twice on Park Heights Avenue, and my hands were tight on the wheel the whole way. When I turned the corner, I saw a small face pressed to the bakery window. I made my face calm before I walked in, so nobody would worry.' },
+    c45h3_b5c10: { title: 'Shabbos at the Lighthouse, Chapter 10 in Short', text: 'On Sunday, the six boys of the crew sit in the back room of Gold\'s Bakery with four accounts of Friday night: the Bay Courier newspaper story, a short Coast Guard report, Reb Shimon\'s log, and what Captain Turner told them. Avrumi draws a chart with a column for each account.\nAll four agree that the light went out, a backup lamp was lit, the engine failed and the father and son are safe. But they differ on times. The Coast Guard and the log say the backup lamp was lit at 9:15 and the rescue was at 9:46. The newspaper says about 10:00, and that the light was out "almost an hour." The newspaper does not mention the boys at all; it is not exactly wrong, but it leaves things out.\nBinyamin thinks the captain may not have seen the dimmer lamp through the rain until 9:30. So both can be true: each one is telling what he saw, from where he was.' },
+    c45h3_b5k10: { title: 'The Science Fair Fire Alarm: Three Accounts', text: 'ACCOUNT A, from Dovid\'s notebook: At 10:15 the fire alarm went off during the science fair. I was standing at my table. We walked out the side door in two lines. It was a false alarm; the toaster in the teachers\' room burned a bagel. We were back inside by 10:30.\nACCOUNT B, from the school newsletter, written on Monday by a parent who heard about it: On Thursday, the science fair was interrupted when an alarm went off. Students left the building quickly and safely. The fair went on after a short break.\nACCOUNT C, from Mr. Halpern: At 10:12 the alarm sounded. I counted every boy at the side door. All were present. We returned at 10:31.' },
+    c45h3_b5c11: { title: 'Shabbos at the Lighthouse, Chapter 11 in Short', text: 'On Wednesday the six boys go out to the lighthouse. Reb Shimon opens the old log to February 7, 1904, the day of the Great Baltimore Fire. Yehuda and Avrumi know the fire well: it burned more than fifteen hundred buildings and stopped at the Jones Falls.\nThe keeper wrote only twelve words: "A great red glow to the northwest all night. Baltimore is burning." From five miles out in the water, he could see only the glow. He could not see the streets, the fire engines or the people, so he wrote what he saw and guessed what it meant.\nThe newspapers that week wrote fast, from what firemen and shopkeepers told them, and some first stories were wrong. Tzvi Hirsch sums it up: each account is different because of who wrote it, where he was standing, what he could see and why he was writing it. So the boys decide the museum wall should show every account side by side.' },
+    c45h3_b5k11: { title: 'Two Accounts of the Storm of 1933', text: 'From the Baltimore paper, August 23, 1933: The worst storm in memory struck the city last night. Streets downtown were under water, and frightened families fled their homes. Our reporter, writing from the newspaper office, heard the wind howl like a freight train until dawn.\nFrom a letter by Captain Elias Ward, master of the steamer Dorothy, written to his son: We rode out the storm at anchor in the bay, ten miles south of the city. The waves broke over the bow all night, but the old ship held. I saw no lights from Baltimore at all. I write this so that you will know your father is safe, and not to worry.' },
+    c45h3_b5c12: { title: 'Shabbos at the Lighthouse, Chapter 12 in Short', text: 'Three weeks later, the new museum wall opens: ONE NIGHT, MANY EYES. Four frames hold the newspaper story, the Coast Guard report, Reb Shimon\'s log and the captain\'s story, each with a card saying who wrote it and how. Avrumi\'s chart shows where they agree and differ, and the 1904 log lies in a glass case.\nAt the bottom is Tzvi Hirsch\'s own page, in his own handwriting: nobody saw everything, so you must listen to all of them; and if someone helps you, even if he never knows it, you must say thank you.\nCaptain Turner and Cody arrive on the repaired Miss Ellie with the old bronze clapper of the fog bell, which came up in their anchor chain. They hang it, and Tzvi Hirsch rings the bell for the first time in fifty years. Reb Shimon writes one more line in the old log.' },
+    c45h3_b5k12: { title: 'A Letter to the Coast Guard Station', text: 'Dear Coast Guard crew,\nMy name is Cody Turner. I am thirteen. On the night of the storm, my dad\'s boat, the Miss Ellie, was stuck on Kettle Shoal, and you came for us in waves taller than our cabin. One of you held my hand when I climbed across, even though my hand was bleeding. I never learned your name.\nI am writing to say thank you. My dad says a person who saves you deserves to be remembered, even if you never see him again. So I put your boat number on my bedroom wall, and every night I see it before I go to sleep.\nWith thanks,\nCody' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+    'READ.LIT.L05.37':{name:'Ridge Trail 8: My Side of the Story',
+      teach:[
+        {p:'c45h3_b2c8', q:'Who tells Chapter 8?', o:['Tzvi Hirsch, about himself', 'A narrator outside the story', 'Avrumi'], how:'Look for I and me. Who is the I?'},
+        {p:'c45h3_b2c8', q:'What can Tzvi Hirsch NOT tell in his own account?', o:['What happened at camp while he was lost', 'How Scout licked his face', 'How he felt on the phone'], how:'A teller in the story knows only what he saw, heard and felt.'},
+        {p:'c45h3_b2c8', q:'Why does Chapter 8 end with a question?', o:['Tzvi Hirsch does not know the answer', 'The ranger forgot', 'The book is over'], how:'Think about where Tzvi Hirsch was on Monday night.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45h3_b2c8', q:'First person or third person?', bins:[{id:'f', label:'first person'}, {id:'t', label:'third person'}], items:[{label:'I ate my granola bar fast.', bin:'f'}, {label:'The dog knocked me over.', bin:'f'}, {label:'He sat down next to Avrumi.', bin:'t'}, {label:'The boys waited by the rock.', bin:'t'}], h:'Look for I, me, my.', how:'First person tells with I and me. Third person tells with he, she and they.'},
+        {t:'pairs', p:'c45h3_b2c8', q:'Match the words to the kind of telling.', pairs:[['I, me, my', 'first person'], ['he, him, they', 'third person']], h:'Who is talking?', how:'The pronouns tell you who tells the story.'},
+        {t:'sort', p:'c45h3_b2c8', q:'Mistake Detective. Can Tzvi Hirsch know it in his own account?', bins:[{id:'k', label:'He can know it'}, {id:'m', label:'Mistake: he cannot know it'}], items:[{label:'Scout licked his face', bin:'k'}, {label:'His throat felt tight', bin:'k'}, {label:'What Reb Akiva did at camp all night', bin:'m'}, {label:'Who saw the cap fly west', bin:'m'}], h:'Was he there? Did he see it or feel it?', how:'A first-person teller knows only what he saw, heard and felt.'},
+        {t:'spotall', p:'c45h3_b2c8', q:'Tap every word that shows first person.', cells:[{label:'I', ok:true}, {label:'me', ok:true}, {label:'my', ok:true}, {label:'he', ok:false}, {label:'they', ok:false}], h:'Which words mean the teller himself?', how:'First person words point to the one telling the story.'},
+        {t:'order', p:'c45h3_b2c8', q:'Put Tzvi Hirsch\'s account in order.', tiles:['Scout knocks him over', 'The ranger radios "Found"', 'They walk down the mountain', 'Reb Akiva hugs them', 'He talks to his mother'], h:'Start on the rock.', how:'Follow his account from the rock to the phone.'},
+        {t:'type', p:'c45h3_b2c8', q:'How many boys did Ranger Morales find? Type the number.', a:'2', alt:['two', 'Two'], kb:'num', h:'"Both boys."', how:'Find the radio words.'}
+      ],
+      check:[
+        {p:'c45h3_b2k8', q:'Nosson\'s notebook is told in...', o:['first person', 'third person', 'second person'], how:'Look at the words he uses for himself.'},
+        {p:'c45h3_b2k8', q:'Did the boys find water? What can Nosson tell us?', o:['the narrator does not know', 'yes, he saw them drink', 'yes, the ranger told him'], how:'Was Nosson there with the boys? What does he say he does not know?'},
+        {p:'c45h3_b2k8', q:'"I do not know if Tzvi Hirsch and Avrumi are warm tonight." Why can\'t Nosson know?', o:['he was not there', 'he was asleep', 'he did not care'], how:'Where is Nosson while he writes?'}
+      ],
+      re:[
+        {p:'c45h3_b2c8', q:'First person uses...', o:['I, me and my', 'he, she and they', 'only names'], how:'The teller talks about himself.'},
+        {p:'c45h3_b2c8', q:'A first-person narrator knows...', o:['only what he saw, heard and felt', 'everything everywhere', 'nothing at all'], how:'Think of Tzvi Hirsch\'s question.'},
+        {p:'c45h3_b2c8', q:'Third person uses...', o:['he, she and they', 'I and me', 'you'], how:'The teller is outside the story.'}
+      ]},
+    'READ.LIT.L05.38':{name:'Ridge Trail 9: Meanwhile, at Camp',
+      teach:[
+        {p:'c45h3_b2c9', q:'Nosson saw the red cap blow west. His telling is a...', o:['firsthand account', 'secondhand account', 'poem'], how:'Did he see it himself, or hear about it?'},
+        {p:'c45h3_b2c9', q:'The camp newspaper article was written by a boy who slept all night. It is a...', o:['secondhand account', 'firsthand account', 'map'], how:'Was the writer there?'},
+        {p:'c45h3_b2c9', q:'What did the article get wrong?', o:['It said the boys wandered for miles.', 'It said a drone found them.', 'It said the camp said Tehillim.'], how:'Compare it with what the boys really did all night.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45h3_b2c9', q:'Firsthand or secondhand?', bins:[{id:'f', label:'firsthand account'}, {id:'s', label:'secondhand account'}], items:[{label:'Nosson tells what he saw', bin:'f'}, {label:'Dovid tells what he saw on the screen', bin:'f'}, {label:'The newspaper boy writes what he heard', bin:'s'}, {label:'A camper retells it at breakfast', bin:'s'}], h:'Did the teller see it himself?', how:'Firsthand: you were there. Secondhand: you heard it from others.'},
+        {t:'pairs', p:'c45h3_b2c9', q:'Match each person to what he saw or heard himself.', pairs:[['Nosson', 'the red cap blowing west'], ['Carl the searcher', 'faint whistle blasts'], ['Dovid', 'the stone arrow on the screen']], h:'Who was where?', how:'Each one saw or heard one piece of the story.'},
+        {t:'sort', p:'c45h3_b2c9', q:'Mistake Detective. Right in the newspaper, or a mistake?', bins:[{id:'r', label:'Right'}, {id:'m', label:'Mistake'}], items:[{label:'A drone found them.', bin:'r'}, {label:'The whole camp said Tehillim.', bin:'r'}, {label:'They wandered for miles.', bin:'m'}, {label:'They walked all night looking for camp.', bin:'m'}], h:'What did the boys really do all night?', how:'Check each line against the firsthand accounts.'},
+        {t:'spotall', p:'c45h3_b2c9', q:'Tap every firsthand account in Chapter 9.', cells:[{label:'Nosson about the cap', ok:true}, {label:'Carl about the whistle', ok:true}, {label:'Dovid about the screen', ok:true}, {label:'The newspaper article', ok:false}], h:'Who saw or heard it himself?', how:'A firsthand account comes from someone who was there.'},
+        {t:'order', p:'c45h3_b2c9', q:'Put the search in order.', tiles:['Reb Akiva counts eight boys', 'Nosson tells about the cap', 'The search starts on the west slope', 'Carl hears the whistle', 'The drone finds the arrow'], h:'Start on the trail on Monday.', how:'Follow the search from Monday to dawn.'},
+        {t:'type', p:'c45h3_b2c9', q:'How many boys did Reb Akiva count? Type the number.', a:'8', alt:['eight', 'Eight'], kb:'num', h:'He left with ten.', how:'Find the count in the rain.'}
+      ],
+      check:[
+        {p:'c45h3_b2k9', q:'Mendy\'s letter is a...', o:['firsthand account', 'secondhand account', 'poem'], how:'Was the writer at the rope pull himself?'},
+        {p:'c45h3_b2k9', q:'Shmuly\'s article is a...', o:['secondhand account', 'firsthand account', 'letter home'], how:'Where was Shmuly that day?'},
+        {p:'c45h3_b2k9', q:'Shmuly was not there. Which words show he is passing on what others told him?', o:['Campers say', 'Bunk Daled won', 'on Tuesday'], how:'A secondhand account passes on what others said. Look for words that tell you who said it.'}
+      ],
+      re:[
+        {p:'c45h3_b2c9', q:'A firsthand account comes from...', o:['someone who was there', 'someone who heard about it', 'a made-up story'], how:'Think of Nosson and the cap.'},
+        {p:'c45h3_b2c9', q:'A secondhand account comes from...', o:['someone who heard about it', 'someone who was there', 'the person it happened to'], how:'Think of the newspaper boy.'},
+        {p:'c45h3_b2c9', q:'Secondhand accounts can be wrong because...', o:['the writer did not see it himself', 'they are always short', 'they use I and me'], how:'Think of "wandered for miles".'}
+      ]},
+    'READ.LIT.L05.39':{name:'Ridge Trail 10: Two Sides of One Story',
+      teach:[
+        {p:'c45h3_b2c10', q:'What do the newspaper and Tzvi Hirsch agree on?', o:['Two boys were lost and found.', 'The boys wandered for miles.', 'Tzvi Hirsch ran after his cap.'], how:'Find what both tellings say.'},
+        {p:'c45h3_b2c10', q:'What does only Tzvi Hirsch tell?', o:['That he ran after his cap without thinking', 'That a drone found them', 'That the camp said Tehillim'], how:'Which part did the newspaper boy not know?'},
+        {p:'c45h3_b2c10', q:'Why did Avrumi speak after Tzvi Hirsch?', o:['Tzvi Hirsch left out the good things he did', 'Avrumi wanted the last word', 'The ranger asked him to'], how:'Listen to what Avrumi says Tzvi Hirsch "left out".'}
+      ],
+      practice:[
+        {t:'sort', p:'c45h3_b2c10', q:'Both accounts, or only one?', bins:[{id:'b', label:'both accounts agree on'}, {id:'o', label:'only one account tells'}], items:[{label:'Two boys were lost and found', bin:'b'}, {label:'The lost boys were Tzvi Hirsch and Avrumi', bin:'b'}, {label:'Tzvi Hirsch ran after his cap', bin:'o'}, {label:'Avrumi said "Stop"', bin:'o'}], h:'Is it in both tellings?', how:'Compare: put the two accounts side by side.'},
+        {t:'pairs', p:'c45h3_b2c10', q:'Match each teller to what he adds.', pairs:[['Tzvi Hirsch', 'the mistake he made'], ['Avrumi', 'what Tzvi Hirsch left out'], ['Ranger Morales', 'the safety rule']], h:'What does each one add to the story?', how:'Each teller adds a part only he can tell.'},
+        {t:'sort', p:'c45h3_b2c10', q:'Mistake Detective. Did the newspaper get it right?', bins:[{id:'r', label:'Right'}, {id:'m', label:'Mistake in the newspaper'}], items:[{label:'A drone found them', bin:'r'}, {label:'They are back safe', bin:'r'}, {label:'They wandered for miles', bin:'m'}, {label:'They walked all night', bin:'m'}], h:'Check it against Tzvi Hirsch\'s firsthand account.', how:'When accounts differ, ask who was there.'},
+        {t:'spotall', p:'c45h3_b2c10', q:'Tap the four words Ranger Morales taught.', cells:[{label:'Stop', ok:true}, {label:'Stay', ok:true}, {label:'Signal', ok:true}, {label:'Wait', ok:true}, {label:'Run', ok:false}], h:'He held up four fingers.', how:'Find what the ranger told the whole camp.'},
+        {t:'order', p:'c45h3_b2c10', q:'Put the campfire in order.', tiles:['Tzvi Hirsch reads the newspaper line', 'He tells the true story', 'Avrumi tells what he left out', 'The ranger teaches four words', 'The ranger holds up the cap'], h:'Start with the newspaper.', how:'Follow the campfire from start to end.'},
+        {t:'type', p:'c45h3_b2c10', q:'How many words did Ranger Morales teach? Type the number.', a:'4', alt:['four', 'Four'], kb:'num', h:'Stop, Stay, ...', how:'Count them.'}
+      ],
+      check:[
+        {p:'c45h3_b2k10', q:'That the box came on Friday is something...', o:['both accounts agree on', 'only one account tells', 'neither account tells'], how:'Look for the day in the note, then in the letter.'},
+        {p:'c45h3_b2k10', q:'How many rugelach Dovid ate is something...', o:['only one account tells', 'both accounts agree on', 'neither account tells'], how:'Look for a number in each account.'},
+        {p:'c45h3_b2k10', q:'Read both accounts. The biggest reason they sound so different is...', o:['why each one wrote', 'what day it was', 'which bakery'], how:'Read the first line of each. Who is it for?'}
+      ],
+      re:[
+        {p:'c45h3_b2c10', q:'To compare two accounts, first find...', o:['what both accounts agree on', 'the longest sentence', 'the title'], how:'Side by side.'},
+        {p:'c45h3_b2c10', q:'Then find...', o:['what only one account tells', 'the first word', 'the pictures'], how:'What does each add?'},
+        {p:'c45h3_b2c10', q:'Accounts can differ because of...', o:['who was there and why each one wrote', 'the color of the paper', 'nothing'], how:'Think of the newspaper boy.'}
+      ]},
+    'READ.LIT.L06.37':{name:'Lighthouse 8: S.G.',
+      teach:[
+        {p:'c45h3_b5c8', q:'Who tells the story of 1971?', o:['Reb Shimon, about himself', 'The ship\'s captain', 'The old keeper'], how:'Whose voice says "I" in this story?'},
+        {p:'c45h3_b5c8', q:'Reb Shimon calls the lighthouse "an old friend." What does that show?', o:['His point of view: he is grateful to it', 'A plain fact about the building', 'That the lighthouse can talk'], how:'Is it a fact anyone could check, or how he feels?'},
+        {p:'c45h3_b5c8', q:'What did Reb Shimon NOT know while he was in the engine room?', o:['That the ship was heading for the shoal', 'That the men were quiet', 'That the engines were loud'], how:'A narrator can only tell what he saw or learned. Where was he?'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b5c8', q:'Put Reb Shimon\'s story in order.', tiles:['Fog comes, and the radar is broken', 'The captain guesses wrong', 'The lookout hears the bell', 'Reb Shimon pulls the lever for reverse', 'The ship misses the shoal'], h:'Start with the fog.', how:'Follow the night from the fog to the safe harbor.'},
+        {t:'pairs', p:'c45h3_b5c8', q:'Match his words to what they show about him.', pairs:[['"I loved the engines"', 'he loved his work'], ['"my hands were shaking"', 'he was afraid'], ['"an old friend"', 'he is grateful to the light']], h:'What does each line tell about how he feels?', how:'A narrator\'s words show his feelings and point of view.'},
+        {t:'sort', p:'c45h3_b5c8', q:'Mistake Detective. His view, or a plain fact?', bins:[{id:'v', label:'His point of view'}, {id:'f', label:'Plain fact'}], items:[{label:'The engines were like a beating heart', bin:'v'}, {label:'The lighthouse is an old friend', bin:'v'}, {label:'The ship was the Atlantic Star', bin:'f'}, {label:'Thirty-two men went home', bin:'f'}], h:'Could anyone check it, or is it how he sees it?', how:'A fact can be checked. A point of view is how the narrator feels about it.'},
+        {t:'spotall', p:'c45h3_b5c8', q:'Tap every thing Reb Shimon could NOT know that night.', cells:[{label:'The ship was off course', ok:true}, {label:'The keeper\'s name', ok:true}, {label:'The men on deck were quiet', ok:false}, {label:'He pulled the lever', ok:false}], h:'He was down in the engine room.', how:'A first-person narrator knows only what he saw, heard or was told.'},
+        {t:'sort', p:'c45h3_b5c8', q:'First-person words or third-person words?', bins:[{id:'1', label:'First person (I, my)'}, {id:'3', label:'Third person (he, his)'}], items:[{label:'"I pulled that lever."', bin:'1'}, {label:'"My hands were shaking."', bin:'1'}, {label:'"He took off his glasses."', bin:'3'}, {label:'"He closed his sefer."', bin:'3'}], h:'Who is talking about whom?', how:'First person says I and my. Third person says he and his.'},
+        {t:'type', p:'c45h3_b5c8', q:'How many men went home safely? Type the number.', a:'32', alt:['thirty-two', 'Thirty-two'], kb:'num', h:'Find the end of the story.', how:'Read what happened when the ship came into Baltimore.'}
+      ],
+      check:[
+        {p:'c45h3_b5k8', q:'Who tells the diary?', o:['first-person narrator', 'third-person narrator', 'newspaper reporter'], how:'Look at the words the writer uses for himself.'},
+        {p:'c45h3_b5k8', q:'"I told myself I was not nervous, but my coffee went cold because I forgot to drink it." What does this line show that he will not say outright?', o:['his feelings', 'the ship\'s route', 'the time of night'], how:'Why would someone forget his coffee? What does it tell you about him?'},
+        {p:'c45h3_b5k8', q:'Who left the biscuit? Why can\'t the narrator tell you for sure?', o:['he can only tell what he saw', 'he is hiding it', 'the cook told him'], how:'Did the sailor see who left it?'}
+      ],
+      re:[
+        {p:'c45h3_b5c8', q:'A first-person narrator...', o:['tells his own story with I and my', 'knows what everyone thinks', 'never has feelings'], how:'Think of Reb Shimon.'},
+        {p:'c45h3_b5c8', q:'A narrator\'s point of view is...', o:['how he sees and feels about what happened', 'the page number', 'a list of facts'], how:'"An old friend."'},
+        {p:'c45h3_b5c8', q:'A narrator can only tell...', o:['what he saw, heard or learned', 'everything in the world', 'what others secretly think'], how:'He was in the engine room.'}
+      ]},
+    'READ.LIT.L06.38':{name:'Lighthouse 9: The Captain\'s Story',
+      teach:[
+        {p:'c45h3_b5c9', q:'The boys saw a green light vanish. What does the captain tell that they could not see?', o:['A wave knocked the boat on its side', 'The backup lamp flashing', 'Binyamin\'s drawing'], how:'Where was the captain? What could only he feel and see?'},
+        {p:'c45h3_b5c9', q:'What stays the same when the captain tells Friday night?', o:['The events', 'The feelings', 'The narrator'], how:'Did the same things happen, even if they look different?'},
+        {p:'c45h3_b5c9', q:'Why does the captain say the light came back at 9:30?', o:['That is when he first saw it', 'He wants to trick the boys', 'He read the log'], how:'Where was he, and what could he see through the rain?'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b5c9', q:'Put the captain\'s night in order.', tiles:['The engine quits', 'He cannot find the light', 'He calls the Coast Guard', 'The light flashes back', 'He drops the anchor'], h:'Start when the engine stops.', how:'Follow his night, one event after another.'},
+        {t:'pairs', p:'c45h3_b5c9', q:'Match each part to the narrator who could tell it.', pairs:[['Reb Shimon climbs to the lantern room', 'the boys in the lighthouse'], ['The engine coughs and quits', 'the captain on the boat'], ['Dad says three times he cannot see the light', 'Cody']], h:'Who was there to see it?', how:'A narrator can tell only what he was there for.'},
+        {t:'sort', p:'c45h3_b5c9', q:'Mistake Detective. Who could tell this part?', bins:[{id:'b', label:'Only the boys'}, {id:'c', label:'Only the captain'}], items:[{label:'The backup lamp is lit', bin:'b'}, {label:'Nosson spots a green light', bin:'b'}, {label:'Cody cuts his hand on the rail', bin:'c'}, {label:'The captain hides his fear from Cody', bin:'c'}], h:'Was he in the lighthouse or on the boat?', how:'Another narrator tells the same night from another place.'},
+        {t:'spotall', p:'c45h3_b5c9', q:'Tap every feeling the captain tells about.', cells:[{label:'scared', ok:true}, {label:'trying to look calm', ok:true}, {label:'thankful', ok:true}, {label:'bored', ok:false}], h:'What did he feel that night, and after?', how:'Another narrator brings his own feelings to the same events.'},
+        {t:'sort', p:'c45h3_b5c9', q:'Same in both tellings, or different?', bins:[{id:'s', label:'Same'}, {id:'d', label:'Different'}], items:[{label:'The light went dark', bin:'s'}, {label:'The anchor held', bin:'s'}, {label:'What each one felt', bin:'d'}, {label:'What each one could see', bin:'d'}], h:'Events, or the view of them?', how:'The events stay the same. What the narrator notices and feels changes.'},
+        {t:'type', p:'c45h3_b5c9', q:'How old is Cody? Type the number.', a:'13', alt:['thirteen', 'Thirteen'], kb:'num', h:'Find where Cody is first described.', how:'Read the start of the chapter.'}
+      ],
+      check:[
+        {p:'c45h3_b5k9', q:'Compare the two tellings of the snowy night. What stays the same?', o:['the events', 'the feelings', 'the narrator'], how:'Find what Tzvi Hirsch AND Abba both say happened.'},
+        {p:'c45h3_b5k9', q:'Which narrator tells that the van slid twice on Park Heights Avenue?', o:['the narrator who was there', 'the narrator at the window', 'both narrators'], how:'Where was each narrator when the van slid?'},
+        {p:'c45h3_b5k9', q:'Tzvi Hirsch thinks Abba was calm. Read Abba\'s own telling. It shows...', o:['feelings the first one could not see', 'the same feelings', 'nothing new'], how:'Read what Abba says about his face. Could Tzvi Hirsch see that?'}
+      ],
+      re:[
+        {p:'c45h3_b5c9', q:'When another narrator tells the same scene...', o:['the events stay the same, but what he notices and feels change', 'everything changes', 'nothing changes'], how:'Think of the captain and the boys.'},
+        {p:'c45h3_b5c9', q:'The captain could tell about the wave because he...', o:['was on the boat', 'read the log', 'was in the lighthouse'], how:'Where was he?'},
+        {p:'c45h3_b5c9', q:'Two narrators can give different times because...', o:['each tells what he saw, when he saw it', 'one is always lying', 'clocks never work'], how:'9:15 and 9:30.'}
+      ]},
+    'READ.LIT.L06.39':{name:'Lighthouse 10: Four Accounts',
+      teach:[
+        {p:'c45h3_b5c10', q:'Which account was written by someone who was not there?', o:['The Bay Courier story', 'Reb Shimon\'s log', 'The captain\'s words'], how:'Who wrote from the phone the next morning?'},
+        {p:'c45h3_b5c10', q:'What do all four accounts agree on?', o:['The father and son are safe', 'The exact time the light came back', 'That the boys helped'], how:'Find what every account says the same.'},
+        {p:'c45h3_b5c10', q:'Why do the boys make a chart?', o:['To see where the accounts agree and differ', 'To make a poster for fun', 'To choose the shortest one'], how:'What does Avrumi put in each column?'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b5c10', q:'Put the steps for comparing accounts in order.', tiles:['Gather every account', 'Make a chart, one column each', 'Mark where they agree', 'Mark where they differ', 'Ask why they differ'], h:'Gather first, ask why last.', how:'Comparing accounts is careful work, one step at a time.'},
+        {t:'pairs', p:'c45h3_b5c10', q:'Match each account to who wrote it.', pairs:[['Bay Courier', 'a reporter on the phone'], ['Coast Guard report', 'officials, for the record'], ['Keeper\'s log', 'Reb Shimon, after Shabbos']], h:'Who wrote each one, and how?', how:'Knowing who wrote an account helps you weigh it.'},
+        {t:'sort', p:'c45h3_b5c10', q:'Mistake Detective. Do all four agree, or do they differ?', bins:[{id:'a', label:'All four agree'}, {id:'d', label:'They differ'}], items:[{label:'A backup lamp was lit', bin:'a'}, {label:'The father and son are safe', bin:'a'}, {label:'When the light came back', bin:'d'}, {label:'How long the light was out', bin:'d'}], h:'Check each fact in every column.', how:'Never assume all accounts agree. Check every one.'},
+        {t:'spotall', p:'c45h3_b5c10', q:'Tap every firsthand account.', cells:[{label:'Reb Shimon\'s log', ok:true}, {label:'The captain\'s words', ok:true}, {label:'The Bay Courier story', ok:false}, {label:'A cousin who heard about it', ok:false}], h:'Who was really there?', how:'A firsthand account is by someone who was there.'},
+        {t:'sort', p:'c45h3_b5c10', q:'Firsthand or secondhand?', bins:[{id:'f', label:'Firsthand account'}, {id:'s', label:'Secondhand account'}], items:[{label:'the captain', bin:'f'}, {label:'Reb Shimon', bin:'f'}, {label:'the newspaper reporter', bin:'s'}, {label:'someone told at breakfast', bin:'s'}], h:'Was the writer there?', how:'Secondhand accounts gather facts from others.'},
+        {t:'type', p:'c45h3_b5c10', q:'How many accounts did the boys compare? Type the number.', a:'4', alt:['four', 'Four'], kb:'num', h:'Count the columns.', how:'Read the start of the chapter.'}
+      ],
+      check:[
+        {p:'c45h3_b5k10', q:'Account A is a...', o:['firsthand account', 'secondhand account', 'summary'], how:'Where was Dovid when the alarm rang?'},
+        {p:'c45h3_b5k10', q:'Account B is a...', o:['secondhand account', 'firsthand account', 'log'], how:'Read who wrote Account B, and when.'},
+        {p:'c45h3_b5k10', q:'Accounts A and C do not agree on one fact. What is it?', o:['the clock time', 'that every boy got out', 'which door they used'], how:'Put A and C side by side. Check each fact in both.'}
+      ],
+      re:[
+        {p:'c45h3_b5c10', q:'A firsthand account is written by...', o:['someone who was there', 'someone who heard about it later', 'nobody'], how:'The captain.'},
+        {p:'c45h3_b5c10', q:'A secondhand account...', o:['gathers facts from others', 'is always wrong', 'is by the main character'], how:'The reporter.'},
+        {p:'c45h3_b5c10', q:'An account that is not wrong but leaves things out is...', o:['not the whole story', 'a lie', 'a firsthand account'], how:'The newspaper and the boys.'}
+      ]},
+    'READ.LIT.L06.40':{name:'Lighthouse 11: The 1904 Glow',
+      teach:[
+        {p:'c45h3_b5c11', q:'Why did the 1904 keeper write only twelve words?', o:['From five miles out, he could see only a glow', 'He was lazy', 'He did not care'], how:'Where was he standing, and what could he see?'},
+        {p:'c45h3_b5c11', q:'Why were some of the first newspaper stories wrong?', o:['They wrote fast, from what people told them', 'They saw every street', 'They wrote a year later'], how:'Who told the reporters, and how fast did they write?'},
+        {p:'c45h3_b5c11', q:'What did the boys decide about the museum wall?', o:['Show every account side by side', 'Show only the newspaper', 'Show only the log'], how:'Find what they decided at the end.'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b5c11', q:'Put the four questions for any account in Tzvi Hirsch\'s order.', tiles:['Who wrote it?', 'Where was he standing?', 'What could he see?', 'Why was he writing?'], h:'Tzvi Hirsch says them in one sentence.', how:'These four questions explain why accounts differ.'},
+        {t:'pairs', p:'c45h3_b5c11', q:'Match each reason to its example.', pairs:[['who wrote it', 'a keeper or a reporter'], ['where he stood', 'five miles out in the bay'], ['why he wrote it', 'a log for the record']], h:'Which reason does each example show?', how:'Each reason accounts differ has a real example in the chapter.'},
+        {t:'sort', p:'c45h3_b5c11', q:'Mistake Detective. Could the keeper see it from the lighthouse?', bins:[{id:'y', label:'Could see it'}, {id:'n', label:'Could not see it'}], items:[{label:'a red glow in the sky', bin:'y'}, {label:'that the glow was northwest', bin:'y'}, {label:'which streets were burning', bin:'n'}, {label:'fire engines from other cities', bin:'n'}], h:'He was five miles out in the water.', how:'An account is limited by where the writer stood.'},
+        {t:'spotall', p:'c45h3_b5c11', q:'Tap every reason accounts can differ.', cells:[{label:'who wrote it', ok:true}, {label:'where he stood', ok:true}, {label:'why he wrote it', ok:true}, {label:'what he could see', ok:true}, {label:'the color of the ink', ok:false}], h:'Think of Tzvi Hirsch\'s sentence.', how:'There are four reasons in this lesson.'},
+        {t:'sort', p:'c45h3_b5c11', q:'What the keeper saw, or what he guessed?', bins:[{id:'s', label:'He saw it'}, {id:'g', label:'He guessed it'}], items:[{label:'A great red glow', bin:'s'}, {label:'It lasted all night', bin:'s'}, {label:'Baltimore is burning', bin:'g'}], h:'Could he see the city itself?', how:'A good reader tells what the writer saw from what he figured out.'},
+        {t:'type', p:'c45h3_b5c11', q:'How many miles out was the lighthouse? Type the number.', a:'5', alt:['five', 'Five'], kb:'num', h:'Find where the keeper was.', how:'Read the part about the glow.'}
+      ],
+      check:[
+        {p:'c45h3_b5k11', q:'Captain Ward saw no lights from Baltimore, but the reporter heard the wind howl in the city. Which reason explains this?', o:['where he stood', 'why he wrote it', 'who wrote it'], how:'Ask the four questions. Which one fits?'},
+        {p:'c45h3_b5k11', q:'The captain wrote "so that you will know your father is safe." That tells us...', o:['why he wrote it', 'where he stood', 'what he could see'], how:'Ask the four questions about that one line.'},
+        {p:'c45h3_b5k11', q:'One account is by a newspaper, one by a ship\'s captain writing to his son. That difference is...', o:['who wrote it', 'where he stood', 'what he could see'], how:'Read the first words of each account.'}
+      ],
+      re:[
+        {p:'c45h3_b5c11', q:'Accounts differ because of...', o:['who wrote it, where he stood, what he saw and why he wrote', 'the size of the paper', 'nothing at all'], how:'Tzvi Hirsch\'s sentence.'},
+        {p:'c45h3_b5c11', q:'The keeper\'s short account was...', o:['true to what he could see', 'made up', 'about the streets'], how:'Twelve words.'},
+        {p:'c45h3_b5c11', q:'To learn what really happened, you should...', o:['listen to many accounts and ask why they differ', 'trust only the first one', 'trust only the longest one'], how:'The museum wall.'}
+      ]},
+    'READ.LIT.L06.41':{name:'Lighthouse 12: The Wall of Many Eyes',
+      teach:[
+        {p:'c45h3_b5c12', q:'Why does the wall show four accounts, not one?', o:['Nobody saw everything', 'The wall was big', 'Four is a nice number'], how:'Read Tzvi Hirsch\'s page.'},
+        {p:'c45h3_b5c12', q:'What is a big lesson, the theme, of the whole book?', o:['Be grateful to those who help you', 'Never go on a boat', 'Fog is always dangerous'], how:'Think of Reb Shimon, the captain and Tzvi Hirsch\'s page.'},
+        {p:'c45h3_b5c12', q:'What did the Miss Ellie bring back?', o:['The old clapper of the fog bell', 'The 1904 log', 'A new beacon'], how:'Find what came up in the anchor chain.'}
+      ],
+      practice:[
+        {t:'order', p:'c45h3_b5c12', q:'Put the opening night in order.', tiles:['The wall opens', 'Rabbi Feldman reads Tzvi Hirsch\'s page', 'The Miss Ellie arrives', 'They hang the clapper', 'Tzvi Hirsch rings the bell'], h:'Start with the wall.', how:'Follow the evening from start to end.'},
+        {t:'pairs', p:'c45h3_b5c12', q:'Match each frame to its card.', pairs:[['newspaper', 'Notice what it leaves out'], ['Coast Guard report', 'Short, careful and exact'], ['captain\'s story', 'Seen from a rocking boat']], h:'Which card tells how each was made?', how:'Each card tells who wrote it and how.'},
+        {t:'sort', p:'c45h3_b5c12', q:'Mistake Detective. The theme, or just an event?', bins:[{id:'t', label:'Theme (the big lesson)'}, {id:'e', label:'Mistake: just an event'}], items:[{label:'Thank people who help you', bin:'t'}, {label:'Listen to every account', bin:'t'}, {label:'The bell got its clapper back', bin:'e'}, {label:'They ate the rugelach', bin:'e'}], h:'Is it a lesson for life, or something that happened?', how:'A theme is a big lesson the whole story teaches.'},
+        {t:'spotall', p:'c45h3_b5c12', q:'Tap every person who shows gratitude in the book.', cells:[{label:'Reb Shimon', ok:true}, {label:'Captain Turner', ok:true}, {label:'Tzvi Hirsch', ok:true}, {label:'the reporter', ok:false}], h:'Who thanks someone, or cares for something that helped him?', how:'Gratitude means remembering and thanking those who help you.'},
+        {t:'sort', p:'c45h3_b5c12', q:'Firsthand or secondhand account?', bins:[{id:'f', label:'Firsthand account'}, {id:'s', label:'Secondhand account'}], items:[{label:'Tzvi Hirsch\'s page', bin:'f'}, {label:'the captain\'s story', bin:'f'}, {label:'the newspaper story', bin:'s'}], h:'Was the writer there?', how:'Firsthand: there. Secondhand: told by others.'},
+        {t:'type', p:'c45h3_b5c12', q:'How many years since the bell last rang with its clapper, about? Type the number.', a:'50', alt:['fifty', 'Fifty'], kb:'num', h:'Find the bell ringing.', how:'Read the part where the clapper is hung.'}
+      ],
+      check:[
+        {p:'c45h3_b5k12', q:'In Cody\'s letter, "A person who saves you deserves to be remembered" is...', o:['a big lesson', 'an event', 'a key detail'], how:'Is it something that happened that night, or a lesson for life?'},
+        {p:'c45h3_b5k12', q:'Cody\'s letter is a...', o:['firsthand account', 'secondhand account', 'newspaper'], how:'Where was Cody that night?'},
+        {p:'c45h3_b5k12', q:'Cody never learned the name of the man who held his hand. What does that remind us about any one account?', o:['nobody saw everything', 'it is made up', 'it is secondhand'], how:'Could Cody know everything about that night?'}
+      ],
+      re:[
+        {p:'c45h3_b5c12', q:'A wall of many accounts helps visitors because...', o:['nobody saw everything', 'it looks nice', 'one account is enough'], how:'Tzvi Hirsch\'s page.'},
+        {p:'c45h3_b5c12', q:'Gratitude means...', o:['remembering and thanking those who help you', 'being afraid', 'winning a prize'], how:'Reb Shimon and the light.'},
+        {p:'c45h3_b5c12', q:'A theme is...', o:['a big lesson the story teaches', 'one event', 'the name of a boat'], how:'Think of the whole book.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.LIT.L05.37':{
+      hook:'Who is telling the story? That one question changes everything you can know.',
+      big:'In first person, the teller is in the story and says I and me. He knows only what he saw, heard and felt. In third person, a narrator outside the story says he, she and they. When a first-person teller was not there, the narrator does not know what happened.',
+      intro:['Look for I, me and my. Then it is first person.', 'Look for he, she and they about everyone. Then it is third person.', 'Ask: what can this teller know?', 'Ask: what can he NOT know, because he was not there?'],
+      ex:[{q:'Ridge Trail, Chapter 8', steps:['"The dog knocked me over." I and me: first person.', 'Tzvi Hirsch tells what he saw and felt.', 'He was not at camp, so he cannot tell what Reb Akiva did.', 'That is why he ends with a question.'], a:'First person: he knows only his own part.'}],
+      oops:{q:'In Chapter 8, can Tzvi Hirsch tell us what Reb Akiva did at camp all night?', wrong:'Yes, he is telling the whole story.', right:'No. He was on the mountain, so he cannot know.', why:'A first-person teller knows only what he saw, heard and felt.'},
+      idea:['A first-person teller is a window. You see only what is in front of that window.'],
+      try:{q:'"I saw the cap fly west." First or third person?', o:['first person', 'third person', 'neither'], a:'first person', steps:['Find the pronoun.', 'Who is the I?']}
+    },
+    'READ.LIT.L05.38':{
+      hook:'Did you see it yourself, or did someone tell you? That is the first question a good detective asks.',
+      big:'A firsthand account comes from someone who was there. A secondhand account comes from someone who heard about it. Secondhand accounts can get things wrong, because the writer did not see it himself. A firsthand account usually tells more about how it felt.',
+      intro:['Ask: who wrote this?', 'Ask: was he there? Then it is a firsthand account.', 'If he heard it from others, it is a secondhand account.', 'Check a secondhand account against the firsthand one.'],
+      ex:[{q:'Ridge Trail, Chapter 9', steps:['Nosson saw the cap blow west: a firsthand account.', 'The newspaper boy slept all night and heard it at breakfast: a secondhand account.', 'The newspaper says they wandered for miles.', 'The firsthand accounts show they stayed put.'], a:'The secondhand account got it wrong.'}],
+      oops:{q:'The newspaper is printed, so is it always right?', wrong:'Yes, a newspaper is always right.', right:'No. This writer was not there, so it is a secondhand account, and it got a big part wrong.', why:'Being printed does not make it firsthand. Ask who was there.'},
+      idea:['Every time a story is passed along, it can change a little, like a message whispered down a line.'],
+      try:{q:'Carl heard the whistle himself. His account is...', o:['firsthand', 'secondhand', 'made up'], a:'firsthand', steps:['Was Carl there?', 'Did he hear it himself?']}
+    },
+    'READ.LIT.L05.39':{
+      hook:'Two people, one event, two stories. Put them side by side, and the truth gets clearer.',
+      big:'To compare two accounts of one event, find what both accounts agree on, then what only one account tells. Then ask why they differ: who was there and why each one wrote.',
+      intro:['Read both accounts.', 'Find what both accounts agree on.', 'Find what only one account tells.', 'Ask why they differ: who was there, and why each one wrote.'],
+      ex:[{q:'Ridge Trail, Chapter 10', steps:['Both: two boys were lost, and they were found safe.', 'Only the newspaper: they wandered for miles.', 'Only Tzvi Hirsch: he ran after his cap without thinking.', 'Why they differ: Tzvi Hirsch was there; the newspaper boy was not.'], a:'Agree, differ, and why.'}],
+      oops:{q:'The two accounts differ. Which is right?', wrong:'The one that sounds more exciting.', right:'Check who was there. Tzvi Hirsch was there; he says they stayed put.', why:'Exciting is not the same as true. Ask who saw it.'},
+      idea:['Two accounts are like two eyes. Each sees a little differently, and together you see more.'],
+      try:{q:'Avrumi and Tzvi Hirsch both say they stayed put. That is something...', o:['both accounts agree on', 'only one account tells', 'neither tells'], a:'both accounts agree on', steps:['Is it in both?']}
+    },
+    'READ.LIT.L06.37':{
+      hook:'Two people can live through the same night and tell two very different stories. It depends on who is talking.',
+      big:'When a narrator tells his own story with I and my, he is a first-person narrator. His point of view colors the story: his feelings, what he loves and fears. And he can only tell what he saw, heard or learned.',
+      intro:['Find who is telling the story.', 'Look for his feelings: words that show how he sees things.', 'Tell his point of view from plain facts.', 'Ask: what could he NOT know from where he was?'],
+      ex:[{q:'Lighthouse, Chapter 8: Reb Shimon\'s story', steps:['Narrator: Reb Shimon, saying I and my.', 'His feelings: the engines were like a beating heart; his hands were shaking.', 'His point of view: the light is "an old friend."', 'What he did not know: down below, that the ship was off course.'], a:'His telling is warm and grateful, and limited to what he knew.'}],
+      oops:{q:'"The lighthouse is an old friend." Is that a fact?', wrong:'Yes, he says it, so it is a fact.', right:'No, it is his point of view: how he feels about the light.', why:'A fact can be checked. A narrator\'s feelings color how he tells it.'},
+      idea:['A narrator is a window. You see the story through his glass, with his colors.'],
+      try:{q:'"I was so proud of my little boat." Who is telling this?', o:['a first-person narrator', 'a third-person narrator', 'nobody'], a:'a first-person narrator', steps:['Look for I and my.', 'He is telling his own story.']}
+    },
+    'READ.LIT.L06.38':{
+      hook:'The boys saw a tiny green light. The captain saw a black sea and a dead engine. Same night, two stories.',
+      big:'When another narrator tells the same scene, the events stay the same, but what he notices and how he feels change the telling. Each narrator can only tell what he was there to see, so the narrator who was there tells that part. Another narrator can show feelings the first one could not see.',
+      intro:['Find a scene told twice.', 'List what stays the same: the events.', 'List what changes: what each one notices and feels.', 'Ask: where was each narrator, and what could he see?'],
+      ex:[{q:'Lighthouse, Chapters 6 and 9: the wave', steps:['The boys: the green light vanished, a terrible minute.', 'The captain: a wave knocked the boat over, the green light smashed.', 'Same event. Another narrator.', 'He could tell what the boys could not see.'], a:'Another narrator fills in a different part of the same scene.'}],
+      oops:{q:'The captain says 9:30; the log says 9:15. Is one of them lying?', wrong:'Yes, one of them must be lying.', right:'No. Each tells what he saw: the captain first saw the lamp at 9:30.', why:'Narrators differ because they stood in different places, not because one lies.'},
+      idea:['Two narrators are two cameras pointed at the same scene from different sides.'],
+      try:{q:'A soccer game told by the goalie and by a fan. What stays the same?', o:['the events', 'the feelings', 'the narrator'], a:'the events', steps:['What happened?', 'Did that change?']}
+    },
+    'READ.LIT.L06.39':{
+      hook:'Four papers on a bakery table. All about one night. They do not all say the same thing.',
+      big:'Accounts of one event share some facts but differ on others. A firsthand account is by someone who was there; a secondhand account gathers facts from others. A chart shows where they agree and differ. An account can be not wrong, but not the whole story.',
+      intro:['Gather every account.', 'For each, ask: firsthand or secondhand?', 'Make a chart: where do they agree, where do they differ?', 'Ask why they differ.'],
+      ex:[{q:'Lighthouse, Chapter 10: the chart', steps:['Agree: the light went out, a backup lamp, everyone safe.', 'Differ: the time of the rescue, how long the light was out.', 'Firsthand: the log and the captain. Secondhand: the newspaper.', 'The newspaper leaves out the boys: not wrong, but not the whole story.'], a:'A chart makes the agreeing and differing easy to see.'}],
+      oops:{q:'The newspaper says "about 10:00." The log says 9:46. What should you think?', wrong:'The newspaper is printed, so it must be right.', right:'Check who wrote each: the log is firsthand; the reporter heard it later.', why:'Being printed does not make an account firsthand. Ask who was there.'},
+      idea:['A chart of accounts is a map. It shows where the roads meet and where they split.'],
+      try:{q:'A boy who watched the game tells about it. His account is...', o:['firsthand account', 'secondhand account', 'a guess'], a:'firsthand account', steps:['Was he there?', 'Then it is firsthand.']}
+    },
+    'READ.LIT.L06.40':{
+      hook:'A keeper five miles away saw the biggest fire in Baltimore\'s history, and wrote twelve words. Why?',
+      big:'Accounts of one event differ because of who wrote it, where he stood, what he could see and why he wrote it. Ask those four questions about any account before you trust it.',
+      intro:['Read the account.', 'Ask: who wrote it?', 'Ask: where was he standing, and what could he see from there?', 'Ask: why was he writing it?'],
+      ex:[{q:'Lighthouse, Chapter 11: the 1904 log', steps:['Who: the keeper.', 'Where he stood: five miles out in the bay.', 'What he could see: only a red glow.', 'Why he wrote: to keep the log, for the record.'], a:'Twelve true words: all that he could see.'}],
+      oops:{q:'Why is the keeper\'s account so short?', wrong:'He did not think the fire was important.', right:'From five miles out, he could see only a glow.', why:'Look at where he stood and what he could see before you judge an account.'},
+      idea:['Every account has a seat in the stadium. Ask which seat it was written from.'],
+      try:{q:'A fan high in the bleachers says the ball was fair. The umpire at the line says foul. Which reason explains this?', o:['where he stood', 'who wrote it', 'why he wrote it'], a:'where he stood', steps:['Where was each one?', 'Who could see the line best?']}
+    },
+    'READ.LIT.L06.41':{
+      hook:'A wall with five frames, a glass case and one boy\'s messy handwriting. Why does it need all of them?',
+      big:'Putting accounts side by side shows that nobody saw everything. Comparing them, where they agree and differ, gets you closest to what happened. The theme of the whole book is gratitude: remember and thank those who help you, even if they never know.',
+      intro:['Look at all the accounts together.', 'Ask what each one adds.', 'Ask what the whole book teaches.', 'Say the theme in one sentence.'],
+      ex:[{q:'Lighthouse, Chapter 12: the wall', steps:['Four accounts, each with a card saying how it was made.', 'A chart of where they agree and differ.', 'Tzvi Hirsch\'s page: nobody saw everything.', 'Reb Shimon\'s new line: gratitude, passed on.'], a:'Many eyes, one night. And a book about gratitude.'}],
+      oops:{q:'What is the theme of the book?', wrong:'A clapper came up in an anchor chain.', right:'Be grateful to those who help you, even if they never know.', why:'That is an event. A theme is a big lesson the story teaches.'},
+      idea:['A theme is the lesson you carry home after the last page.'],
+      try:{q:'A boy thanks the crossing guard every morning. The theme is...', o:['gratitude', 'speed', 'fear'], a:'gratitude', steps:['What does he do?', 'What lesson does it show?']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var TELL = 'Read every page. Tap a blue word to see what it means. Tap Next at the end.';
+  var BITE = {
+    'READ.LIT.L05.37':{ band:'E45', pic:'📓', today:'Read Tzvi Hirsch\'s own account: what can he know?',
+      why:'Knowing who tells a story shows you what the teller can know, and what he cannot.',
+      ready:[{q:'In Chapter 7, what burst out of the bushes?', o:['A search dog','A deer','A bear'], a:'A search dog'},
+             {q:'"I" in a story means...', o:['the one telling it','someone far away','the reader'], a:'the one telling it'}],
+      bridge:'READ.LIT.L05.02', bridgeName:'Who\'s Telling?',
+      watch:{ q:'Two Tellings of One Moment', m:{type:'scene', e:'🪢', t:'Teller A: "I grabbed the rope and pulled with all my strength." Teller B: "Dovid grabbed the rope and pulled with all his strength."'}, steps:[
+        {t:'Teller A says I and my: first person.'},
+        {t:'Teller A is Dovid. He knows how his own arms felt.'},
+        {t:'Teller B says Dovid and his: third person.'},
+        {t:'Teller B stands outside the story and tells about Dovid.'}],
+        a:'First person: I, me, my. Third person: he, she, they.' },
+      oops:{ q:'Teller A says "I". Can he tell what Mendy was thinking?', wrong:'Yes, the teller knows everything.', right:'No. A first-person teller knows only his own thoughts.', why:'He can guess from what Mendy does, but he cannot know his thoughts.' },
+      ways:['real book (the Reader)','point of view','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Tzvi Hirsch\'s own account! Tell your chavrusa one thing Tzvi Hirsch could not know, and why.',
+      board:{ one:'First person: the teller is in the story and says I. He knows only what he saw, heard and felt. Third person: a narrator outside says he and they.', activity:'Switch the teller: each pair rewrites one sentence from Chapter 8 in third person ("The dog knocked him over") and reads both out loud.', mistakes:['Thinking a first-person teller knows everything','Mixing up I with the author','Missing the pronoun clues'] },
+      do:[
+        {type:'read', text:'C45.B2.08', say:'Open the book. Read Tzvi Hirsch\'s own account.', how:TELL},
+        {type:'match', pairs:[['"I was laughing and crying at the same time."','first person: the teller says I'],['"He sat down next to Avrumi."','third person: the teller says he'],['"The dog knocked me over."','first person: the teller says me'],['"Scout sat on his stomach."','third person: the teller says his']],
+          say:'Match each sentence to first or third person.', how:'Find the pronoun. Is it I, or he?',
+          why:{q:'How do you know the first one is first person?', o:['The teller says I','It is sad','It has a name'], a:'The teller says I'}}],
+      your:[
+        {type:'sort', mis:true, bins:['He can know it','Mistake: he cannot know it'], cards:[['Scout licked his face',0],['His throat felt tight',0],['What Reb Akiva did at camp all night',1],['Who saw the cap fly west',1]],
+          say:'Mistake Detective: can Tzvi Hirsch know it, telling his story?', how:'Was he there? Did he see, hear or feel it himself?',
+          why:{q:'Why can he not know what Reb Akiva did?', o:['He was on the mountain, not at camp','He forgot','Reb Akiva did nothing'], a:'He was on the mountain, not at camp'}},
+        {type:'proof', text:'C45.B2.08', q:'Find the sentence where Tzvi Hirsch says what he can tell.', proof:'I can only tell what I saw and heard and felt', look:'what a first-person teller knows',
+          say:'Open the book. Find the sentence that proves it.', how:'Look on the first page, where he starts his story.'},
+        {type:'cloze', t:'Tzvi Hirsch tells his own story, so Chapter 8 is told in ___ person.', o:['first','third','second'], a:'first',
+          say:'Which word fits? Tap it into the gap.', how:'Who is telling? Does he say I?',
+          why:{q:'Why not third person?', o:['The teller says I and me','It is longer','It is about camp'], a:'The teller says I and me'}},
+        {type:'evidence', q:'Which sentence could ONLY be in a first-person telling?', p:['Ranger Morales gave the boys water.','I have never been so happy to be licked in my life.','Tzvi Hirsch was so happy that he cried.'], a:1, look:'the teller himself in the sentence',
+          say:'Tap the sentence only a first-person teller could say.', how:'Feelings can be in any telling. Which one has the teller himself in it?'},
+        {type:'listen', q:'Challenge: what the narrator knows.', hear:'Tzvi Hirsch wonders how they knew to look on the west side. Why can he not answer it?', o:['He was not at camp, so he did not see it','He forgot','He was asleep all day'], a:'He was not at camp, so he did not see it',
+          say:'Challenge! Why can he not answer his own question?', how:'Where was Tzvi Hirsch while the searchers made their plan?',
+          why:{q:'Who could answer it?', o:['Someone who was at camp','Scout','The deer'], a:'Someone who was at camp'}}] },
+
+    'READ.LIT.L05.38':{ band:'E45', pic:'📰', today:'Read Chapter 9, and tell firsthand accounts from secondhand ones',
+      why:'Knowing who saw it, and who only heard about it, helps you decide what to believe.',
+      ready:[{q:'In Chapter 8, what could Tzvi Hirsch not explain?', o:['How they knew to look west','Where the dog came from','Why he was hungry'], a:'How they knew to look west'},
+             {q:'Someone who was there and saw it...', o:['can tell it firsthand','only heard about it','made it up'], a:'can tell it firsthand'}],
+      bridge:'READ.LIT.L05.37', bridgeName:'Ridge Trail 8: My Side of the Story',
+      watch:{ q:'The Deer, Two Ways (a short passage)', m:{type:'scene', e:'🦌', t:'Avrumi saw the deer himself in the hollow. The next morning, Dovid told the bunk, "Avrumi saw a moose!"'}, steps:[
+        {t:'Avrumi was there. His telling is a firsthand account.'},
+        {t:'Dovid only heard about it. His telling is a secondhand account.'},
+        {t:'Words like "campers say" mean someone heard it from others.'},
+        {t:'Dovid says "moose". Avrumi saw a deer.'},
+        {t:'The secondhand account changed the story.'}],
+        a:'Firsthand: you were there. Secondhand: you heard it from someone.' },
+      oops:{ q:'Dovid tells the story loudly and with lots of detail. Is his account firsthand?', wrong:'Yes, because he tells it with lots of detail.', right:'No. He was not there, so it is secondhand.', why:'Detail does not make it firsthand. Ask: was the teller there?' },
+      ways:['real book (the Reader)','firsthand and secondhand','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 9 and sorted the accounts! Tell your chavrusa which account you trust most, and why.',
+      board:{ one:'Firsthand: from someone who was there. Secondhand: from someone who heard about it. Check secondhand accounts against firsthand ones.', activity:'Whisper line: the first boy reads one sentence from Chapter 9 and whispers it down the line; the last boy says it aloud, and the class compares.', mistakes:['Thinking anything printed is firsthand','Thinking more detail means firsthand','Trusting a secondhand account over a firsthand one without checking'] },
+      do:[
+        {type:'read', text:'C45.B2.09', say:'Open the book. Read Chapter 9.', how:TELL},
+        {type:'sort', bins:['Firsthand (saw it)','Secondhand (heard about it)'], cards:[['Nosson tells what he saw: the cap fly west',0],['Dovid tells what he saw on the screen',0],['The newspaper boy writes what he heard',1],['A camper retells it at breakfast',1]],
+          say:'Firsthand, or secondhand?', how:'Ask of each teller: was he there to see or hear it?',
+          why:{q:'Why is the newspaper boy secondhand?', o:['He slept through the night and heard it later','He wrote it on paper','He is young'], a:'He slept through the night and heard it later'}}],
+      your:[
+        {type:'evidence', mis:true, q:'Mistake Detective: which line of the newspaper is wrong?', p:['Two boys from Bunk Daled got lost on Monday.','They wandered for miles through the woods all night.','On Tuesday morning, a drone found them.'], a:1, look:'what the boys really did all night',
+          say:'Mistake Detective! Which line is wrong?', how:'Compare each line with what the boys and the searchers saw.',
+          why:{q:'How do you know it is wrong?', o:['The firsthand accounts show they stayed put','It is the longest line','Drones cannot fly'], a:'The firsthand accounts show they stayed put'}},
+        {type:'proof', text:'C45.B2.09', q:'Find the sentence that tells who wrote the article, and where he was that night.', proof:'slept through the whole night', look:'the writer of the newspaper article',
+          say:'Open the book. Find who wrote the article.', how:'Go to the last page, just before the article.'},
+        {type:'match', pairs:[['Nosson','saw the red cap blow west'],['Carl','heard the faint whistle'],['Dovid','saw the arrow on the screen'],['The newspaper boy','heard the story at breakfast']],
+          say:'Match each person to what he saw or heard.', how:'Who was where? Each one has one piece.'},
+        {type:'cloze', t:'The newspaper boy was not there, so his article is a ___ account.', o:['secondhand','firsthand','first-person'], a:'secondhand',
+          say:'Which word fits? Tap it into the gap.', how:'Was the writer there, or did he hear about it?',
+          why:{q:'What is the danger of a secondhand account?', o:['It can change as it is passed along','It is always too short','It has no words'], a:'It can change as it is passed along'}},
+        {type:'listen', q:'Challenge: why it went wrong.', hear:'Why did the newspaper say the boys wandered for miles?', o:['He was not there; he heard it later at breakfast','The writer wanted to trick everyone','The drone told him'], a:'He was not there; he heard it later at breakfast',
+          say:'Challenge! Why did the newspaper get it wrong?', how:'Think about where the writer was, and who told him.',
+          why:{q:'How could he have got it right?', o:['Ask someone who was there','Write it faster','Use bigger letters'], a:'Ask someone who was there'}}] },
+
+    'READ.LIT.L05.39':{ band:'E45', pic:'🔥', today:'Read Chapter 10, and compare two accounts of one event',
+      why:'When two people tell one event differently, comparing them gets you closer to the truth.',
+      ready:[{q:'A secondhand account comes from...', o:['someone who heard about it','someone who was there','a map'], a:'someone who heard about it'},
+             {q:'In Chapter 9, what did the newspaper say the boys did?', o:['Wandered for miles','Stayed put','Swam home'], a:'Wandered for miles'}],
+      bridge:'READ.LIT.L05.38', bridgeName:'Ridge Trail 9: Meanwhile, at Camp',
+      watch:{ q:'Two Tellings of the Deer', m:{type:'scene', e:'🦌', t:'Avrumi: "A deer came into the hollow. She was more scared than we were." Tzvi Hirsch: "A deer came crashing in. I was pretty scared."'}, steps:[
+        {t:'Both accounts agree on: a deer came into the hollow.'},
+        {t:'Only Avrumi tells that the deer was more scared.'},
+        {t:'Only Tzvi Hirsch tells that it came crashing in.'},
+        {t:'Why they differ: each tells what he noticed and felt.'},
+        {t:'Also ask: who is each one writing to, and why?'}],
+        a:'Agree, then differ, then why.' },
+      oops:{ q:'The two tellings differ. Does that mean one boy is lying?', wrong:'Yes, if they differ, one must be lying.', right:'No. Each tells what he noticed. Both can be true.', why:'Accounts often differ because each teller sees and feels different things.' },
+      ways:['real book (the Reader)','compare two accounts','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You finished the whole book, and you can compare accounts! Tell your chavrusa: what would you have done on the mountain?',
+      board:{ one:'To compare two accounts: find what both agree on, find what only one tells, then ask why they differ.', activity:'Two-column chart: the class lists what the newspaper and Tzvi Hirsch agree on, and what only one tells, then circles the line that was wrong and why.', mistakes:['Thinking different accounts mean someone is lying','Believing the more exciting account','Comparing only what is the same and missing what differs'] },
+      do:[
+        {type:'read', text:'C45.B2.10', say:'Open the book. Read the last chapter.', how:TELL},
+        {type:'storymap', slots:['Both accounts agree','Only the newspaper says','Only Tzvi Hirsch says'], cards:['Two boys were lost and found','They wandered for miles','He ran after his cap without thinking'],
+          say:'Put each line in its box.', how:'Is it in both accounts, or in only one?',
+          why:{q:'Why does only Tzvi Hirsch know about the cap?', o:['He was there and did it himself','The newspaper hid it','It is not true'], a:'He was there and did it himself'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Fair way to compare','Mistake in comparing'], cards:[['Find what both accounts say',0],['Ask who was there',0],['They differ, so one must be lying',1],['The exciting one must be true',1]],
+          say:'Mistake Detective: fair compare, or a mistake?', how:'Different does not mean lying. Ask who was there.',
+          why:{q:'Why is "they differ, so one must be lying" a mistake?', o:['Each teller tells what he saw','Nobody ever lies','Both are the same'], a:'Each teller tells what he saw'}},
+        {type:'proof', text:'C45.B2.10', q:'Find the sentence where Tzvi Hirsch tells where they really were all night.', proof:'We stayed in one spot', look:'where the boys were all night',
+          say:'Open the book. Find what really happened.', how:'Find where Tzvi Hirsch says what the newspaper got wrong.'},
+        {type:'match', pairs:[['Tzvi Hirsch','tells the mistake he made'],['Avrumi','tells what Tzvi Hirsch left out'],['Ranger Morales','tells the safety rule'],['The newspaper','tells what it heard secondhand']],
+          say:'Match each teller to what his account adds.', how:'What does each one tell that the others do not?'},
+        {type:'combine', a:'The newspaper says they wandered.', b:'Tzvi Hirsch says they stayed put.', o:['but','so','because'], j:'but',
+          say:'Join the two accounts to show how they differ.', how:'Do they agree, or does the second go against the first?',
+          why:{q:'Which account do you trust here?', o:['Tzvi Hirsch, who was there','The newspaper, because it is printed','Neither'], a:'Tzvi Hirsch, who was there'}},
+        {type:'listen', q:'Challenge: what was left out.', hear:'Avrumi said Tzvi Hirsch left something out. What was it?', o:['He admitted he was scared and stopped himself','He lost the red cap','A drone flew over'], a:'He admitted he was scared and stopped himself',
+          say:'Challenge! What did Tzvi Hirsch leave out?', how:'Listen to what Avrumi tells the campfire.',
+          why:{q:'Why did Tzvi Hirsch leave it out?', o:['He was telling his own mistakes, not his good deeds','He forgot the night','He was not there'], a:'He was telling his own mistakes, not his good deeds'}}] },
+    'READ.LIT.L06.37':{ band:'E45', pic:'⚓', today:'Read Chapter 8: how his view colors the story',
+      why:'Who tells a story changes the story. Know the teller, and you understand the tale.',
+      ready:[{q:'A story told with "I" and "my" is told by...', o:['a first-person narrator','a third-person narrator','a newspaper'], a:'a first-person narrator'},
+             {q:'In Chapter 7, what note did Nosson find in the margin?', o:['"S.G. 1971. This light saved my life."','A map','A recipe'], a:'"S.G. 1971. This light saved my life."'}],
+      bridge:'READ.LIT.L06.12', bridgeName:'The Narrator\'s View',
+      watch:{ q:'My New Bike (a short passage)', m:{type:'scene', e:'🚲', t:'I got my bike on my birthday. It is the fastest, shiniest bike on Glen Avenue. My little brother says it squeaks. I never hear a squeak.'}, steps:[
+        {t:'Who tells it? "I" and "my": a first-person narrator.'},
+        {t:'Fact: he got a bike on his birthday.'},
+        {t:'His view: "the fastest, shiniest bike." That is how he feels.'},
+        {t:'What he does not notice: the squeak his brother hears.'},
+        {t:'His point of view colors the whole telling.'}],
+        a:'A first-person narrator shows his feelings, and only what he notices.' },
+      oops:{ q:'Is it a fact that the bike is the fastest on the street?', wrong:'Yes, the narrator says so.', right:'No, that is his point of view.', why:'A narrator\'s feelings are not facts. Could anyone check it?' },
+      ways:['real book (the Reader)','point of view','first-person narrator','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 8 and saw the story through Reb Shimon\'s eyes! Tell your chavrusa one thing he could not know that night.',
+      board:{ one:'A first-person narrator tells his own story with I and my. His feelings color it, and he knows only what he saw, heard or learned.', activity:'Retell it: pairs retell the fog story as the ship\'s captain, with "I", and list one thing the captain knew that Reb Shimon did not.', mistakes:['Treating a narrator\'s feelings as facts','Thinking a narrator knows everything','Mixing up first person and third person'] },
+      do:[
+        {type:'read', text:'C45.B5.08', say:'Open the book. Read Chapter 8.', how:TELL},
+        {type:'storymap', slots:['Reb Shimon knew it then','He did not know it then'], cards:['The men on deck were very quiet','The ship was heading for the shoal'], extra:['The ship was painted green'],
+          say:'What did Reb Shimon know down in the engine room?', how:'He was below deck. What could he see and hear there?',
+          why:{q:'Why could he not know the ship was off course?', o:['He was down in the engine room','He was asleep','Nobody knew'], a:'He was down in the engine room'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Labeled right','Mistake'], cards:[['"An old friend": his point of view',0],['"Thirty-two men went home": plain fact',0],['"Like a beating heart": plain fact',1],['"The truest friend I ever had": plain fact',1]],
+          say:'Mistake Detective: is each line labeled right?', how:'Could anyone check it? Or is it how he feels?',
+          why:{q:'Why is "like a beating heart: plain fact" a mistake?', o:['It is how he feels, not something you can check','It is a number','It is the ship\'s name'], a:'It is how he feels, not something you can check'}},
+        {type:'proof', text:'C45.B5.08', q:'Find the sentence where Reb Shimon says what he did not know down in the engine room.', proof:'I did not know any of this', look:'what he could not see from the engine room',
+          say:'Open the book. Find the proof.', how:'Find where he is down in the engine room. What does he admit?'},
+        {type:'match', pairs:[['"I loved the engines"','he loved his work'],['"my hands were shaking"','he was afraid'],['"an old friend"','he is grateful to the light'],['"I cannot thank that keeper"','he wishes he could']],
+          say:'Match his words to what they show.', how:'What does each line tell about how he feels?'},
+        {type:'cloze', t:'Because Reb Shimon tells his own story, we hear his ___ most of all.', o:['feelings','engine','ship'], a:'feelings',
+          say:'Which word fits? Tap it into the gap.', how:'What does a first-person narrator share that a list of facts does not?',
+          why:{q:'Which line shows it best?', o:['"my hands were shaking"','"thirty-two men"','"October"'], a:'"my hands were shaking"'}},
+        {type:'listen', q:'Challenge: another narrator.', hear:'If the old keeper told this story, what would he NOT know?', o:['That his bell saved a ship','That it was foggy','That he rang the bell'], a:'That his bell saved a ship',
+          say:'Challenge! What would the keeper not know?', how:'Did the keeper ever hear about the Atlantic Star?',
+          why:{q:'How do you know?', o:['Reb Shimon says the keeper never knew','The keeper was asleep','The log says so'], a:'Reb Shimon says the keeper never knew'}}] },
+
+    'READ.LIT.L06.38':{ band:'E45', pic:'🎣', today:'Read Chapter 9: the same night, another narrator',
+      why:'The same night looks different from a lighthouse and from a sinking boat. Both views are part of the truth.',
+      ready:[{q:'In Chapter 6, what did the boys see on the water?', o:['A tiny green light','A whale','A rescue boat'], a:'A tiny green light'},
+             {q:'In Chapter 5, who saw the green light first?', o:['Nosson','Reb Shimon','Binyamin'], a:'Nosson'}],
+      bridge:'READ.LIT.L06.13', bridgeName:'Same Scene, Another Narrator',
+      watch:{ q:'The Fallen Tray (a short passage, told twice)', m:{type:'scene', e:'🥯', t:'DOVID: I heard a crash and saw bagels rolling everywhere. COOK: My foot slipped on a wet spot, and the whole tray flew. I was so embarrassed.'}, steps:[
+        {t:'Same scene: a tray of bagels falls.'},
+        {t:'Dovid notices the crash and the rolling bagels.'},
+        {t:'The cook knows why it fell: a wet spot.'},
+        {t:'And he tells how he felt: embarrassed.'},
+        {t:'Same events. Another narrator adds what only he knew.'}],
+        a:'The events stay the same; what each one notices and feels changes.' },
+      oops:{ q:'Dovid did not mention the wet spot. Is his telling wrong?', wrong:'Yes, he left it out, so he is wrong.', right:'No, he could not see it. Only the cook knew.', why:'Each narrator tells what he was there to see.' },
+      ways:['real book (the Reader)','point of view','another narrator','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 9 and saw Friday night from the boat! Tell your chavrusa one thing only the captain could tell.',
+      board:{ one:'When another narrator tells the same scene, the events stay the same, but what he notices and feels change.', activity:'Two seats: one boy tells the storm night as Nosson at the window, another as Cody on the boat. The class lists what is the same and what changes.', mistakes:['Thinking a narrator who leaves something out is lying','Thinking the events change with the narrator','Forgetting where each narrator was'] },
+      do:[
+        {type:'read', text:'C45.B5.09', say:'Open the book. Read Chapter 9.', how:TELL},
+        {type:'sort', mis:true, bins:['Nosson could tell it','Mistake: only the captain knew it'], cards:[['Reb Shimon climbs to the lantern room',0],['Binyamin traces a boat in the air',0],['The engine coughs twice, then quits',1],['Cody cuts his hand on the rail',1]],
+          say:'Mistake Detective: a boy says the boys could tell all of these.', how:'Were they in the lighthouse or on the boat?',
+          why:{q:'Why could the boys not tell how the engine died?', o:['They were not on the boat','They were asleep','It was too loud'], a:'They were not on the boat'}}],
+      your:[
+        {type:'evidence', q:'Which sentence could ONLY the captain tell?', p:['The backup lamp flashed every six seconds.','The green light was gone.','I could see in his face that he was scared.'], a:2, look:'something seen from on the boat',
+          say:'Tap the sentence only the captain could tell.', how:'Which one needs you to be on the boat?',
+          why:{q:'Why could the boys not tell it?', o:['They could not see Cody\'s face','They were not scared','It was Shabbos'], a:'They could not see Cody\'s face'}},
+        {type:'proof', text:'C45.B5.09', q:'Find the sentence where the captain admits he was scared too.', proof:'not to let him see that I was scared', look:'what he hid from Cody',
+          say:'Open the book. Find the proof.', how:'Find the part about Cody holding the rail.'},
+        {type:'order', steps:['The engine quits','He cannot find the light','He calls the Coast Guard','The light flashes back on','He drops the anchor'],
+          say:'Put the captain\'s night in order.', how:'Start when the engine stops.'},
+        {type:'combine', a:'The captain saw the light come back.', b:'He knew exactly where he was.', o:['so','but','or'], j:'so',
+          say:'Join the two ideas from his telling.', how:'Which idea led to the other?',
+          why:{q:'Why did the light tell him where he was?', o:['He knew its six-second pattern','It was very bright','Cody told him'], a:'He knew its six-second pattern'}},
+        {type:'listen', q:'Challenge: compare the tellings.', hear:'The boys saw the green light vanish. What really happened, by the captain?', o:['A wave knocked the boat on its side','The boat sank','He turned off the light'], a:'A wave knocked the boat on its side',
+          say:'Challenge! What really happened to the green light?', how:'Put the two tellings together.',
+          why:{q:'Why did the boys not know?', o:['They saw only the light, from a mile away','They were not looking','The captain hid it'], a:'They saw only the light, from a mile away'}}] },
+
+    'READ.LIT.L06.39':{ band:'E45', pic:'📰', today:'Read Chapter 10, and compare four accounts of one night',
+      why:'Real events come to us in many accounts. Comparing them is how you find out what really happened.',
+      ready:[{q:'The log said 9:15. What did the captain say?', o:['9:30','10:00','8:52'], a:'9:30'},
+             {q:'An account is...', o:['a telling of what happened','a bank','a chart only'], a:'a telling of what happened'}],
+      bridge:'READ.COMP.L06.14', bridgeName:'One Event, Many Accounts',
+      watch:{ q:'The Broken Window (a short passage)', m:{type:'scene', e:'🪟', t:'Yehuda: "The ball broke the window at recess." Mr. Gomez: "I found the glass at 12:40." The class newsletter: "A window was broken last week."'}, steps:[
+        {t:'Three accounts of one event.'},
+        {t:'They agree: a window was broken.'},
+        {t:'They differ on the clock time: only Mr. Gomez gives one.'},
+        {t:'Yehuda and Mr. Gomez were there: firsthand.'},
+        {t:'The newsletter heard about it: secondhand.'}],
+        a:'Compare: where they agree, where they differ, and who was there.' },
+      oops:{ q:'The newsletter does not give a clock time. Is it wrong?', wrong:'Yes, it is wrong because it is missing the time.', right:'Not wrong, just not the whole story.', why:'Leaving things out is different from getting them wrong.' },
+      ways:['real book (the Reader)','compare accounts','firsthand and secondhand','chart','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 10 and compared four accounts! Tell your chavrusa where they agree, and one place they differ.',
+      board:{ one:'Accounts of one event agree on some facts and differ on others. Firsthand: there. Secondhand: told by others. A chart shows it.', activity:'Class chart: four groups each read one account from Chapter 10 aloud, and the class fills one big agree/differ chart on the board.', mistakes:['Assuming all accounts agree','Trusting an account because it is printed','Calling an account wrong when it only leaves things out'] },
+      do:[
+        {type:'read', text:'C45.B5.10', say:'Open the book. Read Chapter 10.', how:TELL},
+        {type:'storymap', slots:['Firsthand account','Secondhand account'], cards:['Reb Shimon\'s log','The Bay Courier story'], extra:['A poem about the sea'],
+          say:'Is each account firsthand or secondhand?', how:'Was the writer there that night?',
+          why:{q:'Why is the newspaper secondhand?', o:['The reporter heard it on the phone','It is printed','It is short'], a:'The reporter heard it on the phone'}}],
+      your:[
+        {type:'sort', mis:true, bins:['All four agree','Mistake: they differ'], cards:[['A backup lamp was lit',0],['The father and son are safe',0],['When the light came back',1],['How long the light was out',1]],
+          say:'Mistake Detective: Dovid says all four agree. Find his mistakes.', how:'Check the fact in every account, not just one.',
+          why:{q:'Why check every account?', o:['They do not all say the same thing','It is faster','The first is always right'], a:'They do not all say the same thing'}},
+        {type:'proof', text:'C45.B5.10', q:'Find the sentence that says WHY both can be right: what each one tells, and from where.', proof:'Each one is telling what he saw', look:'what Tzvi Hirsch figures out at the end',
+          say:'Open the book. Find the proof.', how:'Find where Tzvi Hirsch thinks it through, near the end.'},
+        {type:'match', pairs:[['Bay Courier','a reporter on the phone'],['Coast Guard report','officials, for the record'],['Keeper\'s log','Reb Shimon, after Shabbos'],['Captain\'s story','the man on the boat']],
+          say:'Match each account to who wrote it.', how:'Who wrote each one, and how did he know?'},
+        {type:'cloze', t:'The newspaper is not exactly wrong; it just ___ things out.', o:['leaves','makes','writes'], a:'leaves',
+          say:'Which word fits? Tap it into the gap.', how:'What did the newspaper do with the boys\' part?',
+          why:{q:'What did it leave out?', o:['The boys who spotted the green light','The storm','The Coast Guard'], a:'The boys who spotted the green light'}},
+        {type:'listen', q:'Challenge: compare the times.', hear:'Which account gives the most exact times?', o:['the Coast Guard report','the Bay Courier','the captain'], a:'the Coast Guard report',
+          say:'Challenge! Which account gives the most exact times?', how:'Compare the times in each account. Which has hours AND minutes for everything?',
+          why:{q:'Why is it so exact?', o:['Officials wrote it for the record','It was written fast','It is the shortest'], a:'Officials wrote it for the record'}}] },
+
+    'READ.LIT.L06.40':{ band:'E45', pic:'🔥', today:'Read Chapter 11 and explain why accounts differ',
+      why:'Before you trust an account, know who wrote it and where he stood. That is how careful thinkers read.',
+      ready:[{q:'A firsthand account is by someone who...', o:['was there','heard about it later','wrote a poem'], a:'was there'},
+             {q:'What was the Great Baltimore Fire of 1904?', o:['A fire that burned much of Baltimore','A fire in a sukkah','A forest fire'], a:'A fire that burned much of Baltimore'}],
+      bridge:'READ.COMP.L06.15', bridgeName:'Why Accounts Differ',
+      watch:{ q:'The Snow Day (a short passage)', m:{type:'scene', e:'❄️', t:'A boy at the window writes: "A little snow, no big deal." A bus driver writes: "Ice under the snow; three buses slid." The boy wanted a day off. The driver had to keep children safe.'}, steps:[
+        {t:'Who wrote it? A boy and a bus driver.'},
+        {t:'Where did each stand? At a window, and on the road.'},
+        {t:'What could each see? Snow, or ice under the snow.'},
+        {t:'Why did each write? A day off, or safety.'},
+        {t:'Four questions explain why the accounts differ.'}],
+        a:'Accounts differ because of who wrote it, where he stood, what he saw and why he wrote.' },
+      oops:{ q:'Why are the two snow accounts different?', wrong:'One of them is lying.', right:'They stood in different places and saw different things.', why:'Different does not mean lying. Ask the four questions.' },
+      ways:['real book (the Reader)','why accounts differ','primary source (the 1904 log)','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You read Chapter 11 and explained why accounts differ! Ask your chavrusa the four questions about any story he tells you.',
+      board:{ one:'Accounts differ because of who wrote it, where he stood, what he could see and why he wrote it.', activity:'Four questions: each pair gets a short account (a letter, a news line, a diary line) and fills the four boxes: who, where, what he saw, why.', mistakes:['Deciding one account is lying just because it is different','Forgetting where the writer stood','Mixing up what the writer saw with what he guessed'] },
+      do:[
+        {type:'read', text:'C45.B5.11', say:'Open the book. Read Chapter 11.', how:TELL},
+        {type:'sort', mis:true, bins:['Could see it from the lighthouse','Mistake: he could not see it'], cards:[['A red glow in the sky',0],['That the glow was northwest',0],['Which streets were burning',1],['Fire engines from other cities',1]],
+          say:'Mistake Detective: a boy says the keeper saw all these.', how:'He was five miles out in the water.',
+          why:{q:'Why could he not see the streets?', o:['He was five miles away','It was raining','He was asleep'], a:'He was five miles away'}}],
+      your:[
+        {type:'match', pairs:[['who wrote it','a keeper or a reporter'],['where he stood','five miles out in the bay'],['what he could see','only a red glow'],['why he wrote it','a log for the record']],
+          say:'Match each reason to its example.', how:'Which reason does each example show?'},
+        {type:'proof', text:'C45.B5.11', q:'Find the sentence that gives all four reasons accounts differ.', proof:'because of who wrote it', look:'Tzvi Hirsch\'s summing up',
+          say:'Open the book. Find the proof.', how:'Find where Tzvi Hirsch puts it all together.'},
+        {type:'evidence', q:'Which line is a guess the keeper made from what he saw?', p:['A great red glow to the northwest all night.','Baltimore is burning.','Fire engines came from other cities.'], a:1, look:'what he figured out, not what he saw',
+          say:'Tap the keeper\'s guess.', how:'Could he see the city itself from the bay?',
+          why:{q:'Why is the third line not his at all?', o:['He could not see the fire engines','It is too long','It is about 1933'], a:'He could not see the fire engines'}},
+        {type:'combine', a:'The keeper wrote only twelve words.', b:'He could see only a glow from five miles away.', o:['because','but','or'], j:'because',
+          say:'Join the two ideas.', how:'Which idea explains the other?'},
+        {type:'listen', q:'Challenge: why accounts differ.', hear:'Why did some of the first 1904 newspaper stories get things wrong?', o:['They wrote fast, from what people told them','They wanted to hurt the city','They saw every street'], a:'They wrote fast, from what people told them',
+          say:'Challenge! Why were some first stories wrong?', how:'Who told the reporters, and how fast did they write?',
+          why:{q:'Which of the four questions does this answer?', o:['Where he stood and what he could see','Why he wrote it','Who wrote it'], a:'Where he stood and what he could see'}}] },
+
+    'READ.LIT.L06.41':{ band:'E45', pic:'🔔', today:'Read Chapter 12 and find the book\'s theme',
+      why:'A book ends by tying its threads together. Find how the accounts and the theme meet.',
+      ready:[{q:'Accounts differ because of who wrote it, where he stood, what he saw and...', o:['why he wrote it','what he ate','his age'], a:'why he wrote it'},
+             {q:'A theme is...', o:['a big lesson the story teaches','one event','the title'], a:'a big lesson the story teaches'}],
+      bridge:'READ.COMP.L06.15', bridgeName:'Why Accounts Differ',
+      watch:{ q:'The Class Mural (a short passage)', m:{type:'scene', e:'🖼️', t:'For the yeshiva\'s 50th year, each grade painted one panel of a mural. Alone, each panel showed only a corner of the school\'s story. Side by side, they showed the whole picture, and every panel ended with a thank-you to someone.'}, steps:[
+        {t:'Each panel is like one account: only part of the story.'},
+        {t:'Side by side, they show the whole picture.'},
+        {t:'Ask: what does every part keep showing?'},
+        {t:'Every panel thanks someone.'},
+        {t:'So the big lesson, the theme, is gratitude.'}],
+        a:'Put the parts side by side to see the whole; find the lesson they share.' },
+      oops:{ q:'What is the theme of the mural?', wrong:'There were five panels.', right:'Gratitude: every panel thanks someone.', why:'A count of panels is a detail. A theme is a big lesson.' },
+      ways:['real book (the Reader)','compare accounts','theme','worked example','Mistake Detective','tap the reason','evidence in the text'],
+      done:'You finished Shabbos at the Lighthouse! Tell your chavrusa the theme, and someone you want to thank.',
+      board:{ one:'Side by side, many accounts show what one cannot, because nobody saw everything. The theme of the book is gratitude.', activity:'Thank-you wall: each boy writes one account of a time someone helped him, and the class hangs them side by side under one title.', mistakes:['Naming an event as the theme','Thinking one account tells everything','Forgetting the theme the whole book built'] },
+      do:[
+        {type:'read', text:'C45.B5.12', say:'Open the book. Read Chapter 12, the last chapter.', how:TELL},
+        {type:'storymap', slots:['Newspaper','Coast Guard report','Keeper\'s log','Captain\'s story'], cards:['Notice what it leaves out','Short, careful and exact','Written from memory after Shabbos','Seen from a rocking boat'], extra:['Written in 1904'],
+          say:'Put each museum card under its frame.', how:'Each card tells who wrote it and how.',
+          why:{q:'Why does each frame need a card?', o:['To show how each account was made','To fill the wall','To give the price'], a:'To show how each account was made'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Theme (the big lesson)','Mistake: just an event'], cards:[['Thank people who help you',0],['Listen to every account',0],['The bell got its clapper back',1],['They ate the rugelach',1]],
+          say:'Mistake Detective: the theme, or just an event?', how:'Is it a lesson for life, or something that happened?',
+          why:{q:'Why is the clapper an event?', o:['It is something that happened, not a lesson','It is too heavy','It is old'], a:'It is something that happened, not a lesson'}},
+        {type:'proof', text:'C45.B5.12', q:'Find the new line Reb Shimon writes in the old log.', proof:'helped two more get home', look:'his last words in the book',
+          say:'Open the book. Find his new line.', how:'Go to the very end of the chapter.'},
+        {type:'order', steps:['the keeper in 1904','the keeper in 1971','Captain Turner'],
+          say:'Put Tzvi Hirsch\'s thoughts in order as he rings.', how:'He thinks of them one by one, from long ago to now.',
+          why:{q:'What links all three?', o:['Each one kept or needed the light on a night that mattered','They all rang the bell','They all wrote in the log'], a:'Each one kept or needed the light on a night that mattered'}},
+        {type:'match', pairs:[['Reb Shimon','the light and bell of 1971'],['Captain Turner','the light on Friday night'],['Tzvi Hirsch','what Yehuda and Uncle Shimon taught him']],
+          say:'Match each person to what he is grateful for.', how:'Who thanks whom, or what, in the book?'},
+        {type:'listen', q:'Challenge: the whole wall.', hear:'Why did the boys want every account on the wall?', o:['Each one shows only part of the night','The wall was very big','The museum asked for four'], a:'Each one shows only part of the night',
+          say:'Challenge! Why every account on the wall?', how:'Think of what Tzvi Hirsch wrote on his page.',
+          why:{q:'What does that teach a reader?', o:['Listen to many accounts before deciding','Trust the longest account','Trust the newest account'], a:'Listen to many accounts before deciding'}}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

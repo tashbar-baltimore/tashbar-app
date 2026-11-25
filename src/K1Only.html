@@ -59,7 +59,7 @@ function shelf(){ const S=subjects(); if(!S.find(s=>s.k===K1O.subj)) K1O.subj=S.
   if(nx>=0){ const id=ids[nx]; h+='<button class="k1-play" data-k1="play" data-id="'+E(id)+'" aria-label="Play: '+E(nameOf(p,id))+'"><span class="pic">'+E(picOf(p,id))+'</span><span class="go">▶ PLAY</span></button>'; }
   h+='<div class="k1-path">'+ids.map((id,n)=>{ const d=passed(p,id), open=d||n===nx||n===0, lock=!open;
     return '<button class="k1-t'+(d?' done':'')+(n===nx?' now':'')+(lock?' lock':'')+'" data-k1="'+(lock?'locked':'play')+'" data-id="'+E(id)+'" aria-label="'+E(nameOf(p,id))+(d?', done':lock?', locked':'')+'"'+(lock?' aria-disabled="true"':'')+'>'+
-      '<span class="pic">'+E(lock?'🔒':picOf(p,id))+'</span><span class="num">'+(n+1)+'</span>'+(d?'<span class="star">⭐</span>':'')+'</button>'; }).join('')+'</div>';
+      '<span class="pic">'+E(lock?'🔒':picOf(p,id))+'</span><span class="num">'+(window.TLK?TLK.pill(n===nx?'now':lock?'lock':'prog',String(n+1)):(n+1))+'</span>'+(d?'<span class="star">⭐</span>':'')+'</button>'; }).join('')+'</div>';
   return h; }
 
 function paint(){ const k=on(), body=document.body; if(!body) return; body.classList.toggle('k1-mode',k);
@@ -201,6 +201,9 @@ body.k1-home{ overflow:hidden !important; background:#FFF4D6 !important; }
 .k1-t .pic{ font-size:clamp(56px,8vw,96px); line-height:1; }
 .k1-t .num{ position:absolute; left:10px; top:8px; min-width:36px; height:36px; border-radius:999px; background:#EEF3FD; color:#3B6FD8; font-size:20px; font-weight:800; line-height:36px; }
 .k1-t .star{ position:absolute; right:6px; top:4px; font-size:34px; }
+/* button system step 5: the game's number is a kit label (now = yellow, done/open = blue, locked = gray), flat, never a button */
+.k1-t .num:has(.tlk-pill){ background:none; min-width:0; height:auto; line-height:1; }
+.k1-t .num .tlk-pill{ font-size:20px; padding:5px 12px; font-weight:800; }
 .k1-t.done{ background:#F0FFF5; border-color:#9BE3B7; }
 .k1-t.now{ border-color:#FFC940; box-shadow:0 0 0 6px rgba(255,201,64,.55),0 7px 0 rgba(0,0,0,.1); }
 .k1-t:active{ transform:scale(.95); }

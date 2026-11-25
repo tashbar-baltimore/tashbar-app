@@ -14,5 +14,9 @@ CORE_SKILLS.W13 = [
   ["WRIT.PARA.L01.01", "Plan with a Picture", "Draw first to plan what to say", { before: "WRIT.SENT.L01.01", std: "W.K.3", file: "CoreDataW133", min: 5 }],
   ["WRIT.PARA.L01.02", "Tell a Friend First", "Say the sentence out loud before writing it", { after: "WRIT.PARA.L01.01", std: "SL.K.6", file: "CoreDataW133", min: 5 }],
   ["WRIT.PARA.L01.03", "Picture and Words Match", "Make the words tell about the picture", { after: "WRIT.PARA.L01.02", std: "W.K.2", file: "CoreDataW133", min: 5 }],
-  ["WRIT.PARA.L01.04", "Tell Me More", "Add a detail: tell more about the picture", { after: "WRIT.PARA.L01.03", std: "W.K.5", file: "CoreDataW133", min: 5 }]
+  ["WRIT.PARA.L01.04", "Tell Me More", "Add a detail: tell more about the picture", { after: "WRIT.PARA.L01.03", std: "W.K.5", file: "CoreDataW133", min: 5 }],
+  ["WRIT.PARA.L02.01", "Pick a Topic", "Choose a topic he knows a lot about", { before: "WRIT.SENT.L02.01", std: "W.1.3", file: "CoreDataW134", min: 5 }],
+  ["WRIT.PARA.L02.02", "Plan in Boxes", "Plan a piece in three picture boxes before writing", { after: "WRIT.PARA.L02.01", std: "W.1.3", file: "CoreDataW134", min: 5 }],
+  ["WRIT.SENT.L02.02", "Say, Write, Read Back", "Say the sentence, write it, then read it back to catch a missing word", { after: "WRIT.PARA.L02.02", std: "W.1.5", file: "CoreDataW134", min: 5 }],
+  ["WRIT.PARA.L02.03", "Stay on Topic", "Keep every sentence about his topic", { after: "WRIT.SENT.L02.02", std: "W.1.2", file: "CoreDataW134", min: 5 }]
 ];
