@@ -44,7 +44,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | C68 | Grade 7, Units 7.5–7.8 (lessons and topic-set texts; see `docs/core-growth/C68-map.md`) | TAKEN | https://claude.ai/code/session_015qpxBAKYSixyWQ3b8Jh8wP | 2026-11-25 07:10 UTC: claimed; reading C68-map.md and the live C68 lessons. Files `src/CoreDataC68H1.html` |
 | C68 | Grade 8, Units 8.5–8.8 (lessons and topic-set texts) | TAKEN | https://claude.ai/code/session_01884AzCfwh1MCak9Ybr1uZi | 2026-11-25 11:10 UTC: claimed; reading C68-map.md (Units 8.5–8.8) and the live C68 lessons to match their pattern |
 | C68 | Longer works W2 *Snowbound* and W6 *The Flood* (after W1 sets the pattern) | OPEN | | |
-| C68 | Adapted public-domain works W5 (Verne), W8 (Conan Doyle), W9 (Stevenson) | OPEN | | |
+| C68 | Adapted public-domain works W5 (Verne), W8 (Conan Doyle), W9 (Stevenson) | TAKEN | https://claude.ai/code/session_01HB2X6bSQzNgF7tdfvDKRX2 | 2026-11-25 13:55 UTC: claimed; reading C68-map.md (Units 7.4–7.5, 8.4–8.5, 8.7–8.8), the live C68 texts and the content store, then W8 ch. 1–4 first |
 | W13 | Grade 3, Units 4–6 (lessons, pieces and unit checks; see `docs/core-growth/W13-map.md`) | OPEN | | |
 | W13 | Grade 2, Units 5–6 | OPEN | | |
 | W13 | K–1 picture-piece prompts (60), ready for job T's K–1 writing step | OPEN | | |
