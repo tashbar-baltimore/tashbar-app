@@ -22,9 +22,10 @@ module.exports = async function (browser) {
       if (u.host === 'v2.test') { const f = path.join(dist, u.pathname.slice(1)); if (f.startsWith(dist) && fs.existsSync(f)) return r.fulfill({ path: f }); return r.fulfill({ status: 404, body: '' }); }
       return r.abort(); });
     const S = () => pg.evaluate(() => window.__eq);
-    const shown = sel => pg.waitForFunction(s => document.querySelector(s).classList.contains('show') && window.__eq.asking, sel, { timeout: 15000 });
+    const T0 = Date.now(), lap = m => { if (process.env.FR1_DEBUG) console.log(label, m, Date.now() - T0); };
+    const shown = sel => pg.waitForFunction(s => document.querySelector(s).classList.contains('show') && window.__eq.asking, sel, { timeout: 45000 });
     const drawn = async what => {
-      const n = await pg.evaluate(() => { const c = document.getElementById('view'), g = document.createElement('canvas'); g.width = 64; g.height = 64;
+      const n = await pg.evaluate(() => { window.__eq.render(); const c = document.getElementById('view'), g = document.createElement('canvas'); g.width = 64; g.height = 64;
         const x = g.getContext('2d'); x.drawImage(c, 0, 0, 64, 64); const d = x.getImageData(0, 0, 64, 64).data, seen = new Set();
         for (let i = 0; i < d.length; i += 4) seen.add((d[i] >> 4) + ',' + (d[i + 1] >> 4) + ',' + (d[i + 2] >> 4)); return seen.size; });
       if (n < 12) bad(label + ': "' + what + '" looks blank (' + n + ' colors)');
@@ -40,35 +41,47 @@ module.exports = async function (browser) {
       await pg.click('#done'); };
     try {
       await pg.goto('http://v2.test/math/equal-parts.html?fast=1');
-      const gl = await pg.waitForFunction(() => window.__eq && window.__eq.ready, null, { timeout: 15000 }).then(() => true).catch(() => false);
+      const gl = await pg.waitForFunction(() => window.__eq && window.__eq.ready, null, { timeout: 45000 }).then(() => true).catch(() => false);
       if (!gl) { bad(label + ': the 3D lesson did not start' + (errs.length ? ': ' + errs.join(' | ') : '')); await ctx.close(); return; }
       await pg.waitForTimeout(200); await drawn('start');
       await pg.click('#start', { force: true });
-      await pg.waitForFunction(() => window.__eq.name === 'judge', null, { timeout: 20000 });
+      await pg.waitForFunction(() => window.__eq.name === 'judge', null, { timeout: 90000 });
       const st0 = await S();
       for (const n of ['learn', 'chant', 'watch']) if (!st0.log.includes(n)) bad(label + ': the "' + n + '" part did not run');
       if (!st0.said.some(t => /halves/.test(t)) || !st0.said.some(t => /fourths/.test(t))) bad(label + ': the lesson never names halves and fourths');
       if (!st0.said.some(t => /not the same shape/.test(t))) bad(label + ': "watch me" never teaches same size, not the same shape');
+      if (!st0.said.includes('Watch me cut.')) bad(label + ': cutting is never shown before his first cut');
       await drawn('equal or not');
-      /* his turn: item 1 right; item 2 wrong first (explained), then right; he opens "How to do it" on item 3 */
+      /* his turn: he checks each one himself first (taps a part to lay it on the other, or taps every square to count) */
+      const boyCheck = async () => { await pg.waitForFunction(() => window.__eq.tapping, null, { timeout: 45000 });
+        const mode = (await S()).tapping, pts = await pg.evaluate(() => window.__eq.cellPts());
+        for (const p of (mode === 'lay' ? pts.slice(0, 1) : pts)) { await pg.mouse.click(p.x, p.y); await pg.waitForTimeout(30); }
+        await pg.waitForFunction(() => !window.__eq.tapping, null, { timeout: 5000 }).catch(() => bad(label + ': his ' + mode + ' taps did not finish the check')); };
+      await boyCheck(); lap('item1'); await judgeRight();
+      await boyCheck(); await judgeWrong(); await pg.waitForFunction(() => window.__eq.said.includes('Let us look again.'), null, { timeout: 45000 }).catch(() => bad(label + ': a wrong answer was not explained'));
       await judgeRight();
-      await judgeWrong(); await pg.waitForFunction(() => window.__eq.said.includes('Let us check together.'), null, { timeout: 15000 }).catch(() => bad(label + ': a wrong answer was not explained'));
-      await judgeRight();
-      await shown('#judge'); await pg.click('#help');
+      await boyCheck(); await shown('#judge'); await pg.click('#help');
       if (!(await pg.evaluate(() => document.getElementById('howto').classList.contains('show')))) bad(label + ': "How to do it" did not open');
       await pg.click('#help'); await judgeRight();
-      /* Mistake Detective: Yanky's parts are not halves */
-      await shown('#right'); await pg.click('#thumbDown');
-      await pg.waitForFunction(() => window.__eq.said.includes('These are not halves. Halves are equal parts.'), null, { timeout: 15000 }).catch(() => bad(label + ': Mistake Detective did not explain'));
-      /* cutting: Yanky's kugel right; chocolate wrong first (explained), then right; honey cake in fourths */
-      await cutRight();
+      if (!(await S()).said.includes('Six and six.')) bad(label + ': counting the different-shape kugel did not say "Six and six."');
+      lap('/* cutting: a wrong cut ');
+      /* cutting: a wrong cut first (explained), then right */
       await shown('#cutbar'); await tapLines(['v1']); await pg.click('#done');
-      await pg.waitForFunction(() => window.__eq.said.includes('Not the same size. Try another line.'), null, { timeout: 15000 }).catch(() => bad(label + ': a wrong cut was not explained'));
-      await cutRight(); await cutRight();
+      await pg.waitForFunction(() => window.__eq.said.includes('Not the same size. Try another line.'), null, { timeout: 45000 }).catch(() => bad(label + ': a wrong cut was not explained'));
+      await cutRight();
+      lap('/* Mistake Detective 1');
+      /* Mistake Detective 1 (not halves), fix the kugel, Mistake Detective 2 (different shapes can be equal), fourths */
+      await shown('#right'); await pg.click('#thumbDown');
+      await pg.waitForFunction(() => window.__eq.said.includes('Moishe made a mistake. These are not halves.'), null, { timeout: 45000 }).catch(() => bad(label + ': Mistake Detective 1 did not explain'));
+      await cutRight();
+      await shown('#right'); await pg.click('#thumbDown');
+      await pg.waitForFunction(() => window.__eq.said.includes('Dovi made a mistake. Different shapes can be equal parts.'), null, { timeout: 45000 }).catch(() => bad(label + ': Mistake Detective 2 did not explain'));
+      await cutRight();
+      lap('/* the check: all right ');
       /* the check: all right */
-      await pg.waitForFunction(() => window.__eq.name === 'check', null, { timeout: 15000 });
+      await pg.waitForFunction(() => window.__eq.name === 'check', null, { timeout: 45000 });
       await judgeRight(); await judgeRight(); await cutRight(); await cutRight();
-      await pg.waitForFunction(() => window.__eq.done, null, { timeout: 15000 }).catch(() => bad(label + ': the lesson did not reach the end'));
+      await pg.waitForFunction(() => window.__eq.done, null, { timeout: 45000 }).catch(() => bad(label + ': the lesson did not reach the end'));
       const st = await S();
       if (st.stars !== 3 || st.checkRight !== 4) bad(label + ': all-right check gave ' + st.stars + ' stars (' + st.checkRight + '/4)');
       await drawn('end');

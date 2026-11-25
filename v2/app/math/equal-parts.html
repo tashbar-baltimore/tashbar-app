@@ -60,6 +60,7 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
 #clapBtn svg{ width:84px; height:84px; }
 #nogl{ position:fixed; inset:0; display:none; place-items:center; text-align:center; padding:24px; font-size:22px; }
 .fast *{ animation-duration:.01s !important; transition-duration:.01s !important; animation-iteration-count:1 !important; }
+@media (min-width:900px){ #howto{ top:auto; bottom:150px; left:16px; right:auto; width:300px; } }
 @media (max-width:520px){ .bar .btn{ width:96px; height:96px; } .bar svg{ width:56px; height:56px; } #howto{ top:100px; font-size:17px; } }
 </style>
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
@@ -124,7 +125,7 @@ scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture
 const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 120);
 scene.add(new THREE.HemisphereLight('#FFF6E8', '#C9B48E', 0.5));
 const sun = new THREE.DirectionalLight('#FFF1DC', 1.8);
-sun.position.set(-4, 12, 6); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 5; sun.shadow.bias = -0.0004;
+sun.position.set(-4, 12, 6); sun.castShadow = true; sun.shadow.mapSize.set(FAST ? 512 : 2048, FAST ? 512 : 2048); sun.shadow.radius = 5; sun.shadow.bias = -0.0004;
 Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 30 }); scene.add(sun);
 
 const std = (color, rough = 0.6, extra = {}) => new THREE.MeshStandardMaterial(Object.assign({ color, roughness: rough }, extra));
@@ -151,6 +152,7 @@ const S = 1.06, FOOD = {
 };
 const cellGeo = {}; const geoFor = h => cellGeo[h] || (cellGeo[h] = new RoundedBoxGeometry(S - 0.07, h, S - 0.07, 3, 0.07));
 const litMat = std('#FFD54A', 0.4, { emissive: '#FFB300', emissiveIntensity: 0.55 });
+const litMats = [litMat, std('#9FD4FF', 0.4, { emissive: '#3D8FE0', emissiveIntensity: 0.45 })];
 const redMat = std('#F07C74', 0.5, { emissive: '#D9534F', emissiveIntensity: 0.35 });
 let item = null;
 /* pieces(c, r) -> piece number; null = one whole */
@@ -178,7 +180,7 @@ function dropItem() { const it = item; item = null; if (!it) return Promise.reso
 const sizes = it => it.groups.map(gr => gr.userData.cells.length);
 const centroid = gr => { const cs = gr.userData.cells; return { x: cs.reduce((a, c) => a + c.m.position.x, 0) / cs.length, z: cs.reduce((a, c) => a + c.m.position.z, 0) / cs.length }; };
 function spread(it, amt, ms = 450) {
-  const goals = it.groups.map(gr => { const c = centroid(gr); const sx = Math.abs(c.x) < 0.01 ? 0 : Math.sign(c.x), sz = Math.abs(c.z) < 0.01 ? 0 : Math.sign(c.z); return new THREE.Vector3(sx * amt, 0, sz * amt * 0.8); });
+  const goals = it.groups.map(gr => { const c = centroid(gr); const sx = Math.abs(c.x) < 0.01 ? 0 : Math.sign(c.x), sz = Math.abs(c.z) < 0.01 ? 0 : Math.sign(c.z); return new THREE.Vector3(sx * amt, 0, (sx === 0 || it.groups.length > 2) ? sz * amt * 1.7 : 0); });
   const starts = it.groups.map(gr => gr.position.clone());
   if (amt) chop();
   return tween(ms, k => it.groups.forEach((gr, i) => gr.position.lerpVectors(starts[i], goals[i], ease(k))));
@@ -213,24 +215,24 @@ function numSprite(n) {
 }
 const NUMW = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
 const cap = s => s[0].toUpperCase() + s.slice(1);
-async function countPart(it, gr) {
+function numAt(it, cl, n) { const sp = numSprite(n), p = new THREE.Vector3(); cl.m.getWorldPosition(p); sp.position.copy(p).setY(p.y + FOOD[it.kind].h / 2 + 0.45); scene.add(sp); numSprites.push(sp); }
+function clearCount(it) { numSprites.splice(0).forEach(sp => scene.remove(sp)); if (it) it.cells.forEach(x => { x.m.material = x.m.userData.base; x.lit = false; }); if (it) it.counted = false; }
+async function countPart(it, gr, i0) {
   const cs = gr.userData.cells.slice().sort((a, b) => a.r - b.r || a.c - b.c);
-  for (let i = 0; i < cs.length; i++) { cs[i].m.material = litMat; plink(i);
-    const sp = numSprite(i + 1); const p = new THREE.Vector3(); cs[i].m.getWorldPosition(p); sp.position.copy(p).setY(p.y + FOOD[it.kind].h / 2 + 0.45); scene.add(sp); numSprites.push(sp);
-    await wait(330); }
+  for (let i = 0; i < cs.length; i++) { cs[i].m.material = litMats[i0 % 2]; plink(i); numAt(it, cs[i], i + 1); await wait(330); }
   await say(cap(NUMW[cs.length]) + '.');
-  numSprites.splice(0).forEach(sp => scene.remove(sp)); cs.forEach(x => { x.m.material = x.m.userData.base; });
 }
-async function countAll(it) { for (const gr of it.groups) await countPart(it, gr); }
+/* count every part (part 1 yellow, part 2 blue); keep = leave the numbers up for explain() to clear */
+async function countAll(it, keep) { for (let i = 0; i < it.groups.length; i++) await countPart(it, it.groups[i], i); if (!keep) { await wait(300); clearCount(it); } }
 
 /* ---------------- cutting lines he taps ---------------- */
-const grooveMat = new THREE.MeshBasicMaterial({ color: '#FFFFFF', transparent: true, opacity: 0.55, depthTest: false });
+const grooveMat = new THREE.MeshBasicMaterial({ color: '#1F2A44', transparent: true, opacity: 0.5, depthTest: false });
 const knifeMat = new THREE.MeshBasicMaterial({ color: '#D9534F', depthTest: false });
 const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
 function showGrooves(it) {
   const h = FOOD[it.kind].h + 0.03;
   const add = (vert, k) => { const len = (vert ? it.rows : it.cols) * S;
-    const line = new THREE.Mesh(new THREE.BoxGeometry(vert ? 0.09 : len, 0.02, vert ? len : 0.09), grooveMat); line.renderOrder = 8;
+    const line = new THREE.Mesh(new THREE.BoxGeometry(vert ? 0.13 : len, 0.02, vert ? len : 0.13), grooveMat); line.renderOrder = 8;
     const hit = new THREE.Mesh(new THREE.BoxGeometry(vert ? 0.62 : len, 0.3, vert ? len : 0.62), hitMat);
     const pos = vert ? new THREE.Vector3((k - it.cols / 2) * S, h, 0) : new THREE.Vector3(0, h, (k - it.rows / 2) * S);
     line.position.copy(pos); hit.position.copy(pos); it.g.add(line); it.g.add(hit);
@@ -238,7 +240,7 @@ function showGrooves(it) {
   for (let k = 1; k < it.cols; k++) add(true, k);
   for (let k = 1; k < it.rows; k++) add(false, k);
 }
-function clearGrooves(it) { it.grooves.forEach(gv => { it.g.remove(gv.line); it.g.remove(gv.hit); }); it.grooves = []; it.cuts.clear(); }
+function clearGrooves(it) { it.grooves.forEach(gv => { it.g.remove(gv.line); it.g.remove(gv.hit); }); it.grooves = []; it.cuts.clear(); W.cuts = []; }
 function toggleCut(gv) { if (it_locked) return; if (item.cuts.has(gv.id)) { item.cuts.delete(gv.id); gv.line.material = grooveMat; gv.line.scale.set(1, 1, 1); }
   else { item.cuts.add(gv.id); gv.line.material = knifeMat; gv.line.scale.set(gv.vert ? 1.6 : 1, 1, gv.vert ? 1 : 1.6); chop(); } W.cuts = [...item.cuts]; }
 let it_locked = true;
@@ -259,27 +261,28 @@ function piecesFromCuts(it) {
 const look = new THREE.Vector3(0, 0.35, 0.15), fit = { w: 6.2, d: 3.6 };
 function placeCam() {
   const vfov = THREE.MathUtils.degToRad(camera.fov), hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
-  const d = Math.max(fit.w / (2 * Math.tan(hfov / 2)), fit.d / (2 * Math.tan(vfov / 2))) * (camera.aspect < 0.8 ? 0.96 : 1.12);
-  camera.position.copy(look).add(new THREE.Vector3(0, 0.66, 0.75).normalize().multiplyScalar(d)); camera.lookAt(look); camera.updateProjectionMatrix();
+  const d = Math.max(fit.w / (2 * Math.tan(hfov / 2)), fit.d / (2 * Math.tan(vfov / 2))) * (camera.aspect < 0.8 ? 1.1 : 1.12);
+  camera.position.copy(look).add((camera.aspect < 0.8 ? new THREE.Vector3(0, 0.80, 0.60) : new THREE.Vector3(0, 0.66, 0.75)).normalize().multiplyScalar(d)); camera.lookAt(look); camera.updateProjectionMatrix();
 }
-function fitTo(cols, rows) { const w0 = fit.w, d0 = fit.d, w1 = cols * S + 2.0, d1 = rows * S + 2.4;
+function fitTo(cols, rows) { const w0 = fit.w, d0 = fit.d, w1 = cols * S + (camera.aspect < 0.8 ? 1.5 : 2.0), d1 = rows * S + 2.4;
   return tween(500, k => { const e = ease(k); fit.w = w0 + (w1 - w0) * e; fit.d = d0 + (d1 - d0) * e; placeCam(); }); }
 function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; placeCam(); }
 addEventListener('resize', resize);
 const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
 function toScreen(v) { const p = v.clone().project(camera); return { x: (p.x + 1) / 2 * innerWidth, y: (1 - p.y) / 2 * innerHeight }; }
 canvas.addEventListener('pointerdown', e => {
-  if (!item || !item.grooves.length || it_locked) return;
+  if (!item || !item.grooves.length || it_locked) return; scene.updateMatrixWorld();
   ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
   const hits = ray.intersectObjects(item.grooves.map(g => g.hit), false); if (hits.length) toggleCut(hits[0].object.userData.groove);
 });
-W.groovePts = () => item ? item.grooves.map(g => { const p = new THREE.Vector3(); g.line.getWorldPosition(p); return Object.assign({ id: g.id, on: item.cuts.has(g.id) }, toScreen(p)); }) : [];
+W.groovePts = () => item ? (scene.updateMatrixWorld(), camera.updateMatrixWorld(), item.grooves).map(g => { const p = new THREE.Vector3(); g.line.getWorldPosition(p); return Object.assign({ id: g.id, on: item.cuts.has(g.id) }, toScreen(p)); }) : [];
 W.sizes = () => item ? sizes(item) : [];
 const tweens = [], ease = k => k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
 function tween(ms, fn) { return new Promise(res => { if (FAST) { fn(1); return res(); } tweens.push({ t0: performance.now(), ms, fn, res }); }); }
 function frame() { requestAnimationFrame(frame); const now = performance.now();
   for (let i = tweens.length - 1; i >= 0; i--) { const t = tweens[i], k = Math.min(1, (now - t.t0) / t.ms); t.fn(k); if (k >= 1) { tweens.splice(i, 1); t.res(); } }
-  if (handTarget) placeHand(); renderer.render(scene, camera); }
+  if (handTarget) placeHand(); if (!FAST) renderer.render(scene, camera); }
+W.render = () => renderer.render(scene, camera);   /* the automatic test draws only when it looks */
 
 /* ---------------- sound ---------------- */
 let AC = null;
@@ -339,7 +342,7 @@ $('#help').onclick = () => { if (!howKey) return; W.help++; const h = HOW[howKey
   $('#howlist').innerHTML = h.list.map(x => '<li>' + x + '</li>').join(''); box.classList.add('show'); hush(); say(h.say); };
 
 /* ---------------- progress dots and the "watch me" hand ---------------- */
-const STEPS = 6;   /* learn, watch, equal or not, the mistake, cut it, show what you know */
+const STEPS = 6;   /* learn, watch, equal or not, cut, Mistake Detective, show what you know */
 function dots(n) { $('#dots').innerHTML = Array.from({ length: STEPS }, (_, i) => '<i' + (i < n ? ' class="on"' : '') + '></i>').join(''); }
 const hand = $('#hand'); let handTarget = null;
 function placeHand() { const r = handTarget.getBoundingClientRect(); hand.style.left = (r.left + r.width / 2) + 'px'; hand.style.top = (r.top + r.height / 2) + 'px'; }
@@ -349,15 +352,43 @@ function bump(el) { el.classList.remove('shake'); void el.offsetWidth; el.classL
 const showBar = id => { ['judge', 'right', 'cutbar'].forEach(b => $('#' + b).classList.toggle('show', b === id)); };
 
 /* ---------------- one question: equal or not? ---------------- */
-/* explain(): lay one on the other when the parts have the same shape, else count the squares */
+/* HE checks first (practice): he taps a part and it lays on the other, or he taps every square to count it */
+let tapWait = null;
+function pickCell(e) { if (!item) return null; scene.updateMatrixWorld(); ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
+  const hits = ray.intersectObjects(item.cells.map(c => c.m), false); return hits.length ? item.cells.find(c => c.m === hits[0].object) : null; }
+canvas.addEventListener('pointerdown', e => { if (!tapWait) return; const cl = pickCell(e); if (cl) tapWait(cl); });
+W.cellPts = () => item ? (scene.updateMatrixWorld(), camera.updateMatrixWorld(), item.cells).map(cl => { const p = new THREE.Vector3(); cl.m.getWorldPosition(p); p.y += FOOD[item.kind].h / 2; return Object.assign({ lit: !!cl.lit, p: cl.p }, toScreen(p)); }) : [];
+function nudge(lines, until) { if (FAST) return; const t = setInterval(() => { if (until()) return clearInterval(t); if (!busy) play(lines); }, 11000); }
+const sizeWords = it => cap(sizes(it).map(n => NUMW[n]).join(' and ')) + '.';
+async function boyChecks(it) {
+  if (it.groups.length === 2 && it.layable) {
+    const line = 'Tap a part. It lays on the other part.'; task = [line];
+    await play(['Check it yourself!', line]);
+    await new Promise(res => { W.tapping = 'lay'; tapWait = () => { tapWait = null; W.tapping = null; res(); }; nudge([line], () => !tapWait); });
+    it.laid = await layOn(it);
+    await play([it.laid ? 'They match!' : 'Some is left over!']);
+  } else {
+    const line = 'Tap each square to count it.'; task = [line];
+    await play(['Check it yourself!', line]);
+    const seen = it.groups.map(() => 0);
+    await new Promise(res => { W.tapping = 'count'; nudge([line], () => !tapWait);
+      tapWait = cl => { if (cl.lit) return; cl.lit = true; const n = ++seen[cl.p]; cl.m.material = litMats[cl.p % 2]; plink(n); numAt(it, cl, n);
+        if (it.cells.every(x => x.lit)) { tapWait = null; W.tapping = null; res(); } }; });
+    it.counted = true;
+    await play([sizeWords(it)]);
+  }
+}
+/* explain(): finish the check and say what it shows (lay one on the other for same-kind parts, else count the squares) */
 async function explain(it) {
   const s = sizes(it), eq = s.every(x => x === s[0]);
   if (it.groups.length === 2 && it.layable) {
-    await say('Lay one part on the other.'); const m = await layOn(it);
-    await say(m ? 'They match. Same size!' : 'Look, some is left over. Not the same size.'); await liftOff(it);
+    let m = it.laid;
+    if (m == null) { await say('Lay one part on the other.'); m = await layOn(it); }
+    await say(m ? 'They match. Same size!' : 'Look, some is left over. Not the same size.'); await liftOff(it); it.laid = null;
   } else {
-    await say('Count the squares in each part.'); await countAll(it);
+    if (!it.counted) { await say('Count the squares in each part.'); await countAll(it, true); }
     await say(eq ? 'Every part is the same. Equal parts!' : 'They are not the same. Not equal parts.');
+    clearCount(it);
   }
   return eq;
 }
@@ -377,19 +408,22 @@ function ask(btnYes, btnNo, correctIsYes, question, counted) {
   });
 }
 async function judge(spec, opts = {}) {
-  item = makeItem(spec.kind, spec.cols, spec.rows, spec.pieces); item.layable = !!spec.layable; await wait(400); await spread(item, 0.22);
+  item = makeItem(spec.kind, spec.cols, spec.rows, spec.pieces); item.layable = !!spec.layable; await wait(400); await spread(item, 0.25);
   const eq = sizes(item).every(x => x === sizes(item)[0]);
   setHow('judge');
-  await play([spec.intro || 'Equal parts, or not equal? Tap your answer.']);
-  let r = await ask($('#yes'), $('#no'), eq, 'Equal parts, or not equal? Tap your answer.', opts.counted);
+  await play([spec.intro || 'Equal parts, or not equal?']);
+  if (!opts.counted) await boyChecks(item);
+  const q = opts.counted ? 'Equal parts, or not equal? Tap your answer.' : 'So, equal parts or not? Tap your answer.';
+  await play([q]);
+  let r = await ask($('#yes'), $('#no'), eq, q, opts.counted);
   if (!r.right && !opts.counted) {               /* a miss: show why, then he answers again */
-    await play(['Let us check together.', () => explain(item), 'So, equal or not? Tap again.']);
-    r.again(); r = await new Promise(res => { $('#yes').onclick = () => { W.asking = false; showBar(null); if (eq) { chime(true); res({ right: true }); } else { chime(false); bump($('#yes')); play(['Not equal. The parts are not the same size.']).then(() => res({ right: false })); } };
-      $('#no').onclick = () => { W.asking = false; showBar(null); if (!eq) { chime(true); res({ right: true }); } else { chime(false); bump($('#no')); play(['They are equal. Every part is the same size.']).then(() => res({ right: false })); } }; });
+    await play(['Let us look again.', () => explain(item), 'So, equal or not? Tap again.']);
+    r.again(); r = await new Promise(res => { $('#yes').onclick = () => { W.asking = false; showBar(null); if (eq) { chime(true); res({ right: false }); } else { chime(false); bump($('#yes')); play(['Not equal. The parts are not the same size.']).then(() => res({ right: false })); } };
+      $('#no').onclick = () => { W.asking = false; showBar(null); if (!eq) { chime(true); res({ right: false }); } else { chime(false); bump($('#no')); play(['They are equal. Every part is the same size.']).then(() => res({ right: false })); } }; });
   } else if (!opts.counted) {
-    await play([eq ? 'Yes! Let us check.' : 'Right! Let us check.', () => explain(item)]);
+    await play([eq ? 'Yes! Equal parts.' : 'Right! Not equal parts.', () => explain(item)]);
   } else await play([r.right ? 'Good.' : 'Let us see.', () => r.right ? null : explain(item)]);
-  setHow(null); await dropItem(); return r.right;
+  clearCount(item); setHow(null); await dropItem(); return r.right;
 }
 /* one question: cut it into n equal parts */
 async function cut(spec, opts = {}) {
@@ -421,10 +455,11 @@ async function cut(spec, opts = {}) {
 
 /* ---------------- the lesson ---------------- */
 const half = (c, r, cols) => c < cols / 2 ? 0 : 1;
+const RECT_L = (c, r) => (r < 2 && c < 3) ? 0 : 1;          /* 4 x 3: a 3 x 2 block and an L, 6 squares each */
 async function learn() {
   setName('learn'); dots(0); W.misses = 0; W.checkRight = 0; W.checkAsked = 0; $('#end').classList.remove('show');
   item = makeItem('bar', 4, 2, null);
-  await play(['Ari and Yanky want to share one chocolate bar.', { wait: 300 }, 'Look at this cut.',
+  await play(['Today we learn equal parts.', 'Ari and Yanky want to share one chocolate bar.', { wait: 300 }, 'Look at this cut.',
     () => { group(item, (c) => c < 3 ? 0 : 1); return spread(item, 0.3); }, 'Ari gets this big part. Yanky gets this small part.',
     'Is that a fair share?', () => { item.layable = true; return layOn(item); }, 'Lay one on the other. Some is left over!',
     'The parts are not the same size.', 'A fair share means equal parts.', () => liftOff(item),
@@ -455,58 +490,64 @@ async function chant() {
 }
 async function watchMe() {
   setName('watch'); dots(1);
-  item = makeItem('bar', 3, 2, (c, r) => (c < 2 ? 0 : 1)); item.layable = true; await spread(item, 0.25);
+  item = makeItem('bar', 3, 2, (c) => (c < 2 ? 0 : 1)); item.layable = true; await spread(item, 0.25);
   await play(['Watch me.', 'Is this cut into equal parts?', 'Let me check. Lay one part on the other.', () => layOn(item),
     'Some is left over. Not equal parts.', () => liftOff(item), () => { showBar('judge'); return pointAt($('#no')); }, 'So I tap: not equal.', () => { bump($('#no')); chime(true); return wait(500); },
     () => { handOff(); showBar(null); return dropItem(); }]);
   /* same size, different shape: count */
-  item = makeItem('kugel', 4, 2, (c, r) => (r === 0 ? (c < 3 ? 0 : 1) : (c < 1 ? 0 : 1))); await spread(item, 0.25);
-  await play(['This kugel is cut a different way.', 'The parts look different. Let me count the squares.', () => countAll(item),
-    'Four and four. Same size!', 'Equal means the same size, not the same shape.', () => { showBar('judge'); return pointAt($('#yes')); }, 'So I tap: equal parts.',
+  item = makeItem('kugel', 4, 3, RECT_L); await spread(item, 0.3);
+  await play(['This kugel has two parts.', 'They look different. Let me count the squares.', () => countAll(item),
+    'Six and six. Same size!', 'Equal means the same size, not the same shape.', () => { showBar('judge'); return pointAt($('#yes')); }, 'So I tap: equal parts.',
     () => { bump($('#yes')); chime(true); return wait(500); }, () => { handOff(); showBar(null); return dropItem(); }]);
+  /* how to cut */
+  item = makeItem('bar', 4, 2, null); await wait(400); showGrooves(item); it_locked = false;
+  await play(['Watch me cut.', 'I tap a line to cut there.', () => { toggleCut(item.grooves.find(g => g.id === 'v2')); return wait(400); },
+    () => { showBar('cutbar'); return pointAt($('#done')); }, 'Then I tap the check.', () => { bump($('#done')); handOff(); showBar(null); it_locked = true; item.grooves.forEach(gv => { gv.line.visible = false; }); group(item, (c) => half(c, 0, 4)); return spread(item, 0.3); },
+    () => countAll(item), 'Four and four. Two equal parts!', () => dropItem()]);
   await yourTurn();
 }
 const JUDGE = [
-  { kind: 'cake', cols: 4, rows: 2, pieces: (c) => (c < 2 ? 0 : 1), layable: true, intro: 'Your turn! Equal parts, or not equal?' },
-  { kind: 'bar', cols: 5, rows: 2, pieces: (c) => (c < 3 ? 0 : 1), layable: true },
-  { kind: 'kugel', cols: 3, rows: 2, pieces: (c, r) => (r === 0 ? (c < 2 ? 0 : 1) : (c < 1 ? 0 : 1)), intro: 'Look closely. Equal parts, or not equal?' },
+  { kind: 'cake', cols: 4, rows: 2, pieces: (c) => (c < 2 ? 0 : 1), layable: true, intro: 'Your turn! Is this cut into equal parts?' },
+  { kind: 'bar', cols: 5, rows: 2, pieces: (c) => (c < 3 ? 0 : 1), layable: true, intro: 'Is this cut into equal parts?' },
+  { kind: 'kugel', cols: 4, rows: 3, pieces: (c, r) => (r === 0 || c === 0) ? 0 : 1, intro: 'These parts look different. Are they equal?' },
 ];
+let missesPractice = 0;
 async function yourTurn() {
-  setName('judge'); dots(2);
-  let missesHere = 0;
-  for (const q of JUDGE) { if (!(await judge(q))) missesHere++; }
-  await mistakeDetective(missesHere);
+  setName('judge'); dots(2); missesPractice = 0;
+  for (const q of JUDGE) { if (!(await judge(q))) missesPractice++; }
+  setName('cut'); dots(3);
+  await cut({ kind: 'bar', cols: 4, rows: 2, n: 2, intro: 'Your turn to cut! Make two equal parts.', hint: ['Count the squares on each side of the line.'], sol: ['v2'] });
+  await mistakeDetective();
 }
-async function mistakeDetective(missesBefore) {
-  setName('mistake'); dots(3);
-  item = makeItem('kugel', 3, 2, (c) => (c < 2 ? 0 : 1)); item.layable = true; await spread(item, 0.25); setHow('right');
-  await play(['Mistake Detective!', 'Yanky cut this kugel.', 'Yanky says: I made halves!', 'Is Yanky right?']);
-  const r = await ask($('#thumbUp'), $('#thumbDown'), false, 'Is Yanky right? Tap your answer.');
-  if (r.right) await play(['Good detective work!', 'Let us show Yanky.', () => explain(item), 'These are not halves. Halves are equal parts.']);
-  else await play(['Look again. Let us check.', () => explain(item), 'Yanky made a mistake. These are not halves.']);
-  setHow(null);
-  /* he fixes Yanky's kugel */
-  await dropItem();
-  await play(['Let us help Yanky.']);
+async function detective(spec, who, claim, shouldAgree) {
+  item = makeItem(spec.kind, spec.cols, spec.rows, spec.pieces); item.layable = !!spec.layable; await spread(item, 0.3); setHow('right');
+  await play([who + ' cut this ' + FOOD[spec.kind].name + '.', who + ' says: ' + claim, 'Is ' + who + ' right?']);
+  const r = await ask($('#thumbUp'), $('#thumbDown'), shouldAgree, 'Is ' + who + ' right? Tap your answer.');
+  if (!r.right) missesPractice++;
+  await play([r.right ? 'Good detective work! Let us show ' + who + '.' : 'Look again. Let us check.', () => explain(item)]);
+  setHow(null); return r.right;
+}
+async function mistakeDetective() {
+  setName('mistake'); dots(4);
+  await play(['Mistake Detective!']);
+  await detective({ kind: 'kugel', cols: 3, rows: 2, pieces: (c) => (c < 2 ? 0 : 1), layable: true }, 'Moishe', 'I made halves!', false);
+  await play(['Moishe made a mistake. These are not halves.', () => dropItem(), 'Let us help Moishe.']);
   await cut({ kind: 'kugel', cols: 3, rows: 2, n: 2, intro: 'Cut the kugel into two equal parts.', hint: ['Try the long line in the middle.'], sol: ['h1'] });
-  if (missesBefore + (r.right ? 0 : 1) >= 2) await reteach();
-  await cutTurn();
+  await detective({ kind: 'cake', cols: 4, rows: 3, pieces: (c, r) => (r < 2 && c > 0) ? 0 : 1 }, 'Dovi', 'Not equal. They look different!', false);
+  await play(['Dovi made a mistake. Different shapes can be equal parts.', () => dropItem()]);
+  if (missesPractice >= 2) await reteach();
+  await cut({ kind: 'cake', cols: 4, rows: 2, n: 4, intro: 'Now cut the honey cake into four equal parts.', hint: ['You need more than one cut.', 'Count the squares in each part.'], sol: ['v2', 'h1'] });
+  await check();
 }
 async function reteach() {
   setName('reteach');
-  item = makeItem('bar', 2, 1, (c) => c); item.layable = true; await spread(item, 0.25);
-  await play(['Let us look one more time.', 'Two squares. One for Ari, one for Yanky.', () => layOn(item), 'They match. Equal parts!', () => liftOff(item), () => dropItem()]);
-}
-async function cutTurn() {
-  setName('cut'); dots(4);
-  await cut({ kind: 'bar', cols: 4, rows: 2, n: 2, intro: 'Now you cut! Cut the chocolate into two equal parts.', hint: ['Count the squares on each side of the line.'], sol: ['v2'] });
-  await cut({ kind: 'cake', cols: 4, rows: 2, n: 4, intro: 'Cut the honey cake into four equal parts.', hint: ['You need more than one cut.', 'Count the squares in each part.'], sol: ['v2', 'h1'] });
-  await check();
+  item = makeItem('kugel', 4, 3, RECT_L); await spread(item, 0.3);
+  await play(['Let us look one more time.', 'These parts look different.', () => countAll(item), 'Six and six. Same size, so equal parts!', () => dropItem()]);
 }
 async function check() {
   setName('check'); dots(5);
   await play(['Now show what you know!']);
-  await judge({ kind: 'cake', cols: 4, rows: 2, pieces: (c, r) => (r === 0 ? (c < 3 ? 0 : 1) : (c < 1 ? 0 : 1)), intro: 'Equal parts, or not equal?' }, { counted: true });
+  await judge({ kind: 'cake', cols: 4, rows: 3, pieces: (c, r) => (r === 2 || c === 3) ? 0 : 1, intro: 'Equal parts, or not equal?' }, { counted: true });
   await judge({ kind: 'bar', cols: 5, rows: 2, pieces: (c) => (c < 2 ? 0 : 1), layable: true, intro: 'Equal parts, or not equal?' }, { counted: true });
   await cut({ kind: 'kugel', cols: 5, rows: 2, n: 2, intro: 'Cut the kugel into two equal parts.' }, { counted: true });
   await cut({ kind: 'bar', cols: 4, rows: 2, n: 4, intro: 'Cut the chocolate into four equal parts.' }, { counted: true });
