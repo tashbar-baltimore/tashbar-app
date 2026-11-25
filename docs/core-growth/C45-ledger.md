@@ -32,8 +32,9 @@ Share of the 90 core hours (proposal): comprehension and fluency ≈ 35 h (this 
 | 2026-11-24 | #425 (live) | Unit 4.5 "Reading coach": 5 small skill lessons (READ.COMP.L05.17–.21): predict, question, clarify, summarize, all four together; 10 new passages | 42 | 0 |
 | 2026-11-24 | #427 (live) | Unit 5.5 "How texts are built" (moon and space): 4 small skill lessons (READ.COMP.L06.13, READ.LIT.L06.10–.11, READ.FLU.L06.04): compare structures, a chapter in the whole book, stanzas and scenes, poetry aloud; 10 new passages | 0 | 32 |
 | 2026-11-25 | #450 (live) | Unit 5.6 "Whose story is it?" (1904 fire, point of view): 4 small skill lessons (READ.LIT.L06.12–.13, READ.COMP.L06.14–.15); 8 new passages | 0 | 32 |
-| 2026-11-25 | (next PR) | Unit 4.6 "Who's telling?" (first airplanes, point of view): 4 small skill lessons (READ.LIT.L05.07, READ.COMP.L05.22–.23, READ.FLU.L05.05); 12 new passages | 32 | 0 |
-| | | **Running total** | **226 / 2,095** | **208 / 2,169** |
+| 2026-11-25 | #454 (live) | Unit 4.6 "Who's telling?" (first airplanes, point of view): 4 small skill lessons (READ.LIT.L05.07, READ.COMP.L05.22–.23, READ.FLU.L05.05); 12 new passages | 32 | 0 |
+| 2026-11-25 | (next PR) | Unit 5.7 "Find it fast" (energy and electricity): 4 small skill lessons (READ.COMP.L06.16–.18, READ.LIT.L06.14): skim and scan, which source, read a table, pictures and sound; 8 new passages | 0 | 32 |
+| | | **Running total** | **226 / 2,095** | **240 / 2,169** |
 
 **Written, not yet counted** (a boy cannot open them until job T's Reader activity is in a lesson): Book B1 *The Missing Esrog*, 10 chapters, 8,346 words (planned 200 min, Grade 4); the Deserts topic set, 5 articles, about 2,800 words (planned 100 min, Grade 4); Book B4 *The Map in Zeidy's Attic*, chapters 1–6 of 12, about 7,500 words (planned 120 of 240 min, Grade 5). All in `texts/C45/`.
 
