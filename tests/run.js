@@ -112,7 +112,7 @@ async function kidTests(browser) {
     return out; });
   report.counts.lessons = audit.skills; report.counts.checkAnswersNeverTaught = audit.untaught.length; report.untaught = audit.untaught;
   audit.broken.forEach(b => fail('broken lesson: ' + b)); if (!audit.broken.length) ok(audit.skills + ' lessons build with well-formed questions');
-  const all = await pg.evaluate(() => { window.OB_LIVE = 'off'; return Object.keys(BANK_ALL); }); let ids = [];   /* the engine's own flow; One Bite has its own test below */
+  const all = await pg.evaluate(() => { window.OB_LIVE = 'off'; window.TL_CHEM_SING = false; /* Chemdas lessons open their "sing the song first" screen before the lesson (src/TorahTracks.html); the app's own switch skips it so this player reaches the questions */ return Object.keys(BANK_ALL); }); let ids = [];   /* the engine's own flow; One Bite has its own test below */
   if (process.env.ALL) ids = all; else { const n = Math.max(1, Number(process.env.SAMPLE || 40)); const step = Math.max(1, Math.floor(all.length / n)); for (let i = 0; i < all.length && ids.length < n; i += step) ids.push(all[i]);
     (process.env.PLAY || '').split(',').filter(Boolean).forEach(p => all.filter(id => id.indexOf(p) === 0).forEach(id => { if (ids.indexOf(id) < 0) ids.push(id); })); }
   let done = 0;
