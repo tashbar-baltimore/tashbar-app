@@ -39,7 +39,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | C45 | Grade 5, Units 5.7–5.9 | TAKEN | https://claude.ai/code/session_01884AzEWr482Hjj7zSABGE2 | 2026-11-24 20:30 UTC: claimed; reading C45-map.md (Units 5.7–5.9) and the live 5.1–5.4 lessons to match their pattern |
 | C45 | Books B2 *Lost on the Ridge Trail* and B5 *Shabbos at the Lighthouse* (after B1 sets the pattern) | TAKEN | https://claude.ai/code/session_01NmKrTkEYdL9V1x4KZktKFR | 2026-11-25 03:58 UTC: claimed; reading C45-map.md and Book B1 in `texts/C45/` to match its pattern |
 | C45 | Fluency passages, Grades 4 and 5 (50, from the unit texts) | TAKEN | https://claude.ai/code/session_013qbMrdsiEQhQo95b1BXLKx | 2026-11-25 03:45 UTC: claimed; reading C45-map, the live fluency lessons and F's fluency passages, then passages 1–10 |
-| G | Grades 6–8 (L07–L09), Units 1–6 (see `docs/core-growth/G-map.md`) | OPEN | | |
+| G | Grades 6–8 (L07–L09), Units 1–6 (see `docs/core-growth/G-map.md`) | TAKEN | https://claude.ai/code/session_015qpxBAKYSixyWQ3b8Jh8wP | 2026-11-25 05:30 UTC: the new Gr 6–8 lessons of Units 1–6 are live (owner). Left: the 10 existing lessons to rebuild as One Bite (LANG.GRAM.L07.01, LANG.MECH.L07.01, LANG.USE.L07.01, READ.VOC.L07.01, LANG.GRAM.L08.01, .L08.02, LANG.USE.L08.01, READ.VOC.L08.01, .L08.02, .L09.01): built, reviewed 4–5, branch `claude/core-G-helper-g68-rebuild`, PR next. File `src/CoreDataGH1.html` |
 | G | Word Work sets for C45 and C68 texts (Grades 4–8), once their Shared texts are listed | OPEN | | |
 | C68 | Grade 7, Units 7.5–7.8 (lessons and topic-set texts; see `docs/core-growth/C68-map.md`) | OPEN | | |
 | C68 | Grade 8, Units 8.5–8.8 (lessons and topic-set texts) | OPEN | | |
