@@ -47,8 +47,8 @@ _From `node tools/core/ledger.js`, 2026-11-25 17:15 UTC (coordinator). Grade 1 s
 | B1a | P1 | Review Round 2: F, all K–1 games, W13 | OPEN | | | |
 | B1b | P1 | Review Round 2: C45 and S | OPEN | | | |
 | B1c | P1 | Review Round 2: G and W48 | OPEN | | | |
-| B2a | P1 | Fix Round 1 failed lessons: W48 Grades 4–5 | TAKEN | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf (W48 owner) | 2026-11-25 20:45 | All 14 ✗ lessons fixed and re-scored 4–5 by a fresh reviewer, in #497 (write minimums wait for A3a/A3b; WRIT.PARA.L05.07 check 3 is A2) |
-| B2b | P1 | Fix Round 1 failed lessons: W48 Grades 6–8 | OPEN | | | |
+| B2a | P1 | Fix Round 1 failed lessons: W48 Grades 4–5 | DONE | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf (W48 owner) | 2026-11-25 21:00 | Live in #497: all 14 ✗ lessons fixed and re-scored 4–5 by a fresh reviewer (write minimums wait for A3a/A3b; WRIT.PARA.L05.07 check 3 is A2) |
+| B2b | P1 | Fix Round 1 failed lessons: W48 Grades 6–8 | TAKEN | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf (W48 owner) | 2026-11-25 21:00 | Fixing the Grades 6–8 ✗ lessons of docs/core-growth/reviews/R1-W48.md, same way as B2a |
 | B2c | P1 | Fix Round 1 failed lessons: G (11), F (5), C45 (4) | OPEN | | | |
 | B2d | P1 | Social Studies Gr 6–8 Unit 1: 12 of 18 lessons fail the 25 Nov re-score (2-choice checks, answer in the picture, How boxes pointing to teach cards One Bite never shows); fixes in packs/SocialMore.html + packs/HowToDo.html (docs/core-growth/reviews/R2-rescore-2026-11-25.md, #489) | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 18:00 | Fixing on branch claude/peaceful-cerf-yx1pgz-ss-checks |
 | B2e | P1 | Re-score fixes: WRIT.PARA.L02.01, WRIT.PARA.L02.03 (Gr 1 games), WRIT.ESSAY.L03.01, READ.FLU.L05.15, READ.LIT.L09.01 (same file, #489) | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 18:00 | Fixing on branch claude/peaceful-cerf-yx1pgz-rescore-fixes |
