@@ -60,9 +60,9 @@ const strands = [
   r('PV8','Exponents and scientific notation','Uses powers and writes very big and very small numbers in scientific notation.',['PV7','MD6'],'Write 45,000,000 in scientific notation.','All top programs'),
  ]},
  { id: 'MD', name: 'Multiplying and dividing', color: 'e',
-   about: 'From fair sharing, to equal groups and arrays, to facts known by heart, to written methods.',
+   about: 'From sharing into equal parts, to equal groups and arrays, to facts known by heart, to written methods.',
    rungs: [
-  r('MD1','Fair sharing','Shares things fairly, one for you, one for me, and checks it is fair.',['CN4'],'Share 8 pretzels fairly between 2 brothers.','Building Blocks: Beginning Grouper and Distributive Sharer'),
+  r('MD1','Sharing into equal parts','Shares things out one for you, one for me, and checks every share is equal.',['CN4'],'Share 8 pretzels equally between 2 brothers.','Building Blocks: Beginning Grouper and Distributive Sharer'),
   r('MD2','Equal groups; skip counting','Counts equal groups by skip counting.',['MD1','CN8'],'5 plates, 2 rolls on each. How many rolls?','Building Blocks: Grouper; Skip Counter ×/÷'),
   r('MD3','Arrays and what × means','Knows 3 × 4 means 3 groups of 4. Sees rows and columns. Order does not matter.',['MD2'],'Draw 3 × 4 two ways.','Building Blocks: Array Quantifier'),
   r('MD4','What ÷ means','Knows dividing as sharing and as making groups. Uses a times fact to divide.',['MD3'],'24 hamantaschen, 6 on each plate. How many plates?','Building Blocks: Partitive Divisor'),
@@ -77,21 +77,23 @@ const strands = [
   r('MD13','× ÷ with negatives','Multiplies and divides with negative numbers and fractions.',['AS12','FR12'],'–6 × 4. –⅔ ÷ ½.','All top programs'),
  ]},
  { id: 'FR', name: 'Fractions, decimals, ratio and percent', color: 'f',
-   about: 'The gateway to algebra. From fair halves of a challah, to fractions as numbers on a line, to all four operations, to percent and ratio.',
+   about: 'The gateway to algebra. From equal halves of a challah, to fractions as numbers on a line, to all four operations, to percent and ratio.',
    rungs: [
-  r('FR1','Fair shares','Cuts a whole into equal parts and knows equal means the same size, not the same shape.',['MD1'],'Is this challah cut in fair halves? Why not?','Equipartitioning (Confrey); Building Blocks shapes',{
+  r('FR1','Equal parts','Cuts a whole into equal parts and knows equal means the same size, not the same shape.',['MD1'],'Is this challah cut in equal halves? Why not?','Equipartitioning (Confrey); Building Blocks shapes',{
     see:'Paper folding, then a picture of a challah, pizza or chocolate bar cut into parts.',
-    say:'"Fair" means every piece is the same size. Count the pieces to name them: 2 fair pieces are halves, 4 fair pieces are fourths.',
-    steps:['Fold a paper in half. Do the two parts match exactly?','Cut a picture into 2, 3, then 4 fair pieces.','Say fair or not fair, and tell why.'],
-    mistake:'He calls any 2 pieces "halves", even when one is bigger. Fix: lay one piece on the other. If they do not match, it is not fair.',
-    practice:'Fair or not fair: tap to judge. Cut it fairly: drag a knife line. Two different-looking halves of a square: are both fair?',
-    why:'Children understand fair sharing long before they understand fraction symbols. Starting here builds on what they already know.'}),
+    say:'"Equal parts" means every piece is exactly the same size. (A fair share means equal parts.) Count the equal parts to name them: 2 equal parts are halves, 4 equal parts are fourths.',
+    steps:['Fold a paper in half. Do the two parts match exactly?','Cut a picture into 2, 3, then 4 equal parts.','Say equal or not equal, and tell why.'],
+    mistake:'He calls any 2 pieces "halves", even when one is bigger. Fix: lay one piece on the other. If they do not match, the parts are not equal.',
+    practice:'Equal or not equal: tap to judge. Cut it into equal parts: drag a knife line. Two different-looking halves of a square: are both equal?',
+    paper:'Fold and cut real paper. A page of shapes: circle the ones cut into equal parts.',
+    why:'Children understand sharing equally long before they understand fraction symbols. Starting here builds on what they already know.'}),
   r('FR2','One part: unit fractions','Names one part of equal parts as 1/2, 1/3, 1/4. Knows more parts means smaller pieces.',['FR1'],'Which piece is bigger, 1/8 or 1/4 of the same cake?','Japan, Singapore: unit fractions first',{
     see:'Fraction strips: the same long strip cut into 2, 3, 4, 6 and 8 equal parts, laid one above the other.',
     say:'The bottom number tells how many equal parts the whole has. The more parts, the smaller each one.',
     steps:['Take one strip. Count its equal parts. That tells the bottom number.','One part is "one ___th".','Lay strips under each other to compare.'],
     mistake:'He thinks 1/8 is bigger than 1/4 "because 8 is bigger than 4". Fix: show both pieces side by side on strips, and share one cake among 8 brothers vs 4 brothers.',
     practice:'Name the piece. Order 1/2, 1/8, 1/3, 1/6 from biggest to smallest. "Would you rather have 1/3 or 1/5 of the kugel?"',
+    paper:'Cut-out fraction strips he keeps in an envelope. Color one part of each strip.',
     why:'Unit fractions are the building block of all other fractions; Japan and Singapore start every fraction topic from them.'}),
   r('FR3','Fractions are counted in units','Sees 3/4 as three 1/4s, and counts on by unit fractions past 1.',['FR2'],'How many fourths make 3/4? What comes after 4/4?','Japan; Common Core Progressions',{
     see:'Fraction strips, then tiles of one unit fraction counted out one by one.',
@@ -99,6 +101,7 @@ const strands = [
     steps:['Pick the unit (one fourth).','Count how many units.','Say it: "three fourths" = 3/4.'],
     mistake:'He reads 3/4 as "3 and 4", two separate numbers. Fix: always say it as a count of units ("three fourths") and build it from unit tiles.',
     practice:'Build 5/6 from sixths. Count on: 2/3, 3/3, 4/3, __. Which is made of more pieces?',
+    paper:'Fraction strips and unit tiles. A page: build it, then write it.',
     why:'Seeing a fraction as a count of unit fractions makes adding fractions and fractions bigger than 1 obvious later.'}),
   r('FR4','Fractions on the number line','Places fractions between 0 and 1 and beyond 1. Knows a fraction is a number, and 4/4 = 1.',['FR3','ME3'],'Put 3/4 on the line. Where is 5/4?','Siegler: fraction size on the number line predicts later algebra',{
     see:'A measuring tape or a long strip, then a number line from 0 to 1 cut into equal spaces.',
@@ -106,6 +109,7 @@ const strands = [
     steps:['Find 0 and 1.','Cut the space between them into equal parts (the bottom number).','Count the spaces from 0 (the top number).'],
     mistake:'He counts tick marks instead of spaces, so 3/4 lands in the wrong place. Fix: hop along the spaces from 0, saying "one fourth, two fourths…".',
     practice:'Drag the fraction to its place. Find 1 on a line where only 0 and 1/3 are marked. Spot the wrong label.',
+    paper:'Printed number lines and a pencil. Mark each fraction, counting the spaces.',
     why:'Placing fractions on a line is the strongest early sign of later algebra success, so this rung is the heart of the ladder.'}),
   r('FR5','Compare fractions','Compares using the same bottom, the same top, or a benchmark of 1/2 and 1.',['FR4'],'Which is more, 3/8 or 3/5? 5/8 or 4/10? Explain.','Common Core Progressions; Japan',{
     see:'Two number lines or two strips, one above the other.',
@@ -113,6 +117,7 @@ const strands = [
     steps:['Same bottom? Compare the tops.','Same top? The smaller bottom means bigger pieces.','Neither? Compare each to 1/2 or to 1.'],
     mistake:'He compares only the top numbers or only the bottom numbers. Fix: always ask "how big is each piece?" and check on the line.',
     practice:'Tap the bigger fraction. Put 3 fractions in order. "Explain why" taps a reason, not just an answer.',
+    paper:'Two strips side by side. Circle the bigger fraction and write a reason.',
     why:'Reasoning about size, not following a rule, is what makes fraction work stick.'}),
   r('FR6','Equal fractions','Finds equal fractions by splitting every piece. Then the rule: multiply top and bottom by the same number.',['FR5','MD6'],'1/2 = ?/8. Is 2/3 = 4/6? Show it.','Singapore, Japan: model before rule',{
     see:'A strip folded in half, then folded again: the half is now 2 fourths, then 4 eighths.',
@@ -120,6 +125,7 @@ const strands = [
     steps:['Draw the fraction.','Split every piece into the same number of smaller pieces.','Count the new pieces: top and bottom were both multiplied.'],
     mistake:'He adds the same number to top and bottom (1/2 = 2/3). Fix: draw both. They do not cover the same amount.',
     practice:'Match equal fractions. Fill the missing number. Simplify 6/8 by grouping pieces back together.',
+    paper:'Fold the same paper again and again. A fraction wall page to find equal fractions.',
     why:'Equal fractions are the tool for comparing, adding unlike fractions and later ratio. The picture keeps the rule from feeling like magic.'}),
   r('FR7','Add and subtract like fractions; mixed numbers','Adds and subtracts fractions with the same bottom, including mixed numbers.',['FR4'],'2/5 + 4/5. 3 1/4 – 1 3/4.','Japan, Singapore',{
     see:'Hops on a number line, and unit tiles.',
@@ -127,6 +133,7 @@ const strands = [
     steps:['Check the pieces are the same size (same bottom).','Add or take away the number of pieces.','Change extra wholes: 6/5 = 1 1/5.'],
     mistake:'He adds the bottoms too (2/5 + 4/5 = 6/10). Fix: say it in words ("fifths plus fifths are fifths") and check it is bigger than each part.',
     practice:'Add with tiles, then without. Regroup a mixed number like trading a ten. Find the mistake in a worked example.',
+    paper:'A number line page to draw the hops, and unit tiles.',
     why:'Counting units makes the right answer obvious and blocks the most common fraction error.'}),
   r('FR8','Tenths and hundredths as decimals','Writes tenths and hundredths as decimals and compares them.',['FR6','PV4'],'0.7 = ?/100. Which is more, 0.25 or 0.3?','Japan, Singapore: decimals from measuring',{
     see:'Money (dimes and pennies), a meter stick, a 10 × 10 grid.',
@@ -134,6 +141,7 @@ const strands = [
     steps:['Read the fraction with a bottom of 10 or 100.','Write it in places after the point.','Compare place by place, starting from the left.'],
     mistake:'He thinks 0.25 is bigger than 0.3 because "25 is bigger than 3". Fix: shade both on a hundred grid, or say them as money: 25¢ vs 30¢.',
     practice:'Shade the grid. Write it as a decimal. Put decimals in order on a line.',
+    paper:'Play money and a hundred-grid page to shade.',
     why:'Decimals are fractions written in place value. Linking the two avoids treating decimals as whole numbers with a dot.'}),
   r('FR9','Add and subtract unlike fractions','Finds a common piece size, then adds or subtracts.',['FR6','FR7','MD10'],'2/3 + 1/4.','All top programs',{
     see:'Two strips with different cuts, both cut further until the pieces match.',
@@ -141,6 +149,7 @@ const strands = [
     steps:['Find a bottom number both can become (a common multiple).','Change each fraction into an equal fraction.','Add or subtract the pieces.'],
     mistake:'He adds across: 2/3 + 1/4 = 3/7. Fix: estimate first. 2/3 + 1/4 is more than 2/3, and 3/7 is less than 1/2, so it is wrong.',
     practice:'Split the strips to match. Solve, then check with an estimate. Spot the wrong method.',
+    paper:'A fraction wall page to find pieces that match.',
     why:'Builds directly on equal fractions (FR6), so it is a short step, not a new rule to memorize.'}),
   r('FR10','A fraction of an amount','Finds 3/4 of 20 with a bar model, and multiplies a fraction by a whole number.',['FR3','MD6'],'3/4 of 20. 5 × 2/3.','Singapore bar model',{
     see:'A bar model: one bar for the whole amount, cut into equal parts.',
@@ -148,6 +157,7 @@ const strands = [
     steps:['Draw a bar for the whole and write its amount.','Cut it into equal parts (the bottom number) and find one part.','Take the number of parts (the top number).'],
     mistake:'He multiplies 20 × 4 or divides by the top number. Fix: draw the bar every time until it is automatic.',
     practice:'3/5 of the 30 boys go on the trip. How many? Story problems with bars that fill in, then bars he draws.',
+    paper:'Draw the bar on squared paper.',
     why:'The bar model turns "fraction of" into simple division and multiplication, and it is the same picture used later for ratio and percent.'}),
   r('FR11','Fraction times fraction','Multiplies fractions with an area model, then the rule. Knows multiplying by less than 1 makes it smaller.',['FR10','FR6'],'2/3 × 3/4. Is 5 × 2/3 more or less than 5?','Area model (Japan, Singapore)',{
     see:'Fold a paper into thirds one way and fourths the other way. Shade 2/3 of 3/4.',
@@ -155,6 +165,7 @@ const strands = [
     steps:['Shade the first fraction.','Take a fraction of the shaded part.','Count: top × top over bottom × bottom.'],
     mistake:'He thinks multiplying always makes bigger. Fix: "half of 6 is 3". Taking a part of something makes it smaller.',
     practice:'Shade and solve. Bigger or smaller than the starting number? Recipe problems: 2/3 of a 3/4-cup measure.',
+    paper:'Fold paper both ways and shade. Grid paper.',
     why:'The area picture explains the rule, so he can rebuild it if he forgets.'}),
   r('FR12','Dividing with fractions','Answers "how many 1/4s in 3?" with strips. Then common bottoms. Then why "flip and multiply" works.',['FR11','MD9'],'3 ÷ 1/4. 2/3 ÷ 1/6. 3/4 ÷ 2/3.','Japan, Singapore, Russia: meaning before rule',{
     see:'Strips: lay 1/4 pieces along 3 wholes and count them.',
@@ -162,6 +173,7 @@ const strands = [
     steps:['Ask the "how many fit" question.','With the same bottom, divide the tops.','Shortcut: multiply by the flipped divisor (show why with one example).'],
     mistake:'He flips the wrong fraction, or flips both. Fix: estimate with the "how many fit" question first.',
     practice:'How many 1/3-cup scoops in 2 cups? Strips, then common bottoms, then the shortcut. Find the wrong flip.',
+    paper:'Fraction strips, and a page to draw "how many fit".',
     why:'Japan and Singapore teach this rung only after the meaning is clear. That keeps it from being the most-forgotten rule in school math.'}),
   r('FR13','Percent','Knows percent means "out of 100". Finds 10%, 25%, 50% and any percent of an amount.',['FR8','FR10'],'20% of 45. What percent is 18 out of 24?','Singapore bar model; Dutch double number line',{
     see:'A 10 × 10 grid, then a bar marked 0% to 100%, then a double number line.',
@@ -169,6 +181,7 @@ const strands = [
     steps:['Draw a bar for 100%.','Find 10% (divide by 10) or 1%.','Build the percent you need from those.'],
     mistake:'He thinks 20% of 45 is 20, or adds the percent. Fix: start from the 100% bar and find 10% first.',
     practice:'Shade percents. Discount and tip stories with bars. Benchmarks: is 48% about a half?',
+    paper:'A hundred-grid page and a percent bar page.',
     why:'Builds on fractions and decimals with the same bar picture, so percent is not a separate topic to learn.'}),
   r('FR14','Ratio and rate','Uses ratio tables and bar models. Finds a unit rate.',['FR10','MD6'],'3 bottles cost $6. What do 7 cost? Boys to girls 2:3.','Singapore, Japan, Russia',{
     see:'A ratio table and a bar model with equal units.',
@@ -176,6 +189,7 @@ const strands = [
     steps:['Write both amounts in a table.','Find the amount for 1 (unit rate).','Multiply to get the amount you need.'],
     mistake:'He adds the same amount to both sides (2:3 becomes 4:5) instead of multiplying. Fix: check with the table that both sides were multiplied.',
     practice:'Recipe scaling for a simcha. Better buy: which pack is cheaper per item? Fill in ratio tables.',
+    paper:'Ratio table pages and bars on squared paper.',
     why:'Ratio is the bridge from arithmetic to algebra. It uses multiplying, not adding.'}),
   r('FR15','Proportions and percent change','Spots proportional relationships, writes y = kx, and solves discount, tax and percent-change problems.',['FR14','FR13','PA7'],'A $40 coat is 15% off. What does it cost?','Common Core; Japan, Singapore',{
     see:'A before-and-after bar model and a straight-line graph through 0.',
@@ -183,6 +197,7 @@ const strands = [
     steps:['Check that the rate stays the same.','Find k (the amount for 1).','Use y = kx or a before-and-after bar.'],
     mistake:'He takes 15% off and then adds tax to the wrong amount. Fix: draw the before-and-after bar for each step.',
     practice:'Is it proportional? Find k from a table or graph. Discount and interest stories.',
+    paper:'Before-and-after bars on squared paper, and graph paper.',
     why:'Finishes the fraction ladder and leads straight into linear functions (PA10).'}),
  ]},
  { id: 'WP', name: 'Story problems with bar models', color: 'k',
@@ -261,11 +276,11 @@ const strands = [
   r('DA3','Bar graphs','Makes and reads bar graphs.',['DA2'],'Make a bar graph of 4 groups.','All top programs'),
   r('DA4','Graphs with a scale','Reads graphs where one picture or square stands for 2, 5 or 10.',['DA3','MD2'],'Each star stands for 5. How many?','All top programs'),
   r('DA5','Line plots with fractions','Makes line plots of measurements in halves, fourths and eighths.',['DA4','FR4'],'Plot these lengths: 2¼, 2½, 2¼, 3.','All top programs'),
-  r('DA6','Average as a fair share','Finds the mean by evening out, then by adding and dividing.',['DA4','MD9'],'Scores 6, 8, 10: even them out.','Singapore, Japan: average as leveling'),
+  r('DA6','Average as evening out','Finds the mean by evening out, then by adding and dividing.',['DA4','MD9'],'Scores 6, 8, 10: even them out.','Singapore, Japan: average as leveling'),
   r('DA7','Middle and spread','Finds median and range. Reads dot plots and box plots.',['DA6','DA5'],'6, 8, 8, 9, 14: median and range?','All top programs'),
   r('DA8','Count the possibilities','Lists all the ways something can happen with a list, table or tree.',['MD3'],'How many outfits from 3 shirts and 2 pants?','Japan; Hungary'),
   r('DA9','Chance','Finds the probability of simple events as a fraction.',['DA8','FR5'],'3 red and 5 blue in a bag. Chance of red?','All top programs'),
-  r('DA10','Samples','Uses a fair sample to make a guess about a whole group.',['DA9','DA7','FR14'],'20 of 50 boys asked like soccer. About how many of 400?','All top programs'),
+  r('DA10','Samples','Uses a good sample (one that matches the whole group) to make a guess about the group.',['DA9','DA7','FR14'],'20 of 50 boys asked like soccer. About how many of 400?','All top programs'),
   r('DA11','Scatter plots and two-way tables','Draws a trend line and reads two-way tables.',['DA10','PA9'],'Does more practice mean higher scores? Draw the line.','All top programs'),
  ]},
 ];
@@ -281,6 +296,7 @@ const out = {
     'If he gets stuck twice, he drops to the rung it needs for a short re-teach, then climbs back.',
     'Every rung is taught the same way: an object he can move, then a picture, then the written rule. One clear idea in plain words. A worked example, then his turn. The usual mistake is shown and fixed.',
     'Every practice set mixes in earlier rungs, so nothing is forgotten.',
+    'Mostly in the app, and also on paper: each teaching plan has an "On paper" line.',
   ],
   sources: [
     'Building Blocks (Clements & Sarama): the order of the early rungs and their level names.',
@@ -290,11 +306,13 @@ const out = {
     'Research on fractions (Siegler), mixed practice (Rohrer) and worked examples.',
     'The report "The World\'s Best Math Programs for Grades 3–8" (November 2026).',
   ],
+  practicePlan: ['Watch a worked example.','3–5 problems with help.','10–15 problems on his own, at least 3 different kinds.','Find and fix a mistake in a worked problem.','The skill keeps coming back, mixed with other skills, over the next days.','A short check two days later, with no help.'],
+  practiceNote: 'About 30 or more problems for every skill, spread over several days. (Approved by Mrs. Khaver, 2026-11-25.)',
   strands,
   next: [
     'Mrs. Khaver checks the order of the rungs and what each one needs.',
-    'She checks the sample teaching plan on the Fractions ladder (FR1–FR15): is this the right kind of detail?',
-    'When she is happy with the sample, the same teaching plan is written for every other rung.',
+    'She checks the updated Fractions sample (FR1–FR15): "equal parts", the "On paper" line, and the practice plan.',
+    'When she approves the sample, the teaching plans for the other 10 ladders are written one ladder at a time, each for her review.',
     'Only after the whole plan is approved does any building start, one rung at a time.',
   ],
 };

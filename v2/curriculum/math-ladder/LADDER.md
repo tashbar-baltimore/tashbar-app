@@ -13,6 +13,7 @@
 - If he gets stuck twice, he drops to the rung it needs for a short re-teach, then climbs back.
 - Every rung is taught the same way: an object he can move, then a picture, then the written rule. One clear idea in plain words. A worked example, then his turn. The usual mistake is shown and fixed.
 - Every practice set mixes in earlier rungs, so nothing is forgotten.
+- Mostly in the app, and also on paper: each teaching plan has an "On paper" line.
 
 ## Built on
 - Building Blocks (Clements & Sarama): the order of the early rungs and their level names.
@@ -21,6 +22,16 @@
 - Russia (Davydov, Toom): part–whole thinking and word problems before algebra.
 - Research on fractions (Siegler), mixed practice (Rohrer) and worked examples.
 - The report "The World's Best Math Programs for Grades 3–8" (November 2026).
+
+## Practice for every skill
+1. Watch a worked example.
+2. 3–5 problems with help.
+3. 10–15 problems on his own, at least 3 different kinds.
+4. Find and fix a mistake in a worked problem.
+5. The skill keeps coming back, mixed with other skills, over the next days.
+6. A short check two days later, with no help.
+
+About 30 or more problems for every skill, spread over several days. (Approved by Mrs. Khaver, 2026-11-25.)
 
 ## CN. Counting and the number line
 Saying numbers, counting things, counting on and back, skip counting, then the whole number line: negatives, fractions and roots.
@@ -273,12 +284,12 @@ Tens and ones, then hundreds, thousands and millions, then tenths and hundredths
 
 
 ## MD. Multiplying and dividing
-From fair sharing, to equal groups and arrays, to facts known by heart, to written methods.
+From sharing into equal parts, to equal groups and arrays, to facts known by heart, to written methods.
 
-### MD1. Fair sharing
-- **He can:** Shares things fairly, one for you, one for me, and checks it is fair.
+### MD1. Sharing into equal parts
+- **He can:** Shares things out one for you, one for me, and checks every share is equal.
 - **Needs first:** CN4
-- **Quick check:** Share 8 pretzels fairly between 2 brothers.
+- **Quick check:** Share 8 pretzels equally between 2 brothers.
 - **Where it comes from:** Building Blocks: Beginning Grouper and Distributive Sharer
 
 ### MD2. Equal groups; skip counting
@@ -355,20 +366,21 @@ From fair sharing, to equal groups and arrays, to facts known by heart, to writt
 
 
 ## FR. Fractions, decimals, ratio and percent
-The gateway to algebra. From fair halves of a challah, to fractions as numbers on a line, to all four operations, to percent and ratio.
+The gateway to algebra. From equal halves of a challah, to fractions as numbers on a line, to all four operations, to percent and ratio.
 
-### FR1. Fair shares
+### FR1. Equal parts
 - **He can:** Cuts a whole into equal parts and knows equal means the same size, not the same shape.
 - **Needs first:** MD1
-- **Quick check:** Is this challah cut in fair halves? Why not?
+- **Quick check:** Is this challah cut in equal halves? Why not?
 - **Where it comes from:** Equipartitioning (Confrey); Building Blocks shapes
 - **How to teach it**
   - What he sees and touches: Paper folding, then a picture of a challah, pizza or chocolate bar cut into parts.
-  - The one idea: "Fair" means every piece is the same size. Count the pieces to name them: 2 fair pieces are halves, 4 fair pieces are fourths.
-  - Steps: 1. Fold a paper in half. Do the two parts match exactly? 2. Cut a picture into 2, 3, then 4 fair pieces. 3. Say fair or not fair, and tell why.
-  - Usual mistake and fix: He calls any 2 pieces "halves", even when one is bigger. Fix: lay one piece on the other. If they do not match, it is not fair.
-  - Practice: Fair or not fair: tap to judge. Cut it fairly: drag a knife line. Two different-looking halves of a square: are both fair?
-  - Why this way: Children understand fair sharing long before they understand fraction symbols. Starting here builds on what they already know.
+  - The one idea: "Equal parts" means every piece is exactly the same size. (A fair share means equal parts.) Count the equal parts to name them: 2 equal parts are halves, 4 equal parts are fourths.
+  - Steps: 1. Fold a paper in half. Do the two parts match exactly? 2. Cut a picture into 2, 3, then 4 equal parts. 3. Say equal or not equal, and tell why.
+  - Usual mistake and fix: He calls any 2 pieces "halves", even when one is bigger. Fix: lay one piece on the other. If they do not match, the parts are not equal.
+  - Practice (kinds): Equal or not equal: tap to judge. Cut it into equal parts: drag a knife line. Two different-looking halves of a square: are both equal?
+  - On paper: Fold and cut real paper. A page of shapes: circle the ones cut into equal parts.
+  - Why this way: Children understand sharing equally long before they understand fraction symbols. Starting here builds on what they already know.
 
 ### FR2. One part: unit fractions
 - **He can:** Names one part of equal parts as 1/2, 1/3, 1/4. Knows more parts means smaller pieces.
@@ -380,7 +392,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: The bottom number tells how many equal parts the whole has. The more parts, the smaller each one.
   - Steps: 1. Take one strip. Count its equal parts. That tells the bottom number. 2. One part is "one ___th". 3. Lay strips under each other to compare.
   - Usual mistake and fix: He thinks 1/8 is bigger than 1/4 "because 8 is bigger than 4". Fix: show both pieces side by side on strips, and share one cake among 8 brothers vs 4 brothers.
-  - Practice: Name the piece. Order 1/2, 1/8, 1/3, 1/6 from biggest to smallest. "Would you rather have 1/3 or 1/5 of the kugel?"
+  - Practice (kinds): Name the piece. Order 1/2, 1/8, 1/3, 1/6 from biggest to smallest. "Would you rather have 1/3 or 1/5 of the kugel?"
+  - On paper: Cut-out fraction strips he keeps in an envelope. Color one part of each strip.
   - Why this way: Unit fractions are the building block of all other fractions; Japan and Singapore start every fraction topic from them.
 
 ### FR3. Fractions are counted in units
@@ -393,7 +406,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: We count fourths the way we count apples: one fourth, two fourths, three fourths, four fourths, five fourths.
   - Steps: 1. Pick the unit (one fourth). 2. Count how many units. 3. Say it: "three fourths" = 3/4.
   - Usual mistake and fix: He reads 3/4 as "3 and 4", two separate numbers. Fix: always say it as a count of units ("three fourths") and build it from unit tiles.
-  - Practice: Build 5/6 from sixths. Count on: 2/3, 3/3, 4/3, __. Which is made of more pieces?
+  - Practice (kinds): Build 5/6 from sixths. Count on: 2/3, 3/3, 4/3, __. Which is made of more pieces?
+  - On paper: Fraction strips and unit tiles. A page: build it, then write it.
   - Why this way: Seeing a fraction as a count of unit fractions makes adding fractions and fractions bigger than 1 obvious later.
 
 ### FR4. Fractions on the number line
@@ -406,7 +420,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: The whole is the distance from 0 to 1. Cut it into equal spaces. Each space is one unit fraction long.
   - Steps: 1. Find 0 and 1. 2. Cut the space between them into equal parts (the bottom number). 3. Count the spaces from 0 (the top number).
   - Usual mistake and fix: He counts tick marks instead of spaces, so 3/4 lands in the wrong place. Fix: hop along the spaces from 0, saying "one fourth, two fourths…".
-  - Practice: Drag the fraction to its place. Find 1 on a line where only 0 and 1/3 are marked. Spot the wrong label.
+  - Practice (kinds): Drag the fraction to its place. Find 1 on a line where only 0 and 1/3 are marked. Spot the wrong label.
+  - On paper: Printed number lines and a pencil. Mark each fraction, counting the spaces.
   - Why this way: Placing fractions on a line is the strongest early sign of later algebra success, so this rung is the heart of the ladder.
 
 ### FR5. Compare fractions
@@ -419,7 +434,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: Same-size pieces: more pieces is more. Same number of pieces: bigger pieces is more. Or check: is it more or less than a half?
   - Steps: 1. Same bottom? Compare the tops. 2. Same top? The smaller bottom means bigger pieces. 3. Neither? Compare each to 1/2 or to 1.
   - Usual mistake and fix: He compares only the top numbers or only the bottom numbers. Fix: always ask "how big is each piece?" and check on the line.
-  - Practice: Tap the bigger fraction. Put 3 fractions in order. "Explain why" taps a reason, not just an answer.
+  - Practice (kinds): Tap the bigger fraction. Put 3 fractions in order. "Explain why" taps a reason, not just an answer.
+  - On paper: Two strips side by side. Circle the bigger fraction and write a reason.
   - Why this way: Reasoning about size, not following a rule, is what makes fraction work stick.
 
 ### FR6. Equal fractions
@@ -432,7 +448,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: Cutting every piece into 2 makes twice as many pieces, each half as big. The amount stays the same.
   - Steps: 1. Draw the fraction. 2. Split every piece into the same number of smaller pieces. 3. Count the new pieces: top and bottom were both multiplied.
   - Usual mistake and fix: He adds the same number to top and bottom (1/2 = 2/3). Fix: draw both. They do not cover the same amount.
-  - Practice: Match equal fractions. Fill the missing number. Simplify 6/8 by grouping pieces back together.
+  - Practice (kinds): Match equal fractions. Fill the missing number. Simplify 6/8 by grouping pieces back together.
+  - On paper: Fold the same paper again and again. A fraction wall page to find equal fractions.
   - Why this way: Equal fractions are the tool for comparing, adding unlike fractions and later ratio. The picture keeps the rule from feeling like magic.
 
 ### FR7. Add and subtract like fractions; mixed numbers
@@ -445,7 +462,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: 2 fifths plus 4 fifths is 6 fifths, the same way 2 apples plus 4 apples is 6 apples. The bottom names the piece. It does not change.
   - Steps: 1. Check the pieces are the same size (same bottom). 2. Add or take away the number of pieces. 3. Change extra wholes: 6/5 = 1 1/5.
   - Usual mistake and fix: He adds the bottoms too (2/5 + 4/5 = 6/10). Fix: say it in words ("fifths plus fifths are fifths") and check it is bigger than each part.
-  - Practice: Add with tiles, then without. Regroup a mixed number like trading a ten. Find the mistake in a worked example.
+  - Practice (kinds): Add with tiles, then without. Regroup a mixed number like trading a ten. Find the mistake in a worked example.
+  - On paper: A number line page to draw the hops, and unit tiles.
   - Why this way: Counting units makes the right answer obvious and blocks the most common fraction error.
 
 ### FR8. Tenths and hundredths as decimals
@@ -458,7 +476,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: The places keep going to the right of the ones: tenths, then hundredths. Each place is 10 times smaller.
   - Steps: 1. Read the fraction with a bottom of 10 or 100. 2. Write it in places after the point. 3. Compare place by place, starting from the left.
   - Usual mistake and fix: He thinks 0.25 is bigger than 0.3 because "25 is bigger than 3". Fix: shade both on a hundred grid, or say them as money: 25¢ vs 30¢.
-  - Practice: Shade the grid. Write it as a decimal. Put decimals in order on a line.
+  - Practice (kinds): Shade the grid. Write it as a decimal. Put decimals in order on a line.
+  - On paper: Play money and a hundred-grid page to shade.
   - Why this way: Decimals are fractions written in place value. Linking the two avoids treating decimals as whole numbers with a dot.
 
 ### FR9. Add and subtract unlike fractions
@@ -471,7 +490,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: You can only add pieces that are the same size. Cut both into the same size pieces first.
   - Steps: 1. Find a bottom number both can become (a common multiple). 2. Change each fraction into an equal fraction. 3. Add or subtract the pieces.
   - Usual mistake and fix: He adds across: 2/3 + 1/4 = 3/7. Fix: estimate first. 2/3 + 1/4 is more than 2/3, and 3/7 is less than 1/2, so it is wrong.
-  - Practice: Split the strips to match. Solve, then check with an estimate. Spot the wrong method.
+  - Practice (kinds): Split the strips to match. Solve, then check with an estimate. Spot the wrong method.
+  - On paper: A fraction wall page to find pieces that match.
   - Why this way: Builds directly on equal fractions (FR6), so it is a short step, not a new rule to memorize.
 
 ### FR10. A fraction of an amount
@@ -484,7 +504,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: Cut the whole into 4 equal parts. One part is 20 ÷ 4 = 5. Three parts are 15.
   - Steps: 1. Draw a bar for the whole and write its amount. 2. Cut it into equal parts (the bottom number) and find one part. 3. Take the number of parts (the top number).
   - Usual mistake and fix: He multiplies 20 × 4 or divides by the top number. Fix: draw the bar every time until it is automatic.
-  - Practice: 3/5 of the 30 boys go on the trip. How many? Story problems with bars that fill in, then bars he draws.
+  - Practice (kinds): 3/5 of the 30 boys go on the trip. How many? Story problems with bars that fill in, then bars he draws.
+  - On paper: Draw the bar on squared paper.
   - Why this way: The bar model turns "fraction of" into simple division and multiplication, and it is the same picture used later for ratio and percent.
 
 ### FR11. Fraction times fraction
@@ -497,7 +518,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: 2/3 × 3/4 means "2/3 of 3/4". Multiply the tops to count shaded pieces, and the bottoms to count all the pieces.
   - Steps: 1. Shade the first fraction. 2. Take a fraction of the shaded part. 3. Count: top × top over bottom × bottom.
   - Usual mistake and fix: He thinks multiplying always makes bigger. Fix: "half of 6 is 3". Taking a part of something makes it smaller.
-  - Practice: Shade and solve. Bigger or smaller than the starting number? Recipe problems: 2/3 of a 3/4-cup measure.
+  - Practice (kinds): Shade and solve. Bigger or smaller than the starting number? Recipe problems: 2/3 of a 3/4-cup measure.
+  - On paper: Fold paper both ways and shade. Grid paper.
   - Why this way: The area picture explains the rule, so he can rebuild it if he forgets.
 
 ### FR12. Dividing with fractions
@@ -510,7 +532,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: Dividing asks "how many of these fit in that?". 3 ÷ 1/4 asks how many quarters fit in 3. 12.
   - Steps: 1. Ask the "how many fit" question. 2. With the same bottom, divide the tops. 3. Shortcut: multiply by the flipped divisor (show why with one example).
   - Usual mistake and fix: He flips the wrong fraction, or flips both. Fix: estimate with the "how many fit" question first.
-  - Practice: How many 1/3-cup scoops in 2 cups? Strips, then common bottoms, then the shortcut. Find the wrong flip.
+  - Practice (kinds): How many 1/3-cup scoops in 2 cups? Strips, then common bottoms, then the shortcut. Find the wrong flip.
+  - On paper: Fraction strips, and a page to draw "how many fit".
   - Why this way: Japan and Singapore teach this rung only after the meaning is clear. That keeps it from being the most-forgotten rule in school math.
 
 ### FR13. Percent
@@ -523,7 +546,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: Percent means "out of 100". The whole bar is 100%. 10% is one tenth of it.
   - Steps: 1. Draw a bar for 100%. 2. Find 10% (divide by 10) or 1%. 3. Build the percent you need from those.
   - Usual mistake and fix: He thinks 20% of 45 is 20, or adds the percent. Fix: start from the 100% bar and find 10% first.
-  - Practice: Shade percents. Discount and tip stories with bars. Benchmarks: is 48% about a half?
+  - Practice (kinds): Shade percents. Discount and tip stories with bars. Benchmarks: is 48% about a half?
+  - On paper: A hundred-grid page and a percent bar page.
   - Why this way: Builds on fractions and decimals with the same bar picture, so percent is not a separate topic to learn.
 
 ### FR14. Ratio and rate
@@ -536,7 +560,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: A ratio compares two amounts in the same units. Find the price of one, then any number.
   - Steps: 1. Write both amounts in a table. 2. Find the amount for 1 (unit rate). 3. Multiply to get the amount you need.
   - Usual mistake and fix: He adds the same amount to both sides (2:3 becomes 4:5) instead of multiplying. Fix: check with the table that both sides were multiplied.
-  - Practice: Recipe scaling for a simcha. Better buy: which pack is cheaper per item? Fill in ratio tables.
+  - Practice (kinds): Recipe scaling for a simcha. Better buy: which pack is cheaper per item? Fill in ratio tables.
+  - On paper: Ratio table pages and bars on squared paper.
   - Why this way: Ratio is the bridge from arithmetic to algebra. It uses multiplying, not adding.
 
 ### FR15. Proportions and percent change
@@ -549,7 +574,8 @@ The gateway to algebra. From fair halves of a challah, to fractions as numbers o
   - The one idea: When two amounts grow together at the same rate, one is always k times the other.
   - Steps: 1. Check that the rate stays the same. 2. Find k (the amount for 1). 3. Use y = kx or a before-and-after bar.
   - Usual mistake and fix: He takes 15% off and then adds tax to the wrong amount. Fix: draw the before-and-after bar for each step.
-  - Practice: Is it proportional? Find k from a table or graph. Discount and interest stories.
+  - Practice (kinds): Is it proportional? Find k from a table or graph. Discount and interest stories.
+  - On paper: Before-and-after bars on squared paper, and graph paper.
   - Why this way: Finishes the fraction ladder and leads straight into linear functions (PA10).
 
 
@@ -914,7 +940,7 @@ From sorting toys into bins, to graphs, to average and spread, to chance.
 - **Quick check:** Plot these lengths: 2¼, 2½, 2¼, 3.
 - **Where it comes from:** All top programs
 
-### DA6. Average as a fair share
+### DA6. Average as evening out
 - **He can:** Finds the mean by evening out, then by adding and dividing.
 - **Needs first:** DA4, MD9
 - **Quick check:** Scores 6, 8, 10: even them out.
@@ -939,7 +965,7 @@ From sorting toys into bins, to graphs, to average and spread, to chance.
 - **Where it comes from:** All top programs
 
 ### DA10. Samples
-- **He can:** Uses a fair sample to make a guess about a whole group.
+- **He can:** Uses a good sample (one that matches the whole group) to make a guess about the group.
 - **Needs first:** DA9, DA7, FR14
 - **Quick check:** 20 of 50 boys asked like soccer. About how many of 400?
 - **Where it comes from:** All top programs
@@ -952,6 +978,6 @@ From sorting toys into bins, to graphs, to average and spread, to chance.
 
 ## What happens next
 - Mrs. Khaver checks the order of the rungs and what each one needs.
-- She checks the sample teaching plan on the Fractions ladder (FR1–FR15): is this the right kind of detail?
-- When she is happy with the sample, the same teaching plan is written for every other rung.
+- She checks the updated Fractions sample (FR1–FR15): "equal parts", the "On paper" line, and the practice plan.
+- When she approves the sample, the teaching plans for the other 10 ladders are written one ladder at a time, each for her review.
 - Only after the whole plan is approved does any building start, one rung at a time.
