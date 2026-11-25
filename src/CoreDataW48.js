@@ -57,5 +57,18 @@ CORE_SKILLS.W48 = [
   ["WRIT.PARA.L06.09", "Best Reason First?", "Rank reasons and put them in a logical order, and say why", { after: "WRIT.ESSAY.L06.06", std: "W.5.1b", file: "CoreDataW4812", min: 8 }],
   ["WRIT.PARA.L06.10", "Proof from the Text", "Back a reason with a fact in your own words or an exact quote, with its source", { after: "WRIT.PARA.L06.09", std: "W.5.1b", file: "CoreDataW4812", min: 9 }],
   ["WRIT.PARA.L06.11", "Because, So, Therefore", "Link reasons and results inside a sentence and across sentences", { after: "WRIT.PARA.L06.10", std: "W.5.1c", file: "CoreDataW4812", min: 7 }],
-  ["WRIT.PARA.L06.12", "Ending That Pushes", "End with the opinion, a sum-up and one push that fits the reader", { after: "WRIT.PARA.L06.11", std: "W.5.1d", file: "CoreDataW4812", min: 7 }]
+  ["WRIT.PARA.L06.12", "Ending That Pushes", "End with the opinion, a sum-up and one push that fits the reader", { after: "WRIT.PARA.L06.11", std: "W.5.1d", file: "CoreDataW4812", min: 7 }],
+  ["WRIT.ESSAY.L07.07", "Pick the Pattern", "Organize an information essay by the pattern its question asks for", { after: "WRIT.PARA.L07.05", std: "W.6.2a", file: "CoreDataW4813", min: 9 }],
+  ["WRIT.ESSAY.L07.08", "Thesis Sentence", "Write a thesis that states the topic and previews the parts in order", { after: "WRIT.ESSAY.L07.07", std: "W.6.2a", file: "CoreDataW4813", min: 9 }],
+  ["WRIT.PARA.L07.06", "Develop the Point", "Develop a paragraph with three or more kinds of support, and name each", { after: "WRIT.ESSAY.L07.08", std: "W.6.2b", file: "CoreDataW4813", min: 9 }],
+  ["WRIT.PARA.L07.07", "Smooth Transitions", "Begin a paragraph with a bridge that points back and forward", { after: "WRIT.PARA.L07.06", std: "W.6.2c", file: "CoreDataW4813", min: 8 }],
+  ["WRIT.PARA.L07.08", "Charts and Captions", "Pick a chart, table or diagram that adds information, with a caption", { after: "WRIT.PARA.L07.07", std: "W.6.2a", file: "CoreDataW4813", min: 8 }],
+  ["WRIT.ESSAY.L08.05", "Plot Plan", "Plan a plot whose stakes keep rising to a late peak", { after: "WRIT.PARA.L08.07", std: "W.7.3a", file: "CoreDataW4814", min: 9 }],
+  ["WRIT.PARA.L08.08", "Character by Dialogue", "Show who a character is by how he speaks", { after: "WRIT.ESSAY.L08.05", std: "W.7.3b", file: "CoreDataW4814", min: 8 }],
+  ["WRIT.PARA.L08.10", "Precise Detail", "Choose the one telling detail and cut the general ones", { after: "WRIT.PARA.L08.08", std: "W.7.3d", file: "CoreDataW4814", min: 8 }],
+  ["WRIT.PARA.L08.11", "Reflective Ending", "End a story with an earned reflection that shows a before and a now", { after: "WRIT.PARA.L08.10", std: "W.7.3e", file: "CoreDataW4814", min: 8 }],
+  ["WRIT.ESSAY.L09.05", "Memoir Moment", "Choose a small true moment that changed you, and zoom in", { after: "WRIT.PARA.L09.05", std: "W.8.3a", file: "CoreDataW4815", min: 9 }],
+  ["WRIT.PARA.L09.06", "Then and Now", "Move between the boy then and the writer now, and signal each cut", { after: "WRIT.ESSAY.L09.05", std: "W.8.3c", file: "CoreDataW4815", min: 9 }],
+  ["WRIT.PARA.L09.07", "Voice", "Sound like a real person: exact words, rhythm and your own lens", { after: "WRIT.PARA.L09.06", std: "W.8.3d", file: "CoreDataW4815", min: 8 }],
+  ["WRIT.PARA.L09.08", "Reflection", "End a memoir with an honest reflection from today", { after: "WRIT.PARA.L09.07", std: "W.8.3e", file: "CoreDataW4815", min: 8 }]
 ];
