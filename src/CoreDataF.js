@@ -126,5 +126,8 @@ CORE_SKILLS.F = [
   ["READ.FLU.L03.16", "The Running Race", "Read a little story with doubled letters", { after: "READ.PHON.L03.14", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
   ["READ.FLU.L03.12", "Berries for the Babies", "Read a little story where y changes to i", { after: "READ.PHON.L03.15", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
   ["READ.FLU.L03.17", "The Helpful Club", "Read a little story with -ful, -less, -ly and -ness", { after: "READ.PHON.L03.16", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
-  ["READ.FLU.L03.13", "Unpack and Repack", "Read a little story full of prefixes", { after: "READ.PHON.L03.17", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }]
+  ["READ.FLU.L03.13", "Unpack and Repack", "Read a little story full of prefixes", { after: "READ.PHON.L03.17", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.18", "Theatre: The Lost Siddur", "Act out a play: find your cue and read in the right voice", { after: "READ.FLU.L03.06", std: "RF.2.4b", file: "CoreDataFH4", min: 10 }],
+  ["READ.FLU.L03.19", "Theatre: The Snow Day Fort", "Act out a play with strong feelings, until it sounds like talking", { after: "READ.FLU.L03.18", std: "RF.2.4b", file: "CoreDataFH4", min: 10 }],
+  ["READ.FLU.L03.20", "The Club Fair", "Read the end-of-Grade-2 story with every pattern, and prove what happened", { after: "READ.PHON.L03.18", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }]
 ];
