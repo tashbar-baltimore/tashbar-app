@@ -8,6 +8,8 @@ Test tools for builders. Nothing here is part of the app. They use `tests/lib/sc
 | `popups2.js OUT TAG [ids]` | Same for batch 2 (shelf, music, weekreport, story, gamzu, notesent, levels). |
 | `k1game.js OUT TAG "Count the stars"` | A K–1 math warm-up game at both sizes; checks its ✕ closes it. |
 | `overlap.js` | Page function: for every visible kit ✕ (`.tlk-x`) lists anything inside the same pop-up within 4 px of it, and anything drawn on top of it. Empty `hits` = clean. Copy the idea for the house/back (`.tlk-home`, `.tlk-back`). |
+| `pages.js OUT TAG GRADE [ids]` | Full pages with the house top left (map, subjects, work, profile, lessons, chumash, workbook) for a made-up boy of that grade (2 = K–3, 5 = grade 4+) at 1366×768 and 390×844; prints the house/Back check and whether the Workbook door touches the top row. |
+| `overlap-home.js` | Page function: anything within 4 px of, or drawn on top of, the house or Back (`.tlk-home`, `.tlk-back`). Things hidden under the page do not count. Empty `hits` = clean. |
 | `stinfo.js` | Made-up store shelf from the real server code (so the store picture is not empty). |
 | `sheet.py DIR TAG OUTBASE id="Label" ...` | Joins pictures into one labeled sheet per size (`OUTBASE-chromebook.png`, `OUTBASE-phone.png`). |
 

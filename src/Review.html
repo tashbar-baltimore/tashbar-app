@@ -152,7 +152,7 @@ function el(){ let d=document.getElementById('mdx'); if(!d){ d=document.createEl
 function open(){ if(window.TL_MD_OFF) return; const list=build(); if(!list){ return; } G.list=list; G.i=0; G.pts=0; G.solved=0; G.step=0; G.lock=false; el().className='on'; intro(); }
 function close(){ const d=document.getElementById('mdx'); if(d){ d.className=''; d.innerHTML=''; } try{ speechSynthesis.cancel(); }catch(e){} }
 function top(){ const n=G.list.length; let dots=''; for(let i=0;i<n;i++) dots+=`<i class="mddot${i<G.i?' done':''}${i===G.i?' cur':''}"></i>`;
- return `<div class="mdtop"><button type="button" class="mdx-close" data-md="close" aria-label="Close">✕</button><div class="mdtitle">🕵️ MISTAKE DETECTIVE</div><div class="mdpts" aria-label="Points">⭐ ${G.pts}</div></div><div class="mddots">${dots}</div>`; }
+ return `<div class="mdtop">${window.TLK?TLK.x('data-md="close"',''):'<button type="button" class="mdx-close" data-md="close" aria-label="Close">✕</button>'}<div class="mdtitle">🕵️ MISTAKE DETECTIVE</div><div class="mdpts" aria-label="Points">⭐ ${G.pts}</div></div><div class="mddots">${dots}</div>`; }
 function intro(){ const best=getBest(); el().innerHTML=`<div class="mdwrap mdintro">${top()}
  <div class="mdhero"><div class="mdglass" aria-hidden="true">🔍</div><h1>Can you catch the mistake?</h1>
  <p class="mdbig">${G.list.length} cases from lessons <b>you</b> learned.</p>

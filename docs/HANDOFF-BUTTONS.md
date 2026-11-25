@@ -13,13 +13,25 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - K–1 game ✕ is 84 px (size of its speaker button), Moshe's decision 24 Nov.
 
 ## Not done
-- Deferred: Arena (⬅ Back + ✕) and Review (✕ + Done).
 - Seen, not changed: story "For the Shabbos table" box (white words on pale yellow); Spark Path cannot be reached from the new home and opens under it (no z-index on #tr-ov).
 - Picture zoom ✕ was never seen in a picture (could not reach a lesson with a real picture).
 
-## Next: step 2, the house top left on full pages (decided)
-- Replace the big yellow HOME bar `#gm-nav` (src/GameMap.html) with `TLK.home(attrs,'tl',TLK.young(grade))`: grade 4+ round 44 px house; K–3 bigger "🏠 Home".
-- Pages: My map, My work, My profile (GameMap), the Chumash page (`src/ChumashPage.html`, its ✕ top left `data-chm="close"`), the Block Builders Workbook (`src/BlockBuildersUI.html`, `.bbx-ib data-bb="close"`).
-- Back (`TLK.back`) sits before the house, only where the rules say (My profile → All my lessons, Skill tree, My week; My map → Change subject). Back already exists from #358; keep it.
-- Never on the home itself, never on a pop-up. Top left always means "out"; corner dots stay top right.
-- Check: house/back not touching anything (copy `tools/screens/overlap.js` for `.tlk-home,.tlk-back`), K–3 and grade 4+ boys, 1366×768 and 390 px.
+## Done: step 2, the house top left on full pages (25 Nov 2026)
+- The big yellow HOME bar `#gm-nav` is gone (`navHTML` returns nothing, `#gm-nav{display:none}`). Every full page in `src/GameMap.html` (My map, Change subject, My work, My profile, All my lessons, Store page, Arcade, ...) has `hud()` = Back (only when `GM.from` is set) + `TLK.home('data-gmnav="home"','',TLK.young(grade))` + the money chip, top left. Never on the home.
+- Chumash page (`src/ChumashPage.html`) and the Block Builders Workbook home (`src/BlockBuildersUI.html`): the old ✕ became the kit house (same `data-chm="close"` / `data-bb="close"`). `#bbx button` is now `#bbx button:not(.tlk)` so it does not restyle the kit.
+- Phone, My map with the Workbook door: the money chip moves under the house so the door does not cover it.
+- Tests: `tests/run.js` now checks ONE kit house top left on every page but the home and no HOME bar.
+- Pictures: `docs/screens/house-before-*.jpg`, `house-after-*.jpg`. Check: `node tools/screens/pages.js OUT TAG GRADE`.
+
+## Done: step 3, Arena and Mistake Detective (25 Nov 2026)
+- Arena (`src/ArenaPage.html` `outBtns()`): kit house top left; kit Back before it on inner pages (they come from the Arena menu). Phone: the title moves under the buttons when Back is there.
+- Mistake Detective review (`src/Review.html`): kit ✕ top left (`TLK.x`). Corner dots, profile and Workbook hide behind it (`#mdx.on` in the GameMap hide list). Its end buttons ("New cases", "Done") are not changed.
+- Pictures: `docs/screens/arena-before-*.jpg`, `arena-after-*.jpg`. Check: `node tools/screens/arena.js OUT TAG GRADE`.
+
+## Done: step 4, Back on inner pages (25 Nov 2026)
+- Workbook job page: kit Back (to the workbook, `data-bb="home"`) + kit house (leaves the workbook) top left, replacing "◀ 📘". K-3 phone: the job title moves under the buttons.
+- Chumash inner pages: kit Back (`data-chm="home"`) before the house, replacing "⬅ parsha".
+- Pictures: `docs/screens/inner-back-after-*.jpg`.
+
+## Next
+- Mistake Detective end buttons ("🔁 New cases" has icon + word) are not on the kit yet.
