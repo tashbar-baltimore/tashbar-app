@@ -87,5 +87,17 @@ CORE_SKILLS.W48 = [
   ["WRIT.RES.L08.01", "Follow-Up Questions", "Let one answer lead to a sharper next question", { after: "WRIT.PARA.L08.11", std: "W.7.7", file: "CoreDataW4819", min: 8 }],
   ["WRIT.RES.L08.02", "Search Smart", "Choose search words, and choose which result to open", { after: "WRIT.RES.L08.01", std: "W.7.8", file: "CoreDataW4819", min: 8 }],
   ["WRIT.RES.L08.03", "No Copying", "Write notes in your own words, not patchwriting", { after: "WRIT.RES.L08.02", std: "W.7.8", file: "CoreDataW4819", min: 9 }],
-  ["WRIT.RES.L08.04", "Cite It", "Write a source entry in a standard format for a book and a web page", { after: "WRIT.RES.L08.03", std: "W.7.8", file: "CoreDataW4819", min: 8 }]
+  ["WRIT.RES.L08.04", "Cite It", "Write a source entry in a standard format for a book and a web page", { after: "WRIT.RES.L08.03", std: "W.7.8", file: "CoreDataW4819", min: 8 }],
+  ["WRIT.RES.L05.01", "Good Question", "Ask a research question you can answer", { after: "WRIT.PARA.L05.20", std: "W.4.7", file: "CoreDataW4820", min: 8 }],
+  ["WRIT.RES.L05.02", "Notes, Not Copies", "Take notes as key words in your own words", { after: "WRIT.RES.L05.01", std: "W.4.8", file: "CoreDataW4820", min: 9 }],
+  ["WRIT.RES.L05.03", "Where I Found It", "List each source: title, by author", { after: "WRIT.RES.L05.02", std: "W.4.8", file: "CoreDataW4820", min: 7 }],
+  ["WRIT.ESSAY.L05.06", "Revise with ARMS", "Revise for meaning: Add, Remove, Move, Substitute", { after: "WRIT.RES.L05.03", std: "W.4.5", file: "CoreDataW4820", min: 9 }],
+  ["WRIT.ESSAY.L05.07", "Edit with COPS", "Edit: Capitals, Order of words, Punctuation, Spelling", { after: "WRIT.ESSAY.L05.06", std: "W.4.5", file: "CoreDataW4820", min: 8 }],
+  ["WRIT.PARA.L05.21", "Answer from the Text", "Answer a question about a text with a detail from it", { after: "WRIT.ESSAY.L05.07", std: "W.4.9", file: "CoreDataW4820", min: 8 }],
+  ["WRIT.RES.L06.01", "Many Sources", "Find the answer in more than one source and check they agree", { after: "WRIT.ESSAY.L06.08", std: "W.5.7", file: "CoreDataW4821", min: 8 }],
+  ["WRIT.RES.L06.02", "Note Cards", "One fact per card, in your own words, with its source", { after: "WRIT.RES.L06.01", std: "W.5.8", file: "CoreDataW4821", min: 8 }],
+  ["WRIT.RES.L06.03", "Source List", "List every source you used, with title and author", { after: "WRIT.RES.L06.02", std: "W.5.8", file: "CoreDataW4821", min: 7 }],
+  ["WRIT.ESSAY.L06.09", "Revise the Whole Thing", "Revise the whole piece for order and missing parts", { after: "WRIT.RES.L06.03", std: "W.5.5", file: "CoreDataW4821", min: 9 }],
+  ["WRIT.ESSAY.L06.10", "Peer Feedback", "Give a chavrusa one praise, one question, one push", { after: "WRIT.ESSAY.L06.09", std: "W.5.5", file: "CoreDataW4821", min: 8 }],
+  ["WRIT.RES.L09.04", "Works Cited", "List every source in one format, in ABC order, with a hanging indent", { before: "WRIT.RES.L09.03", std: "W.8.8", file: "CoreDataW4822", min: 8 }]
 ];
