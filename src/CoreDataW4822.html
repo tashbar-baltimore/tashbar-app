@@ -1,0 +1,149 @@
+<script>
+/* CoreDataW4822.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 8 (L09), Unit 4 "Research Paper". The new lesson Works Cited, and One Bite upgrades of the older lessons WRIT.RES.L09.01 and L09.02 (their questions, Teacher Time and How-to boxes stay). Cast: The Beacon newsroom. The sources are practice sources made up for these lessons.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.RES.L09.04':{name:'Works Cited',
+  teach:[
+    {how:'In Grade 7 you wrote ONE entry for one source. A research paper uses many sources, so it ends with a WORKS CITED list: a new page at the end, titled Works Cited, with one entry for every source you used in the paper. The order is ABC ORDER by the FIRST WORD of each entry. Most entries start with the author’s last name, so Abrams comes before Brandt, and Brandt before Delgado. Same first letters? Keep going, letter by letter: Brandt comes before Brooks, because a comes before o. The Beacon’s railroad paper used six sources. They are practice sources, made up for these lessons.', q:'Which entry comes first on the list?', o:['Abrams, Noah. Steam Comes to Maryland. Ridgeline Press, 2019.','Brandt, Jonah. The Race to the West. Chesapeake Press, 2016.','Yamada, Ken. Tracks over the Mountains. Harbor Lane Books, 2012.']},
+    {how:'Some sources have NO AUTHOR, like a page written by a museum’s staff. Then the entry starts with the TITLE: “The First Stone.” Maryland Rail Heritage Society, 3 July 2021. To place it, skip a first word A, An or The, and go by the next word. “The First Stone.” goes under F, so it comes after Delgado and before Pereira. “A Horse Beats an Engine.” goes under H. Never make up an author, and never move the site name to the front.', q:'Where does “The First Stone.” go on the list?', o:['under F, between Delgado and Pereira','under T, between Pereira and Yamada','at the top, because it has no author']},
+    {how:'ONE FORMAT for every entry. Every book: Author. Title. Publisher, year. Every web page: Author. “Page title.” Site, date. Last name first every time, every date written the same way (6 May 2022, never 5/6/22), and a period at the end of every entry. When an entry runs onto a second line, indent the second line: a HANGING INDENT, so the first word of each entry stands out. Two mistakes. OUT OF ABC ORDER: an entry in the wrong place, often a no-author entry filed under The. MIXED FORMATS: one entry written a different way, like the first name first or the date in another style. A CORRECT LIST is in ABC order, and every entry has the same format.', q:'Gavriel’s list. First: Brandt, Jonah. The Race to the West. Chesapeake Press, 2016. Then: Simon Delgado. “Why Baltimore Built a Railroad.” Patapsco History Center, 6 May 2022. Which is it: correct list, out of ABC order, or mixed formats?', o:['mixed formats','out of ABC order','correct list']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each entry: does it go by the author, or by the title?', bins:[{id:'A',label:'👤 Goes by the author'},{id:'T',label:'📄 No author: goes by the title'}],
+      items:[{label:'Abrams, Noah. Steam Comes to Maryland. Ridgeline Press, 2019.',bin:'A'},{label:'“The First Stone.” Maryland Rail Heritage Society, 3 July 2021.',bin:'T'},{label:'Delgado, Simon. “Why Baltimore Built a Railroad.” Patapsco History Center, 6 May 2022.',bin:'A'},{label:'“A Horse Beats an Engine.” Patapsco History Center, 12 Aug. 2020.',bin:'T'},{label:'Pereira, Mateo. Engines and Merchants. Tidewater Press, 2020.',bin:'A'},{label:'Yamada, Ken. Tracks over the Mountains. Harbor Lane Books, 2012.',bin:'A'}],
+      h:'Look at the very first word. Is it a last name with a comma after it? Or does the entry start with a title?'},
+    {t:'pairs', q:'Match each entry to the letter it is filed under.', pairs:[['“The First Stone.” Maryland Rail Heritage Society, 3 July 2021.','F'],['“A Horse Beats an Engine.” Patapsco History Center, 12 Aug. 2020.','H'],['Pereira, Mateo. Engines and Merchants. Tidewater Press, 2020.','P'],['Delgado, Simon. “Why Baltimore Built a Railroad.” Patapsco History Center, 6 May 2022.','D']],
+      h:'Find the first word. If it is A, An or The, skip it and use the next word.'},
+    {t:'spotall', q:'The railroad list uses one format. Tap every entry written in that SAME FORMAT.', cells:[{label:'Brandt, Jonah. The Race to the West. Chesapeake Press, 2016.',ok:true},{label:'Delgado, Simon. “Why Baltimore Built a Railroad.” Patapsco History Center, 6 May 2022.',ok:true},{label:'Yamada, Ken. Tracks over the Mountains. Harbor Lane Books, 2012.',ok:true},{label:'Mateo Pereira. Engines and Merchants. Tidewater Press, 2020.',ok:false},{label:'Abrams, Noah. Steam Comes to Maryland. 2019, Ridgeline Press.',ok:false},{label:'“The First Stone.” Maryland Rail Heritage Society, 7/3/21.',ok:false}],
+      h:'Check three things: last name first, the parts in order, and the date written like 6 May 2022.'},
+    {t:'sort', q:'Sneaky lists! Sort each one. (… means the rest of that entry is fine. → means the next entry on the list.)', bins:[{id:'G',label:'✅ Correct list'},{id:'O',label:'⚠️ Mistake: out of ABC order'},{id:'M',label:'⚠️ Mistake: mixed formats'}],
+      items:[{label:'Abrams, Noah. … → Brandt, Jonah. … → Delgado, Simon. …',bin:'G'},{label:'Delgado, Simon. … → Brandt, Jonah. …',bin:'O'},{label:'Pereira, Mateo. … → “The First Stone.” …',bin:'O'},{label:'Brandt, Jonah. The Race to the West. Chesapeake Press, 2016. → Simon Delgado. “Why Baltimore Built a Railroad.” Patapsco History Center, 6 May 2022.',bin:'M'},{label:'Delgado, Simon. … → “The First Stone.” … → Pereira, Mateo. …',bin:'G'},{label:'Delgado, Simon. “Why Baltimore Built a Railroad.” Patapsco History Center, 6 May 2022. → “The First Stone.” Maryland Rail Heritage Society, 7/3/21.',bin:'M'}],
+      h:'First check the ABC order of the first words (skip A, An, The). Then check that every entry is written the same way.'},
+    {t:'order', q:'Build the Works Cited list for the railroad paper. Tap the entries in ABC order.', tiles:['Abrams, Noah.','Brandt, Jonah.','Delgado, Simon.','“The First Stone.”','Pereira, Mateo.','Yamada, Ken.'], extra:['Noah Abrams.'],
+      h:'Go by the first word. “The First Stone.” goes under F. Leave out the entry with the first name first.'},
+    {t:'pairs', q:'Match each rule of a Works Cited list to what it means.', pairs:[['ABC order','by the first word of each entry'],['no author','start with the title; skip A, An, The'],['same format','every part, mark and date written alike'],['hanging indent','the second line of an entry moves in']],
+      h:'Which rule tells the order? Which tells where a no-author source goes? Which keeps the entries alike?'},
+    {t:'write', q:'Your turn to write. Write the Works Cited list for your own report, with at least three sources. Title it Works Cited. Put the entries in ABC order by their first word, and give every entry the same format.', min:0, checks:['🔤 My entries are in ABC order by their first word.','📄 An entry with no author goes by its title, skipping A, An, The.','📏 Every entry has the same format: last name first, the same marks, every date written alike.'], h:'Write each entry first. Circle its first word. Then copy the entries onto the list in ABC order. Indent each entry’s second line.'}
+  ],
+  check:[
+    {q:'Yoni’s list for his piece on the first trains: “A Horse Beats an Engine.” Patapsco History Center, 12 Aug. 2020. Then: Brandt, Jonah. The Race to the West. Chesapeake Press, 2016. Then: Delgado, Simon. “Why Baltimore Built a Railroad.” Patapsco History Center, 6 May 2022. Is it a correct list, out of ABC order, or mixed formats?', o:['out of ABC order','mixed formats','correct list'], h:'Skip A. Which letter does the first entry go under? Is that before B?'},
+    {q:'Eli’s list: Delgado, Simon. “Why Baltimore Built a Railroad.” Patapsco History Center, 6 May 2022. Then: “The First Stone.” Maryland Rail Heritage Society, 3 July 2021. Then: Pereira, Mateo. Engines and Merchants. Tidewater Press, 2020. Is it a correct list, out of ABC order, or mixed formats?', o:['correct list','out of ABC order','mixed formats'], h:'Circle the first words: Delgado, First, Pereira. Then check that every entry is written the same way.'},
+    {t:'order', q:'Build Benny’s Works Cited list. Tap the entries in ABC order.', tiles:['Brandt, Jonah.','Brooks, Caleb.','“A Horse Beats an Engine.”','Yamada, Ken.'], extra:['Ken Yamada.'], h:'Brandt and Brooks both start with Br: go letter by letter. Skip A and go by Horse.'}
+  ],
+  re:[
+    {how:'A new way: the school library shelves its books in ABC order by the author’s last name, so you walk straight to the right spot. A Works Cited list works the same way. A reader sees (Brandt 42) in your paper and goes straight to B.', q:'A reader sees (Brandt 42) in your paper. Where does he look?', o:['under B on the Works Cited list','at the top of the paper','under J, for Jonah']},
+    {how:'A simpler step: circle the first word of each entry. If it is A, An or The, circle the next word instead. Then put the circled words in ABC order.', q:'“The First Stone.” Which word do you circle?', o:['First','The','Stone']},
+    {how:'The skill underneath: Cite It (Grade 7). You wrote one entry for a book and one for a web page, with every part in order. Now you go further: you build the whole list, in ABC order, you file a source with no author by its title, and you keep one format for every entry.', q:'Cite It taught you to write…', o:['one entry, with every part in order','a whole list in ABC order','a thesis']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.RES.L09.04':{hook:'Six sources, one page. How does a reader find the one he wants?', big:'End the paper with a Works Cited list: one entry for each source, in ABC order by the first word, the same format for every entry.',
+    intro:['Title a new last page: Works Cited.','ABC order by the first word, usually the author’s last name.','No author? Go by the title, skipping A, An, The.','One format for every entry. Indent each entry’s second line.'],
+    ex:[{q:'Abrams, Brandt and Delgado.',steps:['Circle the first words.','A, B, D.'],a:'Abrams, then Brandt, then Delgado.'},
+        {q:'“The First Stone.” Maryland Rail Heritage Society, 3 July 2021.',steps:['No author: it goes by its title.','Skip The: it goes under F.'],a:'After Delgado, before Pereira.'}],
+    oops:{q:'Gavriel files the no-author page.',wrong:'“The First Stone.” filed under T, after Pereira.',right:'“The First Stone.” filed under F, before Pereira.',why:'Skip A, An and The. Go by the next word.'},
+    idea:['ABC order lets the reader jump from (Brandt 42) straight to B.'],
+    try:{q:'Benny’s list: Brooks, Caleb. … then Brandt, Jonah. …',o:['out of ABC order','correct list','mixed formats'],a:'out of ABC order',steps:['Both start with Br. Which comes first: a or o?']}},
+  };
+  var HOWTO = {
+  'WRIT.RES.L09.04':{s:'Title a new last page: Works Cited.\nWrite one entry for each source you used, all in the same format.\nCircle each entry’s first word. No author? Circle the title’s first word, skipping A, An, The.\nPut the entries in ABC order. Indent each entry’s second line.'},
+  };
+  var BITE = {
+  'WRIT.RES.L09.04':{ band:'M68', pic:'🗂️', today:'Put every source on one Works Cited list', why:'One neat list lets a reader find any source fast.',
+    ready:[{q:'In Cite It, a book entry starts with…', o:['the author, last name first','the title','the year','the publisher'], a:'the author, last name first'}],
+    bridge:'WRIT.RES.L08.04', bridgeName:'Cite It',
+    watch:{ q:'How does Gavriel build the Works Cited list for the railroad paper?', m:{type:'scene', e:'🗂️', t:'The editors used six sources (made up for practice). Gavriel puts them on one list.'}, steps:[
+      {t:'Title a new last page: Works Cited.'},
+      {t:'Circle each entry’s first word: Abrams, Brandt, Delgado.'},
+      {t:'No author? Use the title and skip The: First.'},
+      {t:'Put the first words in ABC order. Indent each second line.'},
+      {t:'Check: every entry has the same format, marks and dates.'},
+      {t:'Teach it back: tell your chavrusa where a no-author entry goes.'}], a:'ABC order by the first word, and the same format for every entry.' },
+    oops:{ q:'Gavriel files the no-author page.', wrong:'“The First Stone.” filed under T, after Pereira.', right:'“The First Stone.” filed under F, before Pereira.', why:'Skip A, An and The. Go by the next word.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can build a Works Cited list in ABC order, one format for every entry.',
+    board:{ one:'Works Cited: one entry per source, in ABC order by the first word (no author: the title, skipping A, An, The), all in the same format.', activity:'Chavrusas get entry cards, circle each first word, and line the cards up in ABC order; then they hunt for one entry in a different format.', mistakes:['Out of ABC order: a no-author entry filed under The','Mixed formats: one entry with the first name first','Mixed formats: dates written two different ways'] },
+    do:[
+      {type:'sort', q:'Sneaky titles! Which letter does each go under?', bins:['Under F','Under T'], cards:[['“The First Stone.”',0],['“Trains of Maryland.”',1],['“The Fast Line West.”',0],['Tobin, Asher.',1]], mis:true,
+        say:'Skip The. Then sort each entry.', how:'If the first word is The, use the next word.'},
+      {type:'tiles', q:'Put the first words in ABC order.', w:['Abrams','Brandt','Delgado'], extra:['Noah'],
+        say:'Put these last names in ABC order.', how:'A, then B, then D. Noah is a first name.'}],
+    your:[
+      {type:'match', pairs:[['Brandt, Jonah. The Race…','B'],['“The First Stone.” …','F'],['“A Horse Beats an Engine.” …','H'],['Yamada, Ken. Tracks…','Y']],
+        say:'Match each entry to the letter it goes under.', how:'Skip A, An and The. Use the next word.'},
+      {type:'sort', q:'Gavriel’s lists.', bins:['Correct list','Out of ABC order','Mixed formats'], cards:[['Abrams, then Brandt, then Delgado',0],['Delgado, then Brandt',1],['“The First Stone” filed under T',1],['one entry has the first name first',2],['one date written 5/6/22',2],['Delgado, “The First Stone,” Pereira',0]],
+        say:'Sort each list Gavriel tried.', how:'Order first. Then: is every entry written alike?'},
+      {type:'tiles', q:'Put these first words in ABC order.', w:['Brandt','First','Pereira','Yamada'], extra:['The'],
+        say:'Build the order of the railroad list.', how:'Skip The. Same letter? Go letter by letter.'},
+      {type:'match', pairs:[['ABC order','by the first word'],['no author','start with the title'],['same format','every entry alike'],['hanging indent','second line moves in']],
+        say:'Match each list rule to what it means.', how:'Which rule tells order, place or look?'},
+      {type:'sort', q:'Does it match the list’s format?', bins:['Same format','Mixed format'], cards:[['Pereira, Mateo. Engines and Merchants. Tidewater Press, 2020.',0],['Mateo Pereira, Engines and Merchants, 2020',1],['Abrams, Noah. Steam Comes to Maryland. Ridgeline Press, 2019.',0],['Steam Comes to Maryland, by Noah Abrams',1]],
+        say:'Same format as the list? Sort each entry.', how:'Last name first? Parts in order? Same marks?'}] }
+  };
+  var UPGRADE_BITE = {
+  'WRIT.RES.L09.01':{ band:'M68', pic:'🚂', today:'Find primary and secondary sources, then judge each one', why:'A research paper needs voices from back then and experts from now.',
+    ready:[{q:'In Check the Source, a writer who gains if you believe him is…', o:['one-sided','out of date','accurate','a second source'], a:'one-sided'}],
+    bridge:'WRIT.PARA.L08.02', bridgeName:'Check the Source',
+    watch:{ q:'How does Akiva find sources for The Beacon’s railroad paper?', m:{type:'scene', e:'🚂', t:'The editors’ final paper asks: Why did Baltimore build the B&O Railroad? (The sources are made up for practice.)'}, steps:[
+      {t:'Primary source: made back then, by someone there. A merchant’s 1827 letter.'},
+      {t:'Secondary source: written later. Brandt’s 2016 history book.'},
+      {t:'Who stands behind a site? .gov is the government, .edu a college.'},
+      {t:'A train-ride ad is trying to sell: biased, less reliable. Check carefully.'},
+      {t:'Two sources disagree on a year? Check a third reliable source.'},
+      {t:'Teach it back: tell your chavrusa primary versus secondary, with one example.'}], a:'Use both kinds. A more reliable source has an expert, is up to date, and is not selling.' },
+    oops:{ q:'Yoni’s label.', wrong:'Brandt’s 2016 book about 1828 is a primary source.', right:'Brandt’s 2016 book is a secondary source: it was written later.', why:'Primary depends on when it was made, not on what it is about.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can find primary and secondary sources and judge each one.',
+    board:{ one:'Primary sources come from back then; secondary sources explain it later. Judge each one: expert, up to date, not selling; more reliable or less reliable.', activity:'Chavrusas get a stack of made-up source cards and sort them twice: primary or secondary, then reliable or check carefully.', mistakes:['Calling a new book about old events a primary source','Trusting a source that is trying to sell','Picking the answer you like when two sources disagree'] },
+    do:[
+      {type:'sort', q:'Sneaky dates! When was each one made?', bins:['Primary source','Secondary source'], cards:[['a merchant’s letter, 1827',0],['a 2016 book about 1828',1],['the newspaper of July 5, 1828',0],['a 2022 web page about 1830',1]], mis:true,
+        say:'Back then, or written later? Sort each source.', how:'Look at when it was made, not what it is about.'},
+      {type:'match', pairs:[['.gov','the government'],['.edu','a college'],['.com','a business']],
+        say:'Match each web ending to who stands behind it.', how:'gov = government, edu = education, com = company.'}],
+    your:[
+      {type:'tiles', q:'Build the rule for a primary source.', w:['A primary','source was','made back','then.'], extra:['later.'],
+        say:'Build the rule for a primary source.', how:'Who made it? When? Back then, by someone there.'},
+      {type:'sort', q:'Sources for the railroad paper.', bins:['Reliable','Check carefully'], cards:[['a history professor’s book',0],['the state archive’s .gov page',0],['an anonymous page, no author',1],['Sponsored: steam train rides',1],['a 1975 price list, used for today’s fares',1],['a university study of the B&O',0]],
+        say:'Reliable, or check carefully? Sort each source.', how:'An expert? Up to date? Trying to sell?'},
+      {type:'match', pairs:[['what people said in 1827','a merchant’s letter'],['why the plan worked','a historian’s book'],['today’s train schedule','the current railroad website']],
+        say:'Match each research need to its best source.', how:'Back then? Explained later? Up to date now?'},
+      {type:'tiles', q:'Two sources give 1828 and 1838. Build the fix.', w:['Check','a third','reliable','source.'], extra:['Pick one'],
+        say:'Two sources disagree. Build what you do next.', how:'Do not pick the one you like. Check a third reliable source.'},
+      {type:'sort', q:'Sources from back then and now.', bins:['Trying to sell','Just giving facts'], cards:[['an 1828 ad selling railroad shares',0],['an 1830 flyer for B&O rides',0],['the state archive’s list of 1830 stops',1],['a historian’s timeline of the B&O',1]],
+        say:'Old or new, does it gain if you buy? Sort it.', how:'A source from back then can be selling too.'}] },
+  'WRIT.RES.L09.02':{ band:'M68', pic:'✍️', today:'Paraphrase without changing the meaning, then cite it', why:'A paraphrase must say what the source said, and show where it came from.',
+    ready:[{q:'In No Copying, a source sentence with a few words changed is…', o:['a word swap','own words','a quote','a citation'], a:'a word swap'}],
+    bridge:'WRIT.RES.L08.03', bridgeName:'No Copying',
+    watch:{ q:'How does Eli use Brandt’s book in the railroad paper?', m:{type:'scene', e:'✍️', t:'Brandt, page 42: merchants feared the Erie Canal would carry the western trade to New York.'}, steps:[
+      {t:'Read the sentence until you understand it. Then cover it.'},
+      {t:'Write it from memory: your own words and your own shape.'},
+      {t:'Check: same meaning? Same numbers? Not still copying?'},
+      {t:'Cite it: (Brandt 42) at the end, or “According to Brandt,” first.'},
+      {t:'Five exact words? Quotation marks, and still cite. No credit is plagiarism.'},
+      {t:'Teach it back: tell your chavrusa the five steps, ending with cite.'}], a:'Same meaning, your words, a citation: honest use of a source. Some teachers use (Author, Year). Use one style for the whole paper.' },
+    oops:{ q:'Akiva’s note.', wrong:'Merchants hoped the canal would bring the western trade to Baltimore (Brandt 42).', right:'Merchants feared the canal would pull the western trade to New York (Brandt 42).', why:'Changed the meaning. A citation does not fix a wrong paraphrase.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can paraphrase without changing the meaning, and cite it.',
+    board:{ one:'A true paraphrase keeps the meaning in your own words and shape. Cite it in parentheses: (Brandt 42).', activity:'One chavrusa reads a source sentence and covers it; the other paraphrases it; together they check the meaning and add the citation.', mistakes:['Still copying: his sentence with a word or two changed','Changed the meaning: a number or a cause went wrong','No citation after a paraphrase'] },
+    do:[
+      {type:'sort', q:'Source: horses pulled the first B&O cars in 1830.', bins:['True paraphrase','Mistake: still copying'], cards:[['Horses dragged the first B&O cars in 1830.',1],['In 1830, the B&O’s first cars ran on horse power.',0],['Horses pulled the first B&O cars in 1830.',1],['The B&O started in 1830 with cars drawn by horses.',0]], mis:true,
+        say:'True paraphrase, or still copying? Sort each note.', how:'His sentence with a word changed is still copying.'},
+      {type:'match', pairs:[['(Brandt 42)','an author and a page'],['(Brandt, 2016)','an author and a year'],['(Delgado)','a web page with no pages'],['(“First Stone”)','no author: a short title']],
+        say:'Match each short citation to what it shows.', how:'Each one names the source. Some teachers add the year.'}],
+    your:[
+      {type:'tiles', q:'You read it and covered it. Finish the steps.', w:['Write it,','check it,','then cite.'], extra:['swap words,'],
+        say:'Finish the paraphrase steps in order.', how:'Write from memory, check the meaning, then give credit.'},
+      {type:'sort', q:'Source: merchants feared the canal would carry the trade to New York.', bins:['True paraphrase','Still copying','Changed the meaning'], cards:[['The canal worried Baltimore’s merchants: trade might go to New York.',0],['Merchants feared the canal would take the trade to New York.',1],['Merchants hoped the canal would bring trade to Baltimore.',2],['Trade heading to New York by canal worried Baltimore’s business owners.',0],['Merchants feared the new canal would carry trade to New York.',1],['Merchants built the canal to send trade to New York.',2]],
+        say:'Sort each note Eli tried.', how:'His words? Then copying. Wrong idea? Then changed meaning.'},
+      {type:'match', pairs:[['paraphrase','same meaning, your words'],['citation','tells where it came from'],['quotation marks','show exact words'],['plagiarism','using work with no credit']],
+        say:'Match each research word to its meaning.', how:'Own words, credit, exact words, or no credit?'},
+      {type:'tiles', q:'Build Akiva’s cited sentence.', w:['The canal','worried','merchants','(Brandt 42).'], extra:['(a book).'],
+        say:'Build the sentence with its citation at the end.', how:'The citation goes last, before the period.'},
+      {type:'sort', q:'For the railroad paper.', bins:['Needs a citation','No citation needed'], cards:[['the 1828 date from Brandt’s book',0],['your paraphrase of Delgado',0],['five words copied from a page',0],['your opinion of trains',1],['what you ate today',1]],
+        say:'Does it need a citation? Sort each one.', how:'Did a fact, idea or words come from a source?'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('W48', { bite: UPGRADE_BITE });
+})();
+</script>
