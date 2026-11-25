@@ -57,5 +57,9 @@ CORE_SKILLS.C45 = [
   ["READ.LIT.L05.07", "What the Narrator Knows", "Tell what an I narrator can and cannot know", { after: "READ.COMP.L05.21", std: "RL.4.6", file: "CoreDataC4511", min: 8 }],
   ["READ.COMP.L05.22", "Firsthand or Secondhand?", "Tell if the writer was there or heard it from others", { std: "RI.4.6", file: "CoreDataC4511", min: 8 }],
   ["READ.COMP.L05.23", "Two Accounts, One Event", "Compare a firsthand and a secondhand account of one event", { std: "RI.4.6", file: "CoreDataC4511", min: 8 }],
-  ["READ.FLU.L05.05", "Does It Make Sense?", "Notice a misread, fix it and reread", { std: "RF.4.4c", file: "CoreDataC4511", min: 8 }]
+  ["READ.FLU.L05.05", "Does It Make Sense?", "Notice a misread, fix it and reread", { std: "RF.4.4c", file: "CoreDataC4511", min: 8 }],
+  ["READ.COMP.L06.16", "Skim and Scan", "Find the answer fast with headings and key words", { after: "READ.COMP.L06.15", std: "RI.5.7", file: "CoreDataC4514", min: 8 }],
+  ["READ.COMP.L06.17", "Which Source?", "Pick the source that answers your question", { std: "RI.5.7", file: "CoreDataC4514", min: 8 }],
+  ["READ.COMP.L06.18", "Read the Table", "Read a table or graph inside an article", { std: "RI.5.7", file: "CoreDataC4514", min: 8 }],
+  ["READ.LIT.L06.14", "Pictures and Sound", "Tell what pictures and sound add to a story", { std: "RL.5.7", file: "CoreDataC4514", min: 8 }]
 ];
