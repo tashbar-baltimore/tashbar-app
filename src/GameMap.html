@@ -561,13 +561,17 @@ function pick(ws){ const live=ws.filter(w=>w.now); return live.find(w=>!doneToda
 function rankOf(n){ let r=RANKS[0],nx=null; for(let i=0;i<RANKS.length;i++){ if(n>=RANKS[i][0]){ r=RANKS[i]; nx=RANKS[i+1]||null; } } return {r,nx}; }
 function steps(){ const sk=(A.st&&A.st.skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m).length; }
 function money(){ const b=Number(A.st&&A.st.balance)||0; return '$'+b.toFixed(2); }
+/* INFORMATION (button system step 5, HoS 2026-11-23 "Information is never a button"): every label a boy reads is a kit pill or box,
+   one color per meaning (money green, progress blue, do-this-now yellow, rank violet, locked gray, subject pink). No shadow, outline or hand pointer. */
+function pill(k,t){ return window.TLK?TLK.pill(k,t):'<span class="gm-lbl">'+esc(t)+'</span>'; }
+function box(k,l,v){ return window.TLK?TLK.box(k,l,v):'<span class="gm-lbl">'+esc(l)+' '+esc(v)+'</span>'; }
 function pfOn(){ const c=document.querySelector('.pf-card'); return !!(c&&c.style.display!=='none'&&c.querySelector('button')); }
 /* SIMPLE HOME (HoS 2026-11-23: "much simpler ... clear and clean and helpful and big"): the top shows only his money; rank and XP live in Trophies */
 /* BACK (HoS 2026-11-24): a page he reached from another menu page gets the kit's Back top left (K-3: arrow + "Back"); it returns to that page */
 function backHTML(){ if(!GM.from||!window.TLK) return ''; const g=M()&&M().grade; return TLK.back('data-gm="gmback"','',TLK.young(g)); }
 /* HOUSE (HoS 2026-11-23, button system step 2): every full page leaves by the kit's house top left (K-3: house + "Home"), after Back; it replaced the big HOME bar (#gm-nav) */
 function houseHTML(){ const g=M()&&M().grade; return window.TLK?TLK.home('data-gmnav="home"','',TLK.young(g)):'<button type="button" class="gm-chip" data-gmnav="home" aria-label="Home">🏠</button>'; }
-function hud(){ return `<div class="gm-hud">${backHTML()}${houseHTML()}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>`; }
+function hud(){ return `<div class="gm-hud">${backHTML()}${houseHTML()}<span class="gm-mny" role="img" aria-label="My money ${money()}">${pill('money',money())}</span></div>`; }
 function hudOld(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>
@@ -583,17 +587,17 @@ function subjectsHTML(ws){ const cur=GM.world;
 function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\s+/)[0]||'', h=new Date().getHours(), hi=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
  const live=P.rounds.findIndex(r=>!r.won&&r.w), lw=live>=0?P.rounds[live].w:null;
  const dots=P.rounds.length?`<span class="dots" aria-hidden="true">${P.rounds.map(r=>`<i class="${r.won?'on':''}"></i>`).join('')}</span>`:'';
- const line=!ws.length?'Your map is almost ready.':P.rounds.length?(P.open?'All your work is done today! ✓':`${P.done} of ${P.total||ROUNDS} done today`):'Every world is cleared!';
+ const line=!ws.length?'Your map is almost ready.':P.rounds.length?(P.open?pill('prog','All your work is done today!'):pill('prog',`${P.done} of ${P.total||ROUNDS} done today`)):'Every world is cleared!';
  const tile=(cls,ic,name,sub,attr,badge)=>`<button type="button" class="gm-ht ${cls}" ${attr}><span class="top" aria-hidden="true"><span class="ic">${ic}</span></span>${badge?`<span class="bdg">${badge}</span>`:''}<span class="bot"><b>${name}</b><small>${sub}</small></span></button>`;
  let tiles='';
  if(ws.length){
   const wsub=lw?`${P.list?'Next':'Round '+(live+1)}: ${esc(lw.name)} · ${esc(nm(lw.now)[0])}`:P.open?'All done! Play more if you like.':P.list?'Open to see your list':'Every world is cleared!';
-  tiles+=tile('work'+(lw?' now':''),'✏️','My work',wsub,'data-gmnav="missions"',lw?'▶ DO THIS NOW':P.open?'✓ DONE':'');
-  const p=pick(ws); tiles+=tile('map','🗺️','My map',p?`${esc(p.name)} · Level ${p.level}`:'Your levels','data-gmnav="map"');
+  tiles+=tile('work'+(lw?' now':''),'✏️','My work',wsub,'data-gmnav="missions"',lw?pill('now','Do this now'):P.open?pill('prog','Done'):'');
+  const p=pick(ws); tiles+=tile('map','🗺️','My map',p?pill('subj',`${p.name} · Level ${p.level}`):'Your levels','data-gmnav="map"');
  }
  tiles+=tile('food','🥪','Canteen','Buy food with your money','data-cno="open"');   /* HoS 2026-11-23: opens the 3D canteen (CanteenKid.html): buy food, get canteen money, money story, money lessons */
- tiles+=tile('store','🛍️','Store',`You have <b>${money()}</b>`,'data-gmnav="money"');
- tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':'🔒');
+ tiles+=tile('store','🛍️','Store',pill('money','You have '+money()),'data-gmnav="money"');
+ tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':pill('lock','Locked'));
  tiles+=tile('things',pfAv('pr-tav'),'My profile','Badges, levels, my stuff','data-gmnav="more"');   /* HoS 2026-11-24: My things became My profile (his picture on the tile) */
  return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
 /* ===== MY PROFILE (HoS 2026-11-24, boss cleared the general page; mock-up from Claude Chat): "My things" became "My profile".
@@ -763,15 +767,15 @@ function sheet(id,st){ const g=root(), old=g.querySelector('.gm-sheet'); if(old)
 function learnLine(n){ if(!n[1]) return ''; if(/ Level \d+$/.test(n[1])) return `<div class="learn">🧠 Real skill: <b>${esc(n[0])}</b> · ${esc(n[1])}</div>`; return `<div class="learn">🧠 You'll learn: <b>${esc(n[1])}</b></div>`; }
 function lcGoalHTML(w,isPick,lc){ const n=nm(w.now), L=lc.L, sub=w.name;
  const say=`Level check first. ${sub} Level ${L}. About ${lc.min} minutes. Questions you get right are skills you skip, and taking it unlocks full pay at this level. Tap Play to start!`;
- return `<div class="gm-goal gm-lcg" aria-label="Level check first"><div class="k"><span>🎫 LEVEL CHECK · ${esc(sub).toUpperCase()} LEVEL ${L}</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>🎫 Level Check</h1><div class="learn">⏭ <b>Skip what you know</b> · 💵 <b>unlock full pay</b> at Level ${L}</div><div class="m">About ${lc.min} minutes · then: ${esc(n[0])}</div>
+ return `<div class="gm-goal gm-lcg" aria-label="Level check first"><div class="k">${pill('subj','Level check · '+sub+' Level '+L)}${isPick?pill('now',"Today's pick"):''}</div><h1>🎫 Level Check</h1><div class="learn">⏭ <b>Skip what you know</b> · 💵 <b>unlock full pay</b> at Level ${L}</div><div class="m">About ${lc.min} minutes · then: ${esc(n[0])}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">Read it to me<span class="ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="18.5"/><circle class="bar" cx="20" cy="20" r="18.5" stroke-dasharray="116.24" stroke-dashoffset="116.24"/></svg><span class="dot"><span class="tri"></span><span class="sq"></span></span></span></button></div></div>`; }
 function goalHTML(w,isPick){
  const lc=lcOf(w); if(lc) return lcGoalHTML(w,isPick,lc);
  if(!w.now) return `<div class="gm-goal"><div class="gm-done">🏆 ${esc(w.name)} unit cleared!<small>Your rebbe or teacher opens your next unit. Pick another world above, or tap 📚 Learn.</small></div></div>`;
  const n=nm(w.now), left=w.ids.length-w.ids.indexOf(w.now)-1, isBoss=left===0;
- const meta=isBoss?`🏰 BOSS LEVEL! Beat it to finish ${esc(w.unitName)}`:`${esc(w.name)} · Level ${w.level} · ${left} level${left===1?'':'s'} to the BOSS 🏰`;
+ const meta=isBoss?pill('now','Boss level')+' Beat it to finish '+esc(w.unitName):pill('subj',w.name+' · Level '+w.level)+pill('prog',left+' level'+(left===1?'':'s')+' to the boss');
  const say=`Your next level: ${n[0]}.${n[1]?(/ Level \d+$/.test(n[1])?' A real '+n[1]+' skill.':' You will learn: '+n[1]+'.'):''} Tap Play to start!`;
- return `<div class="gm-goal" aria-label="Your next level"><div class="k"><span>⚡ YOUR NEXT LEVEL</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
+ return `<div class="gm-goal" aria-label="Your next level"><div class="k">${pill('now','Your next level')}${isPick?pill('now',"Today's pick"):''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">Read it to me<span class="ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="18.5"/><circle class="bar" cx="20" cy="20" r="18.5" stroke-dasharray="116.24" stroke-dashoffset="116.24"/></svg><span class="dot"><span class="tri"></span><span class="sq"></span></span></span></button></div></div>`; }
 /* ONE BUTTON, ONE JOB (HoS 2026-11-21, simplify step 3): 4 tabs (K-2: 3). Arcade, all lessons, skill tree, My Stuff and Pathfinder sit on
    ONE "More" page; Money opens from the money chip at the top (one door, not two). */
@@ -799,16 +803,16 @@ function missionsHTML(ws){ const P=plan(ws), wk=weekCounts(), pk=pick(ws), picks
  const toBoss=pk&&pk.now?pk.ids.length-pk.ids.indexOf(pk.now)-1:0;
  let rows='', live=null;
  P.rounds.forEach((r,i)=>{ const num=i+1;
-  if(r.won){ const lc=/^LEVELCHECK\./.test(String(r.id)), n=lc?['Level check passed: you already knew it','']:nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐',r.name||'']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">${P.list?'':'ROUND '+num+' · '}${esc(String(P.list&&r.name?r.name:(W[1]||'')).toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">${P.list?'DONE':'CLEARED'}<br>⭐⭐⭐</div></div>`; return; }
-  if(!r.w){ rows+=`<div class="gm-rd"><div class="n">${num}</div><div class="t">${esc(String(r.name||'').toUpperCase())}<small>Nothing left at your level today. Tell your rebbe!</small></div><div class="p">ASK</div></div>`; return; }
+  if(r.won){ const lc=/^LEVELCHECK\./.test(String(r.id)), n=lc?['Level check passed: you already knew it','']:nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐',r.name||'']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">${P.list?'':'ROUND '+num+' · '}${esc(String(P.list&&r.name?r.name:(W[1]||'')).toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">${pill('prog',P.list?'Done':'Cleared')}</div></div>`; return; }
+  if(!r.w){ rows+=`<div class="gm-rd"><div class="n">${num}</div><div class="t">${esc(String(r.name||'').toUpperCase())}<small>Nothing left at your level today. Tell your rebbe!</small></div><div class="p">${pill('now','Ask your rebbe')}</div></div>`; return; }
   const w=r.w, n=nm(w.now), isLive=!live; if(isLive) live=w;
-  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="${P.list?esc(r.name||w.name):'Round '+num+': '+esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">${P.list?esc(String(r.name||w.name).toUpperCase()):'ROUND '+num+' · '+esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?'YOUR<br>TURN!':'NEXT'}</div></button>`; });
- picks.forEach(p=>{ const n=nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id); rows+=`<button type="button" class="gm-rd rebbe" data-gm="play" data-id="${esc(p.id)}"><div class="n">📌</div><div class="t">FROM ${esc(String(p.by||'YOUR REBBE').toUpperCase())}<small>${esc(n)}</small></div><div class="p">PICKED<br>FOR YOU</div></button>`; });
- rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':P.list?'Finish your list → 🎮 Arcade opens + daily bonus ✓':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?'OPEN':'🔒'}</div></button>`:'';
- const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
+  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="${P.list?esc(r.name||w.name):'Round '+num+': '+esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">${P.list?esc(String(r.name||w.name).toUpperCase()):'ROUND '+num+' · '+esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?pill('now','Your turn'):pill('prog','Next')}</div></button>`; });
+ picks.forEach(p=>{ const n=nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id); rows+=`<button type="button" class="gm-rd rebbe" data-gm="play" data-id="${esc(p.id)}"><div class="n">📌</div><div class="t">FROM ${esc(String(p.by||'YOUR REBBE').toUpperCase())}<small>${esc(n)}</small></div><div class="p">${pill('now','Picked for you')}</div></button>`; });
+ rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':P.list?'Finish your list → 🎮 Arcade opens + daily bonus ✓':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?pill('prog','Open'):pill('lock','Locked')}</div></button>`:'';
+ const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal ${pill('prog',Math.min(ch.days||0,ch.need)+' of '+ch.need+' days this week')}${ch.paid?pill('prog','Opened'):''}</div>`:'';
  const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ ${P.list?'Next':'Play round '+(P.done+1)}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
  const TOT=P.total||ROUNDS, KICK=P.list?"TODAY'S LIST":'MY WORK TODAY';
- const head=P.open?`<div class="s">${KICK}</div><h1>All done! ✓</h1><small>${P.list?(P.rounds.length?'Your whole list is done today. Every extra level still counts!':'Nothing on your list today: every world is cleared!'):'All '+ROUNDS+' rounds cleared today. Every extra level still counts!'}</small>`:`<div class="s">${KICK}</div><h1>${P.rounds.length?P.done+' of '+TOT+' done':'All clear!'}</h1><small>${P.rounds.length?(P.list?(P.left?P.left+' more to go. Tap Next.':'Saving your work…'):'Round '+(P.done+1)+' is next. Tap Play.'):'No rounds today: every world is cleared!'}</small>`;
+ const head=P.open?`<div class="s">${KICK}</div><h1>All done!</h1><small>${P.list?(P.rounds.length?'Your whole list is done today. Every extra level still counts!':'Nothing on your list today: every world is cleared!'):'All '+ROUNDS+' rounds cleared today. Every extra level still counts!'}</small>`:`<div class="s">${KICK}</div><h1>${P.rounds.length?P.done+' of '+TOT+' done':'All clear!'}</h1><small>${P.rounds.length?(P.list?(P.left?P.left+' more to go. Tap Next.':'Saving your work…'):'Round '+(P.done+1)+' is next. Tap Play.'):'No rounds today: every world is cleared!'}</small>`;
  return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>${chest}${cta}`; }
 function arcadeHTML(ws){ const P=plan(ws);
  return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>${P.list?`Finish ${P.left} more thing${P.left===1?'':'s'} on today's list to open the Arcade!`:`Clear ${P.left} more round${P.left===1?'':'s'} of your work to open the Arcade!`}</p></div>
@@ -870,16 +874,16 @@ function dayWord(at){ const d=new Date(at), t=new Date(), y=new Date(t.getFullYe
  return d.toDateString()===t.toDateString()?'Today':d.toDateString()===y.toDateString()?'Yesterday':d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'}); }
 function moneyHTML(){ const L=((A.st&&A.st.ledger)||[]).filter(x=>x&&x.at), d0=new Date(), td=d0.toDateString(), wk0=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate()-d0.getDay()).getTime();
  const today=L.filter(x=>new Date(x.at).toDateString()===td&&x.amt>0).reduce((a,x)=>a+Number(x.amt),0), week=L.filter(x=>x.at>=wk0&&x.amt>0).reduce((a,x)=>a+Number(x.amt),0);
- const dow=d0.getDay(), pay=dow===4||dow===5?'🎉 It\'s PAYDAY! Your week\'s money is ready to use.':'📅 Payday is Thursday and Friday.';
- const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="mm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
+ const dow=d0.getDay(), pay=dow===4||dow===5?pill('now','Payday today')+' Your week\'s money is ready to use.':pill('money','Payday is Thursday and Friday');
+ const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="mm-chest">🎁 Treasure chest: daily goal ${pill('prog',Math.min(ch.days||0,ch.need)+' of '+ch.need+' days this week')}${ch.paid?pill('prog','Opened'):''}</div>`:'';
  const bal=Number(A.st&&A.st.balance)||0, I=storeInfo(), S=(A.st&&A.st.store)||{}, gi=S.goal&&I&&(I.items||[]).find(x=>x.id===S.goal);
  const save=gi?`<span class="d">My goal: <b>${esc(gi.emoji||'')} ${esc(gi.name)}</b><br>${usd(Math.min(bal,gi.cents/100))} of ${usd(gi.cents/100)}${bal>=gi.cents/100?' · you can buy it! 🎉':''}</span><span class="bar"><i style="width:${Math.min(100,Math.round(bal/(gi.cents/100)*100))}%"></i></span><span class="go">See my goal ›</span>`
   :S.goal?`<span class="d">You have a goal. Tap to see how close you are.</span><span class="go">See my goal ›</span>`:`<span class="d">Pick something you want, and watch your money grow toward it.</span><span class="go">Pick a goal ›</span>`;
  const all=GM.mstory==='all', run0=bal; let run=run0; const rowsAll=L.map(x=>{ const r={x,after:run}; run-=Number(x.amt)||0; return r; });
- const rows=(all?rowsAll:rowsAll.filter(r=>r.x.at>=wk0)).slice(0,all?60:30).map(r=>`<div class="r"><small>${esc(dayWord(r.x.at))}</small><span>${esc(whyText(r.x.why))}</span><b class="${r.x.amt<0?'m':'p'}">${r.x.amt<0?'−':'+'}${usd(r.x.amt)}</b><em>${usd(r.after)}</em></div>`).join('')
+ const rows=(all?rowsAll:rowsAll.filter(r=>r.x.at>=wk0)).slice(0,all?60:30).map(r=>`<div class="r"><small>${esc(dayWord(r.x.at))}</small><span>${esc(whyText(r.x.why))}</span><b class="${r.x.amt<0?'m':'p'}">${pill('money',(r.x.amt<0?'−':'+')+usd(r.x.amt))}</b><em>${usd(r.after)}</em></div>`).join('')
   ||`<div class="r none">${all?'💵 Nothing yet. Clear a level to earn your first money!':'Nothing this week yet. Clear a level to earn money!'}</div>`;
  const owned=(I&&(I.items||[]).filter(x=>(S.owned||[]).indexOf(x.id)>=0||(I.owned&&I.owned[x.id])).length)||((S.owned||[]).length), waiting=I&&(I.orders||[]).filter(o=>o.status==='waiting').length;
- return `<div class="mm"><div class="mm-bal"><div><div class="k">💰 MY MONEY</div><b>${money()}</b><div class="sub">${today>0?'+'+usd(today)+' today · ':''}${week>0?'+'+usd(week)+' this week':'Earned by mastering skills'}</div></div><div class="pay">${pay}</div></div>${chest}
+ return `<div class="mm"><div class="mm-bal">${box('money','My money',money())}<div class="sub">${today>0?pill('money','+'+usd(today)+' today'):''}${week>0?pill('money','+'+usd(week)+' this week'):'Earned by mastering skills'}</div><div class="pay">${pay}</div></div>${chest}
  <h2 class="mm-h">What can I do with my money?</h2>
  <div class="mm-four">
   <button type="button" class="mm-c spend" data-st="open" data-t="fun"><span class="i">🛍️</span><span class="t">Spend</span><span class="d">Fun upgrades for the app, or a real prize your rebbe hands you.</span><span class="go">Open the Store ›</span></button>
@@ -998,7 +1002,7 @@ function sync(){
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
  const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>
- <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${esc(cur.name)} · Level ${cur.level}${cur.isK?'':' unit'}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?l+' TO 🏰':'🏰 BOSS NOW!'; })():'✓ CLEARED'}</div>${GM.view==='tree'?'<button type="button" class="gm-chg" data-gm="tree">🗺️ Back to my path</button>':ws.length>1?'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>':''}</div>
+ <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${pill('subj',cur.name+' · Level '+cur.level)}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?pill('prog',l+' to the boss'):pill('now','Boss now!'); })():pill('prog','Cleared')}</div>${GM.view==='tree'?'<button type="button" class="gm-chg" data-gm="tree">🗺️ Back to my path</button>':ws.length>1?'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>':''}</div>
  ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play gm-play2" data-gm="play" data-id="${esc(cur.now)}">▶ Play<small>${esc(nm(cur.now)[0])}</small></button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
@@ -1226,6 +1230,23 @@ body #gm .gm-more{background:#fff;color:#047857}
 #gm .gm-ht .ic .pr-tav{display:grid;place-items:center;width:1.5em;height:1.5em;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.45);font-size:.82em;line-height:1}
 @media (max-width:860px){#gm .pr-cols{grid-template-columns:1fr}#gm .pr-tiles{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){#gm .pr-shelves,#gm .pr-two{grid-template-columns:1fr}#gm .pr-li{flex-wrap:wrap}}
+/* INFORMATION ON THE KIT (button system step 5): the labels on the home tiles, My map, My work and the money page are kit pills and boxes.
+   Their holders are flat (no shadow, no outline), so nothing a boy only reads looks like something to tap. The money by the house is a pill, not a button. */
+#gm .gm-hud .gm-mny{display:inline-flex;flex:none}#gm .gm-hud .gm-mny .tlk-pill{font-size:16px;padding:7px 12px}
+#gm .gm-ht .bdg,#gm .gm-ht.work.now .bdg{background:none;box-shadow:none;padding:0;border-radius:0;letter-spacing:0}
+#gm .gm-ht .bdg .tlk-pill{font-size:14px;padding:6px 10px}
+#gm .gm-ht .bot small .tlk-pill{font-size:15px;white-space:normal}
+#gm .gm-hi p .tlk-pill{font-size:17px;padding:5px 12px}
+#gm .gm-unit small .tlk-pill{margin-top:4px}
+#gm .gm-goal .k{justify-content:flex-start;gap:8px;flex-wrap:wrap;letter-spacing:.06em}
+#gm .gm-goal .m{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#gm .gm-rd .p .tlk-pill{white-space:nowrap}
+body #gm .gm-chest,body #gm .mm-chest{background:none!important;border:0!important;padding:4px 0!important;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+body #gm .mm-bal{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;color:#1E1B4B!important;align-items:center;gap:10px}
+#gm .mm-bal .tlk-box{padding:12px 22px;text-align:left}#gm .mm-bal .tlk-box b{font-size:40px;line-height:1.05}
+#gm .mm-bal .sub{display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:#4B4880;margin:0}
+#gm .mm-bal .pay{background:none!important;padding:0;color:#4B4880;display:flex;flex-wrap:wrap;gap:6px;align-items:center;max-width:none}
+#gm .mm-story .r b .tlk-pill{font-size:15px}
 /* his picture by Workbook (outside #gm, like Workbook): round, the kit's floating look; Workbook steps left to make room */
 #pr-av{position:fixed;right:52px;top:calc(env(safe-area-inset-top) + 11px);z-index:60;width:44px;height:44px;padding:0;border-radius:50%;border:1.5px solid #E6E2F7;background:#fff;box-shadow:0 8px 20px rgba(30,27,75,.14),0 1px 3px rgba(30,27,75,.10);cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent;transition:box-shadow .15s,transform .12s}
 #pr-av:active{box-shadow:0 1px 3px rgba(30,27,75,.14);transform:translateY(2px)}#pr-av:focus-visible{outline:3px solid #FDE047;outline-offset:3px}

@@ -166,6 +166,7 @@ body.oh-sky #ar-ov{right:var(--skyw,96px)}
 #ar-ov .rv .rq{font:900 22px/1.3 'Fredoka',system-ui;unicode-bidi:plaintext}#ar-ov .rv .rp{font:700 30px 'Frank Ruhl Libre',serif;direction:rtl;text-align:center}
 #ar-ov .rv .ra{display:inline-block;margin-top:8px;background:#d9ffe1;color:#0b6b2b;border-radius:12px;padding:6px 12px;font:900 20px system-ui;unicode-bidi:plaintext}
 #ar-ov .pts{display:inline-block;background:#ffd23f;color:#2a0f6b;border-radius:999px;padding:6px 16px;font:900 20px system-ui;margin:3px;box-shadow:0 4px 0 #b97f00}
+#ar-ov .arstat{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0}#ar-ov .arstat .tlk-pill,#ar-ov .tro .tlk-pill{font-size:16px;padding:6px 12px}#ar-ov .tro span.tlk-pill{border:0;border-radius:8px;background:var(--tlk-rank-bg);color:var(--tlk-rank-fg)}
 #ar-ov .tro{display:flex;flex-wrap:wrap;gap:8px}#ar-ov .tro span{background:#ffffff1f;border:2px solid #ffffff33;border-radius:14px;padding:8px 10px;font:800 15px system-ui}
 #ar-ov .err{background:#ff3b46;color:#fff;border-radius:16px;padding:12px 16px;margin:10px 0;font:800 18px system-ui;box-shadow:0 5px 0 #a3121a}
 #ar-ov .count{font:900 220px/1 'Fredoka',system-ui;text-align:center;color:#ffd23f;margin-top:20px;text-shadow:0 0 50px #ffd23f,0 10px 0 #0006;animation:arcount 1s ease-out infinite}
@@ -246,11 +247,13 @@ function avH(){ return '<div class="card"><b>🎭 Your Arena avatar</b> <span cl
 function questH(){ const q=R.stats&&R.stats.quests; if(!q) return ''; const done=q.filter(x=>x[2]>=x[3]).length;
  return '<div class="card arquest"><div class="big" style="font-size:24px;margin:0 0 6px">🗺️ This week\'s Arena Quests <span class="pts">'+done+' / '+q.length+'</span></div>'+q.map(x=>'<div class="arq'+(x[2]>=x[3]?' ok':'')+'"><span class="qi">'+x[0]+'</span><span class="qt">'+E(x[1])+'</span><span class="qb"><i style="width:'+Math.round(100*x[2]/x[3])+'%"></i></span><span class="qn">'+(x[2]>=x[3]?'✅':x[2]+'/'+x[3])+'</span></div>').join('')+(done===q.length?'<div class="prog" style="font-size:18px;color:#7dff7a">🏅 Quest Master this week! Yasher koach!</div>':'')+'</div>'; }
 function ltTH(){ return R.mode==='live'?'<button class="btn'+(R.lt?'':' alt')+'" data-ar="lt" style="'+(R.lt?'background:linear-gradient(90deg,#f59e0b,#ef4444);color:#fff':'')+'">⚡ Lightning Round: '+(R.lt?'ON':'off')+'<small>20 questions, 75 seconds. Answer as many right as you can!</small></button>':''; }
+/* button system step 5: Arena points, wins, titles and trophies are kit labels (rank = violet, progress = blue), flat, never a button */
+function PL(k,t){ return window.TLK?TLK.pill(k,t):'<span>'+E(t)+'</span>'; }
 function homeH(){ const s=R.stats, p=s?s.pts:0, T=title(p), tr=trophies(s), pct=T.nx?Math.round(100*(p-T.t[0])/Math.max(1,T.nx[0]-T.t[0])):100;
  return '<div class="card"><div class="arhero"><div class="armedal">🏅</div><div style="flex:1"><div class="artt">'+E(T.t[1])+' <span class="arhe">'+T.t[2]+'</span></div>'
-  +'<div style="font:800 18px system-ui">'+(s?'<span class="pts">'+p+' Arena points</span> 🏆 '+s.wins+' win'+(s.wins===1?'':'s')+' · ⚔️ '+s.played+' showdown'+(s.played===1?'':'s')+' · 🕯️ taught '+s.taught:'Loading your record…')+'</div>'
-  +(T.nx?'<div class="arbar"><i style="width:'+pct+'%"></i></div><div class="prog">'+(T.nx[0]-p)+' more points to become '+E(T.nx[1])+'</div>':'<div class="prog">The highest title! Mazel tov!</div>')+'</div></div>'
-  +(tr.length?'<div class="tro" style="margin-top:10px">'+tr.map(x=>'<span>'+x[0]+' '+E(x[1])+'</span>').join('')+'</div>':'')+'</div>'
+  +'<div class="arstat">'+(s?PL('rank',p+' Arena points')+PL('rank','🏆 '+s.wins+' win'+(s.wins===1?'':'s'))+PL('prog','⚔️ '+s.played+' showdown'+(s.played===1?'':'s'))+PL('prog','🕯️ Taught '+s.taught):'Loading your record…')+'</div>'
+  +(T.nx?'<div class="arbar"><i style="width:'+pct+'%"></i></div><div class="prog">'+PL('prog',(T.nx[0]-p)+' more points to become '+T.nx[1])+'</div>':'<div class="prog">'+PL('rank','The highest title! Mazel tov!')+'</div>')+'</div></div>'
+  +(tr.length?'<div class="tro" style="margin-top:10px">'+tr.map(x=>PL('rank',x[0]+' '+x[1])).join('')+'</div>':'')+'</div>'
   +(s&&s.on===false?'<div class="err">The Arena is closed right now. Your rebbe can open it.</div>':'')
   +'<div class="armenu">'
   +'<button class="btn" data-ar="new"><span class="bi">⚔️</span>START A SHOWDOWN<small>Pick a topic, get a code, your chavrusa joins</small></button>'
@@ -264,7 +267,7 @@ function homeH(){ const s=R.stats, p=s?s.pts:0, T=title(p), tr=trophies(s), pct=
 const SUBCOL=['#ff5a5f','#2d9cdb','#f2a10f','#27ae60','#9b51e0','#e0557f','#00a6a6','#ff7a3d','#5c6bc0','#c0392b','#16a085','#8e44ad'];
 function subjH(){ const S=skillsBy(); let k=0; return '<div class="big">Pick a subject</div><div class="grid">'+(window.tlChm&&window.tlChm.quiz?'<button class="sub" data-ar="subj" data-k="PAR" style="background:linear-gradient(160deg,#ffd23f,#ff9f1a);color:#3a1700"><span class="ic">📜</span>Parsha<br><small>all 54 parshiyos</small></button>':'')+SUBJ.filter(x=>S[x[0]]&&S[x[0]].length).filter((x,i,a)=>a.findIndex(y=>y[1]===x[1])===i).map(x=>'<button class="sub" data-ar="subj" data-k="'+x[0]+'" style="background:'+SUBCOL[(k++)%SUBCOL.length]+'"><span class="ic">'+x[2]+'</span>'+E(x[1])+'<br><small>'+S[x[0]].length+' topics</small></button>').join('')+'</div>'; }
 function topicList(){ const f=R.filt.toLowerCase(), L=topicIds().filter(id=>!f||skillName(id).toLowerCase().indexOf(f)>=0).sort((a,b)=>(mastered(b)-mastered(a))||a.localeCompare(b)).slice(0,120);
- return L.map(id=>'<button class="tp" data-ar="topic" data-id="'+E(id)+'"><span>'+E(skillName(id))+'</span><small>'+(mastered(id)?'✓ MASTERED':'')+'</small></button>').join('')||'<div class="card">No topics match.</div>'; }
+ return L.map(id=>'<button class="tp" data-ar="topic" data-id="'+E(id)+'"><span>'+E(skillName(id))+'</span><small>'+(mastered(id)?PL('prog','Mastered'):'')+'</small></button>').join('')||'<div class="card">No topics match.</div>'; }
 function topicH(){ if(R.subj==='PAR') return parTopicH(); const S=SUBJ.find(x=>x[0]===R.subj)||['','',''], mine=topicIds().filter(mastered);
  return '<div class="big">'+S[2]+' '+E(S[1])+': pick a topic</div>'+(mine.length>=2?'<button class="btn" data-ar="mix"><span class="bi">🎲</span>MIX OF EVERYTHING I MASTERED<small>'+mine.length+' '+E(S[1])+' topics in one showdown</small></button>':'')+mkTH()+ltTH()
   +'<input class="srch" placeholder="🔎 Search topics…" value="'+E(R.filt)+'"><div class="tlist">'+topicList()+'</div>'; }

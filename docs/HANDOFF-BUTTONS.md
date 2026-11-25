@@ -33,5 +33,17 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - Chumash inner pages: kit Back (`data-chm="home"`) before the house, replacing "⬅ parsha".
 - Pictures: `docs/screens/inner-back-after-*.jpg`.
 
+## Done: step 5, information on the kit labels (25 Nov 2026)
+- Every label a boy only reads is a kit pill or box (`TLK.pill`, `TLK.box`), one color per meaning: money green, progress blue, do-this-now yellow, rank violet, locked gray, subject pink. Holders are flat (no shadow, no outline).
+  - Home tiles (`src/GameMap.html` `homeHTML`): "Do this now" (now), "Done" (prog), Arcade "Locked" (lock), My map "Math · Level 5" (subj), Store "You have $…" (money), "0 of 3 done today" (prog).
+  - The money by the house (`hud()`): a money pill, **no longer a button** (the Store opens from its home tile). Test: `tests/run.js` "button system step 5".
+  - My map: unit bar (subject pill, "N to the boss" / "Boss now!" / "Cleared"), goal card ("Your next level", "Today's pick", subject + levels-to-boss). My work: each round's "Your turn" / "Next" / "Cleared" / "Locked" / "Picked for you", the treasure chest line. Money page: "My money" box, today/this-week pills, payday, money story amounts.
+  - Store pop-up (`src/StoreKid.html`): "My money" box, prices (money), "Yours" (prog), "Need $… more" (lock), holiday "Back before …" (lock), order states, My week boxes.
+  - Arena home (`src/ArenaPage.html`): Arena points, wins (rank), showdowns, taught, "N more points to become …" (prog), trophies (rank), topic "Mastered" (prog).
+  - Workbook home (`src/BlockBuildersUI.html`): "Next" (now), "Page on the way" (lock). Chumash home (`src/ChumashPage.html`): Parsha (subj), this week's (now), pesukim (prog), level and mastered (rank).
+  - K–1 games path (`src/K1Only.html`): each game's number (now / prog / lock).
+- Mistake Detective end (`src/Review.html`): "New cases" = `TLK.main`, "Done" = `TLK.quiet`, words only. Enter/focus use `.mdkit .tlk-main`.
+- Pictures: `docs/screens/info-before-*.png`, `info-after-*.png`. Check: `node tools/screens/info.js OUT TAG GRADE` (+ `pages.js`, `arena.js`).
+
 ## Next
-- Mistake Detective end buttons ("🔁 New cases" has icon + word) are not on the kit yet.
+- Not yet on kit labels: Mistake Detective's points and case dots, the old Trophies/My week rooms, Canteen, lesson screens. The Store pop-up's own buttons (Buy it, Make it my goal, tabs) and the Chumash/Workbook/Arena buttons are not on the kit yet.
