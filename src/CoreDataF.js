@@ -104,5 +104,17 @@ CORE_SKILLS.F = [
   ["READ.FLU.L03.06", "Readers' Theatre", "Read your part in a play: on cue, in the right voice", { after: "READ.FLU.L03.05", std: "RF.2.4b", file: "CoreDataFH4", min: 8 }],
   ["READ.FLU.L03.07", "Fix It As You Go", "Notice when a word does not look right or make sense, and fix it", { after: "READ.FLU.L03.06", std: "RF.2.4c", file: "CoreDataFH4", min: 7 }],
   ["READ.PHON.L03.18", "Spell It Back", "Hear a sentence and spell its Grade 2 pattern words", { after: "READ.FLU.L03.07", std: "L.2.2d", file: "CoreDataFH4", min: 7 }],
-  ["WRIT.HAND.L03.01", "Neat Paragraph", "The rules of a neat paragraph: indent, spaces, letters on the line", { after: "LANG.MECH.L03.01", file: "CoreDataFH4", min: 6 }]
+  ["WRIT.HAND.L03.01", "Neat Paragraph", "The rules of a neat paragraph: indent, spaces, letters on the line", { after: "LANG.MECH.L03.01", file: "CoreDataFH4", min: 6 }],
+  ["READ.LV.L01.07", "Book: The Bug in the Jug", "Read the little book The Bug in the Jug and tell what happened", { after: "READ.LV.L01.06", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.08", "Book: The Wet Dog", "Read the little book The Wet Dog and tell what happened", { after: "READ.LV.L01.07", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.09", "Book: Jam on a Bun", "Read the little book Jam on a Bun and tell what happened", { after: "READ.LV.L01.08", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.10", "Book: Go, Bus, Go!", "Read the little book Go, Bus, Go! and tell what happened", { after: "READ.LV.L01.09", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.11", "Book: The Web on the Log", "Read the little book The Web on the Log and tell what happened", { after: "READ.LV.L01.10", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.12", "Book: Mop It Up", "Read the little book Mop It Up and tell what happened", { after: "READ.LV.L01.11", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.13", "Book: The Fox in the Box", "Read the little book The Fox in the Box and tell what happened", { after: "READ.LV.L01.12", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.14", "Book: The Hen in the Box", "Read the little book The Hen in the Box and tell what happened", { after: "READ.LV.L01.13", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.15", "Book: Go, Van, Go!", "Read the little book Go, Van, Go! and tell what happened", { after: "READ.LV.L01.14", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.16", "Book: Zip Up!", "Read the little book Zip Up! and tell what happened", { after: "READ.LV.L01.15", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.17", "Book: The Quiz", "Read the little book The Quiz and tell what happened", { after: "READ.LV.L01.16", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.18", "Book: The Red Wax", "Read the little book The Red Wax and tell what happened", { after: "READ.LV.L01.17", std: "RF.K.4", file: "CoreDataFH1", min: 5 }]
 ];
