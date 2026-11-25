@@ -130,5 +130,35 @@
           say:PROOF, how:'Find the page about the gate.'}] }
   };
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
+  /* Unit S7.1: the unit check (boss level) and test-out, and the unit project: build a model plant cell, then a short write */
+  var PROJECT = { id: 'S.PROJ7.01', title: 'A Cell in a Box', grade: 7, kind: 'information',
+    prompt: 'Be a scientist! Build a model of a plant cell from things at home. A small plastic tub is the cell wall. A zip bag inside it is the cell membrane. Fill the bag with water (cytoplasm) and seal it well, on a tray. Add a marble or bottle cap for the nucleus, small green beads or buttons for chloroplasts, a small water balloon for the vacuole, and a few rubber bands for mitochondria. Then write what each part of your model stands for, what its job is, and how an animal cell would be different.',
+    strategy: { name: 'Part, Job, Compare', steps: [['P', 'Part: what did I use, and what part does it stand for?'], ['J', 'Job: what does that part do in a real cell?'], ['C', 'Compare: what would an animal cell not have?']] },
+    plan: [ { k: 'build', label: 'P · How I built it', hint: 'I used a plastic tub for the cell wall and…' },
+            { k: 'jobs', label: 'J · The jobs of the parts', hint: 'In my model, the ___ stands for the nucleus. In a real cell, it…' },
+            { k: 'compare', label: 'C · An animal cell', hint: 'An animal cell would be missing… so its shape…' } ],
+    starters: ['To build my cell, I used', 'The nucleus', 'The chloroplasts', 'The vacuole', 'An animal cell is different because', 'My model is not perfect because'],
+    min: 90,
+    checks: [
+      { t: 'I wrote at least 7 sentences.', sentences: 7 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I told the real job of the parts (gate, control, power, food, water…).', any: ['gate', 'control', 'instructions', 'power', 'energy', 'sunlight', 'makes food', 'photosynthesis', 'stiff', 'stores water'] },
+      { t: 'I told what an animal cell does not have, and its shape.', any: ['round', 'uneven', 'no wall', 'no cell wall', 'no chloroplast'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I told one way my model is not like a real cell.', self: true },
+      { t: 'I built it with a grown-up’s OK and cleaned up after.', self: true } ],
+    rubric: ['I told what each part of my model stands for', 'I told the real job of each part', 'I compared a plant cell to an animal cell', 'I used the right science words'],
+    pics: ['🔬', '🌱', '📦', '🧫'] };
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'S.U04', title: 'Cells: Building Blocks', c: 'SCI', grade: 7,
+    skills: ['SCI.PLANT.L08.01', 'SCI.PLANT.L08.02', 'SCI.PLANT.L08.03', 'SCI.PLANT.L08.04'], n: 8, task: PROJECT,
+    items: [   /* one fresh question per skill: these skills have only 1 or 2 check questions of the tap kinds a unit check can use */
+      { skill: 'SCI.PLANT.L08.01', type: 'cloze', t: 'Every living thing is made of one or more ___.', o: ['cells', 'leaves', 'bones'], a: 'cells',
+        say: 'Tap the word that fits the gap.', how: 'Think of the cell theory: what is every living thing built from?' },
+      { skill: 'SCI.PLANT.L08.02', type: 'cloze', t: 'A 20× eyepiece and a 5× lens make things look ___ times bigger.', o: ['100', '25', '15'], a: '100',
+        say: 'Multiply. Tap the answer into the gap.', how: 'Multiply the eyepiece number by the lens number.' },
+      { skill: 'SCI.PLANT.L08.03', type: 'evidence', q: 'Which sentence proves this is a plant cell?', p: ['It has a membrane around it.', 'It has a nucleus near the middle.', 'It has green chloroplasts and a stiff wall.', 'It is full of cytoplasm.'], a: 2, look: 'parts only a plant cell has',
+        say: 'Tap the sentence that proves it.', how: 'Both kinds of cell share some parts. Find the plant-only ones.' },
+      { skill: 'SCI.PLANT.L08.04', type: 'cloze', t: 'The ___ are the power plants of the cell.', o: ['mitochondria', 'vacuoles', 'cell walls'], a: 'mitochondria',
+        say: 'Tap the word that fits the gap.', how: 'Which part releases energy from food?' } ] });
 })();
 </script>
