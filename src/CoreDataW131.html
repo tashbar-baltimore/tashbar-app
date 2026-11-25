@@ -11,7 +11,7 @@
   'WRIT.ESSAY.L03.01':{name:'POW Power',
   teach:[
     {how:'Writers make a plan before they write. The plan is called POW. P is the first step: Pick my idea. Pick something you know a lot about.', q:'Avi knows a lot about maps. He knows a little about rockets. What should he pick to write about?', o:['the map of our street','rockets','he should not pick yet']},
-    {how:'O is the second step: Organize my notes. A note is just a few words, not a whole sentence. If you wrote the long sentence, cut it down to a few words. Put your notes in an order that makes sense.', q:'Naftali is writing about the clubhouse. Which one is a good note?', o:['old blue sofa','The clubhouse has an old blue sofa that squeaks.','I like pizza.']},
+    {how:'O is the second step: Organize my notes. A note is just a few words, not a whole sentence. Put your notes in an order that makes sense.', q:'Naftali is writing about the clubhouse. Which one is a good note?', o:['old blue sofa','The clubhouse has an old blue sofa that squeaks.','I like pizza.']},
     {how:'W is the last step: Write and say more. Turn each note into a sentence, and add more so the reader can see it.', q:'The note says: old blue sofa. Which sentence says more?', o:['Our clubhouse has an old blue sofa that squeaks.','Sofa.','It is a sofa.']}
   ],
   practice:[
@@ -28,7 +28,7 @@
     {t:'write', q:'Your turn. Use POW. Pick an idea you know a lot about. Write 3 notes. Then write one sentence that says more.', min:0, checks:['P: I picked something I know a lot about.','O: I wrote 3 short notes.','W: I wrote a sentence that says more.'], h:'Pick first. Notes are a few words. Then turn one note into a sentence.'}
   ],
   check:[
-    {q:'Chaim’s notes for the shul library: old sefarim, quiet corner, “The library is a room in the shul where people learn and read.” Which note is too long for a note?', o:['the long sentence','old sefarim','quiet corner'], h:'O: a note is just a few words. Which one is a whole long sentence?'},
+    {q:'Yossi helps in Zeidy’s bakery every week, but he picked “the moon”. He knows only a little about it. Which POW step went wrong?', o:['Pick my idea','Organize my notes','Write and say more'], h:'Which step is about choosing what to write about?'},
     {q:'Dovid’s note: “On Shabbos we eat lunch at the big table with all my cousins.” What is it?', o:['too long for a note','a good note','not about his idea'], h:'A note is just a few words. Is it a few words, or a whole long sentence?'},
     {q:'Dovid’s note: snow boots. Dovid writes: “I have boots.” What did he do?', o:['says less','says more','just a note'], h:'Says more: the reader can see what, where or how. Can you see it?'}
   ],
@@ -61,7 +61,7 @@
   check:[
     {q:'Naftali sweeps. Avi wipes the table. Dovid takes out the trash. Topic sentence: “The club cleans up the clubhouse.”', o:['just right','just one detail','a question'], h:'Does it tell about all three details? Is it only one? Does it ask?'},
     {q:'Abba bakes challah. Ima sets the table. Yossi polishes the becher. Topic sentence: “Yossi polishes the becher.”', o:['just one detail','just right','a question'], h:'Does it tell about all three details, or only one?'},
-    {q:'Chaim has bird books, a bird feeder and a bird list. Topic sentence: “Does Chaim like birds?”', o:['a question','just right','just one detail'], h:'Does it tell about all three details, or only one?'}
+    {q:'Chaim has bird books, a bird feeder and a bird list. Topic sentence: “Does Chaim like birds?”', o:['a question','just right','just one detail'], h:'Does it tell, or does it ask? Look at the end mark.'}
   ],
   re:[
     {how:'A new way: the topic sentence is the name on a box. The details are the things inside the box.', q:'Inside the box: siddur, tallis bag, kippah. What is the best name for the box?', o:['Things I take to shul','Kippah','Toys']},
@@ -292,8 +292,29 @@
 
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
   /* Units: W13.U<grade><unit> (K = 0): W13.U21 = Grade 2, Unit 1 (docs/core-growth/HOW-TO-ADD-A-UNIT.md) */
+  /* The unit's real task (map: Gr 2 piece 1): a Writing Workshop piece. It opens from "Unit cleared!"; his teacher scores it
+     in the writing inbox (docs/core-growth/HOW-TO-ADD-A-WRITING-TASK.md). It is never marked right just for being typed. */
+  var PIECE = { id: 'W13.G2.P1', title: 'A Place I Know Well', grade: 2, kind: 'information',
+    prompt: 'Write a paragraph for the club notebook about a place you know well: your room, your shul, or your kitchen on Erev Shabbos. Plan it with POW. Start with a topic sentence, give three details that belong, and end with a closing sentence in new words.',
+    strategy: { name: 'POW', steps: [['P', 'Pick my idea'], ['O', 'Organize my notes'], ['W', 'Write and say more']] },
+    plan: [ { k: 'topic', label: 'Topic sentence', hint: 'My kitchen on Erev Shabbos is busy.' },
+            { k: 'd1', label: 'Detail 1 (a note)', hint: 'challah in the oven' },
+            { k: 'd2', label: 'Detail 2 (a note)', hint: 'candlesticks shine' },
+            { k: 'd3', label: 'Detail 3 (a note)', hint: 'Abba sets the table' },
+            { k: 'close', label: 'Closing sentence', hint: 'That is why…' } ],
+    starters: ['My favorite place is', 'First,', 'There is', 'Also,', 'That is why', 'In the end,'],
+    min: 30,
+    checks: [
+      { t: 'I wrote at least 5 sentences.', sentences: 5 },
+      { t: 'My first sentence is my topic sentence.', first: 'topic' },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'My closing says the big idea in new words, not a copy.', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['A topic sentence that tells what it is about', 'Three details that belong', 'A closing sentence in new words', 'Capitals and end marks'],
+    pics: ['🏠', '🕍', '🍞', '🕯️'] };
   if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U21', title: 'Writers Plan', c: 'WRIT', grade: 2,
     skills: ['WRIT.ESSAY.L03.01', 'WRIT.PARA.L03.04', 'WRIT.PARA.L03.05', 'WRIT.PARA.L03.06', 'WRIT.SENT.L03.01'],
-    review: ['WRIT.SENT.L02.01', 'LANG.SENT.L03.02', 'LANG.SENT.L03.03'], n: 8 });
+    review: ['WRIT.SENT.L02.01', 'LANG.SENT.L03.02', 'LANG.SENT.L03.03'], n: 8, task: PIECE });
 })();
 </script>
