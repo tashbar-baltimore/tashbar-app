@@ -56,7 +56,7 @@ CORE_SKILLS.F = [
   ["READ.LV.L01.03", "Book: The Red Rug", "Read the little book The Red Rug and tell what happened", { after: "READ.LV.L01.02", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
   ["READ.LV.L01.04", "Book: Fun in the Sun", "Read the little book Fun in the Sun and tell what happened", { after: "READ.LV.L01.03", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
   ["READ.LV.L01.05", "Book: The Pup Can Dig", "Read the little book The Pup Can Dig and tell what happened", { after: "READ.LV.L01.04", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
-  ["READ.LV.L01.06", "Book: The Hat on the Dog", "Read the little book The Hat on the Dog and tell what happened", { after: "READ.LV.L01.05", std: "RF.K.4", file: "CoreDataFH1", min: 5 }]
+  ["READ.LV.L01.06", "Book: The Hat on the Dog", "Read the little book The Hat on the Dog and tell what happened", { after: "READ.LV.L01.05", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
   ["READ.LV.L02.20", "Rain and Play", "Read and spell ai inside a word and ay at the end", { after: "READ.LV.L02.02", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
   ["READ.LV.L02.21", "Tree and Seat", "Read ee and ea, two teams that both say ee", { after: "READ.LV.L02.20", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
   ["READ.LV.L02.22", "Boat and Snow", "Read and spell oa inside a word and ow at the end", { after: "READ.LV.L02.21", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
