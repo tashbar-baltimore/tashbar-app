@@ -1,0 +1,47 @@
+<script>
+/* CoreDataW136.html: Core Growth job W13, Grade 1 games (K-1 boys get games only; docs/core-growth/HOW-TO-ADD-A-K1-GAME.md).
+   Keep this file under 150 KB. W13 = Writing K-3 (docs/core-growth/W13-map.md). This file: Grade 1 (L02), Unit 2 "Small Moment Stories".
+   Opener idea (map): Shmuli writes "I went to Zeidy's farm and saw everything." Zeidy smiles: "Tell me about just one moment!"
+   A Grade 1 boy reads only a little: instructions are spoken (say, hear), choices are pictures, and the only words on screen are short
+   words he can sound out or time words (first, then, last). The K-1 player shows and speaks the "how" line after a wrong tap or on
+   the light-bulb button (#403), so a "how" line gives a way to think, never the answer.
+   Cast: Shmuli Peretz (Grade 1), Abba's bakery, Zeidy's farm and its hen house, Akiva.
+   WRIT.SENT.L02.01 "Tell What Happened" is an existing skill rebuilt here as a Grade 1 game (no new row); the other three are new rows
+   in src/CoreDataW13.js. No engine lessons: a Grade 1 boy plays the game. */
+(function () {
+  var LESSONS = {
+  };
+  var TEACH = {}, HOWTO = {}, BITE = {};
+  var K1G = [
+    { id:'WRIT.SENT.L02.01', grade:1, name:'Tell What Happened', pic:'📖', after:'WRIT.PARA.L02.03', acts:[
+      {type:'listen', hear:'First Shmuli put on his boots. Next he ran outside. Last he made a snowman.', o:['👢','🏃','⛄'], a:'🏃', say:'Stories tell what happened in order. What happened next?', how:'Listen for the word next. What came after it?'},
+      {type:'storymap', slots:['1','2','3'], cards:['🥚','🍳','🍽️'], say:'First crack, next fry, last eat. Fill the three boxes.', how:'What has to happen first? What can only come after?'},
+      {type:'listen', hear:'Last, Shmuli put on his coat. First, he went outside in the snow.', o:['👍','👎'], a:'👎', mis:true, say:'Did Shmuli tell it in the right order?', how:'Act it out. Can you go out before your coat is on?'},
+      {type:'tiles', w:['🧼','🍞','🙏'], hear:'First we wash. Next we eat challah. Last we bentch.', say:'Listen to the order. Put the pictures in order.', how:'Listen for first, next and last.'},
+      {type:'listen', hear:'First I fed the hen. Next I found an egg. Last I gave it to Zeidy.', o:['🐔','🥚','👴'], a:'👴', say:'What happened last? Tap the picture.', how:'Listen for the word last. What came after it?'}]},
+
+    { id:'WRIT.PARA.L02.04', grade:1, name:'Zoom In', pic:'🔍', after:'WRIT.SENT.L02.01', acts:[
+      {type:'listen', hear:'Zeidy says: Tell me about just one moment!', o:['🐐🍼','🚜🐐🐔🌾🌙'], a:'🐐🍼', say:'Zoom in! Write about one small moment. Which one is small?', how:'One moment is one thing that happened, not the whole day.'},
+      {type:'sort', bins:['🔍','🌅🌙'], cards:[['🥚',0],['🚌🏫📚🍽️🛏️',1],['⛄',0],['🌅🚜🐐🐔🌙',1]], say:'One small moment, or the whole day? Sort them.', how:'Count the things that happen. Is it one thing, or many?'},
+      {type:'listen', hear:'I woke up. I ate. I went to school. I played. I ate. I slept.', o:['👍','👎'], a:'👎', mis:true, say:'Is Shmuli’s story about one small moment?', how:'Does it tell one thing, or the whole day?'},
+      {type:'findall', grid:['🐔','🥚','🌾','🚀','🏫','🌙'], find:['🐔','🥚','🌾'], findSay:'thing in the egg moment', say:'Moment: Shmuli finds an egg in the hen house. Tap what fits.', how:'Picture just that moment. What would you see there?'},
+      {type:'listen', hear:'One: I went to the farm and did lots of things. Two: I held a warm egg so gently.', o:['1','2'], a:'2', say:'Which story start zooms in on one small moment?', how:'Which one tells just one thing that happened?'}]},
+
+    { id:'WRIT.PARA.L02.05', grade:1, name:'Time Words', pic:'⏱️', after:'WRIT.PARA.L02.04', acts:[
+      {type:'listen', hear:'First, Abba mixed the dough. Then, he shaped it. At the end, it baked in the oven.', o:['🥣','🍞','🛏️'], a:'🍞', say:'Time words: first, then, after that, at the end. What happened last?', how:'Listen for the words at the end. What came after them?'},
+      {type:'tiles', w:['🧦','👟','🏃'], hear:'First, socks. Then, shoes. At the end, I run!', say:'Listen for the time words. Put the pictures in order.', how:'Listen for first, then and at the end.'},
+      {type:'listen', hear:'First, Shmuli put on his shoes. At the end, he put on his socks.', o:['👍','👎'], a:'👎', mis:true, say:'Do Shmuli’s time words make sense?', how:'Act it out. Can shoes go on before socks?'},
+      {type:'match', pairs:[['1','First'],['2','Then'],['3','At the end']], say:'Match each box to its time word.', how:'Which word starts a story? Which word ends it?'},
+      {type:'listen', hear:'First, Ima lit the candles. Then, we sang. After that, Abba made kiddush on grape juice.', o:['🕯️','🎶','🍇'], a:'🍇', say:'What happened after that?', how:'Listen for the words after that. What came next?'}]},
+
+    { id:'WRIT.PARA.L02.06', grade:1, name:'Feeling Ending', pic:'😊', after:'WRIT.PARA.L02.05', acts:[
+      {type:'listen', hear:'Shmuli found his lost kippah under the bed. At the end he wrote: I felt so happy! How did he feel?', o:['😀','😢','😴'], a:'😀', say:'An ending can tell how it felt, or what you learned.', how:'Listen to his last words. Which face shows that?'},
+      {type:'listen', hear:'The challah rose too much and fell off the tray. The end.', o:['👍','👎'], a:'👎', mis:true, say:'Does this ending tell how Shmuli felt?', how:'A feeling ending says how you felt, or what you learned.'},
+      {type:'match', pairs:[['🎁','😀'],['🍦⬇️','😢'],['🌩️','😨']], say:'How would you feel? Match each moment to a feeling.', how:'Picture it happening to you. What face would you make?'},
+      {type:'tiles', w:['I','felt','so','glad.'], extra:['dog'], hear:'I felt so glad.', pic:'😀', say:'Build Shmuli’s feeling ending. Then read it back.', how:'Say it slowly. Tap each word as you say it.'},
+      {type:'listen', hear:'The first snow fell. At the end I wrote: I learned to make a snowman with Abba.', o:['⛄','☀️','🚀'], a:'⛄', say:'This ending tells what Shmuli learned. What did he learn?', how:'Listen to the end. What did he learn to make?'}]}
+  ];
+  if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
