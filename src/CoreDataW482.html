@@ -119,8 +119,8 @@
       items:[{label:'I am writing to ask for your help.',bin:'F'},{label:'Guess what happened today!',bin:'R'},{label:'Thank you for your time.',bin:'F'},{label:'See you at shul, buddy!',bin:'R'}],
       h:'Formal: polite, full sentences, no slang. Friendly: relaxed, like talking to a friend.'},
     {t:'pairs', q:'Same news: the Crew won the science fair. Match each reader to the sentence that fits.', pairs:[['Mr. Halpern, the judge','Thank you for choosing our project for first place.'],['Yehuda’s best friend','We won! Can you believe it?'],['Yehuda’s little sister','Our weather box won a big gold ribbon!']],
-      h:'Formal for a teacher. Friendly for a friend. Simple for a little child.'},
-    {t:'spotall', q:'Dovid is writing to the menahel. Tap every phrase that does NOT fit this reader.', cells:[{label:'Hey dude',ok:true},{label:'super awesome',ok:true},{label:'Thank you for',ok:false},{label:'I would like to ask',ok:false},{label:'gonna',ok:true}],
+      h:'Ask 3 things: Who is he? What does he already know? How close are we? Then pick: formal for a teacher, friendly for a friend, simple for a little child.'},
+    {t:'spotall', q:'Dovid is writing to the menahel. Tap every phrase that does NOT fit this reader.', cells:[{label:'Hey dude',ok:true},{label:'super cool',ok:true},{label:'Thank you for',ok:false},{label:'I would like to ask',ok:false},{label:'gonna',ok:true}],
       h:'The menahel needs formal words. Tap the slang.'},
     {t:'order', q:'Build a formal opening for a letter to the shul’s rav. Tap the tiles in order.', tiles:['Dear Rav Gold,','Thank you for','speaking at','our siyum.'],
       h:'Start with Dear and the name. Then thank him. Then for what.'},
@@ -132,7 +132,7 @@
     {t:'write', q:'Your turn to write. Write the same news two ways: "Our class is collecting food for families in need." First write it to your friend. Then write it to the menahel.', min:0, checks:['😊 My note to my friend is friendly and kind.','🎩 My note to the menahel is formal and polite.','🚫 I used no slang for the menahel.'], h:'For the friend, write like you talk at recess. For the menahel, start with Dear and use full, polite sentences.'}
   ],
   check:[
-    {q:'Dovid writes a note to the menahel about the class trip: “Hey, the trip was super cool, thx!” Do the words fit the reader?', o:['does not fit','fits the reader'], h:'Is the menahel a friend, or does he need formal words?'},
+    {q:'Dovid writes to the menahel: “The trip was super cool, thank you.” Which words should he change?', o:['super cool','thank you','the trip'], h:'The menahel needs formal words. Which words are slang?'},
     {q:'Binyamin explains chess to his cousin, who is 6: “The castle moves in a straight line, like a train on a track.” Do the words fit the reader?', o:['fits the reader','does not fit'], h:'Are the words simple and short, with a picture a 6-year-old knows?'},
     {t:'order', q:'Avrumi wants to ask Mr. Stern, the librarian, a question. Build a formal opening. Tap the tiles in order.', tiles:['Dear Mr. Stern,','I would like','to ask about','the library hours.'], h:'Start with Dear and the name. Then say politely what you would like.'}
   ],
@@ -176,7 +176,7 @@
   'WRIT.ESSAY.L06.02':{s:'Read the opening.\nDoes it ask? A question hook.\nDoes it tell a surprising true thing? A fact hook.\nDoes it show one moment? A scene hook.\n"This piece is about…" is announcing, not a hook.'},
   'WRIT.ESSAY.L06.03':{s:'Point: what the paragraph proves.\nProof: what happened, a fact or a quote.\nExplain: how the proof shows the point ("This shows that…").\nAn explain never just repeats the proof.'},
   'WRIT.ESSAY.L06.04':{s:'Restate: the main idea in new words.\nSum up: the points in one sentence.\nFinal thought: what to think or do, or back to the hook.\nNo new points. Never just "the end".'},
-  'WRIT.PARA.L06.03':{s:'Ask: who is reading?\nTeacher, rav or company: formal, polite, no slang.\nFriend: friendly and kind.\nLittle child: simple words, short sentences.'}
+  'WRIT.PARA.L06.03':{s:'Ask: who is reading? What does he already know? How close are we?\nTeacher, rav or company: formal, polite, no slang.\nFriend: friendly and kind.\nLittle child: simple words, short sentences.'}
   };
   var BITE = {
   'WRIT.ESSAY.L06.02':{ band:'E45', pic:'🎣', today:'Hook the reader with your first sentence', why:'If the first sentence is boring, the reader stops. A hook makes him want more.',
@@ -275,6 +275,7 @@
     bridge:'WRIT.PARA.L06.02', bridgeName:'Letter Writer',
     watch:{ q:'News: the Crew won the science fair.', m:{type:'scene', e:'🏆', t:'Yehuda wants to tell three different people the big news.'}, steps:[
       {t:'First ask: WHO is reading?'},
+      {t:'Ask 3 things: Who is he? What does he already know? How close are we?'},
       {t:'To Mr. Halpern, formal: "Thank you for choosing our project."'},
       {t:'To his best friend, friendly: "We won! Can you believe it?"'},
       {t:'To his little sister, simple: "Our weather box won a gold ribbon!"'},
@@ -287,10 +288,10 @@
         say:'Do the words fit the menahel? Sort each one.', how:'The menahel needs formal words: polite, no slang.',
         why:{q:'Why does "Hey dude, guess what!" not fit?', o:['It is slang for a formal reader','It is too long','It is a question','It is polite'], a:'It is slang for a formal reader'}},
       {type:'match', pairs:[['Mr. Halpern, the judge','Thank you for choosing our project.'],['Yehuda’s best friend','We won! Can you believe it?'],['Yehuda’s little sister','Our box won a gold ribbon!']],
-        say:'Match each reader to the words that fit.', how:'Formal for a teacher. Friendly for a friend. Simple for a little child.'}],
+        say:'Match each reader to the words that fit.', how:'Ask: who is he, what does he know, how close are we?'}],
     your:[
-      {type:'tiles', q:'A letter to the shul’s rav.', w:['Dear Rav Gold,','Thank you for','speaking at','our siyum.'], extra:['Hey Rav!'],
-        say:'Build a formal opening from the tiles.', how:'Start with Dear and the name. Then thank him. Then for what.'},
+      {type:'tiles', q:'A note to the shul’s rav, after the siyum.', w:['Thank you','for your','kind words.'], extra:['Thx, Rav!'],
+        say:'Build a formal thank-you from the tiles.', how:'Polite, full words for a rav. Leave out the slang tile.'},
       {type:'sort', q:'Binyamin explains chess to his cousin, age 6.', bins:['Fits the reader','Does not fit'], cards:[['The horse jumps in an L shape.',0],['Knights create tactical forks.',1],['If the king is trapped, the game ends.',0],['Checkmate means no legal moves.',1]],
         say:'Do the words fit a 6-year-old?', how:'A little child needs simple words and short sentences.',
         why:{q:'Why does "Knights create tactical forks" not fit?', o:['The words are too hard for a 6-year-old','It is too polite','It is slang','It is a question'], a:'The words are too hard for a 6-year-old'}},
