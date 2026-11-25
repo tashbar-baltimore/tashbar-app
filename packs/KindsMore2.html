@@ -918,6 +918,27 @@ rep('COMP.DIG.L01.01',TAPALL,'Your hands are sticky from cake. What do you do fi
   tiles:['Wash your hands','Dry your hands','Start the computer'],h:'Clean hands first, then the computer.',why:'Sticky hands make the keys messy.'},
  'Sticky hands would make the keys messy.\nWhat do you do first to get them clean?\nWhat comes right after that?\nPut the cards in that order.');
 
+/* ---------- WRIT.RES.L09.01 Find and judge sources (flag fix 2026-11-24: 6 auto boards, the bridges pair on every one) ---------- */
+rep('WRIT.RES.L09.01',TAPALL,'Two sources disagree. What should you do? → Use the one you like.',
+ {t:'order',q:'Two websites give different heights for the same bridge. Put the steps in order.',
+  tiles:['Notice the two facts do not match','Check a third reliable source','Use the height the good sources agree on'],h:'When sources disagree, find another good source.',why:'Good researchers check a third source when two disagree.'},
+ 'Two sources say different things.\nFirst you have to notice that.\nThen ask a third good source to break the tie.\nPut the cards in that order.');
+rep('WRIT.RES.L09.01',TAPALL,'Why is a source with no author less reliable? → It is shorter.',
+ {t:'sort',q:'Sort each clue about a source: does it make the source more reliable, or less reliable?',bins:[{id:'M',label:'More reliable'},{id:'L',label:'Less reliable'}],
+  items:[{label:'an expert author is named',bin:'M'},{label:'it was updated this year',bin:'M'},{label:'other good sources agree with it',bin:'M'},
+   {label:'no author is named',bin:'L'},{label:'it is trying to sell you something',bin:'L'},{label:'it is 30 years old, and the facts change',bin:'L'}],
+  h:'Ask: who wrote it, when, and do others agree?',why:'Reliable sources have a known expert, are up to date, and can be checked.'},
+ 'Read one clue.\nAsk the three questions: who wrote it? When? Do other good sources agree?\nA good answer makes it more reliable.\nDrag each card to its box.');
+rep('WRIT.RES.L09.01',TAPALL,'Which source is most likely biased about a drill? → A consumer testing report',
+ {t:'sort',q:'Sort each source about a new bike helmet: is it trying to sell you the helmet, or just giving facts?',bins:[{id:'S',label:'Trying to sell'},{id:'F',label:'Just giving facts'}],
+  items:[{label:'the helmet company ad',bin:'S'},{label:'a store sale flyer for the helmet',bin:'S'},{label:'a video paid for by the helmet maker',bin:'S'},
+   {label:'a safety test by a testing lab',bin:'F'},{label:'a government safety report',bin:'F'},{label:'a university study of helmets',bin:'F'}],
+  h:'Ask: does this source make money if you buy the helmet?',why:'A source that wants to sell you something may be biased.'},
+ 'Read one card.\nAsk: does whoever made it want me to buy the helmet?\nIf yes, it is trying to sell. If not, it is just giving facts.\nDrag each card to its box.');
+rep('WRIT.RES.L09.01',TAPALL,'Which is the best source for a report on volcanoes? → A social media post',
+ {t:'spotall',q:'You are writing a report on volcanoes. Tap every source you can trust for facts.',cells:[{label:'a national geological survey website',ok:true},{label:'a university earth science department',ok:true},{label:'a science museum website',ok:true},
+   {label:'a social media post',ok:false},{label:'a blog with no author',ok:false},{label:'an action movie about a volcano',ok:false}],h:'Expert, up to date, and can be checked?',why:'Reliable sources have expert authors and can be checked.'},
+ 'Read one source.\nAsk: is it from experts who study this? Can you check it?\nTap every one you can trust. There is more than one.');
 /* ---------- COMP.DIG.L01.02 Tap and Swipe ---------- */
 rep('COMP.DIG.L01.02','Chizkiyahu wants to see the next photo of his Saba. Which move does he use? A press on the pad, a swipe, or closing the lid?','a swipe',
  {t:'sort',q:'Chizkiyahu has jobs to do on the screen. Sort each job: tap or swipe?',bins:[{id:'T',label:'👆 Tap'},{id:'W',label:'👉 Swipe'}],
@@ -4573,8 +4594,8 @@ rep('READ.LV.L03.01',PICQ,['paw','pay'],
  'Read the end of each word with care.\na-w says "aw." a-y says the name of a.\nThen find what each word means.');
 /* ---------- READ.LV.L03.02 Vowel Teams 3 ---------- */
 rep('READ.LV.L03.02',PICQ,['tie','tip'],
- {t:'type',q:'Abba wears it with his Shabbos shirt. Read the words: tie, tip, tin. Type the one it is.',a:'tie',alt:['Tie'],kb:'text',h:'i-e together says the name of i.'},
- 'Read each word slowly.\nWhen i and e sit together at the end, you hear the name of i.\nWhich word is the Shabbos thing? Type it.');
+ {t:'type',q:'Look at the picture. Read the words: tie, tip, tin. Type the word for the picture.',pic:'👔',a:'tie',alt:['Tie'],kb:'text',h:'i-e together says the name of i.'},
+ 'Read each word slowly.\nWhen i and e sit together at the end, you hear the name of i.\nWhich word names the picture? Type it.');
 rep('READ.LV.L03.02',PICQ,['cry','cap'],
  {t:'spotall',q:'Tap every word where the y at the end says the name of i, like cry.',cells:[{label:'cry',ok:true},{label:'dry',ok:true},{label:'shy',ok:true},{label:'my',ok:true},{label:'puppy',ok:false},{label:'bunny',ok:false},{label:'boy',ok:false}],h:'Clap it. One beat?'},
  'Clap each word.\nOne beat, and y is the only vowel? Then y says the name of i.\nTap every one like that.');

@@ -72,7 +72,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
     gen(){ const k=RI(0,3), [s,e]=PICK(SNACK), pr=PICK([0.75,1,1.25,1.5,2]), co=r2(pr-PICK([0.15,0.25,0.35,0.5]));
       if(k===0) return N(`${e} ${s} costs the canteen ${$m(co)}. We sell it for ${$m(pr)}. What is the profit on one? (Type dollars)`, r2(pr-co), `Profit = price − cost: ${$m(pr)} − ${$m(co)}.`, {pic:e});
       if(k===1){ const q=RI(2,6), p=r2(pr-co); return N(`Profit on one ${s} is ${$m(p)}. We sold ${q}. What is the total profit? (Type dollars)`, r2(p*q), `Total profit = profit on one × how many: ${$m(p)} × ${q}.`); }
-      if(k===2){ const a=[s,pr,co], [s2]=PICK(SNACK.filter(x=>x[0]!==s)), pr2=PICK([0.5,1,1.5,2]), co2=r2(pr2-PICK([0.1,0.2,0.3,0.6])); const p1=r2(pr-co), p2=r2(pr2-co2); if(p1===p2) return N(`${s}: price ${$m(pr)}, cost ${$m(co)}. Profit on one? (Type dollars)`, p1, 'Profit = price − cost.');
+      if(k===2){ const a=[s,pr,co], [s2]=PICK(SNACK.filter(x=>x[0]!==s)), pr2=PICK([0.5,1,1.5,2]), co2=r2(pr2-PICK([0.1,0.2,0.3,0.6].filter(d=>d<pr2))); const p1=r2(pr-co), p2=r2(pr2-co2); if(p1===p2) return N(`${s}: price ${$m(pr)}, cost ${$m(co)}. Profit on one? (Type dollars)`, p1, 'Profit = price − cost.');
         return MX(`${s}: price ${$m(pr)}, cost ${$m(co)}. ${s2}: price ${$m(pr2)}, cost ${$m(co2)}. Which one earns more profit on each sale?`, op(p1>p2?s:s2,[p1>p2?s2:s,'They are the same']), `Work out each profit (price − cost): ${s} = ${$m(p1)}, ${s2} = ${$m(p2)}. Which is bigger?`); }
       return MX(`A snack costs the canteen ${$m(co)}. Which price makes a profit?`, op($m(r2(co+0.25)),[$m(co),$m(r2(Math.max(0,co-0.1)))]), `A profit means the price is MORE than the cost (${$m(co)}).`); }}
   };

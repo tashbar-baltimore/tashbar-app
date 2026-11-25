@@ -45,5 +45,9 @@ CORE_SKILLS.C45 = [
   ["READ.COMP.L05.18", "Ask a Good Question", "Ask thick and thin questions while you read", { after: "READ.COMP.L05.17", std: "RL.4.1", file: "CoreDataC459", min: 8 }],
   ["READ.COMP.L05.19", "Clarify It", "Fix a confusing part: reread, read on, or look at word parts", { after: "READ.COMP.L05.18", std: "RF.4.4c", file: "CoreDataC459", min: 8 }],
   ["READ.COMP.L05.20", "The Best Summary", "Pick a summary that is not too long and not too short", { after: "READ.COMP.L05.19", std: "RL.4.2", file: "CoreDataC459", min: 8 }],
-  ["READ.COMP.L05.21", "Reading Coach", "Predict, question, clarify and summarize as you read", { after: "READ.COMP.L05.20", std: "RL.4.10", file: "CoreDataC459", min: 10 }]
+  ["READ.COMP.L05.21", "Reading Coach", "Predict, question, clarify and summarize as you read", { after: "READ.COMP.L05.20", std: "RL.4.10", file: "CoreDataC459", min: 10 }],
+  ["READ.COMP.L06.13", "Built Two Ways", "Compare how two texts on one topic are built", { after: "READ.FLU.L06.03", std: "RI.5.5", file: "CoreDataC4510", min: 8 }],
+  ["READ.LIT.L06.10", "One Chapter, Whole Book", "See how one chapter fits the whole book", { std: "RL.5.5", file: "CoreDataC4510", min: 8 }],
+  ["READ.LIT.L06.11", "Stanzas and Scenes", "See how stanzas or scenes fit together", { std: "RL.5.5", file: "CoreDataC4510", min: 8 }],
+  ["READ.FLU.L06.04", "Poetry Aloud", "Read a poem with its rhythm and pauses", { std: "RF.5.4b", file: "CoreDataC4510", min: 8 }]
 ];
