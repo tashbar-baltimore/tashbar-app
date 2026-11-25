@@ -104,5 +104,17 @@ CORE_SKILLS.C45 = [
   ["READ.FLU.L06.16", "Read It 3 Times: Dear Science Museum", "Read a funny letter with the right timing", { std: "RF.5.4b", file: "CoreDataC45H2", min: 6 }],
   ["READ.FLU.L06.17", "Read It 3 Times: Fast and Slow", "Read a poem for two voices, taking turns smoothly", { after: "READ.LIT.L06.09", std: "RF.5.4b", file: "CoreDataC45H2", min: 6 }],
   ["READ.FLU.L06.18", "Read It 3 Times: The New Partners", "Read a play so each character's voice shows who he is", { std: "RF.5.4b", file: "CoreDataC45H2", min: 6 }],
-  ["READ.FLU.L06.19", "Read It 3 Times: End of the Year", "Read a letter, and fix a slip with the words around it", { std: "RF.5.4c", file: "CoreDataC45H2", min: 6 }]
+  ["READ.FLU.L06.19", "Read It 3 Times: End of the Year", "Read a letter, and fix a slip with the words around it", { std: "RF.5.4c", file: "CoreDataC45H2", min: 6 }],
+  ["READ.FLU.L05.20", "Read It 3 Times: A Cloud in a Jar", "Read a science demo so every step is clear", { after: "READ.FLU.L05.04", std: "RF.4.4b", file: "CoreDataC45H3", min: 6 }],
+  ["READ.FLU.L05.21", "Read It 3 Times: Counting the Thunder", "Read a poem, counting evenly and waiting at the dots", { std: "RF.4.4b", file: "CoreDataC45H3", min: 6 }],
+  ["READ.FLU.L05.22", "Read It 3 Times: The Snow Day Phone Call", "Read a play, passing the message slow and clear", { std: "RF.4.4b", file: "CoreDataC45H3", min: 6 }],
+  ["READ.FLU.L05.23", "Read It 3 Times: Rules of the Trail", "Read a safety talk so every rule is heard", { after: "READ.COMP.L05.21", std: "RF.4.4b", file: "CoreDataC45H3", min: 6 }],
+  ["READ.FLU.L05.24", "Read It 3 Times: Campfire Night", "Read a quiet poem softly and smoothly", { std: "RF.4.4b", file: "CoreDataC45H3", min: 6 }],
+  ["READ.FLU.L05.25", "Read It 3 Times: Dear Zeidy, from Camp", "Read a long letter in scoops, with its feelings", { std: "RF.4.4b", file: "CoreDataC45H3", min: 6 }],
+  ["READ.FLU.L06.20", "Read It 3 Times: A River in the Ocean", "Read a science talk with names, dates and numbers clearly", { after: "READ.FLU.L06.03", std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }],
+  ["READ.FLU.L06.21", "Read It 3 Times: The Tide", "Read a poem whose sentences run across lines", { std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }],
+  ["READ.FLU.L06.22", "Read It 3 Times: From the Deep Ocean", "Read a letter, with big facts that sink in", { std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }],
+  ["READ.FLU.L06.23", "Read It 3 Times: Galileo Looks Up", "Read a history talk, building to the big discovery", { after: "READ.FLU.L06.04", std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }],
+  ["READ.FLU.L06.24", "Read It 3 Times: The Eagle Has Landed", "Read a tense play at the right pace", { std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }],
+  ["READ.FLU.L06.25", "Read It 3 Times: Footprints on the Moon", "Read a poem that turns from playful to still", { std: "RF.5.4b", file: "CoreDataC45H4", min: 6 }]
 ];
