@@ -30,7 +30,7 @@ Grade 4: `READ.FLU.L05.11`–`.35`. Grade 5: `READ.FLU.L06.11`–`.35`. (`.05`�
 | G4-7 | 4.3 | READ.FLU.L05.17 | C45.FL4.07 Binyamin's Hardest Game | story | expression follows feelings | built |
 | G4-8 | 4.3 | READ.FLU.L05.18 | C45.FL4.08 Who Ate the Rugelach? | play | stress the word that matters | built |
 | G4-9 | 4.3 | READ.FLU.L05.19 | C45.FL4.09 The Sukkah in the Wind | poem | self-correct: does it make sense? | built |
-| G4-10–12 | 4.4 | .20–.22 | weather (Weather and storms set) | | | next |
+| G4-10–12 | 4.4 | .20–.22 | weather: A Cloud in a Jar, Counting the Thunder, The Snow Day Phone Call | speech, poem, play | | written, batch 2 |
 | G4-13–15 | 4.5 | .23–.25 | Book B2 / reading coach | | | |
 | G4-16–17 | 4.6 | .26–.27 | the first airplanes | | | |
 | G4-18–19 | 4.7 | .28–.29 | bridges | | | |
@@ -61,6 +61,11 @@ A passage of about 330 words read 3 times is about 8 minutes at Grade 4–5 spee
 |---|---|---|
 | Batch 1 (Units x.1–x.3) | 9 passages, ≈ 135 min | 9 passages, ≈ 135 min |
 | **Running total** | **9 / 25** | **9 / 25** |
+
+## Notes for job T, V and the HoS
+- **The Reader's voice is a computer voice.** It reads at one speed with one voice, so read 1 models smooth word reading, not expression. The lessons never claim it shows stress, character voices or timing; the boy adds those himself in reads 2 and 3. Recorded model reads (in `art/sounds/`) would make read 1 a true model: a decision for the HoS or job T.
+- **Cold checks and the "never taught" counter (issue #310).** Show me asks about a short new passage shown on the check screen. The counter only looks at the lesson's teaching, so each lesson's teacher board (`board.key`, never shown to a boy) carries a "Show me answers (for the rebbe)" line. It is a real answer key for the teacher, and it keeps the counter from going up.
+- **Reviews:** three independent passes (Grade 4, Grade 5, then all 18 twice). Every fix was applied; see the batch 1 pull request for the score table.
 
 ## Where I am
 See the Helpers row in `docs/CORE-GROWTH-LANES.md`.
