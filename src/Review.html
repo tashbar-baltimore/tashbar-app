@@ -193,9 +193,9 @@ function end(){ const max=G.list.reduce((s,c)=>s+3,0), r=rankOf(G.pts,max), best
  el().innerHTML=`<div class="mdwrap mdend">${top()}<div class="mdhero"><div class="mdbadge${RM?'':' pop'}">${r[2]}</div><h1>${E(r[1])}!</h1>
  <p class="mdbig">⭐ ${G.pts} of ${max} · ${G.solved} cases closed</p>${nb&&best?'<p class="mdbest">🎉 New best!</p>':''}
  <p class="mdtip">Detectives learn the most from mistakes. Every clue you read today makes the right answer stick.</p>
- <div class="mdbtns two"><button type="button" class="mdgo" data-md="again">🔁 New cases</button><button type="button" class="mdgo mdalt" data-md="close">Done</button></div></div></div>`; if(!RM) confetti(); focusGo(); }
+ ${window.TLK?`<div class="mdkit">${TLK.main('New cases','data-md="again"')}${TLK.quiet('Done','data-md="close"')}</div>`:'<div class="mdbtns two"><button type="button" class="mdgo" data-md="again">New cases</button><button type="button" class="mdgo mdalt" data-md="close">Done</button></div>'}</div></div>`; if(!RM) confetti(); focusGo(); }
 function confetti(){ const d=el(); for(let i=0;i<60;i++){ const p=document.createElement('i'); p.className='mdcf'; p.style.left=(Math.random()*100)+'vw'; p.style.background=['#FACC15','#F43F5E','#22C55E','#3B82F6','#A855F7','#FB923C'][i%6]; p.style.animationDelay=(Math.random()*.6)+'s'; p.style.animationDuration=(1.6+Math.random()*1.4)+'s'; d.appendChild(p); setTimeout(()=>p.remove(),3500); } }
-function focusGo(){ try{ const b=el().querySelector('.mdgo'); if(b) b.focus({preventScroll:true}); }catch(e){} }
+function focusGo(){ try{ const b=el().querySelector('.mdgo,.mdkit .tlk-main'); if(b) b.focus({preventScroll:true}); }catch(e){} }
 document.addEventListener('click',function(e){ const tile=e.target.closest&&e.target.closest('[data-hp="open"][data-k="mdcard"]'); if(tile&&!window.TL_MD_OFF){ e.preventDefault(); e.stopPropagation(); return open(); }
  const t=e.target.closest&&e.target.closest('[data-md],[data-mdopen]'); if(!t) return;
  if(t.hasAttribute('data-mdopen')){ e.preventDefault(); e.stopPropagation(); return open(); }
@@ -207,7 +207,7 @@ document.addEventListener('click',function(e){ const tile=e.target.closest&&e.ta
 document.addEventListener('keydown',function(e){ const d=document.getElementById('mdx'); if(!d||d.className!=='on') return;
  if(e.key==='Escape'){ e.preventDefault(); return close(); }
  const n=parseInt(e.key,10); if(n>=1&&n<=4&&!G.lock){ const sc=lastScope(); const bs=[...sc.querySelectorAll('.mdb:not([disabled])')]; if(bs[n-1]){ e.preventDefault(); bs[n-1].click(); } }
- else if(e.key==='Enter'){ const g=d.querySelector('.mdgo'); if(g&&document.activeElement!==g){ e.preventDefault(); g.click(); } } },true);
+ else if(e.key==='Enter'){ const g=d.querySelector('.mdgo,.mdkit .tlk-main'); if(g&&document.activeElement!==g){ e.preventDefault(); g.click(); } } },true);
 function card(st){ if(window.TL_MD_OFF) return ''; let n=0; try{ n=pool().length; }catch(e){ return ''; } if(n<3) return ''; const best=getBest();
  return `<section class="mdcard"><div class="mdch"><span class="mdci" aria-hidden="true">🕵️</span><div><b>Mistake Detective</b><small>Spot it. Fix it. Prove it. ${ROUND} cases from your lessons.</small></div></div><div class="mdcb"><button type="button" class="mdcbtn" data-mdopen="1">🔍 Start a case</button>${best?`<span class="mdcbest">Best: ⭐ ${best}</span>`:''}</div></section>`; }
 const _find=window.tlFindLevelCard;
@@ -238,6 +238,7 @@ try{ if(!document.getElementById('tl-md-css')){ const s=document.createElement('
 .mdqt{font-size:clamp(22px,3.6vw,32px);font-weight:800;line-height:1.25;margin-top:4px}.mdspk{position:absolute;right:8px;top:8px;border:0;background:#FEF3C7;border-radius:12px;width:42px;height:42px;font-size:22px;cursor:pointer}
 .mdans{display:flex;gap:12px;align-items:center;margin:12px 0;background:#EFF6FF;border-radius:16px;padding:10px 14px}.mdface{font-size:44px}.mdshown{font-size:clamp(22px,3.6vw,32px);font-weight:900;color:#1E3A8A}
 .mdprompt{font-size:clamp(21px,3.4vw,28px);font-weight:900;margin:14px 0 8px;color:#111827}.mdstep{display:inline-block;background:#0F766E;color:#fff;border-radius:10px;padding:2px 10px;font-size:.7em;letter-spacing:.08em;margin-right:8px;vertical-align:middle}
+.mdkit{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:8px}   /* the end buttons are the kit's (button system step 5): New cases = MAIN, Done = QUIET, words only */
 .mdbtns{display:grid;gap:10px}.mdbtns.two{grid-template-columns:1fr 1fr}
 .mdb{display:flex;align-items:center;gap:10px;text-align:left;border:3px solid #CBD5E1;background:#fff;color:#111827;border-radius:16px;padding:12px 14px;min-height:60px;font-size:clamp(18px,3vw,24px);font-weight:800;font-family:inherit;cursor:pointer;transition:transform .12s}
 .mdb b{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#E2E8F0;font-size:17px}.mdb:hover:not([disabled]){transform:translateY(-2px);border-color:#0F766E}
