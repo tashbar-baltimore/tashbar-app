@@ -56,6 +56,8 @@ The F owner built the Units 4–5 lessons and checks. This helper builds Unit 6,
 | Fluency texts | `F.PO.01` *Rain on the Sukkah* (poem), `F.RT.01` *The Clock That Stopped* (Readers' Theatre, 6 parts) | 2 × 8 = **16** |
 | Unit check | `F.U26` Poems, Plays and Spelling (the end-of-Grade-2 boss level) | **8** |
 | Word-study little readers | `F.WR.15`–`.24` (10 stories, 160–210 words, Units 4–5 patterns), each with its own read-and-prove lesson: `READ.FLU.L03.08`–`.17` | 10 × 18 (first read + rereads, per the Grade 2 reader row) = **180** |
-| **Total so far** | | **265 min ≈ 4.4 h** |
+| Readers' Theatre scripts 2–3 | `F.RT.02` *The Lost Siddur*, `F.RT.03` *The Snow Day Fort*, each with its own lesson: `READ.FLU.L03.18`, `.19` | 2 × (8 text + 10 lesson) = **36** |
+| Little reader 25 | `F.WR.25` *The Club Fair* (end-of-Grade-2 story, every pattern), lesson `READ.FLU.L03.20` | **18** |
+| **Total** | | **319 min ≈ 5.3 h** |
 
-Next: Readers' Theatre scripts 2–3 and little reader 25 (written and reviewed, next PR). The map's readers 1–14 (Units 1–3) belong to the F owner's units; this helper piece covers 15–25.
+The helper piece is complete. The map's readers 1–14 (Units 1–3) belong to the F owner's units; this helper piece covers 15–25.
