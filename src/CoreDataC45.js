@@ -53,5 +53,9 @@ CORE_SKILLS.C45 = [
   ["READ.LIT.L06.12", "The Narrator's View", "See how a narrator's view colors the story", { after: "READ.FLU.L06.04", std: "RL.5.6", file: "CoreDataC4512", min: 8 }],
   ["READ.LIT.L06.13", "Same Scene, Another Narrator", "Tell how a scene changes with another narrator", { std: "RL.5.6", file: "CoreDataC4512", min: 8 }],
   ["READ.COMP.L06.14", "One Event, Many Accounts", "Compare several accounts of one event", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }],
-  ["READ.COMP.L06.15", "Why Accounts Differ", "Explain why accounts differ: who wrote it, what he saw, and why", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }]
+  ["READ.COMP.L06.15", "Why Accounts Differ", "Explain why accounts differ: who wrote it, what he saw, and why", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }],
+  ["READ.LIT.L05.07", "What the Narrator Knows", "Tell what an I narrator can and cannot know", { after: "READ.COMP.L05.21", std: "RL.4.6", file: "CoreDataC4511", min: 8 }],
+  ["READ.COMP.L05.22", "Firsthand or Secondhand?", "Tell if the writer was there or heard it from others", { std: "RI.4.6", file: "CoreDataC4511", min: 8 }],
+  ["READ.COMP.L05.23", "Two Accounts, One Event", "Compare a firsthand and a secondhand account of one event", { std: "RI.4.6", file: "CoreDataC4511", min: 8 }],
+  ["READ.FLU.L05.05", "Does It Make Sense?", "Notice a misread, fix it and reread", { std: "RF.4.4c", file: "CoreDataC4511", min: 8 }]
 ];
