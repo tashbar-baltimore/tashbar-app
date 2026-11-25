@@ -235,7 +235,11 @@ function confetti(n){ try{ if(matchMedia('(prefers-reduced-motion: reduce)').mat
  for(let i=0;i<(n||90);i++){ const c=document.createElement('i'); c.className='arconfetti'; c.style.left=(Math.random()*100)+'vw'; c.style.background=C[i%C.length]; c.style.animationDuration=(1.8+Math.random()*1.8)+'s'; c.style.animationDelay=(Math.random()*.6)+'s'; ov.appendChild(c); setTimeout(()=>c.remove(),4200); } }catch(e){} }
 const HYPE_OK=['CORRECT!','YES!','BOOM!','NAILED IT!','SHARP!','BULLSEYE!','KOL HAKAVOD!'], HYPE_NO=['OOPS!','NOT THIS TIME!','SO CLOSE!','NEXT ONE!'];
 const pickR=a=>a[Math.floor(Math.random()*a.length)];
-function head(){ return '<div class="hd"><h2>⚔️ Chavrusa Showdown<small>קִנְאַת סוֹפְרִים תַּרְבֶּה חָכְמָה</small></h2>'+(R.v!=='home'&&R.v!=='play'&&R.v!=='count'?'<button class="x" data-ar="home">⬅ Back</button>':'')+'<button class="x" data-ar="close">✕</button></div>'; }
+function head(){ return '<div class="hd">'+outBtns()+'<h2>⚔️ Chavrusa Showdown<small>קִנְאַת סוֹפְרִים תַּרְבֶּה חָכְמָה</small></h2>'+'</div>'; }
+/* button system (HoS 2026-11-23/24): the Arena is a full page, so the kit house top left leaves it; Back before it only on a page reached from the Arena menu */
+function outBtns(){ const T=window.TLK, y=T&&T.young(window.TL_MAP&&TL_MAP.grade), inner=R.v!=='home'&&R.v!=='play'&&R.v!=='count';
+ if(!T) return (inner?'<button class="x" data-ar="home">⬅ Back</button>':'')+'<button class="x" data-ar="close" aria-label="Home">🏠</button>';
+ return (inner?T.back('data-ar="home"','',y):'')+T.home('data-ar="close"','',y); }
 function avH(){ return '<div class="card"><b>🎭 Your Arena avatar</b> <span class="prog">(your chavrusa sees it on your podium)</span><div class="aravs">'+AVS.map(a=>'<button class="arav'+(a===R.av?' on':'')+'" data-ar="av" data-k="'+a+'">'+a+'</button>').join('')+'</div></div>'; }
 function questH(){ const q=R.stats&&R.stats.quests; if(!q) return ''; const done=q.filter(x=>x[2]>=x[3]).length;
  return '<div class="card arquest"><div class="big" style="font-size:24px;margin:0 0 6px">🗺️ This week\'s Arena Quests <span class="pts">'+done+' / '+q.length+'</span></div>'+q.map(x=>'<div class="arq'+(x[2]>=x[3]?' ok':'')+'"><span class="qi">'+x[0]+'</span><span class="qt">'+E(x[1])+'</span><span class="qb"><i style="width:'+Math.round(100*x[2]/x[3])+'%"></i></span><span class="qn">'+(x[2]>=x[3]?'✅':x[2]+'/'+x[3])+'</span></div>').join('')+(done===q.length?'<div class="prog" style="font-size:18px;color:#7dff7a">🏅 Quest Master this week! Yasher koach!</div>':'')+'</div>'; }
