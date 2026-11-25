@@ -173,8 +173,8 @@ function open(name){ css(); const s=S(); const rl=rebbeLv(); if(rl&&rl!==s.rlv){
  draw(); }
 function close(){ const ov=document.getElementById('chm-ov'); if(ov) ov.remove(); C.q=null; save(); try{ render(); }catch(e){} }
 function top(){ const opts=SEF.map(s=>'<optgroup label="'+E(s[0])+'">'+PAR.slice(s[2],s[3]).map(p=>'<option value="'+E(p[0])+'"'+(p[0]===C.name?' selected':'')+'>'+E(p[0])+' · '+E(p[1])+'</option>').join('')+'</optgroup>').join('');
- return '<div class="chm-top">'+(window.TLK?TLK.home('data-chm="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button class="chm-btn x" data-chm="close" aria-label="Home">🏠</button>')+'<h2>Chumash <span class="he">חוּמָשׁ</span></h2>'
-  +(C.view!=='home'?'<button class="chm-btn" data-chm="home">⬅ '+E(C.name)+'</button>':'<select data-chm="par" aria-label="Parsha">'+opts+'</select>')
+ return '<div class="chm-top">'+(window.TLK&&C.view!=='home'?TLK.back('data-chm="home"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'')+(window.TLK?TLK.home('data-chm="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button class="chm-btn x" data-chm="close" aria-label="Home">🏠</button>')+'<h2>Chumash <span class="he">חוּמָשׁ</span></h2>'
+  +(C.view!=='home'?(window.TLK?'':'<button class="chm-btn" data-chm="home">⬅ '+E(C.name)+'</button>'):'<select data-chm="par" aria-label="Parsha">'+opts+'</select>')
   +'<button class="chm-btn" data-chm="levels">Level '+C.lv+(rebbeLv()?' ✓':'')+'</button></div>'; }
 function draw(){ const ov=document.getElementById('chm-ov'); if(!ov) return;
  ov.innerHTML=top()+'<div class="chm-body"><div class="chm-msg">📜 Opening Parshas '+E(C.name)+'…</div></div>';

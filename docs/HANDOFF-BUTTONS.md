@@ -28,5 +28,10 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - Mistake Detective review (`src/Review.html`): kit ✕ top left (`TLK.x`). Corner dots, profile and Workbook hide behind it (`#mdx.on` in the GameMap hide list). Its end buttons ("New cases", "Done") are not changed.
 - Pictures: `docs/screens/arena-before-*.jpg`, `arena-after-*.jpg`. Check: `node tools/screens/arena.js OUT TAG GRADE`.
 
+## Done: step 4, Back on inner pages (25 Nov 2026)
+- Workbook job page: kit Back (to the workbook, `data-bb="home"`) + kit house (leaves the workbook) top left, replacing "◀ 📘". K-3 phone: the job title moves under the buttons.
+- Chumash inner pages: kit Back (`data-chm="home"`) before the house, replacing "⬅ parsha".
+- Pictures: `docs/screens/inner-back-after-*.jpg`.
+
 ## Next
-- Workbook job pages still have the old `◀ 📘` back to the workbook (top left); Chumash inner pages still have `⬅ parsha`. Not changed (not in step 2).
+- Mistake Detective end buttons ("🔁 New cases" has icon + word) are not on the kit yet.
