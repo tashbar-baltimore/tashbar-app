@@ -36,6 +36,12 @@ You are a builder on the Tashbar Baltimore learning app for the Head of School (
 - Mrs. Khaver and Esti work on 2.0 in their own Claude with `v2/START-PROMPT.md`: one small piece of 1.0 at a time (look at it, decide, build it their way, approve).
 - **Post that line only for the person working on 2.0 who, in the same conversation, looked at the newest look link and said to approve. Never post it otherwise, never ask anyone to post it, never merge or publish 2.0 by hand.**
 
+## 2.0 try-out inside 1.0 (HoS 2026-11-25)
+HoS: "Put all 2.0 into 1.0 for now, live. Leave 2.0 not live, waiting for the people it is waiting for. Let all the 2.0 requests be tested out live in 1.0."
+- `try2/` (at the repository root) is a **copy for testing, not 2.0**. `tools/try2-sync.js` fills it from `v2/app` on main plus every open 2.0 pull request; the 1.0 site serves it at `/try2/`. Boys of the right grade see its pieces; staff and TEST- boys see all of it.
+- The 2.0 rules above are unchanged: `v2/`, the 2.0 site, `v2-gate`, `publish-v2` and the approval line stay exactly as they are. Never edit `try2/` by hand (the sync overwrites it) and never change `v2/` from a try2 pull request.
+- Builders do not chase 2.0 approvals. Every 2.0 pull request stays open for Mrs. Khaver or Esti.
+
 ## Shared art library (HoS 2026-11-24, binding on 1.0, 2.0 and every future app)
 HoS: "I want the graphics for 1.0 and 2.0 to all be shared." All art (pictures, photos, drawings, icons, sounds, recorded clips, 3D models saved as files) lives once in `art/` and every app uses it from there. How: `art/README.md`.
 - (a) Search `art/CATALOG.md` before ordering or making any art, and reuse what fits.
