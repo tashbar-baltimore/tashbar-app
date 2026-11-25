@@ -8,7 +8,8 @@
    purpose: he hears it and spells it); later pieces are harder; the boy's likely mistake is one piece (mis:true); no real word is offered
    as a wrong spelling. Sentences use only patterns taught by then plus the K heart words (the, a, I, is, to, see, we, he, me, my, go, no,
    so, like, and, you, said, was, have, of, they, are), and cast names (the Peretz family on Maple Street, F-map section 8).
-   Path order on the Grade 1 Reading path: Vowel Teams 1 (the existing overview) -> Unit 7 -> Unit 8 -> Unit 9 -> Two-Part Words (existing). */
+   Path order on the Grade 1 Reading path: Vowel Teams 1 (the existing overview) -> Unit 7 -> Unit 8 -> Unit 9 -> Two-Part Words (existing) -> Unit 10;
+   Unit 11 and Unit 12 come after Smooth Reader (existing), so the end-of-Grade-1 fluency and heart-word games follow it. */
 (function () {
   var LESSONS = {}, TEACH = {}, HOWTO = {}, BITE = {};
   var K1G = [
@@ -126,7 +127,103 @@
       {type:'sort', bins:['Yitzy','Akiva'], cards:[['"See my kite, Akiva!" said Yitzy.',0],['"Yitzy, it is so high!" said Akiva.',1],['"Akiva, get the string!" said Yitzy.',0]], mis:true, say:'Careful! A name inside the marks is not the talker.', how:'The name inside the marks is who he talks to. Look next to said.'},
       {type:'dictation', hear:'"I see a bird," said Dovid.', w:['"I','see','a','bird,"','said','Dovid.'], say:'Build what Dovid said. Watch for the talking marks!', how:'The talking marks go around the words Dovid says.'},
       {type:'sort', bins:['😮 loud','🤫 soft'], cards:[['"Help! My hat!" yelled Yitzy.',0],['"Shh, the baby is asleep," Eli whispered.',1],['"I did it!" yelled Shmuli.',0]], say:'Stand up and read each one like the boy says it!', how:'Look at the end marks and the words yelled or whispered.'},
-      {type:'evidence', q:'What did Ovadia say?', p:['"I like buns," said Ovadia.','"Have a hot bun," said Abba.','Ovadia went to the shop.'], a:0, look:'Ovadia next to said', say:'Ovadia and Abba talk. Which words did Ovadia say?', how:'Find the talking marks. Then look at the name next to said.'}]}
+      {type:'evidence', q:'What did Ovadia say?', p:['"I like buns," said Ovadia.','"Have a hot bun," said Abba.','Ovadia went to the shop.'], a:0, look:'Ovadia next to said', say:'Ovadia and Abba talk. Which words did Ovadia say?', how:'Find the talking marks. Then look at the name next to said.'}]},
+
+    /* ===== G1 Unit 10 · Two-syllable words: every beat has a vowel, split between two consonants, -er and -est, copy a sentence neatly ===== */
+    { id:'READ.PA.L02.20', grade:1, name:'Every Beat Has a Vowel', pic:'👏', after:'READ.PHON.L02.03', acts:[
+      {type:'sort', bins:['👏 one beat','👏👏 two beats'], cards:[['🐱',0],['🐰',1],['🚢',0],['🥕',1],['🐟',0],['🍕',1]], say:'Clap it! Every beat has a vowel sound. One or two?', how:'Say the picture and clap. Count your claps.'},
+      {type:'findall', grid:['n','a','p','k','i','n'], find:['a','i'], findSay:'vowel', say:'Napkin has two beats. Tap the vowel in each beat.', how:'Say napkin slowly. Which letter makes the sound in each beat?'},
+      {type:'sort', bins:['👏 one beat','👏👏 two beats'], cards:[['cake',0],['cupcake',1],['stripe',0],['sunset',1],['smile',0],['pancake',1]], mis:true, say:'Careful! The quiet e is silent. It does not make a beat.', how:'Count the vowels you HEAR, not the ones you see.'},
+      {type:'tiles', w:['pump','kin'], extra:['pemp','kun'], hear:'pumpkin', say:'Build pumpkin, one beat at a time.', how:'Clap it: pump, kin. Each beat has one vowel.'},
+      {type:'match', pairs:[['cat','👏'],['rabbit','👏👏'],['fantastic','👏👏👏']], say:'Shmuli reads and claps each word. Match it to its claps.', how:'Find the vowels. Each vowel sound is one clap.'}]},
+
+    { id:'READ.PHON.L02.45', grade:1, name:'Rabbit Split', pic:'🐰', after:'READ.PA.L02.20', acts:[
+      {type:'tiles', w:['rab','bit'], extra:['ra','bbit'], hear:'rabbit', say:'Two consonants in the middle? Split between them. Build rabbit.', how:'Find the two letters in the middle. Draw the line between them.'},
+      {type:'sort', bins:['✂️ split right','not right'], cards:[['nap | kin',0],['na | pkin',1],['sun | set',0],['su | nset',1],['bas | ket',0],['ba | sket',1]], mis:true, say:'Careful! Do not split after the vowel. Split between the consonants!', how:'Look at the two letters in the middle. The line goes between them.'},
+      {type:'match', pairs:[['basket','🧺'],['kitten','🐱'],['tennis','🎾']], say:'Split it, read each part, then match!', how:'Cover the second part. Read the first. Then read the second.'},
+      {type:'listen', hear:'puppet', o:['puppet','pupet','pupput'], a:'puppet', say:'Two beats, two consonants in the middle. Which spelling?', how:'Clap it: pup, pet. Each beat is a short word.'},
+      {type:'evidence', q:'Which sentence is spelled right?', p:['Eli has a kiten.','Eli has a kitten.','Eli has a kittin.'], a:1, look:'kitten split into kit and ten', say:'Eli has a new pet! Tap the sentence spelled right.', how:'Clap it: kit, ten. Spell each beat.'},
+      {type:'dictation', hear:'My kitten naps in a basket.', w:['My','kitten','naps','in','a','basket.'], extra:['kiten'], say:'Listen. Build the sentence about the kitten.', how:'Say it softly. Split the long words into beats.'}]},
+
+    { id:'READ.PHON.L02.46', grade:1, name:'Fast, Faster, Fastest', pic:'🚀', after:'READ.PHON.L02.45', acts:[
+      {type:'sort', bins:['-er: more','-est: the most'], cards:[['faster',0],['fastest',1],['longer',0],['longest',1],['softer',0],['softest',1]], say:'Er means more. Est means the most. Sort by the ending!', how:'Look at the end of the word. Er or est?'},
+      {type:'match', pairs:[['fast','🚲'],['faster','🚗'],['fastest','🚀']], say:'Bike, car, rocket! Read each word. Match its picture.', how:'Est is the most of all. Er is in the middle.'},
+      {type:'tiles', w:['dark','est'], extra:['er'], hear:'darkest', say:'The middle of the night is the darkest. Build darkest.', how:'The most dark of all? Add the ending that means the most.'},
+      {type:'evidence', q:'Which sentence is right?', p:['Avi is fastest than Dovid.','Avi is faster than Dovid.'], a:1, look:'the ending for two boys', mis:true, say:'Careful! Two boys? Use er. More than two? Use est.', how:'Count the boys in the sentence. Two? Then er.'},
+      {type:'dictation', hear:'Bubby\'s pillow is the softest.', w:['Bubby\'s','pillow','is','the','softest.'], extra:['softer.'], say:'Listen to Bubby. Build the sentence.', how:'The most soft of all? Pick the ending that means the most.'}]},
+
+    { id:'WRIT.HAND.L02.20', grade:1, name:'Copy It Neatly', pic:'✍️', after:'READ.PHON.L02.46', acts:[
+      {type:'sort', bins:['✅ neat','❌ squished'], cards:[['I see a cat.',0],['Iseeacat.',1],['My dog is big.',0],['Mydogisbig.',1]], mis:true, say:'Careful! Squished words are hard to read. Sort them!', how:'Look for a space between every word, the size of a finger.'},
+      {type:'trace', glyph:'The', name:'word The', say:'Copy The. Start with a big T. Trace it!', how:'Start at the top of the T. Then the tall h, then the small e.'},
+      {type:'evidence', q:'Which sentence is written right?', p:['the cat is fat','The cat is fat.','The cat is fat'], a:1, look:'a capital and an end mark', say:'Which copy has a capital and an end mark?', how:'Check the start: a big letter? Check the end: a dot?'},
+      {type:'sort', bins:['tall','small','tail'], cards:[['b',0],['a',1],['g',2],['h',0],['p',2],['o',1]], say:'Tall, small or tail? Sort each letter.', how:'Tall letters reach the top line. Tail letters drop below.'},
+      {type:'trace', glyph:'yes', name:'word yes', say:'Trace yes. The y has a tail that drops down.', how:'Go slowly. Small e, then the s.'},
+      {type:'dictation', hear:'I can see a star.', w:['I','can','see','a','star.'], extra:['i'], say:'Build it. Then copy it on paper for Abba!', how:'Start with a capital. Put a space between words. End with a dot.'}]},
+
+    /* ===== G1 Unit 11 · More vowel sounds: ou/ow, oi/oy, oo, heart words, sentence dictation ===== */
+    { id:'READ.LV.L02.26', grade:1, name:'Cloud and Cow', pic:'☁️', after:'READ.FLU.L02.02', acts:[
+      {type:'sort', bins:['ou, like cloud','ow, like cow'], cards:[['out',0],['now',1],['shout',0],['town',1],['mouth',0],['down',1]], say:'Ow! Like a bump! Two teams say ow. Sort them!', how:'Look at the two letters. o and u, or o and w?'},
+      {type:'match', pairs:[['cloud','☁️'],['cow','🐄'],['owl','🦉']], say:'Zeidy\'s farm! Read each word. Match its picture.', how:'The team says ow, like when you bump your knee.'},
+      {type:'sort', bins:['ow, like cow','oh, like snow'], cards:[['how',0],['grow',1],['town',0],['blow',1],['brown',0],['slow',1]], mis:true, say:'Careful! This team can say ow or oh. Try both!', how:'Read it with ow. Is it a word? If not, try oh.'},
+      {type:'tiles', w:['m','ou','th'], extra:['ow'], hear:'mouth', say:'Open your mouth wide! Build mouth.', how:'Mouth is spelled like out and shout. Use that team.'},
+      {type:'findall', grid:['loud','load','found','fond','cow','cot'], find:['loud','found','cow'], findSay:'word that says ow', say:'Tap every word that says ow, like a bump!', how:'Look for o and u, or o and w, together.'},
+      {type:'evidence', q:'Which sentence is spelled right?', p:['A clowd is in the sky.','A cloud is in the sky.','A clould is in the sky.'], a:1, look:'the team in loud', say:'Look up! Tap the sentence spelled right.', how:'Cloud is spelled like loud and found. Which team is in them?'}]},
+
+    { id:'READ.LV.L02.27', grade:1, name:'Coin and Boy', pic:'🪙', after:'READ.LV.L02.26', acts:[
+      {type:'sort', bins:['inside, like coin','at the end, like boy'], cards:[['foil',0],['toy',1],['soil',0],['joy',1],['point',0],['enjoy',1]], say:'Oy! Coin and boy say the same sound. Sort them!', how:'Is the oy sound inside the word, or at the very end?'},
+      {type:'match', pairs:[['coin','🪙'],['boy','👦'],['toy','🧸']], say:'Shmuli saves for tzedakah! Read each word and match.', how:'The team says oy. Sound it out, then find the picture.'},
+      {type:'listen', hear:'joy', o:['joy','joi','joye'], a:'joy', mis:true, say:'Careful! The sound is at the very end. Which team?', how:'At the end of a word, use the team from boy.'},
+      {type:'tiles', w:['b','oi','l'], extra:['oy'], hear:'boil', say:'Bubby boils water for tea. Build boil.', how:'The oy sound is inside, so use the team from coin.'},
+      {type:'findall', grid:['coin','con','oil','ill','joy','jog'], find:['coin','oil','joy'], findSay:'word that says oy', say:'Tap every word that says oy.', how:'Look for o and i, or o and y, together.'},
+      {type:'dictation', hear:'The boy has a coin.', w:['The','boy','has','a','coin.'], extra:['coyn.'], say:'Listen. Build the sentence about the boy.', how:'Say it softly. Is each oy sound inside a word or at the end?'}]},
+
+    { id:'READ.LV.L02.28', grade:1, name:'Moon and Book', pic:'🌕', after:'READ.LV.L02.27', acts:[
+      {type:'sort', bins:['oo, like moon','oo, like book'], cards:[['food',0],['look',1],['spoon',0],['foot',1],['tooth',0],['wood',1]], say:'Oo has two sounds: moon and book. Sort them!', how:'Read it with oo like moon. Is it a word? If not, try book.'},
+      {type:'match', pairs:[['moon','🌕'],['spoon','🥄'],['book','📖']], say:'Read each word. Match its picture.', how:'Try oo like moon first. Not a word? Try oo like book.'},
+      {type:'tiles', w:['f','oo','t'], extra:['u'], hear:'foot', mis:true, say:'Careful! Foot sounds like book. Which letters spell it?', how:'The book sound is spelled with the same team as book.'},
+      {type:'findall', grid:['zoo','good','pool','pod','boot','hook'], find:['zoo','pool','boot'], findSay:'word with oo like moon', say:'Tap every word with oo like moon.', how:'Look for two o letters together. Then read it.'},
+      {type:'evidence', q:'Which sentence makes sense?', p:['Eli reads a good boot.','Eli reads a good book.','Eli reads a good hook.'], a:1, look:'a word that makes sense', say:'Read each one. Tap the sentence that makes sense.', how:'Read the last word slowly. What can you read?'},
+      {type:'dictation', hear:'Look at the moon!', w:['Look','at','the','moon!'], extra:['Luk'], say:'Shmuli sees it from the window. Build the sentence.', how:'Say it softly. Look and moon both use two o letters.'}]},
+
+    { id:'READ.FLU.L02.23', grade:1, name:'Heart Words: friend, people', pic:'💛', after:'READ.LV.L02.28', acts:[
+      {type:'listen', hear:'people', o:['people','friend','because'], a:'people', say:'Heart words break the rules. Listen and tap the word.', how:'Listen again. Look at the first letter of each word.'},
+      {type:'tiles', w:['w','a','t','er'], extra:['o'], hear:'water', say:'Water is a heart word too. Build water.', how:'Listen to each sound. The a in water does not say a, like cat.'},
+      {type:'listen', hear:'friend', o:['friend','frend','freind'], a:'friend', mis:true, say:'Careful! Friend has a quiet letter. Which is right?', how:'Fri, then end. The i is quiet, but it is there.'},
+      {type:'sort', bins:['💛 heart word','sound it out'], cards:[['friend',0],['frog',1],['people',0],['pen',1],['because',0],['bed',1]], say:'Heart words break the rules. Find them!', how:'Try to sound it out. Does it break the rules? It is a heart word.'},
+      {type:'match', pairs:[['friend','👦👦'],['water','💧'],['people','👥']], say:'Read the heart words. Match each picture.', how:'Read each heart word. Which picture shows it?'},
+      {type:'evidence', q:'Which sentence is spelled right?', p:['I am glad becuz Zeidy is here.','I am glad because Zeidy is here.','I am glad becauz Zeidy is here.'], a:1, look:'the heart word because', say:'Zeidy came! Tap the sentence spelled right.', how:'You sorted because. Picture how it looked.'},
+      {type:'dictation', hear:'My friend gave me water.', w:['My','friend','gave','me','water.'], extra:['frend'], say:'Listen. Build the sentence with heart words.', how:'Say it softly. Friend has a quiet i.'}]},
+
+    { id:'READ.PHON.L02.47', grade:1, name:'Hear It, Write It', pic:'👂', after:'READ.FLU.L02.23', acts:[
+      {type:'listen', hear:'I like my dog.', o:['3','4','5'], a:'4', say:'Listen. Hold up a finger for each word.', how:'Say it again slowly. One finger for each word.'},
+      {type:'dictation', hear:'The rain is wet.', w:['The','rain','is','wet.'], extra:['rayn'], say:'Say it back. Then build it, word by word.', how:'Say it softly. Find the first word, then the next.'},
+      {type:'evidence', q:'Which one is built right?', p:['the boy has a toy?','The boy has a toy.','The boy has a toy'], a:1, look:'a capital and an end mark', mis:true, say:'Careful! Check the start and the end of each one.', how:'A sentence starts with a capital and ends with a mark.'},
+      {type:'tiles', w:['s','t','or','m'], extra:['ar'], hear:'storm', say:'A tricky word? Say each sound. Build storm.', how:'Say storm slowly. Tap one tile for each sound you hear.'},
+      {type:'dictation', hear:'Can you see the boat?', w:['Can','you','see','the','boat?'], extra:['boat.'], say:'Is it asking? Pick the right end mark!', how:'An asking sentence ends with a question mark.'},
+      {type:'dictation', hear:'Zeidy and I feed the goats.', w:['Zeidy','and','I','feed','the','goats.'], extra:['gotes.'], say:'Last one! A long sentence. You can do it!', how:'Say it back softly. Tap the words in order.'}]},
+
+    /* ===== G1 Unit 12 · Putting it all together: try the other vowel sound, heart words, read it 3 times ===== */
+    { id:'READ.PHON.L02.48', grade:1, name:'Try the Vowel', pic:'🔑', after:'READ.PHON.L02.47', acts:[
+      {type:'sort', bins:['ea, like seat','ea, like bread'], cards:[['leaf',0],['head',1],['beak',0],['bread',1],['meal',0],['feather',1]], say:'Ea can say ee or eh. Try ee first!', how:'Read it with ee. Is it a word? If not, read it with eh.'},
+      {type:'match', pairs:[['thread','🧵'],['feather','🪶'],['meat','🍖']], say:'Try both sounds! Read each word and match.', how:'Try ee first. Not a word? Try eh.'},
+      {type:'sort', bins:['ow, like cow','oh, like snow'], cards:[['clown',0],['show',1],['owl',0],['slow',1]], say:'Do not stop at the first try. Try both!', how:'Read it with ow. Is it a word? If not, try oh.'},
+      {type:'tiles', w:['h','ea','d'], extra:['e'], hear:'head', say:'A hat goes on your head. Build head.', how:'Head is spelled like bread, with a team.'},
+      {type:'evidence', q:'Which sentence makes sense?', p:['Bubby bakes a loaf of bead.','Bubby bakes a loaf of bread.','Bubby bakes a loaf of bed.'], a:1, look:'a word that makes sense', mis:true, say:'Careful! Try both ea sounds. Which sentence makes sense?', how:'Read the last word slowly. What does Bubby bake?'}]},
+
+    { id:'READ.FLU.L02.24', grade:1, name:'Heart Word Dash', pic:'⚡', after:'READ.PHON.L02.48', acts:[
+      {type:'findall', grid:['said','sad','said','sand','said','paid'], find:'said', findSay:'said', say:'Snap! Tap every said, quick as a flash.', how:'Said starts with s and ends with d. Check the middle.'},
+      {type:'sort', bins:['💛 heart word','sound it out'], cards:[['many',0],['man',1],['were',0],['wet',1],['again',0],['rain',1]], say:'Heart word or sound it out? Sort them fast!', how:'Sound it out. Does it sound like a real word? If not, it is a heart word.'},
+      {type:'listen', hear:'could', o:['could','cold','cloud'], a:'could', say:'Shmuli says a heart word! Tap the word you hear.', how:'Could is a heart word. The l is quiet.'},
+      {type:'evidence', q:'Which sentence makes sense?', p:['Eli was a dog.','Eli saw a dog.'], a:1, look:'a sentence that makes sense', mis:true, say:'Careful! Was and saw look alike. Which makes sense?', how:'Look at the first letter of the middle word. Then read it all.'},
+      {type:'dictation', hear:'They could see my friend.', w:['They','could','see','my','friend.'], extra:['frend.'], say:'Listen. Build it with your heart words.', how:'Say it softly. Spell the heart words the way they look.'},
+      {type:'evidence', q:'Which sentence is spelled right?', p:['Meny people have water.','Many people have water.','Many peeple have water.'], a:1, look:'every heart word spelled right', say:'Last one! Tap the sentence spelled right.', how:'Check each heart word: many, people, water.'}]},
+
+    { id:'READ.FLU.L02.25', grade:1, name:'Read It 3 Times', pic:'📖', after:'READ.FLU.L02.24', acts:[
+      {type:'dictation', hear:'Eli and Shmuli ran to the park with a red kite.', w:['Eli and Shmuli','ran to the park','with a red kite.'], extra:['ran to'], say:'Read 1: listen. Then scoop it into phrases!', how:'Listen for the little stops. Each scoop is one phrase.'},
+      {type:'listen', hear:'The. Wind. Was. Strong.', o:['choppy','smooth'], a:'choppy', say:'Listen to this reading. Is it smooth or choppy?', how:'Smooth reading sounds like talking. Did it stop after every word?'},
+      {type:'sort', bins:['asking','shouting','telling'], cards:[['Can I fly it?',0],['Help me!',1],['The kite is red.',2]], mis:true, say:'Careful! Look at the end mark. Ask, shout or tell?', how:'A question mark asks. An exclamation mark shouts. A dot tells.'},
+      {type:'dictation', hear:'The kite went up so high!', w:['The kite','went up','so high!'], extra:['went so'], say:'Read 2: scoop it! Read each phrase like one big word.', how:'Read it the way you talk. Each scoop is one phrase.'},
+      {type:'evidence', q:'Where did Eli and Shmuli go?', p:['Eli and Shmuli ran to the park.','The wind was strong.','The kite went up so high!'], a:0, look:'where they went', say:'Read 3: the whole page, smooth like talking. Where did they go?', how:'Read every sentence. Which one tells a place?'}]}
   ];
   if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
   if (window.TLCORE) TLCORE.add('F', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
