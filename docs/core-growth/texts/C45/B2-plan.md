@@ -54,7 +54,7 @@ C45 helper (claim #445). Units 4.4–4.6 (`docs/core-growth/C45-map.md`). Cast: 
 **Book Club lessons (how a boy reads a chapter).** One new skill per chapter, `READ.LIT.L05.30`–`.39`, each at the end of its unit on the Reading ladder:
 - ch. 1–3 come after `READ.FLU.L05.04`;
 - ch. 4–7 come after `READ.COMP.L05.21`;
-- ch. 8–10 come after Unit 4.6's last skill once it is built (until then, after ch. 7).
+- ch. 8–10 come after Unit 4.6's last skill, `READ.FLU.L05.05`.
 
 Each lesson:
 - Today we learn: the chapter's skill, in one line.

@@ -23,13 +23,13 @@ The Glen Avenue Crew looks exactly as in `C45-picture-orders.md` (Yehuda, Avrumi
 | Captain Ray Turner (about 55) | big man, gray mustache, sunburned face, yellow rain jacket |
 | Cody Turner (13) | thin, freckled, life jacket |
 
-## Order 1 (2026-11-25) · status: 21 of 24 IN `art/`; 3 sent back for a redraw
+## Order 1 (2026-11-25) · status: all 24 IN `art/` (3 after a redraw)
 All 24 came back the same morning. Each was checked against its order and the picture rules. Three were sent back:
 - **#11 b2-ch10:** Scout is drawn as a German shepherd. She must be the same brown, floppy-eared dog as in #9.
 - **#17 b5-ch5:** the boys stand outside on rocks. In the story the lighthouse stands in open water and the boys stay inside.
 - **#18 b5-ch6:** a boy draws on the fogged window on Shabbos. The story was fixed so that he traces the shape in the air; the order was written before that fix.
 
-Until the redraws come, those three chapters have no picture of their own. Ridge Trail ch. 1–3 and Lighthouse ch. 1 now use their new pictures instead of the library photos.
+The 3 redraws came back the same day, were checked against the redraw request and the picture rules, and are now on Ridge Trail ch. 10 and Lighthouse ch. 5 and 6. Ridge Trail ch. 1–3 and Lighthouse ch. 1 now use their new pictures instead of the library photos.
 
 Cast note for the next order: in the B5 pictures the curly-haired boy looks like Yehuda, who is not on the trip. Nosson has neatly combed dark hair.
 | # | File name | Goes on | Size | Prompt |
