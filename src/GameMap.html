@@ -883,7 +883,7 @@ function moneyHTML(){ const L=((A.st&&A.st.ledger)||[]).filter(x=>x&&x.at), d0=n
  const rows=(all?rowsAll:rowsAll.filter(r=>r.x.at>=wk0)).slice(0,all?60:30).map(r=>`<div class="r"><small>${esc(dayWord(r.x.at))}</small><span>${esc(whyText(r.x.why))}</span><b class="${r.x.amt<0?'m':'p'}">${pill('money',(r.x.amt<0?'−':'+')+usd(r.x.amt))}</b><em>${usd(r.after)}</em></div>`).join('')
   ||`<div class="r none">${all?'💵 Nothing yet. Clear a level to earn your first money!':'Nothing this week yet. Clear a level to earn money!'}</div>`;
  const owned=(I&&(I.items||[]).filter(x=>(S.owned||[]).indexOf(x.id)>=0||(I.owned&&I.owned[x.id])).length)||((S.owned||[]).length), waiting=I&&(I.orders||[]).filter(o=>o.status==='waiting').length;
- return `<div class="mm"><div class="mm-bal">${box('money','My money',money())}<div class="sub">${today>0?pill('money','+'+usd(today)+' today'):''}${week>0?pill('money','+'+usd(week)+' this week'):'Earned by mastering skills'}</div><div class="pay">${pay}</div></div>${chest}
+ return `<div class="mm"><div class="mm-bal">${box('money','My money',money())}<div class="sub">${today>0?pill('money','+'+usd(today)+' today'):''}${week>0?pill('money','+'+usd(week)+' this week'):'Earned by mastering skills'}</div><div class="mm-pay">${pay}</div></div>${chest}
  <h2 class="mm-h">What can I do with my money?</h2>
  <div class="mm-four">
   <button type="button" class="mm-c spend" data-st="open" data-t="fun"><span class="i">🛍️</span><span class="t">Spend</span><span class="d">Fun upgrades for the app, or a real prize your rebbe hands you.</span><span class="go">Open the Store ›</span></button>
@@ -1244,8 +1244,11 @@ body #gm .gm-more{background:#fff;color:#047857}
 body #gm .gm-chest,body #gm .mm-chest{background:none!important;border:0!important;padding:4px 0!important;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 body #gm .mm-bal{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;color:#1E1B4B!important;align-items:center;gap:10px}
 #gm .mm-bal .tlk-box{padding:12px 22px;text-align:left}#gm .mm-bal .tlk-box b{font-size:40px;line-height:1.05}
-#gm .mm-bal .sub{display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:#4B4880;margin:0}
-#gm .mm-bal .pay{background:none!important;padding:0;color:#4B4880;display:flex;flex-wrap:wrap;gap:6px;align-items:center;max-width:none}
+#gm .mm-bal .sub{display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:#4B4880!important;margin:0}
+#gm .mm-bal .mm-pay{margin-left:auto;color:#4B4880;font-size:14px;font-weight:800;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#gm .mm-bal .tlk-box b{color:inherit;text-shadow:none;display:block}#gm .mm-bal .sub{font-size:14px;font-weight:800}
+#gm .gm-goal .k .tlk-pill{letter-spacing:.04em}
+@media (max-width:700px){#gm .mm-bal .mm-pay{margin-left:0}#gm .mm-bal .tlk-box{justify-self:start;width:max-content}}
 #gm .mm-story .r b .tlk-pill{font-size:15px}
 /* his picture by Workbook (outside #gm, like Workbook): round, the kit's floating look; Workbook steps left to make room */
 #pr-av{position:fixed;right:52px;top:calc(env(safe-area-inset-top) + 11px);z-index:60;width:44px;height:44px;padding:0;border-radius:50%;border:1.5px solid #E6E2F7;background:#fff;box-shadow:0 8px 20px rgba(30,27,75,.14),0 1px 3px rgba(30,27,75,.10);cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent;transition:box-shadow .15s,transform .12s}

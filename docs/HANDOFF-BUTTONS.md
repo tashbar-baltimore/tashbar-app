@@ -43,7 +43,7 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
   - Workbook home (`src/BlockBuildersUI.html`): "Next" (now), "Page on the way" (lock). Chumash home (`src/ChumashPage.html`): Parsha (subj), this week's (now), pesukim (prog), level and mastered (rank).
   - K–1 games path (`src/K1Only.html`): each game's number (now / prog / lock).
 - Mistake Detective end (`src/Review.html`): "New cases" = `TLK.main`, "Done" = `TLK.quiet`, words only. Enter/focus use `.mdkit .tlk-main`.
-- Pictures: `docs/screens/info-before-*.png`, `info-after-*.png`. Check: `node tools/screens/info.js OUT TAG GRADE` (+ `pages.js`, `arena.js`).
+- Pictures: `docs/screens/info-before-*.jpg`, `info-after-*.jpg`. Check: `node tools/screens/info.js OUT TAG GRADE` (+ `pages.js`, `arena.js`).
 
 ## Next
 - Not yet on kit labels: Mistake Detective's points and case dots, the old Trophies/My week rooms, Canteen, lesson screens. The Store pop-up's own buttons (Buy it, Make it my goal, tabs) and the Chumash/Workbook/Arena buttons are not on the kit yet.
