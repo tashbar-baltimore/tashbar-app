@@ -25,5 +25,9 @@ CORE_SKILLS.W13 = [
   ["WRIT.SENT.L01.03", "Point and Read", "Read his sentence back pointing to each word, and fix a missing word", { after: "WRIT.SENT.L01.02", std: "W.K.5", file: "CoreDataW135", min: 4 }],
   ["WRIT.PARA.L02.04", "Zoom In", "Write about one small moment, not the whole day", { after: "WRIT.SENT.L02.01", std: "W.1.3", file: "CoreDataW136", min: 5 }],
   ["WRIT.PARA.L02.05", "Time Words", "Use time words: first, then, after that, at the end", { after: "WRIT.PARA.L02.04", std: "W.1.3", file: "CoreDataW136", min: 5 }],
-  ["WRIT.PARA.L02.06", "Feeling Ending", "End a story with how it felt or what he learned", { after: "WRIT.PARA.L02.05", std: "W.1.3", file: "CoreDataW136", min: 5 }]
+  ["WRIT.PARA.L02.06", "Feeling Ending", "End a story with how it felt or what he learned", { after: "WRIT.PARA.L02.05", std: "W.1.3", file: "CoreDataW136", min: 5 }],
+  ["WRIT.ESSAY.L03.02", "WWW Story Plan", "Plan a story with W-W-W, What 2, How 2", { before: "WRIT.PARA.L03.03", std: "W.2.3", file: "CoreDataW137", min: 8 }],
+  ["WRIT.PARA.L03.07", "Actions and Thoughts", "Tell what the character did, thought and felt", { after: "WRIT.PARA.L03.03", std: "W.2.3", file: "CoreDataW137", min: 7 }],
+  ["WRIT.PARA.L03.08", "Time-Order Words", "Move the story along with time-order words", { after: "WRIT.PARA.L03.07", std: "W.2.3", file: "CoreDataW137", min: 7 }],
+  ["WRIT.PARA.L03.09", "Story Ending", "End with how the problem was solved and how he felt", { after: "WRIT.PARA.L03.08", std: "W.2.3", file: "CoreDataW137", min: 7 }]
 ];

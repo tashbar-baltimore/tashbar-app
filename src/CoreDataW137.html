@@ -1,0 +1,322 @@
+<script>
+/* CoreDataW137.html: Core Growth job W13, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW13.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W13 = Writing K-3 (docs/core-growth/W13-map.md). This file: Grade 2 (L03), Unit 2 "Real Stories" (W.2.3).
+   Opener idea (map): Dovid's story about the lost key, told flat, then told alive. The key goes missing on Friday afternoon, before
+   Shabbos (nothing here is carried or written on Shabbos). Cast: the Shabbos Street Club (docs/core-growth/F-map.md section 8):
+   Naftali Rosen, Avi Benhamou, Chaim Weiss, Dovid Katz, Rabbi Feld, Naftali's Zeidy (a watchmaker), Avi's Saba, Mr. Benhamou.
+   SRSD for stories: W-W-W, What = 2, How = 2 (Graham and Harris). WRIT.PARA.L03.03 "Story Starter" is an existing pack lesson: it gets
+   its One Bite lesson here with TLCORE.upgrade (its own questions stay as practice and Show me).
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+
+  'WRIT.ESSAY.L03.02':{name:'WWW Story Plan',
+  teach:[
+    {how:'Story writers plan with W-W-W, What = 2, How = 2. The three W’s: Who is in it? When is it? Where is it?', q:'Dovid’s plan: “in the club garage”. Which W is it?', o:['Where','Who','When']},
+    {how:'What = 2 is the middle: What does he want to do? What happens then?', q:'Dovid wants to open the club box. Which part of the plan is that?', o:['What does he want to do?','Where is it?','How does it end?']},
+    {how:'How = 2 is the end: How does it end? How does he feel? Then the plan is done, and the story can be written.', q:'“Dovid feels so relieved.” Which part of the plan is it?', o:['How does he feel?','Who is in it?','When is it?']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each question to Chaim’s note.', pairs:[['Who?','Chaim'],['Where?','the shul library'],['When?','after Mincha']], h:'Read the question word. Find the note that answers it.'},
+    {t:'sort', q:'Dovid’s key story. Sort each note.', bins:[{id:'W',label:'W: who, when, where'},{id:'H',label:'What or How'}],
+      items:[{label:'the club garage',bin:'W'},{label:'Friday afternoon',bin:'W'},{label:'He wants to open the box.',bin:'H'},{label:'He feels happy.',bin:'H'}], h:'The three W’s set the scene. What and How tell the story.'},
+    {t:'order', q:'Put the plan in order. Tap the tiles in order.', tiles:['Who, when, where','What, what','How, how'], h:'Scene first, then the middle, then the end.'},
+    {t:'spotall', q:'Avi plans a story about Saba. Tap every note that tells HOW it ends or feels.', cells:[{label:'Saba reached Eretz Yisrael.',ok:true},{label:'Avi feels proud of Saba.',ok:true},{label:'long ago',ok:false},{label:'Saba and Avi',ok:false}], h:'How does it end? How does he feel?'},
+    {t:'sort', q:'Naftali’s plan: Zeidy’s clock. W-W-W, What, or How?', bins:[{id:'W',label:'Who, when, where'},{id:'T',label:'What'},{id:'H',label:'How'}],
+      items:[{label:'Naftali and Zeidy',bin:'W'},{label:'He wants to fix the clock.',bin:'T'},{label:'The clock ticks again.',bin:'H'}], h:'Who, when and where first. What he wants is a What. How it ends is a How.'},
+    {t:'write', q:'Your turn. Plan a story about a time you helped someone. Write W-W-W, What = 2, How = 2 as short notes.', min:0, checks:['I wrote who, when and where.','I wrote what he wants and what happens.','I wrote how it ends and how he feels.'], h:'Count on your fingers: 3 W’s, 2 Whats, 2 Hows.'}
+  ],
+  check:[
+    {q:'Avi’s plan says: “Avi and Saba”. Which part of the plan is it?', o:['Who','Where','How does it end?'], h:'Does it tell who, where, or how it ends?'},
+    {q:'Chaim’s plan says: “He wants to find his lost siddur.” Which part is it?', o:['What does he want to do?','When is it?','How does he feel?'], h:'Is it a want, a time, or a feeling?'},
+    {q:'Naftali’s plan has who, when, where and both Whats. What is missing?', o:['the two Hows','the three W’s','nothing'], h:'Count: 3 W’s, 2 Whats, 2 Hows. Which are not there?'}
+  ],
+  re:[
+    {how:'A new way: W-W-W is a hand. Three fingers for who, when, where. Two for the Whats. Two more for the Hows.', q:'How many W’s start the plan?', o:['three','two','one']},
+    {how:'A simpler step: just answer who, when and where first.', q:'“Friday afternoon” answers which question?', o:['When?','Who?','Where?']},
+    {how:'The skill underneath: POW (POW Power). Pick my idea, Organize my notes, Write and say more. W-W-W is how you organize a story.', q:'In POW, W-W-W helps with which step?', o:['Organize my notes','Pick my idea','Write and say more']}
+  ]},
+
+  'WRIT.PARA.L03.07':{name:'Actions and Thoughts',
+  teach:[
+    {how:'A real story tells what the character DID, what he THOUGHT and how he FELT. That makes the reader feel he is there.', q:'“Dovid searched under the sofa.” What does it tell?', o:['what he did','what he thought','how he felt']},
+    {how:'A thought is what goes on in his head. Writers often write “he thought” or “he wondered”.', q:'“Where could it be? Dovid wondered.” What does it tell?', o:['what he thought','what he did','how he felt']},
+    {how:'A feeling can be told with a feeling word, like worried, proud or glad.', q:'“Dovid felt worried.” What does it tell?', o:['how he felt','what he did','what he thought']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each sentence about Chaim’s lost siddur.', bins:[{id:'D',label:'Did'},{id:'T',label:'Thought'},{id:'F',label:'Felt'}],
+      items:[{label:'Chaim checked his bag.',bin:'D'},{label:'Did I leave it at home? he wondered.',bin:'T'},{label:'Chaim felt worried.',bin:'F'}], h:'Did is an action. Thought is in his head. Felt is a feeling.'},
+    {t:'pairs', q:'Match each sentence to what it tells.', pairs:[['Avi ran to the corner.','what he did'],['Avi felt proud.','how he felt'],['Avi thought, I can do it!','what he thought']], h:'Is it an action, a thought, or a feeling?'},
+    {t:'spotall', q:'Tap every sentence that tells a THOUGHT.', cells:[{label:'Will the clock ever tick again? Naftali wondered.',ok:true},{label:'I hope Zeidy can fix it, he thought.',ok:true},{label:'Naftali opened the clock.',ok:false},{label:'Naftali felt sad.',ok:false}], h:'A thought is what he says inside his head.'},
+    {t:'order', q:'Build a story sentence: what he did, then how he felt. Tap the tiles in order.', tiles:['Dovid found the key,','and he felt','so relieved.'], h:'First the action. Then the feeling.'},
+    {t:'sort', q:'Plain or alive?', bins:[{id:'A',label:'Alive: did, thought or felt'},{id:'P',label:'Plain'}],
+      items:[{label:'Dovid’s hands shook as he searched.',bin:'A'},{label:'It was Friday.',bin:'P'},{label:'Oh no, he thought.',bin:'A'},{label:'There was a box.',bin:'P'}], h:'Alive sentences show an action, a thought or a feeling.'},
+    {t:'write', q:'Your turn. Write two sentences about a time you lost something: one thing you did, and one thing you thought or felt.', min:0, checks:['One sentence tells what I did.','One sentence tells what I thought or felt.'], h:'Did, thought, felt: pick two.'}
+  ],
+  check:[
+    {q:'“Avi felt proud of his map.” What does it tell?', o:['how he felt','what he did','what he thought'], h:'Is it an action, a thought, or a feeling?'},
+    {q:'“Will Saba like it? Avi wondered.” What does it tell?', o:['what he thought','what he did','how he felt'], h:'Is it in his head, an action, or a feeling?'},
+    {q:'“Naftali wiped the dusty clock.” What does it tell?', o:['what he did','how he felt','what he thought'], h:'Can you see him do it?'}
+  ],
+  re:[
+    {how:'A new way: a story is a movie. Did is what the camera sees. Thought is a speech bubble in his head. Felt is his face.', q:'A speech bubble in his head shows…', o:['what he thought','what he did','how he felt']},
+    {how:'A simpler step: an action is something you can see him do.', q:'Which one can you see him do?', o:['Dovid jumped up.','Dovid felt glad.','Dovid wondered.']},
+    {how:'The skill underneath: a story has a beginning, a middle and an end (Story Starter).', q:'Where does the problem happen?', o:['the middle','the beginning','the end']}
+  ]},
+
+  'WRIT.PARA.L03.08':{name:'Time-Order Words',
+  teach:[
+    {how:'Time-order words move a story along: First, Next, Then, After that, Later, Finally. They tell the reader WHEN.', q:'Which word starts a story?', o:['First','Finally','After that']},
+    {how:'Finally tells the reader the story is ending. It never starts the story.', q:'Which word tells the story is ending?', o:['Finally','First','Next']},
+    {how:'Do not start every sentence with “and then”. Change the words: Next, After that, Later.', q:'Which is better than “and then, and then, and then”?', o:['Next … After that … Finally','and then … and then … and then','The end … the end']}
+  ],
+  practice:[
+    {t:'order', q:'Put the time words in story order. Tap the tiles in order.', tiles:['First','Next','After that','Finally'], h:'Which one starts? Which one ends?'},
+    {t:'pairs', q:'Match each time word to its part of the story.', pairs:[['First,','the beginning'],['Next,','the middle'],['Finally,','the end']], h:'Where does each word belong?'},
+    {t:'spotall', q:'Tap every sentence that starts with a good time word.', cells:[{label:'First, we lit the candles.',ok:true},{label:'After that, we sang Shalom Aleichem.',ok:true},{label:'And then and then we sang.',ok:false},{label:'Finally, the story begins.',ok:false}], h:'Is the word right for that part of the story?'},
+    {t:'order', q:'Put Naftali’s story in order. Tap the tiles in order.', tiles:['First, Zeidy opened the clock.','Next, Naftali found the broken gear.','Finally, the clock ticked again.'], h:'Follow the time words.'},
+    {t:'sort', q:'Beginning word or ending word?', bins:[{id:'B',label:'Starts the story'},{id:'E',label:'Ends the story'}],
+      items:[{label:'First',bin:'B'},{label:'One morning',bin:'B'},{label:'Finally',bin:'E'},{label:'In the end',bin:'E'}], h:'Which words open a story? Which close it?'},
+    {t:'write', q:'Your turn. Write three sentences about getting ready for Shabbos. Start them with First, Next and Finally.', min:0, checks:['I used First, Next and Finally.','The sentences are in order.'], h:'First, then next, then finally.'}
+  ],
+  check:[
+    {q:'Which time word fits? “___, the club packed the baskets.” (It is the first thing they did.)', o:['First','Finally','After that'], h:'It is the first thing. Which word starts?'},
+    {q:'Which word tells the reader the story is ending?', o:['Finally','Next','First'], h:'Which word closes the story?'},
+    {q:'Dovid wrote: “and then, and then, and then”. What should he do?', o:['change the words: Next, After that, Later','add more and then','take out every time word'], h:'How can he move the story along without repeating?'}
+  ],
+  re:[
+    {how:'A new way: time words are stepping stones across a river. Step, step, step, and you are across.', q:'Which is the last stepping stone?', o:['Finally','First','Next']},
+    {how:'A simpler step: First starts. Finally ends. Everything else goes in the middle.', q:'Which word goes in the middle?', o:['Next','First','Finally']},
+    {how:'The skill underneath: Tell What Happened (Grade 1). First, next, last.', q:'What comes after First?', o:['Next','Finally','The end']}
+  ]},
+
+  'WRIT.PARA.L03.09':{name:'Story Ending',
+  teach:[
+    {how:'A good story ending does two things. It tells how the problem was solved, and how the character felt.', q:'Problem: Dovid lost the key. Which is a good ending?', o:['The key was in his coat pocket, and Dovid laughed with relief.','The end.','Dovid has a coat.']},
+    {how:'A weak ending just stops: “The end.” Or it leaves the problem not solved. The reader wants to know what happened.', q:'Problem: the bird feeder broke. Which ending is weak?', o:['The end.','Naftali glued it, and the birds came back. He felt proud.','Zeidy helped fix it, and Naftali was so happy.']},
+    {how:'The feeling must fit what happened. A solved problem usually feels good: glad, proud, relieved.', q:'Chaim found his siddur. Which feeling fits?', o:['relieved','bored','angry']}
+  ],
+  practice:[
+    {t:'sort', q:'Problem: Avi’s map blew away. Good ending or weak ending?', bins:[{id:'G',label:'Good ending'},{id:'W',label:'Weak ending'}],
+      items:[{label:'Avi caught it by the fence and felt so proud.',bin:'G'},{label:'The end.',bin:'W'},{label:'Avi likes maps.',bin:'W'},{label:'Dovid ran after it, and Avi thanked him with a big smile.',bin:'G'}], h:'Is the problem solved? Is there a feeling?'},
+    {t:'pairs', q:'Match each problem to its solution.', pairs:[['The clock stopped.','Zeidy put in a new gear.'],['The siddur was lost.','Chaim found it on the table.'],['The bread burned.','Abba baked a new one.']], h:'Which solution fixes that problem?'},
+    {t:'spotall', q:'Tap every ending that tells how he FELT.', cells:[{label:'Naftali grinned from ear to ear.',ok:true},{label:'Dovid felt so relieved.',ok:true},{label:'They went home.',ok:false},{label:'The end.',ok:false}], h:'Look for a feeling word or a face.'},
+    {t:'order', q:'Build a good ending. Tap the tiles in order.', tiles:['Finally, the key turned,','and Dovid','felt so relieved.'], h:'First the solution. Then the feeling.'},
+    {t:'sort', q:'Solution or feeling?', bins:[{id:'S',label:'Tells the solution'},{id:'F',label:'Tells the feeling'}],
+      items:[{label:'Rabbi Feld lent him a siddur.',bin:'S'},{label:'Chaim felt thankful.',bin:'F'},{label:'The bus came back.',bin:'S'},{label:'He felt glad.',bin:'F'}], h:'Does it fix the problem, or tell a feeling?'},
+    {t:'write', q:'Your turn. Problem: the challah fell on the floor. Write an ending that solves it and tells how you felt.', min:0, checks:['My ending solves the problem.','My ending tells how I felt.','No “The end.” by itself.'], h:'Solution first. Then the feeling.'}
+  ],
+  check:[
+    {q:'Problem: the club’s bird feeder fell. Ending: “The end.” What is it?', o:['a weak ending','a good ending','a beginning'], h:'Does it tell how the problem was solved?'},
+    {q:'Ending: “Naftali glued the feeder back together, and he felt proud.” What does it tell?', o:['the solution and a feeling','only the problem','who and where'], h:'Look for the fix. Then look for a feeling.'},
+    {q:'Dovid found the key at last. Which feeling fits the ending?', o:['relieved','bored','angry'], h:'How do you feel when a problem is solved?'}
+  ],
+  re:[
+    {how:'A new way: an ending is like tying your shoes. Tie the knot (solve the problem), then the bow (the feeling).', q:'The bow on the story is…', o:['the feeling','the problem','the beginning']},
+    {how:'A simpler step: ask “Is the problem fixed?” If not, the story is not over.', q:'Which ending fixes the problem?', o:['Abba baked a new challah.','It fell.','The end.']},
+    {how:'The skill underneath: Actions and Thoughts. A feeling tells how he felt.', q:'“Avi felt glad.” What does it tell?', o:['how he felt','what he did','what he thought']}
+  ]}
+  };
+
+  var TEACH = {
+  'WRIT.ESSAY.L03.02':{hook:'Before a trip, you make a plan. Before a story, too!', big:'Plan a story with W-W-W, What = 2, How = 2.',
+    intro:['Who is in it? When is it? Where is it?','What does he want to do? What happens then?','How does it end? How does he feel?'],
+    ex:[{q:'Dovid’s key story.',steps:['Who: Dovid and Naftali. When: Friday afternoon. Where: the club garage.','What: he wants to open the club box. What happens: the key is gone!','How it ends: the key was in his pocket. How he feels: relieved.'],a:'Who, when, where; what, what; how, how.'}],
+    oops:{q:'Avi writes about Saba with no plan.',wrong:'Saba came. It was good. The end.',right:'Plan: who, when, where, what, what, how, how.',why:'With no plan, the story has no middle and no end.'},
+    idea:['Count the plan on your fingers: 3, 2, 2.'],
+    try:{q:'“In the shul library” answers which question?',o:['Where?','Who?','When?'],a:'Where?',steps:['Is it a person, a time, or a place?']}},
+  'WRIT.PARA.L03.07':{hook:'Is a story about a robot, or about a real boy with feelings?', big:'Tell what the character did, thought and felt.',
+    intro:['Did: an action you can see.','Thought: what is in his head.','Felt: a feeling word.'],
+    ex:[{q:'Plain: Dovid looked for the key.',steps:['Did: Dovid searched under the sofa.','Thought: Where could it be? he wondered.','Felt: He felt worried.'],a:'Dovid searched under the sofa. Where could it be? he wondered. He felt worried.'}],
+    oops:{q:'Dovid’s story: It was Friday. There was a box. It was locked.',wrong:'That is enough.',right:'Dovid tugged the lock. Oh no! he thought.',why:'With no actions, thoughts or feelings, the story is flat.'},
+    idea:['A story is a movie: the camera, a speech bubble, a face.'],
+    try:{q:'“Dovid’s heart pounded.” What does it show?',o:['how he felt','what he thought','where he is'],a:'how he felt',steps:['Is it an action, a thought, or a feeling?']}},
+  'WRIT.PARA.L03.08':{hook:'And then, and then, and then… are you bored yet?', big:'Move the story along with time-order words.',
+    intro:['First starts the story.','Next, Then, After that, Later move it along.','Finally ends it.'],
+    ex:[{q:'Naftali’s clock story.',steps:['First, Zeidy opened the clock.','Next, Naftali found the broken gear.','Finally, the clock ticked again.'],a:'First … Next … Finally.'}],
+    oops:{q:'Dovid’s story: and then he looked, and then he looked, and then he found it.',wrong:'Keep every and then.',right:'First he looked. After that he looked again. Finally he found it.',why:'Different time words keep the reader awake.'},
+    idea:['Time words are stepping stones across a river.'],
+    try:{q:'Which word ends the story?',o:['Finally','First','Next'],a:'Finally',steps:['Which stepping stone is last?']}},
+  'WRIT.PARA.L03.09':{hook:'What if a story stopped in the middle? Not fair!', big:'End with how the problem was solved and how he felt.',
+    intro:['Tell how the problem was solved.','Tell how the character felt.','Never just “The end.”'],
+    ex:[{q:'Problem: Dovid lost the key.',steps:['Solved: the key was in his coat pocket.','Felt: he laughed with relief.'],a:'The key was in his coat pocket, and Dovid laughed with relief.'}],
+    oops:{q:'Problem: the bird feeder broke.',wrong:'The end.',right:'Naftali glued it, and the birds came back. He felt proud.',why:'“The end” leaves the problem not solved.'},
+    idea:['Tie the knot (solve it), then the bow (the feeling).'],
+    try:{q:'Which ending is good?',o:['Abba baked a new challah, and we all cheered.','The end.','It fell.'],a:'Abba baked a new challah, and we all cheered.',steps:['Is the problem solved? Is there a feeling?']}}
+  };
+
+  var HOWTO = {
+  'WRIT.ESSAY.L03.02':{s:'Who? When? Where?\nWhat does he want? What happens then?\nHow does it end? How does he feel?\nThree W’s, two Whats, two Hows.'},
+  'WRIT.PARA.L03.07':{s:'Did: an action you can see.\nThought: what is in his head.\nFelt: a feeling word.\nAsk: is it an action, a thought, or a feeling?'},
+  'WRIT.PARA.L03.08':{s:'First starts the story.\nNext, Then, After that, Later go in the middle.\nFinally ends it.\nDo not repeat “and then”.'},
+  'WRIT.PARA.L03.09':{s:'Is the problem solved?\nHow did he feel?\nA good ending has both.\nNever just “The end.”'}
+  };
+
+  var BITE = {
+  'WRIT.ESSAY.L03.02':{ band:'B23', pic:'🗺️', today:'Plan a story with W-W-W, What 2, How 2', why:'A plan keeps your story from getting lost.',
+    ready:[{q:'What does POW start with?', o:['Pick my idea','Write and say more','Organize my notes'], a:'Pick my idea'}],
+    bridge:'WRIT.ESSAY.L03.01', bridgeName:'POW Power',
+    watch:{ q:'Dovid plans his story: the lost key.', m:{type:'scene', e:'🔑', t:'Friday afternoon. The club box is locked, and the key is gone!'}, steps:[
+      {t:'Who? Dovid and Naftali.'},
+      {t:'When? Friday afternoon. Where? The club garage.'},
+      {t:'What does he want? To open the club box. What happens then? They hunt under the old blue sofa.'},
+      {t:'How does it end? The key was in Dovid’s coat pocket! How does he feel? Silly, then so relieved.'},
+      {t:'Count the plan on your fingers with me!', m:{type:'chant', lines:['Who, when, where: three W’s!','What and what: the middle, please!','How and how: the end is near,','Now my story plan is clear!']}}], a:'Who, when, where; what, what; how, how.' },
+    oops:{ q:'Avi starts his story about Saba with no plan.', wrong:'Saba came. It was good. The end.', right:'Plan first: who, when, where, what, what, how, how.', why:'With no plan, the story has no middle and no end.' },
+    ways:['worked example','chant','plan boxes','sort it','match it','put it in order','tap the sentence','fill the gap','Mistake Detective'], done:'You can plan a story with W-W-W, What 2, How 2!',
+    board:{ one:'Three W’s, two Whats, two Hows.', activity:'Boys hold up fingers: 3 for the W’s, 2 for the Whats, 2 for the Hows, and say each question.', mistakes:['Starting to write with no plan','A plan with no middle (no Whats)','A plan with no ending (no Hows)'] },
+    do:[
+      {type:'storymap', slots:['Who','When','Where'], cards:['Dovid and Naftali','Friday afternoon','the club garage'], extra:['He feels happy.'],
+        say:'Plan the three W’s. Put each note in its box.', how:'Ask who, then when, then where. One note does not fit.'},
+      {type:'sort', q:'Dovid’s key story.', bins:['W: who, when, where','What or How'], cards:[['the club garage',0],['He wants to open the box.',1],['Friday afternoon',0],['He feels relieved.',1]], mis:true,
+        say:'Mistake Detective! Is each note a W, or a What or How?', how:'The W’s set the scene. What and How tell the story.'}],
+    your:[
+      {type:'match', pairs:[['Who?','Chaim'],['Where?','the shul library'],['When?','after Mincha']],
+        say:'Match each question to Chaim’s note.', how:'Is the note a person, a place, or a time?'},
+      {type:'order', steps:['Who, when, where','What, what','How, how'],
+        say:'Put the parts of the plan in order.', how:'Scene first. Then the middle. Then the end.'},
+      {type:'evidence', q:'Avi’s plan about Saba. Which note tells how Avi feels?', p:['Saba and Avi','in Saba’s kitchen','Saba tells about the long trip','Avi feels proud of Saba'], a:3, look:'the note with a feeling',
+        say:'Tap the note that tells how he feels.', how:'Look for a feeling word.'},
+      {type:'cloze', t:'What does Naftali want to do? He wants to ___.', o:['fix Zeidy’s clock','the club garage','on Sunday'], a:'fix Zeidy’s clock',
+        say:'Pick the note that tells what he wants.', how:'A want is something he wants to do.'},
+      {type:'storymap', slots:['How does it end?','How does he feel?'], cards:['The clock ticks again.','proud'], extra:['on Sunday'],
+        say:'Finish Naftali’s plan with the two Hows.', how:'One tells the end. One tells a feeling.'}] },
+
+  'WRIT.PARA.L03.07':{ band:'B23', pic:'🎬', today:'Tell what the character did, thought and felt', why:'It makes the reader feel he is right there.',
+    ready:[{q:'In a story, the problem happens in the…', o:['middle','beginning','title'], a:'middle'}],
+    bridge:'WRIT.PARA.L03.03', bridgeName:'Story Starter',
+    watch:{ q:'Plain: Dovid looked for the key.', m:{type:'scene', e:'🛋️', t:'Dovid’s flat sentence needs to come alive.'}, steps:[
+      {t:'Did: something you can see. “Dovid searched under the sofa.”'},
+      {t:'Thought: what is in his head. “Where could it be? he wondered.”'},
+      {t:'Felt: a feeling word. “He felt worried.”'},
+      {t:'Together, the story comes alive: Dovid searched under the sofa. Where could it be? he wondered. He felt worried.'},
+      {t:'Act it with me!', m:{type:'move', t:'Search with your hands: did! Tap your head: thought! Point to your face: felt!'}}], a:'Did, thought, felt.' },
+    oops:{ q:'Dovid’s story: It was Friday. There was a box. It was locked.', wrong:'That is enough.', right:'Dovid tugged the lock. Oh no! he thought.', why:'With no actions, thoughts or feelings, the story is flat.' },
+    ways:['worked example','movement','sort it','match it','tap the sentence','build with tiles','fill the gap','Mistake Detective'], done:'You can tell what a character did, thought and felt!',
+    board:{ one:'Did, thought, felt.', activity:'Read a flat sentence. Boys act it out, then say one did, one thought and one felt sentence.', mistakes:['Only telling what happened, never a thought or feeling','Mixing up a thought and a feeling','Feelings that do not fit the story'] },
+    do:[
+      {type:'sort', q:'Chaim’s lost siddur.', bins:['Did','Thought','Felt'], cards:[['Chaim checked his bag.',0],['Did I leave it home? he wondered.',1],['Chaim felt worried.',2],['He ran back to shul.',0]],
+        say:'Sort each sentence: did, thought, or felt?', how:'Can you see it? Is it in his head? Is it a feeling?'},
+      {type:'evidence', q:'Boys mix these up! Which one is a THOUGHT, not a feeling?', p:['Naftali felt sad.','Is it broken? Naftali wondered.','He felt hopeful.'], a:1, look:'words in his head', mis:true,
+        say:'Mistake Detective! Tap the thought, not the feeling.', how:'A thought is words in his head. A feeling is one feeling word.'}],
+    your:[
+      {type:'match', pairs:[['Avi ran to the corner.','what he did'],['Avi felt proud.','how he felt'],['I can do it! Avi thought.','what he thought']],
+        say:'Match each sentence to what it tells.', how:'Is it an action, a thought, or a feeling?'},
+      {type:'evidence', q:'Which sentence tells what Avi THOUGHT?', p:['Avi ran to the fence.','Will I catch it? Avi wondered.','Avi felt scared.','The map flew away.'], a:1, look:'the words in his head',
+        say:'Tap the sentence that tells a thought.', how:'Look for wondered or thought.'},
+      {type:'tiles', w:['Dovid found the key,','and he felt','so relieved.'], extra:['the box.'],
+        say:'Build it: what he did, then how he felt.', how:'Action first. Then the feeling.'},
+      {type:'cloze', t:'Naftali opened the clock. ___ he wondered.', o:['Can I fix it?','He felt glad.','The clock.'], a:'Can I fix it?',
+        say:'Pick the thought that fits.', how:'What would he wonder in his head?'},
+      {type:'evidence', q:'Which sentence makes the story come alive?', p:['It was Sunday.','There was a feeder.','Naftali grinned as the first bird landed.','It was a day.'], a:2, look:'an action and a feeling',
+        say:'Tap the sentence that comes alive.', how:'Which one shows what he did and felt?'}] },
+
+  'WRIT.PARA.L03.08':{ band:'B23', pic:'🪨', today:'Move the story along with time-order words', why:'Time words tell the reader when, so the story is easy to follow.',
+    ready:[{q:'What did Shmuli use in Grade 1 to tell what happened?', o:['first, next, last','who, when, where','did, thought, felt'], a:'first, next, last'}],
+    bridge:'WRIT.SENT.L02.01', bridgeName:'Tell What Happened',
+    watch:{ q:'Naftali’s clock story.', m:{type:'scene', e:'🕰️', t:'Zeidy’s old clock stopped. Naftali tells what happened.'}, steps:[
+      {t:'First starts the story: “First, Zeidy opened the clock.”'},
+      {t:'Next moves it along: “Next, Naftali found the broken gear.”'},
+      {t:'After that, or Later: “After that, they put in a new gear.”'},
+      {t:'Finally ends it: “Finally, the clock ticked again.”'},
+      {t:'Hop across the stones with me!', m:{type:'move', t:'Hop: First! Hop: Next! Hop: After that! Big jump: Finally!'}}], a:'First, Next, After that, Finally.' },
+    oops:{ q:'Dovid wrote: and then he looked, and then he looked, and then he found it.', wrong:'Keep every and then.', right:'First he looked. After that he looked again. Finally he found it.', why:'Different time words keep the reader awake.' },
+    ways:['worked example','movement','put it in order','match it','sort it','fill the gap','tap the sentence','Mistake Detective'], done:'You can move a story along with time-order words!',
+    board:{ one:'First starts, Finally ends, the rest move it along.', activity:'Boys stand in a line, each holding a time word card, and tell a story in order.', mistakes:['Finally at the start','and then, and then, and then','Time words out of order'] },
+    do:[
+      {type:'order', steps:['First','Next','After that','Finally'],
+        say:'Put the time words in story order.', how:'Which one starts? Which one ends?'},
+      {type:'sort', q:'Good time word for that spot?', bins:['Good','Mistake'], cards:[['First, we lit the candles.',0],['Finally, the story begins.',1],['After that, we sang.',0],['And then and then we ate.',1]], mis:true,
+        say:'Mistake Detective! Good time word, or a mistake?', how:'Does the word fit that part of the story?'}],
+    your:[
+      {type:'cloze', t:'___, the club packed the baskets. Then they gave them out.', o:['First','Finally','In the end'], a:'First',
+        say:'Pick the time word for the first thing.', how:'Which word starts?'},
+      {type:'match', pairs:[['First,','the beginning'],['Next,','the middle'],['Finally,','the end']],
+        say:'Match each time word to its part of the story.', how:'Where does each word belong?'},
+      {type:'order', steps:['First, Chaim packed his bag.','Next, he walked to shul.','Finally, he opened his siddur.'],
+        say:'Put Chaim’s morning in order.', how:'Follow the time words.'},
+      {type:'evidence', q:'Which sentence should come LAST?', p:['First, the snow fell.','Finally, we drank hot cocoa.','Next, we built a fort.'], a:1, look:'the ending time word',
+        say:'Tap the sentence that comes last.', how:'Find the word that ends a story.'},
+      {type:'cloze', t:'Dovid looked under the sofa. ___, he checked his coat pocket.', o:['After that','First','Once upon a time'], a:'After that',
+        say:'Pick the time word that moves the story along.', how:'It is the middle. Which word fits there?'}] },
+
+  'WRIT.PARA.L03.09':{ band:'B23', pic:'🎀', today:'End a story: the problem solved and how he felt', why:'A good ending lets the reader smile and close the book.',
+    ready:[{q:'“Avi felt glad.” What does it tell?', o:['how he felt','what he did','who it is'], a:'how he felt'}],
+    bridge:'WRIT.PARA.L03.07', bridgeName:'Actions and Thoughts',
+    watch:{ q:'Problem: Dovid lost the club key.', m:{type:'scene', e:'🔑', t:'Dovid’s story needs an ending.'}, steps:[
+      {t:'Weak: “The end.” The reader asks: but what happened?'},
+      {t:'Step 1: how the problem was solved. “The key was in his coat pocket!”'},
+      {t:'Step 2: how he felt. “Dovid laughed with relief.”'},
+      {t:'Together: The key was in his coat pocket, and Dovid laughed with relief.'},
+      {t:'Tie the ending with me!', m:{type:'move', t:'Tie a knot: solved! Pull the bow: the feeling! Hold it up: the end!'}}], a:'The key was in his coat pocket, and Dovid laughed with relief.' },
+    oops:{ q:'Problem: the bird feeder broke.', wrong:'The end.', right:'Naftali glued it, and the birds came back. He felt proud.', why:'“The end” leaves the problem not solved.' },
+    ways:['worked example','movement','sort it','match it','build with tiles','tap the sentence','fill the gap','Mistake Detective'], done:'You can end a story with the problem solved and a feeling!',
+    board:{ one:'Solve the problem, then tell the feeling.', activity:'Read a story with no ending. Boys tie a knot (a solution) and a bow (a feeling).', mistakes:['Just “The end.”','A new problem at the end','A feeling that does not fit'] },
+    do:[
+      {type:'sort', q:'Problem: Avi’s map blew away.', bins:['Good ending','Weak ending'], cards:[['Avi caught it by the fence and felt so proud.',0],['The end.',1],['Avi likes maps.',1],['Dovid caught it, and Avi thanked him with a smile.',0]], mis:true,
+        say:'Mistake Detective! Good ending, or weak ending?', how:'Is the problem solved? Is there a feeling?'},
+      {type:'match', pairs:[['The clock stopped.','Zeidy put in a new gear.'],['The siddur was lost.','Chaim found it on the table.'],['The bread burned.','Abba baked a new one.']],
+        say:'Match each problem to the solution that fixes it.', how:'Which solution fixes that problem?'}],
+    your:[
+      {type:'tiles', w:['Finally, the key turned,','and Dovid','felt so relieved.'], extra:['The end.'],
+        say:'Build a good ending: solved, then a feeling.', how:'The solution first. Then the feeling.'},
+      {type:'evidence', q:'Problem: Chaim forgot his siddur. Which is the best ending?', p:['Chaim went to shul.','The end.','Rabbi Feld lent him one, and Chaim felt thankful.','Chaim likes shul.'], a:2, look:'the solution and a feeling',
+        say:'Tap the best ending.', how:'Find the one that solves it and tells a feeling.'},
+      {type:'cloze', t:'Naftali glued the feeder, and he felt ___.', o:['proud','bored','angry'], a:'proud',
+        say:'Pick the feeling that fits.', how:'How do you feel when you fix something?'},
+      {type:'sort', bins:['Tells the solution','Tells the feeling'], cards:[['The bus came back.',0],['He felt glad.',1],['Abba found the keys.',0],['We all cheered.',1]],
+        say:'Solution, or feeling?', how:'Does it fix the problem, or tell a feeling?'},
+      {type:'evidence', q:'Which ending fits Dovid’s key story?', p:['The key was in his pocket, and Dovid laughed with relief.','Dovid lost his hat.','It was Friday.'], a:0, look:'the problem solved and a feeling',
+        say:'Tap the ending that fits.', how:'Which one fixes the key problem and tells a feeling?'}] }
+  };
+
+  /* Story Starter (WRIT.PARA.L03.03): an existing pack lesson, upgraded with its One Bite lesson. Its own questions stay as practice and Show me. */
+  var UP = {
+  'WRIT.PARA.L03.03':{ band:'B23', pic:'📖', today:'Write a story with a beginning, a middle and an end', why:'A story needs all three, or the reader gets lost.',
+    ready:[{q:'In W-W-W, what tells the middle of the story?', o:['the two Whats','the three W’s','the two Hows'], a:'the two Whats'}],
+    bridge:'WRIT.ESSAY.L03.02', bridgeName:'WWW Story Plan',
+    watch:{ q:'Dovid writes his key story from his plan.', m:{type:'scene', e:'🔑', t:'Friday afternoon in the club garage.'}, steps:[
+      {t:'Beginning: who and where. “One Friday, Dovid and Naftali went to the club garage.”'},
+      {t:'Middle: a problem happens. Uh oh! “The club box was locked, and the key was gone!”'},
+      {t:'They try to fix it: “They looked under the old blue sofa.”'},
+      {t:'End: the problem is solved. That is the solution. “The key was in Dovid’s coat pocket!”'},
+      {t:'Story hands with me!', m:{type:'move', t:'Hands together: beginning! Hands apart, uh oh: the problem! Clap: solved!'}}], a:'Beginning, problem, solution.' },
+    oops:{ q:'Avrumi built a block tower. His little brother knocked it down.', wrong:'That is the whole story.', right:'It needs an end: Avrumi and his brother built it again, together.', why:'A problem with no solution has no end.' },
+    ways:['worked example','movement','put it in order','sort it','tap the sentence','fill the gap','match it','Mistake Detective'], done:'You can write a story with a beginning, a middle and an end!',
+    board:{ one:'Beginning: who and where. Middle: the problem. End: the solution.', activity:'Tell a story in three claps: beginning, uh-oh problem, solution.', mistakes:['No problem in the middle','A problem with no solution','Parts out of order'] },
+    do:[
+      {type:'order', steps:['One Friday, Dovid went to the club garage.','The club box was locked, and the key was gone!','Dovid found the key in his coat pocket.'],
+        say:'Put Dovid’s story in order: beginning, middle, end.', how:'Who and where first. Then the problem. Then how it was solved.'},
+      {type:'sort', bins:['Beginning','Problem','Solution'], cards:[['Chaim walked to shul.',0],['His siddur was not in his bag!',1],['Rabbi Feld lent him one.',2],['Avi went to the corner grocery.',0]], mis:true,
+        say:'Mistake Detective! Beginning, problem, or solution?', how:'A beginning tells who and where. A problem is an uh-oh. A solution fixes it.'}],
+    your:[
+      {type:'evidence', q:'Which sentence is the problem?', p:['Naftali planted beans in the garden.','No rain fell for two weeks.','He watered them every day.','Soon the beans grew tall.'], a:1, look:'the uh-oh sentence',
+        say:'Tap the problem.', how:'Which sentence is the uh-oh?'},
+      {type:'match', pairs:[['Beginning','who and where'],['Middle','the problem'],['End','the solution']],
+        say:'Match each part to what it tells.', how:'What does each part of a story do?'},
+      {type:'cloze', t:'Avi made a map. Then it blew away! ___', o:['Avi ran and caught it by the fence.','Avi likes maps.','It was windy.'], a:'Avi ran and caught it by the fence.',
+        say:'Pick the solution that ends the story.', how:'Which one fixes the problem?'},
+      {type:'order', steps:['Zeidy’s old clock stopped ticking.','Naftali found a broken gear.','They put in a new gear, and it ticked again.'],
+        say:'Put the clock story in order.', how:'What starts it? What goes wrong? What fixes it?'},
+      {type:'sort', q:'Problem: the cookies started to burn.', bins:['Good ending','Not an ending'], cards:[['Abba pulled out the tray just in time.',0],['The oven was hot.',1],['We baked a new batch, and they were perfect.',0],['Cookies are sweet.',1]],
+        say:'Does it end the story, or not?', how:'Does it solve the burning-cookie problem?'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('W13', { bite: UP });
+  /* Units: W13.U<grade><unit>: W13.U22 = Grade 2, Unit 2 (docs/core-growth/HOW-TO-ADD-A-UNIT.md) */
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U22', title: 'Real Stories', c: 'WRIT', grade: 2,
+    skills: ['WRIT.ESSAY.L03.02', 'WRIT.PARA.L03.03', 'WRIT.PARA.L03.07', 'WRIT.PARA.L03.08', 'WRIT.PARA.L03.09'],
+    review: ['WRIT.ESSAY.L03.01', 'WRIT.PARA.L03.04', 'WRIT.PARA.L03.06'], n: 10,
+    items: [
+      { skill: 'WRIT.ESSAY.L03.02', type: 'evidence', q: 'Akiva’s story plan. Which note tells WHERE?', p: ['Akiva and Abba', 'on Sunday morning', 'at the lake', 'He feels proud.'], a: 2, look: 'the place', say: 'Tap the where note.', how: 'Is it a person, a time, a place, or a feeling?' },
+      { skill: 'WRIT.PARA.L03.03', type: 'evidence', q: 'Which sentence is the solution?', p: ['Yossi waited for the bus.', 'The bus did not come.', 'Abba drove him to school just in time.'], a: 2, look: 'the sentence that fixes it', say: 'Tap the solution.', how: 'Which one fixes the uh-oh?' },
+      { skill: 'WRIT.PARA.L03.07', type: 'evidence', q: 'Which sentence tells what Yossi FELT?', p: ['Yossi waited by the door.', 'Yossi felt nervous.', 'Will it come? he wondered.'], a: 1, look: 'a feeling word', say: 'Tap the feeling.', how: 'Find the feeling word.' },
+      { skill: 'WRIT.PARA.L03.08', type: 'cloze', t: 'First, we set the table. ___, we lit the candles.', o: ['Next', 'Finally', 'Once upon a time'], a: 'Next', say: 'Pick the time word for the middle.', how: 'It is not the first thing, and not the last.' },
+      { skill: 'WRIT.PARA.L03.09', type: 'evidence', q: 'Problem: the sukkah wall fell in the wind. Which is the best ending?', p: ['The wind blew.', 'Abba and I tied it tight, and we felt proud.', 'The end.'], a: 1, look: 'the solution and a feeling', say: 'Tap the best ending.', how: 'Which one solves it and tells a feeling?' },
+      { skill: 'WRIT.PARA.L03.09', type: 'cloze', t: 'Chaim found his siddur at last, and he felt ___.', o: ['relieved', 'bored', 'angry'], a: 'relieved', say: 'Pick the feeling that fits.', how: 'How do you feel when a problem is fixed?' }
+    ] });
+})();
+</script>
