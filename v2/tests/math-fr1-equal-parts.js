@@ -71,11 +71,11 @@ module.exports = async function (browser) {
       await cutRight();
       lap('/* Mistake Detective 1');
       /* Mistake Detective 1 (not halves), fix the kugel, Mistake Detective 2 (different shapes can be equal), fourths */
-      await shown('#right'); await pg.click('#thumbDown');
+      await boyCheck(); await shown('#right'); await pg.click('#thumbDown');
       await pg.waitForFunction(() => window.__eq.said.includes('Moishe made a mistake. These are not halves.'), null, { timeout: 45000 }).catch(() => bad(label + ': Mistake Detective 1 did not explain'));
       await cutRight();
-      await shown('#right'); await pg.click('#thumbDown');
-      await pg.waitForFunction(() => window.__eq.said.includes('Dovi made a mistake. Different shapes can be equal parts.'), null, { timeout: 45000 }).catch(() => bad(label + ': Mistake Detective 2 did not explain'));
+      await boyCheck(); await shown('#right'); await pg.click('#thumbDown');
+      await pg.waitForFunction(() => window.__eq.said.includes('Eliyahu made a mistake. Different shapes can be equal parts.'), null, { timeout: 45000 }).catch(() => bad(label + ': Mistake Detective 2 did not explain'));
       await cutRight();
       lap('/* the check: all right ');
       /* the check: all right */
