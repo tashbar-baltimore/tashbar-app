@@ -310,11 +310,543 @@
     skills:['READ.LIT.L09.01','READ.LIT.L09.09','READ.COMP.L09.14','READ.LIT.L09.10','READ.FLU.L09.02'],
     review:['READ.LIT.L08.02','READ.VOC.L09.01'], n:10,
     items:[
-      {type:'evidence', q:'Which line is dramatic irony? (We saw Yanky put the ring in the challah cover.)', p:['FATHER: The ring is lost. We will never find it.','YANKY: Let us set the table.','MOTHER: The guests are here.'], a:0, look:'a speaker who is wrong about what we saw', how:'Who is wrong about something the audience saw?'},
-      {type:'cloze', t:'"Granted, the field trip costs money." This sentence is ___ a point.', o:['conceding','refuting','ignoring'], a:'conceding', how:'Granted: does the author agree, or answer?'},
-      {type:'evidence', q:'Which narrator keeps the reader guessing?', p:['"I watched the detective study the map. I could not tell what he saw."','"The detective knew at once that the clerk had lied."','"Everyone in the room was thinking about the money."'], a:0, look:'a narrator who knows less', how:'Which narrator does not know the answer?'},
-      {type:'cloze', t:'"AKIVA: (firmly) One last look." Akiva\'s voice should be ___.', o:['steady and strong','soft and sleepy','silly'], a:'steady and strong', how:'Read the ( ) word. How does firmly sound?'},
-      {type:'cloze', t:'"Come to our siyum! It will be the best night of the year." The purpose is to ___.', o:['persuade','inform','entertain'], a:'persuade', how:'Does it ask you to do something?'}
+      {type:'evidence', skill:'READ.LIT.L09.09', q:'Which line is dramatic irony? (We saw Yanky put the ring in the challah cover.)', p:['FATHER: The ring is lost. We will never find it.','YANKY: Let us set the table.','MOTHER: The guests are here.'], a:0, look:'a speaker who is wrong about what we saw', how:'Who is wrong about something the audience saw?'},
+      {type:'cloze', skill:'READ.COMP.L09.14', t:'"Granted, the field trip costs money." This sentence is ___ a point.', o:['conceding','refuting','ignoring'], a:'conceding', how:'Granted: does the author agree, or answer?'},
+      {type:'evidence', skill:'READ.LIT.L09.10', q:'Which narrator keeps the reader guessing?', p:['"I watched the detective study the map. I could not tell what he saw."','"The detective knew at once that the clerk had lied."','"Everyone in the room was thinking about the money."'], a:0, look:'a narrator who knows less', how:'Which narrator does not know the answer?'},
+      {type:'cloze', skill:'READ.FLU.L09.02', t:'"AKIVA: (firmly) One last look." Akiva\'s voice should be ___.', o:['steady and strong','soft and sleepy','silly'], a:'steady and strong', how:'Read the ( ) word. How does firmly sound?'},
+      {type:'cloze', skill:'READ.LIT.L09.01', t:'"Come to our siyum! It will be the best night of the year." The purpose is to ___.', o:['persuade','inform','entertain'], a:'persuade', how:'Does it ask you to do something?'},
+      {type:'evidence', skill:'READ.LIT.L09.01', q:'Which text is written mainly to inform?', p:['a guide to the city\'s bus routes','an ad for a new bakery','a funny poem about a lost shoe'], a:0, look:'a text that teaches facts', how:'Ask why each one was written: persuade, inform or entertain?'},
+      {type:'evidence', skill:'READ.LIT.L09.09', q:'We saw Chaim hide the birthday gift in the closet. Which line is dramatic irony?', p:['MOSHE: "Chaim forgot my birthday."','CHAIM: "Happy birthday!"','MOSHE: "What a nice day."'], a:0, look:'a speaker who is wrong about what we saw', how:'What do we know that the speaker does not?'},
+      {type:'evidence', skill:'READ.COMP.L09.14', q:'Which sentence refutes "The trip costs too much"?', p:['But families who cannot pay will get help from a fund.','Granted, the trip is expensive.','Some parents say it costs too much.'], a:0, look:'an answer to the other side', how:'Which one answers the worry, instead of agreeing or repeating it?'},
+      {type:'evidence', skill:'READ.LIT.L09.10', q:'Which opening keeps a mystery hidden the longest?', p:['"I watched my uncle study the letter. He smiled, but said nothing."','"The thief was Mr. Fox, and here is how he did it."','"Everyone in town knew who took the money."'], a:0, look:'a narrator who knows less', how:'Which narrator does not know the answer yet?'}
+    ] });
+})();
+/* Unit 8.6 "Judge the Argument" (topic set: Money and trust, texts/C68/C68.MON.01-05): new skills READ.COMP.L09.15 (evidence that does not belong),
+   READ.COMP.L09.16 (same facts, different reading), READ.FLU.L09.04 (read a dense paragraph twice) with TLCORE.add, and the existing
+   READ.COMP.L09.01 "Argument Judge" and READ.COMP.L09.03 "Fact Checker" rebuilt as One Bite lessons (TLCORE.upgrade). */
+(function () {
+  var LESSONS = {
+
+    /* ===== Unit 8.6, skill 2: evidence that does not belong ===== */
+    'READ.COMP.L09.15':{name:'Evidence That Does Not Belong',
+      teach:[
+        {q:'A fact is true. Does that make it good evidence?', o:['only if it supports this claim','yes, every true fact helps','no, facts never help'], how:'Good evidence is true AND speaks to the claim.'},
+        {q:'Claim: young adults should have credit cards. "The first card was made in 1950." What is wrong with this evidence?', o:['it is true, but it does not support the claim','it is false','it is too short'], how:'A history fact can be true and still be off topic.'},
+        {q:'How do you test one piece of evidence?', o:['take it away: is the claim any weaker?','ask if it is interesting','ask if it is long'], how:'If the claim stands just as well without it, the evidence does not belong.'}
+      ],
+      practice:[
+        {t:'sort', q:'Claim: our shul needs a ramp. Sort each piece of evidence.', bins:[{id:'b',label:'belongs: it supports the claim'},{id:'o',label:'true but off topic'}], items:[{label:'Three members use wheelchairs.',bin:'b'},{label:'Older members find the steps hard.',bin:'b'},{label:'The shul was built in 1952.',bin:'o'},{label:'The shul has a beautiful aron kodesh.',bin:'o'}], h:'Take each one away. Is the claim any weaker?'},
+        {t:'pairs', q:'Match each problem to its name.', pairs:[['a true fact about something else','true but off topic'],['"It worked for my neighbor."','one person\'s story, not proof'],['"Everyone knows it is right."','a feeling, not a fact'],['a careful study about this claim','strong evidence']], h:'Ask: is it about the claim? Is it more than one story?'},
+        {t:'spotall', q:'Claim: the yeshiva should plant a garden. Tap every piece of evidence that belongs.', cells:[{label:'Boys who garden eat more vegetables.',ok:true},{label:'The empty lot gets six hours of sun.',ok:true},{label:'A parent offered free seeds.',ok:true},{label:'Gardens were popular in ancient Bavel.',ok:false},{label:'The principal likes the color green.',ok:false}], h:'Does it help prove a garden here is a good idea?'},
+        {t:'order', q:'Put the steps for testing evidence in order.', tiles:['Find the claim.','Read one piece of evidence.','Ask: is it true?','Ask: does it speak to THIS claim?','Keep it, or set it aside.'], h:'Claim first. Then test each piece.'},
+        {t:'sort', q:'Eli\'s credit card piece. Sort his evidence.', bins:[{id:'b',label:'belongs: it supports the claim'},{id:'o',label:'true but off topic'}], items:[{label:'Paying on time builds a credit history.',bin:'b'},{label:'A lost card can be shut off.',bin:'b'},{label:'The first card was made in 1950.',bin:'o'},{label:'Cards let you pay by phone.',bin:'b'}], h:'Does it show a young adult should have a card?'},
+        {t:'spotall', q:'Tap every question that helps you spot evidence that does not belong.', cells:[{label:'Is it about this claim?',ok:true},{label:'Would the claim be weaker without it?',ok:true},{label:'Is it one person\'s story?',ok:true},{label:'Is it a long sentence?',ok:false},{label:'Is it a surprising fact?',ok:false}], h:'Which questions test the link to the claim?'}
+      ],
+      check:[
+        {q:'Claim: the town should build a library. "Libraries have existed for over 2,000 years." This evidence is...', o:['true but off topic','strong evidence','a counterclaim']},
+        {q:'Claim: buses should have seat belts. "In crashes, seat belts cut injuries by about half." This evidence...', o:['belongs: it supports the claim','true but off topic','a feeling, not a fact']},
+        {q:'Claim: every boy should eat breakfast. "My cousin never eats breakfast, and he runs fast." What is wrong with it?', o:['one person\'s story, not proof','true but off topic','nothing']}
+      ],
+      re:[
+        {q:'Claim: the yeshiva needs a bigger lunchroom. "Our lunchroom serves hot food every day." This evidence is...', o:['true but off topic','strong evidence','a counterclaim']},
+        {q:'Claim: boys should learn to swim. "Young children who take swimming lessons are less likely to drown." This evidence...', o:['belongs: it supports the claim','true but off topic','a feeling, not a fact']},
+        {q:'Claim: phones should stay home. "My friend brought his phone and nothing bad happened." What is wrong with it?', o:['one person\'s story, not proof','true but off topic','nothing']}
+      ]},
+
+    /* ===== Unit 8.6, skill 4: same facts, different reading ===== */
+    'READ.COMP.L09.16':{name:'Same Facts, Different Reading',
+      teach:[
+        {q:'Two writers agree on a fact but want different plans. What do they disagree about?', o:['what the fact means for the plan','whether the fact is true','nothing'], how:'An interpretation is what a writer decides a fact means.'},
+        {q:'Eli: "Unpaid cards cost interest, so teach boys to pay in full." Gavriel: "Unpaid cards cost interest, so wait for a card." What is the same?', o:['the fact','the plan','the writer'], how:'Find the shared fact first. Then find where the readings split.'},
+        {q:'How do you judge two readings of the same fact?', o:['choose the one that fits all the facts','choose the longer one','choose the one you like'], how:'A strong reading explains every fact, not just one.'}
+      ],
+      practice:[
+        {t:'sort', q:'Fact, or interpretation?', bins:[{id:'f',label:'a fact'},{id:'i',label:'an interpretation'}], items:[{label:'The average card rate was over 20 percent.',bin:'f'},{label:'Cards are a trap for young people.',bin:'i'},{label:'A lost card can be shut off.',bin:'f'},{label:'Cards are a useful tool.',bin:'i'}], h:'A fact can be checked. An interpretation is what someone decides it means.'},
+        {t:'pairs', q:'Same fact: "The shul is full every Yom Tov." Match each reading to its plan.', pairs:[['Too many people for the room.','build a bigger room'],['Too many people at one time.','add a second minyan'],['Crowded only on Yom Tov.','set up extra chairs on Yom Tov']], h:'Each reading of the same fact leads to a different plan.'},
+        {t:'order', q:'Put the steps for comparing two readings in order.', tiles:['Find the fact both writers use.','Find what each writer says it means.','Check other facts.','Choose the one that fits all the facts.'], h:'Shared fact first. Judge last.'},
+        {t:'spotall', q:'Tap every sign that two writers share a fact but read it differently.', cells:[{label:'Both say "that is true".',ok:true},{label:'They agree on the number.',ok:true},{label:'They want different plans.',ok:true},{label:'One says the fact is false.',ok:false}], h:'Do they agree on the fact, but not on what to do?'},
+        {t:'sort', q:'Fact: a lost card can be shut off. Whose reading is it?', bins:[{id:'e',label:'Eli: so cards are safer'},{id:'g',label:'Gavriel: theft is not the big danger'}], items:[{label:'You lose nothing if a thief takes it.',bin:'e'},{label:'Cash is gone forever when lost.',bin:'e'},{label:'The real danger is your own spending.',bin:'g'},{label:'Safe from thieves, not from yourself.',bin:'g'}], h:'Eli likes the fact. Gavriel says it misses the point.'},
+        {t:'pairs', q:'Fact: Beacon sales fell this year. We also printed fewer copies. Match each reading to its strength.', pairs:[['"We printed fewer, so we sold fewer."','the one that fits all the facts'],['"Boys stopped reading."','fits only one fact']], h:'Which reading explains both facts?'}
+      ],
+      check:[
+        {q:'Fact: the lunchroom is crowded. Writer A: "Build a bigger lunchroom." Writer B: "Eat in two shifts." What do they disagree about?', o:['what the fact means for the plan','whether the fact is true','nothing']},
+        {q:'Rebbe counted: 9 boys asked to repeat a question before recess, 3 after. "Recess is what helped them focus." This sentence is...', o:['an interpretation','a counted fact','a counterclaim']},
+        {q:'Fact: fewer boys came to night seder. Also: the night bus stopped running. Reading A: boys stopped caring. Reading B: boys could not get there. Which is stronger?', o:['Reading B','Reading A','neither']}
+      ],
+      re:[
+        {q:'Fact: the library is empty at night. Writer A: "Close it at five." Writer B: "Add better lights." What do they disagree about?', o:['what the fact means for the plan','whether the fact is true','nothing']},
+        {q:'The class voted 18 to 6 for the new schedule. "The boys are happier with it." This sentence is...', o:['an interpretation','a counted fact','a counterclaim']},
+        {q:'Fact: the bake sale earned less. Also: it rained all day. Reading A: the rain kept buyers home. Reading B: the cakes were worse. Which is stronger?', o:['Reading A','Reading B','neither']}
+      ]},
+
+    /* ===== Unit 8.6 fluency: a dense paragraph, read twice ===== */
+    'READ.FLU.L09.04':{name:'Read It Twice',
+      teach:[
+        {q:'A paragraph is packed with facts. What is your first read for?', o:['the big idea','every number','the hardest word'], how:'Read 1 is for sense: what is this paragraph about?'},
+        {q:'What is your second read for?', o:['the details that prove the big idea','a new topic','skipping ahead'], how:'Read 2 is slower. Catch each detail and see how it fits.'},
+        {q:'Reading aloud, where should you slow down?', o:['at numbers, names and new words','at every comma','nowhere'], how:'Numbers, names and new words carry the facts. Give them time.'}
+      ],
+      practice:[
+        {t:'sort', q:'Which read is it for?', bins:[{id:'1',label:'Read 1: sense'},{id:'2',label:'Read 2: detail'}], items:[{label:'What is this about?',bin:'1'},{label:'What is the main point?',bin:'1'},{label:'Which year?',bin:'2'},{label:'How much silver?',bin:'2'}], h:'First the big idea. Then the details.'},
+        {t:'order', q:'Put the steps for a dense paragraph in order.', tiles:['Read it once for the big idea.','Say the big idea in one sentence.','Read it again, slowly, for detail.','Check each detail against the big idea.'], h:'Sense first. Detail second.'},
+        {t:'spotall', q:'"About 2,600 years ago, in the kingdom of Lydia, rulers began to stamp metal." Tap what to read slowly.', cells:[{label:'the numbers',ok:true},{label:'the names',ok:true},{label:'"in the"',ok:false},{label:'"began to"',ok:false}], h:'Numbers and names carry the facts.'},
+        {t:'pairs', q:'Match each problem to the fix.', pairs:[['I got the idea but no details.','read it again, slowly, for detail'],['I got details but no big idea.','read it once more, for sense'],['I tripped on a name.','say it slowly, then reread the sentence']], h:'What is missing: the sense, or the detail?'},
+        {t:'sort', q:'Barter paragraph. Big idea, or detail?', bins:[{id:'b',label:'the big idea'},{id:'d',label:'a detail'}], items:[{label:'Barter is hard because both sides must want a trade.',bin:'b'},{label:'Fish spoil in a few days.',bin:'d'},{label:'Nobody gives change in pieces of cow.',bin:'d'},{label:'It hardly works between strangers.',bin:'d'}], h:'The big idea is what the whole paragraph says.'},
+        {t:'spotall', q:'Tap every habit of a strong reader with a hard paragraph.', cells:[{label:'read it twice',ok:true},{label:'slow down at numbers',ok:true},{label:'say the big idea in your own words',ok:true},{label:'read fast to get it over with',ok:false},{label:'skip the numbers',ok:false}], h:'What helps you understand AND remember?'}
+      ],
+      check:[
+        {q:'"In 1913, Congress created the Federal Reserve, with twelve regional banks, to lend to banks in trouble and stop panics." Read 1: what is the big idea?', o:['A central bank was made to keep banks steady.','There are twelve regional banks.','It happened in 1913.']},
+        {q:'"The bridge, finished in 1883, is 1,595 feet long." Reading aloud, what should you read slowest?', o:['the numbers','"The bridge"','"finished in"']},
+        {q:'After two reads, Yitzy knows the big idea but no details. What should he do?', o:['read it again, slowly, for detail','stop, he is done','read only the title']}
+      ],
+      re:[
+        {q:'"Before 1863, hundreds of American banks printed their own paper money, so a bank\'s dollar might be worth less in the next town." Read 1: what is the big idea?', o:['Many banks printed money, so its worth was uncertain.','It was before 1863.','There were hundreds of banks.']},
+        {q:'"In 1869, the first railroad crossed the whole country." Reading aloud, what should you read slowest?', o:['the numbers','"the first"','"the whole"']},
+        {q:'Moshe read a hard paragraph once and remembers no details. What should he do?', o:['read it again, slowly, for detail','stop, he is done','read only the title']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L09.15':{ hook:'A fact can be true and still be the wrong fact. Catch it, and you cannot be fooled.',
+      big:'Good evidence has two jobs: it must be true, and it must speak to the claim. Some evidence is true but off topic. In Eli\'s piece on credit cards, he writes that the first card was made in 1950, and tells the story its makers liked to tell. The date is true, but it does not show that a young adult should have a card today. Other evidence is one person\'s story ("my brother never paid interest"), which shows that something CAN happen, not that it usually does. To test any piece of evidence, take it away and ask: is the claim any weaker? If not, it does not belong.',
+      intro:['Find the claim.','Take one piece of evidence.','Ask: is it true, and is it about THIS claim?','Take it away: is the claim any weaker?'],
+      ex:[{q:'Eli: "The first card of this kind was made in 1950."', steps:['Claim: a young adult should get a card.','The 1950 date is true.','Does it show a young adult today should get one? No.','So it is true but off topic.'], a:'true but off topic'},
+          {q:'Eli: "My brother has never paid a cent of interest."', steps:['It is about the claim.','But it is one person.','It shows paying in full CAN work, not that most boys will do it.'], a:'one person\'s story, not proof'}],
+      oops:{ q:'"The 1950 date is true, so it is good evidence." Right?', wrong:'Yes: true facts always help', right:'No: it is true but off topic', why:'Evidence must speak to the claim. A true fact about something else does not prove anything.' },
+      idea:['True is not enough. Evidence must be true AND on topic.'],
+      'try':{ q:'How do you test one piece of evidence?', o:['take it away: is the claim any weaker?','ask if it is interesting'], a:'take it away: is the claim any weaker?', steps:['Picture the argument without it.','Is it still just as strong?'] } },
+    'READ.COMP.L09.16':{ hook:'Two smart people can look at the same fact and walk away with opposite plans. Who is right?',
+      big:'Writers often agree on the facts and still disagree. The fact is the same; the interpretation, what the fact means, is different. In the credit card debate, Eli and Gavriel agree that an unpaid card costs a lot of interest. Eli reads that fact as: so teach boys to pay in full. Gavriel reads it as: so make them wait until they can keep a budget. To judge two readings, first find the shared fact, then find where the readings split, then check the other facts. The stronger reading is the one that fits all the facts, not just the one it started with.',
+      intro:['Find the fact both writers use.','Find what each writer says it means.','Check the other facts.','Choose the reading that fits all the facts.'],
+      ex:[{q:'Both: "An unpaid card costs a lot of interest."', steps:['Shared fact: unpaid cards cost interest.','Eli: so pay in full.','Gavriel: so wait until you can budget.','Same fact, two readings.'], a:'the same fact, read two ways'},
+          {q:'Fact: Beacon sales fell. Also: we printed fewer copies.', steps:['Reading A: boys stopped reading.','Reading B: we printed fewer, so we sold fewer.','B explains both facts.'], a:'Reading B fits all the facts'}],
+      oops:{ q:'Eli and Gavriel disagree. So one of them got the facts wrong. Right?', wrong:'Yes: if they disagree, one is lying', right:'No: they share the fact and read it differently', why:'Disagreement is often about what a fact means, not whether it is true.' },
+      idea:['Same facts, different reading: judge the reading by how many facts it explains.'],
+      'try':{ q:'How do you judge two readings of the same fact?', o:['choose the one that fits all the facts','choose the one you like'], a:'choose the one that fits all the facts', steps:['List the other facts.','Which reading explains them all?'] } },
+    'READ.FLU.L09.04':{ hook:'Some paragraphs are so packed that one read is not enough. Strong readers read twice, on purpose.',
+      big:'A dense paragraph is full of facts: numbers, names, places and new words. If you read it once, fast, you may get a blur. So strong readers read it twice. The first read is for sense: what is this paragraph about? Say the big idea in one sentence. The second read is slower, for detail: which facts prove the big idea, and how do they fit? Reading aloud, slow down at numbers, names and new words, because they carry the facts. If you finish with the big idea but no details, read it again for detail. If you have details but no big idea, read it once more for sense.',
+      intro:['Read 1: for sense. What is it about?','Say the big idea in one sentence.','Read 2: slowly, for detail.','Slow down at numbers, names and new words.'],
+      ex:[{q:'"Economists call this the double coincidence of wants."', steps:['Read 1: barter needs both people to want a trade.','Read 2: "double coincidence of wants" is the name for it.','Slow down on the new words.'], a:'big idea first, then the name for it'},
+          {q:'"About 2,600 years ago, in the kingdom of Lydia..."', steps:['Read 1: the first coins.','Read 2: when (2,600 years ago) and where (Lydia).'], a:'the first coins: when and where'}],
+      oops:{ q:'Yanky read a hard paragraph once, fast, and remembers nothing. What went wrong?', wrong:'The paragraph was too hard for him', right:'He needed two reads: first for sense, then for detail', why:'Dense paragraphs are meant to be read twice. That is not a weakness; it is a skill.' },
+      idea:['Read for sense, then read for detail.'],
+      'try':{ q:'A paragraph is packed with facts. What is your first read for?', o:['the big idea','every number'], a:'the big idea', steps:['Ask: what is this about?','Say it in one sentence.'] } }
+  };
+
+  var HOWTO = {
+    'READ.COMP.L09.15':{ s:'Find the claim.\nAsk: is this evidence true AND about this claim?\nTake it away: is the claim any weaker?',
+      q:{ 'Claim: the town should build a library. "Libraries have existed for over 2,000 years." This evidence is...':'Does the history of libraries show THIS town needs one?',
+          'Claim: buses should have seat belts. "In crashes, seat belts cut injuries by about half." This evidence...':'Take it away. Is the claim weaker?',
+          'Claim: every boy should eat breakfast. "My cousin never eats breakfast, and he runs fast." What is wrong with it?':'How many people is it about?',
+          'Claim: the yeshiva needs a bigger lunchroom. "Our lunchroom serves hot food every day." This evidence is...':'Does hot food show the room is too small?',
+          'Claim: boys should learn to swim. "Young children who take swimming lessons are less likely to drown." This evidence...':'Take it away. Is the claim weaker?',
+          'Claim: phones should stay home. "My friend brought his phone and nothing bad happened." What is wrong with it?':'How many people is it about?' } },
+    'READ.COMP.L09.16':{ s:'Find the fact both writers use.\nFind what each one says it means.\nThe stronger reading fits all the facts.',
+      q:{ 'Fact: the lunchroom is crowded. Writer A: "Build a bigger lunchroom." Writer B: "Eat in two shifts." What do they disagree about?':'Do they both agree it is crowded?',
+          'Rebbe counted: 9 boys asked to repeat a question before recess, 3 after. "Recess is what helped them focus." This sentence is...':'Which part was counted? Which part says what it means?',
+          'Fact: fewer boys came to night seder. Also: the night bus stopped running. Reading A: boys stopped caring. Reading B: boys could not get there. Which is stronger?':'Which reading explains the bus fact too?',
+          'Fact: the library is empty at night. Writer A: "Close it at five." Writer B: "Add better lights." What do they disagree about?':'Do they both agree it is empty?',
+          'The class voted 18 to 6 for the new schedule. "The boys are happier with it." This sentence is...':'Which part was counted? Which part says what it means?',
+          'Fact: the bake sale earned less. Also: it rained all day. Reading A: the rain kept buyers home. Reading B: the cakes were worse. Which is stronger?':'Which reading explains the rain too?' } },
+    'READ.FLU.L09.04':{ s:'Read 1: for sense, the big idea.\nRead 2: slowly, for detail.\nSlow down at numbers, names and new words.',
+      q:{ '"In 1913, Congress created the Federal Reserve, with twelve regional banks, to lend to banks in trouble and stop panics." Read 1: what is the big idea?':'Read 1: what is the whole sentence about?',
+          '"The bridge, finished in 1883, is 1,595 feet long." Reading aloud, what should you read slowest?':'Which words carry the facts?',
+          'After two reads, Yitzy knows the big idea but no details. What should he do?':'What is he missing: sense or detail?',
+          '"Before 1863, hundreds of American banks printed their own paper money, so a bank\'s dollar might be worth less in the next town." Read 1: what is the big idea?':'Read 1: what is the whole sentence about?',
+          '"In 1869, the first railroad crossed the whole country." Reading aloud, what should you read slowest?':'Which words carry the facts?',
+          'Moshe read a hard paragraph once and remembers no details. What should he do?':'What is he missing: sense or detail?' } }
+  };
+
+  var BITE = {
+    'READ.COMP.L09.15':{ band:'M68', pic:'🧩', today:'Spot evidence that does not belong',
+      why:'Writers sometimes fill an argument with facts that sound good but prove nothing. Spot them, and you judge the argument by what really counts.',
+      ready:[{q:'Which is evidence for "We need a new heater"?', o:['The classroom is 55 degrees in winter.','Heaters come in many colors.','I like warm rooms.'], a:'The classroom is 55 degrees in winter.'}],
+      bridge:'READ.COMP.L09.01', bridgeName:'Argument Judge',
+      watch:{ q:'Credit Cards: Help or Trap?', m:{type:'scene', e:'💳', t:'Eli: "The first card of this kind was made in 1950."'}, steps:[
+        {t:'Start with the claim. Eli: a young adult should get a credit card.'},
+        {t:'Read one piece of evidence: the first card, in 1950.'},
+        {t:'Is it true? Yes. Is it about THIS claim? No: it is about how cards began.'},
+        {t:'Take it away. Is Eli\'s claim any weaker? No. So it does not belong.'},
+        {t:'Now his brother: "never paid a cent of interest." On topic, but one person\'s story.'},
+        {t:'Teach it back: tell your chavrusa the two tests: is it about the claim, and is it more than one story?'}], a:'The 1950 date is true but off topic. The brother is one person\'s story.' },
+      oops:{ q:'"The 1950 date is a true fact, so it makes Eli\'s argument stronger." Right?', wrong:'Yes: more facts make it stronger', right:'No: a true fact that is off topic adds nothing', why:'Evidence must be true AND about the claim. Extra facts that miss the point only fill space.' },
+      ways:['worked example','read the whole debate','Mistake Detective','tap the reason','sort','teach it back'], done:'You can spot evidence that does not belong!',
+      board:{ one:'Good evidence is true AND speaks to the claim. Test: take it away. Is the claim any weaker?', activity:'Write a claim on the board and ten "facts" on cards. Boys vote on each card: belongs, off topic, or one person\'s story, and must explain the vote.', mistakes:['Keeping a fact because it is true','Trusting one person\'s story as proof','Counting more facts as a stronger argument'] },
+      do:[
+        {type:'read', text:'C68.MON.04', say:'Read the whole credit card debate.', how:'Mark each piece of evidence. Is it about the question?'},
+        {type:'evidence', mis:true, q:'Which of Eli\'s sentences does NOT help his claim?', p:['The first card of this kind was made in 1950.','A person who has paid on time for five years has proved that he can be trusted.','If a credit card is lost or stolen, the card is shut off.'], a:0, look:'a true fact that is about something else', say:'Watch the trap! Which one is off topic?', how:'Take each one away. Which one does Eli not need?'}],
+      your:[
+        {type:'proof', text:'C68.MON.04', q:'Which sentence in Akiva\'s note asks you to check if evidence is on topic?', proof:'Which reasons speak to the question', look:'Akiva\'s question about the reasons', say:'Find the proof in the editor\'s note.', how:'Read the editor\'s note at the end.'},
+        {type:'sort', bins:['Belongs','Does not belong'], cards:[['Card rates were over 20 percent.',0],['People spend more with cards.',0],['Some cards have a picture on the front.',1],['Card companies began in New York.',1]], say:'Gavriel\'s claim: cards are a trap. Sort the evidence.', how:'Does it help show cards are dangerous for young people?'},
+        {type:'match', pairs:[['a true fact about something else','true but off topic'],['"It worked for my brother."','one person\'s story'],['a careful study about the claim','strong evidence']], say:'Match each piece to its name.', how:'Is it on topic? Is it more than one story?'},
+        {type:'order', steps:['Find the claim.','Read one piece of evidence.','Ask: is it about THIS claim?','Take it away: is the claim weaker?'], say:'Put the test in order.', how:'Claim first. Then test each piece.'},
+        {type:'cloze', t:'If you take evidence away and the claim is just as strong, the evidence does not ___.', o:['belong','matter to anyone','exist'], a:'belong', say:'Challenge! Tap the word that fits.', how:'What does it mean if nothing changes?'}] },
+    'READ.COMP.L09.16':{ band:'M68', pic:'🔀', today:'Same facts, two readings: judge which fits best',
+      why:'Most arguments are not about the facts. They are about what the facts mean. Learn to see that, and you can judge any debate.',
+      ready:[{q:'Which is a fact you could check?', o:['The rate was over 20 percent.','Cards are a trap.','Cards are great.'], a:'The rate was over 20 percent.'}],
+      bridge:'READ.COMP.L09.15', bridgeName:'Evidence That Does Not Belong',
+      watch:{ q:'Two editors, one fact', m:{type:'scene', e:'⚖️', t:'Eli: "A card that is not paid in full costs a lot of interest. But the answer is simple: pay the whole bill." Gavriel: "The danger is interest... Teach him first. Give him the keys later."'}, steps:[
+        {t:'Find the fact both writers use: an unpaid card costs a lot of interest.'},
+        {t:'Eli\'s reading: so teach boys to pay in full, and give them the card.'},
+        {t:'Gavriel\'s reading: so make them keep a budget first, then give the card.'},
+        {t:'Neither one says the fact is false. They split on what it means.'},
+        {t:'Now check other facts: people spend more with a card. Which reading fits that too? Gavriel\'s.'},
+        {t:'Teach it back: tell your chavrusa the shared fact, the two readings, and which fits more facts.'}], a:'Same fact, two readings. The stronger reading fits all the facts.' },
+      oops:{ q:'"Eli and Gavriel disagree, so one of them has the facts wrong." Right?', wrong:'Yes: one of them must be lying', right:'No: they share the fact and read it two ways', why:'Most debates are about what a fact means. Check the reading, not just the fact.' },
+      ways:['worked example','read two texts','debate','chavrusa','sort','challenge round','teach it back'], done:'You can see two readings of the same facts, and judge which is stronger!',
+      board:{ one:'Fact: can be checked. Interpretation: what someone says it means. The stronger reading fits all the facts.', activity:'Debate: give two teams the same fact ("The shul is full every Yom Tov"). Each team writes a different reading and a plan. The class judges which reading fits the extra facts the rebbe reveals.', mistakes:['Thinking a disagreement means someone lied','Calling an interpretation a fact','Judging a reading by how strongly it is said'] },
+      do:[
+        {type:'read', text:'C68.MON.04', say:'Read the debate again. Find the facts both editors use.', how:'Look for "That is true" and "I will admit".'},
+        {type:'sort', mis:true, bins:['A fact','An interpretation'], cards:[['Unpaid cards cost interest.',0],['Cards are a trap.',1],['A lost card can be shut off.',0],['Cards are a useful tool.',1]], say:'Watch the trap! Fact or interpretation?', how:'Can it be checked, or is it what someone thinks it means?'}],
+      your:[
+        {type:'proof', text:'C68.MON.04', q:'Which sentence shows Gavriel accepting Eli\'s fact about theft?', proof:'That is true about theft', look:'where Gavriel agrees with a fact of Eli\'s', say:'Find the proof in the debate.', how:'Read Gavriel\'s answer about cash.'},
+        {type:'match', pairs:[['Eli','pay in full, and get the card'],['Gavriel','keep a budget first, then the card'],['both','unpaid cards cost interest']], say:'Match each editor to his reading.', how:'Who says what the fact means?'},
+        {type:'evidence', q:'Which extra fact fits Gavriel\'s reading better?', p:['People tend to spend more when they pay with a card.','Credit cards were first made in 1950.','A card can be used to pay by phone.'], a:0, look:'a fact that supports waiting', say:'Tap the fact that fits his reading.', how:'Which fact shows the danger of spending?'},
+        {type:'listen', hear:'Fact: The Beacon got fewer letters this month. Also, the letter box was broken. Writer A says readers stopped caring. Writer B says the broken box lost the letters.', o:['Writer B: it fits both facts','Writer A: it is more dramatic','neither'], a:'Writer B: it fits both facts', cap:'Which reading is stronger?', say:'Listen. Which reading fits all the facts?', how:'Which reading explains the broken box?'},
+        {type:'cloze', t:'Two writers can share a fact and still disagree about what it ___.', o:['means','costs','weighs'], a:'means', say:'Challenge! Tap the word that fits.', how:'What do they argue about, if not the fact?'}] },
+    'READ.FLU.L09.04':{ band:'M68', pic:'🔁', today:'Read a dense paragraph twice: for sense, then detail',
+      why:'Hard articles pack many facts into a few lines. Two smart reads beat one fast blur, every time.',
+      ready:[{q:'What is the big idea of a paragraph?', o:['what the whole paragraph is about','its first word','its longest sentence'], a:'what the whole paragraph is about'}],
+      bridge:'READ.FLU.L06.03', bridgeName:'Pace It',
+      watch:{ q:'From Barter to Coins', m:{type:'scene', e:'🪙', t:'"Barter has a big problem. Both people must want what the other one has, at the same time. Economists call this the double coincidence of wants."'}, steps:[
+        {t:'Read 1, for sense: barter only works if both people want a trade.'},
+        {t:'Say it in one sentence: barter needs two people who want each other\'s things.'},
+        {t:'Read 2, slowly, for detail: a farmer with a cow, a fisherman whose fish spoil.'},
+        {t:'Slow down for the new words: "double coincidence of wants".'},
+        {t:'Check: does each detail prove the big idea? Yes: each shows a trade that fails.'},
+        {t:'Teach it back: read the paragraph to your chavrusa twice, and tell him what each read was for.'}], a:'Read 1: barter needs both sides to want a trade. Read 2: the cow, the fish, the name.' },
+      oops:{ q:'"I read it once, fast, and got the gist. That is enough." Right?', wrong:'Yes: the gist is all you need', right:'No: read it again, slowly, for the details', why:'A dense paragraph hides its proof in the details. The second read finds them.' },
+      ways:['worked example','close reading','read twice','read aloud','chavrusa','teach it back'], done:'You can read a dense paragraph twice: for sense, then for detail!',
+      board:{ one:'Read 1: sense (the big idea, in one sentence). Read 2: slowly, for detail. Slow down at numbers, names and new words.', activity:'Chavrusa reading: one boy reads a dense paragraph aloud while the other listens for the big idea. Then they switch, and the listener names three details.', mistakes:['Reading once, fast, and calling it done','Racing past numbers and names','Remembering details without the big idea'] },
+      do:[
+        {type:'read', text:'C68.MON.01', say:'Read "From Barter to Coins" to the end.', how:'For each page, say the big idea in one sentence.'},
+        {type:'listen', mis:true, hear:'Shimmy read the barter paragraph once, fast. He said: "It is about a cow."', o:['he got a detail, not the big idea','he got the big idea','he read it perfectly'], a:'he got a detail, not the big idea', cap:'What did Shimmy miss?', say:'Mistake Detective! What did Shimmy miss?', how:'Is a cow the big idea, or one detail?'}],
+      your:[
+        {type:'proof', text:'C68.MON.01', q:'Which sentence gives the economists\' name for barter\'s problem?', proof:'double coincidence of wants', look:'the special name economists use', say:'Find the proof in the article.', how:'Read the second paragraph slowly.'},
+        {type:'sort', bins:['Read 1: sense','Read 2: detail'], cards:[['What is this page about?',0],['What is the main point?',0],['Which kingdom?',1],['How many years ago?',1]], say:'Which read is each question for?', how:'Big idea first, then details.'},
+        {type:'order', steps:['Read it once for the big idea.','Say the big idea in one sentence.','Read it again, slowly, for detail.','Check each detail against the big idea.'], say:'Put the two-read steps in order.', how:'Sense first. Detail second.'},
+        {type:'match', pairs:[['I got the idea but no details.','read it again, slowly, for detail'],['I tripped on a name.','say it slowly, then reread'],['I got details but no big idea.','read once more, for sense']], say:'Match each problem to its fix.', how:'What is missing: the sense, or the detail?'},
+        {type:'cloze', t:'Reading aloud, slow down at numbers, names and new ___.', o:['words','pages','books'], a:'words', say:'Tap the word that fits.', how:'What carries the facts in a sentence?'}] }
+  };
+
+  /* Existing skills rebuilt as One Bite lessons. Their own questions stay as practice and Show me. */
+  var UP = {
+    'READ.COMP.L09.01':{ band:'M68', pic:'🗺️', today:'Judge an argument: map the claim and test the evidence',
+      why:'Every ad, editorial and speech wants you to agree. Map the argument and test the evidence, and you decide for yourself.',
+      ready:[{q:'Which sentence is a claim?', o:['Young people should wait for credit cards.','Card rates were over 20 percent.','Eli writes about sports.'], a:'Young people should wait for credit cards.'}],
+      bridge:'READ.COMP.L09.14', bridgeName:'Answer the Other Side',
+      watch:{ q:'A Trap With a Smile', m:{type:'scene', e:'🗺️', t:'Gavriel: "According to the Federal Reserve, the average interest rate on credit cards in 2024 was more than twenty percent a year."'}, steps:[
+        {t:'Find the claim: a young person should wait for a credit card.'},
+        {t:'Map the reasons: high interest, easy spending, rewards are not free.'},
+        {t:'Test each piece of evidence. Is it relevant? Is it from someone who knows?'},
+        {t:'The Federal Reserve number: relevant and from a careful source. Strong.'},
+        {t:'"Studies have found" with no study named: relevant, but we cannot check it. Weaker.'},
+        {t:'Teach it back: tell your chavrusa Gavriel\'s claim, his best evidence, and his weakest.'}], a:'Claim, reasons, evidence: strongest is the Federal Reserve number.' },
+      oops:{ q:'"Gavriel\'s argument is longer, so it is stronger." Right?', wrong:'Yes: more words, more proof', right:'No: judge the evidence, not the length', why:'A strong argument has relevant evidence from careful sources. Length proves nothing.' },
+      ways:['argument map','read the whole debate','find the proof','retrieval','Mistake Detective','teach it back'], done:'You can map an argument and judge its evidence!',
+      board:{ one:'Argument map: claim → reasons → evidence. Test each piece: relevant? reliable? Then judge: strong or weak?', activity:'Draw Eli\'s and Gavriel\'s argument maps side by side on the board. Boys put a star on each strong piece of evidence and an X on each weak one, then decide which map is stronger.', mistakes:['Judging by length or loudness','Counting a feeling as evidence','Forgetting to ask who the source is'] },
+      do:[
+        {type:'read', text:'C68.MON.04', say:'Read the credit card debate.', how:'Find each writer\'s claim and his evidence.'},
+        {type:'sort', mis:true, bins:['Strong evidence','Weak evidence'], cards:[['the Federal Reserve rate for 2024',0],['my cousin\'s half-price flight',1],['by law, you usually owe nothing for a thief\'s charges',0],['my brother never paid interest',1]], say:'Watch the trap! Strong or weak evidence?', how:'Is it from a careful source, or one person?'}],
+      your:[
+        {type:'storymap', slots:['Claim','Reason about cost','Reason about habits','Plan'], cards:['Young people should wait for a card.','Interest is very high.','Cards make spending easy.','Keep a budget for six months first.'], extra:['Cards were first made in 1950.'], say:'Build Gavriel\'s argument map.', how:'Claim first, then his reasons, then his plan.'},
+        {type:'proof', text:'C68.MON.04', q:'Which sentence gives Gavriel\'s strongest evidence?', proof:'According to the Federal Reserve', look:'a number from a careful source', say:'Find the proof in the debate.', how:'Look for a source that is named.'},
+        {type:'match', pairs:[['relevant','it speaks to the claim'],['reliable','it comes from someone who knows'],['a feeling','not evidence at all']], say:'Match each word to its meaning.', how:'Two tests for evidence: relevant and reliable.'},
+        {type:'evidence', q:'Which of Eli\'s pieces of evidence is weakest?', p:['My cousin flew to Eretz Yisrael for half price with points from his card.','If a credit card is lost or stolen, the card is shut off.','A person who has paid on time has proved that he can be trusted.'], a:0, look:'one person\'s story', say:'Tap the weakest evidence.', how:'Which one is only about one person?'},
+        {type:'cloze', t:'Evidence from a careful, named source is more ___.', o:['reliable','relevant','exciting'], a:'reliable', say:'Challenge! Tap the word that fits.', how:'Which test is about who says it?'}] },
+    'READ.COMP.L09.03':{ band:'M68', pic:'🔎', today:'Two sources disagree on a fact: find who is right',
+      why:'Sources do not always agree. A careful reader checks the date, the author and a third source before he trusts a number.',
+      ready:[{q:'Which source is more likely to be careful?', o:['a government report','a sign in a store window','a post with no author'], a:'a government report'}],
+      bridge:'READ.COMP.L09.01', bridgeName:'Argument Judge',
+      watch:{ q:'How much is insured?', m:{type:'scene', e:'🏦', t:'"How a Bank Lends" (this year): up to $250,000 at each bank. A bank pamphlet from 2005: up to $100,000.'}, steps:[
+        {t:'Two sources, two numbers. Do not pick one yet.'},
+        {t:'Check the dates: one is from this year, one from 2005. Rules can change.'},
+        {t:'Check the authors: a careful article, and a bank\'s old pamphlet.'},
+        {t:'Check a third source: the government\'s own insurance website says $250,000 today.'},
+        {t:'Decide: the newer number is right now. The old pamphlet was right in its time.'},
+        {t:'Teach it back: tell your chavrusa the three checks: date, author, third source.'}], a:'Check the date, the author and a third source. Today it is $250,000.' },
+      oops:{ q:'"The two sources disagree, so neither one can be trusted." Right?', wrong:'Yes: ignore them both', right:'No: check date, author and a third source', why:'A disagreement is a signal to check, not a reason to give up.' },
+      ways:['worked example','read the topic set','debate','find the proof','Mistake Detective','teach it back'], done:'You can decide which source to trust when two disagree!',
+      board:{ one:'When sources disagree: check the date, check the author, check a third source. Then decide.', activity:'Give pairs two short "sources" that disagree (an old almanac and a new report). Each pair writes which one they trust and the reason, then checks a third source the rebbe holds up.', mistakes:['Picking the first source you saw','Giving up because they disagree','Forgetting that old facts can change'] },
+      do:[
+        {type:'read', text:'C68.MON.02', say:'Read "How a Bank Lends".', how:'Mark each number and date. Who could check it?'},
+        {type:'sort', mis:true, bins:['More reliable','Less reliable'], cards:[['a government report from 2024',0],['a bank pamphlet from 2005',1],['a careful article with dates',0],['a post with no author',1]], say:'Watch the trap! Which sources are more reliable?', how:'Check the date and the author.'}],
+      your:[
+        {type:'proof', text:'C68.MON.02', q:'Which sentence gives today\'s insurance limit?', proof:'up to two hundred fifty thousand dollars', look:'the amount each family gets back', say:'Find the proof in the article.', how:'Read the part about 1933 and today.'},
+        {type:'order', steps:['Notice the two sources disagree.','Check each source\'s date and author.','Check a third source.','Decide which to trust.'], say:'Put the fact-check steps in order.', how:'Notice first. Decide last.'},
+        {type:'match', pairs:[['an old number','check if the rule changed'],['no author','find who wrote it'],['someone selling something','look for a source with no reason to bend it']], say:'Match each warning sign to its check.', how:'What would you check first?'},
+        {type:'evidence', q:'Two sources disagree on when the first coins were made. Which is more reliable?', p:['a history museum guide that names the kingdom of Lydia','a restaurant placemat with fun facts','a comment under a video'], a:0, look:'a careful source that gives details', say:'Tap the more reliable source.', how:'Who would check the facts most carefully?'},
+        {type:'cloze', t:'When two sources disagree, check the date, the author and a ___ source.', o:['third','louder','longer'], a:'third', say:'Challenge! Tap the word that fits.', how:'What breaks a tie between two sources?'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C68', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('C68', { bite: UP });
+
+  if (window.TLCORE && TLCORE.units && TLCORE.units.add) TLCORE.units.add({ id:'C68.U86', title:'Judge the Argument', c:'READ', grade:8,
+    skills:['READ.COMP.L09.01','READ.COMP.L09.15','READ.COMP.L09.03','READ.COMP.L09.16','READ.FLU.L09.04'],
+    review:['READ.COMP.L09.14','READ.LIT.L09.09'], n:10,
+    items:[
+      {type:'evidence', skill:'READ.COMP.L09.15', q:'Claim: the yeshiva needs a new van. Which evidence does NOT belong?', p:['The van was painted blue in 2015.','The old van broke down three times this month.','Two more classes now go on trips.'], a:0, look:'a true fact that is off topic', how:'Take each one away. Which one does the claim not need?'},
+      {type:'cloze', skill:'READ.COMP.L09.16', t:'"The new shul will be too small in five years." This is an ___.', o:['interpretation','official count','exact measurement'], a:'interpretation', how:'Can it be checked today, or is it what someone thinks?'},
+      {type:'evidence', skill:'READ.COMP.L09.03', q:'Two sources disagree on a town\'s population. Which do you trust?', p:['the town\'s 2023 official report','a 1998 newspaper ad','a sign at the town fair'], a:0, look:'the newest careful source', how:'Check the date and who counted.'},
+      {type:'cloze', skill:'READ.COMP.L09.01', t:'Strong evidence is relevant and ___.', o:['reliable','surprising','repeated'], a:'reliable', how:'The two tests: is it about the claim, and is it from someone who knows?'},
+      {type:'evidence', skill:'READ.FLU.L09.04', q:'Which is the best first step with a dense paragraph?', p:['Read it once for the big idea.','Memorize every number first.','Skip to the last sentence.'], a:0, look:'read for sense first', how:'Sense first, then detail.'},
+      {type:'evidence', skill:'READ.COMP.L09.01', q:'Claim: the yeshiva should start a chess club. Which evidence is strongest?', p:['A study of 500 students found chess players did better in math.','My friend likes chess.','Chess boards are cheap.'], a:0, look:'relevant and reliable', how:'Which one comes from a careful source and speaks to the claim?'},
+      {type:'evidence', skill:'READ.COMP.L09.15', q:'Claim: Main Street needs a bike lane. Which evidence does NOT belong?', p:['Bicycles were invented in the 1800s.','Twelve bike accidents happened on Main Street last year.','Two hundred students ride to school on Main Street.'], a:0, look:'a true fact that is off topic', how:'Take each one away. Which one does the claim not need?'},
+      {type:'evidence', skill:'READ.COMP.L09.03', q:'Two sources give different heights for the same mountain. What do you check first?', p:['the date and the author of each source','which number is bigger','which source has more pictures'], a:0, look:'the first check when sources disagree', how:'What could make one number out of date?'},
+      {type:'evidence', skill:'READ.COMP.L09.16', q:'Fact: 60 boys came to the library on Monday. Which sentence is an interpretation?', p:['The boys love the new books.','60 boys came on Monday.','The library has 40 seats.'], a:0, look:'what someone says the fact means', how:'Which one could not be counted?'}
+    ] });
+})();
+/* Unit 8.7 "Reading for Real Life" (topic set: Disasters and how people rebuild, texts/C68/C68.DIS.01-06): new skills READ.COMP.L09.17 (print, video or chart),
+   READ.COMP.L09.18 (news report or opinion piece), READ.COMP.L09.19 (check a claim against two sources) with TLCORE.add, and the existing
+   READ.COMP.L09.02 "Manual Reader" rebuilt as a One Bite lesson (TLCORE.upgrade). */
+(function () {
+  var LESSONS = {
+
+    /* ===== Unit 8.7, skill 2: print, video or chart ===== */
+    'READ.COMP.L09.17':{name:'Print, Video or Chart?',
+      teach:[
+        {q:'You want to show HOW the bridge twisted in the wind. Which form shows it best?', o:['a video','a chart','a printed list'], how:'Motion is best shown by a video: you see it happen.'},
+        {q:'You want to compare two cities\' death rates, week by week. Which form shows it best?', o:['a chart','a video','a poem'], how:'Numbers that change over time are clearest in a chart or graph.'},
+        {q:'You want to explain WHY the bridge fell. Which form explains it best?', o:['print: a written explanation','a chart','a photo'], how:'Causes and reasons need words. Print can explain step by step.'}
+      ],
+      practice:[
+        {t:'sort', q:'Which form tells each one best?', bins:[{id:'v',label:'a video'},{id:'c',label:'a chart'},{id:'p',label:'print: a written explanation'}], items:[{label:'how a tower sways in the wind',bin:'v'},{label:'rainfall in five cities, month by month',bin:'c'},{label:'why the dam failed',bin:'p'},{label:'what a flood wave looks like',bin:'v'},{label:'deaths per week in two cities',bin:'c'},{label:'what engineers recommend, and why',bin:'p'}], h:'Motion: video. Numbers over time: chart. Reasons: print.'},
+        {t:'pairs', q:'Match each form to what it does best.', pairs:[['a video','shows motion and sound'],['a chart','compares numbers at a glance'],['print: a written explanation','explains causes and reasons'],['a diagram','shows the parts and how they fit']], h:'What is each form good at?'},
+        {t:'spotall', q:'Tap every limit of a video.', cells:[{label:'it is hard to compare exact numbers',ok:true},{label:'it rarely explains why something happened',ok:true},{label:'you cannot easily go back to one detail',ok:true},{label:'it cannot show motion',ok:false}], h:'What is hard to learn from a film alone?'},
+        {t:'order', q:'Put the steps for choosing a form in order.', tiles:['Decide what you need to know.','Ask: is it motion, numbers or reasons?','Pick the form that shows it best.','Check it against another form.'], h:'Your question first. The form second.'},
+        {t:'sort', q:'The Tacoma Narrows Bridge. What did each source give best?', bins:[{id:'v',label:'the film'},{id:'p',label:'the engineers\' report'}], items:[{label:'the deck twisting like a ribbon',bin:'v'},{label:'the moment it broke away',bin:'v'},{label:'why the thin deck caught the wind',bin:'p'},{label:'advice for future builders',bin:'p'}], h:'Seeing it happen, or understanding why?'},
+        {t:'spotall', q:'Tap every strength of a chart.', cells:[{label:'you can compare at a glance',ok:true},{label:'you can see a change over time',ok:true},{label:'it shows a pattern in the numbers',ok:true},{label:'it tells you why the numbers changed',ok:false}], h:'What does a chart show, and what does it leave out?'}
+      ],
+      check:[
+        {q:'You want to show how a tsunami wave rushes onto a beach. Which form shows it best?', o:['a video','a table of numbers','a written list of dates']},
+        {q:'You want to compare snowfall in four towns over twelve months. Which form shows it best?', o:['a chart','a short film','one photo of each town']},
+        {q:'You want to explain why a levee failed, and show how high the river rose each hour. What should you use?', o:['a written report with a chart','a video alone','a single photo']}
+      ],
+      re:[
+        {q:'You want to show how a tornado spins across a field. Which form shows it best?', o:['a video','a table of numbers','a written list of dates']},
+        {q:'You want to compare how many trees three towns planted each year. Which form shows it best?', o:['a chart','a short film','one photo of each town']},
+        {q:'You want to explain why a roof fell in, and show how much snow fell each day. What should you use?', o:['a written report with a chart','a video alone','a single photo']}
+      ]},
+
+    /* ===== Unit 8.7, skill 3: news report or opinion piece ===== */
+    'READ.COMP.L09.18':{name:'News or Opinion?',
+      teach:[
+        {q:'A news report mostly gives...', o:['facts: who, what, when, where','the writer\'s feelings','advice about what to do'], how:'News answers who, what, when, where and how, in neutral words.'},
+        {q:'An opinion piece mostly gives...', o:['a claim the writer wants you to accept','only dates','a list of names'], how:'Opinion argues. Look for I, should, must, and strong words that judge.'},
+        {q:'"The careless club owners are to blame." Which kind of writing is this from?', o:['an opinion piece','a news report','a weather report'], how:'"Careless" and "to blame" judge people. That is opinion.'}
+      ],
+      practice:[
+        {t:'sort', q:'News report, or opinion piece?', bins:[{id:'n',label:'a news report'},{id:'o',label:'an opinion piece'}], items:[{label:'The dam failed at about three o\'clock.',bin:'n'},{label:'More than 2,200 people died.',bin:'n'},{label:'The club owners should have been punished.',bin:'o'},{label:'This was the worst failure of greed in history.',bin:'o'}], h:'Can it be checked? Or is the writer judging?'},
+        {t:'spotall', q:'"The greedy owners ignored every sensible warning." Tap every loaded word.', cells:[{label:'greedy',ok:true},{label:'sensible',ok:true},{label:'ignored every',ok:true},{label:'owners',ok:false},{label:'warning',ok:false}], h:'Which words judge, and which only name?'},
+        {t:'pairs', q:'Match each sign to what it shows.', pairs:[['a word that judges, like "reckless"','a loaded word'],['who, what, when, where','a news report'],['"should" and "must"','an opinion piece'],['a quote from a witness','a source in a news report']], h:'Is it reporting, or judging?'},
+        {t:'order', q:'Put the steps for telling news from opinion in order.', tiles:['Read the headline and first lines.','Look for facts you could check.','Look for loaded words and "should".','Decide: report or opinion?'], h:'Read first. Decide last.'},
+        {t:'sort', q:'Where would you find each sentence?', bins:[{id:'n',label:'a news report'},{id:'o',label:'an opinion piece'}], items:[{label:'The city closed its schools on October 3.',bin:'n'},{label:'Our leaders acted far too late.',bin:'o'},{label:'St. Louis stopped large gatherings.',bin:'n'},{label:'Every city must learn from St. Louis.',bin:'o'}], h:'Fact you could check, or a judgment?'},
+        {t:'spotall', q:'Tap every sign that a piece is an opinion piece.', cells:[{label:'the writer uses "I believe"',ok:true},{label:'it says what people should do',ok:true},{label:'it uses words that judge',ok:true},{label:'it gives a date and a place',ok:false}], h:'What shows the writer is arguing?'}
+      ],
+      check:[
+        {q:'"The storm reached the coast at 4 a.m. with winds of 90 miles per hour." This sentence is from...', o:['a news report','an opinion piece','a poem']},
+        {q:'"The town\'s leaders failed us, and they must resign." This sentence is from...', o:['an opinion piece','a news report','a recipe']},
+        {q:'"The stubborn mayor kept the shelters closed." This sentence is from...', o:['an opinion piece','a news report','a weather report']}
+      ],
+      re:[
+        {q:'"The bridge closed at 10 a.m., and no one was hurt." This sentence is from...', o:['a news report','an opinion piece','a poem']},
+        {q:'"This shameful delay cost lives, and it must never happen again." This sentence is from...', o:['an opinion piece','a news report','a recipe']},
+        {q:'"The lazy crew left the sandbags on the truck." This sentence is from...', o:['an opinion piece','a news report','a weather report']}
+      ]},
+
+    /* ===== Unit 8.7, skill 4: check a claim against two sources ===== */
+    'READ.COMP.L09.19':{name:'Check a Claim',
+      teach:[
+        {q:'Claim: "The parade caused Philadelphia\'s disaster." What is your first step?', o:['find what each source says about it','believe it, because it sounds right','look for a more exciting story'], how:'Check a claim against more than one careful source.'},
+        {q:'Both sources show the parade spread the flu, but one adds other causes. The claim is...', o:['partly supported','fully supported','not supported'], how:'If the sources show other causes too, the claim is only part of the story.'},
+        {q:'Why is a study of many cities stronger than a story of two?', o:['many cases show a pattern; two can be luck','two is always enough','stories are always wrong'], how:'More cases and careful numbers make stronger proof.'}
+      ],
+      practice:[
+        {t:'sort', q:'Claim: "Closing early saved St. Louis." Sort what the article says.', bins:[{id:'s',label:'supports the claim'},{id:'d',label:'adds doubt'}], items:[{label:'St. Louis\'s peak death rate was much lower.',bin:'s'},{label:'Cities that closed early tended to do better.',bin:'s'},{label:'The flu reached St. Louis later.',bin:'d'},{label:'Some early-closing cities still suffered badly.',bin:'d'}], h:'Does it back the claim, or show another cause?'},
+        {t:'pairs', q:'Match each verdict to what it means.', pairs:[['fully supported','careful sources agree, with no other cause'],['partly supported','true, but not the whole story'],['not supported','careful sources show it is wrong']], h:'How much of the claim do the sources back up?'},
+        {t:'order', q:'Put the steps for checking a claim in order.', tiles:['State the claim exactly.','Find what source A says.','Find what source B says.','Look for other causes.','Give a verdict.'], h:'Claim first. Verdict last.'},
+        {t:'spotall', q:'Tap every question a careful checker asks.', cells:[{label:'Do the sources agree on the facts?',ok:true},{label:'Is there another cause?',ok:true},{label:'How many cases were studied?',ok:true},{label:'Which story is more exciting?',ok:false}], h:'What would make you trust the claim more?'},
+        {t:'sort', q:'Claim: "The Johnstown dam broke only because of the storm." Sort the facts.', bins:[{id:'s',label:'supports the claim'},{id:'d',label:'adds doubt'}], items:[{label:'Six to ten inches of rain fell in one day.',bin:'s'},{label:'The club lowered the dam.',bin:'d'},{label:'Screens blocked the spillway.',bin:'d'},{label:'Water poured over the top.',bin:'s'}], h:'Was the storm the only cause?'},
+        {t:'pairs', q:'Match each claim to its verdict.', pairs:[['"The bridge fell in 1940."','fully supported'],['"Only the wind made the bridge fall."','partly supported'],['"People died when the bridge fell."','not supported']], h:'Check each claim against the report.'}
+      ],
+      check:[
+        {q:'Claim: "The new seawall saved the town." Source A: the town flooded less than its neighbors. Source B: the storm also turned away at the last hour. The claim is...', o:['partly supported','fully supported','not supported']},
+        {q:'Claim: "The library opened in 1962." A city history says 1962. The library\'s own records say 1962. The claim is...', o:['fully supported','partly supported','not supported']},
+        {q:'Claim: "The fire started in the bakery." Source A: it began in a barn. Source B: the bakery was closed that week, and the fire map starts at the barn. The claim is...', o:['not supported','fully supported','partly supported']}
+      ],
+      re:[
+        {q:'Claim: "The new pumps kept the street dry." Source A: the street stayed dry. Source B: the rain that week was also much lighter than usual. The claim is...', o:['partly supported','fully supported','not supported']},
+        {q:'Claim: "The shul was built in 1925." The cornerstone says 1925. The city records say 1925. The claim is...', o:['fully supported','partly supported','not supported']},
+        {q:'Claim: "The storm hit on a Tuesday." Source A: it hit on Thursday. Source B: the weather service log says Thursday night. The claim is...', o:['not supported','fully supported','partly supported']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L09.17':{ hook:'A film of a bridge twisting, a chart of a city\'s deaths, a report on why: each tells a different part of the truth.',
+      big:'Information comes in different forms, and each form is good at something different. A video shows motion and sound: you can watch the Tacoma Narrows Bridge twist like a ribbon. A chart compares numbers at a glance: you can see that Philadelphia\'s worst week was far worse than St. Louis\'s. Print, a written explanation, gives causes and reasons step by step: why the thin deck caught the wind. A diagram shows the parts and how they fit. To choose, first decide what you need to know: motion, numbers or reasons. Then pick the form that shows it best, and check it against another form, because each one leaves something out.',
+      intro:['Decide what you need to know.','Motion? Choose a video.','Numbers over time? Choose a chart.','Reasons? Choose print.'],
+      ex:[{q:'How did the bridge move before it fell?', steps:['I need to see motion.','A video shows it happen.','So the film tells this best.'], a:'a video'},
+          {q:'Why did the bridge fall?', steps:['I need causes and reasons.','A film shows what, not why.','The engineers\' written report explains it.'], a:'print: a written explanation'}],
+      oops:{ q:'"The film of the bridge shows everything. We do not need the report." Right?', wrong:'Yes: seeing is enough', right:'No: the film shows what happened; the report explains why', why:'Each form leaves something out. Use the one that fits your question, and check it with another.' },
+      idea:['Motion: video. Numbers: chart. Reasons: print. Two needs, reasons and numbers? Use a written report with a chart.'],
+      'try':{ q:'You want to explain WHY the bridge fell. Which form explains it best?', o:['print: a written explanation','a chart'], a:'print: a written explanation', steps:['Is the question about motion, numbers or reasons?','Reasons need words.'] } },
+    'READ.COMP.L09.18':{ hook:'Some writers tell you what happened. Others tell you what to think about it. Can you tell which is which?',
+      big:'A news report tells what happened: who, what, when, where and how, in neutral words, often with quotes from witnesses. An opinion piece argues: it makes a claim and wants you to agree. Its signs are words like I believe, should and must, and loaded words that judge, like careless, greedy or shameful. Both can be useful. A news report gives you facts to think with. An opinion piece shows you one way to think about them. The danger is mixing them up: taking a writer\'s judgment as if it were a plain fact. So before you trust a sentence, ask: could this be checked, or is the writer judging?',
+      intro:['Read the headline and the first lines.','Look for facts you could check.','Look for loaded words, I, should and must.','Decide: news report or opinion piece?'],
+      ex:[{q:'"The dam failed at about three o\'clock."', steps:['Can it be checked? Yes.','No loaded words.','It is reporting.'], a:'a news report'},
+          {q:'"The greedy owners should have been punished."', steps:['"Greedy" judges.','"Should" tells what ought to happen.','It is arguing.'], a:'an opinion piece'}],
+      oops:{ q:'"The article uses numbers, so it must be a news report." Right?', wrong:'Yes: numbers mean news', right:'No: opinion pieces use numbers too', why:'Check what the writer does with the numbers: report them, or use them to argue?' },
+      idea:['News reports what happened. Opinion argues about what it means.'],
+      'try':{ q:'"The careless club owners are to blame." Which kind of writing is this from?', o:['an opinion piece','a news report'], a:'an opinion piece', steps:['Find words that judge.','Careless, to blame: opinion.'] } },
+    'READ.COMP.L09.19':{ hook:'A dramatic story with a clear lesson is easy to believe. A careful reader checks it first.',
+      big:'A claim is a statement someone wants you to accept, like "The parade caused Philadelphia\'s disaster." To check it, find what at least two careful sources say. Do they agree on the facts? Do they show other causes too? How many cases did they study? Then give a verdict. Fully supported: careful sources agree, and nothing else explains it. Partly supported: true, but not the whole story. Not supported: careful sources show it is wrong. The 1918 flu article shows all of this. The parade did spread the flu. But Philadelphia was also a crowded port that the flu reached early, so "the parade alone caused it" is only partly supported.',
+      intro:['State the claim exactly.','Find what each source says.','Look for other causes.','Give a verdict: fully, partly or not supported.'],
+      ex:[{q:'Claim: "The parade alone caused Philadelphia\'s disaster."', steps:['Source: the parade spread the flu.','Source: the flu came early, with sailors, to a crowded port.','Other causes exist.'], a:'partly supported'},
+          {q:'Claim: "The Tacoma Narrows Bridge fell in 1940."', steps:['The report says November 7, 1940.','The film is from that day.','Both agree, nothing against it.'], a:'fully supported'}],
+      oops:{ q:'"One source says it, so the claim is proven." Right?', wrong:'Yes: it is written down', right:'No: check a second careful source and look for other causes', why:'One source can be wrong or tell only part of the story.' },
+      idea:['One source is a start. Two careful sources, and a look for other causes, make a verdict.'],
+      'try':{ q:'Both sources show the parade spread the flu, but one adds other causes. The claim is...', o:['partly supported','fully supported'], a:'partly supported', steps:['Is the parade part of the cause?','Is it the only cause?'] } }
+  };
+
+  var HOWTO = {
+    'READ.COMP.L09.17':{ s:'Decide what you need to know.\nMotion: video. Numbers: chart. Reasons: print.\nTwo needs? Use two forms together.',
+      q:{ 'You want to show how a tsunami wave rushes onto a beach. Which form shows it best?':'Is it about motion, numbers or reasons?',
+          'You want to compare snowfall in four towns over twelve months. Which form shows it best?':'Is it about motion, numbers or reasons?',
+          'You want to explain why a levee failed, and show how high the river rose each hour. What should you use?':'Two needs: reasons and numbers. Which choice covers both?',
+          'You want to show how a tornado spins across a field. Which form shows it best?':'Is it about motion, numbers or reasons?',
+          'You want to compare how many trees three towns planted each year. Which form shows it best?':'Is it about motion, numbers or reasons?',
+          'You want to explain why a roof fell in, and show how much snow fell each day. What should you use?':'Two needs: reasons and numbers. Which choice covers both?' } },
+    'READ.COMP.L09.18':{ s:'Could it be checked? That is news.\nDoes it judge, or say should? That is opinion.\nLook for loaded words.',
+      q:{ '"The storm reached the coast at 4 a.m. with winds of 90 miles per hour." This sentence is from...':'Could each part be checked?',
+          '"The town\'s leaders failed us, and they must resign." This sentence is from...':'Find "must" and words that judge.',
+          '"The stubborn mayor kept the shelters closed." This sentence is from...':'Which word judges, and which only name?',
+          '"The bridge closed at 10 a.m., and no one was hurt." This sentence is from...':'Could each part be checked?',
+          '"This shameful delay cost lives, and it must never happen again." This sentence is from...':'Find "must" and words that judge.',
+          '"The lazy crew left the sandbags on the truck." This sentence is from...':'Which word judges, and which only name?' } },
+    'READ.COMP.L09.19':{ s:'State the claim.\nWhat does each source say? Any other cause?\nVerdict: fully, partly or not supported.',
+      q:{ 'Claim: "The new seawall saved the town." Source A: the town flooded less than its neighbors. Source B: the storm also turned away at the last hour. The claim is...':'Is the seawall the only reason?',
+          'Claim: "The library opened in 1962." A city history says 1962. The library\'s own records say 1962. The claim is...':'Do both sources agree?',
+          'Claim: "The fire started in the bakery." Source A: it began in a barn. Source B: the bakery was closed that week, and the fire map starts at the barn. The claim is...':'Where do the sources say it started?',
+          'Claim: "The new pumps kept the street dry." Source A: the street stayed dry. Source B: the rain that week was also much lighter than usual. The claim is...':'Are the pumps the only reason?',
+          'Claim: "The shul was built in 1925." The cornerstone says 1925. The city records say 1925. The claim is...':'Do both sources agree?',
+          'Claim: "The storm hit on a Tuesday." Source A: it hit on Thursday. Source B: the weather service log says Thursday night. The claim is...':'What day do the sources give?' } }
+  };
+
+  var BITE = {
+    'READ.COMP.L09.17':{ band:'M68', pic:'🎞️', today:'Print, video or chart: which tells it best?',
+      why:'The same event can be filmed, charted or explained. Knowing what each form does best helps you learn more, and be fooled less.',
+      ready:[{q:'What does a chart usually show?', o:['numbers you can compare','a story with characters','a person\'s voice'], a:'numbers you can compare'}],
+      bridge:'READ.COMP.L09.02', bridgeName:'Manual Reader',
+      watch:{ q:'Why the Bridge Fell', m:{type:'scene', e:'🌉', t:'"The film became one of the most famous pieces of engineering film ever made, and it is still shown to engineering students today."'}, steps:[
+        {t:'Question 1: how did the bridge move? That is motion. The film shows it best.'},
+        {t:'Question 2: why did it twist? That is a reason. The written report explains it.'},
+        {t:'Question 3: how bad was each city\'s flu week by week? Numbers over time: a chart.'},
+        {t:'Each form leaves something out. The film cannot explain flutter. The report cannot show the twist.'},
+        {t:'So choose the form that fits your question. Often the best answer is two forms together: Gavriel puts a chart inside Benny\'s written report.'},
+        {t:'Teach it back: tell your chavrusa which form you would use for motion, numbers and reasons, and why.'}], a:'Motion: video. Numbers: chart. Reasons: print.' },
+      oops:{ q:'"The film shows the bridge falling, so it explains why it fell." Right?', wrong:'Yes: you can see the reason', right:'No: the film shows what; the report explains why', why:'A video shows motion. Causes need words, step by step.' },
+      ways:['worked example','compare forms','listen','chavrusa','sort','teach it back'], done:'You can choose the form that tells it best!',
+      board:{ one:'Motion: video. Numbers over time: chart. Causes and reasons: print. Parts: diagram. Each leaves something out.', activity:'Show the class one minute of a storm video, one chart of the same storm, and one paragraph about it. Boys list what each one taught them that the others did not.', mistakes:['Thinking a video explains why','Reading a chart without asking what it leaves out','Using one form for every question'] },
+      do:[
+        {type:'read', text:'C68.DIS.05', say:'Read the report on why the bridge fell.', how:'Notice what the film showed, and what the report explains.'},
+        {type:'sort', mis:true, bins:['The film shows it','The report explains it'], cards:[['the deck twisting',0],['why the wind pushed harder',1],['the deck crashing down',0],['why a deep truss is safer',1]], say:'Watch the trap! Which source gives each one?', how:'Seeing it happen, or understanding why?'}],
+      your:[
+        {type:'proof', text:'C68.DIS.05', q:'Which sentence tells how the twisting was recorded?', proof:'they filmed the twisting from the shore', look:'who recorded it, and how', say:'Find the proof in the report.', how:'Read the part about the morning of November 7.'},
+        {type:'match', pairs:[['a video','shows motion and sound'],['a chart','compares numbers at a glance'],['a diagram','shows the parts and how they fit']], say:'Match each form to its strength.', how:'What is each form good at?'},
+        {type:'evidence', q:'Which question is best answered by a chart?', p:['How many people died each week in Philadelphia and St. Louis?','What did the flood wave sound like?','Why did the club lower the dam?'], a:0, look:'numbers to compare', say:'Tap the question for a chart.', how:'Which one asks for numbers over time?'},
+        {type:'listen', hear:'Gavriel wants to show The Beacon\'s readers how base isolation pads let a building sway gently while the ground shakes hard.', o:['a video of a shake table test','a chart of earthquake dates','a list of building names'], a:'a video of a shake table test', cap:'Which form should Gavriel use?', say:'Listen. Which form fits best?', how:'Is it about motion, numbers or reasons?'},
+        {type:'cloze', t:'Causes and reasons are explained best in ___.', o:['print','a chart','a photo'], a:'print', say:'Challenge! Tap the word that fits.', how:'Which form can explain step by step?'}] },
+    'READ.COMP.L09.18':{ band:'M68', pic:'📰', today:'Tell a news report from an opinion piece',
+      why:'Some writers report what happened; others tell you what to think. A careful reader always knows which one he is reading.',
+      ready:[{q:'Which sentence could be checked?', o:['The dam broke in 1889.','The owners were wicked.','It was the saddest day ever.'], a:'The dam broke in 1889.'}],
+      bridge:'READ.COMP.L09.16', bridgeName:'Same Facts, Different Reading',
+      watch:{ q:'The Day the Dam Broke', m:{type:'scene', e:'🌊', t:'"On the afternoon of May 31, 1889, a wall of water as tall as a three-story building rushed down a narrow valley."'}, steps:[
+        {t:'First sentence: a date, a place, what happened. Facts you could check: reporting.'},
+        {t:'Now read the last paragraph. Does the writer report, or tell you what builders owe? That is the writer\'s lesson.'},
+        {t:'Look for signs of opinion: I, should, must, and loaded words that judge.'},
+        {t:'Most of this article reports. Its last paragraph gives the writer\'s lesson.'},
+        {t:'An editorial written in 1889 might say "the greedy club is to blame". That is pure opinion.'},
+        {t:'Teach it back: tell your chavrusa two signs of news and two signs of opinion.'}], a:'Facts you could check: news. Judging words and should: opinion.' },
+      oops:{ q:'"The writer gives numbers, so every sentence is a fact." Right?', wrong:'Yes: numbers make it news', right:'No: check each sentence for words that judge', why:'Opinion pieces use numbers too, and news articles sometimes end with a lesson.' },
+      ways:['worked example','read the whole article','Mistake Detective','find the proof','sort','teach it back'], done:'You can tell a news report from an opinion piece!',
+      board:{ one:'News: who, what, when, where, in neutral words. Opinion: a claim, I, should, must, loaded words.', activity:'Boys rewrite one opinion sentence as a news sentence (take out the loaded words), then one news sentence as an opinion sentence (add a judgment), and read both aloud.', mistakes:['Taking a judgment as a fact','Calling a piece news because it has numbers','Missing loaded words'] },
+      do:[
+        {type:'read', text:'C68.DIS.01', say:'Read "The Day the Dam Broke".', how:'Mark facts you could check. Mark any place the writer judges.'},
+        {type:'evidence', mis:true, q:'Which sentence is an opinion?', p:['The greedy club is to blame for every death.','The dam gave way at about three o\'clock.','More than 2,200 people lost their lives.'], a:0, look:'a sentence that judges', say:'Watch the trap! Which one is opinion?', how:'Which one could not be checked with a record?'}],
+      your:[
+        {type:'proof', text:'C68.DIS.01', q:'Which sentence says what the writer thinks builders owe others?', proof:'have a responsibility to build it well', look:'the writer\'s lesson at the end', say:'Find the proof in the article.', how:'Read the last paragraph.'},
+        {type:'sort', bins:['News report','Opinion piece'], cards:[['The storm dropped six inches of rain.',0],['The owners were heartless.',1],['"The club was careless," one survivor told reporters.',0],['The courts were cowardly.',1]], say:'Yoni checks lines for The Beacon. News or opinion?', how:'Can it be checked, or does it judge? A quote reports what someone said.'},
+        {type:'match', pairs:[['"reckless", "greedy", "shameful"','loaded words'],['who, what, when, where','signs of news'],['"should" and "must"','signs of opinion']], say:'Match each clue to what it shows.', how:'Does it report, or judge?'},
+        {type:'order', steps:['Read the headline and first lines.','Look for facts you could check.','Look for loaded words and "should".','Decide: report or opinion?'], say:'Put the steps in order.', how:'Read first. Decide last.'},
+        {type:'cloze', t:'A word like "greedy" that judges someone is a ___ word.', o:['loaded','neutral','checked'], a:'loaded', say:'Challenge! Tap the word that fits.', how:'Does the word judge, or only name?'}] },
+    'READ.COMP.L09.19':{ band:'M68', pic:'🧪', today:'Check a claim against two sources',
+      why:'Dramatic stories with clear lessons spread fast. A careful reader checks them against more than one source before he passes them on.',
+      ready:[{q:'Which is a claim?', o:['The parade caused the disaster.','The parade was on September 28.','Philadelphia is in Pennsylvania.'], a:'The parade caused the disaster.'}],
+      bridge:'READ.COMP.L09.03', bridgeName:'Fact Checker',
+      watch:{ q:'Two Cities and the 1918 Flu', m:{type:'scene', e:'🏙️', t:'"Should we conclude, then, that the parade alone caused Philadelphia\'s disaster?"'}, steps:[
+        {t:'The claim: "The parade alone caused Philadelphia\'s disaster."'},
+        {t:'Source 1, the study of many cities: crowds spread the flu. That supports the parade\'s part.'},
+        {t:'Source 2, careful historians: the flu came early to a crowded port, with sailors. That adds another cause.'},
+        {t:'So the parade was part of the cause, but not the only one.'},
+        {t:'Verdict: partly supported.'},
+        {t:'Teach it back: tell your chavrusa the claim, what each source said, and your verdict.'}], a:'Partly supported: the parade helped spread it, but it was not the only cause.' },
+      oops:{ q:'"The story of the two cities proves that closing early saves lives." Right?', wrong:'Yes: two cities are proof', right:'No: the study of many cities is the real proof', why:'Two cities can differ in many ways. A pattern across many cases is stronger.' },
+      ways:['worked example','read the topic set','find the proof','challenge round','sort','teach it back'], done:'You can check a claim against two sources and give a fair verdict!',
+      board:{ one:'State the claim. Find what two careful sources say. Look for other causes. Verdict: fully, partly or not supported.', activity:'Post three claims about the 1918 flu around the room. Groups find evidence in the article for each, then stand by the verdict sign they choose and defend it.', mistakes:['Trusting one dramatic story','Calling a claim proven when there are other causes','Ignoring how many cases were studied'] },
+      do:[
+        {type:'read', text:'C68.DIS.02', say:'Read "Two Cities and the 1918 Flu".', how:'Notice what supports the parade claim, and what adds doubt.'},
+        {type:'sort', mis:true, bins:['Points to the parade','Points to another cause'], cards:[['Hospitals filled within three days.',0],['The flu arrived early, with sailors.',1],['Philadelphia was a crowded port.',1],['Thousands fell sick within a week.',0]], say:'Watch the trap! Claim: the parade alone caused it.', how:'Does it point to the parade, or to another cause?'}],
+      your:[
+        {type:'proof', text:'C68.DIS.02', q:'Which sentence compares the two cities\' death rates at the worst point?', proof:'about eight times as high as in St. Louis', look:'the comparison from the 2007 study', say:'Find the proof in the article.', how:'Read the part about the 2007 study.'},
+        {type:'order', steps:['State the claim exactly.','Find what source A says.','Find what source B says.','Look for other causes.','Give a verdict.'], say:'Put the steps for checking a claim in order.', how:'Claim first. Verdict last.'},
+        {type:'match', pairs:[['fully supported','sources agree, nothing else explains it'],['partly supported','true, but not the whole story'],['not supported','careful sources show it is wrong']], say:'Match each verdict to its meaning.', how:'How much of the claim holds up?'},
+        {type:'evidence', q:'Eli claims the Tacoma Narrows Bridge fell in an earthquake. Which fact settles it?', p:['The report says it twisted apart in a steady wind.','The bridge was a suspension bridge.','It opened on July 1, 1940.'], a:0, look:'the cause the report gives', say:'Tap the fact that settles it.', how:'What does the report say made it fall?'},
+        {type:'cloze', t:'Some cities that closed early still suffered badly. That makes "closing saves lives" ___ supported.', o:['partly','fully','not'], a:'partly', say:'Challenge! Tap the word that fits.', how:'Is closing early the whole story?'}] }
+  };
+
+  /* The existing skill "Manual Reader" (READ.COMP.L09.02), rebuilt as a One Bite lesson. Its own questions stay as practice and Show me. */
+  var UP = {
+    'READ.COMP.L09.02':{ band:'M68', pic:'📋', today:'Read a safety guide and follow it exactly',
+      why:'In a real emergency, the people who read the guide carefully, before they need it, keep their families safe.',
+      ready:[{q:'In numbered steps, what does the number tell you?', o:['the order to do them','how important they are','how long they take'], a:'the order to do them'}],
+      bridge:'READ.FLU.L09.04', bridgeName:'Read It Twice',
+      watch:{ q:'Hurricane Ready: A Family Guide', m:{type:'scene', e:'🌀', t:'PART 1: KNOW THE WORDS. PART 2: THE WATER IS THE GREATEST DANGER. PART 3: MAKE A KIT. PART 4: MAKE A PLAN. PART 5: AFTER THE STORM.'}, steps:[
+        {t:'Read the headings first: Know the Words, the Water, Make a Kit, Make a Plan, After the Storm.'},
+        {t:'Find the key terms. A watch: possible, within 48 hours. A warning: expected, within 36 hours.'},
+        {t:'Notice the capital letters. A guide shouts the words you must not miss.'},
+        {t:'Find the action for each term. Watch: get ready. Warning: finish, and leave if told to.'},
+        {t:'Read the warnings: "Never walk or drive through flood water."'},
+        {t:'Teach it back: tell your chavrusa the difference between a watch and a warning, and what to do for each.'}], a:'Watch: possible, get ready. Warning: expected, act now.' },
+      oops:{ q:'"A hurricane warning just means it MIGHT come, so we can wait." Right?', wrong:'Yes: a warning is a maybe', right:'No: a warning means it is expected; act now', why:'A watch is "possible". A warning is "expected". Mixing them up can cost lives.' },
+      ways:['worked example','read the whole guide','Mistake Detective','retrieval','order','teach it back'], done:'You can read a safety guide and follow it exactly!',
+      board:{ one:'Read the headings first. Find the key terms. Find the action for each. Follow numbered steps in order. Never skip a warning.', activity:'Families make a kit list from the guide as homework. In class, boys compare lists and find what each one missed.', mistakes:['Mixing up watch and warning','Skipping the warnings in capital letters','Doing the steps out of order'] },
+      do:[
+        {type:'read', text:'C68.DIS.03', say:'Read "Hurricane Ready: A Family Guide".', how:'Read the headings first. Then read each part slowly.'},
+        {type:'sort', mis:true, bins:['Do it at a WATCH','Do it at a WARNING'], cards:[['check your kit',0],['fill the gas tank',0],['finish getting ready',1],['leave if you are told to',1]], say:'Watch the trap! Watch or warning?', how:'Watch: possible, get ready. Warning: expected, act.'}],
+      your:[
+        {type:'proof', text:'C68.DIS.03', q:'Which sentence tells what a hurricane warning means?', proof:'conditions are EXPECTED in your area', look:'the definition of a warning', say:'Find the proof in the guide.', how:'Read Part 1: Know the Words.'},
+        {type:'match', pairs:[['Part 1','what watch and warning mean'],['Part 3','what goes in the kit'],['Part 5','what to do after the storm']], say:'Match each part to its topic.', how:'Skim each heading.'},
+        {type:'evidence', q:'After the storm, which action does the guide warn against?', p:['Using a generator indoors.','Taking photos of damage.','Checking on neighbors.'], a:0, look:'a danger the guide names', say:'Tap the action to avoid.', how:'Read Part 5: After the Storm.'},
+        {type:'order', steps:['Wait until officials say it is safe.','Go back home.','Take photos of the damage.','Clean up.'], say:'Benny\'s family goes home. Put the steps in order.', how:'Read Part 5. Photos come before you clean up.'},
+        {type:'cloze', t:'Just ___ inches of moving water can knock a grown man off his feet.', o:['six','twenty','thirty-six'], a:'six', say:'Challenge! Tap the word that fits.', how:'Read Part 2 about flood water.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C68', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('C68', { bite: UP });
+
+  if (window.TLCORE && TLCORE.units && TLCORE.units.add) TLCORE.units.add({ id:'C68.U87', title:'Reading for Real Life', c:'READ', grade:8,
+    skills:['READ.COMP.L09.02','READ.COMP.L09.17','READ.COMP.L09.18','READ.COMP.L09.19'],
+    review:['READ.COMP.L09.15','READ.COMP.L09.16'], n:10,
+    items:[
+      {type:'evidence', skill:'READ.COMP.L09.02', q:'A flood guide says: "A flood WATCH means flooding is possible. A flood WARNING means flooding is happening or about to happen." The radio says "flood warning". What do you do?', p:['Act now: move to higher ground if told to.','Wait and see.','Check the weather next week.'], a:0, look:'what a warning means', how:'Warning: it is happening or about to. Act.'},
+      {type:'cloze', skill:'READ.COMP.L09.17', t:'To show how a landslide moves down a hill, the best form is a ___.', o:['video','table','list'], a:'video', how:'Is it motion, numbers or reasons?'},
+      {type:'evidence', skill:'READ.COMP.L09.18', q:'Which sentence is from an opinion piece?', p:['The mayor\'s lazy response put every family in danger.','The river crested at 22 feet on Sunday.','Three shelters opened downtown.'], a:0, look:'a word that judges', how:'Find the loaded word.'},
+      {type:'cloze', skill:'READ.COMP.L09.19', t:'Claim: "The levee held because of the new sandbags." But the river also rose less than expected. The claim is ___ supported.', o:['partly','fully','never'], a:'partly', how:'Is there another cause?'},
+      {type:'evidence', skill:'READ.COMP.L09.02', q:'A tornado guide says: "Go to the lowest floor. Stay away from windows. Cover your head." Where should a family go?', p:['the basement, away from windows','the top floor, to see the storm','outside, to the car'], a:0, look:'the guide\'s first step', how:'Read each step. What does "lowest floor" mean?'},
+      {type:'evidence', skill:'READ.COMP.L09.17', q:'Gavriel must show why a dam failed AND how fast the lake rose each hour. Which pair of forms is best?', p:['a written report with a chart','a video alone','a photo alone'], a:0, look:'two needs: reasons and numbers', how:'One form for reasons, one for numbers.'},
+      {type:'evidence', skill:'READ.COMP.L09.18', q:'A news report quotes a neighbor: "The builders were careless." Is the report itself an opinion piece?', p:['No: it reports what someone said','Yes: it contains a loaded word','Yes: every quote is the writer\'s view'], a:0, look:'who is speaking in the quote', how:'Whose words are in the quote marks?'},
+      {type:'cloze', skill:'READ.COMP.L09.19', t:'Claim: "The fire began at 2 a.m." The fire log says 2 a.m., and the alarm company says 2 a.m. The claim is ___ supported.', o:['fully','partly','not'], a:'fully', how:'Do both careful sources agree?'}
     ] });
 })();
 </script>

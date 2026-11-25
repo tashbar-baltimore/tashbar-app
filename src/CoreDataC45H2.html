@@ -1,0 +1,701 @@
+<script>
+/* CoreDataC45H2.html: Core Growth job C45 (helper piece: fluency passages, Grade 5), lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md).
+   Keep this file under 150 KB. No double slash in this file (HtmlService rule).
+   "Read It 3 Times" lessons: each one opens a fluency passage from the content store (texts/C45/C45.FL5.*) with the "read"
+   kind: read 1 = listen to the Reader's voice and follow the lit words, read 2 = read along with it, read 3 = read it alone, out loud
+   (no recording and no timers, HoS 2026-11-24). Then hands-on work on one fluency skill (end marks, phrasing, character voices, stress,
+   pace, poems, self-correcting) on the same passage. Show me checks the skill on a different, cold passage (PASS, c45f_ keys).
+   Plan and minutes: docs/core-growth/C45H-fluency.md. Cast: the Glen Avenue Crew (docs/core-growth/C45-map.md, section 5). */
+(function () {
+  var READ3 = 'Read it 3 times. 1: tap 🔊 and follow the lit words. 2: read along with the voice. 3: read it alone, out loud. Then tap Next.';
+  var P = {
+c45f_lion: { title: "A Letter with a Lion Stamp", text: "Your letter came on Tuesday, with a stamp of a tall ship on it, and I read it out loud three times: once to your father, once to your sisters, and once more to myself, very slowly, so that I would not miss a single word.\nHere, the oranges are ripe in the courtyard, the sky is blue, and your little sister Simcha asks every morning, \"Did Yosef write today?\"\nPlease, Yosef, eat properly. Wear the wool scarf." },
+    c45f_postcard: { title: "A Postcard from Bnei Brak", text: "Dear Avrumi,\nWe landed on Monday, tired and hungry, and Bubby met us at the door with soup, kugel, and a hug that lasted a whole minute.\nYesterday we went up to Yerushalayim, to the Kosel, early in the morning, before the sun was hot. Abba stood there for a long time without saying a word.\nWrite soon, and tell me about the map!\nYour cousin,\nMeir" },
+    c45f_attic: { title: "One Box a Year", text: "NARRATOR: Yehuda climbs the ladder and pushes open the square door in the ceiling.\nYEHUDA: A trunk with leather straps. A hatbox.\nZEIDY: Yehuda! Did you choose?\nYEHUDA: Yes, Zeidy! I chose!\nNARRATOR: He turns the key. The lock gives a rusty little crunch." },
+    c45f_shul: { title: "The Lost Siddur (a play)", text: "NARRATOR: Friday night. The shul is empty. Shimon walks back in, looking under every bench.\nSHIMON: Where is it? Where is my siddur?\nREB DOV: Slowly, Shimon. Slowly. What does it look like?\nSHIMON: Blue, with my name in gold!\nNARRATOR: Reb Dov smiles and lifts a blue siddur from the shelf." },
+    c45f_map: { title: "How to Read an Old Map", text: "First, look for the date. Many old maps have a date in a corner, sometimes written in small, curly letters.\nSecond, find the compass rose. On most maps, north is at the top. But not on all of them!\nThird, read the key. Without the key, the symbols are just scribbles." },
+    c45f_bees: { title: "Three Things About Bees", text: "Good morning. My report is about honeybees, and I have three things to tell you.\nFirst, a bee visits about one hundred flowers on every trip.\nSecond, bees talk to each other by dancing. A bee that finds food dances in a little circle.\nThird, and this is the most surprising: a bee makes only a tiny drop of honey in its whole life, about one twelfth of a teaspoon." },
+    c45f_atticpoem: { title: "The Attic", text: "Up the ladder, through the square,\ninto dusty, quiet air,\nwhere the boxes, stacked and old,\nkeep the stories no one told.\nEvery box a locked-up door.\nEvery lid a \"Tell me more!\"" },
+    c45f_rain: { title: "Rain on the Sukkah", text: "The rain came tapping on the schach,\nit drummed, it dripped, it tapped right back,\nand all of us, with bowls of soup,\nran laughing in a dripping group\ninto the kitchen, warm and dry,\nto wait until it passed us by." },
+    c45f_candles: { title: "Zeidy's Words", text: "Children, look at the candles. Each one is small. One small flame does not light a whole street. But we do not light one candle and stop. We add. Every night, one more." },
+    c45f_siyum: { title: "A Siyum Speech", text: "Rabbosai, one minute, please. When our class started this perek, it looked so long. Twenty dapim! But we learned one daf. And then one more. And then one more. Tonight, we finished. Remember this, boys: a big job is just a lot of small jobs, one after the other." },
+    c45f_museum: { title: "Dear Science Museum", text: "I drew the plan three times. I tested every part by itself. Every part worked.\nThen I put all the parts together, and the machine flooded the kitchen.\nNot a little. A lot. The water ran under the refrigerator, across the floor, and into my sister's slippers. My mother was very patient. My sister was less patient." },
+    c45f_cake: { title: "Dear Baking Contest", text: "Dear Baking Contest,\nI followed the recipe exactly. I measured every cup. I set the timer.\nThe cake came out tall, golden and perfect.\nThen my little brother found it.\nI am writing to ask: do you give a prize for half a cake?\nSincerely,\nEli Mizrahi" },
+    c45f_fastslow: { title: "Fast and Slow", text: "TZVI HIRSCH: I'm fast!\nYEHUDA: I'm slow.\nTZVI HIRSCH: I run ahead.\nYEHUDA: I stop to look.\nTZVI HIRSCH: I shout the answer.\nYEHUDA: I check the book.\nBOTH: Fast and slow, and slow and fast:\nwe each need the other, first to last." },
+    c45f_brothers: { title: "Big and Small (a poem for two voices)", text: "BIG BROTHER: I carry the groceries.\nLITTLE BROTHER: I carry the bread.\nBIG BROTHER: I say the brachos loud and clear.\nLITTLE BROTHER: I say them softly instead.\nBIG BROTHER: I'm tall.\nLITTLE BROTHER: I'm small.\nBOTH: But on Shabbos, at the table, we sing it all!" },
+    c45f_partners: { title: "The New Partners", text: "TZVI HIRSCH: Okay, I've got it! We roll the paper into tubes, glue them, done. Let's go!\nBINYAMIN: Wait. Before we glue anything, let's test one tube.\nTZVI HIRSCH: Test? Why test? Tubes are strong. Everybody knows that.\nBINYAMIN: Then the test will be quick." },
+    c45f_chess: { title: "The Chess Club (a play)", text: "NARRATOR: The chess club, after school.\nMENDY: Come on, come on, move already! The bus leaves in five minutes!\nZEIDY YUSUPOV: Patience, Mendy. A good move is worth waiting for.\nMENDY: But I want to win before the bus comes!\nZEIDY YUSUPOV: Then think first. Winning comes after." },
+    c45f_nosson: { title: "A Letter at the End of the Year", text: "You did not even argue. You just turned pink and went to your seat. Later, when I told you I was wrong, you shrugged and said, \"You didn't know.\" Then I said sorry. That was all. You never brought it up again. Not once.\nHere is what I did not tell you then. That shrug changed me." },
+    c45f_thanks: { title: "A Thank-You Letter", text: "Dear Reb Chaim,\nThank you for teaching me to swim this summer. On the first day, I was so scared that I would not even put my feet in the water. You did not laugh. You sat on the edge with me and waited. By the last week, I swam the whole pool.\nYour talmid,\nShloimy" },
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+'READ.FLU.L06.11':{name:"Read It 3 Times: The Lion Stamp",
+      teach:[
+        {p:"c45f_lion", q:"The first sentence is very long. How do you read it?", o:["Read it in phrases, with a little pause at each comma", "Read it in one breath, as fast as you can", "Stop after every word"], how:"A long sentence is a chain of phrases. The commas show where one phrase ends."},
+        {p:"c45f_lion", q:"\"once to your father, once to your sisters, and once more to myself\" What is this?", o:["A list: give each part the same small pause", "Three questions", "One phrase with no breaks"], how:"Look for \"once\" again and again. Things in a list each get their own little pause."},
+        {p:"c45f_lion", q:"\"Please, Yosef, eat properly.\" Why is there a comma on each side of \"Yosef\"?", o:["She is calling him by name, so a little pause on each side", "Yosef is a list", "It is a question"], how:"When a writer talks to someone by name, the name gets commas around it."}
+      ],
+      practice:[
+        {t:"order", p:"c45f_lion", q:"Put the phrases in order to read the sentence smoothly.", tiles:["Here,", "the oranges are ripe in the courtyard,", "the sky is blue,", "and your little sister Simcha asks every morning,"],
+          h:"Find the sentence that starts with \"Here\".", how:"Each comma ends one phrase. Read each phrase as one smooth piece."},
+        {t:"sort", p:"c45f_lion", q:"Mistake Detective. Good phrase, or broken phrase?", bins:[{id:"g", label:"Good phrase"}, {id:"b", label:"Broken phrase"}],
+          items:[{label:"with a stamp of a tall ship", bin:"g"}, {label:"so that I would not miss a single word", bin:"g"}, {label:"of a tall", bin:"b"}, {label:"miss a single", bin:"b"}],
+          h:"Does it make sense by itself?", how:"A good phrase holds one small idea. A broken phrase stops in the middle of it."},
+        {t:"pairs", p:"c45f_lion", q:"Match each phrase to the question it answers.", pairs:[["on Tuesday", "When?"], ["in the courtyard", "Where?"], ["with a stamp of a tall ship", "With what?"]],
+          h:"When, where, with what.", how:"Many phrases answer one small question. That is why they stay together."},
+        {t:"spotall", p:"c45f_lion", q:"\"Please, Yosef, eat properly.\" Tap every place you pause a little.", cells:[{label:"after \"Please,\"", ok:true}, {label:"after \"Yosef,\"", ok:true}, {label:"after \"eat\"", ok:false}],
+          h:"Find the commas.", how:"Each comma is a little pause. Calling someone's name gets commas around it."},
+        {t:"sort", p:"c45f_lion", q:"How should each line sound?", bins:[{id:"w", label:"Warm and strong, like you mean it"}, {id:"q", label:"Go up, like asking a question"}],
+          items:[{label:"Please, Yosef, eat properly.", bin:"w"}, {label:"Wear the wool scarf.", bin:"w"}, {label:"\"Did Yosef write today?\"", bin:"q"}],
+          h:"Look at the end mark, and think about who is writing.", how:"A loving mother gives advice warmly. A question goes up."},
+        {t:"order", p:"c45f_lion", q:"Put the letter's parts in order.", tiles:["Your letter came on Tuesday.", "We lit the candles in the window.", "I made too many sfenj.", "I am sending a small package."],
+          h:"Think back to the whole letter.", how:"Smooth readers still read for meaning. Picture each part of the letter."}
+      ],
+      check:[
+        {p:"c45f_postcard", q:"Find Meir's first sentence. Where is the first little pause?", o:["after \"Monday,\"", "after \"landed\"", "after \"tired\""], how:"Find the first comma."},
+        {p:"c45f_postcard", q:"Find what Bubby met them with at the door. What is it?", o:["A list: give each part the same small pause", "Three questions", "One phrase with no breaks"], how:"Count the things Bubby gave them."},
+        {p:"c45f_postcard", q:"Find Meir's sentence about Yerushalayim. Where is the first little pause?", o:["after \"Yerushalayim,\"", "after \"Yesterday\"", "after \"went\""], how:"Find the sentence that starts with \"Yesterday\". Find its first comma."}
+      ],
+      re:[
+        {p:"c45f_lion", q:"\"On Monday, the letter came from Meknes.\" Where is the first little pause?", o:["after \"Monday,\"", "after \"letter\""], how:"A comma inside a long sentence is a little pause. Find the first one."},
+        {p:"c45f_lion", q:"\"Please, Yosef, eat properly.\" How does a loving mother sound?", o:["Warm and strong, like you mean it", "Bored", "Angry"], how:"Think about why she writes it."},
+        {p:"c45f_lion", q:"Read it 3 times. What is read 3?", o:["Read it alone, out loud", "Only listen", "Read along with the voice"], how:"Listen, read along, then alone."}
+      ]},
+    'READ.FLU.L06.12':{name:"Read It 3 Times: One Box a Year",
+      teach:[
+        {p:"c45f_attic", q:"You read Yehuda's part. Do you say \"YEHUDA\" out loud?", o:["No, the name only tells you who is talking", "Yes, read every word on the page", "Only the first time"], how:"In a play, the name in capitals is a label, like a name tag: YEHUDA:, ZEIDY:, NARRATOR:."},
+        {p:"c45f_attic", q:"Who tells what is happening, in a calm storyteller voice?", o:["The narrator", "Zeidy", "Yehuda"], how:"Which part says what people do, not what they say?"},
+        {p:"c45f_attic", q:"\"Yes, Zeidy! I chose!\" How does Yehuda sound?", o:["Excited, like a boy calling down", "Calm, like a storyteller", "Sleepy"], how:"Look at the marks and think about what just happened."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_attic", q:"Mistake Detective. Read it out loud, or not?", bins:[{id:"r", label:"Read it out loud"}, {id:"n", label:"Do not read it out loud"}],
+          items:[{label:"YEHUDA:", bin:"n"}, {label:"A trunk with leather straps.", bin:"r"}, {label:"NARRATOR:", bin:"n"}, {label:"The lock gives a rusty little crunch.", bin:"r"}],
+          h:"Is it a name tag, or words someone says?", how:"The capital name only tells you who speaks. Read his words, not his name."},
+        {t:"pairs", p:"c45f_attic", q:"Match each part to its voice.", pairs:[["The narrator, as Yehuda peels the tape", "Calm and gentle"], ["Yehuda finding the key", "Excited, like a boy calling down"], ["Zeidy calling up the ladder", "Warm and loud, from far away"]],
+          h:"Who is talking, and how does he feel?", how:"Each part gets its own voice, so listeners always know who is talking."},
+        {t:"order", p:"c45f_attic", q:"Put the lines in order.", tiles:["Yehuda climbs the ladder.", "Yehuda finds a flat wooden box.", "Yehuda finds the key.", "The lock gives a rusty crunch."],
+          h:"What happens first in the play?", how:"Picture the scene, step by step."},
+        {t:"spotall", p:"c45f_attic", q:"Tap every part the narrator reads.", cells:[{label:"Yehuda climbs the ladder", ok:true}, {label:"The lock gives a rusty little crunch", ok:true}, {label:"Did you choose?", ok:false}, {label:"Yes, Zeidy! I chose!", ok:false}],
+          h:"The narrator tells what happens.", how:"Characters talk. The narrator tells the story around them."},
+        {t:"sort", p:"c45f_attic", q:"Whose line is it?", bins:[{id:"y", label:"Yehuda"}, {id:"z", label:"Zeidy"}],
+          items:[{label:"Did you choose?", bin:"z"}, {label:"Yes, Zeidy! I chose!", bin:"y"}, {label:"A trunk with leather straps.", bin:"y"}],
+          h:"Look at the name before each line.", how:"The name tag before the line tells you whose voice to use."},
+        {t:"pairs", p:"c45f_attic", q:"Match each line to the feeling in it.", pairs:[["Locked. Of course it's locked.", "disappointed"], ["A key! Taped underneath!", "surprised"], ["Here we go.", "ready, a little nervous"]],
+          h:"How would you feel?", how:"The words and the marks show the feeling. Let your voice show it too."}
+      ],
+      check:[
+        {p:"c45f_shul", q:"Which words do you NOT say out loud?", o:["REB DOV:", "Slowly, Shimon.", "Where is my siddur?"], how:"Which one is a name tag, not words someone says?"},
+        {p:"c45f_shul", q:"Find the line that tells what Reb Dov does at the end. Who reads it?", o:["The narrator", "Shimon", "Reb Dov"], how:"Who tells what is happening?"},
+        {p:"c45f_shul", q:"Find Reb Dov's first words. How should he sound?", o:["Calm and gentle", "Excited, like a boy calling down", "Sleepy"], how:"What is Reb Dov telling Shimon to do?"}
+      ],
+      re:[
+        {p:"c45f_attic", q:"In \"REB DOV: Slowly, Shimon.\" the words REB DOV: are...", o:["a label that tells who is talking", "a word you shout", "the title"], how:"Like a name tag."},
+        {p:"c45f_attic", q:"The narrator's voice is...", o:["calm, like a storyteller", "always angry", "a whisper"], how:"He tells the story."},
+        {p:"c45f_attic", q:"Why give each part its own voice?", o:["So listeners know who is talking", "To make it longer", "Because the page is short"], how:"Think about someone listening with closed eyes."}
+      ]},
+    'READ.FLU.L06.13':{name:"Read It 3 Times: Reading an Old Map",
+      teach:[
+        {p:"c45f_map", q:"Which words tell the listener a new tip is starting?", o:["First, Second, Third", "map, date, key", "small, curly, old"], how:"Look at the first word of each paragraph."},
+        {p:"c45f_map", q:"\"But not on all of them!\" Which word do you stress?", o:["not", "on", "them"], how:"Which word changes the meaning? Stress the most important word."},
+        {p:"c45f_map", q:"After \"First, look for the date.\" what do you do?", o:["Pause, so the listener is ready for the next point", "Rush right on", "Stop reading"], how:"Listeners need a moment to take in each point."}
+      ],
+      practice:[
+        {t:"spotall", p:"c45f_map", q:"Tap every word that starts a new point.", cells:[{label:"First", ok:true}, {label:"Second", ok:true}, {label:"Third", ok:true}, {label:"Many", ok:false}, {label:"Without", ok:false}],
+          h:"Look at the start of each paragraph.", how:"A speaker numbers his points so listeners can follow."},
+        {t:"pairs", p:"c45f_map", q:"Match each sentence to the word you stress.", pairs:[["But not on all of them!", "not"], ["Without the key, the symbols are just scribbles.", "scribbles"], ["The date tells you which world the map is showing you.", "world"]],
+          h:"Which word carries the meaning?", how:"Stress the most important word, the one the speaker wants you to remember."},
+        {t:"sort", p:"c45f_map", q:"Mistake Detective. Good speaker, or mistake?", bins:[{id:"g", label:"Good speaker"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Pauses before each new point", bin:"g"}, {label:"Reads every word just as loud", bin:"m"}, {label:"Leans on \"not\"", bin:"g"}, {label:"Rushes \"First, Second, Third\" together", bin:"m"}],
+          h:"Would a listener follow him?", how:"A good speaker helps the listener: pauses, numbers and stress."},
+        {t:"order", p:"c45f_map", q:"Put Avrumi's tips in order.", tiles:["Look for the date.", "Find the compass rose.", "Read the key.", "Check the scale.", "Look for what does not belong."],
+          h:"Use the number words.", how:"First, Second, Third, Fourth, Fifth."},
+        {t:"pairs", p:"c45f_map", q:"Match each map word to its meaning.", pairs:[["compass rose", "shows north, south, east and west"], ["key", "tells what each symbol means"], ["scale", "tells how far is far"]],
+          h:"Think back to the speech.", how:"Each tip explains one part of a map."},
+        {t:"spotall", p:"c45f_map", q:"\"Many old maps have a date in a corner, sometimes written in small, curly letters.\" Tap the places to pause.", cells:[{label:"after \"corner,\"", ok:true}, {label:"after \"small,\"", ok:true}, {label:"after \"old\"", ok:false}, {label:"after \"have\"", ok:false}],
+          h:"Find the commas.", how:"A comma is a little pause."}
+      ],
+      check:[
+        {p:"c45f_bees", q:"Find the speaker's first sentence after \"Good morning.\" How many points should the listeners get ready for?", o:["3", "2", "5"], how:"The speaker tells you how many things he will say."},
+        {p:"c45f_bees", q:"Find the surprising fact about how much honey one bee makes. Which word do you stress?", o:["only", "a", "its"], how:"Which word makes the fact surprising?"},
+        {p:"c45f_bees", q:"Find the point about how bees talk. Which number word starts it, so you pause after it?", o:["Second,", "First,", "Third,"], how:"Find the dancing. Look at the word that starts that point."}
+      ],
+      re:[
+        {p:"c45f_map", q:"\"Second, find the compass rose.\" Where do you pause?", o:["after \"Second,\"", "after \"find\""], how:"Number words start a new point. Pause after them."},
+        {p:"c45f_map", q:"\"And fifth, and this is the most important one:\" How do you read it?", o:["Pause, then lean on the big words", "Rush it", "Whisper it"], how:"To stress means to say a word a little stronger. Lean on \"most important\"."},
+        {p:"c45f_map", q:"Read it 3 times. What is read 1?", o:["Listen and follow the lit words", "Read it alone", "Write it down"], how:"Listen first."}
+      ]},
+    'READ.FLU.L06.14':{name:"Read It 3 Times: The Attic",
+      teach:[
+        {p:"c45f_atticpoem", q:"\"where the boxes, stacked and old, / keep the stories no one told.\" Do you stop at \"old,\"?", o:["Keep going: the sentence goes on", "Stop hard: the thought is over", "Shout it"], how:"A line end is not always a stop. Look at the mark."},
+        {p:"c45f_atticpoem", q:"Which words rhyme?", o:["old and told", "boxes and stories", "air and old"], how:"Listen to the last words of the lines."},
+        {p:"c45f_atticpoem", q:"How should the poem sound?", o:["Like a beat you can feel, but still like talking", "Sing-song, banging every beat", "As fast as you can"], how:"A poem has a beat, but it still means something."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_atticpoem", q:"At the end of each line: keep going, or stop?", bins:[{id:"k", label:"Keep going: the sentence goes on"}, {id:"s", label:"Stop: the thought is over"}],
+          items:[{label:"where the boxes, stacked and old,", bin:"k"}, {label:"keep the stories no one told.", bin:"s"}, {label:"Up the ladder, through the square,", bin:"k"}, {label:"Every lid a \"Tell me more!\"", bin:"s"}],
+          h:"Look at the mark at the end of each line.", how:"A comma, or no mark: keep going. A period or !: the thought is over."},
+        {t:"pairs", p:"c45f_atticpoem", q:"Match the rhyming words.", pairs:[["square", "air"], ["old", "told"], ["door", "more"]],
+          h:"Say them out loud.", how:"Rhyming words end with the same sound."},
+        {t:"sort", p:"c45f_atticpoem", q:"Mistake Detective. Smooth poem reading, or sing-song?", bins:[{id:"g", label:"Smooth poem reading"}, {id:"m", label:"Sing-song mistake"}],
+          items:[{label:"Feels the beat but means the words", bin:"g"}, {label:"Bangs on every rhyme word", bin:"m"}, {label:"Keeps going when a line runs on", bin:"g"}, {label:"Stops hard at every line end", bin:"m"}],
+          h:"Does it sound like a person telling you something?", how:"Sing-song reading hides the meaning. Smooth reading shows it."},
+        {t:"order", p:"c45f_atticpoem", q:"Put the lines of the stanza in order.", tiles:["Up the ladder, through the square,", "into dusty, quiet air,", "where the boxes, stacked and old,", "keep the stories no one told."],
+          h:"Start with climbing up.", how:"Rhymes come in pairs: square and air, old and told."},
+        {t:"spotall", p:"c45f_atticpoem", q:"Tap every line where the thought really stops.", cells:[{label:"keep the stories no one told.", ok:true}, {label:"Every lid a \"Tell me more!\"", ok:true}, {label:"into dusty, quiet air,", ok:false}, {label:"where the boxes, stacked and old,", ok:false}],
+          h:"Find the periods and exclamation marks.", how:"Stop where the thought is over, not just where the line ends."},
+        {t:"pairs", p:"c45f_atticpoem", q:"Match each picture word to what it shows.", pairs:[["a locked-up door", "a closed box"], ["dusty, quiet air", "the attic"], ["stories no one told", "family history in the boxes"]],
+          h:"What does the poet really mean?", how:"Poems say one thing to mean another."}
+      ],
+      check:[
+        {p:"c45f_rain", q:"\"The rain came tapping on the schach,\" Do you stop hard at the end of this line?", o:["Keep going: the sentence goes on", "Stop hard: the thought is over", "Shout it"], how:"Look at the mark at the end of the line."},
+        {p:"c45f_rain", q:"Find the last line of the rain poem. What do you do at its end?", o:["Stop: the thought is over", "Keep going: the sentence goes on", "Go up, like a question"], how:"What does a period tell you?"},
+        {p:"c45f_rain", q:"How many sentences are in the rain poem? Look for the marks that end a thought.", o:["1", "3", "6"], how:"Lines are not sentences. Count only the marks that stop a thought."}
+      ],
+      re:[
+        {p:"c45f_atticpoem", q:"A line ends with a period. What do you do?", o:["Stop: the thought is over", "Keep going: the sentence goes on", "Whisper"], how:"Period = stop. The line with the period ends the thought."},
+        {p:"c45f_atticpoem", q:"A line ends with a comma. What do you do?", o:["Keep going: the sentence goes on", "Stop: the thought is over", "Shout"], how:"Comma = small pause, keep going."},
+        {p:"c45f_atticpoem", q:"Sing-song reading means...", o:["banging the beat so hard the meaning gets lost", "reading with feeling", "reading slowly"], how:"Beat, yes. Bang, no."}
+      ]},
+    'READ.FLU.L06.15':{name:"Read It 3 Times: Zeidy's Words",
+      teach:[
+        {p:"c45f_candles", q:"\"Each one is small.\" How do you read a short, important line?", o:["Slow down and let it sink in", "Rush past it", "Whisper it so nobody hears"], how:"Short lines in a speech are often the important ones."},
+        {p:"c45f_candles", q:"\"We add.\" What comes after it?", o:["A pause, so the words sink in", "No pause at all", "A question"], how:"Give the listener a moment to think."},
+        {p:"c45f_candles", q:"\"Every night, one more.\" Which words carry the message?", o:["one more", "Every", "night"], how:"Which words does Zeidy say again and again?"}
+      ],
+      practice:[
+        {t:"spotall", p:"c45f_candles", q:"Tap every short sentence Zeidy wants to sink in.", cells:[{label:"Each one is small.", ok:true}, {label:"We add.", ok:true}, {label:"Every night, one more.", ok:true}, {label:"Children, look at the", ok:false}],
+          h:"Find the short, strong sentences.", how:"Speakers use short sentences for big ideas."},
+        {t:"sort", p:"c45f_candles", q:"Mistake Detective. Lets it sink in, or mistake?", bins:[{id:"g", label:"Lets it sink in"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Slows down on \"Always, one more.\"", bin:"g"}, {label:"Reads the big message as fast as the joke", bin:"m"}, {label:"Pauses after \"We add.\"", bin:"g"}, {label:"Never looks up at the listeners", bin:"m"}],
+          h:"Would the family remember it?", how:"Big ideas need time. Slow down and look up."},
+        {t:"order", p:"c45f_candles", q:"Put Zeidy's sentences in order.", tiles:["Children, look at the candles.", "Each one is small.", "One small flame does not light a whole street.", "We add."],
+          h:"Start where Zeidy points at the candles.", how:"Each sentence builds on the one before."},
+        {t:"pairs", p:"c45f_candles", q:"Match each part of the speech to how you read it.", pairs:[["Moshe, put down the sfenj.", "light and funny"], ["My father came from Meknes.", "warm and proud"], ["Always, one more.", "slow and strong"]],
+          h:"What is each part about?", how:"A speech changes feeling. Your voice changes with it."},
+        {t:"spotall", p:"c45f_candles", q:"\"Every night, one more.\" Tap where you pause.", cells:[{label:"after \"night,\"", ok:true}, {label:"after \"Every\"", ok:false}, {label:"after \"one\"", ok:false}],
+          h:"Find the comma.", how:"The comma gives a breath before the big words."},
+        {t:"pairs", p:"c45f_candles", q:"Match the candles to the family.", pairs:[["one candle", "one small good deed"], ["one more each night", "we keep adding, step by step"], ["a whole street lit up", "a strong family"]],
+          h:"What do the candles stand for?", how:"Zeidy compares candles to building a family."}
+      ],
+      check:[
+        {p:"c45f_siyum", q:"Find the sentence right after the last \"And then one more.\" How do you read it?", o:["Slow down and let it sink in", "Light and funny, like a joke", "Rush past it"], how:"Is it a joke, or the big news?"},
+        {p:"c45f_siyum", q:"\"And then one more. And then one more.\" What comes after each one?", o:["A pause, so the words sink in", "No pause at all", "A question"], how:"Think about the people listening."},
+        {p:"c45f_siyum", q:"Find the words right after \"Remember this, boys:\". How do you read them?", o:["Slow and strong: it is the message", "Light and funny, like a joke", "Fast, to finish the speech"], how:"What does the speaker want the boys to remember?"}
+      ],
+      re:[
+        {p:"c45f_candles", q:"A siyum speaker says, \"Tonight, we finished.\" Why read a short line like that slowly?", o:["It is short and big: let it sink in", "It is a joke", "It is a mistake"], how:"Short sentences in a speech are often the important ones."},
+        {p:"c45f_candles", q:"When a speaker says his main message, he should...", o:["Look up at the listeners and read it clearly", "read faster", "turn the page"], how:"They need to hear it."},
+        {p:"c45f_candles", q:"Zeidy's message is \"one more\". A siyum speaker's message is \"a big job is just a lot of small jobs, one after the other\". How are they alike?", o:["Both say: keep going, one step at a time", "Both are jokes", "Both are about candles"], how:"Repeating a message is like a drumbeat."}
+      ]},
+    'READ.FLU.L06.16':{name:"Read It 3 Times: Dear Science Museum",
+      teach:[
+        {p:"c45f_museum", q:"\"Then I put all the parts together, and the machine flooded the kitchen.\" What do you do before \"and the machine flooded\"?", o:["Pause a beat before the funny part", "Read it flat, with no pause", "Make it a question"], how:"Funny writing needs good timing."},
+        {p:"c45f_museum", q:"\"Not a little. A lot.\" How do you read these?", o:["Two short stops, each one punchy", "One long rush", "As two questions"], how:"Each period is a stop. Short pieces land hard."},
+        {p:"c45f_museum", q:"\"My sister was less patient.\" How should it sound?", o:["Say it plainly, and let the joke land", "Laugh while you read it", "Shout it"], how:"The joke is in the words. You do not have to push it."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_museum", q:"Mistake Detective. Funny timing, or mistake?", bins:[{id:"g", label:"Funny timing"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Pauses before \"A lot.\"", bin:"g"}, {label:"Reads the joke in a rush", bin:"m"}, {label:"Plain voice on \"less patient\"", bin:"g"}, {label:"Laughs before the joke ends", bin:"m"}],
+          h:"Would the listener laugh?", how:"A pause before the funny part gives the listener time to get it."},
+        {t:"order", p:"c45f_museum", q:"Put what happened in order.", tiles:["Dovid draws the plan.", "He tests every part.", "The kitchen floods.", "He writes to the museum."],
+          h:"What came first?", how:"Smooth readers still read for meaning."},
+        {t:"spotall", p:"c45f_museum", q:"\"I drew the plan three times. I tested every part by itself. Every part worked.\" Tap every full stop.", cells:[{label:"after \"times.\"", ok:true}, {label:"after \"itself.\"", ok:true}, {label:"after \"worked.\"", ok:true}, {label:"after \"plan\"", ok:false}],
+          h:"Find the periods.", how:"Three short, proud sentences. Each one stops. Then comes the surprise."},
+        {t:"pairs", p:"c45f_museum", q:"Match each line to its feeling.", pairs:[["Every part worked.", "proud"], ["and the machine flooded the kitchen.", "the big surprise"], ["Thank you very much for your time.", "polite"]],
+          h:"How does Dovid feel?", how:"Your voice can show proud, surprised and polite."},
+        {t:"pairs", p:"c45f_museum", q:"Match each friend to his advice.", pairs:[["Binyamin", "learn from the games you lose"], ["Yehuda", "write every test down"], ["the rebbe", "do not be too shy to ask"]],
+          h:"Think back to the second page.", how:"Each friend gives Dovid one idea."},
+        {t:"sort", p:"c45f_museum", q:"Joke, or real question?", bins:[{id:"j", label:"Joke"}, {id:"q", label:"Real question"}],
+          items:[{label:"My sister was less patient.", bin:"j"}, {label:"Why would a pump work for one hour and then stop?", bin:"q"}, {label:"I would like to stop mopping.", bin:"j"}],
+          h:"Is he asking to learn, or to make you smile?", how:"A letter can mix serious and funny. Your voice changes with it."}
+      ],
+      check:[
+        {p:"c45f_cake", q:"Find the line where the surprise happens. Which line is it?", o:["Then my little brother found it.", "The cake came out tall, golden and perfect.", "I set the timer."], how:"After the proud lines, what goes wrong? Pause a beat before it."},
+        {p:"c45f_cake", q:"Find Eli's three proud sentences before the cake comes out. How do you read them?", o:["Short stops, each one punchy", "One long rush", "As three questions"], how:"Look at the mark at the end of each one."},
+        {p:"c45f_cake", q:"Find the question Eli asks the contest. How do you read it?", o:["Say it plainly, and let the joke land", "Laugh while you read it", "Shout it"], how:"Is it a real question, or a joke? Let the words do the work."}
+      ],
+      re:[
+        {p:"c45f_museum", q:"Good timing in a funny letter means...", o:["a short pause before the funny part", "reading as fast as you can", "laughing first"], how:"Wait for it..."},
+        {p:"c45f_museum", q:"Eli's cake letter ends: \"do you give a prize for half a cake?\" Why read that line in a plain voice?", o:["The joke is in the words, so let it land", "Jokes are boring", "To hide it"], how:"Do not push."},
+        {p:"c45f_museum", q:"In Eli's cake letter, the line before the joke is \"Then my little brother found it.\" Why pause a beat before it?", o:["It is where the surprise happens", "It is a question", "It is the greeting"], how:"Wait for it..."}
+      ]},
+    'READ.FLU.L06.17':{name:"Read It 3 Times: Fast and Slow",
+      teach:[
+        {p:"c45f_fastslow", q:"Who reads \"I'm fast!\"?", o:["Tzvi Hirsch's voice", "Yehuda's voice", "Both voices together"], how:"Look at the name tag before the line."},
+        {p:"c45f_fastslow", q:"Who reads the last two lines?", o:["Both voices together", "Only Tzvi Hirsch", "Only Yehuda"], how:"Look for the word BOTH."},
+        {p:"c45f_fastslow", q:"How should Yehuda's lines sound?", o:["Slow and thoughtful", "Fast and loud", "Sleepy"], how:"What is Yehuda like?"}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_fastslow", q:"Whose voice reads each line?", bins:[{id:"t", label:"Tzvi Hirsch"}, {id:"y", label:"Yehuda"}, {id:"b", label:"Both voices together"}],
+          items:[{label:"I run ahead.", bin:"t"}, {label:"I stop to look.", bin:"y"}, {label:"we each need the other, first to last.", bin:"b"}, {label:"I check the book.", bin:"y"}],
+          h:"Look at the name tags.", how:"A poem for two voices takes turns, then joins."},
+        {t:"order", p:"c45f_fastslow", q:"Put the lines in order.", tiles:["I'm fast!", "I'm slow.", "I run ahead.", "I stop to look."],
+          h:"Tzvi Hirsch starts.", how:"The voices take turns: fast, slow, fast, slow."},
+        {t:"sort", p:"c45f_fastslow", q:"Mistake Detective. Good partner reading, or mistake?", bins:[{id:"g", label:"Good partner reading"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Comes in right after his partner", bin:"g"}, {label:"Reads his partner's line too", bin:"m"}, {label:"Both voices together on BOTH", bin:"g"}, {label:"A long silence between lines", bin:"m"}],
+          h:"Does it sound like one smooth poem?", how:"Come in right away, with no long gap. Read only your own lines."},
+        {t:"pairs", p:"c45f_fastslow", q:"Match each boy to his voice.", pairs:[["Tzvi Hirsch", "Quick and bouncy"], ["Yehuda", "Slow and thoughtful"], ["Both", "Strong, together"]],
+          h:"What is each boy like?", how:"The voice shows who the boy is."},
+        {t:"pairs", p:"c45f_fastslow", q:"Match the rhyming lines.", pairs:[["He drives me crazy, slow as snow.", "He drives me crazy, go, go, go!"], ["I jump right in, I don't think twice!", "I think, and think, and think it thrice."]],
+          h:"Listen for the same end sound.", how:"Say the last word of each line. Which two end the same?"},
+        {t:"spotall", p:"c45f_fastslow", q:"Tap every line that shows how the boys changed.", cells:[{label:"So now I wait a little bit.", ok:true}, {label:"And now I run, a little bit.", ok:true}, {label:"I'm fast!", ok:false}, {label:"I stop to look.", ok:false}],
+          h:"Look near the end.", how:"\"Now\" shows what is different after the story."}
+      ],
+      check:[
+        {p:"c45f_brothers", q:"Find the last line of the poem. Who reads it?", o:["Both voices together", "Only the big brother", "Only the little brother"], how:"What does the name tag say?"},
+        {p:"c45f_brothers", q:"Find the little brother's line about the brachos. How should he read it?", o:["Softly, the way the words say", "Loud and strong", "Like a question"], how:"What does the line itself say?"},
+        {p:"c45f_brothers", q:"The big brother finishes his line. What does the little brother do?", o:["Come in right away, with no long gap", "Wait a long time", "Read the big brother's line again"], how:"Think about one smooth poem."}
+      ],
+      re:[
+        {p:"c45f_fastslow", q:"In a poem for two voices, you read...", o:["only your own lines, and BOTH together", "every line", "only the first line"], how:"Take turns."},
+        {p:"c45f_fastslow", q:"\"So now I wait a little bit.\" How should fast Tzvi Hirsch read it?", o:["Calmer, the way the words say", "Fast and loud, as always", "Like a question"], how:"He has changed. Let the words lead your voice."},
+        {p:"c45f_fastslow", q:"Why come in right away?", o:["So the poem sounds like one smooth piece", "To win", "Because it is short"], how:"Two voices, one poem."}
+      ]},
+    'READ.FLU.L06.18':{name:"Read It 3 Times: The New Partners",
+      teach:[
+        {p:"c45f_partners", q:"\"Okay, I've got it! ... Let's go!\" How does Tzvi Hirsch sound?", o:["Fast and eager, like he can't wait", "Calm and slow, like he is thinking", "Sad and quiet"], how:"Look at the marks and what he wants to do."},
+        {p:"c45f_partners", q:"\"Wait. Before we glue anything, let's test one tube.\" How does Binyamin sound?", o:["Calm and slow, like he is thinking", "Fast and eager, like he can't wait", "Sad and quiet"], how:"What kind of person is Binyamin?"},
+        {p:"c45f_partners", q:"Why do the two voices sound different?", o:["The voice shows who the character is", "The page tells you to whisper", "They are reading two books"], how:"Think about each boy's way of doing things."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_partners", q:"Which voice fits each line?", bins:[{id:"t", label:"Tzvi Hirsch: fast"}, {id:"b", label:"Binyamin: calm"}],
+          items:[{label:"Okay, I've got it!", bin:"t"}, {label:"Before we glue anything, let's test one tube.", bin:"b"}, {label:"Test? Why test?", bin:"t"}, {label:"Then the test will be quick.", bin:"b"}],
+          h:"Who is talking, and what is he like?", how:"Many readers use one voice for everyone. Give each boy his own."},
+        {t:"pairs", p:"c45f_partners", q:"Match each part to its voice.", pairs:[["Tzvi Hirsch", "quick and bouncy"], ["Binyamin", "calm and steady"], ["Narrator", "clear storyteller"]],
+          h:"Think about each one.", how:"The voice shows who the character is."},
+        {t:"order", p:"c45f_partners", q:"Put what happened in order.", tiles:["They test one tube.", "The tube folds like a noodle.", "Tzvi Hirsch thinks of triangles.", "The tower holds two pounds."],
+          h:"Start with the first test.", how:"Picture the play from start to end."},
+        {t:"spotall", p:"c45f_partners", q:"Tap every line where Tzvi Hirsch rushes.", cells:[{label:"Let's go!", ok:true}, {label:"Test? Why test?", ok:true}, {label:"Wait.", ok:false}, {label:"Then the test will be quick.", ok:false}],
+          h:"Look for short, fast lines with ! and ?.", how:"Fast characters talk in quick bursts."},
+        {t:"pairs", p:"c45f_partners", q:"Match each line to what it shows.", pairs:[["I am not slow. I am careful.", "Binyamin knows himself"], ["Careful is slow wearing a nice hat.", "Tzvi Hirsch makes a joke"], ["My slow way only proved it.", "Binyamin gives credit"]],
+          h:"What does each line tell you about the boy?", how:"What a character says shows who he is."},
+        {t:"sort", p:"c45f_partners", q:"Did the character change?", bins:[{id:"b", label:"At the start"}, {id:"e", label:"At the end"}],
+          items:[{label:"Tubes are strong. Everybody knows that.", bin:"b"}, {label:"That careful is not slow.", bin:"e"}, {label:"Let's go!", bin:"b"}],
+          h:"What does Tzvi Hirsch think, first and last?", how:"Characters can change each other."}
+      ],
+      check:[
+        {p:"c45f_chess", q:"Find Mendy's first line. How does he sound?", o:["Fast and eager, like he can't wait", "Calm and slow, like he is thinking", "Sad and quiet"], how:"Look at his words and the bus."},
+        {p:"c45f_chess", q:"Find what Zeidy Yusupov says first. How does he sound?", o:["Calm and slow, like he is thinking", "Fast and eager, like he can't wait", "Sad and quiet"], how:"What is Zeidy teaching?"},
+        {p:"c45f_chess", q:"Which line should be read the slowest?", o:["A good move is worth waiting for.", "Come on, come on, move already!", "But I want to win before the bus comes!"], how:"Who is the calm one?"}
+      ],
+      re:[
+        {p:"c45f_partners", q:"In a play, each character's voice should...", o:["show who he is", "be the same", "be a whisper"], how:"Different people, different voices."},
+        {p:"c45f_partners", q:"A wise Zeidy says, \"A good move is worth waiting for.\" A boy says, \"Hurry up!\" Which line is read slowest?", o:["A good move is worth waiting for.", "Hurry up!"], how:"The calm, wise character speaks slowly. A character who talks in short bursts with ! is fast."},
+        {p:"c45f_partners", q:"Do you read the name tag \"BINYAMIN\" out loud?", o:["No, it only tells who is talking", "Yes", "Only once"], how:"It is a label."}
+      ]},
+    'READ.FLU.L06.19':{name:"Read It 3 Times: End of the Year",
+      teach:[
+        {p:"c45f_nosson", q:"A reader says: \"You just turned pink and went to your seal.\" What should he do?", o:["Go back and fix it", "Keep going, it does not matter", "Start the whole letter again"], how:"Does \"seal\" make sense in a classroom?"},
+        {p:"c45f_nosson", q:"How can he tell \"seal\" is wrong?", o:["It did not make sense with the words around it", "It was too long", "It had no picture"], how:"Read the words before and after it."},
+        {p:"c45f_nosson", q:"\"That shrug changed me.\" How should it sound?", o:["Slow and serious: it is the big moment", "Fast and silly", "Like a question"], how:"Is this a small line or a big one?"}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_nosson", q:"Mistake Detective. Makes sense, or a slip?", bins:[{id:"s", label:"Makes sense"}, {id:"f", label:"Slip: go back and fix it"}],
+          items:[{label:"You turned pink and went to your seat.", bin:"s"}, {label:"You turned pink and went to your seal.", bin:"f"}, {label:"I counted. I asked a question first.", bin:"s"}, {label:"I counted. I asked a question fist.", bin:"f"}],
+          h:"Read each one. Does it make sense?", how:"A slip is a word that looks close but does not make sense. Go back and fix it."},
+        {t:"pairs", p:"c45f_nosson", q:"Match each slip to the right word.", pairs:[["seal", "seat"], ["fist", "first"], ["shrunk", "shrugged"]],
+          h:"Use the words around it.", how:"Ask: which word makes sense here?"},
+        {t:"order", p:"c45f_nosson", q:"Put what happened in order.", tiles:["Tzvi Hirsch blames Nosson.", "Nosson says nothing.", "Nosson shrugs: \"You didn't know.\"", "Tzvi Hirsch says sorry."],
+          h:"Start in fourth grade.", how:"Picture the story the letter tells."},
+        {t:"spotall", p:"c45f_nosson", q:"\"That was all. You never brought it up again. Not once.\" Tap every full stop.", cells:[{label:"after \"all.\"", ok:true}, {label:"after \"again.\"", ok:true}, {label:"after \"once.\"", ok:true}, {label:"after \"never\"", ok:false}],
+          h:"Find the periods.", how:"Short sentences, short stops. Each one sinks in."},
+        {t:"sort", p:"c45f_nosson", q:"What does a good reader do when he slips?", bins:[{id:"g", label:"Good reader"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Notices it does not make sense", bin:"g"}, {label:"Rereads the sentence the right way", bin:"g"}, {label:"Keeps going, even if it makes no sense", bin:"m"}],
+          h:"Think about what helps you understand.", how:"Reading must make sense. If it does not, go back and fix it."},
+        {t:"pairs", p:"c45f_nosson", q:"Match each word to its meaning.", pairs:[["shrugged", "lifted the shoulders"], ["argue", "say you do not agree"], ["patient", "calm while waiting"]],
+          h:"Think back to the letter.", how:"Knowing the word helps you notice a slip."}
+      ],
+      check:[
+        {p:"c45f_thanks", q:"Find the sentence about where Reb Chaim sat. A boy read one word in it as \"egg\". Which word was really there?", o:["edge", "edgy", "egg"], how:"Read the sentence. Which word makes sense for where someone sits?"},
+        {p:"c45f_thanks", q:"A boy reads the sentence about the first day and says \"waiter\" at the end. Which word should it be?", o:["water", "winter", "waiter"], how:"Find the sentence about the first day. Which word makes sense for feet?"},
+        {p:"c45f_thanks", q:"\"By the last week, I swam the whole pool.\" A boy reads \"swim\" for \"swam\". Does it matter?", o:["Yes, it changes the meaning, so fix it", "No, it means the same", "Only in a poem"], how:"Read the whole sentence with \"swim\". Does it still make sense?"}
+      ],
+      re:[
+        {p:"c45f_nosson", q:"\"I pointed at you\" read as \"I painted you.\" Does it matter?", o:["Yes, it changes the meaning, so fix it", "No, it means the same", "Only in a poem"], how:"Pointing and painting are very different."},
+        {p:"c45f_nosson", q:"\"Abba waved to the waiter at the simcha.\" Is \"waiter\" a slip here?", o:["No, it makes sense here", "Yes, fix it"], how:"To self-correct means to notice your own slip and fix it. A word is a slip only if it does not make sense with the words around it."},
+        {p:"c45f_nosson", q:"\"I sat on the edge and put my feet in the water.\" Which two words could a fast reader slip on?", o:["edge and water", "sat and put"], how:"Meaning is the check."}
+      ]},
+  };
+
+  var TEACH = {
+'READ.FLU.L06.11':{
+      hook:"A letter from far away is a voice on paper. Read it smoothly, and you can almost hear the person.",
+      big:"Read it 3 times: listen, read along, then alone. Break long sentences into phrases, with a little pause at each comma.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along with the voice, at the same speed.", "Read 3: read it alone, out loud.", "A long sentence is a chain of phrases. Read each phrase smoothly, with a little pause at each comma."],
+      ex:[{q:"Your letter came on Tuesday, with a stamp of a tall ship on it, and I read it out loud three times.", steps:["Phrase 1: Your letter came on Tuesday,", "Phrase 2: with a stamp of a tall ship on it,", "Phrase 3: and I read it out loud three times."], a:"Three smooth phrases."},
+          {q:"once to your father, once to your sisters, and once more to myself", steps:["It is a list: once, once, once more.", "Each part gets the same small pause."], a:"A list: give each part the same small pause."}],
+      oops:{q:"Your letter came on Tuesday, with a stamp of a tall ship on it.", wrong:"Your letter came / on Tuesday with a / stamp of a tall", right:"Your letter came on Tuesday, / with a stamp of a tall ship on it.", why:"Broken phrases chop ideas in half. The comma shows where one idea ends."},
+      idea:["A long sentence is a train. Each phrase is a car, and the commas are the links between them."],
+      try:{q:"Which is a good phrase?", o:["with a stamp of a tall ship", "of a tall"], a:"with a stamp of a tall ship", steps:["Does it make sense by itself?"]}
+    },
+    'READ.FLU.L06.12':{
+      hook:"A play on paper is quiet. When you read it aloud, the characters come alive.",
+      big:"In a play, the narrator tells the story in a calm voice, each character gets his own voice, and the name tags are never read aloud.",
+      intro:["Read it 3 times: listen, read along, then alone.", "The name in capitals tells you who is talking. Do not read it aloud.", "The narrator is calm, like a storyteller.", "Each character's voice shows how he feels."],
+      ex:[{q:"ZEIDY: Yehuda! You remember the rule?", steps:["ZEIDY is a name tag. I do not say it.", "Zeidy is calling up the ladder, so he is loud and warm.", "The question goes up at the end."], a:"Yehuda! You remember the rule?"},
+          {q:"NARRATOR: The lock gives a rusty little crunch.", steps:["The narrator tells what happens.", "Calm and gentle, so we can hear the click."], a:"Calm and gentle."}],
+      oops:{q:"YEHUDA: Here we go.", wrong:"\"Yehuda. Here we go.\"", right:"\"Here we go.\"", why:"The name tag is not part of what he says. Reading it out loud breaks the play."},
+      idea:["Name tags are like the labels on jars: they tell you what is inside, but you do not eat them."],
+      try:{q:"Do you read \"NARRATOR:\" out loud?", o:["No", "Yes"], a:"No", steps:["It is a name tag."]}
+    },
+    'READ.FLU.L06.13':{
+      hook:"A good speaker helps his listeners follow. He numbers his points, pauses, and leans on the key words.",
+      big:"In a talk, stress the most important word, and pause before each new point.",
+      intro:["Read it 3 times: listen, read along, then alone.", "Number words (First, Second, Third) start a new point.", "Pause, so the listener is ready for the next point.", "Stress the most important word: the one that changes the meaning."],
+      ex:[{q:"On most maps, north is at the top. But not on all of them!", steps:["Which word changes the meaning? not.", "I lean on it: But NOT on all of them!"], a:"Stress \"not\"."},
+          {q:"Third, read the key.", steps:["Third starts a new point.", "I pause before it, then read it clearly."], a:"Pause, then a clear new point."}],
+      oops:{q:"But not on all of them!", wrong:"But not on ALL of THEM!", right:"But NOT on all of them!", why:"Stressing the wrong word changes the meaning. Ask: which word is the surprise?"},
+      idea:["A speech is a walk with signposts: First, Second, Third. Pauses are the corners."],
+      try:{q:"\"Without the key, the symbols are just scribbles.\" Which word do you stress?", o:["scribbles", "the"], a:"scribbles", steps:["Which word is the point?"]}
+    },
+    'READ.FLU.L06.14':{
+      hook:"A poem has a beat, like a niggun. But it also means something, so it must sound like talking.",
+      big:"Feel the beat, but pause where the meaning pauses: keep going when a line runs on, stop when the thought is over.",
+      intro:["Read it 3 times: listen, read along, then alone.", "At a line end with a comma or no mark: keep going: the sentence goes on.", "At a period or !: stop: the thought is over.", "Feel the beat, but do not bang it: no sing-song."],
+      ex:[{q:"where the boxes, stacked and old, / keep the stories no one told.", steps:["After \"old,\" there is a comma: keep going.", "After \"told.\" there is a period: stop."], a:"One smooth thought across two lines."},
+          {q:"Every box a locked-up door. / Every lid a \"Tell me more!\"", steps:["Two lines, two full stops.", "The second one is excited."], a:"Stop, then an excited line."}],
+      oops:{q:"where the boxes, stacked and old, / keep the stories no one told.", wrong:"where the boxes, stacked and OLD. (stop) keep the stories...", right:"where the boxes, stacked and old, keep the stories no one told.", why:"Stopping at every line end chops the sentence in half."},
+      idea:["Line ends are like stops on a bus route: the bus stops only if someone rings the bell, and the bell is the period."],
+      try:{q:"\"Up the ladder, through the square,\" Keep going or stop?", o:["Keep going", "Stop"], a:"Keep going", steps:["Look at the mark: a comma."]}
+    },
+    'READ.FLU.L06.15':{
+      hook:"The most important words in a speech are often the shortest. A good reader gives them room.",
+      big:"Slow down and let it sink in: pause after short, big lines, and look up at the listeners for the main message.",
+      intro:["Read it 3 times: listen, read along, then alone.", "Short, important lines: slow down and let it sink in.", "After a big line, a pause, so the words sink in.", "For the main message: look up at the listeners and read it clearly. Slow and strong: it is the message."],
+      ex:[{q:"We add.", steps:["Two words, a big idea.", "I say them slowly.", "Then I pause."], a:"\"We add.\" (pause)"},
+          {q:"Always, one more.", steps:["This is the main message.", "I look up and read it clearly and slowly."], a:"The line everyone remembers."}],
+      oops:{q:"Every night, one more.", wrong:"Everynightonemore (rushed, eyes on the paper)", right:"Every night, (pause) one more.", why:"A rushed message is a lost message. Give it room."},
+      idea:["A pause in a speech is like a candle flame: small, but it lights the words around it."],
+      try:{q:"\"Each one is small.\" Fast or slow?", o:["Slow", "Fast"], a:"Slow", steps:["Is it short and important?"]}
+    },
+    'READ.FLU.L06.16':{
+      hook:"A joke read too fast falls flat. A joke read with good timing makes everyone laugh.",
+      big:"For funny writing: pause a beat before the funny part, read short pieces as short stops, and say the joke plainly.",
+      intro:["Read it 3 times: listen, read along, then alone.", "Find the surprise. Pause a beat before the funny part.", "Short pieces: two short stops, each one punchy.", "Say it plainly, and let the joke land. Do not laugh first."],
+      ex:[{q:"Every part worked. Then I put all the parts together, and the machine flooded the kitchen.", steps:["\"Every part worked.\" Proud voice.", "Pause a beat...", "\"and the machine flooded the kitchen.\" Plain voice. The listener laughs."], a:"Pause before the surprise."},
+          {q:"Not a little. A lot.", steps:["Two short stops.", "Each one punchy."], a:"Not a little. (stop) A lot. (stop)"}],
+      oops:{q:"My mother was very patient. My sister was less patient.", wrong:"(laughing) My sister was less patient, ha ha!", right:"My mother was very patient. (beat) My sister was less patient.", why:"If you laugh first, the joke is gone. Let the words do it."},
+      idea:["Timing is like a drum roll: the little wait makes the big moment bigger."],
+      try:{q:"\"Every part worked. Then I put all the parts together, and the machine flooded the kitchen.\" Pause before \"and the machine\"?", o:["Yes", "No"], a:"Yes", steps:["Is it the surprise?"]}
+    },
+    'READ.FLU.L06.17':{
+      hook:"A poem for two voices is like a game of catch: each voice tosses a line, and the other one catches it.",
+      big:"Read only your own lines, come in right away, with no long gap, and read the BOTH lines together.",
+      intro:["Read it 3 times: listen, read along, then alone (or with a chavrusa).", "Each voice reads only his own lines.", "Come in right away, with no long gap.", "BOTH means both voices together, in one strong voice. If a line says softly, read it softly, the way the words say."],
+      ex:[{q:"TZVI HIRSCH: I'm fast! / YEHUDA: I'm slow.", steps:["Tzvi Hirsch's voice: quick and bouncy.", "Right away, Yehuda's voice: slow and thoughtful."], a:"Toss, catch."},
+          {q:"BOTH: Fast and slow, and slow and fast:", steps:["Both voices together.", "Strong, as one."], a:"Together."}],
+      oops:{q:"TZVI HIRSCH: I run ahead. / YEHUDA: I stop to look.", wrong:"(long silence) ... I stop to look.", right:"I run ahead. I stop to look.", why:"A long gap breaks the poem. Be ready for your line."},
+      idea:["Two voices, one poem: like two hands clapping."],
+      try:{q:"Who reads a BOTH line?", o:["Both voices together", "Only one"], a:"Both voices together", steps:["BOTH means both."]}
+    },
+    'READ.FLU.L06.18':{
+      hook:"In a good play, you can close your eyes and still know who is talking.",
+      big:"The voice shows who the character is: fast and eager for Tzvi Hirsch, calm and slow for Binyamin.",
+      intro:["Read it 3 times: listen, read along, then alone.", "Ask: who is talking, and what is he like?", "Fast and eager, like he can't wait: short bursts, ! and ?", "Calm and slow, like he is thinking: steady, with pauses."],
+      ex:[{q:"TZVI HIRSCH: Okay, I've got it! We roll the paper into tubes, glue them, done. Let's go!", steps:["Tzvi Hirsch is fast.", "Quick, bouncy, excited."], a:"Fast and eager."},
+          {q:"BINYAMIN: Wait. Before we glue anything, let's test one tube.", steps:["Binyamin is careful.", "\"Wait.\" Pause. Then calm and steady."], a:"Calm and slow."}],
+      oops:{q:"BINYAMIN: Wait. Before we glue anything, let's test one tube.", wrong:"(fast and excited, like Tzvi Hirsch)", right:"(calm and steady, with a pause after \"Wait.\")", why:"If both boys sound the same, the listener loses who is who."},
+      idea:["A voice is a costume you can hear."],
+      try:{q:"\"Test? Why test?\" Whose voice?", o:["Tzvi Hirsch's fast voice", "Binyamin's calm voice"], a:"Tzvi Hirsch's fast voice", steps:["Who is in a hurry?"]}
+    },
+    'READ.FLU.L06.19':{
+      hook:"Every reader slips sometimes. A strong reader catches his own slip and fixes it.",
+      big:"If a word does not make sense with the words around it, go back and fix it.",
+      intro:["Read it 3 times: listen, read along, then alone.", "Keep asking: does this make sense?", "If not, the word did not make sense with the words around it.", "Go back and fix it, then read the sentence again smoothly."],
+      ex:[{q:"You just turned pink and went to your seal.", steps:["Seal? A sea animal, in a classroom?", "It does not make sense.", "Go back: seat. You went to your seat."], a:"seat"},
+          {q:"I counted. I asked a question fist.", steps:["Fist? That makes no sense.", "Go back: first."], a:"first"}],
+      oops:{q:"I asked a question first.", wrong:"I asked a question fist. (keeps going)", right:"I asked a question fist... first. I asked a question first.", why:"Keeping going after a slip leaves you with nonsense. Fix it and reread."},
+      idea:["Your brain is a spell-checker for meaning: when it beeps, go back."],
+      try:{q:"\"I told you I was wrong, and you shrunk.\" Slip?", o:["Yes, fix it: shrugged", "No"], a:"Yes, fix it: shrugged", steps:["Does \"shrunk\" make sense?"]}
+    },
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+'READ.FLU.L06.11':{ band:"E45", pic:"✉️", today:"Read a long letter in smooth phrases",
+      why:"Long sentences are everywhere from Grade 5 on. Read them in phrases, and they make sense on the first try.",
+      ready:[{q:"How many parts in \"unhappily\"?", o:["3: un + happi + ly", "2", "1"], a:"3: un + happi + ly"},
+             {q:"A comma tells your voice to...", o:["pause a little", "stop for a long time", "shout"], a:"pause a little"}],
+      bridge:"READ.FLU.L06.01", bridgeName:"Prefix-Suffix Peel",
+      watch:{ q:"A letter from Meknes", m:{type:"scene", e:"✉️", t:"Your letter came on Tuesday, / with a stamp of a tall ship on it, / and I read it out loud three times."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along with the voice, phrase by phrase."},
+        {t:"Read 3: I read it alone, out loud, like the mother is talking."},
+        {t:"Long sentence? I find the commas. Each phrase is one smooth piece."}],
+        a:"Listen, read along, read alone. Long sentences go phrase by phrase." },
+      oops:{ q:"Your letter came on Tuesday, with a stamp of a tall ship on it.", wrong:"Your letter came / on Tuesday with a / stamp of a tall", right:"Your letter came on Tuesday, / with a stamp of a tall ship on it.", why:"Broken phrases chop ideas in half. The comma shows where one idea ends." },
+      ways:["repeated reading with a model", "read along", "phrase scoops", "Mistake Detective", "tap the reason", "chavrusa"], done:"You read a whole long letter in smooth phrases! Read the Chanukah part to your chavrusa.",
+      board:{ key:"Show me answers (for the rebbe): after \"Monday,\" · A list: give each part the same small pause · after \"Yerushalayim,\"", one:"Long sentence = a chain of phrases. Pause a little at each comma.", activity:"Phrase strips: a long sentence is cut into phrases. Pairs put it together, then read it smoothly 3 times.", mistakes:["Reading a long sentence in one rushed breath", "Breaking a phrase in the middle", "Stopping after every word"] },
+      do:[
+        {type:"read", text:"C45.FL5.01", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"tiles", mis:true, w:["Learn every night,", "even when you are tired,", "even when the work at the shop is hard."], extra:["tired even"],
+          say:"Build the sentence in phrases. Watch for the broken scoop.", how:"Each phrase makes sense by itself. One tile breaks a phrase in the middle: leave it out.",
+          why:{q:"Why leave out \"tired even\"?", o:["It breaks two phrases in the middle", "It is too short", "It is a question"], a:"It breaks two phrases in the middle"}}],
+      your:[
+        {type:"sort", bins:["Good phrase", "Broken phrase"], cards:[["with a stamp of a tall ship", 0], ["of a tall", 1], ["in the courtyard", 0], ["the oranges are", 1]],
+          say:"Good phrase, or broken phrase?", how:"A good phrase holds one small idea by itself."},
+        {type:"evidence", q:"Which line is a list, with the same small pause for each part?", p:["once to your father, once to your sisters, and once more to myself", "We lit the candles tonight in the window.", "Wear the wool scarf.", "I made sfenj, of course."], a:0, look:"the word that repeats",
+          say:"Read each line. Find the one built like a list.", how:"A list repeats the same kind of part, with a comma after each one."},
+        {type:"listen", q:"Please, Yosef, eat properly.", hear:"Please, Yosef, eat properly.", o:["Pause at each comma", "Rush with no pauses", "Stop after every word"], a:"Pause at each comma",
+          say:"Listen. How should a good reader read this?", how:"Count the commas. Each one is a little pause.",
+          why:{q:"Why the commas around \"Yosef\"?", o:["She is calling him by name", "Yosef is a question", "The line is over"], a:"She is calling him by name"}},
+        {type:"cloze", t:"Wear the wool ___.", o:["scarf", "scar", "scare"], a:"scarf",
+          say:"Which word was really in the letter? Tap it in.", how:"Look-alike words trick fast eyes. Read the whole word. Does it make sense?"},
+        {type:"match", pairs:[["the radiators", "knock and bang all night"], ["the oranges", "ripe in the courtyard"], ["Madame Toledano", "never praises anyone's cooking"]],
+          say:"Match each one to what the letter says.", how:"Think back to the letter. Smooth readers still read for meaning."}] },
+    'READ.FLU.L06.12':{ band:"E45", pic:"🔦", today:"A calm narrator and two real voices",
+      why:"Plays are meant to be heard. Give each part its own voice and the scene comes alive.",
+      ready:[{q:"Peel it: \"rewrapped\" has a prefix. Which?", o:["re", "wrap", "ed"], a:"re"},
+             {q:"In a story, who tells what happens?", o:["the narrator", "the title", "the reader's friend"], a:"the narrator"}],
+      bridge:"READ.FLU.L06.01", bridgeName:"Prefix-Suffix Peel",
+      watch:{ q:"Up in Zeidy's attic", m:{type:"scene", e:"🔦", t:"ZEIDY: Yehuda! You remember the rule? / YEHUDA: One box a year, Zeidy! Just one!"}, steps:[
+        {t:"Read 1: I listen and follow the lit words. I watch the name tags."},
+        {t:"Read 2: I read along with the voice."},
+        {t:"Read 3: I read it alone. I skip the name tags."},
+        {t:"Narrator: calm, like a storyteller. Yehuda: excited. Zeidy: warm and loud, from far away."}],
+        a:"Name tags tell who is talking. Never read them aloud." },
+      oops:{ q:"YEHUDA: Here we go.", wrong:"\"Yehuda. Here we go.\"", right:"\"Here we go.\"", why:"The name tag is not part of what he says." },
+      ways:["Readers' Theatre", "repeated reading with a model", "Mistake Detective", "tap the reason", "find the proof", "chavrusa"], done:"Three voices, one scene! Read it with a chavrusa: one reads the narrator, one reads Yehuda.",
+      board:{ key:"Show me answers (for the rebbe): REB DOV: · The narrator · Calm and gentle", one:"Narrator = calm storyteller. Each character = his own voice. Name tags stay silent.", activity:"Readers' Theatre: groups of three take the parts and read the scene 3 times, switching parts each time.", mistakes:["Reading the name tags out loud", "One voice for every part", "A sleepy narrator"] },
+      do:[
+        {type:"read", text:"C45.FL5.02", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"sort", mis:true, bins:["Read it out loud", "Do not read it out loud"], cards:[["YEHUDA:", 1], ["One box a year, Zeidy!", 0], ["NARRATOR:", 1], ["The lock gives a rusty little crunch.", 0]],
+          say:"Mistake Detective: read it out loud, or not?", how:"Many readers say the name tags. Ask: is it a label, or words someone says?",
+          why:{q:"Why not read \"YEHUDA:\" aloud?", o:["It only tells you who is talking", "It is a hard word", "It is a question"], a:"It only tells you who is talking"}}],
+      your:[
+        {type:"match", pairs:[["Narrator", "calm storyteller"], ["Yehuda", "excited boy"], ["Zeidy", "warm, calling up the ladder"]],
+          say:"Match each part to its voice.", how:"Who is he, and how does he feel?"},
+        {type:"proof", text:"C45.FL5.02", q:"Find the line where Yehuda is surprised by where the key was.", proof:"Taped underneath", look:"where the key was hidden",
+          say:"Open the book. Find the line that proves it.", how:"Find the part about the key. Which short line shows surprise?"},
+        {type:"order", steps:["Zeidy: You remember the rule?", "Yehuda: What is that?", "Yehuda: A key!", "Narrator: The lid begins to open."],
+          say:"Put the lines in order.", how:"Picture the scene, step by step."},
+        {type:"listen", q:"Locked. Of course it's locked.", hear:"Locked. Of course it's locked.", o:["Disappointed, a little grumpy", "Happy and excited", "Like a question"], a:"Disappointed, a little grumpy",
+          say:"Listen. How should Yehuda sound here?", how:"What did he just find out?",
+          why:{q:"How do you know?", o:["A locked box with no key is useless", "He found a key", "Zeidy called him"], a:"A locked box with no key is useless"}},
+        {type:"cloze", t:"The lock gives a rusty little ___.", o:["crunch", "crutch", "brunch"], a:"crunch",
+          say:"Which word was really in the play? Tap it in.", how:"Look-alike words trick fast eyes. Read the whole word."}] },
+    'READ.FLU.L06.13':{ band:"E45", pic:"🗺️", today:"Read a talk: clear points, stressed key words",
+      why:"One day you will give a talk too. Speakers who pause and stress the right words are easy to follow.",
+      ready:[{q:"Peel it: \"completely\". Which is the suffix?", o:["ly", "com", "plete"], a:"ly"},
+             {q:"Which word starts a list of tips?", o:["First", "Maybe", "Because"], a:"First"}],
+      bridge:"READ.FLU.L06.01", bridgeName:"Prefix-Suffix Peel",
+      watch:{ q:"Avrumi gives a talk", m:{type:"scene", e:"🗺️", t:"On most maps, north is at the top. But not on all of them!"}, steps:[
+        {t:"Read 1: I listen and follow the lit words."},
+        {t:"Read 2: I read along with the voice."},
+        {t:"Read 3: I read it alone, like I am giving the talk."},
+        {t:"First, Second, Third: I pause before each one. I stress the surprise word: NOT. Words like not, only and never often carry the surprise."}],
+        a:"Pause before each point. Stress the most important word." },
+      oops:{ q:"But not on all of them!", wrong:"But not on ALL of THEM!", right:"But NOT on all of them!", why:"Stress the wrong word and the meaning changes." },
+      ways:["repeated reading with a model", "listen and choose", "Mistake Detective", "find the proof", "word parts", "tap the reason"], done:"You read a talk like a real speaker! Give Avrumi's five tips to your chavrusa.",
+      board:{ key:"Show me answers (for the rebbe): 3 · only · Second,", one:"Number words start new points. Pause before them. Stress the most important word.", activity:"Each boy gives one of Avrumi's tips to the class, stressing one word. The class guesses which word.", mistakes:["Every word just as loud", "Rushing First, Second, Third together", "Stressing small words like \"of\""] },
+      do:[
+        {type:"read", text:"C45.FL5.03", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"listen", q:"But not on all of them!", hear:"But not on all of them!", o:["Stress the word not", "Stress the word of", "Stress no word at all"], a:"Stress the word not",
+          say:"Listen. Which word should be the strongest?", how:"Which word changes the meaning?",
+          why:{q:"Why that word?", o:["It is the surprise: some maps are different", "It is the longest word", "It comes last"], a:"It is the surprise: some maps are different"}}],
+      your:[
+        {type:"findall", grid:["First,", "look", "Second,", "find", "Third,", "read", "Fourth,", "check", "fifth,", "look"], find:["First,", "Second,", "Third,", "Fourth,", "fifth,"], findSay:"the number words",
+          say:"Tap every word that starts a new point.", how:"Speakers number their points. Look for counting words."},
+        {type:"sort", mis:true, bins:["Good speaker", "Mistake"], cards:[["Pauses before each new point", 0], ["Every word just as loud", 1], ["Leans on \"not\"", 0], ["Rushes First, Second, Third together", 1]],
+          say:"Mistake Detective: good speaker, or mistake?", how:"Would a listener follow him?"},
+        {type:"proof", text:"C45.FL5.03", q:"Find the sentence that says which tip matters most.", proof:"this is the most important one", look:"the most important tip",
+          say:"Open the book. Find the line that proves it.", how:"Look near the end of the talk."},
+        {type:"parts", parts:["complete", "ly"], extra:["un"], mean:"in every way; totally",
+          say:"Build the long word from the talk.", how:"Find the main word, then the ending."},
+        {type:"order", steps:["Look for the date.", "Find the compass rose.", "Read the key.", "Check the scale.", "Look for what does not belong."],
+          say:"Put Avrumi's tips in order.", how:"Use the number words.",
+          why:{q:"Why does a speaker number his points?", o:["So listeners can follow along", "To make it longer", "Because maps have numbers"], a:"So listeners can follow along"}}] },
+    'READ.FLU.L06.14':{ band:"E45", pic:"🪜", today:"Read a poem with its beat and its meaning",
+      why:"Poems sound beautiful when the beat and the meaning work together, not when they fight.",
+      ready:[{q:"Which pair rhymes?", o:["door and more", "box and lid", "old and new"], a:"door and more"},
+             {q:"Who is talking: \"Yehuda! Did you choose?\"", o:["Zeidy, calling Yehuda", "Yehuda", "the narrator"], a:"Zeidy, calling Yehuda"}],
+      bridge:"READ.FLU.L06.02", bridgeName:"Who Is Talking?",
+      watch:{ q:"The attic poem", m:{type:"scene", e:"🪜", t:"where the boxes, stacked and old, / keep the stories no one told."}, steps:[
+        {t:"Read 1: I listen and feel the beat. I follow the lit words."},
+        {t:"Read 2: I read along with the voice."},
+        {t:"Read 3: I read it alone, out loud."},
+        {t:"\"old,\" has a comma: I keep going. \"told.\" has a period: I stop."}],
+        a:"Feel the beat. Stop only where the thought is over." },
+      oops:{ q:"where the boxes, stacked and old, / keep the stories no one told.", wrong:"stacked and OLD. (full stop) keep the STORIES...", right:"stacked and old, keep the stories no one told.", why:"Stopping at every line end chops the sentence in half." },
+      ways:["repeated reading with a model", "find the line", "rhyme match", "Mistake Detective", "tap the reason", "chavrusa"], done:"Beat and meaning, together! Read the poem to your chavrusa, and let him tap the beat.",
+      board:{ key:"Show me answers (for the rebbe): Keep going: the sentence goes on · Stop: the thought is over · 1", one:"Feel the beat. Keep going when the line runs on. Stop when the thought is over.", activity:"Choral reading: the class reads the poem together while the rebbe raises a hand only at real stops.", mistakes:["Stopping hard at every line end", "Sing-song: banging every rhyme", "Rushing so the beat is lost"] },
+      do:[
+        {type:"read", text:"C45.FL5.04", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"evidence", mis:true, q:"Moishe stopped hard at one line end. Where was he wrong to stop?", p:["keep the stories no one told.", "where the boxes, stacked and old,", "Every box a locked-up door."], a:1, look:"a line that ends with a comma, in the middle of a sentence",
+          say:"Find the line end where Moishe should have kept going.", how:"Many readers stop at every line end. Look at the mark: does the thought go on?",
+          why:{q:"How did you know?", o:["It ends with a comma: the sentence goes on", "It rhymes", "It is short"], a:"It ends with a comma: the sentence goes on"}}],
+      your:[
+        {type:"match", pairs:[["square", "air"], ["old", "told"], ["door", "more"], ["look", "book"]],
+          say:"Match the rhyming words.", how:"Say them out loud. Which end the same?"},
+        {type:"cloze", t:"Letters tied with faded ___,", o:["string", "strong", "sting"], a:"string",
+          say:"Which word was really in the poem? Tap it in.", how:"It must make sense and rhyme with \"king\"."},
+        {type:"sort", bins:["Smooth poem reading", "Sing-song"], cards:[["Feels the beat, means the words", 0], ["Bangs on every rhyme word", 1], ["Keeps going when a line runs on", 0], ["Bangs the beat like a drum", 1]],
+          say:"Smooth poem reading, or sing-song?", how:"Does it sound like a person telling you something?"},
+        {type:"tiles", w:["Zeidy says the attic keeps", "all the family while it sleeps:", "every journey, every name,", "every Chanukah's small flame."],
+          say:"Build the stanza, line by line.", how:"Rhymes come in pairs: keeps and sleeps, name and flame."},
+        {type:"listen", q:"So I climb, and so I look, / like a reader with a book,", hear:"So I climb, and so I look, like a reader with a book,", o:["Keep going after \"look\"", "Stop hard after \"look\"", "Read it as a question"], a:"Keep going after \"look\"",
+          say:"Listen. What should happen at the end of the first line?", how:"Look at the mark after \"look\".",
+          why:{q:"Why keep going?", o:["The sentence is not over yet", "Poems never stop", "It is a question"], a:"The sentence is not over yet"}}] },
+    'READ.FLU.L06.15':{ band:"E45", pic:"🕎", today:"Read a speech and let the big words sink in",
+      why:"The most important words are often the shortest. Give them room, and people remember them.",
+      ready:[{q:"In a speech, a very short line usually...", o:["carries a big idea, so slow down", "does not matter", "is a question"], a:"carries a big idea, so slow down"},
+             {q:"A period tells your voice to...", o:["stop", "go up", "keep going"], a:"stop"}],
+      bridge:"READ.FLU.L06.02", bridgeName:"Who Is Talking?",
+      watch:{ q:"Zeidy speaks at the Chanukah table", m:{type:"scene", e:"🕎", t:"Children, look at the candles. Each one is small. We add. Every night, one more."}, steps:[
+        {t:"Read 1: I listen and follow the lit words."},
+        {t:"Read 2: I read along with the voice."},
+        {t:"Read 3: I read it alone, like Zeidy at the table."},
+        {t:"\"We add.\" Two words, a big idea. I slow down and let it sink in."}],
+        a:"Short, big lines: slow down, pause, look up." },
+      oops:{ q:"Every night, one more.", wrong:"Everynightonemore (rushed, eyes on the paper)", right:"Every night, (pause) one more.", why:"A rushed message is a lost message." },
+      ways:["repeated reading with a model", "dictation", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"Zeidy's message landed! Say \"Always, one more\" to your chavrusa, slowly, the way Zeidy would.",
+      board:{ key:"Show me answers (for the rebbe): Slow down and let it sink in · A pause, so the words sink in · Slow and strong: it is the message", one:"Short, important lines: slow down and let it sink in. Look up for the main message.", activity:"Each boy reads one line of the speech. The class claps once after every line that should sink in.", mistakes:["Rushing the big message", "Eyes stuck on the paper", "The joke and the lesson in the same voice"] },
+      do:[
+        {type:"read", text:"C45.FL5.05", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"listen", q:"We add. Every night, one more.", hear:"We add. Every night, one more.", o:["Pause after \"We add.\"", "Rush it all together", "Make it a question"], a:"Pause after \"We add.\"",
+          say:"Listen. Where should Zeidy let the words sink in?", how:"Short, big lines need a breath after them.",
+          why:{q:"Why pause there?", o:["So the big idea can sink in", "Zeidy is tired", "It is a question"], a:"So the big idea can sink in"}}],
+      your:[
+        {type:"evidence", q:"Which line is Zeidy's big message?", p:["Five candles.", "Moshe, put down the sfenj.", "And I want you to remember: one more.", "Now you may eat the sfenj."], a:2, look:"what Zeidy wants them to remember",
+          say:"Tap Zeidy's big message.", how:"Which line tells what to remember?",
+          why:{q:"How should you read it?", o:["Slow down and let it sink in", "As fast as the joke", "In a whisper"], a:"Slow down and let it sink in"}},
+        {type:"sort", mis:true, bins:["Lets it sink in", "Mistake"], cards:[["Slows down on \"Always, one more.\"", 0], ["Reads the message as fast as the joke", 1], ["Pauses after \"We add.\"", 0], ["Never looks up at the listeners", 1]],
+          say:"Mistake Detective: lets it sink in, or mistake?", how:"Would the family remember it?"},
+        {type:"proof", text:"C45.FL5.05", q:"Find the line where Zeidy's father says why he works so hard.", proof:"one day I will have a family", look:"the father's answer",
+          say:"Open the book. Find the line that proves it.", how:"Find where people ask Yosef a question. Read his answer."},
+        {type:"dictation", hear:"Every night, one more.", w:["Every", "night,", "one", "more."], extra:["night."],
+          say:"Listen. Build Zeidy's words, comma and all.", how:"Listen for the little pause. That is where the comma goes."},
+        {type:"findall", grid:["Each one is small.", "One small flame does not light a whole street.", "We add.", "Every night, one more.", "He worked in a shoe shop on Lombard Street, six days a week.", "Always, one more."], find:["Each one is small.", "We add.", "Every night, one more.", "Always, one more."], findSay:"the short lines that need a pause after them",
+          say:"Tap every short line that needs a pause after it.", how:"Short, big lines are where a speaker stops and lets the words sink in."}] },
+    'READ.FLU.L06.16':{ band:"E45", pic:"🚰", today:"Read a funny letter with good timing",
+      why:"Good timing makes people laugh, and it shows you understand every word.",
+      ready:[{q:"\"Binyamin says, in chess, you learn the most from the games you lose.\" Who said it?", o:["Binyamin", "Dovid", "the museum"], a:"Binyamin"},
+             {q:"\"Not a little.\" How many stops?", o:["1", "2", "0"], a:"1"}],
+      bridge:"READ.FLU.L06.02", bridgeName:"Who Is Talking?",
+      watch:{ q:"Dovid's machine", m:{type:"scene", e:"🚰", t:"Every part worked. Then I put all the parts together, and the machine flooded the kitchen."}, steps:[
+        {t:"Read 1: I listen and follow the lit words."},
+        {t:"Read 2: I read along with the voice."},
+        {t:"Read 3: I read it alone, with good timing."},
+        {t:"\"Every part worked.\" Proud short stops, each one punchy. A beat. \"and the machine flooded the kitchen.\" Say it plainly, and let the joke land."}],
+        a:"Pause a beat before the funny part. Say it plainly." },
+      oops:{ q:"My sister was less patient.", wrong:"(laughing) less patient, ha ha!", right:"(plain voice) My sister was less patient.", why:"If you laugh first, the joke is gone." },
+      ways:["repeated reading with a model", "fill the gap", "find the line", "Mistake Detective", "tap the reason", "chavrusa"], done:"Good timing! Read the flood part to your chavrusa and see if he laughs.",
+      board:{ key:"Show me answers (for the rebbe): Then my little brother found it. · Short stops, each one punchy · Say it plainly, and let the joke land", one:"Funny writing: pause a beat before the funny part, short stops for short pieces, say the joke plainly.", activity:"Pairs read the flood paragraph twice: once rushed, once with a pause before the surprise. The class votes which was funnier, and says why.", mistakes:["Rushing the joke", "Laughing before the funny part", "No stop between short pieces"] },
+      do:[
+        {type:"read", text:"C45.FL5.06", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"cloze", mis:true, t:"My mother was very patient. My sister was ___ patient.", o:["less", "more", "very"], a:"less",
+          say:"Careful! Which word was really in the letter?", how:"Fast eyes guess a word. Read the real one: the joke depends on it.",
+          why:{q:"Why is \"less\" funny?", o:["Her slippers got wet, so she was upset", "It is a long word", "It rhymes"], a:"Her slippers got wet, so she was upset"}}],
+      your:[
+        {type:"sort", bins:["Funny timing", "Mistake"], cards:[["Pauses before \"A lot.\"", 0], ["Reads the joke in a rush", 1], ["Plain voice on \"less patient\"", 0], ["Laughs before the joke ends", 1]],
+          say:"Funny timing, or mistake?", how:"Would the listener laugh?"},
+        {type:"evidence", q:"Which line is the surprise?", p:["I drew the plan three times.", "I tested every part by itself.", "Every part worked.", "Then I put all the parts together, and the machine flooded the kitchen."], a:3, look:"the part nobody expected",
+          say:"Tap the surprise line.", how:"After three proud lines, what goes wrong?",
+          why:{q:"What do you do just before it?", o:["Pause a beat before the funny part", "Speed up", "Whisper"], a:"Pause a beat before the funny part"}},
+        {type:"order", steps:["Dovid draws the plan.", "He tests every part.", "The kitchen floods.", "The pump stops after one hour.", "He writes to the museum."],
+          say:"Put what happened in order.", how:"Think back to the whole letter."},
+        {type:"match", pairs:[["Binyamin", "learn from the games you lose"], ["Yehuda", "write every test down"], ["the rebbe", "do not be too shy to ask"]],
+          say:"Match each friend to his advice.", how:"Each friend gives Dovid one idea."},
+        {type:"listen", q:"I will keep trying either way, but I would like to stop mopping.", hear:"I will keep trying either way, but I would like to stop mopping.", o:["A little pause before \"but\"", "No pause anywhere", "Read it like a question"], a:"A little pause before \"but\"",
+          say:"Listen. Where should the timing go?", how:"Where does the funny part start?"}] },
+    'READ.FLU.L06.17':{ band:"E45", pic:"🐢", today:"Read a two-voice poem, taking turns smoothly",
+      why:"Reading with a partner is like a game of catch. Good timing makes the poem one smooth piece.",
+      ready:[{q:"Pace: how do you read a hard part?", o:["a little slower", "faster", "skip it"], a:"a little slower"},
+             {q:"In a play, \"TZVI HIRSCH:\" is...", o:["a name tag", "the first word he says", "a question"], a:"a name tag"}],
+      bridge:"READ.FLU.L06.03", bridgeName:"Pace It",
+      watch:{ q:"Fast and slow", m:{type:"scene", e:"🐢", t:"TZVI HIRSCH: I'm fast! / YEHUDA: I'm slow. / BOTH: Fast and slow, and slow and fast."}, steps:[
+        {t:"Read 1: I listen and follow the lit words."},
+        {t:"Read 2: I read along with the voice."},
+        {t:"Read 3: I read it alone, or with a chavrusa: he takes one voice, I take the other."},
+        {t:"Only my lines. I come in right away. BOTH: both voices together."}],
+        a:"Take turns, no long gaps, BOTH together." },
+      oops:{ q:"TZVI HIRSCH: I run ahead. / YEHUDA: I stop to look.", wrong:"(long silence) ... I stop to look.", right:"I run ahead. I stop to look.", why:"A long gap breaks the poem." },
+      ways:["two-voice reading", "repeated reading with a model", "Mistake Detective", "tap the reason", "story order", "chavrusa"], done:"Two voices, one smooth poem! Read it with a chavrusa: you take Tzvi Hirsch, he takes Yehuda, then switch.",
+      board:{ key:"Show me answers (for the rebbe): Both voices together · Softly, the way the words say · Come in right away, with no long gap", one:"Two voices: read only your lines, come in right away, BOTH together.", activity:"Pairs read the poem 3 times, switching parts each time. The third time, the class reads BOTH with them.", mistakes:["Reading the partner's lines", "Long gaps between lines", "Only one voice on BOTH"] },
+      do:[
+        {type:"read", text:"C45.FL5.07", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"match", pairs:[["I run ahead.", "Tzvi Hirsch"], ["I stop to look.", "Yehuda"], ["Fast and slow, and slow and fast", "Both voices together"]],
+          say:"Match each line to its voice.", how:"Look at the name tag before each line.",
+          why:{q:"How do you know who reads \"I stop to look\"?", o:["The name tag says YEHUDA", "It is the first line", "It rhymes with fast"], a:"The name tag says YEHUDA"}}],
+      your:[
+        {type:"order", steps:["I shout the answer.", "I check the book.", "I jump right in, I don't think twice!", "I think, and think, and think it thrice."],
+          say:"Put the lines in order: fast, slow, fast, slow.", how:"The voices take turns. Tzvi Hirsch goes first."},
+        {type:"sort", mis:true, bins:["Good partner reading", "Mistake"], cards:[["Comes in right after his partner", 0], ["Reads his partner's line too", 1], ["Both voices on BOTH", 0], ["A long silence between lines", 1]],
+          say:"Mistake Detective: good partner reading, or mistake?", how:"Does it sound like one smooth poem?"},
+        {type:"evidence", q:"Which line should sound calm and cooled down?", p:["I shout the answer.", "He drives me crazy, go, go, go!", "that cooled his temper, calmed his rage.", "I jump right in, I don't think twice!"], a:2, look:"words about calming down",
+          say:"Tap the line that needs a calm voice.", how:"Let the words tell your voice what to do.",
+          why:{q:"Why calm?", o:["The words say the temper cooled", "It is the shortest", "It has a question"], a:"The words say the temper cooled"}},
+        {type:"cloze", t:"I think, and think, and think it ___.", o:["thrice", "twice", "price"], a:"thrice",
+          say:"Which word was really in the poem? Tap it in.", how:"It must rhyme with \"twice\". Which word fits \"think, and think, and think\"?"},
+        {type:"listen", q:"So now I wait a little bit. And now I run, a little bit.", hear:"So now I wait a little bit. And now I run, a little bit.", o:["Both boys changed a little", "One boy is shouting", "A question"], a:"Both boys changed a little",
+          say:"Listen. What do these two lines show?", how:"Who says each line? What is new?"}] },
+    'READ.FLU.L06.18':{ band:"E45", pic:"🏗️", today:"Let each voice show who the boy is",
+      why:"When each voice fits the character, listeners see the people, not just hear the words.",
+      ready:[{q:"Pace: how do you read an easy, happy part?", o:["smoothly, not too slow", "word by word", "skip it"], a:"smoothly, not too slow"},
+             {q:"Who is careful and calm in the Glen Avenue Crew?", o:["Binyamin", "Tzvi Hirsch", "Mr. Halpern's list"], a:"Binyamin"}],
+      bridge:"READ.FLU.L06.03", bridgeName:"Pace It",
+      watch:{ q:"Two partners, two voices", m:{type:"scene", e:"🏗️", t:"TZVI HIRSCH: Okay, I've got it! Let's go! / BINYAMIN: Wait. Before we glue anything, let's test one tube."}, steps:[
+        {t:"Read 1: I listen and follow the lit words."},
+        {t:"Read 2: I read along with the voice."},
+        {t:"Read 3: I read it alone, a different voice for each boy."},
+        {t:"Tzvi Hirsch: fast and eager, like he can't wait. Binyamin: calm and slow, like he is thinking."}],
+        a:"The voice shows who the character is." },
+      oops:{ q:"BINYAMIN: Wait. Before we glue anything, let's test one tube.", wrong:"(fast and excited, like Tzvi Hirsch)", right:"(calm and steady, a pause after \"Wait.\")", why:"If both boys sound the same, the listener loses who is who." },
+      ways:["Readers' Theatre", "repeated reading with a model", "Mistake Detective", "find the proof", "tap the reason", "chavrusa"], done:"Two boys, two real voices! Read the play with a chavrusa: one is Tzvi Hirsch, one is Binyamin.",
+      board:{ key:"Show me answers (for the rebbe): Fast and eager, like he can't wait · Calm and slow, like he is thinking · A good move is worth waiting for.", one:"Ask who is talking and what he is like. The voice shows who the character is.", activity:"Readers' Theatre in fours: Tzvi Hirsch, Binyamin, Mr Halpern, the narrator. Read it 3 times, switching parts.", mistakes:["One voice for everyone", "Calm Binyamin read in a rush", "Reading the name tags aloud"] },
+      do:[
+        {type:"read", text:"C45.FL5.08", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"sort", mis:true, bins:["Right voice", "Mistake"], cards:[["\"Wait.\" read in a rush, like Tzvi Hirsch", 1], ["\"Let's go!\" read quick and bouncy", 0], ["\"Then the test will be quick.\" read calm and steady", 0], ["\"Triangles!\" read slow and sleepy", 1]],
+          say:"Mistake Detective: right voice, or mistake?", how:"Many readers use one voice for everyone. Ask: who is talking, and what is he like?",
+          why:{q:"How can you tell a Tzvi Hirsch line?", o:["Short, fast bursts with ! and ?", "It is always the longest", "It has the word test"], a:"Short, fast bursts with ! and ?"}}],
+      your:[
+        {type:"proof", text:"C45.FL5.08", q:"Find the sentence where Binyamin says what he really is.", proof:"I am careful", look:"how Binyamin answers",
+          say:"Open the book. Find the line that proves it.", how:"Find where Tzvi Hirsch calls him slow. Binyamin answers twice: which sentence says what he IS?"},
+        {type:"match", pairs:[["Tzvi Hirsch", "quick and bouncy"], ["Binyamin", "calm and steady"], ["Narrator", "clear storyteller"], ["Mr Halpern", "warm teacher"]],
+          say:"Match each part to its voice.", how:"What is each one like?"},
+        {type:"listen", q:"No. Your fast idea works. My slow way only proved it.", hear:"No. Your fast idea works. My slow way only proved it.", o:["Calm and kind, giving credit", "Fast and bragging", "Angry"], a:"Calm and kind, giving credit",
+          say:"Listen. How should Binyamin sound here?", how:"What is Binyamin doing for his partner?",
+          why:{q:"Why kind?", o:["He gives Tzvi Hirsch the credit", "He lost", "He is tired"], a:"He gives Tzvi Hirsch the credit"}},
+        {type:"cloze", t:"It bends in the middle and folds like a sad ___.", o:["noodle", "needle", "poodle"], a:"noodle",
+          say:"Which word was really in the play? Tap it in.", how:"Look-alike words trick fast eyes. What folds?"},
+        {type:"order", steps:["They test one tube.", "The tube folds.", "Tzvi Hirsch thinks of triangles.", "The tower holds a pound and a half.", "At the fair, it holds two pounds."],
+          say:"Put what happened in order.", how:"Picture the play from start to end."}] },
+    'READ.FLU.L06.19':{ band:"E45", pic:"💌", today:"Read a letter and fix your own slips",
+      why:"Every reader slips. Strong readers notice, go back and fix it, so the meaning stays right.",
+      ready:[{q:"Pace: a word you are not sure of means...", o:["slow down a little", "speed up", "skip the page"], a:"slow down a little"},
+             {q:"\"seat\" or \"seal\": where do you sit?", o:["seat", "seal", "both"], a:"seat"}],
+      bridge:"READ.FLU.L06.03", bridgeName:"Pace It",
+      watch:{ q:"Tzvi Hirsch's letter", m:{type:"scene", e:"💌", t:"You just turned pink and went to your seal... seat."}, steps:[
+        {t:"Read 1: I listen and follow the lit words."},
+        {t:"Read 2: I read along with the voice."},
+        {t:"Read 3: I read it alone, out loud, checking that it makes sense."},
+        {t:"\"seal\"? A sea animal in class? It did not make sense with the words around it. Go back and fix it: seat."}],
+        a:"Does it make sense? If not, go back and fix it." },
+      oops:{ q:"I asked a question first.", wrong:"I asked a question fist. (keeps going)", right:"I asked a question fist... first. I asked a question first.", why:"Keeping going after a slip leaves you with nonsense." },
+      ways:["repeated reading with a model", "self-correcting", "Mistake Detective", "find the proof", "tap the reason", "chavrusa"], done:"You caught the slips and fixed them! Read the turning point to your chavrusa.",
+      board:{ key:"Show me answers (for the rebbe): edge · water · Yes, it changes the meaning, so fix it", one:"Ask: does this make sense? If not, go back and fix it, then reread smoothly.", activity:"The rebbe reads aloud and makes 3 slips on purpose. Boys raise a hand at each one and say the fix.", mistakes:["Keeping going after a word that makes no sense", "Starting the whole page again", "Guessing from the first letter only"] },
+      do:[
+        {type:"read", text:"C45.FL5.09", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"cloze", mis:true, t:"I told you I was wrong, and you ___ and said, \"You didn't know.\"", o:["shrugged", "shrubbed", "shrunk"], a:"shrugged",
+          say:"Careful! Which word makes sense here?", how:"A slip looks close but does not make sense. Read the words around the gap.",
+          why:{q:"How do you know?", o:["Only shrugged is a real word that makes sense", "It is the longest word", "It starts with sh"], a:"Only shrugged is a real word that makes sense"}}],
+      your:[
+        {type:"sort", bins:["Makes sense", "Slip: go back and fix it"], cards:[["I tied my shoe and ran to class.", 0], ["I tied my shoe and ran to glass.", 1], ["We ate soup at the table.", 0], ["We ate soap at the table.", 1]],
+          say:"Makes sense, or a slip?", how:"Read each one. Does it make sense?"},
+        {type:"evidence", q:"One sentence has a slip. Tap it.", p:["Most boys are writing to their parents.", "I remember it every time I see a silver fox.", "You never brought it up again.", "My Abba noticed."], a:1, look:"a word that does not make sense",
+          say:"Find the slip.", how:"Read each sentence. Which word does not fit the story?",
+          why:{q:"What should it say?", o:["a silver box", "a silver fax", "a silver fix"], a:"a silver box"}},
+        {type:"proof", text:"C45.FL5.09", q:"Find the sentence that tells what changed Tzvi Hirsch.", proof:"That shrug changed me", look:"what changed Tzvi Hirsch",
+          say:"Open the book. Find the turning point.", how:"Find where he starts telling Nosson something new. The answer is the very next short sentence."},
+        {type:"order", steps:["Tzvi Hirsch blames Nosson.", "Nosson says nothing.", "Tzvi Hirsch says he was wrong.", "Nosson shrugs: \"You didn't know.\"", "Tzvi Hirsch says sorry.", "Tzvi Hirsch learns to ask first."],
+          say:"Put what happened in order.", how:"Picture the story the letter tells."},
+        {type:"listen", q:"Chocolate is better than cinnamon. Everybody knows that.", hear:"Chocolate is better than cinnamon. Everybody knows that.", o:["Joking and sure of himself", "Sad and slow", "Scared"], a:"Joking and sure of himself",
+          say:"Listen. How should Tzvi Hirsch sound here?", how:"Is this a serious part, or friendly teasing?"}] },
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
