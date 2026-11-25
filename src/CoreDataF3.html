@@ -1,0 +1,237 @@
+<script>
+/* CoreDataF3.html: Core Growth job F, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataF.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 2: ph says fff (Unit 4), Scoop and Read (Unit 2), Who Is Talking? (Unit 3). In every choice list the right answer is written FIRST (the engine shuffles).
+   The two fluency lessons use no voice recording and no timers. */
+(function () {
+  var GOOD = 'Good scoop', BROKEN = 'Broken scoop';
+  var ASK = 'Asking voice', SOFT = 'Soft voice', LOUD = 'Loud voice';
+
+  var LESSONS = {
+    /* ===== G2 Unit 4: ph says fff ===== */
+    'READ.PHON.L03.12':{name:'Phone and Photo',
+      teach:[
+        {q:'Read "phone". What does the ph say?', o:['fff','puh-huh'], how:'P and h side by side say fff, like the start of fish.'},
+        {q:'Which is the right way to spell a picture you take with a camera?', o:['photo','foto'], how:'This word spells fff with ph. Learn how it looks.'},
+        {q:'Read "uphill". Do the p and h say fff here?', o:['no: up + hill','yes: ph says fff'], how:'Uphill is up + hill. P ends up and h starts hill, so no fff.'}
+      ],
+      practice:[
+        {t:'sort', q:'Where is the ph?', bins:[{id:'s',label:'At the start'},{id:'m',label:'In the middle'},{id:'e',label:'At the end'}], items:[{label:'phone',bin:'s'},{label:'dolphin',bin:'m'},{label:'graph',bin:'e'},{label:'photo',bin:'s'},{label:'alphabet',bin:'m'},{label:'autograph',bin:'e'}], h:'Find the p and h side by side. Where are they?'},
+        {t:'pairs', q:'Match each word to its picture.', pairs:[['phone','📱'],['dolphin','🐬'],['elephant','🐘'],['trophy','🏆']], h:'Ph says fff. Read the word, then find the picture.'},
+        {t:'spotall', q:'Tap every word spelled the right way.', cells:[{label:'telephone',ok:true},{label:'telefone',ok:false},{label:'microphone',ok:true},{label:'microfone',ok:false},{label:'nephew',ok:true},{label:'nefew',ok:false}], h:'These words spell fff with ph.'},
+        {t:'order', q:'Listen. Build the word you hear.', tiles:['gr','a','ph'], h:'Which two letters spell fff at the end?'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['trophy','a prize cup'],['nephew','a brother\'s son'],['graph','a chart'],['alphabet','the letters A to Z']], h:'Read the word first. Ph says fff.'},
+        {t:'sort', q:'Ph says fff, or are p and h split?', bins:[{id:'f',label:'Ph says fff'},{id:'x',label:'P and h in two parts'}], items:[{label:'phone',bin:'f'},{label:'uphill',bin:'x'},{label:'photo',bin:'f'},{label:'cupholder',bin:'x'}], h:'Does p end one small word and h start the next, like up + hill? Then no fff.'}
+      ],
+      check:[
+        {q:'Read "photograph". What does the ph say?', o:['fff','puh','huh']},
+        {q:'Chaim wrote "telefone". How should he spell it?', o:['telephone','telefone','telefhone']},
+        {q:'Read "xylophone". Which two letters say fff?', o:['ph','op','he']}
+      ],
+      re:[
+        {q:'Read "headphones". What does the ph say?', o:['fff','puh','huh']},
+        {q:'Yanky wrote "microfone". How should he spell it?', o:['microphone','microfone','mikrofone']},
+        {q:'Read "prophet". Which two letters say fff?', o:['ph','pr','et']}
+      ]},
+
+    /* ===== G2 Unit 2: phrase by phrase ===== */
+    'READ.FLU.L03.02':{name:'Scoop and Read',
+      teach:[
+        {q:'Which words make one scoop?', o:['in the garden','garden in the'], how:'A scoop is words that go together, like where something happened.'},
+        {q:'Where should you pause?', o:['at the end of a scoop','in the middle of a scoop'], how:'Read the whole scoop. Then pause a tiny bit.'},
+        {q:'In "Dovid swam in the river", what does "in the river" tell?', o:['where','when','who'], how:'A where scoop names a place: in the river, by the door.'}
+      ],
+      practice:[
+        {t:'sort', q:'Good scoop, or broken scoop?', bins:[{id:'g',label:GOOD},{id:'b',label:BROKEN}], items:[{label:'on the roof',bin:'g'},{label:'the roof on',bin:'b'},{label:'after supper',bin:'g'},{label:'supper the',bin:'b'},{label:'my big brother',bin:'g'},{label:'big brother ran to',bin:'b'}], h:'A good scoop is words that go together. A broken scoop stops in the middle.'},
+        {t:'pairs', q:'Match each scoop to what it tells.', pairs:[['Naftali and Chaim','who'],['ate supper','did what'],['in the sukkah','where'],['on Sunday','when']], h:'Ask: who? did what? where? when?'},
+        {t:'spotall', q:'Tap every good scoop.', cells:[{label:'at the shul',ok:true},{label:'the shul at',ok:false},{label:'after Maariv',ok:true},{label:'Maariv the',ok:false},{label:'Zaidy and Avi',ok:true},{label:'and Avi went',ok:false}], h:'Does it sound whole, like one idea?'},
+        {t:'order', q:'Put the scoops in order: who, did what, where, when.', tiles:['Avi','fixed the wagon','in the garage','after school'], h:'Start this one with who. Then did what, where and when.'},
+        {t:'pairs', q:'Match each broken line to its fixed line.', pairs:[['The boys sat / on the','The boys sat / on the bench'],['We ate / lunch in','We ate lunch / in the yard'],['Zaidy / fixed','Zaidy / fixed the watch']], h:'Pause at the end of a scoop, not in the middle.'},
+        {t:'sort', q:'Does it tell where, or when?', bins:[{id:'w',label:'where'},{id:'n',label:'when'}], items:[{label:'by the door',bin:'w'},{label:'at night',bin:'n'},{label:'in the kitchen',bin:'w'},{label:'before Shabbos',bin:'n'}], h:'Where is a place. When is a time.'}
+      ],
+      check:[
+        {q:'Read: "Chaim and Moishe / swept the porch / before Shabbos." What does "before Shabbos" tell?', o:['when','where','who']},
+        {q:'Is this a good scoop or a broken scoop: "ran up the"?', o:['broken scoop','good scoop']},
+        {q:'Dovid read: "We sat on / the bench." Look at the /. Where did he pause?', o:['in the middle of a scoop','at the end of a scoop','at a comma']}
+      ],
+      re:[
+        {q:'Read: "Avi / climbed the ladder / in the shed." What does "in the shed" tell?', o:['where','when','who']},
+        {q:'Read: "After dinner, Zaidy fixed the clock." Which part tells who?', o:['Zaidy','After dinner','fixed the clock']},
+        {q:'Is this a good scoop or a broken scoop: "under the tree"?', o:['good scoop','broken scoop']}
+      ]},
+
+    /* ===== G2 Unit 3: who is talking? ===== */
+    'READ.FLU.L03.03':{name:'Who Is Talking?',
+      teach:[
+        {q:'What do quotation marks show?', o:['the words someone says','where the story is'], how:'Quotation marks hold the talking part, like two hands.'},
+        {q:'"Is it raining?" asked Avi. Who is talking?', o:['Avi','Zaidy'], how:'Read the tag next to the talking part. It names who said it.'},
+        {q:'"Shh," whispered Dovid. How should it sound?', o:['soft','loud'], how:'Whispered tells how: quiet and soft.'}
+      ],
+      practice:[
+        {t:'sort', q:'How should the talking part sound?', bins:[{id:'a',label:ASK},{id:'s',label:SOFT},{id:'l',label:LOUD}], items:[{label:'"Can I come?" asked Avi.',bin:'a'},{label:'"Shh," whispered Chaim.',bin:'s'},{label:'"Stop!" shouted Mendy.',bin:'l'},{label:'"Is it late?" asked Moishe.',bin:'a'},{label:'"Good night," whispered Zaidy.',bin:'s'},{label:'"Catch it!" yelled Dovid.',bin:'l'}], h:'Look at the tag word and the mark at the end.'},
+        {t:'pairs', q:'Match each tag word to its voice.', pairs:[['asked','asking voice'],['whispered','soft voice'],['shouted','loud voice']], h:'The tag word tells how the words were said.'},
+        {t:'spotall', q:'Tap every line where someone is talking.', cells:[{label:'"Come in," said Zaidy.',ok:true},{label:'Zaidy sat down.',ok:false},{label:'"I am here!" said Avi.',ok:true},{label:'Avi ran home.',ok:false},{label:'Naftali said, "Hi."',ok:true},{label:'The door was open.',ok:false}], h:'Look for quotation marks. They hold the words someone says.'},
+        {t:'order', q:'Put the steps in order for a talking part.', tiles:['Find the quotation marks.','Read the tag: who and how?','Read the words in that voice.'], h:'First find the talking part. Then find who said it.'},
+        {t:'pairs', q:'Match each line to who is talking.', pairs:[['"Sit here," Zaidy told Naftali.','Zaidy'],['"Thank you," Naftali told Zaidy.','Naftali'],['Yanky said, "Look!"','Yanky']], h:'The name next to said or told, before the listener, is the one talking.'},
+        {t:'sort', q:'Talking part, or tag?', bins:[{id:'t',label:'Talking part'},{id:'g',label:'Tag'}], items:[{label:'"We won!"',bin:'t'},{label:'shouted Mendy',bin:'g'},{label:'"Where is it?"',bin:'t'},{label:'Avi said',bin:'g'}], h:'The talking part is inside the quotation marks. The tag tells who said it.'}
+      ],
+      check:[
+        {q:'"Pass the salt," Chaim told Yanky. Who is talking?', o:['Chaim','Yanky','both boys']},
+        {q:'"We must be quiet in shul," whispered Moishe. How should the talking part sound?', o:['soft','loud','asking']},
+        {q:'Chaim said, "My shoe is wet." What do the quotation marks show?', o:['the words someone says','who is listening','where it happened']}
+      ],
+      re:[
+        {q:'"Where are my boots?" Moishe asked Naftali. Who is talking?', o:['Moishe','Naftali','both boys']},
+        {q:'"Run to the gate!" shouted Naftali. How should the talking part sound?', o:['loud','soft','asking']},
+        {q:'Avi said, "The soup is hot." Which part tells who is talking?', o:['Avi said','The soup is hot','the quotation marks']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.PHON.L03.12':{ hook:'Phone starts with fff. So why does it start with a p?',
+      big:'When p and h stand side by side, they team up and say fff: phone, photo, graph, dolphin. Ph can be at the start, in the middle or at the end. Most fff words are spelled with f (fish, fan), but some words use ph, and many of them came into English from Greek, like phone and photo. Learn how those words look. In a word like uphill, p ends one small word (up) and h starts the next (hill), so they do not say fff. In headphones, the ph is inside phones, so it still says fff.',
+      intro:['Look for p and h side by side.','Ph says fff. Read it like an f.','Ph can be at the start, the middle or the end: phone, dolphin, graph.','Does p end one small word and h start the next, like up + hill? Then no fff.'],
+      ex:[{q:'Read: dolphin', steps:['Find ph in the middle.','Ph says fff: dol-fin.','Dolphin!'], a:'dolphin'},
+          {q:'Read: uphill', steps:['I see up and hill.','P ends up. H starts hill.','Up-hill. No fff!'], a:'uphill'}],
+      oops:{ q:'Read: phone', wrong:'puh-hone', right:'fff-ohn', why:'P and h side by side say fff.' },
+      idea:['Ph is a team of two letters with one sound, fff, like sh and ch. Telephone, microphone and photo all spell fff with ph.'],
+      'try':{ q:'Read "phone". What does the ph say?', o:['fff','puh-huh'], a:'fff', steps:['Find p and h side by side.','They say fff.'] } },
+    'READ.FLU.L03.02':{ hook:'Read like a robot: We. Went. To. Shul. Now read it like talking. What changed?',
+      big:'Good readers read in scoops: groups of words that go together. A scoop can tell who (Avi and Dovid), did what (played ball), where (in the yard) or when (after school). Pause a tiny bit at the end of a scoop, never in the middle of a scoop. A broken scoop sounds choppy and the meaning gets lost.',
+      intro:['Find who: the person in the sentence.','Find did what: what he did.','Find where and when, if they are there.','Read one scoop at a time. Pause at the end of a scoop.'],
+      ex:[{q:'Read: Naftali and Chaim ate supper in the sukkah.', steps:['Who? Naftali and Chaim.','Did what? ate supper. Where? in the sukkah.','Naftali and Chaim / ate supper / in the sukkah.'], a:'Naftali and Chaim / ate supper / in the sukkah.'},
+          {q:'Is "the roof on" a good scoop?', steps:['Read it. Does it sound whole?','No. It stops in the middle.','It is a broken scoop. On the roof is a good scoop.'], a:'broken scoop'}],
+      oops:{ q:'Read: Avi and Dovid played ball in the yard.', wrong:'Avi and / Dovid played / ball in the / yard.', right:'Avi and Dovid / played ball / in the yard.', why:'Pause at the end of a scoop, not in the middle.' },
+      idea:['A scoop is like a spoonful of soup: you scoop up the words that go together, then take a tiny breath.'],
+      'try':{ q:'Which words make one scoop?', o:['in the garden','garden in the'], a:'in the garden', steps:['Read each one.','Which sounds whole?'] } },
+    'READ.FLU.L03.03':{ hook:'"Hurry!" Who said that? And how did he say it?',
+      big:'Quotation marks hold the words someone says. The tag (said Avi, asked Zaidy, shouted Dovid) tells who is talking and how. Make your voice fit: asked and a question mark mean an asking voice that goes up; whispered means a soft voice; shouted, yelled or an exclamation mark mean a loud voice. In "Sit here," Zaidy told Avi, Zaidy is talking and Avi is listening. The tag can come first, too: Avi said, "Good Shabbos!"',
+      intro:['Find the quotation marks: the words someone says.','Read the tag: who is talking?','Read the tag word: how did he say it?','Read the talking part in that voice.'],
+      ex:[{q:'"Can I help?" asked Mendy.', steps:['The talking part: Can I help?','The tag: asked Mendy. Mendy is talking.','Asked and ?: an asking voice.'], a:'Mendy, in an asking voice'},
+          {q:'"Look at me!" shouted Yanky.', steps:['The talking part: Look at me!','The tag: shouted Yanky. Yanky is talking.','Shouted and !: a loud voice.'], a:'Yanky, in a loud voice'}],
+      oops:{ q:'"Sit here," Zaidy told Avi. Who is talking?', wrong:'Avi', right:'Zaidy', why:'Zaidy told Avi: Zaidy is talking, Avi is listening.' },
+      idea:['Quotation marks are like two hands holding the words someone says. The tag is the name tag: it tells who.'],
+      'try':{ q:'"Is it raining?" asked Avi. Who is talking?', o:['Avi','Zaidy'], a:'Avi', steps:['Find the tag.','Asked Avi: Avi said it.'] } }
+  };
+
+  var HOWTO = {
+    'READ.PHON.L03.12':{ s:'Look for p and h side by side.\nPh says fff.\nDoes p end one small word and h start the next, like up + hill? Then no fff.',
+      q:{ 'Read "photograph". What does the ph say?':'Find p and h side by side.\nWhat sound do they make together?',
+          'Chaim wrote "telefone". How should he spell it?':'Think of phone.\nWhich letters spell fff in phone?',
+          'Read "xylophone". Which two letters say fff?':'Look for two letters side by side\nthat make one sound.',
+          'Read "headphones". What does the ph say?':'Is it head + phones?\nAre p and h in the same part?',
+          'Yanky wrote "microfone". How should he spell it?':'Think of phone.\nHow is fff spelled in phone?',
+          'Read "prophet". Which two letters say fff?':'Say the word slowly. Where do you hear fff?\nWhich letters make that sound?' } },
+    'READ.FLU.L03.02':{ s:'Find who, did what, where and when.\nRead one scoop at a time.\nPause at the end of a scoop.',
+      q:{ 'Read: "Chaim and Moishe / swept the porch / before Shabbos." What does "before Shabbos" tell?':'Is it a person, a place or a time?',
+          'Is this a good scoop or a broken scoop: "ran up the"?':'Read it out loud.\nDoes it sound whole, or does it stop in the middle?',
+          'Dovid read: "We sat on / the bench." Look at the /. Where did he pause?':'Find each /.\nRead the words on both sides. Do they still sound whole?',
+          'Read: "Avi / climbed the ladder / in the shed." What does "in the shed" tell?':'Is it a person, a place or a time?',
+          'Read: "After dinner, Zaidy fixed the clock." Which part tells who?':'Who tells about a person.\nFind the person in the sentence.',
+          'Is this a good scoop or a broken scoop: "under the tree"?':'Read it out loud.\nDoes it sound whole, or does it stop in the middle?' } },
+    'READ.FLU.L03.03':{ s:'Find the quotation marks.\nRead the tag: who and how?\nRead the talking part in that voice.',
+      q:{ '"Pass the salt," Chaim told Yanky. Who is talking?':'Look at the tag.\nWho told, and who is listening?',
+          '"We must be quiet in shul," whispered Moishe. How should the talking part sound?':'Read the tag word.\nIt tells how he said it.',
+          'Chaim said, "My shoe is wet." What do the quotation marks show?':'Look at the words inside the marks.\nWho could say those words?',
+          '"Where are my boots?" Moishe asked Naftali. Who is talking?':'Look at the tag.\nWho asked, and who is listening?',
+          '"Run to the gate!" shouted Naftali. How should the talking part sound?':'Read the tag word and the end mark.\nHow does shouting sound?',
+          'Avi said, "The soup is hot." Which part tells who is talking?':'Look for a name and a tag word like said or asked.' } }
+  };
+
+  var BITE = {
+    'READ.PHON.L03.12':{ band:'B23', pic:'📱', today:'Read ph, which says fff',
+      why:'Phone, photo, dolphin, elephant: once you know ph says fff, these words are easy.',
+      ready:[{q:'Which word starts with fff?', o:['fish','dish','wish'], a:'fish'},{q:'Read "knee". Which letter is quiet?', o:['k','n','e'], a:'k'}],
+      bridge:'READ.PHON.L03.11', bridgeName:'Knock, Write, Lamb',
+      watch:{ q:'ph says fff', m:{type:'tiles',w:['ph','o','n','e'],hi:[0]}, steps:[
+        {t:'Phone. P and h side by side say fff. Phone!', m:{type:'tiles',w:['ph','o','n','e'],hi:[0]}},
+        {t:'Graph. Ph at the end says fff too.', m:{type:'tiles',w:['g','r','a','ph'],hi:[3]}},
+        {t:'Dolphin. Ph in the middle: dol-fin.', m:{type:'tiles',w:['d','o','l','ph','i','n'],hi:[3]}},
+        {t:'Uphill: p ends up, and h starts hill. Then no fff!', m:{type:'tiles',w:['up','hill'],hi:[0,1]}},
+        {t:'Most fff words use f: fish, fan. Some use ph: phone, photo. Learn how they look.'},
+        {t:'Hold up a pretend phone with Dovid and chant!', m:{type:'chant', lines:['P and h, side by side,','say fff in phone and photo!','Dolphin, graph and elephant too:','ph says fff for me and you!']}}], a:'P and h side by side say fff.' },
+      oops:{ q:'Read: phone', wrong:'puh-hone', right:'fff-ohn', why:'P and h side by side say fff.' },
+      ways:['think-aloud','chant with a pretend phone','match to pictures','build with tiles','Mistake Detective'], done:'You can read ph, which says fff!',
+      board:{ one:'P and h side by side say fff: phone, graph, dolphin.', activity:'Phone call: the rebbe writes phone, graph, dolphin, uphill and fan. Boys hold up a pretend phone when ph says fff, and shake their heads for uphill.', mistakes:['Reading ph as puh-huh: puh-hone','Spelling phone as fone or photo as foto','Reading uphill as u-fill: p ends up, h starts hill'] },
+      do:[
+        {type:'match', pairs:[['phone','📱'],['dolphin','🐬'],['elephant','🐘'],['trophy','🏆']], say:'Read each word. Match it to its picture.', how:'Ph says fff. Read the word, then find the picture.'},
+        {type:'tiles', w:['ph','o','t','o'], extra:['f'], hear:'photo', pic:'📷', say:'Listen. Build the word you hear.', how:'This word spells fff with two letters. Which ones?'}],
+      your:[
+        {type:'listen', q:'Avi read "phone" as "puh-hone".', hear:'What should ph say?', o:['fff','puh','huh'], a:'fff', mis:true, say:'Mistake Detective! What should ph say?', how:'Find p and h side by side. They make one sound.'},
+        {type:'cloze', t:'Dovid can say the whole ___ from A to Z.', o:['alphabet','alfabet','alpabet'], a:'alphabet', say:'Tap the right spelling into the gap.', how:'This word spells fff with ph.'},
+        {type:'findall', grid:['graph','uphill','dolphin','push','phone','path'], find:['graph','dolphin','phone'], findSay:'ph that says fff', say:'Tap every word where ph says fff.', how:'P and h side by side say fff. P ending up, h starting hill: no fff.'},
+        {type:'tiles', w:['el','e','ph','ant'], extra:['f'], hear:'elephant', say:'Listen. Build the word you hear.', how:'Say it slowly. Which two letters spell fff?'},
+        {type:'sort', bins:['Ph says fff','P and h in two parts'], cards:[['photo',0],['uphill',1],['trophy',0],['cupholder',1]], say:'Challenge! Does ph say fff here?', how:'Does p end one small word and h start the next, like up + hill? Then no fff.'}] },
+
+    'READ.FLU.L03.02':{ band:'B23', pic:'🥄', today:'Read in scoops: words that go together',
+      why:'When you scoop the words that go together, reading sounds like talking and makes sense.',
+      ready:[{q:'What does a period tell you?', o:['stop','go faster'], a:'stop'},{q:'Which line sounds like talking?', o:['We ate lunch.','We. Ate. Lunch.'], a:'We ate lunch.'}],
+      bridge:'READ.FLU.L03.01', bridgeName:'Fluent Flyer',
+      watch:{ q:'scoop and read', m:{type:'scene', e:'⚽', t:'Avi and Dovid played ball in the yard after school.'}, steps:[
+        {t:'Who? Avi and Dovid. That is one scoop.'},
+        {t:'Did what? played ball. That is the next scoop.'},
+        {t:'Where? in the yard. When? after school.'},
+        {t:'Now I read in scoops: Avi and Dovid / played ball / in the yard / after school.'},
+        {t:'I pause at the end of a scoop. I do not pause in the middle of a scoop. In the yard is a good scoop. In the / yard is a broken scoop.'},
+        {t:'Scoop the words with Avi!', m:{type:'move', t:'Cup your hands like a spoon. Scoop up "Avi and Dovid", then "played ball", then "in the yard", then "after school"!'}}], a:'Scoop the words that go together. Pause at the end of a scoop.' },
+      oops:{ q:'Read: Avi and Dovid played ball in the yard.', wrong:'Avi and / Dovid played / ball in the / yard.', right:'Avi and Dovid / played ball / in the yard.', why:'Pause at the end of a scoop, not in the middle.' },
+      ways:['think-aloud','scoop with your hands','good and broken scoops','put scoops in order','Mistake Detective'], done:'You can read in scoops!',
+      board:{ one:'Scoop the words that go together: who, did what, where, when. Pause at the end of a scoop.', activity:'Scoop it: the rebbe writes a sentence. Boys cup their hands and scoop each part out loud: who, did what, where, when.', mistakes:['Pausing in the middle of a scoop: in the / yard','Reading word by word like a robot','Running the whole sentence together with no pauses'] },
+      do:[
+        {type:'sort', bins:['Who','Did what','Where'], cards:[['Yanky',0],['fed the bunny',1],['in the yard',2],['the big boys',0],['sang a song',1],['at the table',2]], say:'What does each scoop tell?', how:'Who is a person. Did what is the action. Where is a place.'},
+        {type:'evidence', q:'Which reader paused at the end of each scoop?', p:['Mendy: Naftali ate / an apple in / the sukkah.','Moishe: Naftali / ate an apple / in the sukkah.','Yanky: Naftali / ate an / apple in the sukkah.'], a:1, look:'pauses at the end of a scoop', mis:true, say:'Mistake Detective! Who scooped it right?', how:'Look at each pause. Does it cut a scoop in the middle?'}],
+      your:[
+        {type:'cloze', t:'Chaim read a book ___.', o:['in the shul library','in the','library in the'], a:'in the shul library', say:'Tap the whole scoop that fits the gap.', how:'A scoop is words that go together. Which one is whole?'},
+        {type:'order', steps:['Dovid and Naftali','built a fort','in the garage','on Sunday'], say:'Put the scoops in order: who, did what, where, when.', how:'Start this one with who. Then did what, where and when.'},
+        {type:'sort', bins:['Where','When'], cards:[['by the river',0],['on Friday',1],['at the shul',0],['after lunch',1]], say:'Does the scoop tell where, or when?', how:'Where is a place. When is a time.'},
+        {type:'match', pairs:[['in the kitchen','where'],['at night','when'],['Zaidy and Avi','who'],['baked challah','did what']], say:'Match each scoop to what it tells.', how:'Ask: who? did what? where? when?'},
+        {type:'evidence', q:'Which reader scooped the whole line right?', p:['Yanky: On Sunday / the boys / swam in / the lake.','Chaim: On Sunday / the boys / swam / in the lake.','Mendy: On / Sunday the boys / swam in the lake.'], a:1, look:'no pause in the middle of a scoop', say:'Challenge! Find the reader who scooped it right.', how:'Check every pause. Is any scoop cut in two?'}] },
+
+    'READ.FLU.L03.03':{ band:'B23', pic:'💬', today:'Find who is talking and read it with feeling',
+      why:'When you know who is talking and how, the story comes alive.',
+      ready:[{q:'Which mark ends an asking sentence?', o:['?','.'], a:'?'},{q:'Which mark shows a strong feeling?', o:['!','.'], a:'!'}],
+      bridge:'READ.FLU.L03.01', bridgeName:'Fluent Flyer',
+      watch:{ q:'who is talking?', m:{type:'scene', e:'💬', t:'"Is it time for shul?" asked Avi. "Shh," whispered Zaidy. "Hurry!" shouted Dovid.'}, steps:[
+        {t:'Quotation marks are like two hands. They hold the words someone says.'},
+        {t:'The tag tells who is talking: asked Avi. Avi said it.'},
+        {t:'Asked and a question mark: my voice goes up. An asking voice.'},
+        {t:'Whispered: a soft voice. Shouted or yelled: a loud voice. A ! makes it strong.'},
+        {t:'"Sit here," Zaidy told Avi. Zaidy is talking. Avi is listening.'},
+        {t:'Avi said, "Good Shabbos!" The tag can come first. Avi said tells who.'},
+        {t:'Show the voices with Dovid!', m:{type:'move', t:'Hands up for an asking voice. Finger on your lips for a soft voice. Arms wide for a loud voice!'}}], a:'Quotation marks hold the words someone says. The tag tells who and how.' },
+      oops:{ q:'"Sit here," Zaidy told Avi. Who is talking?', wrong:'Avi', right:'Zaidy', why:'Zaidy told Avi: Zaidy is talking, Avi is listening.' },
+      ways:['think-aloud','show the voices','match tag words to voices','sort lines by voice','Mistake Detective'], done:'You can find who is talking and read it with feeling!',
+      board:{ one:'Quotation marks hold the words someone says. The tag tells who is talking and how.', activity:'Show the voice: the rebbe reads a tag word (asked, whispered, shouted). Boys raise hands for asking, put a finger on their lips for soft, and open their arms wide for loud, then read the line together.', mistakes:['Thinking the listener is talking: Zaidy told Avi','Reading the tag in the talking voice','Reading asked or whispered lines in a flat voice'] },
+      do:[
+        {type:'match', pairs:[['asked','asking voice'],['whispered','soft voice'],['shouted','loud voice']], say:'Match each tag word to its voice.', how:'The tag word tells how the words were said.'},
+        {type:'listen', q:'"Come see my lamb," Yanky told Chaim.', hear:'Mendy said Chaim is talking. Who is really talking?', o:['Yanky','Chaim','Mendy'], a:'Yanky', mis:true, say:'Mistake Detective! Who is really talking?', how:'Look at the tag. Who told, and who is listening?'}],
+      your:[
+        {type:'evidence', q:'Which sentence has someone talking?', p:['Dovid ran into the clubhouse.','"I found the key!" he said.','Then he sat down.'], a:1, look:'quotation marks', say:'Tap the sentence with talking in it.', how:'Look for quotation marks. They hold the words someone says.'},
+        {type:'sort', bins:[ASK, SOFT, LOUD], cards:[['"Can I go?" asked Avi.',0],['"Shh," whispered Chaim.',1],['"We won!" shouted Mendy.',2],['"Is it hot?" asked Yanky.',0]], say:'How should each line sound?', how:'Look at the tag word and the mark at the end.'},
+        {type:'cloze', t:'"Look at the big fish!" shouted Mendy. Read it in a ___ voice.', o:['loud','soft','sleepy'], a:'loud', say:'Tap the word that fits.', how:'Read the tag word and the mark at the end.'},
+        {type:'order', steps:['Find the quotation marks.','Read the tag: who and how?','Read the words in that voice.'], say:'Put the steps in order.', how:'First find the talking part. Then find who said it.'},
+        {type:'listen', q:'"Can you fix it?" Dovid asked Zaidy.', hear:'Who is talking, and how?', o:['Dovid, asking','Zaidy, asking','Dovid, loud'], a:'Dovid, asking', say:'Challenge! Who is talking, and how?', how:'Find who asked. Then think how asking sounds.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('F', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  /* Grade 2 word-study unit checks (docs/core-growth/HOW-TO-ADD-A-UNIT.md): F.U2<n> = Grade 2, F-map Unit n. Each mixes the unit's skills with 2 from earlier units. */
+  if (window.TLCORE && TLCORE.units) {
+    TLCORE.units.add({ id: 'F.U21', title: 'Syllables and Long Vowels', c: 'READ', grade: 2,
+      skills: ['READ.PHON.L03.04', 'READ.PHON.L03.01', 'READ.PHON.L03.05', 'READ.PHON.L03.06', 'READ.FLU.L03.01'],
+      review: ['READ.LV.L02.01', 'READ.PHON.L02.03'], n: 10 });
+    TLCORE.units.add({ id: 'F.U22', title: 'Vowel Teams 2', c: 'READ', grade: 2,
+      skills: ['READ.LV.L03.01', 'READ.LV.L03.02', 'READ.LV.L03.03', 'READ.LV.L03.04', 'READ.LV.L03.05', 'READ.FLU.L03.02'],
+      review: ['READ.PHON.L03.04', 'READ.PHON.L03.05'], n: 10 });
+    TLCORE.units.add({ id: 'F.U23', title: 'Bossy R and Tricky Endings', c: 'READ', grade: 2,
+      skills: ['READ.PHON.L03.02', 'READ.LV.L03.06', 'READ.PHON.L03.07', 'READ.PHON.L03.08', 'READ.FLU.L03.03'],
+      review: ['READ.LV.L03.03', 'READ.PHON.L03.06'], n: 10 });
+    TLCORE.units.add({ id: 'F.U24', title: 'Soft Letters and Quiet Letters', c: 'READ', grade: 2,
+      skills: ['READ.PHON.L03.09', 'READ.PHON.L03.10', 'READ.PHON.L03.11', 'READ.PHON.L03.12', 'READ.PHON.L03.03'],
+      review: ['READ.LV.L03.06', 'READ.PHON.L03.08'], n: 10 });
+    TLCORE.units.add({ id: 'F.U25', title: 'Endings That Change the Word', c: 'READ', grade: 2,
+      skills: ['READ.PHON.L03.13', 'READ.PHON.L03.14', 'READ.PHON.L03.15', 'READ.PHON.L03.16', 'READ.PHON.L03.17', 'READ.FLU.L03.04'],
+      review: ['READ.PHON.L03.09', 'READ.LV.L03.05'], n: 10 });
+  }
+})();
+</script>

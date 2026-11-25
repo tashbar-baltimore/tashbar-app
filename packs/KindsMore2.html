@@ -918,6 +918,27 @@ rep('COMP.DIG.L01.01',TAPALL,'Your hands are sticky from cake. What do you do fi
   tiles:['Wash your hands','Dry your hands','Start the computer'],h:'Clean hands first, then the computer.',why:'Sticky hands make the keys messy.'},
  'Sticky hands would make the keys messy.\nWhat do you do first to get them clean?\nWhat comes right after that?\nPut the cards in that order.');
 
+/* ---------- WRIT.RES.L09.01 Find and judge sources (flag fix 2026-11-24: 6 auto boards, the bridges pair on every one) ---------- */
+rep('WRIT.RES.L09.01',TAPALL,'Two sources disagree. What should you do? → Use the one you like.',
+ {t:'order',q:'Two websites give different heights for the same bridge. Put the steps in order.',
+  tiles:['Notice the two facts do not match','Check a third reliable source','Use the height the good sources agree on'],h:'When sources disagree, find another good source.',why:'Good researchers check a third source when two disagree.'},
+ 'Two sources say different things.\nFirst you have to notice that.\nThen ask a third good source to break the tie.\nPut the cards in that order.');
+rep('WRIT.RES.L09.01',TAPALL,'Why is a source with no author less reliable? → It is shorter.',
+ {t:'sort',q:'Sort each clue about a source: does it make the source more reliable, or less reliable?',bins:[{id:'M',label:'More reliable'},{id:'L',label:'Less reliable'}],
+  items:[{label:'an expert author is named',bin:'M'},{label:'it was updated this year',bin:'M'},{label:'other good sources agree with it',bin:'M'},
+   {label:'no author is named',bin:'L'},{label:'it is trying to sell you something',bin:'L'},{label:'it is 30 years old, and the facts change',bin:'L'}],
+  h:'Ask: who wrote it, when, and do others agree?',why:'Reliable sources have a known expert, are up to date, and can be checked.'},
+ 'Read one clue.\nAsk the three questions: who wrote it? When? Do other good sources agree?\nA good answer makes it more reliable.\nDrag each card to its box.');
+rep('WRIT.RES.L09.01',TAPALL,'Which source is most likely biased about a drill? → A consumer testing report',
+ {t:'sort',q:'Sort each source about a new bike helmet: is it trying to sell you the helmet, or just giving facts?',bins:[{id:'S',label:'Trying to sell'},{id:'F',label:'Just giving facts'}],
+  items:[{label:'the helmet company ad',bin:'S'},{label:'a store sale flyer for the helmet',bin:'S'},{label:'a video paid for by the helmet maker',bin:'S'},
+   {label:'a safety test by a testing lab',bin:'F'},{label:'a government safety report',bin:'F'},{label:'a university study of helmets',bin:'F'}],
+  h:'Ask: does this source make money if you buy the helmet?',why:'A source that wants to sell you something may be biased.'},
+ 'Read one card.\nAsk: does whoever made it want me to buy the helmet?\nIf yes, it is trying to sell. If not, it is just giving facts.\nDrag each card to its box.');
+rep('WRIT.RES.L09.01',TAPALL,'Which is the best source for a report on volcanoes? → A social media post',
+ {t:'spotall',q:'You are writing a report on volcanoes. Tap every source you can trust for facts.',cells:[{label:'a national geological survey website',ok:true},{label:'a university earth science department',ok:true},{label:'a science museum website',ok:true},
+   {label:'a social media post',ok:false},{label:'a blog with no author',ok:false},{label:'an action movie about a volcano',ok:false}],h:'Expert, up to date, and can be checked?',why:'Reliable sources have expert authors and can be checked.'},
+ 'Read one source.\nAsk: is it from experts who study this? Can you check it?\nTap every one you can trust. There is more than one.');
 /* ---------- COMP.DIG.L01.02 Tap and Swipe ---------- */
 rep('COMP.DIG.L01.02','Chizkiyahu wants to see the next photo of his Saba. Which move does he use? A press on the pad, a swipe, or closing the lid?','a swipe',
  {t:'sort',q:'Chizkiyahu has jobs to do on the screen. Sort each job: tap or swipe?',bins:[{id:'T',label:'👆 Tap'},{id:'W',label:'👉 Swipe'}],
@@ -4065,7 +4086,7 @@ var FIX=[
 ["ELEC.SPEAK.L05.01",
  "Put the steps of good listening in order.",
  "Think It Through!\nCan you sum up a talk before you hear it all?\nCan you listen well if your eyes wander?\nWork out what each step needs first.\nTap them in order.",
- "Think It Through!\nCan you listen well if your eyes wander?\nCan you sum up a talk before you hear it all?\nTap them in order."],
+ "Think It Through!\nEyes on the speaker, then hear it all.\nRetell what you heard first. Then ask your question.\nTap them in order."],
 ["ELEC.SPEAK.L05.01",
  "What is a retelling?",
  "Try a Model!\nYossi hears a long story about a lost dog.\nHe tells Abba the story in two short lines.\nWhat did he keep? Whose words did he use?\nTap it.",
@@ -4337,6 +4358,16 @@ rep('READ.PA.L01.02',TAPALL,['Do these two words rhyme: sun and bed? → 👍 ye
  {t:'sort',q:'Say each pair of words. Sort it: rhymes, or does not rhyme?',bins:[{id:'y',label:'Rhymes'},{id:'n',label:'Does not rhyme'}],
   items:[{label:'sock, clock',bin:'y'},{label:'cake, lake',bin:'y'},{label:'king, ring',bin:'y'},{label:'sun, bed',bin:'n'},{label:'dog, cup',bin:'n'},{label:'fish, tree',bin:'n'}],h:'Do the ends sound the same?'},
  'Say the two words out loud.\nListen only to the end of each word.\nSame ending sound? It rhymes. Different? It does not.');
+/* flag fix 2026-11-24: K boys had to read 4 long lines; now picture boards */
+rep('READ.PA.L01.02',TAPALL,['Which one rhymes with king? Ring, boat, or bed? → 💍'],
+ {t:'spotall',q:'Tap every picture that rhymes with cat.',cells:[{label:'🎩 hat',ok:true},{label:'🦇 bat',ok:true},{label:'🐀 rat',ok:true},{label:'🐶 dog',ok:false},{label:'☀️ sun',ok:false},{label:'🐟 fish',ok:false}],h:'Say cat. Listen to the end: -at.'},
+ 'Say cat. The end is at.\nSay each picture word.\nDoes it end with at? Tap it. There is more than one.');
+rep('READ.PA.L01.02',TAPALL,['Which one rhymes with bear? Chair, ball, or cake? → 🪑'],
+ {t:'spotall',q:'Tap every picture that rhymes with bear.',cells:[{label:'🪑 chair',ok:true},{label:'🍐 pear',ok:true},{label:'⚽ ball',ok:false},{label:'🎂 cake',ok:false}],h:'Say bear. Listen to the end: -air.'},
+ 'Say bear. The end is air.\nSay each picture word.\nDoes it end with air? Tap it. There is more than one.');
+rep('READ.PA.L01.02',TAPALL,['Which one rhymes with dog? Frog, cake, or star? → 🐸'],
+ {t:'spotall',q:'Tap every picture that rhymes with dog.',cells:[{label:'🐸 frog',ok:true},{label:'🪵 log',ok:true},{label:'🎂 cake',ok:false},{label:'⭐ star',ok:false}],h:'Say dog. Listen to the end: -og.'},
+ 'Say dog. The end is og.\nSay each picture word.\nDoes it end with og? Tap it. There is more than one.');
 /* ---------- READ.PA.L01.03 Clap the Beats ---------- */
 rep('READ.PA.L01.03','Match each question to its answer.',['Clap the word banana: ba-na-na. How many claps?','Clap the word cat. How many claps?','Clap the word rabbit: rab-bit. How many claps?'],
  {t:'order',q:'Clap each word. Put them in order: fewest claps first, most claps last.',tiles:['cat','rabbit','banana'],h:'Clap each word and count.'},
@@ -4563,8 +4594,8 @@ rep('READ.LV.L03.01',PICQ,['paw','pay'],
  'Read the end of each word with care.\na-w says "aw." a-y says the name of a.\nThen find what each word means.');
 /* ---------- READ.LV.L03.02 Vowel Teams 3 ---------- */
 rep('READ.LV.L03.02',PICQ,['tie','tip'],
- {t:'type',q:'Abba wears it with his Shabbos shirt. Read the words: tie, tip, tin. Type the one it is.',a:'tie',alt:['Tie'],kb:'text',h:'i-e together says the name of i.'},
- 'Read each word slowly.\nWhen i and e sit together at the end, you hear the name of i.\nWhich word is the Shabbos thing? Type it.');
+ {t:'type',q:'Look at the picture. Read the words: tie, tip, tin. Type the word for the picture.',pic:'👔',a:'tie',alt:['Tie'],kb:'text',h:'i-e together says the name of i.'},
+ 'Read each word slowly.\nWhen i and e sit together at the end, you hear the name of i.\nWhich word names the picture? Type it.');
 rep('READ.LV.L03.02',PICQ,['cry','cap'],
  {t:'spotall',q:'Tap every word where the y at the end says the name of i, like cry.',cells:[{label:'cry',ok:true},{label:'dry',ok:true},{label:'shy',ok:true},{label:'my',ok:true},{label:'puppy',ok:false},{label:'bunny',ok:false},{label:'boy',ok:false}],h:'Clap it. One beat?'},
  'Clap each word.\nOne beat, and y is the only vowel? Then y says the name of i.\nTap every one like that.');
@@ -6207,6 +6238,10 @@ rep('LIFE.FIN.L04.01',MQ,['What is income?','Your balance says $25.50. How many 
  {t:'sort',q:'Sort each one: money coming in (income), or money going out?',bins:[{id:'i',label:'Money in: income'},{id:'o',label:'Money out: spending'}],
   items:[{label:"pay for raking a neighbor's leaves",bin:'i'},{label:'$10 for helping in Zeidy\'s store',bin:'i'},{label:'pay for shoveling snow',bin:'i'},{label:'buying a snack',bin:'o'},{label:'paying for a new ball',bin:'o'},{label:'buying a birthday gift',bin:'o'}],h:'Does the money come to you, or leave you?'},
  'Income is money you get for doing work.\nFor each card ask: does money come to me, or go away from me?\nSort each card.');
+/* flag fix 2026-11-24: the typed version lost the two balances (they were only in the old tap choices) */
+rep('LIFE.FIN.L04.01','Which balance has more money? (Type it.)',['$63.00'],
+ {t:'type',q:'Two balances: $63.00 and $36.00. Which one has more money? Type the dollars.',a:'63',alt:['$63','63.00','$63.00'],kb:'num',h:'Look at the tens place: 6 tens or 3 tens.'},
+ 'Look at the dollars before the dot in each balance.\nCompare the tens digit first. More tens means more money.\nType the bigger balance.');
 /* ---------- LIFE.FIN.L04.02 Count and Pay ---------- */
 rep('LIFE.FIN.L04.02',TAPALL,['A snack costs $6. You pay $10. How much change do you get? → $4'],
  {t:'type',q:'A snack costs $6. You pay with a $10 bill. How many dollars of change do you get? (Type it.)',a:'4',alt:['$4','4.00','$4.00'],kb:'num',h:'Count up from the price.'},

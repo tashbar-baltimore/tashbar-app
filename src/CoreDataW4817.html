@@ -1,0 +1,317 @@
+<script>
+/* CoreDataW4817.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 5 (L06), Unit 4 "Explain and Compare". Cast: the Glen Avenue Crew.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L06.07':{name:'Same and Different',
+  teach:[
+    {how:'Yehuda is writing a Gazette piece, “Two Sukkahs.” He will compare the yeshiva sukkah with Dovid’s family sukkah at home. His notes: The yeshiva sukkah stands in the parking lot and seats 120 boys. Mr. Halpern and the eighth graders built it on a Sunday, in six hours, with wooden walls. The Lerner sukkah is on the back porch and seats 10 people. Dovid and his Abba built it in two hours, with canvas walls. Both sukkahs have bamboo mats for s’chach, and both have paper chains made by boys. To COMPARE, first list your POINTS: the things you will look at in both, like size, walls and s’chach. For each point, ask: are the two ALIKE or DIFFERENT?', q:'Point: size. The yeshiva sukkah seats 120 boys. The Lerner sukkah seats 10 people. Alike or different?', o:['different','alike','it is not a point']},
+    {how:'Then choose a PLAN for the body. A BLOCK plan: one block all about the yeshiva sukkah (its size and walls), then one block all about the Lerner sukkah, with the SAME points in the SAME order. A POINT BY POINT plan: one paragraph for each point, and each paragraph tells about BOTH sukkahs. Either way, the opening names both things, and a closing ends the piece.', q:'Paragraph 1: the size of both sukkahs. Paragraph 2: the walls of both. Paragraph 3: the s’chach of both. Which plan is it?', o:['point by point','block','one side only']},
+    {how:'Choose the plan that fits best. TWO points, or a short piece: a block plan works well. THREE or more points: point by point is best, so the reader sees each point side by side and does not have to remember all of one sukkah while he reads about the other. Two mistakes. ONE SIDE ONLY: a point tells about just one of the two things. ORDER DOES NOT MATCH: in a block plan, the second block takes the points in a different order.', q:'Yehuda has four points to compare: size, walls, s’chach and who built it. Which plan fits best?', o:['point by point','block','one side only']}
+  ],
+  practice:[
+    {t:'sort', q:'Yehuda’s notes on the two sukkahs. Sort each point: alike or different?', bins:[{id:'A',label:'🟰 Alike'},{id:'D',label:'↔️ Different'}],
+      items:[{label:'S’chach: both have bamboo mats.',bin:'A'},{label:'Decorations: both have paper chains made by boys.',bin:'A'},{label:'Size: 120 boys and 10 people.',bin:'D'},{label:'Walls: wooden walls and canvas walls.',bin:'D'},{label:'Building time: six hours and two hours.',bin:'D'}],
+      h:'Read both sides of the point. Are they the same, or not the same?'},
+    {t:'pairs', q:'Match each point to what BOTH sukkahs have.', pairs:[['Size','120 boys at the yeshiva; 10 people at the Lerners'],['Walls','wooden walls at the yeshiva; canvas walls at the Lerners'],['S’chach','bamboo mats on both'],['Where it stands','the parking lot; the back porch']],
+      h:'Find the point in Yehuda’s notes. What does each sukkah have for that point?'},
+    {t:'order', q:'Put Yehuda’s BLOCK plan for a short note in order. He compares two points, size and walls, and writes about the yeshiva sukkah first. Tap the lines in order.', tiles:['Opening: the yeshiva sukkah and the Lerner sukkah are alike and different.','First block: the yeshiva sukkah: its size and walls.','Second block: the Lerner sukkah: its size and walls.','Closing: two sukkahs, one mitzvah.'], extra:['Third block: my favorite snack.'],
+      h:'The opening names both sukkahs. Then one whole block for each sukkah, yeshiva first. The closing comes last.'},
+    {t:'spotall', q:'Point by point: each paragraph tells about BOTH sukkahs. Tap every paragraph line that does.', cells:[{label:'Walls: the yeshiva sukkah has wood; the Lerner sukkah has canvas.',ok:true},{label:'Size: 120 boys at the yeshiva; 10 people at the Lerners.',ok:true},{label:'S’chach: both sukkahs use bamboo mats.',ok:true},{label:'Walls: the yeshiva sukkah has wooden walls.',ok:false},{label:'Size: the Lerner sukkah seats 10 people.',ok:false}],
+      h:'Look for BOTH sukkahs in the line. If only one is there, it is one side only.'},
+    {t:'sort', q:'Sort each plan line: a strong plan line, or a mistake?', bins:[{id:'S',label:'✅ Strong plan line'},{id:'O',label:'❌ Mistake: one side only'},{id:'M',label:'❌ Mistake: order does not match'}],
+      items:[{label:'Size paragraph: 120 boys at the yeshiva and 10 people at the Lerners.',bin:'S'},{label:'Block 1: yeshiva size, walls. Block 2: Lerner size, walls.',bin:'S'},{label:'Walls paragraph: only the yeshiva sukkah’s wooden walls.',bin:'O'},{label:'Block 1: yeshiva size, walls, s’chach. Block 2: Lerner s’chach, size, walls.',bin:'M'},{label:'Block 1: yeshiva walls, size. Block 2: Lerner size, walls.',bin:'M'}],
+      h:'Does every point tell about both sukkahs? In a block plan, do both blocks use the same order?'},
+    {t:'spotall', q:'Three or more points: point by point. Two points, a short piece: block. Tap every writer who should use POINT BY POINT.', cells:[{label:'Yehuda: four points about two sukkahs.',ok:true},{label:'Binyamin: three points about two parks.',ok:true},{label:'Avrumi: five points about two seforim stores.',ok:true},{label:'Tzvi Hirsch: two points about two pens, a short piece.',ok:false},{label:'Dovid: two points about two lunch boxes, a short piece.',ok:false}],
+      h:'Count the points. Three or more? Point by point.'},
+    {t:'write', q:'Your turn to plan Yehuda’s piece on the two sukkahs. Use three points: size, walls and s’chach. Choose block or point by point. Write the opening line, one line for each paragraph, and a closing line.', min:0, checks:['🧱 I chose block or point by point, and I know why.','⚖️ Every point tells about BOTH sukkahs.','🔁 In a block plan, both blocks use the same order.'], h:'Three points means point by point fits best. Write one line per point, and name both sukkahs in each line.'}
+  ],
+  check:[
+    {q:'Tzvi Hirsch compares his Bubby’s challah with the bakery challah. Paragraph 1: the taste of both. Paragraph 2: the shape of both. Paragraph 3: the price of both. Which plan is it?', o:['point by point','block','one side only'], h:'Is each paragraph about one challah, or about one point for both?'},
+    {q:'Tzvi Hirsch writes a short note with a block plan. Block 1, Bubby’s challah: taste, then shape. Block 2, the bakery challah: shape, then taste. What is wrong?', o:['order does not match','one side only','nothing, it is a strong plan'], h:'Read the points in Block 1, then in Block 2. Same order?'},
+    {t:'order', q:'Put Tzvi Hirsch’s point-by-point plan in order. Tap the lines in order.', tiles:['Bubby’s challah and the bakery challah are alike and different.','First, the taste: both challahs are sweet.','Next, the shape: Bubby braids six strands, and the bakery braids three.','Last, the price: Bubby’s challah is free, and the bakery challah costs $6.'], extra:['Challah is a kind of bread.'], h:'The opening names both challahs. Then First, Next, Last.'}
+  ],
+  re:[
+    {how:'A new way: picture two tables at a kiddush. Block: walk all around one table, then all around the other. Point by point: look at the kugel on both tables, then the cake on both tables.', q:'Looking at the kugel on both tables, then the cake on both, is…', o:['point by point','block','one side only']},
+    {how:'A simpler step: make a T-chart. The yeshiva sukkah on the left, the Lerner sukkah on the right. One row for each point. Fill in BOTH sides of every row before you plan.', q:'In a T-chart, every row needs…', o:['both sides filled in','one side only','a quote']},
+    {how:'The skill underneath: Three-Part Piece (this year), which planned an opening, a body and a closing. Now you go further: the body compares TWO things, planned block or point by point, and every point tells about both.', q:'In a compare plan, every point tells about…', o:['both things','one thing','the writer']}
+  ]},
+
+  'WRIT.PARA.L06.13':{name:'In Contrast',
+  teach:[
+    {how:'In Grade 4 your linking words joined an opinion to its reasons, and in Because, So, Therefore your links pointed from reason to result. Now you link two THINGS you compare. A COMPARE WORD tells the reader, before he reads on, if the next part is the SAME or NOT THE SAME. An ALIKE WORD shows the same: “Similarly,” or “Both”. “The yeshiva sukkah has bamboo mats for s’chach. Similarly, the Lerner sukkah has bamboo mats.” “Both sukkahs have paper chains made by boys.”', q:'Which word shows the two sukkahs are ALIKE?', o:['Similarly,','However,','Unlike']},
+    {how:'A DIFFERENT WORD shows they are not the same: “In contrast,” “However,” “On the other hand,” or “Unlike”. “The yeshiva sukkah seats 120 boys. In contrast, the Lerner sukkah seats 10 people.” “Similarly,” “In contrast,” “However,” and “On the other hand,” start a sentence, with a comma after. “Unlike” comes before the first thing: “Unlike the yeshiva sukkah, the Lerner sukkah has canvas walls.”', q:'“The yeshiva sukkah has wooden walls. ___ the Lerner sukkah has canvas walls.” Which word fits?', o:['In contrast,','Similarly,','Both']},
+    {how:'Two mistakes. The WRONG SIGNAL: an alike word before something different, or a different word before something the same. “The yeshiva sukkah seats 120 boys. Similarly, the Lerner sukkah seats 10 people.” 120 and 10 are not the same! TWO DIFFERENT POINTS: the two sentences are not about the same point. “The yeshiva sukkah has wooden walls. In contrast, the Lerner sukkah seats 10 people.” Walls and size cannot be compared. Keep the SAME point on both sides.', q:'“The yeshiva sukkah seats 120 boys. Similarly, the Lerner sukkah seats 10 people.” What is wrong?', o:['wrong signal','two different points','nothing, it links the right way']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each compare word: an alike word, or a different word?', bins:[{id:'A',label:'🟰 Alike word'},{id:'D',label:'↔️ Different word'}],
+      items:[{label:'Similarly,',bin:'A'},{label:'Both',bin:'A'},{label:'In contrast,',bin:'D'},{label:'However,',bin:'D'},{label:'On the other hand,',bin:'D'},{label:'Unlike',bin:'D'}],
+      h:'Does the word tell the reader “the same” or “not the same”?'},
+    {t:'pairs', q:'Match each sentence about the yeshiva sukkah to the sentence that links to it.', pairs:[['The yeshiva sukkah has bamboo mats for s’chach.','Similarly, the Lerner sukkah has bamboo mats.'],['The yeshiva sukkah seats 120 boys.','In contrast, the Lerner sukkah seats 10 people.'],['The yeshiva sukkah has wooden walls.','However, the Lerner sukkah has canvas walls.'],['The yeshiva sukkah stands in the parking lot.','On the other hand, the Lerner sukkah is on the back porch.']],
+      h:'Find the same point on both sides: s’chach, size, walls or place. Then check the word: same or not the same?'},
+    {t:'order', q:'Build the sentence with “Unlike”. Tap the parts in order.', tiles:['Unlike the yeshiva sukkah,','the Lerner sukkah','has canvas walls.'], extra:['Similarly,'],
+      h:'“Unlike” and the first thing come first, then a comma. Then the other thing and how it is different.'},
+    {t:'spotall', q:'Tap every sentence or pair that links the RIGHT way.', cells:[{label:'The yeshiva sukkah took six hours to build. In contrast, the Lerner sukkah took two hours.',ok:true},{label:'Both sukkahs have paper chains made by boys.',ok:true},{label:'The yeshiva sukkah has bamboo mats. Similarly, the Lerner sukkah has bamboo mats.',ok:true},{label:'The yeshiva sukkah has bamboo mats. However, the Lerner sukkah has bamboo mats.',ok:false},{label:'The yeshiva sukkah seats 120 boys. On the other hand, the Lerner sukkah has canvas walls.',ok:false}],
+      h:'Same point on both sides? And does the word match: same, or not the same?'},
+    {t:'sort', q:'Sort each pair: does it link the right way, or is it a mistake?', bins:[{id:'R',label:'✅ Links the right way'},{id:'W',label:'❌ Mistake: wrong signal'},{id:'T',label:'❌ Mistake: two different points'}],
+      items:[{label:'The yeshiva sukkah is in the parking lot. In contrast, the Lerner sukkah is on the back porch.',bin:'R'},{label:'Unlike the yeshiva sukkah, the Lerner sukkah took only two hours to build.',bin:'R'},{label:'The yeshiva sukkah has wooden walls. Similarly, the Lerner sukkah has canvas walls.',bin:'W'},{label:'The yeshiva sukkah has bamboo mats. In contrast, the Lerner sukkah has bamboo mats too.',bin:'W'},{label:'The yeshiva sukkah has wooden walls. In contrast, the Lerner sukkah seats 10 people.',bin:'T'}],
+      h:'First check: are both sentences about the same point? Then check: does the word say same or not the same, and is that true?'},
+    {t:'order', q:'Build a compare paragraph about the two sukkahs. Tap the sentences in order.', tiles:['The yeshiva sukkah and the Lerner sukkah are alike in some ways.','One way is the s’chach: both have bamboo mats.','However, the two sukkahs are very different in size.','The yeshiva sukkah seats 120 boys. In contrast, the Lerner sukkah seats only 10 people.'], extra:['Similarly, both sukkahs are huge.'],
+      h:'“One way” points back to the “some ways” sentence. “However” turns from alike to different. The size details come after “different in size.”'},
+    {t:'write', q:'Your turn. Write three sentences comparing the two sukkahs: one with an alike word (Similarly, or Both), one with a different word (In contrast, However, On the other hand, or Unlike), and one more of your choice.', min:0, checks:['🟰 My alike word comes before something that is the same.','↔️ My different word comes before something that is different.','🎯 Each pair talks about the SAME point on both sides.'], h:'Pick a point first: size, walls, s’chach or place. Say “same” or “different” out loud. Then pick the word.'}
+  ],
+  check:[
+    {q:'Tzvi Hirsch compares his Bubby’s challah and the bakery challah. “Bubby’s challah is sweet. ___ the bakery challah is sweet.” Which kind of word fits the blank?', o:['an alike word','a different word','a reason word'], h:'Sweet and sweet: same, or not the same?'},
+    {q:'“Bubby braids her challah with six strands. Similarly, the bakery braids its challah with three strands.” What is wrong?', o:['wrong signal','two different points','nothing, it links the right way'], h:'Six and three: same, or not the same? Does “Similarly” fit?'},
+    {t:'order', q:'Bubby’s challah is free. The bakery challah costs $6. Build the sentence with “Unlike”. Tap the parts in order.', tiles:['Unlike the bakery challah,','Bubby’s challah','costs nothing.'], extra:['Similarly,'], h:'“Unlike” and the first thing come first, then a comma. Then the other thing.'}
+  ],
+  re:[
+    {how:'A new way: an alike word is like an equals sign (=). A different word is like a not-equal sign (≠). Put the right sign between the two things.', q:'“In contrast,” is like…', o:['a not-equal sign','an equals sign','a plus sign']},
+    {how:'A simpler step: before you write, say “same” or “different” out loud for the point. Same: Similarly, or Both. Different: In contrast, or However.', q:'The point is different. Which word can you use?', o:['In contrast,','Similarly,','Both']},
+    {how:'The skill underneath: Because, So, Therefore (this year) and Grade 4’s Linking Words, where every link has a job. Now you go further: compare words link two THINGS, tell the reader alike or different, and stay on the same point.', q:'Compare words tell the reader…', o:['alike or different','reason or result','first or last']}
+  ]},
+
+  'WRIT.PARA.L06.14':{name:'Quote It Right',
+  teach:[
+    {how:'In Proof from the Text you wrote a FULL QUOTE with a source tag: Mr. Halpern said, “A garden is a science lab that grows.” Now you go further. WEAVE a few of his words into the middle of YOUR OWN sentence: Mr. Halpern called the garden “a science lab that grows.” That is a WOVEN QUOTE. The quotation marks go only around HIS exact words. Your words stay outside them, and your sentence still says who said it. For the sukkah piece, Mr. Halpern said, “This sukkah is a dining room for the whole yeshiva.”', q:'Which sentence weaves a quote into the writer’s own sentence?', o:['Mr. Halpern called the yeshiva sukkah “a dining room for the whole yeshiva.”','Mr. Halpern said, “This sukkah is a dining room for the whole yeshiva.”','Mr. Halpern said the sukkah is big.']},
+    {how:'Punctuate each kind the right way. A FULL QUOTE: the tag, a COMMA, the quotation mark, then a CAPITAL letter, because the quote starts a sentence. Dovid’s Zaidy says, “A small sukkah can hold a big simcha.” A WOVEN QUOTE: NO comma before it and NO capital, because it is the middle of your sentence. Dovid’s Zaidy says a small sukkah “can hold a big simcha.” In both, the period goes INSIDE the closing quotation mark.', q:'Which full quote is punctuated right?', o:['Dovid’s Zaidy says, “A small sukkah can hold a big simcha.”','Dovid’s Zaidy says “a small sukkah can hold a big simcha.”','Dovid’s Zaidy says, A small sukkah can hold a big simcha.']},
+    {how:'Three mistakes. NO QUOTATION MARKS: his exact words with no marks look like YOUR words. A PUNCTUATION MISTAKE: no comma or capital in a full quote, or a comma and a capital before a woven quote. CHANGED WORDS: inside quotation marks, every word must be exactly what he said. If you want other words, leave out the marks and say it in your own words.', q:'“Mr. Halpern called the sukkah a dining room for the whole yeshiva.” These are his exact words. What is wrong?', o:['no quotation marks','changed words','nothing, it is woven right']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each sentence: a full quote, or a woven quote?', bins:[{id:'F',label:'💬 Full quote (tag, comma, capital)'},{id:'W',label:'🧵 Woven quote (inside my sentence)'}],
+      items:[{label:'Mr. Halpern said, “This sukkah is a dining room for the whole yeshiva.”',bin:'F'},{label:'Dovid’s Zaidy says, “A small sukkah can hold a big simcha.”',bin:'F'},{label:'Mr. Halpern called the sukkah “a dining room for the whole yeshiva.”',bin:'W'},{label:'Dovid’s Zaidy says a small sukkah “can hold a big simcha.”',bin:'W'},{label:'Mr. Halpern called the garden “a science lab that grows.”',bin:'W'}],
+      h:'A tag, a comma, then a capital: a full quote. His words in the middle of your sentence, with no comma: a woven quote.'},
+    {t:'pairs', q:'Match each full quote to the same words woven into a sentence.', pairs:[['Mr. Halpern said, “This sukkah is a dining room for the whole yeshiva.”','Mr. Halpern called the sukkah “a dining room for the whole yeshiva.”'],['Dovid’s Zaidy says, “A small sukkah can hold a big simcha.”','Dovid’s Zaidy says a small sukkah “can hold a big simcha.”'],['Mr. Halpern said, “A garden is a science lab that grows.”','Mr. Halpern called the garden “a science lab that grows.”']],
+      h:'Find the same exact words in both. Who said them?'},
+    {t:'spotall', q:'Tap every sentence that is punctuated right.', cells:[{label:'Mr. Halpern said, “This sukkah is a dining room for the whole yeshiva.”',ok:true},{label:'Dovid’s Zaidy says a small sukkah “can hold a big simcha.”',ok:true},{label:'Mr. Halpern called the sukkah “a dining room for the whole yeshiva.”',ok:true},{label:'Mr. Halpern said “this sukkah is a dining room for the whole yeshiva.”',ok:false},{label:'Dovid’s Zaidy says a small sukkah, “Can hold a big simcha.”',ok:false}],
+      h:'Full quote: comma and capital. Woven quote: no comma, no capital. The period goes inside the closing mark.'},
+    {t:'order', q:'Weave Mr. Halpern’s words into your own sentence. Tap the parts in order.', tiles:['Mr. Halpern','called the yeshiva sukkah','“a dining room for the whole yeshiva.”'], extra:['Everyone said,'],
+      h:'Who said it comes first. Then your own words. His words come last, inside the quotation marks.'},
+    {t:'sort', q:'Dovid’s Zaidy said, “A small sukkah can hold a big simcha.” Mr. Halpern said, “This sukkah is a dining room for the whole yeshiva.” Sort each sentence: quoted right, or a mistake?', bins:[{id:'R',label:'✅ Quoted right'},{id:'N',label:'❌ Mistake: no quotation marks'},{id:'C',label:'❌ Mistake: changed words'}],
+      items:[{label:'Dovid’s Zaidy says a small sukkah “can hold a big simcha.”',bin:'R'},{label:'Mr. Halpern called the sukkah “a dining room for the whole yeshiva.”',bin:'R'},{label:'Dovid’s Zaidy says a small sukkah can hold a big simcha.',bin:'N'},{label:'Mr. Halpern called the sukkah “a lunchroom for all the boys.”',bin:'C'},{label:'Dovid’s Zaidy says a small sukkah “holds a really big simcha.”',bin:'C'}],
+      h:'Are his exact words inside quotation marks? Check every word against what he really said.'},
+    {t:'order', q:'Build Zaidy’s full quote. Watch the comma and the capital. Tap the parts in order.', tiles:['Dovid’s Zaidy says,','“A small sukkah','can hold a big simcha.”'], extra:['“a small sukkah'],
+      h:'The tag and a comma come first. A full quote starts with a capital letter.'},
+    {t:'write', q:'Your turn. Write two sentences for Yehuda’s sukkah piece. In one, give a full quote with a tag, comma and capital. In the other, weave a few of Dovid’s Zaidy’s words, “can hold a big simcha,” into your own sentence.', min:0, checks:['🧵 I wove a few exact words into my own sentence.','✍️ My full quote has a comma before it and starts with a capital.','🔤 My quoted words are exact, in quotation marks, and I said who said them.'], h:'For the woven quote, start with who said it and your own words. Put his few words last, with no comma and no capital.'}
+  ],
+  check:[
+    {q:'Tzvi Hirsch’s Bubby said, “Challah tastes best when you braid it with love.” Tzvi Hirsch writes: Bubby says challah “tastes best when you braid it with love.” What kind of quote is it?', o:['a woven quote','a full quote','no quotation marks'], h:'Are Bubby’s words in the middle of Tzvi Hirsch’s own sentence?'},
+    {q:'Bubby’s real words: “Challah tastes best when you braid it with love.” A boy writes: Bubby says to braid challah, “With love.” What is wrong?', o:['a punctuation mistake','changed words','nothing, it is quoted right'], h:'Are her words in the middle of his own sentence? Then no comma and no capital.'},
+    {t:'order', q:'Bubby said, “Challah tastes best when you braid it with love.” Weave her last few words into your own sentence. Tap the parts in order.', tiles:['Bubby says','to braid challah','“with love.”'], extra:[', “With love.”'], h:'Who said it first, then your own words. Her few words come last, in quotation marks: no comma, no capital.'}
+  ],
+  re:[
+    {how:'A new way: quotation marks are like a frame around a picture. They show exactly which words are someone else’s. Everything outside the frame is yours.', q:'Quotation marks are like…', o:['a frame around his exact words','a period','a title']},
+    {how:'A simpler step: write the full quote first. Then pick the best few words, and build your own sentence that ends with them.', q:'To weave a quote, keep…', o:['a few of his exact words','all your own words','no quotation marks']},
+    {how:'The skill underneath: Proof from the Text (this year) gave a full quote with a source tag, and Dialogue + Action taught commas and quotation marks for talk. Now you go further: you weave a few exact words into your own sentence, and punctuate full and woven quotes the right way.', q:'A woven quote sits…', o:['in the middle of your own sentence','after “The end.”','in the title']}
+  ]},
+
+  'WRIT.ESSAY.L06.08':{name:'Two Texts, One Piece',
+  teach:[
+    {how:'In Proof from the Text you used one text. Now Yehuda has TWO short texts on one topic. TEXT 1, Avrumi’s article “The Yeshiva Sukkah”: “The yeshiva sukkah stands in the parking lot and seats 120 boys. Mr. Halpern and the eighth graders built it on a Sunday, in six hours, with wooden walls and bamboo mats for s’chach. Every class hung a paper chain it made. Mr. Halpern said, ‘This sukkah is a dining room for the whole yeshiva.’” TEXT 2, Dovid’s article “Our Sukkah at Home”: “Our sukkah is on our back porch and seats 10 people. My Abba and I built it in two hours, with canvas walls and bamboo mats for s’chach. My little brothers hung paper chains they made. My Zaidy says, ‘A small sukkah can hold a big simcha.’” Step 1: pick ONE POINT that BOTH texts talk about.', q:'Which point do BOTH texts talk about?', o:['how the sukkah was built','the yeshiva parking lot','what Zaidy says']},
+    {how:'Step 2: take ONE DETAIL FROM EACH TEXT about that point. Step 3: NAME BOTH TEXTS, so the reader knows where each detail came from: “In Avrumi’s article,” or “Dovid writes that”. Step 4: say what the two texts show together: “Both texts show that…”. Point: the sukkahs are very different in size. In Avrumi’s article, the yeshiva sukkah seats 120 boys. In contrast, Dovid writes that his family’s sukkah seats only 10 people. Both texts show that a sukkah can be any size.', q:'Which sentence names the text its detail came from?', o:['In Avrumi’s article, the yeshiva sukkah seats 120 boys.','The yeshiva sukkah seats 120 boys.','Everyone knows the yeshiva sukkah is big.']},
+    {how:'Three mistakes. ONE TEXT ONLY: both details come from the same text, so the paragraph is not about two texts. TEXT NOT NAMED: like a missing source tag in Proof from the Text, the detail is real, but the reader cannot tell which text it came from. WRONG TEXT NAMED: the detail is named with the other text. Always look back and check.', q:'“In Dovid’s article, the sukkah seats 120 boys.” What is wrong?', o:['wrong text named','one text only','text not named']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each detail: which text is it from?', bins:[{id:'A',label:'📄 Avrumi’s article (the yeshiva sukkah)'},{id:'D',label:'🏠 Dovid’s article (the sukkah at home)'}],
+      items:[{label:'It seats 120 boys.',bin:'A'},{label:'It was built in six hours.',bin:'A'},{label:'It has wooden walls.',bin:'A'},{label:'It seats 10 people.',bin:'D'},{label:'It was built in two hours.',bin:'D'},{label:'It has canvas walls.',bin:'D'}],
+      h:'Look back at both texts. Is the detail about the yeshiva sukkah or the sukkah at home?'},
+    {t:'pairs', q:'Match each point to a detail from EACH text.', pairs:[['Size','Avrumi: 120 boys. Dovid: 10 people.'],['Walls','Avrumi: wooden walls. Dovid: canvas walls.'],['Building time','Avrumi: six hours. Dovid: two hours.'],['Decorations','Avrumi: a paper chain from every class. Dovid: paper chains from his little brothers.']],
+      h:'For each point, find what Avrumi says and what Dovid says.'},
+    {t:'spotall', q:'Point: both sukkahs were built by a team. Tap every sentence that fits the point AND names the right text.', cells:[{label:'In Avrumi’s article, Mr. Halpern and the eighth graders built the yeshiva sukkah.',ok:true},{label:'Dovid writes that he and his Abba built their sukkah together.',ok:true},{label:'Mr. Halpern and the eighth graders built the yeshiva sukkah.',ok:false},{label:'In Dovid’s article, the sukkah seats 10 people.',ok:false},{label:'In Avrumi’s article, Dovid and his Abba built the sukkah.',ok:false}],
+      h:'Three tests: is it about who built it, is its text named, and is it the right text?'},
+    {t:'sort', q:'Point: the sukkahs are different in size. Sort each pair of details: strong, or a mistake?', bins:[{id:'T',label:'✅ Two texts, both named'},{id:'O',label:'❌ Mistake: one text only'},{id:'N',label:'❌ Mistake: text not named'}],
+      items:[{label:'In Avrumi’s article, the yeshiva sukkah seats 120 boys. Dovid writes that his sukkah seats 10 people.',bin:'T'},{label:'Avrumi writes that the yeshiva sukkah seats 120 boys. Mr. Halpern calls it “a dining room for the whole yeshiva.”',bin:'O'},{label:'Dovid writes that his sukkah seats 10 people. His Zaidy says, “A small sukkah can hold a big simcha.”',bin:'O'},{label:'One sukkah seats 120 boys. The other sukkah seats 10 people.',bin:'N'}],
+      h:'Are there details from BOTH texts? Does each one say which text it came from?'},
+    {t:'order', q:'Build Yehuda’s paragraph from two texts. Tap the sentences in order.', tiles:['The two sukkahs are very different in size.','In Avrumi’s article, the yeshiva sukkah seats 120 boys.','In contrast, Dovid writes that his family’s sukkah seats only 10 people.','Both texts show that a sukkah can be any size.'], extra:['Sukkos comes in the fall.'],
+      h:'The point first. Then a detail from one text. “In contrast” brings in the other text. “Both texts show” comes last.'},
+    {t:'pairs', q:'Match each mistake to its fix.', pairs:[['One text only','Add a detail from the other text.'],['Text not named','Add “In Avrumi’s article,” or “Dovid writes that”.'],['Wrong text named','Look back and name the text it really came from.']],
+      h:'What is missing or wrong? What would fix it?'},
+    {t:'write', q:'Your turn. Point: boys made both sukkahs beautiful. Write a paragraph: the point, a detail from Avrumi’s article, a detail from Dovid’s article, each with its text named, and a sentence that says what both texts show.', min:0, checks:['📄 I used a detail from EACH text.','🏷️ I named the text each detail came from.','🎯 Both details are about my one point.'], h:'Look for paper chains in both texts. Start one detail with “In Avrumi’s article,” and one with “Dovid writes that”.'}
+  ],
+  check:[
+    {q:'Two texts. Tzvi Hirsch’s article: “Bubby braids her challah with six strands. She bakes it every Friday.” Binyamin’s article: “The bakery braids its challah with three strands.” Point: the two challahs are braided in different ways. A boy writes: “In Tzvi Hirsch’s article, Bubby braids her challah with six strands. He writes that she bakes it every Friday.” What is wrong?', o:['one text only','text not named','wrong text named'], h:'Where does each detail come from? Is Binyamin’s article there at all?'},
+    {q:'Same two texts. A boy writes: “In Binyamin’s article, Bubby braids her challah with six strands.” What is wrong?', o:['wrong text named','text not named','one text only'], h:'Look back. Who wrote about Bubby’s challah?'},
+    {t:'order', q:'Build a paragraph from the two challah texts. Tap the sentences in order.', tiles:['The two challahs are braided in different ways.','In Tzvi Hirsch’s article, Bubby braids her challah with six strands.','In contrast, Binyamin writes that the bakery braids its challah with three strands.','Both texts show that challah can be braided more than one way.'], extra:['Challah is for Shabbos.'], h:'The point first. Then one text, then “In contrast” and the other text. “Both texts show” comes last.'}
+  ],
+  re:[
+    {how:'A new way: think of a class photo with a name under each boy. In a two-text paragraph, every detail gets the name of the text it came from.', q:'In a two-text paragraph, every detail gets…', o:['the name of its text','a picture','a question']},
+    {how:'A simpler step: use two colors. Underline Avrumi’s article in blue and Dovid’s in green. Your paragraph needs one blue detail and one green detail.', q:'Your paragraph needs a detail from…', o:['each text','one text','no text']},
+    {how:'The skill underneath: Proof from the Text (this year): a detail from ONE text, with a source tag. Now you go further: one point, a detail from EACH of two texts, and both texts named. (In Grade 8, you will weave many sources together.)', q:'Two Texts, One Piece goes further by using…', o:['a detail from each of two texts','one text only','no texts']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L06.07':{hook:'How do you write about two things at once without mixing the reader up?', big:'Plan a compare-and-contrast piece: list your points, tell both sides of each, and choose a block plan or a point-by-point plan.',
+    intro:['Points: what you compare, like size, walls, s’chach.','Block: all of one thing, then all of the other, same order.','Point by point: one paragraph per point, both things in each.','Every point tells about BOTH things.'],
+    ex:[{q:'A short note with two points: size and walls. A block plan.',steps:['Block 1: the yeshiva sukkah: size, walls.','Block 2: the Lerner sukkah: size, walls.'],a:'Same points, same order, in both blocks.'},
+        {q:'The same points, point by point.',steps:['Paragraph 1: size: 120 boys and 10 people.','Paragraph 2: walls: wood and canvas.'],a:'Paragraph 3: s’chach: both use bamboo mats.'}],
+    oops:{q:'Yehuda’s walls paragraph.',wrong:'Walls: the yeshiva sukkah has wooden walls.',right:'Walls: the yeshiva sukkah has wooden walls, and the Lerner sukkah has canvas walls.',why:'The first line tells only one side. In a compare plan, every point tells about both sukkahs.'},
+    idea:['Same points, both sides, in a plan the reader can follow.'],
+    try:{q:'Paragraph 1: all about the yeshiva sukkah. Paragraph 2: all about the Lerner sukkah. Which plan is it?',o:['block','point by point','one side only'],a:'block',steps:['Is each paragraph about one sukkah, or about one point?']}},
+  'WRIT.PARA.L06.13':{hook:'Can one word tell the reader “same” or “different” before he reads the rest?', big:'Link two things you compare with alike words (Similarly, Both) and different words (In contrast, However, On the other hand, Unlike), on the same point.',
+    intro:['Alike words: Similarly, Both.','Different words: In contrast, However, On the other hand, Unlike.','Compare the SAME point on both sides.','Never send the wrong signal.'],
+    ex:[{q:'S’chach: both sukkahs use bamboo mats.',steps:['Same or different? Same.','Pick an alike word.'],a:'The yeshiva sukkah has bamboo mats. Similarly, the Lerner sukkah has bamboo mats.'},
+        {q:'Walls: wood and canvas.',steps:['Same or different? Different.','Pick a different word.'],a:'Unlike the yeshiva sukkah, the Lerner sukkah has canvas walls.'}],
+    oops:{q:'Link the size point.',wrong:'The yeshiva sukkah seats 120 boys. Similarly, the Lerner sukkah seats 10 people.',right:'The yeshiva sukkah seats 120 boys. In contrast, the Lerner sukkah seats 10 people.',why:'120 and 10 are different, so “Similarly” sends the wrong signal. Use a different word.'},
+    idea:['Say “same” or “different” first, then pick the word.'],
+    try:{q:'“The yeshiva sukkah is in the parking lot. ___ the Lerner sukkah is on the back porch.” Which word fits?',o:['In contrast,','Similarly,','Both'],a:'In contrast,',steps:['Parking lot and back porch: same or different?']}},
+  'WRIT.PARA.L06.14':{hook:'Can you borrow just a few of someone’s words and make them part of your sentence?', big:'Weave a few exact words into your own sentence, say who said them, and punctuate full and woven quotes the right way.',
+    intro:['Full quote: a tag, a comma, then a capital letter.','Woven quote: your own sentence, then “his few words.”','A woven quote has no comma and no capital.','Exact words, in quotation marks, and say who said them.'],
+    ex:[{q:'Mr. Halpern said, “This sukkah is a dining room for the whole yeshiva.”',steps:['Pick his best few words.','Build your own sentence around them.'],a:'Mr. Halpern called the sukkah “a dining room for the whole yeshiva.”'},
+        {q:'Dovid’s Zaidy: “A small sukkah can hold a big simcha.” As a full quote.',steps:['The tag and a comma.','A capital letter; the period inside.'],a:'Dovid’s Zaidy says, “A small sukkah can hold a big simcha.”'}],
+    oops:{q:'Weave Zaidy’s words.',wrong:'Dovid’s Zaidy says a small sukkah, “Can hold a big simcha.”',right:'Dovid’s Zaidy says a small sukkah “can hold a big simcha.”',why:'A woven quote is the middle of your sentence: no comma before it, and no capital letter.'},
+    idea:['Borrow his exact words; build your own sentence around them.'],
+    try:{q:'Mr. Halpern called the sukkah “a dining room for the whole yeshiva.” What kind of quote is it?',o:['a woven quote','a full quote','no quotation marks'],a:'a woven quote',steps:['Are his words in the middle of the writer’s own sentence?']}},
+  'WRIT.ESSAY.L06.08':{hook:'What can two short articles show together that one cannot show alone?', big:'Use details from two texts on one topic in one paragraph: one point, a detail from each text, and both texts named.',
+    intro:['Pick one point both texts talk about.','Take one detail from each text.','Name each text: “In Avrumi’s article,” “Dovid writes that”.','Say what both texts show together.'],
+    ex:[{q:'Point: the sukkahs are very different in size.',steps:['Avrumi’s article: it seats 120 boys.','Dovid’s article: it seats 10 people.'],a:'In Avrumi’s article, the yeshiva sukkah seats 120 boys. In contrast, Dovid writes that his family’s sukkah seats only 10 people.'},
+        {q:'Point: both sukkahs were built by a team.',steps:['Avrumi’s article: Mr. Halpern and the eighth graders.','Dovid’s article: Dovid and his Abba.'],a:'Both texts show that boys help build a sukkah.'}],
+    oops:{q:'A sentence about size.',wrong:'In Dovid’s article, the sukkah seats 120 boys.',right:'In Avrumi’s article, the yeshiva sukkah seats 120 boys.',why:'120 boys is in Avrumi’s article, not Dovid’s. Look back and check which text each detail came from.'},
+    idea:['Two texts, one point: a detail from each, and both named.'],
+    try:{q:'“It seats 10 people.” Which text is it from?',o:['Dovid’s article','Avrumi’s article','neither text'],a:'Dovid’s article',steps:['Look back at both texts.']}},
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L06.07':{s:'List your points: what will you compare?\nFor each point, write BOTH sides. Alike or different?\nBlock: all of one thing, then all of the other, in the same order.\nPoint by point: one paragraph per point, both things in each.\nTwo points or a short piece: block works. Three or more: point by point.'},
+  'WRIT.PARA.L06.13':{s:'Pick ONE point, like the walls.\nSay it: same or different?\nSame: Similarly, or Both.\nDifferent: In contrast, However, On the other hand, or Unlike.\nCheck: both sentences talk about the same point.'},
+  'WRIT.PARA.L06.14':{s:'Find his exact words. Pick the best few.\nWoven: build your own sentence around them, and say who said them.\nPut quotation marks around his words only.\nWoven: no comma before, no capital. Full quote: tag, comma, capital.\nThe period goes inside the closing quotation mark.'},
+  'WRIT.ESSAY.L06.08':{s:'Read both texts. Find ONE point they both talk about.\nTake one detail from each text about that point.\nName each text: “In Avrumi’s article,” or “Dovid writes that”.\nLook back: is each detail really from the text you named?\nEnd with what both texts show together.'},
+  };
+  var BITE = {
+  'WRIT.ESSAY.L06.07':{ band:'E45', pic:'⚖️', today:'Plan a piece that compares two things', why:'A clear plan lets the reader see how two things are alike and different without getting mixed up.',
+    ready:[{q:'A Three-Part Piece has an opening, a body and…', o:['a closing','a hook only','a quote'], a:'a closing'}],
+    bridge:'WRIT.ESSAY.L06.01', bridgeName:'Three-Part Piece',
+    watch:{ q:'Yehuda plans “Two Sukkahs” for the Gazette', m:{type:'scene', e:'🌿', t:'Yehuda stands between the big yeshiva sukkah and Dovid’s small sukkah on the back porch.'}, steps:[
+      {t:'POINTS: size, walls, s’chach.'},
+      {t:'SIZE: 120 boys at the yeshiva; 10 people at the Lerners. Different.'},
+      {t:'WALLS: wood at the yeshiva; canvas at the Lerners. Different.'},
+      {t:'S’CHACH: bamboo mats on both. Alike.'},
+      {t:'CHOOSE: three points, so point by point.'},
+      {t:'PLAN: one paragraph for size, one for walls, one for s’chach.'}], a:'List the points, tell both sides of each, then choose the plan that fits: point by point.' },
+    oops:{ q:'Yehuda’s walls paragraph', wrong:'Walls: the yeshiva sukkah has wooden walls.', right:'Walls: the yeshiva sukkah has wooden walls, and the Lerner sukkah has canvas walls.', why:'The first line tells only one side. In a compare plan, every point tells about both sukkahs.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can plan a compare-and-contrast piece, block or point by point.',
+    board:{ one:'Same points, both sides: block or point by point.', activity:'Two boys stand for the two sukkahs; the class calls out a point, and each boy says his sukkah’s side. Then the class decides: block or point by point?', mistakes:['A point that tells only one side','A block plan with the points in a different order','No plan: facts mixed up at random'] },
+    do:[
+      {type:'sort', q:'The two sukkahs.', bins:['Alike','Different'], cards:[['Both use bamboo mats.',0],['120 boys and 10 people.',1],['Wood walls and canvas walls.',1],['Both have paper chains.',0]],
+        say:'Alike or different? Sort each point.', how:'Is it the same for both sukkahs, or not?',
+        why:{q:'Why is "Wood walls and canvas walls" different?', o:['The two kinds of walls are not the same','Both walls are the same','It is about one sukkah','It is the s’chach'], a:'The two kinds of walls are not the same'}},
+      {type:'match', q:'Yehuda’s plan lines.', pairs:[['Walls: only the yeshiva’s wood.','One side only'],['Size: 120 boys and 10 people.','Both sides told'],['Block 2: s’chach, size, walls.','Order does not match']], mis:true,
+        say:'Match each plan line to what it is.', how:'Are both sukkahs there? In a block plan, is the order the same?'}],
+    your:[
+      {type:'tiles', q:'Block plan. The yeshiva sukkah goes first.', w:['Opening','Yeshiva','Lerners','Closing'], extra:['A recipe'],
+        say:'Build the block plan, yeshiva sukkah first.', how:'Open, then one whole block for each sukkah, then close.'},
+      {type:'sort', bins:['Block','Point by point'], cards:[['All yeshiva, then all Lerners.',0],['Size of both, then walls of both.',1],['All Bubby’s challah, then all bakery.',0],['Taste of both, then shape of both.',1]],
+        say:'Block or point by point? Sort each plan.', how:'One thing per part is block. One point per part is point by point.',
+        why:{q:'Why is "Taste of both, then shape of both" point by point?', o:['Each part is one point, with both sides','Each part is one thing','It tells one side only','It has no plan'], a:'Each part is one point, with both sides'}},
+      {type:'match', pairs:[['Size','120 boys and 10 people'],['Walls','Wood and canvas'],['S’chach','Bamboo mats on both']],
+        say:'Match each point to both sides.', how:'Find what each sukkah has for that point.',
+        why:{q:'Why does "Wood and canvas" go with Walls?', o:['It tells the walls of both sukkahs','It tells the size','It is about one sukkah','It is the s’chach'], a:'It tells the walls of both sukkahs'}},
+      {type:'tiles', q:'Build Yehuda’s opening line.', w:['The two','sukkahs are','alike and','different.'], extra:['only big.'],
+        say:'Build the opening about both sukkahs.', how:'Name the two things. Say they are alike and different.'},
+      {type:'sort', bins:['Block works','Point by point'], cards:[['Two points, a short piece',0],['Four points to compare',1],['Three points to compare',1],['Two points to compare',0]],
+        say:'Which plan fits? Sort by the number of points.', how:'Two points: block works. Three or more: point by point.',
+        why:{q:'Why use point by point for four points?', o:['The reader sees each point side by side','It is shorter','It tells one side only','Block needs four points'], a:'The reader sees each point side by side'}}] },
+
+  'WRIT.PARA.L06.13':{ band:'E45', pic:'↔️', today:'Show alike and different with the right word', why:'The right compare word tells the reader, before he reads on, if the two things match.',
+    ready:[{q:'In a point-by-point plan, each paragraph tells about…', o:['one point, both things','one thing only','the writer'], a:'one point, both things'}],
+    bridge:'WRIT.ESSAY.L06.07', bridgeName:'Same and Different',
+    watch:{ q:'Avrumi links Yehuda’s sukkah points', m:{type:'scene', e:'↔️', t:'Avrumi reads Yehuda’s notes on the two sukkahs and picks a word for each pair.'}, steps:[
+      {t:'POINT: s’chach. Same or different? Same.'},
+      {t:'ALIKE WORD: Similarly, the Lerner sukkah has bamboo mats.'},
+      {t:'POINT: size. 120 boys and 10 people. Different.'},
+      {t:'DIFFERENT WORD: In contrast, the Lerner sukkah seats 10 people.'},
+      {t:'UNLIKE: Unlike the yeshiva sukkah, the Lerner sukkah has canvas walls.'},
+      {t:'CHECK: each pair talks about the same point.'}], a:'Same point on both sides: an alike word for the same, a different word for not the same.' },
+    oops:{ q:'Link the size point', wrong:'The yeshiva sukkah seats 120 boys. Similarly, the Lerner sukkah seats 10 people.', right:'The yeshiva sukkah seats 120 boys. In contrast, the Lerner sukkah seats 10 people.', why:'120 and 10 are different, so “Similarly” sends the wrong signal. Use a different word.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can link two things with words that show alike and different.',
+    board:{ one:'Same: Similarly, Both. Different: In contrast, However, On the other hand, Unlike.', activity:'Read pairs of sukkah facts aloud; boys hold up an = card for alike or a ≠ card for different, then say the compare word that fits.', mistakes:['An alike word before something different','A different word before something the same','Two sentences about two different points'] },
+    do:[
+      {type:'sort', bins:['Alike word','Different word'], cards:[['Similarly,',0],['In contrast,',1],['Both',0],['However,',1],['Unlike',1]],
+        say:'Alike word or different word? Sort them.', how:'Does it tell the reader same, or not the same?',
+        why:{q:'Why is "However," a different word?', o:['It shows the next part is not the same','It shows the same','It gives a reason','It ends the piece'], a:'It shows the next part is not the same'}},
+      {type:'match', q:'The two sukkahs.', pairs:[['Bamboo mats. Similarly, bamboo mats.','Right signal'],['120 boys. Similarly, 10 people.','Wrong signal'],['Wood walls. In contrast, seats 10.','Two different points']], mis:true,
+        say:'Match each pair to what it is.', how:'Same point on both sides? Does the word fit?'}],
+    your:[
+      {type:'tiles', q:'The yeshiva sukkah seats 120 boys.', w:['In contrast,','the Lerner','sukkah seats','10 people.'], extra:['Similarly,'],
+        say:'Build the next sentence with a different word.', how:'120 and 10 are different. Start with a different word.'},
+      {type:'sort', bins:['Right signal','Wrong signal'], cards:[['Both sukkahs have bamboo mats.',0],['120 boys. Similarly, 10 people.',1],['Wood walls. In contrast, canvas.',0],['Paper chains. However, paper chains.',1]],
+        say:'Right signal or wrong signal? Sort each one.', how:'Same or different? Does the word say the same thing?',
+        why:{q:'Why is "120 boys. Similarly, 10 people." the wrong signal?', o:['120 and 10 are different','They are the same','It has no point','It is a quote'], a:'120 and 10 are different'}},
+      {type:'match', pairs:[['Same, in a new sentence','Similarly,'],['Not the same','In contrast,'],['Same, both in one sentence','Both']],
+        say:'Match each idea to its compare word.', how:'Same or different? Which word says it?',
+        why:{q:'Why does "Both" fit "Same, both in one sentence"?', o:['It names the two things together as alike','It shows a difference','It gives a reason','It shows a result'], a:'It names the two things together as alike'}},
+      {type:'tiles', w:['Both','sukkahs have','paper','chains.'], extra:['However,'],
+        say:'Build an alike sentence with Both.', how:'Both comes first. Then the two things together.'},
+      {type:'sort', bins:['Same point','Two different points'], cards:[['Wood walls; canvas walls.',0],['120 boys; 10 people.',0],['Wood walls; seats 10.',1],['Bamboo mats; back porch.',1]],
+        say:'Same point on both sides? Sort each pair.', how:'Are both sides about walls, size, s’chach or place?'}] },
+
+  'WRIT.PARA.L06.14':{ band:'E45', pic:'🧵', today:'Weave a short quote into your own sentence', why:'A few exact words, woven in, make your sentence strong and still sound like you.',
+    ready:[{q:'Which line is punctuated correctly?', o:['“Pass the glue,” Dovid said.','“Pass the glue.” Dovid said.','“Pass the glue” Dovid said.'], a:'“Pass the glue,” Dovid said.'}],
+    bridge:'WRIT.PARA.L06.04', bridgeName:'Dialogue + Action',
+    watch:{ q:'Yehuda weaves Mr. Halpern’s words', m:{type:'scene', e:'🧵', t:'Yehuda has Mr. Halpern’s full quote about the yeshiva sukkah in his notebook.'}, steps:[
+      {t:'FULL QUOTE: Mr. Halpern said, “This sukkah is a dining room for the whole yeshiva.”'},
+      {t:'PICK: the best few words: a dining room for the whole yeshiva.'},
+      {t:'BUILD: Mr. Halpern called the sukkah …'},
+      {t:'WEAVE: … “a dining room for the whole yeshiva.”'},
+      {t:'PUNCTUATE: no comma, no capital, the period inside.'},
+      {t:'CHECK: exact words, and it says who said them.'}], a:'Mr. Halpern called the sukkah “a dining room for the whole yeshiva.”' },
+    oops:{ q:'Weave Zaidy’s words', wrong:'Dovid’s Zaidy says a small sukkah, “Can hold a big simcha.”', right:'Dovid’s Zaidy says a small sukkah “can hold a big simcha.”', why:'A woven quote is the middle of your sentence: no comma before it, and no capital letter.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can weave a short quote into your own sentence and punctuate it right.',
+    board:{ one:'A woven quote: his exact few words, in quotation marks, inside your sentence.', activity:'Write Mr. Halpern’s full quote on the board; boys take turns building their own sentence around a few of his words, and the class checks the marks, the comma and the capital.', mistakes:['No quotation marks around his words','A comma and a capital before a woven quote','Changed words inside the quotation marks'] },
+    do:[
+      {type:'sort', bins:['Full quote','Woven quote'], cards:[['Mr. Halpern said, “This sukkah is…”',0],['Mr. Halpern called it “a dining room.”',1],['Zaidy says, “A small sukkah…”',0],['Zaidy says a small sukkah “can hold a big simcha.”',1]],
+        say:'Full quote or woven quote? Sort each one.', how:'Tag, comma, capital? Full. Mid-sentence words? Woven.',
+        why:{q:'Why is "Zaidy says a small sukkah “can hold a big simcha.”" woven?', o:['His words are inside the writer’s sentence','It has a comma before it','It starts with a capital','It has no quotation marks'], a:'His words are inside the writer’s sentence'}},
+      {type:'match', q:'Weave Zaidy’s words.', pairs:[['Zaidy says a small sukkah “can hold a big simcha.”','Quoted right'],['Zaidy says a small sukkah can hold a big simcha.','No quotation marks'],['Zaidy says a small sukkah “holds a huge simcha.”','Changed words']], mis:true,
+        say:'Match each sentence to what it is.', how:'Are the marks there? Are the words exact?'}],
+    your:[
+      {type:'tiles', w:['Mr. Halpern','called it','“a dining','room.”'], extra:['said, “A'],
+        say:'Weave Mr. Halpern’s words into your sentence.', how:'Who said it, then your words. His words last, in the marks.'},
+      {type:'sort', bins:['Punctuated right','Comma or capital mistake'], cards:[['Zaidy says, “A small sukkah…”',0],['Zaidy says, “a small sukkah…”',1],['Mr. Halpern called it “a dining room.”',0],['Mr. Halpern called it, “A dining room.”',1]],
+        say:'Punctuated right? Check the comma and the capital.', how:'Full quote: comma and capital. Woven: neither.',
+        why:{q:'Why is "Mr. Halpern called it, “A dining room.”" a mistake?', o:['A woven quote has no comma and no capital','It needs a comma','It has no tag','The words changed'], a:'A woven quote has no comma and no capital'}},
+      {type:'match', pairs:[['Full quote','Tag, comma, capital'],['Woven quote','Inside my own sentence'],['Quotation marks','Around his exact words only']],
+        say:'Match each part to its rule.', how:'Where do the comma, capital and marks go?',
+        why:{q:'Why do the marks go around his words only?', o:['They show which words are his','They look nice','They end the sentence','They are a tag'], a:'They show which words are his'}},
+      {type:'tiles', w:['Zaidy says a','small sukkah','“can hold a','big simcha.”'], extra:['“Can hold a'],
+        say:'Weave Zaidy’s words. Watch for the capital!', how:'Woven words get no capital. They are mid-sentence.'},
+      {type:'sort', q:'Zaidy’s words: “A small sukkah can hold a big simcha.”', bins:['His exact words','Changed words'], cards:[['“can hold a big simcha.”',0],['“can fit a big simcha.”',1],['“a big simcha.”',0],['“can hold a huge party.”',1]],
+        say:'Exact or changed? Check each woven quote.', how:'Look back at Zaidy’s words. Is every word the same?'}] },
+
+  'WRIT.ESSAY.L06.08':{ band:'E45', pic:'📰', today:'Use details from two texts in one paragraph', why:'Two texts side by side teach the reader more than one text alone.',
+    ready:[{q:'A source tag tells the reader…', o:['where the proof comes from','the title','your opinion'], a:'where the proof comes from'}],
+    bridge:'WRIT.PARA.L06.10', bridgeName:'Proof from the Text',
+    watch:{ q:'Yehuda writes one paragraph from two texts', m:{type:'scene', e:'📰', t:'Yehuda lays Avrumi’s article and Dovid’s article side by side.'}, steps:[
+      {t:'POINT: the sukkahs are very different in size.'},
+      {t:'TEXT 1: Avrumi’s article: it seats 120 boys.'},
+      {t:'TEXT 2: Dovid’s article: it seats 10 people.'},
+      {t:'NAME IT: In Avrumi’s article, the yeshiva sukkah seats 120 boys.'},
+      {t:'NAME IT: In contrast, Dovid writes that his sukkah seats 10.'},
+      {t:'TOGETHER: Both texts show that a sukkah can be any size.'}], a:'One point, a detail from each text, and both texts named.' },
+    oops:{ q:'A sentence about size', wrong:'In Dovid’s article, the sukkah seats 120 boys.', right:'In Avrumi’s article, the yeshiva sukkah seats 120 boys.', why:'120 boys is in Avrumi’s article, not Dovid’s. Look back and check which text each detail came from.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can use details from two texts in one paragraph and name each text.',
+    board:{ one:'Two texts, one point: a detail from each, and name each text.', activity:'Tape Avrumi’s and Dovid’s articles on two walls; pairs find one detail about the same point on each wall, then say the paragraph aloud, naming both texts.', mistakes:['Both details from one text','A detail with no text named','A detail named with the wrong text'] },
+    do:[
+      {type:'sort', bins:['Avrumi’s article','Dovid’s article'], cards:[['Seats 120 boys.',0],['Seats 10 people.',1],['Built in two hours.',1],['Wooden walls.',0]],
+        say:'Which text is each detail from? Sort them.', how:'Look back at both texts. The yeshiva, or home?',
+        why:{q:'Why is "Built in two hours" from Dovid’s article?', o:['Dovid wrote about his sukkah at home','Avrumi wrote it','It is in both texts','It is made up'], a:'Dovid wrote about his sukkah at home'}},
+      {type:'match', q:'Point: the sukkahs are different in size.', pairs:[['Avrumi: 120 boys. Dovid: 10 people.','Two texts, both named'],['120 boys. 10 people.','Text not named'],['Avrumi: 120 boys, parking lot.','One text only']], mis:true,
+        say:'Match each plan to what it is.', how:'Two texts? Is each one named?'}],
+    your:[
+      {type:'tiles', w:['Dovid','writes that','his sukkah','seats 10.'], extra:['Avrumi'],
+        say:'Build the detail, and name its text.', how:'Who wrote about the sukkah that seats 10?'},
+      {type:'sort', bins:['Text named right','Wrong text named'], cards:[['Avrumi: it seats 120 boys.',0],['Dovid: canvas walls.',0],['Avrumi: built in two hours.',1],['Dovid: wooden walls.',1]],
+        say:'Is the right text named? Sort each one.', how:'Look back. Which text has that detail?',
+        why:{q:'Why is "Avrumi: built in two hours" wrong?', o:['Two hours is in Dovid’s article','Avrumi said it','It has no point','It is a quote'], a:'Two hours is in Dovid’s article'}},
+      {type:'match', pairs:[['One text only','Add a detail from the other text.'],['Text not named','Say which text it came from.'],['Wrong text named','Look back and fix the name.']],
+        say:'Match each mistake to its fix.', how:'What is missing or wrong? What fixes it?',
+        why:{q:'Why add a detail from the other text?', o:['The paragraph needs both texts','It makes it shorter','It is a new topic','It needs a title'], a:'The paragraph needs both texts'}},
+      {type:'tiles', w:['Both texts','show that','boys help','build.'], extra:['Avrumi only'],
+        say:'Build what both texts show together.', how:'Start with Both texts. Then what they show.'},
+      {type:'sort', q:'Point: the walls are different.', bins:['Fits the point','Off the point'], cards:[['Avrumi: wooden walls.',0],['Dovid: canvas walls.',0],['Avrumi: seats 120 boys.',1],['Dovid: paper chains.',1]],
+        say:'Does each detail fit the point? Sort them.', how:'Is the detail about the walls?'}] },
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

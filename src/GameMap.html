@@ -406,7 +406,7 @@ body.gm-nav .stkpis b{color:#39FF88!important}body.gm-nav .stkpis small,body.gm-
 #gm-room{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%);color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
 #gm-room .hd{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#7B61FF;border-bottom:2px solid rgba(255,255,255,.1)}
 #gm-room .hd b{flex:1;font-size:20px;font-weight:900;font-style:italic;text-transform:uppercase}
-#gm-room .hd button{border:0;border-radius:14px;padding:10px 14px;font-family:inherit;font-weight:900;font-size:15px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 4px 0 #B36B00;cursor:pointer}
+#gm-room .hd button:not(.tlk){border:0;border-radius:14px;padding:10px 14px;font-family:inherit;font-weight:900;font-size:15px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 4px 0 #B36B00;cursor:pointer}
 #gm-room .bd{flex:1;overflow:auto;padding:14px}
 #gm-room .bd>*{max-width:900px;margin-left:auto!important;margin-right:auto!important}
 #gm-room .bd .panel,#gm-room .bd section{border-radius:22px!important}
@@ -454,6 +454,8 @@ body.gm-home #gm .gm-none p{color:#3F3A7A!important}body.gm-home #gm .gm-none h1
 #gm-nav .gm-homebtn{flex:1;flex-direction:row;gap:12px;font-size:22px;color:#1E1B4B;letter-spacing:.02em}
 #gm-nav .gm-homebtn b{font-size:32px}
 body.gm-home #gm-nav{display:none!important}
+#gm-nav{display:none!important}
+#gm .gm-hud{gap:8px}@media (max-width:760px){body:has(#bbx-door):not(.gm-home) #gm .gm-hud{flex-wrap:wrap;row-gap:8px;padding-right:200px}}#gm .gm-hud .tlk-home,#gm .gm-hud .tlk-back{flex:none}
 
 /* bright pages (HoS 2026-11-23: "brighter and happier ... ADHD friendly"): his work, My things and Change subject match the home */
 body.gm-lite #gm{background:linear-gradient(180deg,#FFF7D6 0%,#FFFDF5 55%,#EAF7FF 100%)!important;color:#1E1B4B}
@@ -563,7 +565,9 @@ function pfOn(){ const c=document.querySelector('.pf-card'); return !!(c&&c.styl
 /* SIMPLE HOME (HoS 2026-11-23: "much simpler ... clear and clean and helpful and big"): the top shows only his money; rank and XP live in Trophies */
 /* BACK (HoS 2026-11-24): a page he reached from another menu page gets the kit's Back top left (K-3: arrow + "Back"); it returns to that page */
 function backHTML(){ if(!GM.from||!window.TLK) return ''; const g=M()&&M().grade; return TLK.back('data-gm="gmback"','',TLK.young(g)); }
-function hud(){ return `<div class="gm-hud">${backHTML()}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>`; }
+/* HOUSE (HoS 2026-11-23, button system step 2): every full page leaves by the kit's house top left (K-3: house + "Home"), after Back; it replaced the big HOME bar (#gm-nav) */
+function houseHTML(){ const g=M()&&M().grade; return window.TLK?TLK.home('data-gmnav="home"','',TLK.young(g)):'<button type="button" class="gm-chip" data-gmnav="home" aria-label="Home">🏠</button>'; }
+function hud(){ return `<div class="gm-hud">${backHTML()}${houseHTML()}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>`; }
 function hudOld(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>
@@ -772,7 +776,7 @@ function goalHTML(w,isPick){
 /* ONE BUTTON, ONE JOB (HoS 2026-11-21, simplify step 3): 4 tabs (K-2: 3). Arcade, all lessons, skill tree, My Stuff and Pathfinder sit on
    ONE "More" page; Money opens from the money chip at the top (one door, not two). */
 function navOn(){ const t=GM.tab; return /^(games|lib|mine|more)$/.test(t)?'more':t==='subjects'?'map':t; }
-function navHTML(k2,left){ return GM.tab==='home'?'':`<button type="button" data-gmnav="home" class="gm-homebtn"><b aria-hidden="true">🏠</b>Home</button>`; }
+function navHTML(k2,left){ return ''; }   /* the HOME bar is gone (button system step 2): the house sits top left on each page (hud) */
 function navHTMLOld(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['more','🧺','More']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['me','🏆','Trophies'],['more','🧺','More']]; const on=navOn();
  return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${[on===x[0]?'on':'',GM.tap===x[0]&&Date.now()-(GM.tapAt||0)<450?'tap':''].filter(Boolean).join(' ')}"${on===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
 /* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
@@ -944,7 +948,7 @@ function stuffHTML(){ const M=document.querySelector('.hlx-mine'); if(!M) return
 function room(t){ try{ SND.tap(); }catch(e){} const map={bank:['.bank','🏦 My bank'],badges:['.badgepanel','🏅 My badges'],map:['.journey','🗺️ My journey map'],week:['.p3week','🚀 Look how far you\'ve come']}, m=map[t]; if(!m) return;
  let html=''; try{ const tpl=document.createElement('div'); tpl.innerHTML=(window.HP&&HP._vHub?HP._vHub():vHub()); const e=tpl.querySelector(m[0]); html=e?e.outerHTML:''; }catch(e){ html=''; }
  let r=document.getElementById('gm-room'); if(!r){ r=document.createElement('div'); r.id='gm-room'; r.setAttribute('role','dialog'); document.body.appendChild(r); }
- r.innerHTML=`<div class="hd"><b>${m[1]}</b><button type="button" data-gm="roomx">✕ Close</button></div><div class="bd">${html||'<p>Nothing here yet.</p>'}</div>`; }
+ r.innerHTML=`<div class="hd"><b>${m[1]}</b>${window.TLK?TLK.x('data-gm="roomx"',''):'<button type="button" data-gm="roomx" aria-label="Close">✕</button>'}</div><div class="bd">${html||'<p>Nothing here yet.</p>'}</div>`; }
 function noMapHTML(){ const lv=document.querySelector('#app [data-hp=levels]'), lg=document.querySelector('#app [data-hp=check]');
  return `<div class="gm-none"><div class="i">🗺️</div><h1>Your map is almost ready!</h1><p>Your rebbe or teacher sets your level. Until then, find your level or pick any lesson.</p>${lv?`<button type="button" class="gm-mini"${px(lv)}>🧭 Find my levels</button> `:''}<button type="button" class="gm-mini" data-gm="lib">📚 All my lessons</button></div>`; }
 /* ===== CELEBRATIONS: one short burst, only when he wins (never on its own). Reduced motion: no movement, same words. */
@@ -1131,6 +1135,9 @@ let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.p
  const st2=document.createElement('style'); st2.id='gmw-css'; st2.textContent=`
 .overlay:has(.gmw){background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%)!important;backdrop-filter:none!important}
 .ocard:has(.gmw){background:transparent!important;box-shadow:none!important;border:0!important;max-width:560px!important;width:100%!important;padding:0!important}
+.ocard{position:relative}
+body:has(.overlay,#hlx-shelf,#lg-games,#gm-room,#tlstore,.hpdraw,.kkov,.tq-ov,.tt-ov,#bl-ov,.rpzoom,#tr-ov,#mdx.on) :is(#pr-av,#bbx-door,#tlmenu){visibility:hidden!important}
+.ocard:has(>.tlk-x) .oband{padding-left:24px!important;padding-right:80px!important;box-sizing:border-box}
 .ocard:has(.gmw) .oband{display:none}
 .gmw{color:#fff;text-align:center;padding:8px 14px 14px;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
 .gmw .k{font-size:13px;font-weight:900;letter-spacing:.16em;color:#FFE259}
