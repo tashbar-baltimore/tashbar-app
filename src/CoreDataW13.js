@@ -50,5 +50,10 @@ CORE_SKILLS.W13 = [
   ["WRIT.PARA.L04.06", "Talking Characters", "Let characters talk, with quotation marks around their exact words", { after: "WRIT.PARA.L04.05", std: "W.3.3b", file: "CoreDataW13H6", min: 7 }],
   ["WRIT.PARA.L04.07", "Show the Feeling", "Show a feeling with what a character does and thinks", { after: "WRIT.PARA.L04.06", std: "W.3.3b", file: "CoreDataW13H6", min: 7 }],
   ["WRIT.PARA.L04.08", "Then, Later, Finally", "Tell events in order with time words", { after: "WRIT.PARA.L04.07", std: "W.3.3c", file: "CoreDataW13H6", min: 7 }],
-  ["WRIT.PARA.L04.09", "Wrap the Story", "End a story so the problem is solved and the reader feels it is finished", { after: "WRIT.PARA.L04.08", std: "W.3.3d", file: "CoreDataW13H6", min: 7 }]
+  ["WRIT.PARA.L04.09", "Wrap the Story", "End a story so the problem is solved and the reader feels it is finished", { after: "WRIT.PARA.L04.08", std: "W.3.3d", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.ESSAY.L04.02", "TREE Plan", "Plan an opinion piece with TREE: Topic sentence, Reasons, Explain, Ending", { after: "WRIT.PARA.L04.09", std: "W.3.1", file: "CoreDataW13H6", min: 8 }],
+  ["WRIT.PARA.L04.10", "Introduce the Topic", "Open an opinion piece by naming the topic and stating his opinion", { after: "WRIT.ESSAY.L04.02", std: "W.3.1a", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.11", "Reasons That Support", "Give reasons that really support the opinion", { after: "WRIT.PARA.L04.10", std: "W.3.1b", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.12", "Linking Words", "Link opinion and reasons with because, therefore, since and for example", { after: "WRIT.PARA.L04.11", std: "W.3.1c", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.13", "Concluding Statement", "End an opinion piece with a strong concluding statement", { after: "WRIT.PARA.L04.12", std: "W.3.1d", file: "CoreDataW13H6", min: 7 }]
 ];
