@@ -32,7 +32,7 @@ const ITEMS = [
 const CLEAN = () => { try { TL_MD.close(); } catch (e) {} try { document.getElementById('gm-room') && document.getElementById('gm-room').remove(); } catch (e) {} try { window.tlChm && tlChm.close(); } catch (e) {} try { window.tlArena && tlArena.close && tlArena.close(); } catch (e) {}
   try { document.body.classList.remove('ob-on'); A.overlay = null; A.play = null; A.view = 'hub'; GM.from = null; GM.tab = 'home'; GM.sig = ''; render(); } catch (e) {} };
 const CHECK = () => { const vis = e => e.offsetParent || getComputedStyle(e).position === 'fixed';
-  const scope = '#mdx,#gm-room,#chm-ov,#ar-ov,.ob,.play,#gm';
+  const scope = '#mdx,#gm-room,#chm-ov,#ar-ov,.ob,.play,.lf-card';
   const nonkit = [...document.querySelectorAll([...scope.split(',')].map(s => s + ' button:not(.tlk)').join(','))].filter(vis).map(b => (b.className || b.dataset.act || '') + ':' + b.textContent.trim().slice(0, 18));
   const badLab = [...document.querySelectorAll('.tlk-pill,.tlk-box')].filter(e => vis(e) && !e.closest('button')).filter(e => { const s = getComputedStyle(e); return s.boxShadow !== 'none' || parseFloat(s.borderTopWidth) > 0 || s.cursor === 'pointer'; }).map(e => e.textContent.slice(0, 20));
   return { nonkit: [...new Set(nonkit)].slice(0, 14), badLabels: badLab }; };
