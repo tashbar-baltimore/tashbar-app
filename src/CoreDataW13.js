@@ -37,5 +37,8 @@ CORE_SKILLS.W13 = [
   ["WRIT.RES.L04.04", "Where I Found It", "Name the source of his facts: the title and the author", { std: "W.3.8", file: "CoreDataW13H2", min: 6 }],
   ["WRIT.ESSAY.L04.05", "ARMS Revise", "Revise with ARMS: Add, Remove, Move, Substitute", { after: "WRIT.RES.L04.04", std: "W.3.5", file: "CoreDataW13H3", min: 8 }],
   ["WRIT.ESSAY.L04.06", "COPS Edit", "Edit with COPS: Capitals, Order of the words, Punctuation, Spelling", { std: "W.3.5", file: "CoreDataW13H3", min: 7 }],
-  ["WRIT.PARA.L04.17", "Letter to a Reader", "Write a letter with all its parts, in words that fit who will read it", { std: "W.3.4", file: "CoreDataW13H3", min: 7 }]
+  ["WRIT.PARA.L04.17", "Letter to a Reader", "Write a letter with all its parts, in words that fit who will read it", { std: "W.3.4", file: "CoreDataW13H3", min: 7 }],
+  ["WRIT.ESSAY.L03.05", "Add and Cut", "Revise a draft: add a detail that helps the reader see it, and cut what does not fit", { after: "WRIT.SENT.L03.01", std: "W.2.5", file: "CoreDataW13H4", min: 7 }],
+  ["WRIT.ESSAY.L03.06", "CUPS Check", "Edit with CUPS: Capitals, Usage, Punctuation, Spelling", { std: "W.2.5", file: "CoreDataW13H4", min: 7 }],
+  ["WRIT.ESSAY.L03.07", "Read It Like a Reader", "Read his writing out loud, pointing to each word, to catch missing and extra words", { std: "W.2.5", file: "CoreDataW13H4", min: 7 }]
 ];
