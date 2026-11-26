@@ -13,7 +13,7 @@
 - **No writing in Kindergarten.** Ksav yad comes in a later year. The letter games are touch, drag and match only.
 - **Listening for the first sound of a word** ("Shabbos" starts with "Sha") comes with the nekudos, not before.
 - **The voice is the rebbe's own recording** for every letter, nekudah and sound.
-- **Picture words are English (Head of School, 2026-11-26).** The boys' first language is English, so a picture goes with the letter its English name starts with: a dog goes to Daled, a goat to Gimmel. No Hebrew picture words (no gamal, gezer, dov). Ches and Tzadik have no English words, so they use words every boy knows: challah and tzitzis. Alef and Ayin are quiet and have no picture. Letters with the same sound (Kaf and Kuf; Vov and Veis; Samech, Sin and Sav; Tes and Tav) are never both picture stands in one game.
+- **Picture words are English (Head of School, 2026-11-26).** The boys' first language is English, so a picture goes with the letter its English name starts with: a dog goes to Daled, a goat to Gimmel. No Hebrew picture words (no gamal, gezer, dov). Ches and Tzadik have no English words, so they use words every boy knows: challah and tzitzis. Alef and Ayin are quiet and have no picture. Letters with the same sound (Kaf and Kuf; Vov and Veis; Samech, Sin and Sav; Tes and Tav) are never both picture stands in one game. This also means a boy hears the first sound of English words ("dog starts with d") already in Part A; the earlier line that first sounds wait for the nekudos now means first sounds of *Hebrew* words with a nekudah ("Shabbos starts with Sha").
 
 ## How the year fits together
 | Part | Units | About how long |
