@@ -57,3 +57,22 @@ Lane: `k-abc` (Esti, 2026-11-26). The map is `MAP.md` ("the map looks fine"). On
 
 ### Unit 1 — reviewer fixes (independent review, 2026-11-26)
 First review 3.9 overall (progression 3, taught→asked 3). Fixed: the check no longer claps the answer (the parts are only said); a dot stone appears in Drum Hill after each right answer, so the check's dot stones were practised; fixed easy-to-hard clap order (1, 2, 3 parts, twice); wider Rhyme Pond; the chant rhymes and claps once per word part; the train is pulled by its engine and loads from a green start flag; Fix It: Mendy checks himself, and the sock round drags the sock to the sss basket; a left-to-right step in the opener; a hint in the review's "which first"; a clearer bun.
+
+### Unit 2 — s a t p
+The letter kit (map) for each letter, each letter with its own world and twist. The meet / trace / hunt games repeat **by design** (the map's letter kit: "boys learn the game once, then spend their time on the letter"); each letter changes the world, the picture that grows, and the hunt's kind of play.
+| Game | Kind | World / twist |
+|---|---|---|
+| opener | lesson: a letter is a picture of a sound; the four friends; tap each letter; the s-a-t-p action chant | Mendy's garden table |
+| s-meet, a-meet, t-meet, p-meet | meet: the picture grows into the letter, its sound, a mouth picture, a body action, tap to hear, "which starts with it" | snake pond · apple vine · ticking tree with a woodpecker · pinwheel on a stick |
+| s-trace ... p-trace | trace 3 rounds: on the shiny path, on dots, alone; the picture grows under his finger | same worlds |
+| s-hunt | moving targets: pictures float past on lily pads; drag the sss ones to the snake | pond parade |
+| a-hunt | pick from a tree: pictures hang in the apple tree; drag the a ones into the crate | apple tree |
+| t-hunt | build: only t pictures become blocks in a tower (stickers on each block) | tower on a stump |
+| p-hunt | tap moving targets: pop the bubbles with p pictures | bubbles over the hill |
+| slide, slide2 | blending: push each letter tile down the slide into the next, left to right; "tap" goes to its picture | playground slide |
+| story | listening + finding words he can read (sat, pat, tap) | three picture frames |
+| fixit | judge Mendy's word (thumbs), then drag the right letter tile into the glowing spot | the meadow shelf |
+| check | mastery, tap kinds: hear a sound → tap its letter; see a letter → tap its picture; hear a word → tap it | sunset stage |
+| review | Units 1–2 mixed: rhyme tap, picture → letter drag, drum parts, hear sounds → tap the word | the pond |
+
+Small choices: the p picture is a **pinwheel** (p's stick and round top), the t picture is a **tree** with a woodpecker that taps t-t-t (the map's chant word "tick-tock" stays). Mommy and Tatty are not on play screens (Esti 2026-11-26), so the map's story "Tatty sat. Pat, pat, pat!" became "The cat sat. Pat, pat, pat! The cat taps the tap." The friends for the opener chant are snake, apple, turtle, penguin.
