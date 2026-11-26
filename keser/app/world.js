@@ -10,7 +10,8 @@ const pref = (k, d) => { try { const v = store && store.getItem(k); return v == 
 const save = (k, v) => { try { store && store.setItem(k, v ? '1' : '0'); } catch (e) {} };
 const progress = readProgress(q, store);
 const N = PLACES.length;
-const S = { focus: 1, entered: false, gl: false, lite: /[?&]lite=1\b/.test(q) || pref('keser.lite', false), calm, sound: pref('keser.sound', true), frames: 0, taps: 0 };
+const START = Math.max(0, PLACES.findIndex(p => p.id === (/[?&]place=([a-z]+)/.exec(q) || [])[1]));   /* ?place=kodesh: she came from that globe in her treasure house */
+const S = { focus: (/[?&]place=/.test(q) && START >= 0) ? START : 1, entered: false, gl: false, lite: /[?&]lite=1\b/.test(q) || pref('keser.lite', false), calm, sound: pref('keser.sound', true), frames: 0, taps: 0 };
 let world = null;
 
 /* ---------- sparkles: a tiny burst of stars wherever she taps ---------- */

@@ -41,3 +41,16 @@ All 8 arrived the same day with see-through backgrounds and were checked by eye 
 | 2 | `keser-crown` | her crown | 1200 × 1200, cut-out | rose-gold tiara, five pearls, pink diamond, lilac, mint and blue gems |
 | 3 | `keser-stage` | the round stage | 1600 × 900, cut-out | rose-quartz jewel-box stage, gold star-rose inlay, row of pearls |
 | 4–8 | `keser-place-kodesh`, `-reading`, `-math`, `-science`, `-writing` | the five places | 1200 × 1200, cut-out | jeweled glass domes: Shabbos candlesticks, Kiddush cup and covered challah; open storybook; crystal shapes; mint flask, microscope and atom; rose-gold pen, inkwell and quill |
+
+## Order 3 (2026-11-26) · status: ARRIVED, all 10 checked and in the library
+HoS: "a super glam code punch-in ... the crown turns like the safe ... you fly into the safe ... this storehouse in the heavens that have these globes with these treasures." No people.
+All 10 arrived the same day (cut-outs with see-through backgrounds) and were checked by eye (no words, letters or symbols; kosher; no people). Changes: stray edge specks removed; the vault door's original was shrunk to 900 px to fit the library's 1.5 MB limit. In use: the jewel-vault sign-in (`signin.html`) and her treasure house.
+
+| # | File name | Screen | Prompt (short; full prompts in the order email) |
+|---|---|---|---|
+| 1 | `keser-vault-door` | sign-in: the vault door | round rose-gold vault door with pink diamonds, pearls, gems, empty centre |
+| 2 | `keser-vault-dial` | sign-in: the crown dial that turns | round jeweled dial, tick marks, small crown in the middle |
+| 3 | `keser-key-gem` | sign-in: each key of her code pad | round pink gem in a gold diamond bezel (the app writes the number) |
+| 4 | `keser-vault-inside` | sign-in: flying through the open vault | open jeweled vault door, golden light, clouds, treasure chests |
+| 5 | `keser-treasure-house` | her treasure house in the heavens | rose-quartz and gold hall in the clouds with shelves of glowing globes |
+| 6–10 | `keser-globe-empty`, `-kodesh`, `-reading`, `-math`, `-science` | her treasures (Writing uses the empty globe for now) | crystal globes on rose-gold stands holding a tiny subject treasure |
