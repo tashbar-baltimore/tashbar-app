@@ -156,6 +156,23 @@ export function makePictures(E) {
       [-1, 1].forEach(s => { g.add(mesh(new THREE.SphereGeometry(.04, 8, 6), M(0xffffff), .38, .06, s * .08, false)); g.add(mesh(new THREE.SphereGeometry(.02, 8, 6), M(0x111111), .41, .06, s * .09, false));
         const an = mesh(new THREE.CylinderGeometry(.012, .012, .25, 4), bm, .36, .22, s * .06, false); an.rotation.z = -.5; g.add(an);
         [-.12, 0, .12].forEach(x => { const lg = mesh(new THREE.CylinderGeometry(.015, .015, .3, 4), bm, x, -.12, s * .14, false); lg.rotation.x = s * .7; g.add(lg); }); }); return g; },
+    shofar() { const g = new THREE.Group(), horn = M(0xe9c993, { roughness: .35, clearcoat: .7 }), tip = M(0x9a6a3a, { roughness: .4, clearcoat: .6 });   /* a curved shofar: wide at the mouth, thin at the tip */
+      const curve = new THREE.CubicBezierCurve3(new THREE.Vector3(.62, .32, 0), new THREE.Vector3(.2, -.45, 0), new THREE.Vector3(-.45, -.25, 0), new THREE.Vector3(-.62, .42, 0)), n = 18;
+      for (let i = 0; i < n; i++) { const a = curve.getPoint(i / n), b = curve.getPoint((i + 1) / n), r0 = .2 - i * .0095, r1 = .2 - (i + 1) * .0095, len = a.distanceTo(b);
+        const seg = mesh(new THREE.CylinderGeometry(r1, r0, len * 1.08, 20), i > n - 4 ? tip : horn); seg.position.copy(a).add(b).multiplyScalar(.5); seg.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize()); g.add(seg); }
+      const mouth = mesh(new THREE.TorusGeometry(.2, .035, 10, 24), horn, .62, .32, 0); mouth.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), curve.getTangent(0).negate()); g.add(mouth);
+      return g; },
+    flag() { const g = new THREE.Group();   /* a Simchas Torah flag on a stick, a red apple on top (plain colours, no writing) */
+      g.add(mesh(new THREE.CylinderGeometry(.035, .035, 1.5, 10), M(0xc68a52, { roughness: .5 }), 0, -.1, 0));
+      g.add(mesh(new THREE.SphereGeometry(.17, 20, 16), M(0xe8322b, { roughness: .25, clearcoat: 1 }), 0, .74, 0)); g.add(mesh(new THREE.CylinderGeometry(.012, .012, .1, 6), M(0x6b4423), 0, .92, 0)); const lf = mesh(new THREE.SphereGeometry(.06, 10, 8), M(0x3fae4a), .06, .93, 0); lf.scale.set(1.4, .5, .8); g.add(lf);
+      const cloth = new THREE.Group(); cloth.position.set(.04, .42, 0); g.add(cloth);
+      [[0x2f7de1, 0], [0xffffff, 1], [0x2f7de1, 2], [0xffcf3a, 3]].forEach(([c, i]) => cloth.add(mesh(new THREE.BoxGeometry(.78, .14, .02), M(c, { roughness: .6 }), .4, -i * .14, 0)));
+      g.userData.wave = cloth; return g; },
+    torah() { const g = new THREE.Group(), wood = M(0x8a5a2b, { roughness: .4, clearcoat: .6 }), silver = M(0xdfe4ea, { metalness: .8, roughness: .2 });   /* a Torah in its blue velvet cover, two wooden handles (no writing) */
+      const cover = mesh(new THREE.CylinderGeometry(.42, .42, 1.0, 32), M(0x2b47a8, { roughness: .7, sheen: 1, sheenColor: new THREE.Color(0x9ab4ff) }), 0, 0, 0); cover.scale.set(1.25, 1, .7); g.add(cover);
+      [.42, -.42].forEach(y => { const band = mesh(new THREE.CylinderGeometry(.43, .43, .07, 32), M(0xf2c14e, { metalness: .5, roughness: .3 }), 0, y, 0); band.scale.set(1.25, 1, .7); g.add(band); });
+      [-.27, .27].forEach(x => { g.add(mesh(new THREE.CylinderGeometry(.05, .05, .35, 12), wood, x, .66, 0)); g.add(mesh(new THREE.SphereGeometry(.1, 14, 10), silver, x, .88, 0)); g.add(mesh(new THREE.CylinderGeometry(.05, .05, .3, 12), wood, x, -.64, 0)); });
+      return g; },
   };
   /* the painted pictures (art/obj), each a flat card that always faces the boy. Its width follows the picture's own shape. */
   const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp', () => fit.filter(x => x.f === f).forEach(x => x.go())); t.colorSpace = THREE.SRGBColorSpace; return t; })());
@@ -191,6 +208,7 @@ export const WORDS = {
   rabbit: { letter: 'reish', say: 'A rabbit!' }, rose: { letter: 'reish', say: 'A rose!' },
   shoe: { letter: 'shin', say: 'A shoe!' }, sheep: { letter: 'shin', say: 'A sheep!' },
   teapot: { letter: 'tav', say: 'A teapot!' },
+  shofar: { letter: 'shin', model: 'shofar', say: 'A shofar!' }, flag: { letter: 'sin', model: 'flag', say: 'A Simchas Torah flag!' }, torah: { letter: 'tav', model: 'torah', say: 'The Torah!' },   /* Unit 8's story: words whose Hebrew and English start the same way */
 };
 export const HAVE = new Set(["ant", "apple", "backpack", "balloon", "basket", "beachball", "bear", "bird", "blocks", "butterfly", "cake", "camel", "carrot", "cat", "clock", "cloud", "cucumber", "dog", "donkey", "dove", "drum", "elephant", "fish", "flower", "fly", "hand", "horse", "house", "ladder", "lamb", "lemon", "mountain", "olives", "peacock", "pear", "pomegranate", "rabbit", "rose", "sun", "table", "toymonkey", "toytrain", "tree", "turtle", "water"]);   /* painted objects on disk (made by a script); a word whose painting hasn't come yet has no picture */
 export const hasPic = w => !!WORDS[w] && (HAVE.has(WORDS[w].file || w) || !!WORDS[w].model);   /* a painting, or until it comes, a simple 3D model */

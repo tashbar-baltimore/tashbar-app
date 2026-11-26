@@ -41,6 +41,15 @@ export function makeStory(E, unit, script) {
     const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? 4.4 + l.userData.below * .28 : 3.6), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
     await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? .28 : .42))); glow.material.opacity = .8 * (1 - q); }); float(l);
   }
+  /* a picture that stays (the Torah is never spun or shrunk away): it steps back beside the grown-up, and its letter rises out of a soft light */
+  const kept = [];
+  async function rise(picObj, k) {
+    const from = E.worldPos(picObj), l = L[k], to = new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6); E.sfx.sparkle(); E.sparkle(from.clone().add(new THREE.Vector3(0, .4, .5)), 30, 1.2);
+    const p0 = picObj.position.clone(), home = new THREE.Vector3(P ? -1.6 : -3.0, P ? 2.9 : 2.3, P ? -.6 : -.4); kept.push(picObj);
+    l.position.copy(from); l.visible = true; l.scale.setScalar(.01); glow.position.set(to.x, 1.6, -.3);
+    await E.tween(1300, q => { picObj.position.lerpVectors(p0, home, q); l.position.lerpVectors(from, to, q); l.scale.setScalar(.01 + q * .99); glow.material.opacity = q * .8; });
+    float(l);
+  }
   const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6), q)); };
   const say = async (who, line) => { if (who) { who.mood('wave'); setTimeout(() => who.mood('calm'), 1100 * E.F); } await E.say(line); };
   return async () => {
@@ -63,7 +72,7 @@ export function makeStory(E, unit, script) {
         pic.position.set(who.position.x + .9, 2.0, who.position.z + .4); pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
         if (st.act) st.act(E, pic, boy, grown);
         for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);   /* the story is told even before its painting comes */
-        await toCentre(pic); await morph(pic, st.letter);
+        if (st.keep) await rise(pic, st.letter); else { await toCentre(pic); await morph(pic, st.letter); }
         for (const line of st.after) await E.say(line);
         await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
         await E.say(['Tap ' + E.LETTERS[st.letter].name + '!']); await tapIt(L[st.letter], E.nameLine(st.letter));
@@ -73,7 +82,7 @@ export function makeStory(E, unit, script) {
     }
     /* the look-alikes, side by side, right to left; for each line the arrow (or the ring at the dot place) shows where to look */
     unit.letters.forEach(k => { L[k].visible = false; floaters.delete(L[k]); });
-    await Promise.all([E.popOut(boy), grown && E.popOut(grown), E.popOut(props)].filter(Boolean));
+    await Promise.all([E.popOut(boy), grown && E.popOut(grown), E.popOut(props), ...kept.map(k => E.popOut(k))].filter(Boolean));
     for (const [a, b, la, lb] of script.lookalikes || []) {
       const A = E.letter(a, 1.8), B = E.letter(b, 1.8); A.position.set(P ? .85 : 1.2, 1.6, .5); B.position.set(P ? -.85 : -1.2, 1.6, .5); E.scene.add(A, B); await Promise.all([E.popIn(A), E.popIn(B)]);
       for (const [k, line] of [[a, la], [b, lb]]) { const l = k === a ? A : B;
@@ -89,7 +98,7 @@ export function makeStory(E, unit, script) {
       let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 2 ? 3.15 - li * 1.3 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
     E.setProgress(steps, steps);
-    await E.say('Let’s sing the Alef-Beis so far!');
+    await E.say(script.chantLine || 'Let’s sing the Alef-Beis so far!');
     for (const l of row) { E.sfx.drum(); E.hop(l, .3, 300); await E.say(E.LETTERS[l.userData.key].name + ',', false); await E.wait(50); }
     const names = unit.letters.map(k => E.LETTERS[k].name), list = names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
     await E.say('Now you! Tap ' + list + '.');

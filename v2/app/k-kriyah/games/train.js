@@ -38,15 +38,16 @@ export default function setup(E, { struggled, unit, game = {} }) {
   E.onFrame(t => {
     puffs.forEach((p, i) => { const k = ((t * .8 + i / 4) % 1); p.position.set(-.35 - k * .5, 1.4 + k * .9, 0); p.scale.setScalar(.6 + k * 1.2); p.material.opacity = .8 * (1 - k); });
     cars.forEach((c, i) => { if (!c.userData.on && c !== drag && !c.userData.busy && c.visible) { c.position.y = homes[c.userData.home ?? i].y + Math.sin(t * 2 + i) * .05; } c.userData.letter.rotation.y = Math.sin(t * 1.3 + i) * .2; if (P) c.userData.letter.scale.setScalar(c.userData.on ? (ORDER.length >= 6 ? 1.25 : 1.2) : 1.3); });   /* on a phone, letters on the train are bigger */
-    const need = nextNeeded(), g = need != null && cars.find(c => c.userData.key === ORDER[need] && !c.userData.on);
+    const need = nextNeeded(), g = swapPairs.length ? cars.find(c => swapPairs.some(p => p.includes(c.userData.slot))) : need != null && cars.find(c => c.userData.key === ORDER[need] && !c.userData.on);   /* in the mix-up round, a mixed-up car glows */
     if (help && g && enabled) { glow.position.copy(g.position).add(new THREE.Vector3(0, .9 * g.scale.x, -.4)); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
   const nextNeeded = () => { if (gaps) return gaps.find(i => !cars.some(c => c.userData.on && c.userData.slot === i)); const k = cars.filter(c => c.userData.on).length; return k < n ? k : null; };
   window.__info = () => ({ ready: enabled && !busy, need: nextNeeded() != null ? ORDER[nextNeeded()] : null, needSlot: nextNeeded(),
     cars: cars.filter(c => !c.userData.on && c.visible).map(c => ({ k: c.userData.key, xy: E.toScreen(c.position.clone().add(new THREE.Vector3(0, .7 * c.scale.x, 0))) })),
-    slots: slotX.map((_, i) => E.toScreen(slotPos(i).add(new THREE.Vector3(0, .6 * S, 0)))) });
+    slots: slotX.map((_, i) => E.toScreen(slotPos(i).add(new THREE.Vector3(0, .6 * S, 0)))),
+    swap: swapPairs.length && enabled && !busy ? { wrong: cars.filter(c => swapPairs.some(p => p.includes(c.userData.slot))).map(c => E.toScreen(c.position.clone().add(new THREE.Vector3(0, .7 * S, 0)))), right: cars.filter(c => !swapPairs.some(p => p.includes(c.userData.slot))).map(c => E.toScreen(c.position.clone().add(new THREE.Vector3(0, .7 * S, 0)))) } : null });
 
-  E.onPointer('down', e => { if (!enabled || busy) return; const c = E.pickFrom(e, cars.filter(c => !c.userData.on && !c.userData.busy)); if (!c) return; drag = c; const p = E.planePoint(e, c.position.z); if (p) grab.copy(c.position).sub(p); c.scale.multiplyScalar(1.1); });
+  E.onPointer('down', e => { if (!enabled || busy || swapPairs.length) return; const c = E.pickFrom(e, cars.filter(c => !c.userData.on && !c.userData.busy)); if (!c) return; drag = c; const p = E.planePoint(e, c.position.z); if (p) grab.copy(c.position).sub(p); c.scale.multiplyScalar(1.1); });
   E.onPointer('move', e => { if (!drag) return; const p = E.planePoint(e, drag.position.z); if (p) drag.position.copy(p.add(grab)); });
   E.onPointer('up', () => { if (!drag) return; const c = drag; drag = null; c.scale.setScalar(P ? .75 : .7); place(c, slotUnder(c)); });
   /* which empty place on the train the car was dropped on (near the train, nearest empty place) */
@@ -116,11 +117,46 @@ export default function setup(E, { struggled, unit, game = {} }) {
     E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant();   /* the full train stays on screen for the end */
     E.setProgress(2, 2);
   }
+  /* Unit 8's twist (game.swap): the full train comes back, but Yaakov mixed up some cars. He listens to the order and taps a car
+     in the wrong place; it swaps with its partner. Two of the mix-ups differ only by the dot (Shin and Sin, Tuf and Suf), so he must look closely.
+     A tap on a car in the right place is answered kindly: it says its name, and the chant plays up to it. */
+  let swapPairs = [], resolveSwap = null;
+  E.onPointer('down', e => { if (!swapPairs.length || busy || !enabled) return; const c = E.pickFrom(e, cars); if (c) tapSwap(c); });
+  async function tapSwap(c) {
+    busy = true; const pr = swapPairs.find(p => p.includes(c.userData.slot));
+    if (pr) { const [a, b] = pr.map(i => cars.find(x => x.userData.slot === i)); swapPairs = swapPairs.filter(p => p !== pr); E.sfx.whoosh();
+      const pa = a.position.clone(), pb = b.position.clone(); await E.tween(650, q => { a.position.lerpVectors(pa, pb, q); b.position.lerpVectors(pb, pa, q); a.position.y += Math.sin(q * Math.PI) * 1.0; b.position.y += Math.sin(q * Math.PI) * .4; });
+      const sa = a.userData.slot; a.userData.slot = b.userData.slot; b.userData.slot = sa; E.sfx.drum(); E.sparkle(a.position.clone().add(new THREE.Vector3(0, .8 * S, .4)), 14); E.sparkle(b.position.clone().add(new THREE.Vector3(0, .8 * S, .4)), 14);
+      const hi = Math.max(a.userData.slot, b.userData.slot); await E.say(['Fixed! ' + E.LETTERS[ORDER[hi - 1]].name + ', then ' + E.LETTERS[ORDER[hi]].name + '!']);
+      wrongInRow = 0; busy = false; if (!swapPairs.length && resolveSwap) { const r = resolveSwap; resolveSwap = null; r(); } }
+    else { E.sfx.boop(); wrong++; wrongInRow++; await E.shake(c, .12); await E.say(E.LETTERS[c.userData.key].name + ' is in the right place. Listen.'); await chant(c.userData.slot, true);
+      if (wrongInRow >= 2 || wrong >= 3) help = true; busy = false; }
+  }
+  async function roundSwap() {
+    /* every other pair of neighbours is swapped: the first pair is the demo */
+    const prs = [[1, 2], [3, 4], [5, 6]].filter(p => p[1] < n); gaps = null;
+    const at = i => { const p = prs.find(q => q.includes(i)); return p ? (p[0] === i ? p[1] : p[0]) : i; };   /* the car standing in place i */
+    const lx = LX; loco.position.x = lx + 10;
+    cars.forEach((c, i) => { c.userData.on = true; c.userData.slot = at(i); c.scale.setScalar(S); c.visible = true; c.position.copy(slotPos(c.userData.slot)).add(new THREE.Vector3(10, 0, 0)); });
+    const sx = cars.map(c => c.position.x);
+    await E.tween(1600, q => { loco.position.x = lx + 10 * (1 - q); cars.forEach((c, i) => c.position.x = sx[i] - 10 * q); }, E.ease.out);
+    await E.say('Oh no! Yaakov mixed up some cars.');
+    swapPairs = prs.slice(); enabled = false;
+    const d = prs[0], first = cars.find(c => c.userData.slot === d[0]);
+    await E.say(['Watch me. ' + E.LETTERS[ORDER[d[0]]].name + ' comes after ' + E.LETTERS[ORDER[d[0] - 1]].name + '.']);
+    let [x, y] = E.toScreen(first.position.clone().add(new THREE.Vector3(0, .7 * S, 0))); E.hand.at(x, y, true); await E.wait(900); E.hand.hide();
+    await tapSwap(first);
+    await E.say('Now you! Tap a car in the wrong place.'); wrong = 0; wrongInRow = 0;
+    const done = new Promise(r => resolveSwap = r); enabled = true; busy = false; document.body.dataset.swapReady = 1;
+    await done; enabled = false; delete document.body.dataset.swapReady;
+    E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant();
+    E.setProgress(2, 2);
+  }
   /* the waiting cars are mixed up (never in Alef-Beis order, no car in its own place), so the order comes from him */
   const derange = m => { let a; do { a = [...Array(m).keys()].sort(() => Math.random() - .5); } while (a.some((v, i) => v === i)); return a; };
   return async () => {
     const perm = derange(n); cars.forEach((c, i) => { c.userData.home = perm[i]; c.position.copy(homes[perm[i]]); });
-    await roundOne(); await roundTwo();
+    await roundOne(); if (game.swap) await roundSwap(); else await roundTwo();
     const stars = wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Choo choo! You know the Alef-Beis order!' : null };
   };

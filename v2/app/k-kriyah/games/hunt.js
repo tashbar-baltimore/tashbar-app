@@ -6,10 +6,11 @@
 /* each unit: two rounds (the letter to find, how many, and the others mixed in), the boy's name, and short "what to look for" words */
 const PLAN = {
   1: { boy: 'Mendy', rounds: [['beis', 4, ['alef', 'alef', 'veis', 'veis'], ['alef', 'veis']], ['veis', 3, ['alef', 'alef', 'beis', 'beis'], ['alef', 'beis']]] },
+  7: { boy: 'Mendy', rounds: [['kuf', 4, ['hei', 'hei', 'reish', 'daled'], ['hei', 'reish']], ['reish', 3, ['daled', 'daled', 'kuf', 'hei'], ['daled', 'kuf']]] },   /* Unit 8's review: Unit 7's Kuf and Reish among their look-alikes */
   3: { boy: 'Ari', rounds: [['zayin', 4, ['vov', 'vov', 'ches', 'gimmel'], ['vov', 'ches']], ['ches', 3, ['hei', 'hei', 'zayin', 'daled'], ['hei', 'zayin']]] },
 };
-const CUE = { beis: 'with the dot', veis: 'with no dot', zayin: 'with the crown', vov: 'with no crown', ches: 'with its leg on the roof', hei: 'with its leg off the roof' };
-const NOTE = { alef: '', beis: 'It has a dot.', veis: 'No dot.', vov: 'No crown.', zayin: 'It has a crown.', hei: 'Its leg doesn\u2019t touch the roof.', ches: 'Its leg touches the roof.', gimmel: '', daled: '' };
+const CUE = { kuf: 'with the long leg', reish: 'round on top', beis: 'with the dot', veis: 'with no dot', zayin: 'with the crown', vov: 'with no crown', ches: 'with its leg on the roof', hei: 'with its leg off the roof' };
+const NOTE = { kuf: 'It has a long leg.', reish: 'It is round on top.', daled: 'It has a corner.', alef: '', beis: 'It has a dot.', veis: 'No dot.', vov: 'No crown.', zayin: 'It has a crown.', hei: 'Its leg doesn\u2019t touch the roof.', ches: 'Its leg touches the roof.', gimmel: '' };
 export default function setup(E, { struggled, unit, game }) {
   const plan = PLAN[(game && game.reviewOf) || unit.n] || PLAN[1], NM = k => E.LETTERS[k].name;   /* a review round hunts an earlier unit's letters */
   const boyName = { 1: 'Mendy', 2: 'Shloimy', 3: 'Ari', 4: 'Dovid' }[unit.n] || plan.boy;

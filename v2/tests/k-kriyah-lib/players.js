@@ -84,7 +84,12 @@ P.soundmatch = async (pg, shot, log) => {
 };
 P.train = async (pg, shot, log) => {
   await pg.waitForSelector('body[data-train-ready]', { timeout: 180000 }); await shot('1-start'); let n = 0, wrong = false;
-  await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready || i.needSlot == null) return false;
+  let swapWrong = false;
+  await loop(pg, async () => { const i = await K.info(pg);
+    if (i && i.swap && i.swap.wrong.length) {   /* Unit 8: fix Yaakov's mixed-up cars (one tap on a car in the right place first) */
+      if (!swapWrong && i.swap.right.length) { swapWrong = true; await pg.mouse.click(...i.swap.right[0]); const ok = await K.until(pg, () => window.__lines.join(' ').includes('in the right place'), 15000); (ok ? log.oks : log.fails).push('a car in the right place is answered kindly'); await shot('2-middle'); return true; }
+      await pg.mouse.click(...i.swap.wrong[0]); await pg.waitForTimeout(600); log.swapped = (log.swapped || 0) + 1; return true; }
+    if (!i || !i.ready || i.needSlot == null) return false;
     const to = i.slots[i.needSlot];
     if (!wrong) { const w = i.cars.find(c => c.k !== i.need); if (w) { wrong = true; await K.drag(pg, w.xy, to); await pg.waitForTimeout(500); await shot('3-wrong');
       log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('goes here'), 15000)); return true; } }
@@ -103,3 +108,12 @@ P.story4 = P.story;
 P.story5 = P.story;
 P.story6 = P.story;
 P.story7 = P.story;
+P.story8 = P.story;
+/* Dot Builder (Unit 8): drag the golden dot to the place that makes the letter he hears; one wrong place first */
+P.dotbuild = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-dot-ready]', { timeout: 180000 }); await shot('1-start'); let wrong = false, n = 0;
+  await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready || !i.want) return false;
+    if (!wrong && i.spots[i.bad]) { wrong = true; await K.drag(pg, i.dot, i.spots[i.bad]); await pg.waitForTimeout(700); await shot('3-wrong');
+      log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Look!'), 15000)); return true; }
+    await K.drag(pg, i.dot, i.spots[i.good]); if (++n === 5) { await pg.waitForTimeout(400); await shot('2-middle'); } await pg.waitForTimeout(500); return true; });
+};
