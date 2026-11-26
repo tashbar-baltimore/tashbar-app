@@ -145,7 +145,7 @@ function greet() {
 }
 
 /* ---------- start ---------- */
-window.KWORLD = { places: PLACES.map(p => p.id), progress, state: S, go, enter, back, next: () => go(S.focus + 1), prev: () => go(S.focus - 1), setLite };
+window.KWORLD = { places: PLACES.map(p => p.id), progress, state: S, layout: () => (world && world.layout ? world.layout() : null), go, enter, back, next: () => go(S.focus + 1), prev: () => go(S.focus - 1), setLite };
 show();
 if (S.lite) { html.classList.add('lite'); $('lite').setAttribute('aria-pressed', 'true'); }
 setTimeout(() => body.classList.remove('intro'), calm ? 0 : 900);

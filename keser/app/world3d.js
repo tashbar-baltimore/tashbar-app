@@ -13,6 +13,11 @@ import { OutputPass } from './vendor/postprocessing/OutputPass.js';
 const TAU = Math.PI * 2, R = 5.0;
 /* M. Heinemann 2026-11-26: the Keser Academy colors (royal purple and gold) and the Keser crown mark from the school logo (keser-logo-mark).
    Each place shows its own picture (places.js: art); the stage painting is tinted royal purple. */
+/* TIDY LAYOUT (HoS 2026-11-26: "everything should be put in its appropriate place ... make sure it stays super sharp"):
+   every picture has its own spot, worked out from the picture sizes, with a clear gap; nothing overlaps another picture.
+   The place in front shows its host girl beside it; the places at the sides show only their picture. The crown floats above
+   the front place with a gap, and Bubby stands beside the crown. keser/tests/tidy.js checks it at Chromebook and phone size. */
+const GAP = 0.32, CAMEO_W = 1.3, CAMEO_H = 1.59, FRONT = 1.0, SIDE = 0.8;
 const ART = { crown: '/pics/keser-logo-mark.webp', stage: '/pics/keser-stage.webp' };
 /* where each place's jewel sits on the Keser crown (0..1 across and down the picture): the diamond in the middle, and the two at the sides */
 const GEMS = { kodesh: [0.5, 0.67, 1.5], general: [0.045, 0.33, 1], timeline: [0.955, 0.35, 1] };
@@ -61,27 +66,30 @@ export function start(o) {
   const pav = places.map((pl, i) => {
     const th = i / places.length * TAU, g = new THREE.Group(); g.position.set(Math.sin(th) * R, 0, Math.cos(th) * R); ring.add(g);
     const halo = glowSprite(SOFT, pl.hex, 4.4, 0.35); halo.position.y = 1.9; g.add(halo);
-    const dome = painting(pl.art, pl.id === 'timeline' ? 2.9 : 3.6, ASPECT[pl.id]); dome.center.set(0.5, 0); g.add(dome);
-    const host = cameo(pl.pic, pl.color); host.position.set(1.75, 2.7, 0.3); g.add(host);
+    const dome = painting(pl.art, pl.id === 'timeline' ? 2.9 : 3.6, ASPECT[pl.id]); dome.userData.h = pl.id === 'timeline' ? 2.9 : 3.6; dome.center.set(0.5, 0); g.add(dome);
+    const dh = pl.id === 'timeline' ? 2.9 : 3.6, dw = dh * ASPECT[pl.id];
+    const host = cameo(pl.pic, pl.color); host.position.set(dw / 2 + GAP + CAMEO_W / 2, dh * 0.42, 0.3); host.userData.y = dh * 0.42; host.material.opacity = 0; g.add(host);   /* her own spot: beside her picture, never on it */
     const motes = [...Array(lite ? 3 : 6)].map((_, k) => { const s = glowSprite(STAR, [0xffffff, 0xfff1b8, pl.hex][k % 3], 0.2); s.userData.k = k; g.add(s); return s; });
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 4, 10), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 2; hit.userData.idx = i; g.add(hit);
     return { g, th, halo, dome, host, motes, hit, sc: 1 };
   });
+  pav.forEach((p, i) => { if (i !== (o.focus || 0)) { p.dome.material.opacity = 0; p.halo.material.opacity = 0; p.dome.visible = p.halo.visible = false; } });   /* the side places start hidden: no ghosts while the world opens */
 
   /* her crown: the painted tiara high in the middle, with a jewel per subject that lights up as she learns */
-  const crownRig = new THREE.Group(); crownRig.position.set(0, 5.6, 0); scene.add(crownRig);
+  const crownH0 = 2.8, CROWN_Y = 3.6 * FRONT + 0.1 + GAP + crownH0 / 2;   /* above the tallest picture in front, with a clear gap */
+  const crownRig = new THREE.Group(); crownRig.position.set(0, CROWN_Y, 0); scene.add(crownRig);
   const crownHalo = glowSprite(radial([[0, 'rgba(255,214,140,.75)'], [0.45, 'rgba(140,80,200,.3)'], [1, 'rgba(140,80,200,0)']]), 0xffffff, 7.5, 0.9); crownRig.add(crownHalo);
-  const crownH = 2.8, crownW = crownH * 600 / 472;
+  const crownH = crownH0, crownW = crownH * 600 / 472;
   const crown = painting(ART.crown, crownH, 600 / 472); crownRig.add(crown);
   const jewels = places.map((pl, i) => { const [u, v, big] = GEMS[pl.id], p = progress[pl.id] || 0;
     const pos = new THREE.Vector3((u - 0.5) * crownW, (0.5 - v) * crownH, 0.02);
     const dim = new THREE.Sprite(new THREE.SpriteMaterial({ map: DIM, transparent: true, depthWrite: false, opacity: 0 }));   /* the Keser crown is gold line art: a jewel not started yet simply has no glow */ dim.scale.set(0.34 * big, 0.34 * big, 1); dim.position.copy(pos); crownRig.add(dim);
-    const glow = glowSprite(SOFT, pl.hex, (0.35 + p * 0.55) * big, p > 0 ? 0.35 + p * 0.5 : 0); glow.position.copy(pos); crownRig.add(glow);
+    const glow = glowSprite(SOFT, pl.hex, (0.22 + p * 0.26) * big, p > 0 ? 0.2 + p * 0.3 : 0);   /* a soft light ON the jewel, never a blob over it */ glow.position.copy(pos); crownRig.add(glow);
     const glint = glowSprite(STAR, 0xffffff, 0.01); glint.position.copy(pos).add(new THREE.Vector3(0, 0, 0.04)); crownRig.add(glint);
     return { glint, glow, p, i }; });
-  const bubby = cameo('/pics/keser-cast-bubby.webp', '#B98CFF'); bubby.position.set(2.9, -0.3, 0.1); bubby.scale.set(1.1, 1.34, 1); crownRig.add(bubby);   /* Bubby waits by her crown */
+  const bubby = cameo('/pics/keser-cast-bubby.webp', '#B98CFF'); bubby.position.set(crownW / 2 + GAP + 0.55, -0.25, 0.1); bubby.scale.set(1.1, 1.34, 1); crownRig.add(bubby);   /* Bubby waits by her crown */
   const crownHit = new THREE.Mesh(new THREE.SphereGeometry(1.5, 10, 8), new THREE.MeshBasicMaterial({ visible: false })); crownRig.add(crownHit);
-  const crownSparks = [...Array(12)].map((_, i) => { const s = glowSprite(STAR, [0xffffff, 0xf6e3b0, 0xd4aa50][i % 3], 0.01); s.userData.off = i * 0.83; crownRig.add(s); return s; });
+  const crownSparks = [...Array(6)].map((_, i) => { const s = glowSprite(STAR, [0xffffff, 0xf6e3b0, 0xd4aa50][i % 3], 0.01); s.userData.off = i * 0.83; crownRig.add(s); return s; });
 
   /* a girl from the cast in a gold oval frame that always faces her */
   function cameo(src, color) {
@@ -155,7 +163,7 @@ export function start(o) {
     dragOff += (dragTo - dragOff) * Math.min(1, dt * 18); angle = glide.get(); ring.rotation.y = angle + dragOff;
     const z = zoomT.get();
     cur.x += (aim.x - cur.x) * 0.04; cur.y += (aim.y - cur.y) * 0.04;
-    if (portrait) { camPos.set(cur.x * 0.8, 4.6 - cur.y * 0.4, R + 14.5); look.set(0, 2.9, 0); } else { camPos.set(cur.x * 1.4, 3.8 - cur.y * 0.6, R + 12.5); look.set(0, 2.5, 0); }
+    if (portrait) { camPos.set(cur.x * 0.8, 4.6 - cur.y * 0.4, R + 14.5); look.set(0, 2.9, 0); } else { camPos.set(cur.x * 1.4, 3.8 - cur.y * 0.6, R + 12.5); look.set(0, 1.2, 0); }   /* the pictures sit high enough that the place name, dots and Enter have their own room below */
     camPos.z += (1 - e) * 3; camPos.y += (1 - e) * 1.5;
     tmp.set(0, 2.6, R + (portrait ? 9 : 7.2)); camPos.lerp(tmp, z); look.lerp(tmp.set(0, 1.9, R), z);
     camera.position.copy(camPos); camera.lookAt(look);
@@ -164,20 +172,22 @@ export function start(o) {
     /* the stage lies under the ring; the domes stand on it */
     stage.scale.set(R * 2 * 1.18, R * 2 * 1.18 * 756 / 1600, 1); stage.position.set(0, -0.55 - (portrait ? 0.3 : 0), 0); stage.material.opacity = 1 - z * 0.15;
     stageGlow.scale.set(R * 3.4, R * 1.6, 1); stageGlow.position.set(0, -0.4, -0.5);
-    pav.forEach((p, i) => { const front = i === focus, sTo = front ? 1.15 : 0.86; p.sc += (sTo - p.sc) * Math.min(1, dt * 6 + (calm ? 1 : 0)); if (Math.abs(sTo - p.sc) > 0.15 && dt >= 0.05) p.sc = sTo;
+    const moving = Math.abs(glide.get() - glide.to) > 0.02 || Math.abs(dragTo) > 0.02 || Math.abs(dragOff) > 0.02;
+    pav.forEach((p, i) => { const front = i === focus, sTo = front ? FRONT : SIDE; p.sc += (sTo - p.sc) * Math.min(1, dt * 6 + (calm ? 1 : 0)); if (Math.abs(sTo - p.sc) > 0.15 && dt >= 0.05) p.sc = sTo;
       const s = p.sc + (front ? Math.sin(nudge * 18) * nudge * 0.06 : 0); p.g.scale.setScalar(s); p.g.rotation.y = -ring.rotation.y;   /* keep each host girl on her dome's right side */
       p.dome.position.y = Math.sin(t * 1.1 + i) * 0.06 * sp;
-      p.halo.material.opacity += ((front ? 0.5 : 0.22) - p.halo.material.opacity) * Math.min(1, dt * 5);
-      p.host.position.y = 2.7 + Math.sin(t * 1.1 + i * 1.3) * 0.08 * sp; p.host.material.opacity += ((entered && !front ? 0.2 : 1) - p.host.material.opacity) * Math.min(1, dt * 4);
-      p.dome.material.opacity += ((entered && !front ? 0.35 : 1) - p.dome.material.opacity) * Math.min(1, dt * 4);
-      p.motes.forEach(m => { const k = m.userData.k, y = ((t * 0.22 + k / p.motes.length) % 1); m.position.set(Math.sin(k * 2.3 + t * 0.7 * sp) * 0.7, 0.8 + y * 2.6, 0.3); m.material.opacity = Math.sin(y * Math.PI) * (calm ? 0.5 : 0.9); m.scale.setScalar(0.12 + 0.12 * Math.sin(y * Math.PI)); }); });
+      const show = front ? 1 : moving ? 0.9 : 0;   /* at rest only the place in front stands on the stage; the others show while she glides */
+      p.halo.material.opacity += ((front ? 0.5 : 0.22 * show) - p.halo.material.opacity) * Math.min(1, dt * 5 + (calm ? 1 : 0));
+      p.host.position.y = p.host.userData.y + Math.sin(t * 1.1 + i * 1.3) * 0.05 * sp; p.host.material.opacity += ((front ? 1 : 0) - p.host.material.opacity) * Math.min(1, dt * 5 + (calm ? 1 : 0)); p.host.visible = p.host.material.opacity > 0.02;   /* only the place in front shows its host */
+      p.dome.material.opacity += ((entered && !front ? 0 : show) - p.dome.material.opacity) * Math.min(1, dt * 5 + (calm ? 1 : 0)); p.dome.visible = p.halo.visible = p.dome.material.opacity > 0.02;
+      p.motes.forEach(m => { const k = m.userData.k, y = ((t * 0.22 + k / p.motes.length) % 1); m.position.set(Math.sin(k * 2.3 + t * 0.7 * sp) * 0.7, 0.8 + y * 2.6, 0.3); m.material.opacity = Math.sin(y * Math.PI) * (calm ? 0.5 : 0.9) * p.dome.material.opacity; m.scale.setScalar(0.12 + 0.12 * Math.sin(y * Math.PI)); }); });
     nudge = Math.max(0, nudge - dt * 1.6);
     /* the crown floats, twirls when tapped (it turns like a card), and its jewels glint */
-    crownRig.position.y = 5.6 + Math.sin(t * 0.9) * 0.1 * sp - (1 - e) * 1.2; const tw = twirlT.get();
+    crownRig.position.y = CROWN_Y + Math.sin(t * 0.9) * 0.1 * sp - (1 - e) * 1.2; const tw = twirlT.get();
     crown.scale.x = crownW * Math.cos(tw); crownHalo.material.rotation = t * 0.1 * sp;
-    jewels.forEach(j => { const k = calm ? 0.4 : Math.pow(Math.max(0, Math.sin(t * 1.3 + j.i * 1.9)), 10); const s = j.p > 0 ? (0.25 + j.p * 0.6) * k : 0; j.glint.scale.set(s, s, 1); j.glint.material.rotation = t * 0.8;
-      if (j.p > 0) j.glow.material.opacity = (0.3 + j.p * 0.45) * (0.8 + 0.2 * Math.sin(t * 2 + j.i)); });
-    crownSparks.forEach((s, i) => { const a = t * 0.35 + s.userData.off, k = Math.pow(Math.max(0, Math.sin(t * 1.7 + s.userData.off * 3)), 8) * sp; s.position.set(Math.cos(a) * 2.4, Math.sin(a * 1.3) * 0.8, 0.2); s.scale.setScalar(0.04 + k * 0.45); });
+    jewels.forEach(j => { const k = calm ? 0.4 : Math.pow(Math.max(0, Math.sin(t * 1.3 + j.i * 1.9)), 10); const s = j.p > 0 ? (0.14 + j.p * 0.32) * k : 0; j.glint.scale.set(s, s, 1); j.glint.material.rotation = t * 0.8;
+      if (j.p > 0) j.glow.material.opacity = (0.18 + j.p * 0.3) * (0.8 + 0.2 * Math.sin(t * 2 + j.i)); });
+    crownSparks.forEach((s, i) => { const a = t * 0.35 + s.userData.off, k = Math.pow(Math.max(0, Math.sin(t * 1.7 + s.userData.off * 3)), 8) * sp; s.position.set(Math.cos(a) * crownW * 0.42, Math.sin(a * 1.3) * crownH * 0.3, 0.2); s.scale.setScalar(0.03 + k * 0.24);   /* the sparkles stay on the crown */ });
     glitter[0].rotation.y = t * 0.012 * sp; glitter[1].rotation.y = -t * 0.02 * sp;
     glitter[0].material.opacity = 0.75 + Math.sin(t * 3.1) * 0.2 * sp; glitter[1].material.opacity = 0.7 + Math.sin(t * 2.3 + 1) * 0.3 * sp;
     const mm = new THREE.Matrix4(), q = new THREE.Quaternion(), eu = new THREE.Euler(), one = new THREE.Vector3(1, 1, 1);
@@ -190,7 +200,17 @@ export function start(o) {
   }
   applyLite(); fit(); frame();
 
+  /* where each picture is on the screen (pixels), for keser/tests/tidy.js */
+  const rectOf = (obj, w, h) => { obj.updateWorldMatrix(true, false); const c = obj.getWorldPosition(new THREE.Vector3()), sc = obj.getWorldScale(new THREE.Vector3());
+    const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0), up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1), ce = obj.center || { x: 0.5, y: 0.5 };
+    const W = sc.x * (w || 1), H = sc.y * (h || 1), xs = [], ys = [];
+    for (const [a, b] of [[0, 0], [1, 0], [0, 1], [1, 1]]) { const q = c.clone().addScaledVector(right, (a - ce.x) * W).addScaledVector(up, (b - ce.y) * H).project(camera);
+      xs.push((q.x + 1) / 2 * innerWidth); ys.push((1 - q.y) / 2 * innerHeight); }
+    return { l: Math.min(...xs), r: Math.max(...xs), t: Math.min(...ys), b: Math.max(...ys) }; };
   return {
+    layout() { const p = pav[focus], out = { picture: rectOf(p.dome), host: rectOf(p.host), crown: rectOf(crown), bubby: rectOf(bubby), screen: { w: innerWidth, h: innerHeight } };
+      out.hostShown = p.host.visible && p.host.material.opacity > 0.5; out.sideHosts = pav.filter((x, i) => i !== focus && x.host.visible).length;
+      out.sides = pav.filter((x, i) => i !== focus && x.dome.visible).map(x => rectOf(x.dome)); out.fade = pav.map(x => +x.dome.material.opacity.toFixed(3) * (x.dome.visible ? 1 : 0)); return out; },
     focus(i) { const old = focus; focus = i; glide.set(shortest(glide.get(), -i / places.length * TAU)); return old; },
     drag(f, release) { dragTo = release ? 0 : f * TAU / places.length * 1.2; if (release) { const to = glide.to; glide.from = glide.get() + dragOff; glide.to = to; glide.t0 = now(); dragOff = 0; } },
     enter() { entered = true; zoomT.set(1); },
