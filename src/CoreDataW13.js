@@ -34,5 +34,8 @@ CORE_SKILLS.W13 = [
   ["WRIT.RES.L04.01", "Good Question", "Ask a research question he can answer by reading", { after: "WRIT.PARA.L04.16", std: "W.3.7", file: "CoreDataW13H2", min: 7 }],
   ["WRIT.RES.L04.02", "Notes, Not Copies", "Take notes in his own words: a few key words that answer the question", { std: "W.3.8", file: "CoreDataW13H2", min: 7 }],
   ["WRIT.RES.L04.03", "Sort My Notes", "Sort notes into groups with headings, one paragraph for each group", { std: "W.3.8", file: "CoreDataW13H2", min: 7 }],
-  ["WRIT.RES.L04.04", "Where I Found It", "Name the source of his facts: the title and the author", { std: "W.3.8", file: "CoreDataW13H2", min: 6 }]
+  ["WRIT.RES.L04.04", "Where I Found It", "Name the source of his facts: the title and the author", { std: "W.3.8", file: "CoreDataW13H2", min: 6 }],
+  ["WRIT.ESSAY.L04.05", "ARMS Revise", "Revise with ARMS: Add, Remove, Move, Substitute", { after: "WRIT.RES.L04.04", std: "W.3.5", file: "CoreDataW13H3", min: 8 }],
+  ["WRIT.ESSAY.L04.06", "COPS Edit", "Edit with COPS: Capitals, Order of the words, Punctuation, Spelling", { std: "W.3.5", file: "CoreDataW13H3", min: 7 }],
+  ["WRIT.PARA.L04.17", "Letter to a Reader", "Write a letter with all its parts, in words that fit who will read it", { std: "W.3.4", file: "CoreDataW13H3", min: 7 }]
 ];
