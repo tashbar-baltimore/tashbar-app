@@ -38,7 +38,7 @@ HoS ask (his words, one line): "simple cards on the real home screen; each card 
 - Pictures: each card for a made-up grade 2 and grade 5 boy at 1366×768 and 390 px.
 
 ## HoS answers (26 Nov 2026) and what was built
-- It never plays by itself. It opens from a small round 💡 (purple tool) to the right of Sign out on the home, and from "How the buttons work · Show me" in My profile's settings (near the top).
+- It never plays by itself. It opens from a small round 💡 (purple tool) to the right of Sign out on the home, and from the "How the buttons work" card on the right side of My profile, under My levels (3 small previews; the whole card opens it).
 - For his first 10 sign-ins, a small pop-up by the 💡 says what it is and that it is also in My profile (once per sign-in, counted per boy on the device; never for K–1).
 - K–3: the short tour (6 cards) reads each bubble out loud by itself. Grade 4+: 12 cards with a Read it to me tool.
 - The words only say what a thing is and where it sits, and that labels are only to read (HoS: "not explaining too much").

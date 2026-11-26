@@ -630,7 +630,6 @@ function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2'), st=
   <div class="pr-boxes">${Q.box('rank','Days in a row',String(streak))}${Q.box('rank','Badges',String(earned))}${Q.box('prog','Lessons done',String(lessons))}</div>
   <h2 class="pr-sec">My settings</h2>
   <div class="pr-set"><span>Sound</span>${Q.pill(snd?'prog':'lock',snd?'On':'Off')}${Q.quiet(snd?'Turn off':'Turn on','data-gm="pfsnd"','tlk-small')}</div>
-  <div class="pr-set"><span>How the buttons work</span>${Q.quiet('Show me','data-gm="pftour"','tlk-small')}</div>
   <div class="pr-set"><span>Music</span>${Q.quiet('Choose music','data-gm="pfmus"','tlk-small')}</div>
   <div class="pr-out">${Q.quiet('Sign out','data-gm="pfout"')}</div></aside>`;
  /* his levels */
@@ -639,7 +638,13 @@ function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2'), st=
   return `<div class="pr-lv"><div class="r">${Q.pill('subj',w.name)}${Q.pill('rank','Level '+w.level)}<span class="n">${dn} of ${tot} steps</span></div><span class="pr-bar" role="img" aria-label="${dn} of ${tot} steps"><i style="width:${pc}%"></i></span></div>`; }).join('');
  if(!lv) lv='<p class="pr-none">Your rebbe or teacher sets your levels. Until then, find your levels below.</p>';
  const find=document.querySelector('#app [data-hp=levels]');
- const levels=sec('My levels')+`<div class="pr-card">${lv}</div>`+(find?`<div class="pr-row">${Q.quiet('Find my levels',px(find).trim())}</div>`:'');
+ const levels=sec('My levels')+`<div class="pr-card">${lv}</div>`+(find?`<div class="pr-row">${Q.quiet('Find my levels',px(find).trim())}</div>`:'')
+  /* HoS 2026-11-26: the button tour has its own section here, with small previews of its cards; the whole card opens the tour */
+  +sec('How the buttons work')+`<button type="button" class="tlk tlk-tile pr-tour" data-gm="pftour" aria-label="Show me how the buttons work"><span class="pr-tprev" aria-hidden="true">`
+  +`<span class="pr-tc"><span class="tlk tlk-main tlk-small">Start</span><small>Gold button</small></span>`
+  +`<span class="pr-tc"><span class="tlk tlk-x">${TLK.X_SVG}</span><small>Round ✕</small></span>`
+  +`<span class="pr-tc">${Q.pill('money','$5')}${Q.pill('prog','2 of 3')}${Q.pill('now','Now')}<small>Colors</small></span>`
+  +`</span><span class="pr-tgo"><b>Show me how</b><small>A short tour on your home page</small></span></button>`;
  /* what he finished lately (his map's growth: mastered steps in the last 7 days) */
  const wk=((g&&g.week)||[]).slice(0,5), subjOf=id=>{ const w=ws.find(x=>x.ids.indexOf(id)>=0||((x.c&&x.c.skills)||[]).some(s=>s[0]===id)); return w?w.name:''; };
  const fin=sec('Recently finished')+`<div class="pr-card">${wk.length?wk.map(x=>`<div class="pr-li">${subjOf(x[0])?Q.pill('subj',subjOf(x[0])):''}<b>${esc(nm(x[0])[0])}</b><span class="sp"></span><span class="d">${esc(dayWord(x[1]))}</span></div>`).join(''):'<p class="pr-none">Nothing finished this week yet. Your next lesson is waiting on My map.</p>'}</div>`;
@@ -1207,6 +1212,10 @@ body #gm .gm-more{background:#fff;color:#047857}
 #gm .pr-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
 #gm .pr-boxes .tlk-box{padding:8px 4px}#gm .pr-boxes .tlk-box small{font-size:10px;letter-spacing:.03em}
 #gm .pr-sec{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:22px 0 8px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4C4A7A}
+#gm .pr-tour{width:100%;padding:14px;gap:12px}#gm .pr-tprev{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;pointer-events:none}
+#gm .pr-tc{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;align-content:center;min-height:96px;padding:10px 8px;border-radius:14px;background:#F5F3FF;text-align:center}
+#gm .pr-tc small{flex-basis:100%;font-size:12px;font-weight:700;color:#4B4778}#gm .pr-tc .tlk{box-shadow:none;cursor:inherit}#gm .pr-tc .tlk-pill{font-size:12px;padding:3px 7px}
+#gm .pr-tgo{display:grid;gap:2px}#gm .pr-tgo b{font-size:19px}#gm .pr-tgo small{font-size:14px;color:#4B4778}
 #gm .pr-sec .tlk-pill{text-transform:none;letter-spacing:0;font-size:13px}
 #gm .pr-me .pr-sec{align-self:flex-start;margin:6px 0 0}
 #gm .pr-set{display:flex;align-items:center;gap:8px;width:100%;justify-content:space-between;font-weight:700}

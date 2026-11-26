@@ -19,7 +19,7 @@ require('fs').mkdirSync(OUT, { recursive: true });
     }
     console.log(nm, 'closed at the end:', await pg.evaluate(() => !document.getElementById('tl-tour')));
     await pg.evaluate(() => { const b = document.querySelector('#gm [data-gmnav="more"]'); if (b) b.click(); }); await pg.waitForTimeout(1200);
-    await pg.screenshot({ path: `${OUT}/${TAG}-profile-${nm}.png` }); console.log(nm, 'profile has Show me:', await pg.evaluate(() => !!document.querySelector('#gm .pr-set [data-gm="pftour"]')));
+    await pg.screenshot({ path: `${OUT}/${TAG}-profile-${nm}.png` }); console.log(nm, 'profile has the tour card:', await pg.evaluate(() => !!document.querySelector('#gm .pr-tour[data-gm="pftour"]')));
     if (errs.length) console.log('page errors', errs.slice(0, 5));
     await browser.close();
   }
