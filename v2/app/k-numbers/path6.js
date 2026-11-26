@@ -236,7 +236,7 @@ export function spinner(el) {
   el.innerHTML = '<img src="art/spinner.png" alt="" class="wheelpic">' +   /* the painted wooden wheel (order N6): yellow right, blue left */
     '<svg viewBox="0 0 200 200" class="wheel"><circle cx="146" cy="100" r="15" fill="#3B2A7A"/>' +
     '<circle cx="54" cy="78" r="15" fill="#3B2A7A"/><circle cx="54" cy="122" r="15" fill="#3B2A7A"/></svg>' +
-    '<svg viewBox="0 0 200 200" class="arrow"><path d="M100 30 L118 92 L100 104 L82 92 Z" fill="#FF5A4E" stroke="#fff" stroke-width="6" stroke-linejoin="round"/><circle cx="100" cy="100" r="16" fill="#fff"/><circle cx="100" cy="100" r="9" fill="#FF5A4E"/></svg>';
+    '<img src="art/spinner-arrow.png" alt="" class="arrow">';   /* the painted wooden arrow (order N6-r1), its gold pin in the centre */
   let turn = 0; const arrow = el.querySelector('.arrow');
   return {
     el,
