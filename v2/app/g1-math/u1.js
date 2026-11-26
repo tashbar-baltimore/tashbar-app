@@ -77,7 +77,7 @@ async function hill() {
     s.userData.face.material.map = canvasTex(256, 256, (x) => { ICONS[g](x); if (!open[i]) { x.globalCompositeOperation = 'source-atop'; x.fillStyle = 'rgba(150,150,150,.85)'; x.fillRect(0, 0, 256, 256); x.globalCompositeOperation = 'source-over'; x.fillStyle = '#8D877E'; x.fillRect(100, 128, 56, 44); x.strokeStyle = '#8D877E'; x.lineWidth = 10; x.beginPath(); x.arc(128, 126, 18, Math.PI, 0); x.stroke(); } }); s.userData.face.material.needsUpdate = true;
     const st = starsOf(g); for (let j = 0; j < 3; j++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex(j < st) })); sp.scale.setScalar(0.7); sp.position.set(pts[i].x - 0.75 + j * 0.75, 1.15, pts[i].z - 1.1); S.scene.add(sp); }
     s.userData.game = g; s.userData.open = open[i]; return s; });
-  const nextI = Math.max(0, ORDER.findIndex((g, i) => open[i] && starsOf(g) < 2));
+  const allDone = ORDER.every(g => starsOf(g) >= 2), nextI = allDone ? ORDER.length - 1 : Math.max(0, ORDER.findIndex((g, i) => open[i] && starsOf(g) < 2));
   const m = addKid(S, 'mendy', pts[nextI === -1 ? 0 : nextI].clone().add(V(PORTRAIT ? (nextI % 2 ? -2.6 : 2.6) : 1.9, 0, 0.6))); m.scale.setScalar(0.8);
   const ring = glow('#FFD84A', 4.2); ring.position.copy(pts[nextI]).add(V(0, 0.05, 0)); S.scene.add(ring);
   S.tick.push((dt, t) => { ring.material.opacity = 0.5 + Math.sin(t * 3) * 0.3; });
@@ -161,6 +161,7 @@ async function wallRound(firstRow, rows, gapNums, o = {}) {
     if (left) { const gg = lightUp(left, '#7FD6FF'); gg.rotation.x = 0; gg.position.z = 0.1; }
     await say(bricks[n - 1] ? (n - 1) + ', then ' + n + '. It goes here!' : 'Ten more than ' + (n - 10) + ' is ' + n + '.');
     await tween(700, u => b.position.lerpVectors(b.userData.home, posOf(n).clone().add(V(0, 0, 0.1)), u)); b.scale.setScalar(1); holes[n].visible = false; b.userData.done = true; chime('good');
+    const b24 = bricks[n + 1]; if (b24 && bricks[n + 11] === undefined) { const g2 = lightUp(b24, '#7FD6FF'); g2.rotation.x = 0; g2.position.z = 0.1; await say('Ten more is right below. ' + (n + 1) + ', then ' + (n + 11) + '.'); b24.remove(g2); }
     await say('Now you! Drag the stones in.');
   } else await say(o.check ? 'Drag each stone into its gap.' : 'Some stones fell out. Drag each one home.');
   let miss = 0, left = loose.filter(b => !b.userData.done).length; G.state = 'ask';
@@ -204,7 +205,7 @@ async function crateRound(n, o = {}) {
     for (let i = 0; i < tens; i++) await countTo(crates[i], (i + 1) * 10, true);
     await say('Then the apples, one by one.');
     for (let i = 0; i < ones; i++) await countTo(apples[i], tens * 10 + i + 1, true);
-    m.act('cheer'); await say(tens + ' crates and ' + ones + ' apples make ' + n + '.'); await wait(400); clearLabels(); return true;
+    m.act('cheer'); await say(tens + (tens === 1 ? ' crate and ' : ' crates and ') + ones + ' apples make ' + n + '.'); await wait(400); clearLabels(); return true;
   }
   function clearLabels() { temp.filter(x => x.isSprite).forEach(x => S.scene.remove(x)); }
   await say(o.check ? 'How many apples? Count, then write it.' : 'Count the crates, then the apples. Tap each one.');
@@ -224,8 +225,8 @@ async function crateRound(n, o = {}) {
     if (v === n) { m.act('cheer'); chime('good'); confetti(S, V(0, 2, 0), 40); await say(first ? 'Yes! ' + n + ' apples!' : n + '! You got it.'); clearLabels(); await wait(300); return first; }
     first = false; G.fixes++;
     if (o.check) { await say('It is ' + n + '.'); clearLabels(); return false; }
-    await say(ones ? tens + ' crates is ' + (tens * 10) + '. ' + ones + ' more is ' + n + '.' : tens + ' crates is ' + n + '.');
-    await say('Write ' + n + '.', { cap: tens + ' tens and ' + ones + ' ones' });
+    const cw = tens === 1 ? ' crate is ' : ' crates is '; await say(ones ? tens + cw + (tens * 10) + '. ' + ones + ' more is ' + n + '.' : tens + cw + n + '.');
+    await say('Write ' + n + '.', { cap: tens + (tens === 1 ? ' ten and ' : ' tens and ') + ones + (ones === 1 ? ' one' : ' ones') });
   }
 }
 /* HEAR AND WRITE: the voice says a number; he writes it (the caption does not show it) */
@@ -253,8 +254,6 @@ async function opener() {
   S.frame(V(0, 1.2, 1.5), 7, 4.5, V(0, 0.3, 1), true);
   await say('Hi! I am Mendy. I am in first grade now!'); m.act('wave', 1.8);
   await say('Today we pick apples for Bubby\'s Shabbos cake!');
-  await say('In kindergarten we counted to 100.');
-  await say('My friends Shmuel and Yaakov pick apples too!');
   await say('Today we count all the way to 120!');
   await say('Big numbers help us count lots of apples!');
   /* 1: tens up the hill */
@@ -270,7 +269,7 @@ async function opener() {
   clearTemp(); const past = [], cols2 = PORTRAIT ? 5 : 10;
   const all = Array.from({ length: 11 }, (_, i) => 100 + i);
   all.forEach((n, i) => { const s = keep(stone(i === 0 ? 100 : null)); const r = Math.floor(i / cols2), c = i % cols2; s.position.set((c - (Math.min(11, cols2) - 1) / 2) * 2.25, 0, r * 2.5 - 2); s.userData.n = n; past.push(s); });
-  m.position.set(PORTRAIT ? -3.8 : -13.5, 0, PORTRAIT ? 3.6 : -1.5);
+  m.position.set(PORTRAIT ? -3.8 : -13.5, 0, PORTRAIT ? 5.2 : -1.5);
   S.frame(V(PORTRAIT ? 0 : -1.2, 0.6, PORTRAIT ? 0.6 : -1), PORTRAIT ? 12 : 27, PORTRAIT ? 10 : 7, V(0, 0.8, 1));
   await say('After 100, we keep going.');
   await say('Watch me. One hundred, then one hundred one!');
@@ -354,9 +353,9 @@ async function mistake() {
   const b0 = rnd(2, 4), t1 = rnd(1, 4), b1 = rnd(1, 3), t2 = rnd(5, 9), b2 = rnd(1, 4);
   const rowOf = (start, bad, wrong) => Array.from({ length: 6 }, (_, i) => i === bad ? wrong : start + i);
   const rounds = [
-    { row: rowOf(110 - b0, b0, 200), bad: b0, right: 110, line: 'Shmuel counted. Is every stone right?' },
+    { row: rowOf(110 - b0, b0, 200), bad: b0, right: 110, line: 'Shmuel counted. Tap the wrong stone.' },
     { row: rowOf(100 + t1 - b1, b1, 1000 + t1), bad: b1, right: 100 + t1, line: 'Shmuel wrote these. Find the wrong one.' },
-    { row: rowOf(100 + t2 - b2, b2, 1000 + t2), bad: b2, right: 100 + t2, line: 'Shmuel wrote ' + (100 + t2) + '. Find the wrong stone.', cap: 'Shmuel wrote a number past 100. Find the wrong stone.' }];
+    { row: rowOf(100 + t2 - b2, b2, 1000 + t2), bad: b2, right: 100 + t2, line: 'Shmuel wrote numbers past 100. Find the wrong stone.' }];
   let miss = 0;
   for (let r = 0; r < rounds.length; r++) {
     clearTemp(); G.round = r; const q = rounds[r]; G.q = (G.q || 0) + 1; G.ask = { kind: 'mistake', bad: q.bad, answer: q.right };
@@ -393,12 +392,13 @@ async function check() {
     () => hearRound(100 + rnd(1, 9), { check: true }),
     () => hearRound(110 + rnd(1, 9), { check: true })]);
   let right = 0;
-  for (let i = 0; i < items.length; i++) { G.round = i; if (await items[i]()) right++; dots(R, i + 1); }
+  const missed = {};
+  for (let i = 0; i < items.length; i++) { G.round = i; if (await items[i]()) right++; else { const g = { hop: 'hop', wall: 'wall', crates: 'crates', hear: 'crates' }[G.ask.kind]; missed[g] = (missed[g] || 0) + 1; } dots(R, i + 1); }
   G.right = right; G.mastered = right >= 7;
-  clearTemp(); const m = keep(addKid(S, 'mendy', V(0, 0, 0))); S.frame(V(0, 1.4, 0), 5, 4, V(0, 0.3, 1));
+  clearTemp(); const m = keep(addKid(S, 'mendy', V(0, 0, 0))); S.frame(V(0, 1.4, 0), 10, 7, V(0, 0.45, 1));
   if (G.mastered) { m.act('cheer', 3); confetti(S, V(0, 3, 0), 80); await say('You did it! You count to 120!'); }
   else { m.act('wave', 2); await say('Good work! Let us practice and try again.');
-    G.practice = ['hop', 'wall', 'crates'].find(g => starsOf(g) < 3) || 'hop'; document.getElementById('onward').href = 'unit1.html?g=' + G.practice; }
+    G.practice = Object.keys(missed).sort((a, b) => missed[b] - missed[a])[0] || 'hop';   /* the game for what he missed most */ document.getElementById('onward').href = 'unit1.html?g=' + G.practice; }
   const e = await endScreen(right === 8 ? 3 : right === 7 ? 2 : 1); if (e === 'replay') location.reload();
 }
 async function review() {
