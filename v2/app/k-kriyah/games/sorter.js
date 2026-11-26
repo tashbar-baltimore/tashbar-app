@@ -65,19 +65,21 @@ export default function setup(E, { struggled, unit, game }) {
       await E.say(['Yes! ' + E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd)]);
       if (idx < deck.length) { busy = true; await setCard(deck[idx]); busy = false; enabled = true; } else onDone();
     } else {
-      E.sfx.boop(); if (!missed) mistakes++; missed = true; wrongInRow++; kid.mood('think'); await back(); busy = true; await E.shake(card, .15);
+      E.sfx.boop(); if (!missed) { mistakes++; E.noteLetter && E.noteLetter(k, false); } missed = true; wrongInRow++; kid.mood('think'); await back(); busy = true; await E.shake(card, .15);
       E.pointAt(cardArrow, card, k, 1.9, feat(k, pair));
       await E.say('Look! ' + say(LOOK, k, pair)); cardArrow.visible = false; busy = false; kid.mood('calm');
       if (wrongInRow >= 2 || mistakes >= 3) help = true;
       await E.say('Try again!');
     }
   }
+  let cardsAll = 0;
   async function playPair(pr, first) {
+    if (!first) { help = struggled; wrongInRow = 0; }   /* help is for this pair only, so later cards are his own */
     setPair(pr); E.sfx.whoosh(); crates.forEach(c => E.hop(c, .2, 300));
     for (const k of pr) await E.say(say(CLUE, k, pr));   /* the right-hand crate first, as we read */   /* two lines: each 12 words or fewer */
     const nCards = (game && game.cards) || 6;
     let d; do { d = Array.from({ length: nCards }, (_, i) => pr[i % pr.length]).sort(() => Math.random() - .5); } while (d.some((k, i) => i > 1 && d[i - 1] === k && d[i - 2] === k) || (pr.length > 2 && d[0] === pr[1]));   /* never three of one letter in a row */
-    const quick = !first && game && game.cards; deck = quick ? d : [pr[1], ...d]; idx = 0; E.setProgress(deck.length, 0);
+    const quick = !first && game && game.cards; deck = quick ? d : [pr[1], ...d]; cardsAll += d.length; idx = 0; E.setProgress(deck.length, 0);
     await setCard(deck[0]); busy = false;
     if (quick) { busy = false; enabled = true; const done = new Promise(r => onDone = r); document.body.dataset.dragReady = ++kRound; await done; return; }   /* quick rounds: no demo after the first pair */
     await E.say('Watch me. ' + (WATCH[pr[1]] || say(LOOK, pr[1], pr)));
@@ -96,7 +98,7 @@ export default function setup(E, { struggled, unit, game }) {
     for (const pr of pairs.slice(1)) {   /* Unit 10: many pairs, one after another, quick */
       const nm = pr.map(k => E.LETTERS[k].name); await E.say((pairs.length > 2 ? 'Next! ' : 'Great! Now ') + nm.slice(0, -1).join(', ') + ' and ' + nm[nm.length - 1] + '!');
       await playPair(pr, false); }
-    const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
+    const stars = mistakes <= Math.max(1, Math.round(cardsAll * .1)) ? 3 : mistakes <= Math.max(3, Math.round(cardsAll * .25)) ? 2 : 1;   /* 12 cards: 1 slip for 3 stars, 3 for 2; a longer game allows the same share */
     return { stars, line: stars >= 2 ? ({ 3: 'Great detective work! Crown or no crown, leg or gap!', 4: 'Great detective work! You know Beis, Kaf and Chaf!', 5: 'Great detective work! Foot or flat, open or closed!', 6: 'Great detective work! Tongue or no tongue, dot or no dot!', 7: 'Great detective work! Corner or round, short leg or long!', 8: 'Great detective work! A gap, no foot, or a little foot!', 10: 'Champion detective! You know every look-alike!' }[game && game.review ? 0 : unit.n]) || 'Great detective work!' : null };
   };
 }

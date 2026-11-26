@@ -41,24 +41,33 @@ export default function setup(E, { unit }) {
     wall(); E.setProgress(4, 1);
     for (const r of rows.slice(0, -1)) { for (const l of r) { E.popIn(l, 1, 250); await E.wait(50); } }
     await E.say('Let’s sing it together!');
-    for (const r of rows.slice(0, -1)) for (const l of r) { E.sfx.drum(); E.hop(l, .25, 260); await E.say(NM(l.userData.key) + ',', false); await E.wait(40); }
+    for (const [ri, r] of rows.slice(0, -1).entries()) {   /* row by row: the voice sings a row, then it is his turn */
+      for (const l of r) { E.sfx.drum(); E.hop(l, .25, 260); await E.say(NM(l.userData.key) + ',', false); await E.wait(40); }
+      await E.say(ri ? 'Your turn!' : 'Your turn! Sing it with me!'); for (const l of r) { E.hop(l, .3, 300); await E.wait(380); } }
     await E.say('And the letters in Shabbos clothes!'); for (const l of rows[rows.length - 1]) { E.popIn(l, 1, 250); E.sfx.drum(); E.hop(l, .25, 260); await E.say(NM(l.userData.key) + ',', false); }
     boys.forEach(b => b.mood('cheer')); E.joy(new THREE.Vector3(0, 3, 1), true); await E.wait(500); boys.forEach(b => b.mood('calm'));
     E.setProgress(4, 2);
     /* warm-up: hear it, tap it, on the wall */
     await E.say('Now you! Listen, and tap the letter.');
-    const ask = ['gimmel', 'shin', 'memsofis', 'tzadik', 'pei'].filter(k => all.some(l => l.userData.key === k));
-    for (const [qi, k] of ask.entries()) {
-      const l = all.find(x => x.userData.key === k); if (qi < 3) await E.sayWithMe(k);
+    all.forEach(l => E.popOut(l, 250)); await E.wait(300);
+    /* three big letters at a time (big enough to tap on a phone): the one he hears, its look-alike and one more */
+    const ASK = [['gimmel', 'nun', 'beis'], ['shin', 'sin', 'lamed'], ['memsofis', 'samech', 'reish'], ['tzadik', 'ayin', 'daled'], ['pei', 'fei', 'yud']];
+    const TIP = { gimmel: 'Gimmel has a foot.', shin: 'Shin’s dot is on the right.', memsofis: 'Mem Sofis is square at the bottom.', tzadik: 'Tzadik has a little arm up.', pei: 'Pei has a dot.' };
+    let trio = [];
+    for (const [qi, set] of ASK.entries()) {
+      const k = set[0]; trio.forEach(l => E.scene.remove(l)); all.length = 0;
+      trio = set.slice().sort(() => Math.random() - .5).map((c, i) => { const l = E.letter(c, P ? 1.3 : 1.7); l.position.set((1 - i) * (P ? 1.45 : 2.4), P ? 3.4 : 2.6, .6); E.scene.add(l); all.push(l); E.popIn(l); return l; });
+      const l = trio.find(x => x.userData.key === k); await E.wait(300); if (qi < 3) await E.sayWithMe(k);
       await E.say(['Tap ' + NM(k) + '!']); document.body.dataset.tapReady = k; if (qi === 0) showHand(l);
       let tries = 0;
-      for (;;) { const got = await E.waitTap(all.filter(x => x.visible)); E.hand.hide();
-        if (got === l) break; tries++; E.sfx.boop(); E.shake(got, .08); await E.say('That is ' + NM(got.userData.key) + '. Find ' + NM(k) + '!'); if (tries >= 2) showHand(l); }
+      for (;;) { const got = await E.waitTap(trio); E.hand.hide();
+        if (got === l) break; tries++; E.sfx.boop(); E.shake(got, .08); await E.say('That is ' + NM(got.userData.key) + '. ' + TIP[k]); if (tries >= 2) showHand(l); }
       delete document.body.dataset.tapReady; E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .2, .4)), 16, .7); E.hop(l, .4); await E.say(E.nameLine(k));
     }
+    trio.forEach(l => E.popOut(l, 250));
     E.setProgress(4, 3);
     /* the golden gate */
-    all.forEach(l => E.popOut(l, 250)); await E.wait(300); gate.visible = true; await E.popIn(gate, 1, 500);
+    await E.wait(300); gate.visible = true; await E.popIn(gate, 1, 500);
     await E.say('This golden gate leads to the nekudos!');
     await E.say('Get three stars on the champion check.'); await E.say('Do it on two different days.');
     await E.say('Then the gate opens!'); E.hop(gate, .2);

@@ -45,7 +45,7 @@ if (ok) {
     else if (kind === 'sorter') { const pr = (G.pairs || [U.letters])[0], a = E.letter(pr[0], .6), b = E.letter(pr[1] || pr[0], .6); a.position.x = .3; b.position.x = -.3; g.add(a, b); }
     else if (kind === 'story') { const h = E.house({ bushes: false }); h.scale.setScalar(.32); h.position.y = -.35; g.add(h); }
     else if (kind === 'detective') { const l = E.letter('beis', .85); g.add(l); }
-    else if (kind === 'feel') { const l = E.letter(U.letters[0], .85, 'orange'); g.add(l); }
+    else if (kind === 'feel') { const l = E.letter((G.letters || U.letters)[0], .85, 'orange'); g.add(l); }
     else if (kind === 'hunt') { const lens = E.mesh(new THREE.TorusGeometry(.3, .07, 14, 32), E.M(0x2f7de1, { roughness: .2, clearcoat: 1 })); g.add(lens); g.add(E.mesh(new THREE.CircleGeometry(.3, 32), new THREE.MeshPhysicalMaterial({ color: 0xcfefff, transparent: true, opacity: .45, roughness: 0, clearcoat: 1 }), 0, 0, 0, false)); const hd = E.mesh(new THREE.CylinderGeometry(.06, .07, .45, 12), E.M(0x8a5a3c), .33, -.33, 0); hd.rotation.z = Math.PI / 4; g.add(hd); }
     else if (kind === 'mistake') { g.add(E.mesh(E.rbox(.8, .85, .08, .06), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); const l = E.letter('veis', .55); l.position.z = .12; g.add(l); }
     else if (kind === 'mastery') { const gold = E.goldDot(); g.add(E.mesh(new THREE.CylinderGeometry(.3, .12, .42, 24), gold, 0, .1, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.08, .08, .2, 12), gold, 0, -.2, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.22, .22, .08, 24), gold, 0, -.32, 0)); [-1, 1].forEach(s => { const h = E.mesh(new THREE.TorusGeometry(.12, .035, 8, 16, Math.PI), gold, s * .3, .14, 0); h.rotation.z = s * -Math.PI / 2; g.add(h); }); }
@@ -61,7 +61,9 @@ if (ok) {
     s.userData = { G, open, stars, ic, disc };
     E.scene.add(s); stops.push(s);
   });
-  const cur = stops.find(s => s.userData.open && s.userData.stars < E.PASS && !s.userData.G.bonus) || stops.slice().reverse().find(s => s.userData.open && !s.userData.G.bonus);
+  const gateCheck = U.gate && stops.find(s => s.userData.G.mastery), gateG = gateCheck && (E.loadSave().games[gateCheck.userData.G.id] || {}), gatePractice = gateCheck && stops.find(s => s.userData.G.afterTry);
+  const gateCur = !gateCheck || !gateG.plays ? null : E.gateOpen(gateCheck.userData.G.id) ? null : (gateG.days3 || []).includes(E.today()) ? null : (gateG.last || 0) < 3 && gatePractice && gatePractice.userData.open && !(((E.loadSave().games[gatePractice.userData.G.id] || {}).at || 0) > (gateG.at || 0)) ? gatePractice : gateCheck;   /* the champion gate: practise after a check under 3 stars, then the check again (another day) */
+  const cur = gateCur || stops.find(s => s.userData.open && s.userData.stars < E.PASS && !s.userData.G.bonus) || stops.slice().reverse().find(s => s.userData.open && !s.userData.G.bonus);
   const boy = E.mendy(); E.scene.add(boy);
   const ring = E.glowSprite('#fff7b0', 3.2, 0); E.scene.add(ring);
   const banner = new THREE.Group(); if (!U.letters.length) { const st = E.star3d(.6); banner.add(st); E.onFrame(t => st.rotation.y = t); }   /* the champion unit: a gold star */
@@ -90,7 +92,7 @@ if (ok) {
   /* big buttons to the unit before (right, as Hebrew reads) and the next unit (left), when it is open */
   const unitBtn = (u, side) => { const b = document.createElement('button'); b.className = 'ui btn'; b.id = 'unit' + u.n; b.setAttribute('aria-label', 'Unit ' + u.n);
     b.style.cssText = `${side}:16px;bottom:44px;width:96px;height:96px;font:800 34px/1 "Noto Serif Hebrew","Times New Roman",serif;color:#1f5fff;direction:rtl`;
-    b.textContent = E.FLAT[u.letters[0]] + '\u2013' + E.FLAT[u.letters[u.letters.length - 1]]; b.onclick = () => { E.sfx.pop(); E.goPath(u.n); }; document.body.appendChild(b); };
+    b.textContent = u.letters.length ? E.FLAT[u.letters[0]] + '\u2013' + E.FLAT[u.letters[u.letters.length - 1]] : '\u2605';   /* the champion unit: a star */ b.onclick = () => { E.sfx.pop(); E.goPath(u.n); }; document.body.appendChild(b); };
   const before = E.UNITS.find(u => u.n === U.n - 1), after = E.UNITS.find(u => u.n === U.n + 1);
   if (before) unitBtn(before, 'right'); if (after && E.unlocked(after.games[0].id)) unitBtn(after, 'left');
   document.body.dataset.ready = 1;

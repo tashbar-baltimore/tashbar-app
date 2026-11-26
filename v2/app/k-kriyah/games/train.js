@@ -97,7 +97,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
     const c0 = cars.find(c => c.userData.key === ORDER[0]);   /* the demo: Alef goes first */ let [x, y] = E.toScreen(c0.position); E.hand.at(x, y); await E.wait(350);
     const p0 = c0.position.clone(), p1 = slotPos(0).add(new THREE.Vector3(0, .6, .3)); await E.tween(1100, q => { c0.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(c0.position); E.hand.at(a, b); });
     E.hand.hide(); await place(c0, 0);
-    await E.say('Now you! Which car comes next?'); wrong = 0;
+    await E.say('Now you! Which car comes next?'); wrong = 0; if (game.clock) startClock();
     const done = new Promise(r => resolveRound = r); enabled = true; busy = false; document.body.dataset.trainReady = 1;
     await done; enabled = false;
     E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant(); await chug();
@@ -117,6 +117,14 @@ export default function setup(E, { struggled, unit, game = {} }) {
     E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant();   /* the full train stays on screen for the end */
     E.setProgress(2, 2);
   }
+  /* Unit 10's bonus (game.clock): a gentle clock. A sun moves slowly across the sky while he fills the train.
+     Nothing is lost when it sets: he just hears "you finished it!" instead of "before the sun went down!". */
+  let sunObj = null, sunT0 = 0, beatSun = true, sunTick = null;
+  const SUN_MS = 70000;
+  function startClock() { sunObj = new THREE.Group(); sunObj.add(E.mesh(new THREE.SphereGeometry(.45, 24, 16), new THREE.MeshBasicMaterial({ color: 0xffd84a }), 0, 0, 0, false)); const g = E.glowSprite('#ffe680', 2.2, .7); sunObj.add(g); E.scene.add(sunObj); sunT0 = performance.now();
+    const f = () => { if (!sunObj) return; const q = Math.min(1, (performance.now() - sunT0) / (SUN_MS * (E.FAST ? .3 : 1))); sunObj.position.set((P ? 2.2 : 6) - q * (P ? 4.4 : 12), (P ? 5.6 : 5.0) - Math.sin(q * Math.PI) * -1.0 - q * q * 1.5, -3); if (q >= 1 && beatSun) { beatSun = false; } };
+    E.onFrame(f); sunTick = f; }
+  function stopClock() { if (sunTick) E.offFrame(sunTick); }
   /* Unit 8's twist (game.swap): the full train comes back, but Yaakov mixed up some cars. He listens to the order and taps a car
      in the wrong place; it swaps with its partner. Two of the mix-ups differ only by the dot (Shin and Sin, Tuf and Suf), so he must look closely.
      A tap on a car in the right place is answered kindly: it says its name, and the chant plays up to it. */
@@ -156,7 +164,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const derange = m => { let a; do { a = [...Array(m).keys()].sort(() => Math.random() - .5); } while (a.some((v, i) => v === i)); return a; };
   return async () => {
     const perm = derange(n); cars.forEach((c, i) => { c.userData.home = perm[i]; c.position.copy(homes[perm[i]]); });
-    await roundOne(); if (game.swap) await roundSwap(); else await roundTwo();
+    await roundOne(); if (game.clock) { stopClock(); await E.say(beatSun ? 'Before the sun went down! Champion!' : 'The sun went down, and you finished it! Great!'); }
+    else if (game.swap) await roundSwap(); else await roundTwo();
     const stars = wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Choo choo! You know the Alef-Beis order!' : null };
   };

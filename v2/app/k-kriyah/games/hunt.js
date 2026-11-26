@@ -91,8 +91,9 @@ export default function setup(E, { struggled, unit, game }) {
   async function miss(l) {
     E.sfx.boop(); wrong++; wrongInRound++; l.userData.busy = true; boy.mood('think'); await E.shake(l, .12); l.userData.busy = false;
     E.pointAt(arrow, l, l.userData.key, l.userData.height, feat(l.userData.key));
-    const k = l.userData.key, look = plan.bySound ? 'Find the letter that says ' + E.LETTERS[want].snd + '!' : 'Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!';
-    await E.say('That is ' + NM(k) + '. ' + look);   /* 12 words or fewer */
+    const k = l.userData.key, look = 'Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!';
+    if (plan.bySound) { E.noteLetter && E.noteLetter(want, false); await E.say(E.quiet(k) ? ['That is ' + NM(k) + '. It is quiet. Find', E.S(E.LETTERS[want].snd), '!'] : ['That is ' + NM(k) + '. It says', E.S(E.LETTERS[k].snd), '. Find', E.S(E.LETTERS[want].snd), '!']); }   /* a sound game answers with sounds */
+    else await E.say('That is ' + NM(k) + '. ' + look);   /* 12 words or fewer */
     arrow.visible = false;
     if (wrongInRound >= 2) showHelp();
   }
@@ -101,7 +102,7 @@ export default function setup(E, { struggled, unit, game }) {
     if (!active) return; const l = E.pickFrom(e, letters.filter(x => !x.userData.got)); if (!l || l.userData.busy) return; lastAct = performance.now();
     if (l.userData.key === want) got(l); else { active = false; await miss(l); active = true; }
   });
-  setInterval(() => { if (active && !helpOn && performance.now() - lastAct > (help ? 7000 : 14000) * E.F) { lastAct = performance.now(); showHelp(); E.say('Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!'); } }, 500);
+  setInterval(() => { if (active && !helpOn && performance.now() - lastAct > (help ? 7000 : 14000) * E.F) { lastAct = performance.now(); showHelp(); E.say(plan.bySound ? ['Find the letter that says', E.S(E.LETTERS[want].snd), '!'] : 'Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!'); } }, 500);
 
   return async () => {
     /* round 1 */

@@ -78,9 +78,11 @@ export default function setup(E, { struggled, unit, id }) {
   const line = q => q.by === 'quiet' ? 'Which letter is quiet? Tap it.' : q.by === 'sound' ? ['Which letter says', S(E.LETTERS[q.k].snd), '? Tap it.'] : 'Tap ' + E.LETTERS[q.k].name + '.';
   const explain = k => E.quiet(k) ? 'That is ' + E.LETTERS[k].name + '. ' + E.LETTERS[k].name + ' is quiet.' : k === 'pei' ? ['That is Pei. It has a dot. Pei says', S('p')] : k === 'fei' ? ['That is Fei. No dot. Fei says', S('f')] : k === 'beis' ? ['That is Beis. It has a dot. Beis says', S('b')] : k === 'veis' ? ['That is Veis. No dot. Veis says', S('v')] : k === 'kaf' ? ['That is Kaf. It has a dot. Kaf says', S('k')] : k === 'chaf' ? ['No dot: Chaf. It says', S('ch')] : k === 'shin' ? ['That is Shin. Dot on the right. Shin says', S('sh')] : k === 'sin' ? ['That is Sin. Dot on the left. Sin says', S('s')] : k === 'tav' ? ['That is Tuf. It has a dot. Tuf says', S('t')] : k === 'sav' ? ['That is Suf. No dot. Suf says', S('s')] : E.LETTERS[k].partner ? ['That is ' + E.LETTERS[k].name + '. It says', S(E.LETTERS[k].snd), ', like ' + E.LETTERS[E.LETTERS[k].partner].name + '.']
     : ['That is ' + E.LETTERS[k].name + '. ' + E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd)];
-  const Qs = (QS[unit.n] || QS[1]).slice();
+  let Qs = (QS[unit.n] || QS[1]).slice();
+  if (unit.gate) {   /* the champion check: 15 letters from the WHOLE Alef-Beis, the ones he finds hardest (or hasn't seen for longest) first, so two days cover every letter; about half ask the sound */
+    Qs = E.reviewPicks(keys, 15).map((k, i) => E.quiet(k) ? { k, by: 'quiet' } : i % 2 && E.LETTERS[k].snd !== 'ch' ? SND(k) : N(k)); }
   /* the older letter he finds hardest (or hasn't seen longest) takes the last older-letter question (RESEARCH.md, gain 5) */
-  if (E.reviewPicks && unit.known.length) { const weak = E.reviewPicks(unit.known, 1)[0], at = Qs.map(q => unit.known.includes(q.k) && q.by === 'name').lastIndexOf(true);
+  if (!unit.gate && E.reviewPicks && unit.known.length) { const weak = E.reviewPicks(unit.known, 1)[0], at = Qs.map(q => unit.known.includes(q.k) && q.by === 'name').lastIndexOf(true);
     if (weak && at >= 0 && !Qs.some(q => q.k === weak)) Qs[at] = { k: weak, by: 'name' }; }
   async function ask(q) {
     cur = q; await E.say(line(q)); active = true; document.body.dataset.askReady = 1;
@@ -114,7 +116,7 @@ export default function setup(E, { struggled, unit, id }) {
     E.hop(basket, .35, 450); E.confetti(basket.position.clone().add(new THREE.Vector3(0, 1, .5)), 50);
     const nQ = Qs.length, stars = right >= nQ - 1 ? 3 : right >= Math.ceil(nQ * .67) ? 2 : 1;   /* 9 questions: 8 for three stars, 6 for two */ window.__right = right;
     const names = unit.letters.map(k => E.LETTERS[k].name);
-    if (unit.gate) { const days = E.gateDays(id) + (stars >= 3 && !(E.loadSave().games[id] || {}).days3?.includes(new Date().toISOString().slice(0, 10)) ? 1 : 0);   /* the champion gate: two different days */
+    if (unit.gate) { const days = E.gateDays(id) + (stars >= 3 && !(E.loadSave().games[id] || {}).days3?.includes(E.today()) ? 1 : 0);   /* the champion gate: two different days */
       return { stars, line: stars >= 3 ? (days >= E.GATE_DAYS ? 'Alef-Beis Champion! The nekudos are open!' : 'Champion today! Come back another day for the nekudos.') : stars === 2 ? 'Two stars! Practice your letters, then try again.' : null }; }
     const all3 = 'Three stars! You know ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + '!';
     return { stars, line: stars === 3 ? (all3.split(' ').length > 12 ? 'Three stars! You know every letter of Unit ' + unit.n + '!' : all3) : stars === 2 ? 'Two stars! You passed Unit ' + unit.n + '!' : null };

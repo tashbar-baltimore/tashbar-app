@@ -49,7 +49,7 @@ P.mistake = async (pg, shot, log) => {
   let n = 0, wrongJ = false, wrongT = false;
   await loop(pg, async () => { const i = await K.info(pg); if (!i) return false;
     if (i.ask && i.yes && i.no) { n++; const right = i.right != null ? i.right : i.shownKey === i.claim; if (n === 1) await shot('1-start');
-      if (!wrongJ && !right) {   /* one mistake: says Yaakov is right when he isn't, then (same round) drags a wrong letter first */ wrongJ = true; await pg.mouse.click(...(right ? i.no : i.yes)); await pg.waitForTimeout(700); await shot('3-wrong'); await pg.waitForTimeout(800); log.wrongHandled = (await pg.evaluate(() => window.__lines.join(' '))).includes('Look again'); }
+      if (!wrongJ && !right) {   /* one mistake: says Yaakov is right when he isn't, then (same round) drags a wrong letter first */ wrongJ = true; await pg.mouse.click(...(right ? i.no : i.yes)); await pg.waitForTimeout(700); await shot('3-wrong'); await pg.waitForTimeout(800); log.wrongHandled = /Look again|Listen again/.test(await pg.evaluate(() => window.__lines.join(' '))); }
       else await pg.mouse.click(...(right ? i.yes : i.no)); await pg.waitForTimeout(300); return true; }
     if (i.fix && i.tiles.length === 3 && await pg.evaluate(() => !!document.body.dataset.fixReady)) { const t = i.tiles.find(x => x.k === i.fix);
       if (!wrongT) { wrongT = true; const w = i.tiles.find(x => x.k !== i.fix); await K.drag(pg, w.xy, i.board); await pg.waitForTimeout(2500); await shot('2-middle'); return true; }

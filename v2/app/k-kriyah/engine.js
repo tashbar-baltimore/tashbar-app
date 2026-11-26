@@ -41,13 +41,15 @@ export function unlocked(id) {
 }
 /* the gate to the nekudos (MAP.md, Unit 10): 3 stars on the champion check on two different days */
 export const GATE_DAYS = 2;
+/* today, by the boy's own clock (not UTC: in Baltimore the UTC date changes in the evening) */
+export const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 export function gateDays(id) { const g = loadSave().games[id]; return g && g.days3 ? g.days3.length : 0; }
 export const gateOpen = id => gateDays(id) >= GATE_DAYS;
 export function struggled(id) { const g = loadSave().games[id]; return !!(g && g.last != null && g.last < PASS); }
 export function record(id, stars) {
   const s = loadSave(); const g = s.games[id] || { stars: 0, plays: 0 };
   g.stars = Math.max(g.stars || 0, stars); g.last = stars; g.plays = (g.plays || 0) + 1; g.at = Date.now();
-  if (stars >= 3) { const day = new Date().toISOString().slice(0, 10); g.days3 = g.days3 || []; if (!g.days3.includes(day)) g.days3.push(day); }   /* the days he got 3 stars (the champion gate counts them) */
+  if (stars >= 3) { const day = today(); g.days3 = g.days3 || []; if (!g.days3.includes(day)) g.days3.push(day); }   /* the days he got 3 stars (the champion gate counts them) */
   s.games[id] = g; writeSave(s);
   try { if (parent && parent !== window) parent.postMessage({ tl2game: 'k-kriyah/' + id, stars }, '*'); } catch (e) {}
   window.__saved = { id, stars };
@@ -671,13 +673,15 @@ export async function finish(id, stars, line) {
   const nx = nextGame(id), bar = $('#endbar');
   const gi = GAMES.findIndex(g => g.id === id);
   const bonusOpen = GAMES[gi + 1] && GAMES[gi + 1].bonus && unlocked(GAMES[gi + 1].id);
+  const practice = GAMES[gi].mastery && unitOf(id).gate && stars < 3 ? GAMES.find(g => g.afterTry && g.unit === GAMES[gi].unit) : null;   /* the champion check: not 3 stars yet, so practise his hard letters next */
   bar.innerHTML = `<button class="btn ${passed ? '' : 'orange big'}" id="again2" aria-label="Play again">${passed ? ICON.replay.replace(/#fff/g, '#2f6fe1') : ICON.replay}</button>` +
-    (passed && (nx || bonusOpen) ? `<button class="btn green big" id="nextg" aria-label="Next game">${ICON.next}</button>` : passed ? `<button class="btn green big" id="home2" aria-label="Back to the path">${ICON.home.replace(/#2f6fe1/g, '#fff')}</button>` : '');
+    ((passed && (nx || bonusOpen)) || practice ? `<button class="btn green big" id="nextg" aria-label="Next game">${ICON.next}</button>` : passed ? `<button class="btn green big" id="home2" aria-label="Back to the path">${ICON.home.replace(/#2f6fe1/g, '#fff')}</button>` : '');
   bar.classList.add('show'); document.body.dataset.done = 1; const note = document.querySelector('.note'); if (note) note.style.display = 'none';
   $('#again2').onclick = () => { location.reload(); };
-  if ($('#nextg')) $('#nextg').onclick = () => goGame((nx || GAMES[gi + 1]).id);
+  if ($('#nextg')) $('#nextg').onclick = () => goGame((practice || nx || GAMES[gi + 1]).id);
   if ($('#home2')) $('#home2').onclick = () => goPath();
-  if (passed) await say(nx ? 'Tap the green arrow for the next game!' : bonusOpen ? 'A bonus game! Tap the green arrow.' : 'Tap the green button to go back.');
+  if (practice) await say('Tap the green arrow to practise your hard letters!');
+  else if (passed) await say(nx ? 'Tap the green arrow for the next game!' : bonusOpen ? 'A bonus game! Tap the green arrow.' : 'Tap the green button to go back.');
   else await say('Tap the orange button to play again.');
 }
 

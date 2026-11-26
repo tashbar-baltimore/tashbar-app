@@ -8,7 +8,7 @@
 const TIP = { beis: 'It has a dot.', veis: 'No dot.', kaf: 'It has a dot.', chaf: 'No dot.', pei: 'It has a dot.', fei: 'No dot.', tav: 'It has a dot.', sav: 'No dot.',
   shin: 'Its dot is on the right.', sin: 'Its dot is on the left.', vov: 'No crown.', zayin: 'It has a crown.', hei: 'Its leg doesn’t touch the roof.', ches: 'Its leg touches the roof.',
   daled: 'It has a corner.', reish: 'It is round on top.', gimmel: 'It has a foot.', nun: 'It is flat at the bottom.', tes: 'It is closed at the bottom.', mem: 'It has an opening at the bottom.',
-  kuf: 'It has a long leg.', samech: 'It is round all around.', memsofis: 'It is square at the bottom.', nunsofis: 'It has a long leg.', chafsofis: 'It has a long leg.', alef: 'It has a slanted line.', ayin: 'It has two arms up.' };
+  kuf: 'It has a long leg.', yud: 'It is the little one.', lamed: 'It is the tall one.', tzadik: 'It has a little arm up.', feisofis: 'It has a long leg.', tzadiksofis: 'It has a long leg.', samech: 'It is round all around.', memsofis: 'It is square at the bottom.', nunsofis: 'It has a long leg.', chafsofis: 'It has a long leg.', alef: 'It has a slanted line.', ayin: 'It has two arms up.' };
 const LOOKS = { beis: ['veis', 'kaf'], veis: ['beis'], kaf: ['chaf', 'beis'], chaf: ['kaf'], pei: ['fei', 'kaf'], fei: ['pei'], tav: ['sav', 'ches'], sav: ['tav'], shin: ['sin'], sin: ['shin'], vov: ['zayin', 'nunsofis'], zayin: ['vov'],
   hei: ['ches', 'kuf'], ches: ['hei', 'tav'], daled: ['reish'], reish: ['daled', 'chafsofis'], gimmel: ['nun'], nun: ['gimmel'], tes: ['mem'], mem: ['tes'], kuf: ['hei'], samech: ['memsofis'], memsofis: ['samech'], nunsofis: ['vov'], chafsofis: ['reish'] };
 export default function setup(E, { struggled, unit }) {
@@ -17,7 +17,7 @@ export default function setup(E, { struggled, unit }) {
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   const bubM = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: .28, roughness: 0, clearcoat: 1, transmission: .2, iridescence: .8, depthWrite: false });
   const bubbles = []; let want = null, active = false, caught = 0, wrong = 0, wrongHere = 0, resolveCatch = null, P = false, big = null, help = struggled;
-  const glow = E.glowSprite('#fff7b0', 1.8, 0); E.scene.add(glow);
+  const glow = E.glowSprite('#fff7b0', 1.8, 0); E.scene.add(glow); const arrow = E.arrow3d(.3);
   E.onLayout(p => { P = p; if (p) { E.camBase.set(0, 2.4, 11); E.camTarget.set(0, 2.3, 0); kid.visible = false; } else { E.camBase.set(0, 2.5, 9.5); E.camTarget.set(0, 1.7, 0); kid.visible = true; kid.position.set(-4.6, 0, 1.2); } });
   const lanes = () => P ? [1.3, .45, -.45, -1.3] : [3.1, 1.6, .1, -1.4, -2.9];
   let seq = 0, queue = [];
@@ -41,7 +41,7 @@ export default function setup(E, { struggled, unit }) {
     if (k === want) { b.userData.popping = true; caught++; E.sfx.pop && E.sfx.pop(); E.joy(b.position.clone()); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 700);
       await E.tween(250, q => b.scale.setScalar(1 + q * .5)); E.scene.remove(b); bubbles.splice(bubbles.indexOf(b), 1); E.say([NM(k) + '!'], false);
       if (caught >= 3 && resolveCatch) { const r = resolveCatch; resolveCatch = null; r(); } }
-    else { E.sfx.boop(); if (!wrongHere) wrong++; wrongHere++; E.shake(b, .1, 300); if (wrongHere >= 2) help = true; await E.say('That is ' + NM(k) + '. Find ' + NM(want) + '. ' + (TIP[want] || '')); }
+    else { E.sfx.boop(); if (!wrongHere) wrong++; wrongHere++; E.shake(b, .1, 300); if (E.pointAt(arrow, b.userData.l, k, .8, E.featFor(k, want))) setTimeout(() => arrow.visible = false, 1500 * E.F); if (wrongHere >= 2) help = true; await E.say('That is ' + NM(k) + '. Find ' + NM(want) + '. ' + (TIP[want] || '')); }
   });
   async function letterRound(k, i) {
     want = k; caught = 0; wrongHere = 0;
@@ -52,8 +52,12 @@ export default function setup(E, { struggled, unit }) {
     const others = (LOOKS[k] || []).filter(o => E.LETTERS[o] && !E.sameSound(o, k)), more = pool.filter(o => o !== k && !others.includes(o) && !E.sameSound(o, k)).sort(() => Math.random() - .5).slice(0, 2);
     queue = [k, ...others, k, ...more, k].slice(0, 8); seq = 0;
     await E.say(['Pop every bubble with ' + NM(k) + '!']);
-    const done = new Promise(r => resolveCatch = r); active = true; document.body.dataset.popReady = i + 1;
+    const done = new Promise(r => resolveCatch = r);
     timer = setInterval(() => { if (bubbles.length < (P ? 3 : 4)) { if (!queue.length) queue = [k, ...others, ...more].sort(() => Math.random() - .5); spawn(); } }, 900 * (E.FAST ? .3 : 1)); spawn();
+    if (i === 0) {   /* show, then try: the hand pops the first one */
+      await E.say('Watch me.'); let b0 = null; for (let w = 0; w < 80 && !b0; w++) { b0 = bubbles.find(b => b.userData.key === k && b.position.y > 1); if (!b0) await E.wait(100); }
+      if (b0) { const [x, y] = E.toScreen(b0.position); E.hand.at(x, y); await E.wait(500); E.hand.hide(); b0.userData.popping = true; caught++; E.joy(b0.position.clone()); E.scene.remove(b0); bubbles.splice(bubbles.indexOf(b0), 1); await E.say([NM(k) + '! Now you!']); } }
+    active = true; document.body.dataset.popReady = i + 1;
     await done; active = false; clearInterval(timer); bubbles.slice().forEach(b => { E.scene.remove(b); }); bubbles.length = 0;
     E.noteLetter && E.noteLetter(k, wrongHere === 0);
     await E.say(['You know ' + NM(k) + '!']);

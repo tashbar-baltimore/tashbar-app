@@ -103,12 +103,14 @@ export const UNITS = [
   { n: 10, letters: [], gate: true, known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches', 'tes', 'yud', 'kaf', 'chaf', 'lamed', 'mem', 'nun', 'samech', 'ayin', 'pei', 'fei', 'tzadik', 'kuf', 'reish', 'shin', 'sin', 'tav', 'sav', 'chafsofis', 'memsofis', 'nunsofis', 'feisofis', 'tzadiksofis'],
     games: [   /* Alef-Beis Champion: no new letters; the whole year, and the gate to the nekudos (3 stars on the check on two different days) */
       { id: 'u10g0', name: 'Champion Day', kind: 'story10', icon: 'trophy' },
-      { id: 'u10g1', name: 'Look-Alike Lightning', kind: 'sorter', icon: 'pair', cards: 4, pairs: [['beis', 'veis'], ['vov', 'zayin'], ['hei', 'ches'], ['daled', 'reish'], ['gimmel', 'nun'], ['tes', 'mem'], ['samech', 'memsofis'], ['shin', 'sin']] },   /* new: eight pairs, quick */
-      { id: 'u10g2', name: 'Sound Hunt', kind: 'hunt', icon: 'glass' },   /* new: he hears only the sound */
-      { id: 'u10g3', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },   /* new: the name AND the sound */
-      { id: 'u10g4', name: 'Champion check', kind: 'mastery', icon: 'trophy', mastery: true },   /* 15 questions; 3 stars on two days opens the nekudos */
-      { id: 'u10g5', name: 'My hard letters', kind: 'practice', icon: 'heart', afterTry: true },   /* new: extra practice of the letters he misses */
-      { id: 'u10g6', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true, rain: ['veis', 'sin', 'chaf', 'sav', 'nunsofis'] },
+      { id: 'u10g1', name: 'Look-Alike Lightning', kind: 'sorter', icon: 'pair', cards: 4, pairs: [['beis', 'veis'], ['hei', 'ches'], ['daled', 'reish'], ['gimmel', 'nun'], ['samech', 'memsofis'], ['shin', 'sin']] },   /* new: six pairs, quick */
+      { id: 'u10g2', name: 'Feel the Shape: mixed', kind: 'feel', icon: 'hand', letters: ['tes', 'lamed', 'ayin', 'tzadik'] },   /* the year's trickiest shapes, mixed (moving learners) */
+      { id: 'u10g3', name: 'Sound Match: mixed', kind: 'soundmatch', icon: 'fish', stands: ['beis', 'daled', 'lamed', 'reish'] },   /* pictures from the whole year */
+      { id: 'u10g4', name: 'Sound Hunt', kind: 'hunt', icon: 'glass' },   /* new: he hears only the sound */
+      { id: 'u10g5', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },   /* new: the name AND the sound */
+      { id: 'u10g6', name: 'Champion check', kind: 'mastery', icon: 'trophy', mastery: true },   /* 15 questions; 3 stars on two days opens the nekudos */
+      { id: 'u10g7', name: 'My hard letters', kind: 'practice', icon: 'heart', afterTry: true },   /* new: extra practice of the letters he misses */
+      { id: 'u10g8', name: 'Bonus: beat the sun', kind: 'train', icon: 'train', bonus: true, clock: true, order: ['lamed', 'mem', 'nun', 'samech', 'ayin', 'pei', 'fei'] },   /* MAP.md: the Alef-Beis Train against a gentle clock (bonus only) */
     ] },
 ];
 /* every game in order, each knowing its unit */

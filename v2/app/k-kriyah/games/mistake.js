@@ -10,8 +10,8 @@ const PLAN = {
   5: { R: [['lamed', 'lamed'], ['gimmel', 'nun'], ['mem', 'mem'], ['mem', 'tes'], ['nun', 'nun'], ['tes', 'mem']], demo: ['nun', 'gimmel', 'Hmm. Watch me. Flat at the bottom. That is not a Gimmel!'] },
   6: { R: [['samech', 'samech'], ['pei', 'fei'], ['ayin', 'ayin'], ['pei', 'kaf'], ['fei', 'fei'], ['kaf', 'pei']], demo: ['fei', 'pei', 'Hmm. Watch me. No dot. That is not a Pei!'] },
   7: { R: [['reish', 'reish'], ['daled', 'reish'], ['kuf', 'kuf'], ['hei', 'kuf'], ['tzadik', 'tzadik'], ['reish', 'daled']], demo: ['kuf', 'hei', 'Hmm. Watch me. A long leg! That is not a Hei!'] },   /* the demo is not one of his own questions */
-  8: { bySound: true, R: [['shin', 'shin'], ['sin', 'shin'], ['tav', 'tav'], ['sav', 'tav'], ['sin', 'sin'], ['shin', 'sin']], demo: ['sav', 'tav', 'Hmm. Watch me. No dot. It does not say t!'] },   /* Unit 8's twist: Yaakov says the SOUND, not the name */
-  10: { both: true, R: [['gimmel', 'gimmel', 'gimmel'], ['daled', 'daled', 'reish'], ['sin', 'shin', 'shin'], ['kuf', 'kuf', 'kuf'], ['memsofis', 'samech', 'samech'], ['tav', 'tav', 'tes']], demo: ['beis', 'beis', 'veis', 'Hmm. Watch me. Beis is right, but Beis says b!'] },   /* Unit 10's twist: the name AND the sound; either can be wrong */
+  8: { bySound: true, R: [['shin', 'shin'], ['sin', 'shin'], ['tav', 'tav'], ['sav', 'tav'], ['sin', 'sin'], ['shin', 'sin']], demo: ['sav', 'tav', ['Hmm. Watch me. No dot. It does not say', { snd: 't' }, '!']] },   /* Unit 8's twist: Yaakov says the SOUND, not the name */
+  10: { both: true, R: [['gimmel', 'gimmel', 'gimmel'], ['daled', 'daled', 'reish'], ['sin', 'sin', 'shin'], ['kuf', 'kuf', 'kuf'], ['memsofis', 'samech', 'samech'], ['tav', 'tav', 'tes']], demo: ['beis', 'beis', 'veis', ['Hmm. Watch me. Beis is right, but Beis says', { snd: 'b' }, '!']] },   /* Unit 10's twist: the name AND the sound; either can be wrong */
   9: { words: true, R: [['memsofis', 'memsofis', ['shin', 'lamed', 'vov'], 'Shalom'], ['mem', 'memsofis', ['lamed', 'ches'], 'Lechem, bread'], ['nunsofis', 'nunsofis', ['gimmel'], 'Gan, a garden'],
       ['tzadik', 'tzadiksofis', ['alef', 'reish'], 'Eretz, the land'], ['chafsofis', 'chafsofis', ['mem', 'lamed'], 'Melech, a king'], ['fei', 'feisofis', ['kaf'], 'Kaf, a spoon']],
     demo: ['nun', 'nunsofis', ['alef', 'beis'], 'Even, a stone', 'Hmm. Watch me. The end needs Shabbos clothes!'] },   /* Unit 9's twist: Yaakov writes a word; is its LAST letter right? */
@@ -127,7 +127,7 @@ export default function setup(E, { struggled, unit }) {
         if (await ask()) { E.sfx.chime(); yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say('Yes! Yaakov is right.'); }
         else await E.say('Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.');
         yak.mood('calm'); }
-      else if (sndWrong) { await E.say(['Look again. ' + E.LETTERS[shownKey].name + ' says', S(E.LETTERS[shownKey].snd), ', not', S(E.LETTERS[sndOf].snd), '.']); unmark(); }
+      else if (sndWrong) { await E.say(['Listen again. ' + E.LETTERS[shownKey].name + ' says', S(E.LETTERS[shownKey].snd), ', not', S(E.LETTERS[sndOf].snd), '.']); unmark(); }
       else { await E.say(why(shownKey, claim)); unmark(); await fix(claim, false); }
     }
   }

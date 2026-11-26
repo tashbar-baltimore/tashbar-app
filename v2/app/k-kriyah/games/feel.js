@@ -2,7 +2,7 @@
    Skill: knows the shape of Alef, Beis and Veis by feeling it. He runs his finger along a glowing road on the big 3D letter;
    the road turns gold where he has been, an orange ring shows where to go next, the letter glows, and its name and sound play.
    Tapping along the road works too. If his finger wanders off, a kind voice and the hand show him the ring. */
-export default function setup(E, { unit }) {
+export default function setup(E, { unit, game }) {
   const { THREE, S } = E;
   /* the path along each letter, in font units (1000 per em, y up), stroke by stroke */
   const BEIS = [[[78, 612], [84, 515], [200, 500], [320, 500], [425, 478], [446, 380], [446, 275], [446, 170], [430, 91], [320, 91], [205, 91], [90, 91]]];
@@ -33,7 +33,7 @@ export default function setup(E, { unit }) {
     hei: [[[75, 615], [80, 510], [200, 500], [340, 500], [505, 495], [507, 380], [500, 250], [494, 120], [490, 25]], [[102, 300], [100, 190], [100, 80], [100, 20]]],
   };
   const REVIEW = { 2: 'beis', 3: 'hei', 5: 'gimmel', 7: 'daled' }[unit.n];   /* Unit 6 already has four letters; Daled comes back beside Reish */   /* one earlier letter comes back: Beis in Unit 2, Hei (Ches's look-alike) in Unit 3, Gimmel in Unit 5, Daled in Unit 7 */
-  const ORDER = (REVIEW ? [...unit.letters, REVIEW] : unit.letters).slice().sort((a, b) => E.AB(a) - E.AB(b));   /* always in Alef-Beis order, the review letter too */
+  const ORDER = ((game && game.letters) || (REVIEW ? [...unit.letters, REVIEW] : unit.letters)).slice().sort((a, b) => E.AB(a) - E.AB(b));   /* always in Alef-Beis order, the review letter too */
   const ROW = [...unit.known, ...unit.letters].filter(k => ORDER.includes(k));   /* the finished row is in Alef-Beis order */
   let H = 3.2; const holder = new THREE.Group(); E.scene.add(holder);
   const boy = E.unitBoy(unit.n); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
