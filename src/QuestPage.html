@@ -1487,8 +1487,10 @@ function buildMission(id){
 if(GEN[id]){ const g=GEN[id]; const mk=(ph,i)=>{const it=g.gen(); if(ph==='teach') it.how=g.how[i]; return prepItem(it,ph)};
 return [0,1,2].map(i=>mk('teach',i)).concat([0,1,2,3,4,5].map(i=>mk('practice',i)),[0,1,2].map(i=>mk('check',i))); }
 const s=BANK_ALL[id];
-return s.teach.map(x=>prepItem(x,'teach')).concat(s.practice.map(x=>prepItem(x,'practice')), s.check.map(x=>prepItem(x,'check')));
+return s.teach.map(x=>prepItem(x,'teach')).concat(s.practice.map(x=>prepItem(x,'practice')), s.check.map(x=>prepItem(x,'check'))).map(x=>wrPrep(x,id));
 }
+/* A3a (HoS 2026-11-25): a write is never right on its own. Not blank and at least its own min; the graded check piece at least the grade minimum (Gr 2-5: 25 words, Gr 6-8: 35). K-1 (levels 1-2) is picture/oral: unchanged. */
+function wrPrep(it,id){ if(it.t!=='write') return it; const L=+((/\.L(\d\d)\./.exec(id||'')||[])[1]||0); it.k1=L>0&&L<3; if(it.phase==='check'&&!it.k1) it.min=Math.max(+it.min||0,L>=7?35:25); return it; }
 function buildRetry(id){ // second round: practice again, then check again
 const all=buildMission(id); return all.filter(i=>i.phase!=='teach');
 }
@@ -1515,7 +1517,7 @@ if(it.t==='num'){
 if(it.kind==='rem'){ const n=String(ans).toUpperCase().replace(/\s+/g,'').replace(/R0$/,''); return n===String(it.a); }
 if(it.lowest){ const lm=String(ans).trim().match(/(\d+)\s*\/\s*(\d+)$/); if(lm&&gcd(+lm[1],+lm[2])>1) return false; }
 const v=parseNum(ans); return isFinite(v) && Math.abs(v-it.a)<1e-6; }
-if(it.t==='write') return true;
+if(it.t==='write') return !!it.k1||(String(ans||'').match(/\S+/g)||[]).length>=Math.max(1,+it.min||0);
 return false;
 }
 function newStudent(r){ return {id:r.id, name:r.name, ranges:clone(r.ranges), skills:{}, fails:{}, fallback:{}, balance:0, ledger:[], flags:[], writing:{}, signoffs:{}, boss:{}, weekBonus:false, v:1}; }
@@ -2054,9 +2056,9 @@ if(it.t==='mc') body+=`<div class="opts">${it.shown.map((o,k)=>{ let cls=''; if(
 return `<button class="opt ${cls}" data-act="pick" data-k="${k}" ${locked||cooling?'disabled':''}><span class="k">${'ABCD'[k]}</span><span>${esc(o)}</span></button>`; }).join('')}</div>`;
 if(it.t==='num') body+=`<form class="numrow" data-act="numform"><label for="numin" class="vh">Your answer</label><input id="numin" class="numin ${locked&&p.fb.ok?'ok':''}" inputmode="decimal" autocomplete="off" placeholder="${it.unit==='$'?'$':it.unit==='¢'?'¢':'Your answer'}" ${locked||cooling?'disabled':''} value="${locked?esc(p.sel||''):''}"><button class="btn go" ${locked?'disabled':''}>Check</button></form>${locked||cooling?'':tlPhotoTools()}`;
 if(it.t==='order') body+=`<div class="built" aria-label="Your sentence">${p.order.map((k,j)=>`<button class="tile on" data-act="untile" data-j="${j}" ${locked?'disabled':''}>${esc(it.shown[k])}</button>`).join('')||'<span style="color:var(--soft)">Tap the pieces in order.</span>'}</div><div class="tiles">${it.shown.map((t,k)=>p.order.includes(k)?'':`<button class="tile" data-act="tile" data-k="${k}" ${cooling?'disabled':''}>${esc(t)}</button>`).join('')}</div>${p.order.length===it.shown.length&&!locked?'<button class="btn go nextbtn" data-act="ordercheck">Check</button>':''}`;
-if(it.t==='write'){ const w=(p.text.trim().match(/\S+/g)||[]).length, pct=Math.min(100,Math.round(w/it.min*100));
+if(it.t==='write'){ const w=(p.text.trim().match(/\S+/g)||[]).length, pct=Math.min(100,Math.round(w/Math.max(1,+it.min||0)*100));
 body+=`<label for="wr" class="vh">Your writing</label><textarea id="wr" class="area" rows="8" placeholder="Start writing here…" ${locked?'disabled':''}>${esc(p.text)}</textarea>${locked?'':tlPhotoTools()}
-<div class="meter"><small id="wct">${w} of ${it.min} words${w>=it.min?' · nice!':''}</small><div class="track"><div class="fill ${pct>=100?'full':''}" id="wfill" style="width:${pct}%"></div></div></div>
+<div class="meter"><small id="wct">${it.min?w+' of '+it.min:w} words${w&&w>=it.min?' · nice!':''}</small><div class="track"><div class="fill ${pct>=100?'full':''}" id="wfill" style="width:${pct}%"></div></div></div>
 <div class="checks">${it.checks.map((c,k)=>`<label class="chk"><input type="checkbox" data-act="tick" data-k="${k}" ${p.ticks[k]?'checked':''} ${locked?'disabled':''}> ${esc(c)}</label>`).join('')}</div>
 ${locked?'':'<button class="btn go nextbtn" data-act="submitwrite">Turn it in</button>'}`; }
 let fb='';
@@ -2189,13 +2191,13 @@ if(a==='pick') return answer(it.shown[+b.dataset.k],b);
 if(a==='tile'){ p.order.push(+b.dataset.k); SND.tap(); p.fb=null; return render(); }
 if(a==='untile'){ p.order.splice(+b.dataset.j,1); return render(); }
 if(a==='ordercheck') return answer(p.order.map(k=>it.shown[k]).join(' '));
-if(a==='submitwrite'){ const w=(p.text.trim().match(/\S+/g)||[]).length; if(w<it.min) return toast(`Write at least ${it.min} words. You have ${w}.`); if(it.checks.some((c,k)=>!p.ticks[k])) return toast('Tick each box when your writing does it.'); return answer(p.text); }
+if(a==='submitwrite'){ const w=(p.text.trim().match(/\S+/g)||[]).length; if(!w&&!it.k1) return toast('Write your answer in the box first.'); if(w<it.min) return toast(`Write at least ${it.min} words. You have ${w}.`); if(it.checks.some((c,k)=>!p.ticks[k])) return toast('Tick each box when your writing does it.'); return answer(p.text); }
 if(a==='next') return next();
 if(window.TLT&&TLT.acts[a]) return TLT.acts[a]();
 });
 document.addEventListener('change',e=>{ const t=e.target; if(t.dataset&&t.dataset.act==='tick'&&A.play){ A.play.ticks[+t.dataset.k]=t.checked; if(t.checked){ SND.tap(); burst(t,['#45E0A0','#F5BF2E'],10); } } });
-document.addEventListener('input',e=>{ if(e.target.id==='wr'&&A.play){ const p=A.play, it=p.items[p.i]; p.text=e.target.value; const w=(p.text.trim().match(/\S+/g)||[]).length, pct=Math.min(100,Math.round(w/it.min*100));
-const f=document.getElementById('wfill'), c=document.getElementById('wct'); if(f){ const was=f.classList.contains('full'); f.style.width=pct+'%'; f.classList.toggle('full',pct>=100); if(pct>=100&&!was){ SND.right(2); burst(f,['#45E0A0','#F5BF2E'],16); } } if(c) c.textContent=`${w} of ${it.min} words${w>=it.min?' · nice!':''}`; } });
+document.addEventListener('input',e=>{ if(e.target.id==='wr'&&A.play){ const p=A.play, it=p.items[p.i]; p.text=e.target.value; const w=(p.text.trim().match(/\S+/g)||[]).length, pct=Math.min(100,Math.round(w/Math.max(1,+it.min||0)*100));
+const f=document.getElementById('wfill'), c=document.getElementById('wct'); if(f){ const was=f.classList.contains('full'); f.style.width=pct+'%'; f.classList.toggle('full',pct>=100); if(pct>=100&&!was){ SND.right(2); burst(f,['#45E0A0','#F5BF2E'],16); } } if(c) c.textContent=`${it.min?w+' of '+it.min:w} words${w&&w>=it.min?' · nice!':''}`; } });
 document.addEventListener('submit',e=>{ if(e.target.dataset.act==='numform'){ e.preventDefault(); const v=document.getElementById('numin').value; if(v.trim()) answer(v.trim()); } });
 document.addEventListener('keydown',e=>{
 if(A.overlay&&(e.key==='Enter'||e.key==='Escape')){ e.preventDefault(); A.overlay=null; render(); return; }
