@@ -8,7 +8,7 @@
    sort    - Sound Garden: drag pictures into the mmm basket or the sss basket
    train   - The Picture Train: load picture-cars from the engine side, the train "reads" them left to right, tap where we start
    paths   - Bee Paths: trace the bee's flight path (line, across, hill, circle, zigzag) to the flower
-   fixit   - Fix It: Eli said something about two pictures; thumbs up or down, then drag in the right picture
+   fixit   - Fix It: Eli (his picture beside Mendy) said something about two pictures; thumbs up or down, then drag in the fix
    check   - The mastery check: tap kinds only (the rhyme, how many claps, the first sound)
    review  - The Listening Walk: one quick round of each skill, mixed */
 import { THREE, V, shuffle, rnd, audio, echo, WORDS, FAST, ease } from '../game.js';
@@ -324,14 +324,15 @@ const fixit = {
     G.view({ wide: [-0.3, 1.8, 11.2, 5.4, 0.2], narrow: [0, 1.8, 5.0, 7.4, 0.24] }); return W; },
   async play(G) {
     const n = () => G.narrow(); G.rounds(FIX.length);
-    await G.say('Sometimes I get mixed up.', 'Check me! Thumbs up if I\'m right.');
+    const eli = await G.friend('eli');
+    await G.say('This is my friend Eli. He is learning too.', 'Sometimes he gets mixed up. Can you help?');
     for (const f of FIX) {
       G.newRound();
       const A = G.item(f.a, () => n() ? V(-1.15, 1.0, -0.4) : V(-1.7, 1.0, -0.4), { size: 1.35 });
       let B = f.b ? G.item(f.b, () => n() ? V(1.15, 1.0, -0.4) : V(1.7, 1.0, -0.4), { size: 1.35 }) : null;
-      G.mendy.set('point', 2);
-      if (f.kind === 'rhyme') await G.say(say(f.a) + ' and ' + say(f.b) + ' rhyme!', 'Am I right?');
-      else await G.say(say(f.a) + ' starts with ' + (f.claim === 'm' ? 'mmm.' : 'sss.'), 'Am I right?');
+      eli.set('think', 30);
+      if (f.kind === 'rhyme') await G.say('Eli says ' + say(f.a) + ' and ' + say(f.b) + ' rhyme.', 'Is he right?');
+      else await G.say('Eli says ' + say(f.a) + ' starts with ' + (f.claim === 'm' ? 'mmm.' : 'sss.'), 'Is he right?');
       G.button('yes', true); G.button('no', true);
       for (;;) {
         G.expect({ kind: 'button', sel: f.ok ? '#yes' : '#no' }); G.A.wrongMove = { kind: 'button', sel: f.ok ? '#no' : '#yes' };
@@ -340,8 +341,8 @@ const fixit = {
         await G.wrong(f.kind === 'rhyme' ? ['Listen again.', say(f.a) + '... ' + say(f.b) + '.'] : ['Listen again.', say(f.a) + '.', echo(() => sound[f.claim === 'm' ? 's' : 'm']())]);
       }
       G.button('yes', false); G.button('no', false);
-      if (f.ok) { await G.right(V(0, 3.4, 0.5), 'Yes! I was right. ' + say(f.a) + ', ' + say(f.b) + '!'); await clearItems(G); continue; }
-      await G.say('Oops, I got mixed up!', 'Let\'s fix it!');
+      if (f.ok) { eli.set('happy', 1.5); eli.hopNow(); await G.right(V(0, 3.4, 0.5), 'Yes! Eli is right. ' + say(f.a) + ', ' + say(f.b) + '!'); await clearItems(G); continue; }
+      await G.say('Right, Eli got mixed up.', 'Let\'s fix it!');
       if (B) await B.remove();
       if (f.kind === 'first') {   /* the sock goes to the sss basket (the snake), not the mmm basket (the moon) */
         const bk = [['moon', 'm'], ['snake', 's']].map(([k, snd2], i) => { const b = basket(G.S, 0xD8A060, 0.85); const at = () => n() ? V(-1.2 + i * 2.4, 0, 2.0) : V(-0.8 + i * 3.2, 0, 1.6); b.position.copy(at()); b.scale.setScalar(n() ? 0.8 : 1);
@@ -351,7 +352,7 @@ const fixit = {
         G.expect({ kind: 'drag', from: A, to: tgt }); G.A.wrongMove = { kind: 'drag', from: A, to: () => bk[0].b.position.clone().add(V(0, 0.9, 0)) };
         G.hint(async () => { A.glow(true); await G.trail(A.obj.position, tgt()); });
         await new Promise(res => G.onDrop(async (it, at) => { const h = G.near(it, bk.map(x => x.b.position.clone().add(V(0, 0.9, 0))), 150); if (!h) return false;
-          if (Math.abs(h.x - bk[1].b.position.x) < 0.01) { G.onDrop(null); it.placed = true; await it.moveTo(tgt(), 300); await G.right(tgt(), 'Sss, sock! Fixed!'); res(); return true; }
+          if (Math.abs(h.x - bk[1].b.position.x) < 0.01) { G.onDrop(null); it.placed = true; await it.moveTo(tgt(), 300); eli.set('happy', 1.5); eli.hopNow(); await G.right(tgt(), 'Sss, sock! Fixed!'); res(); return true; }
           await G.wrong(['Sock. Listen to the start.', echo(() => sound.s())], it); return false; }));
         bk.forEach(x => { G.S.scene.remove(x.b); G.S.scene.remove(x.key); }); await clearItems(G); continue; }
       const want = f.fix[0], opts = shuffle(f.fix).map((w, i) => G.item(w, () => n() ? V(-1.0 + i * 2.0, 0.7, 2.3) : V(-1.4 + i * 2.8, 0.7, 2.2), { drag: true, size: 0.95 }));
@@ -362,12 +363,12 @@ const fixit = {
       G.expect({ kind: 'drag', from: good, to: slot }); G.A.wrongMove = { kind: 'drag', from: bad, to: slot };
       G.hint(async () => { good.glow(true); await G.trail(good.obj.position, slot()); });
       await new Promise(res => { G.onDrop(async (it, at) => { if (!G.near(it, [slot()], 140)) return false;
-        if (it.name === want) { G.onDrop(null); it.placed = true; await it.moveTo(slot(), 300); ring.visible = false;
+        if (it.name === want) { G.onDrop(null); it.placed = true; await it.moveTo(slot(), 300); ring.visible = false; eli.set('happy', 1.5); eli.hopNow();
           await G.right(slot(), f.kind === 'rhyme' ? say(f.a) + ', ' + say(it.name) + '. Fixed!' : 'Mmm, ' + say(it.name) + '. Fixed!'); res(); return true; }
         await G.wrong(f.kind === 'rhyme' ? [say(f.a) + ', ' + say(it.name) + '. Not the same end.'] : [say(it.name) + '. That is not mmm.'], it); return false; }); });
       G.S.scene.remove(ring); await clearItems(G);
     }
-    await G.done('Thank you for checking me!');
+    eli.set('happy', 3); await G.done('Thank you for helping Eli!');
   }
 };
 
