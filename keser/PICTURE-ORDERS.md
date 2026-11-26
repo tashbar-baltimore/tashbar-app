@@ -18,7 +18,8 @@ How this works (`CLAUDE.md`, "Shared art library"; `art/README.md`): the Keser b
 | **Ima** | the girls' mother | kind smile, shoulder-length dark-brown sheitel, rose-coloured modest dress below the knee |
 | **Bubby** | their grandmother | soft wrinkles, silver snood with a small pearl band, lilac cardigan, warm eyes |
 
-## Order 1 (2026-11-26) · status: SENT 2026-11-26, waiting for the pictures
+## Order 1 (2026-11-26) · status: ARRIVED, all 8 checked and in the library
+All 8 arrived the same day and were checked by eye against the order and the rules (girls and women only, modest dress, married women's hair covered, kosher food, no words or logos). Only change: the style sheet had a small logo mark in its top-right corner, so its right edge was cropped. In use: the sisters greet her in her world; Ima, Ayelet, Rivky, Shira and Malka host Kodesh, Reading, Math, Science and Writing; Bubby waits by her crown; the style sheet glows behind the welcome page.
 | # | File name | Screen | Size | Prompt |
 |---|---|---|---|---|
 | 1 | `keser-style-sheet.webp` | Library reference: the Keser look (every future picture copies it) | 1600 × 900 | A premium 3D animated-film style board with no people: a glossy rose-gold jewel box open on a velvet plum surface, a small jeweled gold crown with pink and lilac gems and pearl tips, faceted crystals splitting light into tiny rainbows, pearls, a gold fountain pen, a glass flask with glowing mint liquid, two silver Shabbos candlesticks with soft flames, soft glitter bokeh in rose, lilac, champagne gold and mint. Elegant, airy, softly lit, classy not cartoonish. No words, letters or numbers anywhere. |

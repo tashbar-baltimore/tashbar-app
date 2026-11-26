@@ -34,8 +34,9 @@ function burst(x, y, color) {
 
 /* ---------- a soft chime (drawn by code, no sound file) ---------- */
 let ac = null;
+let gestured = false; addEventListener('pointerdown', () => { gestured = true; }, true); addEventListener('keydown', () => { gestured = true; }, true);
 function chime(semi, soft) {
-  if (!S.sound) return;
+  if (!S.sound || !gestured) return;   /* browsers allow sound only after her first tap */
   try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume();
     const t = ac.currentTime, f = 1046.5 * Math.pow(2, (semi || 0) / 12), out = ac.createGain();
     out.gain.setValueAtTime(0, t); out.gain.linearRampToValueAtTime(soft ? 0.035 : 0.07, t + 0.008); out.gain.exponentialRampToValueAtTime(0.0001, t + 1.4); out.connect(ac.destination);
@@ -64,7 +65,7 @@ function go(i, quiet) {
 }
 function enter() {
   if (S.entered) return; S.entered = true; const p = PLACES[S.focus];
-  chime(p.note); chime(p.note + 7, true); $('roomName').textContent = p.name; body.classList.add('in');
+  chime(p.note); chime(p.note + 7, true); $('roomName').textContent = p.name; $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
   world && world.enter(S.focus); setTimeout(() => { if (S.entered) { body.classList.add('inside'); $('room').setAttribute('aria-hidden', 'false'); $('back').focus({ preventScroll: true }); } }, calm ? 50 : 750);
 }
 function back() {
@@ -113,7 +114,7 @@ const ICONS = {
 function buildFlat() {
   const tr = document.querySelector('.flat .track'); tr.innerHTML = '';
   PLACES.forEach((p, i) => { const c = document.createElement('div'); c.className = 'place'; c.style.setProperty('--c', p.color);
-    c.innerHTML = '<svg viewBox="0 0 80 70">' + ICONS[p.id] + '</svg>';
+    c.innerHTML = '<div class="pic" style="background-image:url(' + p.pic + ')"></div><svg viewBox="0 0 80 70">' + ICONS[p.id] + '</svg>';
     c.onclick = e => { tapAt(e, p.color); if (i === S.focus) enter(); else go(i); }; tr.appendChild(c); });
   const g = document.getElementById('flatgems'); g.innerHTML = '';
   PLACES.forEach((p, i) => { const v = progress[p.id], x = 35 + i * 20;
@@ -123,16 +124,34 @@ function buildFlat() {
 function flat() { html.classList.add('nogl'); S.gl = false; buildFlat(); show(); }
 addEventListener('resize', show);
 
+/* ---------- the sisters greet her (once per visit; any tap or key lets her straight in) ---------- */
+function greet() {
+  let seen = false; try { seen = sessionStorage.getItem('keser.greeted') === '1'; sessionStorage.setItem('keser.greeted', '1'); } catch (e) {}
+  if (seen || /[?&]nogreet=1\b/.test(q)) return;
+  const g = $('greet'), off = () => { g.classList.remove('on'); body.classList.remove('greeting'); removeEventListener('pointerdown', off, true); removeEventListener('keydown', off, true); };
+  g.classList.add('on'); body.classList.add('greeting');
+  /* she sees the sisters while her world gets ready, then 2.5 seconds more once it is ready (at most 15 seconds in all) */
+  const t0 = performance.now(); let seenAt = 0;
+  const wait = () => { if (!g.classList.contains('on')) return; const now = performance.now();
+    if (!seenAt && (body.classList.contains('ready') || html.classList.contains('nogl'))) seenAt = now;
+    if ((seenAt && now - seenAt > 2500) || now - t0 > 15000) off(); else setTimeout(wait, 250); };
+  setTimeout(wait, calm ? 1500 : 2500);
+  addEventListener('pointerdown', off, true); addEventListener('keydown', off, true);
+}
+
 /* ---------- start ---------- */
 window.KWORLD = { places: PLACES.map(p => p.id), progress, state: S, go, enter, back, next: () => go(S.focus + 1), prev: () => go(S.focus - 1), setLite };
 show();
 if (S.lite) { html.classList.add('lite'); $('lite').setAttribute('aria-pressed', 'true'); }
 setTimeout(() => body.classList.remove('intro'), calm ? 0 : 900);
+greet();
 if (/[?&]nogl=1\b/.test(q)) flat();
 else {
   import('./world3d.js').then(m => {
     world = m.start({ canvas: $('scene'), places: PLACES, progress, focus: S.focus, calm, lite: S.lite, full: /[?&]full=1\b/.test(q),
-      onFrame: () => { S.frames++; }, onAutoLite: () => setLite(true, false) });
+      onFrame: () => { if (++S.frames === 2) body.classList.add('ready'); }, onAutoLite: () => setLite(true, false) });
     S.gl = true;
+    /* if the 3D world has not drawn after 12 seconds, this computer is too slow for it: show the still cards instead */
+    if (!/[?&]full=1\b/.test(q)) setTimeout(() => { if (S.frames < 1 && !S.entered) { world && world.stop && world.stop(); world = null; flat(); } }, 12000);
   }).catch(e => { console.warn('Keser world: no 3D, still cards shown (' + (e && e.message) + ')'); flat(); });
 }

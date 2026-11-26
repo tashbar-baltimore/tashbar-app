@@ -45,7 +45,7 @@ export function start(o) {
   const silver = new THREE.MeshPhysicalMaterial({ color: 0xf4eef8, metalness: 1, roughness: 0.1, clearcoat: 1 });
   const pearl = new THREE.MeshPhysicalMaterial({ color: 0xfff7fb, roughness: 0.22, iridescence: 1, iridescenceIOR: 1.3, clearcoat: 1, sheen: 1, sheenColor: 0xffd6ec });
   const gem = (c, e) => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.03, metalness: 0.1, clearcoat: 1, iridescence: 1, iridescenceIOR: 1.7, iridescenceThicknessRange: [200, 900], emissive: c, emissiveIntensity: e == null ? 0.25 : e, flatShading: true });
-  const crystal = (c) => { const m = new THREE.MeshPhysicalMaterial({ color: c, roughness: 0, metalness: 0.1, transmission: 0.75, thickness: 0.8, ior: 2.0, dispersion: 6, iridescence: 1, iridescenceIOR: 1.6, clearcoat: 1, flatShading: true, emissive: c, emissiveIntensity: 0.3 });
+  const crystal = (c) => { const m = new THREE.MeshPhysicalMaterial({ color: c, roughness: 0, metalness: 0.1, transmission: 0, transparent: true, opacity: 0.9, iridescence: 1, iridescenceIOR: 1.6, clearcoat: 1, flatShading: true, emissive: c, emissiveIntensity: 0.3 });
     m.userData.crystal = true; return m; };
   const glow = (c, op) => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: op == null ? 1 : op, blending: THREE.AdditiveBlending, depthWrite: false });
   const crystals = [];   /* crystal materials: in light mode they turn into simple shiny gems */
@@ -60,6 +60,26 @@ export function start(o) {
     x.globalCompositeOperation = 'lighter'; x.fillStyle = '#fff'; x.beginPath(); x.moveTo(32, 0); x.lineTo(34.5, 29.5); x.lineTo(64, 32); x.lineTo(34.5, 34.5); x.lineTo(32, 64); x.lineTo(29.5, 34.5); x.lineTo(0, 32); x.lineTo(29.5, 29.5); x.closePath(); x.fill();
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();
   const sprite = (tex, color, s, op) => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, color, transparent: true, opacity: op == null ? 1 : op, depthWrite: false, blending: THREE.AdditiveBlending })); m.scale.set(s, s, 1); return m; };
+
+  /* a girl from the cast in a gold oval frame that always faces her (the picture loads in; a soft glow shows until it does) */
+  function cameo(src, color) {
+    const W = 360, H = 440, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'), tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+    const draw = img => { x.clearRect(0, 0, W, H); const cx = W / 2, cy = H / 2, rx = W / 2 - 22, ry = H / 2 - 22;
+      const gl = x.createRadialGradient(cx, cy, rx * 0.6, cx, cy, W / 2); gl.addColorStop(0, color); gl.addColorStop(1, 'rgba(255,255,255,0)'); x.globalAlpha = 0.55; x.fillStyle = gl; x.fillRect(0, 0, W, H); x.globalAlpha = 1;
+      x.save(); x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); x.clip();
+      if (img) { const s = Math.max(rx * 2 / img.width, ry * 2 / img.height) * 1.05; x.drawImage(img, cx - img.width * s / 2, cy - ry - 6, img.width * s, img.height * s); }
+      else { const f = x.createLinearGradient(0, 0, 0, H); f.addColorStop(0, '#fff1f7'); f.addColorStop(1, color); x.fillStyle = f; x.fillRect(0, 0, W, H); }
+      x.restore();
+      const gg = x.createLinearGradient(0, 0, W, H); gg.addColorStop(0, '#fff1b8'); gg.addColorStop(0.5, '#c98a1e'); gg.addColorStop(1, '#fff1b8');
+      x.lineWidth = 12; x.strokeStyle = gg; x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2); x.stroke();
+      x.lineWidth = 3; x.strokeStyle = 'rgba(255,255,255,.85)'; x.beginPath(); x.ellipse(cx, cy, rx - 9, ry - 9, 0, 0, Math.PI * 2); x.stroke();
+      x.fillStyle = '#fff7fb'; for (let k = 0; k < 18; k++) { const a = k / 18 * Math.PI * 2; x.beginPath(); x.arc(cx + Math.cos(a) * (rx + 2), cy + Math.sin(a) * (ry + 2), 5, 0, Math.PI * 2); x.fill(); }
+      tex.needsUpdate = true; };
+    draw(null); const img = new Image(); img.onload = () => draw(img); img.src = src;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false })); sp.scale.set(1.45, 1.77, 1); return sp;
+  }
+  /* Bubby waits by her crown */
+  const bubby = cameo('/pics/keser-cast-bubby.webp', '#B98CFF');
 
   /* ---------- the floor: a mirror inlaid with gold, edged in pearls ---------- */
   const floorR = 8.8;
@@ -131,6 +151,7 @@ export function start(o) {
       mm.makeTranslation(Math.cos(a) * r, top - len, Math.sin(a) * r); drops.setMatrixAt(i, mm);
       for (let k = 0; k < 4; k++) { mm.makeTranslation(Math.cos(a) * r, top - (k + 0.5) / 4 * (len - 0.22), Math.sin(a) * r); strands.setMatrixAt(si++, mm); } }
     chandelier.add(drops, strands); }
+  bubby.position.set(2.6, 0.4, 0.6); bubby.scale.set(1.15, 1.4, 1); crownRig.add(bubby);
   const crownHit = new THREE.Mesh(new THREE.SphereGeometry(1.7, 12, 8), new THREE.MeshBasicMaterial({ visible: false })); crownHit.position.y = 0.6; crownRig.add(crownHit);
   const crownSparks = [...Array(10)].map((_, i) => { const s = sprite(STAR, [0xffffff, 0xfff1b8, 0xffc2dd][i % 3], 0.01); s.userData.off = i * 0.9; crownRig.add(s); return s; });
 
@@ -158,14 +179,15 @@ export function start(o) {
       fragmentShader: 'uniform vec3 c; uniform float k; varying vec2 vUv; void main(){ float a=pow(1.-vUv.y,4.)*k; gl_FragColor=vec4(c*a,a); }' }));
     beam.position.y = 1.55; g.add(beam);
     const halo = sprite(SOFT, pl.hex, 3.0, 0.3); halo.position.set(0, 1.6, -0.3); g.add(halo);
-    const lamp = new THREE.PointLight(pl.hex, 1.6, 5, 1.6); lamp.position.set(0, 1.7, 0.6); g.add(lamp);
+    const lamp = new THREE.Object3D();   /* no per-place light: lights make every shiny surface slow to prepare on a school computer; the glow, beam and halo carry the colour */
+    const host = cameo(pl.pic, pl.color); host.position.set(1.75, 2.45, 0.3); g.add(host);
     /* the subject itself, floating in the middle */
     const thing = new THREE.Group(); thing.position.y = 1.55; thing.scale.setScalar(1.3); g.add(thing); const anim = build(pl.id, thing, pl);
     /* her progress here: little gems circling the pedestal (more as she learns) */
     const v = progress[pl.id] || 0, orbit = new THREE.Group(); orbit.position.y = 0.5; g.add(orbit);
     for (let k = 0; k < Math.round(v * 10); k++) { const s = new THREE.Mesh(new THREE.OctahedronGeometry(0.05, 0), gem(k % 3 ? pl.hex : 0xfff1b8, 0.8)); const a = k / 10 * TAU; s.position.set(Math.cos(a) * 1.18, 0, Math.sin(a) * 1.18); orbit.add(s); }
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 3.8, 12), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 1.9; hit.userData.idx = i; g.add(hit);
-    return { g, thing, anim, halo, lamp, beam, orbit, fin, hit, th, sc: 1 };
+    return { g, thing, anim, halo, lamp, beam, orbit, fin, hit, host, th, sc: 1 };
   });
 
   function build(id, t, pl) {   /* returns a function(time, dt) that animates it */
@@ -178,7 +200,7 @@ export function start(o) {
         const f = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), glow(0xffd27a)); f.scale.set(0.8, 1.9, 0.8); f.position.set(x, 0.62, 0); t.add(f);
         const core = new THREE.Mesh(new THREE.SphereGeometry(0.025, 12, 8), glow(0xffffff)); core.scale.y = 1.6; core.position.set(x, 0.6, 0); t.add(core);
         const fh = sprite(SOFT, 0xffb050, 0.9, 0.8); fh.position.set(x, 0.63, 0); t.add(fh); flames.push([f, fh]); }
-      const lt = new THREE.PointLight(0xffc070, 3, 3, 1.5); lt.position.set(0, 0.8, 0.3); t.add(lt);
+      const lt = { intensity: 0 };
       return (time) => { flames.forEach(([f, fh], i) => { const k = 1 + Math.sin(time * 13 + i * 2) * 0.08 + Math.sin(time * 23 + i) * 0.05; f.scale.set(0.8, 1.9 * k, 0.8); fh.material.opacity = 0.65 + (k - 1) * 3; }); lt.intensity = 2.6 + Math.sin(time * 17) * 0.4; };
     }
     if (id === 'reading') {   /* an open book with gold edges and a page that keeps turning */
@@ -219,7 +241,7 @@ export function start(o) {
       const nuc = new THREE.Mesh(new THREE.IcosahedronGeometry(0.08, 1), gem(0xff5fa2, 1)); atom.add(nuc);
       const elec = [0, 1, 2].map(k => { const r = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.008, 8, 80), glow(0xbff5ee, 0.8)); r.rotation.set(Math.PI / 2 + k * 1.0, k * 1.1, 0); atom.add(r);
         const e = new THREE.Mesh(new THREE.SphereGeometry(0.03, 10, 8), glow(0xffffff)); r.add(e); return e; });
-      const lt = new THREE.PointLight(0x5fe3cf, 3, 3, 1.6); lt.position.y = -0.3; t.add(lt);
+      
       return (time) => { bub.forEach((b, k) => { const y = (time * 0.35 + k / 9) % 1; b.position.set(Math.sin(k * 3 + time) * 0.06 * (1 - y), -0.5 + y * 1.0, Math.cos(k * 5) * 0.05); b.scale.setScalar(Math.sin(y * Math.PI) + 0.2); });
         elec.forEach((e, k) => { const a = time * (2 + k * 0.5); e.position.set(Math.cos(a) * 0.3, Math.sin(a) * 0.3, 0); }); atom.rotation.y = time * 0.5; };
     }
@@ -277,7 +299,7 @@ export function start(o) {
     mirror.visible = !lite; plainFloor.visible = lite; veil.material.opacity = lite ? 0.9 : 1;
     glitter[1].visible = !lite; glitter[0].geometry.setDrawRange(0, lite ? 600 : Infinity);
     petals.count = lite ? 40 : PN; flies.forEach((f, i) => f.visible = !lite || i < 2); bokeh.forEach((b, i) => b.visible = !lite || i < 6);
-    crystals.forEach(m => { m.transmission = lite ? 0 : (m.userData.tr || 0.75); m.transparent = lite; m.opacity = lite ? 0.85 : (m.opacity < 1 ? m.opacity : 1); m.needsUpdate = true; });
+    
     pav.forEach((p, i) => p.lamp.visible = !lite || i === focus);
     renderer.setPixelRatio(lite ? 1 : Math.min(devicePixelRatio || 1, 1.5)); fit();
   }
@@ -320,7 +342,7 @@ export function start(o) {
     pav.forEach((p, i) => { const front = i === focus, sTo = front ? 1.12 : 0.9; p.sc += (sTo - p.sc) * Math.min(1, dt * 6 + (calm ? 1 : 0)); if (Math.abs(sTo - p.sc) > 0.15 && dt >= 0.05) p.sc = sTo; p.g.scale.setScalar(p.sc + (front ? Math.sin(nudge * 18) * nudge * 0.08 : 0));
       p.halo.material.opacity += ((front ? (entered ? 0.12 : 0.35) : 0.12) - p.halo.material.opacity) * Math.min(1, dt * 5); p.beam.material.uniforms.k.value += ((front ? (entered ? 0 : 0.3) : 0.12) - p.beam.material.uniforms.k.value) * Math.min(1, dt * 5);
       p.thing.position.y = 1.55 + Math.sin(t * 1.3 + i) * 0.07 * sp; p.thing.rotation.y = (front ? Math.sin(t * 0.5) * 0.35 : t * 0.3 + i) * sp - (p.th + ring.rotation.y) * (front ? 1 : 0) * 0;
-      p.anim(calm ? 1.5 + i : t, dt); p.orbit.rotation.y = t * 0.6 * sp; p.fin.rotation.y = t * 1.2 * sp; });
+      p.anim(calm ? 1.5 + i : t, dt); p.host.position.y = 2.45 + Math.sin(t * 1.1 + i * 1.3) * 0.08 * sp; p.host.material.opacity += ((entered && i !== focus ? 0.25 : 1) - p.host.material.opacity) * Math.min(1, dt * 4); p.orbit.rotation.y = t * 0.6 * sp; p.fin.rotation.y = t * 1.2 * sp; });
     nudge = Math.max(0, nudge - dt * 1.6);
     /* the crown sways, twirls when tapped, and its jewels glint */
     crown.rotation.y = twirlT.get();
@@ -340,8 +362,9 @@ export function start(o) {
     ribbons.forEach((r, k) => { r.material.uniforms.t.value = t * 0.12 * (sp || 0) + k * 0.3; });
     if (lite) renderer.render(scene, camera); else composer.render(dt);
     o.onFrame && o.onFrame();
-    requestAnimationFrame(frame);
+    if (!stopped) requestAnimationFrame(frame);
   }
+  let stopped = false;
   fit(); frame();
 
   return {
@@ -356,5 +379,6 @@ export function start(o) {
       const hits = ray.intersectObjects([crownHit].concat(pav.map(p => p.hit)), false); if (!hits.length) return null;
       return hits[0].object === crownHit ? 'crown' : hits[0].object.userData.idx; },
     get lite() { return lite; },
+    stop() { stopped = true; canvas.style.display = 'none'; },
   };
 }
