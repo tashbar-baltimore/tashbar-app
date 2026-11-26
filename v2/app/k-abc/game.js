@@ -139,7 +139,7 @@ export function makeGame(host, o) {
     if (s.kind === 'trace') return { kind: 'trace' };
     return null; };
   A.wrongScreen = () => { const s = A.wrongMove; if (!s) return null; const save = A.next; A.next = s; const r = A.nextScreen(); A.next = save; return r; };
-  A.items = () => G.items.filter(i => i.live).map(i => Object.assign({ name: i.name }, i.screen()));
+  A.items = () => G.items.filter(i => i.live).map(i => Object.assign({ name: i.name, roam: !!i.data.roam }, i.screen()));
   A.mendyScreen = () => S.toScreen(G.mendy.top().add(V(0, -1, 0)));
   A.t = () => S.t; A.tier = () => S.tier;
 

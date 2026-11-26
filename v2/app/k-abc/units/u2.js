@@ -60,7 +60,7 @@ export function meet(ch) {
       /* rounds 2-3: which picture starts with it? (two pictures stand on the grass) */
       const pairs = shuffle(START[ch].filter(w => w !== KEYWORD[ch])).slice(0, 2).map((w, i) => [w, shuffle(others(ch))[i]]);
       for (const [pi, [good, bad]] of pairs.entries()) {
-        G.newRound(); const order = shuffle([good, bad]), its = order.map((w, i) => G.item(w, () => G.narrow() ? V(-1.2 + i * 2.4, 0.8, 2.0) : V(-1.6 + i * 3.2, 0.8, 2.0), { size: 1.1 }));
+        G.newRound(); const order = shuffle([good, bad]), its = order.map((w, i) => G.item(w, () => G.narrow() ? V(-1.2 + i * 2.4, 0.85, 1.2) : V(-1.6 + i * 3.2, 0.9, 0.9), { size: 1.1 }));
         const g = its[order.indexOf(good)], b = its[order.indexOf(bad)];
         if (pi === 0) await G.say('Which one starts with this sound?', snd(ch));
         else await G.say('Now just look at the letter.', 'Which one starts with its sound?');   /* the letter only, no sound: as in the check */
@@ -116,8 +116,8 @@ const hunt = {
       const S = G.S, n = () => G.narrow(), set = huntSet('s'), rockAt = () => n() ? V(1.4, 0.4, 2.6) : V(3.7, 0.4, 1.8);
       const lay = () => { const r = rockAt(); G.rock.position.set(r.x, S.groundH(r.x, r.z) + 0.15, r.z); G.rock.scale.setScalar(n() ? 0.7 : 1); G.snake.position.set(r.x, r.y + (n() ? 0.7 : 0.9), r.z); }; lay(); G.W.layout = lay;
       G.rounds(3); await G.say('The pond parade is coming!', 'Catch the pictures that start with this sound.', snd('s'), 'Drag them to the snake.');
-      const pads = []; const its = set.map(([w, yes], i) => { const it = G.item(w, () => V((7 + i * 3.2) * (n() ? 0.6 : 1), 0.75, -0.3), { drag: true, size: 1.0, data: { yes, x: 7 + i * 3.2 } }); const p = lilypad(S, 0.7); pads.push([p, it]); return it; });
-      let pause = false; S.tick((t, dt) => { its.forEach((it, i) => { if (it.placed || !it.live) return; if (!pause && !G.dragItem() && G.A.name !== 'end') it.data.x -= dt * (FAST ? 0.6 : 0.9);   /* the parade waits while his finger is down */ if (it.data.x < -7) it.data.x += set.length * 3.2;
+      const pads = []; const its = set.map(([w, yes], i) => { const it = G.item(w, () => V((7 + i * 3.2) * (n() ? 0.6 : 1), 0.75, -0.3), { drag: true, size: 1.0, data: { yes, x: 7 + i * 3.2, roam: true } }); const p = lilypad(S, 0.7); pads.push([p, it]); return it; });
+      let pause = false; S.tick((t, dt) => { its.forEach((it, i) => { if (it.placed || !it.live) return; if (!pause && !G.dragItem() && G.A.name !== 'end') it.data.x -= dt * (FAST ? 0.3 : 0.9);   /* the parade waits while his finger is down */ if (it.data.x < -7) it.data.x += set.length * 3.2;
         const z = n() ? -0.4 : -0.3, w = n() ? 0.6 : 1; it.home.set(it.data.x * w, 0.75, z + Math.sin(it.data.x * 0.5) * 0.6); if (!it.moving && it !== G.dragItem()) it.obj.position.copy(it.home); });
         pads.forEach(([p, it]) => { p.visible = it.live && !it.placed; p.position.set(it.home.x, 0.1, it.home.z); }); });
       let got = 0;
@@ -192,7 +192,7 @@ const hunt = {
       const S = G.S, n = () => G.narrow(); const lay = () => { G.bk.position.set(n() ? 1.2 : 3.6, 0, 1.8); G.bk.scale.setScalar(n() ? 0.75 : 1); }; lay(); G.W.layout = lay;
       const set = huntSet('p', 6), bm = toon(0xDDF4FF, { transparent: true, opacity: 0.32, rough: 0.05, clear: 1, rim: 0xFFFFFF, rimI: 1.4, depthWrite: false });
       G.rounds(3); await G.say('Bubbles! Some have pictures that start with this sound.', snd('p'), 'Tap those bubbles to pop them!');
-      const its = set.map(([w, yes], i) => { const it = G.item(w, () => V(0, 0, 0), { size: 0.8, data: { yes, ph: i * 1.05 } }); const b = new THREE.Mesh(new THREE.SphereGeometry(0.85, 24, 16), bm); it.obj.add(b); it.bub = b; return it; });
+      const its = set.map(([w, yes], i) => { const it = G.item(w, () => V(0, 0, 0), { size: 0.8, data: { yes, ph: i * 1.05, roam: true } }); const b = new THREE.Mesh(new THREE.SphereGeometry(0.85, 24, 16), bm); it.obj.add(b); it.bub = b; return it; });
       let t0 = 0; S.tick((t, dt) => { t0 += dt * (FAST ? 0.5 : 1); its.forEach((it, i) => { if (it.placed || !it.live) return; const k = ((t0 * 0.08 + it.data.ph / 6.3) % 1), w = n() ? 1.7 : 3.4;
         it.home.set(Math.sin(i * 2.3) * w + Math.sin(t0 * 0.6 + i) * 0.3 - (n() ? 0 : 0.6), 0.9 + k * (n() ? 5.2 : 4.4), -0.4); if (!it.moving) it.obj.position.copy(it.home); }); });
       for (let r = 0; r < 3; r++) {

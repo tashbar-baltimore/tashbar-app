@@ -74,7 +74,7 @@ function unitTest(UNIT, GAMES, o = {}) { const NOWRONG = o.noWrong || [], NAME =
   /* phone size: the first rounds of every game, with a wrong move; every picture and Mendy must be on the screen */
   for (const g of GAMES) { const w = 390, h = 844, label = g + ' ' + w + 'x' + h, { ctx, pg, errs, outside } = await open(browser, dist, w, h, '/k-abc/play.html?u=' + UNIT + '&g=' + g + '&fast=1');
     try { const r = await play(pg, { wrong: !NOWRONG.includes(g), stopAt: 2 });
-      if (r.partial) { r.items.forEach(it => { if (it.x < 0 || it.x > w || it.y < 0 || it.y > h) bad(label + ': the picture "' + it.name + '" is off the screen'); });
+      if (r.partial) { r.items.forEach(it => { if (it.roam) return; /* pictures that float in and out by design (a parade, bubbles, butterflies) */ if (it.x < 0 || it.x > w || it.y < 0 || it.y > h) bad(label + ': the picture "' + it.name + '" is off the screen'); });
         if (r.mendy.x < 0 || r.mendy.x > w || r.mendy.y < 0 || r.mendy.y > h) bad(label + ': Mendy is off the screen'); }
       checkLines(r.said, bad, label);
     } catch (e) { bad(label + ': ' + String(e).slice(0, 220)); }
@@ -103,7 +103,7 @@ function unitTest(UNIT, GAMES, o = {}) { const NOWRONG = o.noWrong || [], NAME =
   { const { ctx, pg, errs } = await open(browser, dist, 1366, 768, '/k-abc/');
     try { await pg.waitForSelector('a.game', { timeout: 20000 });
       const tiles = await pg.evaluate(u => [...document.querySelectorAll('[data-unit="' + u + '"] a.game')].map(a => ({ href: a.getAttribute('href'), img: a.querySelector('img') && a.querySelector('img').getAttribute('src') })), String(UNIT));
-      const ids = tiles.map(t => (t.href.match(/[?&]g=([a-z0-9]+)/) || [])[1]);
+      const ids = tiles.map(t => (t.href.match(/[?&]g=([a-z0-9-]+)/) || [])[1]);
       if (ids.join() !== GAMES.join()) bad('the menu shows Unit ' + UNIT + ' games ' + ids.join(', ') + ' (should be ' + GAMES.join(', ') + ')');
       tiles.forEach(t => { if (!t.img || !fs.existsSync(path.join(dist, 'k-abc', t.img))) bad('the menu button ' + t.href + ' has no picture'); });
       errs.forEach(e => bad('menu: page error: ' + e));
