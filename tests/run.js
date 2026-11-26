@@ -234,6 +234,9 @@ async function kidTests(browser) {
   /* BLOCK BUILDERS workbook (tests/lib/blockbuilders.js, HoS 2026-11-22) */
   try { const bb = await require('./lib/blockbuilders.js')(pg); bb.fails.forEach(fail); bb.oks.forEach(ok); Object.assign(report.counts, bb.counts); }
   catch (e) { fail('Block Builders test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* CHUMASH & TIMELINE LAB, its own curriculum (tests/lib/chumashlab.js, 2026-11-26) */
+  try { const cl = await require('./lib/chumashlab.js')(pg); cl.fails.forEach(fail); cl.oks.forEach(ok); }
+  catch (e) { fail('Chumash Lab test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* Store Fun tab (tests/lib/storefx.js, HoS 2026-11-22): no two items share a name, a picture, a tap blast, a trail or nearly the same app colors */
   /* THE BUTTON SYSTEM (tests/lib/uikit.js, src/UiKit.html, HoS 2026-11-23): every part of the kit, measured inside the real page */
   try { const uk = await require('./lib/uikit.js')(pg); uk.fails.forEach(fail); uk.oks.forEach(ok); }
