@@ -13,19 +13,19 @@ export default function setup(E, { struggled, unit }) {
   const shelf = E.mesh(E.rbox(8.6, .18, 1.0, .06), shelfM, 0, 0, 0); E.scene.add(shelf);
   const tops = [], places = [], links = [], cards = [];
   const glow = E.glowSprite('#fff7b0', 2.0, 0); E.scene.add(glow); const arrow = E.arrow3d(.35);
-  let P = false, H = 1.3, order = REG.slice(), busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), mistakes = 0, wrongInRow = 0, help = struggled, resolveRound = null, placed = 0, missedKey = null;
+  let P = false, H = 1.3, HC = 1, order = REG.slice(), busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), mistakes = 0, wrongInRow = 0, help = struggled, resolveRound = null, placed = 0, missedKey = null;
   const slotX = i => P ? (2 - i) * 1.0 : (2 - i) * 1.75;   /* right to left */
   const topPos = i => new THREE.Vector3(slotX(i), P ? 4.6 : 3.25, 0);
   const placePos = i => new THREE.Vector3(slotX(i), P ? 3.3 : 1.75, .3);
-  const homePos = i => P ? new THREE.Vector3([1.3, 0, -1.3, .65, -.65][i], [1.95, 1.95, 1.95, .95, .95][i], 1.6) : new THREE.Vector3(3.6 - i * 1.8, .95, 2.4);
-  E.onLayout(p => { P = p; H = p ? .85 : 1.3;
+  const homePos = i => P ? new THREE.Vector3([1.3, 0, -1.3, .65, -.65][i], [1.75, 1.75, 1.75, .55, .55][i], 1.2) : new THREE.Vector3(3.6 - i * 1.8, .95, 1.4);   /* the waiting letters a little back, so none crowds another */
+  E.onLayout(p => { P = p; H = p ? .78 : 1.3; HC = p ? .62 : .8;
     if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.6, 0); kid.visible = false; shelf.scale.set(.6, 1, 1); shelf.position.set(0, 4.6 - H / 2 - .12, 0); }
     else { E.camBase.set(0, 2.4, 10); E.camTarget.set(0, 1.7, 0); kid.visible = true; kid.position.set(-5.4, 0, .8); shelf.scale.set(1, 1, 1); shelf.position.set(0, 3.25 - H / 2 - .12, 0); }
     lay();
   });
   function lay() {
     tops.forEach((t, i) => { t.position.copy(topPos(i)); t.scale.setScalar(H / 1.3); }); places.forEach((p, i) => { p.position.copy(placePos(i)); p.scale.setScalar(H / 1.3); });
-    cards.forEach(c => { c.scale.setScalar(H / 1.3); if (c.userData.done != null) c.position.copy(placePos(c.userData.done)); else if (c !== drag) c.position.copy(homePos(c.userData.home)); });
+    cards.forEach(c => { c.scale.setScalar(c.userData.done != null ? H / 1.3 : HC); if (c.userData.done != null) c.position.copy(placePos(c.userData.done)); else if (c !== drag) c.position.copy(homePos(c.userData.home)); });
     links.forEach(l => { const i = l.userData.i; l.position.copy(topPos(i)).lerp(placePos(i), .5); l.scale.setScalar(H / 1.3); });
   }
   function build() {
@@ -44,9 +44,9 @@ export default function setup(E, { struggled, unit }) {
   });
   window.__info = () => ({ ready: enabled && !busy, cards: cards.filter(c => c.userData.done == null).map(c => ({ k: c.userData.key, xy: E.toScreen(c.position) })),
     places: Object.fromEntries(order.map((k, i) => [k, i]).filter(([k, i]) => !cards.some(c => c.userData.done === i)).map(([k, i]) => [k, E.toScreen(placePos(i))])), partnerOf: Object.fromEntries(FIN.map(f => [f, E.LETTERS[f].partner])) });
-  E.onPointer('down', e => { if (!enabled || busy) return; const c = E.pickFrom(e, cards.filter(c => c.userData.done == null && !c.userData.busy)); if (!c) return; drag = c; const p = E.planePoint(e, c.position.z); if (p) grab.copy(c.position).sub(p); c.scale.multiplyScalar(1.1); });
+  E.onPointer('down', e => { if (!enabled || busy) return; const c = E.pickFrom(e, cards.filter(c => c.userData.done == null && !c.userData.busy)); if (!c) return; drag = c; const p = E.planePoint(e, c.position.z); if (p) grab.copy(c.position).sub(p); c.scale.setScalar(HC * 1.1); });
   E.onPointer('move', e => { if (!drag) return; const p = E.planePoint(e, drag.position.z); if (p) drag.position.copy(p.add(grab)); });
-  E.onPointer('up', () => { if (!drag) return; const c = drag; drag = null; c.scale.setScalar(H / 1.3); drop(c, nearest(c)); });
+  E.onPointer('up', () => { if (!drag) return; const c = drag; drag = null; c.scale.setScalar(HC); drop(c, nearest(c)); });
   function nearest(c) { const [cx, cy] = E.toScreen(c.position); let best = null, bd = Math.max(60, Math.min(innerWidth, innerHeight) * .12);
     order.forEach((k, i) => { if (cards.some(o => o.userData.done === i)) return; const [x, y] = E.toScreen(placePos(i)), d = Math.hypot(x - cx, y - cy); if (d < bd) { bd = d; best = i; } }); return best; }
   async function back(c) { const p0 = c.position.clone(), h = homePos(c.userData.home); c.userData.busy = true; await E.tween(380, q => c.position.lerpVectors(p0, h, q), E.ease.out); c.userData.busy = false; }
@@ -55,7 +55,7 @@ export default function setup(E, { struggled, unit }) {
     busy = true; const k = c.userData.key, partner = E.LETTERS[k].partner;
     if (order[i] === partner) {
       c.userData.done = i; wrongInRow = 0; missedKey = null; const p0 = c.position.clone(), to = placePos(i);
-      await E.tween(380, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * .4; });
+      await E.tween(380, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * .4; c.scale.setScalar(HC + (H / 1.3 - HC) * q); });
       const link = E.mesh(new THREE.CylinderGeometry(.05, .05, 1, 10), E.goldDot(), 0, 0, -.2, false); link.userData.i = i; link.scale.setScalar(H / 1.3); link.position.copy(topPos(i)).lerp(placePos(i), .5).setZ(-.25); link.scale.y = 1; E.scene.add(link); links.push(link);
       E.joy(to.clone().add(new THREE.Vector3(0, .5, .5))); E.hop(c, .3); E.hop(tops[i], .3); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F);
       await E.say([NM(partner) + ' and ' + NM(k) + '! Both say', S(E.LETTERS[k].snd), '!']);

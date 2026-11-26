@@ -22,7 +22,7 @@ export default function setup(E, { struggled, unit }) {
   E.onLayout(p => { P = p;
     if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.4, 0); kid.visible = false; cardHome.set(0, .95, 2.2); } else { E.camBase.set(0, 2.5, 9.5); E.camTarget.set(0, 1.6, 0); kid.visible = true; kid.position.set(-4.9, 0, 1.2); cardHome.set(0, .7, 2.6); }
     pads.forEach((pd, i) => { pd.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .35, 0); pd.scale.setScalar(S2()); });
-    if (A) { A.position.set(X(), Y(), .3); A.scale.setScalar(S2()); } if (B) { B.position.set(-X(), Y(), .3); B.scale.setScalar(S2()); }
+    if (A) { A.position.set(X(), Y() + A.userData.below * S2(), .3); A.scale.setScalar(S2()); } if (B) { B.position.set(-X(), Y() + B.userData.below * S2(), .3); B.scale.setScalar(S2()); }   /* a long leg stands on its stand, never through it */
     if (card && !drag) card.position.copy(cardHome);
   });
   E.onFrame(t => { [A, B].forEach((l, i) => { if (l) l.rotation.y = Math.sin(t * .9 + i) * .12; }); marks.forEach(m => m.visible && (m.material.opacity = m.userData.on ? .65 + Math.sin(t * 5) * .25 : 0)); hint.forEach(h => h.material.opacity = help && active ? .35 + Math.sin(t * 4) * .2 : 0);
@@ -63,7 +63,7 @@ export default function setup(E, { struggled, unit }) {
       if (l) { E.sfx.boop(); if (!cardMissed) mistakes++; cardMissed = true; await E.say('Look! ' + (k === R.a ? R.la : R.lb)); } busy = false; }
   }
   async function playRound(r, demo) {
-    R = r; [A, B].forEach(l => l && E.scene.remove(l)); A = E.letter(r.a, H); B = E.letter(r.b, H); A.position.set(X(), Y(), .3); B.position.set(-X(), Y(), .3); A.scale.setScalar(S2()); B.scale.setScalar(S2()); E.scene.add(A, B); await Promise.all([E.popIn(A, S2()), E.popIn(B, S2())]);
+    R = r; [A, B].forEach(l => l && E.scene.remove(l)); A = E.letter(r.a, H); B = E.letter(r.b, H); A.position.set(X(), Y() + A.userData.below * S2(), .3); B.position.set(-X(), Y() + B.userData.below * S2(), .3); A.scale.setScalar(S2()); B.scale.setScalar(S2()); E.scene.add(A, B); await Promise.all([E.popIn(A, S2()), E.popIn(B, S2())]);
     await E.say(['This is ' + NM(r.a) + '. This is ' + NM(r.b) + '.']);
     if (demo) { await E.say('Watch me. I look carefully at the bottom.'); const [x, y] = E.toScreen(spot(r.b, r.a, B)); E.hand.at(x, y, true); await E.wait(900); E.hand.hide(); E.sfx.chime(); await showDiff(); await E.say(r.la); await E.say(r.lb); hideDiff();
       card = E.letter(r.b, 1.3); card.position.copy(cardHome); card.scale.setScalar(P ? .75 : 1); E.scene.add(card); await E.popIn(card, P ? .75 : 1);   /* show, then try: the hand puts a card with its twin */
