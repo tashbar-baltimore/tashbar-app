@@ -165,11 +165,11 @@ const hunt = {
       G.base = stump(G.S, 2.6, 0.6, 0.9, 0.5); G.view({ wide: [0, 2.6, 11.6, 6.4, 0.15], narrow: [0, 2.8, 5.4, 8.6, 0.18] }); G.mendyAt = { wide: [-4.8, 1.6, 0.92], narrow: [-1.5, 3.6, 0.55] }; return W; },
     async play(G) {
       const S = G.S, n = () => G.narrow(), set = huntSet('t'), cols = [0xFF5A6E, 0xFFB020, 0x4DDB6A, 0x4DB2FF];
-      const bx = () => n() ? 1.1 : 2.6; const lay = () => { G.base.position.x = bx(); }; lay(); G.W.layout = () => { lay(); blocks.forEach(b => b.position.x = bx()); its.filter(x => x.placed).forEach(x => { x.home.x = bx(); x.obj.position.x = bx(); }); };
+      const bx = () => n() ? 1.5 : 2.6; const lay = () => { G.base.position.x = bx(); }; lay(); G.W.layout = () => { lay(); blocks.forEach(b => b.position.x = bx()); its.filter(x => x.placed).forEach(x => { x.home.x = bx(); x.obj.position.x = bx(); }); };
       const blocks = []; let h = 0.5;
       const topAt = () => V(bx(), h + 0.75, 0.6);
       G.rounds(3); await G.say('Let\'s build a tall tower!', 'Only pictures that start with this sound.', snd('t'));
-      const its = set.map(([w, yes], i) => G.item(w, () => n() ? V(-1.75 + (i % 3) * 1.4, 0.75 + Math.floor(i / 3) * 0.0, 2.2 - Math.floor(i / 3) * 1.6) : V(-3.8 + (i % 3) * 1.55, 0.75, 2.0 - Math.floor(i / 3) * 1.7), { drag: true, size: 0.95, data: { yes } }));
+      const its = set.map(([w, yes], i) => G.item(w, () => n() ? V(-1.9 + (i % 3) * 1.2, 0.75, 2.2 - Math.floor(i / 3) * 1.5) : V(-3.8 + (i % 3) * 1.55, 0.75, 2.0 - Math.floor(i / 3) * 1.7), { drag: true, size: 0.95, data: { yes } }));
       for (let r = 0; r < 3; r++) {
         G.newRound(); const good = its.find(i => i.data.yes && !i.placed), bad = its.find(i => !i.data.yes);
         G.expect({ kind: 'drag', from: good, to: topAt }); G.A.wrongMove = { kind: 'drag', from: bad, to: topAt };

@@ -66,8 +66,12 @@ const checkLines = (said, bad, label) => said.forEach(t => {
 
 /* the test for one unit: every game in order (shared by k-abc-unit2.js and later units) */
 function unitTest(UNIT, GAMES, o = {}) { const NOWRONG = o.noWrong || [], NAME = o.name || ('unit ' + UNIT);
- return async function (browser) {
+ return async function (shared) {
   const out = { fails: [], oks: [] }, bad = m => out.fails.push('2.0 K ABC ' + NAME + ': ' + m);
+  /* its own browser, closed at the end: the 3D games use a lot of memory, which must not stay behind for the tests that run after */
+  let browser = shared, own = null; try { own = await require('playwright').chromium.launch(); browser = own; } catch (e) {}
+  try { return await body(browser, out, bad); } finally { if (own) await own.close().catch(() => {}); } };
+ async function body(browser, out, bad) {
   let dist; try { dist = build(); } catch (e) { bad('build failed: ' + String(e.stderr || e).slice(0, 200)); return out; }
   for (const f of ['play.html', 'game.js', 'cast.js', 'props.js', 'scenes.js', 'units/u' + UNIT + '.js', 'art/mendy-idle.webp', 'art/mendy-talk.webp'])
     if (!fs.existsSync(path.join(dist, 'k-abc', f))) bad(f + ' is not in the built site');
@@ -111,7 +115,8 @@ function unitTest(UNIT, GAMES, o = {}) { const NOWRONG = o.noWrong || [], NAME =
   fs.rmSync(dist, { recursive: true, force: true });
   if (!out.fails.length) out.oks.push('2.0 K ABC ' + NAME + ': all ' + GAMES.length + ' games play to the end at Chromebook and phone size with a real mouse; wrong moves get a gentle fix; perfect play earns 3 stars; short spoken lines; big buttons; menu in order');
   return out;
- }; }
+ }
+}
 module.exports = unitTest(1, GAMES, { noWrong: NOWRONG, name: 'unit 1 (Ears On)' });
 module.exports.unitTest = unitTest;
 module.exports.play = play; module.exports.open = open; module.exports.build = build; module.exports.GAMES = GAMES;
