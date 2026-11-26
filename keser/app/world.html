@@ -44,6 +44,7 @@ body.inside #room{ opacity:1; pointer-events:auto; }
   backdrop-filter:blur(16px) saturate(1.5); -webkit-backdrop-filter:blur(16px) saturate(1.5); transform:translateY(30px) scale(.96); transition:transform .7s var(--spring); }
 body.inside #room .card{ transform:none; }
 #room .k-foil{ font-size:clamp(38px,5vw,58px); margin:0; }
+#room .k-btn.lab{ margin-top:14px; letter-spacing:.06em; text-transform:none; font-size:16px; padding:15px 28px; }
 #room .soon{ margin:10px 0 0; font-size:15px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold1); opacity:.9; }
 #room .back{ position:fixed; top:max(16px,env(safe-area-inset-top)); left:16px; }
 
@@ -80,7 +81,8 @@ body.greeting .hud{ opacity:0; }
 .flat .place[aria-current="true"]{ transform:scale(1); opacity:1; box-shadow:0 20px 70px color-mix(in srgb, var(--c) 55%, transparent), inset 0 1px 0 rgba(255,255,255,.4); }
 .flat .place .dome{ width:86%; height:86%; object-fit:contain; filter:drop-shadow(0 0 18px var(--c)); }
 .flat .crown{ position:fixed; left:50%; top:max(10px,2vh); width:180px; transform:translateX(-50%); filter:drop-shadow(0 0 22px rgba(245,196,81,.55)); pointer-events:auto; cursor:pointer; }
-@media (max-width:600px){ .side{ display:none } .flat{ top:15% } #room .soon{ letter-spacing:.12em; font-size:13px; white-space:nowrap } #room .card{ padding:22px 26px 24px } }
+@media (max-width:600px){ .side{ display:none } .flat{ top:15% } #room .k-btn.lab{ margin-top:14px; letter-spacing:.06em; text-transform:none; font-size:16px; padding:15px 28px; }
+#room .soon{ letter-spacing:.12em; font-size:13px; white-space:nowrap } #room .card{ padding:22px 26px 24px } }
 @media (max-height:560px){ .name .k-foil{ font-size:36px } .bottom{ gap:10px } }
 @media (prefers-reduced-motion: reduce){ .hud,#room,#room .card,.flat .track,.flat .place{ transition:none } .name.swap .k-foil,.name.swap .he{ animation:none } }
 </style>
@@ -111,7 +113,7 @@ body.greeting .hud{ opacity:0; }
 
 <div id="room" aria-hidden="true">
   <button class="k-icon back" id="back" aria-label="Back to my world"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-  <div class="card"><img class="host" id="roomHost" alt=""><p class="k-foil" id="roomName"></p><p class="soon">✦ Lessons coming soon ✦</p></div>
+  <div class="card"><img class="host" id="roomHost" alt=""><p class="k-foil" id="roomName"></p><p class="soon" id="roomSoon">✦ Lessons coming soon ✦</p><button class="k-btn lab" id="openLab" hidden><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>Chumash &amp; Timeline Lab</button></div>
 </div>
 <canvas id="fx" aria-hidden="true"></canvas>
 <script type="module" src="world.js"></script>
