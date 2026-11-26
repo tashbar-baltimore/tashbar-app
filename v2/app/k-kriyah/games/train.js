@@ -139,8 +139,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
     const at = i => { const p = prs.find(q => q.includes(i)); return p ? (p[0] === i ? p[1] : p[0]) : i; };   /* the car standing in place i */
     const lx = LX; loco.position.x = lx + 10;
     /* on a phone the cars park in two short lines (right to left, top line first), big enough to see every dot */
-    const park = i => { const r = i < 4 ? 0 : 1, j = r ? i - 4 : i, m = r ? n - 4 : Math.min(4, n); return new THREE.Vector3(((m - 1) / 2 - j) * 1.15, r ? 1.25 : 2.9, .8); };
-    cars.forEach((c, i) => { c.userData.on = true; c.userData.slot = at(i); c.scale.setScalar(P ? .82 : S); c.visible = true; c.position.copy(P ? park(c.userData.slot) : slotPos(c.userData.slot)).add(new THREE.Vector3(10, 0, 0)); });
+    const park = i => { const r = i < 4 ? 0 : 1, j = r ? i - 4 : i, m = r ? n - 4 : Math.min(4, n); return new THREE.Vector3(((m - 1) / 2 - j) * .98, r ? 1.25 : 2.9, .8); };
+    cars.forEach((c, i) => { c.userData.on = true; c.userData.slot = at(i); c.scale.setScalar(P ? .74 : S); c.visible = true; c.position.copy(P ? park(c.userData.slot) : slotPos(c.userData.slot)).add(new THREE.Vector3(10, 0, 0)); });
     if (P) { loco.visible = false; track.visible = false; E.camBase.set(0, 2.3, 10.5); E.camTarget.set(0, 2.0, 0); }
     const sx = cars.map(c => c.position.x);
     await E.tween(1600, q => { if (!P) loco.position.x = lx + 10 * (1 - q); cars.forEach((c, i) => c.position.x = sx[i] - 10 * q); }, E.ease.out);
