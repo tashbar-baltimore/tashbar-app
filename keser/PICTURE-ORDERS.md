@@ -42,7 +42,7 @@ All 8 arrived the same day with see-through backgrounds and were checked by eye 
 | 3 | `keser-stage` | the round stage | 1600 × 900, cut-out | rose-quartz jewel-box stage, gold star-rose inlay, row of pearls |
 | 4–8 | `keser-place-kodesh`, `-reading`, `-math`, `-science`, `-writing` | the five places | 1200 × 1200, cut-out | jeweled glass domes: Shabbos candlesticks, Kiddush cup and covered challah; open storybook; crystal shapes; mint flask, microscope and atom; rose-gold pen, inkwell and quill |
 
-## Order 3 (2026-11-26) · the girls in the Keser uniform · status: SENT 2026-11-26, waiting for the pictures
+## Order 3 (2026-11-26) · the girls in the Keser uniform · status: SENT 2026-11-26 to M. Heinemann (the owner), who makes the pictures; waiting for them
 M. Heinemann: "Make sure that the uniform ... matches in the app." The Keser Academy uniform (from the school's own pictures, sent by Mrs. David; those photos are **not** used or kept, they show real girls): a **purple polo shirt** with a collar, a **black button-up cardigan** with a **small gold Keser crown** embroidered on the left chest (the crown only, no letters), a **black pleated skirt** well below the knee, **black tights**, **white sneakers**. Each girl's face, hair and age stay exactly as in order 1. New file names; the order 1 pictures stay in the library.
 
 | # | File name | Screen | Size | Prompt |
