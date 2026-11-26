@@ -559,7 +559,7 @@ export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimm
 const REF_H = 64.7, REF_CY = 32.35;
 const DOT_AT = { 'ב': [24, 29.6], 'כ': [22, 29.6], 'פ': [38, 30], 'ת': [34, 24] };
 /* Shin's dot sits on top of its right head, Sin's on top of its left head (font units) */
-export const TOP_DOT = { right: [66, 74.5], left: [11.5, 74.5] };
+export const TOP_DOT = { right: [66, 71.5], left: [11.5, 71.5] };
 const dotAt = key => LETTERS[key].top ? TOP_DOT[LETTERS[key].top] : DOT_AT[LETTERS[key].ch];
 export const sameShape = (a, b) => LETTERS[a].ch === LETTERS[b].ch;
 /* a letter's place in the Alef-Beis (for putting things in order, right to left) */
