@@ -525,8 +525,24 @@ audio.burst = (f, q, ms, gain, type = 'highpass') => { const c = audio.ctx(); if
   s.connect(bp); bp.connect(g); g.connect(c.destination); s.start(t); s.stop(t + ms / 1000 + 0.02); };
 audio.tick = () => { audio.tN++; audio.burst(3800, 0.8, 70, 0.55); audio.burst(5200, 2, 40, 0.25, 'bandpass'); return new Promise(r => setTimeout(r, FAST ? 0 : 260)); };
 audio.puff = () => { audio.pN++; audio.burst(700, 0.7, 110, 0.6, 'lowpass'); audio.burst(1400, 1, 60, 0.2, 'bandpass'); return new Promise(r => setTimeout(r, FAST ? 0 : 280)); };
+/* vowels and voiced sounds built from mouth-shape resonances (formants), made by the device */
+audio.vowel = (f1, f2, f3, ms = 420, pitch = 225) => { const c = audio.ctx(); if (c && !FAST) { const t0 = c.currentTime, d = ms / 1000, o = c.createOscillator(), g = c.createGain(), out = c.createGain();
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(pitch, t0); o.frequency.linearRampToValueAtTime(pitch * 0.9, t0 + d);
+    [[f1, 9, 1], [f2, 11, 0.55], [f3, 13, 0.22]].forEach(([f, q, k]) => { const b = c.createBiquadFilter(); b.type = 'bandpass'; b.frequency.value = f; b.Q.value = q; const gg = c.createGain(); gg.gain.value = k * 3.2; o.connect(b); b.connect(gg); gg.connect(out); });
+    out.connect(g); g.connect(c.destination); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.5, t0 + 0.04); g.gain.setValueAtTime(0.5, t0 + d - 0.08); g.gain.linearRampToValueAtTime(0, t0 + d); o.start(t0); o.stop(t0 + d + 0.05); }
+  return new Promise(r => setTimeout(r, FAST ? 0 : ms + 60)); };
+audio.iN = 0; audio.nN = 0; audio.dN = 0;
+audio.vowelI = (ms = 380) => { audio.iN++; return audio.vowel(400, 2000, 2600, ms); };   /* short i, as in "it" */
+audio.nasalN = (ms = 750) => { audio.nN++; const c = audio.ctx(); if (c && !FAST) { const t0 = c.currentTime, d = ms / 1000, o = c.createOscillator(), lp = c.createBiquadFilter(), pk = c.createBiquadFilter(), g = c.createGain();
+    o.type = 'sawtooth'; o.frequency.value = 165; lp.type = 'lowpass'; lp.frequency.value = 650; lp.Q.value = 4; pk.type = 'peaking'; pk.frequency.value = 1300; pk.gain.value = 8; pk.Q.value = 3;
+    o.connect(lp); lp.connect(pk); pk.connect(g); g.connect(c.destination); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.42, t0 + 0.06); g.gain.setValueAtTime(0.42, t0 + d - 0.1); g.gain.linearRampToValueAtTime(0, t0 + d); o.start(t0); o.stop(t0 + d + 0.05); }
+  return new Promise(r => setTimeout(r, FAST ? 0 : ms + 60)); };   /* the pure "nnn" (tongue up, a hum through the nose) */
+audio.dee = () => { audio.dN++; const c = audio.ctx(); if (c && !FAST) { const t0 = c.currentTime, o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter(); o.type = 'sawtooth'; o.frequency.value = 130; lp.type = 'lowpass'; lp.frequency.value = 400;
+    o.connect(lp); lp.connect(g); g.connect(c.destination); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.3, t0 + 0.02); g.gain.linearRampToValueAtTime(0, t0 + 0.07); o.start(t0); o.stop(t0 + 0.1); audio.burst(2600, 1, 45, 0.35, 'bandpass'); }
+  return new Promise(r => setTimeout(r, FAST ? 0 : 260)); };   /* a soft voiced "d" with no "uh" */
 /* every letter's pure sound, made by the device (letters added unit by unit) */
-audio.letter = ch => ({ s: () => audio.hiss(750), a: () => audio.vowelA(450), t: () => audio.tick(), p: () => audio.puff(), m: () => audio.hum(750) }[ch] || (() => Promise.resolve()))();
+audio.letter = ch => ({ s: () => audio.hiss(750), a: () => audio.vowelA(450), t: () => audio.tick(), p: () => audio.puff(), m: () => audio.hum(750),
+  i: () => audio.vowelI(), n: () => audio.nasalN(), d: () => audio.dee() }[ch] || (() => Promise.resolve()))();
 audio.whoosh = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, s = c.createBufferSource(); s.buffer = noiseBuf(c, 0.5); const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.5; bp.frequency.setValueAtTime(400, t); bp.frequency.exponentialRampToValueAtTime(2400, t + 0.35);
   const g = c.createGain(); g.gain.setValueAtTime(0.001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.12); g.gain.exponentialRampToValueAtTime(0.001, t + 0.45); s.connect(bp); bp.connect(g); g.connect(c.destination); s.start(t); s.stop(t + 0.5); };
 audio.hmm = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(330, t); o.frequency.linearRampToValueAtTime(262, t + 0.35);

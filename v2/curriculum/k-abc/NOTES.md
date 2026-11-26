@@ -13,7 +13,7 @@ Lane: `k-abc` (Esti, 2026-11-26). The map is `MAP.md` ("the map looks fine"). On
 1. **No locks on the menu for now.** The map says the next game opens at 2 stars. 2.0 has no shared progress yet, so every game stays open (so you can see everything from one look link). His stars show on each button, saved in his browser. When 2.0 gets saved progress, the lock is one line.
 2. **Mendy is the painted Mendy from 2.0 Shapes** (same pictures, copied into `v2/app/k-abc/art/`), so the boys meet one Mendy everywhere. He stands inside the 3D world and always turns to face the boy.
 3. **No faces on objects.** The pictures (hat, sun, cake, clock...) have no faces. Animals (cat, goat, bee, fish, snake) have small kind eyes. The look sample's apple friend has a face; I will not use it in the units (the art bible says no faces on objects).
-4. **Eli in "Fix it".** Until Eli's painted picture arrives (order A1), Mendy tells what Eli said ("Eli says sun and map rhyme"). When it arrives, Eli will stand next to Mendy.
+4. **Who makes the mistake in "Fix it".** The map says a boy's name always comes with his picture. Until the friends' painted pictures arrive (order A1), Mendy makes the mistakes himself: "Sun and map rhyme! Am I right?" The boy checks Mendy. When the pictures arrive, Eli and Ari take over as in the map.
 5. **Added from 1.0 K (Pencil Power): "Bee Paths"** in Unit 1, finger tracing of lines, a curve, a circle and a zigzag, so his hand is ready to trace letters in Unit 2.
 6. **Pictures live in the lane folder** (`v2/app/k-abc/art/`), not in the shared `art/` library. CLAUDE.md asks for `art/`, but your lane rules say I may change only lane folders. **Shared change to ask about:** may I copy them into `art/` later (needs a catalog row each)?
 7. **The menu tiles are pictures of the games themselves** (made from the game screens), saved small in `art/thumb-*.webp`.
@@ -39,7 +39,7 @@ Lane: `k-abc` (Esti, 2026-11-26). The map is `MAP.md` ("the map looks fine"). On
 | Listening: who, what, first / next / last | Unit 13 (after each story), and story moments from Unit 2 |
 | Adding or taking away a beat | Review A (bonus) |
 
-**Heart words (about 40, Esti):** the map's 13 + family words, plus 1.0's snap words: I, the, a, is, to, he, we, my, said, was, of, you, are, and, see, like, go, me, look, no, yes, play, said, she, be, do, for, have, here, they, what, where, come, said, put, one, two, little, down, Tatty, Mommy, Bubby, Zeidy. Taught a few at a time in Unit 10, used in Units 11–13.
+**Heart words (about 40, Esti):** the map's 13 + family words, plus 1.0's snap words and a few more: I, the, a, is, to, he, we, my, said, was, of, you, are, and, see, like, go, me, look, no, yes, play, she, be, do, for, have, here, they, what, where, come, put, one, two, little, down, Tatty, Mommy, Bubby, Zeidy (42). Taught a few at a time in Unit 10, used in Units 11–13.
 
 ## Game kinds per unit (so no game repeats an earlier kind without a new twist)
 ### Unit 1 — Ears On
@@ -54,3 +54,6 @@ Lane: `k-abc` (Esti, 2026-11-26). The map is `MAP.md` ("the map looks fine"). On
 | fixit | judge: thumbs up / down on what Eli said, then drag in the right picture | the fence meadow |
 | check | mastery: tap kinds only (the rhyme, how many claps on dot stones, the first sound) | sunset stage |
 | review | mixed walk: one rhyme drag, one drum word, one first-sound tap, one "which first" tap | morning pond |
+
+### Unit 1 — reviewer fixes (independent review, 2026-11-26)
+First review 3.9 overall (progression 3, taught→asked 3). Fixed: the check no longer claps the answer (the parts are only said); a dot stone appears in Drum Hill after each right answer, so the check's dot stones were practised; fixed easy-to-hard clap order (1, 2, 3 parts, twice); wider Rhyme Pond; the chant rhymes and claps once per word part; the train is pulled by its engine and loads from a green start flag; Fix It: Mendy checks himself, and the sock round drags the sock to the sss basket; a left-to-right step in the opener; a hint in the review's "which first"; a clearer bun.

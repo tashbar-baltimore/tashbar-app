@@ -10,7 +10,7 @@
    Returns { fails, oks }. The play() helper is also used to take the pictures in v2/screens/k-abc-unit1/. */
 const path = require('path'), fs = require('fs'), os = require('os'), cp = require('child_process');
 const R = path.join(__dirname, '..', '..');
-const UNIT = 1, GAMES = ['opener', 'rhyme', 'clap', 'sort', 'train', 'paths', 'fixit', 'check', 'review'];
+const UNIT = 1, GAMES = ['opener', 'rhyme', 'clap', 'sort', 'train', 'paths', 'fixit', 'review', 'check'];
 const NOWRONG = ['opener', 'paths'];   /* games with nothing a boy can do wrong (a lesson, a trace) */
 
 function build() { const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'v2abc-'));
