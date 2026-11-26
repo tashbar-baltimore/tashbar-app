@@ -24,35 +24,35 @@ The shared list of gaps for every builder account working toward the finish line
 - `tests/quality-baseline.json` goes from 101 toward 0.
 
 ## Ledger (hours of new core learning built / target)
-_From `node tools/core/ledger.js`, 2026-11-25 17:15 UTC (coordinator). Grade 1 shows 0 because the counter misses the K–1 games (gap B6); 26 Grade 1 games are live._
+_From `node tools/core/ledger.js`, 2026-11-26 01:00 UTC (coordinator). Grade 1 shows 0 because the counter misses the K–1 games (gap B6); 26 Grade 1 games are live._
 
 | K | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
 |---|---|---|---|---|---|---|---|---|
-| 4.1/68 | 0*/68 | 9.8/90 | 2.6/90 | 21.8/90 | 20.6/90 | 4.7/90 | 6.0/90 | 9.2/90 |
+| 4.1/68 | 0*/68 | 11.2/90 | 2.6/90 | 23.5/90 | 22.6/90 | 4.7/90 | 10.5/90 | 10.5/90 |
 
 ## Gaps (top to bottom = priority)
 | ID | Priority | Gap | Status | Owner (session link) | Last update (UTC) | Where I am / proof (PR links) |
 |---|---|---|---|---|---|---|
-| A1 | P0 (top: coordinator 25 Nov) | Test check at its 45-min limit (3 runs cut off on 25 Nov: #649, #651, #662; 12 of the last 25 passing runs took over 35 min, none under 25): make it reliably under 25 min without weakening any check | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 17:25 | Measuring where the time goes; fix on branch claude/peaceful-cerf-yx1pgz-test-speed |
-| A5 | P0 | docs/CORE-GROWTH-LANES.md on main still has merge-conflict marks (lines 40–46, from #484): keep the newest C45 helper rows, remove the marks, and add a test that fails on conflict marks in any text file | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 17:25 | Fixed + test on branch claude/peaceful-cerf-yx1pgz-lanes-marks; tests running, PR next |
-| D1 | HoS decision | Social Studies path (#432): `SS` next to `SCI` in src/CoreUnits.html + test; then a unit check, test-out and project for every live Social Studies Unit 1 (Gr 4–8) | TAKEN | https://claude.ai/code/session_01884AzB9DUW87TWh6Ujbq9k | 2026-11-25 21:55 | Shipped: #512 (SS path in the engine, passed tests, going live), #514 (unit checks, test-outs and map/timeline projects for SS Unit 1 Gr 4–8, closes issue 432 when live; tests running). DONE when #514 is live |
-| D2 | HoS decision | Science index names (#391, option a): rename the 64 Gr 6–8 names to the real lessons, keep the Torah-linked topics as planned skills, add a test | TAKEN | https://claude.ai/code/session_015qpxB9qGaqzj8notpPXamM | 2026-11-25 21:10 | Shipped in #508 (tests pass locally; goes live when CI passes): 64 names fixed, 26 planned topics, 28 "No lesson yet" fixed, test added. DONE once #508 is on main |
+| A1 | P0 (top: coordinator 25 Nov) | Test check at its 45-min limit (3 runs cut off on 25 Nov: #649, #651, #662; 12 of the last 25 passing runs took over 35 min, none under 25): make it reliably under 25 min without weakening any check | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-26 01:00 | Still the top problem: 3 more runs cut off at 45 min on 25 Nov evening (#490, #517, #521 runs 677, 714, 718). Fix in progress on branch claude/peaceful-cerf-yx1pgz-test-speed |
+| A5 | P0 | docs/CORE-GROWTH-LANES.md on main still has merge-conflict marks (lines 40–46, from #484): keep the newest C45 helper rows, remove the marks, and add a test that fails on conflict marks in any text file | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-26 01:00 | Marks removed on main by #495. The test that catches them is in #490 (its first run was cut off at 45 min; re-pushed) |
+| D1 | HoS decision | Social Studies path (#432): `SS` next to `SCI` in src/CoreUnits.html + test; then a unit check, test-out and project for every live Social Studies Unit 1 (Gr 4–8) | DONE | https://claude.ai/code/session_01884AzB9DUW87TWh6Ujbq9k | 2026-11-26 01:00 | Checked on main by the coordinator: #512 (SS path, src/CoreUnits.html, test in tests/lib/coreunits.js) and #514 (unit checks S.U06–S.U10 in src/CoreDataS11.html) live |
+| D2 | HoS decision | Science index names (#391, option a): rename the 64 Gr 6–8 names to the real lessons, keep the Torah-linked topics as planned skills, add a test | DONE | https://claude.ai/code/session_015qpxB9qGaqzj8notpPXamM | 2026-11-26 01:00 | Checked on main by the coordinator: #508 live, with its test tests/lib/sciindex.js |
 | D3 | HoS decision | 2.0 try-out inside 1.0: every open 2.0 PR playable at /try2/ for the right grades, refreshed every 3 hours; 2.0 itself unchanged | TAKEN | https://claude.ai/code/session_01884AzB9DUW87TWh6Ujbq9k | 2026-11-25 21:55 | Claimed. Reading v2/README.md and the open 2.0 PRs; first PR: the CLAUDE.md section (a), then tools/try2-sync.js + try2/ (b) |
 | A2 | P0 | Round 1 URGENT "right answer marked wrong" fixes (h__l, rep-til, skating rink, W48 "wanders off" checks, "rebbe sold it") + sweep for the same bug; also READ.FLU.L05.16 "line right after Number one" (re-score 25 Nov) | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 17:25 | Fixing the 5 URGENT cards, then the sweep; branch claude/peaceful-cerf-yx1pgz-a2-right-answers |
-| A3a | P0 | Writing engine: a write is never auto-right; grade minimums; test | OPEN | | | |
+| A3a | P0 | Writing engine: a write is never auto-right; grade minimums; test | TAKEN | https://claude.ai/code/session_015qpxB9qGaqzj8notpPXamM | 2026-11-26 01:10 | Claimed (D3 was taken). Reading src/MiddleSchoolPage.html write checking; branch claude/wizardly-cannon-hogqso-a3a |
 | A3b | P0 | W48 (Gr 4–8): every live unit's real task is a Writing Workshop piece; real minimums | OPEN | | | |
 | A3c | P0 | W13 (Gr K–3): the same for the live W13 units | OPEN | | | |
 | A4 | P0 | K–1 game bugs #402 (tiny text), #378 (word over instruction), #343 (no "how" after a miss) | OPEN | | | |
 | A6 | P0 | A lesson can start before all its parts load and quietly skip activities (seen in the coordinator's play-through: 1 "with me" + 2 "your turn" played). Find out if a slow Chromebook gives a boy a short lesson with no warning; if so, wait for the parts or show a message; add a test | OPEN | | | |
 | B1a | P1 | Review Round 2: F, all K–1 games, W13 | OPEN | | | |
-| B1b | P1 | Review Round 2: C45 and S | OPEN | | | |
+| B1b | P1 | Review Round 2: C45 and S | TAKEN | https://claude.ai/code/session_01A6aeygGDJYGYoKVNbunetu | 2026-11-26 01:30 | First the "Re-review needed" items #493 and #499 (C45 "Read It 3 Times" batches 2–3: 21 lessons): fresh re-score, fix every point under 4, re-score the fixes. Files `src/CoreDataC45H1.html`/`H2.html` only. Then the rest of C45 Round 2 |
 | B1c | P1 | Review Round 2: G and W48 | OPEN | | | |
 | B1d | P1 | Re-review needed (26 Nov list): unit checks never scored in a table: C68.U85 and C68.U86 (incl. the 8 new items of #496), C68.U77 (#501), C68.U78 (#513), C68.U88 (#486), C23.U21 (#516). Fresh reviewer scores every item, fix every point under 4, fresh re-score of the fixes | TAKEN | https://claude.ai/code/session_01NmKrTheArRrvmB8BX96mxf | 2026-11-26 05:30 | Shipped in #526 (claim + fix together, after the claim run was cut off at 45 min): all 6 checks re-scored 4–5 by fresh reviewers over 5 rounds (docs/core-growth/reviews/R2-unitchecks-2026-11-26.md); 3 right-answer-marked-wrong fixes; boss levels now show lesson passages (51 questions lost them); new guards in tests/lib/coreunits.js. DONE when #526 is live |
 | B2a | P1 | Fix Round 1 failed lessons: W48 Grades 4–5 | DONE | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf (W48 owner) | 2026-11-25 21:00 | Live in #497: all 14 ✗ lessons fixed and re-scored 4–5 by a fresh reviewer (write minimums wait for A3a/A3b; WRIT.PARA.L05.07 check 3 is A2) |
 | B2b | P1 | Fix Round 1 failed lessons: W48 Grades 6–8 | DONE | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf (W48 owner) | 2026-11-25 23:00 | Live in #518: all 19 ✗ lessons fixed and re-scored 4–5 by fresh reviewers (write minimums wait for A3a/A3b) |
 | B2c | P1 | Fix Round 1 failed lessons: G (11), F (5), C45 (4) | OPEN | | | |
 | B2d | P1 | Social Studies Gr 6–8 Unit 1: 12 of 18 lessons fail the 25 Nov re-score (2-choice checks, answer in the picture, How boxes pointing to teach cards One Bite never shows); fixes in packs/SocialMore.html + packs/HowToDo.html (docs/core-growth/reviews/R2-rescore-2026-11-25.md, #489) | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 18:00 | Fixing on branch claude/peaceful-cerf-yx1pgz-ss-checks |
-| B2e | P1 | Re-score fixes: WRIT.PARA.L02.01, WRIT.PARA.L02.03 (Gr 1 games), WRIT.ESSAY.L03.01, READ.FLU.L05.15, READ.LIT.L09.01 (same file, #489) | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 18:00 | Fixing on branch claude/peaceful-cerf-yx1pgz-rescore-fixes |
+| B2e | P1 | Re-score fixes: WRIT.PARA.L02.01, WRIT.PARA.L02.03 (Gr 1 games), WRIT.ESSAY.L03.01, READ.FLU.L05.15, READ.LIT.L09.01 (same file, #489) | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-26 01:00 | The W13 part was fixed by the W13 owner in #506. Left: READ.FLU.L05.15 and READ.LIT.L09.01, on branch claude/peaceful-cerf-yx1pgz-rescore-fixes |
 | B3 | P1 | Cold checks: no check answer shown earlier in its lesson; no 2-choice checks | OPEN | | | |
 | B4 | P1 | "Write one sentence" activity kind (teacher-scored), then add it to the end of the G lessons | OPEN | | | |
 | B5-1 | P1 | Quality baseline: fix old lessons 1–15 on tests/quality-baseline.json, shrink the list | OPEN | | | |
@@ -97,3 +97,13 @@ _From `node tools/core/ledger.js`, 2026-11-25 17:15 UTC (coordinator). Grade 1 s
 - #475 W13 Grade 2 Unit 1 polish (a 3; only 2 of 4 lessons pictured)
 - #474 C68 Grade 8 Unit 8.5 (a 3)
 Still to re-score: the unit checks in #483 and #481 (not fully scored).
+
+**Added 26 Nov 01:00 (coordinator audit of lesson PRs merged since 25 Nov 17:15):**
+- #499 C45 fluency batch 3: six 2s and 3s (L05.27, L05.29, L06.26, L06.28) raised to 4 by the author, not re-reviewed
+- #493 C45 fluency batch 2: three 3s (L05.21, L05.25) raised to 4 by the author; the camp passages were rewritten after the last review
+- #496 C68 Units 8.5/8.6: 8 new unit-check items with no fresh review, no table, no pictures
+- #506 W13: POW Power left at "3 → fixed"; the two new Writing Workshop tasks were not scored
+- #498 W13 Grade 1 Unit 2: Feeling Ending left at "3 → fixed"
+- Unit checks never scored in a table: C23.U21 (#516), C68.U88 (#486), C68.U77 (#501) and C68.U78 (#513), which got a verdict only, and the replaced items in #495
+- #497: Belongs or Not? check 3 and the Grade 6 "Claim About a Character" change were not scored
+- Pictures for only part of the lessons: #513, #501, #495, #506
