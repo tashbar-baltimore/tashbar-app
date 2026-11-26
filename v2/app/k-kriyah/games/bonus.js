@@ -26,6 +26,7 @@ export default function setup(E, { unit }) {
     others: falling.filter(l => !l.userData.busy && l.userData.key !== want).map(l => E.toScreen(l.position)), caught, targetsSoFar: targets });
   function setSign(k) { if (signL) sign.remove(signL); signL = E.letter(k, .9); if (signL.userData.below) { signL.scale.setScalar(.7); signL.position.set(0, signL.userData.below * .45, .25); } else signL.position.set(0, 0, .25);   /* Kuf's leg stays on the sign */ sign.add(signL); E.popIn(signL); }
   const FALL_F = E.FAST ? (E.LITE ? 1.4 : 2.5) : 1;    /* quick test runs draw very few frames a second, so letters fall slower there to stay tappable */
+  let pauseUntil = 0, lastNow = performance.now(); E.onFrame(() => { const now = performance.now(); if (now < pauseUntil) falling.forEach(l => { l.userData.t0 += now - lastNow; }); lastNow = now; });   /* the rain stops while he hears the correction (reviewer) */
   function drop(k, ms) {
     const l = E.letter(k, 1.0); let x; if (E.portrait) { const top = lx => Math.max(-9, ...falling.filter(f => !f.userData.busy && !f.userData.gone && Math.abs(f.userData.x - lx) < .5).map(f => f.position.y)); x = [-.25, 1.45].sort((a, b) => top(a) - top(b))[0]; }   /* a phone has two lanes: the one whose last letter is lowest */
     else do { x = Math.max(-2.0, (Math.random() * 2 - 1) * X * .85 + .6);   /* never over the sign */ } while (falling.some(f => !f.userData.busy && f.position.y > 2.5 && Math.abs(f.userData.x - x) < 1.6) && Math.random() > .02);

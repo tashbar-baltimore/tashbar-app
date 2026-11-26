@@ -55,7 +55,7 @@ export default function setup(E, { struggled, unit, game }) {
     if (c.userData.key === k) {
       busy = true; enabled = false; wrongInRow = 0; const p0 = card.position.clone(), to = centre(c);
       await E.tween(420, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar(CS * (1 - q * .85)); });
-      card.visible = false; E.joy(to); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F); E.hop(c, .15, 300);
+      card.visible = false; { const m = E.letter(k, .42); const n = c.userData.inCrate = (c.userData.inCrate || 0) + 1; m.position.set(((n - 1) % 4 - 1.5) * .42, .24 + Math.floor((n - 1) / 4) * .46, 1.0); m.userData.inPile = true; c.add(m); E.popIn(m, 1, 250); }   /* the crate fills up: he sees his sorted letters pile in (reviewer: more fun) */ E.joy(to); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F); E.hop(c, .15, 300);
       idx++; E.setProgress(deck.length, idx);
       await E.say(['Yes! ' + E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd)]);
       if (idx < deck.length) { busy = true; await setCard(deck[idx]); busy = false; enabled = true; } else onDone();
