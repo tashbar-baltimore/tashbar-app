@@ -165,7 +165,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
   /* the stage: the round mat in the middle where the shapes sit (its top is at 0.1, like the rug) */
   /* painted round mats that have arrived and been checked by eye (art/mat-<world>.png; k-shapes-art-requests.md) */
-  const MATS = new Set(['toyland', 'garden', 'sky', 'bakery', 'space', 'underwater', 'traintown', 'jungle', 'snow', 'party']);
+  const MATS = new Set(['toyland', 'garden', 'sky', 'bakery', 'space', 'beach', 'underwater', 'traintown', 'jungle', 'snow', 'farm', 'party']);
   function stage(draw, o = {}) {
     const t = paint(1024, 1024, (x, w) => draw(x, w / 2, w));
     const top = new PM({ color: '#FFFFFF', map: t, roughness: o.rough || 0.9, sheen: o.sheen == null ? 0.8 : o.sheen, sheenColor: new THREE.Color(o.sheenColor || '#FFF6E8'), sheenRoughness: 0.7, clearcoat: o.coat || 0, clearcoatRoughness: 0.3 });

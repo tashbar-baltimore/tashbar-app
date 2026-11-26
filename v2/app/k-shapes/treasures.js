@@ -513,7 +513,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     'farm-tire-round.png', 'garden-sunflower-round.png', 'party-bunting-surface.jpg', 'party-cake-round.png', 'party-gift-surface.jpg', 'sky-basket-surface.jpg', 'sky-cloudtile-surface.jpg',
     'sky-goldstar-surface.jpg', 'space-fin-surface.jpg', 'space-panel-surface.jpg', 'space-planet-round.png', 'space-solar-surface.jpg', 'toy-drum-round.png',
     'garden-planter-surface.jpg', 'garden-stone-surface.jpg', 'garden-flag-surface.jpg', 'toy-brick-surface.jpg', 'toy-sail-surface.jpg', 'toy-puzzle-surface.jpg', 'sky-kitecloth-surface.jpg',
-    'beach-mould-surface.jpg', 'party-tile-surface.jpg', 'party-foil-surface.jpg', 'jungle-carved-surface.jpg', 'jungle-leaf-surface.jpg', 'winter-knit-surface.jpg']);
+    'beach-mould-surface.jpg', 'sky-kite-round.png', 'party-tile-surface.jpg', 'party-foil-surface.jpg', 'jungle-carved-surface.jpg', 'jungle-leaf-surface.jpg', 'winter-knit-surface.jpg']);
   T.artList = () => [...HAVE];
   const loader = new THREE.TextureLoader(), texCache = {};
   function artTex(pic) { return texCache[pic] || (texCache[pic] = (() => { const t = loader.load('art/' + pic); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO; t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; })()); }
