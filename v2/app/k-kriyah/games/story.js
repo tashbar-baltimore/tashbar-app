@@ -56,7 +56,7 @@ export default function setup(E) {
     await E.tween(700, k => { alef.position.lerpVectors(a0, new THREE.Vector3(X().row, 1.6, .2), k); alef.scale.setScalar(1 - k * (1 - X().s)); glow.material.opacity = .8 * (1 - k); }); float(alef);
     home.position.set(0, 0, 0); home.scale.setScalar(P ? .75 : .9); boy.scale.setScalar(1); boy.position.set(-.55, 0, 1.3); boy.visible = true; await Promise.all([E.popIn(home, P ? .75 : .9), E.popIn(boy)]);
     E.setProgress(4, 2);
-    boy.mood('wave'); await E.say('This is a bayis. A house.');
+    boy.mood('wave'); await E.say('This is Mendy’s house.');   /* English words only (HoS 2026-11-26) */
     await E.say('Mendy is home!'); boy.mood('calm');
     await E.say('Watch! The house turns into a letter.');
     const p0 = boy.position.clone(); await E.tween(700, k => { boy.position.lerpVectors(p0, new THREE.Vector3(0, .4, 1.2), k); boy.position.y += Math.sin(k * Math.PI) * .8; });

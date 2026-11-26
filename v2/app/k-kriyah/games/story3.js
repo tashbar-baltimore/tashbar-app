@@ -1,5 +1,5 @@
 /* Unit 3 opener (Picture Story): Ari plays in the garden while Mommy waters the flowers.
-   A rose (vered) turns into Vov, a buzzing fly (zevuv) into Zayin, and a cat on the fence (chatul) into Ches.
+   A vase turns into Vov, a zipper into Zayin, and a challah into Ches (English words; challah is a word every boy knows).
    Then the look-alikes side by side (Zayin's crown; Ches's leg on the roof), a chant of all nine letters, and he taps each new one. */
 import { makeStory } from './storykit.js';
 export default function setup(E, { unit }) {
@@ -14,9 +14,9 @@ export default function setup(E, { unit }) {
       const sp = E.mesh(new THREE.CylinderGeometry(.03, .045, .4, 8), cm, .25, .3, 0); sp.rotation.z = -.9; can.add(sp); can.position.set(-2.9, 0, 1.6); g.add(can); },
     intro: ['This is Ari. He plays in the garden.', 'Mommy is watering the flowers.'],
     steps: [
-      { pic: 'vered', near: 'grown', lines: ['Mommy shows him a red rose.', 'A rose is a vered!'], letter: 'vov', after: ['Vered starts with Vov.', ['Vov says', S('v')], 'Vov says v, just like Veis!'] },
-      { pic: 'zevuv', lines: ['Bzzz! A little fly is buzzing!', 'A fly is a zevuv.'], letter: 'zayin', after: ['Zevuv starts with Zayin.', ['Zayin says', S('z')]] },
-      { pic: 'chatul', lines: ['A cat jumps up on the fence!', 'A cat is a chatul.'], letter: 'ches', after: ['Chatul starts with Ches.', ['Ches says', S('ch')]] },
+      { pic: 'vase', near: 'grown', lines: ['Mommy puts flowers in a vase.'], letter: 'vov', after: [['Vase starts with', S('v'), '.'], ['Vov says', S('v'), ', like vase!'], 'Vov says v, just like Veis!'] },
+      { pic: 'zipper', lines: ['Ari zips up his jacket. Zzzip!'], letter: 'zayin', after: [['Zipper starts with', S('z'), '.'], ['Zayin says', S('z'), ', like zipper!']] },
+      { pic: 'challah', near: 'grown', lines: ['Mommy brings out a warm challah.'], letter: 'ches', after: ['Challah starts with Ches.', ['Ches says', S('ch')]] },
     ],
     lookalikes: [['vov', 'zayin', 'Vov has no crown.', 'Zayin has a crown on top.'], ['hei', 'ches', 'Hei’s little leg doesn’t touch the roof.', 'Ches’s leg touches the roof.']],
   });
