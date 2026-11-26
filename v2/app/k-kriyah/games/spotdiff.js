@@ -18,7 +18,7 @@ export default function setup(E, { struggled, unit }) {
   const H = 2.3, arrows = [E.arrow3d(.45), E.arrow3d(.45)], marks = [E.glowSprite('#ffe680', 1.4, 0), E.glowSprite('#ffe680', 1.4, 0)], hint = [E.glowSprite('#fff7b0', 1.5, 0), E.glowSprite('#fff7b0', 1.5, 0)];
   const pads = [0, 1].map(() => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(1.25, 1.35, .25, 40), E.M(0xfff6e4, { roughness: .4, clearcoat: .6 }), 0, .12, 0)); { const rg = E.mesh(new THREE.TorusGeometry(1.3, .05, 10, 48), E.M(0xf2c14e, { metalness: .5, roughness: .3 }), 0, .26, 0); rg.rotation.x = Math.PI / 2; p.add(rg); } E.scene.add(p); return p; });
   /* the line where ordinary letters stop: a long leg goes below it */
-  const lines = [0, 1].map(() => { const g = new THREE.Group(); g.add(E.mesh(E.rbox(2.1, .07, .08, .03), E.M(0xf2c14e, { metalness: .5, roughness: .3, emissive: 0x6a4200, emissiveIntensity: .3 }), 0, 0, 0, false)); E.scene.add(g); return g; });
+  const lines = [0, 1].map(() => { const g = new THREE.Group(); g.add(E.mesh(E.rbox(2.6, .14, .1, .05), new THREE.MeshStandardMaterial({ color: 0xffd23a, emissive: 0xff9a00, emissiveIntensity: .55, roughness: .3 }), 0, 0, 0, false)); E.scene.add(g); return g; });
   let P = false, A = null, B = null, R = null, busy = true, active = false, misses = 0, mistakes = 0, help = struggled, resolveFind = null, card = null, cardHome = new THREE.Vector3(), drag = null, grab = new THREE.Vector3(), resolveCard = null, cardMissed = false;
   const X = () => P ? 1.15 : 2.0, Y = () => P ? 2.9 : 1.95, S2 = () => P ? .62 : 1;
   E.onLayout(p => { P = p;
