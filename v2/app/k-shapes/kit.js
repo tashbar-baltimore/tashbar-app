@@ -285,7 +285,7 @@ export function startGame(cfg) {
   }
   function placeMendy(mode) {
     if (mode === 'close') { mendy.visible = !friend.visible && cfg.mode !== 'pattern' && cfg.mode !== 'position'; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
-    else { mendy.visible = !(NB > 1 && tall) && !(cfg.mendyAt && !cfg.mendyAt[tall ? 'tall' : 'wide']); mendy.position.copy(mendyAt()); mendy.rotation.set(tall ? -0.6 : 0, (NB > 1 || cfg.mendyAt) && !tall ? 0.5 : -0.35, 0); }
+    else { mendy.visible = !(NB > 1 && tall) && !(cfg.mendyAt && !cfg.mendyAt[tall ? 'tall' : 'wide']); mendy.position.copy(mendyAt()); if (PAINTED && PATTERNED) mendy.position.add(new THREE.Vector3(0.75, 0, 1.9));   /* the painted boy is wider: keep him clear of the train's engine */ mendy.rotation.set(tall ? -0.6 : 0, (NB > 1 || cfg.mendyAt) && !tall ? 0.5 : -0.35, 0); }
   }
   function inBoxSpot(bi, n) { const b = boxAt(bi), sp = NB === 1 ? 0.75 : 0.55; return new THREE.Vector3(b.x - sp + (n % 3) * sp, 0.3 + Math.floor(n / 3) * 0.15, b.z + (n % 2 ? 0.18 : -0.18)); }
   function resize() {
@@ -1259,7 +1259,7 @@ export function startGame(cfg) {
     const inner = objMesh(T), turn = new THREE.Group(); turn.add(inner); const g = new THREE.Group(); g.add(turn); scene.add(g); inner.traverse(q => { q.castShadow = true; });
     const o = { id, k: T.look, word: T.word, w: T.w, box: -1, g, turn, mesh: inner, mat: inner.material || inner.children[0].material, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), still: true, slot: i, inBox: false, busy: false };
     const xs = tall ? [-1.1, 1.1] : [-1.5, 1.5];
-    o.home.set(xs[i], 0, tall ? 1.6 : 0.3); g.position.copy(o.home); g.scale.setScalar(tall ? 0.7 : 1);
+    o.home.set(xs[i], 0, tall ? 1.6 : 0.3); g.position.copy(o.home); g.scale.setScalar(tall ? (LK ? 0.95 : 0.7) : 1);   /* new look: bigger on a phone */
     const hull = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.4, 1.2), new THREE.MeshBasicMaterial({ visible: false })); hull.position.y = 0.6; g.add(hull); o.mesh = hull; hull.userData.shape = o; shapes.push(o); return o;
   }
   function markPans() { const free = BS.pans.findIndex(P => !P.item); shapes.forEach(o => { if (!o.inBox) o.box = free; }); }
