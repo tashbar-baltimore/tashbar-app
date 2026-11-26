@@ -13,6 +13,7 @@
      sessions/<hash>   who is signed in on a device (girl or staff), until when; the device holds the token, we keep its scramble
      steps/<id>        what she did: one lesson step, right or wrong, when, how long
      throttle/<hash>   wrong sign-in tries per device address, so codes cannot be guessed
+     stepcount/<id>    how many steps a girl saved today (a cap, so no one can fill the records)
      sys/pepper        the random key for the scrambles (made on first use; it never leaves the server)
 
    THE RULES (each one tested in tests/lib/keserserver.js)
@@ -36,7 +37,8 @@ const crypto = require('crypto');
 const DB_NAME = 'keser';
 const GIRL_CODE_LEN = 6, STAFF_CODE_LEN = 8;
 const GIRL_HOURS = 14, STAFF_HOURS = 12;
-const TRY_WINDOW_MS = 10 * 60 * 1000, GIRL_TRIES = 60, STAFF_TRIES = 15;
+const TRY_WINDOW_MS = 10 * 60 * 1000, GIRL_TRIES = 60, STAFF_TRIES = 15, DAY_TRIES = 300;
+const DAY_STEPS = 5000;
 const GRADES = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
 const CROWNS = ['gold', 'rose', 'pearl', 'sapphire', 'emerald', 'amethyst', 'ruby'];
 const START = 'start';
@@ -76,29 +78,31 @@ function profile(p, base) {
 const girlOut = (id, g) => ({ id, first: g.first, grade: g.grade, cls: g.cls || '', crown: g.crown || 'gold', place: g.place || START });
 
 /* ---------- sign-in, sessions, wrong tries ---------- */
-async function tooMany(db, pep, ip, kind, limit) {
-  const ref = db.collection('throttle').doc(codeKey(pep, 'ip-' + kind, ip || '?'));
-  const d = await ref.get(); const t = d.exists ? d.data() : null;
-  return !!(t && now() - t.since < TRY_WINDOW_MS && t.n >= limit);
-}
-async function wrongTry(db, pep, ip, kind) {
-  const ref = db.collection('throttle').doc(codeKey(pep, 'ip-' + kind, ip || '?'));
-  await db.runTransaction(async tx => { const d = await tx.get(ref); const t = d.exists ? d.data() : null;
-    tx.set(ref, t && now() - t.since < TRY_WINDOW_MS ? { since: t.since, n: t.n + 1 } : { since: now(), n: 1 }); });
-}
+/* Wrong tries are counted per device address (an IPv6 address by its /64 block), in the SAME transaction that looks the
+   code up: parallel guesses cannot slip past the count, because the transaction reads the count and the code together
+   and a wrong guess writes the count before it can be answered. A right code only reads (no lock-out from the school's
+   own sign-ins at 8:30). Limits: GIRL_TRIES / STAFF_TRIES per ten minutes and DAY_TRIES per day per address. */
+function addrOf(ip) { ip = String(ip || '?'); if (ip.indexOf(':') >= 0 && !/^::ffff:/i.test(ip)) return ip.split(':').slice(0, 4).join(':') + '::/64'; return ip.replace(/^::ffff:/i, ''); }
+function over(t, limit) { if (!t) return false; const day = new Date().toISOString().slice(0, 10);
+  return (now() - t.since < TRY_WINDOW_MS && t.n >= limit) || (t.day === day && t.dn >= DAY_TRIES); }
+function counted(t) { const day = new Date().toISOString().slice(0, 10), fresh = !t || now() - t.since >= TRY_WINDOW_MS;
+  return { since: fresh ? now() : t.since, n: fresh ? 1 : t.n + 1, day, dn: t && t.day === day ? t.dn + 1 : 1 }; }
 async function signInWith(db, ip, code, kind) {
-  const girl = kind === 'girl', len = girl ? GIRL_CODE_LEN : STAFF_CODE_LEN; const pep = await pepper(db);
-  if (await tooMany(db, pep, ip, kind, girl ? GIRL_TRIES : STAFF_TRIES)) no('Too many tries. Wait ten minutes and try again.');
+  const girl = kind === 'girl', len = girl ? GIRL_CODE_LEN : STAFF_CODE_LEN, limit = girl ? GIRL_TRIES : STAFF_TRIES; const pep = await pepper(db);
+  const tref = db.collection('throttle').doc(codeKey(pep, 'ip-' + kind, addrOf(ip)));
   code = String(code == null ? '' : code).replace(/\s+/g, '');
-  const bad = async () => { await wrongTry(db, pep, ip, kind); no('That code did not open. Try again.'); };
-  if (!new RegExp('^[0-9]{' + len + '}$').test(code)) return bad();
-  const c = await db.collection(girl ? 'girlcodes' : 'staffcodes').doc(codeKey(pep, kind, code)).get();
-  if (!c.exists) return bad();
-  const id = c.data().id; const who = await db.collection(girl ? 'girls' : 'staff').doc(id).get();
-  if (!who.exists || who.data().off) return bad();
+  const cref = db.collection(girl ? 'girlcodes' : 'staffcodes').doc(codeKey(pep, kind, new RegExp('^[0-9]{' + len + '}$').test(code) ? code : 'x'));
+  const v = await db.runTransaction(async tx => { const t = await tx.get(tref), c = await tx.get(cref); const td = t.exists ? t.data() : null;
+    if (over(td, limit)) return { many: true };
+    if (!c.exists) { tx.set(tref, counted(td)); return { bad: true }; }
+    return { id: c.data().id, key: cref.id }; });
+  if (v.many) no('Too many tries. Wait ten minutes and try again.');
+  if (v.bad) no('That code did not open. Try again.');
+  const who = await db.collection(girl ? 'girls' : 'staff').doc(v.id).get();
+  if (!who.exists || who.data().off || who.data().codeKey !== v.key) no('That code did not open. Try again.');   /* a code replaced a moment ago */
   const token = newToken();
-  await db.collection('sessions').doc(sha(token)).set({ kind, id, made: now(), until: now() + (girl ? GIRL_HOURS : STAFF_HOURS) * 3600e3 });
-  return { token, who: who.data(), id };
+  await db.collection('sessions').doc(sha(token)).set({ kind, id: v.id, key: v.key, made: now(), until: now() + (girl ? GIRL_HOURS : STAFF_HOURS) * 3600e3 });
+  return { token, who: who.data(), id: v.id };
 }
 async function session(db, token, kind) {
   if (typeof token !== 'string' || token.length < 30 || token.length > 100) no('Please sign in again.');
@@ -106,8 +110,9 @@ async function session(db, token, kind) {
   if (!d.exists) no('Please sign in again.');
   const s = d.data(); if (s.until < now()) { await ref.delete(); no('Please sign in again.'); }
   if (s.kind !== kind) no(kind === 'staff' ? 'This is for staff only.' : 'This is for girls only.');
-  if (kind === 'staff') { const m = await db.collection('staff').doc(s.id).get(); if (!m.exists || m.data().off) no('Please sign in again.'); s.role = m.data().role; }
-  return s;
+  const m = await db.collection(kind === 'staff' ? 'staff' : 'girls').doc(s.id).get();
+  if (!m.exists || m.data().off || m.data().codeKey !== s.key) no('Please sign in again.');   /* a new code ends every session opened with the old one */
+  s.role = m.data().role; s.who = m.data(); return s;
 }
 async function endSessions(db, kind, id) {
   const q = await db.collection('sessions').where('id', '==', id).get(); const dels = [];
@@ -153,11 +158,14 @@ function summary(rows) {
 /* ---------- the calls ---------- */
 const GIRL = {
   async signIn(db, ip, code) { const r = await signInWith(db, ip, code, 'girl'); return { token: r.token, me: girlOut(r.id, r.who) }; },
-  async me(db, ip, token) { const s = await session(db, token, 'girl'); const g = await db.collection('girls').doc(s.id).get(); if (!g.exists) no('Please sign in again.'); return girlOut(s.id, g.data()); },
+  async me(db, ip, token) { const s = await session(db, token, 'girl'); return girlOut(s.id, s.who); },
   async saveSteps(db, ip, token, steps) {
     const s = await session(db, token, 'girl');
     if (!Array.isArray(steps) || !steps.length) return { saved: 0 }; if (steps.length > MAX_STEPS) no('Too many steps at once.');
     const list = steps.map(stepIn), at = now(), batch = db.batch();
+    const cref = db.collection('stepcount').doc(s.id + '_' + new Date().toISOString().slice(0, 10));
+    const room = await db.runTransaction(async tx => { const c = await tx.get(cref), n = c.exists ? c.data().n : 0; if (n + list.length > DAY_STEPS) return false; tx.set(cref, { n: n + list.length }); return true; });
+    if (!room) no('That is a lot of learning for one day. Save again tomorrow.');
     /* the id comes from HER session and the device's step id, so sending the same step again keeps one copy */
     list.forEach(x => { const sid = x.sid; delete x.sid; batch.set(db.collection('steps').doc(sha(s.id + '|' + sid).slice(0, 40)), Object.assign(x, { girl: s.id, at })); });
     await batch.commit(); return { saved: list.length };
@@ -175,7 +183,7 @@ const STAFF = {
   async editGirl(db, ip, token, id, p) { await session(db, token, 'staff'); const ref = await girlRef(db, id); const old = (await ref.get()).data();
     const g = profile(p, old); await ref.set({ first: g.first, grade: g.grade, cls: g.cls, crown: g.crown }, { merge: true }); return girlOut(ref.id, g); },   /* only her profile: never her code or place */
   async newCode(db, ip, token, id) { await session(db, token, 'staff'); const ref = await girlRef(db, id);
-    const code = await giveCode(db, 'girl', ref.id); await endSessions(db, 'girl', ref.id); return { code }; },
+    const code = await giveCode(db, 'girl', ref.id); await endSessions(db, 'girl', ref.id).catch(() => {}); return { code }; },   /* old sessions already stop (key check); this only tidies */
   async girlCard(db, ip, token, id) { await session(db, token, 'staff'); const ref = await girlRef(db, id); const g = (await ref.get()).data();
     const rows = []; (await db.collection('steps').where('girl', '==', ref.id).get()).forEach(d => rows.push(d.data()));
     return Object.assign({ girl: girlOut(ref.id, g) }, summary(rows)); },
@@ -194,7 +202,10 @@ async function makeStaff(db, name, role) {
 }
 async function firstLead(db, key, adminKey, name) {
   if (!adminKey || typeof key !== 'string' || key.length !== adminKey.length || !crypto.timingSafeEqual(Buffer.from(key), Buffer.from(adminKey))) no('Not allowed.');
-  const any = await db.collection('staff').get(); if (any.size) no('Staff already exist. A lead adds staff from the staff page.');
+  if (clean(name, 40).length < 2) no('Type the staff member\'s name.');
+  const mark = db.collection('sys').doc('firstLead');
+  const first = await db.runTransaction(async tx => { const m = await tx.get(mark); if (m.exists) return false; tx.set(mark, { at: now() }); return true; });
+  const any = await db.collection('staff').get(); if (!first || any.size) no('Staff already exist. A lead adds staff from the staff page.');
   return makeStaff(db, name, 'lead');
 }
 

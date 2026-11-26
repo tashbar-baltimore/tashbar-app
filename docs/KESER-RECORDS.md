@@ -22,7 +22,9 @@ POST to the server function `api` (the same address the boys' app uses) with
 
 - `sid` is the device's own id for a step, so a step sent twice is kept once.
 - Grades: K, 1–8. Crown colours: gold (default), rose, pearl, sapphire, emerald, amethyst, ruby. Everyone starts at place `start`.
-- Wrong sign-in tries are limited per device address: 60 for girls and 15 for staff, per ten minutes.
+- Wrong sign-in tries are counted per device address (an IPv6 home network counts as one), in the same step that checks the code, so guesses sent all at once cannot slip past: 60 for girls and 15 for staff per ten minutes, and 300 per day. Right codes are never counted, so a whole school signing in together is never locked out.
+- A session lasts only while the code it was opened with is still her code: a new code ends every old session at once.
+- A girl can save up to 5,000 steps a day (so no one can fill the records).
 - The very first staff code (the lead) is made once with the server's admin key (`firstLead`), only while there are no staff. Piece 2 (staff sign-in) decides how the lead gets it.
 
 ## The one-time set-up in Google Cloud (Rabbi Khaver)
