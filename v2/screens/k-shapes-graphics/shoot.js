@@ -31,7 +31,7 @@ pw.chromium.launch = async (o) => {
       const state = async () => { try { return await pg.evaluate(() => window.__shp && (window.__shp.done ? 'end' : document.querySelector('.judge.show') ? 'mistake' : window.__shp.name)); } catch (e) { return null; } };
       const before = async () => { const t = await state(); if (t && t !== last) { last = t; seen[t] = (seen[t] || 0) + 1; if (seen[t] <= 2) { await pg.waitForTimeout(t === 'mistake' ? 3000 : 400); await snap(t); } } };
       const goto = pg.goto.bind(pg);
-      pg.goto = async (u, o2) => { game = (u.match(/k-shapes\/([a-z0-9-]+)\.html/) || [])[1] || game; const r = await goto(u.replace('fast=1', 'fast=1&shot=1'), o2);
+      pg.goto = async (u, o2) => { game = (u.match(/k-shapes\/([a-z0-9-]+)\.html/) || [])[1] || game; const r = await goto(u.replace('fast=1', 'fast=1&shot=1' + (process.env.SHOT_EXTRA || '')), o2);   /* SHOT_EXTRA: for example &kids=painted */
         await pg.waitForTimeout(2500); await snap('start'); last = 'start'; return r; };
       const M = pg.mouse, down = M.down.bind(M), up = M.up.bind(M), click = M.click.bind(M), pclick = pg.click.bind(pg);
       M.down = async (o2) => { await before(); return down(o2); };

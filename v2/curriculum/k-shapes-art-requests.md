@@ -14,3 +14,4 @@ The game cuts every picture to the exact shape (the outline in `kit.js`), so a t
 - A **round object** (tire, sunflower, beach ball ...) is a perfect circle touching the picture's edges; it becomes the circle, and the circle's look-alikes (an oval tire, half a tire), so a tricky piece stays exactly as tricky.
 - A **surface** (hay, barn boards, honeycomb ...) is cut to the shape. Shapes that look alike share the same object (square and rectangle are both hay bales on the farm), so a boy must judge the shape, not the object.
 - Esti, 2026-11-26 (during the build): "dont just add one tire think creatively ... if you have a farm page the shapes should be farm themed".
+| K4 | 2026-11-26 ~04:15 UTC | Pictures needed: round play mats for 12 worlds + 5 more boys - order K4 | 12 round mats (one per world); friends Dovid, Shloimy, Ari, Avi, Yossi (idle, talk, happy); Shmuel happy | Waiting |

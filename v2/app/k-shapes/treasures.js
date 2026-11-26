@@ -133,6 +133,54 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     return g;
   }
 
+  /* ================= FARM: the things on the scale (same sizes as before, so the weighing is exactly the same) =================
+     rock = a smooth field stone, ball = a ball of wool in its colour, block = a little hay bale with twine, feather = a soft hen's feather */
+  const strawTex = () => once('straw', () => { const t = paint(256, 256, (x, w, h) => { x.fillStyle = '#E9BE4E'; x.fillRect(0, 0, w, h); const R = rng(5);
+    for (let i = 0; i < 900; i++) { x.strokeStyle = ['#D9A52E', '#F6D477', '#C98F22', '#FFE39A'][i % 4]; x.lineWidth = 1.2 + R() * 1.5; const px = R() * w, py = R() * h, a = (R() - 0.5) * 0.5; x.beginPath(); x.moveTo(px, py); x.lineTo(px + Math.cos(a) * 22, py + Math.sin(a) * 22); x.stroke(); } }); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; });
+  const stoneTex = () => once('stoneT', () => paint(256, 128, (x, w, h) => { x.fillStyle = '#9A9086'; x.fillRect(0, 0, w, h); const R = rng(9); for (let i = 0; i < 500; i++) { x.fillStyle = ['rgba(255,255,255,.12)', 'rgba(60,50,40,.12)', 'rgba(200,180,150,.15)'][i % 3]; x.beginPath(); x.arc(R() * w, R() * h, 0.8 + R() * 2.5, 0, 7); x.fill(); } }));
+  function fieldStone(s) {
+    const geo = new THREE.SphereGeometry(0.36 * s, 40, 28), p = geo.attributes.position, v = new THREE.Vector3();
+    for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const k = 1 + 0.06 * Math.sin(v.x * 9 / s + 1) * Math.cos(v.z * 7 / s) + 0.04 * Math.sin(v.y * 11 / s); p.setXYZ(i, v.x * k * 1.15, v.y * k * 0.78, v.z * k); }
+    geo.computeVertexNormals(); const r = new THREE.Mesh(geo, new PM({ color: '#FFFFFF', map: stoneTex(), roughness: 0.75, clearcoat: 0.2 })); r.position.y = 0.28 * s; return r;
+  }
+  function woolBall(s, color) {
+    const R0 = 0.62 * s, g = new THREE.Group(), col = vivid(color);
+    const core = new THREE.Mesh(new THREE.SphereGeometry(R0 * 0.97, 36, 24), new PM({ color: shade(col, 0.8), roughness: 0.95, sheen: 1, sheenColor: C(tint(col, 0.5)) })); g.add(core);
+    const yarn = new PM({ color: col, roughness: 0.9, sheen: 1, sheenColor: C(tint(col, 0.6)), sheenRoughness: 0.6 }), Rr = rng(11);
+    for (let k = 0; k < 14; k++) {   /* strands wound round and round, each a great circle at its own angle */
+      const ax = new THREE.Vector3(Rr() - 0.5, Rr() - 0.5, Rr() - 0.5).normalize(), q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), ax), pts = [];
+      for (let i = 0; i <= 64; i++) { const a = i / 64 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * R0, 0, Math.sin(a) * R0).applyQuaternion(q)); }
+      g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 80, R0 * 0.045, 6, true), yarn)); }
+    const tail = []; for (let i = 0; i <= 20; i++) { const u = i / 20; tail.push(new THREE.Vector3(R0 * (0.6 + u * 0.7), -R0 * 0.85 + Math.sin(u * 3) * 0.05, R0 * 0.3 * (1 - u))); }
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(tail), 30, R0 * 0.045, 6, false), yarn));
+    g.position.y = R0; return g;
+  }
+  function hayBale(s) {
+    const e = 0.75 * s, g = new THREE.Group(), t = strawTex().clone(); t.needsUpdate = true; t.repeat.set(1.5 * s, 1.5 * s);
+    const b = new THREE.Mesh(new THREE.BoxGeometry(e, e, e, 1, 1, 1), new PM({ color: '#FFFFFF', map: t, roughness: 0.95, sheen: 0.4, sheenColor: C('#FFE9A8') })); g.add(b);
+    const twine = once('twine', () => new PM({ color: '#B7793A', roughness: 0.8 }));
+    [-0.22, 0.22].forEach(d => { const band = new THREE.Mesh(new THREE.BoxGeometry(e * 1.02, e * 1.02, e * 0.05), twine); band.position.z = d * e; g.add(band); });
+    g.position.y = e / 2; return g;
+  }
+  function henFeather() {
+    const sh = new THREE.Shape(); sh.moveTo(-0.8, 0); sh.bezierCurveTo(-0.5, 0.26, 0.4, 0.3, 0.8, 0.02); sh.bezierCurveTo(0.4, -0.22, -0.5, -0.2, -0.8, 0);
+    const tex = once('featherT', () => paint(256, 128, (x, w, h) => { const g = x.createLinearGradient(0, 0, w, 0); g.addColorStop(0, '#F3E6D2'); g.addColorStop(1, '#FFFFFF'); x.fillStyle = g; x.fillRect(0, 0, w, h);
+      x.strokeStyle = 'rgba(190,160,120,.35)'; x.lineWidth = 1.5; for (let i = 0; i < 40; i++) { const px = i / 40 * w; x.beginPath(); x.moveTo(px, h / 2); x.lineTo(px + 18, 4); x.moveTo(px, h / 2); x.lineTo(px + 18, h - 4); x.stroke(); } }));
+    const geo = new THREE.ShapeGeometry(sh, 24), uv = geo.attributes.uv, p = geo.attributes.position; for (let i = 0; i < p.count; i++) uv.setXY(i, (p.getX(i) + 0.8) / 1.6, (p.getY(i) + 0.3) / 0.6);
+    const f = new THREE.Group(), vane = new THREE.Mesh(geo, new PM({ color: '#FFFFFF', map: tex, roughness: 0.85, sheen: 1, sheenColor: C('#FFFFFF'), side: THREE.DoubleSide })); vane.rotation.x = -Math.PI / 2 + 0.95; vane.scale.setScalar(1.15); f.add(vane);
+    const quill = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.012, 1.75, 6), once('quill', () => new PM({ color: '#E2D2B6', roughness: 0.5 }))); quill.rotation.z = Math.PI / 2; quill.position.set(0.05, 0.01, 0); f.add(quill);
+    f.position.y = 0.1; f.rotation.y = 0.5; return f;
+  }
+  T.weighable = (W) => {
+    if (world !== 'farm') return null;
+    const s = W.s || 1;
+    const o = W.look === 'rock' ? fieldStone(s) : W.look === 'ball' ? woolBall(s, W.color) : W.look === 'block' ? hayBale(s) : W.look === 'feather' ? henFeather() : null;
+    if (!o) return null;
+    const first = []; o.traverse(c => { if (c.isMesh && !first.length) first.push(c); }); if (!o.material) o.material = first[0].material;
+    o.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+    return o;
+  };
+
   /* ================= what each world offers kit.js ================= */
   /* T.bead(type, B, shapeFn): a pattern item, or null to keep the plain bead */
   T.bead = (type, B, shapeFn) => {

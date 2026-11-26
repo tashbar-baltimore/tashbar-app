@@ -561,8 +561,23 @@ export function startGame(cfg) {
     if (a === 'stand') return tween(1200, k => { o.turn.rotation.x = Math.sin(Math.PI * k) * 1.57; });
     return tween(1400, k => { o.turn.rotation.y = ease(k) * Math.PI * 2; });
   }
+  /* the pure shape, glowing (Esti 2026-11-26): when the voice names the shape, a soft gold outline of the exact shape lights up on the object,
+     so a cupcake, a tire or a hay bale is never in doubt: it is that shape. New look only. */
+  function glowOutline(o, on) {
+    if (!LK || !o || o.solid || !KINDS[o.k] || KINDS[o.k].solid || !o.mesh) return Promise.resolve();
+    if (!o.glow) {
+      const pts = shapeOf(o.k).s.getPoints(96).map(p => new THREE.Vector3(p.x, p.y, 0)); if (pts[0].distanceTo(pts[pts.length - 1]) < 1e-3) pts.pop();
+      const z = (cfg.thinFlat ? 0.03 : DEPTH / 2) + (cfg.thinFlat ? 0.03 : BEV) * 1.25 + 0.012;
+      const m = new THREE.MeshBasicMaterial({ color: '#FFE27A', transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
+      const tube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true, 'catmullrom', 0.0), 240, 0.045, 8, true), m); tube.position.z = z; tube.renderOrder = 4;
+      const soft = new THREE.Mesh(tube.geometry, new THREE.MeshBasicMaterial({ color: '#FFC94A', transparent: true, opacity: 0, depthWrite: false, toneMapped: false, blending: THREE.AdditiveBlending })); soft.scale.set(1, 1, 1); soft.position.z = z; soft.renderOrder = 4;
+      o.mesh.add(tube, soft); o.glow = { tube, soft };
+    }
+    const a0 = o.glow.tube.material.opacity, a1 = on ? 0.95 : 0;
+    return tween(450, k => { const a = a0 + (a1 - a0) * k; o.glow.tube.material.opacity = a; o.glow.soft.material.opacity = a * 0.5; });
+  }
   function lessonFor(L, o) {
-    const n = o.marks.length, steps = [];
+    const n = o.marks.length, steps = [() => { glowOutline(o, true); }];
     if (L.kind === 'solid') {   /* a solid shape: its name, what it is like, what it does; he taps it to make it do it */
       steps.push('This is a ' + L.word + '.', L.like, () => solidAction(o, L.action), ...(L.rule || []));
       if (L.tap) steps.push(L.tap, () => { setName('tap'); task = [L.tap]; return tapShape(o, L.tap, () => Promise.all([say(L.tapSay || 'Yes!'), solidAction(o, L.action)])); }, () => { setName('learn'); task = null; });
@@ -579,6 +594,7 @@ export function startGame(cfg) {
       steps.push(...(L.rule || []), () => { clearCorners(o); return wait(200); });
       if (L.tapCorners && n) steps.push('Your turn! Tap each corner.', () => { setName('tap'); task = ['Tap each corner.']; return tapCorners(o); }, () => { setName('learn'); task = null; }, cap(WORDS[n]) + ' corners!', () => clearCorners(o));
       if (L.chant) { steps.push(() => { chant(true); }, 'Clap it with me! Tap the hands.'); L.chant.forEach(c => steps.push(c[0], () => claps(o, c[1], c[2]))); steps.push(() => { chant(false); return cheer(mendy); }); }
+      steps.push(() => glowOutline(o, false));
       return steps;
     }
     if (L.kind === 'circle') {
@@ -596,10 +612,11 @@ export function startGame(cfg) {
     steps.push(() => { chant(true); o.marks.forEach(m => { m.material = cornerMat; m.scale.setScalar(1.15); }); }, 'Clap it with me! Tap the hands.');
     L.chant.forEach(c => steps.push(c[0], () => claps(o, c[1], c[2])));
     steps.push(() => { chant(false); burst(o.g.position, 30); chime(true); clearCorners(o); clearBars(o); return cheer(mendy); });
-    if (L.noTurn) return steps;
+    if (L.noTurn) { steps.push(() => glowOutline(o, false)); return steps; }
     if (L.turn != null) steps.push(L.turnLine || 'Watch. I turn it.', () => tween(1100, k => { o.turn.rotation.z = ease(k) * L.turn; }), 'Still a ' + L.word + '!');
     steps.push('Now I make it small.', () => tween(800, k => o.g.scale.setScalar(1.25 - ease(k) * 0.7)), 'Small, but still a ' + L.word + '!');
     if (L.big) steps.push('Now big!', () => tween(800, k => o.g.scale.setScalar(0.55 + ease(k) * 1.0)), 'Big, and still a ' + L.word + '!');
+    steps.push(() => glowOutline(o, false));
     return steps;
   }
 
@@ -1214,6 +1231,7 @@ export function startGame(cfg) {
     BS.pans.forEach(P => { const x = P.sd * PAN_X; P.g.position.set(x * Math.cos(BS.angle), BEAM_Y + x * Math.sin(BS.angle) - HANG, 0); });
   }
   function objMesh(T) {   /* the things we weigh */
+    const TW = LK && LK.treasures.weighable ? LK.treasures.weighable(T) : null; if (TW) return TW;   /* the farm's own things (treasures.js) */
     const m = c => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.35, clearcoat: 0.7 });
     if (T.look === 'rock') { const r = new THREE.Mesh(new THREE.DodecahedronGeometry(0.32 * (T.s || 1), 1), new THREE.MeshStandardMaterial({ color: '#7B7F87', roughness: 0.9, flatShading: true })); r.position.y = 0.3 * (T.s || 1); return r; }
     if (T.look === 'ball') { const b = new THREE.Mesh(new THREE.SphereGeometry(0.62 * (T.s || 1), 36, 24), m(T.color)); b.position.y = 0.62 * (T.s || 1); return b; }
