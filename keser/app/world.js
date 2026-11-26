@@ -10,7 +10,7 @@ const pref = (k, d) => { try { const v = store && store.getItem(k); return v == 
 const save = (k, v) => { try { store && store.setItem(k, v ? '1' : '0'); } catch (e) {} };
 const progress = readProgress(q, store);
 const N = PLACES.length;
-const S = { focus: 1, entered: false, gl: false, lite: /[?&]lite=1\b/.test(q) || pref('keser.lite', false), calm, sound: pref('keser.sound', true), frames: 0, taps: 0 };
+const S = { focus: 0, entered: false, gl: false, lite: /[?&]lite=1\b/.test(q) || pref('keser.lite', false), calm, sound: pref('keser.sound', true), frames: 0, taps: 0 };
 let world = null;
 
 /* ---------- sparkles: a tiny burst of stars wherever she taps ---------- */
@@ -46,11 +46,13 @@ function chime(semi, soft) {
 
 /* ---------- the buttons, dots and name ---------- */
 const dots = $('dots'), nameEl = document.querySelector('.name'), he = nameEl.querySelector('.he');
-PLACES.forEach((p, i) => { const b = document.createElement('button'); b.style.setProperty('--c', p.color); b.setAttribute('role', 'tab'); b.setAttribute('aria-label', p.name);
+PLACES.forEach((p, i) => { const b = document.createElement('button'); b.style.setProperty('--c', p.color); b.setAttribute('role', 'tab'); b.setAttribute('aria-label', p.label || p.name);
   b.onclick = e => { tapAt(e, p.color); go(i); }; dots.appendChild(b); });
+/* a Hebrew name (Kodesh) is written right to left */
+function setName(el, p) { el.textContent = p.name; if (p.lang) { el.setAttribute('lang', p.lang); el.setAttribute('dir', 'rtl'); } else { el.removeAttribute('lang'); el.removeAttribute('dir'); } }
 function show() {
   const p = PLACES[S.focus];
-  $('placeName').textContent = p.name; he.textContent = p.he || '';
+  setName($('placeName'), p); he.textContent = p.he || '';
   nameEl.classList.remove('swap'); void nameEl.offsetWidth; nameEl.classList.add('swap');
   [...dots.children].forEach((d, i) => d.setAttribute('aria-current', i === S.focus ? 'true' : 'false'));
   document.querySelectorAll('.flat .place').forEach((c, i) => c.setAttribute('aria-current', i === S.focus ? 'true' : 'false'));
@@ -65,7 +67,7 @@ function go(i, quiet) {
 }
 function enter() {
   if (S.entered) return; S.entered = true; const p = PLACES[S.focus];
-  chime(p.note); chime(p.note + 7, true); $('roomName').textContent = p.name; $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
+  chime(p.note); chime(p.note + 7, true); setName($('roomName'), p); $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
   world && world.enter(S.focus); setTimeout(() => { if (S.entered) { body.classList.add('inside'); $('room').setAttribute('aria-hidden', 'false'); $('back').focus({ preventScroll: true }); } }, calm ? 50 : 750);
 }
 function back() {
@@ -105,11 +107,11 @@ stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel',
 
 /* ---------- still cards, for computers that cannot draw 3D ---------- */
 const ICONS = {
-  kodesh: '<g fill="none" stroke="#FFF1B8" stroke-width="2.2" stroke-linejoin="round"><path d="M22 56h16l-3-6h-10zM30 50V36M26 36h8M44 56h16l-3-6h-10zM52 50V36M48 36h8"/></g><rect x="27" y="18" width="6" height="18" rx="1.5" fill="#fff"/><rect x="49" y="18" width="6" height="18" rx="1.5" fill="#fff"/><path d="M30 6c3 4 3 7 0 10-3-3-3-6 0-10zM52 6c3 4 3 7 0 10-3-3-3-6 0-10z" fill="#FFD27A"/>',
-  reading: '<path d="M40 22C30 15 18 16 10 19v34c8-3 20-4 30 3z" fill="#fff"/><path d="M40 22c10-7 22-6 30-3v34c-8-3-20-4-30 3z" fill="#FFE3F0"/><path d="M40 22v34" stroke="#FF5FA2" stroke-width="2"/><path d="M52 18v16l4-3 4 3V17" fill="#F5C451"/>',
-  math: '<rect x="10" y="36" width="22" height="22" rx="2" fill="#D9C2FF" stroke="#fff" stroke-width="1.5"/><path d="M48 58l12-30 12 30z" fill="#FF8FBF" stroke="#fff" stroke-width="1.5"/><circle cx="40" cy="20" r="11" fill="#BFF5EE" stroke="#fff" stroke-width="1.5"/>',
-  science: '<path d="M32 10h16M35 10v18L20 58c-1 3 1 5 4 5h32c3 0 5-2 4-5L45 28V10" fill="rgba(255,255,255,.25)" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M26 46h28l6 12c1 3-1 5-4 5H24c-3 0-5-2-4-5z" fill="#5FE3CF"/><circle cx="36" cy="40" r="2.5" fill="#fff"/><circle cx="44" cy="34" r="1.8" fill="#fff"/>',
-  writing: '<path d="M14 64c10-2 18-8 26-6s14 4 26-2" fill="none" stroke="#F5C451" stroke-width="2.5" stroke-linecap="round"/><g transform="rotate(40 44 30)"><rect x="40" y="2" width="9" height="38" rx="4" fill="#FF8FBF" stroke="#fff" stroke-width="1.2"/><rect x="40" y="26" width="9" height="4" fill="#F5C451"/><path d="M40 40h9l-4.5 12z" fill="#F5C451"/></g>',
+  kodesh: '<rect x="24" y="8" width="4" height="8" rx="1" fill="#C98A1E"/><rect x="52" y="8" width="4" height="8" rx="1" fill="#C98A1E"/><circle cx="26" cy="6" r="4" fill="#E8E4F0"/><circle cx="54" cy="6" r="4" fill="#E8E4F0"/>'
+    + '<rect x="18" y="15" width="44" height="44" rx="9" fill="#B0306F" stroke="#FFF1B8" stroke-width="2"/><path d="M18 50h44" stroke="#F5C451" stroke-width="2.5"/><path d="M30 40l2-12 6 7 2-9 2 9 6-7 2 12z" fill="#F5C451" stroke="#FFF6D6" stroke-width="1"/>'
+    + '<rect x="24" y="59" width="4" height="7" rx="1" fill="#C98A1E"/><rect x="52" y="59" width="4" height="7" rx="1" fill="#C98A1E"/>',
+  general: '<path d="M40 34C30 27 18 28 10 31v30c8-3 20-4 30 3z" fill="#fff"/><path d="M40 34c10-7 22-6 30-3v30c-8-3-20-4-30 3z" fill="#FFE3F0"/><path d="M40 34v30" stroke="#FF5FA2" stroke-width="2"/>'
+    + '<rect x="18" y="8" width="13" height="13" rx="2" fill="#D9C2FF" stroke="#fff" stroke-width="1.3"/><path d="M47 22l7-15 7 15z" fill="#FF8FBF" stroke="#fff" stroke-width="1.3"/><circle cx="39" cy="14" r="6" fill="#BFF5EE" stroke="#fff" stroke-width="1.3"/>',
 };
 function buildFlat() {
   const tr = document.querySelector('.flat .track'); tr.innerHTML = '';

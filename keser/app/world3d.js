@@ -1,5 +1,5 @@
 /* HER WORLD in 3D: a jewel box under a glitter sky. A mirror floor inlaid with gold, a colonnade of rose-crystal pillars hung with pearls,
-   her crown floating high in the middle inside a ring of chandelier crystals, and five jeweled pavilions (one per subject) on a turning ring.
+   her crown floating high in the middle inside a ring of chandelier crystals, and a jeweled pavilion for each place on a turning ring (today two: קודש with a Torah, and General Studies).
    Rose petals drift down, holographic butterflies wander, ribbons of light circle, and everything glows (bloom).
    Light mode (slow computers): no mirror, no bloom, fewer petals and glitter. Reduce motion: everything still, glides are quick.
    Everything here is drawn by code: no picture files. */
@@ -155,7 +155,7 @@ export function start(o) {
   const crownHit = new THREE.Mesh(new THREE.SphereGeometry(1.7, 12, 8), new THREE.MeshBasicMaterial({ visible: false })); crownHit.position.y = 0.6; crownRig.add(crownHit);
   const crownSparks = [...Array(10)].map((_, i) => { const s = sprite(STAR, [0xffffff, 0xfff1b8, 0xffc2dd][i % 3], 0.01); s.userData.off = i * 0.9; crownRig.add(s); return s; });
 
-  /* ---------- the five pavilions ---------- */
+  /* ---------- the pavilions (one per place) ---------- */
   const ring = new THREE.Group(); scene.add(ring);
   const pav = places.map((pl, i) => {
     const g = new THREE.Group(), th = i / places.length * TAU; g.position.set(Math.sin(th) * R, 0, Math.cos(th) * R); g.rotation.y = th; ring.add(g);
@@ -191,17 +191,53 @@ export function start(o) {
   });
 
   function build(id, t, pl) {   /* returns a function(time, dt) that animates it */
-    if (id === 'kodesh') {   /* Shabbos candlesticks on a silver tray, flames that flicker */
-      const tray = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.55, 0.05, 48), silver); tray.position.y = -0.62; t.add(tray);
-      const pts = [[0.2, 0], [0.22, 0.03], [0.09, 0.08], [0.05, 0.16], [0.07, 0.2], [0.035, 0.26], [0.035, 0.5], [0.07, 0.54], [0.05, 0.58], [0.1, 0.66], [0.11, 0.7], [0.05, 0.72], [0, 0.72]].map(([x, y]) => new THREE.Vector2(x, y));
-      const stick = new THREE.LatheGeometry(pts, 48), flames = [];
-      for (const x of [-0.27, 0.27]) { const s = new THREE.Mesh(stick, silver); s.position.set(x, -0.6, 0); t.add(s);
-        const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.42, 24), new THREE.MeshPhysicalMaterial({ color: 0xfffaf2, roughness: 0.5, sheen: 0.5, emissive: 0xffe8c8, emissiveIntensity: 0.15 })); candle.position.set(x, 0.33, 0); t.add(candle);
-        const f = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), glow(0xffd27a)); f.scale.set(0.8, 1.9, 0.8); f.position.set(x, 0.62, 0); t.add(f);
-        const core = new THREE.Mesh(new THREE.SphereGeometry(0.025, 12, 8), glow(0xffffff)); core.scale.y = 1.6; core.position.set(x, 0.6, 0); t.add(core);
-        const fh = sprite(SOFT, 0xffb050, 0.9, 0.8); fh.position.set(x, 0.63, 0); t.add(fh); flames.push([f, fh]); }
-      const lt = { intensity: 0 };
-      return (time) => { flames.forEach(([f, fh], i) => { const k = 1 + Math.sin(time * 13 + i * 2) * 0.08 + Math.sin(time * 23 + i) * 0.05; f.scale.set(0.8, 1.9 * k, 0.8); fh.material.opacity = 0.65 + (k - 1) * 3; }); lt.intensity = 2.6 + Math.sin(time * 17) * 0.4; };
+    if (id === 'kodesh') {   /* a Sefer Torah (M. Heinemann 2026-11-26): a rose-velvet mantle with a gold-embroidered crown, gold bands, wooden handles and silver rimonim with bells. No letters on it. */
+      const T = new THREE.Group(); T.position.y = 0.02; T.scale.setScalar(1.05); t.add(T);
+      /* bright metals so the silver and gold glow even where the room is dark */
+      const sil = new THREE.MeshPhysicalMaterial({ color: 0xf6f1fb, metalness: 0.8, roughness: 0.18, clearcoat: 1, emissive: 0x8a7aa0, emissiveIntensity: 0.45 });
+      const thread = new THREE.MeshPhysicalMaterial({ color: 0xffd36b, metalness: 0.7, roughness: 0.25, clearcoat: 1, emissive: 0xc8861a, emissiveIntensity: 0.6 });
+      const velvet = new THREE.MeshPhysicalMaterial({ color: 0x9c2463, roughness: 0.62, sheen: 1, sheenColor: 0xff9fcf, sheenRoughness: 0.35, emissive: 0x5a1238, emissiveIntensity: 0.4 });
+      const wood = new THREE.MeshPhysicalMaterial({ color: 0x7a4322, roughness: 0.4, clearcoat: 0.7, clearcoatRoughness: 0.2 });
+      const OV = 0.56;   /* the mantle is oval: wide across the two rollers, narrower front to back */
+      const oval = (geo, y) => { const m = new THREE.Mesh(geo, velvet); m.scale.z = OV; m.position.y = y; T.add(m); return m; };
+      oval(new THREE.CylinderGeometry(0.43, 0.47, 1.0, 64, 1), -0.05);                           /* the mantle */
+      oval(new THREE.CylinderGeometry(0.435, 0.435, 0.05, 64), 0.47);                            /* its top */
+      for (const [y, r, tb] of [[-0.53, 0.475, 0.022], [-0.44, 0.468, 0.012], [0.36, 0.44, 0.012], [0.47, 0.44, 0.022]]) {   /* gold bands and trim */
+        const b = new THREE.Mesh(new THREE.TorusGeometry(r, tb, 10, 96), thread); b.rotation.x = Math.PI / 2; b.scale.y = OV; b.position.y = y; T.add(b); }
+      /* the embroidered crown on the front, in raised gold, with a pearl on each point and a rose gem in the middle */
+      const cs = new THREE.Shape(); cs.moveTo(-0.16, -0.1); cs.lineTo(-0.18, 0.1); cs.lineTo(-0.09, 0.0); cs.lineTo(0, 0.15); cs.lineTo(0.09, 0.0); cs.lineTo(0.18, 0.1); cs.lineTo(0.16, -0.1); cs.closePath();
+      const front = 0.45 * OV + 0.004, emb = new THREE.Group(); emb.position.set(0, 0.04, front); T.add(emb);
+      const cm = new THREE.Mesh(new THREE.ExtrudeGeometry(cs, { depth: 0.02, bevelEnabled: true, bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 2 }), thread); emb.add(cm);
+      const cb = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.05, 0.025), thread); cb.position.y = -0.12; emb.add(cb);
+      for (const [x, y] of [[-0.18, 0.1], [0, 0.15], [0.18, 0.1]]) { const pp = new THREE.Mesh(new THREE.SphereGeometry(0.022, 14, 10), pearl); pp.position.set(x, y + 0.02, 0.02); emb.add(pp); }
+      const cg = new THREE.Mesh(new THREE.OctahedronGeometry(0.035, 0), gem(0xff5fa2, 0.8)); cg.position.set(0, -0.03, 0.035); emb.add(cg);
+      /* a scatter of tiny gold stars stitched below the crown */
+      for (const [x, y] of [[-0.24, -0.26], [-0.08, -0.3], [0.08, -0.3], [0.24, -0.26]]) { const d = new THREE.Mesh(new THREE.OctahedronGeometry(0.018, 0), thread); d.position.set(x, y, front + 0.01); T.add(d); }
+      /* the two wooden handles (atzei chaim) above and below, each with a turned disc */
+      const rims = [];
+      for (const x of [-0.22, 0.22]) {
+        for (const [y, len] of [[0.63, 0.28], [-0.69, 0.24]]) { const h = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.036, len, 20), wood); h.position.set(x, y, 0); T.add(h); }
+        const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.03, 32), wood); disc.position.set(x, 0.52, 0); T.add(disc);
+        const dB = disc.clone(); dB.position.y = -0.6; T.add(dB);
+        const knob = new THREE.Mesh(new THREE.SphereGeometry(0.042, 16, 12), wood); knob.position.set(x, -0.82, 0); T.add(knob);
+        /* a silver rimon on top, with little bells */
+        const prof = [[0, 0], [0.03, 0], [0.03, 0.04], [0.085, 0.1], [0.1, 0.15], [0.075, 0.21], [0.03, 0.24], [0.045, 0.27], [0, 0.31]].map(([a, b]) => new THREE.Vector2(a, b));
+        const rim = new THREE.Group(); rim.position.set(x, 0.76, 0); T.add(rim);
+        rim.add(new THREE.Mesh(new THREE.LatheGeometry(prof, 32), sil));
+        const top = new THREE.Mesh(new THREE.OctahedronGeometry(0.03, 0), gem(0xb98cff, 0.7)); top.scale.y = 1.5; top.position.y = 0.34; rim.add(top);
+        const bells = [...Array(5)].map((_, k) => { const a = k / 5 * TAU, b = new THREE.Mesh(new THREE.SphereGeometry(0.022, 12, 8, 0, TAU, 0, Math.PI * 0.6), sil);
+          b.rotation.x = Math.PI; b.position.set(Math.cos(a) * 0.1, 0.1, Math.sin(a) * 0.1); rim.add(b); return b; });
+        rims.push({ rim, bells }); }
+      const halo = sprite(SOFT, 0xffd27a, 1.6, 0.35); halo.position.set(0, 0.1, -0.2); T.add(halo);
+      const motes = [...Array(6)].map((_, k) => { const s = sprite(STAR, [0xfff1b8, 0xffffff, 0xffc2dd][k % 3], 0.1); T.add(s); return s; });
+      return (time) => { T.rotation.y = Math.sin(time * 0.45) * 0.4;
+        rims.forEach((r, i) => r.bells.forEach((b, k) => { b.rotation.z = Math.sin(time * 3 + k + i) * 0.25; }));
+        motes.forEach((s, k) => { const a = time * 0.5 + k / 6 * TAU, y = (time * 0.18 + k / 6) % 1; s.position.set(Math.cos(a) * 0.6, -0.5 + y * 1.4, Math.sin(a) * 0.35); s.material.opacity = Math.sin(y * Math.PI); }); };
+    }
+    if (id === 'general') {   /* General Studies: the open book with its turning page, and the crystal shapes circling above it */
+      const b = new THREE.Group(); b.position.y = -0.25; t.add(b); const fb = build('reading', b, pl);
+      const m = new THREE.Group(); m.position.y = 0.6; m.scale.setScalar(0.55); t.add(m); const fm = build('math', m, pl);
+      return (time, dt) => { fb(time, dt); fm(time, dt); };
     }
     if (id === 'reading') {   /* an open book with gold edges and a page that keeps turning */
       const cover = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.05, 0.9), new THREE.MeshPhysicalMaterial({ color: 0xd6336c, roughness: 0.4, sheen: 1, sheenColor: 0xffb3d1, clearcoat: 0.5 })); cover.position.y = -0.3; t.add(cover);
