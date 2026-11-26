@@ -1085,8 +1085,10 @@ function buildMission(id){
  if(GEN[id]){ const g=GEN[id]; const mk=(ph,i)=>{const it=g.gen(); if(ph==='teach') it.how=g.how[i]; return prepItem(it,ph)};
   return [0,1,2].map(i=>mk('teach',i)).concat([0,1,2,3,4,5].map(i=>mk('practice',i)),[0,1,2].map(i=>mk('check',i))); }
  const s=BANK_ALL[id];
- return s.teach.map(x=>prepItem(x,'teach')).concat(s.practice.map(x=>prepItem(x,'practice')), s.check.map(x=>prepItem(x,'check')));
+ return s.teach.map(x=>prepItem(x,'teach')).concat(s.practice.map(x=>prepItem(x,'practice')), s.check.map(x=>prepItem(x,'check'))).map(x=>wrPrep(x,id));
 }
+/* A3a (HoS 2026-11-25): a write is never right on its own. Not blank and at least its own min; the graded check piece at least the grade minimum (Gr 2-5: 25 words, Gr 6-8: 35). K-1 (levels 1-2) is picture/oral: unchanged. */
+function wrPrep(it,id){ if(it.t!=='write') return it; const L=+((/\.L(\d\d)\./.exec(id||'')||[])[1]||0); it.k1=L>0&&L<3; if(it.phase==='check'&&!it.k1) it.min=Math.max(+it.min||0,L>=7?35:25); return it; }
 function buildRetry(id){ // second round: practice again, then check again
  const all=buildMission(id); return all.filter(i=>i.phase!=='teach');
 }
@@ -1113,7 +1115,7 @@ function checkAnswer(it, ans){
   if(it.kind==='rem'){ const n=String(ans).toUpperCase().replace(/\s+/g,'').replace(/R0$/,''); return n===String(it.a); }
   if(it.lowest){ const lm=String(ans).trim().match(/(\d+)\s*\/\s*(\d+)$/); if(lm&&gcd(+lm[1],+lm[2])>1) return false; }
 const v=parseNum(ans); return isFinite(v) && Math.abs(v-it.a)<1e-6; }
- if(it.t==='write') return true;
+ if(it.t==='write') return !!it.k1||(String(ans||'').match(/\S+/g)||[]).length>=Math.max(1,+it.min||0);
  return false;
 }
 
@@ -1272,7 +1274,7 @@ const App = {
   const st=Store.student(this.sid()); if(!st) return;
   let items, title, c;
   if(kind==='boss'){ c=id; items=buildBoss(c, st.ranges[c]); title='Boss challenge'; }
-  else if(kind==='revise'){ c=currOf(id); const s=BANK_ALL[id]; const w=s.check.find(x=>x.t==='write'); const it=prepItem(w,'check'); it.prev=st.writing[id].text; it.note=st.writing[id].note; items=[it]; title=skillName(id); }
+  else if(kind==='revise'){ c=currOf(id); const s=BANK_ALL[id]; const w=s.check.find(x=>x.t==='write'); const it=wrPrep(prepItem(w,'check'),id); it.prev=st.writing[id].text; it.note=st.writing[id].note; items=[it]; title=skillName(id); }
   else { c=currOf(id); items=buildMission(id); title=skillName(id); }
   this.play={kind, id, c, items, i:0, title, results:[], tries:0, hints:0, t0:Date.now(), fb:null, sel:null, order:[], text:'', ticks:{}, replay:!!(opt&&opt.replay), round:1, reveal:false};
   this.render(); window.scrollTo(0,0);
@@ -1383,7 +1385,7 @@ const App = {
   if(a==='tile'&&p){ p.order.push(+b.dataset.k); p.fb=null; return this.render(); }
   if(a==='untile'&&p){ p.order.splice(+b.dataset.j,1); p.fb=null; return this.render(); }
   if(a==='ordercheck'&&p){ const it=p.items[p.i]; const ans=p.order.map(k=>it.shown[k]).join(' '); this.answer(ans); if(!p.fb.ok && it.phase!=='check'){ p.order=[]; this.render(); } return; }
-  if(a==='submitwrite'&&p){ const it=p.items[p.i]; const words=(p.text.trim().match(/\S+/g)||[]).length; if(words<it.min) return this.toast(`Write at least ${it.min} words. You have ${words}.`); if(it.checks.some((c,k)=>!p.ticks[k])) return this.toast('Tick each box when your writing does it.'); this.answer(p.text); return; }
+  if(a==='submitwrite'&&p){ const it=p.items[p.i]; const words=(p.text.trim().match(/\S+/g)||[]).length; if(!words&&!it.k1) return this.toast('Write your answer in the box first.'); if(words<it.min) return this.toast(`Write at least ${it.min} words. You have ${words}.`); if(it.checks.some((c,k)=>!p.ticks[k])) return this.toast('Tick each box when your writing does it.'); this.answer(p.text); return; }
   if(a==='next'&&p) return this.next();
   if(a==='retry'&&p){ const id=p.id; this.play=null; this.startPlay('mission', id); this.play.items=buildRetry(id); this.render(); return; }
   const sid=this.sid(); if(!sid) return; const st=Store.student(sid);

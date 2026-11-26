@@ -38,6 +38,7 @@ function staticChecks() {
     if (h !== p[1] || b.length !== p[2]) { fail('packs/' + name + '.html does not match ContentPacks.js (sha256 ' + h.slice(0, 12) + ', ' + b.length + ' bytes; table says ' + p[1].slice(0, 12) + ', ' + p[2] + ')'); bad++; }
   }
   if (!bad) ok(Object.keys(T).length + ' lesson packs match ContentPacks.js');
+  try { const wm = require('./lib/writemin.js').source(); wm.fails.forEach(fail); wm.oks.forEach(ok); } catch (e) { fail('writing check crashed: ' + String(e).slice(0, 200)); }   /* gap A3a: a write is never right on its own */
   report.counts.packs = Object.keys(T).length;
   picsCheck();
   conflictMarks();
@@ -248,6 +249,8 @@ async function kidTests(browser) {
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* CORE GROWTH (tests/lib/core.js, job T): every core lesson reached the page, no clash with an existing lesson */
   try { const cg = await require('./lib/core.js').page(pg); cg.fails.forEach(fail); cg.oks.forEach(ok); } catch (e) { fail('core skills page check crashed: ' + String(e).slice(0, 200)); }
+  /* A WRITE IS NEVER RIGHT ON ITS OWN (tests/lib/writemin.js, gap A3a): blank and short pieces fail, grade minimums */
+  try { const wm = await require('./lib/writemin.js').page(pg); wm.fails.forEach(fail); wm.oks.forEach(ok); } catch (e) { fail('writing page check crashed: ' + String(e).slice(0, 200)); }
   /* SCIENCE INDEX NAMES (tests/lib/sciindex.js, issue #391): staff see the same name as the Science lesson a boy really gets */
   try { const si = await require('./lib/sciindex.js').page(pg); si.fails.forEach(fail); si.oks.forEach(ok); } catch (e) { fail('science index page check crashed: ' + String(e).slice(0, 200)); }
   /* ONE BITE player (tests/lib/onebite.js) */
