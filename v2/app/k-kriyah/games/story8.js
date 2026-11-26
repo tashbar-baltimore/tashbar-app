@@ -12,7 +12,7 @@ export default function setup(E, { unit }) {
     steps: [
       { pic: 'shofar', near: 'grown', lines: ['Tatty shows Mendy the shofar from Rosh Hashanah.'], letter: 'shin', after: [['Shofar starts with', S('sh'), '.'], 'Shin has a dot on its right head.', ['Shin says', S('sh'), ', like shofar!']] },
       { pic: 'flag', lines: ['Mendy waves his Simchas Torah flag!'], letter: 'sin', after: [['Simchas Torah starts with', S('s'), '.'], 'Sin has a dot on its left head.', ['Sin says', S('s'), '.']] },
-      { pic: 'torah', near: 'grown', keep: true, lines: ['Tatty dances with the Torah!'], letter: 'tav', after: [['Torah starts with', S('t'), '.'], 'Tuf has a dot inside.', ['Tuf says', S('t'), ', like Torah!']] },
+      { pic: 'torah', near: 'grown', keep: true, size: .8, lines: ['Tatty dances with the Torah!'], letter: 'tav', after: [['Torah starts with', S('t'), '.'], 'Tuf has a dot inside.', ['Tuf says', S('t'), ', like Torah!']] },
       { fromDot: 'tav', letter: 'sav', lines: ['No dot. This is Suf!', ['Suf says', S('s'), '.']] },
     ],
     lookalikes: [['shin', 'sin', 'Shin has its dot on the right.', 'Sin has its dot on the left.'], ['ches', 'tav', 'Ches has no foot.', 'Tuf has a little foot.']],
