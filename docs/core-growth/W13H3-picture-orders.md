@@ -52,7 +52,7 @@ Until a picture arrives, the TODAY WE LEARN screen keeps its big emoji, never an
 
 All 6 arrived on 2026-11-26 as 1600 × 900 PNG and were checked by eye, zoomed in: boys and men only, kippah and tzitzis, the cast as on their cards, no letters or numerals (the clock faces have tick marks only, and the book spines carry no lettering), no brands. They were saved as WebP at 1100 × 619 (123–152 KB), with the originals as JPEG.
 
-## Order W13H3-2 (2026-11-26) · Grade 3 Units 5 "Little Researcher" and 6 "Revise, Edit, Publish" · status: ARRIVED (Unit 5 pictures 1–4 linked; Unit 6 pictures 5–7 go in with Unit 6)
+## Order W13H3-2 (2026-11-26) · Grade 3 Units 5 "Little Researcher" and 6 "Revise, Edit, Publish" · status: LINKED (7 of 7: pictures 1–4 with Unit 5, 5–7 with Unit 6)
 
 Same style, rules, cast, prompt start and prompt ending as order W13H3-1. Rabbi Feld: the club's rebbe, a kind man with a dark beard streaked with gray, black hat and glasses.
 
@@ -74,8 +74,8 @@ Same style, rules, cast, prompt start and prompt ending as order W13H3-1. Rabbi 
 | 2 | LINKED (with Unit 5) | `core-w13-notes-today.webp` on `WRIT.RES.L04.02|@today` |
 | 3 | LINKED (with Unit 5) | `core-w13-sortnotes-today.webp` on `WRIT.RES.L04.03|@today` |
 | 4 | LINKED (with Unit 5) | `core-w13-source-today.webp` on `WRIT.RES.L04.04|@today` |
-| 5 | ARRIVED, goes in with Unit 6 | `core-w13-arms-today.webp` on `WRIT.ESSAY.L04.05|@today` |
-| 6 | ARRIVED, goes in with Unit 6 | `core-w13-cops-today.webp` on `WRIT.ESSAY.L04.06|@today` |
-| 7 | ARRIVED, goes in with Unit 6 | `core-w13-letter-today.webp` on `WRIT.PARA.L04.17|@today` |
+| 5 | LINKED (with Unit 6) | `core-w13-arms-today.webp` on `WRIT.ESSAY.L04.05|@today` |
+| 6 | LINKED (with Unit 6) | `core-w13-cops-today.webp` on `WRIT.ESSAY.L04.06|@today` |
+| 7 | LINKED (with Unit 6) | `core-w13-letter-today.webp` on `WRIT.PARA.L04.17|@today` |
 
 All 7 arrived on 2026-11-26 as 1600 × 900 PNG and were checked by eye, zoomed in: boys and men only, kippah and tzitzis, the cast as ordered (Rabbi Feld with a gray-streaked beard, black hat and glasses), no letters or numerals (the clock faces on the ARMS draft page have tick marks only, the stamp and envelope are blank, book spines carry no lettering), no brands. They were saved as WebP at 1100 × 619 (at most 200 KB), with the originals as JPEG.
