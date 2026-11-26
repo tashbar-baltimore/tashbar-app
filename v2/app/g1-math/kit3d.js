@@ -287,7 +287,7 @@ export function orchard(S, o = {}) {
   /* flowers in the grass */
   const fN = FAST ? 60 : 260, stem = new THREE.InstancedMesh(new THREE.SphereGeometry(0.2, 10, 8), matte('#FFFFFF', { roughness: 0.6 }), fN), fc = new THREE.Color(), m = new THREE.Matrix4();
   const FC = ['#FFFFFF', '#FFD84A', '#FF9EC4', '#B9A4FF', '#FFB36B'];
-  for (let i = 0; i < fN; i++) { let x, z; do { x = (Math.random() - 0.5) * 70; z = 8 - Math.random() * 45; } while (Math.abs(x) < 12 && z > -7); m.makeTranslation(x, 0.2, z); stem.setMatrixAt(i, m); stem.setColorAt(i, fc.set(FC[i % 5])); }
+  for (let i = 0; i < fN; i++) { let x, z; do { x = (Math.random() - 0.5) * 70; z = 8 - Math.random() * 45; } while (Math.abs(x) < 12 && z > -7); m.makeTranslation(x, 0.12, z); m.multiply(new THREE.Matrix4().makeScale(1, 0.35, 1)); stem.setMatrixAt(i, m); stem.setColorAt(i, fc.set(FC[i % 5])); }
   g.add(stem);
   /* butterflies: two soft wings, gentle flight */
   const wingM = new THREE.MeshStandardMaterial({ color: '#FFB0D8', side: THREE.DoubleSide, roughness: 0.6 }), wingM2 = new THREE.MeshStandardMaterial({ color: '#FFE27A', side: THREE.DoubleSide, roughness: 0.6 });

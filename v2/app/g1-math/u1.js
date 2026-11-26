@@ -78,11 +78,11 @@ async function hill() {
     const st = starsOf(g); for (let j = 0; j < 3; j++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex(j < st) })); sp.scale.setScalar(0.7); sp.position.set(pts[i].x - 0.75 + j * 0.75, 1.15, pts[i].z - 1.1); S.scene.add(sp); }
     s.userData.game = g; s.userData.open = open[i]; return s; });
   const nextI = Math.max(0, ORDER.findIndex((g, i) => open[i] && starsOf(g) < 2));
-  const m = addKid(S, 'mendy', pts[nextI === -1 ? 0 : nextI].clone().add(V(PORTRAIT ? 1.6 : 0, 0, 1.4))); m.scale.setScalar(0.8);
+  const m = addKid(S, 'mendy', pts[nextI === -1 ? 0 : nextI].clone().add(V(PORTRAIT ? (nextI % 2 ? -2.6 : 2.6) : 1.9, 0, 0.6))); m.scale.setScalar(0.8);
   const ring = glow('#FFD84A', 4.2); ring.position.copy(pts[nextI]).add(V(0, 0.05, 0)); S.scene.add(ring);
   S.tick.push((dt, t) => { ring.material.opacity = 0.5 + Math.sin(t * 3) * 0.3; });
   const ctr = pts[0].clone().lerp(pts[pts.length - 1], 0.5); ctr.y = 0.6;
-  S.frame(ctr, PORTRAIT ? 8.5 : 30, PORTRAIT ? 22 : 10, PORTRAIT ? V(0, 1.1, 0.8) : V(0, 0.62, 1), true);
+  ctr.z += PORTRAIT ? 0 : 1.2; S.frame(ctr, PORTRAIT ? 8.5 : 30, PORTRAIT ? 22 : 8, PORTRAIT ? V(0, 1.1, 0.8) : V(0, 0.62, 1), true);
   G.stationAt = i => sc(big[i]); G.open = open;
   S.onTap(big, o => { if (!o.userData.open) { say('Finish the stone before it first.'); return; } chime('tap'); location.href = 'unit1.html?g=' + o.userData.game + (FAST ? '&fast=1' : QUICK ? '&quick=1' : ''); });
   G.how = { title: 'Orchard Hill', steps: ['Tap the glowing stone.', 'Play the game.', 'Get 2 stars to open the next stone.'], say: 'Tap the glowing stone to play.' };
