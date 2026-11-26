@@ -98,8 +98,8 @@ function ring(now) {
     if (calm) ang = aim; else { vel += (aim - ang) * 70 * dt; vel *= Math.exp(-11 * dt); ang += vel * dt; }
     tilt += (tiltAim - tilt) * .06;
     const W = ringEl.clientWidth, R = Math.min(W * .36, 430), f = front();
-    globes.forEach((g, i) => { const a = ang + i * STEP, x = Math.sin(a) * R, z = Math.cos(a), sc = .55 + (z + 1) * .32;
-      g.style.transform = 'translateX(calc(-50% + ' + (x + tilt * 30 * z).toFixed(1) + 'px)) translateY(' + (-(1 - z) * 20).toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
+    globes.forEach((g, i) => { const a = ang + i * STEP, x = Math.sin(a) * R, z = Math.cos(a), sc = .5 + Math.pow((z + 1) / 2, 2.2) * .92;   /* the front globe comes right up close */
+      g.style.transform = 'translateX(calc(-50% + ' + (x + tilt * 30 * z).toFixed(1) + 'px)) translateY(' + (-(1 - z) * 34 + (z > .9 ? 18 : 0)).toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
       g.style.zIndex = String(Math.round(z * 100) + 100); g.style.setProperty('--o', (.45 + (z + 1) * .275).toFixed(2)); g.style.setProperty('--lbl', z > .3 ? '1' : '0');
       g.classList.toggle('front', i === f); });
   }

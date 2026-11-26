@@ -63,19 +63,32 @@ body.flying #vault{ opacity:0; transform:scale(1.6); transition:opacity 1s .2s, 
 body.home #house{ opacity:1; pointer-events:auto; }
 body.home #fly{ opacity:0; }
 #house .title{ position:absolute; top:max(4vh,18px); left:0; right:0; text-align:center; }
-#house .title h1{ margin:0; font-size:clamp(34px,4.4vw,56px); filter:drop-shadow(0 2px 3px rgba(40,0,40,.95)) drop-shadow(0 0 18px rgba(40,0,40,.7)); }
-.globes{ position:absolute; left:0; right:0; bottom:13vh; height:46vh; touch-action:pan-y; cursor:grab; }
+#house .title{ display:grid; justify-items:center; gap:0; }
+#house .title .tcrown{ width:clamp(70px,8vw,110px); filter:drop-shadow(0 0 18px rgba(255,214,140,.9)) drop-shadow(0 4px 8px rgba(40,0,40,.6)); animation:float 4s ease-in-out infinite; }
+#house .title h1{ position:relative; margin:-4px 0 0; padding:4px 34px 10px; font-size:clamp(46px,6.4vw,86px); letter-spacing:.04em; line-height:1;
+  background-image:linear-gradient(100deg,#8A5A10 0%,#C98A1E 12%,#F5C451 28%,#FFF1B8 42%,#fff 50%,#FFF1B8 58%,#F5C451 72%,#C98A1E 88%,#8A5A10 100%); background-size:250% 100%;
+  filter:drop-shadow(0 2px 0 #7A4A0A) drop-shadow(0 4px 6px rgba(40,0,40,.9)) drop-shadow(0 0 26px rgba(255,214,140,.85)); }
+#house .title .rule{ width:min(70vw,520px); height:14px; margin-top:2px;
+  background:radial-gradient(circle at 50% 50%, #FFF1B8 0 3px, transparent 4px) center/14px 14px no-repeat, linear-gradient(90deg, transparent, #F5C451 25%, #FFF1B8 50%, #F5C451 75%, transparent) center/100% 2px no-repeat;
+  filter:drop-shadow(0 0 6px rgba(255,214,140,.9)); }
+.globes{ position:absolute; left:0; right:0; bottom:11vh; height:44vh; touch-action:pan-y; cursor:grab; }
 .globes::before{ content:""; position:absolute; left:50%; bottom:2%; width:min(74vw,900px); height:16%; translate:-50% 0; border-radius:50%;
   background:radial-gradient(ellipse, rgba(255,214,140,.55), rgba(255,95,162,.18) 55%, transparent 72%); box-shadow:0 0 0 2px rgba(245,196,81,.35) inset; }
 .globe{ appearance:none; border:0; background:none; padding:0; cursor:pointer; position:absolute; left:50%; bottom:6%; display:grid; justify-items:center; gap:6px; color:#fff;
   font:700 16px/1.1 var(--serif); transform-origin:50% 100%; will-change:transform, opacity; opacity:0; transition:opacity .8s; }
-body.home .globe{ opacity:var(--o,1); }
+body.home .globe{ opacity:1; }
 .globe img{ width:clamp(90px,13vw,170px); filter:drop-shadow(0 0 24px var(--c)) drop-shadow(0 14px 24px rgba(40,0,40,.4)); animation:float 4s ease-in-out infinite; }
 .globe:nth-child(2) img{ animation-delay:-.8s } .globe:nth-child(3) img{ animation-delay:-1.6s } .globe:nth-child(4) img{ animation-delay:-2.4s } .globe:nth-child(5) img{ animation-delay:-3.2s }
 @keyframes float{ 50%{ translate:0 -10px } }
 .globe.waiting img{ filter:saturate(.35) brightness(.8) drop-shadow(0 14px 24px rgba(40,0,40,.4)); opacity:.8; }
 .globe span{ text-shadow:0 2px 10px rgba(40,0,40,.8); opacity:var(--lbl,1); }
-.globe.front span{ font-size:20px; color:var(--gold1); }
+.globe::before{ content:""; position:absolute; left:50%; top:42%; width:150%; aspect-ratio:1; translate:-50% -50%; border-radius:50%; z-index:-1;
+  background:radial-gradient(circle, color-mix(in srgb, var(--c) 55%, transparent), transparent 65%); opacity:0; transition:opacity .5s; pointer-events:none; }
+.globe.front::before{ opacity:1; }
+.globe.front img{ filter:drop-shadow(0 0 34px var(--c)) drop-shadow(0 0 60px rgba(255,241,184,.55)) drop-shadow(0 18px 30px rgba(40,0,40,.5)); }
+.globe:not(.front) img{ filter:brightness(.92) drop-shadow(0 0 14px var(--c)) drop-shadow(0 12px 20px rgba(40,0,40,.45)); }
+.globe.waiting:not(.front) img{ filter:saturate(.45) brightness(.88) drop-shadow(0 12px 20px rgba(40,0,40,.45)); }
+.globe.front span{ font-size:24px; color:var(--gold1); letter-spacing:.04em; }
 .globe:focus-visible{ outline:3px solid var(--gold1); outline-offset:6px; border-radius:16px; }
 .spin{ position:absolute; bottom:28vh; }
 .spin.l{ left:max(18px,4vw); } .spin.r{ right:max(18px,4vw); }
@@ -109,7 +122,7 @@ body.home .globe{ opacity:var(--o,1); }
 <section class="scene" id="fly" aria-hidden="true"><img class="bg" src="/pics/keser-vault-inside.webp" alt=""></section>
 <section class="scene" id="house" aria-hidden="true">
   <img class="bg" src="/pics/keser-treasure-house.webp" alt=""><div class="veil" style="background:linear-gradient(180deg,rgba(26,11,46,.25),transparent 30%,transparent 60%,rgba(26,11,46,.55))"></div>
-  <div class="title"><h1 class="k-foil">Your treasures</h1></div>
+  <div class="title"><img class="tcrown" src="/pics/keser-crown.webp" alt=""><h1 class="k-foil">Your Treasures</h1><div class="rule"></div></div>
   <div class="globes" id="globes"></div>
   <button class="k-icon spin l" id="spinL" aria-label="Turn the treasures left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
   <button class="k-icon spin r" id="spinR" aria-label="Turn the treasures right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
