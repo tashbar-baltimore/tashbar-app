@@ -1262,7 +1262,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   function sprite(tex, color, add) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, color, transparent: true, depthWrite: false, blending: add ? THREE.AdditiveBlending : THREE.NormalBlending })); s.renderOrder = 5; scene.add(s); return s; }
   L.celebrate = (at, n) => {
     if (FAST) return;
-    const k = L.Q >= 2 ? 1 : L.Q === 1 ? 0.6 : 0.3, N = Math.round((n || 26) * 2 * k);
+    const k = L.Q >= 2 ? 1 : L.Q === 1 ? 0.6 : 0.3, N = Math.round((n || 26) * 2 * k * (CEL && CEL.n ? CEL.n : 1));   /* party: fewer, smaller balloons, so they never cover the play */
     for (let i = 0; i < N; i++) { const c = cs[cNext]; cNext = (cNext + 1) % CN; c.life = 1.8 + Math.random() * 0.6;
       c.p.copy(at); const a = Math.random() * Math.PI * 2, sp = 2 + Math.random() * 4; c.v.set(Math.cos(a) * sp, 5 + Math.random() * 5, Math.sin(a) * sp * 0.6);
       c.ax.set(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize(); c.spin = (6 + Math.random() * 10) * (CEL ? CEL.spin : 1); c.q.setFromAxisAngle(c.ax, Math.random() * 6); }

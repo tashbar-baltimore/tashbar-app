@@ -245,7 +245,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
       if (kind === 'cone') return { mat: [M(solidTex('nose' + col, 512, 256, (x, w, h) => { x.fillStyle = col; x.fillRect(0, 0, w, h); x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, w, h * 0.22); x.fillRect(0, h * 0.62, w, h * 0.08); })), M(null, { color: '#E6ECF5' })] };   /* a rocket nose */
     }
     if (world === 'underwater') {
-      if (kind === 'sphere') return { mat: new PM({ color: tint(col, 0.3), roughness: 0.1, clearcoat: 1, sheen: 1, sheenColor: C('#FFE0F4'), iridescence: 1, iridescenceIOR: 1.6, envMapIntensity: 1.1, emissive: '#FFC400', emissiveIntensity: 0 }) };   /* a shiny pearl, tinted */
+      if (kind === 'sphere') return { mat: new PM({ color: col, roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.05, sheen: 0.35, sheenColor: C('#FFC0E0'), envMapIntensity: 0.5, emissive: '#FFC400', emissiveIntensity: 0 }) };   /* a glossy pearl in its colour (it must stand out on the sand) */
       if (kind === 'cube') return { mat: M(solidTex('chest' + col, 256, 256, (x, w, h) => { lightWash(x, w, h, col, 0.2, 0.85); x.strokeStyle = 'rgba(60,30,10,.35)'; x.lineWidth = 4; for (let i = 1; i < 4; i++) { x.beginPath(); x.moveTo(0, i * h / 4); x.lineTo(w, i * h / 4); x.stroke(); }
         x.fillStyle = '#E8C35A'; x.fillRect(0, 0, w, 16); x.fillRect(0, h - 16, w, 16); x.fillRect(0, 0, 16, h); x.fillRect(w - 16, 0, 16, h); }), { roughness: 0.55 }) };   /* a treasure box: planks and gold bands */
       if (kind === 'cyl') { const side = M(solidTex('barrel' + col, 512, 256, (x, w, h) => { lightWash(x, w, h, col, 0.2, 0.85); x.strokeStyle = 'rgba(60,30,10,.3)'; x.lineWidth = 4; for (let i = 0; i < 16; i++) { x.beginPath(); x.moveTo(i * w / 16, 0); x.lineTo(i * w / 16, h); x.stroke(); }
@@ -501,7 +501,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     toyland: { round: { pic: 'toy-drum-round.png', side: '#D23A33' }, box: { pic: 'toy-brick-surface.jpg', tint: 1 }, pointy: { pic: 'toy-sail-surface.jpg', side: '#F1C98E' }, many: { pic: 'toy-puzzle-surface.jpg', side: '#F1C98E' } },
     garden: { round: { pic: 'garden-sunflower-round.png', side: '#6E8B3D' }, box: { pic: 'garden-planter-surface.jpg', side: '#A9774A' }, pointy: { pic: 'garden-flag-surface.jpg', side: '#FFFFFF' }, many: { pic: 'garden-stone-surface.jpg', side: '#C9B79A' } },
     sky: { round: { pic: 'sky-kite-round.png', side: '#FFFFFF' }, box: { pic: 'sky-basket-surface.jpg', side: '#B98548' }, pointy: { pic: 'sky-kitecloth-surface.jpg', side: '#FFFFFF' }, many: { pic: 'sky-cloudtile-surface.jpg', side: '#DCEBFF' }, star: { pic: 'sky-goldstar-surface.jpg', side: '#E0A21A' } },
-    space: { round: { pic: 'space-planet-round.png', side: '#C9A6E8' }, box: { pic: 'space-panel-surface.jpg', tint: 1 }, pointy: { pic: 'space-fin-surface.jpg', side: '#D7DEEA' }, many: { pic: 'space-solar-surface.jpg', side: '#D7DEEA' } },
+    space: { round: { pic: 'space-planet-round.png', side: '#C9A6E8' }, box: { pic: 'space-panel-surface.jpg', tint: 1 }, pointy: { pic: 'space-panel-surface.jpg', tint: 1 }, many: { pic: 'space-solar-surface.jpg', side: '#D7DEEA' } },
     beach: { round: { pic: 'beach-ball-round.png', side: '#FFFFFF' }, box: { pic: 'beach-sand-surface.jpg', side: '#D9B36A' }, pointy: { pic: 'beach-sail-surface.jpg', side: '#FFFFFF' }, many: { pic: 'beach-mould-surface.jpg', tint: 1 } },
     party: { round: { pic: 'party-cake-round.png', side: '#FFFFFF' }, box: { pic: 'party-gift-surface.jpg', side: '#FFFFFF', trim: 1 }, pointy: { pic: 'party-bunting-surface.jpg', side: '#FFFFFF' }, many: { pic: 'party-tile-surface.jpg', side: '#FFFFFF' }, star: { pic: 'party-foil-surface.jpg', side: '#E0A21A' } },
     jungle: { round: { pic: 'jungle-leaf-surface.jpg', tint: 1 }, box: { pic: 'jungle-carved-surface.jpg', tint: 1 }, pointy: { pic: 'jungle-carved-surface.jpg', tint: 1 }, many: { pic: 'jungle-carved-surface.jpg', tint: 1 }, star: { pic: 'jungle-carved-surface.jpg', tint: 1 } },
@@ -564,7 +564,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     snow: { geo: () => new THREE.SphereGeometry(0.05, 10, 8), colors: ['#FFFFFF', '#F2F8FF', '#E3F0FF'], spin: 0, star: 0.3, grav: 0.3, name: 'soft snow' },
     farm: { geo: () => new THREE.PlaneGeometry(0.16, 0.04), colors: ['#F2C94C', '#E8B33A', '#FFE08A', '#D9A43A', '#9BCB5A'], spin: 0.5, star: 0.4, name: 'hay-coloured confetti' },
     jungle: { geo: petal, colors: ['#6CC24A', '#9BDB6A', '#3FA34D', '#FFD23F', '#FF7A59'], spin: 0.35, star: 0.4, grav: 0.5, name: 'leaves' },
-    party: { geo: () => new THREE.SphereGeometry(0.09, 16, 12), colors: ['#FF5C8A', '#4CC3FF', '#FFD23F', '#7BDC6B', '#B98CFF'], spin: 0, star: 0.6, grav: -0.3, name: 'little balloons' }
+    party: { geo: () => new THREE.SphereGeometry(0.07, 14, 10), colors: ['#FF5C8A', '#4CC3FF', '#FFD23F', '#7BDC6B', '#B98CFF'], spin: 0, star: 0.4, grav: -0.3, n: 0.4, name: 'little balloons' }
   };
   T.celebration = CEL[world] || null;
   return T;
