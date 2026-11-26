@@ -92,6 +92,14 @@ export default function setup(E, { struggled, unit, game = {} }) {
     if (keys.includes('kuf') && !keys.includes('kaf') && unit.letters.includes('kuf')) {   /* Kaf is never a stand beside Kuf (both say k): it joins Kuf at the end */
       const pd = peds.find(x => x.userData.key === 'kuf'), c = E.letter('kaf', 1.2); if (P && peds.length > 3) c.position.set(pd.position.x * .05, .35, pd.position.z + 1.3); else c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 3.0 : 2.6) * pd.scale.x, .6));   /* two rows on a phone: Kaf low in the middle, in front of the stands */ c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);
       await E.say('This is Kaf.'); E.hop(c, .3); E.hop(L.kuf, .3); await E.say('Kuf sounds just like Kaf!'); }
+    if (keys.includes('shin') && unit.letters.includes('sin')) {   /* Sin has no picture: right on its stand, Shin's dot hops to the left (nothing new stands above it, so no dot can look like a nekudah) */
+      const l = L.shin, d = l.userData.dot, from = d.position.clone(), to = l.userData.dotAt('sin'); await E.say('Watch Shin\u2019s dot!'); E.sfx.whoosh();
+      await E.tween(900, q => { d.position.lerpVectors(from, to, q); d.position.y += Math.sin(q * Math.PI) * .5; }); d.position.copy(to); l.userData.key = 'sin'; l.userData.dotHome = to.clone(); E.sparkle(E.worldPos(d), 14, .8); E.hop(l, .3);
+      await E.say('The dot hopped to the left. Now it is Sin!'); await E.say(['Sin says', S(E.LETTERS.sin.snd), ', just like Samech.']); }
+    if (keys.includes('tav') && unit.letters.includes('sav')) {   /* Sav has no picture: Tav's dot floats away on its stand */
+      const l = L.tav, d = l.userData.dot, d0 = d.position.clone(); await E.say('Now watch Tav\u2019s dot!'); E.sfx.whoosh();
+      await E.tween(800, q => { d.position.set(d0.x + q * .8, d0.y + q * 1.6, d0.z + q * .4); d.scale.setScalar(Math.max(.01, 1 - q)); }); d.visible = false; d.position.copy(d0); d.scale.setScalar(1); l.userData.key = 'sav'; E.hop(l, .3);
+      await E.say('No dot. Now it is Sav!'); await E.say(['Sav says', S(E.LETTERS.sav.snd), '.']); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Great matching! Every picture found its letter.' : null };
   };

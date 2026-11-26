@@ -78,6 +78,17 @@ export const UNITS = [
       { id: 'u7g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['kaf', 'pei'], ['pei', 'fei']] },   /* Unit 6's look-alikes come back */
       { id: 'u7g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
+  { n: 8, letters: ['shin', 'sin', 'tav', 'sav'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches', 'tes', 'yud', 'kaf', 'chaf', 'lamed', 'mem', 'nun', 'samech', 'ayin', 'pei', 'fei', 'tzadik', 'kuf', 'reish'],
+    games: [
+      { id: 'u8g0', name: 'Moshe in the kitchen', kind: 'story8', icon: 'apple' },
+      { id: 'u8g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
+      { id: 'u8g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['shin', 'sin'], ['ches', 'tav']] },   /* the dot's side; then Tav's foot */
+      { id: 'u8g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish', stands: ['beis', 'shin', 'tav'] },   /* Sin and Sav have no picture: at the end Shin's dot moves left (Sin) and Tav loses its dot (Sav) */
+      { id: 'u8g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u8g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
+      { id: 'u8g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['daled', 'reish'], ['hei', 'kuf']] },   /* Unit 7's look-alikes come back */
+      { id: 'u8g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
+    ] },
 ];
 /* every game in order, each knowing its unit */
 export const GAMES = UNITS.flatMap(u => u.games.map(g => ({ ...g, unit: u.n })));

@@ -162,7 +162,8 @@ export function makePictures(E) {
     chatul: ['cat', .82], chamor: ['donkey', .79], taleh: ['lamb', .91], tavas: ['peacock', 1.06], yonah: ['dove', 1.1], yad: ['hand', .91], kadur: ['beachball', 1], kelev: ['dog', .94], limon: ['lemon', .86], mayim: ['water', .85],
     melafefon: ['cucumber', 1.16], nemalah: ['ant', 1.06],
     sus: ['horse', .9], sulam: ['ladder', .66], eitz: ['tree', 1.03], anan: ['cloud', 1.6], parpar: ['butterfly', 1.21], pil: ['elephant', 1.19],
-    tzipor: ['bird', .99], tzav: ['turtle', 1.19], kof: ['toymonkey', 1], kubiyot: ['blocks', 1.09], rakevet: ['toytrain', 1.2], rimon: ['pomegranate', 1.04] };
+    tzipor: ['bird', .99], tzav: ['turtle', 1.19], kof: ['toymonkey', 1], kubiyot: ['blocks', 1.09], rakevet: ['toytrain', 1.2], rimon: ['pomegranate', 1.04],
+    shulchan: ['table', 1.32], shaon: ['clock', .99], tapuach: ['apple', .89], tof: ['drum', .97], tik: ['backpack', 1] };
   const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp'); t.colorSpace = THREE.SRGBColorSpace; return t; })());
   for (const [w, [f, a]] of Object.entries(IMG)) P[w] = () => { const g = new THREE.Group(), h = 1.7, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex(f), transparent: true, alphaTest: .4 }));
     sp.scale.set(h * a, h, 1); g.add(sp); g.userData.card = sp; return g; };
@@ -205,5 +206,10 @@ export const WORDS = {
   mayim: { letter: 'mem', say: 'Mayim. Water!' },
   melafefon: { letter: 'mem', say: 'Melafefon. A cucumber!' },
   nemalah: { letter: 'nun', say: 'Nemalah. An ant!' },
+  shulchan: { letter: 'shin', say: 'Shulchan. A table!' },
+  shaon: { letter: 'shin', say: 'Sha\u2019on. A clock!' },
+  tapuach: { letter: 'tav', say: 'Tapuach. An apple!' },
+  tof: { letter: 'tav', say: 'Tof. A drum!' },
+  tik: { letter: 'tav', say: 'Tik. A backpack!' },
 };
-export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah', sus: 'Sus', sulam: 'Sulam', eitz: 'Eitz', anan: 'Anan', parpar: 'Parpar', pil: 'Pil', tzipor: 'Tzipor', tzav: 'Tzav', kof: 'Kof', kubiyot: 'Kubiyos', rakevet: 'Rakeves', rimon: 'Rimon' };
+export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah', sus: 'Sus', sulam: 'Sulam', eitz: 'Eitz', anan: 'Anan', parpar: 'Parpar', pil: 'Pil', tzipor: 'Tzipor', tzav: 'Tzav', kof: 'Kof', kubiyot: 'Kubiyos', rakevet: 'Rakeves', rimon: 'Rimon', shulchan: 'Shulchan', shaon: 'Sha\u2019on', tapuach: 'Tapuach', tof: 'Tof', tik: 'Tik' };

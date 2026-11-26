@@ -52,8 +52,12 @@ export function makeStory(E, unit, script) {
         const src = L[st.fromDot]; float(src, false); const kp = src.position.clone(), ch = L[st.letter]; ch.position.copy(kp); ch.rotation.copy(src.rotation); ch.visible = true; ch.userData.dot.visible = true; src.visible = false;
         await E.say('Now watch the dot!');
         const d = ch.userData.dot, dp = d.position.clone(); E.sfx.whoosh();
-        await E.tween(700, k => { d.position.set(dp.x + k * 1.5, dp.y + k * 2.6, dp.z + k * .5); d.scale.setScalar(1 - k); }, E.ease.out); d.visible = false; d.position.copy(dp); d.scale.setScalar(1);
-        E.sparkle(E.worldPos(ch).add(new THREE.Vector3(1.4, 2.4, .5)), 14); float(ch);
+        if (st.move) {   /* Sin from Shin: the dot hops from the right to the left, and stays */
+          const from = ch.userData.dotAt(st.fromDot); d.position.copy(from);
+          await E.tween(900, k => { d.position.lerpVectors(from, dp, k); d.position.y += Math.sin(k * Math.PI) * .7; }, E.ease.inOut); d.position.copy(dp); E.sparkle(E.worldPos(d), 14, .8); }
+        else { await E.tween(700, k => { d.position.set(dp.x + k * 1.5, dp.y + k * 2.6, dp.z + k * .5); d.scale.setScalar(1 - k); }, E.ease.out); d.visible = false; d.position.copy(dp); d.scale.setScalar(1);
+          E.sparkle(E.worldPos(ch).add(new THREE.Vector3(1.4, 2.4, .5)), 14); }
+        float(ch);
         for (const line of st.lines) await E.say(line);
         await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
         await E.say('Tap ' + E.LETTERS[st.letter].name + '!'); await tapIt(ch, E.nameLine(st.letter));
@@ -74,19 +78,24 @@ export function makeStory(E, unit, script) {
     /* the look-alikes, side by side, right to left; for each line the arrow (or the ring at the dot place) shows where to look */
     unit.letters.forEach(k => { L[k].visible = false; floaters.delete(L[k]); });
     await Promise.all([E.popOut(boy), grown && E.popOut(grown), E.popOut(props)].filter(Boolean));
-    for (const [a, b, la, lb] of script.lookalikes || []) {
-      const A = E.letter(a, 1.8), B = E.letter(b, 1.8); A.position.set(P ? .85 : 1.2, 1.6, .5); B.position.set(P ? -.85 : -1.2, 1.6, .5); E.scene.add(A, B); await Promise.all([E.popIn(A), E.popIn(B)]);
-      for (const [k, line] of [[a, la], [b, lb]]) { const l = k === a ? A : B;
-        if (E.sameShape && E.sameShape(a, b)) { ring.position.copy(l.userData.dotHome).setZ(.6); l.add(ring); ring.visible = true; arrow.visible = false; } else { ring.visible = false; if (E.pointAt) E.pointAt(arrow, l, k, 1.8, E.featFor ? E.featFor(k, k === a ? b : a) : undefined); }
-        await E.say(line); await E.wait(250); }
-      arrow.visible = false; ring.visible = false; await Promise.all([E.popOut(A), E.popOut(B)]); E.scene.remove(A, B);
+    for (const la of script.lookalikes || []) {   /* [a, b, line a, line b], or { keys, vs, lines } for three side by side (Hei, Ches, Tav) */
+      const keys = Array.isArray(la) ? la.slice(0, 2) : la.keys, lines = Array.isArray(la) ? la.slice(2) : la.lines, vs = Array.isArray(la) ? [keys[1], keys[0]] : la.vs, n = keys.length;
+      const wide = keys.some(k => E.letter(k, 1.8).userData.width > 1.75), h = P && (n > 2 || wide) ? (n > 2 ? 1.3 : 1.45) : 1.8, wMax = Math.max(...keys.map(k => E.letter(k, h).userData.width));   /* on a phone, smaller beside a wide letter (Shin) */
+      const gx = Math.max(n > 2 ? (P ? 1.25 : 2.2) : (P ? 1.7 : 2.4), wMax + (P ? (n > 2 ? .15 : .35) : .7)), dx = P && n > 2 ? .25 : 0;   /* wide letters never touch; on a phone three sit a little right, so an arrow at the left one stays on screen */
+      const Ls = keys.map((k, i) => { const l = E.letter(k, h); l.position.set(((n - 1) / 2 - i) * gx + dx, 1.6, .5); E.scene.add(l); return l; });   /* right to left */
+      await Promise.all(Ls.map(l => E.popIn(l)));
+      for (let i = 0; i < n; i++) { const k = keys[i], l = Ls[i];
+        if (E.sameShape && E.sameShape(k, vs[i])) { ring.position.copy(l.userData.dotHome).setZ(.6); l.add(ring); ring.visible = true; arrow.visible = false; } else { ring.visible = false; if (E.pointAt) E.pointAt(arrow, l, k, h, E.featFor ? E.featFor(k, vs[i]) : undefined); }
+        await E.say(lines[i]); await E.wait(250); }
+      arrow.visible = false; ring.visible = false; await Promise.all(Ls.map(l => E.popOut(l))); E.scene.remove(...Ls);
     }
     E.setProgress(steps, steps - 1);
     /* every letter so far, right to left (two lines on a phone when there are many), and the chant */
     const all = [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .68 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
     const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 3 : all.length > 12 ? 2 : 1, per = Math.ceil(all.length / nl), lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
-    lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (ks.length - 1);
-      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 2 ? 3.15 - li * 1.3 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
+    const tops = E.topDot && all.some(k => E.topDot(k)), sp = tops ? (P ? .5 : .72) : .45;   /* Shin and Sin carry a dot on top: more room between letters and between lines, so a dot never sits under the letter above or between two letters */
+    lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * sp * (ks.length - 1);
+      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? (tops ? 3.3 - li * .98 : 3.1 - li * (lines.length > 3 ? .85 : 1.0)) : 2.3 - li * 1.1) : (lines.length > 2 ? (tops ? 3.3 - li * 1.42 : 3.15 - li * 1.3) : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * sp; l.visible = false; E.scene.add(l); row.push(l); }); });
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
     E.setProgress(steps, steps);
     await E.say('Let’s sing the Alef-Beis so far!');
@@ -99,10 +108,11 @@ export function makeStory(E, unit, script) {
       document.body.dataset.tapReady = left.map(l => 'row-' + l.userData.key).join(',');
       const l = await E.waitTap(row); E.hand.hide();
       if (!left.includes(l)) { E.sfx.boop(); E.shake(l, .08); const tk = target.userData.key, lk = l.userData.key, same = E.LETTERS[lk].snd && E.LETTERS[lk].snd === E.LETTERS[tk].snd;   /* Kaf for Kuf: both say k, so the sound is no help */
-        await E.say(same ? 'That is ' + E.LETTERS[lk].name + '.' : E.nameLine(lk)); await E.say((same || lk === 'hei') && tk === 'kuf' ? 'Kuf has a long leg. Tap Kuf!' : lk === 'daled' && tk === 'reish' ? 'Reish is round on top. Tap Reish!' : 'Now tap ' + E.LETTERS[tk].name + '!'); continue; }   /* Hei for Kuf: the look-alike cue */
+        await E.say(same ? 'That is ' + E.LETTERS[lk].name + '.' : E.nameLine(lk)); const cue = script.tapCue && script.tapCue(lk, tk);
+        await E.say(cue ? cue : (same || lk === 'hei') && tk === 'kuf' ? 'Kuf has a long leg. Tap Kuf!' : lk === 'daled' && tk === 'reish' ? 'Reish is round on top. Tap Reish!' : 'Now tap ' + E.LETTERS[tk].name + '!'); continue; }   /* Hei for Kuf: the look-alike cue */
       left.splice(left.indexOf(l), 1);
       E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .3, .5)), 20, 1); E.hop(l, .45);
-      if (lines.length > 1) { const s0 = l.scale.x; E.tween(300, q => l.scale.setScalar(s0 * (1 + .18 * q))); }   /* more than one line: no star, which could sit under a letter above and look like a nekudah; the letter grows instead */
+      if (lines.length > 1 || (E.topDot && E.topDot(l.userData.key))) { const s0 = l.scale.x; E.tween(300, q => l.scale.setScalar(s0 * (1 + .18 * q))); }   /* more than one line: no star, which could sit under a letter above and look like a nekudah; the letter grows instead. Never a star above Shin or Sin: it could look like their dot */
       else { const st = E.star3d(.14); st.position.copy(l.position).add(new THREE.Vector3(0, sz * .85, .3)); E.scene.add(st); E.popIn(st); E.onFrame(t => st.rotation.y = t * 2); }
       await E.say(E.nameLine(l.userData.key));
     }
