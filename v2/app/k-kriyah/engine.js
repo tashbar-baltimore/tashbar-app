@@ -514,3 +514,14 @@ export function flatFallback() {
   f.querySelectorAll('button').forEach(b => b.onclick = () => say(b.dataset.k === 'alef' ? 'Alef. Alef is quiet.' : nameLine(b.dataset.k)));
   say('Tap a letter to hear it.');
 }
+
+/* "Say it with me" (curriculum/k-kriyah/RESEARCH.md, gain 2): saying a letter out loud helps it stick (the production effect).
+   The voice says the name, then waits a moment for him to say it too, then says it again with him. */
+export async function sayWithMe(key) {
+  const L = LETTERS[key], name = L.name;
+  document.body.dataset.sayIt = key;
+  await say('Say it with me: ' + name + '!'); await wait(1300);
+  sfx.pop && sfx.pop(); await say(quietLetter(key) ? name + '! Quiet!' : [name + '!', S(L.snd)]);
+  delete document.body.dataset.sayIt;
+}
+const quietLetter = k => k === 'alef' || k === 'ayin';

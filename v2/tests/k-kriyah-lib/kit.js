@@ -65,6 +65,8 @@ function gameTest(id, kind, label) {
       if (stars >= 2) oks.push(tag + ': can be won (' + stars + ' stars, after one mistake)'); else fails.push(tag + ': could not be won (' + stars + ' stars)');
       log.oks.forEach(m => oks.push(tag + ': ' + m)); log.fails.forEach(m => fails.push(tag + ': ' + m));
       if (log.wrongHandled) oks.push(tag + ': a wrong answer gets a kind correction'); else fails.push(tag + ': a wrong answer was not handled');
+      if (/^(story|feel)/.test(kind)) { const said = await pg.evaluate(() => window.__lines.filter(l => /^Say it with me: /.test(l)).length);   /* RESEARCH.md: he says each new letter out loud */
+        if (said >= 3) oks.push(tag + ': asks him to say each new letter out loud (' + said + ' times)'); else fails.push(tag + ': "Say it with me" came ' + said + ' times'); }
       const sv = await saved(pg); if (sv.games && sv.games[id] && sv.games[id].stars === stars) oks.push(tag + ': saves the stars'); else fails.push(tag + ': stars were not saved');
       errs.forEach(e => fails.push(tag + ': ' + e));
       await ctx.close();

@@ -96,6 +96,7 @@ export default function setup(E) {
     cur.userData.spin = true; E.joy(E.worldPos(cur).add(new THREE.Vector3(0, 0, .8)), true); boy.mood('cheer');
     const r0 = cur.rotation.y; await E.tween(900, k => { cur.rotation.y = r0 + k * Math.PI * 2; glow.material.opacity = .8; }, E.ease.out); cur.userData.spin = false; cur.rotation.y = 0;
     await E.say(key === 'alef' ? 'Alef! Alef is quiet.' : key === 'beis' ? ['Beis! Beis says', S('b')] : ['Veis! Veis says', S('v')]); boy.mood('calm');
+    await E.sayWithMe(key);   /* he says it out loud too */
     /* it moves to the side, so he sees the ones he has done */
     [...beads, ...roads, ...golds, target].forEach(b => b.parent && b.parent.remove(b)); beads = []; roads = []; golds = []; const l = cur; cur = null; holder.remove(l); E.scene.add(l); l.position.copy(holder.position);
     const i = done.length; done.push(l); const p0 = l.position.clone(); const tmp = new THREE.Object3D(); layoutDone(tmp, i);
