@@ -1,0 +1,63 @@
+name: publish-keser
+# Puts Keser Girls 3.0 on its OWN website (https://keser-girls-3.web.app), separate from 1.0 and 2.0 (keser/README.md).
+#   what=preview pr=N : builds that pull request's keser/ and puts it on a private look link for the approver (the live site unchanged)
+#   what=live         : builds main's keser/ and puts it live
+# Started only by keser-gate (a look link after tests pass; live only after an approver's yes). Never run it by hand for live.
+on:
+  workflow_dispatch:
+    inputs:
+      what: { description: 'preview or live', required: true, type: choice, options: [preview, live], default: preview }
+      pr: { description: 'pull request number (preview only)', required: false, default: '' }
+concurrency: { group: publish-keser, cancel-in-progress: false }
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+env:
+  PROJECT: tashbar-learning-live
+  SITE: keser-girls-3
+  WIF_PROVIDER: projects/594290752127/locations/global/workloadIdentityPools/github/providers/tashbar-app
+  DEPLOY_SA: github-deploy@tashbar-learning-live.iam.gserviceaccount.com
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env: { GH_TOKEN: '${{ github.token }}', REPO: '${{ github.repository }}' }
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: For a look link, take the pull request's Keser files (only keser/ and the shared art library art/)
+        if: inputs.what == 'preview'
+        run: |
+          n='${{ inputs.pr }}'; [[ "$n" =~ ^[0-9]+$ ]] || { echo "preview needs a pull request number"; exit 1; }
+          git fetch -q origin "pull/$n/head"
+          rm -rf keser && git archive FETCH_HEAD keser | tar -x
+          # the shared art library (HoS 2026-11-24): a Keser pull request may add art to art/ for its screens
+          if git cat-file -e FETCH_HEAD:art 2>/dev/null; then rm -rf art && git archive FETCH_HEAD art | tar -x; fi
+          echo "look link for PR #$n at $(git rev-parse --short FETCH_HEAD)"
+      - name: Build Keser Girls 3.0
+        run: node keser/build.js
+      - name: Sign in to Google (keyless, short-lived)
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.DEPLOY_SA }}
+          token_format: access_token
+      - name: Put it on the Keser Girls 3.0 website
+        env: { TOKEN: '${{ steps.auth.outputs.access_token }}' }
+        run: |
+          umask 077; printf '%s' "$TOKEN" > "$RUNNER_TEMP/fbtok"
+          where=live; [ '${{ inputs.what }}' = preview ] && where="pr-${{ inputs.pr }}"
+          PUBLISH_DIR=keser/dist V2_LINK_FILE="$RUNNER_TEMP/link" python3 .github/scripts/publish-v2.py "$PROJECT" "$SITE" "$RUNNER_TEMP/fbtok" "$where" "Keser 3.0 ${{ inputs.what }} ${{ inputs.pr }} (${GITHUB_SHA::7})"
+          rm -f "$RUNNER_TEMP/fbtok"
+      - name: Post the look link on the pull request
+        if: inputs.what == 'preview'
+        run: |
+          url=$(cat "$RUNNER_TEMP/link" 2>/dev/null || true); [ -n "$url" ] || exit 0
+          gh pr comment '${{ inputs.pr }}' --repo "$REPO" --body "**Keser Girls 3.0 look link:** $url
+
+          Approver (keser/APPROVERS.json): open it and look at every screen at Chromebook and phone size. Tell your Claude what to change. To let it in, ask your Claude to post your yes on this pull request (the words \"approved for keser\" and your name on their own line). A yes counts only for this version. How it works: keser/README.md"
