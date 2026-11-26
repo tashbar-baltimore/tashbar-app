@@ -23,9 +23,9 @@
         {t:'pairs', q:'Match each question to when you ask it.', pairs:[['What will it be about?','before you read'],['Why did the boy run?','while you read'],['What did I learn?','after you read']], h:'When can each question be answered?'}
       ],
       check:[
-        {q:'When should a reader ask questions?', o:['before, while and after you read','only after you finish','never']},
+        {q:'Dovid is in the middle of a story. Should he ask questions now?', o:['Yes, readers ask questions while they read.','No, only after the story ends.','No, questions stop the reading.']},
         {q:'"Shloimy heard a knock at night." Avi asks, "Who is knocking?" That is...', o:['a good reading question','not about the story','the answer']},
-        {q:'Before reading "Snow Day", Dovid asked, "Will school close?" How can he find out?', o:['keep reading the story','stop reading','guess and close the book']}
+        {q:'Before reading "Snow Day", Dovid asked, "Will school close?" Then he read: "The phone rang. Rabbi Feld said, \'No school today!\'" What is the answer?', o:['Yes, school is closed.','No, school is open.','The story does not say.']}
       ],
       re:[
         {q:'When does a good reader wonder about a story?', o:['before, while and after you read','only after you finish','never']},
@@ -75,9 +75,9 @@
         {t:'pairs', q:'Match each signal word to its question.', pairs:[['because','why'],['first','how'],['where','a place']], h:'Reason words: why. Step words: how.'}
       ],
       check:[
-        {q:'"Avi brought an umbrella because the sky was dark." Which words tell WHY he brought it?', o:['the words after "because"','the words before "brought"','the very first word']},
-        {q:'"First Naftali mixed the dough. Then he shaped the challah." What does this tell?', o:['how he did it','why he did it','where he was']},
-        {q:'A question asks, "Why did the dog bark?" Where do you look for the answer?', o:['in the words of the story','in your guess','in the title only']}
+        {q:'"Avi brought an umbrella because the sky was dark." Why did Avi bring an umbrella?', o:['the sky was dark','Avi brought an umbrella','it was Sunday']},
+        {q:'Which sentence tells HOW Naftali made the challah?', o:['First he mixed the dough, then he shaped it.','He made it because it was Erev Shabbos.','The challah was big.']},
+        {q:'"The dog barked because a cat was on the fence." Why did the dog bark?', o:['A cat was on the fence.','The dog was hungry.','It was dark out.']}
       ],
       re:[
         {q:'"Moshe ran home because it began to rain." Which words tell WHY he ran?', o:['the words after "because"','the words before "ran"','the very first word']},
@@ -115,9 +115,9 @@
 
   var HOWTO = {
     'READ.COMP.L03.04':{ s:'Look at the title and picture.\nAsk: what will happen?\nKeep reading to find out.',
-      q:{ 'When should a reader ask questions?':'Think about the whole time you read.',
+      q:{ 'Dovid is in the middle of a story. Should he ask questions now?':'Good readers ask before, while and after they read.',
           '"Shloimy heard a knock at night." Avi asks, "Who is knocking?" That is...':'Is the question about the story?',
-          'Before reading "Snow Day", Dovid asked, "Will school close?" How can he find out?':'Where is the answer waiting?',
+          'Before reading "Snow Day", Dovid asked, "Will school close?" Then he read: "The phone rang. Rabbi Feld said, \'No school today!\'" What is the answer?':'Find what Rabbi Feld said.',
           'When does a good reader wonder about a story?':'Think about the whole time you read.',
           '"The bus did not come." Chaim asks, "Where is the bus?" That is...':'Is the question about the story?',
           'Before reading "The Broken Clock", Naftali asked, "Who will fix it?" How can he find out?':'Where is the answer waiting?' } },
@@ -129,9 +129,9 @@
           '"At the bakery, Ari bought rolls." Which question does "at the bakery" answer?':'Is it a person, a place or a time?',
           '"On Friday morning, Dov swept the porch." Which question does "on Friday morning" answer?':'Is it a person, a place or a time?' } },
     'READ.COMP.L03.06':{ s:'Why: look for because or so.\nHow: look for first, then, next.\nAnswer with the story\'s words.',
-      q:{ '"Avi brought an umbrella because the sky was dark." Which words tell WHY he brought it?':'Find because. Where is the reason?',
-          '"First Naftali mixed the dough. Then he shaped the challah." What does this tell?':'Do you see first and then?',
-          'A question asks, "Why did the dog bark?" Where do you look for the answer?':'Where are the answers to a story?',
+      q:{ '"Avi brought an umbrella because the sky was dark." Why did Avi bring an umbrella?':'Find "because". Read the words after it.',
+          'Which sentence tells HOW Naftali made the challah?':'HOW tells the steps. Look for first and then.',
+          '"The dog barked because a cat was on the fence." Why did the dog bark?':'Find "because". Read the words after it.',
           '"Moshe ran home because it began to rain." Which words tell WHY he ran?':'Find because. Where is the reason?',
           '"First Ari folded the paper. Then he cut a star." What does this tell?':'Do you see first and then?',
           'A question asks, "How did the boys find the key?" Where do you look for the answer?':'Where are the answers to a story?' } }
@@ -213,16 +213,16 @@
 
   if (window.TLCORE && TLCORE.units && TLCORE.units.add) TLCORE.units.add({ id:'C23.U21', title:'Story Detectives', c:'READ', grade:2,
     skills:['READ.COMP.L03.04','READ.COMP.L03.05','READ.COMP.L03.06','READ.LIT.L03.01'],
-    review:['READ.COMP.L02.01','READ.LIT.L02.01'], n:8,
+    review:['READ.COMP.L02.01','READ.LIT.L02.01'], n:10,
     items:[
-      {type:'cloze', skill:'READ.COMP.L03.04', t:'Before you read "The Snowman", look at the title and ___.', o:['picture','page number','last word'], a:'picture', how:'What helps you guess what will happen?'},
-      {type:'evidence', skill:'READ.COMP.L03.04', q:'Title: "The Lost Glove". Which is the best question to ask?', p:['Who lost the glove?','What is for dinner?','How tall is the door?'], a:0, look:'a question about the story', how:'Which question is about the glove?'},
-      {type:'cloze', skill:'READ.COMP.L03.05', t:'"At the river, Avi saw a frog." "At the river" tells ___.', o:['where','who','when'], a:'where', how:'Is it a person, a place or a time?'},
-      {type:'evidence', skill:'READ.COMP.L03.05', q:'Which sentence tells WHEN?', p:['Before Shabbos, the boys swept the shul.','The boys swept the shul.','The shul was clean.'], a:0, look:'a time', how:'Find the words that tell a time.'},
-      {type:'cloze', skill:'READ.COMP.L03.06', t:'"Dovid wore his boots ___ the ground was wet."', o:['because','first','where'], a:'because', how:'Which word gives the reason?'},
-      {type:'evidence', skill:'READ.COMP.L03.06', q:'Which sentence tells HOW Naftali fixed the bike?', p:['First he tightened the chain, then he pumped the tire.','Naftali was happy.','The bike was red.'], a:0, look:'the steps', how:'Look for first and then.'},
-      {type:'evidence', skill:'READ.LIT.L03.01', q:'Which is the best retell of a story?', p:['Moshe lost his hat. He looked everywhere. His brother found it in the car.','Moshe had a hat.','The car was blue.'], a:0, look:'beginning, middle and end', how:'Which one tells the big parts in order?'},
-      {type:'evidence', skill:'READ.LIT.L03.01', q:'Which retell has a beginning, middle, end AND the lesson?', p:['Moshe teased the new boy. Then he saw him sitting alone. He said sorry and played with him. The lesson: be kind to new friends.','Moshe played ball at recess.','The new boy had a red hat.'], a:0, look:'all the parts, in order, and the lesson', how:'Count the parts: beginning, middle, end, lesson.'}
+      {type:'evidence', skill:'READ.COMP.L03.04', q:'You read: "Chaim opened the door. The box on the step was moving!" What is the best question to ask now?', p:['Who opened the door?','What is in the box?','What is for lunch?'], a:1, look:'a question the story will answer next', how:'Which question makes you want to keep reading?'},
+      {type:'evidence', skill:'READ.COMP.L03.04', q:'Title: "The Lost Glove". Which is the best question to ask before you read?', p:['What is a glove?','What is for dinner?','Who lost the glove?'], a:2, look:'a question the story will answer', how:'Which question will the story answer?'},
+      {type:'evidence', skill:'READ.COMP.L03.05', q:'"On Sunday, Avi saw a frog at the river." Which words tell WHERE?', p:['at the river','On Sunday','Avi'], a:0, look:'a place', how:'Is it a person, a place or a time?'},
+      {type:'evidence', skill:'READ.COMP.L03.05', q:'Which sentence tells WHEN?', p:['In the shul, the boys swept the floor.','The boys swept the shul.','Before Shabbos, the boys swept the shul.'], a:2, look:'a time', how:'Find the words that tell a time.'},
+      {type:'evidence', skill:'READ.COMP.L03.06', q:'"Dovid wore his boots because the ground was wet." Why did Dovid wear his boots?', p:['The ground was wet.','He liked his new boots.','He was going to shul.'], a:0, look:'the reason in the words', how:'Find "because". Read the words after it.'},
+      {type:'evidence', skill:'READ.COMP.L03.06', q:'Which sentence tells HOW Naftali fixed the bike?', p:['He fixed it because he wanted to ride to shul.','First he tightened the chain, then he pumped the tire.','The bike was red.'], a:1, look:'the steps', how:'HOW tells the steps. WHY tells the reason.'},
+      {type:'evidence', skill:'READ.LIT.L03.01', q:'Story: Moshe lost his hat. He looked in his room and in the yard. At last his brother found it in the car. Which retell is best?', p:['His brother found the hat in the car. Moshe lost his hat. He looked all over.','Moshe lost his hat. He looked all over. His brother found it in the car.','Moshe lost his hat. He looked in his room.'], a:1, look:'beginning, middle and end, in order', how:'Does it tell the start, the middle and the end, in order?'},
+      {type:'evidence', skill:'READ.LIT.L03.01', q:'Story: Moshe teased the new boy. Then he saw him sitting alone. Moshe said sorry and played with him. Which retell has the parts AND the lesson?', p:['Moshe teased the new boy, saw him alone, and said sorry. The lesson: be kind to new friends.','Moshe teased the new boy, saw him alone, and said sorry.','Moshe played with the new boy. The lesson: always play ball.'], a:0, look:'all the parts, in order, and the lesson', how:'Count the parts: beginning, middle, end, lesson.'}
     ] });
 })();
 </script>
