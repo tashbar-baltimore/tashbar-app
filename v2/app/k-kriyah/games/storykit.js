@@ -3,7 +3,7 @@
    A dot letter can come from the one before it losing its dot (Chaf from Kaf). Then the look-alikes stand side by side
    (an orange arrow at a shape difference, a ring only at the dot place), every letter so far is chanted right to left, and he taps each new one.
    Every spoken line is 12 words or fewer. */
-import { makePictures } from '../pictures.js';
+import { makePictures, hasPic } from '../pictures.js';
 export function makeStory(E, unit, script) {
   const { THREE, S } = E;
   const PIC = makePictures(E);
@@ -45,7 +45,7 @@ export function makeStory(E, unit, script) {
   const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6), q)); };
   const say = async (who, line) => { if (who) { who.mood('wave'); setTimeout(() => who.mood('calm'), 1100 * E.F); } await E.say(line); };
   return async () => {
-    boy.position.set(P ? -1.1 : -2.0, 0, 1.4); if (grown) grown.position.set(P ? -1.85 : -3.9, 0, P ? .2 : .6); if (P) { boy.scale.setScalar(.75); if (grown) grown.scale.multiplyScalar(.75); }   /* on a phone both are smaller, clear of the big letter */
+    boy.position.set(P ? -.85 : -2.0, 0, P ? 3.0 : 1.4); if (grown) grown.position.set(P ? -1.5 : -3.9, 0, P ? 2.2 : .6); if (P) { boy.scale.setScalar(.95); if (grown) grown.scale.multiplyScalar(.9); }   /* on a phone they stand in front, big enough to see (reviewer: they were tiny) */
     E.setProgress(steps, 0);
     for (const line of script.intro) await say(boy, line);
     for (const [si, st] of script.steps.entries()) {
@@ -64,10 +64,10 @@ export function makeStory(E, unit, script) {
         await E.say('Tap ' + E.LETTERS[st.letter].name + '!'); await tapIt(ch, E.nameLine(st.letter));
         src.visible = true; src.position.copy(kp); float(src); await letterDone(st.fromDot); await letterDone(st.letter);
       } else {
-        const pic = PIC[st.pic](); const who = st.near === 'grown' && grown ? grown : boy;
+        const has = hasPic(st.pic), pic = has ? PIC[st.pic]() : new THREE.Group(); const who = st.near === 'grown' && grown ? grown : boy;   /* a painting not here yet: the letter appears on its own */
         pic.position.set(who.position.x + .9, 2.0, who.position.z + .4); pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
         if (st.act) st.act(E, pic, boy, grown);
-        for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);
+        for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);   /* the story is told even before its painting comes */
         await toCentre(pic); await morph(pic, st.letter);
         for (const line of st.after) await E.say(line);
         await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
@@ -92,11 +92,11 @@ export function makeStory(E, unit, script) {
     }
     E.setProgress(steps, steps - 1);
     /* every letter so far, right to left (two lines on a phone when there are many), and the chant */
-    const all = [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .68 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
-    const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 3 : all.length > 12 ? 2 : 1, per = Math.ceil(all.length / nl), lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
+    const all = [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .66 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (all.length > 20 ? 1.0 : many ? .62 : .82);   /* a wide gap when there are many, so no two letters touch (reviewer) */
+    const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 4 : all.length > 12 ? 2 : 1, per = Math.ceil(all.length / nl), lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
     const tops = E.topDot && all.some(k => E.topDot(k)), sp = tops ? (P ? .5 : .72) : .45;   /* Shin and Sin carry a dot on top: more room between letters and between lines, so a dot never sits under the letter above or between two letters */
     lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * sp * (ks.length - 1);
-      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? (tops ? 3.3 - li * .98 : 3.1 - li * (lines.length > 3 ? .85 : 1.0)) : 2.3 - li * 1.1) : (lines.length > 2 ? (tops ? 3.3 - li * 1.42 : 3.15 - li * 1.3) : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * sp; l.visible = false; E.scene.add(l); row.push(l); }); });
+      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? (tops ? 3.3 - li * .98 : 3.1 - li * (lines.length > 3 ? .85 : 1.0)) : 2.3 - li * 1.1) : (lines.length > 3 ? (tops ? 3.55 - li * 1.12 : 3.45 - li * 1.05) : lines.length > 2 ? (tops ? 3.3 - li * 1.42 : 3.15 - li * 1.3) : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * sp; l.visible = false; E.scene.add(l); row.push(l); }); });
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
     E.setProgress(steps, steps);
     await E.say('Let’s sing the Alef-Beis so far!');

@@ -30,14 +30,14 @@ export default function setup(E, { struggled, unit }) {
   const glowT = E.glowSprite('#fff7b0', 2.2, 0); E.scene.add(glowT);
   let P = false, help = struggled, mistakes = 0, missed = false, dragT = null, grab = new THREE.Vector3(), fixKey = null, resolveFix = null, busy = false;
   E.onLayout(p => { P = p;
-    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.2, 0); yak.position.set(-1.75, 0, .9); yak.scale.setScalar(.62); board.position.set(.55, 3.1, .4); board.scale.setScalar(.85); }
+    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.2, 0); yak.position.set(-1.6, 0, 1.3); yak.scale.setScalar(.85); board.position.set(.55, 3.1, .4); board.scale.setScalar(.85); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); yak.position.set(-3.3, 0, 1.2); yak.scale.setScalar(1.1); board.position.set(.2, 2.35, .4); board.scale.setScalar(1); }
     tiles.forEach((t, i) => { if (t !== dragT) t.position.copy(tileHome(i)); });
   });
   const tileHome = i => P ? new THREE.Vector3([1.35, -.1, -1.25][i], .5, 2.1) : new THREE.Vector3(2.55 - i * 1.65, .6, 1.9);   /* never in front of the sign's pole */
   E.onFrame(t => {
     if (shown) shown.rotation.y = Math.sin(t * 1.2) * .15;
-    tiles.forEach((tl, i) => { if (tl !== dragT && tl.visible && !tl.userData.busy) { tl.position.y = tileHome(i).y + Math.sin(t * 2 + i) * .05; } });
+    tiles.forEach((tl, i) => { if (tl !== dragT && tl.visible && !tl.userData.busy) { tl.position.y = tileHome(i).y + Math.sin(t * 2 + i) * .05; tl.lookAt(E.cam.position); }   /* each tile faces the boy, so Hei's gap always shows */ });
     const g = tiles.find(x => x.visible && x.userData.key === fixKey); glowT.material.opacity = help && g && !dragT ? .6 + Math.sin(t * 5) * .3 : 0; if (g) glowT.position.copy(g.position).add(new THREE.Vector3(0, 0, -.3));
   });
   /* the yes / no buttons (big, glossy, the same place every time) */

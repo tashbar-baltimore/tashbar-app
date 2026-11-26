@@ -27,12 +27,12 @@ export default function setup(E, { struggled, unit, game }) {
   const cardArrow = E.arrow3d(.45);
   function makeCard(k) { const old = card; card = E.letter(k, 1.9); card.visible = false; E.scene.add(card); E.scene.remove(old); }   /* each letter has its own shape */
   let pair = pairs[0], labels = [], P = false, CS = 1, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, wrongInRow = 0, missed = false, deck = [], idx = 0, onDone = null, kRound = 0;
-  E.onLayout(p => { P = p; CS = p ? .85 : 1;
-    if (p) { E.camBase.set(0, 3.2, 11.8); E.camTarget.set(0, 2.4, 0); crates[0].position.set(1.3, 0, 0); crates[1].position.set(-1.3, 0, 0); crates.forEach(c => c.scale.setScalar(.86)); cardHome.set(0, 4.5, 1.5); kid.visible = false; }
+  E.onLayout(p => { P = p; CS = p ? 1.05 : 1;
+    if (p) { E.camBase.set(0, 3.0, 11.2); E.camTarget.set(0, 2.3, 0); crates[0].position.set(1.3, 0, .3); crates[1].position.set(-1.3, 0, .3); crates.forEach(c => c.scale.setScalar(.82)); cardHome.set(0, 4.3, 1.5); kid.visible = false; }   /* phone: bigger crates and card (graphics pass) */
     else { E.camBase.set(0, 2.7, 9.8); E.camTarget.set(0, 1.5, 0); crates[0].position.set(2.6, 0, 0); crates[1].position.set(-2.6, 0, 0); crates.forEach(c => c.scale.setScalar(1)); cardHome.set(0, 2.1, 1.5); kid.visible = true; kid.position.set(-4.7, 0, 1.4); }
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
-  function setPair(pr) {   /* right crate: the first letter of the pair (as Hebrew reads), left crate: the second */
+  function setPair(pr) { crates.forEach(c => { c.children.filter(o => o.userData && o.userData.inPile).forEach(o => c.remove(o)); c.userData.inCrate = 0; });   /* right crate: the first letter of the pair (as Hebrew reads), left crate: the second */
     pair = pr; labels.forEach(l => l.parent && l.parent.remove(l)); labels = pr.map((k, i) => { const l = E.letter(k, 1.15); l.position.set(0, 1.95, .62); const lo = Math.max(...pr.map(x => E.letter(x, 1.15).userData.below)); if (lo) { l.scale.setScalar(.72); l.position.y += lo * .72 + .05; }   /* beside Kuf both letters are smaller and higher, so the long leg shows on the white label */ if (pr.some(x => E.topDot(x))) { l.scale.setScalar(.88); l.position.y -= .12; }   /* Shin and Sin: the dot on top stays on the white label */ crates[i].add(l); crates[i].userData.key = k; return l; });
     pr.forEach((k, i) => E.pointAt(arrows[i], labels[i], k, 1.3, feat(k, pr)));
   }
@@ -55,7 +55,7 @@ export default function setup(E, { struggled, unit, game }) {
     if (c.userData.key === k) {
       busy = true; enabled = false; wrongInRow = 0; const p0 = card.position.clone(), to = centre(c);
       await E.tween(420, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar(CS * (1 - q * .85)); });
-      card.visible = false; E.joy(to); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F); E.hop(c, .15, 300);
+      card.visible = false; { const m = E.letter(k, .42); const n = c.userData.inCrate = (c.userData.inCrate || 0) + 1; m.position.set(((n - 1) % 4 - 1.5) * .42, .24 + Math.floor((n - 1) / 4) * .46, 1.0); m.userData.inPile = true; c.add(m); E.popIn(m, 1, 250); }   /* the crate fills up: he sees his sorted letters pile in (reviewer: more fun) */ E.joy(to); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F); E.hop(c, .15, 300);
       idx++; E.setProgress(deck.length, idx);
       await E.say(['Yes! ' + E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd)]);
       if (idx < deck.length) { busy = true; await setCard(deck[idx]); busy = false; enabled = true; } else onDone();
