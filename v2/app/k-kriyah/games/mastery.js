@@ -60,6 +60,8 @@ export default function setup(E, { struggled, unit }) {
   /* the older letter he finds hardest (or hasn't seen longest) takes the last older-letter question (RESEARCH.md, gain 5) */
   if (E.reviewPicks && unit.known.length) { const weak = E.reviewPicks(unit.known, 1)[0], at = Qs.map(q => unit.known.includes(q.k) && q.by === 'name').lastIndexOf(true);
     if (weak && at >= 0 && !Qs.some(q => q.k === weak)) Qs[at] = { k: weak, by: 'name' }; }
+  /* two more older letters, from across all the earlier units, so the check covers everything so far (reviewer: too few older letters) */
+  if (E.reviewPicks && unit.known.length > 3) E.reviewPicks(unit.known, 2, Qs.map(q => q.k)).forEach((k, i) => Qs.splice(3 + i * 4, 0, { k, by: 'name' }));
   async function ask(q) {
     cur = q; await E.say(line(q)); active = true; document.body.dataset.askReady = 1;
     const got = await new Promise(r => resolveQ = r); active = false; delete document.body.dataset.askReady; return got;
@@ -87,7 +89,7 @@ export default function setup(E, { struggled, unit }) {
       if (q.first && easy && !q.again) queue.push({ ...q, again: true });   /* with only two letters it was practice: it comes back with all three */
       else if (q.first) { done++; E.setProgress(Qs.length, done); }
     }
-    const stars = right >= 8 ? 3 : right >= 6 ? 2 : 1; window.__right = right;
+    const stars = right >= Qs.length - 1 ? 3 : right >= Math.ceil(Qs.length * 2 / 3) ? 2 : 1;   /* 8 of 9 / 6 of 9, the same share with more questions */ window.__right = right;
     const names = unit.letters.map(k => E.LETTERS[k].name);
     return { stars, line: stars === 3 ? 'Three stars! You know ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + '!' : stars === 2 ? 'Two stars! You passed Unit ' + unit.n + '!' : null };
   };
