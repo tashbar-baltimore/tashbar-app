@@ -6,6 +6,6 @@ The HoS decides the order. A piece can come from 1.0 or 2.0; it is copied in, ma
 
 | Piece | Comes from | Status | Notes |
 |---|---|---|---|
-| Welcome page | new | Moving now | First page (HoS 2026-11-26: "exciting and girlish, elementary and middle school girls, similar to the Tashbar app; don't overwhelm it with anything yet"). Crown, rose-to-purple, gold edge, gentle sparkles; one card, no buttons yet. |
+| Welcome page | new | Moving now | First page (HoS 2026-11-26: "exciting and girlish, elementary and middle school girls, similar to the Tashbar app; don't overwhelm it with anything yet"). HoS: "don't make it wordy or tacky". One clean card: crown on rose-to-purple, כתר, Keser Girls, Coming soon. |
 | Girl sign-in and her own student records | new | Not looked at yet | Separate from the boys' records (HoS 2026-11-26). Needs a decision on where the girls' records live. |
 | Lessons, games, staff screens | 1.0 / 2.0 | Not looked at yet | One piece at a time, adapted for girls. |
