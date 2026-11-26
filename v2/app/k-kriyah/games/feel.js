@@ -22,7 +22,7 @@ export default function setup(E, { unit }) {
   const ORDER = REVIEW ? [...unit.letters, REVIEW] : unit.letters;
   const ROW = [...unit.known, ...unit.letters].filter(k => ORDER.includes(k));   /* the finished row is in Alef-Beis order */   /* a later unit ends with one earlier letter (Beis, and its dot) */
   let H = 3.2; const holder = new THREE.Group(); E.scene.add(holder);
-  const boy = unit.n === 3 ? E.ari() : unit.n === 2 ? E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }) : E.mendy(); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
+  const boy = unit.n === 3 ? E.ari() : unit.n === 2 ? E.pictureCard('shloimy', () => E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c })) : E.mendy(); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
   const done = []; let cur = null, beads = [], next = 0, demo = false, active = false, lastHelp = 0, wander = 0, offTries = 0;
   /* the path is a soft glowing road along the letter (never dots: a dot on Beis means the dagesh); the part he has felt
      turns gold, and a pulsing ring shows where to go next */

@@ -6,7 +6,7 @@ export default function setup(E, { unit }) {
   const pool = [...unit.known, ...unit.letters];
   const R = unit.n === 1 ? ['beis', 'veis', 'alef'] : unit.letters;   /* the letter to catch in each round */
   const { THREE, S } = E;
-  const boy = unit.n === 3 ? E.ari() : unit.n === 2 ? E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }) : E.mendy(); E.scene.add(boy);   /* each unit's own boy */
+  const boy = unit.n === 3 ? E.ari() : unit.n === 2 ? E.pictureCard('shloimy', () => E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c })) : E.mendy(); E.scene.add(boy);   /* each unit's own boy */
   const sign = new THREE.Group(); sign.add(E.mesh(E.rbox(1.25, 1.35, .14, .1), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); sign.add(E.mesh(E.rbox(1.05, 1.15, .08, .06), E.M(0xfffaf0), 0, 0, .06));
   sign.add(E.mesh(new THREE.CylinderGeometry(.05, .05, 1.2, 8), E.M(0x8a5a3c), 0, -1.2, -.05)); E.scene.add(sign);
   const arrow = E.arrow3d(.25), hint = E.glowSprite('#fff7b0', 1.6, 0); E.scene.add(hint); let missRound = 0;   /* a wrong catch: an arrow shows the place to look; after two, the letters to catch glow */
