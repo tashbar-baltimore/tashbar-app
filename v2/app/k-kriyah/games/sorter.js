@@ -27,8 +27,8 @@ export default function setup(E, { struggled, unit, game }) {
   const cardArrow = E.arrow3d(.45);
   function makeCard(k) { const old = card; card = E.letter(k, 1.9); card.visible = false; E.scene.add(card); E.scene.remove(old); }   /* each letter has its own shape */
   let pair = pairs[0], labels = [], P = false, CS = 1, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, wrongInRow = 0, missed = false, deck = [], idx = 0, onDone = null, kRound = 0;
-  E.onLayout(p => { P = p; CS = p ? .85 : 1;
-    if (p) { E.camBase.set(0, 3.2, 11.8); E.camTarget.set(0, 2.4, 0); crates[0].position.set(1.25, 0, 0); crates[1].position.set(-1.25, 0, 0); crates.forEach(c => c.scale.setScalar(.6)); cardHome.set(0, 4.5, 1.5); kid.visible = false; }
+  E.onLayout(p => { P = p; CS = p ? 1.05 : 1;
+    if (p) { E.camBase.set(0, 3.0, 11.2); E.camTarget.set(0, 2.3, 0); crates[0].position.set(1.3, 0, .3); crates[1].position.set(-1.3, 0, .3); crates.forEach(c => c.scale.setScalar(.82)); cardHome.set(0, 4.3, 1.5); kid.visible = false; }   /* phone: bigger crates and card (graphics pass) */
     else { E.camBase.set(0, 2.7, 9.8); E.camTarget.set(0, 1.5, 0); crates[0].position.set(2.6, 0, 0); crates[1].position.set(-2.6, 0, 0); crates.forEach(c => c.scale.setScalar(1)); cardHome.set(0, 2.1, 1.5); kid.visible = true; kid.position.set(-4.7, 0, 1.4); }
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
