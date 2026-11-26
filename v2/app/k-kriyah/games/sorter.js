@@ -3,18 +3,20 @@
    on each label an orange arrow points at the difference (Zayin's crown, Hei's gap). He drags each letter card to its crate (or taps the crate).
    Show-then-try demo for each pair; a wrong answer points an arrow at the difference on the card and says what to look for;
    if he struggles, the right crate glows. */
+let SAV_TOO = false;
 const PAIRS = { 3: [['vov', 'zayin'], ['hei', 'ches']] };   /* a game can bring its own pairs (Unit 4: Beis/Kaf, then Kaf/Chaf) */
 /* the place to look on each letter (font units), and what to say about it */
 const LOOK = { vov: 'No crown. That is Vov.', zayin: 'A crown on top! That is Zayin.', hei: 'The leg doesn’t touch the roof. That is Hei.', ches: 'The leg touches the roof. That is Ches.',
-  beis: 'A tail at the bottom! That is Beis.', gimmel: 'A foot at the bottom! That is Gimmel.', pei: 'A dot! That is Pei.', peiTongue: 'A little tongue inside! That is Pei.', kafNoTongue: 'No little tongue. That is Kaf.', fei: 'No dot. That is Fei.', nun: 'Flat at the bottom. That is Nun.', tes: 'Closed at the bottom. That is Tes.', mem: 'An opening at the bottom! That is Mem.', kafRound: 'Round at the bottom. That is Kaf.', reish: 'Round on top. That is Reish.', daledCorner: 'A corner! That is Daled.', kuf: 'A long leg! That is Kuf.', heiShort: 'A short leg. That is Hei.', kaf: 'A dot inside! That is Kaf.', chaf: 'No dot. That is Chaf.', tav: 'A little foot! That is Tuf.', chesNoFoot: 'The leg touches the roof. No foot. That is Ches.' };
+  beis: 'A tail at the bottom! That is Beis.', gimmel: 'A foot at the bottom! That is Gimmel.', pei: 'A dot! That is Pei.', peiTongue: 'A little tongue inside! That is Pei.', kafNoTongue: 'No little tongue. That is Kaf.', fei: 'No dot. That is Fei.', nun: 'Flat at the bottom. That is Nun.', tes: 'Closed at the bottom. That is Tes.', mem: 'An opening at the bottom! That is Mem.', kafRound: 'Round at the bottom. That is Kaf.', reish: 'Round on top. That is Reish.', daledCorner: 'A corner! That is Daled.', kuf: 'A long leg! That is Kuf.', heiShort: 'A short leg. That is Hei.', kaf: 'A dot inside! That is Kaf.', chaf: 'No dot. That is Chaf.', tav: 'A little foot! That is Tuf.', sav: 'A little foot! That is Suf.', chesNoFoot: 'The leg touches the roof. No foot. That is Ches.' };
 const CLUE = { vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', hei: 'Hei’s leg doesn’t touch the roof.', ches: 'Ches’s leg touches the roof.',
-  beis: 'Beis has a tail at the bottom.', gimmel: 'Gimmel has a foot.', pei: 'Pei has a dot.', peiTongue: 'Pei has a little tongue inside.', kafNoTongue: 'Kaf has no little tongue.', fei: 'Fei has no dot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', kafRound: 'Kaf is round at the bottom.', reish: 'Reish is round on top.', daledCorner: 'Daled has a corner.', kuf: 'Kuf has a long leg.', heiShort: 'Hei has a short leg.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.', tav: 'Tuf has a little foot.', chesNoFoot: 'Ches’s leg touches the roof. Ches has no foot.' };
+  beis: 'Beis has a tail at the bottom.', gimmel: 'Gimmel has a foot.', pei: 'Pei has a dot.', peiTongue: 'Pei has a little tongue inside.', kafNoTongue: 'Kaf has no little tongue.', fei: 'Fei has no dot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', kafRound: 'Kaf is round at the bottom.', reish: 'Reish is round on top.', daledCorner: 'Daled has a corner.', kuf: 'Kuf has a long leg.', heiShort: 'Hei has a short leg.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.', tav: 'Tuf has a little foot.', tavSav: 'Tuf and Suf have a little foot.', chesNoFoot: 'Ches’s leg touches the roof. Ches has no foot.' };
 /* in a Beis/Kaf round the thing to see is the bottom, in a Kaf/Chaf round the dot */
-const say = (T, k, pr) => T[k === 'kaf' && pr.includes('beis') ? 'kafRound' : k === 'kaf' && pr.includes('pei') ? 'kafNoTongue' : k === 'pei' && pr.includes('kaf') ? 'peiTongue' : k === 'daled' && pr.includes('reish') ? 'daledCorner' : k === 'hei' && pr.includes('kuf') ? 'heiShort' : k === 'ches' && pr.includes('tav') ? 'chesNoFoot' : k];
+const say = (T, k, pr) => T[T === CLUE && k === 'tav' && pr.length === 2 && pr.includes('ches') && SAV_TOO ? 'tavSav' : k === 'kaf' && pr.includes('beis') ? 'kafRound' : k === 'kaf' && pr.includes('pei') ? 'kafNoTongue' : k === 'pei' && pr.includes('kaf') ? 'peiTongue' : k === 'daled' && pr.includes('reish') ? 'daledCorner' : k === 'hei' && pr.includes('kuf') ? 'heiShort' : k === 'ches' && pr.includes('tav') ? 'chesNoFoot' : k];
 const WATCH = { reish: 'Round on top!', kuf: 'A long leg!', zayin: 'A crown on top!', ches: 'The leg touches the roof!', kaf: 'Round at the bottom!', chaf: 'No dot!', nun: 'Flat at the bottom!', mem: 'An opening at the bottom!', pei: 'A little tongue inside!', fei: 'No dot!', tav: 'A little foot!', ches: 'The leg touches the roof!' };
 export default function setup(E, { struggled, unit, game }) {
   const { THREE, S } = E;
   const pairs = (game && game.pairs) || PAIRS[unit.n] || PAIRS[3];
+  SAV_TOO = !!(game && game.alsoIn && game.alsoIn.tav); const ALSO = (game && game.alsoIn) || {}, REV = Object.fromEntries(Object.entries(ALSO).map(([a, b]) => [b, a])), boxOf = k => REV[k] || k;   /* a card's box */
   const feat = (k, pr) => E.featFor(k, pr[0] === k ? pr[1] : pr[0]);   /* a dot pair: point at the dot place */
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   const wood = E.M(0xc68a52, { roughness: .6 }), wood2 = E.M(0xa86f3c, { roughness: .6 });
@@ -43,10 +45,10 @@ export default function setup(E, { struggled, unit, game }) {
   }
   E.onFrame(t => {
     if (card.visible && !dragging && !busy) { card.position.y = cardHome.y + Math.sin(t * 2.2) * .08; card.rotation.y = Math.sin(t * 1.1) * .25; }
-    const want = card.userData.key; crates.forEach((c, i) => glows[i].material.opacity = help && card.visible && c.userData.key === want ? .55 + Math.sin(t * 5) * .3 : 0);
+    const want = boxOf(card.userData.key); crates.forEach((c, i) => glows[i].material.opacity = help && card.visible && c.userData.key === want ? .55 + Math.sin(t * 5) * .3 : 0);
   });
   const centre = c => c.position.clone().add(new THREE.Vector3(0, .8 * c.scale.x, .5));
-  window.__info = () => ({ ready: enabled && !busy && card.visible, k: card.userData.key, card: E.toScreen(card.position), crates: Object.fromEntries(crates.filter(c => c.visible).map(c => [c.userData.key, E.toScreen(centre(c))])) });
+  window.__info = () => ({ ready: enabled && !busy && card.visible, k: boxOf(card.userData.key), card: E.toScreen(card.position), crates: Object.fromEntries(crates.filter(c => c.visible).map(c => [c.userData.key, E.toScreen(centre(c))])) });
   const nearest = () => { const [cx, cy] = E.toScreen(card.position); let best = null, bd = Math.min(innerWidth, innerHeight) * .25; crates.filter(c => c.visible).forEach(c => { const [x, y] = E.toScreen(centre(c)), d = Math.hypot(x - cx, y - cy); if (d < bd) { bd = d; best = c; } }); return best; };
   const grab = new THREE.Vector3();
   E.onPointer('down', e => { if (!enabled || busy || !card.visible) return; if (E.pickFrom(e, [card])) { dragging = true; const p = E.planePoint(e, card.position.z); if (p) grab.copy(card.position).sub(p); return; } const c = E.pickFrom(e, crates.filter(c => c.visible)); if (c) drop(c); });
@@ -57,7 +59,7 @@ export default function setup(E, { struggled, unit, game }) {
   async function drop(c) {
     if (!c) { await back(); return; }
     const k = card.userData.key;
-    if (c.userData.key === k) {
+    if (c.userData.key === boxOf(k)) {
       busy = true; enabled = false; wrongInRow = 0; const p0 = card.position.clone(), to = centre(c);
       await E.tween(420, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar(CS * (1 - q * .85)); });
       card.visible = false; E.joy(to); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F); E.hop(c, .15, 300);
@@ -76,6 +78,7 @@ export default function setup(E, { struggled, unit, game }) {
     setPair(pr); E.sfx.whoosh(); crates.forEach(c => E.hop(c, .2, 300));
     for (const k of pr) await E.say(say(CLUE, k, pr));   /* the right-hand crate first, as we read */   /* two lines: each 12 words or fewer */
     let d; do { d = Array.from({ length: 6 }, (_, i) => pr[i % pr.length]).sort(() => Math.random() - .5); } while (d.some((k, i) => i > 1 && d[i - 1] === k && d[i - 2] === k) || (pr.length > 2 && d[0] === pr[1]));   /* never three of one letter in a row */
+    d = d.map((k, i) => ALSO[k] && i % 2 ? ALSO[k] : k);   /* Unit 8: some Tuf cards are Suf; both go in Tuf's box (the foot, not the dot, is the clue) */
     deck = [pr[1], ...d]; idx = 0; E.setProgress(deck.length, 0);
     await setCard(deck[0]); busy = false;
     await E.say('Watch me. ' + (WATCH[pr[1]] || say(LOOK, pr[1], pr)));

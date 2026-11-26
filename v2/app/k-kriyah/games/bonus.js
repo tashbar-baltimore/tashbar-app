@@ -56,11 +56,11 @@ export default function setup(E, { unit }) {
   return async () => {
     E.setProgress(R.length, 0);
     await E.say('Bonus round! Letters are falling from the clouds.');
-    setSign(R[0]); await E.say('Watch me. I catch ' + E.an(R[0]) + '.');
+    want = R[0]; setSign(R[0]); await E.say('Watch me. I catch ' + E.an(R[0]) + '.');   /* the demo catches the right letter (it never counts as a miss) */
     drop(R[0], 2600); targets--; const demo = falling[falling.length - 1]; await E.wait(900);
     const [hx, hy] = E.toScreen(demo.position); E.hand.at(hx, hy); await E.wait(400); E.hand.hide();
     active = true; await new Promise(r => { const iv = setInterval(() => { if (demo.userData.busy || demo.userData.gone) { clearInterval(iv); r(); } }, 50); E.$('#c').dispatchEvent(new PointerEvent('pointerdown', { clientX: E.toScreen(demo.position)[0], clientY: E.toScreen(demo.position)[1], bubbles: true, pointerId: 1 })); });
-    active = false; caught = 0; await E.wait(600);
+    active = false; caught = 0; wrong = 0; missRound = 0; await E.wait(600);
     await E.say('Now you! Be quick!');
     const SP = R.length > 3 ? [[7, 1500, 4600], [8, 1400, 4300], [9, 1250, 3900], [10, 1100, 3500]] : [[8, 1500, 4600], [9, 1300, 4000], [10, 1100, 3500]];   /* each round a little faster */
     for (let i = 0; i < R.length; i++) { await round(R[i], ...SP[i]); E.setProgress(R.length, i + 1); }
