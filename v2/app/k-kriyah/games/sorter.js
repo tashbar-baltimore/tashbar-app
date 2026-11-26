@@ -32,7 +32,7 @@ export default function setup(E, { struggled, unit, game }) {
     else { E.camBase.set(0, 2.7, 9.8); E.camTarget.set(0, 1.5, 0); crates[0].position.set(2.6, 0, 0); crates[1].position.set(-2.6, 0, 0); crates.forEach(c => c.scale.setScalar(1)); cardHome.set(0, 2.1, 1.5); kid.visible = true; kid.position.set(-4.7, 0, 1.4); }
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
-  function setPair(pr) {   /* right crate: the first letter of the pair (as Hebrew reads), left crate: the second */
+  function setPair(pr) { crates.forEach(c => { c.children.filter(o => o.userData && o.userData.inPile).forEach(o => c.remove(o)); c.userData.inCrate = 0; });   /* right crate: the first letter of the pair (as Hebrew reads), left crate: the second */
     pair = pr; labels.forEach(l => l.parent && l.parent.remove(l)); labels = pr.map((k, i) => { const l = E.letter(k, 1.15); l.position.set(0, 1.95, .62); const lo = Math.max(...pr.map(x => E.letter(x, 1.15).userData.below)); if (lo) { l.scale.setScalar(.72); l.position.y += lo * .72 + .05; }   /* beside Kuf both letters are smaller and higher, so the long leg shows on the white label */ crates[i].add(l); crates[i].userData.key = k; return l; });
     pr.forEach((k, i) => E.pointAt(arrows[i], labels[i], k, 1.3, feat(k, pr)));
   }
