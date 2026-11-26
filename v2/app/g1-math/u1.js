@@ -151,7 +151,7 @@ async function wallRound(firstRow, rows, gapNums, o = {}) {
   const LS = PORTRAIT ? 1.25 : 1.25, loose = shuffle(gapNums.slice()).map((n, i) => { const b = brick(n, MATS.phys('#FFE6B8', { roughness: 0.6, clearcoat: 0.3 })); b.scale.setScalar(LS);
     b.position.set(hx + (i - (gapNums.length - 1) / 2) * (PORTRAIT ? 2.45 : 2.9), PORTRAIT ? 1.0 : 0.75, 1.6); b.userData.home = b.position.clone(); keep(b); return b; });
   G.looseLeft = () => loose.filter(b => !b.userData.done).map(b => b.userData.n);
-  const m = keep(addKid(S, 'mendy', PORTRAIT ? V(hx - half * 3.2, -0.2, 2.6) : V(bw * 5 + 1.6, 0, 1.4))); m.rotation.y = PORTRAIT ? half * 0.4 : -0.5; m.scale.setScalar(PORTRAIT ? 0.6 : 0.8);
+  const m = keep(addKid(S, 'mendy', PORTRAIT ? V(hx - half * 4.2, -0.2, 3.4) : V(bw * 5 + 1.6, 0, 1.4))); m.rotation.y = PORTRAIT ? half * 0.4 : -0.5; m.scale.setScalar(PORTRAIT ? 0.6 : 0.8);
   S.frame(V(hx, (top + 0.2) / 2 + (PORTRAIT ? -0.4 : 0.5), 0), PORTRAIT ? bw * 5 + 0.2 : bw * 10 + 1.5, top + (PORTRAIT ? 2.6 : 2.4), V(0, 0.22, 1));
   G.hit = { loose: n => sc(loose.find(b => b.userData.n === n)), gap: n => { const v = posOf(n); const d = new THREE.Object3D(); d.position.copy(v).add(V(0, 0, 0.3)); S.scene.add(d); const r = sc(d); S.scene.remove(d); return r; } };
   if (o.demo) {
@@ -169,7 +169,7 @@ async function wallRound(firstRow, rows, gapNums, o = {}) {
       start: b => { if (b.userData.done) return; b.scale.setScalar(1.15); chime('tap'); },
       move: (b, p) => { if (!b.userData.done) b.position.set(p.x, p.y, 1.6); },
       drop: async b => { if (b.userData.done) return;
-        let best = null, bd = 1e9; gapNums.forEach(n => { if (!holes[n].visible) return; const q = posOf(n), d = Math.hypot(q.x - b.position.x, q.y - b.position.y); if (d < bd) { bd = d; best = n; } });
+        let best = null, bd = 1e9; const cam = S.camera.position; gapNums.forEach(n => { if (!holes[n].visible) return; const g0 = posOf(n), dv = g0.clone().sub(cam), q = cam.clone().addScaledVector(dv, (1.6 - cam.z) / dv.z), d = Math.hypot(q.x - b.position.x, q.y - b.position.y); if (d < bd) { bd = d; best = n; } });
         if (best != null && bd < 1.6 && best === b.userData.n) { b.userData.done = true; await tween(250, u => b.position.lerp(posOf(best).clone().add(V(0, 0, 0.1)), u)); b.scale.setScalar(1); holes[best].visible = false; chime('good');
           if (--left === 0) { m.act('cheer'); confetti(S, V(0, top, 1), 50); await say(miss ? 'The wall is fixed!' : 'Perfect! The wall is fixed!'); done(); } return; }
         if (best == null || bd >= 1.6) { await tween(300, u => b.position.lerp(b.userData.home, u)); b.scale.setScalar(LS); return; }
@@ -185,19 +185,19 @@ async function wallRound(firstRow, rows, gapNums, o = {}) {
 /* CRATE COUNT: full crates of 10 and loose apples. He taps the crates (10, 20 ...) then the apples, then writes the number. */
 async function crateRound(n, o = {}) {
   clearTemp(); G.q = (G.q || 0) + 1; G.ask = { kind: 'crates', answer: n };
-  const tens = Math.floor(n / 10), ones = n % 10, per = PORTRAIT ? 3 : 6, rows = Math.ceil(tens / per) || 1;
-  const crates = [], apples = [];
+  const tens = Math.floor(n / 10), ones = n % 10, per = PORTRAIT ? 4 : 6, rows = Math.ceil(tens / per) || 1;
+  const crates = [], apples = [], RZ = PORTRAIT ? 2.3 : 1.7;
   for (let i = 0; i < tens; i++) { const c = keep(crate(10)), r = Math.floor(i / per), k = i % per, inRow = Math.min(per, tens - r * per);
-    c.position.set((k - (inRow - 1) / 2) * 2.95, 0, -r * 1.7 - 1.2); crates.push(c);
+    c.position.set((k - (inRow - 1) / 2) * 2.95, 0, -r * RZ - 1.2); crates.push(c);
     const hit = new THREE.Mesh(new THREE.BoxGeometry(2.7, 1.0, 1.3), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); hit.position.y = 0.4; c.add(hit); }
   for (let i = 0; i < ones; i++) { const a = keep(apple()); a.scale.setScalar(1.6); a.position.set((i - (ones - 1) / 2) * (PORTRAIT ? 0.9 : 1.05), 0.35, 1.3); apples.push(a);
     const hit = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 6), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); a.add(hit); }
   const w = Math.max(Math.min(tens, per) * 2.95, ones * 1.05, 6) + (PORTRAIT ? 1 : 5);
   const m = keep(addKid(S, o.who || 'mendy', V(PORTRAIT ? -3.4 : -w / 2 + 0.6, 0, 1.4))); m.rotation.y = 0.5; m.scale.setScalar(0.85);
-  S.frame(V(PORTRAIT ? 0 : -1.5, 0.6, -(rows - 1) * 0.85 + 0.2), w, rows * 1.7 + 4.2, V(0, 0.85, 1));
+  S.frame(V(PORTRAIT ? 0 : -1.5, 0.6, -(rows - 1) * RZ / 2 + 0.2), w, rows * RZ + 4.2, V(0, 0.85, 1));
   G.hit = { crate: i => sc(crates[i], 0.5), apple: i => sc(apples[i], 0.2) };
   let said = 0;
-  const countTo = async (obj, k, saying) => { const isC = crates.includes(obj), lab = floatNum(k, obj.position.clone().add(V(0, isC ? 1.5 : 0.95, isC ? -0.3 : 0))); lab.scale.setScalar(isC ? 1.2 : 0.78); chime('tap'); if (saying) await say(String(k)); return lab; };
+  const countTo = async (obj, k, saying) => { const isC = crates.includes(obj), lab = floatNum(k, obj.position.clone().add(V(0, isC ? 1.5 : 0.95, isC ? -0.3 : 0))); lab.scale.setScalar(isC ? (PORTRAIT ? 1.0 : 1.2) : 0.78); chime('tap'); if (saying) await say(String(k)); return lab; };
   if (o.demo) {
     await say('Watch me. Crates first: each crate has 10.');
     for (let i = 0; i < tens; i++) await countTo(crates[i], (i + 1) * 10, true);
@@ -215,6 +215,7 @@ async function crateRound(n, o = {}) {
     S.onTap(apples, async a => { if (doneC.size < tens) { say('Tens first! Tap the crates.'); return; } if (doneA.has(a)) return; doneA.add(a); await countTo(a, tens * 10 + doneA.size, !QUICK); if (doneA.size === ones) res(); });
   });
   S.clearInput(); G.state = 'write';
+  if (o.check) clearLabels();
   await say('Write how many apples.', { cap: 'Write how many apples.' });
   let first = true;
   for (;;) {
@@ -222,7 +223,7 @@ async function crateRound(n, o = {}) {
     if (v === n) { m.act('cheer'); chime('good'); confetti(S, V(0, 2, 0), 40); await say(first ? 'Yes! ' + n + ' apples!' : n + '! You got it.'); clearLabels(); await wait(300); return first; }
     first = false; G.fixes++;
     if (o.check) { await say('It is ' + n + '.'); clearLabels(); return false; }
-    await say(tens + ' crates is ' + (tens * 10) + '. ' + ones + ' more is ' + n + '.');
+    await say(ones ? tens + ' crates is ' + (tens * 10) + '. ' + ones + ' more is ' + n + '.' : tens + ' crates is ' + n + '.');
     await say('Write ' + n + '.', { cap: tens + ' tens and ' + ones + ' ones' });
   }
 }
@@ -236,7 +237,7 @@ async function hearRound(n, o = {}) {
   G.state = 'write';
   const v = await pad(3); s.setNum(v);
   if (v === n) { chime('good'); m.act('cheer'); await say('Yes! ' + n + '.'); await wait(300); return true; }
-  G.fixes++; await wait(200); s.setNum(n); shake(s); await say(o.check ? 'It is ' + n + '.' : 'Close! ' + n + ' looks like this.'); await wait(600); return false;
+  G.fixes++; await wait(200); s.setNum(n); shake(s); await say(o.check ? 'It is ' + n + '.' : 'Not yet. ' + n + ' looks like this.'); await wait(600); return false;
 }
 
 /* ============================================================ the games ============================================================ */
@@ -245,9 +246,11 @@ async function opener() {
   G.how = { title: 'Counting past 100', steps: ['Listen to Mendy count.', 'Tap the stone that glows.', 'After 100, say "one hundred one", "one hundred two" ...'], say: 'Tap the glowing stone and say its number.' };
   const m = addKid(S, 'mendy', V(0, 0, 3)); m.scale.setScalar(0.9);
   S.frame(V(0, 1.2, 1.5), 7, 4.5, V(0, 0.3, 1), true);
-  await say('Hi! It is Mendy. I am in first grade now!'); m.act('wave', 1.8);
+  await say('Hi! I am Mendy. I am in first grade now!'); m.act('wave', 1.8);
+  await say('Today we pick apples for Bubby\'s Shabbos cake!');
   await say('In kindergarten we counted to 100.');
   await say('Today we count all the way to 120!');
+  await say('Big numbers help us count lots of apples!');
   /* 1: tens up the hill */
   const tens = Array.from({ length: 10 }, (_, i) => (i + 1) * 10), row = [];
   const cols = PORTRAIT ? 5 : 10;
@@ -283,7 +286,23 @@ async function opener() {
   await say('See the pattern? 1, then 101.');
   for (let i = 0; i < 3; i++) { lightUp(two[i], '#7FD6FF'); lightUp(two[10 + i], '#7FD6FF'); await wait(500); }
   await say('A hundred in front, then the same numbers.');
-  await say('And at the top of the hill: 120!');
+  /* 4: 111 to 120, then he finishes the climb himself */
+  clearTemp(); const top = [];
+  for (let i = 0; i < 10; i++) { const n = 111 + i, s = keep(stone(i < 7 ? null : null)); const rr = Math.floor(i / cols3), c = i % cols3; s.position.set((c - (cols3 - 1) / 2) * 2.25, 0, rr * 2.5 - 2); s.userData.n = n; top.push(s); }
+  S.frame(V(0, 0.6, PORTRAIT ? 0.6 : -2), PORTRAIT ? 12 : 23.5, PORTRAIT ? 9 : 6, V(0, 0.8, 1));
+  await say('Up to the top of the hill!');
+  for (let i = 0; i < 7; i++) { top[i].setNum(top[i].userData.n); lightUp(top[i]); chime('tap'); await say(String(top[i].userData.n)); }
+  await say('Now you! Finish the climb.'); G.state = 'tapnext';
+  for (let i = 7; i < 10; i++) { const s = top[i], g = lightUp(s, '#7FFFB0'); G.next = s.userData.n; G.hit = { next: () => sc(s, 0.3), prev: () => sc(top[i - 1], 0.3) };
+    await new Promise(res => { const t = S.onTap(top, o => { if (o !== s) { say('Tap the glowing stone.'); return; } t.enabled = false; res(); }); });
+    s.remove(g); s.setNum(s.userData.n); lightUp(s); chime('tap'); await say(String(s.userData.n)); }
+  S.clearInput(); G.state = 'busy';
+  await say('120! The top of the hill!');
+  /* 5: how a big number is written */
+  clearTemp(); const w = keep(stone(113)); w.scale.setScalar(2.4); lightUp(w, '#FFE27A');
+  S.frame(V(0, 0.6, 0), 8, 5, V(0, 0.9, 1));
+  await say('We write one hundred thirteen like this: 113.');
+  await say('A 1 for the hundred, then 13.');
   confetti(S, V(0, 2, 0), 60); m.act('cheer'); dots(3, 3);
   G.how = null; await wait(600);
   const r = await endScreen(3); if (r === 'replay') location.reload();
@@ -295,29 +314,31 @@ async function hop() {
   let miss = 0, easy = false;
   const plan = [() => [rnd(21, 55), rnd(2, 4)], () => { const s = rnd(3, 8) * 10 + rnd(6, 8); return [s, rnd(3, 5)]; }, () => [rnd(95, 98), rnd(4, 6)], () => [rnd(104, 110), rnd(3, 5)]];
   for (let r = 0; r < plan.length; r++) {
-    G.round = r; let [s, h] = plan[r](); if (easy) h = Math.min(h, 3);
+    G.round = r; let [s, h] = plan[r](); if (easy) { h = Math.min(h, 3); s = Math.min(s, 90 - h); }
     if (s + h > 120) s = 120 - h;
     const ok = await hopRound(s, h); if (!ok) miss++; if (miss >= 2 && !easy) { easy = true; G.easy = true; await say('Let us take smaller hops.'); }
     dots(R, r + 2);
   }
+  if (miss === 0) { G.bonus = true; await say('Bonus! The numbers are hiding.'); await hopRound(rnd(104, 112), 4, { blank: true }); }
   const st = easy ? Math.min(2, starsFor(miss, 4)) : starsFor(miss, 4);
   await say(st === 3 ? 'Amazing hopping!' : 'Great counting on!'); const r = await endScreen(st); if (r === 'replay') location.reload();
 }
 async function wall() {
   G.name = 'wall'; dots(3, 0);
   G.how = { title: 'Fix the wall', pic: PIC.wall, steps: ['Look at the stone before the gap: one more comes next.', 'Or look up: the stone below is ten more.', 'Drag the stone into its gap.'], say: 'One more is next. Ten more is right below.' };
-  const sets = [[21, 3, [23, 34, 45]], [61, 3, [67, 78, 89]], [91, 3, [99, 108, 116, 120]]];
+  const sets = [[21, 3, [23, 34, 45]], [61, 3, [76, 77, 89]], [91, 3, [99, 108, 116, 120]]];
   let miss = 0;
   for (let r = 0; r < sets.length; r++) { G.round = r; const [a, rows, gaps] = sets[r]; miss += await wallRound(a, rows, gaps, { demo: r === 0 }); dots(3, r + 1); }
   const st = starsFor(miss, 6); const e = await endScreen(st); if (e === 'replay') location.reload();
 }
 async function crates() {
-  G.name = 'crates'; const R = 4; dots(R, 0);
+  G.name = 'crates'; const R = 5; dots(R, 0);
   G.how = { title: 'Crate count', pic: PIC.crates, steps: ['Each crate has 10 apples.', 'Tap the crates: 10, 20, 30 ...', 'Then tap the apples: 31, 32 ...', 'Write the number.'], say: 'Count the crates by tens, then the apples by ones.' };
   await crateRound(23, { demo: true }); dots(R, 1);
   let miss = 0; const ns = [rnd(3, 4) * 10 + rnd(1, 9), rnd(6, 8) * 10 + rnd(1, 9), 110 + rnd(1, 6)];
   for (let r = 0; r < ns.length; r++) { G.round = r; if (!(await crateRound(ns[r]))) miss++; dots(R, r + 2); }
-  const st = starsFor(miss, 3); await say(st === 3 ? 'You count like a farmer!' : 'Great counting!'); const e = await endScreen(st); if (e === 'replay') location.reload();
+  G.round = 3; await say('Now listen, and write the number.'); if (!(await hearRound(110 + rnd(1, 9)))) miss++; dots(R, 5);
+  const st = starsFor(miss, 4); await say(st === 3 ? 'You count like a farmer!' : 'Great counting!'); const e = await endScreen(st); if (e === 'replay') location.reload();
 }
 async function mistake() {
   G.name = 'mistake'; const R = 3; dots(R, 0);
@@ -325,7 +346,7 @@ async function mistake() {
   const rounds = [
     { row: [106, 107, 108, 109, 200, 111], bad: 4, right: 110, line: 'Shmuel counted. Is every stone right?' },
     { row: [98, 99, 100, 1001, 102, 103], bad: 3, right: 101, line: 'Shmuel wrote these. Find the wrong one.' },
-    { row: [100, 101, 102, 1003, 104, 105], bad: 3, right: 103, line: 'One stone says 1003. Is that right?' }];
+    { row: [100, 101, 102, 1003, 104, 105], bad: 3, right: 103, line: 'Shmuel wrote one hundred three. Find the wrong stone.' }];
   let miss = 0;
   for (let r = 0; r < rounds.length; r++) {
     clearTemp(); G.round = r; const q = rounds[r]; G.q = (G.q || 0) + 1; G.ask = { kind: 'mistake', bad: q.bad, answer: q.right };
@@ -352,9 +373,9 @@ async function check() {
   await say('The big check! Do your best. No help this time.');
   const items = shuffle([
     () => hopRound(rnd(64, 85), rnd(3, 5), { check: true }),
-    () => hopRound(rnd(96, 99), rnd(3, 6), { check: true }),
-    async () => (await wallRound(41, 3, [57], { check: true })) === 0,
-    async () => (await wallRound(91, 3, [113], { check: true })) === 0,
+    () => { const s = rnd(96, 99); return hopRound(s, rnd(Math.max(3, 101 - s), 6), { check: true }); },
+    async () => (await wallRound(41, 3, [57, 66, 75], { check: true })) === 0,
+    async () => (await wallRound(91, 3, [104, 113, 118], { check: true })) === 0,
     () => crateRound(rnd(4, 9) * 10 + rnd(1, 9), { check: true }),
     () => crateRound(100 + rnd(11, 19), { check: true }),
     () => hearRound(100 + rnd(1, 9), { check: true }),
@@ -364,7 +385,8 @@ async function check() {
   G.right = right; G.mastered = right >= 7;
   clearTemp(); const m = keep(addKid(S, 'mendy', V(0, 0, 0))); S.frame(V(0, 1.4, 0), 5, 4, V(0, 0.3, 1));
   if (G.mastered) { m.act('cheer', 3); confetti(S, V(0, 3, 0), 80); await say('You did it! You count to 120!'); }
-  else { m.act('wave', 2); await say('Good work! Let us practice and try again.'); }
+  else { m.act('wave', 2); await say('Good work! Let us practice and try again.');
+    G.practice = ['hop', 'wall', 'crates'].find(g => starsOf(g) < 3) || 'hop'; document.getElementById('onward').href = 'unit1.html?g=' + G.practice; }
   const e = await endScreen(right === 8 ? 3 : right === 7 ? 2 : 1); if (e === 'replay') location.reload();
 }
 async function review() {
