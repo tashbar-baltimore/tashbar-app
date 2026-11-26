@@ -1479,7 +1479,7 @@ function words(c){ return c.name.replace(/=/,'means')+'. '+c.what+' '+c.when; }
 function draw(){ const T=window.TLK, c=S.list[S.i], n=S.list.length, y=T.young(grade()), last=S.i===n-1;
  const tgt=c.find?Q(c.find):null; if(tgt) try{ tgt.scrollIntoView({block:'center',behavior:'auto'}); }catch(e){}
  const r=tgt?tgt.getBoundingClientRect():null, pad=8;
- S.el.innerHTML=(r?`<div class="tlt-ring" style="left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px"></div>`:'<div class="tlt-dim"></div>')+
+ S.el.innerHTML=(r?`<div class="tlt-ring" style="left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;border-radius:${getComputedStyle(tgt).borderRadius==='50%'?'50%':(parseFloat(getComputedStyle(tgt).borderRadius)||10)+pad+'px'}"></div>`:'<div class="tlt-dim"></div>')+
   `<div class="tlt-bub" role="dialog" aria-modal="true" aria-label="How the buttons work">${T.x('data-tlt="x"','tr')}
    <div class="tlt-top">${T.pill('prog',(S.i+1)+' of '+n)}${y?'':T.tool('🔊','Read it to me','data-tlt="say"')}</div>
    <div class="tlt-show" aria-hidden="true">${c.show}</div>
@@ -1496,15 +1496,15 @@ function css(){ if(document.getElementById('tlt-css')) return; const s=document.
 #tl-tour .tlt-dim{position:absolute;inset:0;background:rgba(15,12,40,.55)}
 #tl-tour .tlt-ring{position:absolute;border-radius:18px;box-shadow:0 0 0 4px #FDE047,0 0 0 9999px rgba(15,12,40,.55);pointer-events:none;transition:all .2s}
 #tl-tour .tlt-bub{position:absolute;box-sizing:border-box;background:#fff;color:#1E1B4B;border-radius:20px;padding:18px 18px 16px;box-shadow:0 18px 40px rgba(15,12,40,.35)}
-#tl-tour .tlt-bub.tlt-under::before,#tl-tour .tlt-bub.tlt-over::after{content:"";position:absolute;left:var(--ax);width:18px;height:18px;margin-left:-9px;background:#fff;transform:rotate(45deg)}
-#tl-tour .tlt-bub.tlt-under::before{top:-8px}#tl-tour .tlt-bub.tlt-over::after{bottom:-8px}
+#tl-tour .tlt-bub.tlt-under::before,#tl-tour .tlt-bub.tlt-over::after{content:"";position:absolute;left:var(--ax);margin-left:-11px;width:0;height:0;border:11px solid transparent}
+#tl-tour .tlt-bub.tlt-under::before{top:-21px;border-bottom-color:#fff;border-top:0;border-bottom-width:12px;top:-12px}#tl-tour .tlt-bub.tlt-over::after{bottom:-12px;border-top-color:#fff;border-bottom:0;border-top-width:12px}
 #tl-tour .tlt-top{display:flex;align-items:center;gap:10px;margin-right:52px}
 #tl-tour .tlt-show{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 4px;pointer-events:none}
 #tl-tour h2{margin:8px 0 4px;font-size:22px}#tl-tour p{margin:0 0 4px;font-size:17px;line-height:1.35}#tl-tour .tlt-when{font-weight:700}
 #tl-tour .tlt-act{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
 @media (prefers-reduced-motion:reduce){#tl-tour .tlt-ring{transition:none}}
 #tl-tourhint{position:fixed;z-index:2147483200;box-sizing:border-box;background:#fff;color:#1E1B4B;border-radius:16px;padding:14px 56px 12px 16px;box-shadow:0 14px 34px rgba(15,12,40,.28);font-size:16px;line-height:1.35}
-#tl-tourhint::before{content:"";position:absolute;top:-8px;left:var(--ax);width:16px;height:16px;margin-left:-8px;background:#fff;transform:rotate(45deg)}
+#tl-tourhint::before{content:"";position:absolute;top:-12px;left:var(--ax);margin-left:-11px;width:0;height:0;border:11px solid transparent;border-top:0;border-bottom:12px solid #fff}
 #tl-tourhint p{margin:0 0 4px}`; document.head.appendChild(s); }
 function close(){ try{ speechSynthesis.cancel(); }catch(e){} if(S.el) S.el.remove(); S.el=null; removeEventListener('resize',draw); }
 function open(){ if(!window.TLK) return; close(); css(); S.list=cards(); S.i=0; S.el=document.createElement('div'); S.el.id='tl-tour'; document.body.appendChild(S.el);
@@ -1528,7 +1528,7 @@ function hint(){ const id=sid(); if(!id){ hintFor=''; hideHint(); return; }
  hintEl=document.createElement('div'); hintEl.id='tl-tourhint'; hintEl.setAttribute('role','dialog'); hintEl.setAttribute('aria-label','The lightbulb');
  hintEl.innerHTML=T.x('data-th="x"','tr')+'<p><b>💡 This is the lightbulb.</b></p><p>Tap it to learn how the buttons work.</p><p>You can also find it in <b>My profile</b>.</p>';
  hintEl.style.width=w+'px'; hintEl.style.top=(r.bottom+14)+'px'; hintEl.style.left=Math.min(Math.max(12,r.left+r.width/2-w/2),innerWidth-w-12)+'px';
- hintEl.style.setProperty('--ax',Math.max(20,Math.min(w-20,r.left+r.width/2-parseFloat(hintEl.style.left)))+'px');
+ hintEl.style.setProperty('--ax',Math.max(22,Math.min(w-22,r.left+r.width/2-parseFloat(hintEl.style.left)))+'px');
  document.body.appendChild(hintEl); hintEl.addEventListener('click',e=>{ if(e.target.closest('[data-th="x"]')){ e.stopPropagation(); hideHint(); } }); }
 document.addEventListener('click',e=>{ if(hintEl&&e.target.closest&&e.target.closest('[data-gm="pftour"]')) hideHint(); },true);
 (function tick(){ try{ hint(); }catch(e){} setTimeout(tick,2500); })();   /* one cheap look every 2.5 s, nothing else */
