@@ -10,12 +10,14 @@
      A wrong tap: "Let's look" and we count along the path together. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>.avichip{ width:clamp(80px,12vh,104px); height:clamp(80px,12vh,104px); } .avichip img{ height:100%; width:auto; pointer-events:none; } .avichip[hidden]{ display:none; }</style>
 </head>
 <body>
 <div id="world"></div>
 <div id="game" class="locked"><div class="stage s6" id="stage">
   <div class="ui" id="panel">
     <div class="who"><img src="art/avi-talk.png" alt="" id="whoimg"></div>
+    <div class="numcard avichip" id="avichip" hidden><img src="art/avi-idle.png" alt="Avi"></div>
     <div class="spin6" id="spin" aria-hidden="true"></div>
   </div>
 </div></div>
@@ -26,8 +28,8 @@ const $ = id => document.getElementById(id);
 let P, A, SP, R, done;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
 function hooks() {
-  if (R.kind === 'hop') { const ok = R.at + R.k, bad = ok === 10 ? 8 : ok + 1 === R.wrongAt ? ok + 2 : ok + 1;
-    GAME.right = () => { P.focus(ok, true); return [{ tap: '.stone[data-n="' + ok + '"]' }]; }; GAME.wrong = () => { P.focus(bad, true); return [{ tap: '.stone[data-n="' + Math.min(10, bad) + '"]' }]; }; return; }
+  if (R.kind === 'hop') { const ok = R.at + R.k, bad = R.wrongAt;
+    GAME.right = () => { P.focus(ok, true); return [{ drag: ['#avichip', '.stone[data-n="' + ok + '"]'] }]; }; GAME.wrong = () => { P.focus(bad, true); return [{ drag: ['#avichip', '.stone[data-n="' + bad + '"]'] }]; }; return; }
   const next = R.picked == null ? R.a : R.picked === R.a ? R.b : R.a, fine = [R.a - 1, R.b + 1, R.a + 1].find(n => n >= 0 && n <= 10 && n !== R.a && n !== R.b);
   GAME.right = () => { P.focus(next, true); return [{ tap: '.stone[data-n="' + next + '"]' }]; };
   GAME.wrong = R.picked == null ? () => { P.focus(fine, true); return [{ tap: '.stone[data-n="' + fine + '"]' }]; } : null;
@@ -36,40 +38,44 @@ function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
 async function walkAlong(from, to) {   /* we count along the path together: each stone shines as we say it */
   for (let n = from; n <= to; n++) { P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === to ? '.' : ','), { noRepeat: true }); P.glow(n, false); }
 }
+/* Avi's piece: he drags Avi (or taps Avi, then the stone) to where Avi should be */
+async function moveAvi(chip, stone) {
+  if (GAME.phase !== 'answer' || R.kind !== 'hop') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n, ok = R.at + R.k;
+  if (n === ok) { A.pose('happy'); await A.hop(ok); P.petals(ok); await FR.yes(stone, FR.pick(['Thank you! Avi is on ' + FR.word(ok) + ' now.', 'Yes! You moved him right!'])); A.pose('idle'); return finish(); }
+  FR.oops(stone); R.misses++;
+  await FR.say("Let's look. Avi started on " + FR.word(R.at) + '. ' + (R.k === 1 ? 'One hop.' : 'Two hops.'));
+  await walkAlong(R.at + 1, ok); if (R.misses > 1) P.el(ok).classList.add('hint');
+  await FR.say('Move Avi to that stone.'); open();
+}
 async function tap(n, el) {
-  if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
-  if (R.kind === 'hop') {
-    const ok = R.at + R.k;
-    if (n === ok) { A.pose('happy'); await A.hop(ok); P.petals(ok); await FR.yes(el, FR.pick(['Thank you! Avi is on ' + FR.word(ok) + ' now.', 'Yes! You fixed it!'])); A.pose('idle'); return finish(); }
-    FR.oops(el); R.misses++;
-    await FR.say("Let's look. Avi started on " + FR.word(R.at) + '. ' + (R.k === 1 ? 'One hop.' : 'Two hops.'));
-    await walkAlong(R.at + 1, ok); if (R.misses > 1) P.el(ok).classList.add('hint');
-    await FR.say('Find that stone for Avi.'); open(); return;
-  }
+  if (GAME.phase !== 'answer' || R.kind !== 'swap') return; GAME.phase = 'busy'; FR.lock(true);
   /* swapped numbers */
   if (n === R.a || n === R.b) {
     if (R.picked == null) { R.picked = n; el.classList.add('hint'); NK.sound.pop(); await FR.say(FR.pick(['Yes, that one is wrong!', 'Good eyes!']) + ' Now the other one.', { repeat: 'Tap the other wrong stone.' }); open(); return; }
     if (n === R.picked) { open(); return; }
     P.el(R.a).classList.remove('hint'); P.el(R.b).classList.remove('hint'); P.lift(R.a); P.lift(R.b); P.label(R.a, R.a); P.label(R.b, R.b); P.petals((R.a + R.b) / 2);
-    await FR.yes(el, 'Swapped back! Every number is next now.'); return finish();
+    await FR.yes(el, 'Swapped back! Now they go in order.'); return finish();
   }
   FR.oops(el); R.misses++;
   await FR.say('That one is right. Look along the path.'); await walkAlong(Math.max(0, R.a - 1), Math.min(10, R.b + 1));
+  await FR.say(FR.Word(R.b) + " can't come before " + FR.word(R.a) + '.');
   if (R.misses > 1) { P.el(R.a).classList.add('hint'); P.el(R.b).classList.add('hint'); await FR.say('Find two numbers in the wrong places.'); setTimeout(() => { if (R.picked == null) { P.el(R.a).classList.remove('hint'); P.el(R.b).classList.remove('hint'); } }, 2500); }
   else await FR.say('Find two numbers in the wrong places.');
   open();
 }
-function finish() { P.showAll(true); for (let n = 0; n <= 10; n++) P.el(n).classList.remove('hint'); const d = done; done = null; d(R.misses === 0); }
+function finish() { $('avichip').hidden = true; P.showAll(true); for (let n = 0; n <= 10; n++) P.el(n).classList.remove('hint'); const d = done; done = null; d(R.misses === 0); }
 const KINDS = ['hop', 'swap', 'hop', 'swap', 'hop', 'swap'];
 function play(F, i) {
   return new Promise(async res => {
     done = res; GAME.phase = 'busy'; F.lock(true); P.showAll(true); A.show(true);
     if (KINDS[i] === 'hop') {
-      const at = [1, 3, 5][i / 2], k = [2, 1, 2][i / 2], wrongAt = at + k + (i === 4 ? -1 : 1);
+      /* Avi's slips: counting his own stone (lands one short), or one hop too many */
+      const at = [1, 3, 5][i / 2], k = 2, far = i === 4, wrongAt = at + k + (far ? 1 : -1);
       R = { kind: 'hop', at, k, wrongAt, misses: 0 }; A.place(at); P.focus(at + 1.5); $('spin').style.visibility = '';
       await F.say("Avi's turn. Watch Avi!"); await SP.spin(k); A.pose('happy'); await A.hop(wrongAt); A.pose('talk');
-      await F.say(k === 1 ? 'One dot. But Avi hopped wrong!' : 'Two dots. But Avi hopped wrong!');
-      open(); await F.say('Where should Avi be? Tap it.', { repeat: 'Avi was on ' + F.word(at) + '. Where should he be?' });
+      await F.say(far ? 'Two dots. Oops, Avi hopped too far!' : "Two dots. Oops, Avi counted his own stone!");
+      $('avichip').hidden = false; open();
+      await F.say('Move Avi where he should be.', { repeat: 'Avi was on ' + F.word(at) + '. Two hops. Move him there.' });
     } else {
       const s = FR.pick(i < 3 ? [1, 2, 3, 4, 5] : [5, 6, 7, 8]), gap = i === 5 ? 2 : 1, a = s, b = s + gap;
       R = { kind: 'swap', a, b, picked: null, misses: 0 }; A.place(0); A.show(false); $('spin').style.visibility = 'hidden';
@@ -84,13 +90,14 @@ FR.game({
   hero: '<div class="hero6"><img src="art/avi-talk.png" alt=""></div>',
   init() {
     P = mount($('world'), { kids: ['avi'], band }); A = P.kids.avi; SP = spinner($('spin'));
-    P.onStone = (n, el) => tap(n, el);
+    P.onStone = (n, el) => tap(n, el); FR.dragTap({ sources: '#avichip', targets: '.p6layer .stone', drop: moveAvi });
   },
   demo: async F => {
     R = { kind: 'demo' }; A.place(2); P.focus(3.5);
     await F.say('Avi is on two. He spins. Watch me check.'); await SP.spin(1); await A.hop(4); A.pose('talk');
     await F.say('One dot is one hop. Not two hops!');
-    await F.handTo(P.el(3)); await F.handTap(); A.place(2); A.pose('happy'); await A.hop(3); P.petals(3); await F.say('Two and one more is three!'); A.pose('idle');
+    $('avichip').hidden = false; await F.handDrag($('avichip'), P.el(3)); $('avichip').hidden = true;
+    A.place(2); A.pose('happy'); await A.hop(3); P.petals(3); await F.say('From two, one hop is three!'); A.pose('idle');
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'Avi says thank you! You found every mistake!' : 'Good looking! Let\'s play once more.'

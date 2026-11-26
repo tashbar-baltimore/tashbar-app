@@ -34,7 +34,8 @@ const SLIDES = [
     M.pose('happy'); await M.hop(5, n => { P.glow(n, true); return say(n, false).then(() => P.glow(n, false)); }); M.pose('idle'); },
   async F => { await F.chant('Step and say, step and say!', true); M.pose('happy'); await M.hop(10, n => { P.glow(n, true); return say(n, n === 10).then(() => P.glow(n, false)); }); M.pose('idle'); P.petals(10); await F.say('Ten! The flag!'); },
   async F => { M.place(3); P.focus(4); await F.say('Mendy is on three.'); M.pose('happy'); await M.hop(4); M.pose('idle'); P.glow(4, true);
-    await F.say('One step forward. Four! One more.'); P.glow(4, false); },
+    await F.say('One step forward. Four! One more.'); P.glow(4, false);
+    await F.say("Count the hops, not Mendy's own stone."); },
   async F => { M.place(7); P.focus(6); await F.say('Mendy is on seven.'); await M.hop(6); P.glow(6, true); await F.say('One step back. Six! One less.'); P.glow(6, false); },
   async F => { M.place(5); P.focus(5.5); await F.say('Your turn! Mendy is on five.'); await F.say('One step forward. Tap that stone!', { repeat: 'Mendy is on five. Tap one more.' }); want = 6; }
 ];

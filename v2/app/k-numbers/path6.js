@@ -181,7 +181,7 @@ export function mount(host, opt) {
   let api = null, last = performance.now(), alive = true;
   function frame() {
     if (!alive) return; requestAnimationFrame(frame); const now = performance.now(), dt = Math.min(50, now - last); last = now;
-    camX += (wantX - camX) * Math.min(1, dt / (FAST ? 16 : 140));
+    camX += (wantX - camX) * Math.min(1, dt / (FAST ? 16 : 140)); if (bedG) bedG.position.x = camX;
     cam();
     const tt = now / 1000; cloth.rotation.y = Math.sin(tt * 2) * 0.15;
     rings.forEach(r => { if (r.visible) r.material.opacity = 0.65 + Math.sin(tt * 6) * 0.3; });
@@ -203,12 +203,14 @@ export function mount(host, opt) {
     bed(k) {
       if (bedG) { scene.remove(bedG); bedG = null; } deco.forEach(f => { f.visible = k == null; }); if (k == null) return [];
       bedG = new THREE.Group(); bedG.position.set(wantX, 0, -2.3); scene.add(bedG); const out = [];
-      /* two tiers, like garden steps: the row of five in front, the more on the higher step behind (every flower shows) */
+      /* two tiers, like garden steps: the row of five in front, the more on the higher step behind (every flower shows).
+         The bed stays in front of the camera while it pans, so the flowers never go off screen. */
+      bedG.position.z = -1.9; bedG.scale.setScalar(1.35);
       const sm = new THREE.MeshStandardMaterial({ color: '#9A6A44', roughness: 1 }), wm = new THREE.MeshStandardMaterial({ color: '#E9D3AE', roughness: 0.9 });
-      [[0.2, 0.2, 0], [0.95, 0.95, -1.0]].forEach(([h, y, z]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(4.6, h, 1.0), wm); b.position.set(0, h / 2, z); b.castShadow = b.receiveShadow = true; bedG.add(b);
-        const top = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.04, 0.86), sm); top.position.set(0, h + 0.01, z); bedG.add(top); });
-      for (let i = 0; i < k; i++) { const row = i < 5 ? 0 : 1, col = i % 5, f = new THREE.Group(); f.position.set((col - 2) * 0.86, row ? 0.97 : 0.22, row ? -1.0 : 0); bedG.add(f);
-        flower(0, 0, 1.55, f, row ? '#FFD23D' : '#FF7FA8'); out.push(f); }
+      [[0.2, 0], [1.05, -1.0]].forEach(([h, z]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(5.4, h, 1.0), wm); b.position.set(0, h / 2, z); b.castShadow = b.receiveShadow = true; bedG.add(b);
+        const top = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.04, 0.86), sm); top.position.set(0, h + 0.01, z); bedG.add(top); });
+      for (let i = 0; i < k; i++) { const row = i < 5 ? 0 : 1, col = i % 5, f = new THREE.Group(); f.position.set((col - 2) * 1.02, row ? 1.07 : 0.22, row ? -1.0 : 0); bedG.add(f);
+        flower(0, 0, 1.75, f, row ? '#FFD23D' : '#FF7FA8'); out.push(f); }
       return out;
     },
     focus(n, now) { follow(n, now); if (now) { cam(); place(); } },

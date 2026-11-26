@@ -38,6 +38,7 @@ function finish(ok) { const d = done; done = null; d(ok); }
 async function drop(card, stone) {
   if (GAME.phase !== 'answer' || R.kind !== 'place') return; const at = +stone.dataset.n; GAME.phase = 'busy'; FR.lock(true);
   if (at === R.n) { card.classList.add('done'); R.placed.push(R.n); P.shown(R.n, true); P.lift(R.n); P.petals(R.n); await FR.yes(stone, FR.pick(['Yes!', 'Right there!', FR.Word(R.n) + '!'])); return finish(R.misses === 0); }
+  if (at === 0 || at === 10 || R.placed.includes(at)) { FR.oops(stone); await FR.say('That stone has its number. Look for an empty one.'); open(); return; }
   FR.oops(stone); R.misses++;
   if (R.misses === 1) { await FR.say("Let's look. Count from zero, stone by stone."); for (let n = 0; n <= R.n; n++) { P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === R.n ? '!' : ','), { noRepeat: true }); P.glow(n, false); } }
   else { P.focus(R.n); P.el(R.n).classList.add('hint'); await FR.say('Put it on the shining stone.'); }

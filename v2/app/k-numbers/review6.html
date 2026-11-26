@@ -40,7 +40,7 @@ async function countTogether() {
 }
 async function tap(n, el) {
   if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
-  if (n === R.n) { M.pose('happy'); await M.hop(n, k => FR.say(FR.Word(k) + (k === n ? '!' : ','), { noRepeat: true })); M.pose('idle'); P.petals(n);
+  if (n === R.n) { M.show(true); M.pose('happy'); await M.hop(n, k => FR.say(FR.Word(k) + (k === n ? '!' : ','), { noRepeat: true })); M.pose('idle'); P.petals(n);
     await FR.yes(el, FR.pick(['Yes! You remember!', 'Right! ' + FR.Word(n) + '.', 'Great counting!'])); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops(el); R.misses++;
   await FR.say("Let's look again."); await countTogether();
@@ -51,7 +51,7 @@ const PLAN = [['bed', 8], ['hand', 3], ['frame', 6], ['bed', 5], ['frame', 9], [
 function play(F, i) {
   return new Promise(async res => {
     done = res; GAME.phase = 'busy'; F.lock(true); for (let n = 0; n <= 10; n++) P.el(n).classList.remove('hint');
-    const [kind, n] = PLAN[i]; R = { kind, n, misses: 0 }; M.place(0); P.focus(P.narrow() ? 1.5 : 5);
+    const [kind, n] = PLAN[i]; R = { kind, n, misses: 0 }; M.place(0); M.show(kind !== 'bed'); P.focus(P.narrow() ? 1.5 : 5);
     $('show').innerHTML = ''; $('show').hidden = kind === 'bed'; $('panel').style.visibility = kind === 'bed' && !P.narrow() ? 'hidden' : ''; P.bed(null); items = [];
     if (kind === 'bed') { items = P.bed(n); await F.say(FR.pick(['Flowers grew!', 'Look at the garden bed!'])); open(); await F.say('How many flowers? Hop Mendy there.', { repeat: 'Count the flowers. Tap that stone.' }); return; }
     if (kind === 'frame') { const t = U5.frame(n, false); $('show').appendChild(t.el); R.view = t; await F.say('A ten-frame!'); open(); await F.say('How many? Hop Mendy there.', { repeat: 'How many counters? Tap that stone.' }); return; }
@@ -64,6 +64,12 @@ FR.game({
   init() {
     P = mount($('world'), { kids: ['mendy'], band }); M = P.kids.mendy; P.onStone = (n, el) => tap(n, el);
     if (P.narrow()) { $('left').hidden = $('right').hidden = false; $('left').onclick = () => { NK.sound.pop(); P.pan(-2); }; $('right').onclick = () => { NK.sound.pop(); P.pan(2); }; }
+  },
+  demo: async F => {   /* count the flowers, tap that stone, Mendy hops there */
+    M.place(0); M.show(false); P.focus(P.narrow() ? 1.5 : 5); R = { kind: 'bed', n: 3, misses: 0 }; items = P.bed(3);
+    await F.say('Watch me. I count the flowers.'); await countTogether();
+    await F.say('Three! I tap the three stone.'); P.focus(P.narrow() ? 2 : 5, true); await F.handTo(P.el(3)); await F.handTap();
+    M.show(true); M.pose('happy'); await M.hop(3, k => F.say(F.Word(k) + (k === 3 ? '!' : ','), { noRepeat: true })); M.pose('idle'); P.bed(null);
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'You remember it all! Wonderful!' : 'Good work! Let\'s play once more.'
