@@ -11,6 +11,7 @@
 | 6 | Picture Story (farm) | Feel the Shape; Look-Alike crates; Sound Match; Find the Mistake | hear it, tap it | Look-Alike crates | letter rain |
 | 7 | Picture Story (playroom) | Feel the Shape; Look-Alike crates; Sound Match; Find the Mistake | hear it, tap it | Look-Alike crates | letter rain |
 | 8 | Picture Story (a 3D shul on Simchas Torah; the Torah is never spun away) | **Dot Builder (new kind)**: drag the dot to make Shin/Sin/Tuf, take it out for Suf; **Look-Alike crates, three boxes (new)**: Hei, Ches, Tuf; **Alef-Beis Train, fix the mix-up (new)**: tap the mixed-up cars; **Find the Mistake by sound (new)**: Yaakov says the sound, not the name | hear it, tap it (the whole Alef-Beis) | Letter Hunt of Unit 7's Kuf and Reish (first hunt of those letters) | letter rain (Shin/Sin/Tuf/Suf) |
+| 9 | Picture Story (the painted kitchen, Erev Shabbos: letters put on Shabbos clothes) | **Partner Match (new kind)**; **End of the Word (new kind)**; **Spot the Difference (new twist on Look-Alike: he taps the difference)**; **Find the Mistake with whole words (new)** | hear it, tap it (final letters) | Dot Builder (Unit 8), mixed | letter rain (finals) |
 
 Units 1–7 were built before the variety rule (2026-11-26). From Unit 8 on, every unit brings at least one new kind of game and a new twist on each kind it reuses.
 
