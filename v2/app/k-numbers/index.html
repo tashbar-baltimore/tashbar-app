@@ -64,7 +64,8 @@
   var P = NK.load().games, U = window.NK_UNITS;
   function passed(id) { return P[id] && P[id].passed; }
   function unitDone(u) { return u.stops.length > 0 && u.stops.every(function (s) { return passed(s[0]); }); }
-  function unitOpen(i) { return i === 0 || unitDone(U[i - 1]); }
+  var LOOK = /[?&]look=1/.test(location.search);   /* teachers and approvers: ?look=1 opens every unit and stop; boys never get this link */
+  function unitOpen(i) { return LOOK || i === 0 || unitDone(U[i - 1]); }
   var cur = 0; for (var i = 0; i < U.length; i++) if (unitOpen(i) && U[i].stops.length && !unitDone(U[i])) { cur = i; break; } else if (unitOpen(i) && U[i].stops.length) cur = i;
 
   function draw() {
@@ -73,7 +74,7 @@
     var tall = innerWidth < 760 || innerHeight > innerWidth * 1.25, u = U[cur], pts = (tall ? SPOTS_TALL : SPOTS).slice(0, u.stops.length), line = '<svg class="line" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M' + pts.map(function (p) { return p[0] + ' ' + p[1]; }).join(' L ') + '" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-dasharray="1 3" vector-effect="non-scaling-stroke" style="stroke-width:14px"/></svg>';
     var s = '', nowSet = false;
     u.stops.forEach(function (st, k) {
-      var open = unitOpen(cur) && (k === 0 || passed(u.stops[k - 1][0])), done = passed(st[0]), now = open && !done && !nowSet; if (now) nowSet = true;
+      var open = LOOK || (unitOpen(cur) && (k === 0 || passed(u.stops[k - 1][0]))), done = passed(st[0]), now = open && !done && !nowSet; if (now) nowSet = true;
       var stars = P[st[0]] ? P[st[0]].best : 0, st3 = ''; for (var j = 0; j < 3; j++) st3 += j < stars ? STAR : '';
       s += '<button class="stop btn3d ' + COLORS[k] + (open ? '' : ' lock') + (now ? ' now' : '') + '" data-k="' + k + '" style="left:' + pts[k][0] + '%;top:' + pts[k][1] + '%" aria-label="' + st[3] + '">' +
         '<svg class="ic" viewBox="0 0 100 100">' + ICON[st[2]] + '</svg>' + (open ? '' : LOCK) + (st3 ? '<span class="st">' + st3 + '</span>' : '') + '</button>';
@@ -89,7 +90,7 @@
       cur = i; draw(); NK.hush(); NK.say(u.say); return; }
     if (st) { var k = +st.dataset.k, s = U[cur].stops[k];
       if (st.classList.contains('lock')) { NK.hush(); NK.say('Do the shining one first.'); st.classList.remove('shake'); void st.offsetWidth; st.classList.add('shake'); return; }
-      NK.hush(); NK.sound.pop(); NK.say(s[3] + '!').then(function () { location.href = s[1]; }); }
+      NK.hush(); NK.sound.pop(); NK.say(s[3] + '!').then(function () { location.href = s[1] + (LOOK ? '?look=1' : ''); }); }
   });
   $('again').classList.add('talk');   /* the speaker pulses until he taps it: then he hears where to go */
   $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.remove('talk'); NK.again(); });

@@ -43,8 +43,8 @@
     while (more.firstChild) document.body.appendChild(more.firstChild);
     if (NK.fast) document.body.classList.add('fast');
     $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.add('talk'); NK.again(); setTimeout(function () { $('again').classList.remove('talk'); }, 1800); });
-    $('home').addEventListener('click', function () { NK.hush(); location.href = './'; });
-    $('next').addEventListener('click', function () { NK.hush(); location.href = (S.stars < 2 && cfg.practice) ? cfg.practice : './'; });
+    $('home').addEventListener('click', function () { NK.hush(); location.href = './' + (/[?&]look=1/.test(location.search) ? '?look=1' : ''); });
+    $('next').addEventListener('click', function () { NK.hush(); location.href = ((S.stars < 2 && cfg.practice) ? cfg.practice : './') + (/[?&]look=1/.test(location.search) ? '?look=1' : ''); });
     $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; run(false); });
     $('play').addEventListener('click', function () { NK.unlock(); $('start').hidden = true; run(true); });
     $('clap').addEventListener('pointerdown', function (e) { e.preventDefault(); NK.unlock(); S.claps = (S.claps || 0) + 1; hit(); });
