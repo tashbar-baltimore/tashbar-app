@@ -75,7 +75,7 @@ export default function setup(E, { struggled, unit, game }) {
   function setRound(k, nTarget, others) {
     letters.forEach(l => E.scene.remove(l)); letters.length = 0;
     const order = [...spots.keys()].sort(() => Math.random() - .5); let j = 0;
-    const add = key => { const l = E.letter(key, SIZE()); const ud = l.userData; const pl = E.mesh(E.rbox(ud.width * 1.35, ud.height * 1.3, .08, .07), plaque, 0, 0, -.22, false); l.add(pl); E.scene.add(l); placeAt(l, order[j++]); letters.push(l); l.visible = false; return l; };
+    const add = key => { const l = E.letter(key, SIZE()); const ud = l.userData; if (ud.below) l.children.forEach(ch => ch.position.y += ud.below / 2);   /* a long leg (Kuf) stays on its tile */ const pl = E.mesh(E.rbox(ud.width * 1.35, (ud.height + ud.below) * 1.25, .08, .07), plaque, 0, 0, -.22, false); l.add(pl); E.scene.add(l); placeAt(l, order[j++]); letters.push(l); l.visible = false; return l; };
     for (let i = 0; i < nTarget; i++) add(k); others.forEach(add);
     want = k; found = 0; need = nTarget; wrongInRound = 0; E.setProgress(need, 0);
   }
