@@ -9,6 +9,7 @@
    All art is made from code (three.js shapes and pictures painted on a hidden canvas): no picture files to load. */
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from './lib/RoundedBoxGeometry.js';
+import { createTreasures } from './treasures.js';
 
 /* a tone curve that keeps toy colours bright and true (Khronos "PBR Neutral"), instead of the default orange-grey film look */
 THREE.ShaderChunk.tonemapping_pars_fragment = THREE.ShaderChunk.tonemapping_pars_fragment.replace('vec3 CustomToneMapping( vec3 color ) { return color; }', `
@@ -63,6 +64,10 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   });
   const twinkleTex = paint(64, 64, (x) => { const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.2, 'rgba(255,250,220,.6)'); g.addColorStop(1, 'rgba(255,240,200,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64);
     x.fillStyle = 'rgba(255,255,255,.95)'; x.beginPath(); x.moveTo(32, 0); x.quadraticCurveTo(35, 29, 64, 32); x.quadraticCurveTo(35, 35, 32, 64); x.quadraticCurveTo(29, 35, 0, 32); x.quadraticCurveTo(29, 29, 32, 0); x.fill(); });
+
+  /* ---------- the world's own things: cupcakes in the bakery, a tyre on the farm ... (treasures.js) ---------- */
+  const TR = createTreasures({ world, PM, paint, FAST, ANISO, vivid });
+  L.bead = TR.bead; L.board = TR.board; L.treasures = TR; TR.camera = camera;
 
   /* ---------- renderer: sharp, bright, soft shadows ---------- */
   function prFor(q) { return FAST ? 0.5 : q >= 2 ? Math.min(2, Math.max(DPR, 1.5)) : q === 1 ? Math.min(DPR, 1.5) : Math.min(DPR, 1); }
@@ -1058,35 +1063,34 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   const MAT = {};
   const mat = (key, make) => MAT[key] || (MAT[key] = make());
   const SKIN = '#F8CFAA';
-  function face(g, o) {   /* big friendly eyes, eyebrows, a smile, rosy cheeks; o: { y, r, hair, glasses, lash } */
-    const r = o.r, cy = o.y, onHead = (dx, dy, lift) => Math.sqrt(Math.max(0, r * r - dx * dx - dy * dy)) * 0.97 + (lift || 0);
-    const white = mat('eyeW', () => phys('#FFFFFF', { roughness: 0.15, clearcoat: 1 })), iris = mat('iris' + o.eye, () => phys(o.eye || '#4A2E1C', { roughness: 0.2, clearcoat: 1 })), pupil = mat('pupil', () => std('#120C0A', { roughness: 0.2 }));
+  function face(g, o) {   /* a gentle face (Esti, 2026-11-26): warm eyes of normal size (no big glassy whites, never staring), soft brows, a small kind smile, rosy cheeks.
+                             o: { y, r, hair, glasses, eye } */
+    const r = o.r, cy = o.y, onHead = (dx, dy, lift) => Math.sqrt(Math.max(0, r * r - dx * dx - dy * dy)) * 0.985 + (lift || 0);
+    const iris = mat('irisG' + o.eye, () => phys(o.eye || '#4A2E1C', { roughness: 0.25, clearcoat: 0.8 }));
     const shine = mat('shine', () => new THREE.MeshBasicMaterial({ color: '#FFFFFF' }));
     const eyes = [];
     [-1, 1].forEach(s => {
-      const ex = s * r * 0.36, ey = r * 0.05, e = new THREE.Group(); e.position.set(ex, cy + ey, onHead(ex, ey, -0.04)); e.rotation.y = s * 0.32;
-      const w = new THREE.Mesh(new THREE.SphereGeometry(r * 0.23, 24, 18), white); w.scale.set(0.85, 1.05, 0.55); e.add(w);
-      const ir = new THREE.Mesh(new THREE.SphereGeometry(r * 0.165, 24, 18), iris); ir.scale.set(0.95, 1.05, 0.5); ir.position.set(0, -r * 0.02, r * 0.07); e.add(ir);
-      const pu = new THREE.Mesh(new THREE.SphereGeometry(r * 0.095, 20, 14), pupil); pu.scale.set(1, 1, 0.5); pu.position.set(0, -r * 0.02, r * 0.11); e.add(pu);
-      const h1 = new THREE.Mesh(new THREE.SphereGeometry(r * 0.045, 12, 8), shine); h1.position.set(r * 0.05, r * 0.05, r * 0.135); e.add(h1);
-      const h2 = new THREE.Mesh(new THREE.SphereGeometry(r * 0.022, 10, 6), shine); h2.position.set(-r * 0.05, -r * 0.07, r * 0.13); e.add(h2);
+      const ex = s * r * 0.3, ey = r * 0.04, e = new THREE.Group(); e.position.set(ex, cy + ey, onHead(ex, ey, -0.012)); e.rotation.y = s * 0.3;
+      const ball = new THREE.Mesh(new THREE.SphereGeometry(r * 0.1, 24, 18), iris); ball.scale.set(0.86, 1.08, 0.42); e.add(ball);
+      const h1 = new THREE.Mesh(new THREE.CircleGeometry(r * 0.03, 14), shine); h1.position.set(r * 0.028, r * 0.038, r * 0.044); e.add(h1);
+      const h2 = new THREE.Mesh(new THREE.CircleGeometry(r * 0.013, 10), shine); h2.position.set(-r * 0.026, -r * 0.036, r * 0.043); e.add(h2);
       g.add(e); eyes.push(e);
-      const brow = new THREE.Mesh(new THREE.CapsuleGeometry(r * 0.035, r * 0.2, 4, 10), mat('brow' + o.hair, () => std(new THREE.Color(o.hair).multiplyScalar(0.7), { roughness: 0.8 })));
-      brow.rotation.z = Math.PI / 2 - s * 0.22; brow.position.set(ex, cy + r * 0.36, onHead(ex, r * 0.36, 0.02)); brow.rotation.y = s * 0.3; g.add(brow);
-      const ck = new THREE.Mesh(new THREE.CircleGeometry(r * 0.15, 24), mat('cheek', () => new THREE.MeshBasicMaterial({ color: '#FF8E9A', transparent: true, opacity: 0.38, depthWrite: false })));
-      const cx = s * r * 0.55, cyy = -r * 0.2; ck.position.set(cx, cy + cyy, onHead(cx, cyy, 0.012)); ck.rotation.set(0.25, s * 0.62, 0); g.add(ck);
+      /* a soft, slightly raised brow: friendly, never cross */
+      const bpts = []; for (let i = 0; i <= 12; i++) { const u = i / 12 - 0.5, bx = ex + u * r * 0.26, by = r * 0.27 + (0.25 - u * u) * r * 0.12 - s * u * r * 0.02; bpts.push(new THREE.Vector3(bx, cy + by, onHead(bx, by, 0.006))); }
+      g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(bpts), 16, r * 0.018, 6, false), mat('browG' + o.hair, () => std(new THREE.Color(o.hair).multiplyScalar(0.8), { roughness: 0.8 }))));
+      const ck = new THREE.Mesh(new THREE.CircleGeometry(r * 0.13, 24), mat('cheekG', () => new THREE.MeshBasicMaterial({ color: '#FF9AA6', transparent: true, opacity: 0.3, depthWrite: false })));
+      const cx = s * r * 0.5, cyy = -r * 0.17; ck.position.set(cx, cy + cyy, onHead(cx, cyy, 0.01)); ck.rotation.set(0.2, s * 0.55, 0); g.add(ck);
       if (o.glasses) { const gm = mat('glass', () => phys('#2A2F45', { roughness: 0.3, clearcoat: 1 }));
-        const rim = new THREE.Mesh(new THREE.TorusGeometry(r * 0.25, r * 0.035, 10, 32), gm); rim.position.set(ex, cy + ey, onHead(ex, ey, 0.06)); rim.rotation.y = s * 0.3; g.add(rim);
-        const arm = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.025, r * 0.025, r * 0.8, 6), gm); arm.rotation.x = Math.PI / 2; arm.position.set(s * r * 0.86, cy + ey + 0.02, r * 0.25); arm.rotation.y = s * 0.15; g.add(arm); }
+        const rim = new THREE.Mesh(new THREE.TorusGeometry(r * 0.19, r * 0.026, 10, 32), gm); rim.position.set(ex, cy + ey, onHead(ex, ey, 0.045)); rim.rotation.y = s * 0.3; g.add(rim); }
     });
-    if (o.glasses) { const br = new THREE.Mesh(new THREE.CapsuleGeometry(r * 0.025, r * 0.16, 4, 8), MAT.glass); br.rotation.z = Math.PI / 2; br.position.set(0, cy + r * 0.1, onHead(0, r * 0.1, 0.07)); g.add(br); }
-    const nose = new THREE.Mesh(new THREE.SphereGeometry(r * 0.1, 16, 12), mat('nose', () => phys('#F4B990', { roughness: 0.5, clearcoat: 0.3 }))); nose.scale.set(1.1, 0.85, 0.8); nose.position.set(0, cy - r * 0.12, onHead(0, -r * 0.12, -0.01)); g.add(nose);
-    /* the smile: an open happy mouth with a little tongue */
-    const sm = new THREE.Shape(), mw = r * 0.27; sm.moveTo(-mw, 0); sm.quadraticCurveTo(0, -r * 0.05, mw, 0); sm.quadraticCurveTo(mw * 0.85, -r * 0.3, 0, -r * 0.32); sm.quadraticCurveTo(-mw * 0.85, -r * 0.3, -mw, 0);
-    const my = -r * 0.32, mouth = new THREE.Mesh(new THREE.ShapeGeometry(sm, 20), mat('mouth', () => std('#8A2A35', { roughness: 0.5 })));
-    mouth.position.set(0, cy + my, onHead(0, my - r * 0.1, 0.03)); mouth.rotation.x = 0.42; g.add(mouth);
-    const tg = new THREE.Mesh(new THREE.CircleGeometry(r * 0.12, 20), mat('tongue', () => std('#FF7A88', { roughness: 0.5 }))); tg.scale.set(1.2, 0.6, 1); tg.position.set(0, -r * 0.24, 0.003); mouth.add(tg);
-    const teeth = new THREE.Mesh(new THREE.PlaneGeometry(mw * 1.3, r * 0.06), shine); teeth.position.set(0, -r * 0.045, 0.002); mouth.add(teeth);
+    if (o.glasses) { const br = new THREE.Mesh(new THREE.CapsuleGeometry(r * 0.02, r * 0.14, 4, 8), MAT.glass); br.rotation.z = Math.PI / 2; br.position.set(0, cy + r * 0.07, onHead(0, r * 0.07, 0.05)); g.add(br); }
+    const nose = new THREE.Mesh(new THREE.SphereGeometry(r * 0.075, 16, 12), mat('noseG', () => phys('#F3BE9C', { roughness: 0.55, clearcoat: 0.2 }))); nose.scale.set(1.1, 0.85, 0.7); nose.position.set(0, cy - r * 0.1, onHead(0, -r * 0.1, -0.012)); g.add(nose);
+    /* a small, kind, closed smile */
+    const mpts = []; for (let i = 0; i <= 16; i++) { const u = i / 16 - 0.5, mx = u * r * 0.26, my = -r * 0.3 - (0.25 - u * u) * r * 0.16; mpts.push(new THREE.Vector3(mx, my, 0)); }
+    const mouth = new THREE.Group(); mouth.position.set(0, cy, 0);
+    mpts.forEach(p => { p.z = onHead(p.x, p.y, 0.008); });
+    mouth.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(mpts), 20, r * 0.02, 6, false), mat('smileG', () => std('#B9505F', { roughness: 0.6 }))));
+    g.add(mouth);
     return { eyes, mouth };
   }
   function curl(mHair, r) {   /* a peyah: a soft little curl */
@@ -1106,7 +1110,9 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     const shirtM = mat('shirt' + shirt, () => new PM({ color: shirt, roughness: 0.7, sheen: 0.8, sheenColor: new THREE.Color('#FFFFFF'), sheenRoughness: 0.7 }));
     const pants = mat('pants', () => new PM({ color: '#2B3656', roughness: 0.75, sheen: 0.5, sheenColor: new THREE.Color('#6D7BA8') }));
     const shoe = mat('shoe', () => phys('#3B2418', { roughness: 0.3, clearcoat: 1 })), hairM = mat('hair' + hair, () => new PM({ color: hair, roughness: 0.6, sheen: 1, sheenColor: new THREE.Color(hair).lerp(new THREE.Color('#FFFFFF'), 0.4), sheenRoughness: 0.4 }));
-    const kipM = mat('kip' + (opts.kippah || '#1F2C5C'), () => new PM({ color: opts.kippah || '#1F2C5C', roughness: 0.8, sheen: 1, sheenColor: new THREE.Color('#7E8FD0'), sheenRoughness: 0.4 }));
+    const kipM = mat('kip' + (opts.kippah || '#24346E'), () => new PM({ color: '#FFFFFF', map: paint(256, 128, (x, w, h) => { x.fillStyle = opts.kippah || '#24346E'; x.fillRect(0, 0, w, h);
+      x.fillStyle = 'rgba(255,255,255,.10)'; for (let i = 0; i < 64; i++) for (let j = 0; j < 16; j++) x.fillRect(i * 4 + (j % 2) * 2, j * 8, 2, 4);   /* knit stitches */
+      x.fillStyle = '#8FB4F0'; x.fillRect(0, h * 0.78, w, h * 0.07); x.fillStyle = '#FFFFFF'; x.fillRect(0, h * 0.88, w, h * 0.04); }), roughness: 0.85, sheen: 0.6, sheenColor: new THREE.Color('#7E8FD0'), sheenRoughness: 0.5 }));
     [-1, 1].forEach(s => { add(new THREE.Mesh(new THREE.SphereGeometry(0.17, 20, 14), shoe), s * 0.19, 0.1, 0.06).scale.set(1, 0.62, 1.45);
       add(new THREE.Mesh(new THREE.CapsuleGeometry(0.14, 0.3, 6, 14), pants), s * 0.18, 0.42, 0); });
     add(lathe([[0, 0.5], [0.3, 0.52], [0.41, 0.62], [0.42, 0.78], [0.39, 0.86], [0, 0.88]], pants), 0, 0, 0);
@@ -1121,20 +1127,42 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
       const th = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 8), skin); th.position.set(i ? -0.08 : 0.08, -0.52, 0.06); a.add(th); });
     armL.rotation.z = -0.15; armR.rotation.z = 0.15;
     add(new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.16, 16), skin), 0, 1.68, 0);
-    const head = new THREE.Group(); head.position.set(0, 2.22, 0); body.add(head);
-    const hr = 0.6;
+    const head = new THREE.Group(); head.position.set(0, 2.13, 0); body.add(head);
+    const hr = 0.5;   /* a natural child's head (it was bigger, like a doll) */
     const skull = new THREE.Mesh(new THREE.SphereGeometry(hr, 48, 36), skin); skull.scale.set(1.02, 0.96, 0.97); skull.castShadow = true; head.add(skull);
-    [-1, 1].forEach(s => { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 12), skin); ear.scale.set(0.5, 1, 0.75); ear.position.set(s * hr * 0.98, -0.02, -0.02); head.add(ear);
-      const pe = curl(hairM, hr); pe.position.set(s * hr * 0.9, -0.06, 0.16); head.add(pe); });
-    const hairCap = new THREE.Mesh(new THREE.SphereGeometry(hr * 1.035, 48, 24, 0, Math.PI * 2, 0, Math.PI * 0.5), hairM); hairCap.rotation.x = -0.58; hairCap.position.set(0, 0.03, -0.03); hairCap.castShadow = true; head.add(hairCap);
-    for (let i = 0; i < 7; i++) { const a = -0.75 + i * 0.25, t = new THREE.Mesh(new THREE.SphereGeometry(0.13, 14, 10), hairM); t.scale.set(1.15, 0.7, 0.8);
-      t.position.set(Math.sin(a) * hr * 0.9, hr * 0.7 - Math.abs(a) * 0.1, Math.cos(a) * hr * 0.5 - 0.02); head.add(t); }
-    const kip = new THREE.Mesh(new THREE.SphereGeometry(hr * 1.07, 40, 10, 0, Math.PI * 2, 0, 0.68), kipM); kip.rotation.x = -0.3; kip.position.set(0, 0.03, -0.02); head.add(kip);
-    const kr = new THREE.Mesh(new THREE.TorusGeometry(hr * 1.07 * Math.sin(0.68), 0.018, 6, 48), mat('kipRim', () => phys('#E8C35A', { metalness: 0.4, roughness: 0.4 }))); kr.rotation.x = Math.PI / 2;
-    kr.position.y = hr * 1.07 * Math.cos(0.68) - 0.005; kip.add(kr);
+    [-1, 1].forEach(s => { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 12), skin); ear.scale.set(0.5, 1, 0.75); ear.position.set(s * hr * 0.98, -0.03, -0.02); head.add(ear);
+      const pe = curl(hairM, hr * 0.8); pe.scale.set(1.5, 1, 1.5); pe.position.set(s * hr * 0.92, -0.08, 0.1); head.add(pe); });
+    /* soft hair: a cap that comes down to a natural hairline, and a gentle fringe (no spikes) */
+    const hairCap = new THREE.Mesh(new THREE.SphereGeometry(hr * 1.035, 48, 24, 0, Math.PI * 2, 0, Math.PI * 0.5), hairM); hairCap.rotation.x = -0.6; hairCap.position.set(0, 0.01, -0.02); hairCap.castShadow = true; head.add(hairCap);
+    for (let i = 0; i < 9; i++) { const a = -0.8 + i * 0.2, el = 0.52 - a * a * 0.12, t = new THREE.Mesh(new THREE.SphereGeometry(hr * 0.16, 18, 12), hairM);
+      const ca = Math.cos(el); t.position.set(Math.sin(a) * ca * hr * 1.0, Math.sin(el) * hr * 1.0, Math.cos(a) * ca * hr * 1.0); t.scale.set(1.45, 0.5, 0.32);
+      t.lookAt(t.position.clone().multiplyScalar(2)); t.rotateZ(a * 0.4); head.add(t); }
+    /* a knitted kippah on top, softly patterned (no shiny rim) */
+    const kip = new THREE.Mesh(new THREE.SphereGeometry(hr * 1.08, 48, 12, 0, Math.PI * 2, 0, 0.72), kipM); kip.rotation.x = -0.28; kip.position.set(0, 0.02, -0.02); head.add(kip);
     const F = face(head, { y: 0, r: hr, hair, glasses, eye: opts.eye });
     k.userData = { armL, armR, head, body, eyes: F.eyes, blink: 2 + Math.random() * 3, kind: 'kid' };
     k.traverse(o => { if (o.isMesh) o.castShadow = true; });
+    scene.add(k); L.kids.push(k); return k;
+  };
+  /* a PAINTED child (Esti chooses between this and the 3D child): illustrated pictures (art/<who>-<pose>.png, transparent) shown as a flat card
+     that always faces the camera, with a soft shadow at his feet. Poses: idle, happy, clap, point, talk. Same calm life as the 3D child: breathing,
+     a happy hop. If a picture is missing the 3D child is used instead (see kit.js). */
+  const texLoader = new THREE.TextureLoader(), paintedTex = {};
+  function poseTex(who, pose) { const k = who + '-' + pose; if (!paintedTex[k]) { paintedTex[k] = new Promise(res => texLoader.load('art/' + k + '.png', t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO; res(t); }, undefined, () => res(null))); } return paintedTex[k]; }
+  L.friendArt = (F) => 'shmuel';   /* every friend uses the one painted friend we have so far (more are ordered once Esti chooses painted) */
+  L.paintedReady = (who) => poseTex(who, 'idle').then(t => !!t);
+  L.makePaintedKid = (who, height = 2.75) => {
+    const k = new THREE.Group(), body = new THREE.Group(); k.add(body);
+    const m = new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.04, fog: false, side: THREE.DoubleSide, visible: false }), card = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), m); body.add(card);
+    const sh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: soft, color: '#5A4030', transparent: true, opacity: 0.32, depthWrite: false, fog: false }));
+    sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; sh.scale.set(1.5, 0.75, 1); sh.renderOrder = 1; k.add(sh);
+    let cur = '';
+    const pose = (name) => { cur = name; poseTex(who, name).then(t => { if (cur !== name) return; if (!t) { if (name !== 'idle') pose('idle'); return; }
+      const a = t.image.width / t.image.height; m.map = t; m.visible = true; m.needsUpdate = true; card.scale.set(height * a, height, 1); card.position.y = height / 2; }); };
+    pose('idle');
+    const dummy = () => new THREE.Object3D();
+    k.userData = { armL: dummy(), armR: dummy(), head: dummy(), body, eyes: [], blink: 9e9, kind: 'kid', painted: true, pose, card, cheerN: 0 };
+    card.onBeforeRender = () => { k.updateMatrixWorld(); const q = new THREE.Quaternion(); body.getWorldQuaternion(q); card.quaternion.copy(q.invert().multiply(camera.quaternion)); };
     scene.add(k); L.kids.push(k); return k;
   };
   /* Tatty and Mommy: kind grown-ups who come to see and clap */
@@ -1211,11 +1239,13 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   L.cornerHalo = () => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: '#FFD84A', transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false })); s.scale.setScalar(0.34); return s; };
 
   /* ================= celebration: confetti, stars, twinkles ================= */
-  const CN = 220, conf = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.13, 0.075), new THREE.MeshStandardMaterial({ roughness: 0.5, side: THREE.DoubleSide }), CN);
+  /* each world celebrates in its own way (treasures.js: sprinkles in the bakery ...); gentle, never a hard flash */
+  const CEL = TR.celebration, CCOL = CEL ? CEL.colors : TOY, GRAV = CEL && CEL.grav != null ? CEL.grav : 1;
+  const CN = 220, conf = new THREE.InstancedMesh(CEL ? CEL.geo() : new THREE.PlaneGeometry(0.13, 0.075), new THREE.MeshStandardMaterial({ roughness: 0.5, side: THREE.DoubleSide }), CN);
   conf.instanceMatrix.setUsage(THREE.DynamicDrawUsage); conf.frustumCulled = false; conf.count = 0; scene.add(conf);
   const cs = Array.from({ length: CN }, () => ({ life: 0, p: new THREE.Vector3(), v: new THREE.Vector3(), q: new THREE.Quaternion(), ax: new THREE.Vector3(), spin: 0 }));
   const cc = new THREE.Color(), cm = new THREE.Matrix4(), cq = new THREE.Quaternion(), one = new THREE.Vector3(1, 1, 1), hid = new THREE.Matrix4().makeScale(0, 0, 0);
-  for (let i = 0; i < CN; i++) { conf.setColorAt(i, cc.set(TOY[i % TOY.length])); conf.setMatrixAt(i, hid); }
+  for (let i = 0; i < CN; i++) { conf.setColorAt(i, cc.set(CCOL[i % CCOL.length])); conf.setMatrixAt(i, hid); }
   let cNext = 0;
   const sprites = [];
   function sprite(tex, color, add) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, color, transparent: true, depthWrite: false, blending: add ? THREE.AdditiveBlending : THREE.NormalBlending })); s.renderOrder = 5; scene.add(s); return s; }
@@ -1224,12 +1254,12 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     const k = L.Q >= 2 ? 1 : L.Q === 1 ? 0.6 : 0.3, N = Math.round((n || 26) * 2 * k);
     for (let i = 0; i < N; i++) { const c = cs[cNext]; cNext = (cNext + 1) % CN; c.life = 1.8 + Math.random() * 0.6;
       c.p.copy(at); const a = Math.random() * Math.PI * 2, sp = 2 + Math.random() * 4; c.v.set(Math.cos(a) * sp, 5 + Math.random() * 5, Math.sin(a) * sp * 0.6);
-      c.ax.set(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize(); c.spin = 6 + Math.random() * 10; c.q.setFromAxisAngle(c.ax, Math.random() * 6); }
+      c.ax.set(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize(); c.spin = (6 + Math.random() * 10) * (CEL ? CEL.spin : 1); c.q.setFromAxisAngle(c.ax, Math.random() * 6); }
     conf.count = CN;
-    const ns = Math.round(9 * Math.max(0.5, k));
+    const ns = Math.round(9 * Math.max(0.5, k) * (CEL ? CEL.star : 1));
     for (let i = 0; i < ns; i++) { const s = sprite(starTex, '#FFFFFF', false), a = i / ns * Math.PI * 2;
       L.fx.push({ s, t: 0, life: 1.1, p0: at.clone(), v: new THREE.Vector3(Math.cos(a) * 3.2, 2.5 + Math.sin(a) * 2.6, 0.6), size: 0.55 + Math.random() * 0.25, spin: (Math.random() - .5) * 6 }); }
-    const ring = sprite(soft, '#FFF0B0', true); L.fx.push({ s: ring, t: 0, life: 0.55, p0: at.clone(), v: new THREE.Vector3(), size: 4.2, ring: true });
+    const ring = sprite(soft, '#FFF0B0', true); L.fx.push({ s: ring, t: 0, life: 0.9, p0: at.clone(), v: new THREE.Vector3(), size: 3.2, ring: true, soft: 0.45 });   /* a soft warm glow, never a hard flash */
   };
   L.sparkle = (at, n) => {
     if (FAST) return;
@@ -1239,15 +1269,15 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   function stepFx(dt) {
     let alive = 0;
     for (let i = 0; i < CN; i++) { const c = cs[i]; if (c.life <= 0) continue; alive++; c.life -= dt;
-      c.v.y -= 7.5 * dt; c.v.multiplyScalar(1 - 1.9 * dt); if (c.v.y < -1.6) c.v.y = -1.6;   /* paper floats down */
+      c.v.y -= 7.5 * dt * GRAV; c.v.multiplyScalar(1 - 1.9 * dt); if (c.v.y < -1.6 * Math.max(0.4, GRAV)) c.v.y = -1.6 * Math.max(0.4, GRAV);   /* paper floats down; bubbles and balloons float up */   /* paper floats down */
       c.p.addScaledVector(c.v, dt); c.p.x += Math.sin(c.life * 5 + i) * 0.6 * dt;
-      if (c.p.y < 0.12) { c.p.y = 0.12; c.v.set(0, 0, 0); }
+      if (c.p.y < 0.12 && GRAV > 0) { c.p.y = 0.12; c.v.set(0, 0, 0); }
       cq.setFromAxisAngle(c.ax, c.spin * dt); c.q.multiply(cq);
       const s = Math.min(1, c.life / 0.5); cm.compose(c.p, c.q, one.set(s, s, s)); conf.setMatrixAt(i, c.life > 0 ? cm : hid); }
     if (alive || conf.count) { conf.instanceMatrix.needsUpdate = true; if (!alive) conf.count = 0; }
     for (let i = L.fx.length - 1; i >= 0; i--) { const f = L.fx[i]; f.t += dt; if (f.t < 0) { f.s.visible = false; continue; } f.s.visible = true; const k = f.t / f.life;
       if (k >= 1) { scene.remove(f.s); f.s.material.dispose(); L.fx.splice(i, 1); continue; }
-      if (f.ring) { f.s.position.copy(f.p0); f.s.scale.setScalar(0.3 + f.size * Math.sqrt(k)); f.s.material.opacity = (1 - k) * 0.9; continue; }
+      if (f.ring) { f.s.position.copy(f.p0); f.s.scale.setScalar(0.3 + f.size * Math.sqrt(k)); f.s.material.opacity = (1 - k) * (f.soft || 0.9); continue; }
       if (f.tw) { f.s.position.copy(f.p0).addScaledVector(f.v, f.t); const e = Math.sin(Math.PI * k); f.s.scale.setScalar(f.size * e); f.s.material.rotation = k * 2; f.s.material.opacity = e; continue; }
       const e = 1 - Math.pow(1 - k, 3); f.s.position.copy(f.p0).addScaledVector(f.v, e * 0.9); f.s.position.y -= k * k * 0.6;
       f.s.scale.setScalar(f.size * (k < 0.2 ? k / 0.2 * 1.25 : 1.25 - (k - 0.2) * 0.6)); f.s.material.rotation += f.spin * dt; f.s.material.opacity = k < 0.7 ? 1 : (1 - k) / 0.3; }

@@ -117,6 +117,7 @@ export function startGame(cfg) {
   /* the new look (look.js): a game with cfg.world gets the rich world, light, characters and effects. Others keep the first look. */
   /* the automatic game test (?fast=1) plays on the first plain look, so it stays quick on a test machine; look=1 (v2/tests/k-shapes-look.js) and pictures (shot=1) use the new look */
   const LOOKTEST = FAST && /[?&]look=1/.test(location.search);
+  const PARENTS = /[?&]parents=1/.test(location.search);
   const LK = cfg.world && (!FAST || SHOT || LOOKTEST || cfg.id === 'triangles') ? createLook({ renderer, scene, camera, FAST: FAST && !SHOT, world: cfg.world }) : null;
   if (LK) document.body.classList.add('world');
   const PAL = LK ? ['#FF3B30', '#2F80FF', '#FFC21A', '#1DC77A', '#9A5BFF', '#FF8A1F', '#00C3D6', '#FF4FA0'] : COLORS;
@@ -214,11 +215,15 @@ export function startGame(cfg) {
   }
   function cheer(kid) {
     const { armL, armR } = kid.userData, y0 = kid.position.y;
+    if (kid.userData.pose) { kid.userData.pose(kid.userData.cheerN++ % 2 ? 'clap' : 'happy'); setTimeout(() => kid.userData.pose('idle'), FAST ? 0 : 1400); }   /* painted boys change pose */
     return tween(700, t => { const e = Math.sin(Math.PI * t); kid.position.y = y0 + e * 0.5; armL.rotation.z = -0.15 - e * 2.4; armR.rotation.z = 0.15 + e * 2.4;
       if (LK && kid.userData.body) kid.userData.body.scale.set(1 - e * 0.06 + (t > 0.9 ? 0 : 0), 1 + e * 0.1, 1 - e * 0.06); }).then(() => { kid.position.y = y0; if (LK && kid.userData.body) LK.squash(kid.userData.body, 1, 0.14); });
   }
   const F = cfg.mistake.friend;
-  const mendy = makeKid('#FFFFFF', LK ? '#6E4426' : '#B5773E'), friend = makeKid(F.shirt, F.hair, F.glasses); friend.visible = false;
+  /* Mendy and his friend: painted pictures (?kids=painted, when the pictures are there) or the 3D boys. Esti chooses. */
+  const PAINTED = LK && (!FAST || SHOT || LOOKTEST) && /[?&]kids=painted/.test(location.search);
+  if (LK) LK.treasures.painted = PAINTED;   /* the painted look also uses the painted cupcakes */
+  const mendy = PAINTED ? LK.makePaintedKid('mendy') : makeKid(LK ? '#A9CFF2' : '#FFFFFF', LK ? '#7A4E2C' : '#B5773E'), friend = PAINTED ? LK.makePaintedKid(LK.friendArt(F)) : makeKid(F.shirt, F.hair, F.glasses); friend.visible = false;
 
   /* ---------- pieces ---------- */
   const DEPTH = 0.34, BEV = 0.09, shapes = [];
@@ -236,8 +241,10 @@ export function startGame(cfg) {
     const dep = cfg.thinFlat ? 0.06 : DEPTH, bev = cfg.thinFlat ? 0.03 : BEV;   /* "flat or solid": flat pieces are thin, like card */
     const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: LK ? bev * 1.25 : bev, bevelSize: bev, bevelSegments: LK && (!FAST || SHOT) ? 6 : 3, curveSegments: LK && (!FAST || SHOT) ? 64 : 48 });
     if (!solid) geo.translate(0, 0, -dep / 2);
-    const mat = LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
+    const TP = LK && !solid && LK.treasures.piece ? LK.treasures.piece(k, color, s, FAMILY(k)) : null;   /* the world's own thing in this exact outline (treasures.js) */
+    const mat = TP ? TP.mats : LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
+    if (TP) TP.extras.forEach(x => { const front = x.clone(); front.position.z = dep / 2 + bev * 1.25 + 0.004; mesh.add(front); const back = x.clone(); back.rotation.y = Math.PI; back.position.z = -(dep / 2 + bev * 1.25 + 0.004); mesh.add(back); });
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
     const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], dep / 2 + bev + 0.02); m.scale.setScalar(0); if (LK) m.add(LK.cornerHalo()); mesh.add(m); return m; });
@@ -316,6 +323,7 @@ export function startGame(cfg) {
       if (o.inBox || o.busy || o.still || o === dragging || !o.g.visible || o.slot == null) return;
       o.g.position.set(o.home.x, o.home.y + Math.sin(t * 1.6 + o.phase) * 0.06, o.home.z);
       if (o.solid) { o.g.rotation.y = t * 0.5 + o.phase; o.g.rotation.x = 0; return; }
+      if (o.upright) { o.g.rotation.set(-0.12, o.vis && o.vis.userData.flat ? 0 : Math.sin(t * 0.7 + o.phase) * 0.3, 0); return; }   /* a cupcake stands up and turns a little, like on a shop turntable */
       o.g.rotation.y = 0;
       o.g.rotation.x = -Math.atan2(camera.position.y - o.g.position.y, camera.position.z - o.g.position.z);   /* faces the camera, so a square always looks square */
     });
@@ -724,7 +732,10 @@ export function startGame(cfg) {
   const BEADS = cfg.beads || {};
   let PS = null;   /* the pattern being built: { g, slots, beads, next, R } */
   function beadMesh(type) {
-    const B = BEADS[type], mat = new THREE.MeshPhysicalMaterial({ color: B.color, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 0.5 });
+    const B = BEADS[type];
+    const TM = LK && LK.bead ? LK.bead(type, B, () => shapeOf(B.kind).s) : null;   /* the world's own things (bakery: cupcakes, iced cookies) */
+    if (TM) { const hull = new THREE.Mesh(new THREE.SphereGeometry(0.46, 12, 8), new THREE.MeshBasicMaterial({ visible: false })); TM.add(hull); TM.userData.hull = hull; TM.userData.upright = true; if (tall) TM.scale.setScalar(0.72); return TM; }
+    const mat = new THREE.MeshPhysicalMaterial({ color: B.color, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 0.5 });
     let geo;
     if (B.kind === 'cube') geo = new RoundedBoxGeometry(0.6, 0.6, 0.6, 4, 0.12);
     else if (B.kind === 'drum') { geo = new THREE.CylinderGeometry(0.34, 0.34, 0.5, 32); geo.rotateX(Math.PI / 2); }
@@ -734,20 +745,24 @@ export function startGame(cfg) {
   }
   function beadNote(type) { tone([BEADS[type].note || 523], BEADS[type].kind === 'drum' ? 'square' : 'triangle', 0, .28, .12); if (BEADS[type].kind === 'drum') clap(); }
   function makeBead(id, type, at, slot) {
-    const mesh = beadMesh(type), turn = new THREE.Group(); turn.add(mesh); const g = new THREE.Group(); g.add(turn); scene.add(g); g.position.copy(at);
-    const o = { id, k: type, type, box: -1, g, turn, mesh, mat: mesh.material, marks: [], corners: [], scale: 1, home: at.clone(), phase: (shapes.length * 1.3) % 6.28, inBox: false, busy: false, slot };
+    const vis = beadMesh(type), mesh = vis.userData.hull || vis, turn = new THREE.Group(); turn.add(vis); const g = new THREE.Group(); g.add(turn); scene.add(g); g.position.copy(at);
+    const o = { id, k: type, type, box: -1, g, turn, mesh, vis, mat: vis.material, marks: [], corners: [], scale: 1, home: at.clone(), phase: (shapes.length * 1.3) % 6.28, inBox: false, busy: false, slot, upright: !!vis.userData.upright };
     mesh.userData.shape = o; shapes.push(o); return o;
   }
   const STR = () => tall ? { y: 1.5, z: -0.7, sp: 0.56, copyZ: 0.5 } : { y: 1.7, z: -0.2, sp: 1.08, copyZ: 1.2 };
   function slotAt(i, n, z) { const S = STR(); return new THREE.Vector3((i - (n - 1) / 2) * S.sp, S.y, z == null ? S.z : z); }
   function trayAt(i, n) { const z = tall ? 2.0 : 2.9, sp = tall ? 1.1 : 1.6; return new THREE.Vector3((i - (n - 1) / 2) * sp, 0.9, z); }
   function stringAt(n, z) {
-    const S = STR(), len = (n - 1) * S.sp + 1.2, g = new THREE.Group();
+    const S = STR(), len = (n - 1) * S.sp + 1.2;
+    const BD = LK && LK.board ? LK.board(len) : null;   /* bakery: a cake board instead of a bead string */
+    if (BD) { if (tall) BD.scale.set(1, 0.72, 0.72); BD.position.set(0, S.y, z == null ? S.z : z); scene.add(BD); return BD; }
+    const g = new THREE.Group();
     const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, len, 12), new THREE.MeshStandardMaterial({ color: '#7A4A26', roughness: 0.8 })); cord.rotation.z = Math.PI / 2; g.add(cord);
     [-1, 1].forEach(sd => { const knot = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), cord.material); knot.position.x = sd * len / 2; g.add(knot); });
     g.position.set(0, S.y, z == null ? S.z : z); scene.add(g); return g;
   }
-  const ghost = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.05, 12, 40), new THREE.MeshBasicMaterial({ color: '#F5B400' })); ghost.visible = false; scene.add(ghost);
+  const ghost = (LK && LK.treasures.marker && LK.treasures.marker()) || new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.05, 12, 40), new THREE.MeshBasicMaterial({ color: '#F5B400' })); ghost.visible = false; scene.add(ghost);
+
   function setPattern(R) {
     if (PS) { PS.parts.forEach(p => scene.remove(p)); } shapes.splice(0).forEach(o => scene.remove(o.g));
     const n = R.seq.length, parts = [], beads = [];
@@ -765,13 +780,13 @@ export function startGame(cfg) {
   function markNext() {
     if (!PS) return; const want = PS.R.seq[PS.next];
     shapes.forEach(o => { if (!o.inBox) o.box = o.type === want ? 0 : -1; });
-    if (PS.next < PS.n && PS.showRing) { ghost.visible = true; ghost.position.copy(slotAt(PS.next, PS.n, PS.z)); } else ghost.visible = false;
+    if (PS.next < PS.n && PS.showRing) { ghost.visible = true; ghost.position.copy(slotAt(PS.next, PS.n, PS.z)); if (ghost.isGroup) ghost.scale.setScalar(tall ? 0.72 : 1); } else ghost.visible = false;
   }
   function placeBead(o) {   /* the right bead slides onto the string; a fresh one appears in the tray */
     const at = slotAt(PS.next, PS.n, PS.z), type = o.type, slot = o.slot, fixAt = PS.R.fixAt;
     o.inBox = true; o.box = -1; PS.next = fixAt != null ? PS.n : PS.next + 1;
     if (fixAt != null && PS.bad) { const b = PS.bad; PS.bad = null; tween(250, k => b.scale.setScalar(Math.max(0.001, 1 - k))).then(() => scene.remove(b)); }
-    return moveTo(o, at, 380, 0.5).then(() => { o.g.rotation.set(0, 0, 0); if (fixAt != null) PS.beads.splice(fixAt, 1, o.mesh); else PS.beads.push(o.mesh); beadNote(type); pop();
+    return moveTo(o, at, 380, 0.5).then(() => { o.g.rotation.set(0, 0, 0); if (fixAt != null) PS.beads.splice(fixAt, 1, o.vis || o.mesh); else PS.beads.push(o.vis || o.mesh); beadNote(type); pop();
       const fresh = makeBead('b' + (++beadN), type, trayAt(slot, PS.R.tray.length), slot); fresh.g.scale.setScalar(0.01); tween(300, k => fresh.g.scale.setScalar(Math.max(0.01, k)));
       markNext(); });
   }
@@ -1454,6 +1469,7 @@ export function startGame(cfg) {
     else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; }
     if (!M.where && !M.measure && !M.balance) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
     if (M.where || M.measure || M.balance) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
+    if (friend.userData.pose) friend.userData.pose('talk');
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
       camTo('close', 1000).then(() => tween(500, k => d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))))); }
     const j = $('#judge'); let answered = false, costed = false;
@@ -1468,7 +1484,7 @@ export function startGame(cfg) {
       if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d);
       const prove = M.prove && d.marks.length ? ['Show ' + F.name + ' the corners.', () => { task = ['Tap each corner.']; return tapCorners(d); }, () => { task = null; clearCorners(d); }] : [];
       const fixBad = () => { const m = PS.beads[M.pattern.bad], want = BEADS[M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t)[M.pattern.bad]];
-        m.material.color.set(want.color); PS.R = { ...PS.R, seq: M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t) }; chime(true); return sing(); };
+        if (m.userData.recolor) m.userData.recolor(want.color); else m.material.color.set(want.color); PS.R = { ...PS.R, seq: M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t) }; chime(true); return sing(); };
       play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), ...(M.outline ? [M.closeLine || 'Let us close it.', () => closeIt()] : []),
         ...(M.measure ? [M.fixLine || 'Let us line them up.', () => Promise.all(MS.items.map(o => alignRod(o))), M.after || 'Now we can see.'] : []),
         ...(M.pattern && M.pattern.bad != null ? [M.fixLine || 'Let us fix it.', fixBad] : M.pattern ? [() => sing()] : []), () => cheer(friend), M.after || (() => {}),
@@ -1482,7 +1498,7 @@ export function startGame(cfg) {
     const m = W.misses, stars = m === 0 ? 3 : m <= 2 ? 2 : 1;
     W.stars = stars; W.done = true; setName('end'); dots(STEPS);
     burst(boxAt(0).clone().setY(1.4), 60); chime(true); task = null; cheer(mendy).then(() => cheer(mendy));
-    if (LK) { placeFamily(true); LK.family(true, true); }
+    if (LK && PARENTS) { placeFamily(true); LK.family(true, true); }   /* Mommy and Tatty only at the very end, and only once Esti says yes to how they look (?parents=1 to preview) */
     const STAR = on => '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="' + (on ? '#F5B400' : '#EDE6D6') + '" stroke="' + (on ? '#C48F00' : '#D8CFBC') + '" stroke-width="4" stroke-linejoin="round"/></svg>';
     $('#stars').innerHTML = [0, 1, 2].map(i => '<div class="star">' + STAR(i < stars) + '</div>').join('');
     if (cfg.certificate) showCertificate();
@@ -1518,7 +1534,7 @@ export function startGame(cfg) {
   if (MEASURED) setMeasure(cfg.rounds[0]);
   if (BALANCED) setBalance(cfg.rounds[0]);
   shapes.forEach(o => { o.g.visible = true; });
-  if (LK) { placeFamily(); LK.family(true); }
+  /* Esti, 2026-11-26: no Mommy and Tatty on the play screens */
   dots(0); frame(); W.ready = true;
   preload([...cfg.intro, cfg.ask, cfg.yourTurn, 'Count the sides with me.', 'Now count the corners.', 'Your turn! Tap each corner and count.', 'One!', 'Two!', 'Three!', 'Four!', 'One.', 'Two.', 'Three.', 'Four.', 'Clap it with me! Tap the hands.']);
   $('#start').onclick = () => { ac(); $('#start').style.display = 'none'; againBtn.style.visibility = 'visible'; learn(); };

@@ -17,19 +17,27 @@ module.exports = async function (browser) {
     if (!new RegExp('function ' + m[1] + '\\(').test(look)) bad(f + ' names a world that does not exist: ' + m[1]);
     for (const p of [m[1] + '.jpg', m[1] + '-ground.jpg']) if (!fs.existsSync(path.join(APP, 'worlds', p))) bad(f + ': worlds/' + p + ' is missing');
   }
+  /* the painted pictures (art/, from the picture account): every one the code names is there and small enough for a school Chromebook */
+  const code = ['treasures.js', 'look.js', 'kit.js'].map(f => fs.readFileSync(path.join(APP, f), 'utf8')).join('\n');
+  const have = (code.match(/const HAVE = new Set\(\[([^\]]*)\]\)/) || [, ''])[1].match(/[a-z0-9-]+\.(?:png|jpg)/g) || [];
+  for (const f of [...have, ...['mendy', 'shmuel'].flatMap(w => ['idle', 'talk'].map(p => w + '-' + p + '.png')), ...['red', 'blue', 'yellow', 'green'].map(c => 'cupcake-' + c + '.png')]) {
+    const fp = path.join(APP, 'art', f);
+    if (!fs.existsSync(fp)) bad('art/' + f + ' is missing');
+    else if (fs.statSync(fp).size > 160 * 1024) bad('art/' + f + ' is too big for a school Chromebook (' + Math.round(fs.statSync(fp).size / 1024) + ' KB; keep each under 160 KB)');
+  }
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'v2look-'));
   try { cp.execFileSync(process.execPath, [path.join(R, 'v2', 'build.js')], { env: Object.assign({}, process.env, { V2_OUT: dist }), stdio: 'pipe' }); }
   catch (e) { bad('build failed: ' + String(e.stderr || e).slice(0, 200)); return out; }
   let own = null;
   try { own = await require('playwright').chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] }); browser = own; } catch (e) {}
-  for (const [world, game] of Object.entries(ONE_PER_WORLD)) {
+  for (const [world, game, extra] of [...Object.entries(ONE_PER_WORLD), ['bakery (painted look)', 'what-comes-next', '&kids=painted']]) {
     const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, deviceScaleFactor: 1 }), pg = await ctx.newPage(), errs = [];
     pg.on('pageerror', e => errs.push(String(e).slice(0, 160)));
     await pg.route('**/*', r => { const u = new URL(r.request().url());
       if (u.host === 'v2.test') { const f = path.join(dist, u.pathname.slice(1)); if (f.startsWith(dist) && fs.existsSync(f)) return r.fulfill({ path: f }); return r.fulfill({ status: 404, body: '' }); }
       return r.abort(); });
     try {
-      await pg.goto('http://v2.test/k-shapes/' + game + '.html?fast=1&look=1');
+      await pg.goto('http://v2.test/k-shapes/' + game + '.html?fast=1&look=1' + (extra || ''));
       if (!(await pg.waitForFunction(() => window.__shp && window.__shp.ready, null, { timeout: 30000 }).then(() => true).catch(() => false))) bad(world + ' (' + game + '): the game did not start');
       else {
         await pg.waitForTimeout(600);
@@ -45,6 +53,6 @@ module.exports = async function (browser) {
   }
   if (own) await own.close();
   fs.rmSync(dist, { recursive: true, force: true });
-  if (!out.fails.length) out.oks.push('2.0 K shapes look: all 12 worlds start with the new look, draw, and have no page errors; every game names a world with its painted pictures');
+  if (!out.fails.length) out.oks.push('2.0 K shapes look: all 12 worlds (and the painted look) start, draw, and have no page errors; every game names a world with its painted pictures; every painted picture is there and small');
   return out;
 };
