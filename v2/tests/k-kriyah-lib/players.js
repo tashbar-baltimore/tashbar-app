@@ -123,7 +123,7 @@ P.partners = async (pg, shot, log) => {
   await pg.waitForSelector('body[data-partner-ready]', { timeout: 180000 }); await shot('1-start'); let wrong = false, n = 0;
   await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready || !i.cards.length) return false; const c = i.cards[0];
     if (!wrong) { wrong = true; const w = Object.keys(i.places).find(k => k !== i.partnerOf[c.k]); await K.drag(pg, c.xy, i.places[w]); await pg.waitForTimeout(700); await shot('3-wrong');
-      log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Its partner is'), 15000)); return true; }
+      log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Find its partner'), 15000)); return true; }
     await K.drag(pg, c.xy, i.places[i.partnerOf[c.k]]); if (++n === 6) { await pg.waitForTimeout(400); await shot('2-middle'); } await pg.waitForTimeout(400); return true; });
 };
 /* End of the Word (Unit 9): the plain letter or its final partner into the empty place; one wrong card first */

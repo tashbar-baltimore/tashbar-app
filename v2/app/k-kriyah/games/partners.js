@@ -12,7 +12,7 @@ export default function setup(E, { struggled, unit }) {
   const shelfM = E.M(0xc68a52, { roughness: .55 }), placeM = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff0b0, emissiveIntensity: .5, transparent: true, opacity: .55 });
   const shelf = E.mesh(E.rbox(8.6, .18, 1.0, .06), shelfM, 0, 0, 0); E.scene.add(shelf);
   const tops = [], places = [], links = [], cards = [];
-  const glow = E.glowSprite('#fff7b0', 2.0, 0); E.scene.add(glow);
+  const glow = E.glowSprite('#fff7b0', 2.0, 0); E.scene.add(glow); const arrow = E.arrow3d(.35);
   let P = false, H = 1.3, order = REG.slice(), busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), mistakes = 0, wrongInRow = 0, help = struggled, resolveRound = null, placed = 0, missedKey = null;
   const slotX = i => P ? (2 - i) * 1.0 : (2 - i) * 1.75;   /* right to left */
   const topPos = i => new THREE.Vector3(slotX(i), P ? 4.6 : 3.25, 0);
@@ -62,8 +62,10 @@ export default function setup(E, { struggled, unit }) {
       placed++; busy = false; if (placed === FIN.length && resolveRound) { const r = resolveRound; resolveRound = null; r(); }
     } else {
       E.sfx.boop(); if (missedKey !== k) mistakes++; missedKey = k; wrongInRow++; kid.mood('think'); await back(c); await E.shake(c, .12);
-      await E.say('That is ' + NM(k) + '. Its partner is ' + NM(partner) + '.');
-      const j = order.indexOf(partner); E.hop(tops[j], .35);
+      const DESC = { chafsofis: 'Chaf Sofis is Chaf with a long leg.', memsofis: 'Mem Sofis is Mem, closed and square.', nunsofis: 'Nun Sofis is Nun with a long leg.', feisofis: 'Fei Sofis is Fei with a long leg.', tzadiksofis: 'Tzadik Sofis is Tzadik with a long leg.' };
+      if (E.pointAt(arrow, c, k, 1.3)) setTimeout(() => arrow.visible = false, 2000 * E.F);
+      await E.say(DESC[k]); await E.say('Find its partner!');
+      if (wrongInRow >= 2) { const j = order.indexOf(partner); E.hop(tops[j], .35); }   /* only after two tries does the partner hop */
       if (wrongInRow >= 2 || mistakes >= 3) help = true; kid.mood('calm'); busy = false;
     }
   }
@@ -76,7 +78,10 @@ export default function setup(E, { struggled, unit }) {
     E.hand.hide(); await drop(c0, i0, true);
     await E.say('Now you! Put each one under its partner.'); mistakes = 0;
     let done = new Promise(r => resolveRound = r); busy = false; enabled = true; document.body.dataset.partnerReady = 1; await done; enabled = false;
-    E.setProgress(2, 1); await E.say('Great! Now the shelf is mixed up.');
+    E.setProgress(2, 1); await E.say('Let’s sing the partners!');
+    for (const [i, k] of order.entries()) { const c = cards.find(x => x.userData.done === i); E.sfx.drum(); E.hop(tops[i], .3, 280); if (c) E.hop(c, .3, 280); await E.say([NM(k) + ', ' + NM(c ? c.userData.key : k) + '!'], false); }
+    await E.sayWithMe('memsofis');
+    await E.say('Great! Now the shelf is mixed up.');
     do { order = REG.slice().sort(() => Math.random() - .5); } while (order.some((k, i) => k === REG[i]));
     build(); tops.forEach(t => E.popIn(t, H / 1.3)); await E.wait(400);
     await E.say('Find each partner again!');

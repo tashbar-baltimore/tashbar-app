@@ -16,7 +16,7 @@ export default function setup(E, { struggled, unit }) {
   const { THREE, S } = E, NM = k => E.LETTERS[k].name;
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   const H = 2.3, arrows = [E.arrow3d(.45), E.arrow3d(.45)], marks = [E.glowSprite('#ffe680', 1.4, 0), E.glowSprite('#ffe680', 1.4, 0)], hint = [E.glowSprite('#fff7b0', 1.5, 0), E.glowSprite('#fff7b0', 1.5, 0)];
-  const pads = [0, 1].map(() => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(1.25, 1.35, .25, 40), E.M(0xfff6e4, { roughness: .4, clearcoat: .6 }), 0, .12, 0)); p.add(E.mesh(new THREE.TorusGeometry(1.3, .05, 10, 48), E.M(0xf2c14e, { metalness: .5, roughness: .3 }), 0, .26, 0)).rotation.x = Math.PI / 2; E.scene.add(p); return p; });
+  const pads = [0, 1].map(() => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(1.25, 1.35, .25, 40), E.M(0xfff6e4, { roughness: .4, clearcoat: .6 }), 0, .12, 0)); { const rg = E.mesh(new THREE.TorusGeometry(1.3, .05, 10, 48), E.M(0xf2c14e, { metalness: .5, roughness: .3 }), 0, .26, 0); rg.rotation.x = Math.PI / 2; p.add(rg); } E.scene.add(p); return p; });
   let P = false, A = null, B = null, R = null, busy = true, active = false, misses = 0, mistakes = 0, help = struggled, resolveFind = null, card = null, cardHome = new THREE.Vector3(), drag = null, grab = new THREE.Vector3(), resolveCard = null, cardMissed = false;
   const X = () => P ? 1.15 : 2.0, Y = () => P ? 2.9 : 1.95, S2 = () => P ? .62 : 1;
   E.onLayout(p => { P = p;
@@ -35,7 +35,7 @@ export default function setup(E, { struggled, unit }) {
   E.onPointer('down', e => {
     if (cardReady && card && !busy) { if (E.pickFrom(e, [card])) { drag = card; const p = E.planePoint(e, card.position.z); if (p) grab.copy(card.position).sub(p); } return; }
     if (!active || busy) return;
-    const near = (w, r) => { const [x, y] = E.toScreen(w); return Math.hypot(x - e.clientX, y - e.clientY) < r; }, r = Math.max(55, Math.min(innerWidth, innerHeight) * .1);
+    const near = (w, r) => { const [x, y] = E.toScreen(w); return Math.hypot(x - e.clientX, y - e.clientY) < r; }, r = Math.max(60, Math.min(innerWidth, innerHeight) * .14);
     if (near(spot(R.a, R.b, A), r) || near(spot(R.b, R.a, B), r)) { const f = resolveFind; resolveFind = null; f && f(true); }
     else if (E.pickFrom(e, [A, B])) { const f = resolveFind; resolveFind = null; f && f(false); }
   });
@@ -65,7 +65,11 @@ export default function setup(E, { struggled, unit }) {
   async function playRound(r, demo) {
     R = r; [A, B].forEach(l => l && E.scene.remove(l)); A = E.letter(r.a, H); B = E.letter(r.b, H); A.position.set(X(), Y(), .3); B.position.set(-X(), Y(), .3); A.scale.setScalar(S2()); B.scale.setScalar(S2()); E.scene.add(A, B); await Promise.all([E.popIn(A, S2()), E.popIn(B, S2())]);
     await E.say(['This is ' + NM(r.a) + '. This is ' + NM(r.b) + '.']);
-    if (demo) { await E.say('Watch me. I look carefully at the bottom.'); const [x, y] = E.toScreen(spot(r.b, r.a, B)); E.hand.at(x, y, true); await E.wait(900); E.hand.hide(); E.sfx.chime(); await showDiff(); await E.say(r.la); await E.say(r.lb); hideDiff(); return; }
+    if (demo) { await E.say('Watch me. I look carefully at the bottom.'); const [x, y] = E.toScreen(spot(r.b, r.a, B)); E.hand.at(x, y, true); await E.wait(900); E.hand.hide(); E.sfx.chime(); await showDiff(); await E.say(r.la); await E.say(r.lb); hideDiff();
+      card = E.letter(r.b, 1.3); card.position.copy(cardHome); card.scale.setScalar(P ? .75 : 1); E.scene.add(card); await E.popIn(card, P ? .75 : 1);   /* show, then try: the hand puts a card with its twin */
+      await E.say(['Watch me. I put ' + NM(r.b) + ' with its twin.']); let [hx, hy] = E.toScreen(card.position); E.hand.at(hx, hy); await E.wait(400);
+      const c0 = card.position.clone(), c1 = E.worldPos(B).add(new THREE.Vector3(0, 0, .6)); await E.tween(1100, q => { card.position.lerpVectors(c0, c1, q); const [a, b] = E.toScreen(card.position); E.hand.at(a, b); }); E.hand.hide();
+      E.scene.remove(card); card = null; E.joy(c1); E.hop(B, .3); return; }
     await E.say('Find what is different! Tap it.'); await find();
     /* use it: one card comes, he puts it with its twin */
     const k = Math.random() < .5 ? r.a : r.b; card = E.letter(k, 1.3); card.position.copy(cardHome); card.scale.setScalar(P ? .75 : 1); E.scene.add(card); await E.popIn(card, P ? .75 : 1); cardMissed = false;
