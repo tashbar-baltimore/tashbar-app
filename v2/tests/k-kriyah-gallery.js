@@ -10,6 +10,7 @@ module.exports = async browser => {
       const { ctx, pg, errs } = await K.open(browser, { view, url: 'gallery.html' });
       await pg.waitForSelector('body[data-ready]', { state: 'attached', timeout: 30000 }); await pg.waitForTimeout(800);
       await K.shot(pg, 'gallery-' + view);
+      await pg.evaluate(() => Promise.all([...document.images].map(i => { i.loading = 'eager'; return i.decode().catch(() => {}); })));   /* pictures further down load only when scrolled to */
       const cards = await pg.evaluate(() => [...document.querySelectorAll('.card')].map(c => ({
         href: c.querySelector('a.open').getAttribute('href'), name: c.querySelector('.name').textContent,
         what: c.querySelector('.what').textContent, img: !!c.querySelector('img') && c.querySelector('img').naturalWidth > 0 })));
