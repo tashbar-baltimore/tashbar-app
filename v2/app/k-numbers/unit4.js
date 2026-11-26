@@ -49,7 +49,12 @@
     d.forEach(function (p) { s += '<path d="' + p + '" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity=".55" transform="translate(-2.5 -3)"/>'; });
     return s + '</svg>';
   };
-  U4.numCard = function (n) { var d = document.createElement('div'); d.className = 'numcard'; d.dataset.n = n; d.innerHTML = U4.num(n); return d; };
+  /* island rule: a written number always tells its name when he touches it (a check's "read it" card is made silent) */
+  U4.numCard = function (n, silent) {
+    var d = document.createElement('div'); d.className = 'numcard'; d.dataset.n = n; d.innerHTML = U4.num(n);
+    if (!silent) d.addEventListener('pointerdown', function () { NK.unlock(); NK.hush(); NK.say(n === 0 ? 'Zero.' : NK.Word(n) + '.', { noRepeat: true }); });
+    return d;
+  };
 
   /* five-frame: tap an empty box to put a counter in, tap a counter to take it out */
   U4.frame5 = function (k, interactive) {

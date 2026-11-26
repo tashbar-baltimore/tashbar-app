@@ -13,8 +13,8 @@ window.NK_UNITS = [
     ['u3-mix', 'mixup.html', 'towel', 'Mix it up'], ['u3-twice', 'twice.html', 'glass', 'Find the mistake'], ['u3-check', 'check3.html', 'trophy', 'Show me'],
     ['u3-review', 'review3.html', 'cards', 'Review'] ] },
   { n: 4, name: 'Numbers 0 to 5', say: 'Unit four. Numbers zero to five.', stops: [
-    ['u4-opener', 'opener4.html', 'book', 'Learn it'], ['u4-frame', 'frame5.html', 'cards', 'Fill the frame'], ['u4-match', 'match4.html', 'cards', 'Match the number'],
-    ['u4-trace', 'trace4.html', 'hand', 'Trace it'], ['u4-zero', 'zero4.html', 'towel', 'Empty plate'], ['u4-mistake', 'mistake4.html', 'glass', 'Fix the frame'],
+    ['u4-opener', 'opener4.html', 'book', 'Learn it'], ['u4-trace', 'trace4.html', 'hand', 'Trace it'], ['u4-zero', 'zero4.html', 'towel', 'Empty plate'],
+    ['u4-frame', 'frame5.html', 'cards', 'Fill the frame'], ['u4-match', 'match4.html', 'cards', 'Match the number'], ['u4-mistake', 'mistake4.html', 'glass', 'Fix the frame'],
     ['u4-check', 'check4.html', 'trophy', 'Show me'], ['u4-review', 'review4.html', 'towel', 'Review time'] ] },
   { n: 5, name: 'Numbers 6 to 10', say: 'Unit five. Numbers six to ten.', stops: [
     ['u5-opener', 'opener5.html', 'book', 'Learn it'], ['u5-frame', 'tenframe.html', 'cards', 'Fill the frame'], ['u5-beads', 'beads.html', 'cards', 'Bead push'],
