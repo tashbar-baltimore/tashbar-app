@@ -361,7 +361,7 @@ async function mistake() {
   for (let r = 0; r < rounds.length; r++) {
     clearTemp(); G.round = r; const q = rounds[r]; G.q = (G.q || 0) + 1; G.ask = { kind: 'mistake', bad: q.bad, answer: q.right };
     const cols = PORTRAIT ? 3 : 6, stones = q.row.map((n, i) => { const s = keep(stone(n)); s.scale.setScalar(1.2); const rr = Math.floor(i / cols), c = i % cols; s.position.set((c - (cols - 1) / 2) * 2.7, 0, rr * 2.8 - 1); return s; });
-    const sh = keep(addKid(S, 'shmuel', V(PORTRAIT ? 0 : -8.8, 0, PORTRAIT ? 4.6 : 0.4))); sh.scale.setScalar(PORTRAIT ? 0.7 : 0.85); sh.rotation.y = PORTRAIT ? 0 : 0.5;
+    const sh = keep(addKid(S, 'shmuel', V(PORTRAIT ? 0 : -8.8, 0, PORTRAIT ? 5.6 : 0.4))); sh.scale.setScalar(PORTRAIT ? 0.7 : 0.85); sh.rotation.y = PORTRAIT ? 0 : 0.5;
     S.frame(V(PORTRAIT ? 0 : -1.4, 0.8, PORTRAIT ? 1.2 : -0.6), PORTRAIT ? 9 : 20, PORTRAIT ? 9 : 6, V(0, 0.75, 1));
     keep(pathRibbon(PORTRAIT ? 9 : 17, PORTRAIT ? 7 : 3.4)).position.set(0, 0.015, PORTRAIT ? 0.4 : -1);
     G.hit = { stone: i => sc(stones[i], 0.3) };

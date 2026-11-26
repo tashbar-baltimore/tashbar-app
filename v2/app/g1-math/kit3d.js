@@ -319,8 +319,9 @@ export function stone(n, o = {}) {
   const g = new THREE.Group(), b = new THREE.Mesh(stoneGeo, o.mat || stoneM[Math.abs(n) % 3]); b.castShadow = !FAST; b.receiveShadow = true; g.add(b);
   const face = new THREE.Mesh(new THREE.CircleGeometry(0.86, 40), new THREE.MeshStandardMaterial({ map: numTex(n == null ? '' : n), transparent: true, roughness: 0.8 }));
   face.rotation.x = -Math.PI / 2; face.position.y = 0.265; g.add(face); g.userData = { n, face, base: b };
-  face.visible = n != null;
-  g.setNum = v => { g.userData.n = v; face.visible = v != null; if (v != null) { face.material.map = numTex(v); face.material.needsUpdate = true; } };
+  const plain = (v) => { const blank = v == null; face.material.map = blank ? null : numTex(v); face.material.color.set(blank ? '#F4E3C4' : '#FFFFFF'); face.material.transparent = !blank; face.material.needsUpdate = true; };   /* a blank stone gets a plain, smooth top */
+  plain(n);
+  g.setNum = v => { g.userData.n = v; plain(v); };
   return g;
 }
 /* a glowing ring under something to show "here" */
