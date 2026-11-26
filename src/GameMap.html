@@ -426,6 +426,7 @@ body.gm-home #gm .gm-sun{position:absolute;inset:0 0 auto 0;height:220px;pointer
 #gm .gm-hi h1{margin:0;font-size:34px;line-height:1.1;font-weight:900;color:#1E1B4B;letter-spacing:-.01em}
 #gm .gm-hi p{margin:8px 0 0;font-size:19px;font-weight:800;color:#3F3A7A;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 #gm .gm-hi .dots{display:inline-flex;gap:6px}
+#gm .gm-hi .gm-out{margin-left:auto;display:inline-flex}
 #gm .gm-hi .dots i{width:18px;height:18px;border-radius:50%;background:#E3E0F5;border:2px solid #C9C4EA}
 #gm .gm-hi .dots i.on{background:#22C55E;border-color:#15803D}
 #gm .gm-hts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
@@ -599,7 +600,8 @@ function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\
  tiles+=tile('store','🛍️','Store',pill('money','You have '+money()),'data-gmnav="money"');
  tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':pill('lock','Locked'));
  tiles+=tile('things',pfAv('pr-tav'),'My profile','Badges, levels, my stuff','data-gmnav="more"');   /* HoS 2026-11-24: My things became My profile (his picture on the tile) */
- return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
+ const out=window.TLK?`<span class="gm-out">${TLK.quiet('Sign out','data-gm="pfout"','tlk-small')}</span>`:'';   /* HoS 2026-11-25: "the kids can't figure out how to log out": a clear Sign out on the home, not only in the corner menu and My profile */
+ return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}${out}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
 /* ===== MY PROFILE (HoS 2026-11-24, boss cleared the general page; mock-up from Claude Chat): "My things" became "My profile".
    One page with who he is (his picture, name, grade, days in a row, badges, lessons), his settings, Sign out,
    his levels in every subject, what he finished lately, his badges, his bank, what he bought, his things from the store, and the doors
