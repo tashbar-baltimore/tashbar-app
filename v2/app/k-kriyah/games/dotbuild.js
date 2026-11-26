@@ -15,7 +15,7 @@ export default function setup(E, { struggled, unit }) {
   /* the dish where the dot waits */
   const dish = new THREE.Group(); E.scene.add(dish); const gold = E.M(0xf2c14e, { metalness: .55, roughness: .3, clearcoat: .8 });
   const bowl = E.mesh(new THREE.SphereGeometry(.5, 28, 14, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), gold, 0, .78, 0); bowl.material.side = THREE.DoubleSide; dish.add(bowl);
-  dish.add(E.mesh(new THREE.CircleGeometry(.48, 28), E.M(0x2b47a8, { roughness: .8 }), 0, .62, 0)).rotation.x = -Math.PI / 2;   /* a velvet lining inside */
+  { const lin = E.mesh(new THREE.CircleGeometry(.42, 28), E.M(0x2b47a8, { roughness: .8 }), 0, .5, 0); lin.rotation.x = -Math.PI / 2; dish.add(lin); }   /* a velvet lining inside */
   dish.add(E.mesh(new THREE.CylinderGeometry(.08, .1, .3, 12), gold, 0, .15, 0)); dish.add(E.mesh(new THREE.CylinderGeometry(.3, .34, .06, 24), gold, 0, .03, 0));
   /* the golden dot (a big invisible ball around it makes it easy to grab) */
   const dot = new THREE.Group(); E.scene.add(dot);
