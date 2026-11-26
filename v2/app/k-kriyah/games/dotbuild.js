@@ -10,12 +10,13 @@ export default function setup(E, { struggled, unit, game }) {
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   /* a soft velvet cushion on a little gold stand, where the letter rests */
   const stand = new THREE.Group(); E.scene.add(stand);
-  stand.add(E.mesh(new THREE.CylinderGeometry(1.7, 1.9, .3, 40), E.M(0x2b47a8, { roughness: .7, sheen: 1, sheenColor: new THREE.Color(0x9ab4ff) }), 0, .15, 0));
-  stand.add(E.mesh(new THREE.TorusGeometry(1.8, .06, 10, 48), E.M(0xf2c14e, { metalness: .55, roughness: .3 }), 0, .3, 0)).rotation.x = Math.PI / 2;
+  const cush = E.mesh(new THREE.CylinderGeometry(1.5, 1.6, .22, 40), E.M(0x2b47a8, { roughness: .7, sheen: 1, sheenColor: new THREE.Color(0x9ab4ff) }), 0, .11, 0); cush.scale.z = .45; stand.add(cush);
+  const rim = E.mesh(new THREE.TorusGeometry(1.55, .05, 10, 48), E.M(0xf2c14e, { metalness: .55, roughness: .3 }), 0, .22, 0); rim.rotation.x = Math.PI / 2; rim.scale.y = .45; stand.add(rim);   /* a low, flat velvet cushion */
   /* the dish where the dot waits */
   const dish = new THREE.Group(); E.scene.add(dish); const gold = E.M(0xf2c14e, { metalness: .55, roughness: .3, clearcoat: .8 });
-  const bowl = E.mesh(new THREE.SphereGeometry(.5, 28, 14, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), gold, 0, .55, 0); bowl.material.side = THREE.DoubleSide; dish.add(bowl);
-  dish.add(E.mesh(new THREE.CylinderGeometry(.08, .1, .5, 12), gold, 0, .25, 0)); dish.add(E.mesh(new THREE.CylinderGeometry(.3, .34, .06, 24), gold, 0, .03, 0));
+  const bowl = E.mesh(new THREE.SphereGeometry(.5, 28, 14, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), gold, 0, .78, 0); bowl.material.side = THREE.DoubleSide; dish.add(bowl);
+  dish.add(E.mesh(new THREE.CircleGeometry(.48, 28), E.M(0x2b47a8, { roughness: .8 }), 0, .62, 0)).rotation.x = -Math.PI / 2;   /* a velvet lining inside */
+  dish.add(E.mesh(new THREE.CylinderGeometry(.08, .1, .3, 12), gold, 0, .15, 0)); dish.add(E.mesh(new THREE.CylinderGeometry(.3, .34, .06, 24), gold, 0, .03, 0));
   /* the golden dot (a big invisible ball around it makes it easy to grab) */
   const dot = new THREE.Group(); E.scene.add(dot);
   dot.add(E.mesh(new THREE.SphereGeometry(.2, 32, 24), E.goldDot(), 0, 0, 0, false));
@@ -30,7 +31,7 @@ export default function setup(E, { struggled, unit, game }) {
   E.onLayout(p => { P = p; H = p ? 2.1 : 2.6;
     if (p) { E.camBase.set(0, 2.6, 10.5); E.camTarget.set(0, 2.0, 0); letterAt.set(0, 2.75, .4); stand.position.set(0, 0, .2); stand.scale.setScalar(.8); dish.position.set(1.15, 0, 2.2); dish.scale.setScalar(.9); kid.visible = false; }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); letterAt.set(.3, 2.05, .4); stand.position.set(.3, 0, .2); stand.scale.setScalar(1); dish.position.set(3.7, 0, 1.4); dish.scale.setScalar(1.1); kid.visible = true; kid.position.set(-4.4, 0, 1.2); }
-    dishAt.copy(dish.position).add(new THREE.Vector3(0, .72 * dish.scale.x, 0));
+    dishAt.copy(dish.position).add(new THREE.Vector3(0, .9 * dish.scale.x, 0));
     if (shape) { const k = shape; shape = null; setShape(k, true); }
     if (!dragging) dot.position.copy(spotPos(at));
   });

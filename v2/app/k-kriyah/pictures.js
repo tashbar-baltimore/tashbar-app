@@ -169,9 +169,13 @@ export function makePictures(E) {
       [[0x2f7de1, 0], [0xffffff, 1], [0x2f7de1, 2], [0xffcf3a, 3]].forEach(([c, i]) => cloth.add(mesh(new THREE.BoxGeometry(.78, .14, .02), M(c, { roughness: .6 }), .4, -i * .14, 0)));
       g.userData.wave = cloth; return g; },
     torah() { const g = new THREE.Group(), wood = M(0x8a5a2b, { roughness: .4, clearcoat: .6 }), silver = M(0xdfe4ea, { metalness: .8, roughness: .2 });   /* a Torah in its blue velvet cover, two wooden handles (no writing) */
-      const cover = mesh(new THREE.CylinderGeometry(.42, .42, 1.0, 32), M(0x2b47a8, { roughness: .7, sheen: 1, sheenColor: new THREE.Color(0x9ab4ff) }), 0, 0, 0); cover.scale.set(1.25, 1, .7); g.add(cover);
-      [.42, -.42].forEach(y => { const band = mesh(new THREE.CylinderGeometry(.43, .43, .07, 32), M(0xf2c14e, { metalness: .5, roughness: .3 }), 0, y, 0); band.scale.set(1.25, 1, .7); g.add(band); });
-      [-.27, .27].forEach(x => { g.add(mesh(new THREE.CylinderGeometry(.05, .05, .35, 12), wood, x, .66, 0)); g.add(mesh(new THREE.SphereGeometry(.1, 14, 10), silver, x, .88, 0)); g.add(mesh(new THREE.CylinderGeometry(.05, .05, .3, 12), wood, x, -.64, 0)); });
+      const vel = M(0x2b47a8, { roughness: .7, sheen: 1, sheenColor: new THREE.Color(0x9ab4ff) }), goldM = M(0xf2c14e, { metalness: .5, roughness: .3 });
+      [-.17, .17].forEach(x => { g.add(mesh(new THREE.CylinderGeometry(.2, .2, 1.15, 28), vel, x, -.05, 0)); });   /* the cover, over the two rolls */
+      g.add(mesh(new THREE.BoxGeometry(.36, 1.15, .3), vel, 0, -.05, 0));
+      [.45, -.52].forEach(y => g.add(mesh(new THREE.BoxGeometry(.76, .07, .44), goldM, 0, y, 0)));   /* gold bands at the top and bottom */
+      g.add(mesh(new THREE.BoxGeometry(.04, 1.0, .02), goldM, 0, -.05, .16));   /* a gold seam down the middle */
+      [-.17, .17].forEach(x => { g.add(mesh(new THREE.CylinderGeometry(.045, .045, .3, 12), wood, x, .67, 0)); g.add(mesh(new THREE.ConeGeometry(.11, .2, 14), silver, x, .9, 0)); g.add(mesh(new THREE.SphereGeometry(.06, 12, 10), silver, x, 1.02, 0));
+        g.add(mesh(new THREE.CylinderGeometry(.045, .045, .22, 12), wood, x, -.72, 0)); });   /* wooden handles, silver tops */
       return g; },
   };
   /* the painted pictures (art/obj), each a flat card that always faces the boy. Its width follows the picture's own shape. */
