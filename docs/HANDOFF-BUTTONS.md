@@ -76,3 +76,4 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 
 ## Done: round speaker buttons (26 Nov 2026)
 - HoS: small buttons are round. The lesson speaker (`.qrow .say`, and every `button.say`) is a perfect 52 px circle, icon only (`src/Shine.html`). Picture: `docs/screens/round-speaker-after.jpg`.
+- Same day: small kit buttons (`tlk-small`: Sign out on the home, Turn off, Choose music, Change, Show me) are pills, and the lesson 🚩 (`.tlrep`, `src/Helpers.html`) is round. Rule in `docs/BUTTON-SYSTEM.md` ("Shape by size"). Picture: `docs/screens/shapes-after.jpg`.
