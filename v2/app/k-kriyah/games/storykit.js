@@ -48,7 +48,7 @@ export function makeStory(E, unit, script) {
     const held = () => { const w = grown || boy; return w.position.clone().add(new THREE.Vector3(.45 * w.scale.x, 1.05 * w.scale.x, .35)); };   /* in the grown-up's arms */
     const p0 = picObj.position.clone(), home = held(); kept.push(picObj); const s0 = picObj.scale.x;
     l.position.copy(from); l.visible = true; l.scale.setScalar(.01); glow.position.set(to.x, 1.6, -.3);
-    await E.tween(1300, q => { picObj.position.lerpVectors(p0, home, q); picObj.scale.setScalar(s0 * (1 - q * .3)); l.position.lerpVectors(from, to, q); l.scale.setScalar(.01 + q * .99); glow.material.opacity = q * .8; });
+    await E.tween(1300, q => { picObj.position.lerpVectors(p0, home, q); l.position.lerpVectors(from, to, q); l.scale.setScalar(.01 + q * .99); glow.material.opacity = q * .8; });
     float(l); const w = grown || boy; w.mood('wave');
     E.onFrame(t => { if (!picObj.visible || picObj.userData.fading) return; picObj.position.copy(held()).add(new THREE.Vector3(Math.sin(t * 2.2) * .08, Math.abs(Math.sin(t * 2.2)) * .1, 0)); picObj.rotation.z = Math.sin(t * 2.2) * .12; });   /* a gentle dance */
   }
