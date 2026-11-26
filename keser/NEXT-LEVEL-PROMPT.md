@@ -21,7 +21,8 @@ You are the lead builder for **Keser Girls 3.0**, the girls' learning app in `ke
 
 **Rules that do not bend:**
 - Modest and frum in every detail. People in pictures are girls and women, modestly dressed, in frum settings, marked "Keser Girls only" in `art/CATALOG.md`. Never the Divine Name (use ה׳). No word "bite". No real student names or data anywhere.
-- All art lives in the shared `art/` library with a catalog row (`art/README.md`). Order new pictures the way `art/README.md` says.
+- **Pictures and graphics: order them from my image account (ChatGPT)** by email, as a numbered order list with file names, the screen, the size and the exact prompt (example: `docs/core-growth/F-picture-orders.md`). Ask me for the address; never write it in the repository. Check the inbox for replies, check every picture against its order and the rules, and add it to `art/` with its catalog row. Start with a Keser style sheet and a girls' cast (a few girls of different ages who look the same in every picture). Until a picture arrives, use coded 3D or drawn shapes, never an empty box.
+- All art lives in the shared `art/` library with a catalog row (`art/README.md`).
 - It must run smoothly on a school Chromebook (1366×768) and a phone. Keep a light mode for slow computers, keep the still fallback for computers without 3D, and respect "reduce motion".
 - A Keser pull request changes only `keser/` and `art/`. Run `node tests/run.js` before opening it; everything must pass. Add tests for each new piece in `keser/tests/`.
 - **See it as a girl before you say "done".** Play it as a made-up girl at Chromebook and phone size, look at every screen, and send me the pictures. Then I look at the look link. Post `APPROVED FOR KESER — Rabbi Khaver` only when I say "approve it" in that same conversation.
