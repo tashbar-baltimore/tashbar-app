@@ -22,10 +22,11 @@ Open `art/CATALOG.md` and search (Ctrl+F) for the thing, the character, the less
 ## 2. Use it
 - **1.0:** link the picture in `src/RealPics.html` (`TL_PICS`, file name only) or name the file in your add-on as `/pics/<file>` or `/sounds/<file>`. The 1.0 site build (`web/build.js`) copies every library file that 1.0 names into the site, at `/pics/`, `/sounds/` and `/models/`.
 - **2.0:** name the file in `v2/app/` as `/pics/<file>`, `/sounds/<file>` or `/models/<file>`. The 2.0 build (`v2/build.js`) copies what 2.0 names from `art/` (2.0 keeps its own clean code and screens; only the art is shared).
+- **Keser Girls 3.0:** name the file in `keser/app/` the same way; `keser/build.js` copies it from `art/`.
 - **Any future app:** the same. Its art lives here, never in its own folder.
 
 ## 3. Add to it (in the same pull request that first uses it)
-1. Check it against its order and the picture rules (`docs/HANDOFF-PICS.md`): boys and men only; modest, frum family life; kosher food; no text inside pictures; no other religions' symbols; no Divine Name. Cast characters must look the same as in their earlier pictures (cast notes in `docs/CORE-GROWTH-LANES.md`).
+1. Check it against its order and the picture rules (`docs/HANDOFF-PICS.md`): boys and men only (exception: Keser Girls 3.0 art may show girls and women, modestly; write "Keser Girls only" in its "what it shows" cell, and it is never used in 1.0 or 2.0); modest, frum family life; kosher food; no text inside pictures; no other religions' symbols; no Divine Name. Cast characters must look the same as in their earlier pictures (cast notes in `docs/CORE-GROWTH-LANES.md`). If a picture breaks a rule, show it to the creator of that lesson and ask: he or she may allow a one-time exception, written in the catalog row (`docs/HANDOFF-PICS.md`, "Exceptions", HoS 2026-11-26).
 2. Put the app-ready file in `art/pics/` (or `sounds/`, `models/`) and the full-size original in `art/originals/`.
 3. Run `node tools/art-catalog.js`. It adds a row and fills what it can (alt, source and licence from `TL_PICS`, the screens that use it, the date).
 4. Fill in the rest of the row by hand: what it shows, the characters (by cast name), the band (K1 / B23 / E45 / M68 / staff), source, licence, author, who ordered or made it, and the alt text. For an AI picture the licence is "made for Tashbar Baltimore with an AI image tool, owned by the school". The script never overwrites a cell that has text.

@@ -1,0 +1,466 @@
+<script>
+/* CoreDataW4820.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 4 (L05), Unit 5 "Little Researcher" (research basics, ARMS, COPS). Cast: the Glen Avenue Crew. The sources are practice texts made up for these lessons.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.RES.L05.01':{name:'Good Question',
+  teach:[
+    {how:'It is Sukkos. Mr. Halpern is visiting the Katz family’s sukkah when geese honk overhead in a big V, heading south. Avrumi asks: “How do they know the way?” Mr. Halpern smiles: “After Yom Tov, let’s find out from books, not guesses.” Research starts with a QUESTION. A good research question asks How or Why about one thing, and a book can answer it.', q:'Which is a good research question?', o:['How do birds find their way south?','Do birds fly?','What is everything about all animals?']},
+    {how:'Mistake 1: a question that is TOO BIG. “What is everything about birds?” would fill a whole library. You could never finish. Keep your question to one thing about your topic.', q:'Which question is too big?', o:['What is everything about birds?','How do geese fly such a long way?','How do birds find their way south?']},
+    {how:'Mistake 2: a YES OR NO question. “Do birds fly south?” Yes. Done! One word answers it, so there is nothing to research. Questions that start with Do, Is, Can or Are are often yes or no. Turn it into How or Why: “Why do birds fly south?”', q:'Dovid asks: “Can birds see the stars?” What kind of question is it?', o:['Yes or no','Too big','Good research question']}
+  ],
+  practice:[
+    {t:'sort', q:'Avrumi’s list of questions about birds. Sort each one.', bins:[{id:'G',label:'✅ Good research question'},{id:'B',label:'📚 Too big'},{id:'Y',label:'👍 Yes or no'}],
+      items:[{label:'How do birds find their way south?',bin:'G'},{label:'Why do birds fly south in the fall?',bin:'G'},{label:'How do geese fly such a long way?',bin:'G'},{label:'What is everything about birds?',bin:'B'},{label:'How do all the animals in the world live?',bin:'B'},{label:'Do birds fly south?',bin:'Y'},{label:'Can geese swim?',bin:'Y'}],
+      h:'If one word (yes or no) answers it, it is yes or no. If it asks about everything or all, it is too big. How or Why about one thing is good.'},
+    {t:'pairs', q:'Match each kind of question to what you do next.', pairs:[['Too big','Ask about one thing.'],['Yes or no','Start with How or Why.'],['Good research question','Keep it, and start looking in books.']],
+      h:'What is wrong with the question? Find the fix for that.'},
+    {t:'spotall', q:'Tap every GOOD research question: How or Why, about one thing.', cells:[{label:'How do birds use the stars?',ok:true},{label:'Why do some birds stay all winter?',ok:true},{label:'How do birds know when to leave?',ok:true},{label:'Is a goose a bird?',ok:false},{label:'What is everything about the sky?',ok:false},{label:'Do geese honk?',ok:false}],
+      h:'Skip a question one word answers. Skip a question about everything. Keep How or Why about one thing.'},
+    {t:'order', q:'Dovid asked: “Can birds see the stars?” That is yes or no. Build his good research question. Tap the tiles in order.', tiles:['How do','birds use','the stars','at night?'],
+      h:'Start with How do. Then who. Then what they use. The question mark goes last.'},
+    {t:'pairs', q:'Match each yes or no question to a How or Why question about the same thing.', pairs:[['Do birds fly south?','Why do birds fly south?'],['Do geese fly a long way?','How do geese fly such a long way?'],['Can birds use the sun?','How do birds use the sun?']],
+      h:'Keep the same topic. Swap Do or Can for How or Why.'},
+    {t:'sort', q:'Too big, or about one thing?', bins:[{id:'B',label:'📚 Too big'},{id:'O',label:'🎯 About one thing'}],
+      items:[{label:'What is everything about the ocean?',bin:'B'},{label:'How do all animals get ready for winter?',bin:'B'},{label:'What is everything about birds?',bin:'B'},{label:'How do geese fly such a long way?',bin:'O'},{label:'How do birds use the sun?',bin:'O'},{label:'Why do birds fly south in the fall?',bin:'O'}],
+      h:'Everything and all make a question too big. A question about one thing can be answered in a short report.'},
+    {t:'write', q:'Your turn. Pick a topic you wonder about: birds, the harbor, the moon or trains. Write three research questions about it. Check each one: Is it about one thing? Does it need more than one word to answer? Circle your best one.', min:0, checks:['❓ My questions start with How or Why.','🎯 Each one asks about one thing, not everything.','📚 A book could answer my best question.'], h:'Start with How or Why. Then ask about one thing you really wonder about. If one word answers it, turn it around.'}
+  ],
+  check:[
+    {q:'Binyamin wonders about the Baltimore harbor. He writes: “What is everything about the ocean?” What is wrong?', o:['Too big','Yes or no','Good research question'], h:'Does it ask about one thing, or about everything?'},
+    {q:'Tzvi Hirsch wonders about the moon. He writes: “Is the moon far away?” What kind of question is it?', o:['Yes or no','Too big','Good research question'], h:'Can one word answer it?'},
+    {t:'order', q:'Yehuda wonders about the harbor. Build his good research question. Tap the tiles in order.', tiles:['Why does','Baltimore’s harbor','have a','lighthouse?'], h:'Start with Why does. The question mark goes last.'}
+  ],
+  re:[
+    {how:'A new way: a research question is like a fishing line. Too big is like trying to catch the whole ocean. Yes or no is a line with no hook: one word and it is over. How or Why about one thing catches a real fish: an answer you can write about.', q:'Which question catches a real answer?', o:['How do geese fly such a long way?','Do geese fly?','What is everything about the sea?']},
+    {how:'A simpler step: just check the first word. Do, Is, Can and Are often make a yes or no question. How and Why ask for more.', q:'Which first word asks for more?', o:['Why','Do','Is']},
+    {how:'The skill underneath: TIDE Plan. There, POW’s Pick my idea meant a topic you already knew how to teach. Now you go further: you pick something you do NOT know yet, and ask a question that books can answer.', q:'In POW, what does the P stand for?', o:['Pick my idea','Plan the ending','Put it in order']}
+  ]},
+
+  'WRIT.RES.L05.02':{name:'Notes, Not Copies',
+  teach:[
+    {how:'Avrumi found a library book: Wings Going South, by Neil Ross. (It is a practice book, made up for these lessons.) It says: “Birds use the sun to tell which way is south.” Copying the whole sentence is slow, and it is not your own work. A NOTE keeps only the KEY WORDS: the few words that hold the fact.', q:'Which note is in key words?', o:['sun – shows south','Birds use the sun to tell which way is south.','birds are nice']},
+    {how:'How to find key words: read one sentence. Cover it. Ask: what is the fact? Write 2 to 5 words that hold it: names, numbers, action words. Leave out little words like the, which and that. Then check the book, and say the note back as a sentence: is it still true?', q:'Book: “Birds that fly at night use the stars instead.” Which note holds the fact?', o:['night fliers – stars','Birds that fly at night use','instead']},
+    {how:'Two mistakes. COPIED: the whole sentence, word for word. LOST THE FACT: so few words, or the wrong words, that the note no longer says the fact, like “birds – sky.” A good note in key words is short AND still true.', q:'Tzvi Hirsch’s note says only: “birds – sky.” What is wrong?', o:['Lost the fact','Copied','Nothing: it is key words']}
+  ],
+  practice:[
+    {t:'sort', q:'Avrumi’s notes from the practice book and article. Sort each note.', bins:[{id:'K',label:'📝 Key words'},{id:'C',label:'📋 Copied'},{id:'L',label:'❓ Lost the fact'}],
+      items:[{label:'sun – shows south',bin:'K'},{label:'night fliers – stars',bin:'K'},{label:'follow rivers, coasts, mountains',bin:'K'},{label:'Birds use the sun to tell which way is south.',bin:'C'},{label:'Birds that fly at night use the stars instead.',bin:'C'},{label:'birds – sky',bin:'L'},{label:'geese',bin:'L'}],
+      h:'A whole sentence, word for word, is copied. One or two words that do not say the fact lost the fact. 2 to 5 words that still say the fact are key words.'},
+    {t:'pairs', q:'Match each sentence from the practice texts to its key-word note.', pairs:[['In the fall, many birds fly south, where they can find more food for the winter.','fall – fly south – more food'],['Birds use the sun to tell which way is south.','sun – shows south'],['Canada geese fly in a V shape, which saves energy on the long trip.','geese V – saves energy'],['Many birds can sense the earth’s magnetism, almost like a compass inside them.','sense magnetism – like a compass']],
+      h:'Find the note with the same fact in fewer words.'},
+    {t:'spotall', q:'Article: “Birds also follow things they can see from the sky, like rivers, coasts and mountains.” Tap every KEY word.', cells:[{label:'follow',ok:true},{label:'rivers',ok:true},{label:'coasts',ok:true},{label:'mountains',ok:true},{label:'also',ok:false},{label:'like',ok:false},{label:'they',ok:false}],
+      h:'Key words hold the fact: what the birds do and what they follow. Little words like also, like and they can go.'},
+    {t:'order', q:'Put the steps for taking a note in order. Tap the tiles in order.', tiles:['Read the sentence.','Cover it.','Write the key words.','Check the book: still true?'],
+      h:'Read it first. Cover it so you do not copy. Write. Then check.'},
+    {t:'pairs', q:'Avrumi’s research question is “How do birds find their way south?” Match each smaller question to the note that answers it.', pairs:[['What do birds use to find south?','sun – shows south'],['What do birds use at night?','night fliers – stars'],['What do birds follow from the sky?','follow rivers, coasts, mountains']],
+      h:'Which note holds that fact?'},
+    {t:'sort', q:'Article: “Canada geese fly in a V shape, which saves energy on the long trip.” Keep it in the note, or leave it out?', bins:[{id:'K',label:'📝 Key word: keep'},{id:'L',label:'✂️ Little word: leave out'}],
+      items:[{label:'geese',bin:'K'},{label:'V shape',bin:'K'},{label:'saves energy',bin:'K'},{label:'which',bin:'L'},{label:'in a',bin:'L'},{label:'on the',bin:'L'}],
+      h:'Keep the words that hold the fact: who, what, and what it does. Leave out little words.'},
+    {t:'write', q:'Your turn. Here is the practice article, How Birds Find Their Way: “The earth acts like a giant magnet. Many birds can sense the earth’s magnetism, almost like a compass inside them. Birds also follow things they can see from the sky, like rivers, coasts and mountains.” Take one note for each sentence, in key words. Then take notes the same way from one page of a real book on your own research question.', min:0, checks:['📝 Each note is 2 to 5 key words.','📋 I did not copy a whole sentence.','✅ I checked the text: every note is still true.'], h:'Read one sentence. Cover it. Ask: what is the fact? Write only the words that hold it. Then uncover and check.'}
+  ],
+  check:[
+    {q:'Dovid reads a book about the harbor: “Big ships use tugboats to turn in the harbor.” His note says: “Big ships use tugboats to turn in the harbor.” What is wrong?', o:['Copied','Lost the fact','Key words'], h:'Is the note the whole sentence, word for word?'},
+    {q:'Binyamin reads: “The moon takes about 27 days to go around the earth.” His note says: “moon – 27 days around earth.” What kind of note is it?', o:['Key words','Copied','Lost the fact'], h:'Is it short? Is the fact still there?'},
+    {t:'order', q:'Yehuda reads a book about trains: “Many steam trains burned coal to make steam.” Put his note-taking in order. Tap the tiles in order.', tiles:['He reads the sentence.','He covers it.','He writes: steam trains – burned coal','He checks: is it still true?'], h:'Read, cover, write the key words, then check.'}
+  ],
+  re:[
+    {how:'A new way: a note is like a short message to yourself. You would not write out a whole page. You write only the words you need: “sun – shows south.”', q:'A good note is like…', o:['a short message to yourself','a whole copied page','a picture']},
+    {how:'A simpler step: find just the one or two most important words first. Ask: what is the sentence about? What do they do or use?', q:'“Birds that fly at night use the stars instead.” What do they use?', o:['the stars','instead','that']},
+    {how:'The skill underneath: Group It. There, the facts were already on cards, ready to sort into groups. Now you go further: you make the fact cards yourself, from a book or an article, in key words and not copies.', q:'In Group It, what did you do with the facts?', o:['Sorted them into named groups','Copied them','Threw them out']}
+  ]},
+
+  'WRIT.RES.L05.03':{name:'Where I Found It',
+  teach:[
+    {how:'Avrumi has great notes. Mr. Halpern asks: “Where did you find them?” Avrumi shrugs: “In a book.” Which book? A reader (or Avrumi, next week) needs to find it again to check. So for each source, write two things: its TITLE and its AUTHOR.', q:'Why write where you found your facts?', o:['So a reader can find the same book and check','So the notes look longer','So you can copy more']},
+    {how:'The TITLE is the name of the book or article. Look on the cover, or at the top of the article. The AUTHOR is the person who wrote it. Look for the word “by.” Wings Going South, by Neil Ross: the title is Wings Going South, and the author is Neil Ross. (Both practice texts were made up for these lessons.)', q:'Practice article: How Birds Find Their Way, by Ben Carter. Who is the author?', o:['Ben Carter','How Birds Find Their Way','by']},
+    {how:'Three mistakes. “A library book” or “the computer” tells nothing: which one? Mixing up the title and the author. Forgetting a source: if a fact came from the article, the article goes on the list too. Write one line for each source: Title, by Author.', q:'Which source line is ready?', o:['Wings Going South, by Neil Ross','a library book','Neil Ross, by Wings Going South']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each one: a title or an author?', bins:[{id:'T',label:'📕 Title'},{id:'A',label:'✍️ Author'}],
+      items:[{label:'Wings Going South',bin:'T'},{label:'How Birds Find Their Way',bin:'T'},{label:'The Busy Harbor',bin:'T'},{label:'Neil Ross',bin:'A'},{label:'Ben Carter',bin:'A'},{label:'Sam Porter',bin:'A'}],
+      h:'The title is the name of the book or article. The author is the person who wrote it.'},
+    {t:'pairs', q:'Match each title to its author.', pairs:[['Wings Going South','Neil Ross'],['How Birds Find Their Way','Ben Carter'],['The Busy Harbor','Sam Porter']],
+      h:'Think back: who wrote the book, and who wrote the article? The Busy Harbor is by Sam Porter.'},
+    {t:'spotall', q:'Tap every source line that tells the reader exactly where to look.', cells:[{label:'Wings Going South, by Neil Ross',ok:true},{label:'How Birds Find Their Way, by Ben Carter',ok:true},{label:'The Busy Harbor, by Sam Porter',ok:true},{label:'a library book',ok:false},{label:'the computer',ok:false},{label:'my friend’s book',ok:false}],
+      h:'A ready line has a title and an author. A line with no title tells nothing.'},
+    {t:'order', q:'Build the source line for the practice book. Tap the tiles in order.', tiles:['Wings Going South,','by','Neil Ross'],
+      h:'Title first, with a comma. Then by. Then the author.'},
+    {t:'sort', q:'Avrumi’s notes came from two practice texts. Which source did each note come from?', bins:[{id:'B',label:'📕 Wings Going South'},{id:'A',label:'📰 How Birds Find Their Way'}],
+      items:[{label:'fall – fly south – more food',bin:'B'},{label:'sun – shows south',bin:'B'},{label:'night fliers – stars',bin:'B'},{label:'sense magnetism – like a compass',bin:'A'},{label:'follow rivers, coasts, mountains',bin:'A'},{label:'geese V – saves energy',bin:'A'}],
+      h:'The book told about fall, the sun and the stars. The article told about magnetism, rivers and geese. Both sources go on the list.'},
+    {t:'pairs', q:'Match each mistake to its fix.', pairs:[['“a library book”','Write its title and author.'],['Title and author mixed up','The author is the person after “by.”'],['A fact from the article, but no article on the list','Add a line for the article.']],
+      h:'What is wrong? Find the fix for that problem.'},
+    {t:'write', q:'Your turn. Find two sources on your research question: two books, or a book and an article, from home, school or the library. Under your notes, write “Where I Found It.” Then write one line for each source: the title, then by, then the author.', min:0, checks:['📕 Each line has the title.','✍️ Each line has the author, after “by.”','📚 Every source I took notes from is on my list.'], h:'Look on the cover or at the top for the title. Look for “by” to find the author. One line for each source.'}
+  ],
+  check:[
+    {q:'Binyamin’s book cover says: Trains of Long Ago, by Peter Lang. What is “Peter Lang”?', o:['Author','Title','Tells nothing'], h:'Which name comes after “by”?'},
+    {q:'Dovid writes his source line: “a book from the library.” What kind of source line is it?', o:['Tells nothing','Title','Author'], h:'Can a reader tell which book it is?'},
+    {t:'order', q:'Tzvi Hirsch used a book: Facts About the Moon, by Martin Brand. Build his source line. Tap the tiles in order.', tiles:['Facts About the Moon,','by','Martin Brand'], h:'Title, then by, then the author.'}
+  ],
+  re:[
+    {how:'A new way: a source line is like a return address on a letter. It tells where the facts came from, so anyone can go back there.', q:'A source line tells…', o:['where the facts came from','how long the book is','what you think of it']},
+    {how:'A simpler step: just find the word “by.” The name after it is the author. The big name on the cover, before it, is the title.', q:'In “The Busy Harbor, by Sam Porter,” what comes after by?', o:['the author','the title','the page']},
+    {how:'The skill underneath: Facts and Quotes. There, you told who SAID a quote: says Mr. Gold, the baker. Now you go further: you list every book or article your facts came FROM, with its title and author, at the end of your notes.', q:'In Facts and Quotes, what did you add after a quote?', o:['who said it','a picture','a heading']}
+  ]},
+
+  'WRIT.ESSAY.L05.06':{name:'Revise with ARMS',
+  teach:[
+    {how:'Yehuda wrote his bird report from his notes. Now he REVISES: he rereads to make the MEANING better, with ARMS. A: Add a word, a detail or a sentence that is missing. R: Remove what does not belong. M: Move a sentence to the place where it makes sense. S: Substitute: swap a weak word for a better one.', q:'Yehuda writes: “Birds use the sun.” Rabbi Feldman asks: “To do what?” Which ARMS move fixes it?', o:['Add','Remove','Move']},
+    {how:'Here are the other moves. Remove: “My cousin has a pet parakeet.” It is not about how birds find their way. Move: “So that is how birds find the way” sits in the middle, but it wraps up, so it belongs at the end. Substitute: “the lights in the sky” is unclear; swap in “the stars.”', q:'“At night, birds use the lights in the sky.” Which ARMS move swaps in “the stars”?', o:['Substitute','Add','Remove']},
+    {how:'You learned in Fix It Up: revise first, then edit. ARMS makes revising exact. The big mistake is still fixing only spelling and calling it revising. Spelling and capitals come later, when you edit. Revising is about MEANING: Does it make sense? Is something missing, extra, out of place, or weak? Revise first. Edit after.', q:'Which change is revising with ARMS?', o:['Removing a sentence that is off the topic','Fixing the spelling of “sowth”','Adding a period']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each problem to its ARMS move.', pairs:[['Something is missing.','Add'],['A sentence does not belong.','Remove'],['A sentence is in the wrong place.','Move'],['A word is weak or unclear.','Substitute']],
+      h:'Say ARMS: Add, Remove, Move, Substitute. Which move fixes that problem?'},
+    {t:'sort', q:'Yehuda’s paragraph is about how birds find their way south. Which ARMS move does each line need?', bins:[{id:'A',label:'➕ Add'},{id:'R',label:'✂️ Remove'},{id:'S',label:'🔁 Substitute'}],
+      items:[{label:'Birds use the sun. (Reader: to do what?)',bin:'A'},{label:'Many birds fly south. (Reader: when?)',bin:'A'},{label:'My cousin has a pet parakeet.',bin:'R'},{label:'Our class trip was on Tuesday.',bin:'R'},{label:'At night, birds use the lights in the sky.',bin:'S'},{label:'Birds follow stuff they can see.',bin:'S'}],
+      h:'If the reader asks a question after the line, Add. If it is not about how birds find the way, Remove. If a word is weak or unclear, like stuff, Substitute.'},
+    {t:'spotall', q:'Yehuda is REVISING. Tap every change that is an ARMS move for meaning.', cells:[{label:'Add: “to tell which way is south”',ok:true},{label:'Remove the parakeet sentence',ok:true},{label:'Move “So that is how…” to the end',ok:true},{label:'Substitute “the stars” for “the lights in the sky”',ok:true},{label:'Fix “sowth” to “south”',ok:false},{label:'Put a period at the end',ok:false}],
+      h:'ARMS changes what the piece means. Spelling and periods are editing, and they come later.'},
+    {t:'order', q:'Yehuda moves his sentences so the paragraph makes sense. Tap the tiles in order.', tiles:['Birds have a few ways to find their way south.','In the day, they use the sun.','Then at night, they use the stars.','So that is how birds find the way.'],
+      h:'What the paragraph is about comes first. “Then” comes after the day. “So that is how” wraps it up at the end.'},
+    {t:'pairs', q:'Substitute: match each weak or unclear phrase to a better one.', pairs:[['the lights in the sky','the stars'],['stuff they can see','rivers and coasts'],['which is good','which saves energy']],
+      h:'Which words say exactly what the practice texts say?'},
+    {t:'sort', q:'Revising now, or editing later?', bins:[{id:'V',label:'🔧 Revising (ARMS)'},{id:'E',label:'✏️ Editing (later)'}],
+      items:[{label:'Add a detail the reader needs',bin:'V'},{label:'Remove an off-topic sentence',bin:'V'},{label:'Move the wrap-up sentence to the end',bin:'V'},{label:'Swap a weak word for a better one',bin:'V'},{label:'Fix a spelling',bin:'E'},{label:'Put in a capital letter',bin:'E'},{label:'Put a period at the end',bin:'E'}],
+      h:'Revising changes the meaning. Editing fixes spelling, capitals and marks.'},
+    {t:'write', q:'Your turn. Take a paragraph you wrote this year, or your bird or research paragraph. Read it out loud. Ask the ARMS questions: Is something missing? Is something extra? Is a sentence out of place? Is a word weak? Make your changes, and mark each one A, R, M or S in the margin.', min:0, checks:['➕ I added a word or detail the reader needed.','✂️ I removed or moved a sentence that was off topic or out of place.','🔁 I swapped at least one weak word for a better one.'], h:'Read it aloud, slowly. Stop at each sentence and ask the four ARMS questions. Leave spelling for later.'}
+  ],
+  check:[
+    {q:'Dovid’s paragraph is about how a lighthouse helps ships at night. One sentence says: “My Zeidy likes fishing.” Which ARMS move fixes it?', o:['Remove','Add','Substitute'], h:'Is the sentence about how a lighthouse helps ships?'},
+    {q:'Binyamin writes: “The moon goes around the earth in some time.” “Some time” is weak. Which ARMS move swaps in “about 27 days”?', o:['Substitute','Remove','Move'], h:'He is swapping a weak word for a better one.'},
+    {t:'order', q:'Tzvi Hirsch revises his paragraph about trains. Move his sentences into the order that makes sense. Tap the tiles in order.', tiles:['Here is how workers build a train track.','First, they lay wooden ties on a bed of stones.','Next, they fasten steel rails on top of the ties.','That is how a train track is built.'], h:'What it is about comes first. First, then Next. The wrap-up goes last.'}
+  ],
+  re:[
+    {how:'A new way: ARMS is like fixing a model you built. Add a missing piece. Remove a piece that does not belong. Move a piece to the right spot. Substitute a better piece for a weak one.', q:'Swapping a weak piece for a better one is…', o:['Substitute','Remove','Add']},
+    {how:'A simpler step: start with just two moves, Add and Remove. Ask: Is something missing? Is something extra?', q:'“Our class trip was on Tuesday” is in a paragraph about birds. Is it missing or extra?', o:['extra','missing','neither']},
+    {how:'The skill underneath: Belongs or Not? and Fix It Up. There, you cut a detail that wandered, and you reread with a checklist. Now you go further: ARMS gives you four exact moves for meaning (Add, Remove, Move, Substitute), and you make them before any spelling fix.', q:'In Belongs or Not?, what did you do with a detail that wandered?', o:['Cut it','Copied it','Moved it to the start']}
+  ]},
+
+  'WRIT.ESSAY.L05.07':{name:'Edit with COPS',
+  teach:[
+    {how:'Yehuda revised his bird report with ARMS. The meaning is right. NOW he edits, with COPS. C: Capitals at the start of a sentence, on names, and on I. O: Order of words: read it aloud. Are the words in order, with none missing? P: Punctuation: an end mark, and commas in a list. S: Spelling: circle words that look wrong, and check them.', q:'“birds use the sun to find south.” Which COPS letter fixes it?', o:['Capitals','Spelling','Order of words']},
+    {how:'Check one letter at a time. Read the whole piece for C. Then again for O. Then P. Then S. Reading aloud helps with O: “Birds south fly in the fall” sounds wrong, so fix the order: “Birds fly south in the fall.”', q:'“At night, birds the stars use.” Which COPS letter fixes it?', o:['Order of words','Punctuation','Capitals']},
+    {how:'From Fix It Up you know: revise first, then edit, one check at a time. COPS goes further. It names your four checks, and it adds O. The mistake: reading in your head. Your eyes jump over a missing or switched word, because your brain fills it in. For O, read aloud, with your finger under each word.', q:'Yehuda reads “Birds use sun to find south” in his head and says it is fine. What should he do?', o:['Read it aloud for O','Check only the spelling','Hand it in']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each COPS letter to its job.', pairs:[['C','Capitals'],['O','Order of words'],['P','Punctuation'],['S','Spelling']],
+      h:'Say COPS slowly: Capitals, Order of words, Punctuation, Spelling.'},
+    {t:'sort', q:'Each sentence has one mistake. Which COPS letter fixes it?', bins:[{id:'C',label:'🔠 Capitals'},{id:'P',label:'❗ Punctuation'},{id:'S',label:'🔤 Spelling'}],
+      items:[{label:'birds fly south in the fall.',bin:'C'},{label:'yehuda read about geese.',bin:'C'},{label:'Birds use the sun to find south',bin:'P'},{label:'How do birds find the way',bin:'P'},{label:'Birds use the sunn.',bin:'S'},{label:'Geese fly in a V shap.',bin:'S'}],
+      h:'A small letter at the start or on a name: Capitals. No mark at the end: Punctuation. A word that looks wrong: Spelling.'},
+    {t:'spotall', q:'Read each sentence aloud. Tap every sentence that needs an Order of words fix.', cells:[{label:'Birds south fly in the fall.',ok:true},{label:'At night, birds the stars use.',ok:true},{label:'Birds use sun to find south.',ok:true},{label:'Geese fly in a V to save energy.',ok:false},{label:'Birds follow rivers and coasts.',ok:false},{label:'Many birds can sense magnetism.',ok:false}],
+      h:'Read it out loud. If it sounds wrong, or a word is missing, it needs an Order of words fix.'},
+    {t:'order', q:'Put Yehuda’s fixing steps in order. Tap the tiles in order.', tiles:['Revise with ARMS.','C: Capitals','O: Order of words','P: Punctuation','S: Spelling'],
+      h:'Revise first. Then edit, one COPS letter at a time.'},
+    {t:'pairs', q:'Match each mistake to its fixed sentence.', pairs:[['birds use the sun.','Birds use the sun.'],['Birds south fly.','Birds fly south.'],['Do geese fly in a V','Do geese fly in a V?'],['Geese fly in a V shap.','Geese fly in a V shape.']],
+      h:'Find the sentence that is the same, with just the mistake fixed.'},
+    {t:'sort', q:'Ready for the Gazette, or still needs a COPS fix?', bins:[{id:'R',label:'✅ Ready'},{id:'F',label:'🚧 Needs a COPS fix'}],
+      items:[{label:'Birds follow rivers, coasts and mountains.',bin:'R'},{label:'Many birds fly south in the fall.',bin:'R'},{label:'birds follow rivers.',bin:'F'},{label:'Birds follow rivers coasts and mountains.',bin:'F'},{label:'Birds use the stars at nite.',bin:'F'}],
+      h:'Check C, O, P and S. Look for commas in a list, too.'},
+    {t:'write', q:'Your turn. Take the paragraph you revised with ARMS. Now edit it with COPS. Read it four times: once for Capitals, once out loud for Order of words, once for Punctuation, once for Spelling. Fix each thing you find.', min:0, checks:['🔠 C: Every sentence and every name starts with a capital.','🗣️ O: I read it aloud: the words are in order, none missing.','❗ P and S: Every sentence has an end mark, and I checked my spelling.'], h:'One COPS letter at a time. Read slowly. Point to each word with your finger for Spelling.'}
+  ],
+  check:[
+    {q:'Dovid’s report says: “A lighthouse helps ships at night” with no mark at the end. Which COPS letter fixes it?', o:['Punctuation','Capitals','Spelling'], h:'What is missing at the end?'},
+    {q:'Binyamin wrote: “the moon goes around the earth.” Which COPS letter fixes it?', o:['Capitals','Order of words','Spelling'], h:'Look at the first letter.'},
+    {t:'order', q:'Tzvi Hirsch wrote: “Trains on run tracks steel.” Read it aloud and fix the Order of words. Tap the tiles in order.', tiles:['Trains','run on','steel','tracks.'], h:'Who, then what they do, then on what. The period goes last.'}
+  ],
+  re:[
+    {how:'A new way: COPS is like a check before a long car trip: lights, tires, brakes, gas, one at a time. You check Capitals, Order of words, Punctuation and Spelling, one at a time.', q:'Why check one COPS letter at a time?', o:['So you do not miss things','So you can skip spelling','So it looks longer']},
+    {how:'A simpler step: start with just C and P. Does each sentence start with a capital and end with a mark?', q:'“geese fly in a V” needs a capital and…', o:['an end mark','a new word','a picture']},
+    {how:'The skill underneath: Fix It Up. There, you learned to revise first, then edit, with a checklist, one item at a time. Now you go further: COPS names four checks, and O, read aloud, catches words that are missing or out of order.', q:'In Fix It Up, what comes first?', o:['revise','edit','hand it in']}
+  ]},
+
+  'WRIT.PARA.L05.21':{name:'Answer from the Text',
+  teach:[
+    {how:'Mr. Halpern hands out the practice article, How Birds Find Their Way (made up for these lessons). He asks: “What do birds follow from the sky?” Avrumi says: “I think they follow the clouds.” That is a GUESS. When a question is about a text, the answer comes FROM THE TEXT. Find the sentence that answers it.', q:'Which answer comes from the text?', o:['They follow rivers, coasts and mountains.','I think they follow the clouds.','They fly in a V.']},
+    {how:'Three steps. 1. Read the question: what does it ask? 2. Find the sentence in the text that answers it. 3. Answer in a full sentence: turn the question around, and add the detail. Question: “Why do Canada geese fly in a V?” Text: “…which saves energy on the long trip.” Answer: Canada geese fly in a V because it saves energy on the long trip.', q:'Question: “What can many birds sense?” Which detail from the article answers it?', o:['the earth’s magnetism','rivers and coasts','a V shape']},
+    {how:'Two more mistakes. A detail from the text that does NOT answer this question. Question: “Why do geese fly in a V?” Answer: “Birds follow rivers.” True, but it answers a different question. And an answer with no detail at all: “They just do.” Always check: does my detail answer THIS question?', q:'Question: “Why do geese fly in a V?” Dovid answers: “Birds follow rivers.” What is wrong?', o:['Detail does not answer','Guess, not from the text','Nothing: it answers from the text']}
+  ],
+  practice:[
+    {t:'sort', q:'Practice book, Wings Going South: “Birds that fly at night use the stars instead.” Question: How do birds find their way at night? Sort each answer.', bins:[{id:'A',label:'✅ Answers from the text'},{id:'G',label:'🤔 Guess, not from the text'},{id:'D',label:'↪️ Detail does not answer'}],
+      items:[{label:'Birds that fly at night use the stars.',bin:'A'},{label:'At night, birds use the stars to find the way.',bin:'A'},{label:'I think they just remember.',bin:'G'},{label:'Maybe they follow the moon.',bin:'G'},{label:'Canada geese fly in a V shape.',bin:'D'},{label:'In the fall, many birds fly south.',bin:'D'}],
+      h:'Is it in the text? If not, it is a guess. If it is in the text but tells about something else, it does not answer. If it tells what night fliers use, it answers.'},
+    {t:'pairs', q:'Match each question to the detail from the practice texts that answers it.', pairs:[['Why do many birds fly south in the fall?','to find more food for the winter'],['What do birds use to tell which way is south?','the sun'],['What do night fliers use instead?','the stars'],['Why do geese fly in a V?','it saves energy']],
+      h:'Read the question. Which detail tells exactly that?'},
+    {t:'spotall', q:'Practice article. Question: “What do birds follow from the sky?” Tap every answer with a detail from the text.', cells:[{label:'Birds follow rivers, coasts and mountains.',ok:true},{label:'They follow rivers and coasts they can see.',ok:true},{label:'They follow things they can see, like mountains.',ok:true},{label:'They follow the clouds, I think.',ok:false},{label:'Geese fly in a V shape.',ok:false},{label:'They just know.',ok:false}],
+      h:'Keep answers that use the text’s detail: rivers, coasts, mountains. Skip guesses, other facts and answers with no detail.'},
+    {t:'order', q:'Put the three steps for answering from the text in order. Tap the tiles in order.', tiles:['Read the question.','Find the sentence that answers it.','Write the question turned around, plus that detail.'], extra:['Write what you think.'],
+      h:'Know what it asks. Find it in the text. Then write: the question turned around, with the detail you found.'},
+    {t:'sort', q:'Question: Why do Canada geese fly in a V? Full answer, or no detail?', bins:[{id:'F',label:'✅ Full answer with the detail'},{id:'N',label:'❌ No detail'}],
+      items:[{label:'Geese fly in a V because it saves energy.',bin:'F'},{label:'Canada geese fly in a V to save energy on the long trip.',bin:'F'},{label:'Because they do.',bin:'N'},{label:'They just know.',bin:'N'},{label:'For a reason.',bin:'N'}],
+      h:'A full answer tells the detail from the text: it saves energy. “Because they do” tells nothing.'},
+    {t:'pairs', q:'Match each mistake to its fix.', pairs:[['Guess, not from the text','Find the sentence in the text.'],['Detail does not answer','Reread the question, then find the right detail.'],['No detail','Add the detail from the text.']],
+      h:'What went wrong? Find the step that fixes it.'},
+    {t:'write', q:'Your turn. Read this page of the practice book: “In the fall, many birds fly south, where they can find more food for the winter. Birds use the sun to tell which way is south. Birds that fly at night use the stars instead.” Answer in full sentences, each with a detail from the text. 1. Why do many birds fly south in the fall? 2. How do birds that fly at night find the way?', min:0, checks:['❓ I read each question: what does it ask?','🔍 Each answer uses a detail from the text.','✅ I turned the question around into a full sentence.'], h:'For each question, find the sentence that answers it. Start your answer with the question turned around. Then add the detail.'}
+  ],
+  check:[
+    {q:'Text: “A tugboat is small but strong. It pushes big ships into their place at the dock.” Question: What does a tugboat do? Binyamin answers: “It pushes big ships into their place at the dock.” What kind of answer is it?', o:['Answers from the text','Guess, not from the text','Detail does not answer'], h:'Is his answer in the text? Does it tell what a tugboat does?'},
+    {q:'Same tugboat text. Same question: What does a tugboat do? Dovid answers: “I think tugboats carry fish.” What kind of answer is it?', o:['Guess, not from the text','Answers from the text','Detail does not answer'], h:'Look for fish in the text. Is it there?'},
+    {t:'order', q:'Same tugboat text. Question: What does a tugboat do? Build Yehuda’s answer. Tap the tiles in order.', tiles:['A tugboat','pushes big ships','into their place','at the dock.'], h:'Turn the question around: A tugboat… Then the detail from the text.'}
+  ],
+  re:[
+    {how:'A new way: answering from the text is like a treasure hunt with a map. The question tells you what treasure to find. The text is the map. Dig where the map says, not where you guess.', q:'When you answer from the text, the text is like…', o:['the map','the treasure','a guess']},
+    {how:'A simpler step: look for the question’s key word in the text. Question: “What do birds use at night?” Find “night” in the text. The answer is right next to it.', q:'Text: “Birds that fly at night use the stars instead.” What do they use?', o:['the stars','the sun','rivers']},
+    {how:'The skill underneath: Back It Up. There, you backed a reason with proof. Now you go further: the question comes from a text, and your answer must use a detail FROM THAT TEXT that answers THIS question.', q:'In Back It Up, what did you add to a reason?', o:['proof','a joke','a question']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.RES.L05.01':{hook:'Geese honk over the Katz family’s sukkah in a big V. How do they know the way south?', big:'Ask a research question you can answer: How or Why, about one thing. Not too big, not yes or no.',
+    intro:['Pick a topic you wonder about.','Start your question with How or Why.','Ask about one thing, not everything.','Check: does it need more than one word? Can a book answer it?'],
+    ex:[{q:'Avrumi’s first try: “Do birds fly south?”',steps:['One word answers it: Yes.','That is a yes or no question.','Turn it around: start with How.'],a:'How do birds find their way south?'},
+        {q:'Dovid’s first try: “What is everything about birds?”',steps:['That would fill a whole library.','It is too big.','Ask about one thing: how geese fly so far.'],a:'How do geese fly such a long way?'}],
+    oops:{q:'Tzvi Hirsch picks his research question.',wrong:'“Is a goose a bird?”',right:'“How do geese find their way south?”',why:'Yes. Done! A yes or no question leaves nothing to research. How or Why asks for more.'},
+    idea:['How or Why, about one thing, that a book can answer.'],
+    try:{q:'Which is a good research question?',o:['Why do birds fly south in the fall?','Do birds have wings?','What is everything about birds?'],a:'Why do birds fly south in the fall?',steps:['How or Why? About one thing?']}},
+  'WRIT.RES.L05.02':{hook:'Avrumi copies a whole page from the library book. His hand hurts, and the words are not his. Is there a better way?', big:'Take notes in key words: 2 to 5 words that hold the fact. Do not copy whole sentences.',
+    intro:['Read one sentence.','Cover it, and ask: what is the fact?','Write 2 to 5 key words.','Check the text: is the note still true?'],
+    ex:[{q:'Practice book: “Birds use the sun to tell which way is south.”',steps:['The fact: the sun shows them south.','Key words: sun, south.'],a:'sun – shows south'},
+        {q:'Practice article: “Canada geese fly in a V shape, which saves energy on the long trip.”',steps:['The fact: the V saves energy.','Leave out which, in a, on the.'],a:'geese V – saves energy'}],
+    oops:{q:'Avrumi takes a note.',wrong:'Birds that fly at night use the stars instead.',right:'night fliers – stars',why:'He copied the whole sentence. A note keeps only the key words, so it is quick and it is his own.'},
+    idea:['Short and still true: key words, not copies.'],
+    try:{q:'Which note is in key words?',o:['night fliers – stars','Birds that fly at night use the stars instead.','birds – sky'],a:'night fliers – stars',steps:['Is it short? Is the fact still there?']}},
+  'WRIT.RES.L05.03':{hook:'“Where did you find that?” asks Mr. Halpern. “In a book,” says Avrumi. Which book?', big:'For each source, write its title and its author: Title, by Author.',
+    intro:['Find the title: the name on the cover or at the top.','Find the author: the person after “by.”','Write one line: Title, by Author.','Do it for every source you used.'],
+    ex:[{q:'The library book (a practice book for these lessons).',steps:['Cover: Wings Going South.','Under it: by Neil Ross.'],a:'Wings Going South, by Neil Ross'},
+        {q:'The article (a practice article for these lessons).',steps:['Top: How Birds Find Their Way.','Under it: by Ben Carter.'],a:'How Birds Find Their Way, by Ben Carter'}],
+    oops:{q:'Avrumi writes where he found his facts.',wrong:'a library book',right:'Wings Going South, by Neil Ross',why:'“A library book” tells nothing. The title and author tell the reader exactly which book to find.'},
+    idea:['Every source: Title, by Author.'],
+    try:{q:'In “Wings Going South, by Neil Ross,” what is the title?',o:['Wings Going South','Neil Ross','by'],a:'Wings Going South',steps:['The title comes before “by.”']}},
+  'WRIT.ESSAY.L05.06':{hook:'Yehuda’s bird report is written. Is it done? Not yet: now it gets better!', big:'Revise for meaning with ARMS: Add, Remove, Move, Substitute. Spelling comes later.',
+    intro:['Reread your piece out loud.','A: Add what the reader is missing.','R: Remove what does not belong. M: Move a sentence to where it makes sense.','S: Substitute a better word for a weak one.'],
+    ex:[{q:'“Birds use the sun.”',steps:['The reader asks: to do what?','Add: to tell which way is south.'],a:'Birds use the sun to tell which way is south.'},
+        {q:'“At night, birds use the lights in the sky.”',steps:['“The lights in the sky” is unclear.','Substitute: the stars.'],a:'At night, birds use the stars.'}],
+    oops:{q:'Yehuda says he revised.',wrong:'He fixed “sowth” to “south” and stopped.',right:'He reread for meaning: he added a detail, removed the parakeet sentence, and swapped in “the stars.”',why:'Fixing spelling is editing, and it comes later. Revising with ARMS makes the meaning better.'},
+    idea:['ARMS fixes the meaning: Add, Remove, Move, Substitute.'],
+    try:{q:'Which ARMS move takes out a sentence that does not belong?',o:['Remove','Add','Move'],a:'Remove',steps:['R is for Remove.']}},
+  'WRIT.ESSAY.L05.07':{hook:'Yehuda’s report makes sense now. But “birds south fly in the fall” cannot go in the Gazette!', big:'After you revise, edit with COPS: Capitals, Order of words, Punctuation, Spelling. One at a time.',
+    intro:['First revise with ARMS. Then edit.','C: Capitals at the start, on names, and on I.','O: Read aloud: words in order, none missing. P: End marks, and commas in a list.','S: Circle words that look wrong, and check them.'],
+    ex:[{q:'birds fly south in the fall',steps:['C: birds needs a capital B.','P: the sentence needs a period.'],a:'Birds fly south in the fall.'},
+        {q:'At night, birds the stars use.',steps:['O: read it aloud. It sounds wrong.','Put the words in order.'],a:'At night, birds use the stars.'}],
+    oops:{q:'Yehuda edits first.',wrong:'He fixes the spelling in the parakeet sentence, then removes the sentence anyway.',right:'He revises with ARMS first, then edits what is left with COPS.',why:'Editing a sentence you will remove wastes time. Revise first, then edit.'},
+    idea:['Revise first. Then COPS, one letter at a time.'],
+    try:{q:'In COPS, what does the P stand for?',o:['Punctuation','Paragraph','Picture'],a:'Punctuation',steps:['End marks and commas.']}},
+  'WRIT.PARA.L05.21':{hook:'“What do birds follow from the sky?” Avrumi guesses: “Clouds!” Is that in the text?', big:'Answer a question about a text with a detail from the text, in a full sentence.',
+    intro:['Read the question: what does it ask?','Find the sentence in the text that answers it.','Turn the question around into a full sentence.','Add the detail from the text.'],
+    ex:[{q:'Question: Why do Canada geese fly in a V?',steps:['Find it: “which saves energy on the long trip.”','Turn the question around, and add the detail.'],a:'Canada geese fly in a V because it saves energy on the long trip.'},
+        {q:'Question: What do birds use to tell which way is south?',steps:['Find it: “Birds use the sun to tell which way is south.”','Turn the question around, and add the detail.'],a:'Birds use the sun to tell which way is south.'}],
+    oops:{q:'Avrumi answers: What do birds follow from the sky?',wrong:'“I think they follow the clouds.”',right:'“Birds follow rivers, coasts and mountains they can see from the sky.”',why:'A guess is not in the text. The answer must use a detail from the text.'},
+    idea:['Find it in the text. Use it in your answer.'],
+    try:{q:'Which answer uses a detail from the text?',o:['Geese fly in a V because it saves energy.','Geese fly in a V because they like it.','Geese are big birds.'],a:'Geese fly in a V because it saves energy.',steps:['Is it in the text? Does it answer the question?']}},
+  };
+  var HOWTO = {
+  'WRIT.RES.L05.01':{s:'Pick a topic you wonder about.\nStart your question with How or Why.\nAsk about one thing, not everything.\nIf one word (yes or no) answers it, turn it into How or Why.'},
+  'WRIT.RES.L05.02':{s:'Read one sentence. Then cover it.\nAsk: what is the fact?\nWrite 2 to 5 key words: names, numbers, action words.\nCheck the text: is your note still true?'},
+  'WRIT.RES.L05.03':{s:'Find the title: the name on the cover or at the top.\nFind the author: the name after “by.”\nWrite one line: Title, by Author.\nOne line for every source you used.'},
+  'WRIT.ESSAY.L05.06':{s:'Reread your piece out loud.\nA: Is something missing? Add it.\nR: Does a sentence wander? Remove it. M: Out of place? Move it.\nS: Is a word weak or unclear? Substitute a better one. Spelling waits.'},
+  'WRIT.ESSAY.L05.07':{s:'First revise with ARMS. Then edit.\nC: Capitals at the start, on names, and on I.\nO: Read aloud: words in order, none missing. P: End marks, and commas in a list.\nS: Circle words that look wrong, and check them.'},
+  'WRIT.PARA.L05.21':{s:'Read the question: what does it ask?\nFind the sentence in the text that answers it.\nTurn the question around into a full sentence.\nAdd the detail from the text. No guesses.'},
+  };
+  var BITE = {
+  'WRIT.RES.L05.01':{ band:'E45', pic:'❓', today:'Ask a research question you can answer', why:'A good question tells you what to look for.',
+    ready:[{q:'In POW, what does the P stand for?', o:['Pick my idea','Plan the ending','Put it in order'], a:'Pick my idea'}],
+    bridge:'WRIT.ESSAY.L05.03', bridgeName:'TIDE Plan',
+    watch:{ q:'Avrumi wonders about the geese.', m:{type:'scene', e:'🐦', t:'Geese honk over the Katz family’s sukkah in a big V, flying south.'}, steps:[
+      {t:'Avrumi asks: “Do birds fly south?” Yes. Done. Too short!'},
+      {t:'One word answers it. That is a yes or no question.'},
+      {t:'Dovid tries: “What is everything about birds?”'},
+      {t:'That would fill a library. It is too big.'},
+      {t:'Yehuda starts with How, and asks about one thing.'},
+      {t:'“How do birds find their way south?” A book can answer it.'}], a:'A good research question: How, about one thing.' },
+    oops:{ q:'Tzvi Hirsch picks his research question.', wrong:'“Is a goose a bird?”', right:'“How do geese find their way south?”', why:'Yes. Done! A yes or no question leaves nothing to research. How or Why asks for more.' },
+    ways:['geese scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can ask a research question you can answer.',
+    board:{ one:'How or Why, about one thing. Not too big, not yes or no.', activity:'Boys write questions about the harbor on cards; the class sorts them on the board into Good, Too big, and Yes or no, then fixes each one together.', mistakes:['A question that is too big (everything about it)','A yes or no question','Starting with Do, Is or Can instead of How or Why'] },
+    do:[
+      {type:'sort', q:'Avrumi’s questions. Good, or a mistake?', bins:['Good research question','Mistake: yes or no'], cards:[['How do birds find the way?',0],['Do birds fly south?',1],['How do geese fly such a long way?',0],['Can geese swim?',1]], mis:true,
+        say:'Good question, or a yes or no mistake? Sort each one.', how:'If one word answers it, it is yes or no.',
+        why:{q:'Why is “Do birds fly south?” a mistake?', o:['One word, yes, answers it','It is about one thing','It starts with How','It is too long'], a:'One word, yes, answers it'}},
+      {type:'match', pairs:[['Too big','Ask about one thing.'],['Yes or no','Start with How or Why.'],['Good research question','Start looking in books.']],
+        say:'Match each kind of question to what you do next.', how:'What is wrong? Find the fix for it.'}],
+    your:[
+      {type:'tiles', q:'Build Avrumi’s research question.', w:['How do','birds find','their way','south?'], extra:['everything'],
+        say:'Build a How question about one thing.', how:'Start with How do. End with the question mark.'},
+      {type:'sort', q:'Too big, or about one thing?', bins:['Too big','About one thing'], cards:[['What is everything about birds?',0],['How do birds use the sun?',1],['How do all animals live?',0],['How do geese fly such a long way?',1]],
+        say:'Too big, or about one thing? Sort each question.', how:'Everything and all make it too big.',
+        why:{q:'Why is “What is everything about birds?” too big?', o:['It would fill a whole library','It is yes or no','It is about one thing','It starts with How'], a:'It would fill a whole library'}},
+      {type:'match', pairs:[['Do birds fly south?','Why do birds fly south?'],['Can birds use the sun?','How do birds use the sun?'],['Do geese fly a long way?','How do geese fly such a long way?']],
+        say:'Match each yes or no question to its fix.', how:'Keep the same topic. Start with How or Why.'},
+      {type:'tiles', q:'Dovid asked: “Can birds see stars?” Fix it.', w:['How do','birds use','the stars?'], extra:['everything'],
+        say:'Turn the yes or no question into a How question.', how:'Start with How do. Then who. Then what they use.'},
+      {type:'sort', q:'Sort Yehuda’s questions.', bins:['Good research question','Too big','Yes or no'], cards:[['Why do birds fly south?',0],['What is everything about the sky?',1],['Is a robin a bird?',2],['How do birds know when to leave?',0]],
+        say:'Good, too big, or yes or no? Sort each one.', how:'How or Why about one thing is good.',
+        why:{q:'How do you know “Is a robin a bird?” is yes or no?', o:['One word answers it','It asks about everything','It starts with Why','It starts with How'], a:'One word answers it'}}] },
+
+  'WRIT.RES.L05.02':{ band:'E45', pic:'📝', today:'Take notes in key words, not copied sentences', why:'Key words are quick, and the note is your own work.',
+    ready:[{q:'In Group It, what did you do with facts?', o:['Sorted them into groups','Copied them','Threw them out'], a:'Sorted them into groups'}],
+    bridge:'WRIT.ESSAY.L05.04', bridgeName:'Group It',
+    watch:{ q:'Avrumi takes notes from the library book.', m:{type:'scene', e:'📖', t:'Avrumi opens Wings Going South, a practice book made up for this lesson.'}, steps:[
+      {t:'Avrumi starts copying every word. His hand hurts!'},
+      {t:'Mr. Halpern says: read one sentence, then cover it.'},
+      {t:'Book: Birds use the sun to tell which way is south.'},
+      {t:'Avrumi asks: what is the fact? The sun shows south.'},
+      {t:'He writes 2 to 5 key words: sun – shows south.'},
+      {t:'He checks the book. Yes, the note is still true.'}], a:'A short note in key words, still true.' },
+    oops:{ q:'Avrumi takes a note.', wrong:'Birds that fly at night use the stars instead.', right:'night fliers – stars', why:'He copied the whole sentence. A note keeps only the key words, so it is quick and it is his own.' },
+    ways:['library scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can take notes in key words, not copies.',
+    board:{ one:'Read, cover, write 2 to 5 key words, check.', activity:'Show one sentence from a book; boys read it, then it is covered, and each boy writes key words. Uncover and check together: still true?', mistakes:['Copying the whole sentence','A note so short it lost the fact','Keeping little words like which and the'] },
+    do:[
+      {type:'sort', q:'Avrumi’s notes. Key words, or a mistake?', bins:['Key words','Mistake: copied'], cards:[['sun – shows south',0],['Birds use the sun to tell which way is south.',1],['night fliers – stars',0],['Birds that fly at night use the stars instead.',1]], mis:true,
+        say:'Key words, or copied? Sort each note.', how:'A copy is the whole sentence. Key words are 2 to 5 words.',
+        why:{q:'Why is a long one a mistake?', o:['He copied the whole sentence','It is too short','It lost the fact','It is a question'], a:'He copied the whole sentence'}},
+      {type:'match', pairs:[['Birds use the sun to tell which way is south.','sun – shows south'],['Birds that fly at night use the stars instead.','night fliers – stars'],['Canada geese fly in a V shape, which saves energy on the long trip.','geese V – saves energy']],
+        say:'Match each sentence to its key-word note.', how:'Find the note with the same fact in fewer words.'}],
+    your:[
+      {type:'tiles', q:'Put the steps for a good note in order.', w:['Read it','Cover it','Key words','Check it'], extra:['Copy it'],
+        say:'Tap the steps for a good note in order.', how:'Read, cover, write key words, then check.',
+        why:{q:'Why cover the sentence before you write?', o:['So you write key words, not a copy','So you forget the fact','So it looks nice','So the note is longer'], a:'So you write key words, not a copy'}},
+      {type:'sort', q:'“Canada geese fly in a V shape, which saves energy.”', bins:['Key word','Leave out'], cards:[['geese',0],['which',1],['saves energy',0],['in a',1],['V shape',0]],
+        say:'Keep it, or leave it out? Sort each word.', how:'Keep words that hold the fact. Leave out little words.'},
+      {type:'match', pairs:[['What do birds use to find south?','sun – shows south'],['What do birds use at night?','night fliers – stars'],['What do birds follow?','rivers, coasts, mountains']],
+        say:'Match each question to the note that answers it.', how:'Which note holds that fact?'},
+      {type:'tiles', q:'Say the note “sun – shows south” as a sentence. Is it still true?', w:['Birds','use the sun','to find','south.'], extra:['which'],
+        say:'Turn the note back into a true sentence.', how:'Start with Birds. End with south and a period.'},
+      {type:'sort', q:'Sort Avrumi’s notes.', bins:['Key words','Copied','Lost the fact'], cards:[['follow rivers, coasts, mountains',0],['Birds also follow things they can see from the sky.',1],['birds – sky',2],['sense magnetism – like a compass',0]],
+        say:'Key words, copied, or lost the fact? Sort each note.', how:'Short and still true is key words.',
+        why:{q:'Why is “birds – sky” a mistake?', o:['It lost the fact: what about the sky?','It copied the whole sentence','It is too long','It has a number'], a:'It lost the fact: what about the sky?'}}] },
+
+  'WRIT.RES.L05.03':{ band:'E45', pic:'📚', today:'List the title and author of each source', why:'Then a reader can find the same book and check.',
+    ready:[{q:'After a quote, what do you tell the reader?', o:['Who said it','What you ate','The page color'], a:'Who said it'}],
+    bridge:'WRIT.PARA.L05.19', bridgeName:'Facts and Quotes',
+    watch:{ q:'Avrumi lists where he found his facts.', m:{type:'scene', e:'📚', t:'Avrumi’s notes come from two practice texts: a book and an article.'}, steps:[
+      {t:'Mr. Halpern asks: where did you find these facts?'},
+      {t:'Avrumi looks at the book’s cover: Wings Going South.'},
+      {t:'That is the title. Under it: by Neil Ross.'},
+      {t:'Neil Ross is the author, the man who wrote it.'},
+      {t:'The article: How Birds Find Their Way, by Ben Carter.'},
+      {t:'Two lines under his notes: Title, by Author.'}], a:'A list with every source: title and author.' },
+    oops:{ q:'Avrumi writes where he found his facts.', wrong:'a library book', right:'Wings Going South, by Neil Ross', why:'“A library book” tells nothing. The title and author tell the reader exactly which book to find.' },
+    ways:['library scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can list the title and author of each source.',
+    board:{ one:'Every source: Title, by Author.', activity:'Pass around three library books; each boy finds the title and the author and writes the line on the board. The class checks: is “by” before the author?', mistakes:['“A library book” or “the computer” instead of a title','Title and author mixed up','Leaving off a source you took notes from'] },
+    do:[
+      {type:'sort', q:'Avrumi’s source lines. Ready, or a mistake?', bins:['Ready source line','Mistake: tells nothing'], cards:[['Wings Going South, by Neil Ross',0],['a library book',1],['How Birds Find Their Way, by Ben Carter',0],['the computer',1]], mis:true,
+        say:'Ready, or tells nothing? Sort each source line.', how:'A ready line has a title and an author.',
+        why:{q:'Why is “a library book” a mistake?', o:['The reader cannot tell which book','It has an author','It is too long','It has a title'], a:'The reader cannot tell which book'}},
+      {type:'match', pairs:[['Wings Going South','Neil Ross'],['How Birds Find Their Way','Ben Carter'],['The Busy Harbor','Sam Porter']],
+        say:'Match each title to its author.', how:'Who wrote each one? Look for the name after by.'}],
+    your:[
+      {type:'sort', q:'Title or author?', bins:['Title','Author'], cards:[['Wings Going South',0],['Neil Ross',1],['The Busy Harbor',0],['Ben Carter',1]],
+        say:'Title or author? Sort each one.', how:'The title names the book. The author is a person.',
+        why:{q:'How do you know Neil Ross is the author?', o:['His name comes after “by”','It is on the top','It is a fact','It names a bird'], a:'His name comes after “by”'}},
+      {type:'tiles', q:'Build the source line for the harbor book.', w:['The Busy','Harbor,','by','Sam Porter'], extra:['a book'],
+        say:'Build the source line: title, by, author.', how:'Title first, with a comma. Then by. Then the author.'},
+      {type:'sort', q:'Which source did each note come from?', bins:['Wings Going South','How Birds Find Their Way'], cards:[['sun – shows south',0],['night fliers – stars',0],['geese V – saves energy',1],['follow rivers, coasts',1]],
+        say:'Which source did each note come from? Sort them.', how:'Think back: which text told that fact?',
+        why:{q:'Why does the article go on the list too?', o:['Some notes came from it','It is longer','It has a picture','It came first'], a:'Some notes came from it'}},
+      {type:'match', pairs:[['“a library book”','Write the title and author.'],['Title and author mixed up','The author comes after by.'],['A source is missing','Add a line for it.']],
+        say:'Match each mistake to its fix.', how:'What is wrong? Find the fix for that.'},
+      {type:'tiles', q:'Tzvi Hirsch read Facts About the Moon, by Martin Brand.', w:['Facts About','the Moon,','by','Martin Brand'], extra:['my book'],
+        say:'Build Tzvi Hirsch’s source line.', how:'Title, then by, then the author.'}] },
+
+  'WRIT.ESSAY.L05.06':{ band:'E45', pic:'🔧', today:'Revise for meaning with ARMS', why:'Revising makes your piece say what you really mean.',
+    ready:[{q:'A detail wanders off the topic. What do you do?', o:['Cut it','Keep it','Copy it'], a:'Cut it'}],
+    bridge:'WRIT.PARA.L05.07', bridgeName:'Belongs or Not?',
+    watch:{ q:'Yehuda revises his bird report.', m:{type:'scene', e:'🔧', t:'Yehuda reads his draft out loud to Avrumi.'}, steps:[
+      {t:'A: “Birds use the sun.” To do what? Add: to find south.'},
+      {t:'R: “My cousin has a pet parakeet.” Off topic. Remove it.'},
+      {t:'M: “So that is how…” sits in the middle. Move it.'},
+      {t:'It goes at the end, where it wraps up.'},
+      {t:'S: “The lights in the sky” is unclear. Substitute: the stars.'},
+      {t:'Spelling waits. First the meaning, then the edit.'}], a:'A revised paragraph that says what Yehuda means.' },
+    oops:{ q:'Yehuda says he revised.', wrong:'He fixed “sowth” to “south” and stopped.', right:'He reread for meaning: he added a detail, removed the parakeet sentence, and swapped in “the stars.”', why:'Fixing spelling is editing, and it comes later. Revising with ARMS makes the meaning better.' },
+    ways:['reading-aloud scene','memory strategy (ARMS)','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can revise for meaning with ARMS.',
+    board:{ one:'ARMS: Add, Remove, Move, Substitute. Meaning first.', activity:'Project a short draft about birds; boys come up and mark one ARMS move each (A, R, M or S in the margin) and say why.', mistakes:['Fixing only spelling and calling it revising','Keeping a sentence that is off topic','Leaving a weak word like stuff or good'] },
+    do:[
+      {type:'sort', q:'Yehuda’s changes. Revising, or a mistake?', bins:['Revising: meaning','Mistake: that is editing'], cards:[['Add a missing detail',0],['Fix “sowth” to “south”',1],['Remove the parakeet line',0],['Put in a capital letter',1]], mis:true,
+        say:'Revising for meaning, or a mistake? Sort each change.', how:'ARMS changes the meaning. Spelling and capitals wait.',
+        why:{q:'Why is fixing “sowth” not revising?', o:['It fixes spelling, not meaning','It adds a detail','It moves a sentence','It is off topic'], a:'It fixes spelling, not meaning'}},
+      {type:'match', pairs:[['Something is missing','Add'],['A sentence wanders','Remove'],['Out of place','Move'],['A weak word','Substitute']],
+        say:'Match each problem to its ARMS move.', how:'Say ARMS. Which move fixes that problem?'}],
+    your:[
+      {type:'tiles', q:'Substitute: “At night, birds use the lights in the sky.”', w:['At night,','birds use','the stars.'], extra:['stuff'],
+        say:'Swap the unclear words. Build the better sentence.', how:'“The lights in the sky” is unclear. Say exactly what they use.'},
+      {type:'sort', q:'Paragraph: how birds find their way south.', bins:['Add','Remove','Substitute'], cards:[['Birds use the sun. (To do what?)',0],['My cousin has a parakeet.',1],['At night, birds use the lights in the sky.',2],['Our trip was on Tuesday.',1]],
+        say:'Add, remove, or substitute? Sort each line.', how:'Missing: add. Off topic: remove. Weak words: substitute.',
+        why:{q:'Why remove “My cousin has a parakeet.”?', o:['It is not about how birds find the way','It is spelled wrong','It needs a capital','It is too short'], a:'It is not about how birds find the way'}},
+      {type:'match', pairs:[['the lights in the sky','the stars'],['stuff they can see','rivers and coasts'],['which is good','which saves energy']],
+        say:'Match each weak word to a better one.', how:'Which words say exactly what you mean?'},
+      {type:'tiles', q:'“Many birds fly south.” The reader asks: when? Add it.', w:['In the fall,','many birds','fly','south.'], extra:['stuff'],
+        say:'Add when: build the full sentence.', how:'Start with when. Then who. Then what they do.'},
+      {type:'sort', q:'Revising now, or editing later?', bins:['Revising (ARMS)','Editing (later)'], cards:[['Move the wrap-up to the end',0],['Fix a spelling',1],['Swap a weak word',0],['Put a period at the end',1]],
+        say:'Revising now, or editing later? Sort each change.', how:'Meaning now. Spelling and marks later.',
+        why:{q:'Why does the period wait until later?', o:['It is editing, not meaning','It is off topic','It is a weak word','It moves a sentence'], a:'It is editing, not meaning'}}] },
+
+  'WRIT.ESSAY.L05.07':{ band:'E45', pic:'✏️', today:'Edit with COPS after you revise', why:'Clean writing lets the reader enjoy your facts.',
+    ready:[{q:'In ARMS, what does the R stand for?', o:['Remove','Read','Rhyme'], a:'Remove'}],
+    bridge:'WRIT.PARA.L05.05', bridgeName:'Fix It Up',
+    watch:{ q:'Yehuda edits his bird report.', m:{type:'scene', e:'✏️', t:'Yehuda revised with ARMS. Now he edits with COPS.'}, steps:[
+      {t:'C: “birds fly south.” Birds needs a capital B.'},
+      {t:'O: “At night, birds the stars use.” He reads it aloud.'},
+      {t:'It sounds wrong. He fixes the order: birds use the stars.'},
+      {t:'P: “How do birds find the way” needs a question mark.'},
+      {t:'S: “sowth” looks wrong. He checks: south.'},
+      {t:'One letter at a time, so he misses nothing.'}], a:'A clean report, ready for the Gazette.' },
+    oops:{ q:'Yehuda edits first.', wrong:'He fixes the spelling in the parakeet sentence, then removes the sentence anyway.', right:'He revises with ARMS first, then edits what is left with COPS.', why:'Editing a sentence you will remove wastes time. Revise first, then edit.' },
+    ways:['editing scene','memory strategy (COPS)','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can edit with COPS after you revise.',
+    board:{ one:'Revise first. Then COPS: Capitals, Order of words, Punctuation, Spelling.', activity:'Write four sentences on the board, each with one mistake; boys name the COPS letter and fix it, reading each one aloud.', mistakes:['Editing before revising','Checking everything at once and missing things','Not reading aloud, so words stay out of order'] },
+    do:[
+      {type:'sort', q:'Yehuda read these in his head and missed some.', bins:['Ready','Mistake: Order of words'], cards:[['Birds use the sun.',0],['Birds use sun to find south.',1],['Night fliers use the stars.',0],['At night, birds the stars use.',1]], mis:true,
+        say:'Read each one aloud. Ready, or a word mistake?', how:'Point to each word as you say it.',
+        why:{q:'Why read aloud for O?', o:['Your ears catch a missing or switched word','It fixes the spelling','It adds capital letters','It makes it longer'], a:'Your ears catch a missing or switched word'}},
+      {type:'match', pairs:[['C','Capitals'],['O','Order of words'],['P','Punctuation'],['S','Spelling']],
+        say:'Match each COPS letter to its job.', how:'Say COPS slowly. What does each letter check?'}],
+    your:[
+      {type:'sort', q:'Each sentence has one mistake.', bins:['Capitals','Punctuation','Spelling'], cards:[['geese fly in a V.',0],['Birds use the stars',1],['Birds use the sunn.',2],['yehuda saw geese.',0]],
+        say:'Capitals, punctuation, or spelling? Sort each sentence.', how:'Look at the first letter, the end, and each word.',
+        why:{q:'How do you know “Birds use the stars” needs P?', o:['It has no mark at the end','It starts with a small letter','A word is spelled wrong','The words are out of order'], a:'It has no mark at the end'}},
+      {type:'tiles', q:'Fix the order: “Birds south fly in the fall.”', w:['Birds','fly south','in the fall.'], extra:['sowth'],
+        say:'Read it aloud, then put the words in order.', how:'Who, then what they do, then when.'},
+      {type:'match', pairs:[['birds use the sun.','Birds use the sun.'],['Birds south fly.','Birds fly south.'],['Do geese fly in a V','Do geese fly in a V?']],
+        say:'Match each mistake to its fixed sentence.', how:'Find the same sentence with the mistake fixed.'},
+      {type:'tiles', q:'Fix it: “at night birds the stars use”', w:['At night,','birds use','the stars.'], extra:['nite'],
+        say:'Fix the capital, the order and the end mark.', how:'Start with a capital. End with a period.'},
+      {type:'sort', q:'Ready for the Gazette?', bins:['Ready','Needs COPS'], cards:[['Birds follow rivers, coasts and mountains.',0],['birds follow rivers.',1],['Many birds fly south in the fall.',0],['Birds use the stars at nite.',1]],
+        say:'Ready, or needs COPS? Sort each sentence.', how:'Check C, O, P and S, one at a time.',
+        why:{q:'What is wrong in “Birds use the stars at nite.”?', o:['Spelling: it should be night','A capital is missing','It needs a question mark','The words are out of order'], a:'Spelling: it should be night'}}] },
+
+  'WRIT.PARA.L05.21':{ band:'E45', pic:'🔎', today:'Answer a question with a detail from the text', why:'The text holds the answer. Show the reader where it is.',
+    ready:[{q:'In Back It Up, what do you add to a reason?', o:['Proof','A joke','A question'], a:'Proof'}],
+    bridge:'WRIT.PARA.L05.16', bridgeName:'Back It Up',
+    watch:{ q:'Avrumi answers a question about the practice article.', m:{type:'scene', e:'🔎', t:'Mr. Halpern asks: “Why do Canada geese fly in a V?”'}, steps:[
+      {t:'Avrumi guesses: “Because it looks nice.” Is that in the text?'},
+      {t:'No. A guess is not an answer from the text.'},
+      {t:'Step 1: read the question. It asks why.'},
+      {t:'Step 2: find it: “which saves energy on the long trip.”'},
+      {t:'Step 3: turn the question around: Canada geese fly in a V…'},
+      {t:'…because it saves energy on the long trip.'}], a:'An answer with a detail from the text.' },
+    oops:{ q:'Avrumi answers: What do birds follow from the sky?', wrong:'“I think they follow the clouds.”', right:'“Birds follow rivers, coasts and mountains they can see from the sky.”', why:'A guess is not in the text. The answer must use a detail from the text.' },
+    ways:['classroom scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can answer a question with a detail from the text.',
+    board:{ one:'Read the question. Find it in the text. Turn it around and add the detail.', activity:'Give a short text and one question; boys underline the sentence that answers it, then say the answer aloud: the question turned around, plus the detail.', mistakes:['A guess that is not in the text','A true detail that answers a different question','An answer with no detail, like “They just do”'] },
+    do:[
+      {type:'sort', q:'Question: Why do geese fly in a V?', bins:['Answers from the text','Mistake: a guess'], cards:[['It saves energy on the long trip.',0],['Because it looks nice.',1],['The V saves energy.',0],['They like to fly together.',1]], mis:true,
+        say:'From the text, or a guess? Sort each answer.', how:'Check the text. Is the answer there?',
+        why:{q:'Why is “Because it looks nice.” a mistake?', o:['It is a guess, not from the text','It is too long','It has the detail','It is a question'], a:'It is a guess, not from the text'}},
+      {type:'match', pairs:[['Why do many birds fly south in the fall?','more food for the winter'],['What do night fliers use?','the stars'],['What do birds follow?','rivers, coasts and mountains']],
+        say:'Match each question to the detail that answers it.', how:'Read the question. Which detail tells exactly that?'}],
+    your:[
+      {type:'tiles', q:'Question: Why do Canada geese fly in a V?', w:['Geese fly','in a V','to save','energy.'], extra:['for fun'],
+        say:'Build the answer with the detail from the text.', how:'Turn the question around. Then add why.',
+        why:{q:'Why use “to save energy”?', o:['It is the detail the text gives','It is a guess','It sounds fun','It is short'], a:'It is the detail the text gives'}},
+      {type:'sort', q:'Question: What do birds follow from the sky?', bins:['Answers it','Does not answer'], cards:[['rivers and coasts',0],['a V shape',1],['mountains',0],['more food',1]],
+        say:'Does this detail answer the question? Sort each one.', how:'Reread the question. What does it ask?'},
+      {type:'match', pairs:[['A guess','Find it in the text.'],['Detail does not answer','Reread the question.'],['No detail','Add the detail.']],
+        say:'Match each mistake to its fix.', how:'What went wrong? Find the step that fixes it.'},
+      {type:'tiles', q:'Question: How do birds that fly at night find the way?', w:['Birds that','fly at night','use the','stars.'], extra:['I think'],
+        say:'Answer about night fliers with the text’s detail.', how:'Start with who. Then what they use, from the text.'},
+      {type:'sort', q:'Question: Why do many birds fly south in the fall?', bins:['Answers from the text','A guess','Does not answer'], cards:[['To find more food for the winter.',0],['Maybe they get bored.',1],['Birds use the sun.',2],['They find more food there.',0]],
+        say:'From the text, a guess, or no answer? Sort each one.', how:'Is it in the text? Does it tell why?',
+        why:{q:'How do you know “Birds use the sun.” does not answer?', o:['It is about finding the way, not why they go','It is a guess','It is not in the text','It has no capital'], a:'It is about finding the way, not why they go'}}] },
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

@@ -1,0 +1,334 @@
+<script>
+/* CoreDataC45H5.html: Core Growth job C45 (helper piece: fluency passages, Grade 4), lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md).
+   Keep this file under 150 KB. No double slash in this file (HtmlService rule).
+   "Read It 3 Times" lessons: each one opens a fluency passage from the content store (texts/C45/C45.FL4.*) with the "read"
+   kind: read 1 = listen to the Reader's voice and follow the lit words, read 2 = read along with it, read 3 = read it alone, out loud
+   (no recording and no timers, HoS 2026-11-24). Then hands-on work on one fluency skill (end marks, phrasing, character voices, stress,
+   pace, poems, self-correcting) on the same passage. Show me checks the skill on a different, cold passage (PASS, c45f_ keys).
+   Plan and minutes: docs/core-growth/C45H-fluency.md. Cast: the Glen Avenue Crew (docs/core-growth/C45-map.md, section 5). */
+(function () {
+  var READ3 = 'Read it 3 times. 1: tap 🔊 and follow the lit words. 2: read along with the voice. 3: read it alone, out loud. Then tap Next.';
+  var P = {
+c45f_twelve: { title: "Twelve Seconds (a play)", text: "NARRATOR: Orville lies down on the lower wing. The engine coughs, then roars.\nWILBUR: Go, go, go!\nNARRATOR: And then, it lifts. One foot. Five feet. Ten feet into the air.\nJOHN DANIELS: It's flying! It's really flying!\nORVILLE: It was not very far. A boy could throw a ball farther." },
+    c45f_kite2: { title: "The Big Kite (a play)", text: "NARRATOR: Eli and his Zeidy run across the field with a huge red kite.\nZEIDY: Now, Eli! Let go!\nNARRATOR: The kite dips. It drags. Then the wind catches it.\nELI: It's going up! Higher! Higher!\nNARRATOR: Up it goes, over the trees, over the shul roof.\nZEIDY: Hold the string tight. Not too tight.\nELI: Zeidy, it's the highest kite in Baltimore!" },
+    c45f_fly: { title: "If I Could Fly", text: "I'd fly so high, I'd fly so far,\nI'd almost touch the evening star.\nBut wait! The wind is pushing hard.\nI'm wobbling over Shloimy's yard!\nToo fast! Too low! Look out! Watch out!\nI hear the neighbors start to shout!\nI'd better land, and land with care,\nlike Orville, gently, through the air." },
+    c45f_sled: { title: "Down the Hill", text: "We climb the hill with our red sled,\nslow and steady, step by step.\nWe sit. We push. We start to slide.\nFaster! Faster! Hold on tight!\nPast the fence and past the tree,\nwhoosh, we're flying, you and me!\nThen softly, softly, in the snow,\nwe stop, and lie, and laugh, and glow." },
+    c45f_brooklyn: { title: "Fourteen Years", text: "The man who planned this bridge was John Roebling. In 1869, while he was measuring the spot for a tower, a boat crushed his foot against a dock.\nFourteen years after John Roebling began measuring, the bridge was finished. It opened on May 24, 1883.\nBut many people were afraid to cross it. Was it really strong enough? So, one year later, in 1884, a famous showman led twenty-one elephants across the bridge.\nThe bridge did not shake. It did not crack. It held." },
+    c45f_tunnel: { title: "Under the Harbor", text: "Welcome aboard, boys! In a minute, our bus will drive under Baltimore Harbor. Yes, under the water! The Harbor Tunnel opened in 1957. It is more than a mile long. Workers sank giant steel tubes into a ditch on the harbor floor, one after another, and joined them together. Are you nervous? Don't be. Every day, thousands of cars ride through it safely. Here we go!" },
+    c45f_bridges: { title: "Bridges", text: "A log across a little stream\nis just a bridge, a simple beam.\nDovid walks it, arms out wide,\nand hops down on the other side.\nA stone bridge bends in one round arch.\nThe heavy stones press in and march.\nEach stone leans hard against its friend,\nso none can fall from end to end." },
+    c45f_railbridge: { title: "The Old Railroad Bridge", text: "Across the river, black and old,\na railroad bridge of iron bold.\nIts beams make triangles in a row,\nto hold the trains that rumble slow.\nWe wave. The engineer waves back.\nThe whistle blows. Clack, clack, clack, clack." },
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+'READ.FLU.L05.26':{name:"Read It 3 Times: Twelve Seconds",
+      teach:[
+        {p:"c45f_twelve", q:"NARRATOR: \"Orville lies down on the lower wing.\" How should the narrator read it?", o:["Plain and steady, like a storyteller", "Shouted, like a fan", "Like a question"], how:"The narrator tells what happens. He is not inside the action."},
+        {p:"c45f_twelve", q:"\"One foot. Five feet. Ten feet into the air.\" How do you read these three?", o:["Each one a little bigger, building up", "All the same, flat", "Whisper them"], how:"The plane is climbing. Let your voice climb too."},
+        {p:"c45f_twelve", q:"ORVILLE: \"A boy could throw a ball farther.\" How does Orville sound?", o:["Calm and modest", "Shouting with joy", "Angry"], how:"Is Orville bragging, or keeping it small?"}
+      ],
+      practice:[
+        {t:"pairs", p:"c45f_twelve", q:"Match each speaker to his voice.", pairs:[["NARRATOR", "Plain and steady, like a storyteller"], ["JOHN DANIELS", "Excited and amazed"], ["ORVILLE", "Calm and modest"]],
+          h:"How does each one feel?", how:"Each part gets its own voice."},
+        {t:"sort", p:"c45f_twelve", q:"Mistake Detective. Readers' Theatre: right, or a mistake?", bins:[{id:"r", label:"Right"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Narrator plain and steady", bin:"r"}, {label:"Narrator shouting \"And then, it lifts!\" like a fan", bin:"m"}, {label:"\"Ten feet into the air\" bigger than \"One foot\"", bin:"r"}, {label:"Saying \"WILBUR\" before Wilbur's line", bin:"m"}],
+          h:"Who is telling, and who is cheering?", how:"The narrator tells. The characters feel. Names are not read."},
+        {t:"order", p:"c45f_twelve", q:"Put the first flight in order.", tiles:["The engine roars.", "The machine lifts.", "It flies twelve seconds.", "It bumps onto the sand."],
+          h:"From the engine to the landing.", how:"Picture the flight as it happens."},
+        {t:"spotall", p:"c45f_twelve", q:"Tap every line that should grow bigger and more excited.", cells:[{label:"One foot.", ok:false}, {label:"Ten feet into the air.", ok:true}, {label:"It's really flying!", ok:true}, {label:"Orville lies down", ok:false}],
+          h:"Where is the excitement highest?", how:"The excitement grows as the plane climbs."},
+        {t:"sort", p:"c45f_twelve", q:"Narrator line, or character line?", bins:[{id:"n", label:"Narrator"}, {id:"c", label:"Character"}],
+          items:[{label:"The engine coughs, then roars.", bin:"n"}, {label:"The propellers spin.", bin:"n"}, {label:"Go, go, go!", bin:"c"}, {label:"It's flying!", bin:"c"}],
+          h:"Who says it in the play?", how:"Narrator lines tell what happens. Character lines show feelings."},
+        {t:"pairs", p:"c45f_twelve", q:"Match each word to its meaning.", pairs:[["gliders", "flying machines with no engine"], ["propellers", "spinning blades"], ["wobbles", "moves side to side"]],
+          h:"Think back to the play.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_kite2", q:"Find the line \"The kite dips. It drags.\" Who reads it, and how?", o:["the narrator, plain and steady", "Eli, shouting", "Zeidy, calm"], how:"Look at the name before that line."},
+        {p:"c45f_kite2", q:"Find Zeidy's line about the string. How should Zeidy sound?", o:["Calm and careful, giving advice", "Shouting with joy", "Plain and steady, like a storyteller"], how:"Look at the name before the line. Is Zeidy cheering, or helping?"},
+        {p:"c45f_kite2", q:"Find the narrator's line where the kite climbs. Which words should build up?", o:["over the trees, over the shul roof", "across the field with a huge red kite", "Then the wind catches it."], how:"Like one foot, five feet, ten feet: bigger each time."}
+      ],
+      re:[
+        {p:"c45f_twelve", q:"A narrator line is read...", o:["Plain and steady, like a storyteller", "shouted", "as a question"], how:"He tells what happens."},
+        {p:"c45f_twelve", q:"\"Higher! Higher!\" in a play is read...", o:["Each one a little bigger, building up", "flat", "whispered"], how:"Excitement grows."},
+        {p:"c45f_twelve", q:"\"Then the wind catches it.\" changes the story. It is...", o:["the turning point", "a list", "a question"], how:"Everything changes there."}
+      ]},
+
+    'READ.FLU.L05.27':{name:"Read It 3 Times: If I Could Fly",
+      teach:[
+        {p:"c45f_fly", q:"\"I'd fly so high, I'd fly so far,\" How should the dreamy start sound?", o:["Calm and dreamy", "Faster and louder", "Like a question"], how:"He is imagining. Nothing has gone wrong yet."},
+        {p:"c45f_fly", q:"\"Too fast! Too low! Look out! Watch out!\" How should it sound?", o:["Faster and louder", "Calm and dreamy", "Slow and soft"], how:"Short words, ! marks, and he is wobbling."},
+        {p:"c45f_fly", q:"\"I'd better land, and land with care,\" How should your voice change?", o:["Slow down and soften, like a gentle landing", "Faster and louder", "Shout it"], how:"The words tell you: with care, gently."}
+      ],
+      practice:[
+        {t:"order", p:"c45f_fly", q:"Put the flight in order.", tiles:["He dreams of flying high.", "The wind pushes hard.", "He wobbles over Shloimy's yard.", "He lands gently."],
+          h:"Dream, trouble, landing.", how:"The poem tells a little story."},
+        {t:"sort", p:"c45f_fly", q:"Mistake Detective. Right pace, or a mistake?", bins:[{id:"r", label:"Right pace"}, {id:"m", label:"Mistake"}],
+          items:[{label:"\"Too fast! Too low!\" quick and loud", bin:"r"}, {label:"The landing read loud and fast", bin:"m"}, {label:"Slowing down for \"land with care\"", bin:"r"}, {label:"One speed for the whole poem", bin:"m"}],
+          h:"Does the speed follow the story?", how:"Calm, then fast, then gentle."},
+        {t:"pairs", p:"c45f_fly", q:"Match the rhyming words.", pairs:[["far", "star"], ["hard", "yard"], ["care", "air"]],
+          h:"Look at the line ends.", how:"Rhymes help you feel the beat."},
+        {t:"spotall", p:"c45f_fly", q:"Tap every short warning that should be quick and loud.", cells:[{label:"Too fast!", ok:true}, {label:"Too low!", ok:true}, {label:"Look out!", ok:true}, {label:"gently", ok:false}],
+          h:"Which ones end with !?", how:"Short warnings are quick and strong."},
+        {t:"sort", p:"c45f_fly", q:"Calm part, or fast part?", bins:[{id:"c", label:"Calm and dreamy"}, {id:"f", label:"Faster and louder"}],
+          items:[{label:"I'd wave to Zeidy on his porch.", bin:"c"}, {label:"I'd see the sun, a golden torch.", bin:"c"}, {label:"I'm wobbling over Shloimy's yard!", bin:"f"}, {label:"I hear the neighbors start to shout!", bin:"f"}],
+          h:"Is he dreaming, or in trouble?", how:"The speed follows the story."},
+        {t:"pairs", p:"c45f_fly", q:"Match each word to its meaning.", pairs:[["height", "how far up"], ["torch", "a flame that gives light"], ["gently", "softly and carefully"]],
+          h:"Think back to the poem.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_sled", q:"Find the line about the snow. Which word is said twice?", o:["softly", "slowly", "gently"], how:"Read that line closely."},
+        {p:"c45f_sled", q:"Find the last two lines. How should they be read?", o:["Slow down and soften, like a gentle landing", "Faster and louder", "Shout them"], how:"What happens to the sled at the end?"},
+        {p:"c45f_sled", q:"Find the line right after \"We sit. We push. We start to slide.\" How should it sound?", o:["Faster and louder", "Slow down and soften, like a gentle landing", "Calm and dreamy"], how:"What is the sled doing on that line?"}
+      ],
+      re:[
+        {p:"c45f_fly", q:"Warnings like \"Look out!\" are read...", o:["Faster and louder", "slowly", "as questions"], how:"Quick and strong."},
+        {p:"c45f_fly", q:"A gentle ending is read...", o:["Slow down and soften, like a gentle landing", "fast", "loud"], how:"Land with care."},
+        {p:"c45f_fly", q:"Words like \"slow and steady\" in a poem tell you...", o:["the pace to read it", "the title", "the rhyme"], how:"Let the words lead."}
+      ]},
+
+    'READ.FLU.L05.28':{name:"Read It 3 Times: Fourteen Years",
+      teach:[
+        {p:"c45f_brooklyn", q:"\"It opened on May 24, 1883.\" How do you say the year?", o:["eighteen eighty-three", "one eight eight three", "one thousand eight"], how:"Most years are said in two parts."},
+        {p:"c45f_brooklyn", q:"\"Was it really strong enough?\" The guide asks the crowd. How should it sound?", o:["Go up, like asking a question", "Strong and firm", "Whisper it"], how:"He wants the crowd to wonder."},
+        {p:"c45f_brooklyn", q:"\"The bridge did not shake. It did not crack. It held.\" How do you read \"It held.\"?", o:["Slow and strong, with a stop: it is the big moment", "Fast, to finish", "Like a question"], how:"Short sentences at the end of a story land hard."}
+      ],
+      practice:[
+        {t:"order", p:"c45f_brooklyn", q:"Put the bridge story in order.", tiles:["John Roebling plans the bridge.", "His son Washington takes over.", "The bridge opens in 1883.", "Elephants cross in 1884."],
+          h:"Follow the dates.", how:"Dates help you keep a history talk in order."},
+        {t:"sort", p:"c45f_brooklyn", q:"Mistake Detective. Clear guide, or a mistake?", bins:[{id:"r", label:"Clear"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Saying 1883 as \"eighteen eighty-three\"", bin:"r"}, {label:"Saying 1883 as \"one eight eight three\"", bin:"m"}, {label:"A stop before \"It held.\"", bin:"r"}, {label:"Rushing the dates in a mumble", bin:"m"}],
+          h:"Could the crowd catch every date and number?", how:"Dates and numbers are said clearly, in two parts."},
+        {t:"pairs", p:"c45f_brooklyn", q:"Match each year to what happened.", pairs:[["1869", "John Roebling is hurt"], ["1883", "the bridge opens"], ["1884", "the elephants cross"]],
+          h:"Find each year in the talk.", how:"Say each year aloud the right way."},
+        {t:"spotall", p:"c45f_brooklyn", q:"Tap every short sentence that should land hard at the end.", cells:[{label:"It did not shake.", ok:true}, {label:"It did not crack.", ok:true}, {label:"It held.", ok:true}, {label:"Fourteen years after", ok:false}],
+          h:"Find the short sentences at the end.", how:"Short sentences build to the big moment."},
+        {t:"sort", p:"c45f_brooklyn", q:"Question to the crowd, or a fact?", bins:[{id:"q", label:"Go up, like asking a question"}, {id:"f", label:"Fact"}],
+          items:[{label:"Was it really strong enough?", bin:"q"}, {label:"Did he give up?", bin:"q"}, {label:"It opened on May 24, 1883.", bin:"f"}, {label:"This is a suspension bridge.", bin:"f"}],
+          h:"Look at the end marks.", how:"A guide asks questions so the crowd wonders."},
+        {t:"pairs", p:"c45f_brooklyn", q:"Match each word to its meaning.", pairs:[["suspension", "hanging from something above"], ["cables", "thick ropes of twisted wire"], ["showman", "a person who puts on big shows"]],
+          h:"Think back to the talk.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_tunnel", q:"Find the year the tunnel opened. How do you say it?", o:["nineteen fifty-seven", "nineteen fifty-three", "one nine five seven"], how:"Say the year in two parts."},
+        {p:"c45f_tunnel", q:"Find the sentence right before \"Don't be.\" How should it sound?", o:["Go up, like asking a question", "Strong and firm", "Slow and sleepy"], how:"Look at its end mark."},
+        {p:"c45f_tunnel", q:"Find the two-word sentence near the end. How should it sound?", o:["Short and firm, with a stop after it", "Go up, like asking a question", "Rushed into the next sentence"], how:"Short sentences land hard. Look at its end mark."}
+      ],
+      re:[
+        {p:"c45f_brooklyn", q:"The year 1957 is said...", o:["nineteen fifty-seven", "one nine five seven"], how:"Two parts."},
+        {p:"c45f_brooklyn", q:"A guide's question to the crowd...", o:["Go up, like asking a question", "is whispered"], how:"Make them wonder."},
+        {p:"c45f_brooklyn", q:"\"Yes, under the water!\" is a surprising fact. Stress...", o:["under the water", "Yes"], how:"Stress the surprise."}
+      ]},
+
+    'READ.FLU.L05.29':{name:"Read It 3 Times: Bridges",
+      teach:[
+        {p:"c45f_bridges", q:"\"Dovid walks it, arms out wide, and hops down on the other side.\" How should it sound?", o:["Light and bouncy, like a hop", "Heavy and slow", "Like a question"], how:"Picture Dovid hopping off the log."},
+        {p:"c45f_bridges", q:"\"The heavy stones press in and march.\" How should it sound?", o:["Heavy and slow, like stones", "Light and bouncy, like a hop", "Fast and squeaky"], how:"Let the word heavy steer your voice."},
+        {p:"c45f_bridges", q:"What is the sing-song mistake?", o:["Banging every beat so the pictures get lost", "Reading the rhymes clearly", "Pausing at a comma"], how:"A poem has a beat, but the pictures matter more."}
+      ],
+      practice:[
+        {t:"pairs", p:"c45f_bridges", q:"Match each bridge to its voice.", pairs:[["the log over the stream", "Light and bouncy, like a hop"], ["the stone arch", "Heavy and slow, like stones"], ["the long bridge over the Chesapeake", "Amazed, almost a whisper"]],
+          h:"Picture each bridge.", how:"Your voice paints the picture."},
+        {t:"sort", p:"c45f_bridges", q:"Mistake Detective. Smooth poet, or sing-song?", bins:[{id:"r", label:"Smooth"}, {id:"m", label:"Sing-song mistake"}],
+          items:[{label:"\"hops down\" light and quick", bin:"r"}, {label:"Banging every beat", bin:"m"}, {label:"\"heavy stones\" slow and heavy", bin:"r"}, {label:"One bouncy voice for every bridge", bin:"m"}],
+          h:"Does the voice paint each bridge?", how:"Soft beat, strong pictures."},
+        {t:"pairs", p:"c45f_bridges", q:"Match the rhyming words.", pairs:[["stream", "beam"], ["wide", "side"], ["friend", "end"]],
+          h:"Look at the line ends.", how:"Rhymes help you feel the beat."},
+        {t:"spotall", p:"c45f_bridges", q:"Tap every kind of bridge in the poem.", cells:[{label:"beam", ok:true}, {label:"arch", ok:true}, {label:"hops", ok:false}, {label:"stream", ok:false}],
+          h:"Which words name a bridge type?", how:"The poem shows three kinds of bridge."},
+        {t:"order", p:"c45f_bridges", q:"Put the bridges in the order of the poem.", tiles:["a log over a stream", "a stone arch", "the long bridge over the bay"],
+          h:"From small to big.", how:"The poem grows from a log to a giant bridge."},
+        {t:"pairs", p:"c45f_bridges", q:"Match each word to its meaning.", pairs:[["beam", "a long, straight piece across a gap"], ["arch", "a curved shape that holds weight"], ["cables", "thick ropes of twisted wire"]],
+          h:"Think back to the poem.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_railbridge", q:"Find the line with the engineer. How should it sound?", o:["Light and friendly", "Heavy and slow, like stones", "Amazed, almost a whisper"], how:"What does the engineer do?"},
+        {p:"c45f_railbridge", q:"Find the line about the trains. Which two words make your voice heavy?", o:["rumble slow", "in a row", "We wave"], how:"Read the line about the trains."},
+        {p:"c45f_railbridge", q:"Find the first two lines. Which words paint the bridge as heavy and strong?", o:["iron bold", "We wave", "Clack, clack"], how:"Which words feel like stones?"}
+      ],
+      re:[
+        {p:"c45f_bridges", q:"\"The heavy stones press in and march.\" is read...", o:["Heavy and slow, like stones", "light and quick", "as a question"], how:"Heavy words, heavy voice."},
+        {p:"c45f_bridges", q:"\"We wave. The engineer waves back.\" has a stop...", o:["after \"We wave.\"", "nowhere"], how:"A period is a stop."},
+        {p:"c45f_bridges", q:"A smooth poet lets ___ lead.", o:["the pictures", "the beat"], how:"Paint with your voice."}
+      ]},
+  };
+
+  var TEACH = {
+'READ.FLU.L05.26':{
+      hook:"Twelve seconds changed the world. In this play, your voice has to make the audience feel it lift off.",
+      big:"Read it 3 times. The narrator stays plain and steady; the characters get excited; the climb grows step by step.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words. Watch the name tags.", "Read 2: read along. Notice who tells and who feels.", "Read 3: read it alone, as every part.", "Narrator: plain and steady, like a storyteller. One foot, five feet, ten feet: each one a little bigger, building up."],
+      ex:[{q:"NARRATOR: And then, it lifts. One foot. Five feet. Ten feet into the air.", steps:["The narrator tells it, plain and steady.", "But the numbers climb, so each one is a little bigger.", "One foot. Five feet. TEN feet into the air."], a:"Building up."},
+          {q:"ORVILLE: A boy could throw a ball farther.", steps:["Orville just flew for the first time ever.", "He keeps it small.", "Calm and modest."], a:"Calm and modest."}],
+      oops:{q:"NARRATOR: The engine coughs, then roars.", wrong:"THE ENGINE ROARS!!! (narrator shouting like a fan)", right:"The engine coughs, then roars. (plain and steady)", why:"The narrator tells the story. The cheering belongs to the characters."},
+      idea:["The narrator is the camera. The characters are the people in the picture."],
+      try:{q:"NARRATOR: The propellers spin. Read it...", o:["Plain and steady, like a storyteller", "Shouted"], a:"Plain and steady, like a storyteller", steps:["Who says it?"]}
+    },
+    'READ.FLU.L05.27':{
+      hook:"This poem takes off, wobbles in the wind, and lands. Your voice has to fly with it.",
+      big:"Read it 3 times. Start calm and dreamy, speed up when things go wrong, then slow down and soften for a gentle landing.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find where the trouble starts.", "Read 3: read it alone, and let your speed follow the flight.", "Calm and dreamy; then faster and louder; then slow down and soften, like a gentle landing."],
+      ex:[{q:"Too fast! Too low! Look out! Watch out!", steps:["Short words, ! marks, wobbling.", "Faster and louder."], a:"Quick and strong."},
+          {q:"I'd better land, and land with care, like Orville, gently, through the air.", steps:["The words say: with care, gently.", "Slow down and soften, like a gentle landing."], a:"Soft and slow."}],
+      oops:{q:"I'd better land, and land with care,", wrong:"IDBETTERLANDANDLANDWITHCARE (still fast and loud)", right:"I'd better land... and land with care, (slow and soft)", why:"If the landing stays fast, the reader crashes the plane."},
+      idea:["Your voice is the pilot: steady in the sky, quick in the wind, gentle on the ground."],
+      try:{q:"\"Hurry! Hurry! The bus is here!\" Read it...", o:["Faster and louder", "Calm and dreamy"], a:"Faster and louder", steps:["The words tell you."]}
+    },
+    'READ.FLU.L05.28':{
+      hook:"A bridge that took fourteen years, a sick engineer with a telescope, and twenty-one elephants. A guide's best story!",
+      big:"Read it 3 times. Say every date and name clearly, ask the crowd's questions so they wonder, and build to the big moment.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find every date and number.", "Read 3: read it alone, like a guide on the bridge.", "Years in two parts, like eighteen eighty-three. Short sentences at the end: slow and strong, with a stop: it is the big moment."],
+      ex:[{q:"It opened on May 24, 1883.", steps:["May twenty-fourth.", "1883 in two parts: eighteen eighty-three.", "Clear and steady, so the crowd remembers."], a:"Dates said clearly."},
+          {q:"The bridge did not shake. It did not crack. It held.", steps:["Three short sentences, each a little stronger.", "Stop before It held.", "Slow and strong."], a:"Build to the big moment."}],
+      oops:{q:"It opened on May 24, 1883.", wrong:"May two four, one eight eight three", right:"May twenty-fourth, eighteen eighty-three", why:"Dates said digit by digit are hard to follow."},
+      idea:["A guide's dates are like signposts on a road: clear and easy to read."],
+      try:{q:"How do you say 1884?", o:["eighteen eighty-four", "one eight eight four"], a:"eighteen eighty-four", steps:["Two parts."]}
+    },
+    'READ.FLU.L05.29':{
+      hook:"Every bridge has its own way to stand, and every bridge in this poem needs its own voice.",
+      big:"Read it 3 times. Keep the beat soft, and paint each bridge with your voice: light, heavy, or amazed.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the three kinds of bridge.", "Read 3: read it alone and paint each bridge.", "Light and bouncy, like a hop; heavy and slow, like stones; amazed, almost a whisper, for the long bridge. Avrumi's own words call out."],
+      ex:[{q:"Dovid walks it, arms out wide, and hops down on the other side.", steps:["A boy hopping off a log.", "Light and bouncy, like a hop."], a:"Light."},
+          {q:"The heavy stones press in and march.", steps:["Heavy stones.", "Heavy and slow, like stones."], a:"Heavy."}],
+      oops:{q:"A log across a little stream", wrong:"a LOG a-CROSS a LIT-tle STREAM (banging every beat)", right:"A log across a little stream (soft beat, clear picture)", why:"Banging every beat so the pictures get lost is the sing-song mistake."},
+      idea:["A good poem reader is a painter: the voice is the brush."],
+      try:{q:"\"Four miles of bridge, up in the sky!\" Read it...", o:["Amazed: Avrumi calls it out", "Heavy and slow, like stones"], a:"Amazed: Avrumi calls it out", steps:["How does Avrumi feel?"]}
+    },
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+'READ.FLU.L05.26':{ band:"E45", pic:"✈️", today:"Read a play about the first airplane flight",
+      why:"In a play, your voice is the whole show. The narrator tells; the characters cheer.",
+      ready:[{q:"In a play, the names are...", o:["not read aloud", "read loudly"], a:"not read aloud"},
+             {q:"\"It's flying!\" sounds...", o:["excited", "sleepy"], a:"excited"}],
+      bridge:"READ.FLU.L05.12", bridgeName:"Read It 3 Times: The Empty Box",
+      watch:{ q:"Kitty Hawk, December 17, 1903", m:{type:"scene", e:"✈️", t:"NARRATOR: And then, it lifts. One foot. Five feet. Ten feet into the air. JOHN DANIELS: It's flying!"}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words. I watch the name tags."},
+        {t:"Read 2: I read along. Who tells, and who feels?"},
+        {t:"Read 3: I read alone. The narrator: plain and steady, like a storyteller."},
+        {t:"One foot. Five feet. Ten feet: each one a little bigger, building up. Then John Daniels cheers."}],
+        a:"A plain narrator, excited characters, and a climb that builds." },
+      oops:{ q:"NARRATOR: The engine coughs, then roars.", wrong:"THE ENGINE ROARS!!! (narrator like a fan)", right:"The engine coughs, then roars. (plain and steady)", why:"The cheering belongs to the characters." },
+      ways:["repeated reading with a model", "Readers' Theatre", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"You flew for twelve seconds with Orville! Read the play with two friends: one narrator, one Wilbur, one Orville.",
+      board:{ key:"Show me answers (for the rebbe): the narrator, plain and steady · Calm and careful, giving advice · over the trees, over the shul roof", one:"Read it 3 times. Narrator plain and steady; characters with feeling; the climb builds.", activity:"Readers' Theatre in fours: Narrator, Wilbur, Orville, John Daniels. Switch parts each read.", mistakes:["Narrator shouting like a fan", "Flat climb: one foot, five feet, ten feet all the same", "Names read aloud"] },
+      do:[
+        {type:"read", text:"C45.FL4.16", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"sort", mis:true, bins:["Right", "Mistake"], cards:[["Narrator plain and steady", 0], ["Narrator shouting like a fan", 1], ["\"Ten feet\" bigger than \"One foot\"", 0], ["Saying \"WILBUR\" before his line", 1]],
+          say:"Mistake Detective: Readers' Theatre right, or a mistake?", how:"The narrator tells. The characters feel. Names are not read.",
+          why:{q:"Why is the narrator plain and steady?", o:["He tells what happens, like a storyteller", "He is tired", "He does not like planes"], a:"He tells what happens, like a storyteller"}}],
+      your:[
+        {type:"listen", q:"\"One foot. Five feet. Ten feet into the air.\"", hear:"One foot. Five feet. Ten feet into the air.", o:["Each one a little bigger, building up", "All the same, flat", "Whisper them"], a:"Each one a little bigger, building up",
+          say:"Listen, then decide: how should these three grow?", how:"The plane is climbing.",
+          why:{q:"Why build up?", o:["The plane climbs higher each time", "To finish fast", "Because it rhymes"], a:"The plane climbs higher each time"}},
+        {type:"evidence", q:"Which line belongs to the narrator?", p:["Go, go, go!", "It's flying! It's really flying!", "Twelve seconds later, it bumps back onto the sand.", "Orville! Twelve seconds!"], a:2, look:"a line that tells what happens",
+          say:"Read each line. Who is telling, not cheering?", how:"The narrator tells what happens, plainly."},
+        {type:"proof", text:"C45.FL4.16", q:"Which sentence shows Orville saying a child could do better?", proof:"A boy could throw a ball farther", look:"Orville's answer after the flight",
+          say:"Open the play. Find the line that proves it.", how:"Look at what Orville says right after Wilbur cheers."},
+        {type:"tiles", w:["Twelve seconds later,", "it bumps back onto the sand,", "one hundred and twenty feet", "from where it started."], extra:["sand one hundred"],
+          say:"Build the narrator's line in smooth scoops.", how:"Each scoop is one idea. Watch for a broken scoop."},
+        {type:"match", pairs:[["Wilbur at the end", "proud and amazed"], ["Orville at the end", "calm and modest"], ["John Daniels", "excited, then worried"], ["the narrator", "plain and steady"]],
+          say:"Match each part to its voice.", how:"How does each one feel at the end?"}] },
+
+    'READ.FLU.L05.27':{ band:"E45", pic:"🪁", today:"Read a flying poem that speeds up, then lands",
+      why:"A poem's speed can tell a story. Your voice flies, wobbles and lands with the words.",
+      ready:[{q:"\"Look out!\" is read...", o:["quick and strong", "slow and sleepy"], a:"quick and strong"},
+             {q:"\"gently\" tells your voice to...", o:["be soft", "shout"], a:"be soft"}],
+      bridge:"READ.FLU.L05.24", bridgeName:"Read It 3 Times: Campfire Night",
+      watch:{ q:"Fly, wobble, land", m:{type:"scene", e:"🪁", t:"Too fast! Too low! Look out! Watch out! I hear the neighbors start to shout!"}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find where the trouble starts."},
+        {t:"Read 3: I read alone. The dream: calm and dreamy. The wobble: faster and louder."},
+        {t:"\"But wait!\" is the turn. My voice speeds up here."},
+        {t:"The landing: slow down and soften, like a gentle landing."}],
+        a:"Your speed follows the flight." },
+      oops:{ q:"I'd better land, and land with care,", wrong:"IDBETTERLAND (still fast and loud)", right:"I'd better land... and land with care,", why:"A fast landing is a crash." },
+      ways:["repeated reading with a model", "poetry aloud", "Mistake Detective", "tap the reason", "word grid", "chavrusa"], done:"You flew, wobbled and landed safely! Read it to your chavrusa, and let him guess where the wind hit.",
+      board:{ key:"Show me answers (for the rebbe): softly · Slow down and soften, like a gentle landing · Faster and louder", one:"Read it 3 times. Calm, then faster and louder, then slow and soft for the landing.", activity:"Paper planes: boys read the poem while one partner flies a paper plane to match the speed.", mistakes:["One speed for the whole poem", "A loud, fast landing", "Sing-song banging"] },
+      do:[
+        {type:"read", text:"C45.FL4.17", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"listen", q:"\"Too fast! Too low! Look out! Watch out!\"", hear:"Too fast! Too low! Look out! Watch out!", o:["Faster and louder", "Calm and dreamy", "Slow and soft"], a:"Faster and louder",
+          say:"Listen, then decide: how should this line sound?", how:"Short words and ! marks. What is happening?",
+          why:{q:"Why faster here?", o:["He is wobbling and in trouble", "The poem is over", "It is a question"], a:"He is wobbling and in trouble"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Right pace", "Mistake"], cards:[["\"Too fast!\" quick and loud", 0], ["The landing loud and fast", 1], ["Slowing for \"land with care\"", 0], ["One speed for the whole poem", 1]],
+          say:"Mistake Detective: right pace, or a mistake?", how:"Does the speed follow the story?"},
+        {type:"order", steps:["He dreams of flying high.", "The wind pushes hard.", "He wobbles over Shloimy's yard.", "He lands gently."],
+          say:"Put the flight in order.", how:"Dream, trouble, landing."},
+        {type:"evidence", q:"Which line is the calmest?", p:["Too fast! Too low! Look out! Watch out!", "I hear the neighbors start to shout!", "I'd better land, and land with care,", "I'm wobbling over Shloimy's yard!"], a:2, look:"a line that asks you to be careful",
+          say:"Read each line. Which one asks for care?", how:"Look for words that slow you down.",
+          why:{q:"How should it sound?", o:["Slow down and soften, like a gentle landing", "Faster and louder", "Like a question"], a:"Slow down and soften, like a gentle landing"}},
+        {type:"match", pairs:[["flew", "blue"], ["porch", "torch"], ["far", "star"], ["care", "air"]],
+          say:"Match the rhyming words.", how:"Say each word. Which ones sound alike at the end?"},
+        {type:"findall", grid:["Too fast!", "porch", "Too low!", "gently", "Look out!", "golden"], find:["Too fast!", "Too low!", "Look out!"], findSay:"the quick warnings",
+          say:"Tap every quick warning.", how:"Warnings are short and end with !"}] },
+
+    'READ.FLU.L05.28':{ band:"E45", pic:"🌉", today:"Read a bridge history talk, dates and all",
+      why:"History lives in dates and names. A clear reader makes the story easy to follow, and the ending hit hard.",
+      ready:[{q:"The year 1903 is said...", o:["nineteen oh three", "one nine zero three"], a:"nineteen oh three"},
+             {q:"A guide's question to the crowd...", o:["goes up", "goes down"], a:"goes up"}],
+      bridge:"READ.FLU.L05.14", bridgeName:"Read It 3 Times: Ship of the Desert",
+      watch:{ q:"The bridge that held", m:{type:"scene", e:"🌉", t:"It opened on May 24, 1883. The bridge did not shake. It did not crack. It held."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find every date and number."},
+        {t:"Read 3: I read alone. 1883: eighteen eighty-three. Clear, so the crowd remembers."},
+        {t:"\"Was it really strong enough?\" goes up. \"It held.\" Slow and strong, with a stop: it is the big moment."}],
+        a:"Clear dates, wondering questions, a strong ending." },
+      oops:{ q:"It opened on May 24, 1883.", wrong:"May two four, one eight eight three", right:"May twenty-fourth, eighteen eighty-three", why:"Digit-by-digit dates are hard to follow." },
+      ways:["repeated reading with a model", "history aloud", "dictation", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"Your crowd heard every date, and felt the bridge hold! Give Abba and your brothers the tour after supper.",
+      board:{ key:"Show me answers (for the rebbe): nineteen fifty-seven · Go up, like asking a question · Short and firm, with a stop after it (\"Don't be.\")", one:"Read it 3 times. Years in two parts. Questions go up. Build to It held.", activity:"Tour guides: pairs give the bridge tour; listeners say back one date and one name.", mistakes:["Dates read digit by digit", "Questions read flat", "Rushing the ending"] },
+      do:[
+        {type:"read", text:"C45.FL4.18", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"tiles", w:["In 1869,", "while he was measuring the spot for a tower,", "a boat crushed his foot", "against a dock."], extra:["tower a boat"],
+          say:"Build the long sentence in clear scoops.", how:"Each scoop is one idea. Watch for a broken scoop.",
+          why:{q:"How do you say 1869?", o:["eighteen sixty-nine", "one eight six nine", "eighteen six nine"], a:"eighteen sixty-nine"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Clear", "Mistake"], cards:[["1883 as \"eighteen eighty-three\"", 0], ["1883 as \"one eight eight three\"", 1], ["A stop before \"It held.\"", 0], ["Mumbling the dates", 1]],
+          say:"Mistake Detective: clear guide, or a mistake?", how:"Could the crowd catch every date?"},
+        {type:"listen", q:"\"The bridge did not shake. It did not crack. It held.\"", hear:"The bridge did not shake. It did not crack. It held.", o:["Slow and strong, with a stop: it is the big moment", "Fast, to finish", "Like a question"], a:"Slow and strong, with a stop: it is the big moment",
+          say:"Listen, then decide: how should the ending sound?", how:"Three short sentences, building.",
+          why:{q:"Why slow and strong?", o:["It is the big moment of the story", "The guide is tired", "It rhymes"], a:"It is the big moment of the story"}},
+        {type:"proof", text:"C45.FL4.18", q:"Which sentence shows how Washington could see the work from home?", proof:"watched the work through a telescope", look:"what Washington did after he got sick",
+          say:"Open the talk. Find the sentence that proves it.", how:"Look right after \"Did he give up? No!\""},
+        {type:"order", steps:["John Roebling is hurt.", "Washington takes over.", "The bridge opens.", "The elephants cross."],
+          say:"Put the bridge story in order.", how:"Follow the dates: 1869, then 1883, then 1884."},
+        {type:"dictation", hear:"It opened on May 24, 1883.", w:["It", "opened", "on", "May", "24,", "1883."], extra:["1833."],
+          say:"Listen. Build the date sentence exactly.", how:"Listen for the year in two parts. Watch for a look-alike tile."}] },
+
+    'READ.FLU.L05.29':{ band:"E45", pic:"🌁", today:"Read a bridge poem, painting each bridge",
+      why:"Your voice can make a log feel light and a stone arch feel heavy. That is what makes a poem come alive.",
+      ready:[{q:"A smooth poet lets ___ lead.", o:["the pictures", "the beat"], a:"the pictures"},
+             {q:"\"heavy\" tells your voice to...", o:["slow down", "speed up"], a:"slow down"}],
+      bridge:"READ.FLU.L05.15", bridgeName:"Read It 3 Times: Desert Night",
+      watch:{ q:"Three bridges, three voices", m:{type:"scene", e:"🌁", t:"Dovid walks it, arms out wide, and hops down on the other side. The heavy stones press in and march."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the beam, the arch and the cables."},
+        {t:"Read 3: I read alone. The log: light and bouncy, like a hop. The arch: heavy and slow, like stones."},
+        {t:"The long bridge: amazed, almost a whisper. Avrumi's own words call out."}],
+        a:"Soft beat, and a voice that paints each bridge." },
+      oops:{ q:"A log across a little stream", wrong:"a LOG a-CROSS a LIT-tle STREAM", right:"A log across a little stream", why:"Banging every beat so the pictures get lost is the sing-song mistake." },
+      ways:["repeated reading with a model", "poetry aloud", "story map", "Mistake Detective", "tap the reason", "chavrusa"], done:"Three bridges, three voices! Read the poem to your chavrusa, and let him guess each bridge from your voice.",
+      board:{ key:"Show me answers (for the rebbe): Light and friendly · rumble slow · iron bold", one:"Read it 3 times. Soft beat. Paint each bridge: light, heavy, amazed.", activity:"Build it: groups make a beam, an arch and a hanging bridge from paper and read the matching stanza aloud.", mistakes:["Banging every beat", "One voice for every bridge", "Stopping hard at every line end"] },
+      do:[
+        {type:"read", text:"C45.FL4.19", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"sort", mis:true, bins:["Smooth", "Sing-song mistake"], cards:[["\"hops down\" light and quick", 0], ["Banging every beat", 1], ["\"heavy stones\" slow and heavy", 0], ["One bouncy voice for every bridge", 1]],
+          say:"Mistake Detective: smooth poet, or sing-song?", how:"Does the voice paint each bridge?"}],
+      your:[
+        {type:"match", pairs:[["the log over the stream", "Light and bouncy, like a hop"], ["the stone arch", "Heavy and slow, like stones"], ["the long bridge over the Chesapeake", "Amazed, almost a whisper"]],
+          say:"Match each bridge to its voice.", how:"Picture each bridge as you read it.",
+          why:{q:"Why change your voice for each bridge?", o:["Each bridge is a different picture", "To make it longer", "Because they rhyme"], a:"Each bridge is a different picture"}},
+        {type:"evidence", q:"Which line should be read almost in a whisper?", p:["Dovid walks it, arms out wide,", "The heavy stones press in and march.", "in whispers: cables, long and fine,", "helps someone get across today."], a:2, look:"a line that tells you how quietly to speak",
+          say:"Read each line. Which one tells you to be quiet?", how:"Sometimes the poem tells you exactly how to read it."},
+        {type:"storymap", slots:["Beam", "Arch", "Hanging bridge"], cards:["a log across a stream", "stones leaning on each other", "a road held up by cables"], extra:["a rowboat"],
+          say:"Match each kind of bridge to the poem.", how:"Which picture goes with which kind?"},
+        {type:"listen", q:"\"Four miles of bridge, up in the sky!\"", hear:"Four miles of bridge, up in the sky!", o:["Amazed: Avrumi calls it out", "Heavy and slow, like stones", "Like a question"], a:"Amazed: Avrumi calls it out",
+          say:"Listen, then decide: how should Avrumi sound?", how:"Look at the mark, and think how Avrumi feels. The poem whispers about the bridge; Avrumi himself calls out.",
+          why:{q:"What makes Avrumi amazed?", o:["The bridge is four miles long", "He is hungry", "The stream is cold"], a:"The bridge is four miles long"}},
+        {type:"findall", grid:["heavy", "hops", "stones", "wide", "leans hard", "whispers"], find:["heavy", "stones", "leans hard"], findSay:"the heavy, slow words",
+          say:"Tap every word that makes your voice heavy.", how:"Which words feel like stones?"}] },
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

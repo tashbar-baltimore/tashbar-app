@@ -1,0 +1,44 @@
+/* KESER KIT: the one look for every button and label a girl sees in Keser Girls 3.0.
+   Use these classes; do not draw your own buttons. Colors (M. Heinemann 2026-11-26): the Keser Academy royal purple and gold, from the school's logo and banners.
+   Accents: the house jewels, ruby, sapphire and emerald.
+   .k-btn    the one big action on a screen (rose glass pill, gold rim, soft glow)
+   .k-icon   a small round glass button (arrows, back, sound, light mode); always has an aria-label
+   .k-foil   gold-foil words (titles, place names)
+   .k-dots   the jewel dots that show where she is */
+:root{
+  --night:#1C0A30; --plum:#3A1660; --royal:#5D2B88; --royal2:#7A44AA; --rose:#5D2B88; --rose2:#7A44AA; --lilac:#B08AD8; --mint:#4FB38A; --sky:#4F7FD8;
+  --gold1:#F6E3B0; --gold2:#D4AA50; --gold3:#A87C2E;
+  --spring:cubic-bezier(.34,1.56,.64,1); --glide:cubic-bezier(.2,.8,.2,1);
+  --serif:"Didot","Bodoni 72","Bodoni MT","Playfair Display",Georgia,serif;
+}
+.k-btn{ appearance:none; border:0; text-decoration:none; cursor:pointer; position:relative; isolation:isolate; display:inline-flex; align-items:center; gap:10px;
+  padding:15px 38px; border-radius:999px; font:800 15px/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; letter-spacing:.32em; text-transform:uppercase; color:#fff;
+  background:linear-gradient(135deg,rgba(122,68,170,.97),rgba(76,32,118,.97)); box-shadow:0 10px 34px rgba(93,43,136,.6), 0 0 0 1px rgba(255,241,184,.55), inset 0 1px 0 rgba(255,255,255,.6);
+  transition:transform .35s var(--spring), box-shadow .3s; -webkit-tap-highlight-color:transparent; }
+.k-btn::before{ content:""; position:absolute; inset:-2px; border-radius:inherit; z-index:-1; padding:2px;
+  background:linear-gradient(100deg,var(--gold3),var(--gold2),var(--gold1),#fff,var(--gold1),var(--gold2),var(--gold3)); background-size:250% 100%; animation:k-foil 4s linear infinite;
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+.k-btn::after{ content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 48%,transparent 62%); background-size:300% 100%; animation:k-shine 3.2s ease-in-out infinite; pointer-events:none; }
+.k-btn:hover{ transform:translateY(-2px) scale(1.03); box-shadow:0 14px 40px rgba(212,170,80,.45), 0 0 0 1px rgba(255,241,184,.8), inset 0 1px 0 rgba(255,255,255,.7); }
+.k-btn:active{ transform:scale(.95); }
+.k-btn:focus-visible,.k-icon:focus-visible,.k-dots button:focus-visible{ outline:2px solid var(--gold1); outline-offset:4px; }
+.k-btn .k-star{ width:14px; height:14px; flex:none; }
+.k-icon{ appearance:none; cursor:pointer; width:48px; height:48px; border-radius:50%; display:grid; place-items:center; color:#fff; padding:0;
+  background:rgba(255,255,255,.1); border:1px solid rgba(255,241,184,.45); box-shadow:0 6px 22px rgba(20,0,40,.35), inset 0 1px 0 rgba(255,255,255,.35);
+  backdrop-filter:blur(10px) saturate(1.4); -webkit-backdrop-filter:blur(10px) saturate(1.4); transition:transform .35s var(--spring), background .2s; -webkit-tap-highlight-color:transparent; }
+.k-icon:hover{ background:rgba(255,255,255,.18); transform:scale(1.07); }
+.k-icon:active{ transform:scale(.9); }
+.k-icon svg{ width:22px; height:22px; }
+.k-icon.small{ width:40px; height:40px; } .k-icon.small svg{ width:18px; height:18px; }
+.k-icon[aria-pressed="true"]{ background:rgba(255,241,184,.25); }
+.k-foil{ font-family:var(--serif); font-weight:700; color:transparent; -webkit-background-clip:text; background-clip:text;
+  background-image:linear-gradient(100deg,var(--gold3) 0%,var(--gold2) 20%,var(--gold1) 40%,#fff 50%,var(--gold1) 60%,var(--gold2) 80%,var(--gold3) 100%);
+  background-size:250% 100%; animation:k-foil 4s linear infinite; filter:drop-shadow(0 4px 16px rgba(245,196,81,.35)); }
+.k-dots{ display:flex; gap:4px; justify-content:center; align-items:center; }
+.k-dots button{ appearance:none; cursor:pointer; border:0; padding:0; width:32px; height:32px; background:none; position:relative; -webkit-tap-highlight-color:transparent; }
+.k-dots button::before{ content:""; position:absolute; left:50%; top:50%; width:12px; height:12px; margin:-6px 0 0 -6px; border-radius:3px; transform:rotate(45deg);
+  background:var(--c,#fff); opacity:.45; box-shadow:0 0 0 1px rgba(255,255,255,.5); transition:transform .4s var(--spring), opacity .3s, box-shadow .3s; }
+.k-dots button[aria-current="true"]::before{ opacity:1; transform:rotate(45deg) scale(1.55); box-shadow:0 0 0 1.5px #fff, 0 0 16px var(--c,#fff); }
+@keyframes k-foil{ 0%{ background-position:100% 0 } 100%{ background-position:-150% 0 } }
+@keyframes k-shine{ 0%,55%{ background-position:120% 0 } 100%{ background-position:-120% 0 } }
+@media (prefers-reduced-motion: reduce){ .k-btn::before,.k-btn::after,.k-foil{ animation:none } .k-btn,.k-icon,.k-dots button::before{ transition:none } }

@@ -395,5 +395,8 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-m,.obk-opt,.obk-bin-t,.obk-card,.obk-fc{ line-height:1.15; text-wrap:balance; }
 .ob-M68 .obk-obj,.ob-M68 .obk-card{ font-size:calc(var(--tap) * .5); }
 `; document.head.appendChild(s); };
+/* Gap A6: the new kinds from CoreKitActs.html join the moment the kit exists. Their own retry timer is held by the parts loader until
+   every piece has run, and a tap replayed at the end used to start a lesson without them (the player then dropped those activities). */
+try{ if(window.TLCORE&&typeof window.TLCORE.joinActs==='function') window.TLCORE.joinActs(); }catch(e){ console.warn('OneBiteKit: joinActs',e); }
 })();
 </script>

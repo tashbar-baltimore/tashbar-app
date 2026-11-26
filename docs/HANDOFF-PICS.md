@@ -74,13 +74,20 @@ CLAUDE.md wins where anything here differs: publish ONLY by pull request (auto-p
 ## Rules that do not bend
 1. **Picture rules:**
    - boys and men only: no women or girls anywhere, even small in the background;
+     (only exception, HoS 2026-11-26: pictures for the girls' app Keser Girls 3.0 may show girls and women, modestly dressed, in modest frum settings. Write "Keser Girls only" in the catalog's "what it shows" cell; such a picture is never used in 1.0 or 2.0, and the tests check that. See `keser/README.md`.)
    - frum, modest settings; kosher food;
    - no churches, crosses or other religions' symbols (also minarets, menhirs);
    - no alcohol, Halloween or fantasy creatures;
    - body topics: drawings or models only;
    - Kosel: stones only, no crowds;
    - no Divine Name readable in any picture;
-   - when in doubt, leave it out.
+   - when in doubt, ask the creator (see "Exceptions" below); until he or she answers, leave it out.
+   **Exceptions (HoS 2026-11-26).** HoS: "The point of these rules is that pictures we didn't review first shouldn't go in without us realizing it. We only realize it once the kids are seeing it. Not that they're restricting creators from creating content that they feel is suitable."
+   - When a picture breaks one of the rules above, do not use it quietly and do not drop it quietly. Show the picture to the **creator of that lesson** (the staff member who asked for it or built it), say which rule it breaks, and ask whether to use it.
+   - The creator may allow it as a **one-time exception**: that picture, in that lesson or screen, after seeing it first. Using the same picture somewhere else needs that creator's OK again.
+   - Write the exception at the end of the row's "what it shows" cell in `art/CATALOG.md`: `EXCEPTION (<rule>): allowed by <creator>, <date>, for <screen>`. Put it in the pull request too, under "Picture exceptions".
+   - Until the creator answers, leave the picture out (show the name only) and list it in the pull request as waiting.
+   - Only the picture rules in point 1 bend this way. Licences (point 2) and never giving the answer away (point 3) still hold.
 2. **Licences:** public domain, CC0, CC BY, CC BY-SA, Pixabay, Pexels, LOC "no known restrictions". Source, licence and author are recorded for every file.
 3. **Never give the answer away:**
    - labels only with words from the screen's "how" line;

@@ -181,7 +181,8 @@ body.gm-k2 #gm-nav button{font-size:13px}
 #gm .gm-score b{display:block;font-size:24px;color:#39FF88;font-family:'JetBrains Mono',ui-monospace,monospace}
 #gm .gm-score small{font-size:10px;color:#A9A6E8;font-weight:900;letter-spacing:.06em}
 #gm .gm-chest{margin-top:10px;border-radius:14px;padding:9px 12px;background:rgba(255,216,77,.12);border:2px solid rgba(255,216,77,.4);font-weight:800;font-size:13px;color:#FFE9A8}
-#gm .gm-cta{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:31}
+#gm .gm-cta{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(28px + env(safe-area-inset-bottom,0px));z-index:31}
+@media (max-width:600px){#gm .gm-cta{bottom:calc(72px + env(safe-area-inset-bottom,0px))}}
 #gm .gm-cta .gm-play{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #gm .gm-play2 small{display:block;margin-top:3px;font-size:13px;font-style:normal;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis}
 #gm .gm-lock{margin-top:16px;border-radius:24px;padding:20px 16px;text-align:center;background:rgba(0,0,0,.35);border:3px dashed rgba(255,255,255,.25)}
@@ -264,6 +265,8 @@ body.gm-k2 #gm-nav{--gmhalo:70px}
 #gm .gm-ladder span{flex:1;border-radius:10px;padding:5px 0;font-size:20px;background:rgba(255,255,255,.06);filter:grayscale(1);opacity:.45}
 #gm .gm-ladder span.got{filter:none;opacity:1;background:rgba(255,226,89,.16)}
 #gm .gm-ladder span.cur{outline:3px solid #FFE259}
+#gm .gm-rkp{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:6px}
+#gm .gm-stk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}#gm .gm-stk .tlk-box{display:grid;width:100%;box-sizing:border-box;text-align:left;padding:12px 14px}#gm .gm-stk .tlk-box b{font-size:30px}
 #gm .gm-stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 #gm .gm-stat div{border-radius:18px;padding:12px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12)}
 #gm .gm-stat b{display:block;font-size:32px;font-weight:900;line-height:1.05}
@@ -332,8 +335,8 @@ body.gm-nav .stbox{background:#140A44;color:#F4F2FF;border:3px solid #FFD84D;box
 body.gm-nav .sthead{background:linear-gradient(120deg,#FF2E63,#B5179E 50%,#7C4DFF)}
 body.gm-nav .sthead h2{font-style:italic;text-transform:uppercase;letter-spacing:-.01em}
 body.gm-nav .stbal b{color:#FFE259;text-shadow:0 3px 0 rgba(0,0,0,.25)}
-body.gm-nav .sttabs button{background:rgba(0,0,0,.28);color:#fff}
-body.gm-nav .sttabs button.on{background:#140A44;color:#FFE259}
+body.gm-nav .sttabs button:not(.tlk){background:rgba(0,0,0,.28);color:#fff}
+body.gm-nav .sttabs button.on:not(.tlk){background:#140A44;color:#FFE259}
 body.gm-nav .stintro{color:#C9C4FF}
 body.gm-nav .stcard{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#F4F2FF;box-shadow:none}
 body.gm-nav .stcard h4{color:#fff}
@@ -406,10 +409,12 @@ body.gm-nav .stkpis b{color:#39FF88!important}body.gm-nav .stkpis small,body.gm-
 #gm-room{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%);color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
 #gm-room .hd{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#7B61FF;border-bottom:2px solid rgba(255,255,255,.1)}
 #gm-room .hd b{flex:1;font-size:20px;font-weight:900;font-style:italic;text-transform:uppercase}
-#gm-room .hd button{border:0;border-radius:14px;padding:10px 14px;font-family:inherit;font-weight:900;font-size:15px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 4px 0 #B36B00;cursor:pointer}
+#gm-room .hd button:not(.tlk){border:0;border-radius:14px;padding:10px 14px;font-family:inherit;font-weight:900;font-size:15px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 4px 0 #B36B00;cursor:pointer}
 #gm-room .bd{flex:1;overflow:auto;padding:14px}
 #gm-room .bd>*{max-width:900px;margin-left:auto!important;margin-right:auto!important}
-#gm-room .bd .panel,#gm-room .bd section{border-radius:22px!important}
+#gm-room .bd .panel,#gm-room .bd section{border-radius:22px!important;color:#1E1B4B}   /* the room is white text; its panels are white cards, so their words are dark (the titles were invisible) */
+#gm-room .bd .tlk-pill{border:0!important;box-shadow:none!important;text-transform:none;letter-spacing:0}#gm-room .bd .tlk-pill.tlk-money{background:var(--tlk-money-bg)!important;color:var(--tlk-money-fg)!important}#gm-room .bd .tlk-pill.tlk-prog{background:var(--tlk-prog-bg)!important;color:var(--tlk-prog-fg)!important}#gm-room .bd .tlk-pill.tlk-rank{background:var(--tlk-rank-bg)!important;color:var(--tlk-rank-fg)!important}
+#gm-room .bd .tier.tlk-pill{font-size:11px;padding:2px 8px;align-self:flex-start;width:max-content}#gm-room .bd .p3h .tlk-quiet{margin-left:auto}#gm-room .bd .p3shab.tlk,#gm-room .bd .tlk-main.tlk-wide{margin-top:12px}
 #gm-room [id^=p3w]{color:#5B3FD9!important;-webkit-text-fill-color:#5B3FD9!important}
 body.gm-nav .hpdraw{background:rgba(10,7,38,.8)!important}
 body.gm-nav .hpsheet{border-left:4px solid #FFD84D!important;box-shadow:-10px 0 40px rgba(0,0,0,.5)!important;background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%)!important;color:#fff}
@@ -424,8 +429,9 @@ body.gm-home #gm .gm-sun{position:absolute;inset:0 0 auto 0;height:220px;pointer
 #gm .gm-in.gm-wide{max-width:1000px;padding:22px 20px calc(28px + env(safe-area-inset-bottom,0px))}
 #gm .gm-hi{padding:4px 110px 14px 4px}
 #gm .gm-hi h1{margin:0;font-size:34px;line-height:1.1;font-weight:900;color:#1E1B4B;letter-spacing:-.01em}
-#gm .gm-hi p{margin:8px 0 0;font-size:19px;font-weight:800;color:#3F3A7A;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#gm .gm-hi p{margin:8px -110px 0 0;font-size:19px;font-weight:800;color:#3F3A7A;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 #gm .gm-hi .dots{display:inline-flex;gap:6px}
+#gm .gm-hi .gm-out{margin-left:auto;display:inline-flex;align-items:center;gap:10px}
 #gm .gm-hi .dots i{width:18px;height:18px;border-radius:50%;background:#E3E0F5;border:2px solid #C9C4EA}
 #gm .gm-hi .dots i.on{background:#22C55E;border-color:#15803D}
 #gm .gm-hts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
@@ -450,10 +456,12 @@ body.gm-home #gm .gm-sun{position:absolute;inset:0 0 auto 0;height:220px;pointer
 #gm .gm-ht.things{--c:linear-gradient(135deg,#FDBA74,#FB923C)}
 body.gm-home #gm .gm-none{background:#fff;color:#1E1B4B;border-radius:22px;margin-bottom:16px}
 body.gm-home #gm .gm-none p{color:#3F3A7A!important}body.gm-home #gm .gm-none h1{color:#1E1B4B!important;text-shadow:none!important}
-@media (max-width:760px){#gm .gm-hts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#gm .gm-ht{height:210px;border-radius:22px}#gm .gm-ht .ic{font-size:64px}#gm .gm-ht .bot{padding:8px 12px;gap:3px}#gm .gm-ht .bot b{font-size:22px}#gm .gm-ht .bot small{font-size:14px}#gm .gm-hi h1{font-size:27px}#gm .gm-hi p{font-size:16px}#gm .gm-hi{padding-right:60px}#gm .gm-ht .bdg{font-size:12px;top:8px;left:8px;padding:4px 8px}}
+@media (max-width:760px){#gm .gm-hts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#gm .gm-ht{height:210px;border-radius:22px}#gm .gm-ht .ic{font-size:64px}#gm .gm-ht .bot{padding:8px 12px;gap:3px}#gm .gm-ht .bot b{font-size:22px}#gm .gm-ht .bot small{font-size:14px}#gm .gm-hi h1{font-size:27px}#gm .gm-hi p{font-size:16px}#gm .gm-hi{padding-right:60px}#gm .gm-hi p{margin-right:-60px}#gm .gm-ht .bdg{font-size:12px;top:8px;left:8px;padding:4px 8px}}
 #gm-nav .gm-homebtn{flex:1;flex-direction:row;gap:12px;font-size:22px;color:#1E1B4B;letter-spacing:.02em}
 #gm-nav .gm-homebtn b{font-size:32px}
 body.gm-home #gm-nav{display:none!important}
+#gm-nav{display:none!important}
+#gm .gm-hud{gap:8px}@media (max-width:760px){body:has(#bbx-door):not(.gm-home) #gm .gm-hud{flex-wrap:wrap;row-gap:8px;padding-right:200px}}#gm .gm-hud .tlk-home,#gm .gm-hud .tlk-back{flex:none}
 
 /* bright pages (HoS 2026-11-23: "brighter and happier ... ADHD friendly"): his work, My things and Change subject match the home */
 body.gm-lite #gm{background:linear-gradient(180deg,#FFF7D6 0%,#FFFDF5 55%,#EAF7FF 100%)!important;color:#1E1B4B}
@@ -559,11 +567,17 @@ function pick(ws){ const live=ws.filter(w=>w.now); return live.find(w=>!doneToda
 function rankOf(n){ let r=RANKS[0],nx=null; for(let i=0;i<RANKS.length;i++){ if(n>=RANKS[i][0]){ r=RANKS[i]; nx=RANKS[i+1]||null; } } return {r,nx}; }
 function steps(){ const sk=(A.st&&A.st.skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m).length; }
 function money(){ const b=Number(A.st&&A.st.balance)||0; return '$'+b.toFixed(2); }
+/* INFORMATION (button system step 5, HoS 2026-11-23 "Information is never a button"): every label a boy reads is a kit pill or box,
+   one color per meaning (money green, progress blue, do-this-now yellow, rank violet, locked gray, subject pink). No shadow, outline or hand pointer. */
+function pill(k,t){ return window.TLK?TLK.pill(k,t):'<span class="gm-lbl">'+esc(t)+'</span>'; }
+function box(k,l,v){ return window.TLK?TLK.box(k,l,v):'<span class="gm-lbl">'+esc(l)+' '+esc(v)+'</span>'; }
 function pfOn(){ const c=document.querySelector('.pf-card'); return !!(c&&c.style.display!=='none'&&c.querySelector('button')); }
 /* SIMPLE HOME (HoS 2026-11-23: "much simpler ... clear and clean and helpful and big"): the top shows only his money; rank and XP live in Trophies */
 /* BACK (HoS 2026-11-24): a page he reached from another menu page gets the kit's Back top left (K-3: arrow + "Back"); it returns to that page */
 function backHTML(){ if(!GM.from||!window.TLK) return ''; const g=M()&&M().grade; return TLK.back('data-gm="gmback"','',TLK.young(g)); }
-function hud(){ return `<div class="gm-hud">${backHTML()}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>`; }
+/* HOUSE (HoS 2026-11-23, button system step 2): every full page leaves by the kit's house top left (K-3: house + "Home"), after Back; it replaced the big HOME bar (#gm-nav) */
+function houseHTML(){ const g=M()&&M().grade; return window.TLK?TLK.home('data-gmnav="home"','',TLK.young(g)):'<button type="button" class="gm-chip" data-gmnav="home" aria-label="Home">🏠</button>'; }
+function hud(){ return `<div class="gm-hud">${backHTML()}${houseHTML()}<span class="gm-mny" role="img" aria-label="My money ${money()}">${pill('money',money())}</span></div>`; }
 function hudOld(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>
@@ -579,19 +593,20 @@ function subjectsHTML(ws){ const cur=GM.world;
 function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\s+/)[0]||'', h=new Date().getHours(), hi=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
  const live=P.rounds.findIndex(r=>!r.won&&r.w), lw=live>=0?P.rounds[live].w:null;
  const dots=P.rounds.length?`<span class="dots" aria-hidden="true">${P.rounds.map(r=>`<i class="${r.won?'on':''}"></i>`).join('')}</span>`:'';
- const line=!ws.length?'Your map is almost ready.':P.rounds.length?(P.open?'All your work is done today! ✓':`${P.done} of ${P.total||ROUNDS} done today`):'Every world is cleared!';
+ const line=!ws.length?'Your map is almost ready.':P.rounds.length?(P.open?pill('prog','All your work is done today!'):pill('prog',`${P.done} of ${P.total||ROUNDS} done today`)):'Every world is cleared!';
  const tile=(cls,ic,name,sub,attr,badge)=>`<button type="button" class="gm-ht ${cls}" ${attr}><span class="top" aria-hidden="true"><span class="ic">${ic}</span></span>${badge?`<span class="bdg">${badge}</span>`:''}<span class="bot"><b>${name}</b><small>${sub}</small></span></button>`;
  let tiles='';
  if(ws.length){
   const wsub=lw?`${P.list?'Next':'Round '+(live+1)}: ${esc(lw.name)} · ${esc(nm(lw.now)[0])}`:P.open?'All done! Play more if you like.':P.list?'Open to see your list':'Every world is cleared!';
-  tiles+=tile('work'+(lw?' now':''),'✏️','My work',wsub,'data-gmnav="missions"',lw?'▶ DO THIS NOW':P.open?'✓ DONE':'');
-  const p=pick(ws); tiles+=tile('map','🗺️','My map',p?`${esc(p.name)} · Level ${p.level}`:'Your levels','data-gmnav="map"');
+  tiles+=tile('work'+(lw?' now':''),'✏️','My work',wsub,'data-gmnav="missions"',lw?pill('now','Do this now'):P.open?pill('prog','Done'):'');
+  const p=pick(ws); tiles+=tile('map','🗺️','My map',p?pill('subj',`${p.name} · Level ${p.level}`):'Your levels','data-gmnav="map"');
  }
  tiles+=tile('food','🥪','Canteen','Buy food with your money','data-cno="open"');   /* HoS 2026-11-23: opens the 3D canteen (CanteenKid.html): buy food, get canteen money, money story, money lessons */
- tiles+=tile('store','🛍️','Store',`You have <b>${money()}</b>`,'data-gmnav="money"');
- tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':'🔒');
+ tiles+=tile('store','🛍️','Store',pill('money','You have '+money()),'data-gmnav="money"');
+ tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':pill('lock','Locked'));
  tiles+=tile('things',pfAv('pr-tav'),'My profile','Badges, levels, my stuff','data-gmnav="more"');   /* HoS 2026-11-24: My things became My profile (his picture on the tile) */
- return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
+ const out=window.TLK?`<span class="gm-out">${TLK.quiet('Sign out','data-gm="pfout"','tlk-small')}${TLK.tool('💡','How the buttons work','data-gm="pftour"')}</span>`:'';   /* HoS 2026-11-26: a small round lightbulb beside Sign out opens the button tour */   /* HoS 2026-11-25: "the kids can't figure out how to log out": a clear Sign out on the home, not only in the corner menu and My profile */
+ return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}${out}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
 /* ===== MY PROFILE (HoS 2026-11-24, boss cleared the general page; mock-up from Claude Chat): "My things" became "My profile".
    One page with who he is (his picture, name, grade, days in a row, badges, lessons), his settings, Sign out,
    his levels in every subject, what he finished lately, his badges, his bank, what he bought, his things from the store, and the doors
@@ -623,7 +638,13 @@ function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2'), st=
   return `<div class="pr-lv"><div class="r">${Q.pill('subj',w.name)}${Q.pill('rank','Level '+w.level)}<span class="n">${dn} of ${tot} steps</span></div><span class="pr-bar" role="img" aria-label="${dn} of ${tot} steps"><i style="width:${pc}%"></i></span></div>`; }).join('');
  if(!lv) lv='<p class="pr-none">Your rebbe or teacher sets your levels. Until then, find your levels below.</p>';
  const find=document.querySelector('#app [data-hp=levels]');
- const levels=sec('My levels')+`<div class="pr-card">${lv}</div>`+(find?`<div class="pr-row">${Q.quiet('Find my levels',px(find).trim())}</div>`:'');
+ const levels=sec('My levels')+`<div class="pr-card">${lv}</div>`+(find?`<div class="pr-row">${Q.quiet('Find my levels',px(find).trim())}</div>`:'')
+  /* HoS 2026-11-26: the button tour has its own section here, with small previews of its cards; the whole card opens the tour */
+  +sec('How the buttons work')+`<button type="button" class="tlk tlk-tile pr-tour" data-gm="pftour" aria-label="Show me how the buttons work"><span class="pr-tprev" aria-hidden="true">`
+  +`<span class="pr-tc"><span class="tlk tlk-main tlk-small">Start</span><small>Gold button</small></span>`
+  +`<span class="pr-tc"><span class="tlk tlk-x">${TLK.X_SVG}</span><small>Round ✕</small></span>`
+  +`<span class="pr-tc">${Q.pill('money','$5')}${Q.pill('prog','2 of 3')}${Q.pill('now','Now')}<small>Colors</small></span>`
+  +`</span><span class="pr-tgo"><b>Show me how</b><small>A short tour on your home page</small></span></button>`;
  /* what he finished lately (his map's growth: mastered steps in the last 7 days) */
  const wk=((g&&g.week)||[]).slice(0,5), subjOf=id=>{ const w=ws.find(x=>x.ids.indexOf(id)>=0||((x.c&&x.c.skills)||[]).some(s=>s[0]===id)); return w?w.name:''; };
  const fin=sec('Recently finished')+`<div class="pr-card">${wk.length?wk.map(x=>`<div class="pr-li">${subjOf(x[0])?Q.pill('subj',subjOf(x[0])):''}<b>${esc(nm(x[0])[0])}</b><span class="sp"></span><span class="d">${esc(dayWord(x[1]))}</span></div>`).join(''):'<p class="pr-none">Nothing finished this week yet. Your next lesson is waiting on My map.</p>'}</div>`;
@@ -668,6 +689,7 @@ function pfClick(a,b){
  if(a==='pfsnd'){ const on=pfSoundOn(); try{ if(window.TL_MENU) TL_MENU.actions.setSound(!on); else { const s=document.createElement('button'); s.dataset.act='sound'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); } }catch(x){} setTimeout(()=>{ GM.sig=''; sync(); },60); return true; }
  if(a==='pfmus'){ try{ if(window.TL_MENU) TL_MENU.actions.openMusicPanel(); }catch(x){} return true; }
  if(a==='pfout'){ try{ if(window.TL_MENU) TL_MENU.actions.signOut(); else { const s=document.createElement('button'); s.dataset.act='signout'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); } }catch(x){} return true; }
+ if(a==='pftour'){ try{ SND.tap(); }catch(x){} GM.from=null; GM.tab='home'; GM.sig=''; try{ root().scrollTop=0; }catch(x){} sync(); setTimeout(()=>{ try{ window.TLTOUR&&TLTOUR.open(); }catch(x){ console.error('tour',x); } },250); return true; }   /* the button tour (HoS 2026-11-26) always plays on the real home */
  if(a==='pfshop'){ try{ SND.tap(); }catch(x){} try{ if(window.TLSTORE) TLSTORE.tab=b.dataset.t||'fun'; if(window.tlStore) tlStore(true); }catch(x){} return true; }
  return false; }
 /* the small round picture next to Workbook on the home, in front of the corner menu: opens My profile (the tile is the other way in) */
@@ -759,20 +781,20 @@ function sheet(id,st){ const g=root(), old=g.querySelector('.gm-sheet'); if(old)
 function learnLine(n){ if(!n[1]) return ''; if(/ Level \d+$/.test(n[1])) return `<div class="learn">🧠 Real skill: <b>${esc(n[0])}</b> · ${esc(n[1])}</div>`; return `<div class="learn">🧠 You'll learn: <b>${esc(n[1])}</b></div>`; }
 function lcGoalHTML(w,isPick,lc){ const n=nm(w.now), L=lc.L, sub=w.name;
  const say=`Level check first. ${sub} Level ${L}. About ${lc.min} minutes. Questions you get right are skills you skip, and taking it unlocks full pay at this level. Tap Play to start!`;
- return `<div class="gm-goal gm-lcg" aria-label="Level check first"><div class="k"><span>🎫 LEVEL CHECK · ${esc(sub).toUpperCase()} LEVEL ${L}</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>🎫 Level Check</h1><div class="learn">⏭ <b>Skip what you know</b> · 💵 <b>unlock full pay</b> at Level ${L}</div><div class="m">About ${lc.min} minutes · then: ${esc(n[0])}</div>
+ return `<div class="gm-goal gm-lcg" aria-label="Level check first"><div class="k">${pill('subj','Level check · '+sub+' Level '+L)}${isPick?pill('now',"Today's pick"):''}</div><h1>🎫 Level Check</h1><div class="learn">⏭ <b>Skip what you know</b> · 💵 <b>unlock full pay</b> at Level ${L}</div><div class="m">About ${lc.min} minutes · then: ${esc(n[0])}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">Read it to me<span class="ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="18.5"/><circle class="bar" cx="20" cy="20" r="18.5" stroke-dasharray="116.24" stroke-dashoffset="116.24"/></svg><span class="dot"><span class="tri"></span><span class="sq"></span></span></span></button></div></div>`; }
 function goalHTML(w,isPick){
  const lc=lcOf(w); if(lc) return lcGoalHTML(w,isPick,lc);
  if(!w.now) return `<div class="gm-goal"><div class="gm-done">🏆 ${esc(w.name)} unit cleared!<small>Your rebbe or teacher opens your next unit. Pick another world above, or tap 📚 Learn.</small></div></div>`;
  const n=nm(w.now), left=w.ids.length-w.ids.indexOf(w.now)-1, isBoss=left===0;
- const meta=isBoss?`🏰 BOSS LEVEL! Beat it to finish ${esc(w.unitName)}`:`${esc(w.name)} · Level ${w.level} · ${left} level${left===1?'':'s'} to the BOSS 🏰`;
+ const meta=isBoss?pill('now','Boss level')+' Beat it to finish '+esc(w.unitName):pill('subj',w.name+' · Level '+w.level)+pill('prog',left+' level'+(left===1?'':'s')+' to the boss');
  const say=`Your next level: ${n[0]}.${n[1]?(/ Level \d+$/.test(n[1])?' A real '+n[1]+' skill.':' You will learn: '+n[1]+'.'):''} Tap Play to start!`;
- return `<div class="gm-goal" aria-label="Your next level"><div class="k"><span>⚡ YOUR NEXT LEVEL</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
+ return `<div class="gm-goal" aria-label="Your next level"><div class="k">${pill('now','Your next level')}${isPick?pill('now',"Today's pick"):''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">Read it to me<span class="ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="18.5"/><circle class="bar" cx="20" cy="20" r="18.5" stroke-dasharray="116.24" stroke-dashoffset="116.24"/></svg><span class="dot"><span class="tri"></span><span class="sq"></span></span></span></button></div></div>`; }
 /* ONE BUTTON, ONE JOB (HoS 2026-11-21, simplify step 3): 4 tabs (K-2: 3). Arcade, all lessons, skill tree, My Stuff and Pathfinder sit on
    ONE "More" page; Money opens from the money chip at the top (one door, not two). */
 function navOn(){ const t=GM.tab; return /^(games|lib|mine|more)$/.test(t)?'more':t==='subjects'?'map':t; }
-function navHTML(k2,left){ return GM.tab==='home'?'':`<button type="button" data-gmnav="home" class="gm-homebtn"><b aria-hidden="true">🏠</b>Home</button>`; }
+function navHTML(k2,left){ return ''; }   /* the HOME bar is gone (button system step 2): the house sits top left on each page (hud) */
 function navHTMLOld(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['more','🧺','More']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['me','🏆','Trophies'],['more','🧺','More']]; const on=navOn();
  return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${[on===x[0]?'on':'',GM.tap===x[0]&&Date.now()-(GM.tapAt||0)<450?'tap':''].filter(Boolean).join(' ')}"${on===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
 /* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
@@ -795,16 +817,16 @@ function missionsHTML(ws){ const P=plan(ws), wk=weekCounts(), pk=pick(ws), picks
  const toBoss=pk&&pk.now?pk.ids.length-pk.ids.indexOf(pk.now)-1:0;
  let rows='', live=null;
  P.rounds.forEach((r,i)=>{ const num=i+1;
-  if(r.won){ const lc=/^LEVELCHECK\./.test(String(r.id)), n=lc?['Level check passed: you already knew it','']:nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐',r.name||'']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">${P.list?'':'ROUND '+num+' · '}${esc(String(P.list&&r.name?r.name:(W[1]||'')).toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">${P.list?'DONE':'CLEARED'}<br>⭐⭐⭐</div></div>`; return; }
-  if(!r.w){ rows+=`<div class="gm-rd"><div class="n">${num}</div><div class="t">${esc(String(r.name||'').toUpperCase())}<small>Nothing left at your level today. Tell your rebbe!</small></div><div class="p">ASK</div></div>`; return; }
+  if(r.won){ const lc=/^LEVELCHECK\./.test(String(r.id)), n=lc?['Level check passed: you already knew it','']:nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐',r.name||'']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">${P.list?'':'ROUND '+num+' · '}${esc(String(P.list&&r.name?r.name:(W[1]||'')).toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">${pill('prog',P.list?'Done':'Cleared')}</div></div>`; return; }
+  if(!r.w){ rows+=`<div class="gm-rd"><div class="n">${num}</div><div class="t">${esc(String(r.name||'').toUpperCase())}<small>Nothing left at your level today. Tell your rebbe!</small></div><div class="p">${pill('now','Ask your rebbe')}</div></div>`; return; }
   const w=r.w, n=nm(w.now), isLive=!live; if(isLive) live=w;
-  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="${P.list?esc(r.name||w.name):'Round '+num+': '+esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">${P.list?esc(String(r.name||w.name).toUpperCase()):'ROUND '+num+' · '+esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?'YOUR<br>TURN!':'NEXT'}</div></button>`; });
- picks.forEach(p=>{ const n=nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id); rows+=`<button type="button" class="gm-rd rebbe" data-gm="play" data-id="${esc(p.id)}"><div class="n">📌</div><div class="t">FROM ${esc(String(p.by||'YOUR REBBE').toUpperCase())}<small>${esc(n)}</small></div><div class="p">PICKED<br>FOR YOU</div></button>`; });
- rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':P.list?'Finish your list → 🎮 Arcade opens + daily bonus ✓':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?'OPEN':'🔒'}</div></button>`:'';
- const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
+  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="${P.list?esc(r.name||w.name):'Round '+num+': '+esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">${P.list?esc(String(r.name||w.name).toUpperCase()):'ROUND '+num+' · '+esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?pill('now','Your turn'):pill('prog','Next')}</div></button>`; });
+ picks.forEach(p=>{ const n=nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id); rows+=`<button type="button" class="gm-rd rebbe" data-gm="play" data-id="${esc(p.id)}"><div class="n">📌</div><div class="t">FROM ${esc(String(p.by||'YOUR REBBE').toUpperCase())}<small>${esc(n)}</small></div><div class="p">${pill('now','Picked for you')}</div></button>`; });
+ rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':P.list?'Finish your list → 🎮 Arcade opens + daily bonus ✓':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?pill('prog','Open'):pill('lock','Locked')}</div></button>`:'';
+ const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal ${pill('prog',Math.min(ch.days||0,ch.need)+' of '+ch.need+' days this week')}${ch.paid?pill('prog','Opened'):''}</div>`:'';
  const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ ${P.list?'Next':'Play round '+(P.done+1)}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
  const TOT=P.total||ROUNDS, KICK=P.list?"TODAY'S LIST":'MY WORK TODAY';
- const head=P.open?`<div class="s">${KICK}</div><h1>All done! ✓</h1><small>${P.list?(P.rounds.length?'Your whole list is done today. Every extra level still counts!':'Nothing on your list today: every world is cleared!'):'All '+ROUNDS+' rounds cleared today. Every extra level still counts!'}</small>`:`<div class="s">${KICK}</div><h1>${P.rounds.length?P.done+' of '+TOT+' done':'All clear!'}</h1><small>${P.rounds.length?(P.list?(P.left?P.left+' more to go. Tap Next.':'Saving your work…'):'Round '+(P.done+1)+' is next. Tap Play.'):'No rounds today: every world is cleared!'}</small>`;
+ const head=P.open?`<div class="s">${KICK}</div><h1>All done!</h1><small>${P.list?(P.rounds.length?'Your whole list is done today. Every extra level still counts!':'Nothing on your list today: every world is cleared!'):'All '+ROUNDS+' rounds cleared today. Every extra level still counts!'}</small>`:`<div class="s">${KICK}</div><h1>${P.rounds.length?P.done+' of '+TOT+' done':'All clear!'}</h1><small>${P.rounds.length?(P.list?(P.left?P.left+' more to go. Tap Next.':'Saving your work…'):'Round '+(P.done+1)+' is next. Tap Play.'):'No rounds today: every world is cleared!'}</small>`;
  return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>${chest}${cta}`; }
 function arcadeHTML(ws){ const P=plan(ws);
  return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>${P.list?`Finish ${P.left} more thing${P.left===1?'':'s'} on today's list to open the Arcade!`:`Clear ${P.left} more round${P.left===1?'':'s'} of your work to open the Arcade!`}</p></div>
@@ -821,9 +843,9 @@ function growthHTML(ws){ const n=steps(), R=rankOf(n), wk=weekCounts(), s=(A.st&
  const ladder=RANKS.map(r=>`<span class="${n>=r[0]?'got':''}${r===R.r?' cur':''}" title="${r[2]}: ${r[0]} steps">${r[1]}</span>`).join('');
  const L=learnedList(), learned=L.length?L.map(id=>{ const x=nm(id), W=WORLDS[subjOfId(id)]||['⭐','']; return `<div><i>${W[0]}</i><span>${esc(x[0])}${x[1]?`<small>${/ Level \d+$/.test(x[1])?esc(x[1]):'I learned: '+esc(x[1])}</small>`:''}</span></div>`; }).join(''):'<div><i>🌱</i><span>Nothing yet this week<small>Clear a level and it shows up here!</small></span></div>';
  let bdg=''; try{ if(typeof BADGES!=='undefined'&&A.st&&A.st.badges) bdg=BADGES.map(b=>`<div class="${A.st.badges.includes(b[0])?'':'no'}" title="${esc(b[3])}"><b>${b[1]}</b>${esc(b[2])}</div>`).join(''); }catch(e){ bdg=''; }
- return `<div class="gm-rk"><div class="md">${R.r[1]}</div><h1>${R.r[2]}</h1><small>⚡ ${(n*100).toLocaleString()} XP · ${n} step${n===1?'':'s'} mastered${R.nx?` · ${R.nx[0]-n} to ${R.nx[2]}`:' · TOP RANK!'}</small><div class="gm-ladder">${ladder}</div></div>
+ return `<div class="gm-rk"><div class="md">${R.r[1]}</div><h1>${R.r[2]}</h1>${window.TLK?`<div class="gm-rkp">${TLK.pill('rank','⚡ '+(n*100).toLocaleString()+' XP')}${TLK.pill('prog',n+' step'+(n===1?'':'s')+' mastered')}${R.nx?TLK.pill('prog',(R.nx[0]-n)+' to '+R.nx[2]):TLK.pill('rank','Top rank!')}</div>`:`<small>⚡ ${(n*100).toLocaleString()} XP · ${n} step${n===1?'':'s'} mastered${R.nx?` · ${R.nx[0]-n} to ${R.nx[2]}`:' · TOP RANK!'}</small>`}<div class="gm-ladder">${ladder}</div></div>
  <div class="gm-cheer">${cheer}</div>
- <div class="gm-stat"><div><small>📈 THIS WEEK</small><b>${wk.w}</b></div><div><small>⏪ LAST WEEK</small><b style="color:#A9A6E8">${wk.p}</b></div><div><small>🔥 DAYS IN A ROW</small><b style="color:#FFB86B">${s}</b></div><div><small>🏰 BOSSES BEATEN</small><b style="color:#FF8AB0">${bb}</b></div></div>
+ ${window.TLK?`<div class="gm-stk">${TLK.box('prog','This week',wk.w)}${TLK.box('prog','Last week',wk.p)}${TLK.box('rank','Days in a row',s)}${TLK.box('rank','Bosses beaten',bb)}</div>`:`<div class="gm-stat"><div><small>📈 THIS WEEK</small><b>${wk.w}</b></div><div><small>⏪ LAST WEEK</small><b style="color:#A9A6E8">${wk.p}</b></div><div><small>🔥 DAYS IN A ROW</small><b style="color:#FFB86B">${s}</b></div><div><small>🏰 BOSSES BEATEN</small><b style="color:#FF8AB0">${bb}</b></div></div>`}
  <div class="gm-sec">🧠 WHAT I LEARNED THIS WEEK</div><div class="gm-learned">${learned}</div>
  ${bdg?`<div class="gm-sec">🏅 MY BADGES</div><div class="gm-bdg">${bdg}</div>`:''}`; }
 /* ===== WIN MOMENTS: right after he masters a level and comes back to the map (his success only, once each).
@@ -866,16 +888,16 @@ function dayWord(at){ const d=new Date(at), t=new Date(), y=new Date(t.getFullYe
  return d.toDateString()===t.toDateString()?'Today':d.toDateString()===y.toDateString()?'Yesterday':d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'}); }
 function moneyHTML(){ const L=((A.st&&A.st.ledger)||[]).filter(x=>x&&x.at), d0=new Date(), td=d0.toDateString(), wk0=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate()-d0.getDay()).getTime();
  const today=L.filter(x=>new Date(x.at).toDateString()===td&&x.amt>0).reduce((a,x)=>a+Number(x.amt),0), week=L.filter(x=>x.at>=wk0&&x.amt>0).reduce((a,x)=>a+Number(x.amt),0);
- const dow=d0.getDay(), pay=dow===4||dow===5?'🎉 It\'s PAYDAY! Your week\'s money is ready to use.':'📅 Payday is Thursday and Friday.';
- const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="mm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
+ const dow=d0.getDay(), pay=dow===4||dow===5?pill('now','Payday today')+' Your week\'s money is ready to use.':pill('money','Payday is Thursday and Friday');
+ const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="mm-chest">🎁 Treasure chest: daily goal ${pill('prog',Math.min(ch.days||0,ch.need)+' of '+ch.need+' days this week')}${ch.paid?pill('prog','Opened'):''}</div>`:'';
  const bal=Number(A.st&&A.st.balance)||0, I=storeInfo(), S=(A.st&&A.st.store)||{}, gi=S.goal&&I&&(I.items||[]).find(x=>x.id===S.goal);
  const save=gi?`<span class="d">My goal: <b>${esc(gi.emoji||'')} ${esc(gi.name)}</b><br>${usd(Math.min(bal,gi.cents/100))} of ${usd(gi.cents/100)}${bal>=gi.cents/100?' · you can buy it! 🎉':''}</span><span class="bar"><i style="width:${Math.min(100,Math.round(bal/(gi.cents/100)*100))}%"></i></span><span class="go">See my goal ›</span>`
   :S.goal?`<span class="d">You have a goal. Tap to see how close you are.</span><span class="go">See my goal ›</span>`:`<span class="d">Pick something you want, and watch your money grow toward it.</span><span class="go">Pick a goal ›</span>`;
  const all=GM.mstory==='all', run0=bal; let run=run0; const rowsAll=L.map(x=>{ const r={x,after:run}; run-=Number(x.amt)||0; return r; });
- const rows=(all?rowsAll:rowsAll.filter(r=>r.x.at>=wk0)).slice(0,all?60:30).map(r=>`<div class="r"><small>${esc(dayWord(r.x.at))}</small><span>${esc(whyText(r.x.why))}</span><b class="${r.x.amt<0?'m':'p'}">${r.x.amt<0?'−':'+'}${usd(r.x.amt)}</b><em>${usd(r.after)}</em></div>`).join('')
+ const rows=(all?rowsAll:rowsAll.filter(r=>r.x.at>=wk0)).slice(0,all?60:30).map(r=>`<div class="r"><small>${esc(dayWord(r.x.at))}</small><span>${esc(whyText(r.x.why))}</span><b class="${r.x.amt<0?'m':'p'}">${pill('money',(r.x.amt<0?'−':'+')+usd(r.x.amt))}</b><em>${usd(r.after)}</em></div>`).join('')
   ||`<div class="r none">${all?'💵 Nothing yet. Clear a level to earn your first money!':'Nothing this week yet. Clear a level to earn money!'}</div>`;
  const owned=(I&&(I.items||[]).filter(x=>(S.owned||[]).indexOf(x.id)>=0||(I.owned&&I.owned[x.id])).length)||((S.owned||[]).length), waiting=I&&(I.orders||[]).filter(o=>o.status==='waiting').length;
- return `<div class="mm"><div class="mm-bal"><div><div class="k">💰 MY MONEY</div><b>${money()}</b><div class="sub">${today>0?'+'+usd(today)+' today · ':''}${week>0?'+'+usd(week)+' this week':'Earned by mastering skills'}</div></div><div class="pay">${pay}</div></div>${chest}
+ return `<div class="mm"><div class="mm-bal">${box('money','My money',money())}<div class="sub">${today>0?pill('money','+'+usd(today)+' today'):''}${week>0?pill('money','+'+usd(week)+' this week'):'Earned by mastering skills'}</div><div class="mm-pay">${pay}</div></div>${chest}
  <h2 class="mm-h">What can I do with my money?</h2>
  <div class="mm-four">
   <button type="button" class="mm-c spend" data-st="open" data-t="fun"><span class="i">🛍️</span><span class="t">Spend</span><span class="d">Fun upgrades for the app, or a real prize your rebbe hands you.</span><span class="go">Open the Store ›</span></button>
@@ -943,8 +965,11 @@ function stuffHTML(){ const M=document.querySelector('.hlx-mine'); if(!M) return
  return `<div class="gm-room-h" style="--a:#00C46A;--b:#00B3FF"><div class="s">🎒 MY STUFF</div><h1>My Stuff</h1><small>Your bank, trophies, Torah passport, Shabbos page and more.</small></div><div class="gm-tiles">${tiles}</div>${mixH}${qH}${nH}`; }
 function room(t){ try{ SND.tap(); }catch(e){} const map={bank:['.bank','🏦 My bank'],badges:['.badgepanel','🏅 My badges'],map:['.journey','🗺️ My journey map'],week:['.p3week','🚀 Look how far you\'ve come']}, m=map[t]; if(!m) return;
  let html=''; try{ const tpl=document.createElement('div'); tpl.innerHTML=(window.HP&&HP._vHub?HP._vHub():vHub()); const e=tpl.querySelector(m[0]); html=e?e.outerHTML:''; }catch(e){ html=''; }
+ /* button system (HoS 2026-11-23): in these old rooms the information is kit labels (one color per meaning) and the buttons are kit buttons, words only */
+ if(window.TLK&&html){ html=html.replace(/class="bpc"/g,'class="bpc tlk-pill tlk-prog"').replace(/class="rew"/g,'class="rew tlk-pill tlk-money"').replace(/class="earned"/g,'class="earned tlk-pill tlk-prog"').replace(/class="tier"/g,'class="tier tlk-pill tlk-rank"')
+   .replace(/<button class="btn" data-act="p3replay">[^<]*<\/button>/,TLK.quiet('Play my week','data-act="p3replay"')).replace(/<button class="btn[^"]*p3shab" data-act="p3shab">[^<]*<\/button>/,TLK.main('My Shabbos page','data-act="p3shab"','tlk-wide')); }
  let r=document.getElementById('gm-room'); if(!r){ r=document.createElement('div'); r.id='gm-room'; r.setAttribute('role','dialog'); document.body.appendChild(r); }
- r.innerHTML=`<div class="hd"><b>${m[1]}</b><button type="button" data-gm="roomx">✕ Close</button></div><div class="bd">${html||'<p>Nothing here yet.</p>'}</div>`; }
+ r.innerHTML=`<div class="hd"><b>${m[1]}</b>${window.TLK?TLK.x('data-gm="roomx"',''):'<button type="button" data-gm="roomx" aria-label="Close">✕</button>'}</div><div class="bd">${html||'<p>Nothing here yet.</p>'}</div>`; }
 function noMapHTML(){ const lv=document.querySelector('#app [data-hp=levels]'), lg=document.querySelector('#app [data-hp=check]');
  return `<div class="gm-none"><div class="i">🗺️</div><h1>Your map is almost ready!</h1><p>Your rebbe or teacher sets your level. Until then, find your level or pick any lesson.</p>${lv?`<button type="button" class="gm-mini"${px(lv)}>🧭 Find my levels</button> `:''}<button type="button" class="gm-mini" data-gm="lib">📚 All my lessons</button></div>`; }
 /* ===== CELEBRATIONS: one short burst, only when he wins (never on its own). Reduced motion: no movement, same words. */
@@ -994,7 +1019,7 @@ function sync(){
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
  const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>
- <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${esc(cur.name)} · Level ${cur.level}${cur.isK?'':' unit'}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?l+' TO 🏰':'🏰 BOSS NOW!'; })():'✓ CLEARED'}</div>${GM.view==='tree'?'<button type="button" class="gm-chg" data-gm="tree">🗺️ Back to my path</button>':ws.length>1?'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>':''}</div>
+ <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${pill('subj',cur.name+' · Level '+cur.level)}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?pill('prog',l+' to the boss'):pill('now','Boss now!'); })():pill('prog','Cleared')}</div>${GM.view==='tree'?(window.TLK?TLK.quiet('Back to my path','data-gm="tree"','tlk-small'):'<button type="button" class="gm-chg" data-gm="tree">Back to my path</button>'):ws.length>1?(window.TLK?TLK.quiet('Change subject','data-gmnav="subjects"','tlk-small'):'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>'):''}</div>
  ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play gm-play2" data-gm="play" data-id="${esc(cur.now)}">▶ Play<small>${esc(nm(cur.now)[0])}</small></button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
@@ -1131,6 +1156,9 @@ let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.p
  const st2=document.createElement('style'); st2.id='gmw-css'; st2.textContent=`
 .overlay:has(.gmw){background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%)!important;backdrop-filter:none!important}
 .ocard:has(.gmw){background:transparent!important;box-shadow:none!important;border:0!important;max-width:560px!important;width:100%!important;padding:0!important}
+.ocard{position:relative}
+body:has(.overlay,#hlx-shelf,#lg-games,#gm-room,#tlstore,.hpdraw,.kkov,.tq-ov,.tt-ov,#bl-ov,.rpzoom,#tr-ov,#mdx.on) :is(#pr-av,#bbx-door,#tlmenu,#clab-door){visibility:hidden!important}
+.ocard:has(>.tlk-x) .oband{padding-left:24px!important;padding-right:80px!important;box-sizing:border-box}
 .ocard:has(.gmw) .oband{display:none}
 .gmw{color:#fff;text-align:center;padding:8px 14px 14px;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
 .gmw .k{font-size:13px;font-weight:900;letter-spacing:.16em;color:#FFE259}
@@ -1162,7 +1190,7 @@ body #gm .gm-l small{color:#5B5FA8}body #gm .gm-l .k{color:#C2410C}body #gm .gm-
 body #gm .gm-l.now{background:#FFFBEA;border:3px solid #FFB800}
 body #gm .gm-unit{background:#fff;color:#1E1B4B;border-color:#FFD84D}body #gm .gm-unit small{color:#5B5FA8}body #gm .gm-unit .left{color:#C2410C}
 body #gm .gm-more{background:#fff;color:#047857}
-#gm .gm-chg{flex:none;border:0;background:none;color:#4338CA;font:800 14px/1.2 inherit;font-family:inherit;text-decoration:underline;text-underline-offset:3px;padding:10px 4px;min-height:44px;cursor:pointer;white-space:nowrap}
+#gm .gm-chg{flex:none;border:0;background:none;color:#4338CA;font-weight:800;font-size:14px;line-height:1.2;font-family:inherit;text-decoration:underline;text-underline-offset:3px;padding:10px 4px;min-height:44px;cursor:pointer;white-space:nowrap}
 #gm .gm-pg{margin-top:14px;text-align:center;color:#fff}
 #gm .gm-pg h1{margin:0;font:900 italic 34px/1.05 var(--display,'Rubik'),'Inter',sans-serif;text-transform:uppercase;text-shadow:0 3px 0 rgba(43,20,120,.35)}
 #gm .gm-why{margin:6px 0 0;font-weight:800;font-size:16px;color:#F4F2FF}
@@ -1184,6 +1212,10 @@ body #gm .gm-more{background:#fff;color:#047857}
 #gm .pr-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
 #gm .pr-boxes .tlk-box{padding:8px 4px}#gm .pr-boxes .tlk-box small{font-size:10px;letter-spacing:.03em}
 #gm .pr-sec{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:22px 0 8px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4C4A7A}
+#gm .pr-tour{width:100%;padding:14px;gap:12px}#gm .pr-tprev{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;pointer-events:none}
+#gm .pr-tc{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;align-content:center;min-height:96px;padding:10px 8px;border-radius:14px;background:#F5F3FF;text-align:center}
+#gm .pr-tc small{flex-basis:100%;font-size:12px;font-weight:700;color:#4B4778}#gm .pr-tc .tlk{box-shadow:none;cursor:inherit}#gm .pr-tc .tlk-pill{font-size:12px;padding:3px 7px}
+#gm .pr-tgo{display:grid;gap:2px}#gm .pr-tgo b{font-size:19px}#gm .pr-tgo small{font-size:14px;color:#4B4778}
 #gm .pr-sec .tlk-pill{text-transform:none;letter-spacing:0;font-size:13px}
 #gm .pr-me .pr-sec{align-self:flex-start;margin:6px 0 0}
 #gm .pr-set{display:flex;align-items:center;gap:8px;width:100%;justify-content:space-between;font-weight:700}
@@ -1219,6 +1251,26 @@ body #gm .gm-more{background:#fff;color:#047857}
 #gm .gm-ht .ic .pr-tav{display:grid;place-items:center;width:1.5em;height:1.5em;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.45);font-size:.82em;line-height:1}
 @media (max-width:860px){#gm .pr-cols{grid-template-columns:1fr}#gm .pr-tiles{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){#gm .pr-shelves,#gm .pr-two{grid-template-columns:1fr}#gm .pr-li{flex-wrap:wrap}}
+/* INFORMATION ON THE KIT (button system step 5): the labels on the home tiles, My map, My work and the money page are kit pills and boxes.
+   Their holders are flat (no shadow, no outline), so nothing a boy only reads looks like something to tap. The money by the house is a pill, not a button. */
+#gm .gm-hud .gm-mny{display:inline-flex;flex:none}#gm .gm-hud .gm-mny .tlk-pill{font-size:16px;padding:7px 12px}
+body #gm .gm-ht .bdg,body #gm .gm-ht.work.now .bdg{background:none;box-shadow:none;padding:0;border-radius:8px;letter-spacing:0;display:flex}
+#gm .gm-ht .bdg .tlk-pill{font-size:14px;padding:6px 10px}
+#gm .gm-ht .bot small .tlk-pill{font-size:15px;white-space:normal}
+#gm .gm-hi p .tlk-pill{font-size:17px;padding:5px 12px}
+#gm .gm-unit small .tlk-pill{margin-top:4px}
+#gm .gm-goal .k{justify-content:flex-start;gap:8px;flex-wrap:wrap;letter-spacing:.06em}
+#gm .gm-goal .m{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#gm .gm-rd .p .tlk-pill{white-space:nowrap}
+body #gm .gm-chest,body #gm .mm-chest{background:none!important;border:0!important;padding:4px 0!important;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+body #gm .mm-bal{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;color:#1E1B4B!important;align-items:center;gap:10px}
+#gm .mm-bal .tlk-box{padding:12px 22px;text-align:left}#gm .mm-bal .tlk-box b{font-size:40px;line-height:1.05}
+#gm .mm-bal .sub{display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:#4B4880!important;margin:0}
+#gm .mm-bal .mm-pay{margin-left:auto;color:#4B4880;font-size:14px;font-weight:800;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#gm .mm-bal .tlk-box b{color:inherit;text-shadow:none;display:block}#gm .mm-bal .sub{font-size:14px;font-weight:800}
+#gm .gm-goal .k .tlk-pill{letter-spacing:.04em}
+@media (max-width:700px){#gm .mm-bal .mm-pay{margin-left:0}#gm .mm-bal .tlk-box{justify-self:start;width:max-content}}
+#gm .mm-story .r b .tlk-pill{font-size:15px}
 /* his picture by Workbook (outside #gm, like Workbook): round, the kit's floating look; Workbook steps left to make room */
 #pr-av{position:fixed;right:52px;top:calc(env(safe-area-inset-top) + 11px);z-index:60;width:44px;height:44px;padding:0;border-radius:50%;border:1.5px solid #E6E2F7;background:#fff;box-shadow:0 8px 20px rgba(30,27,75,.14),0 1px 3px rgba(30,27,75,.10);cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent;transition:box-shadow .15s,transform .12s}
 #pr-av:active{box-shadow:0 1px 3px rgba(30,27,75,.14);transform:translateY(2px)}#pr-av:focus-visible{outline:3px solid #FDE047;outline-offset:3px}
@@ -1404,5 +1456,91 @@ body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 5
   if(b.dataset.gmw==='play'){ A.overlay=null; render(); setTimeout(()=>{ const p=document.querySelector('#gm .gm-goal .gm-play'); if(p) p.click(); },60); } },true);
 })();
 try{ sync(); }catch(e){ console.error('GameMap',e); }
+})();
+/* BUTTON TOUR (HoS 2026-11-26, plan docs/BUTTON-TUTORIAL-PLAN.md): simple cards on the REAL home. Each card lights up one button or label,
+   with a bubble under it saying what it does and when to tap it, and Next. Never plays by itself: the round lightbulb beside Sign out
+   on the home and "How the buttons work" in My profile open it. K-3: a short tour (6 cards) that reads each bubble out loud by itself;
+   grade 4 and up: 12 cards with a Read it to me tool. Every button and label in it comes from the kit (window.TLK). No money, no rewards. */
+(function(){
+if(window.TLTOUR) return;
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const grade=()=>{ try{ return window.TL_MAP&&TL_MAP.grade; }catch(e){ return null; } };
+const Q=sel=>{ const e=document.querySelector(sel); if(!e) return null; const r=e.getBoundingClientRect(); return r.width>0&&r.height>0?e:null; };
+function cards(){ const T=window.TLK, y=T.young(grade());
+ const all={
+  main:{find:null,show:T.main('Start',''),name:'Gold button',what:'Starts, or goes on to the next part.',when:'Most screens have one, at the bottom.'},
+  quiet:{find:'#gm .gm-out [data-gm="pfout"]',show:T.quiet('Not now',''),name:'White button',what:'Other choices, like Not now or Sign out.',when:'Often next to the gold button.'},
+  x:{find:null,show:T.x(''),name:'Round ✕',what:'Closes a pop-up. In a lesson, it leaves the lesson.',when:'Top right of a pop-up, top left in a lesson.'},
+  home:{find:null,show:T.home('','',y),name:'House',what:'Goes back to your home page.',when:'Top left of a page.'},
+  back:{find:null,show:T.back('','',y),name:'Back',what:'Goes back to the page you came from.',when:'Top left, before the house.'},
+  tool:{find:'#gm .gm-out [data-gm="pftour"]',show:T.tool('🔊','Read it to me',''),name:'Purple circle',what:'A helper: it reads to you, plays music or shows you how.',when:'Next to what it helps with.'},
+  money:{find:'#gm .gm-hts .tlk-money',show:T.pill('money','$5.00'),name:'Green = money',what:'Shows money.',when:'A label is only to read. It is not a button.'},
+  prog:{find:'#gm .gm-hi .tlk-prog,#gm .gm-hts .tlk-prog',show:T.pill('prog','2 of 3 done'),name:'Blue = how far you got',what:'Shows how much you finished.',when:'A label is only to read. It is not a button.'},
+  now:{find:'#gm .gm-hts .tlk-now',show:T.pill('now','Do this now'),name:'Yellow = do this now',what:'Shows what to do next.',when:'A label is only to read. It is not a button.'},
+  rank:{find:'#gm .gm-hts .tlk-rank',show:T.pill('rank','Level 5'),name:'Purple = your rank',what:'Shows your rank, levels and trophies.',when:'A label is only to read. It is not a button.'},
+  lock:{find:'#gm .gm-hts .tlk-lock',show:T.pill('lock','Locked'),name:'Gray = not open yet',what:'Shows what is still locked.',when:'A label is only to read. It is not a button.'},
+  subj:{find:'#gm .gm-hts .tlk-subj',show:T.pill('subj','Math'),name:'Pink = the subject',what:'Shows which subject it is.',when:'A label is only to read. It is not a button.'},
+  colors:{find:null,show:['money','prog','now','rank','lock','subj'].map((k,i)=>T.pill(k,['Money','How far','Do now','Rank','Locked','Subject'][i])).join(' '),name:'Colors are labels',what:'Green money, blue how far, yellow do now, purple rank, gray locked, pink subject.',when:'Labels are only to read. They are not buttons.'} };
+ return (y?['main','quiet','x','home','tool','colors']:['main','quiet','x','home','back','tool','money','prog','now','rank','lock','subj']).map(k=>all[k]); }
+const S={i:0,list:null,el:null};
+function say(t){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.rate=.95; speechSynthesis.speak(u); }catch(e){} }
+function words(c){ return c.name.replace(/=/,'means')+'. '+c.what+' '+c.when; }
+function draw(){ const T=window.TLK, c=S.list[S.i], n=S.list.length, y=T.young(grade()), last=S.i===n-1;
+ const tgt=c.find?Q(c.find):null; if(tgt) try{ tgt.scrollIntoView({block:'center',behavior:'auto'}); }catch(e){}
+ const r=tgt?tgt.getBoundingClientRect():null, pad=8;
+ S.el.innerHTML=(r?`<div class="tlt-ring" style="left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;border-radius:${getComputedStyle(tgt).borderRadius==='50%'?'50%':(parseFloat(getComputedStyle(tgt).borderRadius)||10)+pad+'px'}"></div>`:'<div class="tlt-dim"></div>')+
+  `<div class="tlt-bub" role="dialog" aria-modal="true" aria-label="How the buttons work">${T.x('data-tlt="x"','tr')}
+   <div class="tlt-top">${T.pill('prog',(S.i+1)+' of '+n)}${y?'':T.tool('🔊','Read it to me','data-tlt="say"')}</div>
+   <div class="tlt-show" aria-hidden="true">${c.show}</div>
+   <h2>${E(c.name)}</h2><p>${E(c.what)}</p><p class="tlt-when">${E(c.when)}</p>
+   <div class="tlt-act">${S.i>0&&!y?T.quiet(T.WORDS.back,'data-tlt="back"'):''}${T.main(last?'Done':T.WORDS.next,'data-tlt="'+(last?'x':'next')+'"')}</div></div>`;
+ const b=S.el.querySelector('.tlt-bub'), bw=Math.min(380,innerWidth-24), bh=b.offsetHeight;
+ let top, left; if(r){ top=r.bottom+pad+14; if(top+bh>innerHeight-8) top=Math.max(8,r.top-pad-14-bh); left=Math.min(Math.max(12,r.left+r.width/2-bw/2),innerWidth-bw-12); b.classList.add(top>r.top?'tlt-under':'tlt-over'); b.style.setProperty('--ax',Math.max(20,Math.min(bw-20,r.left+r.width/2-left))+'px'); }
+ else { top=Math.max(12,(innerHeight-bh)/2); left=(innerWidth-bw)/2; }
+ b.style.width=bw+'px'; b.style.top=top+'px'; b.style.left=left+'px';
+ const g=b.querySelector('.tlk-main'); if(g) setTimeout(()=>{ try{ g.focus({preventScroll:true}); }catch(e){} },30);
+ if(y) say(words(c)); }
+function css(){ if(document.getElementById('tlt-css')) return; const s=document.createElement('style'); s.id='tlt-css'; s.textContent=`
+#tl-tour{position:fixed;inset:0;z-index:2147483300;font-family:inherit}
+#tl-tour .tlt-dim{position:absolute;inset:0;background:rgba(15,12,40,.55)}
+#tl-tour .tlt-ring{position:absolute;border-radius:18px;box-shadow:0 0 0 4px #FDE047,0 0 0 9999px rgba(15,12,40,.55);pointer-events:none;transition:all .2s}
+#tl-tour .tlt-bub{position:absolute;box-sizing:border-box;background:#fff;color:#1E1B4B;border-radius:20px;padding:18px 18px 16px;box-shadow:0 18px 40px rgba(15,12,40,.35)}
+#tl-tour .tlt-bub.tlt-under::before,#tl-tour .tlt-bub.tlt-over::after{content:"";position:absolute;left:var(--ax);margin-left:-11px;width:0;height:0;border:11px solid transparent}
+#tl-tour .tlt-bub.tlt-under::before{top:-21px;border-bottom-color:#fff;border-top:0;border-bottom-width:12px;top:-12px}#tl-tour .tlt-bub.tlt-over::after{bottom:-12px;border-top-color:#fff;border-bottom:0;border-top-width:12px}
+#tl-tour .tlt-top{display:flex;align-items:center;gap:10px;margin-right:52px}
+#tl-tour .tlt-show{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 4px;pointer-events:none}
+#tl-tour h2{margin:8px 0 4px;font-size:22px}#tl-tour p{margin:0 0 4px;font-size:17px;line-height:1.35}#tl-tour .tlt-when{font-weight:700}
+#tl-tour .tlt-act{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+@media (prefers-reduced-motion:reduce){#tl-tour .tlt-ring{transition:none}}
+#tl-tourhint{position:fixed;z-index:2147483200;box-sizing:border-box;background:#fff;color:#1E1B4B;border-radius:16px;padding:14px 56px 12px 16px;box-shadow:0 14px 34px rgba(15,12,40,.28);font-size:16px;line-height:1.35}
+#tl-tourhint::before{content:"";position:absolute;top:-12px;left:var(--ax);margin-left:-11px;width:0;height:0;border:11px solid transparent;border-top:0;border-bottom:12px solid #fff}
+#tl-tourhint p{margin:0 0 4px}`; document.head.appendChild(s); }
+function close(){ try{ speechSynthesis.cancel(); }catch(e){} if(S.el) S.el.remove(); S.el=null; removeEventListener('resize',draw); }
+function open(){ if(!window.TLK) return; close(); css(); S.list=cards(); S.i=0; S.el=document.createElement('div'); S.el.id='tl-tour'; document.body.appendChild(S.el);
+ S.el.addEventListener('click',e=>{ e.stopPropagation(); const b=e.target.closest('[data-tlt]'); if(!b) return; const a=b.dataset.tlt;
+  if(a==='x') return close(); if(a==='say') return say(words(S.list[S.i])); if(a==='next'&&S.i<S.list.length-1){ S.i++; draw(); } if(a==='back'&&S.i>0){ S.i--; draw(); } });
+ addEventListener('resize',draw); draw(); }
+document.addEventListener('keydown',e=>{ if(S.el&&e.key==='Escape') close(); },true);
+/* THE HINT (HoS 2026-11-26): for his first 10 sign-ins, a small pop-up by the lightbulb says what it is and that the tour is also in My profile.
+   Once per sign-in, counted per boy on this device; it goes away with its round X, when he taps the lightbulb, or when he leaves the home. */
+function sid(){ try{ return A.st&&A.st.id&&A.view!=='signin'?String(A.st.id):''; }catch(e){ return ''; } }
+const LS={ get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
+let hintFor='', hintEl=null;
+function hideHint(){ if(hintEl) hintEl.remove(); hintEl=null; }
+function hint(){ const id=sid(); if(!id){ hintFor=''; hideHint(); return; }
+ const bulb=Q('#gm .gm-out [data-gm="pftour"]');
+ if(hintEl){ if(!bulb||S.el||document.querySelector('.overlay,#gm-room,#mdx.on,#tlstore')) hideHint(); return; }
+ const gr=grade(); if(gr!=null&&gr!==''&&Number(gr)<=1) return;   /* K-1: games only, no pop-ups */
+ if(hintFor===id||!bulb||S.el||document.querySelector('.overlay,#gm-room,#mdx.on,#tlstore')) return;
+ hintFor=id; const k='tl-tourhint-'+id, n=+(LS.get(k)||0); if(n>=10) return; LS.set(k,String(n+1)); css();
+ const T=window.TLK, r=bulb.getBoundingClientRect(), w=Math.min(300,innerWidth-24);
+ hintEl=document.createElement('div'); hintEl.id='tl-tourhint'; hintEl.setAttribute('role','dialog'); hintEl.setAttribute('aria-label','The lightbulb');
+ hintEl.innerHTML=T.x('data-th="x"','tr')+'<p><b>💡 This is the lightbulb.</b></p><p>Tap it to learn how the buttons work.</p><p>You can also find it in <b>My profile</b>.</p>';
+ hintEl.style.width=w+'px'; hintEl.style.top=(r.bottom+14)+'px'; hintEl.style.left=Math.min(Math.max(12,r.left+r.width/2-w/2),innerWidth-w-12)+'px';
+ hintEl.style.setProperty('--ax',Math.max(22,Math.min(w-22,r.left+r.width/2-parseFloat(hintEl.style.left)))+'px');
+ document.body.appendChild(hintEl); hintEl.addEventListener('click',e=>{ if(e.target.closest('[data-th="x"]')){ e.stopPropagation(); hideHint(); } }); }
+document.addEventListener('click',e=>{ if(hintEl&&e.target.closest&&e.target.closest('[data-gm="pftour"]')) hideHint(); },true);
+(function tick(){ try{ hint(); }catch(e){} setTimeout(tick,2500); })();   /* one cheap look every 2.5 s, nothing else */
+window.TLTOUR={open,close,cards,hint};
 })();
 </script>

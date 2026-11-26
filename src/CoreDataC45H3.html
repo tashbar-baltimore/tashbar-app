@@ -1,0 +1,486 @@
+<script>
+/* CoreDataC45H3.html: Core Growth job C45 (helper piece: fluency passages, Grade 4), lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md).
+   Keep this file under 150 KB. No double slash in this file (HtmlService rule).
+   "Read It 3 Times" lessons: each one opens a fluency passage from the content store (texts/C45/C45.FL4.*) with the "read"
+   kind: read 1 = listen to the Reader's voice and follow the lit words, read 2 = read along with it, read 3 = read it alone, out loud
+   (no recording and no timers, HoS 2026-11-24). Then hands-on work on one fluency skill (end marks, phrasing, character voices, stress,
+   pace, poems, self-correcting) on the same passage. Show me checks the skill on a different, cold passage (PASS, c45f_ keys).
+   Plan and minutes: docs/core-growth/C45H-fluency.md. Cast: the Glen Avenue Crew (docs/core-growth/C45-map.md, section 5). */
+(function () {
+  var READ3 = 'Read it 3 times. 1: tap 🔊 and follow the lit words. 2: read along with the voice. 3: read it alone, out loud. Then tap Next.';
+  var P = {
+c45f_cloudjar: { title: "A Cloud in a Jar", text: "Watch carefully. First, I pour a little hot water into this glass jar. Just a little, about two inches.\nSecond, I put a metal plate on top of the jar. And on the plate, I put ice. Lots of ice.\nNow, here is the secret ingredient. I light a match, blow it out, and drop the smoke into the jar. Quickly! Cover it again.\nLook! Do you see it?" },
+    c45f_icecream: { title: "Ice Cream in a Bag", text: "Today, boys, we make ice cream with no freezer. First, pour one cup of milk and a spoon of sugar into a small bag. Seal it tight! Second, fill a big bag with ice and six spoons of salt. Third, put the small bag inside the big one. Now shake. Shake hard, for five whole minutes. Feel it? It's getting thick!" },
+    c45f_thunder: { title: "Counting the Thunder", text: "\"Now count!\" said Abba. \"One, two, three,\nfour, five...\" and then, so suddenly,\na rumble rolled across the town,\na giant's drum, a growling sound.\n\"Five seconds,\" Abba said. \"You see?\nThe storm is one mile off, maybe.\"" },
+    c45f_hail: { title: "Hail on the Sukkah", text: "Tap, tap, tap, the hail came down,\nlike marbles on the sukkah's crown.\n\"Inside!\" called Zeidy. \"Bring the plate!\"\nWe grabbed the challah. \"Wait! Wait! Wait!\"\nThen from the window, safe and dry,\nwe watched the white stones bounce and fly." },
+    c45f_snowcall: { title: "The Snow Day Phone Call", text: "RABBI FELDMAN: Tell them three things. One: no yeshiva today. Two: stay off the roads. Three: we will learn on the phone at ten o'clock.\nAVRUMI: Learn on the phone? On a snow day?\nABBA: Now go call the Golds. And speak slowly and clearly!\nTZVI HIRSCH: Hello? Gold's Bakery and Gold family. We are closed." },
+    c45f_bus: { title: "The Late Bus (a play)", text: "RABBI ROTH: Boys, listen. The bus is stuck in the snow. Here is the plan. One: wait inside the shul. Two: call your parents. Three: stay together. Four: nobody walks home alone.\nSHIMMY: Inside the shul? For how long?\nRABBI ROTH: Until a parent comes. Not one minute less.\nSHIMMY: Then I'm calling my Zeidy. He drives a truck!" },
+    c45f_trail: { title: "Rules of the Trail", text: "So here are my four rules of the trail.\nRule one: stay together. Nobody walks ahead of the leader. Nobody falls behind the counselor.\nRule three: carry water, and drink it. Not when you are thirsty. Before you are thirsty!\nRule four, and listen carefully, because this one is the most important: if you are lost, stop. Do not run. Do not wander." },
+    c45f_pool: { title: "Pool Rules", text: "Listen up, boys! Three pool rules.\nRule one: walk, don't run. The deck is wet and slippery.\nRule two: swim only where the lifeguard can see you.\nRule three, the big one: if you hear my whistle, stop and look at me. Right away. Not in a minute. Right away!\nOkay? In you go!" },
+    c45f_campfire: { title: "Campfire Night", text: "The sun goes down behind the hill.\nThe lake is dark, the air is still.\nA crackle, then a pop, a spark!\nThe flames leap up against the dark.\nWe sing a niggun, soft and low,\nthat rises with the embers' glow.\nAt last the fire is ash and gray." },
+    c45f_lakepoem: { title: "Morning on the Lake", text: "The lake is flat, the mist is white,\nthe stars are leaving with the night.\nA fish jumps up! A ring, a splash!\nThen all is still. No noise, no crash.\nWe whisper, \"Look,\" and point, and stay,\nand watch the sun begin the day." },
+    c45f_zeidycamp: { title: "Dear Zeidy, from Camp", text: "First, the good news. I passed my swimming test on the first try! The water was freezing, but I did not complain, because you told me that a strong person does not complain about cold water. Well, I complained a little, but only inside my head.\nThird, the bad news. The food is not like Bubby's.\nI miss you. I miss learning with you on Sunday mornings." },
+    c45f_dive: { title: "Dear Ima", text: "Dear Ima,\nGuess what? I learned to dive! First I was scared to jump. Then Reb Akiva counted, \"One, two, three,\" and I went. Splash!\nAlso, I lost my towel. Again.\nI miss your shnitzel. Please send cookies. Lots.\nLove, Shmuel" },
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+'READ.FLU.L05.20':{name:"Read It 3 Times: A Cloud in a Jar",
+      teach:[
+        {p:"c45f_cloudjar", q:"\"First, I pour a little hot water into this glass jar.\" Where do you pause?", o:["After the signal word", "After \"pour a\"", "After \"glass\""], how:"Signal words like First, Second and Now start a new step. Pause a little after them."},
+        {p:"c45f_cloudjar", q:"\"Quickly! Cover it again.\" How should it sound?", o:["Strong and quick, like an order", "Soft and sleepy", "Go up, like asking a question"], how:"The teacher is telling someone to hurry. The ! shows it."},
+        {p:"c45f_cloudjar", q:"\"Lots of ice.\" After a short step like this, what does a good reader do?", o:["Stop, then go on", "Run into the next words", "Read it twice"], how:"A period ends the step. Let the listeners picture it."}
+      ],
+      practice:[
+        {t:"order", p:"c45f_cloudjar", q:"Put the steps of the cloud in a jar in order.", tiles:["Pour a little hot water into the jar.", "Put a plate with ice on top.", "Drop in the smoke from a match.", "Watch a cloud swirl inside."],
+          h:"First, second, then now.", how:"Signal words tell you the order of the steps."},
+        {t:"sort", p:"c45f_cloudjar", q:"Mistake Detective. Clear demo reader, or a mistake?", bins:[{id:"r", label:"Clear"}, {id:"m", label:"Mistake"}],
+          items:[{label:"A little pause after \"First,\"", bin:"r"}, {label:"No pause between the steps", bin:"m"}, {label:"\"Quickly!\" read strong and quick", bin:"r"}, {label:"\"Quickly!\" read soft and slow", bin:"m"}],
+          h:"Could the class follow every step?", how:"A demo reader pauses after signal words and lets the marks steer his voice."},
+        {t:"spotall", p:"c45f_cloudjar", q:"Tap every signal word that starts a new step.", cells:[{label:"First,", ok:true}, {label:"Second,", ok:true}, {label:"Now,", ok:true}, {label:"little", ok:false}, {label:"secret", ok:false}],
+          h:"Which words tell the order?", how:"Signal words start a step. Pause a little after each one."},
+        {t:"pairs", p:"c45f_cloudjar", q:"Match each part of the jar to its job.", pairs:[["hot water", "makes warm, wet air"], ["ice on the plate", "cools the air"], ["smoke", "gives the drops something to hold"]],
+          h:"What does each thing do?", how:"Read for meaning: each step has a reason."},
+        {t:"sort", p:"c45f_cloudjar", q:"Which voice fits each line?", bins:[{id:"o", label:"Strong and quick, like an order"}, {id:"q", label:"Go up, like asking a question"}],
+          items:[{label:"Quickly!", bin:"o"}, {label:"Cover it again.", bin:"o"}, {label:"Do you see it?", bin:"q"}, {label:"Any questions?", bin:"q"}],
+          h:"Is he telling the class to do something, or asking?", how:"Orders are strong. Questions go up."},
+        {t:"order", p:"c45f_cloudjar", q:"How is every cloud made? Put it in order.", tiles:["Warm, wet air rises.", "High up, the air cools.", "The water turns into tiny drops.", "Each drop hugs a speck of dust."],
+          h:"Start with the warm air.", how:"The demo shows what happens in the sky."}
+      ],
+      check:[
+        {p:"c45f_icecream", q:"Find the step with the salt. Which signal word starts it? Pause a little after it.", o:["Second", "First", "Third"], how:"Find the salt, then look at the first word of that step."},
+        {p:"c45f_icecream", q:"Find the only question in the demo. Which word starts it? Your voice goes up there.", o:["Feel", "Seal", "Shake"], how:"Look for the ? mark, then read the whole question."},
+        {p:"c45f_icecream", q:"Which order with a ! is really in the demo? Read it strong and quick.", o:["Seal it tight!", "Stir it fast!", "Close the lid!"], how:"Find the first step. Which order is written there?"}
+      ],
+      re:[
+        {p:"c45f_cloudjar", q:"First, Second and Now are...", o:["signal words that start a step", "names", "questions"], how:"They tell the order."},
+        {p:"c45f_cloudjar", q:"After a signal word, you...", o:["pause a little", "read faster", "stop for a long time"], how:"Let the listeners get ready."},
+        {p:"c45f_cloudjar", q:"\"Cover it again.\" is said...", o:["Strong and quick, like an order", "like a question", "in a whisper"], how:"It tells someone what to do."}
+      ]},
+
+    'READ.FLU.L05.21':{name:"Read It 3 Times: Counting the Thunder",
+      teach:[
+        {p:"c45f_thunder", q:"\"One, two, three, four, five...\" How do you read the counting?", o:["Count slowly and evenly, like seconds", "As fast as you can", "Skip to five"], how:"Abba is counting seconds. Each number takes about one second."},
+        {p:"c45f_thunder", q:"\"Now count!\" said Abba. Which words get a new voice, Abba's voice?", o:["The words inside the quotation marks", "said Abba", "Every word in the poem"], how:"Quotation marks hold the words someone says."},
+        {p:"c45f_thunder", q:"\"four, five...\" What do the dots tell your voice?", o:["Read the dots as a little wait", "Read faster", "Stop the poem"], how:"Dots are a small wait. Something is about to happen."}
+      ],
+      practice:[
+        {t:"pairs", p:"c45f_thunder", q:"Match the seconds to how far the storm is.", pairs:[["5 seconds", "about 1 mile"], ["10 seconds", "about 2 miles"], ["15 seconds", "about 3 miles"]],
+          h:"Every 5 seconds is about 1 mile.", how:"Light comes at once. Sound walks slowly, about 1 mile in 5 seconds."},
+        {t:"sort", p:"c45f_thunder", q:"Mistake Detective. Smooth reader, or a mistake?", bins:[{id:"r", label:"Smooth"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Counts slowly and evenly", bin:"r"}, {label:"Counts one-two-three-four-five in a rush", bin:"m"}, {label:"A little wait at the dots", bin:"r"}, {label:"Reads Abba's words in the same flat voice", bin:"m"}],
+          h:"Does the counting sound like real seconds?", how:"Count evenly. Give Abba's words his own voice."},
+        {t:"order", p:"c45f_thunder", q:"Put the storm's counts in order, as it comes close.", tiles:["five seconds", "four seconds", "two seconds", "one: CRASH!"],
+          h:"Fewer seconds means closer.", how:"The numbers get smaller as the storm comes near."},
+        {t:"spotall", p:"c45f_thunder", q:"Tap the words Abba says out loud.", cells:[{label:"Now count!", ok:true}, {label:"Five seconds", ok:true}, {label:"said Abba", ok:false}, {label:"a rumble rolled", ok:false}],
+          h:"Look inside the quotation marks.", how:"The words inside the marks get Abba's voice."},
+        {t:"sort", p:"c45f_thunder", q:"Coming closer, or going away?", bins:[{id:"c", label:"Coming closer"}, {id:"a", label:"Going away"}],
+          items:[{label:"four seconds, three, then two", bin:"c"}, {label:"Then one. Then CRASH!", bin:"c"}, {label:"three, five, then seven", bin:"a"}, {label:"to ten! moving on", bin:"a"}],
+          h:"Are the numbers getting smaller or bigger?", how:"Read for meaning: the numbers tell the story of the storm."},
+        {t:"pairs", p:"c45f_thunder", q:"Match each word to its meaning.", pairs:[["rumble", "a long, low, rolling sound"], ["growling", "a deep, angry sound"], ["suddenly", "quickly, with no warning"]],
+          h:"Think back to the poem.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_hail", q:"Find the words right after \"We grabbed the challah.\" How should they sound?", o:["Strong and excited", "Soft and sleepy", "Go up, like asking a question"], how:"Look at the mark after each word."},
+        {p:"c45f_hail", q:"Find the first line. Which mark sits between each tap? Read them evenly.", o:["a comma", "a period", "a ! mark"], how:"Look right after each tap."},
+        {p:"c45f_hail", q:"Find who calls \"Inside!\". Whose voice do you use for it?", o:["Zeidy's", "Abba's", "the hail's"], how:"Look right after the quotation marks."}
+      ],
+      re:[
+        {p:"c45f_thunder", q:"Counting seconds in a poem, you read...", o:["Count slowly and evenly, like seconds", "fast", "only the last number"], how:"Like a clock."},
+        {p:"c45f_thunder", q:"\"Tick, tock, tick, tock\" in a poem is read...", o:["Even and light, like the sound", "all squashed together", "as a question"], how:"Sound words sound like the sound."},
+        {p:"c45f_thunder", q:"Dots like ... are read as...", o:["Read the dots as a little wait", "a shout", "nothing"], how:"Something is coming."}
+      ]},
+
+    'READ.FLU.L05.22':{name:"Read It 3 Times: The Snow Day Phone Call",
+      teach:[
+        {p:"c45f_snowcall", q:"RABBI FELDMAN: \"One: no yeshiva today. Two: stay off the roads.\" How should he say it?", o:["Slow and clear, one point at a time", "Fast, all in one breath", "In a whisper"], how:"Each point is important news. Every family must hear it."},
+        {p:"c45f_snowcall", q:"AVRUMI: \"Learn on the phone? On a snow day?\" How does Avrumi sound?", o:["Surprised, and up at each question", "Calm and steady", "Sleepy and soft"], how:"Two questions in a row. He cannot believe it."},
+        {p:"c45f_snowcall", q:"How does Rabbi Feldman sound when he gives the plan?", o:["Calm and steady", "Excited and fast", "Sleepy and soft"], how:"A rebbe giving a plan stays calm so everyone can follow."}
+      ],
+      practice:[
+        {t:"pairs", p:"c45f_snowcall", q:"Match each speaker to his voice.", pairs:[["Avrumi, hearing \"snow day\"", "Excited and fast"], ["Rabbi Feldman, giving the plan", "Calm and steady"], ["Tzvi Hirsch, hearing about learning", "Let down"]],
+          h:"How does each one feel?", how:"Each character gets his own voice."},
+        {t:"sort", p:"c45f_snowcall", q:"Mistake Detective. Passing the message: right, or a mistake?", bins:[{id:"r", label:"Right"}, {id:"m", label:"Mistake"}],
+          items:[{label:"A little stop after each number", bin:"r"}, {label:"All three points in one breath", bin:"m"}, {label:"Saying \"TZVI HIRSCH\" before his line", bin:"m"}, {label:"Calm and steady for the plan", bin:"r"}],
+          h:"Could the next family catch every point?", how:"Slow and clear, one point at a time. Names are not read aloud."},
+        {t:"order", p:"c45f_snowcall", q:"Put the phone chain in order.", tiles:["Rabbi Feldman calls the Katz family.", "Avrumi gets the message.", "Avrumi calls the Golds.", "The Golds call the next family."],
+          h:"Who calls whom?", how:"A phone chain passes the message along, like a paper chain."},
+        {t:"spotall", p:"c45f_snowcall", q:"Tap the three points of the message.", cells:[{label:"no yeshiva today", ok:true}, {label:"stay off the roads", ok:true}, {label:"learn on the phone at ten", ok:true}, {label:"We are closed", ok:false}],
+          h:"One, two, three.", how:"These are the words that must be said slowly and clearly."},
+        {t:"sort", p:"c45f_snowcall", q:"Which voice fits each line?", bins:[{id:"e", label:"Excited and fast"}, {id:"c", label:"Calm and steady"}],
+          items:[{label:"A snow day? A real snow day?", bin:"e"}, {label:"YES!", bin:"e"}, {label:"Everything is fine, baruch Hashem.", bin:"c"}, {label:"Exactly like that.", bin:"c"}],
+          h:"Who is talking, and how does he feel?", how:"Excited lines are quick and bright. The plan is calm."},
+        {t:"pairs", p:"c45f_snowcall", q:"Match each word to its meaning.", pairs:[["pajamas", "clothes you sleep in"], ["clearly", "easy to hear and understand"], ["yeshiva", "a school where boys learn Torah"]],
+          h:"Think back to the play.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_bus", q:"Find Rabbi Roth's plan. How many points must you read slowly, one at a time?", o:["4", "3", "2"], how:"Count the numbers in the plan."},
+        {p:"c45f_bus", q:"Find Shimmy's first line. How does it sound?", o:["Surprised, and up at each question", "Calm and steady", "Soft and sleepy"], how:"Look at the marks at the end of his words."},
+        {p:"c45f_bus", q:"Find Shimmy's last line. How does it sound?", o:["Excited and fast", "Calm and steady", "Let down"], how:"Look at the mark at the end. How does Shimmy feel about his idea?"}
+      ],
+      re:[
+        {p:"c45f_snowcall", q:"Important news with numbers is read...", o:["Slow and clear, one point at a time", "fast", "in a whisper"], how:"Every point must be heard."},
+        {p:"c45f_snowcall", q:"A happy surprise sounds...", o:["Excited and fast", "Calm and steady", "sleepy"], how:"A snow day!"},
+        {p:"c45f_snowcall", q:"A grown-up giving a plan sounds...", o:["Calm and steady", "Excited and fast", "sleepy"], how:"Calm helps everyone follow."}
+      ]},
+    'READ.FLU.L05.23':{name:"Read It 3 Times: Rules of the Trail",
+      teach:[
+        {p:"c45f_trail", q:"\"Rule one: stay together.\" Where is the little pause?", o:["after the rule's number", "after \"stay\"", "no pause at all"], how:"The number tells which rule. Pause, then say the rule clearly."},
+        {p:"c45f_trail", q:"\"Not when you are thirsty. Before you are thirsty!\" Which word carries the surprise?", o:["Before", "you", "thirsty"], how:"The two sentences are the same except for one word. Stress the word that changes."},
+        {p:"c45f_trail", q:"\"Do not run. Do not wander.\" How do you read short rules like these?", o:["Slow and firm, with a stop after each", "Fast, as one long sentence", "Soft and sleepy"], how:"Short sentences are for rules that matter. Give each one room."}
+      ],
+      practice:[
+        {t:"order", p:"c45f_trail", q:"Put the four rules in order.", tiles:["Stay together.", "Stay on the trail.", "Carry water, and drink it.", "If you are lost, stop."],
+          h:"Rule one, two, three, four.", how:"Reb Akiva numbers his rules. Numbers help the listeners remember."},
+        {t:"sort", p:"c45f_trail", q:"Mistake Detective. Clear safety reader, or a mistake?", bins:[{id:"r", label:"Clear"}, {id:"m", label:"Mistake"}],
+          items:[{label:"A little pause after each rule's number", bin:"r"}, {label:"All four rules in one breath", bin:"m"}, {label:"Stressing \"Before\" in \"Before you are thirsty!\"", bin:"r"}, {label:"\"Do not run.\" read soft and sleepy", bin:"m"}],
+          h:"Could a new camper catch every rule?", how:"A safety talk is slow, firm and clear."},
+        {t:"pairs", p:"c45f_trail", q:"Match each rule to its reason.", pairs:[["Stay together.", "nobody gets left behind"], ["Stay on the trail.", "the blue marks lead home"], ["If you are lost, stop.", "a boy who stays put is found fast"]],
+          h:"Why does each rule matter?", how:"Read for meaning: rules make sense when you know why."},
+        {t:"spotall", p:"c45f_trail", q:"Tap every short rule that needs a firm stop after it.", cells:[{label:"Do not run.", ok:true}, {label:"Do not wander.", ok:true}, {label:"Stay together.", ok:true}, {label:"Every group has a leader", ok:false}],
+          h:"Which ones are short commands?", how:"Short commands get a firm stop."},
+        {t:"order", p:"c45f_trail", q:"What do you do if you are lost? Put it in order.", tiles:["Stop.", "Sit down next to a big tree.", "Blow your whistle three times.", "Wait."],
+          h:"Rule four tells you exactly.", how:"Read the steps in the order Reb Akiva says them."},
+        {t:"sort", p:"c45f_trail", q:"Friendly talk, or a firm rule?", bins:[{id:"f", label:"Friendly"}, {id:"r", label:"Firm rule"}],
+          items:[{label:"Good morning, campers!", bin:"f"}, {label:"A trail is a gift.", bin:"f"}, {label:"Nobody walks ahead of the leader.", bin:"r"}, {label:"Do not wander.", bin:"r"}],
+          h:"Is he welcoming, or giving a rule?", how:"A good speaker changes his voice for each part."}
+      ],
+      check:[
+        {p:"c45f_pool", q:"Find \"Not in a minute.\" Which words come right after it, and get the stress?", o:["Right away", "In you go", "Listen up"], how:"Find the sentence that says the same idea the opposite way."},
+        {p:"c45f_pool", q:"Find the rule about where to swim. Where is the little pause?", o:["after \"Rule two:\"", "after \"Rule one:\"", "after \"Rule three:\""], how:"Find the rule. Where does its number end?"},
+        {p:"c45f_pool", q:"Find the speaker's very last words. How should he say them?", o:["Bright and friendly, the talk is done", "Slow and firm, with a stop after each", "Soft and sleepy"], how:"Are the rules still going, or is it time to swim?"}
+      ],
+      re:[
+        {p:"c45f_trail", q:"After a rule's number, you...", o:["pause a little", "rush on", "stop for a long time"], how:"Let the listeners get ready."},
+        {p:"c45f_trail", q:"Short rules like \"Do not wander.\" are read...", o:["Slow and firm, with a stop after each", "fast", "softly"], how:"Each one matters."},
+        {p:"c45f_trail", q:"A word a speaker says twice is...", o:["important, so stress it", "a mistake", "skipped"], how:"Repeating shows it matters."}
+      ]},
+
+    'READ.FLU.L05.24':{name:"Read It 3 Times: Campfire Night",
+      teach:[
+        {p:"c45f_campfire", q:"\"A crackle, then a pop, a spark!\" How do you read the fire's sounds?", o:["Quick and bright, then quiet again", "Slow and sleepy", "Like a question"], how:"Fire sounds are short and sudden."},
+        {p:"c45f_campfire", q:"\"We sing a niggun, soft and low,\" How should this line sound?", o:["Softly, almost a whisper", "Loud and excited", "Fast and bouncy"], how:"The poem tells you: soft and low."},
+        {p:"c45f_campfire", q:"\"At last the fire is ash and gray.\" The poem is ending. Your voice should...", o:["Slow down, the poem is ending", "Speed up to finish", "Get louder"], how:"The night is ending, and the boys are sleepy."}
+      ],
+      practice:[
+        {t:"pairs", p:"c45f_campfire", q:"Match the rhyming words.", pairs:[["hill", "still"], ["spark", "dark"], ["low", "glow"]],
+          h:"Look at the line ends.", how:"Rhymes help you feel the poem's beat."},
+        {t:"sort", p:"c45f_campfire", q:"Mistake Detective. Campfire reader, or a mistake?", bins:[{id:"r", label:"Right"}, {id:"m", label:"Mistake"}],
+          items:[{label:"\"crackle, pop\" read quick and crisp", bin:"r"}, {label:"Shouting every line", bin:"m"}, {label:"Slowing down for the last lines", bin:"r"}, {label:"Racing through \"and sleep, and dream\"", bin:"m"}],
+          h:"Does the voice fit a quiet night?", how:"A campfire poem is gentle, with a few bright sparks."},
+        {t:"order", p:"c45f_campfire", q:"Put the campfire night in order.", tiles:["The sun goes down.", "The boys build a fire.", "They sing a niggun.", "They walk to their bunks."],
+          h:"From sunset to sleep.", how:"Picture the evening as it goes."},
+        {t:"spotall", p:"c45f_campfire", q:"Tap every sound the fire makes.", cells:[{label:"crackle", ok:true}, {label:"pop", ok:true}, {label:"niggun", ok:false}, {label:"glow", ok:false}],
+          h:"Which ones are noises?", how:"Sound words get a quick, crisp voice."},
+        {t:"sort", p:"c45f_campfire", q:"Bright moment, or soft moment?", bins:[{id:"b", label:"Quick and bright, then quiet again"}, {id:"s", label:"Softly, almost a whisper"}],
+          items:[{label:"A crackle, then a pop, a spark!", bin:"b"}, {label:"The flames leap up", bin:"b"}, {label:"We sing a niggun, soft and low", bin:"s"}, {label:"drifts across the lake with ease", bin:"s"}],
+          h:"Is the fire jumping, or is everyone quiet?", how:"Your voice changes with the moment."},
+        {t:"pairs", p:"c45f_campfire", q:"Match each word to its meaning.", pairs:[["embers", "glowing bits after a fire"], ["drifts", "floats slowly"], ["wobbling", "moving side to side"]],
+          h:"Think back to the poem.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_lakepoem", q:"Find the line where a fish jumps. How do you read it?", o:["Quick and sudden, then still again", "Slow and sleepy all the way", "Going up, like a question"], how:"Read that line, then the line right after it."},
+        {p:"c45f_lakepoem", q:"Find the line where the boys speak. How do you read it?", o:["Softly, almost a whisper", "Loud and excited", "Fast and bouncy"], how:"Find the word that tells how they speak."},
+        {p:"c45f_lakepoem", q:"Find the line where the stars leave. How do you read it?", o:["Softly and slowly, all is still", "Loud, like a crash", "Quick and bright"], how:"Find the stars. What is happening on the lake?"}
+      ],
+      re:[
+        {p:"c45f_campfire", q:"Short, sudden sounds in a poem are read...", o:["Quick and bright, then quiet again", "slowly", "as questions"], how:"Like a spark."},
+        {p:"c45f_campfire", q:"A soft line is read...", o:["Softly, almost a whisper", "loud", "fast"], how:"Let the words lead."},
+        {p:"c45f_campfire", q:"At the end of a sleepy poem...", o:["Slow down, the poem is ending", "speed up", "shout"], how:"Let it end gently."}
+      ]},
+
+    'READ.FLU.L05.25':{name:"Read It 3 Times: Dear Zeidy, from Camp",
+      teach:[
+        {p:"c45f_zeidycamp", q:"\"Well, I complained a little, but only inside my head.\" Why pause a little before \"but only inside my head\"?", o:["The joke is at the end, so give it a little pause", "It is a question", "The letter is over"], how:"The funny part comes last. A tiny pause makes it land."},
+        {p:"c45f_zeidycamp", q:"\"I passed my swimming test on the first try!\" How should it sound?", o:["Proud and excited", "Homesick and slow", "Like a question"], how:"Look at the mark, and think about how Avrumi feels."},
+        {p:"c45f_zeidycamp", q:"\"I miss you. I miss learning with you on Sunday mornings.\" How should it sound?", o:["A little homesick, slower and softer", "Proud and excited", "Loud and funny"], how:"Avrumi is thinking about home."}
+      ],
+      practice:[
+        {t:"order", p:"c45f_zeidycamp", q:"Put the scoops in order.", tiles:["The water was freezing,", "but I did not complain,", "because you told me", "that a strong person does not complain about cold water."],
+          h:"Find the sentence about the freezing water.", how:"Each scoop is one small idea. Pause a little at each comma."},
+        {t:"sort", p:"c45f_zeidycamp", q:"Mistake Detective. Letter reader, or a mistake?", bins:[{id:"r", label:"Right"}, {id:"m", label:"Mistake"}],
+          items:[{label:"A tiny pause before the joke", bin:"r"}, {label:"\"I miss you.\" in a jolly voice", bin:"m"}, {label:"\"on the first try!\" proud and bright", bin:"r"}, {label:"One flat voice for the whole letter", bin:"m"}],
+          h:"Does the voice follow Avrumi's feelings?", how:"A letter has many feelings. The voice changes with each one."},
+        {t:"pairs", p:"c45f_zeidycamp", q:"Match each part of the letter to its feeling.", pairs:[["the swimming test", "proud"], ["tomorrow's hike", "excited"], ["Bubby's chicken", "missing home, with a smile"]],
+          h:"First, second, third news.", how:"Each part of the letter has its own feeling."},
+        {t:"spotall", p:"c45f_zeidycamp", q:"Tap every word that starts a new part of the letter.", cells:[{label:"First,", ok:true}, {label:"Second,", ok:true}, {label:"Third,", ok:true}, {label:"Well,", ok:false}],
+          h:"Which words number the news?", how:"Pause after each one. A new part is starting."},
+        {t:"order", p:"c45f_zeidycamp", q:"Put Avrumi's news in order.", tiles:["He passed his swimming test.", "Tomorrow is the big hike.", "The food is not like Bubby's.", "He asks for mandelbroit."],
+          h:"Good news, exciting news, bad news, closing.", how:"Follow the First, Second, Third."},
+        {t:"sort", p:"c45f_zeidycamp", q:"Proud, or homesick?", bins:[{id:"p", label:"Proud and excited"}, {id:"h", label:"A little homesick, slower and softer"}],
+          items:[{label:"on the first try!", bin:"p"}, {label:"I am the one who explains it!", bin:"p"}, {label:"I miss you.", bin:"h"}, {label:"it was not Bubby's chicken.", bin:"h"}],
+          h:"How does Avrumi feel in each one?", how:"Your voice follows his feelings."}
+      ],
+      check:[
+        {p:"c45f_dive", q:"Find the sentence where Shmuel tells how he felt before he jumped. How should it sound?", o:["Scared, a little slower and softer", "Proud and excited", "Like a question"], how:"Find the word that tells his feeling."},
+        {p:"c45f_dive", q:"Find the sentence about the towel. How do you read the one word right after it?", o:["Plain, with a little pause before it", "Shouted", "Like a question"], how:"Read the towel sentence, then the next word. Is it big news, a question, or Shmuel smiling at himself?"},
+        {p:"c45f_dive", q:"Find the sentence where Shmuel tells what he learned. How should it sound?", o:["Proud and excited", "A little homesick, slower and softer", "Like a question"], how:"Find the new thing he can do. Look at its mark."}
+      ],
+      re:[
+        {p:"c45f_zeidycamp", q:"Before the funny end of a sentence...", o:["The joke is at the end, so give it a little pause", "rush", "shout"], how:"Let it land."},
+        {p:"c45f_zeidycamp", q:"\"I miss you\" in a letter sounds...", o:["A little homesick, slower and softer", "jolly", "angry"], how:"Thinking of home."},
+        {p:"c45f_zeidycamp", q:"A one-word sound like \"Crash!\" is read...", o:["Loud and quick, like the sound", "softly", "as a question"], how:"Sound words sound like the sound."}
+      ]},
+  };
+
+  var TEACH = {
+'READ.FLU.L05.20':{
+      hook:"A science demo is like a cooking show: if the steps run together, nobody can follow.",
+      big:"Read it 3 times. Pause after each signal word, give orders a strong voice, and let each step land before the next.",
+      intro:["Read 1: listen and follow the lit words.", "Read 2: read along. Find the signal words: First, Second, Now.", "Read 3: read it alone, like Mr. Halpern at the front of the class.", "Pause after the signal word. Stop, then go on, after each step."],
+      ex:[{q:"First, I pour a little hot water into this glass jar.", steps:["First is a signal word.", "First, (little pause)", "I pour a little hot water / into this glass jar."], a:"Pause after the signal word."},
+          {q:"Quickly! Cover it again.", steps:["Mr. Halpern is giving an order.", "Strong and quick, like an order: Quickly!", "Cover it again."], a:"Strong and quick."}],
+      oops:{q:"Second, I put a metal plate on top of the jar.", wrong:"SecondIputametalplate (no pause)", right:"Second, (pause) I put a metal plate / on top of the jar.", why:"Without the pause, the class does not hear that a new step started."},
+      idea:["Signal words are like the numbers on recipe steps. Your pause is the space between them."],
+      try:{q:"\"Now, here is the secret ingredient.\" Pause where?", o:["After the signal word", "After \"secret\""], a:"After the signal word", steps:["Find First, Second or Now."]}
+    },
+    'READ.FLU.L05.21':{
+      hook:"A storm poem with a clock inside it! Read the counting wrong, and the storm comes too fast.",
+      big:"Read it 3 times. Count slowly and evenly, like seconds; read the dots as a little wait; give Abba's words his own voice.",
+      intro:["Read 1: listen and follow the lit words.", "Read 2: read along. Find the counting and the quotation marks.", "Read 3: read it alone. Count like a clock. Then CRASH!", "Dots are a little wait. Quotation marks hold Abba's words."],
+      ex:[{q:"\"Now count!\" said Abba. \"One, two, three, four, five...\"", steps:["Abba's words are inside the quotation marks: a new voice.", "One... two... three... four... five: evenly, like seconds.", "The dots: a little wait. Something is coming."], a:"Count evenly, then wait."},
+          {q:"Then one. Then CRASH! The windows shook!", steps:["Short and sudden.", "CRASH! in big letters: strong and excited."], a:"The loudest moment."}],
+      oops:{q:"One, two, three, four, five...", wrong:"Onetwothreefourfive (one rush)", right:"One... two... three... four... five...", why:"If the counting rushes, the storm sounds close when it is far."},
+      idea:["Counting in a poem is like a ticking clock. Every tick takes the same time."],
+      try:{q:"\"three, four...\" The dots mean?", o:["Read the dots as a little wait", "Read faster"], a:"Read the dots as a little wait", steps:["Dots are a small wait."]}
+    },
+    'READ.FLU.L05.22':{
+      hook:"A phone chain only works if every boy passes the message clearly. One mumble, and the whole street gets it wrong.",
+      big:"Read it 3 times. Read important points slow and clear, one at a time, and give each character his own voice.",
+      intro:["Read 1: listen and follow the lit words.", "Read 2: read along. Find the three points of the message.", "Read 3: read it alone, with a voice for each person.", "Slow and clear for the points; excited and fast for Avrumi; calm and steady for the rebbe."],
+      ex:[{q:"One: no yeshiva today. Two: stay off the roads.", steps:["Numbers mean points to remember.", "One: (stop) no yeshiva today. (stop)", "Two: (stop) stay off the roads."], a:"Slow and clear, one point at a time."},
+          {q:"Closed? A snow day? A real snow day?", steps:["Avrumi cannot believe it.", "Three questions, each going up, each brighter."], a:"Surprised, and up at each question."}],
+      oops:{q:"One: no yeshiva today. Two: stay off the roads.", wrong:"Onenoyeshivatodaytwostayofftheroads", right:"One: no yeshiva today. (stop) Two: stay off the roads.", why:"All in one breath, the next family will miss a point."},
+      idea:["Passing a message is like passing a full cup: slow and steady, so nothing spills."],
+      try:{q:"Important points are read...", o:["Slow and clear, one point at a time", "Fast, all in one breath"], a:"Slow and clear, one point at a time", steps:["Every family must catch every point."]}
+    },
+    'READ.FLU.L05.23':{
+      hook:"A safety talk on a mountain can keep a boy safe, but only if every camper hears every rule.",
+      big:"Read it 3 times. Pause after each rule's number, read short rules slow and firm, and stress the word that changes.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the four rules.", "Read 3: read it alone, like Reb Akiva in front of the campers.", "Friendly for the welcome; slow and firm for the rules; bright and friendly, the talk is done, at the end."],
+      ex:[{q:"Rule three: carry water, and drink it. Not when you are thirsty. Before you are thirsty!", steps:["Rule three: (pause) carry water, and drink it.", "The next two sentences differ in one word.", "Not when you are thirsty. BEFORE you are thirsty!"], a:"Stress the word that changes."},
+          {q:"Do not run. Do not wander.", steps:["Two short commands.", "Slow and firm, with a stop after each."], a:"Firm stops."}],
+      oops:{q:"Rule four: if you are lost, stop. Do not run. Do not wander.", wrong:"rulefourifyouarelostdonotrundonotwander", right:"Rule four: (pause) if you are lost, stop. (stop) Do not run. (stop) Do not wander.", why:"A rule rushed is a rule missed."},
+      idea:["Rules are like trail marks: each one must stand out on its own."],
+      try:{q:"\"Stay together.\" after \"Rule one:\". Pause where?", o:["after the rule's number", "after \"stay\""], a:"after the rule's number", steps:["The number names the rule."]}
+    },
+    'READ.FLU.L05.24':{
+      hook:"Some poems are loud. This one is a quiet night around a fire, with a few bright sparks.",
+      big:"Read it 3 times. Keep the voice soft and smooth, make the fire's sounds quick and bright, and slow down as the night ends.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the fire's sounds and the soft lines.", "Read 3: read it alone, like you are at the campfire.", "Quick and bright for sparks; softly, almost a whisper, for the niggun; slow down, the poem is ending, at the end."],
+      ex:[{q:"A crackle, then a pop, a spark!", steps:["Three quick fire sounds.", "Quick and bright, then quiet again."], a:"Crisp sounds."},
+          {q:"We sing a niggun, soft and low,", steps:["The words say soft and low.", "Softly, almost a whisper."], a:"Soft."}],
+      oops:{q:"and sleep, and dream of morning sun.", wrong:"ANDSLEEPANDDREAM (loud and fast)", right:"and sleep... and dream... of morning sun.", why:"A sleepy ending read loud and fast breaks the quiet the poem built."},
+      idea:["A quiet poem is like a whisper by the fire: only the sparks pop."],
+      try:{q:"\"The lake is dark, the air is still.\" Read it...", o:["Softly, almost a whisper", "Loud and excited"], a:"Softly, almost a whisper", steps:["Still air, dark lake."]}
+    },
+    'READ.FLU.L05.25':{
+      hook:"A letter from camp is a whole summer in one page: proud, excited, funny and a little homesick.",
+      big:"Read it 3 times. Pause after First, Second, Third; give a joke a tiny pause; let your voice follow each feeling.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the good, exciting and bad news.", "Read 3: read it alone, like Avrumi talking to his Zeidy.", "Proud and excited; a little homesick, slower and softer; and for a one-word joke: plain, with a little pause before it."],
+      ex:[{q:"Well, I complained a little, but only inside my head.", steps:["The funny part is at the end.", "Well, I complained a little, (tiny pause)", "but only inside my head."], a:"The joke lands after the pause."},
+          {q:"I miss you.", steps:["Avrumi is thinking of home.", "A little homesick, slower and softer."], a:"Soft and slow."}],
+      oops:{q:"I miss you. I miss learning with you on Sunday mornings.", wrong:"I MISS YOU! (jolly and loud)", right:"I miss you. (soft) I miss learning with you on Sunday mornings.", why:"The words are homesick. A jolly voice makes them sound like a joke."},
+      idea:["A letter is a phone call on paper. Let Zeidy hear Avrumi's face."],
+      try:{q:"\"A lot more.\" after asking for mandelbroit. Read it...", o:["Plain, with a little pause before it", "Shouted"], a:"Plain, with a little pause before it", steps:["It is a tiny joke."]}
+    },
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+'READ.FLU.L05.20':{ band:"E45", pic:"☁️", today:"Read a science demo so every step is clear",
+      why:"Steps you can follow are steps you can do. A clear reader turns a page of steps into a real experiment.",
+      ready:[{q:"A comma tells your voice to...", o:["pause a little", "stop for a long time"], a:"pause a little"},
+             {q:"\"Look! Do you see it?\" The ? makes your voice...", o:["go up", "go down"], a:"go up"}],
+      bridge:"READ.FLU.L05.04", bridgeName:"Punctuation Tells Your Voice",
+      watch:{ q:"Mr. Halpern makes a cloud", m:{type:"scene", e:"☁️", t:"First, I pour a little hot water into this glass jar. Second, I put a metal plate on top."}, steps:[
+        {t:"Read 1: I listen and follow the lit words."},
+        {t:"Read 2: I read along. I spot the signal words: First, Second, Now."},
+        {t:"Read 3: I read alone, like the teacher. First, (little pause) I pour..."},
+        {t:"\"Quickly! Cover it again.\" Strong and quick, like an order. After each step: stop, then go on."}],
+        a:"Pause after the signal word. Give each step room." },
+      oops:{ q:"Second, I put a metal plate on top of the jar.", wrong:"SecondIputametalplate (no pause)", right:"Second, (pause) I put a metal plate / on top of the jar.", why:"Without the pause, nobody hears that a new step began." },
+      ways:["repeated reading with a model", "signal words", "process organizer", "dictation", "Mistake Detective", "tap the reason", "chavrusa"], done:"Your listeners could follow every step! Read the demo to your chavrusa while he acts it out, step by step.",
+      board:{ key:"Show me answers (for the rebbe): Second · Feel · Seal it tight!", one:"Read it 3 times. Pause after signal words. Orders are strong. Let each step land.", activity:"Demo theater: one partner reads the steps, the other mimes them. If the reader rushes, the actor gets lost.", mistakes:["No pause between steps", "Orders read soft and slow", "Questions read flat"] },
+      do:[
+        {type:"read", text:"C45.FL4.10", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"order", steps:["Pour a little hot water into the jar.", "Put a plate with ice on top.", "Drop in the smoke from a match.", "Watch a cloud swirl inside."],
+          say:"Put the steps of the demo in order.", how:"The signal words First, Second and Now tell you the order.",
+          why:{q:"Which words helped you?", o:["The signal words First, Second, Now", "The longest words", "The names"], a:"The signal words First, Second, Now"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Clear", "Mistake"], cards:[["A little pause after \"First,\"", 0], ["No pause between the steps", 1], ["\"Quickly!\" strong and quick", 0], ["\"Quickly!\" soft and slow", 1]],
+          say:"Mistake Detective: clear demo reader, or a mistake?", how:"Could the class follow every step?"},
+        {type:"dictation", hear:"Quickly! Cover it again.", w:["Quickly!", "Cover", "it", "again."], extra:["Quickly."],
+          say:"Listen, then build the order, marks and all.", how:"An order said in a hurry gets a strong mark. Which mark is that?"},
+        {type:"storymap", slots:["Hot water", "Ice on the plate", "Smoke", "What you see"], cards:["makes warm, wet air", "cools the air", "gives drops something to hold", "a gray cloud swirling"], extra:["makes it rain"],
+          say:"Fill in what each part of the demo does.", how:"Picture the jar from the bottom to the top."},
+        {type:"evidence", q:"Which sentence is a question to the class?", p:["Watch carefully.", "Lots of ice.", "Look!", "Do you see it?"], a:3, look:"the question mark",
+          say:"Read each one. Find where the voice goes up.", how:"A question asks the listeners something.",
+          why:{q:"Why does a demo teacher ask questions?", o:["To make the class look and think", "To fill time", "To end the lesson"], a:"To make the class look and think"}},
+        {type:"listen", q:"\"Look! Do you see it?\"", hear:"Look! Do you see it?", o:["Excited, then up at the question", "Flat and sleepy", "Down at the question"], a:"Excited, then up at the question",
+          say:"Listen. How should the teacher say this?", how:"Look at both end marks."}] },
+
+    'READ.FLU.L05.21':{ band:"E45", pic:"⛈️", today:"Read a storm poem, counting like a clock",
+      why:"The counting in this poem is a real way to tell how far a storm is. Read it right, and the poem teaches you science.",
+      ready:[{q:"Quotation marks hold...", o:["the words someone says", "the title"], a:"the words someone says"},
+             {q:"\"Hold tight!\" sounds...", o:["strong", "sleepy"], a:"strong"}],
+      bridge:"READ.FLU.L05.04", bridgeName:"Punctuation Tells Your Voice",
+      watch:{ q:"A clock inside a poem", m:{type:"scene", e:"⛈️", t:"\"Now count!\" said Abba. \"One, two, three, four, five...\" and then, so suddenly, a rumble rolled across the town."}, steps:[
+        {t:"Read 1: I listen and follow the lit words."},
+        {t:"Read 2: I read along. I find Abba's words in the quotation marks."},
+        {t:"Read 3: I read alone. One... two... three...: count slowly and evenly, like seconds."},
+        {t:"The dots: a little wait. Then the rumble. Then CRASH! strong and excited."}],
+        a:"Count like a clock, wait at the dots, and let the thunder roll." },
+      oops:{ q:"One, two, three, four, five...", wrong:"Onetwothreefourfive (one rush)", right:"One... two... three... four... five...", why:"If you rush the count, the storm sounds close when it is far." },
+      ways:["repeated reading with a model", "poetry aloud", "word parts", "Mistake Detective", "tap the reason", "chavrusa"], done:"You counted the storm in and out! Next storm, count with your family, and tell them how far away it is.",
+      board:{ key:"Show me answers (for the rebbe): Strong and excited · a comma · Zeidy's", one:"Read it 3 times. Count evenly, like seconds. Dots are a little wait. Quotation marks get a new voice.", activity:"Thunder counting: the rebbe flicks the lights (lightning) and claps (thunder); the class counts and says how many miles.", mistakes:["Rushing the count", "No wait at the dots", "Abba's words in the narrator's voice"] },
+      do:[
+        {type:"read", text:"C45.FL4.11", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"listen", q:"\"One, two, three, four, five...\"", hear:"One, two, three, four, five", o:["Count slowly and evenly, like seconds", "Say it as fast as you can", "Whisper only the five"], a:"Count slowly and evenly, like seconds",
+          say:"Listen. How should you read Abba's counting?", how:"Abba is counting seconds.",
+          why:{q:"Why count evenly?", o:["Each number is one second", "It rhymes better", "Abba is sleepy"], a:"Each number is one second"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Smooth", "Mistake"], cards:[["Counts slowly and evenly", 0], ["One-two-three-four-five in a rush", 1], ["A little wait at the dots", 0], ["Abba's words in a flat voice", 1]],
+          say:"Mistake Detective: smooth reader, or a mistake?", how:"Does the counting sound like real seconds?"},
+        {type:"match", pairs:[["5 seconds", "about 1 mile"], ["10 seconds", "about 2 miles"], ["15 seconds", "about 3 miles"]],
+          say:"Match the count to how far the storm is.", how:"Every 5 seconds is about 1 mile away.",
+          why:{q:"Why does the sound come later than the light?", o:["Sound travels much slower than light", "Thunder is shy", "The light is louder"], a:"Sound travels much slower than light"}},
+        {type:"evidence", q:"Which line is the loudest moment?", p:["The sky turned dark on Friday night,", "\"Now count!\" said Abba.", "Then one. Then CRASH! The windows shook!", "By Shabbos morning, it was gone."], a:2, look:"a sound word in big letters",
+          say:"Read each line. Find the storm's biggest moment.", how:"Big letters and a ! show a big sound."},
+        {type:"order", steps:["five seconds: one mile off", "two seconds: Hold tight!", "one: CRASH!", "nine, then ten: moving on"],
+          say:"Put the storm's counts in order.", how:"First it comes closer, then it goes away."},
+        {type:"parts", parts:["sudden", "ly"], mean:"quickly, with no warning",
+          say:"Build the long word from the poem.", how:"Find the main word first. Then add the ending."}] },
+
+    'READ.FLU.L05.22':{ band:"E45", pic:"☎️", today:"Read a phone-call play, passing the message clearly",
+      why:"When the message is important, how you read it decides whether people hear it. Clear points, real voices.",
+      ready:[{q:"In a play, the names are...", o:["not read aloud", "read loudly"], a:"not read aloud"},
+             {q:"\"A real snow day?\" Your voice...", o:["goes up", "goes down"], a:"goes up"}],
+      bridge:"READ.FLU.L05.12", bridgeName:"Read It 3 Times: The Empty Box",
+      watch:{ q:"The phone chain", m:{type:"scene", e:"☎️", t:"RABBI FELDMAN: Tell them three things. One: no yeshiva today. Two: stay off the roads. Three: we will learn on the phone at ten o'clock."}, steps:[
+        {t:"Read 1: I listen and follow the lit words."},
+        {t:"Read 2: I read along. I find the three points."},
+        {t:"Read 3: I read alone. The rebbe: calm and steady. Avrumi: excited and fast."},
+        {t:"The points: slow and clear, one point at a time. One: (stop) no yeshiva today."}],
+        a:"Clear points, and a voice for each person." },
+      oops:{ q:"One: no yeshiva today. Two: stay off the roads.", wrong:"Onenoyeshivatodaytwostayofftheroads", right:"One: no yeshiva today. (stop) Two: stay off the roads.", why:"All in one breath, the next family misses a point." },
+      ways:["repeated reading with a model", "Readers' Theatre", "dictation", "story map", "find the proof", "tap the reason", "chavrusa"], done:"Message passed, every point clear! Play the phone chain with two friends: each one passes the message to the next.",
+      board:{ key:"Show me answers (for the rebbe): 4 · Surprised, and up at each question · Excited and fast", one:"Read it 3 times. Important points: slow and clear, one at a time. A voice for each character.", activity:"Real phone chain: the rebbe whispers a 3-point message to the first boy; it goes down the row; the last boy says it aloud.", mistakes:["Points run together", "Names read aloud", "One voice for every person"] },
+      do:[
+        {type:"read", text:"C45.FL4.12", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"match", pairs:[["Avrumi, hearing \"snow day\"", "Excited and fast"], ["Rabbi Feldman, giving the plan", "Calm and steady"], ["Tzvi Hirsch, hearing about learning", "Let down"]],
+          say:"Match each person to the voice he needs.", how:"How does each one feel at that moment?",
+          why:{q:"Why is the rebbe calm and steady?", o:["He is giving a plan everyone must follow", "He is sleepy", "He is angry"], a:"He is giving a plan everyone must follow"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Right", "Mistake"], cards:[["A little stop after each number", 0], ["All three points in one breath", 1], ["Saying \"TZVI HIRSCH\" before his line", 1], ["Calm and steady for the plan", 0]],
+          say:"Mistake Detective: passing the message, right or mistake?", how:"Could the next family catch every point?"},
+        {type:"dictation", hear:"Two: stay off the roads.", w:["Two:", "stay", "off", "the", "roads."], extra:["Two,"],
+          say:"Listen. Build point two, just as the rebbe says it.", how:"A point starts with its number and a colon. End with a period."},
+        {type:"evidence", q:"Which line shows that Tzvi Hirsch feels let down?", p:["Hello? Gold's Bakery and Gold family.", "YES!", "Oh. Well. Two out of three is still very good news!", "We are closed."], a:2, look:"the line after he hears about learning",
+          say:"Read each line. Find where his voice drops.", how:"Short words like Oh and Well show a feeling changing.",
+          why:{q:"How should that line start?", o:["Slow and a little let down, then brighter", "Shouting", "Like a question"], a:"Slow and a little let down, then brighter"}},
+        {type:"proof", text:"C45.FL4.12", q:"Which sentence tells what does NOT take a day off?", proof:"The Torah does not", look:"what the rebbe says keeps going on a snow day",
+          say:"Open the play. Find the line that proves it.", how:"Look for the rebbe's answer to Avrumi's question."},
+        {type:"storymap", slots:["Who calls first", "Who answers the rebbe's call", "Who Avrumi calls", "What happens at ten"], cards:["Rabbi Feldman", "Avrumi", "the Gold family", "learning on the phone"], extra:["recess in the snow"],
+          say:"Map the phone chain.", how:"Follow the message from the rebbe down the line."}] },
+    'READ.FLU.L05.23':{ band:"E45", pic:"🥾", today:"Read a safety talk so every rule is heard",
+      why:"Rules keep people safe only when they are heard. A clear reader makes every rule stand out.",
+      ready:[{q:"\"Do not wait.\" in a warning is read...", o:["slow and strong", "fast and soft"], a:"slow and strong"},
+             {q:"After \"First,\" you...", o:["pause a little", "rush on"], a:"pause a little"}],
+      bridge:"READ.FLU.L05.16", bridgeName:"Read It 3 Times: Flash Flood Warning",
+      watch:{ q:"Reb Akiva's four rules", m:{type:"scene", e:"🥾", t:"Rule three: carry water, and drink it. Not when you are thirsty. Before you are thirsty!"}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the four rules."},
+        {t:"Read 3: I read alone. Rule three: (pause) carry water. Not when you are thirsty. BEFORE you are thirsty!"},
+        {t:"Short rules, slow and firm. The last line: bright and friendly, the talk is done."}],
+        a:"Pause after the number, firm short rules, stress the word that changes." },
+      oops:{ q:"Rule four: if you are lost, stop. Do not run.", wrong:"rulefourifyouarelostdonotrun", right:"Rule four: (pause) if you are lost, stop. (stop) Do not run.", why:"A rule rushed is a rule missed." },
+      ways:["repeated reading with a model", "rules read aloud", "Mistake Detective", "tap the reason", "phrase scoops", "chavrusa"], done:"Every camper heard every rule! Give your chavrusa the four rules, and see if he can say them back.",
+      board:{ key:"Show me answers (for the rebbe): Right away · after \"Rule two:\" · Bright and friendly, the talk is done", one:"Read it 3 times. Pause after the rule number. Short rules slow and firm. Stress the word that changes.", activity:"Camp counselor: each boy reads one rule to the class as if on the trail; the class repeats it.", mistakes:["All the rules in one breath", "Rules read soft and sleepy", "No stress on the word that changes"] },
+      do:[
+        {type:"read", text:"C45.FL4.13", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"sort", mis:true, bins:["Clear", "Mistake"], cards:[["A little pause after each rule's number", 0], ["All four rules in one breath", 1], ["Stressing \"Before\" in \"Before you are thirsty!\"", 0], ["\"Do not run.\" soft and sleepy", 1]],
+          say:"Mistake Detective: clear safety reader, or a mistake?", how:"Could a new camper catch every rule?",
+          why:{q:"Why read rules slow and firm?", o:["So every camper hears and remembers them", "Because they are boring", "To make the talk longer"], a:"So every camper hears and remembers them"}}],
+      your:[
+        {type:"order", steps:["Stay together.", "Stay on the trail.", "Carry water, and drink it.", "If you are lost, stop."],
+          say:"Put the four rules in order.", how:"Rule one, two, three, four."},
+        {type:"listen", q:"\"Not when you are thirsty. Before you are thirsty!\"", hear:"Not when you are thirsty. Before you are thirsty!", o:["Before", "you", "thirsty"], a:"Before",
+          say:"Listen, then decide: which word should get the stress?", how:"The two sentences are the same except for one word.",
+          why:{q:"Why that word?", o:["It is the word that changes the meaning", "It is the longest", "It comes last"], a:"It is the word that changes the meaning"}},
+        {type:"evidence", q:"Which sentence is the most important rule?", p:["A trail is a gift.", "Look for the painted marks on the trees.", "Rule four, and listen carefully, because this one is the most important: if you are lost, stop.", "Excellent!"], a:2, look:"where Reb Akiva says which rule matters most",
+          say:"Read each sentence. Where does Reb Akiva say it?", how:"He tells the campers which rule is the most important."},
+        {type:"match", pairs:[["Stay together.", "nobody is left behind"], ["Stay on the trail.", "the blue marks lead home"], ["If you are lost, stop.", "a boy who stays put is found fast"]],
+          say:"Match each rule to its reason.", how:"Why does each rule matter on a mountain?"},
+        {type:"tiles", w:["Sit down next to a big tree,", "blow your whistle three times,", "and wait."], extra:["tree blow your"],
+          say:"Build the lost-camper steps in clear scoops.", how:"Each scoop is one step. Watch for a broken scoop."}] },
+
+    'READ.FLU.L05.24':{ band:"E45", pic:"🔥", today:"Read a quiet poem softly and smoothly",
+      why:"A quiet poem read gently makes the listener feel the night. Your voice is the campfire.",
+      ready:[{q:"Short sound words like \"pop\" are read...", o:["quick and crisp", "slow and long"], a:"quick and crisp"},
+             {q:"A line that ends with ! is read...", o:["with more feeling", "in a whisper"], a:"with more feeling"}],
+      bridge:"READ.FLU.L05.15", bridgeName:"Read It 3 Times: Desert Night",
+      watch:{ q:"Around the fire", m:{type:"scene", e:"🔥", t:"A crackle, then a pop, a spark! The flames leap up against the dark."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the fire's sounds and the soft lines."},
+        {t:"Read 3: I read alone. Sparks: quick and bright, then quiet again. The niggun: softly, almost a whisper."},
+        {t:"The last lines: slow down, the poem is ending."}],
+        a:"Soft and smooth, with a few bright sparks, slowing at the end." },
+      oops:{ q:"and sleep, and dream of morning sun.", wrong:"ANDSLEEPANDDREAM (loud and fast)", right:"and sleep... and dream... of morning sun.", why:"A loud, fast ending breaks the quiet." },
+      ways:["repeated reading with a model", "poetry aloud", "Mistake Detective", "tap the reason", "word grid", "chavrusa"], done:"Your voice made the campfire glow and fade! Read it to your chavrusa as softly as you can, and still be heard.",
+      board:{ key:"Show me answers (for the rebbe): Quick and sudden, then still again · Softly, almost a whisper · Softly and slowly, all is still", one:"Read it 3 times. Soft and smooth; quick bright sparks; slow at the end.", activity:"Campfire circle: the class sits in a circle and reads the poem in a near-whisper, one line each.", mistakes:["Shouting a quiet poem", "Slow, heavy sound words", "Racing the sleepy ending"] },
+      do:[
+        {type:"read", text:"C45.FL4.14", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"listen", q:"\"A crackle, then a pop, a spark!\"", hear:"A crackle, then a pop, a spark!", o:["Quick and bright, then quiet again", "Slow and sleepy", "Like a question"], a:"Quick and bright, then quiet again",
+          say:"Listen, then decide: how should the sparks sound?", how:"Fire sounds are short and sudden.",
+          why:{q:"Why quick and bright?", o:["Sparks are sudden and short", "The poem is ending", "It is a question"], a:"Sparks are sudden and short"}}],
+      your:[
+        {type:"order", steps:["The sun goes down.", "The boys build a fire.", "They sing a niggun.", "They walk to their bunks."],
+          say:"Put the campfire night in order.", how:"From sunset to sleep."},
+        {type:"sort", mis:true, bins:["Right", "Mistake"], cards:[["\"crackle, pop\" quick and crisp", 0], ["Shouting every line", 1], ["Slowing down at the end", 0], ["Racing \"and sleep, and dream\"", 1]],
+          say:"Mistake Detective: campfire reader, or a mistake?", how:"Does the voice fit a quiet night?"},
+        {type:"evidence", q:"Which line should be the softest?", p:["A crackle, then a pop, a spark!", "The flames leap up against the dark.", "We sing a niggun, soft and low,", "Reb Akiva tells a story, slow,"], a:2, look:"words that tell you how to sing",
+          say:"Read each line. Which one tells you to be soft?", how:"Sometimes the poem tells you exactly how to read it.",
+          why:{q:"How did you know?", o:["The words say soft and low", "It is the longest line", "It has a !"], a:"The words say soft and low"}},
+        {type:"dictation", hear:"The flames leap up against the dark.", w:["The", "flames", "leap", "up", "against", "the", "dark."], extra:["leaps"],
+          say:"Listen, then build the fire line, word by word.", how:"Listen for every word. Watch for a look-alike tile."},
+        {type:"findall", grid:["crackle", "lake", "pop", "niggun", "wood", "tents"], find:["crackle", "pop"], findSay:"fire sounds",
+          say:"Tap every word that is a fire sound.", how:"Say each word. Does it make a noise?"}] },
+
+    'READ.FLU.L05.25':{ band:"E45", pic:"🏕️", today:"Read a camp letter, with all its feelings",
+      why:"A letter carries a person's voice. Read it with its feelings, and Zeidy can almost hear Avrumi.",
+      ready:[{q:"\"I miss you.\" sounds...", o:["soft", "loud and jolly"], a:"soft"},
+             {q:"After \"First,\" in a list of news, you...", o:["pause a little", "rush on"], a:"pause a little"}],
+      bridge:"READ.FLU.L05.13", bridgeName:"Read It 3 Times: A Letter to Montreal",
+      watch:{ q:"A whole summer on one page", m:{type:"scene", e:"🏕️", t:"Well, I complained a little, but only inside my head."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the good news, the exciting news and the bad news."},
+        {t:"Read 3: I read alone. Proud and excited for the test. A tiny pause, then the joke."},
+        {t:"\"I miss you.\" A little homesick, slower and softer. \"A lot more.\" Plain, with a little pause before it."}],
+        a:"Let your voice follow every feeling in the letter." },
+      oops:{ q:"I miss you.", wrong:"I MISS YOU! (jolly)", right:"I miss you. (soft)", why:"Homesick words in a jolly voice sound like a joke." },
+      ways:["repeated reading with a model", "letter aloud", "story map", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"Zeidy could hear every feeling! Write your own three lines of camp news and read them to your chavrusa.",
+      board:{ key:"Show me answers (for the rebbe): Scared, a little slower and softer · Plain, with a little pause before it · Proud and excited (\"I learned to dive!\")", one:"Read it 3 times. Pause after First, Second, Third. A tiny pause before a joke. The voice follows each feeling.", activity:"Feeling cards: pairs read the letter; the listener holds up proud, excited, funny or homesick at each part.", mistakes:["One flat voice for every feeling", "No pause before a joke", "Jolly voice for homesick lines"] },
+      do:[
+        {type:"read", text:"C45.FL4.15", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"sort", mis:true, bins:["Right", "Mistake"], cards:[["A tiny pause before the joke", 0], ["\"I miss you.\" in a jolly voice", 1], ["\"on the first try!\" proud and bright", 0], ["One flat voice for the whole letter", 1]],
+          say:"Mistake Detective: letter reader, or a mistake?", how:"Does the voice follow Avrumi's feelings?",
+          why:{q:"Why change your voice in a letter?", o:["Each part has a different feeling", "To make it longer", "Letters must be loud"], a:"Each part has a different feeling"}}],
+      your:[
+        {type:"tiles", w:["Tzvi Hirsch has already", "laced his sneakers twice,", "and it is still today."], extra:["sneakers twice and"],
+          say:"Build the sneakers sentence in smooth scoops.", how:"Each scoop is one idea. Watch for a broken scoop."},
+        {type:"evidence", q:"Which sentence needs a tiny pause before its funny ending?", p:["I passed my swimming test on the first try!", "Well, I complained a little, but only inside my head.", "I said them to myself four times before Mincha,", "Write back soon."], a:1, look:"a sentence with a joke at the end",
+          say:"Read each one. Where is the joke at the end?", how:"A joke at the end of a sentence needs a little pause to land.",
+          why:{q:"Why pause there?", o:["The joke is at the end, so give it a little pause", "It is a question", "It is the last line"], a:"The joke is at the end, so give it a little pause"}},
+        {type:"proof", text:"C45.FL4.15", q:"Which sentence shows Avrumi is proud of how he learns with Binyamin?", proof:"I am the one who explains it", look:"Avrumi talking about learning the mishna",
+          say:"Open the letter. Find the sentence that proves it.", how:"Look near the end, where Avrumi writes about his chavrusa."},
+        {type:"storymap", slots:["Good news", "Exciting news", "Bad news", "Ending"], cards:["the swimming test", "tomorrow's hike up Ridge Trail", "the camp food", "please send mandelbroit"], extra:["a lost boy"],
+          say:"Map the letter's news.", how:"First, Second, Third, then the closing."},
+        {type:"listen", q:"\"I miss you. I miss learning with you on Sunday mornings.\"", hear:"I miss you. I miss learning with you on Sunday mornings.", o:["A little homesick, slower and softer", "Proud and excited", "Loud and funny"], a:"A little homesick, slower and softer",
+          say:"Listen, then decide: how should Avrumi sound here?", how:"What is Avrumi thinking about?"}] },
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

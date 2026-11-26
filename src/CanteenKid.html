@@ -12,12 +12,13 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
   const nm=()=>{ try{ return PICK(TLB); }catch(e){ return PICK(['Moshe','Dovid','Yosef','Chaim','Eli','Shmuel']); } };
   const SNACK=[['pretzels','🥨'],['water','💧'],['chips','🥔'],['lollipop','🍭'],['granola bar','🥣'],['apple juice','🧃'],['cookie','🍪'],['popcorn','🍿']];
   const price=()=>PICK([0.25,0.5,0.75,1,1.25,1.5,1.75,2]);
+  const DK={}; const deck=(key,n)=>{ let d=DK[key]; if(!d||!d.length){ d=DK[key]=[]; for(let i=0;i<n;i++) d.splice(RI(0,i),0,i); } return d.pop(); };   /* flag fix 2026-11-24: each scenario once before any repeats */
   const CREW={
   'VOC.CREW.01':{name:'Honest Service', how:[
     'Welcome to the Canteen Crew! A cashier is trusted with other boys’ money. Honesty (yashrus) and a kind word turn a snack line into a kiddush Hashem.',
     'Three rules: (1) Every sale is charged exactly right, never more, never less. (2) Every customer is treated with respect, even when he is rude or slow. (3) Friends pay like everyone else.',
     'Worked example: your friend says “Just give me a free bag of pretzels, nobody will know.” You smile and say: “I can’t give away the canteen’s food. I can ring it up for you.” That is honest AND friendly.'],
-    gen(){ const x=nm(), k=RI(0,5);
+    gen(){ const x=nm(), k=deck('c1',6);
       if(k===0) return MX(`${x} is your good friend. He asks you to give him a snack for free. What do you do?`, op('Kindly say no and offer to ring it up',['Give it, he is your friend','Give it but charge someone else']), 'Rule 2 and 3: friends pay like everyone else. Say no kindly, then offer to ring it up.');
       if(k===1) return MX(`You charged ${x} ${$m(1.5)} but the snack costs ${$m(1)}. You notice after he walks away. What do you do?`, op('Tell the staff so the extra is given back',['Keep quiet, it is small','Keep the extra for the canteen']), 'Rule 1: every sale is charged exactly right. The 50¢ belongs to him. Tell the staff so they can void and fix it.');
       if(k===2) return MX(`A boy in line is rude and says “Hurry up!” What is the best answer?`, op('“Sure, I’m going as fast as I can. What would you like?”',['“Wait your turn!”','Ignore him and serve someone else']), 'Rule 2: respect every customer, even a rude one. Stay calm and friendly.');
@@ -28,7 +29,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
     'The kiosk is the canteen’s cash register. When you run it well, the line moves fast and every boy pays the right amount from his Canteen Cash.',
     'The steps, in order: 1) The boy taps his name. 2) The boy types his own 4-digit code. 3) He sees his Canteen Cash. 4) Tap items into the cart. 5) Check the total and “Left after”. 6) Tap Buy ONE time. 7) Read the new balance with him.',
     'Worked example: Dovid taps his name and types his code. He has $3.00. He wants chips ($1.00) and water ($0.50). Total $1.50, left after $1.50. You tap Buy once and say: “Done! You have $1.50 left.”'],
-    gen(){ const k=RI(0,5);
+    gen(){ const k=deck('c2',6);
       const steps=['Tap his name','Type his code','Add items to the cart','Tap Buy'];
       if(k===0){ const i=RI(0,2); return MX(`What comes right after “${steps[i]}”?`, op(steps[i+1],steps.filter((s,j)=>j!==i+1).slice(0,2)), 'Say the steps in order: name, code, cart, Buy. Which one comes next?'); }
       if(k===1){ const b=PICK([1,1.5,2,2.5]), c=r2(b+PICK([0.25,0.5,1])); return MX(`A boy has ${$m(b)} Canteen Cash. His cart costs ${$m(c)}. What happens?`, op('Buy is blocked; take something out',['It goes through and he owes money','You pay the difference']), `Compare: is ${$m(c)} more than ${$m(b)}? If the cart costs more than he has, the kiosk blocks Buy.`); }
@@ -71,7 +72,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
     gen(){ const k=RI(0,3), [s,e]=PICK(SNACK), pr=PICK([0.75,1,1.25,1.5,2]), co=r2(pr-PICK([0.15,0.25,0.35,0.5]));
       if(k===0) return N(`${e} ${s} costs the canteen ${$m(co)}. We sell it for ${$m(pr)}. What is the profit on one? (Type dollars)`, r2(pr-co), `Profit = price − cost: ${$m(pr)} − ${$m(co)}.`, {pic:e});
       if(k===1){ const q=RI(2,6), p=r2(pr-co); return N(`Profit on one ${s} is ${$m(p)}. We sold ${q}. What is the total profit? (Type dollars)`, r2(p*q), `Total profit = profit on one × how many: ${$m(p)} × ${q}.`); }
-      if(k===2){ const a=[s,pr,co], [s2]=PICK(SNACK.filter(x=>x[0]!==s)), pr2=PICK([0.5,1,1.5,2]), co2=r2(pr2-PICK([0.1,0.2,0.3,0.6])); const p1=r2(pr-co), p2=r2(pr2-co2); if(p1===p2) return N(`${s}: price ${$m(pr)}, cost ${$m(co)}. Profit on one? (Type dollars)`, p1, 'Profit = price − cost.');
+      if(k===2){ const a=[s,pr,co], [s2]=PICK(SNACK.filter(x=>x[0]!==s)), pr2=PICK([0.5,1,1.5,2]), co2=r2(pr2-PICK([0.1,0.2,0.3,0.6].filter(d=>d<pr2))); const p1=r2(pr-co), p2=r2(pr2-co2); if(p1===p2) return N(`${s}: price ${$m(pr)}, cost ${$m(co)}. Profit on one? (Type dollars)`, p1, 'Profit = price − cost.');
         return MX(`${s}: price ${$m(pr)}, cost ${$m(co)}. ${s2}: price ${$m(pr2)}, cost ${$m(co2)}. Which one earns more profit on each sale?`, op(p1>p2?s:s2,[p1>p2?s2:s,'They are the same']), `Work out each profit (price − cost): ${s} = ${$m(p1)}, ${s2} = ${$m(p2)}. Which is bigger?`); }
       return MX(`A snack costs the canteen ${$m(co)}. Which price makes a profit?`, op($m(r2(co+0.25)),[$m(co),$m(r2(Math.max(0,co-0.1)))]), `A profit means the price is MORE than the cost (${$m(co)}).`); }}
   };
@@ -155,6 +156,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
 #cn-shop.cw3d .bx{position:relative;background:transparent;box-shadow:none;border-radius:0;width:min(1000px,100%);max-height:none;height:100%;overflow:auto;padding:14px 18px 0;animation:cwIn .7s .25s cubic-bezier(.2,.8,.3,1) both}
 @keyframes cwIn{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:none}}
 #cn-shop.cw-still .bx{animation:none}
+.lk:has(.tlk-pill){background:none;padding:0}.pr .tlk-pill{font-size:17px;padding:4px 10px}.cn-a .tlk-pill{font-size:22px;padding:6px 12px}.hd .tlk{flex:none}
 #cn-shop .hd{gap:12px}#cn-shop .cw-sign{flex:1;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#B45309,#92400E);color:#FFFBEB;border-radius:20px;padding:8px 18px;box-shadow:0 6px 0 #78350F,0 14px 24px #78350F55;transform:perspective(700px) rotateX(10deg);transform-origin:bottom}
 #cn-shop .cw-sign h2{color:#FFFBEB;font-size:30px;letter-spacing:.02em;text-shadow:0 2px 0 #78350F}#cn-shop .cw-si{font-size:40px}
 #cn-shop .ib{box-shadow:0 4px 0 #FDBA74,0 8px 16px #0002}#cn-shop .cw-home{padding:0 16px;font-size:20px;color:#7C2D12}
@@ -197,6 +199,9 @@ body.cn-open #tlmenu{display:none!important}
 .tlq p{margin:6px 0 0;font-weight:700;font-size:15px}.tlq.mini{padding:6px 12px;margin:0 0 10px}.tlq.mini p{display:none}.tlq.mini .h{font-size:16px}.tlq.mini .row{margin:4px 0 0}.tlq.mini .split i{width:34px;height:34px;font-size:10px}`;
   document.head.appendChild(ocss);
   const $$=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  /* button system (HoS 2026-11-23): canteen buttons and labels come from the kit (TLK), words only; plain fallback when the kit is missing */
+  const KB=(main,t,a,fb,x)=>window.TLK?(main?TLK.main(t,a,x):TLK.quiet(t,a,x)):fb;
+  const KL=(k,t)=>window.TLK?TLK.pill(k,t):$$(t);
   const money=n=>(n<0?'−':'')+'$'+Math.abs(Number(n)||0).toFixed(2);
   const cents=n=>Math.round((Number(n)||0)*100);
   const amt=c=>c<100?c+'¢':money(c/100);
@@ -235,17 +240,17 @@ body.cn-open #tlmenu{display:none!important}
   function steps(n){ return `<div class="steps4">${['1 Pick food 👆','2 Pay 💵','3 Get your food 😋'].map((s,i)=>`<span class="${i===n?'on':''}">${s}</span>`).join('')}</div>`; }
   function vShop(){ const have=cents(O.cash), used=trayCents(), left=have-used, L=trayLines();
     let h=steps(0)+`<div class="grid">${O.menu.map(m=>{ const p=cents(m.price), q=O.tray[m.id]||0, lock=!m.out&&p>left, cls=m.out?'out':q?'in':lock?'lock':'';
-      return `<button class="it ${cls}" data-cno="add" data-id="${$$(m.id)}" ${m.out||lock?'aria-disabled="true"':''} aria-label="${$$(m.name)}, ${amt(p)}${m.out?', sold out':lock?', locked':''}">${q?`<span class="n">${q}</span>`:''}${m.pic?`<img src="${$$(m.pic)}" alt="">`:`<span class="em">${$$(m.emoji||'🍪')}</span>`}<span class="nm">${$$(m.name)}</span><span class="pr">${amt(p)}</span>${m.out?'<span class="lk">Sold out</span>':lock&&q?'<span class="lk">No money for one more</span>':lock?`<span class="lk">🔒 Need ${amt(p-left)} more</span>`:''}</button>`; }).join('')}</div>`;
+      return `<button class="it ${cls}" data-cno="add" data-id="${$$(m.id)}" ${m.out||lock?'aria-disabled="true"':''} aria-label="${$$(m.name)}, ${amt(p)}${m.out?', sold out':lock?', locked':''}">${q?`<span class="n">${q}</span>`:''}${m.pic?`<img src="${$$(m.pic)}" alt="">`:`<span class="em">${$$(m.emoji||'🍪')}</span>`}<span class="nm">${$$(m.name)}</span><span class="pr">${KL('money',amt(p))}</span>${m.out?'<span class="lk">'+KL('lock','Sold out')+'</span>':lock&&q?'<span class="lk">'+KL('lock','No money for one more')+'</span>':lock?'<span class="lk">'+KL('lock','Need '+amt(p-left)+' more')+'</span>':''}</button>`; }).join('')}</div>`;
     h+=coach(O.menu.some(m=>!m.out&&cents(m.price)>left)&&!L.length?TIPS[5]:null);
     h+=`<div class="tray"><div class="ti">${L.length?L.map(l=>`<button data-cno="sub" data-id="${$$(l.m.id)}" aria-label="Take out one ${$$(l.m.name)}">${$$(l.m.emoji||'🍪')} ${$$(l.m.name)}${l.q>1?' ×'+l.q:''} ✕</button>`).join(''):'<span class="sm" style="font-size:16px;font-weight:800">👆 Tap the food you want.</span>'}
       ${L.length?`<div class="mathl" style="width:100%">${money(have/100)} <span class="mi">− ${money(used/100)}</span> <span class="eq">= ${money(left/100)} left</span></div>`:''}</div>
-      <button class="go" data-cno="check" ${!L.length||O.busy?'disabled':''}>Next ➜</button></div>`;
+      ${KB(1,'Next','data-cno="check"'+(!L.length||O.busy?' disabled':''),'<button class="go" data-cno="check" '+(!L.length||O.busy?'disabled':'')+'>Next</button>')}</div>`;
     return h; }
   function vCheck(){ const have=cents(O.cash), used=trayCents(), L=trayLines();
     return steps(1)+`<div class="big"><div class="e">${L.map(l=>$$(l.m.emoji||'🍪')).join(' ')}</div><h3>Pay ${money(used/100)}?</h3>
       <div class="list" style="max-width:460px;margin:0 auto;text-align:left">${L.map(l=>`<div><span>${$$(l.m.emoji||'🍪')} ${$$(l.m.name)}${l.q>1?' ×'+l.q:''}</span><span>${money(cents(l.m.price)*l.q/100)}</span></div>`).join('')}
       <div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>You have</span><span>${money(have/100)}</span></div><div><span>You pay</span><span style="color:#BE123C">− ${money(used/100)}</span></div><div style="font-size:20px"><span>Left after</span><span style="color:#047857">${money((have-used)/100)}</span></div></div>
-      <div class="yn"><button class="go" data-cno="buy" ${O.busy?'disabled':''}>${O.busy?'Paying…':'✅ Yes, buy it!'}</button><button class="no" data-cno="back">↩ No, go back</button></div>
+      <div class="yn">${KB(1,O.busy?'Paying…':'Buy it','data-cno="buy"'+(O.busy?' disabled':''),'<button class="go" data-cno="buy" '+(O.busy?'disabled':'')+'>'+(O.busy?'Paying…':'Buy it')+'</button>')}${KB(0,'Not now','data-cno="back"','<button class="no" data-cno="back">Not now</button>')}</div>
       <p class="sm">The money comes off your canteen money right now. Then go to the canteen and get your food.</p></div>`+coach(TIPS[3]); }
   function vTrack(){ const o=O.order, done=o.status==='picked', seen=o.seen||o.status==='ready', st=[['🛒',o.paid===false?'I ordered':'I paid'],['👀','The canteen is making it'],['😋','I got my food']], idx=done?3:seen?1:0;
     let h=steps(2);
@@ -253,14 +258,14 @@ body.cn-open #tlmenu{display:none!important}
     h+=`<div class="trk">${st.map((x,i)=>`<div class="${i<idx||(i===0)?'ok':i===idx?'on':''}"><span class="e">${x[0]}</span>${i<idx||i===0?'✓ ':''}${x[1]}</div>`).join('')}</div>`;
     h+=`<p style="font-size:20px;font-weight:900;text-align:center;color:#065F46">${seen?'⏳ The canteen saw your order. It is still being made.':'🚶 Go to the canteen and say your name. They will give you your food.'}</p>
       <div class="list">${o.items.map(i=>`<div><span>${$$(i.emoji||'🍪')} ${$$(i.name)}${i.qty>1?' ×'+i.qty:''}</span><span>${money(cents(i.price)*i.qty/100)}</span></div>`).join('')}<div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>${o.paid===false?'You pay at the canteen':'Paid ✓'}</span><span>${money(o.est)}</span></div></div>`;
-    if(o.status==='pending'&&!o.seen&&Date.now()-o.at<110000) h+=`<p style="text-align:center;margin-top:12px"><button class="lnk" data-cno="cancel">Changed my mind: cancel and get my money back</button></p>`;
+    if(o.status==='pending'&&!o.seen&&Date.now()-o.at<110000) h+=`<p style="text-align:center;margin-top:12px">${KB(0,'Cancel and get my money back','data-cno="cancel"','<button class="lnk" data-cno="cancel">Cancel and get my money back</button>')}</p>`;
     return h+coach(['Good habit','After you buy, check your money. Do you know how much you have left?']); }
   function vStory(){ if(O.cash==null&&!O.menu) return '<p class="sm cw-wait">Opening your money story… 📒</p>'; return `<h3 class="cw-h">📒 My money story</h3><div class="story">${O.story.length?'':'<p style="font-weight:800">Nothing yet. When money comes in or goes out, it shows here.</p>'}<div class="list" ${O.story.length?'':'hidden'}>${O.story.map(r=>`<div><span>${$$(r.note||r.kind)}</span><b class="${r.cents>=0?'p':'m'}">${r.cents>=0?'+':'−'}${amt(Math.abs(r.cents))}</b></div>`).join('')}</div><p class="sm">Money comes in when your teachers sign you off (on time, did your work, middos: 20¢ each) and from Canteen Cards in the Tashbar Store. It goes out when you buy.</p></div>`; }
   function oDraw(){
     if(!O.open) return; let d=document.getElementById('cn-shop');
     if(!d){ d=document.createElement('div'); d.id='cn-shop'; d.className='cw3d'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Tashbar Canteen');
       d.innerHTML=cwRoom()+'<div class="cw-stage"><div class="bx"></div></div>'; document.body.appendChild(d); cwLook(d); }
-    let h=`<div class="hd"><div class="cw-sign"><span class="cw-si" aria-hidden="true">🥪</span><h2>Tashbar Canteen</h2></div><button class="ib" data-cno="say" aria-label="Read it to me">🔊</button><button class="ib cw-home" data-cno="close" aria-label="Close the canteen and go home">🏠 Home</button></div>`;
+    let h=`<div class="hd">${window.TLK?TLK.home('data-cno="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button class="ib cw-home" data-cno="close" aria-label="Close the canteen and go home">🏠</button>'}<div class="cw-sign"><span class="cw-si" aria-hidden="true">🥪</span><h2>Tashbar Canteen</h2></div>${window.TLK?TLK.tool('🔊','Read it to me','data-cno="say"'):'<button class="ib" data-cno="say" aria-label="Read it to me">🔊</button>'}</div>`;
     if(O.err) h+=`<div class="err" role="alert">${$$(O.err)}</div>`;
     if(O.cls){ h+=`<div class="cw-panel big"><div class="e">🔔</div><h3>The canteen opens after class.</h3><p style="font-weight:800">Come back when class is over.</p></div>`; return cwPut(d,h); }
     h+=wallet()+window.tlQuarterHTML(O.pf,true)+cwDoors();
@@ -304,7 +309,7 @@ body.cn-open #tlmenu{display:none!important}
     return `<h3 class="cw-h">💳 Where canteen money comes from</h3>
       <div class="cw-ways"><div><span class="i">🧑‍🏫</span><b>From your teachers</b><p>Every class they sign you off: on time, did your work, middos. <b>20¢ each.</b></p></div>
       <div><span class="i">🏪</span><b>From the Tashbar Store</b><p>Turn Tashbar cash into canteen money with a <b>Canteen Card</b>.</p></div></div>
-      <p style="text-align:center;margin:14px 0 4px"><button class="go" data-cno="tostore" data-st="open" data-t="canteen">💳 Get a Canteen Card</button></p>
+      <p style="text-align:center;margin:14px 0 4px">${KB(0,'Get a Canteen Card','data-cno="tostore" data-st="open" data-t="canteen"','<button class="go" data-cno="tostore" data-st="open" data-t="canteen">Get a Canteen Card</button>')}</p>
       <p class="sm" style="text-align:center">Canteen money is only for food at the canteen. Tashbar cash is for the Store.</p>`+coach(TIPS[1]); }
   function vLearn(){ const st=(typeof A!=='undefined'&&A.st)||{skills:{}}, sk=st.skills||{}, has=id=>(typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]);
     const nm=id=>(typeof BANK_ALL!=='undefined'&&BANK_ALL[id]&&BANK_ALL[id].name)||(CREW[id]&&CREW[id].name)||id;
@@ -345,8 +350,8 @@ body.cn-open #tlmenu{display:none!important}
   });
   window.cnOrderButton=function(i){ if(!i||i.cash==null||inClass()) return '';
     const o=i.order; let h='';
-    if(o) h+=`<div class="cn-st ${o.seen?'ready':''}">${o.status==='picked'?'😋 You got your food.':o.seen?'⏳ The canteen is making your food.':'🛒 You paid. Go to the canteen and get your food.'}<button class="cn-ord" data-cno="open" style="padding:8px 14px;font-size:15px;min-height:44px">See it</button></div>`;
-    else if(i.menuN) h+=`<button class="cn-ord" data-cno="open">🍕 Buy food</button>`;
+    if(o) h+=`<div class="cn-st ${o.seen?'ready':''}">${o.status==='picked'?'😋 You got your food.':o.seen?'⏳ The canteen is making your food.':'🛒 You paid. Go to the canteen and get your food.'}${KB(0,'See it','data-cno="open"','<button class="cn-ord" data-cno="open">See it</button>','tlk-small')}</div>`;
+    else if(i.menuN) h+=`${KB(0,'Buy food','data-cno="open"','<button class="cn-ord" data-cno="open">Buy food</button>')}`;
     return h; };
   function cards(){
     try{
@@ -354,7 +359,7 @@ body.cn-open #tlmenu{display:none!important}
       if(Date.now()-K.at>((K.info&&K.info.order)?20000:60000)) fetchInfo();
       const i=K.info, app=document.getElementById('app'); if(!i||!app||app.querySelector('.cn-card')) return;
       let h='';
-      if(i.cash!==null&&i.cash!==undefined) h+=`<div class="cn-card" aria-label="Canteen Cash"><span class="cn-i">🥨</span><div><b>Canteen money</b><small>Spend it on food at the school canteen. It comes from your teachers at sign-off (on time, did your work, middos: 20¢ each) and from Canteen Cards in the Tashbar Store.</small></div><span class="cn-a">${i.cash<0?'−':''}$${Math.abs(i.cash).toFixed(2)}</span>${window.cnOrderButton?cnOrderButton(i):''}${i.pf<1&&window.tlQuarterHTML?'<div style="width:100%">'+window.tlQuarterHTML(i.pf,true)+'</div>':''}</div>`;
+      if(i.cash!==null&&i.cash!==undefined) h+=`<div class="cn-card" aria-label="Canteen Cash"><span class="cn-i">🥨</span><div><b>Canteen money</b><small>Spend it on food at the school canteen. It comes from your teachers at sign-off (on time, did your work, middos: 20¢ each) and from Canteen Cards in the Tashbar Store.</small></div><span class="cn-a">${KL('money',(i.cash<0?'−':'')+'$'+Math.abs(i.cash).toFixed(2))}</span>${window.cnOrderButton?cnOrderButton(i):''}${i.pf<1&&window.tlQuarterHTML?'<div style="width:100%">'+window.tlQuarterHTML(i.pf,true)+'</div>':''}</div>`;
       if(i.crew&&i.crew.assigned){ const st=A.st;
         h+=`<div class="cn-card cn-crew"><span class="cn-i">🧑‍🍳</span><div><b>Canteen Crew course</b><small>${i.crew.isCrew?'You are Canteen Crew! You can be cashier at the canteen.':'Finish all 6 lessons to become Canteen Crew.'}</small></div><span class="cn-a" style="font-size:22px">${i.crew.all.filter(id=>(st.skills[id]&&st.skills[id].m)||i.crew.done.indexOf(id)>=0).length} / 6</span><div class="cn-ls">${i.crew.all.map((id,k)=>{ const d=(st.skills[id]&&st.skills[id].m)||i.crew.done.indexOf(id)>=0; return `<button class="${d?'done':''}" data-act="start" data-id="${id}" data-c="VOC">${d?'✓':k+1}. ${CREW[id].name}</button>`; }).join('')}</div></div>`; }
       if(!h) return;

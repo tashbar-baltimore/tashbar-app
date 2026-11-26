@@ -1,10 +1,10 @@
 <script>
 /* ===== Helpers: boy-page helpers (v68, takeover builder, 2026-11-11). Loaded by msQuestTools after Shine.
-   1. "Report a problem" flag on every question: 4 big set choices, no typing. Sends msReport. ===== */
+   1. "Report a problem" flag on every question: 4 big set choices, then (Grade 2 and up) he may write what is wrong. Sends msReport. ===== */
 (function(){
 const R=[['wrong','✖️','The answer is wrong'],['confusing','❓','I don’t understand the question'],['broken','🖼️','The picture or sound doesn’t work'],['other','💬','Something else is wrong']];
 try{ if(!document.getElementById('tl-help-css')){ const s=document.createElement('style'); s.id='tl-help-css'; s.textContent=`
-.tlrep{flex:none;border:0;background:#FFF1F0;color:#B42318;border-radius:14px;min-width:48px;min-height:48px;font-size:20px;cursor:pointer;box-shadow:inset 0 0 0 2px #FDCDC8}
+.tlrep{flex:none;border:0;background:#FFF1F0;color:#B42318;border-radius:50%;width:48px;height:48px;min-width:48px;min-height:48px;padding:0;font-size:20px;cursor:pointer;box-shadow:inset 0 0 0 2px #FDCDC8}
 .tlrep:hover{background:#FEE4E2}
 #tlrep-ov{position:fixed;inset:0;z-index:9999;background:rgba(20,18,50,.55);display:grid;place-items:center;padding:16px}
 #tlrep-ov .bx{background:#fff;border-radius:26px;max-width:520px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.3);font-family:inherit}
@@ -12,18 +12,29 @@ try{ if(!document.getElementById('tl-help-css')){ const s=document.createElement
 #tlrep-ov .ch{display:grid;gap:10px}#tlrep-ov .ch button{display:flex;align-items:center;gap:12px;border:2px solid #E4E4E7;background:#fff;border-radius:18px;padding:14px 16px;font-weight:700;font-size:19px;font-family:inherit;color:#1E1B4B;min-height:60px;cursor:pointer;text-align:left}
 #tlrep-ov .ch button:hover{border-color:#6D28D9;background:#F5F3FF}#tlrep-ov .ch i{font-style:normal;font-size:26px}
 #tlrep-ov .x{margin-top:12px;width:100%;border:0;background:#F4F4F5;border-radius:14px;min-height:52px;font-weight:700;font-size:18px;font-family:inherit;cursor:pointer}
+#tlrep-ov .bx{position:relative}#tlrep-ov textarea+.go{margin-top:12px}#tlrep-ov .bx>h2{padding-right:50px}#tlrep-ov textarea{width:100%;box-sizing:border-box;border:2px solid #E4E4E7;border-radius:16px;padding:12px 14px;font:inherit;font-size:18px;color:#1E1B4B;resize:vertical;min-height:110px}#tlrep-ov textarea:focus{outline:3px solid #FDE047;border-color:#6D28D9}#tlrep-ov .go{margin-top:12px}
 #tlrep-ov .ok{font-size:22px;font-weight:800;color:#067647;text-align:center;padding:18px 0}`; document.head.appendChild(s); } }catch(e){}
 function cur(){ try{ if(typeof A==='undefined'||A.view!=='play'||!A.play) return null; const it=A.play.items&&A.play.items[A.play.i]; return it?{skill:A.play.id,phase:it.phase||'',item:String(it.q||'')}:null; }catch(e){ return null; } }
 function add(){ try{ if(!cur()) return; document.querySelectorAll('.qrow').forEach(r=>{ if(!r.querySelector('.tlrep')){ const b=document.createElement('button'); b.type='button'; b.className='tlrep'; b.setAttribute('data-tlrep','open'); b.setAttribute('aria-label','Report a problem with this question'); b.title='Report a problem'; b.textContent='🚩'; r.appendChild(b); } }); }catch(e){} }
 function close(){ const o=document.getElementById('tlrep-ov'); if(o) o.remove(); }
 function open(){ const c=cur(); if(!c) return; close(); const o=document.createElement('div'); o.id='tlrep-ov'; o.setAttribute('role','dialog'); o.setAttribute('aria-label','Report a problem');
- o.innerHTML=`<div class="bx"><h2>🚩 What is wrong with this question?</h2><p>Tap one. Your rebbe will look at it.</p><div class="ch">${R.map(r=>`<button type="button" data-tlrep="send" data-r="${r[0]}"><i aria-hidden="true">${r[1]}</i>${r[2]}</button>`).join('')}</div><button type="button" class="x" data-tlrep="close">Never mind</button></div>`;
+ o.innerHTML=`<div class="bx"><h2>🚩 What is wrong with this question?</h2><p>Tap one. We will check it.</p><div class="ch">${R.map(r=>`<button type="button" data-tlrep="send" data-r="${r[0]}"><i aria-hidden="true">${r[1]}</i>${r[2]}</button>`).join('')}</div><button type="button" class="x" data-tlrep="close">Never mind</button></div>`;
  o.dataset.skill=c.skill; o.dataset.phase=c.phase; o.dataset.item=c.item; document.body.appendChild(o); const f=o.querySelector('.ch button'); f&&f.focus(); }
-function send(reason){ const o=document.getElementById('tlrep-ov'); if(!o) return; const p={skill:o.dataset.skill,phase:o.dataset.phase,item:o.dataset.item,reason};
- o.querySelector('.bx').innerHTML='<div class="ok">Thank you! 🙏<br><span style="font-size:17px;color:#52525B;font-weight:600">Your rebbe will look at it. Keep going!</span></div>';
+/* v2 (HoS 2026-11-24: "they should be able to type what the problem is"): after he taps a reason he may write what is wrong
+   (optional, 300 letters). A K or Grade 1 boy skips the writing step. The hourly flag checker reads it (docs/FLAG-CHECKER.md). */
+function young(){ try{ const m=window.TL_MAP, g=m&&A.st&&m.sid===A.st.id?Number(m.grade):NaN; return !isNaN(g)&&g<=1; }catch(e){ return false; } }
+function send(reason){ const o=document.getElementById('tlrep-ov'); if(!o) return; o.dataset.reason=reason;
+ if(young()||!window.TLK){ go(); return; }
+ o.querySelector('.bx').innerHTML=`<h2>✏️ Tell us what is wrong</h2><p>Write it in your own words. This helps us fix it fast.</p>
+  <textarea id="tlrep-note" maxlength="300" rows="4" aria-label="What is wrong" placeholder="For example: the picture shows 3 apples, but the question says 4."></textarea>
+  <div class="go">${TLK.main('Send','data-tlrep="go"','tlk-wide')}</div>${TLK.x('data-tlrep="close"','tr')}`;
+ const t=o.querySelector('#tlrep-note'); if(t){ t.addEventListener('keydown',function(e){ e.stopPropagation(); if(e.key==='Escape') close(); }); t.addEventListener('keyup',function(e){ e.stopPropagation(); }); t.addEventListener('keypress',function(e){ e.stopPropagation(); }); t.focus(); } }
+function go(){ const o=document.getElementById('tlrep-ov'); if(!o) return; const t=o.querySelector('#tlrep-note');
+ const p={skill:o.dataset.skill,phase:o.dataset.phase,item:o.dataset.item,reason:o.dataset.reason,note:t?String(t.value||'').trim().slice(0,300):''};
+ o.querySelector('.bx').innerHTML='<div class="ok">Thank you! 🙏<br><span style="font-size:17px;color:#52525B;font-weight:600">We will check this question. Keep going!</span></div>';
  setTimeout(close,1600);
  try{ google.script.run.withFailureHandler(function(){}).msReport(SRV.token,p); }catch(e){} }
-document.addEventListener('click',function(e){ const b=e.target.closest&&e.target.closest('[data-tlrep]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const a=b.getAttribute('data-tlrep'); if(a==='open') open(); else if(a==='close') close(); else if(a==='send') send(b.dataset.r); },true);
+document.addEventListener('click',function(e){ const b=e.target.closest&&e.target.closest('[data-tlrep]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const a=b.getAttribute('data-tlrep'); if(a==='open') open(); else if(a==='close') close(); else if(a==='send') send(b.dataset.r); else if(a==='go') go(); },true);
 document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
 try{ new MutationObserver(()=>add()).observe(document.documentElement,{childList:true,subtree:true}); }catch(e){}
 /* 2. v71: keep his work safe through a Wi-Fi drop. If a save fails, put the answers and pay rows back in the queue
