@@ -104,8 +104,8 @@
       var out = [];
       [[a, '.h0', Math.min(5, k)], [b, '.h1', Math.max(0, k - 5)]].forEach(function (x) {
         var h = x[0], c = h.count(), want = x[2], i;
-        for (i = c; i < want; i++) out.push({ tap: sel + ' ' + x[1] + ' svg > path:first-of-type' });
-        for (i = c - 1; i >= want; i--) out.push({ tap: sel + ' ' + x[1] + ' .fg[data-f="' + i + '"]' });
+        for (i = c; i < want; i++) out.push({ tap: sel + ' ' + x[1] + ' .hpics' });
+        for (i = c - 1; i >= want; i--) out.push({ tap: sel + ' ' + x[1] + ' .fdown' });
       });
       return out;
     };
