@@ -76,3 +76,4 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 
 ## Done: the button tour (26 Nov 2026)
 - Plan and HoS answers: `docs/BUTTON-TUTORIAL-PLAN.md` (#551). Round 💡 right of Sign out on the home (`data-gm="pftour"`, the home test allows exactly it), a "How the buttons work" card with 3 small previews on the right side of My profile, under My levels (`.pr-tour`); hint pop-up for the first 10 sign-ins; K–3 short spoken tour, 4+ 12 cards. Code at the end of `src/GameMap.html` (`TLTOUR`). Do not add a second `<script>` block to GameMap.html (Photos.js strips only the outer tags), and the `tt-` names belong to Torah Tracks (the tour uses `tlt-`).
+- Later (Moshe 26 Nov, not now): a button on the tour card to move it to the bottom of My profile once a boy does not need it anymore.
