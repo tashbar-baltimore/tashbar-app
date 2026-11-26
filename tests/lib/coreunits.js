@@ -59,6 +59,19 @@ function server() {
 
 async function page(pg) {
   const fails = [], oks = [];
+  /* every live unit: a lesson question keeps its reading passage in the boss level (the lesson keeps it in pic), and the unit's own
+     "tap the proof" items do not all put the right sentence in the same place (that kind is never shuffled: a boy learns "tap the top one") */
+  const live = await pg.evaluate(() => { const bad = [], U = TLCORE.units; let lessonQs = 0;
+    U.list.forEach(u => {
+      const src = {}; (u.skills || []).concat(u.review || []).forEach(id => { let it = []; try { it = buildMission(id).filter(x => x.phase === 'check'); } catch (e) {} it.forEach(x => { src[id + '|' + x.q] = x; }); });
+      for (let r = 0; r < 4; r++) (U.questions(u, 'check') || []).forEach(q => { if (q.kind !== 'mc' && q.kind !== 'order') return; lessonQs++; const x = src[q.skill + '|' + q.q];
+        if (x && !x.p && x.pic && /[A-Za-z0-9]/.test(String(x.pic)) && q.p !== String(x.pic)) bad.push(u.id + ' ' + q.skill + ': "' + String(q.q).slice(0, 50) + '" loses its passage'); });
+      const ev = (u.items || []).filter(x => x.type === 'evidence' && !Array.isArray(x.a));
+      if (ev.length >= 3 && ev.every(x => +x.a === +ev[0].a)) bad.push(u.id + ': all ' + ev.length + ' "tap the proof" items have the answer in place ' + (+ev[0].a + 1));
+    });
+    return { bad: bad.filter((x, i, a) => a.indexOf(x) === i), units: U.list.length, lessonQs }; }).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 200)] }));
+  live.bad.slice(0, 12).forEach(b => fails.push('live units: ' + b)); if (live.bad.length > 12) fails.push('live units: ... and ' + (live.bad.length - 12) + ' more');
+  if (!live.bad.length) oks.push('unit checks (live units): ' + live.units + ' units, ' + live.lessonQs + ' lesson questions drawn: every passage shows; "tap the proof" answers are not all in one place');
   for (const vp of [{ width: 1366, height: 768 }, { width: 390, height: 844 }]) {
     await pg.setViewportSize(vp); const at = vp.width + 'px: ';
     const r = await pg.evaluate(async () => {
