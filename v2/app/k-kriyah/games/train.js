@@ -128,14 +128,15 @@ export default function setup(E, { struggled, unit, game = {} }) {
     if (pr) { const [a, b] = pr.map(i => cars.find(x => x.userData.slot === i)); swapPairs = swapPairs.filter(p => p !== pr); E.sfx.whoosh();
       const pa = a.position.clone(), pb = b.position.clone(); await E.tween(650, q => { a.position.lerpVectors(pa, pb, q); b.position.lerpVectors(pb, pa, q); a.position.y += Math.sin(q * Math.PI) * 1.0; b.position.y += Math.sin(q * Math.PI) * .4; });
       const sa = a.userData.slot; a.userData.slot = b.userData.slot; b.userData.slot = sa; E.sfx.drum(); E.sparkle(a.position.clone().add(new THREE.Vector3(0, .8 * S, .4)), 14); E.sparkle(b.position.clone().add(new THREE.Vector3(0, .8 * S, .4)), 14);
-      const hi = Math.max(a.userData.slot, b.userData.slot); await E.say(['Fixed! ' + E.LETTERS[ORDER[hi - 1]].name + ', then ' + E.LETTERS[ORDER[hi]].name + '!']);
+      const hi = Math.max(a.userData.slot, b.userData.slot), k1 = ORDER[hi - 1], k2 = ORDER[hi]; await E.say(['Fixed! ' + E.LETTERS[k1].name + ', then ' + E.LETTERS[k2].name + '!']);
+      if (E.sameShape(k1, k2)) await E.say(E.LETTERS[k1].top ? 'Shin has its dot on the right.' : 'Tuf has a dot. Suf has none.');   /* what to look at */
       wrongInRow = 0; busy = false; if (!swapPairs.length && resolveSwap) { const r = resolveSwap; resolveSwap = null; r(); } }
     else { E.sfx.boop(); wrong++; wrongInRow++; await E.shake(c, .12); await E.say(E.LETTERS[c.userData.key].name + ' is in the right place. Listen.'); await chant(c.userData.slot, true);
       if (wrongInRow >= 2 || wrong >= 3) help = true; busy = false; }
   }
   async function roundSwap() {
     /* every other pair of neighbours is swapped: the first pair is the demo */
-    const prs = [[1, 2], [3, 4], [5, 6]].filter(p => p[1] < n); gaps = null;
+    const dotPairs = [[3, 4], [5, 6]].filter(p => p[1] < n), prs = [[1, 2], dotPairs[Math.floor(Math.random() * dotPairs.length)]].filter(Boolean); gaps = null;   /* the demo pair, and ONE dot pair among cars in the right place: he must look to find it */
     const at = i => { const p = prs.find(q => q.includes(i)); return p ? (p[0] === i ? p[1] : p[0]) : i; };   /* the car standing in place i */
     const lx = LX; loco.position.x = lx + 10;
     /* on a phone the cars park in two short lines (right to left, top line first), big enough to see every dot */
@@ -150,7 +151,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
     await E.say(['Watch me. ' + E.LETTERS[ORDER[d[0]]].name + ' comes after ' + E.LETTERS[ORDER[d[0] - 1]].name + '.']);
     let [x, y] = E.toScreen(first.position.clone().add(new THREE.Vector3(0, .7 * S, 0))); E.hand.at(x, y, true); await E.wait(900); E.hand.hide();
     await tapSwap(first);
-    await E.say('Now you! Tap a car in the wrong place.'); wrongInRow = 0;   /* mistakes in both rounds count */
+    await E.say('Now you! Look at the dots.'); await E.say('Tap a car in the wrong place.'); wrongInRow = 0;   /* mistakes in both rounds count */
     const done = new Promise(r => resolveSwap = r); enabled = true; busy = false; document.body.dataset.swapReady = 1;
     await done; enabled = false; delete document.body.dataset.swapReady;
     E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant();
