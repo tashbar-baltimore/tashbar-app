@@ -66,7 +66,9 @@
       R = { n: 8, misses: 0 }; ask(8); K.set(0, 0);
       await F.say('A bead rack! Five red, five white.');
       await F.say('Watch me push eight in one move.');
-      await F.handTo(K.bead(0, 7)); await F.handTap(); K.tap(0, 7); await F.wait(500);
+      await F.handTo(K.bead(0, 8)); await F.handTap(); K.tap(0, 8); await F.wait(500);
+      await F.say('Oops, that is nine. Tap a bead to push one back.');
+      await F.handTo(K.bead(0, 8)); await F.handTap(); K.tap(0, 8); await F.wait(500);
       await F.say('Five red and three white. Eight!');
       await F.handTo($('check')); await F.handTap();
       K.el.classList.add('glowmoved'); await F.yes(K.el, 'One push. No counting!'); K.el.classList.remove('glowmoved');

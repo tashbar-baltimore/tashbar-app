@@ -68,7 +68,9 @@
       await F.say('This is a ten-frame. Watch me make seven.');
       for (var i = 0; i < 5; i++) { await F.handTo(T.cell(i)); await F.handTap(); T.set(i + 1); NK.sound.pop(); }
       await F.say('One full row. That is five!');
-      for (i = 5; i < 7; i++) { await F.handTo(T.cell(i)); await F.handTap(); T.set(i + 1); NK.sound.pop(); }
+      for (i = 5; i < 8; i++) { await F.handTo(T.cell(i)); await F.handTap(); T.set(i + 1); NK.sound.pop(); }
+      await F.say('Oops, too many! Tap a counter to take one out.');
+      await F.handTo(T.cell(7)); await F.handTap(); T.set(7); NK.sound.back();
       await F.handTo($('check')); await F.handTap(); T.glow(true);
       await F.yes(T.el, 'Five and two more. Seven!'); T.glow(false);
     },

@@ -62,7 +62,9 @@
       for (var t = 1; t <= 5; t++) { await F.handTap(); H.hands[0].set(t); NK.sound.pop(); await F.wait(120); }
       await F.say('One whole hand is five.');
       await F.handTo(H.hands[1].el, .5, .6);
-      for (var i = 1; i <= 2; i++) { await F.handTap(); H.hands[1].set(i); NK.sound.pop(); await F.wait(120); }
+      for (var i = 1; i <= 3; i++) { await F.handTap(); H.hands[1].set(i); NK.sound.pop(); await F.wait(120); }
+      await F.say('Oops, too many! Tap the arrow to put one down.');
+      var dn = H.hands[1].el.querySelector('.fdown'); if (dn) await F.handTo(dn); await F.handTap(); H.hands[1].set(2); NK.sound.back();
       await F.handTo($('check')); await F.handTap(); cloth(true);
       await F.yes($('hp'), 'Five and two. Seven!');
       await F.say('Show me on your hands too!');

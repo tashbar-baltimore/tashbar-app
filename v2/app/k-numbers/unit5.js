@@ -139,8 +139,16 @@
     9: { strokes: ['M148 96 C 148 62, 126 46, 100 46 C 72 46, 52 66, 52 96 C 52 124, 74 140, 100 140 C 124 140, 148 126, 148 96 L 148 228'], rhyme: 'A loop and a line. Nine!' },
     10: { strokes: ['M42 76 L 70 52 L 70 228', 'M146 52 C 118 52, 104 92, 104 140 C 104 190, 118 228, 146 228 C 174 228, 188 190, 188 140 C 188 92, 174 52, 146 52'], rhyme: 'A one and a zero. Ten!' }
   };
+  /* 0-5 for tracing in review: Unit 4's strokes, scaled into the tracer's box (the same rhymes as Unit 4) */
+  U5.RHYME04 = { 0: 'Around and back to the top. Zero!', 1: 'One straight line, down we go. One!', 2: 'Curve around, slide down, line across. Two!',
+    3: 'Around a bump, around a bump. Three!', 4: 'Down and across, then down again. Four!', 5: 'Down, a round belly, then a hat. Five!' };
+  U5.numSpec = function (n) {
+    if (n > 5) return U5.NUMERALS[n];
+    var k = 0, strokes = U5.STROKES04[n].map(function (d) { k = 0; return d.replace(/-?\d+(\.\d+)?/g, function (v) { var x = +v, out = (k % 2 === 0) ? 20 + x * 1.8 : 9 + x * 1.8; k++; return String(Math.round(out * 10) / 10); }); });
+    return { strokes: strokes, rhyme: U5.RHYME04[n] };
+  };
   U5.tracer = function (n) {
-    var spec = U5.NUMERALS[n], el = document.createElement('div'); el.className = 'tracer';
+    var spec = U5.numSpec(n), el = document.createElement('div'); el.className = 'tracer';
     var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 220 270'); el.appendChild(svg);
     var api = { el: el, n: n, stroke: 0, onDone: null, onOff: null, done: false }, cur = 0, samples = [], prog, head, startDot, len, track = false, warned = false;
     function mk(tag, attrs) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); svg.appendChild(e); return e; }

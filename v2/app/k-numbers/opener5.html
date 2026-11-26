@@ -12,7 +12,8 @@
 .stage{ grid-template-rows:1fr auto; justify-items:center; align-items:center; }
 .show{ display:flex; align-items:center; justify-content:center; gap:3vw; width:100%; }
 .show .tf{ width:min(46vw,560px); } .show .hands2{ width:min(32vw,40vh,380px); } .show .rack{ width:min(94vw,1100px); }
-.show .panel{ display:flex; align-items:center; justify-content:center; }
+.show .panel{ display:flex; align-items:center; justify-content:center; } .numpanel svg{ height:clamp(90px,20vh,180px) !important; } .numpanel{ padding:12px 20px; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-rows:1fr auto; } .show{ gap:8px; } .numpanel svg{ height:13vh !important; } .show .tf{ width:76vw; } .show .hands2{ width:52vw; } }
 #go{ width:clamp(100px,15vh,130px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; visibility:hidden; animation:pulse 1.2s infinite; }
 #go.on{ visibility:visible; } #go svg{ width:52%; height:52%; position:relative; }
 .hero{ display:flex; align-items:center; justify-content:center; }
@@ -44,6 +45,7 @@
       if (k === 'hands') { var h = U5.hands(0, false); p.appendChild(h.el); made.hands = h; }
       if (k === 'rack') { var r = U5.rack(false); p.appendChild(r.el); made.rack = r; }
     });
+    if (s.n > 5) { var q = document.createElement('div'); q.className = 'panel unum numpanel'; q.innerHTML = U5.num(s.n); q.style.visibility = 'hidden'; box.appendChild(q); made.num = q; }
     return made;
   }
   async function grow(m, n) { /* the five comes in at once, then the "more" one by one */
@@ -65,6 +67,7 @@
         var m = build(s); await grow(m, s.n);
         for (var k = 0; k < s.lines.length; k++) await F.say(s.lines[k]);
         if (m.frame && s.n > 5) { m.frame.glow(true); await F.wait(900); m.frame.glow(false); }
+        if (m.num) { m.num.style.visibility = ''; NK.sound.pop(); await F.say('This is how we write ' + F.word(s.n) + '.'); }
         if (s.pause) await F.wait(s.pause);
         if (s.chant) await F.chant(s.chant, true);
         done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#go' }]; }; GAME.wrong = null; F.lock(false); $('go').classList.add('on');

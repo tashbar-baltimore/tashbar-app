@@ -81,7 +81,13 @@
     },
     round: function (F, i) {
       var n = [6, 7, 8, 9, 10][i], e = easyNext; easyNext = false;
-      return play(F, n, (e ? 'A wide road this time. ' : '') + 'Trace ' + F.word(n) + '.', { easy: e });
+      if (n === 10) return (async function () {   /* ten is new: show it first (one and zero), then a slow trace, then his turn */
+        GAME.phase = 'busy'; F.lock(true); U5.setNum($('num'), 10); F5.set(10); F5.glow(true);
+        await F.say('Ten is a one and a zero.'); await F.say('Two full rows. Ten! Watch me write it.'); F5.glow(false);
+        await showMe(10, 2600); await F.say(U5.NUMERALS[10].rhyme);
+        return play(F, 10, 'Your turn. Trace ten.', { easy: e });
+      })();
+      return play(F, n, (e ? 'A wide road. ' : '') + 'This is ' + F.word(n) + '. Trace ' + F.word(n) + '.', { easy: e });   /* each written number is named as it is shown */
     },
     bonus: function (F) { var n = F.pick([6, 8, 9]); return play(F, n, 'Bonus! A faint road. Trace ' + F.word(n) + '.', { faint: true }); }
   });

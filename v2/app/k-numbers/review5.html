@@ -27,13 +27,15 @@
 .og{ width:clamp(64px,10vh,84px); height:clamp(64px,10vh,84px); cursor:pointer; touch-action:none; transition:transform .15s; }
 .og:active{ transform:scale(.9); }
 .hero svg{ width:58%; margin:6% auto 0; display:block; }
+#aT{ width:min(30vw,48vh,320px); aspect-ratio:220/270; padding:4px; } #aT .tracer{ width:100%; height:100%; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ #aT{ width:min(60vw,40vh); } }
 @media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.7fr 1.3fr; } #flash.qcard{ width:min(64vw,28vh); } .ans{ width:94vw; } .ans .hands2{ width:84vw; } .give{ flex-direction:row; } .bowl, .plt{ width:49%; aspect-ratio:auto; min-height:150px; border-radius:30px; padding:2%; gap:0; } .og{ width:64px; height:64px; } }
 </style>
 </head>
 <body>
 <div id="game" class="locked"><div class="stage" id="stage">
   <div class="left"><div class="qcard flash" id="flash"><div class="cloth"><div class="eyes"><i></i><i></i></div></div></div></div>
-  <div class="right"><div class="ans panel" id="aH"></div><div class="ans panel give" id="aG" hidden><div class="bowl" id="pile"></div><div class="plt" id="plt"></div></div>
+  <div class="right"><div class="ans panel" id="aH"></div><div class="ans panel" id="aT" hidden></div><div class="ans panel give" id="aG" hidden><div class="bowl" id="pile"></div><div class="plt" id="plt"></div></div>
     <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
 </div></div>
 <script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
@@ -52,13 +54,15 @@
     (o.parentNode.id === 'pile' ? $('plt') : $('pile')).appendChild(o); NK.sound[o.parentNode.id === 'plt' ? 'pop' : 'back'](); ready();
     NK.hush(); var c = G.count(); NK.say(c ? FR.Word(c) + '!' : 'Zero.', { noRepeat: true });   /* each orange is counted as it lands */
   });
-  function W() { return R.ans === 'give' ? G : H; }
+  var TR; function W() { return R.ans === 'give' ? G : H; }
   function ready() { var c = $('check'); var ok = W().count() > 0 || R.n === 0; c.classList.toggle('dim', !ok); c.classList.toggle('ready', ok && GAME.phase === 'answer'); }
   function taps(k) {
     if (R.ans !== 'give') return H.moves(k, '#aH');
     var c = G.count(), out = []; for (var i = 0; i < Math.abs(k - c); i++) out.push({ tap: (k > c ? '#pile' : '#plt') + ' .og >> nth=0' }); return out;
   }
-  function hooks() { GAME.right = function () { return taps(R.n).concat([{ tap: '#check' }]); }; GAME.wrong = function () { return taps(R.n + 1).concat([{ tap: '#check' }]); }; }
+  function hooks() {
+    if (R.ans === 'trace') { GAME.right = function () { return [{ path: TR.points() }]; }; GAME.wrong = R.misses ? null : function () { return [{ path: TR.offPath() }]; }; return; }
+    GAME.right = function () { return taps(R.n).concat([{ tap: '#check' }]); }; GAME.wrong = function () { return taps(R.n + 1).concat([{ tap: '#check' }]); }; }
   function put(html) { if (shown) shown.remove(); var d = document.createElement('div'); d.className = 'shown'; d.style.cssText = 'position:absolute;inset:0'; d.innerHTML = html || ''; $('flash').insertBefore(d, $('flash').firstChild); shown = d; return d; }
   function scattered(n) { var pts = [], t = 0; while (pts.length < n && t++ < 800) { var x = 14 + Math.random() * 72, y = 14 + Math.random() * 72; if (pts.every(function (q) { return Math.hypot(q[0] - x, q[1] - y) > 20; })) pts.push([x, y]); } return pts; }
   async function countTogether() {
@@ -68,6 +72,7 @@
   async function help(second) {
     if (R.type === 'count') { await FR.say("Let's count together. Touch each one."); await countTogether(); }
     else if (R.type === 'give') { await FR.say("Let's count the plate together."); var os = $('plt').querySelectorAll('.og'); for (var i = 0; i < os.length; i++) { os[i].style.filter = 'drop-shadow(0 0 8px #FFD23D)'; await FR.say(FR.Word(i + 1) + (i === os.length - 1 ? '.' : ','), { noRepeat: true }); } os.forEach(function (x) { x.style.filter = ''; }); await FR.say('Bubby needs ' + FR.word(R.n) + '.'); }
+    else if (R.type === 'down') await FR.say("Let's look again. Counting down, after " + FR.word(R.n + 1) + ' comes ' + (second ? FR.word(R.n) + '.' : '...?'));
     else if (R.type === 'next') await FR.say("Let's look again. After " + FR.word(R.n - 1) + ' comes ' + (second ? FR.word(R.n) + '.' : '...?'));
     else if (R.type === 'zero') await FR.say("Let's look. Nothing there. That is zero!");
     else if (R.type === 'peek') { cloth(true); await FR.say("Let's look again."); if (R.L) await FR.showShape(shown.querySelector('.qcard') || shown, second); }
@@ -85,10 +90,24 @@
   }
   /* the first time each kind comes: a short demo of how to answer */
   var DEMO = {
-    peek: async function (F) { await F.say('Peek, then tap the hand. One finger each tap.'); await F.handTo(H.hands[0].el, .5, .6); await F.handTap(); H.hands[0].set(1); NK.sound.pop(); await F.wait(300); H.set(0); F.handHide(); },
-    give: async function (F) { await F.say('Tap an orange. It goes on Bubby\'s plate.'); var o = $('pile').querySelector('.og'); await F.handTo(o); await F.handTap(); $('plt').appendChild(o); NK.sound.pop(); await F.wait(300); G.set(0); F.handHide(); },
+    peek: async function (F) { await F.say('Peek, then tap the hand. One finger each tap.'); await F.handTo(H.hands[0].el, .5, .6); for (var t = 1; t <= 2; t++) { await F.handTap(); H.hands[0].set(t); NK.sound.pop(); }
+      await F.say('Too many? Tap the arrow to put one down.'); var dn = H.hands[0].el.querySelector('.fdown'); if (dn) await F.handTo(dn); await F.handTap(); H.hands[0].set(1); NK.sound.back(); await F.wait(300); H.set(0); F.handHide(); },
+    give: async function (F) { await F.say('Tap an orange. It goes on Bubby\'s plate.'); for (var t = 0; t < 2; t++) { var o = $('pile').querySelector('.og'); await F.handTo(o); await F.handTap(); $('plt').appendChild(o); NK.sound.pop(); await F.say(F.Word(t + 1) + '!', { noRepeat: true }); }
+      await F.say('Too many? Tap one to take it back.'); var b = $('plt').querySelector('.og:last-child'); await F.handTo(b); await F.handTap(); $('pile').appendChild(b); NK.sound.back(); await F.wait(300); G.set(0); F.handHide(); },
     zero: async function (F) { await F.say('None? Keep the hands closed. Then press check.'); await F.handTo($('check')); await F.wait(300); F.handHide(); },
-    numeral: async function (F) { await F.say('A written number. Show it on the hands.'); }
+    numeral: async function (F) {   /* show one first: the written three, and three fingers */
+      var keep = shown; put('<div class="bignum">' + U5.num(3) + '</div>'); cloth(true); await F.say('This is three. I show three fingers.');
+      await F.handTo(H.hands[0].el, .5, .6); for (var t = 1; t <= 3; t++) { await F.handTap(); H.hands[0].set(t); NK.sound.pop(); } await F.wait(400); H.set(0); F.handHide(); cloth(false); await F.wait(380);
+      if (shown) shown.remove(); shown = keep; $('flash').insertBefore(keep, $('flash').firstChild); },
+    next: async function (F) { $('flash').classList.add('open'); await F.say('Listen. One, two, three... next is four!'); H.set(4); NK.sound.pop(); await F.wait(900); H.set(0); },
+    down: async function (F) { $('flash').classList.add('open'); await F.say('Counting down. Five, four, three... next is two!'); H.set(2); NK.sound.pop(); await F.wait(900); H.set(0); },
+    trace: async function (F) {   /* the hand traces a one, then he traces his number */
+      var t = U5.tracer(1); $('aT').innerHTML = ''; $('aT').appendChild(t.el); t.lock(true); await F.say('Trace the number. Start at the green dot. Watch me.');
+      var pts = t.points(), hand = document.getElementById('hand'); hand.style.transition = 'left .08s linear, top .08s linear';
+      await F.handTo(t.el.querySelector('.startdot')); var go = t.auto(1500);
+      for (var k = 0; k < pts.length; k += 3) { hand.style.left = (pts[k][0] - 20) + 'px'; hand.style.top = (pts[k][1] - 8) + 'px'; await F.wait(85); }
+      await go; hand.style.transition = ''; F.handHide(); await F.say(U5.RHYME04[1]); },
+    count: async function (F) { cloth(true); await F.say('Touch each apple as you count. Then show me.'); var a = shown.querySelectorAll('svg.q'); await F.handTo(a[0]); await F.handTap(); await F.say('One…', { noRepeat: true }); F.handHide(); }
   };
   var ITEMS = [
     { type: 'peek', make: function (F) { var n = easy ? F.pick([2, 3]) : F.pick([3, 4, 5]), c = F.card(n, 'dots'); c.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; put().appendChild(c); return { n: n, L: c.L, flash: true, line: 'Peek! How many dots?' }; } },
@@ -96,15 +115,25 @@
     { type: 'give', make: function (F) { var n = easy ? 2 : F.pick([3, 4]); put('<div class="bignum">' + U5.num(n) + '</div>'); return { n: n, ans: 'give', line: 'Bubby needs ' + F.word(n) + ' oranges. Give her ' + F.word(n) + '.' }; } },
     { type: 'count', make: function (F) { var n = easy ? 5 : F.pick([6, 7, 8]), h = ''; scattered(n).forEach(function (p) { h += '<svg class="q" viewBox="0 0 100 100" style="position:absolute;width:19%;height:19%;transform:translate(-50%,-50%);left:' + p[0] + '%;top:' + p[1] + '%"><use href="#nkApple"/></svg>'; }); put(h); return { n: n, line: 'How many apples? Count, then show me.' }; } },
     { type: 'zero', make: function (F) { put('<div style="position:absolute;inset:12%;border-radius:50%;background:radial-gradient(ellipse at 50% 42%, #fff 0 55%, #C7D9EE 86%, #A9C1DE 100%)"></div>'); return { n: 0, line: 'How many cookies on the plate?' }; } },
-    { type: 'numeral', make: function (F) { var n = easy ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]); put('<div class="bignum">' + U5.num(n) + '</div>'); return { n: n, line: 'What number is this? Show me.' }; } }
+    { type: 'down', make: function (F) { var a = easy ? F.pick([4, 5]) : F.pick([6, 7, 8]); put(EAR); return { n: a - 3, a: a }; } },
+    { type: 'trace', make: function (F) { var n = easy ? F.pick([1, 4]) : F.pick([2, 3, 5]); put('<div class="bignum">' + U5.num(n) + '</div>'); return { n: n, ans: 'trace', line: 'Trace ' + F.word(n) + '. Start at the green dot.' }; } },
+    { type: 'numeral', make: function (F) { var n = easy ? F.pick([1, 2, 4]) : F.pick([2, 4, 5]); put('<div class="bignum">' + U5.num(n) + '</div>'); return { n: n, line: 'What number is this? Show me.' }; } }
   ];
   function play(F, it) {
     return new Promise(async function (res) {
       GAME.phase = 'busy'; F.lock(true); cloth(false); await F.wait(380);
       var r = it.make(F); r.type = it.type; r.ans = r.ans || 'hands'; r.misses = 0; R = r; if (easy > 0) easy--;
-      $('aH').hidden = R.ans !== 'hands'; $('aG').hidden = R.ans !== 'give'; H.set(0); G.set(0); H.lock(true); G.lock(true); ready();
+      $('aH').hidden = R.ans !== 'hands'; $('aG').hidden = R.ans !== 'give'; $('aT').hidden = R.ans !== 'trace'; $('check').style.visibility = R.ans === 'trace' ? 'hidden' : ''; H.set(0); G.set(0); H.lock(true); G.lock(true); ready();
       if (DEMO[R.type] && !seen[R.type]) { seen[R.type] = true; await DEMO[R.type](F); }
-      if (R.type === 'next') { $('flash').classList.add('open'); await F.say('Count with me. What comes next?'); for (var k = R.a; k < R.a + 3; k++) await F.say(F.Word(k) + '…', { noRepeat: true }); NK.last = 'What comes after ' + F.word(R.n - 1) + '? Show me.'; await F.say('What comes next? Show me.', { noRepeat: true }); }
+      if (R.ans === 'trace') {
+        TR = U5.tracer(R.n); $('aT').innerHTML = ''; $('aT').appendChild(TR.el); TR.lock(true); cloth(true); await F.say(R.line);
+        TR.onOff = async function () { FR.oops($('aT')); R.misses++; GAME.phase = 'busy'; hooks(); await FR.say('Stay on the road. Look at the green dot.'); TR.rearm(); if (R.misses >= 2) TR.easy = true; GAME.phase = 'answer'; hooks(); };
+        TR.onDone = async function () { GAME.phase = 'busy'; FR.lock(true); await FR.say(U5.RHYME04[R.n]); await FR.yes($('aT'), 'You remember!'); var d = done; done = null; if (d) d(R.misses === 0); };
+        done = function (first) { if (R.misses >= 2) easy = 2; res(first); };
+        GAME.phase = 'answer'; F.lock(false); TR.lock(false); hooks(); return;
+      }
+      if (R.type === 'down') { $('flash').classList.add('open'); await F.say('Count down with me. What comes next?'); for (var k2 = R.a; k2 > R.a - 3; k2--) await F.say(F.Word(k2) + '…', { noRepeat: true }); NK.last = 'Counting down, what comes after ' + F.word(R.n + 1) + '?'; await F.say('What comes next? Show me.', { noRepeat: true }); }
+      else if (R.type === 'next') { $('flash').classList.add('open'); await F.say('Count with me. What comes next?'); for (var k = R.a; k < R.a + 3; k++) await F.say(F.Word(k) + '…', { noRepeat: true }); NK.last = 'What comes after ' + F.word(R.n - 1) + '? Show me.'; await F.say('What comes next? Show me.', { noRepeat: true }); }
       else if (R.flash) { await F.say(R.line, { repeat: 'How many dots? Show me.' }); cloth(true); await F.wait(1300); cloth(false); await F.wait(380); }
       else { cloth(true); await F.say(R.line); }
       done = function (first) { if (R.misses >= 2) easy = 2; res(first); };
@@ -112,7 +141,7 @@
     });
   }
   FR.game({
-    id: 'u5-review', bonusSay: '', title: 'Review Time', rounds: 6,
+    id: 'u5-review', bonusSay: '', title: 'Review Time', rounds: 8,
     hero: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#fff" stroke="#3B2A7A" stroke-width="5"/><path d="M50 50 L50 22 M50 50 L70 60" stroke="#3B2A7A" stroke-width="6" stroke-linecap="round"/><path d="M14 30 A40 40 0 0 1 40 11" stroke="#22B45E" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M40 11 l-2 -8 M40 11 l-8 2" stroke="#22B45E" stroke-width="6" stroke-linecap="round"/></svg>',
     init: function (F) { H = U5.hands(0, true); $('aH').appendChild(H.el); H.onChange = ready; H.lock(true); $('check').addEventListener('click', check); },
     reset: function (F, again) { plan = ITEMS.slice(); if (!again) { easy = 0; seen = {}; } },

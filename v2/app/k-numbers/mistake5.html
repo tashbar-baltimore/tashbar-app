@@ -102,7 +102,9 @@
       await F.handTo($('down')); await F.handTap(); NK.sound.yes(); await F.say('Thumbs down means a mistake.');
       $('thumbs').hidden = true; $('fixrow').hidden = false; H.set(0); await F.say('Then show the right number. Tap the hands.');
       await F.handTo(H.hands[0].el, .5, .6); for (var t = 1; t <= 5; t++) { await F.handTap(); H.hands[0].set(t); NK.sound.pop(); }
-      await F.handTo(H.hands[1].el, .5, .6); for (t = 1; t <= 3; t++) { await F.handTap(); H.hands[1].set(t); NK.sound.pop(); }
+      await F.handTo(H.hands[1].el, .5, .6); for (t = 1; t <= 4; t++) { await F.handTap(); H.hands[1].set(t); NK.sound.pop(); }
+      await F.say('Oops, nine. Tap the arrow to put one down.');
+      var dn = H.hands[1].el.querySelector('.fdown'); if (dn) await F.handTo(dn); await F.handTap(); H.hands[1].set(3); NK.sound.back();
       await F.handTo($('check')); await F.handTap(); await F.yes($('hp'), 'Eight! Thank you for helping Eli!'); H.set(0);
     },
     round: function (F, i) { return play(F, i, false); },
