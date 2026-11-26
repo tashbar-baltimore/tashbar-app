@@ -6,12 +6,12 @@
 const PAIRS = { 3: [['vov', 'zayin'], ['hei', 'ches']] };   /* a game can bring its own pairs (Unit 4: Beis/Kaf, then Kaf/Chaf) */
 /* the place to look on each letter (font units), and what to say about it */
 const LOOK = { vov: 'No crown. That is Vov.', zayin: 'A crown on top! That is Zayin.', hei: 'The leg doesn’t touch the roof. That is Hei.', ches: 'The leg touches the roof. That is Ches.',
-  beis: 'A tail at the bottom! That is Beis.', gimmel: 'A foot at the bottom! That is Gimmel.', pei: 'A dot! That is Pei.', peiTongue: 'A little tongue inside! That is Pei.', kafNoTongue: 'No little tongue. That is Kaf.', fei: 'No dot. That is Fei.', nun: 'Flat at the bottom. That is Nun.', tes: 'Closed at the bottom. That is Tes.', mem: 'An opening at the bottom! That is Mem.', kafRound: 'Round at the bottom. That is Kaf.', kaf: 'A dot inside! That is Kaf.', chaf: 'No dot. That is Chaf.' };
+  beis: 'A tail at the bottom! That is Beis.', gimmel: 'A foot at the bottom! That is Gimmel.', nun: 'Flat at the bottom. That is Nun.', tes: 'Closed at the bottom. That is Tes.', mem: 'An opening at the bottom! That is Mem.', kafRound: 'Round at the bottom. That is Kaf.', kaf: 'A dot inside! That is Kaf.', chaf: 'No dot. That is Chaf.' };
 const CLUE = { vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', hei: 'Hei’s leg doesn’t touch the roof.', ches: 'Ches’s leg touches the roof.',
-  beis: 'Beis has a tail at the bottom.', gimmel: 'Gimmel has a foot.', pei: 'Pei has a dot.', peiTongue: 'Pei has a little tongue inside.', kafNoTongue: 'Kaf has no little tongue.', fei: 'Fei has no dot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', kafRound: 'Kaf is round at the bottom.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.' };
+  beis: 'Beis has a tail at the bottom.', gimmel: 'Gimmel has a foot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', kafRound: 'Kaf is round at the bottom.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.' };
 /* in a Beis/Kaf round the thing to see is the bottom, in a Kaf/Chaf round the dot */
-const say = (T, k, pr) => T[k === 'kaf' && pr.includes('beis') ? 'kafRound' : k === 'kaf' && pr.includes('pei') ? 'kafNoTongue' : k === 'pei' && pr.includes('kaf') ? 'peiTongue' : k];
-const WATCH = { zayin: 'A crown on top!', ches: 'The leg touches the roof!', kaf: 'Round at the bottom!', chaf: 'No dot!', nun: 'Flat at the bottom!', mem: 'An opening at the bottom!', pei: 'A little tongue inside!', fei: 'No dot!' };
+const say = (T, k, pr) => T[k === 'kaf' && pr.includes('beis') ? 'kafRound' : k];
+const WATCH = { zayin: 'A crown on top!', ches: 'The leg touches the roof!', kaf: 'Round at the bottom!', chaf: 'No dot!', nun: 'Flat at the bottom!', mem: 'An opening at the bottom!' };
 export default function setup(E, { struggled, unit, game }) {
   const { THREE, S } = E;
   const pairs = (game && game.pairs) || PAIRS[unit.n] || PAIRS[3];
@@ -27,8 +27,8 @@ export default function setup(E, { struggled, unit, game }) {
   const cardArrow = E.arrow3d(.45);
   function makeCard(k) { const old = card; card = E.letter(k, 1.9); card.visible = false; E.scene.add(card); E.scene.remove(old); }   /* each letter has its own shape */
   let pair = pairs[0], labels = [], P = false, CS = 1, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, wrongInRow = 0, missed = false, deck = [], idx = 0, onDone = null, kRound = 0;
-  E.onLayout(p => { P = p; CS = p ? .85 : 1;
-    if (p) { E.camBase.set(0, 3.2, 11.8); E.camTarget.set(0, 2.4, 0); crates[0].position.set(1.3, 0, 0); crates[1].position.set(-1.3, 0, 0); crates.forEach(c => c.scale.setScalar(.72)); cardHome.set(0, 4.5, 1.5); kid.visible = false; }
+  E.onLayout(p => { P = p; CS = p ? 1.05 : 1;
+    if (p) { E.camBase.set(0, 3.0, 11.2); E.camTarget.set(0, 2.3, 0); crates[0].position.set(1.3, 0, .3); crates[1].position.set(-1.3, 0, .3); crates.forEach(c => c.scale.setScalar(.82)); cardHome.set(0, 4.3, 1.5); kid.visible = false; }   /* phone: bigger crates and card (graphics pass) */
     else { E.camBase.set(0, 2.7, 9.8); E.camTarget.set(0, 1.5, 0); crates[0].position.set(2.6, 0, 0); crates[1].position.set(-2.6, 0, 0); crates.forEach(c => c.scale.setScalar(1)); cardHome.set(0, 2.1, 1.5); kid.visible = true; kid.position.set(-4.7, 0, 1.4); }
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
@@ -89,6 +89,6 @@ export default function setup(E, { struggled, unit, game }) {
     await E.say('Great! Now ' + E.LETTERS[pairs[1][0]].name + ' and ' + E.LETTERS[pairs[1][1]].name + '!');
     await playPair(pairs[1], false);
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
-    return { stars, line: stars >= 2 ? ({ 3: 'Great detective work! Crown or no crown, leg or gap!', 4: 'Great detective work! You know Beis, Kaf and Chaf!', 5: 'Great detective work! Foot or flat, open or closed!', 6: 'Great detective work! Tongue or no tongue, dot or no dot!' }[game && game.review ? 0 : unit.n]) || 'Great detective work!' : null };
+    return { stars, line: stars >= 2 ? ({ 3: 'Great detective work! Crown or no crown, leg or gap!', 4: 'Great detective work! You know Beis, Kaf and Chaf!', 5: 'Great detective work! Foot or flat, open or closed!' }[unit.n]) : null };
   };
 }
