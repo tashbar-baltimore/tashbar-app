@@ -44,14 +44,16 @@ function fin(el, line) { return FR.yes(el, line).then(() => { const d = done; do
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer' || R.kind !== 'hide') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true);
   if (H.count() === R.k) { await K.lift(); return fin($('check'), 'Yes! ' + FR.Word(R.k) + ' were hiding.'); }
-  FR.oops($('check')); R.misses++; await FR.say("Let's look. " + FR.Word(R.n) + ' in all. I see ' + FR.word(R.n - R.k) + '.'); await FR.say('Count on to ' + FR.word(R.n) + '. Show me again.'); H.set(0); open();
+  FR.oops($('check')); R.misses++; await FR.say("Let's look. " + FR.Word(R.n) + ' in all. I see ' + FR.word(R.n - R.k) + '.'); await FR.say('Show ' + FR.word(R.n) + ' fingers. Fold down the ones you see.'); H.set(0); open();
 }
 function fill(id, n) { const c = $(id); c.classList.toggle('empty', n == null); c.innerHTML = n == null ? '' : U5.num(n); }
 async function drop(card, slot) {
   if (GAME.phase !== 'answer' || R.kind !== 'bond' || slot.id !== ID[R.miss]) return; GAME.phase = 'busy'; FR.lock(true); const k = +card.dataset.n;
   if (k === want()) { fill(slot.id, k); K.setPlates(R.a, R.b); return fin(slot, FR.Word(R.a) + ' and ' + FR.word(R.b) + ' make ' + FR.word(R.a + R.b) + '!'); }
-  FR.oops(slot); R.misses++; await FR.say("Let's look. Count the slices on the plates."); const all = K.plates.flatMap(p => p.children);
-  await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true })); await FR.say('Try again.'); open();
+  FR.oops(slot); R.misses++;
+  if (R.miss === 'w') { await FR.say("Let's count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true })); }
+  else { const have = R.miss === 0 ? R.b : R.a; await FR.say("Let's look. Show " + FR.word(R.a + R.b) + ' fingers. Fold down ' + FR.word(have) + '.'); }
+  await FR.say('Try again.'); open();
 }
 const PLAN = [{ kind: 'hide', n: 3, k: 2 }, { kind: 'hide', n: 4, k: 3 }, { kind: 'hide', n: 5, k: 2 }, { kind: 'bond', a: 3, b: 2, miss: 'w' }, { kind: 'bond', a: 1, b: 3, miss: 1 }];
 function play(F, i) {

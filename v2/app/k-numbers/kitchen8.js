@@ -124,14 +124,15 @@ export function mount(host, opt) {
     /* kugel: n slices on the platter; hide k of them (from the right) under the towel */
     setKugel(n) { slices.forEach(s => scene.remove(s)); slices = []; platter.visible = n > 0; for (let j = 0; j < n; j++) { const s = slice(); s.position.set(sliceX(j, n), 0.3, 0.4); scene.add(s); slices.push(s); } towel.visible = false; spot('towel', towel, { cls: 'towel', r: 0.8, y: 0.2, min: 80 }); },
     async hide(k) { const n = slices.length; if (!k) { towel.visible = false; return; } const x0 = sliceX(n - k, n), x1 = sliceX(n - 1, n); towel.scale.set((x1 - x0) + 1.2, 1, 1); const tx = (x0 + x1) / 2;
-      towel.visible = true; await tween(500, e => { towel.position.set(tx, 2 - e * 1.45, 0.4); towel.rotation.z = (1 - e) * 0.4; }); towel.position.y = 0.55; },
-    async lift() { if (!towel.visible) return; const y0 = towel.position.y; await tween(450, e => { towel.position.y = y0 + e * 1.6; towel.rotation.z = -e * 0.5; }); towel.visible = false; },
+      towel.visible = true; await tween(500, e => { towel.position.set(tx, 2 - e * 1.45, 0.4); towel.rotation.z = (1 - e) * 0.4; }); towel.position.y = 0.55; slices.slice(n - k).forEach(s => { s.visible = false; }); },   /* under the towel: really hidden, no edges peek out */
+    async lift() { if (!towel.visible) return; slices.forEach(s => { s.visible = true; }); const y0 = towel.position.y; await tween(450, e => { towel.position.y = y0 + e * 1.6; towel.rotation.z = -e * 0.5; }); towel.visible = false; },
     slices: () => slices, towelOn: () => towel.visible,
     async bumpAll(list, say) { for (let i = 0; i < list.length; i++) { const o = list[i], y0 = o.position.y; await tween(240, (e, t) => { o.position.y = y0 + Math.sin(Math.PI * t) * 0.35; }); o.position.y = y0; if (say) await say(i); } },
     /* parts on two plates: show a and b slices (or counters) on the two little plates */
-    setPlates(a, b, what) { platter.visible = false; slices.forEach(s => scene.remove(s)); slices = []; towel.visible = false; plates.forEach(p => { p.visible = true; while (p.children.length) p.remove(p.children[0]); });
+    setPlates(a, b, what) { platter.visible = false; slices.forEach(s => scene.remove(s)); slices = []; towel.visible = false; plates.forEach((p, i) => { p.visible = true; while (p.children.length) p.remove(p.children[0]); p.position.x = (i ? 1 : -1) * (narrow ? 1.5 : 1.75); p.scale.setScalar(narrow ? 0.85 : 1); });
       [a, b].forEach((n, k) => { for (let j = 0; j < n; j++) { const o = what === 'counters' ? counter() : slice(); if (what !== 'counters') o.scale.setScalar(0.6); else if (k) o.rotation.x = Math.PI;
-        o.position.set((j - (n - 1) / 2) * 0.5, what === 'counters' ? 0.1 : 0.2, 0); plates[k].add(o); } }); },   /* in a row, so every one shows */
+        const per = n > 3 ? Math.ceil(n / 2) : n, row = Math.floor(j / per), col = j % per, inRow = row ? n - per : per; if (what !== 'counters') o.scale.setScalar(0.5);
+        o.position.set((col - (inRow - 1) / 2) * 0.66, what === 'counters' ? 0.1 : 0.2, n > 3 ? (row ? 0.38 : -0.38) : 0); plates[k].add(o); } }); },   /* rows with gaps, so each one can be counted */
     hidePlates() { plates.forEach(p => { p.visible = false; }); platter.visible = true; },
     fit, destroy() { alive = false; renderer.dispose(); }
   };

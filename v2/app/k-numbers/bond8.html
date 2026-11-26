@@ -46,7 +46,8 @@ async function drop(card, slot) {
     await FR.yes(slot, FR.Word(R.a) + ' and ' + FR.word(R.b) + ' make ' + FR.word(R.a + R.b) + '!'); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops(slot); R.misses++;
   if (R.miss === 'w') { await FR.say("Let's count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + (i === all.length - 1 ? '!' : ','), { noRepeat: true })); }
-  else { const have = R.miss === 0 ? R.b : R.a; await FR.say("Let's look. " + FR.Word(R.a + R.b) + ' in all. This plate has ' + FR.word(have) + '.'); await FR.say('Count on from ' + FR.word(have) + ' to ' + FR.word(R.a + R.b) + '.'); }
+  else { const have = R.miss === 0 ? R.b : R.a, which = R.miss === 0 ? 'blue' : 'peach'; await FR.say("Let's look. " + FR.Word(R.a + R.b) + ' in all. The ' + which + ' plate has ' + FR.word(have) + '.');
+    await FR.say('Show ' + FR.word(R.a + R.b) + ' fingers. Fold down ' + FR.word(have) + '.'); }
   open();
 }
 function tiles() { $('src').innerHTML = ''; for (let n = 0; n <= 5; n++) { const c = document.createElement('div'); c.className = 'numcard'; c.dataset.n = n; c.innerHTML = U5.num(n); $('src').appendChild(c); } }
@@ -67,6 +68,8 @@ FR.game({
     R = { a: 1, b: 2, miss: 'w' }; K.setPlates(1, 2); fill('bw', null); fill('b0', 1); fill('b1', 2);
     await F.say('One slice and two slices. Watch me.'); await F.say('One and two make three. Three on top!');
     await F.handDrag($('src').querySelector('.numcard[data-n="3"]'), $('bw')); fill('bw', 3); await F.say('Part, part, whole!');
+    K.setPlates(4, 0); fill('bw', 5); fill('b0', 4); fill('b1', null); await F.say('Now five on top. Four on the peach plate.');
+    await F.say('Four and one make five. One goes here!'); await F.handDrag($('src').querySelector('.numcard[data-n="1"]'), $('b1')); fill('b1', 1); K.setPlates(4, 1);
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'Part, part, whole! You built them all.' : 'Good building! Let\'s play once more.'

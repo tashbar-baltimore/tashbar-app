@@ -10,12 +10,17 @@
      He taps the big arrow to go on; on the last slide he shows how many are hiding on his fingers. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
-<style>#go{ visibility:hidden; animation:pulse 1.2s infinite; } #go.on{ visibility:visible; } #hp[hidden], #check[hidden]{ display:none; }</style>
+<style>.bond{ position:relative; width:clamp(200px,30vh,250px); height:clamp(130px,19vh,160px); } .bond[hidden]{ display:none; } .bond svg.lines{ position:absolute; inset:0; width:100%; height:100%; }
+.bc{ position:absolute; width:clamp(64px,9.5vh,80px); height:clamp(64px,9.5vh,80px); border-radius:50%; background:#fff; border:5px solid #FF8A3D; display:flex; align-items:center; justify-content:center; padding:8px; } .bc svg{ height:100%; width:auto; }
+#bw{ left:50%; top:0; transform:translateX(-50%); border-color:#2FB5E8; } #b0{ left:0; bottom:0; } #b1{ right:0; bottom:0; }
+#go{ visibility:hidden; animation:pulse 1.2s infinite; } #go.on{ visibility:visible; } #hp[hidden], #check[hidden]{ display:none; }</style>
 </head>
 <body>
 <div id="world"></div>
 <div id="game" class="locked"><div class="stage s6" id="stage">
   <div class="ui" id="panel">
+    <div class="bond" id="bond" hidden><svg class="lines" viewBox="0 0 100 64" preserveAspectRatio="none"><path d="M50 18 L16 48 M50 18 L84 48" stroke="#8A6A4A" stroke-width="2.5"/></svg>
+      <div class="bc" id="bw"></div><div class="bc" id="b0"></div><div class="bc" id="b1"></div></div>
     <div id="hp" hidden></div>
     <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button id="go" class="bigbtn btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -31,6 +36,7 @@ const SLIDES = [
   async F => { await F.say("Welcome to Bubby's kitchen!"); K.showCup(true); await F.say('Five counters. Red on one side, yellow on the other.'); await K.shake(); await K.spill(5, 3);
     await F.say('Three red and two yellow.'); await F.say('Three and two make five! Those are the parts.'); },
   async F => { K.clearCounters(); K.showCup(false); K.setPlates(4, 1); await F.say('Four on this plate. One on that plate.'); await F.say('Four and one make five, too!'); },
+  async F => { $('bond').hidden = false; await F.say('We draw it like this. Five on top.'); await F.say('Four and one below. Part, part, whole!'); $('bond').hidden = true; },
   async F => { await F.chant('Four is three and one!', true); },
   async F => { K.hidePlates(); K.setKugel(4); await F.say('Four slices of kugel.'); await K.hide(1); await F.say('There were four. I see three.'); await F.say('One is hiding!'); await K.lift(); },
   async F => { K.setKugel(3); await F.say('Your turn! Three slices.'); await K.hide(2); asking = true; $('hp').hidden = $('check').hidden = false; $('go').hidden = true;
@@ -42,9 +48,11 @@ FR.game({
   endSay: () => "Great! Now let's find the hiding slices!",
   init() {
     K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = FR.fingers(0, true); $('hp').appendChild(H.el);
+    $('bw').innerHTML = U5.num(5); $('b0').innerHTML = U5.num(4); $('b1').innerHTML = U5.num(1);
     $('go').addEventListener('click', () => { if (GAME.phase !== 'answer' || asking) return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; const d = done; done = null; d(true); });
     $('check').addEventListener('click', async () => { NK.unlock(); if (GAME.phase !== 'answer' || !asking) return; GAME.phase = 'busy';
-      if (H.count() !== 2) { FR.oops($('check')); await FR.say("Let's look. Three in all. I see one."); await FR.say('One and two make three. Show two.'); GAME.phase = 'answer'; return; }
+      if (H.count() !== 2) { FR.oops($('check')); await FR.say("Let's look under the towel."); await K.lift(); const hid = K.slices().slice(1);
+        await K.bumpAll(hid, i => FR.say(FR.Word(i + 1) + (i === hid.length - 1 ? '.' : ','), { noRepeat: true })); await K.hide(2); H.set(0); await FR.say('Show me on your fingers.'); GAME.phase = 'answer'; return; }
       asking = false; await K.lift(); K.sparkle(0, 0.4); await FR.yes($('check'), 'Yes! Two were hiding. One and two make three!'); const d = done; done = null; d(true); });
   },
   round: (F, i) => new Promise(async res => {
