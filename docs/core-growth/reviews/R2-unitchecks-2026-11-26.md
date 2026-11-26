@@ -61,7 +61,10 @@ Every answer key was checked by hand: the own items, the review questions and ev
 - **New own items for all six checks.** They are harder, on the unit's topic and cold. The wrong options are real mistakes of about the same length as the key. Every skill has 2 own items.
 - **"Tap the proof" answers:** in 9 checks the right answer was always first (this kind is never shuffled). Now the place varies, including in U75, U76 and U87.
 - **Four "Same passage:" checks** (READ.COMP.L08.10, L08.12) had no passage. Each now carries its own.
-- **32 lesson check questions** were fixed for a second answer, unclear wording, a missing chart or not being cold.
+- **Lesson check questions** were fixed for a second answer, unclear wording or a missing chart, and the boss-level review questions were made cold. The test "check answers never taught" (baseline 850) went up to 874, because a cold answer is not word for word in the lesson. So:
+  - the lesson checks asked only in a pre-check (before the boy sees the lesson) or in their own lesson are back to their earlier reviewed wording (19 of them);
+  - the ones a boss level asks answer with the lesson's own taught words ("a news report", "a loaded word", "the text explains why", "reread when lost").
+  - The count is back to 850, and a fresh reviewer checked every late change (see below).
 - **Kosher:** "the best crabs in the world" is now a pizza shop sign (`packs/HowToDo3.html`).
 - **Shabbos:** "no computer to read it on" is now "at the Shabbos table, where no one reads a screen".
 - **Review skills:**
