@@ -60,17 +60,19 @@ export function start(o) {
   const stageGlow = glowSprite(SOFT, 0xd4aa50, 1, 0.35); scene.add(stageGlow);
   const stage = painting(ART.stage, 1, 1600 / 756); stage.material.color.set(0x9070d0); stage.renderOrder = -5; scene.add(stage);
 
-  /* the places on a ring that turns; each glows in its Keser house color (no cast pictures until the girls come in the Keser uniform) */
+  /* the places on a ring that turns; each glows in its Keser house color, with a Keser girl in the school uniform beside it */
   const ring = new THREE.Group(); scene.add(ring);
   const ASPECT = { kodesh: 690 / 860, general: 703 / 900, timeline: 900 / 760 };
   const pav = places.map((pl, i) => {
     const th = i / places.length * TAU, g = new THREE.Group(); g.position.set(Math.sin(th) * R, 0, Math.cos(th) * R); ring.add(g);
     const halo = glowSprite(SOFT, pl.hex, 4.4, 0.35); halo.position.y = 1.9; g.add(halo);
     const dome = painting(pl.art, pl.id === 'timeline' ? 2.9 : 3.6, ASPECT[pl.id]); dome.center.set(0.5, 0); g.add(dome);
-    if (pl.id === 'general') dome.material.color.set(0xb4c6ff);   /* the rose glass dome tinted toward the Keser Malchus royal blue */
+    if (pl.id === 'general') dome.material.color.set(0xb4c6ff);
+    /* a Keser girl in the school uniform stands on the stage beside her place */
+    const girl = pl.girl ? painting(pl.girl, 2.9, pl.girlAspect) : null; if (girl) { girl.center.set(0.5, 0); girl.position.set(1.85, -0.25, 0.5); g.add(girl); }   /* the rose glass dome tinted toward the Keser Malchus royal blue */
     const motes = [...Array(lite ? 3 : 6)].map((_, k) => { const s = glowSprite(STAR, [0xffffff, 0xfff1b8, pl.hex][k % 3], 0.2); s.userData.k = k; g.add(s); return s; });
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 4, 10), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 2; hit.userData.idx = i; g.add(hit);
-    return { g, th, halo, dome, motes, hit, sc: 1 };
+    return { g, th, halo, dome, girl, motes, hit, sc: 1 };
   });
 
   /* her crown: the painted tiara high in the middle, with a jewel per subject that lights up as she learns */
@@ -155,6 +157,7 @@ export function start(o) {
       p.dome.position.y = Math.sin(t * 1.1 + i) * 0.06 * sp;
       p.halo.material.opacity += ((front ? 0.5 : 0.22) - p.halo.material.opacity) * Math.min(1, dt * 5);
       p.dome.material.opacity += ((entered && !front ? 0.35 : 1) - p.dome.material.opacity) * Math.min(1, dt * 4);
+      if (p.girl) p.girl.material.opacity += ((entered && !front ? 0.25 : 1) - p.girl.material.opacity) * Math.min(1, dt * 4);
       p.motes.forEach(m => { const k = m.userData.k, y = ((t * 0.22 + k / p.motes.length) % 1); m.position.set(Math.sin(k * 2.3 + t * 0.7 * sp) * 0.7, 0.8 + y * 2.6, 0.3); m.material.opacity = Math.sin(y * Math.PI) * (calm ? 0.5 : 0.9); m.scale.setScalar(0.12 + 0.12 * Math.sin(y * Math.PI)); }); });
     nudge = Math.max(0, nudge - dt * 1.6);
     /* the crown floats, twirls when tapped (it turns like a card), and its jewels glint */

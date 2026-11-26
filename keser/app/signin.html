@@ -18,6 +18,8 @@ html,body{ margin:0; height:100%; overflow:hidden; color:#fff; font-family:syste
 .bg{ position:absolute; inset:-4%; width:108%; height:108%; object-fit:cover; }
 .bg.sky{ background:radial-gradient(ellipse at 12% 18%, rgba(163,38,63,.55), transparent 42%), radial-gradient(ellipse at 88% 16%, rgba(47,95,208,.5), transparent 44%), radial-gradient(ellipse at 50% 108%, rgba(31,143,92,.45), transparent 48%), radial-gradient(ellipse at 50% 38%, #8A55BC 0, #5D2B88 32%, #3A1660 62%, #1C0A30 100%); }
 /* the painted treasure hall, turned from rose pink to Keser purple (M. Heinemann 2026-11-26) */
+.hostess{ position:absolute; left:max(2vw,8px); bottom:4vh; height:min(62vh,540px); z-index:1; pointer-events:none; filter:drop-shadow(0 16px 28px rgba(20,0,40,.5)); animation:float 5s ease-in-out infinite; }   /* a Keser girl in the uniform welcomes her (M. Heinemann 2026-11-26) */
+@media (max-width:600px){ .hostess{ height:30vh; bottom:auto; top:20vh; left:4px; } }
 .hall-tint{ position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg,#4A1F78,#5D2B88 55%,#3A1660); mix-blend-mode:color; opacity:.62; }   /* Keser royal purple (M. Heinemann 2026-11-26) */
 .globe .mark{ grid-row:1; } .globe .orb{ grid-row:2; grid-column:1; } .globe > span{ grid-row:3; }
 /* Timeline's clear globe holds its timeline picture, layered inside the glass */
@@ -138,7 +140,7 @@ body.home .globe{ opacity:1; }
 <section class="scene" id="house" aria-hidden="true">
   <img class="bg hall" src="/pics/keser-treasure-house.webp" alt=""><div class="hall-tint"></div><div class="veil" style="background:linear-gradient(180deg,rgba(26,11,46,.25),transparent 30%,transparent 60%,rgba(26,11,46,.55))"></div>
   <div class="title"><img class="tcrown" src="/pics/keser-logo-mark.webp" alt=""><h1 class="k-foil">Your Treasures</h1><div class="rule"></div></div>
-  <div class="globes" id="globes"></div>
+  <img class="hostess" src="/pics/keser-girl-uniform-welcome.webp" alt="A Keser girl welcomes you to your treasures"><div class="globes" id="globes"></div>
   <button class="k-icon spin l" id="spinL" aria-label="Turn the treasures left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
   <button class="k-icon spin r" id="spinR" aria-label="Turn the treasures right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
   <div class="go"><a class="k-btn" id="toWorld" href="world.html"><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>My world</a></div>

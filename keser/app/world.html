@@ -73,7 +73,9 @@ body.greeting .hud{ opacity:0; }
   box-shadow:0 0 0 3px #D4AA50, 0 0 0 7px rgba(246,227,176,.35), 0 24px 80px rgba(140,80,200,.45); transform:scale(.92) translateY(14px); transition:transform 1s var(--spring); }
 #greet.on .frame{ transform:none; }
 #greet .frame img{ width:100%; height:100%; object-fit:cover; display:block; }
-/* the sisters' picture waits for the Keser uniform (picture order 4); the Three Crowns greet her instead */
+/* two sisters in the Keser uniform welcome her (pictures sent by M. Heinemann, 2026-11-26) */
+#greet .sisters{ height:min(44vh,380px); filter:drop-shadow(0 0 24px rgba(255,214,140,.45)) drop-shadow(0 18px 30px rgba(20,0,40,.5)); transform:translateY(30px) scale(.94); opacity:0; transition:transform 1s var(--spring), opacity .8s; }
+#greet.on .sisters{ transform:none; opacity:1; }
 #greet .frame.three{ display:flex; gap:3%; justify-content:center; background:radial-gradient(ellipse,#5D2B88,#2A0F45); padding:3%; box-sizing:border-box; }
 #greet .frame.three img{ width:auto; height:100%; object-fit:contain; border-radius:6px; box-shadow:0 0 0 1.5px #D4AA50, 0 8px 20px rgba(0,0,0,.4); }
 #greet .frame::after{ content:""; position:absolute; inset:0; background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%); background-size:300% 100%; animation:k-shine 2.6s ease-in-out infinite; }
@@ -107,7 +109,7 @@ body.greeting .hud{ opacity:0; }
 <canvas id="scene" aria-hidden="true"></canvas>
 <div id="stage" aria-hidden="true"></div>
 <div id="loading" aria-hidden="true"><img src="/pics/keser-logo.webp" alt=""></div>
-<div id="greet" aria-hidden="true"><img class="glogo" src="/pics/keser-logo.webp" alt="Keser Academy for Girls"><div class="frame three"><img src="/pics/keser-keter-torah.webp" alt=""><img src="/pics/keser-keter-kehuna.webp" alt=""><img src="/pics/keser-keter-malchut.webp" alt=""></div><p class="k-foil">Welcome to your world</p></div>
+<div id="greet" aria-hidden="true"><img class="glogo" src="/pics/keser-logo.webp" alt="Keser Academy for Girls"><img class="sisters" src="/pics/keser-girls-uniform-sisters.webp" alt="Two sisters in the Keser uniform"><p class="k-foil">Welcome to your world</p></div>
 
 <div class="flat" aria-hidden="true">
   <img class="crown" src="/pics/keser-logo-mark.webp" alt="">
