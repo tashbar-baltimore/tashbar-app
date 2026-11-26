@@ -55,6 +55,7 @@ export function makeStory(E, unit, script) {
         await E.tween(700, k => { d.position.set(dp.x + k * 1.5, dp.y + k * 2.6, dp.z + k * .5); d.scale.setScalar(1 - k); }, E.ease.out); d.visible = false; d.position.copy(dp); d.scale.setScalar(1);
         E.sparkle(E.worldPos(ch).add(new THREE.Vector3(1.4, 2.4, .5)), 14); float(ch);
         for (const line of st.lines) await E.say(line);
+        await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
         await E.say('Tap ' + E.LETTERS[st.letter].name + '!'); await tapIt(ch, E.nameLine(st.letter));
         src.visible = true; src.position.copy(kp); float(src); await letterDone(st.fromDot); await letterDone(st.letter);
       } else {
@@ -64,6 +65,7 @@ export function makeStory(E, unit, script) {
         for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);
         await toCentre(pic); await morph(pic, st.letter);
         for (const line of st.after) await E.say(line);
+        await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
         await E.say(['Tap ' + E.LETTERS[st.letter].name + '!']); await tapIt(L[st.letter], E.nameLine(st.letter));
         if (!(script.steps[si + 1] && script.steps[si + 1].fromDot)) await letterDone(st.letter);
       }
