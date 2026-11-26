@@ -165,6 +165,9 @@ export function mount(host, opt) {
       for (let j = 0; j < n; j++) { const a = apple(); a.position.copy(s.slots[j]); s.g.add(a); s.apples.push(a); spot('a' + i + '-' + j, a, { cls: 'apple', r: 0.34, y: 0.3 }); }
     },
     count(i) { return sides[i].apples.length; },
+    /* the "spread out" trick: a few apples spread wide across the blanket, or many squeezed close together */
+    spread(i, wide) { const s = sides[i], n = s.apples.length, gap = wide ? Math.min(1.2, (W - 0.6) / Math.max(1, n - 1)) : 0.62;
+      s.slots = s.apples.map((a, j) => new THREE.Vector3(-((n - 1) * gap) / 2 + j * gap, 0.05, 0)); s.apples.forEach((a, j) => a.position.copy(s.slots[j])); },
     /* an apple drops from the tree onto a side (one more) */
     async drop(i) {
       const s = sides[i], a = apple(); scene.add(a); const from = new THREE.Vector3(); tree.getWorldPosition(from); from.y = 2.8; from.z += 0.9;
