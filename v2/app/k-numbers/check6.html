@@ -62,7 +62,9 @@ function play(F, i) {
       const n = order[i]; R = { kind: 'place', n, misses: 0, placed: (R && R.placed) || [] };
       $('spin').hidden = true; $('src').hidden = false; $('src').innerHTML = '<div class="numcard" data-n="' + n + '">' + U5.num(n) + '</div>';
       if (i === 0) { P.showAll(false); P.shown(0, true); P.shown(10, true); M.show(false); await F.say('Show me! Zero and ten are here.'); }
-      P.focus(P.narrow() ? Math.max(1, Math.min(9, n + FR.pick([-1, 0, 1]))) : 5);
+      if (P.narrow()) {   /* a phone shows 4 stones: include the nearest number already on the path, so he can count from it */
+        const s = [0, 10].concat(R.placed).sort((x, y) => Math.abs(x - n) - Math.abs(y - n))[0]; P.focus(Math.abs(n - s) <= 3 ? (n + s) / 2 : n + Math.sign(s - n) * 1.5);
+      } else P.focus(5);
       open(); await F.say('Where does ' + F.word(n) + ' go?', { repeat: 'Put ' + F.word(n) + ' on its stone.' });
     } else {
       const start = i === 5 ? 3 : 6, k = i === 5 ? 2 : 1; R = { kind: 'race', stage: 'spin', k, to: start + k, misses: 0 };

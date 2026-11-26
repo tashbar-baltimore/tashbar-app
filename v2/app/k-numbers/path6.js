@@ -203,8 +203,11 @@ export function mount(host, opt) {
     bed(k) {
       if (bedG) { scene.remove(bedG); bedG = null; } deco.forEach(f => { f.visible = k == null; }); if (k == null) return [];
       bedG = new THREE.Group(); bedG.position.set(wantX, 0, -2.3); scene.add(bedG); const out = [];
-      const soil = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.18, 2.1), new THREE.MeshStandardMaterial({ color: '#9A6A44', roughness: 1 })); soil.position.set(0, 0.09, -0.45); soil.receiveShadow = true; bedG.add(soil);
-      for (let i = 0; i < k; i++) { const row = i < 5 ? 0 : 1, col = i % 5, f = new THREE.Group(); f.position.set((col - 2) * 0.82, 0.16, row ? -0.95 : 0); bedG.add(f);
+      /* two tiers, like garden steps: the row of five in front, the more on the higher step behind (every flower shows) */
+      const sm = new THREE.MeshStandardMaterial({ color: '#9A6A44', roughness: 1 }), wm = new THREE.MeshStandardMaterial({ color: '#E9D3AE', roughness: 0.9 });
+      [[0.2, 0.2, 0], [0.95, 0.95, -1.0]].forEach(([h, y, z]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(4.6, h, 1.0), wm); b.position.set(0, h / 2, z); b.castShadow = b.receiveShadow = true; bedG.add(b);
+        const top = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.04, 0.86), sm); top.position.set(0, h + 0.01, z); bedG.add(top); });
+      for (let i = 0; i < k; i++) { const row = i < 5 ? 0 : 1, col = i % 5, f = new THREE.Group(); f.position.set((col - 2) * 0.86, row ? 0.97 : 0.22, row ? -1.0 : 0); bedG.add(f);
         flower(0, 0, 1.55, f, row ? '#FFD23D' : '#FF7FA8'); out.push(f); }
       return out;
     },

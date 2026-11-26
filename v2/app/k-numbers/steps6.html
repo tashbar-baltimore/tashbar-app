@@ -34,7 +34,10 @@ const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect
 /* each tap asks for one more (or one less) hop; Mendy hops them one by one, saying the number */
 function pump() {
   if (pumping) return pumping;
-  return (pumping = (async () => { while (M.n !== want) { await M.hop(M.n + (want > M.n ? 1 : -1), n => FR.say(FR.Word(n) + '!', { noRepeat: true })); } pumping = null; })());
+  if (M.n === want) return Promise.resolve();
+  /* M.n !== want here, so the loop always waits at least once before it clears pumping */
+  pumping = (async () => { while (M.n !== want) { await M.hop(M.n + (want > M.n ? 1 : -1), n => FR.say(FR.Word(n) + '!', { noRepeat: true })); } pumping = null; })();
+  return pumping;
 }
 function step(d) { NK.unlock(); if (GAME.phase !== 'answer') return; const t = want + d; if (t < 0 || t > 10) { NK.sound.oops(); return; } want = t; $('check').classList.add('ready'); pump(); }
 function moves(to) { const out = [], c = want; for (let k = c; k < to; k++) out.push({ tap: '#hop' }); for (let k = c; k > to; k--) out.push({ tap: '#back' }); return out; }

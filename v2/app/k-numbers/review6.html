@@ -52,7 +52,7 @@ function play(F, i) {
   return new Promise(async res => {
     done = res; GAME.phase = 'busy'; F.lock(true); for (let n = 0; n <= 10; n++) P.el(n).classList.remove('hint');
     const [kind, n] = PLAN[i]; R = { kind, n, misses: 0 }; M.place(0); P.focus(P.narrow() ? 1.5 : 5);
-    $('show').innerHTML = ''; $('show').hidden = kind === 'bed'; P.bed(null); items = [];
+    $('show').innerHTML = ''; $('show').hidden = kind === 'bed'; $('panel').style.visibility = kind === 'bed' && !P.narrow() ? 'hidden' : ''; P.bed(null); items = [];
     if (kind === 'bed') { items = P.bed(n); await F.say(FR.pick(['Flowers grew!', 'Look at the garden bed!'])); open(); await F.say('How many flowers? Hop Mendy there.', { repeat: 'Count the flowers. Tap that stone.' }); return; }
     if (kind === 'frame') { const t = U5.frame(n, false); $('show').appendChild(t.el); R.view = t; await F.say('A ten-frame!'); open(); await F.say('How many? Hop Mendy there.', { repeat: 'How many counters? Tap that stone.' }); return; }
     const h = n > 5 ? U5.hands(n, false) : F.fingers(n, false); $('show').appendChild(h.el); await F.say('Fingers!'); open(); await F.say('How many? Hop Mendy there.', { repeat: 'How many fingers? Tap that stone.' });
