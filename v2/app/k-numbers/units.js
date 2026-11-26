@@ -2,8 +2,9 @@
    Each stop: [id, page, picture, spoken name]. A stop opens when the one before it is passed (2+ stars). */
 window.NK_UNITS = [
   { n: 1, name: 'How many? Look and say', say: 'Unit one. Look and say how many!', stops: [
-    ['u1-opener', 'opener1.html', 'book', 'Learn it'], ['peek', 'peek.html', 'towel', 'Peek'], ['match', 'match.html', 'cards', 'Match it'],
-    ['fingers', 'fingers.html', 'hand', 'Finger flash'], ['mistake', 'mistake.html', 'glass', 'Find the mistake'], ['u1-check', 'check1.html', 'trophy', 'Show me'] ] },
+    ['u1-opener', 'opener1.html', 'book', 'Learn it'], ['meet123', 'meet123.html', 'hand', 'Meet one, two, three'], ['meet45', 'meet45.html', 'hand', 'Meet four and five'],
+    ['match', 'match.html', 'cards', 'Match it'], ['fingers', 'fingers.html', 'hand', 'Finger flash'], ['peek', 'peek.html', 'towel', 'Peek'],
+    ['mistake', 'mistake.html', 'glass', 'Find the mistake'], ['u1-check', 'check1.html', 'trophy', 'Show me'] ] },
   { n: 2, name: 'Counting out loud to 10', say: 'Unit two. Counting out loud.', stops: [] },
   { n: 3, name: 'Counting things', say: 'Unit three. Counting things.', stops: [] },
   { n: 4, name: 'Numbers 0 to 5', say: 'Unit four. Numbers zero to five.', stops: [] },
