@@ -10,7 +10,7 @@ Job V builds no lessons and never reviews its own work. It scores every job's le
 
 ### For the Head of School (plain words)
 
-Rabbi Khaver: **the new K–3 work is mostly sound, but 8 places can mark a boy wrong for a right answer, and the boss levels repeat questions he has just answered.**
+Rabbi Khaver: **the new K–3 work is mostly sound, but 12 places can mark a boy wrong for a right answer (one more blocks a letter from being sent), and the boss levels repeat questions he has just answered.**
 
 - **Lessons:** 30 of 39 new lessons pass every point (F 17 of 24, W13 13 of 15). Almost every failure is the same thing: the check question was already answered in the lesson's own practice.
 - **K–1 games:** 84 of 104 pass. The common problems: a "How" line read aloud that is longer than 12 words, and a few picture choices with two right answers.
@@ -39,6 +39,23 @@ Rabbi Khaver: **the new K–3 work is mostly sound, but 8 places can mark a boy 
 | `READ.PA.L02.20` sort (Gr 1) | 🐱 is keyed one beat (cat), but many boys say "kitty" (two beats). | Use 🌙 (moon). |
 | `READ.LIT.L01.01` match (listen-along) | 🧔 Abba is keyed to 🎒, but Abba also walked Eli to school (🏫); each pair is marked as he taps it. The How line helps, but the pair is defensible. | Pair 👨‍🏫 (Rebbe) with 🎵 (he taught the song) instead of 🏫. |
 | `READ.LIT.L01.02` match (listen-along) | 😴 is keyed to 🌙, but Baby Moishy falls asleep in the sukkah (🛖), so that pair is defensible too. | Use 🦉 with 🌙. |
+
+### Cross-check with a second independent pass (more URGENT lines, each checked by V in the code)
+
+A second builder session (claim #560) made its own full pass of B1a before stepping aside. Its notes are on branch `claude/awesome-feynman-kwbk84-b1a` (`docs/core-growth/reviews/R2-F.md`, `R2-W13.md`, pictures in `docs/screens/b1a-r2/`). Both passes found the unit-check pictures, `READ.PA.L02.20` 🐱 and `READ.LIT.L01.02` 😴. It also found these, and V checked each one:
+
+| Where | Problem | Fix |
+|---|---|---|
+| **W13.U36** letter piece `W13.LETT3.01` (`src/CoreDataW13H3.html` around line 241) | The boy cannot send it. Every checklist line must pass before Send (`src/CoreWrite.html` line 122). The greeting line accepts only "dear", and the closing line has no "thank you,", yet the unit's own lessons teach "Thank you," as a closing (line 84) and show "Hi Avi" (line 90). A boy who follows the lesson is stuck on Fix. | Greeting `any: ['dear', 'hi', 'hello', 'to ']`; closing `any: ['love,', 'student,', 'respectfully,', 'sincerely,', 'thanks,', 'thank you,', 'your friend,']`. |
+| `READ.PA.L01.15` sort (K, `src/CoreDataFH1.html` line 196) | 🐱 is keyed 3 sounds (cat), but "kitty" has 4. | Replace 🐱 with 🚌 (bus: 3 sounds, b-u-s). |
+| `READ.FLU.L02.23` match (Gr 1) | "friend" = 👦👦 and "people" = 👥, but two boys are also people; each pair is marked as he taps it. | Use 🤝 for friend. |
+| `READ.PA.L01.14` piece 5 (K) | "Big, change the middle to uh" is keyed 🐛, but 🐝 is also a bug. | Use pin → pan instead. |
+| `READ.PHON.L01.16` piece 4 (K) | 🐸 is keyed fff (frog), but a boy may say "toad". | Use a 🐟 fish for fff. |
+
+Lower, not URGENT (V's view):
+- `WRIT.PARA.L02.06` act 1 (Gr 1): the spoken line is 21 words, and it says the answer ("I felt so happy! How did he feel?"). Fix: hear `Shmuli found his lost kippah. Listen to how he ended it.` and play the ending as its own line.
+- 🦀 is used as a "short a" picture in `READ.PHON.L01.25` and `READ.PA.L01.15` (`src/CoreDataFH1.html` lines 182, 196). It is an animal, not food, so it may be within the rules; V leaves it to the F owner (🎒 and 🧢 already cover short a).
+- For the test owners: `K.err` in `src/CoreK1.html` counts only `say` for the 12-word rule, but `how` and `hear` are spoken too; more than a dozen lines run 13–21 words. And no test checks that a K little reader uses only taught words ("see", "to", and "has"/"his" with s saying zzz appear before they are taught).
 
 ### What the boy sees (played as a made-up TEST boy, 1366×768 and 390 px)
 
