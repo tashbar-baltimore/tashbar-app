@@ -6,11 +6,11 @@
 const PAIRS = { 3: [['vov', 'zayin'], ['hei', 'ches']] };   /* a game can bring its own pairs (Unit 4: Beis/Kaf, then Kaf/Chaf) */
 /* the place to look on each letter (font units), and what to say about it */
 const LOOK = { vov: 'No crown. That is Vov.', zayin: 'A crown on top! That is Zayin.', hei: 'The leg doesn’t touch the roof. That is Hei.', ches: 'The leg touches the roof. That is Ches.',
-  beis: 'A tail at the bottom! That is Beis.', gimmel: 'A foot at the bottom! That is Gimmel.', pei: 'A dot! That is Pei.', peiTongue: 'A little tongue inside! That is Pei.', kafNoTongue: 'No little tongue. That is Kaf.', fei: 'No dot. That is Fei.', nun: 'Flat at the bottom. That is Nun.', tes: 'Closed at the bottom. That is Tes.', mem: 'An opening at the bottom! That is Mem.', kafRound: 'Round at the bottom. That is Kaf.', reish: 'Round on top. That is Reish.', daledCorner: 'A corner! That is Daled.', kuf: 'A long leg! That is Kuf.', heiShort: 'A short leg. That is Hei.', kaf: 'A dot inside! That is Kaf.', chaf: 'No dot. That is Chaf.', tav: 'A little foot! That is Tuf.', chesNoFoot: 'The leg touches the roof. No foot. That is Ches.' };
+  beis: 'A tail at the bottom! That is Beis.', gimmel: 'A foot at the bottom! That is Gimmel.', pei: 'A dot! That is Pei.', peiTongue: 'A little tongue inside! That is Pei.', kafNoTongue: 'No little tongue. That is Kaf.', fei: 'No dot. That is Fei.', nun: 'Flat at the bottom. That is Nun.', tes: 'Closed at the bottom. That is Tes.', mem: 'An opening at the bottom! That is Mem.', kafRound: 'Round at the bottom. That is Kaf.', reish: 'Round on top. That is Reish.', daledCorner: 'A corner! That is Daled.', kuf: 'A long leg! That is Kuf.', heiShort: 'A short leg. That is Hei.', kaf: 'A dot inside! That is Kaf.', chaf: 'No dot. That is Chaf.', tav: 'A little foot! That is Tuf.', veis: 'No dot. That is Veis.', beisDot: 'A dot! That is Beis.', shin: 'Dot on the right! That is Shin.', sin: 'Dot on the left! That is Sin.', samech: 'Round at the bottom. That is Samech.', memsofis: 'Square at the bottom! That is Mem Sofis.', chesNoFoot: 'The leg touches the roof. No foot. That is Ches.' };
 const CLUE = { vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', hei: 'Hei’s leg doesn’t touch the roof.', ches: 'Ches’s leg touches the roof.',
-  beis: 'Beis has a tail at the bottom.', gimmel: 'Gimmel has a foot.', pei: 'Pei has a dot.', peiTongue: 'Pei has a little tongue inside.', kafNoTongue: 'Kaf has no little tongue.', fei: 'Fei has no dot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', kafRound: 'Kaf is round at the bottom.', reish: 'Reish is round on top.', daledCorner: 'Daled has a corner.', kuf: 'Kuf has a long leg.', heiShort: 'Hei has a short leg.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.', tav: 'Tuf has a little foot.', chesNoFoot: 'Ches’s leg touches the roof. Ches has no foot.' };
+  beis: 'Beis has a tail at the bottom.', gimmel: 'Gimmel has a foot.', pei: 'Pei has a dot.', peiTongue: 'Pei has a little tongue inside.', kafNoTongue: 'Kaf has no little tongue.', fei: 'Fei has no dot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', kafRound: 'Kaf is round at the bottom.', reish: 'Reish is round on top.', daledCorner: 'Daled has a corner.', kuf: 'Kuf has a long leg.', heiShort: 'Hei has a short leg.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.', tav: 'Tuf has a little foot.', veis: 'Veis has no dot.', beisDot: 'Beis has a dot.', shin: 'Shin’s dot is on the right.', sin: 'Sin’s dot is on the left.', samech: 'Samech is round at the bottom.', memsofis: 'Mem Sofis is square at the bottom.', chesNoFoot: 'Ches’s leg touches the roof. Ches has no foot.' };
 /* in a Beis/Kaf round the thing to see is the bottom, in a Kaf/Chaf round the dot */
-const say = (T, k, pr) => T[k === 'kaf' && pr.includes('beis') ? 'kafRound' : k === 'kaf' && pr.includes('pei') ? 'kafNoTongue' : k === 'pei' && pr.includes('kaf') ? 'peiTongue' : k === 'daled' && pr.includes('reish') ? 'daledCorner' : k === 'hei' && pr.includes('kuf') ? 'heiShort' : k === 'ches' && pr.includes('tav') ? 'chesNoFoot' : k];
+const say = (T, k, pr) => T[k === 'beis' && pr.includes('veis') ? 'beisDot' : k === 'kaf' && pr.includes('beis') ? 'kafRound' : k === 'kaf' && pr.includes('pei') ? 'kafNoTongue' : k === 'pei' && pr.includes('kaf') ? 'peiTongue' : k === 'daled' && pr.includes('reish') ? 'daledCorner' : k === 'hei' && pr.includes('kuf') ? 'heiShort' : k === 'ches' && pr.includes('tav') ? 'chesNoFoot' : k];
 const WATCH = { reish: 'Round on top!', kuf: 'A long leg!', zayin: 'A crown on top!', ches: 'The leg touches the roof!', kaf: 'Round at the bottom!', chaf: 'No dot!', nun: 'Flat at the bottom!', mem: 'An opening at the bottom!', pei: 'A little tongue inside!', fei: 'No dot!', tav: 'A little foot!', ches: 'The leg touches the roof!' };
 export default function setup(E, { struggled, unit, game }) {
   const { THREE, S } = E;
@@ -75,9 +75,11 @@ export default function setup(E, { struggled, unit, game }) {
   async function playPair(pr, first) {
     setPair(pr); E.sfx.whoosh(); crates.forEach(c => E.hop(c, .2, 300));
     for (const k of pr) await E.say(say(CLUE, k, pr));   /* the right-hand crate first, as we read */   /* two lines: each 12 words or fewer */
-    let d; do { d = Array.from({ length: 6 }, (_, i) => pr[i % pr.length]).sort(() => Math.random() - .5); } while (d.some((k, i) => i > 1 && d[i - 1] === k && d[i - 2] === k) || (pr.length > 2 && d[0] === pr[1]));   /* never three of one letter in a row */
-    deck = [pr[1], ...d]; idx = 0; E.setProgress(deck.length, 0);
+    const nCards = (game && game.cards) || 6;
+    let d; do { d = Array.from({ length: nCards }, (_, i) => pr[i % pr.length]).sort(() => Math.random() - .5); } while (d.some((k, i) => i > 1 && d[i - 1] === k && d[i - 2] === k) || (pr.length > 2 && d[0] === pr[1]));   /* never three of one letter in a row */
+    const quick = !first && game && game.cards; deck = quick ? d : [pr[1], ...d]; idx = 0; E.setProgress(deck.length, 0);
     await setCard(deck[0]); busy = false;
+    if (quick) { busy = false; enabled = true; const done = new Promise(r => onDone = r); document.body.dataset.dragReady = ++kRound; await done; return; }   /* quick rounds: no demo after the first pair */
     await E.say('Watch me. ' + (WATCH[pr[1]] || say(LOOK, pr[1], pr)));
     E.pointAt(cardArrow, card, pr[1], 1.9, feat(pr[1], pr)); await E.wait(600); cardArrow.visible = false;
     busy = true; let [x, y] = E.toScreen(card.position); E.hand.at(x, y); await E.wait(350);
@@ -91,9 +93,10 @@ export default function setup(E, { struggled, unit, game }) {
   return async () => {
     await E.say('Look-alike letters! Each one goes in its own box.');
     await playPair(pairs[0], true);
-    const nm = pairs[1].map(k => E.LETTERS[k].name); await E.say('Great! Now ' + nm.slice(0, -1).join(', ') + ' and ' + nm[nm.length - 1] + '!');
-    await playPair(pairs[1], false);
+    for (const pr of pairs.slice(1)) {   /* Unit 10: many pairs, one after another, quick */
+      const nm = pr.map(k => E.LETTERS[k].name); await E.say((pairs.length > 2 ? 'Next! ' : 'Great! Now ') + nm.slice(0, -1).join(', ') + ' and ' + nm[nm.length - 1] + '!');
+      await playPair(pr, false); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
-    return { stars, line: stars >= 2 ? ({ 3: 'Great detective work! Crown or no crown, leg or gap!', 4: 'Great detective work! You know Beis, Kaf and Chaf!', 5: 'Great detective work! Foot or flat, open or closed!', 6: 'Great detective work! Tongue or no tongue, dot or no dot!', 7: 'Great detective work! Corner or round, short leg or long!', 8: 'Great detective work! A gap, no foot, or a little foot!' }[game && game.review ? 0 : unit.n]) || 'Great detective work!' : null };
+    return { stars, line: stars >= 2 ? ({ 3: 'Great detective work! Crown or no crown, leg or gap!', 4: 'Great detective work! You know Beis, Kaf and Chaf!', 5: 'Great detective work! Foot or flat, open or closed!', 6: 'Great detective work! Tongue or no tongue, dot or no dot!', 7: 'Great detective work! Corner or round, short leg or long!', 8: 'Great detective work! A gap, no foot, or a little foot!', 10: 'Champion detective! You know every look-alike!' }[game && game.review ? 0 : unit.n]) || 'Great detective work!' : null };
   };
 }

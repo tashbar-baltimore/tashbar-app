@@ -34,14 +34,21 @@ export function unlocked(id) {
   const g = GAMES.find(x => x.id === id), u = unitOf(id); if (!g || !u) return false;
   const i = u.games.findIndex(x => x.id === id), check = v => v.games.find(x => x.mastery).id;
   if (g.bonus) return best(check(u)) >= 3;      /* the bonus round opens for a boy who got 3 stars on his unit's check */
-  if (i === 0) { const before = UNITS.find(x => x.n === u.n - 1); return !before || best(check(before)) >= PASS; }   /* a new unit opens when the one before it passed its check */
+  if (i === 0) { const before = UNITS.find(x => x.n === u.n - 1); if (before && before.gate) return gateOpen(check(before)); return !before || best(check(before)) >= PASS; }   /* a new unit opens when the one before it passed its check */
+  if (g.afterTry) { const pv = loadSave().games[u.games[i - 1].id]; return !!(pv && pv.plays); }   /* extra practice opens once he has tried the check */
   let j = i - 1; while (j > 0 && u.games[j].bonus) j--;
   return best(u.games[j].id) >= PASS;
 }
+/* the gate to the nekudos (MAP.md, Unit 10): 3 stars on the champion check on two different days */
+export const GATE_DAYS = 2;
+export function gateDays(id) { const g = loadSave().games[id]; return g && g.days3 ? g.days3.length : 0; }
+export const gateOpen = id => gateDays(id) >= GATE_DAYS;
 export function struggled(id) { const g = loadSave().games[id]; return !!(g && g.last != null && g.last < PASS); }
 export function record(id, stars) {
   const s = loadSave(); const g = s.games[id] || { stars: 0, plays: 0 };
-  g.stars = Math.max(g.stars || 0, stars); g.last = stars; g.plays = (g.plays || 0) + 1; g.at = Date.now(); s.games[id] = g; writeSave(s);
+  g.stars = Math.max(g.stars || 0, stars); g.last = stars; g.plays = (g.plays || 0) + 1; g.at = Date.now();
+  if (stars >= 3) { const day = new Date().toISOString().slice(0, 10); g.days3 = g.days3 || []; if (!g.days3.includes(day)) g.days3.push(day); }   /* the days he got 3 stars (the champion gate counts them) */
+  s.games[id] = g; writeSave(s);
   try { if (parent && parent !== window) parent.postMessage({ tl2game: 'k-kriyah/' + id, stars }, '*'); } catch (e) {}
   window.__saved = { id, stars };
 }

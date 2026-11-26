@@ -12,10 +12,11 @@ const QS = {
   6: [N('pei'), N('nun'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), SND('fei')],   /* Pei beside Fei; Kaf beside Chaf; 'Which says f?' with Pei beside it */
   7: [N('reish'), N('tzadik'), N('kuf'), SND('reish'), N('daled'), SND('tzadik'), N('hei'), SND('mem'), SND('kuf')],   /* an older letter comes back too */   /* Reish beside Daled, Kuf beside Hei */
   8: [N('shin'), N('sin'), SND('shin'), N('tav'), N('sav'), SND('tav'), N('ches'), N('tzadik'), N('sin')],   /* Shin beside Sin, Tuf beside Suf; 'Which says t?' never with Tes on screen */
+  10: [N('veis'), SND('shin'), N('chaf'), N('zayin'), SND('tes'), N('memsofis'), { k: 'alef', by: 'quiet' }, N('reish'), SND('pei'), N('tzadiksofis'), N('sin'), N('nun'), SND('lamed'), N('sav'), N('hei')],   /* the champion check: 15 questions from the whole year */
   9: [N('memsofis'), N('nunsofis'), N('chafsofis'), SND('memsofis'), N('feisofis'), N('tzadiksofis'), N('samech'), SND('nunsofis'), N('vov')],   /* Mem Sofis beside Samech, Nun Sofis beside Vov, Chaf Sofis beside Reish; 'Which says m?' never with Mem on screen */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
-export default function setup(E, { struggled, unit }) {
+export default function setup(E, { struggled, unit, id }) {
   const { THREE, S } = E;
   const rebbe = E.rebbe(); E.scene.add(rebbe);
   const keys = [...unit.known, ...unit.letters], L = {}, peds = [];
@@ -87,7 +88,7 @@ export default function setup(E, { struggled, unit }) {
   }
   return async () => {
     E.setProgress(Qs.length, 0);
-    const demoK = unit.letters[0]; await showSet(demoK);
+    const demoK = unit.letters[0] || 'shin'; await showSet(demoK);
     rebbe.mood('wave'); await E.say('Show the rebbe what you know!'); rebbe.mood('calm');
     /* show, then try */
     await E.say('Watch me. Tap ' + E.LETTERS[demoK].name + '.'); let [x, y] = E.toScreen(E.worldPos(L[demoK])); E.hand.at(x, y + 20); await E.wait(700); E.hand.hide();
@@ -111,8 +112,10 @@ export default function setup(E, { struggled, unit }) {
       else if (q.first) { done++; E.setProgress(Qs.length, done); }
     }
     E.hop(basket, .35, 450); E.confetti(basket.position.clone().add(new THREE.Vector3(0, 1, .5)), 50);
-    const stars = right >= 8 ? 3 : right >= 6 ? 2 : 1; window.__right = right;
+    const nQ = Qs.length, stars = right >= nQ - 1 ? 3 : right >= Math.ceil(nQ * .67) ? 2 : 1;   /* 9 questions: 8 for three stars, 6 for two */ window.__right = right;
     const names = unit.letters.map(k => E.LETTERS[k].name);
+    if (unit.gate) { const days = E.gateDays(id) + (stars >= 3 && !(E.loadSave().games[id] || {}).days3?.includes(new Date().toISOString().slice(0, 10)) ? 1 : 0);   /* the champion gate: two different days */
+      return { stars, line: stars >= 3 ? (days >= E.GATE_DAYS ? 'Alef-Beis Champion! The nekudos are open!' : 'Champion today! Come back another day for the nekudos.') : stars === 2 ? 'Two stars! Practice your letters, then try again.' : null }; }
     const all3 = 'Three stars! You know ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + '!';
     return { stars, line: stars === 3 ? (all3.split(' ').length > 12 ? 'Three stars! You know every letter of Unit ' + unit.n + '!' : all3) : stars === 2 ? 'Two stars! You passed Unit ' + unit.n + '!' : null };
   };

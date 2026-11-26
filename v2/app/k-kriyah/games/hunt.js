@@ -6,6 +6,7 @@
 /* each unit: two rounds (the letter to find, how many, and the others mixed in), the boy's name, and short "what to look for" words */
 const PLAN = {
   1: { boy: 'Mendy', rounds: [['beis', 4, ['alef', 'alef', 'veis', 'veis'], ['alef', 'veis']], ['veis', 3, ['alef', 'alef', 'beis', 'beis'], ['alef', 'beis']]] },
+  10: { boy: 'Mendy', bySound: true, rounds: [['shin', 4, ['sin', 'sin', 'samech', 'tav'], ['sin', 'tav']], ['gimmel', 3, ['nun', 'nun', 'zayin', 'daled'], ['nun', 'daled']]] },   /* Unit 10's twist: he hears only the SOUND */
   7: { boy: 'Mendy', rounds: [['kuf', 4, ['hei', 'hei', 'reish', 'daled'], ['hei', 'reish']], ['reish', 3, ['daled', 'daled', 'kuf', 'hei'], ['daled', 'kuf']]] },   /* Unit 8's review: Unit 7's Kuf and Reish among their look-alikes */
   3: { boy: 'Ari', rounds: [['zayin', 4, ['vov', 'vov', 'ches', 'gimmel'], ['vov', 'ches']], ['ches', 3, ['hei', 'hei', 'zayin', 'daled'], ['hei', 'zayin']]] },
 };
@@ -13,7 +14,7 @@ const CUE = { kuf: 'with the long leg', reish: 'round on top', beis: 'with the d
 const NOTE = { kuf: 'It has a long leg.', reish: 'It is round on top.', daled: 'It has a corner.', alef: '', beis: 'It has a dot.', veis: 'No dot.', vov: 'No crown.', zayin: 'It has a crown.', hei: 'Its leg doesn\u2019t touch the roof.', ches: 'Its leg touches the roof.', gimmel: '' };
 export default function setup(E, { struggled, unit, game }) {
   const plan = PLAN[(game && game.reviewOf) || unit.n] || PLAN[1], NM = k => E.LETTERS[k].name;   /* a review round hunts an earlier unit's letters */
-  const boyName = { 1: 'Mendy', 2: 'Shloimy', 3: 'Ari', 4: 'Dovid' }[unit.n] || plan.boy;
+  const boyName = { 1: 'Mendy', 2: 'Shloimy', 3: 'Ari', 4: 'Dovid', 8: 'Mendy', 10: 'Mendy' }[unit.n] || plan.boy;
   const { THREE } = E;
   const wood = E.M(0xd9a066, { roughness: .6 }), wood2 = E.M(0xc68a52, { roughness: .6 }), cloth = E.M(0xffffff, { roughness: .5 }), leaf = E.M(0x2f9b3e, { roughness: .7, clearcoat: 0 }), leaf2 = E.M(0x46b54d, { roughness: .7, clearcoat: 0 });
   let suk = null, W = 7.4, spots = [];
@@ -90,7 +91,7 @@ export default function setup(E, { struggled, unit, game }) {
   async function miss(l) {
     E.sfx.boop(); wrong++; wrongInRound++; l.userData.busy = true; boy.mood('think'); await E.shake(l, .12); l.userData.busy = false;
     E.pointAt(arrow, l, l.userData.key, l.userData.height, feat(l.userData.key));
-    const k = l.userData.key, look = 'Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!';
+    const k = l.userData.key, look = plan.bySound ? 'Find the letter that says ' + E.LETTERS[want].snd + '!' : 'Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!';
     await E.say('That is ' + NM(k) + '. ' + look);   /* 12 words or fewer */
     arrow.visible = false;
     if (wrongInRound >= 2) showHelp();
@@ -109,18 +110,18 @@ export default function setup(E, { struggled, unit, game }) {
     boy.mood('think'); if (game && game.review) await E.say('Remember ' + NM(plan.rounds[0][0]) + ' and ' + NM(plan.rounds[1][0]) + '? Let’s find them again!');
     await E.say(boyName + ' is in the sukkah. Letters are hiding!');
     await showAll();
-    await E.say('Watch me. I find ' + E.an(r1[0]) + '. ' + (NOTE[r1[0]] || ''));
+    await E.say(plan.bySound ? ['Watch me. I find the letter that says', E.S(E.LETTERS[r1[0]].snd), '.'] : 'Watch me. I find ' + E.an(r1[0]) + '. ' + (NOTE[r1[0]] || ''));
     const first = letters.find(l => l.userData.key === r1[0]); let [x, y] = E.toScreen(E.worldPos(first)); E.hand.at(x + 10, y + 10); await E.wait(700);
     const fin1 = new Promise(r => resolveRound = r);
     await got(first); await E.wait(300);
-    await E.say('Now you! Find every ' + NM(r1[0]) + '.'); active = true; lastAct = performance.now(); document.body.dataset.huntReady = r1[0];
+    await E.say(plan.bySound ? ['Now you! Find every letter that says', E.S(E.LETTERS[r1[0]].snd), '.'] : 'Now you! Find every ' + NM(r1[0]) + '.'); active = true; lastAct = performance.now(); document.body.dataset.huntReady = r1[0];
     await fin1; active = false; await E.wait(500);
     await E.say('You found every ' + NM(r1[0]) + '!');
     /* round 2 */
     round = 1; letters.forEach(l => E.popOut(l)); await E.wait(450);
     setRound(r2[0], r2[1], help ? r2[3] : r2[2]);
     await showAll();
-    await E.say('Now find every ' + NM(r2[0]) + '. ' + (NOTE[r2[0]] || ''));
+    await E.say(plan.bySound ? ['Now find every letter that says', E.S(E.LETTERS[r2[0]].snd), '.'] : 'Now find every ' + NM(r2[0]) + '. ' + (NOTE[r2[0]] || ''));
     const fin2 = new Promise(r => resolveRound = r); active = true; lastAct = performance.now(); document.body.dataset.huntReady = r2[0];
     await fin2; active = false;
     const stars = wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1;

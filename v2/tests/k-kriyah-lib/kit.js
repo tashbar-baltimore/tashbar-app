@@ -25,7 +25,7 @@ async function open(browser, { view = 'chromebook', save = null, url = 'index.ht
 /* every game in order, read from the app's own list (v2/app/k-kriyah/units.js) */
 const UNITS_SRC = fs.readFileSync(path.join(APP, 'units.js'), 'utf8');
 const ALL = [...UNITS_SRC.matchAll(/id: '(u\d+g\d+)'[^}]*?kind: '(\w+)'([^}]*)\}/g)].map(m => ({ id: m[1], kind: m[2], bonus: /bonus: true/.test(m[3]), mastery: /mastery: true/.test(m[3]) }));
-function passedBefore(id) { const ids = ALL.map(g => g.id); const games = {}; for (const g of ids) { if (g === id) break; games[g] = { stars: 3, last: 3, plays: 1 }; } return { games }; }
+function passedBefore(id) { const ids = ALL.map(g => g.id); const games = {}; for (const g of ids) { if (g === id) break; games[g] = { stars: 3, last: 3, plays: 1, days3: ['2026-01-01', '2026-01-02'] }; }   /* two champion days, so the gate after Unit 10 is open */ return { games }; }
 /* is the 3D canvas really drawn (not blank)? counts distinct colours in a grid of samples */
 async function canvasColours(pg) {
   return pg.evaluate(() => { const c = document.querySelector('#c'); if (!c) return 0; const g = c.getContext('webgl2') || c.getContext('webgl'); if (!g) return 0;

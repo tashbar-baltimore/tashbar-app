@@ -48,7 +48,7 @@ P.hunt = async (pg, shot, log) => {
 P.mistake = async (pg, shot, log) => {
   let n = 0, wrongJ = false, wrongT = false;
   await loop(pg, async () => { const i = await K.info(pg); if (!i) return false;
-    if (i.ask && i.yes && i.no) { n++; const right = i.shownKey === i.claim; if (n === 1) await shot('1-start');
+    if (i.ask && i.yes && i.no) { n++; const right = i.right != null ? i.right : i.shownKey === i.claim; if (n === 1) await shot('1-start');
       if (!wrongJ && !right) {   /* one mistake: says Yaakov is right when he isn't, then (same round) drags a wrong letter first */ wrongJ = true; await pg.mouse.click(...(right ? i.no : i.yes)); await pg.waitForTimeout(700); await shot('3-wrong'); await pg.waitForTimeout(800); log.wrongHandled = (await pg.evaluate(() => window.__lines.join(' '))).includes('Look again'); }
       else await pg.mouse.click(...(right ? i.yes : i.no)); await pg.waitForTimeout(300); return true; }
     if (i.fix && i.tiles.length === 3 && await pg.evaluate(() => !!document.body.dataset.fixReady)) { const t = i.tiles.find(x => x.k === i.fix);
@@ -144,4 +144,13 @@ P.spotdiff = async (pg, shot, log) => {
     if (!wrong) { wrong = true; await pg.mouse.click(...i.away); await pg.waitForTimeout(600); await shot('3-wrong');
       log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Look at the'), 15000)); return true; }
     await pg.mouse.click(...i.spots[n % 2]); if (++n === 2) { await pg.waitForTimeout(800); await shot('2-middle'); } await pg.waitForTimeout(500); return true; });
+};
+P.story10 = P.story;
+/* My hard letters (Unit 10): pop every bubble with the letter; one wrong bubble first */
+P.practice = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-pop-ready]', { timeout: 180000 }); await shot('1-start'); let wrong = false, n = 0;
+  await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready) return false;
+    if (!wrong && i.others.length) { wrong = true; await pg.mouse.click(...i.others[0]); await pg.waitForTimeout(500); await shot('3-wrong');
+      log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('That is'), 15000)); return true; }
+    if (!i.targets.length) return false; await pg.mouse.click(...i.targets[0]); if (++n === 4) await shot('2-middle'); await pg.waitForTimeout(250); return true; });
 };

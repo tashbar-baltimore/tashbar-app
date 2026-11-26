@@ -11,6 +11,7 @@ const PLAN = {
   6: { R: [['samech', 'samech'], ['pei', 'fei'], ['ayin', 'ayin'], ['pei', 'kaf'], ['fei', 'fei'], ['kaf', 'pei']], demo: ['fei', 'pei', 'Hmm. Watch me. No dot. That is not a Pei!'] },
   7: { R: [['reish', 'reish'], ['daled', 'reish'], ['kuf', 'kuf'], ['hei', 'kuf'], ['tzadik', 'tzadik'], ['reish', 'daled']], demo: ['kuf', 'hei', 'Hmm. Watch me. A long leg! That is not a Hei!'] },   /* the demo is not one of his own questions */
   8: { bySound: true, R: [['shin', 'shin'], ['sin', 'shin'], ['tav', 'tav'], ['sav', 'tav'], ['sin', 'sin'], ['shin', 'sin']], demo: ['sav', 'tav', 'Hmm. Watch me. No dot. It does not say t!'] },   /* Unit 8's twist: Yaakov says the SOUND, not the name */
+  10: { both: true, R: [['gimmel', 'gimmel', 'gimmel'], ['daled', 'daled', 'reish'], ['sin', 'shin', 'shin'], ['kuf', 'kuf', 'kuf'], ['memsofis', 'samech', 'samech'], ['tav', 'tav', 'tes']], demo: ['beis', 'beis', 'veis', 'Hmm. Watch me. Beis is right, but Beis says b!'] },   /* Unit 10's twist: the name AND the sound; either can be wrong */
   9: { words: true, R: [['memsofis', 'memsofis', ['shin', 'lamed', 'vov'], 'Shalom'], ['mem', 'memsofis', ['lamed', 'ches'], 'Lechem, bread'], ['nunsofis', 'nunsofis', ['gimmel'], 'Gan, a garden'],
       ['tzadik', 'tzadiksofis', ['alef', 'reish'], 'Eretz, the land'], ['chafsofis', 'chafsofis', ['mem', 'lamed'], 'Melech, a king'], ['fei', 'feisofis', ['kaf'], 'Kaf, a spoon']],
     demo: ['nun', 'nunsofis', ['alef', 'beis'], 'Even, a stone', 'Hmm. Watch me. The end needs Shabbos clothes!'] },   /* Unit 9's twist: Yaakov writes a word; is its LAST letter right? */
@@ -48,7 +49,7 @@ export default function setup(E, { struggled, unit }) {
   document.body.appendChild(bar);
   const ask = () => new Promise(r => { bar.style.display = 'flex'; document.body.dataset.askReady = 1; const done = v => { bar.style.display = 'none'; delete document.body.dataset.askReady; E.sfx.pop(); r(v); }; E.$('#yes').onclick = () => done(true); E.$('#no').onclick = () => done(false); });
   const btnXY = id => { const r = E.$(id).getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; };
-  window.__info = () => ({ ask: !!document.body.dataset.askReady, fix: fixKey, shownKey: shown && shown.userData.key, claim: curClaim, yes: bar.style.display !== 'none' ? btnXY('#yes') : null, no: bar.style.display !== 'none' ? btnXY('#no') : null,
+  window.__info = () => ({ right: curRight, ask: !!document.body.dataset.askReady, fix: fixKey, shownKey: shown && shown.userData.key, claim: curClaim, yes: bar.style.display !== 'none' ? btnXY('#yes') : null, no: bar.style.display !== 'none' ? btnXY('#no') : null,
     tiles: tiles.filter(t => t.visible).map(t => ({ k: t.userData.key, xy: E.toScreen(E.worldPos(t)) })), board: E.toScreen(E.worldPos(board)) });
   let curClaim = null;
 
@@ -70,7 +71,7 @@ export default function setup(E, { struggled, unit }) {
     : k === 'beis' && c === 'veis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
     : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : lookOf(k, c)) + ' This is ' + E.LETTERS[k].name + '.';
   const an = k => E.an(k);
-  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters])].slice(0, 3).sort((a, b) => E.AB(a) - E.AB(b)).forEach((k, i) => { const t = E.letter(k, P ? .8 : .95); if (t.userData.below) t.children.forEach(ch => ch.position.y += t.userData.below);   /* Kuf's long leg stays above the floor */ t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
+  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters, ...unit.known.slice().sort(() => Math.random() - .5).filter(o => !E.sameSound(o, fixKey))])].slice(0, 3).sort((a, b) => E.AB(a) - E.AB(b)).forEach((k, i) => { const t = E.letter(k, P ? .8 : .95); if (t.userData.below) t.children.forEach(ch => ch.position.y += t.userData.below);   /* Kuf's long leg stays above the floor */ t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
   const onBoard = () => { const [bx, by] = E.toScreen(E.worldPos(board)), [tx, ty] = E.toScreen(dragT.position); return Math.hypot(bx - tx, by - ty) < Math.min(innerWidth, innerHeight) * .16; };
   E.onPointer('down', e => { if (!fixKey || busy) return; const t = E.pickFrom(e, tiles); if (t) { dragT = t; const p = E.planePoint(e, t.position.z); if (p) grab.copy(t.position).sub(p); t.scale.setScalar(1.12); } });
   E.onPointer('move', e => { if (!dragT) return; const p = E.planePoint(e, dragT.position.z); if (p) dragT.position.copy(p.add(grab)); });
@@ -103,17 +104,20 @@ export default function setup(E, { struggled, unit }) {
     await E.say(E.quiet(k) ? 'Now Yaakov has his ' + E.LETTERS[k].name + '! Thank you!' : E.LETTERS[k].snd === 'ch' ? 'Now Yaakov has his ' + E.LETTERS[k].name + '! Thank you!' : ['Now Yaakov has his ' + E.LETTERS[k].name + '!', ...E.nameLine(k)]);   /* 12 words or fewer */
     yak.mood('calm');
   }
+  let sndOf = null, curRight = null;
   async function roundOf(shownKey, claim, pre, said, demo = false) {
-    if (plan.words) prefix = pre;
+    if (plan.words) prefix = pre; if (plan.both) { sndOf = pre; }
     missed = false; curClaim = claim; yak.mood('calm'); await showLetter(shownKey); yak.mood('wave'); E.hop(yak, .25);
     if (plan.words) await E.say(['Yaakov wrote ' + said + '.']);
-    await E.say(plan.words ? 'Is the last letter right?' : plan.bySound ? ['Yaakov says this letter says', S(E.LETTERS[claim].snd), '. Is he right?'] : 'Yaakov says this is ' + an(claim) + '. Is he right?'); yak.mood('calm');
+    if (plan.both) await E.say(['Yaakov says: this is ' + E.LETTERS[claim].name + '.']);
+    await E.say(plan.both ? ['It says', S(E.LETTERS[sndOf].snd), '. Is he right?'] : plan.words ? 'Is the last letter right?' : plan.bySound ? ['Yaakov says this letter says', S(E.LETTERS[claim].snd), '. Is he right?'] : 'Yaakov says this is ' + an(claim) + '. Is he right?'); yak.mood('calm');
     if (help && mark(shownKey)) { await E.say(plan.words ? 'Look at the end of the word!' : ring.visible ? 'Look at the dot place!' : 'Look carefully here!'); unmark(); }
-    const right = shownKey === claim; let saysRight;
-    if (demo) { mark(shownKey); await E.say(plan.demo[plan.words ? 4 : 2]); unmark(); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
+    const sndWrong = plan.both && E.LETTERS[sndOf].snd !== E.LETTERS[shownKey].snd && shownKey === claim, right = shownKey === claim && !sndWrong; curRight = right; let saysRight;
+    if (demo) { mark(shownKey); await E.say(plan.demo[plan.words ? 4 : plan.both ? 3 : 2]); unmark(); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
     else saysRight = await ask();
     if (saysRight === right) {
       if (right) { yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say(E.LETTERS[shownKey].snd === 'ch' ? 'Yes! Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.' : ['Yes! Yaakov is right.', ...E.nameLine(shownKey)]);   /* 12 words or fewer */ yak.mood('calm'); }
+      else if (sndWrong) { E.sfx.chime(); await E.say(['Yes! A mistake.', E.LETTERS[shownKey].name + ' says', S(E.LETTERS[shownKey].snd), '!']); }   /* the name was right, the sound was not */
       else { E.sfx.chime(); await E.say(['Yes! Yaakov made a mistake. That is', E.LETTERS[shownKey].name + '.']); await fix(claim, demo); }
     } else {
       E.sfx.boop(); if (!demo && !missed) mistakes++; missed = true; yak.mood('think'); help = help || mistakes >= 2;
@@ -123,6 +127,7 @@ export default function setup(E, { struggled, unit }) {
         if (await ask()) { E.sfx.chime(); yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say('Yes! Yaakov is right.'); }
         else await E.say('Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.');
         yak.mood('calm'); }
+      else if (sndWrong) { await E.say(['Look again. ' + E.LETTERS[shownKey].name + ' says', S(E.LETTERS[shownKey].snd), ', not', S(E.LETTERS[sndOf].snd), '.']); unmark(); }
       else { await E.say(why(shownKey, claim)); unmark(); await fix(claim, false); }
     }
   }

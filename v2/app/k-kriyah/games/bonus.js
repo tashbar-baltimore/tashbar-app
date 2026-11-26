@@ -2,9 +2,9 @@
    Skill: spots Beis, Veis and Alef fast, mixed together. Letters float down from the clouds; he taps every one that
    matches the letter on Mendy's sign. Three short rounds (Beis, then Veis, then Alef), each a little faster.
    A wrong tap is named kindly ("That is Veis. No dot."), and nothing is lost when a letter lands. */
-export default function setup(E, { unit }) {
+export default function setup(E, { unit, game }) {
   const pool = [...unit.known, ...unit.letters];
-  const R = unit.n === 1 ? ['beis', 'veis', 'alef'] : unit.letters;   /* Unit 4: four short rounds */   /* the letter to catch in each round */
+  const R = game && game.rain ? game.rain : unit.n === 1 ? ['beis', 'veis', 'alef'] : unit.letters;   /* Unit 4: four short rounds */   /* the letter to catch in each round */
   const { THREE, S } = E;
   const boy = E.unitBoy(unit.n); E.scene.add(boy);   /* each unit's own boy */
   const sign = new THREE.Group(); sign.add(E.mesh(E.rbox(1.25, 1.35, .14, .1), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); sign.add(E.mesh(E.rbox(1.05, 1.15, .08, .06), E.M(0xfffaf0), 0, 0, .06));

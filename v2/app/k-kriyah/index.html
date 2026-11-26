@@ -35,6 +35,8 @@ if (ok) {
     else if (kind === 'story6') { const b = E.mesh(new THREE.SphereGeometry(.3, 18, 12), E.M(0x8a5a32, { roughness: .6 }), 0, 0, 0); b.scale.set(1.5, .8, .8); g.add(b); g.add(E.mesh(new THREE.SphereGeometry(.17, 14, 10), E.M(0x8a5a32), .42, .25, 0)); }   /* a horse */
     else if (kind === 'story7') { g.add(E.mesh(E.rbox(.6, .32, .3, .06), E.M(0x2f7de1, { roughness: .3, clearcoat: .8 }), 0, .1, 0)); g.add(E.mesh(E.rbox(.26, .3, .3, .05), E.M(0xffd43b, { roughness: .3, clearcoat: .8 }), .2, .38, 0)); [-.2, .02, .22].forEach(x => { const w = E.mesh(new THREE.CylinderGeometry(.1, .1, .32, 16), E.M(0xe8322b, { roughness: .3 }), x, -.1, 0); w.rotation.x = Math.PI / 2; g.add(w); }); }   /* a toy train */
     else if (kind === 'story8') { g.add(E.mesh(new THREE.CylinderGeometry(.03, .03, .9, 8), E.M(0xc68a52), -.25, -.05, 0)); g.add(E.mesh(new THREE.SphereGeometry(.12, 16, 12), E.M(0xe8322b, { roughness: .25, clearcoat: 1 }), -.25, .45, 0)); [[0x2f7de1, 0], [0xffffff, 1], [0x2f7de1, 2], [0xffcf3a, 3]].forEach(([c, i]) => g.add(E.mesh(new THREE.BoxGeometry(.5, .1, .03), E.M(c), .02, .3 - i * .1, 0))); }   /* a Simchas Torah flag */
+    else if (kind === 'story10') { const st = E.star3d(.4); g.add(st); }   /* a champion star */
+    else if (kind === 'practice') { g.add(E.mesh(new THREE.SphereGeometry(.36, 24, 16), new THREE.MeshPhysicalMaterial({ color: 0xbfe8ff, transparent: true, opacity: .5, roughness: 0, clearcoat: 1 }))); const l = E.letter('veis', .4); g.add(l); }   /* a bubble with a letter */
     else if (kind === 'story9') { const sh = E.M(0xffffff, { roughness: .4 }); g.add(E.mesh(E.rbox(.62, .6, .2, .08), sh, 0, -.05, 0)); [-1, 1].forEach(s => { const sl = E.mesh(E.rbox(.22, .4, .18, .06), sh, s * .38, .08, 0); sl.rotation.z = s * .6; g.add(sl); }); g.add(E.mesh(new THREE.BoxGeometry(.1, .1, .05), E.M(0x1f3c88), 0, .2, .12)); }   /* a white Shabbos shirt */
     else if (kind === 'partners') { const a = E.letter('mem', .55), b = E.letter('memsofis', .55); a.position.x = .3; b.position.x = -.3; g.add(a, b); }
     else if (kind === 'endword') { g.add(E.mesh(E.rbox(.9, .45, .08, .05), E.M(0xc68a52), 0, 0, -.05)); const l = E.letter('memsofis', .35); l.position.set(-.22, 0, .05); g.add(l); const st = E.star3d(.1); st.position.set(-.36, .3, .1); g.add(st); }
@@ -47,7 +49,7 @@ if (ok) {
     else if (kind === 'hunt') { const lens = E.mesh(new THREE.TorusGeometry(.3, .07, 14, 32), E.M(0x2f7de1, { roughness: .2, clearcoat: 1 })); g.add(lens); g.add(E.mesh(new THREE.CircleGeometry(.3, 32), new THREE.MeshPhysicalMaterial({ color: 0xcfefff, transparent: true, opacity: .45, roughness: 0, clearcoat: 1 }), 0, 0, 0, false)); const hd = E.mesh(new THREE.CylinderGeometry(.06, .07, .45, 12), E.M(0x8a5a3c), .33, -.33, 0); hd.rotation.z = Math.PI / 4; g.add(hd); }
     else if (kind === 'mistake') { g.add(E.mesh(E.rbox(.8, .85, .08, .06), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); const l = E.letter('veis', .55); l.position.z = .12; g.add(l); }
     else if (kind === 'mastery') { const gold = E.goldDot(); g.add(E.mesh(new THREE.CylinderGeometry(.3, .12, .42, 24), gold, 0, .1, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.08, .08, .2, 12), gold, 0, -.2, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.22, .22, .08, 24), gold, 0, -.32, 0)); [-1, 1].forEach(s => { const h = E.mesh(new THREE.TorusGeometry(.12, .035, 8, 16, Math.PI), gold, s * .3, .14, 0); h.rotation.z = s * -Math.PI / 2; g.add(h); }); }
-    else if (kind === 'bonus') { const cm = E.M(0xffffff, { roughness: .9, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .15 }); [[0, .15, .3], [.28, .1, .22], [-.28, .1, .22]].forEach(([x, y, r]) => g.add(E.mesh(new THREE.SphereGeometry(r, 16, 12), cm, x, y, 0))); const l = E.letter(U.letters[0], .4); l.position.set(0, -.35, .1); g.add(l); }
+    else if (kind === 'bonus') { const cm = E.M(0xffffff, { roughness: .9, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .15 }); [[0, .15, .3], [.28, .1, .22], [-.28, .1, .22]].forEach(([x, y, r]) => g.add(E.mesh(new THREE.SphereGeometry(r, 16, 12), cm, x, y, 0))); const l = E.letter(U.letters[0] || 'alef', .4); l.position.set(0, -.35, .1); g.add(l); }
     return g; }
   U.games.forEach((G, i) => {
     const open = E.unlocked(G.id), stars = E.best(G.id), s = new THREE.Group();
@@ -62,7 +64,8 @@ if (ok) {
   const cur = stops.find(s => s.userData.open && s.userData.stars < E.PASS && !s.userData.G.bonus) || stops.slice().reverse().find(s => s.userData.open && !s.userData.G.bonus);
   const boy = E.mendy(); E.scene.add(boy);
   const ring = E.glowSprite('#fff7b0', 3.2, 0); E.scene.add(ring);
-  const banner = new THREE.Group(); U.letters.forEach((k, i) => { const l = E.letter(k, 1.25); l.position.x = ((U.letters.length - 1) / 2 - i) * 1.35; banner.add(l); }); E.scene.add(banner);   /* the unit's letters, right to left */
+  const banner = new THREE.Group(); if (!U.letters.length) { const st = E.star3d(.6); banner.add(st); E.onFrame(t => st.rotation.y = t); }   /* the champion unit: a gold star */
+  U.letters.forEach((k, i) => { const l = E.letter(k, 1.25); l.position.x = ((U.letters.length - 1) / 2 - i) * 1.35; banner.add(l); }); E.scene.add(banner);   /* the unit's letters, right to left */
   let pebbles = [];
   E.onLayout(p => {
     const N = stops.length, P = stops.map((_, i) => p ? [i % 2 ? -.9 : .95, 3.4 - i * (7.8 / (N - 1))] : [4.6 - i * 9.2 / (N - 1), i % 2 ? 1.2 : 2.5]);   /* right to left, zig-zag */
