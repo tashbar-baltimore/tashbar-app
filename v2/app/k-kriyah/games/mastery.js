@@ -11,7 +11,7 @@ const QS = {
   5: [N('lamed'), N('nun'), SND('mem'), N('mem'), SND('nun'), N('tes'), SND('lamed'), N('gimmel'), N('kaf')],   /* Nun beside Gimmel, Mem beside Tes */
   6: [N('pei'), N('nun'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), SND('fei')],   /* Pei beside Fei; Kaf beside Chaf; 'Which says f?' with Pei beside it */
   7: [N('reish'), N('tzadik'), N('kuf'), SND('reish'), N('daled'), SND('tzadik'), N('hei'), SND('mem'), SND('kuf')],   /* an older letter comes back too */   /* Reish beside Daled, Kuf beside Hei */
-  8: [N('shin'), N('sin'), SND('shin'), N('tav'), N('sav'), SND('tav'), N('ches'), N('tzadik'), N('sin')],   /* Shin beside Sin, Tuf beside Suf; 'Which says t?' never with Tes on screen */
+  8: [N('shin'), SND('sin'), N('tav'), N('sav'), N('veis'), N('chaf'), N('mem'), SND('pei'), N('kuf')],   /* four on Unit 8 (with 'Which says s?': Samech and Suf never on screen then), five from Units 1-7 */   /* Shin beside Sin, Tuf beside Suf; 'Which says t?' never with Tes on screen */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {

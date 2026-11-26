@@ -113,7 +113,7 @@ P.story8 = P.story;
 P.dotbuild = async (pg, shot, log) => {
   await pg.waitForSelector('body[data-dot-ready]', { timeout: 180000 }); await shot('1-start'); let wrong = false, n = 0;
   await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready || !i.want) return false;
-    if (!wrong && i.spots[i.bad]) { wrong = true; await K.drag(pg, i.dot, i.spots[i.bad]); await pg.waitForTimeout(700); await shot('3-wrong');
+    if (!wrong && (i.spots[i.bad] || (i.ok && i.good !== i.at))) { wrong = true; if (i.spots[i.bad]) await K.drag(pg, i.dot, i.spots[i.bad]); else await pg.mouse.click(...i.ok); await pg.waitForTimeout(700); await shot('3-wrong');
       log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Look!'), 15000)); return true; }
-    await K.drag(pg, i.dot, i.spots[i.good]); if (++n === 5) { await pg.waitForTimeout(400); await shot('2-middle'); } await pg.waitForTimeout(500); return true; });
+    if (i.ok && i.good === i.at) await pg.mouse.click(...i.ok); else await K.drag(pg, i.dot, i.spots[i.good]); if (++n === 5) { await pg.waitForTimeout(400); await shot('2-middle'); } await pg.waitForTimeout(500); return true; });
 };

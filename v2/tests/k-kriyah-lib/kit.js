@@ -89,6 +89,7 @@ function runOne(browser0, id, kind, label) {
       const stars = Number(await pg.evaluate(() => document.body.dataset.stars));
       if (stars >= 2) oks.push(tag + ': can be won (' + stars + ' stars, after one mistake)'); else fails.push(tag + ': could not be won (' + stars + ' stars)');
       log.oks.forEach(m => oks.push(tag + ': ' + m)); log.fails.forEach(m => fails.push(tag + ': ' + m));
+      if (process.env.KK_LINES) fs.appendFileSync(process.env.KK_LINES, JSON.stringify({ id, lines: await pg.evaluate(() => window.__lines) }) + '\n');   /* every spoken line, for the pull request */
       const badLines = await pg.evaluate(() => window.__lines.filter(l => /\bundefined\b|\bnull\b|\bNaN\b|\[undefined\]/.test(l)));   /* a missing word must never be spoken */
       if (badLines.length) fails.push(tag + ': a spoken line is missing a word: ' + badLines[0]); else oks.push(tag + ': every spoken line is whole words');
       const longLines = await pg.evaluate(() => window.__lines.filter(l => l.split(/\s+/).filter(w => /[A-Za-z\u0590-\u05FF\[]/.test(w)).length > 12));   /* HoS rule: 12 words or fewer (a sound counts as one) */
