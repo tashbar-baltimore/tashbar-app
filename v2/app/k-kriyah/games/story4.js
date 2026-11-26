@@ -1,5 +1,5 @@
 /* Unit 4 opener (Picture Story): Dovid goes to the park with Tatty.
-   A peacock (tavas) turns into Tes, a dove (yonah) into Yud, and a big ball (kadur) into Kaf; then Kaf's dot floats away and it is Chaf.
+   A turtle turns into Tes, a yo-yo into Yud, and a cat into Kaf; then Kaf's dot floats away and it is Chaf (English words).
    Then the look-alikes side by side (Beis's tail and Kaf's round bottom; Kaf's dot), a chant of all thirteen letters, and he taps each new one. */
 import { makeStory } from './storykit.js';
 export default function setup(E, { unit }) {
@@ -14,9 +14,9 @@ export default function setup(E, { unit }) {
       const path = E.mesh(new THREE.PlaneGeometry(2.2, 14), E.M(0xe9d3a0, { roughness: .9 }), 6.8, .015, -2, false); path.rotation.x = -Math.PI / 2; path.rotation.z = .5; g.add(path); },
     intro: ['This is Dovid. He goes to the park with Tatty.'],
     steps: [
-      { pic: 'tavas', lines: ['Look! A peacock opens its tail!', 'A peacock is a tavas.'], letter: 'tes', after: ['Tavas starts with Tes.', ['Tes says', S('t')]] },
-      { pic: 'yonah', lines: ['A white dove lands on the path.', 'A dove is a yonah.'], letter: 'yud', after: ['Yonah starts with Yud. Yud is the little letter.', ['Yud says', S('y')]] },
-      { pic: 'kadur', near: 'grown', lines: ['Tatty throws him a big ball!', 'A ball is a kadur.'], letter: 'kaf', after: ['Kadur starts with Kaf. Kaf has a dot.', ['Kaf says', S('k')]] },
+      { pic: 'turtle', lines: ['A little turtle walks by the pond.'], letter: 'tes', after: [['Turtle starts with', S('t'), '.'], ['Tes says', S('t'), ', like turtle!']] },
+      { pic: 'yoyo', near: 'grown', lines: ['Tatty gives him a yo-yo. Up and down!'], letter: 'yud', after: [['Yo-yo starts with', S('y'), '. Yud is the little letter.'], ['Yud says', S('y'), ', like yo-yo!']] },
+      { pic: 'cat', lines: ['A cat naps on the bench.'], letter: 'kaf', after: [['Cat starts with', S('k'), '. Kaf has a dot.'], ['Kaf says', S('k'), ', like cat!']] },
       { fromDot: 'kaf', letter: 'chaf', lines: ['No dot. This is Chaf!', ['Chaf says', S('ch')], 'Chaf sounds just like Ches!'] },
     ],
     lookalikes: [['beis', 'kaf', 'Beis has a tail at the bottom.', 'Kaf is round at the bottom.'], ['kaf', 'chaf', 'Kaf has a dot.', 'Chaf has no dot.']],

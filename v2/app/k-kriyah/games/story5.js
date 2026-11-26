@@ -1,5 +1,5 @@
 /* Unit 5 opener (Picture Story): Eli has a picnic with Bubby.
-   A lemon (limon) turns into Lamed, a glass of water (mayim) into Mem, and a little ant (nemalah) into Nun.
+   A lemon turns into Lamed, a mountain into Mem, and nuts into Nun (English words).
    Then the look-alikes side by side (Gimmel's foot and Nun's flat bottom; Tes closed and Mem open at the bottom), a chant of all sixteen letters, and he taps each new one. */
 import { makeStory } from './storykit.js';
 export default function setup(E, { unit }) {
@@ -13,9 +13,9 @@ export default function setup(E, { unit }) {
       bk.position.set(4.2, .02, -.5); g.add(bk); },
     intro: ['This is Eli. He has a picnic with Bubby.'],
     steps: [
-      { pic: 'limon', near: 'grown', lines: ['Bubby makes lemonade with a lemon.', 'A lemon is a limon.'], letter: 'lamed', after: ['Limon starts with Lamed. Lamed is the tall one.', ['Lamed says', S('l')]] },
-      { pic: 'mayim', lines: ['Eli is thirsty. He drinks cold water.', 'Water is mayim.'], letter: 'mem', after: ['Mayim starts with Mem.', ['Mem says', S('m')]] },
-      { pic: 'nemalah', lines: ['Look! A little ant wants a crumb!', 'An ant is a nemalah.'], letter: 'nun', after: ['Nemalah starts with Nun.', ['Nun says', S('n')]] },
+      { pic: 'lemon', near: 'grown', lines: ['Bubby makes lemonade with a lemon.'], letter: 'lamed', after: [['Lemon starts with', S('l'), '.'], ['Lamed says', S('l'), ', like lemon!']] },
+      { pic: 'mountain', lines: ['Eli sees a big mountain far away.'], letter: 'mem', after: [['Mountain starts with', S('m'), '.'], ['Mem says', S('m'), ', like mountain!']] },
+      { pic: 'nut', near: 'grown', lines: ['Bubby brings nuts for a snack.'], letter: 'nun', after: [['Nut starts with', S('n'), '.'], ['Nun says', S('n'), ', like nut!']] },
     ],
     lookalikes: [['gimmel', 'nun', 'Gimmel has a foot.', 'Nun is flat at the bottom.'], ['tes', 'mem', 'Tes is closed at the bottom.', 'Mem has an opening at the bottom.']],
   });

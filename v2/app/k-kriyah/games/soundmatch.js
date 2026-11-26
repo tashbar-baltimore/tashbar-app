@@ -1,12 +1,12 @@
-/* Sound Match: each picture goes to the letter it starts with (gefen to Gimmel, dag to Daled, Havdalah to Hei).
+/* Sound Match: each picture goes to the letter it starts with (its English name: grapes to Gimmel, dog to Daled, hand to Hei).
    Skill: links each new letter with its sound. He hears the word, then drags the picture to a letter (or taps the letter).
    Show-then-try demo; a wrong answer is explained (he hears the word's first sound and the right letter glows); if he
    struggles, the right letter glows from the start of each picture. */
-import { makePictures, WORDS, WORD_NAME } from '../pictures.js';
+import { makePictures, WORDS, WORD_NAME, hasPic } from '../pictures.js';
 export default function setup(E, { struggled, unit, game = {} }) {
   const { THREE, S } = E;
-  const PIC = makePictures(E), keys = (game.stands || (game.reviewOf ? E.UNITS[game.reviewOf - 1].letters : unit.n > 1 ? ['beis', ...unit.letters] : unit.letters)).filter(k => Object.values(WORDS).some(w => w.letter === k));   /* only letters with pictures (Chaf has none: few words start with it) */   /* in Alef-Beis order, right to left; as a review round, an earlier unit's letters */   /* one earlier letter comes back (Beis, with the bayis) */
-  const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter));
+  const PIC = makePictures(E), keys = (game.stands || (game.reviewOf ? E.UNITS[game.reviewOf - 1].letters : unit.n > 1 ? ['beis', ...unit.letters] : unit.letters)).filter(k => Object.keys(WORDS).some(w => WORDS[w].letter === k && hasPic(w)));   /* only letters with pictures (Chaf has none: few words start with it) */   /* in Alef-Beis order, right to left; as a review round, an earlier unit's letters */   /* one earlier letter comes back (Beis, with the bayis) */
+  const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter) && hasPic(w)).filter((w, i, a) => a.slice(0, i).filter(x => WORDS[x].letter === WORDS[w].letter).length < 2);   /* two pictures per letter */
   words.forEach(w => PIC[w]());   /* every picture starts loading now, so no card is ever blank */
   const kid = E.unitBoy(unit.n); E.scene.add(kid);   /* the unit's boy: Shloimy, then Ari */
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
@@ -86,7 +86,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
     if (keys.includes('ches') && unit.letters.includes('chaf')) {   /* Chaf has no picture: it joins Ches, the letter that sounds just like it */
       const pd = peds.find(x => x.userData.key === 'ches'), c = E.letter('chaf', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, 2.75 * pd.scale.x, .6)); c.scale.setScalar(.75 * pd.scale.x); E.scene.add(c); await E.popIn(c, .75 * pd.scale.x);   /* well above its partner, smaller, so the two never look like one tall letter */
       await E.say('This is Chaf. Kaf without its dot.'); E.hop(L.ches, .3); await E.say('Chaf sounds just like Ches!'); }
-    if (keys.includes('pei') && unit.letters.includes('fei')) {   /* Fei has no picture: it stands beside Pei and says f */
+    if (keys.includes('pei') && !keys.includes('fei') && unit.letters.includes('fei')) {   /* Fei has no picture: it stands beside Pei and says f */
       const pd = peds.find(x => x.userData.key === 'pei'), c = E.letter('fei', 1.2); if (P && peds.length > 3) c.position.set(pd.position.x * .05, .35, pd.position.z + 1.3); else c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 2.6 : 2.1) * pd.scale.x, .6));   /* two rows on a phone: between the rows */ c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);   /* just above its partner, a little smaller, so the two never look like one tall letter */
       await E.say('This is Fei. Pei without its dot.'); E.hop(c, .3); await E.say(['Fei says', S(E.LETTERS.fei.snd), '.']); }
     if (keys.includes('kuf') && !keys.includes('kaf') && unit.letters.includes('kuf')) {   /* Kaf is never a stand beside Kuf (both say k): it joins Kuf at the end */
