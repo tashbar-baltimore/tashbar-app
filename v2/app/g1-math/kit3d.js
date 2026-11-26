@@ -261,6 +261,7 @@ export function stage(host, opts = {}) {
     S.tick.forEach(f => f(dt, t)); renderer.render(scene, camera); S.frames++; G.frames = S.frames; }
   loop();
   S.stop = () => { rafOn = false; };
+  G.settled = () => camPos.distanceTo(S.goal.pos) < 0.05;   /* the camera has finished gliding (for the picture-taking script) */
   return S;
 }
 
