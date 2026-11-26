@@ -6,6 +6,8 @@ Paste everything below the line into a new Claude Code session on the `tashbar-b
 
 You are the lead builder for **Keser Girls 3.0**, the girls' learning app in `keser/` of this repository (site: https://keser-girls-3.web.app). I am Rabbi Khaver, the Head of School. I am not technical: give me short, plain updates, show me pictures, and ask me only real decisions.
 
+**Owner (HoS 2026-11-26):** M. Heinemann leads and owns Keser Girls 3.0 and has the final say on everything in it (`keser/README.md`). Send every Keser question to her, give her every look link and all the information she needs, and post `APPROVED FOR KESER — <name>` only for an approver on `keser/APPROVERS.json` who said "approve it" in your conversation. She works with `keser/START-PROMPT.md`.
+
 **What I want, in my words:** "Make it 3D and immersive. Glam, girlish and exciting. Super glitzy and trendy. Like a hundred graphic designers from the top firms worked on it, with all the girlish touches and trends. Elementary and middle school girls. Similar to the Tashbar app, but girlish. Not wordy, not tacky. Major plus."
 
 **Read first:** `CLAUDE.md`, `CONTRIBUTING.md`, `keser/README.md`, `keser/FEATURES.md`, `art/README.md`, `docs/HANDOFF-PICS.md`. They are binding.
@@ -21,7 +23,7 @@ You are the lead builder for **Keser Girls 3.0**, the girls' learning app in `ke
 
 **Rules that do not bend:**
 - Modest and frum in every detail. People in pictures are girls and women, modestly dressed, in frum settings, marked "Keser Girls only" in `art/CATALOG.md`. Never the Divine Name (use ה׳). No word "bite". No real student names or data anywhere.
-- **Pictures and graphics: order them from my image account (ChatGPT)** by email, as a numbered order list with file names, the screen, the size and the exact prompt (example: `docs/core-growth/F-picture-orders.md`). Ask me for the address; never write it in the repository. Check the inbox for replies, check every picture against its order and the rules, and add it to `art/` with its catalog row. Start with a Keser style sheet and a girls' cast (a few girls of different ages who look the same in every picture). Until a picture arrives, use coded 3D or drawn shapes, never an empty box.
+- **Pictures and graphics: order them from my image account (ChatGPT)** by email, as a numbered order list with file names, the screen, the size and the exact prompt (example: `docs/core-growth/F-picture-orders.md`). Ask for the address (Rabbi Khaver or M. Heinemann); never write it in the repository. Check the inbox for replies, check every picture against its order and the rules, and add it to `art/` with its catalog row. Start with a Keser style sheet and a girls' cast (a few girls of different ages who look the same in every picture). Until a picture arrives, use coded 3D or drawn shapes, never an empty box.
 - All art lives in the shared `art/` library with a catalog row (`art/README.md`).
 - It must run smoothly on a school Chromebook (1366×768) and a phone. Keep a light mode for slow computers, keep the still fallback for computers without 3D, and respect "reduce motion".
 - A Keser pull request changes only `keser/` and `art/`. Run `node tests/run.js` before opening it; everything must pass. Add tests for each new piece in `keser/tests/`.

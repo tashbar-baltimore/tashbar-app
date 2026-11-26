@@ -37,8 +37,9 @@ You are a builder on the Tashbar Baltimore learning app for the Head of School (
 - **Post that line only for the person working on 2.0 who, in the same conversation, looked at the newest look link and said to approve. Never post it otherwise, never ask anyone to post it, never merge or publish 2.0 by hand.**
 
 ## Keser Girls 3.0 (HoS 2026-11-26)
+- **Owner (HoS 2026-11-26): M. Heinemann leads and owns Keser Girls 3.0 and has the final say on everything in it**, including setting aside any rule made for it. Send every Keser question to her (by email; ask the HoS for her school address, which is not written here because this repository is public), and give her every look link and all the information she needs. She works in her own Claude with `keser/START-PROMPT.md`. Pictures for Keser are still ordered from the HoS's image account.
 - A third, separate, clean learning app **for girls**, in `keser/`, at its own site https://keser-girls-3.web.app. Read `keser/README.md` before touching `keser/`. 1.0 and 2.0 stay as they are.
-- A Keser pull request changes only `keser/` and the shared `art/` library. It goes in only when an approver on `keser/APPROVERS.json` (today: Rabbi Khaver) has his or her Claude post `APPROVED FOR KESER — <name>` after looking at its newest look link. Same rule as 2.0: never post it otherwise, never ask anyone to post it, never merge or publish by hand.
+- A Keser pull request changes only `keser/` and the shared `art/` library. It goes in only when an approver on `keser/APPROVERS.json` (M. Heinemann, the owner; Rabbi Khaver) has his or her Claude post `APPROVED FOR KESER — <name>` after looking at its newest look link. Same rule as 2.0: never post it otherwise, never ask anyone to post it, never merge or publish by hand.
 - Every school rule applies, written for girls (girls' names and stories). Pictures may show girls and women, modestly, marked "Keser Girls only" in the catalog; those never appear in 1.0 or 2.0.
 
 ## Shared art library (HoS 2026-11-24, binding on 1.0, 2.0 and every future app)

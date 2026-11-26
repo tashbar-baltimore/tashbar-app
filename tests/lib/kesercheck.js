@@ -23,6 +23,11 @@ module.exports = function () {
   try { const ap = fs.readFileSync(path.join(R, '.github', 'workflows', 'auto-publish.yml'), 'utf8'), g = fs.readFileSync(path.join(R, '.github', 'workflows', 'keser-gate.yml'), 'utf8');
     if (!/\^keser\/[\s\S]{0,300}keser-gate\.yml\/dispatches/.test(ap)) bad('auto-publish no longer hands keser/ pull requests to keser-gate (it would go in without an approver)');
     if (!/APPROVED FOR KESER/.test(g) || !/created_at > /.test(g) || !/keser\/APPROVERS\.json/.test(g)) bad('keser-gate must accept only a yes from a listed approver posted after the newest commit');
+    /* the Keser-only lane (HoS 2026-11-26) may be chosen only for a change inside keser/ and art/ with at least one keser/ file; otherwise the whole kit runs */
+    const tw = fs.readFileSync(path.join(R, '.github', 'workflows', 'test.yml'), 'utf8'), rj = fs.readFileSync(path.join(R, 'tests', 'run.js'), 'utf8');
+    if (!/grep -q '\^keser\/' <<<"\$files" && ! grep -Eqv '\^\(keser\|art\)\/' <<<"\$files"; then lane=keser/.test(tw) || !/previous_filename/.test(tw) || !/lane=full/.test(tw)) bad('the test check must choose the Keser-only lane only for changes inside keser/ and art/ (renames counted), and the whole kit for anything else');
+    if (!tw.includes('if [ "${{ needs.scope.outputs.lane }}" = keser ]; then [ "${{ needs.keser.result }}" = success ]; else [ "${{ needs.kit.result }}" = success ]; fi')) bad('the test check must pass only when the lane it chose passed');
+    if (!/LANE === 'keser'/.test(rj) || !/staticChecks\(\);\s*\/\* KESER-ONLY LANE/.test(rj)) bad('tests/run.js: the Keser lane must still run every static check (parse, packs, pictures, conflict marks, art library)');
   } catch (e) { bad('publishing files missing: ' + e.message); }
   /* girls-only pictures stay out of the boys' apps */
   try { const cat = fs.readFileSync(path.join(R, 'art', 'CATALOG.md'), 'utf8'), girls = new Set();
@@ -32,7 +37,7 @@ module.exports = function () {
       ['src', 'packs', 'web', 'v2'].forEach(d => scan(path.join(R, d)));
       hits.forEach(h => bad('a "Keser Girls only" picture is used in a boys\' app: ' + h)); }
   } catch (e) { bad('girls-only picture check failed: ' + String(e).slice(0, 150)); }
-  if (!out.fails.length) out.oks.push('Keser Girls 3.0: builds from keser/ only, auto-publish hands its changes to the approval gate, girls-only pictures stay out of the boys\' apps, no "bite" / Divine Name');
+  if (!out.fails.length) out.oks.push('Keser Girls 3.0: builds from keser/ only, auto-publish hands its changes to the approval gate, the Keser-only test lane is fenced, girls-only pictures stay out of the boys\' apps, no "bite" / Divine Name');
   fs.rmSync(tmp, { recursive: true, force: true });
   return out;
 };
