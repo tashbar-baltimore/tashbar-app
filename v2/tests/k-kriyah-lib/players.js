@@ -3,7 +3,9 @@
    shot(name) is called at: the start, the middle, right after the mistake, and the end. */
 const K = require('./kit.js');
 const isDone = pg => pg.evaluate(() => !!document.body.dataset.done);
-async function loop(pg, step, ms = 420000) { const t = Date.now(); while (!(await isDone(pg))) { if (Date.now() - t > ms) throw new Error('did not finish in ' + Math.round(ms / 1000) + 's'); const did = await step(); if (!did) await pg.waitForTimeout(200); } }
+/* "Remember these?" (the spaced review before the stars): the made-up boy taps the letter he hears */
+async function review(pg) { const r = await pg.evaluate(() => window.__review && window.__review.ready ? window.__review : null).catch(() => null); if (!r) return false; await pg.mouse.click(...r.at[r.want]); await pg.waitForTimeout(400); return true; }
+async function loop(pg, step, ms = 420000) { const t = Date.now(); while (!(await isDone(pg))) { if (Date.now() - t > ms) throw new Error('did not finish in ' + Math.round(ms / 1000) + 's'); if (await review(pg)) continue; if (await pg.evaluate(() => !!document.body.dataset.review)) { await pg.waitForTimeout(150); continue; } const did = await step(); if (!did) await pg.waitForTimeout(200); } }
 const P = {};
 P.story = async (pg, shot, log) => {
   await pg.waitForTimeout(1200); await shot('1-start'); let n = 0, wrong = false;

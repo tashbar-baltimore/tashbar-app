@@ -83,6 +83,8 @@ function runOne(browser0, id, kind, label) {
       await startGame(pg); await pg.waitForSelector('body[data-drawn]', { timeout: 60000 }); await pg.waitForTimeout(800);
       const col = await canvasColours(pg); if (col >= 12) oks.push(tag + ': loads and shows real 3D (' + col + ' colours on screen)'); else fails.push(tag + ': the screen looks blank (' + col + ' colours)');
       await P[kind](pg, shotF, log);
+      for (let t = Date.now(); Date.now() - t < 60000 && !(await pg.evaluate(() => !!document.querySelector('#endbar.show')));) {   /* answer "Remember these?" if the player stopped before it */
+        const r = await pg.evaluate(() => window.__review && window.__review.ready ? window.__review : null); if (r) { log.reviewed = (log.reviewed || 0) + 1; await pg.mouse.click(...r.at[r.want]); } await pg.waitForTimeout(250); }
       await pg.waitForSelector('#endbar.show', { timeout: 60000 }); await pg.waitForTimeout(300); await shotF('4-end');
       const stars = Number(await pg.evaluate(() => document.body.dataset.stars));
       if (stars >= 2) oks.push(tag + ': can be won (' + stars + ' stars, after one mistake)'); else fails.push(tag + ': could not be won (' + stars + ' stars)');

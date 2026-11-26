@@ -148,6 +148,17 @@ body{background:linear-gradient(#3fb4ff 0%,#8fd8ff 45%,#dff6ff 75%,#fff6d8 100%)
 #flat button{width:130px;height:150px;border-radius:30px;border:none;font-size:96px;line-height:1;font-family:"Noto Serif Hebrew","Times New Roman",serif;font-weight:800;color:#1f5fff;cursor:pointer;
  background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#e8f3ff 40%,#b9d8f5 100%);box-shadow:inset 0 -6px 10px #7aa9d655,0 7px 0 #6f9dc8,0 14px 22px #0b3a6640}
 #flat p{font-size:15px;max-width:460px;margin:0;background:#ffffffc0;padding:8px 14px;border-radius:14px}
+#rev{position:fixed;inset:0;display:none;z-index:8;background:radial-gradient(circle at 50% 45%,#ffffffee 0 38%,#eaf6ffd8 75%);align-items:center;justify-content:center;flex-direction:column;gap:26px;padding:20px}
+#rev.show{display:flex}
+#rev .row{display:flex;gap:22px;direction:rtl;flex-wrap:wrap;justify-content:center}
+#rev button{width:150px;height:170px;border-radius:34px;border:none;font-size:110px;line-height:1;font-family:"Noto Serif Hebrew","Times New Roman",serif;font-weight:800;color:#1f5fff;cursor:pointer;
+ background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#e8f3ff 40%,#b9d8f5 100%);box-shadow:inset 0 -6px 10px #7aa9d655,0 7px 0 #6f9dc8,0 14px 22px #0b3a6640;transition:transform .15s}
+#rev button:active{transform:translateY(4px)}
+#rev button.right{background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#eaffea 40%,#9fe0a6 100%);box-shadow:0 0 0 8px #7bd94a88,0 7px 0 #5fae62}
+#rev button.wrong{animation:revshake .45s}
+#rev .dots{display:flex;gap:10px}#rev .dots i{width:18px;height:18px;border-radius:50%;background:#d6e2ee}#rev .dots i.on{background:#ffcf3a}
+@keyframes revshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}75%{transform:translateX(12px)}}
+@media (max-width:700px){#rev button{width:100px;height:120px;font-size:76px;border-radius:26px}#rev .row{gap:12px}}
 @media (max-width:700px){#start{width:150px;height:150px}#start svg{width:70px;height:70px}.endbar .btn.big{width:100px;height:100px}.stars svg{width:80px;height:80px}.stars{gap:10px;padding:14px 18px}#prog{top:96px}#prog i{width:18px;height:18px}}
 `;
 const HAND = '<svg class="hand" id="hand" viewBox="0 0 64 64"><path d="M26 6c3 0 5 2 5 5v19l2-1c2-6 10-5 10 1l1-1c2-4 9-3 9 2v2c2-3 8-2 8 3v12c0 9-7 16-16 16h-6c-6 0-10-3-13-8L10 40c-2-4 2-8 6-5l5 5V11c0-3 2-5 5-5z" fill="#fff" stroke="#1d2b3a" stroke-width="3"/></svg>';
@@ -161,6 +172,7 @@ ${home ? `<button class="ui btn" id="home" aria-label="Back to the path">${ICON.
 <div class="ui endbar" id="endbar"></div>
 ${HAND}<div class="yay" id="yay"><div class="stars"></div></div>
 <div id="flat"></div>
+<div id="rev" aria-live="polite"><div class="dots"></div><div class="row"></div></div>
 <div class="note">The letter sounds are the computer voice for now; the rebbe's own recording will replace them.</div>`);
   $('#again').onclick = () => { sfx.pop(); again(); };
   if (home) $('#home').onclick = () => goPath();
@@ -507,4 +519,47 @@ export function flatFallback(keys = ['alef', 'beis', 'veis']) {
   <p>This computer can't show the 3D games. Tap a letter to hear it. (For the teacher: please open the games on a newer Chromebook or browser.)</p>`;
   f.querySelectorAll('button').forEach(b => b.onclick = () => say(nameLine(b.dataset.k)));
   say('Tap a letter to hear it.');
+}
+
+/* ---------------- "Remember these?": spaced review at the end of a game (RESEARCH.md, gain 1) ----------------
+   Before the stars, three quick "hear it, tap it" questions about letters from EARLIER units, chosen by spacing:
+   a letter he got wrong comes back first, then the ones he hasn't seen for longest. Practice only: it never costs a star.
+   Every answer here and in the mastery check is remembered on his device, per letter (save.letters). */
+export function noteLetter(k, right) { const s = loadSave(); s.letters = s.letters || {}; const m = s.letters[k] || { r: 0, w: 0, at: 0 };
+  if (right) m.r++; else { m.w++; m.lastWrong = Date.now(); } m.at = Date.now(); m.ok = right; s.letters[k] = m; writeSave(s); }
+const REV_LOOK = { beis: ['veis', 'kaf'], veis: ['beis'], gimmel: ['nun'], daled: ['reish'], hei: ['ches', 'kuf'], vov: ['zayin'], zayin: ['vov'], ches: ['hei'], tes: ['mem'], kaf: ['chaf', 'beis', 'pei'], chaf: ['kaf'], mem: ['tes'], nun: ['gimmel'], pei: ['fei', 'kaf'], fei: ['pei'], reish: ['daled'], kuf: ['hei'] };
+const REV_SAME = { vov: 'veis', veis: 'vov', chaf: 'ches', ches: 'chaf', alef: 'ayin', ayin: 'alef', samech: 'sin', sin: 'samech', kaf: 'kuf', kuf: 'kaf', tes: 'tav', tav: 'tes', sav: 'samech' };
+export function reviewPicks(known, n = 3) {
+  const L = loadSave().letters || {}, now = Date.now();
+  const score = k => { const m = L[k]; if (!m) return 1e12; return (m.ok === false ? 2e12 : 0) + (m.w > m.r ? 1e11 : 0) + (now - (m.at || 0)); };   /* missed last time first, then weaker, then not seen for longest */
+  const order = known.slice().sort(() => Math.random() - .5).sort((a, b) => score(b) - score(a));
+  const out = []; for (const k of order) { if (out.length >= n) break; if (out.some(o => REV_SAME[o] === k)) continue; out.push(k); }
+  return out;
+}
+export async function quickReview(unit, game) {
+  if (!unit || !unit.known || !unit.known.length || !game || game.mastery || game.bonus || /^story/.test(game.kind)) return;
+  const pool = [...unit.known, ...unit.letters], picks = reviewPicks(unit.known), box = $('#rev'), row = box.querySelector('.row'), dots = box.querySelector('.dots');
+  dots.innerHTML = picks.map(() => '<i></i>').join(''); box.classList.add('show'); document.body.dataset.review = 1;
+  await say('Remember these?');
+  for (let qi = 0; qi < picks.length; qi++) {
+    const k = picks[qi], others = [];
+    (REV_LOOK[k] || []).filter(o => pool.includes(o)).slice(0, 1).forEach(o => others.push(o));   /* its look-alike, if he knows it */
+    for (const c of pool.slice().sort(() => Math.random() - .5)) if (others.length < 2 && c !== k && !others.includes(c) && REV_SAME[k] !== c && !others.some(o => REV_SAME[o] === c)) others.push(c);
+    const set = [k, ...others].sort((a, b) => AB(a) - AB(b));   /* right to left in Alef-Beis order */
+    row.innerHTML = set.map(c => `<button data-k="${c}" aria-label="${LETTERS[c].name}">${FLAT[c]}</button>`).join('');
+    let firstTry = true;
+    await new Promise(res => {
+      const btns = [...row.querySelectorAll('button')];
+      window.__review = { want: k, at: Object.fromEntries(btns.map(b => { const r = b.getBoundingClientRect(); return [b.dataset.k, [r.x + r.width / 2, r.y + r.height / 2]]; })) };
+      let busy = true; say('Tap ' + LETTERS[k].name + '.').then(() => { busy = false; window.__review.ready = 1; });
+      btns.forEach(b => b.onclick = async () => { if (busy) return; const c = b.dataset.k;
+        if (c === k) { busy = true; b.classList.add('right'); sfx.chime(); if (firstTry) noteLetter(k, true); dots.children[qi].classList.add('on');
+          await say(k === 'alef' || k === 'ayin' ? [LETTERS[k].name + '! ' + LETTERS[k].name + ' is quiet.'] : [LETTERS[k].name + '! ' + LETTERS[k].name + ' says', S(LETTERS[k].snd)]); res(); }
+        else { busy = true; sfx.boop(); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); if (firstTry) noteLetter(k, false); firstTry = false;
+          const r = btns.find(x => x.dataset.k === k); r.classList.add('right');
+          await say('That is ' + LETTERS[c].name + '. This is ' + LETTERS[k].name + '.'); r.classList.remove('right'); busy = false; } });
+    });
+    window.__review = null; await wait(250);
+  }
+  box.classList.remove('show'); delete document.body.dataset.review;
 }
