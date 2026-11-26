@@ -28,7 +28,10 @@ window.NK_UNITS = [
     ['u7-opener', 'opener7.html', 'book', 'Learn it'], ['u7-pairs', 'pairs7.html', 'cards', 'Line them up'], ['u7-more', 'more7.html', 'cards', 'Which is more?'],
     ['u7-build', 'build7.html', 'hand', 'One more, one less'], ['u7-seesaw', 'seesaw7.html', 'hand', 'The see-saw'], ['u7-mistake', 'mistake7.html', 'glass', 'Find the mistake'],
     ['u7-review', 'review7.html', 'towel', 'Review time'], ['u7-check', 'check7.html', 'trophy', 'Show me'] ] },
-  { n: 8, name: 'Parts of 5', say: 'Unit eight. Parts of five.', stops: [] },
+  { n: 8, name: 'Parts of 5', say: 'Unit eight. Parts of five.', stops: [
+    ['u8-opener', 'opener8.html', 'book', 'Learn it'], ['u8-hide', 'hide8.html', 'towel', 'How many hiding?'], ['u8-shake', 'shake8.html', 'hand', 'Shake and spill'],
+    ['u8-bond', 'bond8.html', 'cards', 'Bond builder'], ['u8-mistake', 'mistake8.html', 'glass', 'Find the mistake'],
+    ['u8-review', 'review8.html', 'towel', 'Review time'], ['u8-check', 'check8.html', 'trophy', 'Show me'] ] },
   { n: 9, name: 'Parts of 10', say: 'Unit nine. Parts of ten.', stops: [] },
   { n: 10, name: 'Making 10', say: 'Unit ten. Making ten.', stops: [] },
   { n: 11, name: 'Adding and taking away to 5', say: 'Unit eleven. Adding and taking away.', stops: [] },

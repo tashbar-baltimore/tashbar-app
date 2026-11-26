@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bond Builder — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 8 "Parts of 5": BOND BUILDER (part, part, whole). On Bubby's table, two little plates of kugel.
+     Above them floats a number bond: the whole on top, the two parts below, joined by lines. One circle is empty.
+     He drags the right number into it (the whole, or a missing part). When a part was missing, the slices then appear on its plate
+     to prove it. A slip: we count the slices together. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>
+.bond{ position:relative; width:clamp(200px,30vh,250px); height:clamp(130px,19vh,160px); }
+.bond svg.lines{ position:absolute; inset:0; width:100%; height:100%; }
+.bc{ position:absolute; width:clamp(64px,9.5vh,80px); height:clamp(64px,9.5vh,80px); border-radius:50%; background:#fff; border:5px solid #FF8A3D; display:flex; align-items:center; justify-content:center; padding:8px; box-shadow:0 5px 0 rgba(0,0,0,.12); }
+.bc svg{ height:100%; width:auto; } .bc.empty{ border-style:dashed; background:#FFF6E8; } .bc.good{ box-shadow:0 0 0 6px #22B45E; } .bc.shake{ animation:shake .45s; }
+#bw{ left:50%; top:0; transform:translateX(-50%); border-color:#2FB5E8; } #b0{ left:0; bottom:0; } #b1{ right:0; bottom:0; }
+#src .numcard{ width:clamp(64px,8.5vh,76px); height:clamp(64px,8.5vh,76px); }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; } #src{ order:3; width:100%; } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="bond"><svg class="lines" viewBox="0 0 100 64" preserveAspectRatio="none"><path d="M50 18 L16 48 M50 18 L84 48" stroke="#8A6A4A" stroke-width="2.5"/></svg>
+      <div class="bc" id="bw"></div><div class="bc" id="b0"></div><div class="bc" id="b1"></div></div>
+    <div class="srcs" id="src"></div>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './kitchen8.js';
+const $ = id => document.getElementById(id);
+let K, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const ID = { w: 'bw', 0: 'b0', 1: 'b1' };
+function want() { return R.miss === 'w' ? R.a + R.b : R.miss === 0 ? R.a : R.b; }
+function hooks() { const k = want(), bad = k === 5 ? 4 : k + 1; GAME.right = () => [{ drag: ['#src .numcard[data-n="' + k + '"]', '#' + ID[R.miss]] }]; GAME.wrong = () => [{ drag: ['#src .numcard[data-n="' + bad + '"]', '#' + ID[R.miss]] }]; }
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+function fill(id, n) { const c = $(id); c.classList.toggle('empty', n == null); c.innerHTML = n == null ? '' : U5.num(n); }
+async function drop(card, slot) {
+  if (GAME.phase !== 'answer' || slot.id !== ID[R.miss]) return; GAME.phase = 'busy'; FR.lock(true); const k = +card.dataset.n, w = want();
+  if (k === w) { fill(slot.id, k); if (R.miss !== 'w') K.setPlates(R.a, R.b); K.sparkle(0, 0.4);
+    await FR.yes(slot, FR.Word(R.a) + ' and ' + FR.word(R.b) + ' make ' + FR.word(R.a + R.b) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops(slot); R.misses++;
+  if (R.miss === 'w') { await FR.say("Let's count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + (i === all.length - 1 ? '!' : ','), { noRepeat: true })); }
+  else { const have = R.miss === 0 ? R.b : R.a; await FR.say("Let's look. " + FR.Word(R.a + R.b) + ' in all. This plate has ' + FR.word(have) + '.'); await FR.say('Count on from ' + FR.word(have) + ' to ' + FR.word(R.a + R.b) + '.'); }
+  open();
+}
+function tiles() { $('src').innerHTML = ''; for (let n = 0; n <= 5; n++) { const c = document.createElement('div'); c.className = 'numcard'; c.dataset.n = n; c.innerHTML = U5.num(n); $('src').appendChild(c); } }
+const PLAN = [[2, 1, 'w'], [3, 2, 1], [4, 1, 'w'], [1, 3, 0], [2, 2, 1], [3, 2, 0]];
+function play(F, i) {
+  return new Promise(async res => {
+    const [a, b, miss] = PLAN[i]; R = { a, b, miss, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true);
+    K.setPlates(miss === 0 ? 0 : a, miss === 1 ? 0 : b); fill('bw', miss === 'w' ? null : a + b); fill('b0', miss === 0 ? null : a); fill('b1', miss === 1 ? null : b);
+    await F.say(miss === 'w' ? 'Two plates. How many in all?' : F.Word(a + b) + ' in all. One plate is empty.');
+    open(); await F.say(miss === 'w' ? 'Put the whole on top.' : 'What goes on the empty plate?', { repeat: 'Drag a number into the empty circle.' });
+  });
+}
+FR.game({
+  id: 'u8-bond', title: 'Bond Builder', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-point.png" alt=""></div>',
+  init() { K = mount($('world'), { kids: ['mendy', 'dovid'], band }); tiles(); FR.dragTap({ sources: '#src .numcard', targets: '.bc.empty', drop }); },
+  demo: async F => {
+    R = { a: 1, b: 2, miss: 'w' }; K.setPlates(1, 2); fill('bw', null); fill('b0', 1); fill('b1', 2);
+    await F.say('One slice and two slices. Watch me.'); await F.say('One and two make three. Three on top!');
+    await F.handDrag($('src').querySelector('.numcard[data-n="3"]'), $('bw')); fill('bw', 3); await F.say('Part, part, whole!');
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'Part, part, whole! You built them all.' : 'Good building! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

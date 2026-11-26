@@ -67,7 +67,7 @@ export function mount(host, opt) {
   const towelMat = new THREE.MeshStandardMaterial({ color: '#FFE7A0', roughness: 1, side: THREE.DoubleSide }); tex('towel-cloth.jpg', t => { towelMat.map = rep(t, 2, 1); towelMat.color.set('#FFFFFF'); towelMat.needsUpdate = true; });
   const towel = new THREE.Mesh(new THREE.BoxGeometry(1, 0.06, 1.5), towelMat); towel.castShadow = true; towel.visible = false; scene.add(towel);
   /* two little plates for the two parts */
-  const plates = [-1, 1].map(s => { const p = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.0, 0.08, 40), plateM); p.position.set(s * 2.1, 0.05, 0.4); p.castShadow = true; p.visible = false; scene.add(p); return p; });
+  const plates = [-1, 1].map(s => { const p = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.3, 0.1, 40), new THREE.MeshStandardMaterial({ color: s < 0 ? '#FFD9B0' : '#CFE6FF', roughness: 0.3 })); p.position.set(s * 1.75, 0.06, 0.4); p.castShadow = true; p.visible = false; scene.add(p); return p; });
 
   /* ---------------- tap spots ---------------- */
   const layer = document.createElement('div'); layer.className = 'p6layer'; host.appendChild(layer);
@@ -131,7 +131,7 @@ export function mount(host, opt) {
     /* parts on two plates: show a and b slices (or counters) on the two little plates */
     setPlates(a, b, what) { platter.visible = false; slices.forEach(s => scene.remove(s)); slices = []; towel.visible = false; plates.forEach(p => { p.visible = true; while (p.children.length) p.remove(p.children[0]); });
       [a, b].forEach((n, k) => { for (let j = 0; j < n; j++) { const o = what === 'counters' ? counter() : slice(); if (what !== 'counters') o.scale.setScalar(0.6); else if (k) o.rotation.x = Math.PI;
-        const ang = j / Math.max(1, n) * Math.PI * 2, r = n > 1 ? 0.5 : 0; o.position.set(Math.cos(ang) * r, what === 'counters' ? 0.1 : 0.2, Math.sin(ang) * r * 0.7); plates[k].add(o); } }); },
+        o.position.set((j - (n - 1) / 2) * 0.5, what === 'counters' ? 0.1 : 0.2, 0); plates[k].add(o); } }); },   /* in a row, so every one shows */
     hidePlates() { plates.forEach(p => { p.visible = false; }); platter.visible = true; },
     fit, destroy() { alive = false; renderer.dispose(); }
   };
