@@ -220,11 +220,8 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     const ph = x * 2.1; anim.push((t, q) => { if (q >= 1) g.rotation.z = Math.sin(t * 0.7 + ph) * 0.03; });
     return g;
   }
-  function mushroom(x, z, s, cap, par) {
-    const g = group(x, 0, z, par); mesh(G.cyl, pm('#FFF4E2', { roughness: 0.6 }), 0, s * 0.35, 0, s * 0.22, s * 0.7, s * 0.22, g);
-    const c = new THREE.Mesh(new THREE.SphereGeometry(s * 0.6, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), pm(cap, { clearcoat: 1, roughness: 0.25 })); c.position.y = s * 0.62; c.castShadow = true; g.add(c);
-    for (let i = 0; i < 7; i++) { const a = i * 2.4, r = 0.25 + (i % 3) * 0.12; const d = mesh(G.ball, pm('#FFFFFF', { roughness: 0.4 }), Math.cos(a) * s * r, s * (0.62 + Math.sqrt(Math.max(0, 0.36 - r * r * 0.36)) * 0.95), Math.sin(a) * s * r, s * 0.07, s * 0.03, s * 0.07, g); d.lookAt(0, -s, 0); }
-    return g;
+  function mushroom(x, z, s, cap, par) {   /* (Esti's reviewer: red toadstools look like poisonous mushrooms) a small round flowering bush instead */
+    void cap; return bush(x, z, 0.5 * s, '#5DBB4A', true, Math.round(Math.abs(x * 37 + z * 11)), par);
   }
   function bush(x, z, r, c, flowers, seed, par) { const g = puff(x, r * 0.55, z, r, pm(c, { roughness: 0.6, clearcoat: 0.2 }), 7, seed, par);
     if (flowers) { const R = rng(seed || 1); for (let i = 0; i < 9; i++) { const a = R() * 6.28, h = R(); mesh(G.ball, pm(flowers[i % flowers.length], { clearcoat: 0.6 }), Math.cos(a) * r * 0.85, (h - 0.2) * r * 0.6, Math.sin(a) * r * 0.55 + r * 0.25, r * 0.12, r * 0.12, r * 0.12, g); } }
@@ -948,7 +945,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
       x.strokeStyle = '#FF6F91'; x.lineWidth = 14; x.beginPath(); x.arc(c, c, c * 0.96, 0, 7); x.stroke(); x.strokeStyle = '#FFFFFF'; x.lineWidth = 8; x.beginPath(); x.arc(c, c, c * 0.93, 0, 7); x.stroke(); x.strokeStyle = 'rgba(70,140,230,.55)'; x.lineWidth = 4; x.beginPath(); x.arc(c, c, c * 0.88, 0, 7); x.stroke();
       const R = rng(33); x.strokeStyle = 'rgba(255,255,255,.7)'; x.lineWidth = 2; for (let i = 0; i < 30; i++) { const a = R() * 6.28, r = R() * c * 0.8; x.beginPath(); x.arc(c, c, r, a, a + 0.6 + R()); x.stroke(); }
       for (let i = 0; i < 16; i++) { const a = i / 16 * 6.28, px = c + Math.cos(a) * c * 0.915, py = c + Math.sin(a) * c * 0.915; x.strokeStyle = '#8FC6FF'; x.lineWidth = 3; for (let k = 0; k < 3; k++) { x.beginPath(); x.moveTo(px - Math.cos(k * 1.05) * 10, py - Math.sin(k * 1.05) * 10); x.lineTo(px + Math.cos(k * 1.05) * 10, py + Math.sin(k * 1.05) * 10); x.stroke(); } } }, { edge: '#D6ECFF', coat: 0.8, sheen: 0.4 });
-    scatter(44, 7.4, 11.5, 121, (x, z, Rr, i) => { const k = i % 4; if (k < 2) pine(x, z, 0.9 + Rr() * 0.9, '#3BB36A', true, near); else if (k === 2) mesh(G.ball, pm('#FFFFFF', { roughness: 0.6, sheen: 0.6 }), x, 0.1, z, 0.5 + Rr() * 0.3, 0.3, 0.45, near); else { const p = mesh(G.box, pm(['#FF5A5A', '#3AA8FF', '#FFC93C'][i % 3], { clearcoat: 1 }), x, 0.25, z, 0.45, 0.45, 0.45, near); p.rotation.y = Rr() * 3; } });
+    scatter(44, 7.4, 11.5, 121, (x, z, Rr, i) => { const k = i % 4; if (k < 2) pine(x, z, 0.9 + Rr() * 0.9, '#3BB36A', true, near); else if (k === 2) mesh(G.ball, pm('#FFFFFF', { roughness: 0.6, sheen: 0.6 }), x, 0.1, z, 0.5 + Rr() * 0.3, 0.3, 0.45, near); else mesh(G.ball, pm('#FFFFFF', { roughness: 0.6, sheen: 0.6 }), x, 0.22, z, 0.26, 0.24, 0.26, near); });   /* snowballs (no stray toy blocks) */
     motes({ n: 220, colors: ['#FFFFFF'], size: 0.13, box: [-14, 14, 0.1, 10, -16, -1], kind: 'fall', speed: 0.025, seed: 25, add: false, opacity: 0.95 });
   }
 
@@ -970,7 +967,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     [[-18, 16, -55, 3.2, 1], [10, 20, -65, 4, 2], [30, 14, -50, 2.8, 3]].forEach(([x, y, z, s, sd]) => far.add(cloud(x, y, z, s, sd)));
     butterflies(4, ['#FFFFFF', '#FFC93C', '#FF8A3D', '#B98CFF'], [[-8, 3, -6, 2.4], [8, 3.4, -6, 2.2], [0, 5, -11, 3], [0, 6, -16, 4]]);
     farify(far);
-    stage((x, c) => { const n = 24; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { x.fillStyle = (i + j) % 2 ? '#FFFFFF' : ((i % 2) ? '#FFB3B0' : '#FFD9D6'); x.fillRect(i * 2 * c / n, j * 2 * c / n, 2 * c / n, 2 * c / n); }
+    stage((x, c) => { const n = 24; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { x.fillStyle = (i + j) % 2 ? '#FFFFFF' : ((i % 2) ? '#E46A5E' : '#F4B7AE'); x.fillRect(i * 2 * c / n, j * 2 * c / n, 2 * c / n, 2 * c / n); }
       x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(c, c, c * 0.86, 0, 7); x.fill(); const g = x.createRadialGradient(c, c, 0, c, c, c * 0.84); g.addColorStop(0, '#FFFDF6'); g.addColorStop(1, '#FFF6E2'); x.fillStyle = g; x.beginPath(); x.arc(c, c, c * 0.84, 0, 7); x.fill();
       x.strokeStyle = 'rgba(255,120,110,.4)'; x.lineWidth = 4; x.setLineDash([14, 12]); x.beginPath(); x.arc(c, c, c * 0.8, 0, 7); x.stroke(); }, { edge: '#FFD9D6' });
     scatter(50, 7.2, 11.5, 131, (x, z, Rr, i) => { const k = i % 4; if (k < 2) tuft(x, z, 1 + Rr() * 0.6, ['#3FBF4A', '#58D35A'][k], near); else if (k === 2) bloomFlower(x, z, 1 + Rr() * 0.6, ['#FFFFFF', '#FFD84D'][i % 2], near); else pumpkin(x, z, 0.45 + Rr() * 0.2, near); });

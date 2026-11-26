@@ -50,8 +50,8 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     return new PM({ color: new THREE.Color(color), roughness: 0.45, clearcoat: 0.35, clearcoatRoughness: 0.35, sheen: 0.2, sheenColor: new THREE.Color('#FFFFFF'), sheenRoughness: 0.5, emissive: '#FFC400', emissiveIntensity: 0 });
   }
   /* frosting colours: soft and creamy, but each one is clearly its colour word */
-  const FROST = { '#E03A33': '#F0484A', '#1F6FEB': '#4C8DF0', '#F2A900': '#FFD400', '#12A766': '#3DBE78', '#7C4DFF': '#9C72FF', '#FF7A1A': '#FF9A3C', '#00A3B8': '#27BFD0', '#F0458E': '#FF7FB3', '#F5C542': '#FFD95A', '#C0392B': '#E2524A' };
-  const frostOf = c => keepHue2(FROST[String(c).toUpperCase()] || c);
+  const FROST = { '#E03A33': '#F0484A', '#1F6FEB': '#4C8DF0', '#F2A900': '#FFD21F', '#12A766': '#3DBE78', '#7C4DFF': '#9C72FF', '#FF7A1A': '#FF9A3C', '#00A3B8': '#27BFD0', '#F0458E': '#FF7FB3', '#F5C542': '#FFD95A', '#C0392B': '#E2524A' };
+  const frostOf = c => { const f = FROST[String(c).toUpperCase()] || c; return f === '#FFD21F' ? f : keepHue2(f); };   /* butter yellow stays butter yellow */
   function keepHue2(c) { const col = new THREE.Color(c), l = 0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b; return l > 0.32 ? '#' + col.multiplyScalar(0.32 / l * 0.95 + 0.05).getHexString() : c; }
   function cupcake(color, topping) {
     const g = new THREE.Group();
@@ -162,14 +162,14 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     [-0.22, 0.22].forEach(d => { const band = new THREE.Mesh(new THREE.BoxGeometry(e * 1.02, e * 1.02, e * 0.05), twine); band.position.z = d * e; g.add(band); });
     g.position.y = e / 2; return g;
   }
-  function henFeather() {
-    const sh = new THREE.Shape(); sh.moveTo(-0.8, 0); sh.bezierCurveTo(-0.5, 0.26, 0.4, 0.3, 0.8, 0.02); sh.bezierCurveTo(0.4, -0.22, -0.5, -0.2, -0.8, 0);
-    const tex = once('featherT', () => paint(256, 128, (x, w, h) => { const g = x.createLinearGradient(0, 0, w, 0); g.addColorStop(0, '#F3E6D2'); g.addColorStop(1, '#FFFFFF'); x.fillStyle = g; x.fillRect(0, 0, w, h);
-      x.strokeStyle = 'rgba(190,160,120,.35)'; x.lineWidth = 1.5; for (let i = 0; i < 40; i++) { const px = i / 40 * w; x.beginPath(); x.moveTo(px, h / 2); x.lineTo(px + 18, 4); x.moveTo(px, h / 2); x.lineTo(px + 18, h - 4); x.stroke(); } }));
-    const geo = new THREE.ShapeGeometry(sh, 24), uv = geo.attributes.uv, p = geo.attributes.position; for (let i = 0; i < p.count; i++) uv.setXY(i, (p.getX(i) + 0.8) / 1.6, (p.getY(i) + 0.3) / 0.6);
-    const f = new THREE.Group(), vane = new THREE.Mesh(geo, new PM({ color: '#FFFFFF', map: tex, roughness: 0.85, sheen: 1, sheenColor: C('#FFFFFF'), side: THREE.DoubleSide })); vane.rotation.x = -Math.PI / 2 + 0.95; vane.scale.setScalar(1.15); f.add(vane);
+  function henFeather() {   /* a warm brown hen's feather, cream at the quill end (white was lost on the pale mat) */
+    const sh = new THREE.Shape(); sh.moveTo(-0.8, 0); sh.bezierCurveTo(-0.5, 0.42, 0.35, 0.48, 0.8, 0.03); sh.bezierCurveTo(0.35, -0.36, -0.5, -0.34, -0.8, 0);
+    const tex = once('featherT', () => paint(256, 128, (x, w, h) => { const g = x.createLinearGradient(0, 0, w, 0); g.addColorStop(0, '#FFF3E0'); g.addColorStop(0.45, '#D9935A'); g.addColorStop(1, '#A8622F'); x.fillStyle = g; x.fillRect(0, 0, w, h);
+      x.strokeStyle = 'rgba(255,240,220,.35)'; x.lineWidth = 1.5; for (let i = 0; i < 40; i++) { const px = i / 40 * w; x.beginPath(); x.moveTo(px, h / 2); x.lineTo(px + 18, 4); x.moveTo(px, h / 2); x.lineTo(px + 18, h - 4); x.stroke(); } }));
+    const geo = new THREE.ShapeGeometry(sh, 24), uv = geo.attributes.uv, p = geo.attributes.position; for (let i = 0; i < p.count; i++) uv.setXY(i, (p.getX(i) + 0.8) / 1.6, (p.getY(i) + 0.45) / 0.9);
+    const f = new THREE.Group(), vane = new THREE.Mesh(geo, new PM({ color: '#FFFFFF', map: tex, roughness: 0.85, sheen: 1, sheenColor: C('#FFFFFF'), side: THREE.DoubleSide })); vane.rotation.x = -Math.PI / 2 + 1.25; vane.scale.setScalar(1.45); f.add(vane);
     const quill = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.012, 1.75, 6), once('quill', () => new PM({ color: '#E2D2B6', roughness: 0.5 }))); quill.rotation.z = Math.PI / 2; quill.position.set(0.05, 0.01, 0); f.add(quill);
-    f.position.y = 0.1; f.rotation.y = 0.5; return f;
+    f.position.y = 0.35; f.rotation.y = 0.2; return f;
   }
   T.weighable = (W) => {
     if (world !== 'farm') return null;
@@ -216,8 +216,8 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     void color; g.material = brass; return shadowy(g);
   }
   function engine() {
-    const g = new THREE.Group(), red = once('engRed', () => new PM({ color: '#D9342B', roughness: 0.3, clearcoat: 1 })), black = wheelM();
-    const boiler = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.62, 28), once('engGreen', () => new PM({ color: '#1F7A4D', roughness: 0.3, clearcoat: 1 }))); boiler.rotation.z = Math.PI / 2; boiler.position.set(0.12, -0.08, 0); g.add(boiler);
+    const g = new THREE.Group(), red = once('engCab', () => new PM({ color: '#2F5FB8', roughness: 0.3, clearcoat: 1 })), black = wheelM();
+    const boiler = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.62, 28), once('engRedB', () => new PM({ color: '#E0372E', roughness: 0.3, clearcoat: 1 }))); boiler.rotation.z = Math.PI / 2; boiler.position.set(0.12, -0.08, 0); g.add(boiler);
     const cab = new THREE.Mesh(new RoundedBoxGeometryLite(0.36, 0.5, 0.48, 0.05), red); cab.position.set(-0.3, 0.0, 0); g.add(cab);
     const roof = new THREE.Mesh(new RoundedBoxGeometryLite(0.46, 0.06, 0.56, 0.03), black); roof.position.set(-0.3, 0.27, 0); g.add(roof);
     const stack = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.2, 16), black); stack.position.set(0.3, 0.18, 0); g.add(stack);
@@ -384,7 +384,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   const shade = (c, k) => hex(C(c).multiplyScalar(k));
   const tint = (c, k) => hex(C(c).lerp(C('#FFFFFF'), k));
   /* soft painted light across the front: brighter top-left, gently darker bottom-right (painted-film look) */
-  function lightWash(x, w, h, c, lite = 0.32, dark = 0.86) { lite *= 0.35; c = shade(c, 0.78); const g = x.createLinearGradient(0, 0, w, h); g.addColorStop(0, tint(c, lite)); g.addColorStop(0.45, c); g.addColorStop(1, shade(c, dark)); x.fillStyle = g; x.fillRect(0, 0, w, h); }
+  function lightWash(x, w, h, c, lite = 0.32, dark = 0.86) { lite *= 0.3; c = c === '#FFD21F' ? c : shade(c, 0.88); const g = x.createLinearGradient(0, 0, w, h); g.addColorStop(0, tint(c, lite)); g.addColorStop(0.45, c); g.addColorStop(1, shade(c, dark)); x.fillStyle = g; x.fillRect(0, 0, w, h); }
   const SKINS = {
     /* toy land: painted wooden toy blocks (the front painted in the colour, a little wood grain shows through; plain maple edges) */
     toyland: { side: () => once('maple', () => new PM({ color: '#F1C98E', roughness: 0.55, clearcoat: 0.5, clearcoatRoughness: 0.3 })),
@@ -442,7 +442,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   const SK = SKINS[world] || null;
   /* very light colours (yellow, light orange) are drawn a little deeper, so the bright sun never washes them to cream: yellow stays yellow */
   function keepHue(c) { const col = C(c), hsl = {}; col.getHSL(hsl);
-    if (hsl.h > 0.07 && hsl.h < 0.2 && hsl.s > 0.5) return '#FFC000';   /* yellow: a warm sunflower yellow (a deeper or paler yellow looks like wood or cream in the sun) */
+    if (hsl.h > 0.07 && hsl.h < 0.2 && hsl.s > 0.5) return '#FFD21F';   /* a true butter yellow */   /* yellow: a warm sunflower yellow (a deeper or paler yellow looks like wood or cream in the sun) */
     const l = 0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b; return l > 0.5 ? hex(col.multiplyScalar(0.5 / l)) : hex(col); }
   function capTex(kind, color) {
     return once('cap' + world + color + kind, () => { const R = rng(kind.length * 17 + color.length), t = paint(512, 512, (x, w, h) => SK.cap(x, w, h, color, R)); t.repeat.set(0.5, 0.5); t.offset.set(0.5, 0.5); return t; });

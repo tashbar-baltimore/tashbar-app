@@ -170,13 +170,16 @@ export function startGame(cfg) {
       plank(BX.t + 0.06, 0.1, BX.d + 0.06, -BX.w / 2 + BX.t / 2, BX.h, 0, BM.rim); plank(BX.t + 0.06, 0.1, BX.d + 0.06, BX.w / 2 - BX.t / 2, BX.h, 0, BM.rim); }
     if (LK && LK.treasures.decorBox) LK.treasures.decorBox(g, BX);   /* the box belongs to the world: a farm wagon, a treasure chest, a pastry box ... */
     const paintM = new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 });
-    if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none */
-      if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16, 0.24, 40), paintM); ring.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(ring); }
-      DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075, 24), paintM); dot.position.set(p[0] * 0.38, BX.h * 0.4 + p[1] * 0.38, BX.d / 2 + 0.005); g.add(dot); });
+    if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none (new look: bigger, on a card tilted up to face the boy) */
+      const card = new THREE.Group(); card.position.set(0, LK ? BX.h * 0.62 : BX.h * 0.4, BX.d / 2 + (LK ? 0.26 : 0.005)); if (LK) card.rotation.x = -0.55; g.add(card);
+      const k = LK ? 1.15 : 1;
+      if (LK) { const bg = new THREE.Mesh(new THREE.CircleGeometry(0.37, 40), new THREE.MeshStandardMaterial({ color: bc.color && bc.color !== '#FFFFFF' ? '#FFFFFF' : '#2B3A6B', roughness: 0.6 })); bg.position.z = -0.004; card.add(bg); }
+      if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
+      DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
       const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.4 })); b3.scale.setScalar(0.28); b3.position.set(0, BX.h * 0.45, BX.d / 2 + 0.18); b3.castShadow = true; g.add(b3);
     } else if (LK) {
-      const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.42, BX.d / 2 + 0.01); g.add(lab);
+      const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.42, BX.d / 2 + 0.07); lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed */
     } else {
       const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
       lab.scale.setScalar((NB === 1 ? 0.48 : 0.5) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
@@ -247,7 +250,7 @@ export function startGame(cfg) {
     const mat = TS ? TS.mat : TP ? TP.mats : LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
     if (TS && TS.extras) TS.extras.forEach(x => mesh.add(x));
-    if (TP) TP.extras.forEach(x => { const front = x.clone(); front.position.z = dep / 2 + bev * 1.25 + 0.004; mesh.add(front); const back = x.clone(); back.rotation.y = Math.PI; back.position.z = -(dep / 2 + bev * 1.25 + 0.004); mesh.add(back); });
+    if (TP && !cfg.thinFlat) TP.extras.forEach(x => { const front = x.clone(); front.position.z = dep / 2 + bev * 1.25 + 0.004; mesh.add(front); const back = x.clone(); back.rotation.y = Math.PI; back.position.z = -(dep / 2 + bev * 1.25 + 0.004); mesh.add(back); });
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
     const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], dep / 2 + bev + 0.02); m.scale.setScalar(0); if (LK) m.add(LK.cornerHalo()); mesh.add(m); return m; });
