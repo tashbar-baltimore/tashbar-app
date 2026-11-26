@@ -61,7 +61,7 @@ Checked by eye, zoomed where needed (domes, sails, palace, harbor town: no other
 | core-map-galus-bavel | `SS.HIST.L07.02|@today` |
 | core-map-poland-lithuania-kehillos | `SS.JHIST.L08.03|@today` |
 | core-map-explorer-sea-routes | `SS.HIST.L05.01|@today` |
-| core-map-silk-road | `SS.HIST.L10.01` question "Follow the Silk Road from east to west." (was camel-caravan-desert) |
+| core-map-silk-road | `SS.HIST.L10.01` question "Follow the Silk Road from east to west." (key in `RealPicsTeach.html`, which overrides camel-caravan-desert in `RealPics.html` for that one screen) |
 | core-map-chesapeake-bay | cover of text `C68.BAY.01` (`pic:` line) |
 | core-map-yetzias-mitzrayim | WATCH ME (`@watch`) of Parsha deep dives Masei, Bamidbar, Devarim (`LK.PAR.L02.42`, `.04`, `.43`). Not TODAY: there the big picture is the pasuk itself, which stays. |
 | core-map-avraham-journey | WATCH ME (`@watch`) of Lech Lecha (`LK.PAR.L03.05`) |
