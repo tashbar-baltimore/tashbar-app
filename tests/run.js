@@ -119,6 +119,9 @@ async function kidTests(browser) {
   /* 2.0 (v2/README.md): every test a 2.0 piece brings in v2/tests/*.js runs here; each exports async (browser) => { fails, oks } */
   try { const V2T = path.join(__dirname, '..', 'v2', 'tests'); if (fs.existsSync(V2T)) for (const f of fs.readdirSync(V2T).filter(x => x.endsWith('.js')).sort()) {
       try { const r = await require(path.join(V2T, f))(browser); (r.fails || []).forEach(fail); (r.oks || []).forEach(ok); } catch (e) { fail('2.0 test ' + f + ' crashed: ' + String(e).slice(0, 200)); } } } catch (e) { fail('2.0 tests could not run: ' + String(e).slice(0, 200)); }
+  /* Keser Girls 3.0 (keser/README.md): every test a Keser piece brings in keser/tests/*.js runs here */
+  try { const KT = path.join(__dirname, '..', 'keser', 'tests'); if (fs.existsSync(KT)) for (const f of fs.readdirSync(KT).filter(x => x.endsWith('.js')).sort()) {
+      try { const r = await require(path.join(KT, f))(browser); (r.fails || []).forEach(fail); (r.oks || []).forEach(ok); } catch (e) { fail('Keser test ' + f + ' crashed: ' + String(e).slice(0, 200)); } } } catch (e) { fail('Keser tests could not run: ' + String(e).slice(0, 200)); }
   /* lessons */
   /* the lessons page, plus PAGES-1 more kid pages opened the same way: the sampled lessons and the One Bite bites are shared out over them
      and played side by side (the kit had grown past 40 minutes on one page). Every lesson is still played once, with the same checks. */
@@ -263,6 +266,9 @@ async function kidTests(browser) {
   /* BLOCK BUILDERS workbook (tests/lib/blockbuilders.js, HoS 2026-11-22) */
   try { const bb = await require('./lib/blockbuilders.js')(pg); bb.fails.forEach(fail); bb.oks.forEach(ok); Object.assign(report.counts, bb.counts); }
   catch (e) { fail('Block Builders test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* CHUMASH & TIMELINE LAB, its own curriculum (tests/lib/chumashlab.js, 2026-11-26) */
+  try { const cl = await require('./lib/chumashlab.js')(pg); cl.fails.forEach(fail); cl.oks.forEach(ok); }
+  catch (e) { fail('Chumash Lab test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* Store Fun tab (tests/lib/storefx.js, HoS 2026-11-22): no two items share a name, a picture, a tap blast, a trail or nearly the same app colors */
   /* THE BUTTON SYSTEM (tests/lib/uikit.js, src/UiKit.html, HoS 2026-11-23): every part of the kit, measured inside the real page */
   try { const uk = await require('./lib/uikit.js')(pg); uk.fails.forEach(fail); uk.oks.forEach(ok); }
@@ -293,6 +299,7 @@ async function staffTests(browser) {
   const browser = await chromium.launch();
   try { await kidTests(browser); await staffTests(browser); } catch (e) { fail('test run crashed: ' + String(e && e.stack || e).slice(0, 400)); }
   try { const v = require('./lib/v2check.js')(); v.fails.forEach(fail); v.oks.forEach(ok); } catch (e) { fail('2.0 check crashed: ' + String(e).slice(0, 200)); }
+  try { const k = require('./lib/kesercheck.js')(); k.fails.forEach(fail); k.oks.forEach(ok); } catch (e) { fail('Keser Girls 3.0 check crashed: ' + String(e).slice(0, 200)); }   /* keser/README.md */
   try { const c = await require('./lib/canteen.js')(); c.fails.forEach(fail); if (!c.fails.length) ok('canteen on the Firebase engine: sell, same sale charged once, crew cashier, two kiosks at once, last sale, undo'); report.timings.canteenSaleMs = c.ms.sale; }
   catch (e) { fail('canteen test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const sl = await require('./lib/saveload.js')(); sl.fails.forEach(fail); sl.oks.forEach(ok); }   /* a class saving lessons at once: no "busy" (MS_State/MS_Evidence row-merge) */

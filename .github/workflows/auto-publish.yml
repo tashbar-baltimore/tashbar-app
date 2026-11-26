@@ -41,6 +41,11 @@ jobs:
             echo "PR #$n changes 2.0: handed to v2-gate (it goes in only with an approver's yes)."
             gh api -X POST "repos/$REPO/actions/workflows/v2-gate.yml/dispatches" -f ref=main -f "inputs[pr]=$n"
             exit 0; fi
+          # Keser Girls 3.0 (HoS 2026-11-26): a pull request that changes keser/ is never auto-published. keser-gate takes it (look link, then an approver's yes).
+          if gh api --paginate "repos/$REPO/pulls/$n/files" --jq '.[].filename' | grep -q '^keser/'; then
+            echo "PR #$n changes Keser Girls 3.0: handed to keser-gate (it goes in only with an approver's yes)."
+            gh api -X POST "repos/$REPO/actions/workflows/keser-gate.yml/dispatches" -f ref=main -f "inputs[pr]=$n"
+            exit 0; fi
           echo "n=$n" >> "$GITHUB_OUTPUT"
       - name: Merge it
         if: steps.pr.outputs.n
