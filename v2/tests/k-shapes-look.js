@@ -20,7 +20,9 @@ module.exports = async function (browser) {
   /* the painted pictures (art/, from the picture account): every one the code names is there and small enough for a school Chromebook */
   const code = ['treasures.js', 'look.js', 'kit.js'].map(f => fs.readFileSync(path.join(APP, f), 'utf8')).join('\n');
   const have = (code.match(/const HAVE = new Set\(\[([^\]]*)\]\)/) || [, ''])[1].match(/[a-z0-9-]+\.(?:png|jpg)/g) || [];
-  for (const f of [...have, ...['mendy', 'shmuel'].flatMap(w => ['idle', 'talk'].map(p => w + '-' + p + '.png')), ...['red', 'blue', 'yellow', 'green'].map(c => 'cupcake-' + c + '.png')]) {
+  const mats = ((code.match(/const MATS = new Set\(\[([^\]]*)\]\)/) || [, ''])[1].match(/[a-z]+/g) || []).map(w => 'mat-' + w + '.png');
+  const friends = ((code.match(/const FRIENDS = \[([^\]]*)\]/) || [, ''])[1].match(/[a-z]+/g) || []).flatMap(w => ['idle', 'talk'].map(p => w + '-' + p + '.png'));
+  for (const f of [...mats, ...friends, ...have, ...['mendy', 'shmuel'].flatMap(w => ['idle', 'talk'].map(p => w + '-' + p + '.png')), ...['red', 'blue', 'yellow', 'green'].map(c => 'cupcake-' + c + '.png')]) {
     const fp = path.join(APP, 'art', f);
     if (!fs.existsSync(fp)) bad('art/' + f + ' is missing');
     else if (fs.statSync(fp).size > 160 * 1024) bad('art/' + f + ' is too big for a school Chromebook (' + Math.round(fs.statSync(fp).size / 1024) + ' KB; keep each under 160 KB)');

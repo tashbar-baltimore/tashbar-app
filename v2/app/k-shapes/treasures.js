@@ -313,7 +313,8 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     const col = keepHue(vivid(color)), t = paint(512, 128, (x, w, h) => { x.fillStyle = col; x.fillRect(0, 0, w, h);
       x.fillStyle = 'rgba(255,255,255,.92)'; [0.1, 0.18, 0.82, 0.9].forEach(u => x.fillRect(u * w, 0, w * 0.035, h));   /* white stripes near the ends */
       x.strokeStyle = 'rgba(0,0,0,.14)'; x.lineWidth = 2; for (let px = 0; px < w; px += 8) for (let py = 4; py < h; py += 12) { x.beginPath(); x.moveTo(px, py); x.lineTo(px + 4, py + 6); x.lineTo(px + 8, py); x.stroke(); } });   /* knit stitches */
-    const g = new THREE.Group(), body = new THREE.Mesh(new RoundedBoxGeometryLite(L - 0.24, 0.16, 0.5, 0.06), new PM({ color: '#FFFFFF', map: t, roughness: 0.95, sheen: 1, sheenColor: C(tint(col, 0.5)), emissive: '#FFC400', emissiveIntensity: 0 }));
+    const knit = HAVE.has('winter-knit-surface.jpg') ? (() => { const k = artTex('winter-knit-surface.jpg').clone(); k.needsUpdate = true; k.wrapS = k.wrapT = THREE.RepeatWrapping; k.repeat.set((L - 0.24) / 0.7, 0.7); return k; })() : null;   /* the painted knit, tinted */
+    const g = new THREE.Group(), body = new THREE.Mesh(new RoundedBoxGeometryLite(L - 0.24, 0.16, 0.5, 0.06), new PM({ color: knit ? col : '#FFFFFF', map: knit || t, roughness: 0.95, sheen: 1, sheenColor: C(tint(col, 0.5)), emissive: '#FFC400', emissiveIntensity: 0 }));
     body.castShadow = true; g.add(body);
     const fm = new PM({ color: col, roughness: 0.9, sheen: 1 }), fg = new THREE.CylinderGeometry(0.018, 0.018, 0.12, 5); fg.rotateZ(Math.PI / 2);
     [-1, 1].forEach(sd => { for (let k = 0; k < 7; k++) { const f = new THREE.Mesh(fg, fm); f.position.set(sd * (L / 2 - 0.06), 0, -0.21 + k * 0.07); g.add(f); } });
@@ -510,7 +511,9 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   /* the pictures that have arrived and been checked by eye (k-shapes-art-requests.md); only these are loaded */
   const HAVE = new Set(['beach-ball-round.png', 'beach-sail-surface.jpg', 'beach-sand-surface.jpg', 'farm-barnroof-surface.jpg', 'farm-hay-surface.jpg', 'farm-honeycomb-surface.jpg',
     'farm-tire-round.png', 'garden-sunflower-round.png', 'party-bunting-surface.jpg', 'party-cake-round.png', 'party-gift-surface.jpg', 'sky-basket-surface.jpg', 'sky-cloudtile-surface.jpg',
-    'sky-goldstar-surface.jpg', 'space-fin-surface.jpg', 'space-panel-surface.jpg', 'space-planet-round.png', 'space-solar-surface.jpg', 'toy-drum-round.png']);
+    'sky-goldstar-surface.jpg', 'space-fin-surface.jpg', 'space-panel-surface.jpg', 'space-planet-round.png', 'space-solar-surface.jpg', 'toy-drum-round.png',
+    'garden-planter-surface.jpg', 'garden-stone-surface.jpg', 'garden-flag-surface.jpg', 'toy-brick-surface.jpg', 'toy-sail-surface.jpg', 'toy-puzzle-surface.jpg', 'sky-kitecloth-surface.jpg',
+    'beach-mould-surface.jpg', 'party-tile-surface.jpg', 'party-foil-surface.jpg', 'jungle-carved-surface.jpg', 'jungle-leaf-surface.jpg', 'winter-knit-surface.jpg']);
   T.artList = () => [...HAVE];
   const loader = new THREE.TextureLoader(), texCache = {};
   function artTex(pic) { return texCache[pic] || (texCache[pic] = (() => { const t = loader.load('art/' + pic); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO; t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; })()); }

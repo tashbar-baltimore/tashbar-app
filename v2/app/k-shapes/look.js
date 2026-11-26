@@ -33,7 +33,7 @@ function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>>
 
 /* bright toy colours: the old palette, made sunnier */
 export const TOY = ['#FF3B30', '#2F80FF', '#FFC21A', '#1DC77A', '#9A5BFF', '#FF8A1F', '#00C3D6', '#FF4FA0'];
-const OLD2TOY = { '#E03A33': '#FF3B30', '#1F6FEB': '#2F80FF', '#F2A900': '#FFC21A', '#12A766': '#1DC77A', '#7C4DFF': '#9A5BFF', '#FF7A1A': '#FF8A1F', '#00A3B8': '#00C3D6', '#F0458E': '#FF4FA0' };
+const OLD2TOY = { '#FFC21A': '#FFD21F', '#E03A33': '#FF3B30', '#1F6FEB': '#2F80FF', '#F2A900': '#FFD21F', '#12A766': '#1DC77A', '#7C4DFF': '#9A5BFF', '#FF7A1A': '#FF8A1F', '#00A3B8': '#00C3D6', '#F0458E': '#FF4FA0' };
 export function vivid(c) {
   const k = String(c).toUpperCase(); if (OLD2TOY[k]) return OLD2TOY[k];
   const col = new THREE.Color(c), hsl = {}; col.getHSL(hsl);
@@ -165,7 +165,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
   /* the stage: the round mat in the middle where the shapes sit (its top is at 0.1, like the rug) */
   /* painted round mats that have arrived and been checked by eye (art/mat-<world>.png; k-shapes-art-requests.md) */
-  const MATS = new Set([]);
+  const MATS = new Set(['toyland', 'garden', 'sky', 'bakery', 'space', 'underwater', 'traintown', 'jungle', 'snow', 'party']);
   function stage(draw, o = {}) {
     const t = paint(1024, 1024, (x, w) => draw(x, w / 2, w));
     const top = new PM({ color: '#FFFFFF', map: t, roughness: o.rough || 0.9, sheen: o.sheen == null ? 0.8 : o.sheen, sheenColor: new THREE.Color(o.sheenColor || '#FFF6E8'), sheenRoughness: 0.7, clearcoat: o.coat || 0, clearcoatRoughness: 0.3 });
@@ -1152,7 +1152,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   function poseTex(who, pose) { const k = who + '-' + pose; if (!paintedTex[k]) { paintedTex[k] = new Promise(res => texLoader.load('art/' + k + '.png', t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO; res(t); }, undefined, () => res(null))); } return paintedTex[k]; }
   /* which painted boy plays each game's friend: glasses -> Dovid, ginger hair -> Shloimy, Shmuel -> Shmuel, the others shared out by name.
      Only boys whose pictures have arrived and been checked are used. */
-  const FRIENDS = ['shmuel'];
+  const FRIENDS = ['shmuel', 'dovid', 'shloimy', 'ari', 'avi', 'yossi'];
   L.friendArt = (F) => {
     const has = n => FRIENDS.includes(n);
     if (F.glasses && has('dovid')) return 'dovid';
