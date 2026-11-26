@@ -14,7 +14,7 @@ module.exports = function () {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'keser-'));
   try { cp.execFileSync(process.execPath, [path.join(K, 'build.js')], { env: Object.assign({}, process.env, { KESER_OUT: tmp }), stdio: 'pipe' });
     if (!fs.existsSync(path.join(tmp, 'index.html'))) bad('the build made no index.html'); } catch (e) { bad('the build failed: ' + String(e.stderr || e).slice(0, 200)); }
-  const files = []; (function walk(d) { for (const f of fs.readdirSync(d)) { const p = path.join(d, f); fs.statSync(p).isDirectory() ? walk(p) : files.push(p); } })(path.join(K, 'app'));
+  const files = []; (function walk(d) { for (const f of fs.readdirSync(d)) { const p = path.join(d, f); if (fs.statSync(p).isDirectory()) { if (f !== 'vendor') walk(p); } else files.push(p); } })(path.join(K, 'app'));   /* vendor/ = outside libraries (three.js, MIT), not our words */
   const code = [path.join(K, 'build.js')].concat(files.filter(f => /\.(js|html|css|json)$/.test(f)));
   code.forEach(f => { const t = fs.readFileSync(f, 'utf8'), rel = path.relative(R, f);
     if (f.endsWith('build.js') && /(\.\.\/)+(src|packs|v2)\/|['"`]\/?(src|packs|v2)\//.test(t)) bad(rel + ' reads from 1.0 or 2.0; Keser Girls 3.0 keeps its own copies');
