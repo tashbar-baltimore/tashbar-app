@@ -1094,7 +1094,10 @@ export function startGame(cfg) {
   const LINE_X = () => tall ? -2.1 : -3.6;
   const ROW_Z = i => (tall ? [-1.0, 0.7, 2.4] : [-1.2, 0.5, 2.2])[i];
   const ROD_Y = 0.28;
-  function makeRod(id, L, color, i) {   /* a pencil: a six-sided body, a wooden tip, a pink eraser */
+  function makeRod(id, L, color, i) {   /* a pencil: a six-sided body, a wooden tip, a pink eraser (winter: a knitted scarf, treasures.js) */
+    const TRd = LK && LK.treasures.rod ? LK.treasures.rod(L, color) : null;
+    if (TRd) { scene.add(TRd.g); const o = { id, k: 'rod', len: L, box: i, g: TRd.g, turn: TRd.g, mesh: TRd.body, mat: TRd.body.material, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), still: true, slot: i, inBox: false, busy: false };
+      TRd.body.userData.shape = o; shapes.push(o); return o; }
     const g = new THREE.Group(), body = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, L - 0.5, 6), new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6 }));
     body.rotation.z = Math.PI / 2; body.position.x = -0.15; body.castShadow = true; g.add(body);
     const tip = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.4, 6), new THREE.MeshStandardMaterial({ color: '#E8C99A' })); tip.rotation.z = -Math.PI / 2; tip.position.x = L / 2 - 0.2; g.add(tip);
@@ -1104,9 +1107,10 @@ export function startGame(cfg) {
     const o = { id, k: 'rod', len: L, box: i, g, turn: g, mesh: body, mat: body.material, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), still: true, slot: i, inBox: false, busy: false };
     body.userData.shape = o; shapes.push(o); return o;
   }
-  function makeTower(id, n, color, i, x) {   /* a tower of n blocks, standing on the floor */
-    const g = new THREE.Group(), m = new THREE.MeshPhysicalMaterial({ color, roughness: 0.35, clearcoat: 0.8 });
+  function makeTower(id, n, color, i, x) {   /* a tower of n blocks, standing on the floor (winter: tinted ice blocks with snow on top) */
+    const g = new THREE.Group(), m = LK && LK.treasures.towerMat ? LK.treasures.towerMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.35, clearcoat: 0.8 });
     for (let j = 0; j < n; j++) { const c = new THREE.Mesh(new RoundedBoxGeometry(0.7, 0.55, 0.7, 3, 0.06), m); c.position.y = 0.3 + j * 0.57; c.castShadow = true; g.add(c); }
+    if (LK && LK.treasures.towerTop) { const top = LK.treasures.towerTop(); top.position.y = 0.3 + (n - 1) * 0.57 + 0.29; g.add(top); }
     const hull = new THREE.Mesh(new THREE.BoxGeometry(0.8, n * 0.57 + 0.1, 0.8), new THREE.MeshBasicMaterial({ visible: false })); hull.position.y = (n * 0.57) / 2; g.add(hull);
     g.position.set(x, 0, -0.2); scene.add(g);
     const o = { id, k: 'tower', len: n, box: -1, g, turn: g, mesh: hull, mat: m, marks: [], corners: [], scale: 1, home: g.position.clone(), still: true, slot: i, inBox: true, busy: false };

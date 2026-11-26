@@ -306,6 +306,23 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   };
   T.boxName = () => (BOXLOOK[world] || {}).name || 'a toy box';
 
+  /* ================= WINTER: the measuring things are knitted scarves (same lengths; the fringe stays inside the length, so lining up is exact)
+     and towers of ice blocks tinted in their colour, with a little snow on top ================= */
+  T.rod = (L, color) => {
+    if (world !== 'snow') return null;
+    const col = keepHue(vivid(color)), t = paint(512, 128, (x, w, h) => { x.fillStyle = col; x.fillRect(0, 0, w, h);
+      x.fillStyle = 'rgba(255,255,255,.92)'; [0.1, 0.18, 0.82, 0.9].forEach(u => x.fillRect(u * w, 0, w * 0.035, h));   /* white stripes near the ends */
+      x.strokeStyle = 'rgba(0,0,0,.14)'; x.lineWidth = 2; for (let px = 0; px < w; px += 8) for (let py = 4; py < h; py += 12) { x.beginPath(); x.moveTo(px, py); x.lineTo(px + 4, py + 6); x.lineTo(px + 8, py); x.stroke(); } });   /* knit stitches */
+    const g = new THREE.Group(), body = new THREE.Mesh(new RoundedBoxGeometryLite(L - 0.24, 0.16, 0.5, 0.06), new PM({ color: '#FFFFFF', map: t, roughness: 0.95, sheen: 1, sheenColor: C(tint(col, 0.5)), emissive: '#FFC400', emissiveIntensity: 0 }));
+    body.castShadow = true; g.add(body);
+    const fm = new PM({ color: col, roughness: 0.9, sheen: 1 }), fg = new THREE.CylinderGeometry(0.018, 0.018, 0.12, 5); fg.rotateZ(Math.PI / 2);
+    [-1, 1].forEach(sd => { for (let k = 0; k < 7; k++) { const f = new THREE.Mesh(fg, fm); f.position.set(sd * (L / 2 - 0.06), 0, -0.21 + k * 0.07); g.add(f); } });
+    return { g, body };
+  };
+  T.towerMat = (color) => world === 'snow' ? new PM({ color: tint(keepHue(vivid(color)), 0.15), roughness: 0.15, clearcoat: 1, transmission: 0.12, thickness: 0.5, emissive: '#FFC400', emissiveIntensity: 0 }) : null;
+  T.towerTop = () => { if (world !== 'snow') return null; const m = new THREE.Mesh(new THREE.SphereGeometry(0.36, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), new PM({ color: '#FFFFFF', roughness: 0.7, sheen: 1, sheenColor: C('#DCEBFF') })); m.scale.set(1, 0.32, 1); return m; };
+  if (world !== 'snow') { T.towerMat = null; T.towerTop = null; T.rod = null; }
+
   /* ================= what each world offers kit.js ================= */
   /* T.bead(type, B, shapeFn): a pattern item, or null to keep the plain bead */
   T.bead = (type, B, shapeFn) => {
