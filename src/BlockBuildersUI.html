@@ -16,6 +16,10 @@
  const X=window.BBX={ready:true,open:false,view:'home',job:null,mine:null,vals:{},ok:{},first:{},miss:{},strokes:[],tool:'tap',sel:null,undo:[],dirty:0,mute:false,t0:0};
  window.BB_LIVE=window.BB_LIVE||'on';   /* 'on' = Math levels 2-4 and TEST- boys, 'all' = every boy, 'test' = TEST- boys only, 'off' */
  const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ /* button system step 7: the workbook's action buttons are the kit's (MAIN = the one thing to do now, QUIET = every other choice), words only */
+ const KT=(ic,lab,a)=>window.TLK?TLK.tool(ic,lab,a):'<button type="button" class="bbx-hear" aria-label="'+E(lab)+'" '+a+'>'+ic+'</button>';
+ const KL=(k,t)=>window.TLK?TLK.pill(k,t):E(t);
+ const KB=(main,t,a,x)=>window.TLK?(main?TLK.main(t,a,x):TLK.quiet(t,a,x)):'<button type="button" class="bbx-btn'+(main?' go':'')+'" '+a+'>'+E(t)+'</button>';
  const B=()=>window.BB_BOOK;
  const pad2=n=>String(n).padStart(2,'0');
  function call(fn){ const a=[].slice.call(arguments,1); return new Promise((ok,no)=>{ try{ google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn].apply(null,a); }catch(e){ no(e); } }); }
@@ -30,8 +34,10 @@
  function css(){ if(document.getElementById('bbx-css')) return; const s=document.createElement('style'); s.id='bbx-css'; s.textContent=`
 #bbx{position:fixed;inset:0;z-index:2147482000;background:#e9edf4;color:#1d2433;font:16px/1.4 'Nunito','Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
 #bbx *{box-sizing:border-box}
-#bbx button{font:inherit;color:inherit;cursor:pointer}
+#bbx button:not(.tlk){font:inherit;color:inherit;cursor:pointer}
 .bbx-top{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;background:#1d2433;color:#fff;min-height:56px}
+.bbx-top .tlk{flex:none}
+@media (max-width:520px){.bbx-top:has(.tlk-back.tlk-back-k3){flex-wrap:wrap}.bbx-top:has(.tlk-back.tlk-back-k3) .t{flex:1 1 calc(100% - 140px);order:2}.bbx-top:has(.tlk-back.tlk-back-k3) .tlk-pill{order:3}.bbx-top:has(.tlk-back.tlk-back-k3) .tlk-tool{margin-left:auto}}
 .bbx-top .t{flex:1;min-width:0;font-weight:800;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bbx-top .t small{display:block;font-weight:600;font-size:12px;opacity:.75}
 .bbx-ib{border:0;background:rgba(255,255,255,.14);color:#fff!important;border-radius:12px;min-width:44px;height:44px;padding:0 12px;font-weight:800;font-size:16px;display:inline-flex;align-items:center;gap:6px}
@@ -56,7 +62,16 @@
 .bbx-job.done{border-color:#8fd3a8;background:#effaf3}
 .bbx-job.soon{opacity:.55;cursor:default}
 .bbx-sh{display:flex;gap:4px;margin-top:auto}.bbx-sh span{font-size:11px;font-weight:800;border-radius:8px;padding:2px 6px;background:#e6eaf2}.bbx-sh span.d{background:#1f9d55;color:#fff}.bbx-sh span.p{background:#ffd9b0}
-.bbx-soon{color:#5b6475;font-size:14px;background:#f6f7fa;border:1px dashed #cfd5e0;border-radius:12px;padding:10px 12px}
+.bbx-soon{color:#5b6475;font-size:14px;padding:4px 0}
+/* button system step 7 (Workbook, HoS 2026-11-25: "do the whole labeling and button system there"): buttons are the kit's, labels are kit pills; holders flat */
+#bbx .tlk.bbx-jt{padding:10px 12px;min-height:88px;gap:4px}.bbx-jt small{color:#5b6475;font-size:12px;font-weight:700}.bbx-jt b{font-size:14px;line-height:1.2}
+.bbx-jt .bbx-sh{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto}.bbx-jt .bbx-sh .tlk-pill{font-size:11px;padding:2px 6px}
+.bbx-cover{box-shadow:none}#bbx .bbx-cover .who{background:none;padding:0;border:0;box-shadow:none;font-size:17px;line-height:1.35}
+.bbx-tools{align-items:center}.bbx-tools .tlk-pill{font-size:14px;padding:8px 12px}
+.bbx-top .tlk-pill{flex:none}
+.bbx-band>div:first-child{min-width:0}.bbx-band .tlk-pill{white-space:normal}
+#bbx .bbx-ph:has(.tlk-tool){align-items:center}#bbx .bbx-ph .tlk.tlk-tool{width:44px;height:44px;min-width:44px;font-size:17px}
+.bbx-pnote{border:0}.bbx-done{box-shadow:none}.bbx-job small .tlk-pill{font-size:12px;padding:2px 8px;margin-left:4px}.bbx-job.soon .tlk-pill{white-space:normal}.bbx-soon .tlk-pill{white-space:normal}
 /* watch me */
 .bbx-say{display:flex;gap:12px;align-items:center;background:#e6efff;border-radius:16px;padding:12px 14px;font-size:18px;font-weight:700}
 .bbx-av{flex:none;width:54px;text-align:center;font-size:12px;font-weight:900}
@@ -389,10 +404,10 @@ body.bbx-open>:not(#bbx):not(script):not(style):not(#bbx-pad){visibility:hidden!
  function avatar(who){ return who==='tenzi'?'<div class="bbx-av"><div class="ten"></div>Tenzi</div>':'<div class="bbx-av"><div class="one"></div>Dot</div>'; }
  function watchHTML(){ const j=X.job, ex=X.wex||j.ex, step=X.wstep||0; const lines=ex?exLines(ex):[];
   const words=X.wex?'Watch me do one like yours. Tap Next step.':j.says;
-  let h=`<div class="bbx-wrap"><div class="bbx-say">${avatar(j.who)}<div style="flex:1">${E(words)}</div><button type="button" class="bbx-hear" data-bb="hear" aria-label="Read it to me">🔊</button></div>`;
+  let h=`<div class="bbx-wrap"><div class="bbx-say">${avatar(j.who)}<div style="flex:1">${E(words)}</div>${KT('🔊','Read it to me','data-bb="hear"')}</div>`;
   if(ex){ h+=`<div class="bbx-watch"><div>${exVisual(ex,step)}</div><div class="bbx-steps"><div style="font-weight:900;margin-bottom:6px;color:#f08a24">${ex.t==='text'?'EXAMPLE':'WATCH ME · '+(ex.a)+' '+(ex.t==='borrow'?'−':'+')+' '+ex.b}</div><ol>${lines.map((l,i)=>`<li class="${i<step?'was':i===step?'now':''}">${E(l)}</li>`).join('')}</ol></div></div>`;
-   h+=`<div class="bbx-cta">${step>0?'<button type="button" class="bbx-btn" data-bb="wback">◀ Back</button>':''}${step<lines.length-1?'<button type="button" class="bbx-btn go" data-bb="wnext">Next step ▶</button>':''}${step>=lines.length-1?`<button type="button" class="bbx-btn y" data-bb="topage">${X.wex?'◀ Back to my page':'✏️ Open my workbook page'}</button>`:''}</div>`; }
-  else h+=`<div class="bbx-cta"><button type="button" class="bbx-btn y" data-bb="topage">✏️ Open my workbook page</button></div>`;
+   h+=`<div class="bbx-cta">${step>0?KB(0,'‹ Back','data-bb="wback"'):''}${step<lines.length-1?KB(1,'Next step','data-bb="wnext"'):''}${step>=lines.length-1?KB(1,X.wex?'Back to my page':'Open my workbook page','data-bb="topage"'):''}</div>`; }
+  else h+=`<div class="bbx-cta">${KB(1,'Open my workbook page','data-bb="topage"')}</div>`;
   return h+'</div>'; }
 
  /* ---------------- the page ---------------- */
@@ -400,46 +415,48 @@ body.bbx-open>:not(#bbx):not(script):not(style):not(#bbx-pad){visibility:hidden!
   if(ex.t==='text') return `<div class="bbx-exb"><div>${lines.map(l=>'<div>'+E(l)+'</div>').join('')}</div></div>`;
   return `<div class="bbx-exb"><div>${exVisual(ex,lines.length-1).replace(/ big"/,'"').replace(/<div class="bbx-blocks"[\s\S]*$/,'')}</div><div><b>Example</b>${lines.map((l,i)=>'<div>'+(i+1)+' '+E(l)+'</div>').join('')}</div></div>`; }
  function paperHTML(j,opts){ opts=opts||{}; const sec=secOf(j.sec), who=opts.name!=null?opts.name:me().name, date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  let n=0, h=`<div class="bbx-band"><div><span class="bbx-tag">${E(j.tag)}</span><h2>Job ${j.n} · ${E(j.title)}${j.sheet?` <small style="font-size:15px;color:#f08a24">Sheet ${j.sheet}</small>`:''}</h2></div><div class="bbx-nd">${j.timed?`Time <b class="bbx-timer" data-bb="time">${opts.readonly?'':'0:00'}</b><br><br>`:''}Name <b>${E(who)}</b><br><br>Date <b>${E(opts.date||date)}</b></div></div>`;
-  h+=`<div class="bbx-say">${avatar(j.who)}<div style="flex:1"><b>${j.who==='tenzi'?'Tenzi':'Dot'} says:</b> ${E(j.says)}</div>${opts.readonly?'':'<button type="button" class="bbx-hear" data-bb="hear" aria-label="Read it to me">🔊</button>'}</div>`;
+  let n=0, h=`<div class="bbx-band"><div>${KL('subj',j.tag)}<h2>Job ${j.n} · ${E(j.title)}${j.sheet?` <small style="font-size:15px;color:#f08a24">Sheet ${j.sheet}</small>`:''}</h2></div><div class="bbx-nd">${j.timed?`Time <b class="bbx-timer" data-bb="time">${opts.readonly?'':'0:00'}</b><br><br>`:''}Name <b>${E(who)}</b><br><br>Date <b>${E(opts.date||date)}</b></div></div>`;
+  h+=`<div class="bbx-say">${avatar(j.who)}<div style="flex:1"><b>${j.who==='tenzi'?'Tenzi':'Dot'} says:</b> ${E(j.says)}</div>${opts.readonly?'':KT('🔊','Read it to me','data-bb="hear"')}</div>`;
   h+=exBox(j);
   if(X.pencil&&!opts.readonly) h+=`<div class="bbx-pnote">✏️ Pencil page: write every answer with your pen, just like on paper. When you finish, tap <b>Check my work</b> and the right answers will show in green next to yours.</div>`;
   let ci=0;
-  j.parts.forEach((p,pi)=>{ const cols=p.cols||2; h+=`<div class="bbx-part">${p.d?`<div class="bbx-ph">${p.L?`<b>${E(p.L)}</b>`:''}<span>${E(p.d)}</span>${opts.readonly?'':`<button type="button" class="bbx-hear" style="width:34px;height:34px;font-size:15px" data-bb="hearp" data-p="${pi}" aria-label="Read it to me">🔊</button>`}</div>`:''}${p.ex?`<div class="bbx-exb">${E(p.ex)}</div>`:''}<div class="bbx-grid" style="grid-template-columns:repeat(var(--bbc${cols}),minmax(0,1fr))">`;
+  j.parts.forEach((p,pi)=>{ const cols=p.cols||2; h+=`<div class="bbx-part">${p.d?`<div class="bbx-ph">${p.L?`<b>${E(p.L)}</b>`:''}<span>${E(p.d)}</span>${opts.readonly?'':KT('🔊','Read it to me',`data-bb="hearp" data-p="${pi}"`)}</div>`:''}${p.ex?`<div class="bbx-exb">${E(p.ex)}</div>`:''}<div class="bbx-grid" style="grid-template-columns:repeat(var(--bbc${cols}),minmax(0,1fr))">`;
    p.items.forEach(()=>{ const c=X.cj[ci++]; n++; h+=itemHTML(c,c.it.t==='code'?'':n); });
    h+='</div></div>'; });
   if((j.inspect||j.score)&&!X.pencil){ const g=X.cj.filter(c=>c.graded), sc=g.filter(c=>X.ok[c.id]&&X.first[c.id]).length; h+=`<div style="margin-top:16px;font-weight:900;font-size:18px">${j.inspect?'Inspection score':'My score'}: <span style="border-bottom:2px solid #1d2433;padding:0 10px">${opts.readonly||X.done?sc:''}</span> out of ${j.inspect||j.score}</div>`; }
-  if(!opts.readonly) h+=X.pencil?(X.checked?`<div class="bbx-pnote" style="margin-top:18px">✅ Checked! Look at each green answer next to yours. Fix any that don’t match with your pen.</div><button type="button" class="bbx-btn go bbx-fin" data-bb="pdone">🏁 I fixed my mistakes</button>`:`<button type="button" class="bbx-btn y bbx-fin" data-bb="pcheck">✅ Check my work</button>`):`<button type="button" class="bbx-btn y bbx-fin" data-bb="finish">✅ I finished this page</button>`;
+  if(!opts.readonly) h+=X.pencil?(X.checked?`<div class="bbx-pnote" style="margin-top:18px">✅ Checked! Look at each green answer next to yours. Fix any that don’t match with your pen.</div><div class="bbx-cta">${KB(1,'I fixed my mistakes','data-bb="pdone"')}</div>`:`<div class="bbx-cta">${KB(1,'Check my work','data-bb="pcheck"')}</div>`):`<div class="bbx-cta">${KB(1,'I finished this page','data-bb="finish"')}</div>`;
   h+=`<div class="bbx-foot"><span>Block Builders: ${E(sec.name)}</span><span>Job ${j.n} of ${sec.of}${j.sheet?', Sheet '+j.sheet:''}</span></div>`;
   return h; }
  function colVars(){ const w=window.innerWidth; const map={1:1,2:w<520?1:2,3:w<520?2:3,4:w<520?2:w<760?3:4,6:w<520?3:w<760?4:6}; return Object.keys(map).map(k=>`--bbc${k}:${map[k]}`).join(';'); }
 
  /* ---------------- screens ---------------- */
+ /* button system step 5: labels a boy only reads (Next, Page on the way) are kit pills, flat, never a button */
+ function L(k,t){ return window.TLK?TLK.pill(k,t):E(t); }
  function homeHTML(){ const bk=B(), nx=nextJob(), m=me();
-  let h=`<div class="bbx-wrap"><div class="bbx-cover"><h1>📘 ${E(bk.title)}</h1><p>${E(bk.sub)}</p><div class="who">Hi, builder! Let’s get to work! · This book belongs to: <b>${E(m.name||'me')}</b></div><div class="bl">${rods(3,4)}</div>${nx?`<div><button type="button" class="bbx-next" data-bb="job" data-j="${nx.id}">▶ Next: Job ${nx.n} · ${E(nx.title)}</button></div>`:'<div class="who">🏆 Every page here is done. Amazing building!</div>'}</div>`;
+  let h=`<div class="bbx-wrap"><div class="bbx-cover"><h1>📘 ${E(bk.title)}</h1><p>${E(bk.sub)}</p><div class="who">Hi, builder! Let’s get to work! · This book belongs to: <b>${E(m.name||'me')}</b></div><div class="bl">${rods(3,4)}</div>${nx?`<div class="bbx-cta" style="justify-content:flex-start">${KB(1,'Next: Job '+nx.n+' · '+nx.title,`data-bb="job" data-j="${nx.id}"`)}</div>`:'<div class="who">🏆 Every page here is done. Amazing building!</div>'}</div>`;
   bk.sections.forEach(s=>{ const js=jobsOf(s.k); const nums=[]; js.forEach(j=>{ if(nums.indexOf(j.n)<0) nums.push(j.n); });
    const doneN=nums.filter(n=>{ const a=js.find(j=>j.n===n&&(!j.sheet||j.sheet==='A')); return a&&jobDone(a); }).length;
    h+=`<div class="bbx-sec"><h2><span>${s.ico}</span>${E(s.name)}</h2><div class="sub">${E(s.sub)} · ${E(s.pages)}</div>`;
    if(s.of) h+=`<div class="bbx-bar"><i style="width:${Math.round(doneN/s.of*100)}%;background:${s.color}"></i></div>`;
    h+='<div class="bbx-jobs">';
-   for(let n=1;n<=s.of;n++){ const two=js.filter(j=>j.n===n); if(!two.length){ h+=`<div class="bbx-job soon"><small>Job ${n}</small><b>📦 Page on the way</b></div>`; continue; }
+   for(let n=1;n<=s.of;n++){ const two=js.filter(j=>j.n===n); if(!two.length){ h+=`<div class="bbx-job soon"><small>Job ${n}</small>${L('lock','Page on the way')}</div>`; continue; }
     const a=two.find(j=>!j.sheet||j.sheet==='A')||two[0]; const isNext=nx&&nx.id===a.id; const d=jobDone(a);
-    h+=`<button type="button" class="bbx-job${isNext?' next':''}${d?' done':''}" data-bb="job" data-j="${a.id}"><small>Job ${n}${isNext?' · ▶ next':''}</small><b>${E(a.title)}</b><div class="bbx-sh">${two.map(j=>{ const p=pageState(j.id); return `<span class="${p&&p.done?'d':p?'p':''}">${j.sheet?j.sheet+' ':''}${p&&p.done?'★'.repeat(stars(p.score,p.total)):p?'…':''}</span>`; }).join('')}</div></button>`; }
+    h+=`<button type="button" class="${window.TLK?'tlk tlk-tile ':''}bbx-jt" data-bb="job" data-j="${a.id}"><small>Job ${n}${isNext?' '+L('now','Next'):d?' '+L('prog','Done'):''}</small><b>${E(a.title)}</b><div class="bbx-sh">${two.map(j=>{ const p=pageState(j.id); return p&&p.done?L('prog',(j.sheet?'Sheet '+j.sheet+' ':'')+'★'.repeat(stars(p.score,p.total))):p?L('now',(j.sheet?'Sheet '+j.sheet+' ':'')+'started'):''; }).join('')}</div></button>`; }
    h+='</div>';
-   if(!s.of) h+=`<div class="bbx-soon">📦 These pages are on the way. Keep building!</div>`;
+   if(!s.of) h+=`<div class="bbx-soon">${L('lock','These pages are on the way. Keep building!')}</div>`;
    h+='</div>'; });
   return h+'</div>'; }
- function doneHTML(){ if(X.pencil){ const nx=nextJob(); return `<div class="bbx-wrap"><div class="bbx-done"><div class="stars">✏️</div><h2>Page done, builder!</h2><p style="font-size:18px;font-weight:700">You wrote it, checked it and fixed it, just like a real builder. Your rebbe will look at your page.</p><div class="bbx-cta">${nx?`<button type="button" class="bbx-btn go" data-bb="job" data-j="${nx.id}">▶ Next job</button>`:''}<button type="button" class="bbx-btn" data-bb="home">📘 My workbook</button></div></div></div>`; }
+ function doneHTML(){ if(X.pencil){ const nx=nextJob(); return `<div class="bbx-wrap"><div class="bbx-done"><div class="stars">✏️</div><h2>Page done, builder!</h2><p style="font-size:18px;font-weight:700">You wrote it, checked it and fixed it, just like a real builder. Your rebbe will look at your page.</p><div class="bbx-cta">${nx?KB(1,'Next job',`data-bb="job" data-j="${nx.id}"`):''}${KB(0,'My workbook','data-bb="home"')}</div></div></div>`; }
   const j=X.job, g=X.cj.filter(c=>c.graded), sc=g.filter(c=>X.first[c.id]).length, st=stars(sc,g.length); const sib=j.sheet==='A'?B().byId[j.id.slice(0,3)+'B']:null; const nx=nextJob();
   return `<div class="bbx-wrap"><div class="bbx-done"><div class="stars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><h2>Job done, builder!</h2><p style="font-size:18px;font-weight:700">${sc} of ${g.length} right on the first try${X.timeTxt?' · ⏱ '+X.timeTxt:''}</p>
    ${sib&&sc/g.length<.8?`<p style="color:#a85a12;font-weight:800">Sheet B has the same job with new numbers. One more try makes it strong!</p>`:''}
-   <div class="bbx-cta">${sib?`<button type="button" class="bbx-btn ${sc/g.length<.8?'y':''}" data-bb="job" data-j="${sib.id}" data-direct="1">📄 Sheet B: more practice</button>`:''}${nx?`<button type="button" class="bbx-btn go" data-bb="job" data-j="${nx.id}">▶ Next job</button>`:''}<button type="button" class="bbx-btn" data-bb="home">📘 My workbook</button></div></div></div>`; }
+   <div class="bbx-cta">${sib?KB(0,'Sheet B: more practice',`data-bb="job" data-j="${sib.id}" data-direct="1"`):''}${nx?KB(1,'Next job',`data-bb="job" data-j="${nx.id}"`):''}${KB(0,'My workbook','data-bb="home"')}</div></div></div>`; }
 
- function topHTML(){ const j=X.job; if(X.view==='home') return `<button type="button" class="bbx-ib" data-bb="close" aria-label="Close">✕</button><div class="t">📘 My Workbook<small>Block Builders</small></div><button type="button" class="bbx-ib" data-bb="mute">${X.mute?'🔇':'🔊'}</button>`;
+ function topHTML(){ const j=X.job; if(X.view==='home') return `${window.TLK?TLK.home('data-bb="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button type="button" class="bbx-ib" data-bb="close" aria-label="Home">🏠</button>'}<div class="t">📘 My Workbook<small>Block Builders</small></div>${KT(X.mute?'🔕':'🔔',X.mute?'Sound off: turn it on':'Sound on: turn it off','data-bb="mute"')}`;
   const sec=secOf(j.sec); const g=X.cj?X.cj.filter(c=>c.graded):[], okN=g.filter(c=>X.ok[c.id]).length;
-  return `<button type="button" class="bbx-ib" data-bb="home" aria-label="Back to my workbook">◀ 📘</button><div class="t">Job ${j.n} · ${E(j.title)}<small>${E(sec.name)}${j.sheet?' · Sheet '+j.sheet:''}</small></div>${X.view==='page'&&!X.pencil?`<span class="bbx-ib bbx-star">⭐ ${okN}/${g.length}</span>`:''}<button type="button" class="bbx-ib" data-bb="mute">${X.mute?'🔇':'🔊'}</button>`; }
- function toolsHTML(){ const T=(k,lab)=>`<button type="button" class="bbx-tl${X.tool===k?' on':''}" data-tool="${k}">${lab}</button>`;
-  return `<div class="bbx-tools">${T('tap','👆 Tap')}${T('pen','✏️ Pen')}${['#1d2433','#2a6fdb','#d64545'].map(c=>`<button type="button" class="bbx-tl${X.color===c&&X.tool==='pen'?' on':''}" data-color="${c}" aria-label="pen color"><i style="background:${c}"></i></button>`).join('')}${T('erase','🧽 Eraser')}<button type="button" class="bbx-tl" data-bb="undo">↶ Undo</button><button type="button" class="bbx-tl" data-bb="clear">🗑 Clear pen</button>${X.job.ex?'<button type="button" class="bbx-tl" data-bb="watch">👀 Watch me</button>':''}<button type="button" class="bbx-tl${X.pencil?' on':''}" data-bb="pencil" title="Write every answer with the pen, like on paper">${X.pencil?'✏️ Pencil page: on':'✏️ Pencil page'}</button></div>`; }
+  return `${window.TLK?TLK.back('data-bb="home"','',TLK.young(window.TL_MAP&&TL_MAP.grade))+TLK.home('data-bb="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button type="button" class="bbx-ib" data-bb="home" aria-label="Back to my workbook">◀ 📘</button>'}<div class="t">Job ${j.n} · ${E(j.title)}<small>${E(sec.name)}${j.sheet?' · Sheet '+j.sheet:''}</small></div>${X.view==='page'&&!X.pencil?KL('prog',okN+' of '+g.length+' right'):''}${KT(X.mute?'🔕':'🔔',X.mute?'Sound off: turn it on':'Sound on: turn it off','data-bb="mute"')}`; }
+ function toolsHTML(){ const T=(k,lab)=>X.tool===k?KL('now',lab):KB(0,lab,`data-tool="${k}"`,'tlk-small');
+  return `<div class="bbx-tools">${T('tap','Tap')}${T('pen','Pen')}${['#1d2433','#2a6fdb','#d64545'].map(c=>`<button type="button" class="bbx-tl${X.color===c&&X.tool==='pen'?' on':''}" data-color="${c}" aria-label="pen color"><i style="background:${c}"></i></button>`).join('')}${T('erase','Eraser')}${KB(0,'Undo','data-bb="undo"','tlk-small')}${KB(0,'Clear pen','data-bb="clear"','tlk-small')}${X.job.ex?KB(0,'Watch me','data-bb="watch"','tlk-small'):''}${X.pencil?KL('now','Pencil page')+KB(0,'Stop pencil page','data-bb="pencil"','tlk-small'):KB(0,'Pencil page','data-bb="pencil" title="Write every answer with the pen, like on paper"','tlk-small')}</div>`; }
 
  function draw(){ if(!X.open) return; css(); let r=document.getElementById('bbx'); if(!r){ r=document.createElement('div'); r.id='bbx'; document.body.appendChild(r); }
   let body='';

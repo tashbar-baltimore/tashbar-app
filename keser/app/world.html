@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A0B2E">
+<title>Keser Girls · Her world</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; overflow:hidden; color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--night);
+  -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; }
+body{ background:
+  radial-gradient(ellipse at 50% 70%, rgba(140,80,200,.30) 0, transparent 50%),
+  radial-gradient(ellipse at 12% 0%, rgba(185,140,255,.38) 0, transparent 50%),
+  radial-gradient(ellipse at 92% 8%, rgba(95,227,207,.16) 0, transparent 40%),
+  linear-gradient(175deg, #34104F 0%, var(--night) 55%, #0E0418 100%); }
+#scene,#fx{ position:fixed; inset:0; width:100%; height:100%; display:block; }
+#fx{ pointer-events:none; z-index:20; }
+#stage{ position:fixed; inset:0; touch-action:pan-y; z-index:1; cursor:grab; }
+#stage:active{ cursor:grabbing; }
+body.intro .hud{ opacity:0; transform:translateY(14px); }
+.hud{ position:fixed; z-index:5; transition:opacity .6s var(--glide), transform .7s var(--glide); }
+body.in .hud{ opacity:0; pointer-events:none; transform:translateY(20px); }
+.corner{ top:max(16px,env(safe-area-inset-top)); right:16px; display:flex; gap:10px; }
+.side{ top:50%; margin-top:-24px; }
+.side.l{ left:max(18px,3vw); } .side.r{ right:max(18px,3vw); }
+.bottom{ left:0; right:0; bottom:max(22px,4vh,env(safe-area-inset-bottom)); display:flex; flex-direction:column; align-items:center; gap:16px; pointer-events:none; padding:0 16px; }
+.bottom > *{ pointer-events:auto; }
+.bottom::before{ content:""; position:absolute; left:50%; bottom:-30px; width:min(760px,140vw); height:260px; transform:translateX(-50%); z-index:-1; pointer-events:none;
+  background:radial-gradient(ellipse at 50% 70%, rgba(18,4,32,.62) 0, rgba(18,4,32,.3) 45%, transparent 70%); }
+.name{ position:relative; text-align:center; min-height:1em; pointer-events:none; }
+.name .he{ display:block; font-size:18px; font-weight:700; letter-spacing:.14em; color:var(--gold1); opacity:.85; height:22px; text-shadow:0 0 14px rgba(212,170,80,.6); }
+.name .k-foil{ display:block; font-size:clamp(40px,5.4vw,64px); line-height:1.05; }
+.name.swap .k-foil,.name.swap .he{ animation:pop .6s var(--spring); }
+@keyframes pop{ 0%{ opacity:0; transform:translateY(10px) scale(.92); filter:blur(4px) } 100%{ opacity:1; transform:none; filter:none } }
+
+/* inside a place */
+#room{ position:fixed; inset:0; z-index:6; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:0 16px max(8vh,40px);
+  opacity:0; pointer-events:none; transition:opacity .5s var(--glide); }
+body.inside #room{ opacity:1; pointer-events:auto; }
+/* THE KESER LOGO throughout her world (HoS 2026-11-26): the loading crown, above the sisters' welcome, and a small crown mark top left */
+.brand{ top:max(14px,env(safe-area-inset-top)); left:16px; width:clamp(64px,7vw,96px); filter:drop-shadow(0 0 12px rgba(255,214,140,.7)) drop-shadow(0 3px 6px rgba(40,0,40,.6)); pointer-events:none; animation:brandin 1.6s cubic-bezier(.16,.9,.3,1.04) .4s both; }
+@keyframes brandin{ 0%{ opacity:0; transform:translate(40vw,30vh) scale(3) rotate(-20deg); filter:blur(8px) } 100%{ opacity:1; transform:none } }
+#greet .glogo{ width:min(300px,56vw); filter:drop-shadow(0 0 24px rgba(255,214,140,.8)); transform:scale(.6) translateY(-30px); opacity:0; transition:transform 1.1s cubic-bezier(.16,.9,.3,1.04), opacity .8s; }
+#greet.on .glogo{ transform:none; opacity:1; }
+/* the Three Crowns (כתר תורה, כתר כהונה, כתר מלכות; Miriam David's banners) rise up behind the card when she enters Kodesh */
+.crowns{ position:fixed; left:50%; top:4vh; display:flex; gap:clamp(8px,1.6vw,26px); translate:-50% 0; pointer-events:none; }
+.crowns img{ height:min(56vh,560px); border-radius:10px; box-shadow:0 20px 60px rgba(20,0,30,.6), 0 0 0 2px rgba(212,170,80,.6); opacity:0; transform:translateY(60px) scale(.8); transition:opacity .8s, transform 1.2s cubic-bezier(.16,.9,.3,1.04); }
+.crowns img:nth-child(1){ rotate:-6deg; transition-delay:.15s } .crowns img:nth-child(2){ transition-delay:.3s } .crowns img:nth-child(3){ rotate:6deg; transition-delay:.45s }
+body.inside.kodesh .crowns img{ opacity:1; transform:none; }
+@media (max-width:600px){ .crowns img{ height:34vh } .brand{ width:56px } }
+#room .card{ text-align:center; padding:26px 44px 30px; border-radius:30px; background:linear-gradient(160deg,rgba(70,20,90,.62),rgba(30,6,48,.55));
+  border:1px solid rgba(246,227,176,.4); box-shadow:0 30px 80px rgba(20,0,40,.5), inset 0 1px 0 rgba(255,255,255,.35);
+  backdrop-filter:blur(16px) saturate(1.5); -webkit-backdrop-filter:blur(16px) saturate(1.5); transform:translateY(30px) scale(.96); transition:transform .7s var(--spring); }
+body.inside #room .card{ transform:none; }
+#room .k-foil{ font-size:clamp(38px,5vw,58px); margin:0; }
+#room .k-btn.lab{ margin-top:14px; letter-spacing:.06em; text-transform:none; font-size:16px; padding:15px 28px; }
+#room .soon{ margin:10px 0 0; font-size:15px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold1); opacity:.9; }
+#room .back{ position:fixed; top:max(16px,env(safe-area-inset-top)); left:16px; }
+
+/* while the 3D world gets ready: a glowing crown, never a dark screen */
+#loading{ position:fixed; inset:0; z-index:8; display:grid; place-items:center; pointer-events:none; transition:opacity .8s var(--glide); }
+#loading img{ width:min(52vw,300px); filter:drop-shadow(0 0 30px rgba(212,170,80,.7)); animation:breathe 1.6s ease-in-out infinite; }
+body.ready #loading,.nogl #loading{ opacity:0; }
+@keyframes breathe{ 50%{ transform:scale(1.08); filter:drop-shadow(0 0 46px rgba(140,80,200,.8)) } }
+/* the sisters greet her when she arrives */
+#greet{ position:fixed; inset:0; z-index:9; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:16px; pointer-events:none;
+  background:radial-gradient(ellipse at 50% 45%, #2e0d4a, #0e0418); opacity:0;   /* solid: nothing from the world shows through behind the logo */ transition:opacity .7s var(--glide); }
+#greet.on{ opacity:1; }
+body.greeting .hud{ opacity:0; }
+#greet .frame{ width:min(640px,88vw); aspect-ratio:16/9; border-radius:28px; overflow:hidden; position:relative;
+  box-shadow:0 0 0 3px #D4AA50, 0 0 0 7px rgba(246,227,176,.35), 0 24px 80px rgba(140,80,200,.45); transform:scale(.92) translateY(14px); transition:transform 1s var(--spring); }
+#greet.on .frame{ transform:none; }
+#greet .frame img{ width:100%; height:100%; object-fit:cover; display:block; }
+#greet .frame::after{ content:""; position:absolute; inset:0; background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%); background-size:300% 100%; animation:k-shine 2.6s ease-in-out infinite; }
+#greet .k-foil{ margin:0; font-size:clamp(30px,4.6vw,52px); text-align:center; }
+/* the host girl inside each place */
+#room .host{ width:118px; height:144px; object-fit:cover; object-position:50% 12%; border-radius:50%; display:block; margin:-80px auto 10px; background:#fff1f7;
+  box-shadow:0 0 0 4px #D4AA50, 0 0 0 8px rgba(246,227,176,.35), 0 12px 40px rgba(140,80,200,.5); }
+.flat .place{ position:relative; overflow:hidden; }
+@media (prefers-reduced-motion: reduce){ .brand{ animation:none } .crowns img,#greet .glogo{ transition:none } #loading img,#greet .frame::after{ animation:none } #greet .frame{ transition:none } }
+/* no 3D on this computer: still cards instead (the same places, dots and button) */
+.flat{ display:none; position:fixed; left:0; right:0; top:16%; height:46%; z-index:2; pointer-events:none; }
+.nogl #scene{ display:none; }
+.nogl body{ background:radial-gradient(ellipse at 50% 30%, #7A44AA 0, #5D2B88 35%, #2A0F45 80%), var(--night); }
+.nogl .flat{ display:block; }
+.flat .track{ position:absolute; left:50%; top:0; height:100%; display:flex; gap:28px; transition:transform .6s var(--spring); }
+.flat .place{ pointer-events:auto; cursor:pointer; width:min(48vw,240px); height:100%; flex:none; border-radius:32px; display:grid; place-items:center;
+  background:radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--c) 45%, transparent), transparent 70%), linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.04));
+  border:1px solid rgba(246,227,176,.4); box-shadow:0 20px 60px rgba(20,0,40,.45), inset 0 1px 0 rgba(255,255,255,.3); transform:scale(.78); opacity:.5; transition:transform .6s var(--spring), opacity .4s; }
+.flat .place[aria-current="true"]{ transform:scale(1); opacity:1; box-shadow:0 20px 70px color-mix(in srgb, var(--c) 55%, transparent), inset 0 1px 0 rgba(255,255,255,.4); }
+.flat .place .dome{ width:86%; height:86%; object-fit:contain; filter:drop-shadow(0 0 18px var(--c)); }
+.flat .crown{ position:fixed; left:50%; top:max(10px,2vh); width:180px; transform:translateX(-50%); filter:drop-shadow(0 0 22px rgba(212,170,80,.55)); pointer-events:auto; cursor:pointer; }
+@media (max-width:600px){ .side{ display:none } .flat{ top:15% } #room .k-btn.lab{ margin-top:14px; letter-spacing:.06em; text-transform:none; font-size:16px; padding:15px 28px; }
+#room .soon{ letter-spacing:.12em; font-size:13px; white-space:nowrap } #room .card{ padding:22px 26px 24px } }
+@media (max-height:560px){ .name .k-foil{ font-size:36px } .bottom{ gap:10px } }
+@media (prefers-reduced-motion: reduce){ .hud,#room,#room .card,.flat .track,.flat .place{ transition:none } .name.swap .k-foil,.name.swap .he{ animation:none } }
+</style>
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+</head>
+<body class="intro">
+<canvas id="scene" aria-hidden="true"></canvas>
+<div id="stage" aria-hidden="true"></div>
+<div id="loading" aria-hidden="true"><img src="/pics/keser-logo.webp" alt=""></div>
+<div id="greet" aria-hidden="true"><img class="glogo" src="/pics/keser-logo.webp" alt="Keser Academy for Girls"><div class="frame"><img src="/pics/keser-cast-group.webp" alt=""></div><p class="k-foil">Welcome to your world</p></div>
+
+<div class="flat" aria-hidden="true">
+  <img class="crown" src="/pics/keser-logo-mark.webp" alt="">
+  <div class="track"></div>
+</div>
+
+<img class="hud brand" src="/pics/keser-logo-mark.webp" alt="Keser">
+<div class="hud corner">
+  <button class="k-icon small" id="sound" aria-label="Sound" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/></svg></button>
+  <button class="k-icon small" id="lite" aria-label="Light mode for slow computers" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C10 4 5 9 4 20M20 4c0 9-5 13-12 12M20 4L9 15"/></svg></button>
+</div>
+<button class="hud side l k-icon" id="prev" aria-label="Previous place"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+<button class="hud side r k-icon" id="next" aria-label="Next place"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+<div class="hud bottom">
+  <div class="name" aria-live="polite"><span class="he" lang="he" dir="rtl"></span><span class="k-foil" id="placeName"></span></div>
+  <div class="k-dots" id="dots" role="tablist" aria-label="Places"></div>
+  <button class="k-btn" id="enter"><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>Enter</button>
+</div>
+
+<div id="room" aria-hidden="true">
+  <div class="crowns" id="crowns" aria-hidden="true"><img src="/pics/keser-keter-torah.webp" alt=""><img src="/pics/keser-keter-kehuna.webp" alt=""><img src="/pics/keser-keter-malchut.webp" alt=""></div>
+  <button class="k-icon back" id="back" aria-label="Back to my world"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="card"><img class="host" id="roomHost" alt=""><p class="k-foil" id="roomName"></p><p class="soon" id="roomSoon">✦ Lessons coming soon ✦</p><button class="k-btn lab" id="openLab" hidden><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span id="labName">Chumash Lab</span></button></div>
+</div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<script type="module" src="world.js"></script>
+</body>
+</html>

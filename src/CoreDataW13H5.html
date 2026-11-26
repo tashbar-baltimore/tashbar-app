@@ -1,0 +1,316 @@
+<script>
+/* CoreDataW13H5.html: Core Growth job W13 helper, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW13.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   W13 = Writing K-3 (docs/core-growth/W13-map.md). This file: Grade 2 (L03), Unit 6 "Letters and Research" (W.2.1, W.2.8, L.2.2b, RL.2.1).
+   Cast for Grades 2-3: the Shabbos Street Club (Naftali, Avi, Chaim, Dovid, Rabbi Feld, Naftali's Zeidy, Mr. Benhamou of the corner grocery).
+   Texts: W13.BIRD.01 "Birds at the Feeder" (texts/W13/) and C23's story C23.ST.01 "The Noise in the Sukkah".
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+
+  'WRIT.PARA.L03.15':{name:'Friendly Letter',
+  teach:[
+    {how:'A friendly letter has five parts: the date, the greeting, the body, the closing and your name.', q:'Which part of a letter says hello?', o:['the greeting','the closing','the date']},
+    {how:'The greeting is Dear and a name, then a comma. The closing comes just before your name, with a comma, like Love, or Your friend,', q:'Which greeting is written right?', o:['Dear Zeidy,','dear Zeidy','Dear Zeidy.']},
+    {how:'The body is the middle. It tells why you are writing, with details.', q:'Which line belongs in the body?', o:['Thank you for teaching us to fix the clock.','Dear Zeidy,','Love,']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each part of a letter to its example.', pairs:[['the date','November 26'],['the greeting','Dear Zeidy,'],['the closing','Love,'],['my name','Dovid']], h:'Hello is the greeting. Goodbye is the closing. Your name comes last.'},
+    {t:'order', q:'Put the five parts of a letter in order, top to bottom. Tap the tiles in order.', tiles:['the date','the greeting','the body','the closing','my name'], h:'Date at the top, then hello, then the middle, then goodbye and your name.'},
+    {t:'sort', q:'Greeting or closing?', bins:[{id:'G',label:'Greeting'},{id:'C',label:'Closing'}],
+      items:[{label:'Dear Rabbi Feld,',bin:'G'},{label:'Your student,',bin:'C'},{label:'Dear Mr. Benhamou,',bin:'G'},{label:'Love,',bin:'C'}],
+      h:'A greeting starts with Dear. A closing comes right before your name.'},
+    {t:'spotall', q:'Tap every line that is written right.', cells:[{label:'Dear Chaim,',ok:true},{label:'Your friend,',ok:true},{label:'dear Chaim',ok:false},{label:'Love.',ok:false}],
+      h:'A greeting and a closing need a capital and a comma.'},
+    {t:'write', q:'Your turn. Write a short letter to Zeidy. Thank him for something. Use all five parts.', min:0, checks:['I wrote the date.','I wrote Dear Zeidy, with a comma.','My body tells why I am writing.','I wrote a closing with a comma, and my name.'], h:'Date, greeting, body, closing, name.'}
+  ],
+  check:[
+    {q:'Naftali wrote “Your friend,” just before his name. Which part of the letter is it?', o:['the closing','the greeting','the body'], h:'Which part says goodbye, right before your name?'},
+    {q:'Which closing is written right?', o:['Love,','love','Love.'], h:'A closing starts with a capital and ends with a comma.'},
+    {q:'What goes at the very top of a friendly letter?', o:['the date','the closing','your name'], h:'Say the five parts in order.'}
+  ],
+  re:[
+    {how:'A new way: a letter is like a visit. You say hello, you talk, and you say goodbye.', q:'Saying goodbye in a letter is the…', o:['closing','greeting','body']},
+    {how:'A simpler step: learn only the greeting. It is Dear, a name, and a comma.', q:'Which one is a greeting?', o:['Dear Mr. Benhamou,','Love,','November 26']},
+    {how:'The skill underneath: a comma goes after the greeting and after the closing (Dear and Love).', q:'Where does the comma go?', o:['Dear Ari,','Dear, Ari','Dear Ari']}
+  ]},
+
+  'WRIT.RES.L03.01':{name:'Find It in a Book',
+  teach:[
+    {how:'To find an answer in a book, first read your question. Pick the key word, the word that tells what you want to know about.', q:'Question: What do cardinals eat? What is the key word?', o:['cardinals','what','do']},
+    {how:'Then look for the key word in the book, and read the sentences around it.', q:'Question: How do chickadees eat? Which sentence answers it?', o:['A chickadee takes one seed and flies to a branch to eat it.','Chickadees are small and quick.','Birds need water too.']},
+    {how:'Check it: does the sentence really answer the question? A sentence with the key word is not always the answer.', q:'Question: What do cardinals eat? Which sentence answers it?', o:['Cardinals love sunflower seeds.','A cardinal has a short, thick beak.','I saw a cardinal.']}
+  ],
+  practice:[
+    {t:'sort', q:'Question: Where do birds hide? Key word, or not?', bins:[{id:'K',label:'Key word'},{id:'N',label:'Not the key word'}],
+      items:[{label:'hide',bin:'K'},{label:'birds',bin:'K'},{label:'where',bin:'N'},{label:'do',bin:'N'}],
+      h:'The key words tell what the question is about. Small asking words like where and do are not key words.'},
+    {t:'pairs', q:'Match each question to the sentence in the article that answers it.', pairs:[['What do cardinals love?','Cardinals love sunflower seeds.'],['What else do birds need?','Birds need water too, even in winter.'],['How can a feeder help?','When you fill it, birds come to eat.']],
+      h:'Find the key word in the question. Then find the sentence that answers it.'},
+    {t:'spotall', q:'Question: How can we keep birds safe? Tap every sentence that answers it.', cells:[{label:'Hang your feeder near a tree or a bush.',ok:true},{label:'Then birds can fly there to hide.',ok:true},{label:'Blue jays have blue feathers.',ok:false},{label:'Cardinals love sunflower seeds.',ok:false}],
+      h:'It must tell how birds stay safe, not just tell about birds.'},
+    {t:'order', q:'Put the steps for finding an answer in order. Tap the tiles in order.', tiles:['Read my question','Find the key word','Look for it in the book','Check: does it answer?'], h:'Question first, then key word, then look, then check.'},
+    {t:'write', q:'Your turn. Question: Why is winter hard for birds? Write the answer you found in the article, in your own words.', min:0, checks:['I found the key word: winter.','My answer comes from the article.','It really answers the question.'], h:'Look for “winter” on page 1.'}
+  ],
+  check:[
+    {q:'Question: What does a cardinal’s beak look like? Which sentence answers it?', o:['A cardinal has a short, thick beak.','Cardinals love sunflower seeds.','Cardinals come to feeders.'], h:'All three have the key word. Which one tells about the beak?'},
+    {q:'Naftali wants to know where cardinals sleep. Which key word should he look for?', o:['cardinals','where','wants'], h:'What does he want to know about? Which word names it?'},
+    {q:'Question: When do blue jays call out loudly? Avi finds: “Blue jays are loud birds with blue feathers.” It has the key word. Does it answer the question?', o:['Does not answer','Answers it','Has no key word'], h:'Does it tell WHEN they call out?'}
+  ],
+  re:[
+    {how:'A new way: finding an answer is a treasure hunt. The key word is your map.', q:'Treasure: how owls see at night. Your map word is…', o:['owls','how','at']},
+    {how:'A simpler step: find only the key word, the most important word in the question.', q:'Question: Where do owls sleep? The key word is…', o:['owls','where','do']},
+    {how:'The skill underneath: answer with the words of the book (Why and How).', q:'The book says: “Birds fly to a bush to hide.” Why do birds fly to a bush?', o:['to hide','to sing','to eat']}
+  ]},
+
+  'WRIT.RES.L03.02':{name:'Fact Notes',
+  teach:[
+    {how:'A fact note is a few key words, not the whole sentence copied.', q:'The book says: “Cardinals love sunflower seeds.” Which is a good note?', o:['cardinals: sunflower seeds','Cardinals love sunflower seeds.','I like birds']},
+    {how:'Keep the words that answer your question. Leave out little words like the, a, to and very.', q:'The book says: “A chickadee takes one seed and flies to a branch to eat it.” Which is the best note?', o:['chickadee: one seed, eats on a branch','A chickadee takes one seed and flies to a branch.','a, the, to']},
+    {how:'Later, you turn your notes into sentences in your own words.', q:'Note: feeder near a bush. Which sentence is in your own words?', o:['We hung our feeder close to a bush so birds can hide.','feeder near a bush','Hang your feeder near a tree or a bush.']}
+  ],
+  practice:[
+    {t:'sort', q:'Avi’s note cards. Good note, or copied?', bins:[{id:'N',label:'Good note'},{id:'C',label:'Copied sentence'}],
+      items:[{label:'cardinals: sunflower seeds',bin:'N'},{label:'water, even in winter',bin:'N'},{label:'Chickadees are small and quick.',bin:'C'},{label:'Keep your feeder clean and full.',bin:'C'}],
+      h:'A good note is a few key words. A whole sentence from the book is copied.'},
+    {t:'pairs', q:'Match each sentence from the book to its short note.', pairs:[['Cardinals love sunflower seeds.','cardinals: sunflower seeds'],['Birds need water too, even in winter.','birds need water in winter'],['Keep your feeder clean and full.','feeder clean, full']],
+      h:'Find the few key words from each sentence.'},
+    {t:'spotall', q:'Tap every good fact note.', cells:[{label:'thick beak cracks shells',ok:true},{label:'chickadee: one seed at a time',ok:true},{label:'A cardinal has a short, thick beak.',ok:false},{label:'birds are nice',ok:false}],
+      h:'A good note is short, and it keeps a real fact from the book.'},
+    {t:'order', q:'Put the note-taking steps in order. Tap the tiles in order.', tiles:['Read the sentence','Find the key words','Write only the key words','Check: does it answer my question?'], h:'Read, find, write, check.'},
+    {t:'write', q:'Your turn. The book says: “Blue jays are loud birds with blue feathers.” Write a short note with only the key words.', min:0, checks:['My note is a few words, not the whole sentence.','It keeps the facts: loud, blue feathers.'], h:'Cross out the little words. Keep blue jays, loud, blue feathers.'}
+  ],
+  check:[
+    {q:'The book says: “The ground is often covered with snow.” Avi’s note says: “The ground is often covered with snow.” What is wrong with his note?', o:['Copied','It is too short','Nothing'], h:'Is it a few key words, or the whole sentence?'},
+    {q:'Avi copied a whole sentence from the book onto his note card. What should he do?', o:['write only the key words','copy two more sentences','leave the card empty'], h:'What is a note made of?'},
+    {q:'Note: “cardinal: short, thick beak”. Dovid writes: “A cardinal’s beak is short and thick, like a nutcracker.” What did he write?', o:['My own sentence','A note','A copied sentence'], h:'Is it a few words, or a whole sentence? Is it the book’s words, or his?'}
+  ],
+  re:[
+    {how:'A new way: a note is like a quick message to yourself. Keep it short!', q:'Which one is a short note?', o:['seeds in winter','Birds eat seeds in the winter time when it is cold.','Hello there!']},
+    {how:'A simpler step: cross out the little words a, the, and, to. Keep what is left.', q:'“The birds eat the seeds.” Cross out the little words. What is left?', o:['birds eat seeds','the the','The birds eat the seeds.']},
+    {how:'The skill underneath: in POW, O means Organize my notes, and notes are a few words (POW Power).', q:'A note is…', o:['a few words','a whole page','a question']}
+  ]},
+
+  'WRIT.PARA.L03.16':{name:'Book Response',
+  teach:[
+    {how:'A book response tells what you think of a book, and why. Start with the title and your opinion.', q:'Which sentence tells an opinion about the story?', o:['I liked “The Noise in the Sukkah” because it was funny.','Dovid slept in the sukkah.','The story has pages.']},
+    {how:'Then prove it with a detail from the book: something that really happens in it.', q:'Opinion: The story was funny. Which detail from the story shows it?', o:['Dovid laughed so loud that Ari woke up.','Sukkos is a Yom Tov.','I have a sukkah too.']},
+    {how:'End by telling who would like the book.', q:'Which is a good ending for a book response?', o:['Boys who like surprises will love this story.','The end.','Dovid has a brother.']}
+  ],
+  practice:[
+    {t:'sort', q:'Naftali’s book response. Opinion, or detail from the story?', bins:[{id:'O',label:'My opinion'},{id:'D',label:'Detail from the story'}],
+      items:[{label:'The story was exciting.',bin:'O'},{label:'Dovid clicked on his flashlight.',bin:'D'},{label:'I liked the ending best.',bin:'O'},{label:'The squirrel ran out through the schach.',bin:'D'}],
+      h:'An opinion tells what you think. A detail tells what really happens in the story.'},
+    {t:'pairs', q:'Match each opinion to the detail that proves it.', pairs:[['The story was funny.','Dovid laughed so loud that Ari woke up.'],['Dovid was brave.','He clicked on his flashlight.'],['The boys were smart.','They put the challah in a box.']],
+      h:'Which detail shows that the opinion is true?'},
+    {t:'spotall', q:'Tap every detail that is really in “The Noise in the Sukkah”.', cells:[{label:'Ari was snoring.',ok:true},{label:'Two shiny eyes looked back at Dovid.',ok:true},{label:'The squirrel ate a carrot.',ok:false},{label:'Dovid slept in his bed.',ok:false}],
+      h:'Think back to the story, or read it again. Did that really happen?'},
+    {t:'order', q:'Put the book response in order. Tap the tiles in order.', tiles:['I liked “The Noise in the Sukkah.”','It was funny because of a surprise guest.','Dovid laughed so loud that Ari woke up.','Boys who like surprises will love it.'], h:'Opinion, reason, detail, then who would like it.'},
+    {t:'write', q:'Your turn. Write a book response to “The Noise in the Sukkah”: your opinion, a reason, and a detail from the story.', min:0, checks:['I told my opinion.','I gave a reason with because.','I gave a detail that really happens in the story.'], h:'I liked it because… In the story,…'}
+  ],
+  check:[
+    {q:'Avi wrote: “I liked the story because it was good.” What is missing?', o:['a detail from the story','an opinion','the word because'], h:'He gave his opinion. Did he prove it with something from the story?'},
+    {q:'Opinion: At first, the story was a little scary. Avi proves it with “Dovid pulled his blanket up to his nose.” What is that sentence?', o:['A detail from the story','Another opinion','The title'], h:'Does it tell what really happens in the story?'},
+    {q:'Avi wrote: “The squirrel hid in Ari’s shoe.” Is that detail really in the story?', o:['Not in the story','Really in the story','It is an opinion'], h:'Think back. Where did the squirrel go?'}
+  ],
+  re:[
+    {how:'A new way: a book response is like telling a friend about a book. Say what you think, then prove it.', q:'After you say “It was funny,” what comes next?', o:['a funny part from the story','another book','the end']},
+    {how:'A simpler step: just finish this sentence: I liked the story because…', q:'Which one finishes it with a reason?', o:['…a squirrel surprised Dovid.','…it.','…books.']},
+    {how:'The skill underneath: an opinion tells what you think, with a reason (My Opinion).', q:'Which one is an opinion?', o:['Squirrels are the funniest animals.','Squirrels have tails.','A squirrel is gray.']}
+  ]}
+  };
+
+  var TEACH = {
+  'WRIT.PARA.L03.15':{hook:'How can you talk to someone who is not in the room? Write a letter!', big:'A friendly letter has five parts: date, greeting, body, closing, name.',
+    intro:['The date goes at the top.','The greeting: Dear and a name, then a comma.','The body tells why you are writing.','The closing and your name, with a comma after the closing.'],
+    ex:[{q:'The club writes to Mr. Benhamou.',steps:['November 26','Dear Mr. Benhamou,','May we hang our bird feeder by your window?','Your friends,','Naftali'],a:'All five parts, in order.'},
+        {q:'Dovid writes to Zeidy.',steps:['November 26','Dear Zeidy,','Thank you for the gears.','Love,','Dovid'],a:'All five parts again: date, greeting, body, closing, name.'}],
+    oops:{q:'Dovid writes to Zeidy.',wrong:'Thanks for the gears.',right:'November 26 · Dear Zeidy, Thank you for the gears. Love, Dovid',why:'With no greeting and no name, Zeidy does not know it is for him, or who wrote it.'},
+    idea:['A letter is like a visit: say hello, talk, and say goodbye.'],
+    try:{q:'Which part says goodbye?',o:['the closing','the greeting','the date'],a:'the closing',steps:['Hello is the greeting. Goodbye is…']}},
+  'WRIT.RES.L03.01':{hook:'Writers do not guess. They find real facts in books!', big:'To find an answer: read the question, find the key word, look for it in the book, and check that it answers.',
+    intro:['Read your question.','Find the key word.','Look for the key word in the book.','Check: does the sentence really answer it?'],
+    ex:[{q:'Question: What do cardinals eat?',steps:['Key word: cardinals.','Page 2: “A cardinal has a short, thick beak.” Not about eating.','“Cardinals love sunflower seeds.” Yes!'],a:'Cardinals love sunflower seeds.'},
+        {q:'Question: Where should we hang a feeder?',steps:['Key word: feeder.','Look for feeder. Page 3: “Hang your feeder near a tree or a bush.”','Does it tell WHERE? Yes!'],a:'Hang your feeder near a tree or a bush.'}],
+    oops:{q:'Dovid wants to know what cardinals eat.',wrong:'He guesses: cardinals eat worms.',right:'He finds it: “Cardinals love sunflower seeds.”',why:'A guess is not a fact. Find it in the book.'},
+    idea:['Finding an answer is a treasure hunt. The key word is your map.'],
+    try:{q:'Question: Why is winter hard for birds? Key word?',o:['winter','why','is'],a:'winter',steps:['What is the question about?']}},
+  'WRIT.RES.L03.02':{hook:'Can you fit a whole fact into just a few words?', big:'A fact note is a few key words from the book, never the whole sentence copied.',
+    intro:['Read the sentence.','Find the key words that answer your question.','Write only those words.','Later, write it your own way.'],
+    ex:[{q:'“Cardinals love sunflower seeds.”',steps:['Key words: cardinals, sunflower seeds.'],a:'cardinals: sunflower seeds'},
+        {q:'“A chickadee takes one seed and flies to a branch to eat it.”',steps:['Key words: chickadee, one seed, branch.'],a:'chickadee: one seed, eats on a branch'}],
+    oops:{q:'Avi writes a note about cardinals.',wrong:'Cardinals love sunflower seeds.',right:'cardinals: sunflower seeds',why:'That is the whole sentence, copied. A note is a few key words.'},
+    idea:['A note is a quick message to yourself: short!'],
+    try:{q:'“Birds need water too, even in winter.” Best note?',o:['birds need water in winter','Birds need water too, even in winter.','birds'],a:'birds need water in winter',steps:['Keep the fact. Drop the little words.']}},
+  'WRIT.PARA.L03.16':{hook:'Did you love a book? Tell your friends, and prove it!', big:'A book response gives your opinion of a book, a reason, and a detail from the book that proves it.',
+    intro:['Name the book and tell your opinion.','Give a reason with because.','Prove it with a detail from the book.','End: who would like this book?'],
+    ex:[{q:'“The Noise in the Sukkah”',steps:['I liked it because it was funny.','Dovid laughed so loud that Ari woke up.'],a:'An opinion, a reason, and a detail.'},
+        {q:'Dovid was brave.',steps:['In the story, he clicked on his flashlight.'],a:'A detail that proves it.'}],
+    oops:{q:'Avi writes a book response.',wrong:'I liked it because it was good.',right:'I liked it because it was funny. Dovid laughed so loud that Ari woke up.',why:'“It was good” proves nothing. A detail from the book does.'},
+    idea:['Tell it like you tell a friend: what you think, then prove it.'],
+    try:{q:'What proves your opinion?',o:['a detail from the book','the number of pages','a new book'],a:'a detail from the book',steps:['Something that really happens in the story.']}}
+  };
+
+  var HOWTO = {
+  'WRIT.PARA.L03.15':{s:'Five parts: date, greeting, body, closing, name.\nGreeting: Dear and a name, then a comma.\nBody: why you are writing.\nClosing: a capital and a comma, then your name.'},
+  'WRIT.RES.L03.01':{s:'Read your question.\nFind the key word.\nLook for it in the book.\nCheck: does that sentence really answer it?'},
+  'WRIT.RES.L03.02':{s:'Read the sentence.\nFind the key words.\nWrite only the key words.\nNever copy the whole sentence.'},
+  'WRIT.PARA.L03.16':{s:'Name the book and tell your opinion.\nGive a reason with because.\nProve it with a detail from the book.\nEnd: who would like it?'}
+  };
+
+  var BITE = {
+  'WRIT.PARA.L03.15':{ band:'B23', pic:'💌', today:'Write a friendly letter with all five parts', why:'A letter lets you thank someone, or ask for something, in writing.',
+    ready:[{q:'Which greeting has its comma right?', o:['Dear Abba,','Dear, Abba'], a:'Dear Abba,'}],
+    bridge:'LANG.MECH.L03.03', bridgeName:'Dear and Love',
+    watch:{ q:'The club built a bird feeder. Naftali writes to Mr. Benhamou to ask where to hang it.', m:{type:'scene', e:'💌', t:'May the club hang its bird feeder by the corner grocery window?'}, steps:[
+      {t:'The date goes at the top: November 26.'},
+      {t:'Greeting: Dear Mr. Benhamou, with a comma.'},
+      {t:'Body: We built a bird feeder. May we hang it by your window? We will fill it every week.'},
+      {t:'Closing: Your friends, with a comma. Then the name: Naftali.'},
+      {t:'Count the parts with me, one finger each!', m:{type:'chant', lines:['Date!','Greeting!','Body!','Closing!','Name!','Five parts make a letter!']}}], a:'Date, greeting, body, closing, name.' },
+    oops:{ q:'Dovid writes to Zeidy.', wrong:'Thanks for the gears.', right:'November 26 · Dear Zeidy, Thank you for the gears. Love, Dovid', why:'With no greeting and no name, Zeidy does not know who wrote it.' },
+    ways:['worked example','chant','put it in order','sort it','match it','tap the line','build with tiles','fill the gap','Mistake Detective'], done:'You can write a friendly letter with all five parts!',
+    board:{ one:'A friendly letter: date, greeting, body, closing, name.', activity:'Boys hold up one finger for each part as the class reads a letter aloud: date, greeting, body, closing, name.', mistakes:['No greeting or no name','No comma after the greeting or the closing','A small letter on Dear or on the name'] },
+    do:[
+      {type:'order', steps:['the date','the greeting','the body','the closing','my name'],
+        say:'Put the five parts of a letter in order.', how:'Top to bottom: date, greeting, body, closing, name.'},
+      {type:'sort', q:'Naftali’s letter to Mr. Benhamou.', bins:['Written right','Mistake'], cards:[['Dear Mr. Benhamou,',0],['Your friends,',0],['dear mr. benhamou',1],['Your friends.',1]], mis:true,
+        say:'Mistake Detective! Written right, or a mistake?', how:'A greeting and a closing need capitals and a comma.'}],
+    your:[
+      {type:'match', pairs:[['November 26','the date'],['Dear Zeidy,','the greeting'],['Love,','the closing']],
+        say:'Match each line to its part of the letter.', how:'Hello is the greeting. Goodbye is the closing.'},
+      {type:'evidence', q:'Which line belongs in the body of the letter?', p:['Dear Mr. Benhamou,','May we hang our bird feeder by your window?','Your friends,','Naftali'], a:1, look:'the line that tells why he is writing',
+        say:'Tap the line that goes in the body.', how:'The body tells why you are writing.'},
+      {type:'tiles', w:['Thank you for the trip.','Your student,','Avi'], extra:['Dear Rabbi Feld,'],
+        say:'Build the end of Avi’s letter.', how:'Body first, then the closing, then the name.'},
+      {type:'cloze', t:'Dear Zeidy, Thank you for the gears. ___ Dovid', o:['Love,','Dear,','November 26'], a:'Love,',
+        say:'Pick the closing.', how:'The closing says goodbye, just before your name.'},
+      {type:'sort', q:'Which part of the letter is it?', bins:['Greeting','Body','Closing'], cards:[['Dear Chaim,',0],['We will fill it every week.',1],['Your friend,',2],['Dear Rabbi Feld,',0]],
+        say:'Greeting, body, or closing?', how:'Hello is the greeting. Goodbye is the closing. The middle is the body.'}] },
+
+  'WRIT.RES.L03.01':{ band:'B23', pic:'📖', today:'Find the answer in a book', why:'Writers get real facts from books, not guesses.',
+    ready:[{q:'The book says: “Squirrels hide nuts so they can eat in winter.” Why do squirrels hide nuts?', o:['so they can eat in winter','because nuts are round'], a:'so they can eat in winter'}],
+    bridge:'READ.COMP.L03.06', bridgeName:'Why and How',
+    watch:{ q:'Question: What do cardinals eat?', m:{type:'scene', e:'📖', t:'Chaim finds a book about birds. Which birds will come to the club’s feeder?'}, steps:[
+      {t:'Read the question. The key word is: cardinals.'},
+      {t:'Look for “cardinal” in the article. It is on page 2!'},
+      {t:'“A cardinal has a short, thick beak.” It has the key word, but it is not about eating.'},
+      {t:'“Cardinals love sunflower seeds.” That answers the question!'},
+      {t:'Hunt with me!', m:{type:'move', t:'Hand over your eyes: look, look, look! Point: found it!'}}], a:'Cardinals love sunflower seeds.' },
+    oops:{ q:'Dovid wants to know what cardinals eat.', wrong:'He guesses: “Cardinals eat worms.”', right:'He looks in the book: “Cardinals love sunflower seeds.”', why:'A guess is not a fact. Find it in the book.' },
+    ways:['worked example','movement','read the article','find the proof','sort it','match it','put it in order','fill the gap','Mistake Detective'], done:'You can find the answer in a book!',
+    board:{ one:'Read the question, find the key word, look for it in the book, check that it answers.', activity:'Read a question aloud. Boys say the key word, then hunt for it in a big book on the board.', mistakes:['Guessing instead of looking','Stopping at the first sentence with the key word','Picking the asking word (what, where) as the key word'] },
+    do:[
+      {type:'read', text:'W13.BIRD.01', say:'Read the article about birds at the feeder.', how:'Read every page. Tap a word to see what it means.'},
+      {type:'proof', text:'W13.BIRD.01', q:'What do cardinals love to eat? Find the sentence.', proof:'Cardinals love sunflower seeds', look:'the sentence about what cardinals eat',
+        say:'Find the answer in the article.', how:'Look for the key word: cardinals. Read page 2.'}],
+    your:[
+      {type:'sort', q:'Question: How does a chickadee eat?', bins:['Answers it','Mistake: does not answer'], cards:[['It takes one seed.',0],['It eats on a branch.',0],['Chickadees are small.',1],['Birds need water.',1]], mis:true,
+        say:'Does it answer the question, or not?', how:'It must tell how a chickadee eats.'},
+      {type:'proof', text:'W13.BIRD.01', q:'Where should you hang a feeder? Find the sentence.', proof:'Hang your feeder near a tree or a bush', look:'the sentence that tells where',
+        say:'Find where to hang the feeder.', how:'Look for the key word: feeder. Read page 3.'},
+      {type:'match', pairs:[['What do cardinals love?','sunflower seeds'],['Where can birds hide?','in a tree or a bush'],['What else do birds need?','water']],
+        say:'Match each question to its answer from the article.', how:'Think of what the article said. Look back if you need to.'},
+      {type:'order', steps:['Read my question','Find the key word','Look for it in the book','Check: does it answer?'],
+        say:'Put the finding steps in order.', how:'Question first. Then key word, look, and check.'},
+      {type:'cloze', t:'Question: What cracks a cardinal’s seeds? Answer: its short, thick ___.', o:['beak','tail','feet'], a:'beak',
+        say:'Pick the answer from the article.', how:'Look for the key word cardinal on page 2.'}] },
+
+  'WRIT.RES.L03.02':{ band:'B23', pic:'🗒️', today:'Take fact notes in a few key words', why:'Short notes help you remember facts and write them your own way.',
+    ready:[{q:'In POW, a good note is…', o:['a few words','a long sentence'], a:'a few words'}],
+    bridge:'WRIT.ESSAY.L03.01', bridgeName:'POW Power',
+    watch:{ q:'The article says: “A chickadee takes one seed and flies to a branch to eat it.”', m:{type:'scene', e:'🗒️', t:'Avi takes notes for the club’s page about birds.'}, steps:[
+      {t:'Read the sentence. My question: how do chickadees eat?'},
+      {t:'Find the key words: chickadee, one seed, branch.'},
+      {t:'Write only those: chickadee: one seed, eats on a branch.'},
+      {t:'Not this: copying the whole long sentence onto the card.'},
+      {t:'Make it short with me!', m:{type:'move', t:'Hands far apart: a long sentence! Squeeze them close: a short note!'}}], a:'chickadee: one seed, eats on a branch' },
+    oops:{ q:'Avi writes a note about cardinals.', wrong:'Cardinals love sunflower seeds. (the whole sentence, copied)', right:'cardinals: sunflower seeds', why:'A note is a few key words. Then you write it your own way.' },
+    ways:['worked example','movement','sort it','match it','build with tiles','tap the note','find the proof','fill the gap','Mistake Detective'], done:'You can take fact notes in a few key words!',
+    board:{ one:'A fact note is a few key words, never the whole sentence copied.', activity:'Read one sentence from a book. Boys squeeze their hands close and call out only the key words.', mistakes:['Copying the whole sentence','Keeping the little words and losing the fact','A note with no fact in it'] },
+    do:[
+      {type:'sort', q:'Avi’s note cards about birds.', bins:['Good note','Mistake: copied'], cards:[['cardinals: sunflower seeds',0],['snow on the ground',0],['Chickadees are small and quick.',1],['Birds need a safe place to eat.',1]], mis:true,
+        say:'Mistake Detective! Good note, or copied?', how:'A good note is a few key words. A whole sentence is copied.'},
+      {type:'match', pairs:[['Cardinals love sunflower seeds.','cardinals: sunflower seeds'],['Birds need water too, even in winter.','birds need water in winter'],['Keep your feeder clean and full.','feeder clean, full']],
+        say:'Match each sentence to its short note.', how:'Find the few key words from each sentence.'}],
+    your:[
+      {type:'tiles', w:['chickadee:','one seed,','eats on a branch'], extra:['A chickadee takes'],
+        say:'Build a short note about chickadees.', how:'Only the key words. No whole sentence.'},
+      {type:'evidence', q:'The article says: “Birds need a safe place to eat.” Which is the best note?', p:['Birds need a safe place to eat.','safe place to eat','birds','I like birds.'], a:1, look:'a few key words that keep the fact',
+        say:'Tap the best note.', how:'Keep the key words. Leave out the little words.'},
+      {type:'proof', text:'W13.BIRD.01', q:'Note: “bugs hard to find”. Find the sentence it came from.', proof:'bugs are hard to find', look:'the sentence about bugs in winter',
+        say:'Find the sentence this note came from.', how:'Look for the key word bugs, on page 1.'},
+      {type:'sort', q:'Note, or a sentence in my own words?', bins:['Note','My own sentence'], cards:[['feeder near a bush',0],['We hung our feeder close to a bush.',1],['cardinal: thick beak',0],['The cardinal cracked a seed with its beak.',1]],
+        say:'Is it a note, or a sentence?', how:'A note is a few words. A sentence is a whole thought.'},
+      {type:'cloze', t:'The article says: “Chickadees are small and quick.” Note: chickadees: small, ___', o:['quick','are','and'], a:'quick',
+        say:'Finish the note with a key word.', how:'Which word tells about chickadees?'}] },
+
+  'WRIT.PARA.L03.16':{ band:'B23', pic:'📚', today:'Tell what you think of a book, and prove it', why:'Your friends can find a great book because of you.',
+    ready:[{q:'Which one is an opinion?', o:['The story was exciting.','The story is about a sukkah.'], a:'The story was exciting.'}],
+    bridge:'WRIT.PARA.L03.01', bridgeName:'My Opinion',
+    watch:{ q:'Naftali read “The Noise in the Sukkah.” He tells the club what he thinks.', m:{type:'scene', e:'📚', t:'The club keeps a page of book reviews in the notebook.'}, steps:[
+      {t:'Name the book and the opinion: I liked “The Noise in the Sukkah.”'},
+      {t:'Give a reason: because it was funny.'},
+      {t:'Prove it with a detail from the story: Dovid laughed so loud that Ari woke up.'},
+      {t:'Tell who would like it: boys who like surprises.'},
+      {t:'Say it with me!', m:{type:'chant', lines:['What do I think?','Thumbs up or down!','Why do I think it?','The book shows how!']}}], a:'I liked it because it was funny. Dovid laughed so loud that Ari woke up.' },
+    oops:{ q:'Avi writes a book response.', wrong:'I liked it because it was good.', right:'I liked it because it was funny. Dovid laughed so loud that Ari woke up.', why:'“It was good” proves nothing. A detail from the story does.' },
+    ways:['worked example','chant','read the story','find the proof','sort it','match it','put it in order','fill the gap','tap the sentence','Mistake Detective'], done:'You can tell what you think of a book, and prove it!',
+    board:{ one:'A book response: my opinion, a reason, and a detail from the book that proves it.', activity:'Boys give a thumbs up or down for a story the class read, then each one names a detail that proves it.', mistakes:['A reason that proves nothing (“it was good”)','A detail that is not really in the book','Retelling the whole story with no opinion'] },
+    do:[
+      {type:'read', text:'C23.ST.01', say:'Read the story “The Noise in the Sukkah”.', how:'Read every page. Tap a word to see what it means.'},
+      {type:'sort', q:'Naftali’s book response.', bins:['Really in the story','Mistake: not in the story'], cards:[['Dovid clicked on his flashlight.',0],['The squirrel held a piece of challah.',0],['The squirrel ate a carrot.',1],['Dovid was sleeping in his bed.',1]], mis:true,
+        say:'Mistake Detective! Is it really in the story?', how:'A detail must really happen in the story. Think back, or look again.'}],
+    your:[
+      {type:'proof', text:'C23.ST.01', q:'Opinion: Dovid was brave. Find what Dovid DID that shows it.', proof:'He reached for his flashlight and clicked it on', look:'the brave thing Dovid did, even though he was scared',
+        say:'Find the proof in the story.', how:'Look on page 1. He was scared. What did he do next?'},
+      {type:'match', pairs:[['The story was funny.','Dovid laughed so loud that Ari woke up.'],['Dovid was brave.','He clicked on his flashlight.'],['The boys were smart.','They put the challah in a box.']],
+        say:'Match each opinion to its detail from the story.', how:'Which detail shows that opinion is true?'},
+      {type:'order', steps:['I liked “The Noise in the Sukkah.”','It was funny because of a surprise guest.','Dovid laughed so loud that Ari woke up.','Boys who like surprises will love it.'],
+        say:'Put the book response in order.', how:'Opinion, reason, detail, then who would like it.'},
+      {type:'cloze', t:'I liked “The Noise in the Sukkah” ___ a squirrel surprised everyone.', o:['because','but','the'], a:'because',
+        say:'Pick the word that gives the reason.', how:'Which word means “here is why”?'},
+      {type:'evidence', q:'Which is the best ending for a book response?', p:['The end.','Boys who like surprises will love this story.','Dovid has a brother.','It has a squirrel.'], a:1, look:'the sentence that tells who would like the book',
+        say:'Tap the best ending.', how:'A good ending tells who would like the book.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+
+  /* Unit W13.U26 = Grade 2, Unit 6 "Letters and Research". The real task (map: Gr 2 piece 11): a letter to a real person.
+     No "caps" check: a letter's closing and name lines have no end mark, so the app would block a correct letter. */
+  var PIECE11 = { id: 'W13.G2.P11', title: 'A Letter to Someone Real', grade: 2, kind: 'letter',
+    prompt: 'Write a real letter to a real person: Zeidy or Bubby, your rebbe, Mr. Benhamou, or someone in your family. Thank them for something, or ask them something. Use all five parts: the date, the greeting, the body, the closing and your name. Then check it with CUPS and read it out loud.',
+    strategy: { name: 'Five parts + CUPS', steps: [['1', 'Date'], ['2', 'Greeting: Dear …,'], ['3', 'Body: why I am writing'], ['4', 'Closing: Love, / Your student,'], ['5', 'My name']],
+      more: [['C', 'Capitals'], ['U', 'Usage'], ['P', 'Punctuation'], ['S', 'Spelling']] },
+    plan: [ { k: 'date', label: 'Date', hint: 'November 26' },
+            { k: 'greet', label: 'Greeting', hint: 'Dear Zeidy,' },
+            { k: 'why', label: 'Body · why I am writing', hint: 'Thank you for…' },
+            { k: 'more', label: 'Body · one more detail', hint: 'I liked it when…' },
+            { k: 'close', label: 'Closing and my name', hint: 'Love, Dovid' } ],
+    starters: ['Dear', 'Thank you for', 'I liked it when', 'May we', 'Love,', 'Your student,', 'Your talmid,', 'Your friend,'],
+    min: 30,
+    checks: [
+      { t: 'My body has at least 2 sentences.', sentences: 3 },
+      { t: 'I started with a greeting.', any: ['dear'] },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I ended with a closing and a comma, then my name.', any: ['love,', 'friend,', 'friends,', 'student,', 'talmid,', 'talmidim,', 'son,', 'grandson,', 'nephew,', 'cousin,', 'brother,', 'neighbor,', 'thanks,', 'from,', 'wishes,', 'warmly,', 'regards,', 'yours,', 'truly,', 'sincerely,', 'respectfully,'] },
+      { t: 'Every sentence in my body starts with a capital and ends with . ! or ?', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['All five parts of a letter', 'A clear reason for writing, with a detail', 'Commas after the greeting and the closing', 'CUPS: capitals, usage, end marks, spelling'],
+    pics: ['💌', '📮', '🐦', '🏪'] };
+
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U26', title: 'Letters and Research', c: 'WRIT', grade: 2,
+    skills: ['WRIT.PARA.L03.15', 'WRIT.RES.L03.01', 'WRIT.RES.L03.02', 'WRIT.PARA.L03.16'],
+    review: ['LANG.MECH.L03.03', 'WRIT.ESSAY.L03.01', 'WRIT.ESSAY.L03.06'], n: 10, task: PIECE11,
+    items: [
+      { skill: 'WRIT.PARA.L03.15', type: 'evidence', q: 'Which greeting is written right?', p: ['Dear Chaim,', 'dear Chaim,', 'Dear Chaim.', 'Dear, Chaim'], a: 0, look: 'a capital on Dear and the name, and a comma after the name', say: 'Find the greeting written right.', how: 'Check the capitals and the comma.' },
+      { skill: 'WRIT.PARA.L03.15', type: 'cloze', t: 'Dear Mr. Benhamou, Thank you for letting us hang our feeder. ___ Chaim', o: ['Your friend,', 'Dear,', 'Thank you for the feeder.'], a: 'Your friend,', say: 'Pick the closing.', how: 'The closing says goodbye, just before the name.' },
+      { skill: 'WRIT.RES.L03.01', type: 'evidence', q: 'Question: Why does a cardinal need a thick beak? Which sentence answers it?', p: ['Cardinals love sunflower seeds.', 'It cracks the hard shell like a nutcracker.', 'Blue jays are loud birds with blue feathers.', 'Birds need water too, even in winter.'], a: 1, look: 'the sentence that tells what the beak does', say: 'Find the sentence that answers the question.', how: 'Find the key word, cardinal. Does that sentence answer why?' },
+      { skill: 'WRIT.RES.L03.01', type: 'cloze', t: 'Avi wants to know how deer find food in winter. The key word to look for is ___.', o: ['deer', 'how', 'wants'], a: 'deer', say: 'Pick the key word.', how: 'What does Avi want to know about?' },
+      { skill: 'WRIT.RES.L03.02', type: 'evidence', q: 'The article says: “A small dish of fresh water helps them.” Which is the best note?', p: ['water', 'I have a dish.', 'small dish, fresh water', 'A small dish of fresh water helps them.'], a: 2, look: 'a few key words that keep the facts', say: 'Find the best note.', how: 'A note is a few key words, not the whole sentence.' },
+      { skill: 'WRIT.RES.L03.02', type: 'cloze', t: 'The article says: “When a hawk is near, they call out loudly to warn the other birds.” Note: blue jays: warn birds of a ___', o: ['hawk', 'near', 'they'], a: 'hawk', say: 'Finish the note.', how: 'Which key word from the sentence is missing?' },
+      { skill: 'WRIT.PARA.L03.16', type: 'evidence', q: 'Which sentence gives a detail from “The Noise in the Sukkah”?', p: ['I liked the story a lot.', 'Stories are fun.', 'Everyone should read many good stories.', 'The stars peeked through the schach.'], a: 3, look: 'something that really happens in the story', say: 'Find the detail from the story.', how: 'An opinion tells what you think. A detail tells what happens.' },
+      { skill: 'WRIT.PARA.L03.16', type: 'cloze', t: 'I think the story was funny ___ a squirrel took the challah.', o: ['because', 'although', 'so'], a: 'because', say: 'Pick the word that gives the reason.', how: 'Which word means “here is why”?' }
+    ] });
+})();
+</script>

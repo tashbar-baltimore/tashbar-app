@@ -1,0 +1,898 @@
+<script>
+/* CoreDataW13H6.html: Core Growth job W13 (helper piece: Grade 3, Units 2-3), lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md).
+   Keep this file under 150 KB. No double slash in this file (HtmlService rule).
+   This part: Grade 3 (L04), Unit 2 "Real Stories" (docs/core-growth/W13-map.md, W.3.3): the story corner of The Shabbos Street News.
+   Avi Benhamou tells his Saba's story: when Saba was nine, his family left Morocco on a big ship, the week before Pesach, and Saba kept
+   his little Chumash dry through a storm. Narrative writing with the SRSD strategy POW + WWW:
+   P = Pick my idea, O = Organize my notes (the W-W-W questions: Who? When? Where? What does he want? What happens? How does it end?
+   How does he feel?), W = Write and say more. Then the story moves one at a time: set the scene, talking characters, show the feeling,
+   time words, wrap the story.
+   Cast: the Shabbos Street Club (docs/core-growth/F-map.md section 8, C23-map.md section 5): Avi Benhamou and his Saba, Naftali Rosen and
+   his Zeidy (a watchmaker), Chaim Weiss, Dovid Katz, Shimon Abergel, Rabbi Feld, Mr. Benhamou (the corner grocery), Mr. Klein (mail).
+   In engine lessons the FIRST choice in o is the right one (the engine shuffles). Show me checks are cold: each gives a new short story
+   line and asks about it. The teacher board (board.key, never shown to a boy) has the Show me answers. */
+(function () {
+  var LESSONS = {
+
+  'WRIT.ESSAY.L04.01':{name:'POW + WWW',
+  teach:[
+    {how:'POW is how a writer gets ready. P: Pick my idea. O: Organize my notes. W: Write and say more.', q:'In POW, what does the O stand for?', o:['Organize my notes','Only one sentence','Open the book']},
+    {how:'For a story, you organize your notes with the W-W-W questions: Who? When? Where? What does he want? What happens? How does it end? How does he feel?', q:'Avi’s note says “on a big ship”. Which W-W-W question does it answer?', o:['Where?','Who?','How does he feel?']},
+    {how:'A note is a few words, not a whole sentence. You will turn notes into sentences when you write.', q:'Which is a good note for “When?”', o:['the week before Pesach','Saba told me that it was a long, long time ago and…','a big ship']}
+  ],
+  practice:[
+    {t:'order', q:'Put the steps of POW in order.', tiles:['P: Pick my idea','O: Organize my notes','W: Write and say more'], h:'First you choose. Then you plan. Then you write.'},
+    {t:'pairs', q:'Match each W-W-W question to Avi’s note.', pairs:[['Who?','Saba, age nine'],['When?','the week before Pesach'],['Where?','a big ship from Morocco'],['What does he want?','to keep his Chumash dry']],
+      h:'Read the question. Which note answers it?'},
+    {t:'sort', q:'Mistake Detective. A good note, or a mistake?', bins:[{id:'G',label:'Good note'},{id:'M',label:'Mistake'}],
+      items:[{label:'Saba, age nine',bin:'G'},{label:'a storm at night',bin:'G'},{label:'Saba told me a very long story about when he was a boy on a ship.',bin:'M'},{label:'my bike is blue',bin:'M'}],
+      h:'A note is a few words, and it is about this story.'},
+    {t:'spotall', q:'Dovid’s notes: “Dovid, Chanukah night, the shul, wants to light the menorah.” Tap every question his notes answer.', cells:[{label:'Who?',ok:true},{label:'When?',ok:true},{label:'Where?',ok:true},{label:'What does he want?',ok:true},{label:'How does it end?',ok:false},{label:'How does he feel?',ok:false}],
+      h:'Check each part of his notes. Did he say how it ends? How he feels?'},
+    {t:'order', q:'Put Chaim’s notes in W-W-W order.', tiles:['Chaim, Sunday, the shul library','wants a book about trains','the lights go out','he finds a flashlight and reads'], h:'Who, when and where first. Then what he wants. Then what happens. The ending comes last.'},
+    {t:'sort', q:'Which part of the plan is each note?', bins:[{id:'S',label:'Who, when, where'},{id:'E',label:'What happens'}],
+      items:[{label:'Chaim, Sunday',bin:'S'},{label:'the shul library',bin:'S'},{label:'the lights go out',bin:'E'},{label:'he finds a flashlight',bin:'E'}],
+      h:'Does the note tell who, when or where? Or something that happens?'}
+  ],
+  check:[
+    {pic:'🕯️', q:'Chaim’s note says: “Erev Shabbos, just before candle lighting.” Which W-W-W question does it answer?', o:['When?','Where?','What happens?'], h:'Does the note tell a time, a place, or an event?'},
+    {pic:'🐦', q:'Naftali plans a story about Zeidy’s cuckoo clock. Which note answers “What does he want?”', o:['to make the bird pop out again','in Zeidy’s workshop on Sunday','Naftali and his Zeidy'], h:'What is Naftali hoping for?'},
+    {pic:'⛄', q:'Shimon’s notes: “Shimon, the first snow, the park by the river, wants to build a snow fort, the wall falls down.” Which of these questions has NO note yet?', o:['How does it end?','Where?','What does he want?'], h:'Check each W-W-W question. Which one is still empty?'}
+  ],
+  re:[
+    {how:'A new way: W-W-W notes are like packing for a trip. One thing for each question goes in the bag.', q:'W-W-W notes are…', o:['a few words for each question','the whole story','only the title']},
+    {how:'A simpler step: just remember POW. Pick, Organize, Write.', q:'What comes first in POW?', o:['Pick my idea','Write and say more','Organize my notes']},
+    {how:'The skill underneath: in Grade 2 you planned with POW (POW Power). Now O means the W-W-W questions.', q:'For a story, O means…', o:['ask the W-W-W questions','draw a picture','read a book']}
+  ]},
+
+  'WRIT.PARA.L04.05':{name:'Set the Scene',
+  teach:[
+    {how:'A story starts by setting the scene: who the story is about, where he is, and the problem.', q:'Which first line sets the scene?', o:['Dovid stood in the shul library and looked up at a book he could not reach.','This is a story about something that happened to me one time.','One day a thing happened, and it was a very big thing.']},
+    {how:'The problem is what goes wrong, or what the character needs. Without a problem, there is no story.', q:'Opening: “Avi ran to the bus stop. The bus was already pulling away.” What is the problem?', o:['He missed the bus.','He likes buses.','He is at the bus stop.']},
+    {how:'Do not start with “This story is about…”. Jump right in with the character.', q:'Which opening is a mistake?', o:['This story is about my trip.','Naftali held the broken clock in both hands.','Rain poured onto the sukkah roof.']}
+  ],
+  practice:[
+    {t:'sort', q:'Character, place, or problem?', bins:[{id:'C',label:'Character'},{id:'P',label:'Place'},{id:'R',label:'Problem'}],
+      items:[{label:'Shimon',bin:'C'},{label:'the corner grocery',bin:'P'},{label:'the milk bottle cracked',bin:'R'},{label:'Mr. Klein',bin:'C'},{label:'the clubhouse',bin:'P'},{label:'the key is lost',bin:'R'}],
+      h:'Is it a person, a place, or something that went wrong?'},
+    {t:'pairs', q:'Match each opening to its problem.', pairs:[['Chaim opened his lunch bag. It was empty.','no lunch'],['The sukkah wall leaned. The wind blew harder.','the wall may fall'],['Dovid reached for the menorah. The matches were gone.','no way to light it']],
+      h:'What went wrong in each opening?'},
+    {t:'sort', q:'Mistake Detective. A strong opening, or a weak one?', bins:[{id:'S',label:'Strong opening'},{id:'W',label:'Weak opening'}],
+      items:[{label:'Naftali knelt by the clock. Its hands had stopped at three.',bin:'S'},{label:'This story is about a clock.',bin:'W'},{label:'One day something happened.',bin:'W'},{label:'Avi stared at the map. Half of it was torn away.',bin:'S'}],
+      h:'A strong opening shows who, where and the problem.'},
+    {t:'spotall', q:'“Chaim sat in the shul library on a rainy Sunday, and the lights went out.” Tap every part of the scene.', cells:[{label:'Chaim',ok:true},{label:'the shul library',ok:true},{label:'the lights went out',ok:true},{label:'books are fun',ok:false},{label:'the end',ok:false}],
+      h:'Find who, where, and the problem.'},
+    {t:'order', q:'Build Dovid’s opening sentence.', tiles:['Dovid stood','in the shul library,','but the book was too high.'], h:'Who, then where, then the problem.'},
+    {t:'pairs', q:'Match each part of a scene to its question.', pairs:[['the character','Who is it about?'],['the place','Where is he?'],['the problem','What went wrong?']],
+      h:'Each part answers one question.'}
+  ],
+  check:[
+    {pic:'🍰', q:'Opening: “Yitzy carried the Shabbos cake into the dining room. The plate began to slip from his hands.” What is the problem?', o:['The plate is slipping.','He is in the dining room.','Yitzy is carrying a cake.'], h:'What went wrong?'},
+    {pic:'⚓', q:'Which opening sets the scene best?', o:['Yaakov stood on the dock. His boat was drifting away!','This is a story about a boy and a boat that I want to tell you.','One day something happened, and it was really very, very big.'], h:'Which one shows who, where and a problem?'},
+    {pic:'❄️', q:'Opening: “The snow came up to Eli’s knees. The shul was at the top of the hill, and the path was gone.” Where is Eli?', o:['outside in deep snow, on the way to shul','inside the warm shul, by the heater','at home, asleep in his warm bed'], h:'Read the clues about the place.'}
+  ],
+  re:[
+    {how:'A new way: setting the scene is like turning on the lights in a play. The reader sees who is there, where, and what is wrong.', q:'Setting the scene shows…', o:['who, where, and the problem','only the ending','the title']},
+    {how:'A simpler step: ask, “Who? Where? What went wrong?”', q:'“The clock stopped.” This is the…', o:['problem','place','character']},
+    {how:'The skill underneath: a hook grabs the reader (Hook the Reader). A story opening can grab him too.', q:'A strong story opening…', o:['jumps right in','says “This story is about…”','starts with “The end.”']}
+  ]},
+
+  'WRIT.PARA.L04.06':{name:'Talking Characters',
+  teach:[
+    {how:'Quotation marks hug the exact words a character says: “Let’s go!” The words outside the marks tell who is talking.', q:'Which sentence has the marks in the right place?', o:['“Look at the map,” said Avi.','“Look at the map, said Avi.”','Look at the “map,” said Avi.']},
+    {how:'The comma, the ! or the ? goes INSIDE the closing mark, before “said” or “asked”.', q:'Which one is right?', o:['“Is it ready?” asked Dovid.','“Is it ready”? asked Dovid.','“Is it ready” asked Dovid?']},
+    {how:'Only words someone really says out loud get quotation marks. “Avi said that he was hungry” has no marks: those are not his exact words.', q:'Which sentence needs quotation marks?', o:['Avi said, I am hungry.','Avi said that he was hungry.','Avi was hungry after cheder.']}
+  ],
+  practice:[
+    {t:'sort', q:'Mistake Detective. Written right, or a mistake?', bins:[{id:'R',label:'Right'},{id:'M',label:'Mistake'}],
+      items:[{label:'“Come here,” said Zeidy.',bin:'R'},{label:'“Come here, said Zeidy.”',bin:'M'},{label:'“Where is it?” asked Chaim.',bin:'R'},{label:'“Where is it” asked Chaim?',bin:'M'}],
+      h:'Marks hug only the spoken words. The comma or ? goes inside.'},
+    {t:'pairs', q:'Match each mark to its job.', pairs:[['“ and ”','go around the exact words'],['the ? inside the marks','shows a question was asked'],['said Avi or asked Dovid','tells who is talking']],
+      h:'Think of what each one does.'},
+    {t:'order', q:'Build Avi’s talking sentence.', tiles:['“We found','the other half!”','shouted Avi.'], h:'The spoken words first, inside the marks. Then who said it.'},
+    {t:'spotall', q:'Zeidy smiled and said, “Every gear has a job.” Tap every word Zeidy said out loud.', cells:[{label:'Every',ok:true},{label:'gear',ok:true},{label:'has',ok:true},{label:'job',ok:true},{label:'smiled',ok:false},{label:'said',ok:false}],
+      h:'Look inside the quotation marks.'},
+    {t:'sort', q:'Exact words, or not?', bins:[{id:'Q',label:'Needs quotation marks'},{id:'N',label:'No quotation marks'}],
+      items:[{label:'Avi said, We should go now.',bin:'Q'},{label:'Avi said that they should go.',bin:'N'},{label:'Chaim asked, Where is the key?',bin:'Q'},{label:'Chaim asked where the key was.',bin:'N'}],
+      h:'Are these the exact words he said out loud?'},
+    {t:'order', q:'Build Dovid’s question.', tiles:['“Can you','help me?”','asked Dovid.'], h:'The spoken words first, with the ? inside the marks. Then who asked.'}
+  ],
+  check:[
+    {pic:'✉️', q:'Which sentence is written the right way?', o:['“The mail is late,” said Mr. Klein.','“The mail is late, said Mr. Klein.”','The mail is “late,” said Mr. Klein.'], h:'Marks hug only the words he said. The comma goes inside.'},
+    {pic:'🚢', q:'Saba said, “Hold the rope tight,” and he grabbed the rail. Which words did Saba say out loud?', o:['Hold the rope tight','and he grabbed the rail','Saba said hold the rope'], h:'Look inside the quotation marks.'},
+    {pic:'📖', q:'Which sentence needs quotation marks?', o:['Rabbi Feld said, Open your Chumash to the new perek.','Rabbi Feld told the boys to open their Chumash.','Rabbi Feld opened his Chumash to the new perek.'], h:'Which one has the exact words he said out loud?'}
+  ],
+  re:[
+    {how:'A new way: quotation marks are like two hands holding the words someone said.', q:'Quotation marks go around…', o:['the exact words said','who said it','the whole story']},
+    {how:'A simpler step: find the words the person said out loud. Put the marks around just those words.', q:'“Hi,” said Dovid. Which word did Dovid say?', o:['Hi','said','Dovid']},
+    {how:'The skill underneath: every sentence ends with an end mark. In talking, the end mark goes inside the closing mark.', q:'In “Is it ready?” asked Dovid, the ? is…', o:['inside the marks','after Dovid','left out']}
+  ]},
+
+  'WRIT.PARA.L04.07':{name:'Show the Feeling',
+  teach:[
+    {how:'Telling names the feeling: “He was scared.” Showing lets the reader see it: “His knees shook.”', q:'Which line SHOWS the feeling?', o:['Dovid’s hands shook on the ladder.','Dovid was scared on the ladder.','Dovid felt bad on the ladder.']},
+    {how:'A thought can show a feeling too: Naftali thought, “What if I drop it?”', q:'Naftali thought, “What if I drop it?” What feeling does it show?', o:['worry','joy','anger']},
+    {how:'Adding “very” still tells. “He was very, very happy” only names it. Show what he did.', q:'Which line SHOWS that Avi is happy?', o:['Avi jumped up and hugged Saba.','Avi was very, very happy.','Avi was so happy and glad.']}
+  ],
+  practice:[
+    {t:'sort', q:'Does it tell the feeling, or show it?', bins:[{id:'T',label:'Tells'},{id:'S',label:'Shows'}],
+      items:[{label:'Chaim was excited.',bin:'T'},{label:'Chaim bounced on his toes.',bin:'S'},{label:'Shimon was sad.',bin:'T'},{label:'Shimon looked at the floor and sighed.',bin:'S'}],
+      h:'Does it name the feeling, or let you see it?'},
+    {t:'pairs', q:'Match each feeling to the line that shows it.', pairs:[['proud','He stood up tall and grinned.'],['nervous','He bit his lip and checked the clock again.'],['tired','His eyes kept closing over his Chumash.']],
+      h:'Picture each line. What feeling do you see?'},
+    {t:'sort', q:'Mistake Detective. Shows the feeling, or a mistake?', bins:[{id:'S',label:'Shows it'},{id:'M',label:'Mistake: only tells'}],
+      items:[{label:'His heart pounded as the ship rocked.',bin:'S'},{label:'He was very, very scared.',bin:'M'},{label:'He grabbed the rail with both hands.',bin:'S'},{label:'He felt really scared.',bin:'M'}],
+      h:'“Very” and “really” still only tell.'},
+    {t:'spotall', q:'Tap every line that SHOWS Dovid is excited.', cells:[{label:'Dovid ran to the door.',ok:true},{label:'He could not stop smiling.',ok:true},{label:'His words came out fast.',ok:true},{label:'Dovid was excited.',ok:false},{label:'He sat down.',ok:false}],
+      h:'Which lines let you see the feeling?'},
+    {t:'order', q:'Build a sentence that shows the feeling.', tiles:['Saba’s heart','pounded','as the ship rocked.'], h:'Who, does what, and when.'},
+    {t:'sort', q:'Is it an action or a thought?', bins:[{id:'A',label:'Action'},{id:'T',label:'Thought'}],
+      items:[{label:'He gripped the Chumash tight.',bin:'A'},{label:'He thought, “Please stay dry.”',bin:'T'},{label:'He wiped his eyes.',bin:'A'},{label:'He thought, “We are almost there!”',bin:'T'}],
+      h:'Did he do it, or think it?'}
+  ],
+  check:[
+    {pic:'😬', q:'Which line SHOWS that Eli is nervous before he leads bentching?', o:['Eli’s voice shook, and he held the bentcher tight.','Eli was very, very nervous before he started to lead it.','Eli felt nervous and also a bit scared at the table.'], h:'Which line lets you SEE the feeling?'},
+    {pic:'🚪', q:'“Moshe kept looking at the door and tapping his foot.” What feeling does it show?', o:['impatient','sleepy','proud'], h:'Picture Moshe. Why does he keep looking at the door?'},
+    {pic:'📝', q:'Ari wrote: “I was happy.” Which change SHOWS it?', o:['I laughed so hard my cheeks hurt.','I felt really, really glad all day long.','I was the happiest boy in the whole shul.'], h:'Which one lets you see it, not just name it?'}
+  ],
+  re:[
+    {how:'A new way: be a camera. A camera cannot see “scared”. It can see shaking hands.', q:'A camera can see…', o:['shaking hands','the word scared','a feeling name']},
+    {how:'A simpler step: ask, “What would his face or hands do?”', q:'A proud boy might…', o:['stand up tall','yawn','frown']},
+    {how:'The skill underneath: exact details help the reader see (Details That Prove).', q:'Showing a feeling uses…', o:['actions and thoughts','only the word “very”','a title']}
+  ]},
+
+  'WRIT.PARA.L04.08':{name:'Then, Later, Finally',
+  teach:[
+    {how:'Time words tell the reader when each thing happens: First, Next, Then, After that, Finally.', q:'Which time word fits the LAST event?', o:['Finally','First','Next']},
+    {how:'Some time words tell how much time passed: “Later that day”, “The next morning”, “Two hours later”.', q:'The story jumps one day ahead. Which words fit? “___, the snow had melted.”', o:['The next morning','Right at that moment','First of all']},
+    {how:'Do not start every sentence with “Then”. Mix your time words so the reader stays awake.', q:'Which story uses time words best?', o:['First… Next… After that… Finally…','Then… Then… Then… Then…','Finally… First… Next… Then…']}
+  ],
+  practice:[
+    {t:'order', q:'Put Saba’s trip in order.', tiles:['First, the family packed one small trunk.','Next, they climbed onto the big ship.','That night, a storm rocked the ship.','Finally, they saw the lights of the shore.'], h:'Follow the time words.'},
+    {t:'sort', q:'Beginning, middle, or end?', bins:[{id:'B',label:'Beginning'},{id:'M',label:'Middle'},{id:'E',label:'End'}],
+      items:[{label:'First',bin:'B'},{label:'At the start',bin:'B'},{label:'Next',bin:'M'},{label:'After that',bin:'M'},{label:'Finally',bin:'E'},{label:'In the end',bin:'E'}],
+      h:'When in the story would you use it?'},
+    {t:'sort', q:'Mistake Detective. Does the time word fit?', bins:[{id:'R',label:'Fits'},{id:'M',label:'Mistake'}],
+      items:[{label:'First, we woke up early.',bin:'R'},{label:'Finally, we woke up early. Then we ate.',bin:'M'},{label:'After the storm, the sky cleared.',bin:'R'},{label:'Then. Then. Then. Then.',bin:'M'}],
+      h:'A time word must match when it happened.'},
+    {t:'pairs', q:'Match each time word to the time it shows.', pairs:[['The next morning','a day later'],['Right then','at that moment'],['Long ago','many years before']],
+      h:'How much time passed?'},
+    {t:'spotall', q:'“After Havdalah, the club met. Later, Avi brought the map. At last, they found the X.” Tap every time word.', cells:[{label:'After Havdalah',ok:true},{label:'Later',ok:true},{label:'At last',ok:true},{label:'the club',ok:false},{label:'the map',ok:false}],
+      h:'Which words tell when?'},
+    {t:'order', q:'Build a sentence with a time word.', tiles:['After Havdalah,','the club','opened the box.'], h:'The time word goes first, with a comma.'}
+  ],
+  check:[
+    {t:'order', pic:'🌿', q:'Put Yosef’s Sukkos story in order.', tiles:['On Motzei Yom Kippur, Yosef carried boards to the yard.','The next day, he and his Abba built the walls.','After that, they laid the schach on top.','Four days later, on Sukkos night, they ate their first meal in it.'], h:'Read the time words AND think: what must come before what?'},
+    {pic:'🌱', q:'Tzvi planted a bean seed on Sunday. A week later, it sprouted. Which tells it in order?', o:['Tzvi planted a bean seed. One week later, a green sprout popped up.','A green sprout popped up. The next morning, Tzvi planted the seed.','Finally, Tzvi planted a seed. First, a green sprout popped up.'], h:'What had to happen first: the seed or the sprout?'},
+    {pic:'🐱', q:'A story ends: “___, the lost kitten was safe in its box.” Which time words show it is the end?', o:['At last','At the very start','Next']
+      , h:'Which words mean the end has come?'}
+  ],
+  re:[
+    {how:'A new way: time words are like the stops on a bus line. Each one tells the reader where he is in the trip.', q:'Time words tell…', o:['when things happen','who is talking','how he feels']},
+    {how:'A simpler step: use First, Next, Then, Finally.', q:'Which word starts a story?', o:['First','Finally','After that']},
+    {how:'The skill underneath: in Grade 1 you learned Time Words. Now you add words that jump in time, like “The next morning”.', q:'“Two hours later” tells…', o:['how much time passed','who it is','where it is']}
+  ]},
+
+  'WRIT.PARA.L04.09':{name:'Wrap the Story',
+  teach:[
+    {how:'A good ending solves the problem and shows how the character feels.', q:'Avi lost Saba’s map. Which ending wraps up the story?', o:['Avi put the map in Saba’s hands, and Saba laughed.','The end. That was my whole story about the map.','Then Avi lost his hat, and he could not find it.']},
+    {how:'Do not end with “The end” or “It was all a dream”. The reader feels cheated.', q:'Which ending is a mistake?', o:['Then I woke up. It was all a dream.','Dovid smiled. The book was safe on the shelf.','Naftali hung the clock back up, and it ticked.']},
+    {how:'An ending can also tell what the character learned.', q:'Which ending tells what Chaim learned?', o:['From then on, Chaim asked for help with high shelves.','Chaim went home and ate supper with his family.','The library closed at six o’clock that night.']}
+  ],
+  practice:[
+    {t:'sort', q:'Mistake Detective. A strong ending, or a weak one?', bins:[{id:'S',label:'Strong ending'},{id:'W',label:'Weak ending'}],
+      items:[{label:'The clock ticked again, and Zeidy hugged Naftali.',bin:'S'},{label:'The end.',bin:'W'},{label:'Then I woke up. It was a dream.',bin:'W'},{label:'Saba still keeps that dry Chumash on his shelf.',bin:'S'}],
+      h:'A strong ending solves the problem. A weak one stops or tricks the reader.'},
+    {t:'pairs', q:'Match each weak ending to what is wrong.', pairs:[['The end.','It just stops.'],['It was all a dream.','It tricks the reader.'],['Then a storm came.','It starts a new problem.']],
+      h:'Does it stop, trick, or start something new?'},
+    {t:'spotall', q:'Problem: Dovid could not reach the book. Tap every ending that solves it.', cells:[{label:'Chaim held the ladder, and Dovid climbed up.',ok:true},{label:'Rabbi Feld handed him the book with a smile.',ok:true},{label:'The end.',ok:false},{label:'Then Dovid lost his kippah.',ok:false}],
+      h:'Which endings fix the problem?'},
+    {t:'order', q:'Build Saba’s last sentence.', tiles:['To this day,','Saba keeps that Chumash','on his shelf.'], h:'When, then who, then the rest.'},
+    {t:'pairs', q:'Match each problem to its ending.', pairs:[['The sukkah wall leaned.','Abba tied it tight, and it stood all Yom Tov.'],['The menorah matches were gone.','Mr. Benhamou brought a new box just in time.'],['Shimon lost the list.','He found it in his coat and ran to the store.']],
+      h:'Which ending solves that problem?'},
+    {t:'sort', q:'Does the ending solve the problem, or tell what he learned?', bins:[{id:'S',label:'Solves it'},{id:'L',label:'What he learned'}],
+      items:[{label:'The bird popped out: cuckoo!',bin:'S'},{label:'Naftali learned to be patient with tiny gears.',bin:'L'},{label:'The ship reached the shore safely.',bin:'S'},{label:'Saba learned that a storm does not last forever.',bin:'L'}],
+      h:'Is it what happened, or a lesson?'}
+  ],
+  check:[
+    {pic:'⚽', q:'Story: Yossi’s ball rolled under the bench in the shul yard. Which ending wraps it up?', o:['Zeidy reached under with his cane, and Yossi hugged the ball.','The end. That was my story about the ball and the bench.','Then a big dog ran down the street and barked loudly.'], h:'Which ending solves the problem?'},
+    {pic:'🎒', q:'Moshe left his Chumash at home twice this week. Which ending tells what he learned?', o:['From that day on, Moshe checked his bag before cheder.','The next day, Moshe left his lunch on the bus too.','Moshe’s bag was red, with a zipper on the front.'], h:'Which one tells a lesson for next time?'},
+    {pic:'🧤', q:'Eli’s story about his lost glove ends: “Then Eli’s little brother spilled juice all over the floor.” What is wrong with this ending?', o:['It starts a new problem.','It shows how Eli feels.','Nothing, it wraps up well.'], h:'Does it solve the glove problem, or start something new?'}
+  ],
+  re:[
+    {how:'A new way: an ending is like tying your shoe. You pull both ends together so nothing is left loose.', q:'A strong ending…', o:['solves the problem','starts a new problem','says “The end.”']},
+    {how:'A simpler step: ask, “Is the problem fixed? How does he feel?”', q:'After the ending, the problem is…', o:['solved','bigger','new']},
+    {how:'The skill underneath: a strong close says the big idea a new way (Strong Close). A story ending also leaves a final feeling.', q:'A story ending can show…', o:['how the character feels','a new hard word','the title']}
+  ]}
+  };
+
+  var TEACH = {
+  'WRIT.ESSAY.L04.01':{hook:'How do real writers get a story ready?', big:'Plan a story with POW: Pick my idea, Organize my notes with W-W-W, Write and say more.',
+    intro:['P: pick an idea you know well.','O: organize notes with the W-W-W questions: Who? When? Where? What does he want? What happens? How does it end? How does he feel?','A note is a few words, not a sentence.','W: write, and say more than your notes.'],
+    ex:[{q:'Saba’s trip from Morocco',steps:['Who? Saba, age nine. When? Before Pesach. Where? A big ship.','What does he want? To keep his Chumash dry.','What happens? A storm splashes the deck.','How does it end? They land, and the Chumash is dry. How does he feel? Proud.'],a:'A full W-W-W plan.'},
+        {q:'A note for “When?”',steps:['Not: “It was a long time ago when Saba…”','Yes: “before Pesach”.'],a:'A few words.'}],
+    oops:{q:'Note for “Where?”',wrong:'Saba told me a very long story about the ship and the sea and…',right:'a big ship',why:'A note is a few words. Save the sentences for writing.'},
+    idea:['W-W-W notes are a packing list: one thing for each question.'],
+    try:{q:'“Motzei Shabbos” answers…',o:['When?','Where?'],a:'When?',steps:['Is it a time or a place?']}},
+  'WRIT.PARA.L04.05':{hook:'How do you pull a reader into a story?', big:'Set the scene in the first lines: who, where, and the problem.',
+    intro:['Start with the character.','Show where he is.','Show the problem: what went wrong, or what he needs.','Never start with “This story is about…”.'],
+    ex:[{q:'Dovid in the library',steps:['Who: Dovid.','Where: the shul library.','Problem: the book is too high.'],a:'Dovid stood in the shul library, but the book was too high.'},
+        {q:'Avi at the bus stop',steps:['Avi ran to the bus stop.','The bus was already pulling away.'],a:'The problem is clear in two lines.'}],
+    oops:{q:'Opening a story about a clock.',wrong:'This story is about a clock.',right:'Naftali knelt by the clock. Its hands had stopped at three.',why:'Jump right in with the character, the place and the problem.'},
+    idea:['Setting the scene is turning on the lights in a play.'],
+    try:{q:'Which shows a problem?',o:['The key was gone.','Avi is eight.'],a:'The key was gone.',steps:['What went wrong?']}},
+  'WRIT.PARA.L04.06':{hook:'How do you let your characters talk?', big:'Put quotation marks around the exact words a character says, and tell who is talking.',
+    intro:['Find the exact words said out loud.','Put “ before them and ” after them.','The comma, ! or ? goes inside the closing mark.','Tell who is talking: said Avi, asked Dovid.'],
+    ex:[{q:'Avi: Look at the map',steps:['Exact words: Look at the map','Marks around them, comma inside.','Who: said Avi.'],a:'“Look at the map,” said Avi.'},
+        {q:'Dovid asks: Is it ready',steps:['A question: the ? goes inside.'],a:'“Is it ready?” asked Dovid.'}],
+    oops:{q:'Zeidy: Come here',wrong:'“Come here, said Zeidy.”',right:'“Come here,” said Zeidy.',why:'The marks hug only the words Zeidy said.'},
+    idea:['Quotation marks are two hands holding the spoken words.'],
+    try:{q:'Which is right?',o:['“Shh,” said Chaim.','“Shh, said Chaim.”'],a:'“Shh,” said Chaim.',steps:['What did Chaim say out loud?']}},
+  'WRIT.PARA.L04.07':{hook:'How do you make a reader feel what your character feels?', big:'Show the feeling with what the character does and thinks. Do not just name it.',
+    intro:['Telling names it: “He was scared.”','Showing lets you see it: “His knees shook.”','A thought shows it too: He thought, “What if I fall?”','“Very” still only tells.'],
+    ex:[{q:'Saba is scared in the storm',steps:['Action: He grabbed the rail.','Body: His heart pounded.','Thought: He thought, “Please stay dry.”'],a:'The reader feels the storm.'},
+        {q:'Avi is happy',steps:['Not: Avi was very happy.'],a:'Avi jumped up and hugged Saba.'}],
+    oops:{q:'Show that Dovid is scared.',wrong:'Dovid was very, very scared.',right:'Dovid’s hands shook on the ladder.',why:'“Very” still names it. Show what he does.'},
+    idea:['Be a camera: it sees shaking hands, not the word “scared”.'],
+    try:{q:'Which shows proud?',o:['He stood up tall and grinned.','He was proud.'],a:'He stood up tall and grinned.',steps:['Can you see it?']}},
+  'WRIT.PARA.L04.08':{hook:'How does a reader know what happened first?', big:'Tell events in order, with time words: First, Next, After that, Later, The next morning, Finally.',
+    intro:['Tell the events in the order they happened.','Start sentences with time words.','Use words that jump in time: Later that day, The next morning.','Mix them: not Then, Then, Then.'],
+    ex:[{q:'Saba’s trip',steps:['First, they packed one trunk.','Next, they climbed onto the ship.','That night, a storm came.','Finally, they saw the shore.'],a:'Clear order, mixed time words.'},
+        {q:'A jump in time',steps:['The story skips to the next day.'],a:'The next morning, the snow had melted.'}],
+    oops:{q:'Ending a story.',wrong:'Then. Then. Then. Then the ship landed.',right:'At last, the ship landed.',why:'Mix your time words, and end with an ending word.'},
+    idea:['Time words are bus stops: each tells the reader where he is.'],
+    try:{q:'Which word ends a story?',o:['Finally','First'],a:'Finally',steps:['Which word means the end?']}},
+  'WRIT.PARA.L04.09':{hook:'How do you end a story so it feels finished?', big:'Wrap the story: solve the problem, and show how the character feels or what he learned.',
+    intro:['Look back at the problem.','Show how it gets solved.','Show how the character feels, or what he learned.','Never: “The end”, “It was all a dream”, or a new problem.'],
+    ex:[{q:'Saba’s trip',steps:['Problem: keep the Chumash dry.','Solved: they land, and it is dry.','Feeling: Saba hugs it.'],a:'To this day, Saba keeps that Chumash on his shelf.'},
+        {q:'What he learned',steps:['Naftali fixed the clock slowly.'],a:'Naftali learned to be patient with tiny gears.'}],
+    oops:{q:'Ending of the kite story.',wrong:'Then I woke up. It was all a dream.',right:'Abba lifted me high, and I pulled the kite free.',why:'A dream ending tricks the reader. Solve the problem.'},
+    idea:['An ending ties the shoe: nothing is left loose.'],
+    try:{q:'Which ending solves it?',o:['The bird popped out: cuckoo!','The end.'],a:'The bird popped out: cuckoo!',steps:['Is the problem fixed?']}}
+  };
+
+  var HOWTO = {
+  'WRIT.ESSAY.L04.01':{s:'P: pick an idea you know well.\nO: organize notes with W-W-W: Who? When? Where? What does he want? What happens? How does it end? How does he feel?\nA note is a few words.\nW: write and say more.'},
+  'WRIT.PARA.L04.05':{s:'Start with the character.\nShow where he is.\nShow the problem.\nNever “This story is about…”.'},
+  'WRIT.PARA.L04.06':{s:'Find the exact words said out loud.\nPut quotation marks around just those words.\nThe comma, ! or ? goes inside.\nTell who is talking.'},
+  'WRIT.PARA.L04.07':{s:'Do not just name the feeling.\nShow what he does: hands, face, body.\nShow what he thinks.\n“Very” still only tells.'},
+  'WRIT.PARA.L04.08':{s:'Tell events in order.\nStart with time words: First, Next, After that, Finally.\nJump in time: The next morning.\nDo not use Then, Then, Then.'},
+  'WRIT.PARA.L04.09':{s:'Look back at the problem.\nSolve it.\nShow how he feels or what he learned.\nNo “The end”, no dream, no new problem.'}
+  };
+
+  var BITE = {
+  'WRIT.ESSAY.L04.01':{ band:'B23', pic:'🚢', today:'Plan a story with POW and W-W-W', why:'A plan makes a story easy to write and fun to read.',
+    ready:[{q:'In POW, P means…', o:['Pick my idea','Put it away','Paint a picture'], a:'Pick my idea'}],
+    bridge:'WRIT.ESSAY.L03.01', bridgeName:'POW Power',
+    watch:{ q:'The Shabbos Street News opens a story corner. Avi has a real story: his Saba’s.', m:{type:'scene', e:'🚢', t:'Saba was nine. His family left Morocco on a big ship, the week before Pesach.'}, steps:[
+      {t:'Avi wants to write Saba’s story. He uses POW.'},
+      {t:'P: Pick my idea. Avi picks Saba’s trip on the ship.'},
+      {t:'O: Organize my notes. Avi asks the W-W-W questions.'},
+      {t:'Who? Saba, age nine. When? Before Pesach. Where? A big ship.'},
+      {t:'What does he want? To keep his little Chumash dry.'},
+      {t:'What happens? A storm splashes the deck. How does it end? They land, and the Chumash is dry. How does he feel? Proud!'},
+      {t:'W: Write and say more. Now the notes become sentences.'},
+      {t:'Say it with me, and tap the desk on every POW!', m:{type:'chant', lines:['P, pick my idea, that is where I start!','O, organize my notes, W-W-W for every part!','W, write and say more, my story comes alive!','POW! POW! POW! Give me five!']}}], a:'POW: Pick, Organize with W-W-W, Write and say more.' },
+    oops:{ q:'A note for “Where?”', wrong:'Saba told me a very long story about the ship and the sea and…', right:'a big ship', why:'A note is a few words. Save the sentences for writing.' },
+    ways:['worked example','chant','story map','Mistake Detective','tap the note','put it in order','match it','fill the gap','listen'], done:'You can plan a story with POW and W-W-W! Tell your plan to your chavrusa.',
+    board:{ key:'Show me answers (for the rebbe): When? · to make the bird pop out again · How does it end?', one:'POW: Pick my idea, Organize my notes with W-W-W (Who? When? Where? What does he want? What happens? How does it end? How does he feel?), Write and say more.', activity:'Tell the class a short true story from your own childhood. The boys fill in W-W-W notes on the board as you talk.', mistakes:['Whole sentences instead of notes','A note about something else','No ending in the plan'] },
+    do:[
+      {type:'storymap', slots:['Who? When? Where?','What does he want?','What happens?','How does it end?'], cards:['Saba, age nine, on a ship','to keep his Chumash dry','a storm splashes the deck','they land, and it is dry'], extra:['Avi likes maps'],
+        say:'Fill in Saba’s W-W-W notes.', how:'Read each question. Which note answers it?'},
+      {type:'sort', q:'Avi’s notes for Saba’s story.', bins:['Good note','Mistake'], cards:[['Saba, age nine',0],['a storm at night',0],['Saba told me a long, long story about the ship.',1],['my bike is blue',1]], mis:true,
+        say:'Mistake Detective! Good note, or a mistake?', how:'A note is a few words, about this story.'}],
+    your:[
+      {type:'evidence', q:'Chaim’s notes. Which note answers “What does he want?”', p:['Chaim, Sunday morning','the shul library','to find a book about trains','he finds it on the top shelf'], a:2, look:'what Chaim is hoping for',
+        say:'Find the note that tells what he wants.', how:'What is Chaim hoping to get?'},
+      {type:'order', steps:['P: Pick my idea','O: Organize my notes','W: Write and say more'],
+        say:'Put the steps of POW in order.', how:'Say the POW chant in your head.'},
+      {type:'match', pairs:[['When?','Motzei Shabbos, after Havdalah'],['Where?','the park by the river'],['How does he feel?','proud and a little tired']],
+        say:'Match each question to Dovid’s note.', how:'Is the note a time, a place, or a feeling?'},
+      {type:'cloze', t:'Naftali’s note for “Where?”: Zeidy’s ___, full of gears.', o:['workshop','Tuesday','happy'], a:'workshop',
+        say:'Finish Naftali’s Where note.', how:'“Where?” answers with a place.'},
+      {type:'listen', q:'“He felt brave and very proud.”', hear:'He felt brave and very proud.', o:['How does he feel?','When?','Where?'], a:'How does he feel?',
+        say:'Listen. Which W-W-W question does it answer?', how:'Is it a time, a place, or a feeling?'}] },
+
+  'WRIT.PARA.L04.05':{ band:'B23', pic:'🎬', today:'Start a story with who, where and the problem', why:'A strong start pulls the reader right into your story.',
+    ready:[{q:'“What does he want?” is in the…', o:['W-W-W plan','ending','title'], a:'W-W-W plan'}],
+    bridge:'WRIT.ESSAY.L04.01', bridgeName:'POW + WWW',
+    watch:{ q:'Avi starts writing Saba’s story. His first try is weak.', m:{type:'scene', e:'🎬', t:'Avi wrote: “This story is about my Saba.” Chaim says, “Jump right in, Avi!”'}, steps:[
+      {t:'A strong start sets the scene. It shows three things.'},
+      {t:'Who: the character. “Nine-year-old Saba…”'},
+      {t:'Where: the place. “…stood on the deck of the big ship.”'},
+      {t:'The problem: “Dark clouds rolled in, and his little Chumash was in his hands.”'},
+      {t:'Now the reader wants to know: will the Chumash stay dry?'},
+      {t:'Act it with me! Point to you, point to the floor, hands on cheeks!', m:{type:'move', t:'Point to yourself: WHO! Point to the floor: WHERE! Hands on your cheeks: the PROBLEM, oh no!'}}], a:'Who, where, and the problem, in the first lines.' },
+    oops:{ q:'Opening a story about a clock.', wrong:'This story is about a clock.', right:'Naftali knelt by the clock. Its hands had stopped at three.', why:'Jump right in with the character, the place and the problem.' },
+    ways:['worked example','movement','sort it','tap the sentence','match it','fill the gap','build with tiles','listen','Mistake Detective'], done:'You can set the scene! Now your reader wants to read on.',
+    board:{ key:'Show me answers (for the rebbe): The plate is slipping. · Yaakov stood on the dock. His boat was drifting away! · outside in deep snow, on the way to shul', one:'Set the scene: who, where, and the problem, in the first lines.', activity:'Read three story openings. The class points to who, where and the problem in each one, then fixes a “This story is about…” opening together.', mistakes:['“This story is about…”','No problem in the opening','A place but no character'] },
+    do:[
+      {type:'sort', q:'Story openings.', bins:['Strong opening','Mistake'], cards:[['Avi stared at the map. Half of it was torn away.',0],['This story is about a map.',1],['Naftali knelt by the clock. Its hands had stopped.',0],['One day something happened.',1]], mis:true,
+        say:'Mistake Detective! Strong opening, or a mistake?', how:'A strong opening shows who, where and the problem.'},
+      {type:'evidence', q:'“Chaim sat in the shul library on a rainy Sunday. Suddenly, the lights went out.” Which sentence shows the problem?', p:['Chaim sat in the shul library on a rainy Sunday.','He pulled a big book off the shelf.','Suddenly, the lights went out.'], a:2, look:'the sentence where something goes wrong',
+        say:'Find the problem in Chaim’s opening.', how:'Which sentence tells what went wrong?'}],
+    your:[
+      {type:'match', pairs:[['Shimon','the character'],['the corner grocery','the place'],['the list is gone','the problem']],
+        say:'Match each part of the scene.', how:'Is it a person, a place, or what went wrong?'},
+      {type:'cloze', t:'Dovid stood in the shul library, but the book was too ___.', o:['high','happy','loud'], a:'high',
+        say:'Finish Dovid’s problem.', how:'Why can’t Dovid get the book?'},
+      {type:'tiles', w:['Saba stood','on the deck,','and the sky turned dark.'], extra:['This story is about'],
+        say:'Build Saba’s opening sentence.', how:'Who, then where, then the problem.'},
+      {type:'listen', q:'“The sukkah wall leaned, and the wind blew harder.”', hear:'The sukkah wall leaned, and the wind blew harder.', o:['the problem','the character','the ending'], a:'the problem',
+        say:'Listen. Which part of the scene is it?', how:'Is it a person, or something going wrong?'},
+      {type:'evidence', q:'Which opening sets the scene?', p:['This is a story about Purim.','One day there was a day.','Moshe stood on the shul steps. His mishloach manos basket had tipped over.','The end.'], a:2, look:'who, where and a problem',
+        say:'Find the opening that sets the scene.', how:'Which one shows who, where and a problem?'}] },
+
+  'WRIT.PARA.L04.06':{ band:'B23', pic:'💬', today:'Let your characters talk', why:'Talking makes your characters come alive.',
+    ready:[{q:'Every sentence ends with…', o:['an end mark','a comma','a capital'], a:'an end mark'}],
+    bridge:'WRIT.PARA.L04.05', bridgeName:'Set the Scene',
+    watch:{ q:'In Avi’s story, Saba’s Abba calls out in the storm. How does Avi write it?', m:{type:'scene', e:'💬', t:'Saba’s Abba shouted: Hold the Chumash under your coat!'}, steps:[
+      {t:'Find the exact words he said: Hold the Chumash under your coat!'},
+      {t:'Put an open mark before them, and a close mark after them.'},
+      {t:'The ! stays inside: “Hold the Chumash under your coat!”'},
+      {t:'Tell who is talking: “Hold the Chumash under your coat!” shouted Abba.'},
+      {t:'A comma also goes inside: “It is safe,” said Saba.'},
+      {t:'The talker can come first: Saba said, “It is safe.” A comma after said, a capital inside.'},
+      {t:'Make the marks with me! Two fingers up at the start, two at the end!', m:{type:'move', t:'Hold up two fingers and wiggle them: open the marks! Say the words. Wiggle again: close the marks!'}}], a:'Marks around the exact words, the end mark inside, then who said it.' },
+    oops:{ q:'Zeidy: Come here', wrong:'“Come here, said Zeidy.”', right:'“Come here,” said Zeidy.', why:'The marks hug only the words Zeidy said.' },
+    ways:['worked example','movement','sort it','tap the sentence','match it','build with tiles','fill the gap','dictation','find them all','Mistake Detective'], done:'You can let your characters talk! Read a talking line out loud to your chavrusa.',
+    board:{ key:'Show me answers (for the rebbe): “The mail is late,” said Mr. Klein. · Hold the rope tight · Rabbi Feld said, Open your Chumash to the new perek.', one:'Quotation marks go around the exact words said; the comma, ! or ? goes inside; tell who is talking.', activity:'Two boys act out a short talk. The class writes one line on the board with the marks, then checks: are only the spoken words inside?', mistakes:['Marks around “said Avi” too','The comma or ? outside the marks','Marks on words nobody said out loud'] },
+    do:[
+      {type:'sort', q:'Talking sentences.', bins:['Written right','Mistake'], cards:[['“Come here,” said Zeidy.',0],['“Come here, said Zeidy.”',1],['“Where is it?” asked Chaim.',0],['“Where is it” asked Chaim?',1]], mis:true,
+        say:'Mistake Detective! Written right, or a mistake?', how:'Marks hug only the spoken words. The comma or ? goes inside.'},
+      {type:'findall', q:'Zeidy smiled and said, “Every gear has a job.”', grid:['Zeidy','Every','gear','smiled','has','a job'], find:['Every','gear','has','a job'], findSay:'the words Zeidy said out loud',
+        say:'Tap every word Zeidy said out loud.', how:'Look inside the quotation marks.'}],
+    your:[
+      {type:'evidence', q:'Which sentence is written the right way?', p:['“Look at the map, said Avi.”','“Look at the map,” said Avi.','Look at the “map,” said Avi.','“Look at the map” said, Avi.'], a:1, look:'marks around only the spoken words, comma inside',
+        say:'Find the sentence with the marks in the right place.', how:'Marks hug only what Avi said.'},
+      {type:'tiles', w:['“We found','the other half!”','shouted Avi.'], extra:['said “Avi.”'],
+        say:'Build Avi’s talking sentence.', how:'Spoken words first, inside the marks. Then who said it.'},
+      {type:'match', pairs:[['a question','“Is it ready?” asked Dovid.'],['a shout','“It works!” Naftali shouted.'],['a whisper','“Shh,” whispered Chaim.']],
+        say:'Match each kind of talking to its sentence.', how:'Look at the end mark and the talking word.'},
+      {type:'cloze', t:'“Can you see the shore___ asked Saba.', o:['?”','”?','.”'], a:'?”',
+        say:'Pick the right marks for Saba’s question.', how:'The ? goes inside the closing mark.'},
+      {type:'sort', bins:['Needs quotation marks','No quotation marks'], cards:[['Avi said, We should go now.',0],['Avi said that they should go.',1],['Chaim asked, Where is the key?',0],['Chaim asked where the key was.',1]],
+        say:'Exact words, or not? Sort them.', how:'Are these the exact words he said out loud?'}] },
+
+  'WRIT.PARA.L04.07':{ band:'B23', pic:'😮', today:'Show a feeling, do not just tell it', why:'When you show a feeling, the reader feels it too.',
+    ready:[{q:'“Avi was scared.” This line…', o:['tells the feeling','shows the feeling','is a time word'], a:'tells the feeling'}],
+    bridge:'WRIT.PARA.L04.06', bridgeName:'Talking Characters',
+    watch:{ q:'Avi wrote: “Saba was scared.” Chaim says, “I can’t feel it. Show me!”', m:{type:'scene', e:'😮', t:'The storm hits the ship. How do we know Saba is scared?'}, steps:[
+      {t:'Telling names the feeling: “Saba was scared.”'},
+      {t:'Showing lets you see it. What did his hands do? “Saba grabbed the rail.”'},
+      {t:'What did his body do? “His heart pounded.”'},
+      {t:'What did he think? He thought, “Please, let the Chumash stay dry.”'},
+      {t:'Now the reader feels the storm too.'},
+      {t:'Show it with me! Shaky hands for scared, a big grin for happy, slumped shoulders for sad!', m:{type:'move', t:'Make shaky hands: scared! A big grin: happy! Droopy shoulders: sad! Now, no words, just show it!'}}], a:'Show the feeling with actions, the body, and thoughts.' },
+    oops:{ q:'Show that Dovid is scared.', wrong:'Dovid was very, very scared.', right:'Dovid’s hands shook on the ladder.', why:'“Very” still names it. Show what he does.' },
+    ways:['worked example','movement','sort it','match it','tap the sentence','combine sentences','fill the gap','listen','find them all','Mistake Detective'], done:'You can show a feeling! Your reader will feel it too.',
+    board:{ key:'Show me answers (for the rebbe): Eli’s voice shook, and he held the bentcher tight. · impatient · I laughed so hard my cheeks hurt.', one:'Show, do not tell: actions, the body, and thoughts let the reader see the feeling.', activity:'Call out a feeling. Boys act it with no words; the class writes the actions they saw as “show” sentences.', mistakes:['Naming the feeling only','Adding “very” instead of showing','An action that does not fit the feeling'] },
+    do:[
+      {type:'sort', q:'Feeling lines.', bins:['Shows it','Mistake: only tells'], cards:[['His heart pounded as the ship rocked.',0],['He was very, very scared.',1],['He grabbed the rail with both hands.',0],['He felt really scared.',1]], mis:true,
+        say:'Mistake Detective! Shows it, or only tells?', how:'“Very” and “really” still only tell.'},
+      {type:'match', pairs:[['proud','He stood up tall and grinned.'],['nervous','He bit his lip and checked the clock.'],['tired','His eyes kept closing over his Chumash.']],
+        say:'Match each feeling to the line that shows it.', how:'Picture each line. What feeling do you see?'}],
+    your:[
+      {type:'evidence', q:'Which line SHOWS that Shimon is sad?', p:['Shimon was sad.','Shimon looked at the floor and sighed.','Shimon felt very sad.','Shimon was a sad boy.'], a:1, look:'something Shimon does',
+        say:'Find the line that shows the feeling.', how:'Which one lets you see it?'},
+      {type:'combine', a:'Saba gripped the Chumash tight.', b:'He thought, “It must not get wet!”', o:['and','but','or'], j:'and',
+        say:'Join the action and the thought.', how:'He did it, and he thought it. Which word adds?'},
+      {type:'cloze', t:'Abba said, “We are going to the zoo!” Dovid ___ up and down.', o:['bounced','yawned','frowned'], a:'bounced',
+        say:'Pick the action that shows excited.', how:'What does an excited boy do?'},
+      {type:'listen', q:'He thought, “What if I drop it?”', hear:'He thought, what if I drop it?', o:['worry','joy','anger'], a:'worry',
+        say:'Listen to his thought. What feeling does it show?', how:'Is he happy, mad, or worried?'},
+      {type:'findall', grid:['ran to the door','was excited','could not stop smiling','felt glad','talked super fast','was happy'], find:['ran to the door','could not stop smiling','talked super fast'], findSay:'lines that show excited',
+        say:'Tap every line that shows the feeling.', how:'Which ones can a camera see?'}] },
+
+  'WRIT.PARA.L04.08':{ band:'B23', pic:'🕰️', today:'Tell what happened in order, with time words', why:'Time words keep your reader on track.',
+    ready:[{q:'Which word starts a story?', o:['First','Finally','At last'], a:'First'}],
+    bridge:'WRIT.PARA.L04.07', bridgeName:'Show the Feeling',
+    watch:{ q:'Avi’s story is all mixed up. Naftali’s Zeidy says, “A story is like a clock: one tick after another.”', m:{type:'scene', e:'🕰️', t:'“Then they landed. Then a storm. Then they packed. Then…” Dovid is lost!'}, steps:[
+      {t:'Put the events in the order they happened.'},
+      {t:'First, the family packed one small trunk.'},
+      {t:'Next, they climbed onto the big ship.'},
+      {t:'That night, a storm rocked the ship.'},
+      {t:'Finally, they saw the lights of the shore.'},
+      {t:'Some time words jump in time: “The next morning”, “Two days later”.'},
+      {t:'Tick-tock with me, and sing the time words!', m:{type:'chant', lines:['First, then next, tick-tock goes the clock,','After that, and later on, the story will not stop,','The next morning, two days later, time can jump ahead,','Finally, at last, the end, the story’s off to bed!']}}], a:'Events in order, with mixed time words.' },
+    oops:{ q:'Telling the end of the trip.', wrong:'Then. Then. Then. Then the ship landed.', right:'At last, the ship landed.', why:'Mix your time words, and end with an ending word.' },
+    ways:['worked example','chant','put it in order','sort it','tap the sentence','fill the gap','match it','find them all','Mistake Detective'], done:'You can tell a story in order with time words!',
+    board:{ key:'Show me answers (for the rebbe): Motzei Yom Kippur, boards · The next day, walls · After that, schach · Four days later, first meal · Tzvi planted a bean seed. One week later, a green sprout popped up. · At last', one:'Tell events in order; start sentences with mixed time words; use words that jump in time.', activity:'Cut a short story into strips. Pairs order the strips, then add a time word to each.', mistakes:['Then, then, then','“Finally” in the middle','Events out of order'] },
+    do:[
+      {type:'order', steps:['First, the family packed one small trunk.','Next, they climbed onto the big ship.','That night, a storm rocked the ship.','Finally, they saw the lights of the shore.'],
+        say:'Put Saba’s trip in order.', how:'Follow the time words: First, Next, That night, Finally.'},
+      {type:'sort', q:'Time words in a story.', bins:['Fits','Mistake'], cards:[['First, we woke up early.',0],['Finally, we woke up. Then we ate.',1],['After the storm, the sky cleared.',0],['Then. Then. Then. Then.',1]], mis:true,
+        say:'Mistake Detective! Does the time word fit?', how:'A time word must match when it happened.'}],
+    your:[
+      {type:'cloze', t:'Ima put the soup on at noon. “___, at two o’clock, the soup was ready.”', o:['Two hours later','Right then','First'], a:'Two hours later',
+        say:'Pick the time words that jump ahead.', how:'Which words mean some time has passed?'},
+      {type:'match', pairs:[['First','the beginning'],['After that','the middle'],['Finally','the end']],
+        say:'Match each time word to its part of the story.', how:'When would you use it?'},
+      {type:'evidence', q:'Which sentence tells the story in order?', p:['Finally, Avi woke up. First, he ate.','Avi woke up. After that, he ate breakfast.','Then, then, then Avi ate.','Avi ate breakfast. First, he woke up.'], a:1, look:'the one that keeps waking up first',
+        say:'Find the sentence in the right order.', how:'What happens first in the morning?'},
+      {type:'findall', grid:['After Havdalah','the club','Later','the map','At last','the X'], find:['After Havdalah','Later','At last'], findSay:'time words',
+        say:'Tap every time word.', how:'Which words tell when?'},
+      {type:'tiles', w:['The next morning,','the club','opened the box.'], extra:['Then then'],
+        say:'Build a sentence that starts with a time word.', how:'The time words go first, then a comma.'}] },
+
+  'WRIT.PARA.L04.09':{ band:'B23', pic:'🎀', today:'End a story so it feels finished', why:'A good ending makes the reader smile and remember.',
+    ready:[{q:'Every story has a…', o:['problem','dream','title only'], a:'problem'}],
+    bridge:'WRIT.PARA.L04.04', bridgeName:'Strong Close',
+    watch:{ q:'Avi’s story is almost done. Dovid asks, “So did the Chumash stay dry?”', m:{type:'scene', e:'🎀', t:'Avi’s last line was: “The end.” Dovid frowns. “That’s it?”'}, steps:[
+      {t:'A good ending looks back at the problem: keep the Chumash dry.'},
+      {t:'It shows the problem solved: “The ship landed, and the Chumash was dry.”'},
+      {t:'It shows a feeling: “Saba hugged it and laughed.”'},
+      {t:'It can tell what he learned: “Saba learned a storm does not last forever.”'},
+      {t:'Never: “The end”, “It was all a dream”, or a brand-new problem.'},
+      {t:'Tie the story with me, like a shoe! Pull, loop, pull tight!', m:{type:'move', t:'Pull the laces: problem! Make a loop: solved! Pull tight: the feeling! Your story is tied!'}}], a:'Solve the problem; show the feeling or the lesson.' },
+    oops:{ q:'Ending of the kite story.', wrong:'Then I woke up. It was all a dream.', right:'Abba lifted me high, and I pulled the kite free.', why:'A dream ending tricks the reader. Solve the problem.' },
+    ways:['worked example','movement','sort it','match it','tap the sentence','fill the gap','put it in order','story map','listen','Mistake Detective'], done:'You can wrap up a story! Your story is ready to plan and write.',
+    board:{ key:'Show me answers (for the rebbe): Zeidy reached under with his cane, and Yossi hugged the ball. · From that day on, Moshe checked his bag before cheder. · It starts a new problem.', one:'Wrap the story: solve the problem, and show the feeling or what he learned.', activity:'Read a story with its ending cut off. Groups write two endings, one that solves it and one “dream” ending; the class says which is fair to the reader.', mistakes:['“The end.”','“It was all a dream.”','A brand-new problem at the end'] },
+    do:[
+      {type:'sort', q:'Story endings.', bins:['Strong ending','Weak ending'], cards:[['The clock ticked again, and Zeidy hugged Naftali.',0],['The end.',1],['Then I woke up. It was a dream.',1],['Saba still keeps that dry Chumash on his shelf.',0]], mis:true,
+        say:'Mistake Detective! Strong ending, or weak?', how:'A weak ending stops or tricks the reader.'},
+      {type:'storymap', slots:['The problem','How it is solved','How he feels'], cards:['Dovid can’t reach the book.','Chaim holds the ladder, and Dovid climbs up.','Dovid hugs the book and grins.'], extra:['Then it rained.'],
+        say:'Build the story ending, one part in each box.', how:'Problem, then how it gets fixed, then the feeling.'}],
+    your:[
+      {type:'evidence', q:'Problem: the sukkah wall leaned in the wind. Which ending wraps it up?', p:['The end.','Then a cat climbed the wall.','Abba tied the wall tight, and it stood all Yom Tov.','It was all a dream.'], a:2, look:'the ending that solves the problem',
+        say:'Find the ending that solves it.', how:'Which one fixes the wall?'},
+      {type:'match', pairs:[['The end.','It just stops.'],['It was all a dream.','It tricks the reader.'],['Then a storm came.','It starts a new problem.']],
+        say:'Match each weak ending to what is wrong.', how:'Does it stop, trick, or start something new?'},
+      {type:'cloze', t:'From that day on, Naftali was always ___ with tiny gears.', o:['patient','hungry','late'], a:'patient',
+        say:'Finish what Naftali learned.', how:'What do tiny gears need?'},
+      {type:'order', steps:['Naftali opened the broken cuckoo clock.','He fixed one tiny gear at a time.','At last, the bird popped out: cuckoo!','Zeidy hugged him and smiled.'],
+        say:'Put Naftali’s story in order, ending last.', how:'Problem, fixing, solved, then the feeling.'},
+      {type:'listen', q:'“From then on, Chaim always asked for help with high shelves.”', hear:'From then on, Chaim always asked for help with high shelves.', o:['what he learned','a new problem','the place'], a:'what he learned',
+        say:'Listen. What kind of ending is it?', how:'Does it tell a lesson for next time?'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+
+  /* Unit W13.U32 = Grade 3, Unit 2 "Real Stories". The real task (map: Gr 3 pieces 3, 4 and 5): ONE Writing Workshop piece, scored by the
+     teacher. A unit holds one Workshop task, so the boy picks which story he writes: a true story from his own life (piece 3), a made-up
+     Shabbos Street Club story (piece 4), or a story he heard from a grandparent (piece 5, an interview). */
+  var PIECE3 = { id: 'W13.STORY3.01', title: 'A Real Story', grade: 3, kind: 'story',
+    prompt: 'Write a story for the story corner of The Shabbos Street News. Pick one: (1) a true story about you, (2) a made-up Shabbos Street Club story, or (3) a story you heard from Saba, Zeidy or Bubby (ask, and take notes). Set the scene, let someone talk, show a feeling, tell it in order, and wrap it up.',
+    strategy: { name: 'POW + WWW', steps: [['P', 'Pick my idea'], ['O', 'Organize my notes: W-W-W'], ['W', 'Write and say more']],
+      more: [['W', 'Who? When? Where?'], ['W', 'What does he want? (the problem)'], ['W', 'What happens?'], ['H', 'How does it end? How does he feel?']] },
+    plan: [ { k: 'who', label: 'Who? When? Where?', hint: 'Saba, age nine, before Pesach, on a ship' },
+            { k: 'want', label: 'What does he want? (the problem)', hint: 'to keep his Chumash dry' },
+            { k: 'happen', label: 'What happens? (in order)', hint: 'first… next… then…' },
+            { k: 'end', label: 'How does it end?', hint: 'the problem is solved: how?' },
+            { k: 'feel', label: 'How does he feel? (what he does or thinks)', hint: 'hands shook; grinned; thought “Oh no!”' } ],
+    starters: ['One rainy morning,', 'First,', 'After that,', 'The next morning,', 'he thought,', 'At last,'],
+    min: 70,
+    checks: [
+      { t: 'I wrote at least 7 sentences.', sentences: 7 },
+      { t: 'My first sentence sets the scene with words from my Who? When? Where? box.', first: 'who' },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I used time words.', any: ['first', 'next', 'then', 'after', 'later', 'finally', 'at last', 'in the end', 'the next', 'that night', 'soon', 'suddenly'] },
+      { t: 'A character talks, with quotation marks.', any: ['“', '"'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I showed a feeling with an action or a thought.', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['The scene: who, where and the problem', 'Events in order, with time words', 'Talking and feelings that are shown', 'An ending that wraps it up', 'Capitals, quotation marks, end marks and spelling'],
+    pics: ['🚢', '🗺️', '📖', '🏡'] };
+
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U32', title: 'Real Stories', c: 'WRIT', grade: 3,
+    skills: ['WRIT.ESSAY.L04.01', 'WRIT.PARA.L04.05', 'WRIT.PARA.L04.06', 'WRIT.PARA.L04.07', 'WRIT.PARA.L04.08', 'WRIT.PARA.L04.09'],
+    review: ['WRIT.PARA.L04.02', 'WRIT.SENT.L04.01', 'WRIT.PARA.L04.04'], n: 10, task: PIECE3,
+    items: [
+      { skill: 'WRIT.ESSAY.L04.01', type: 'evidence', q: 'Binyamin’s notes for a story. Which note answers “How does it end?”', p: ['Binyamin, Lag BaOmer, the park', 'wants to win the three-legged race', 'he trips at the start', 'he and Yitzy cross the line first'], a: 3, look: 'the note that tells the ending', say: 'Find the note for the ending.', how: 'Which note tells how the story finishes?' },
+      { skill: 'WRIT.PARA.L04.05', type: 'evidence', q: 'Which opening sets the scene?', p: ['This story is about a sled and a hill that I want to tell you.', 'Ezra stood at the top of the hill. His sled had a crack down the middle.', 'Once upon a time there was a time.', 'I like snow very much, and I like sleds and hills even more.'], a: 1, look: 'who, where and a problem', say: 'Find the opening that sets the scene.', how: 'Which one shows who, where and what went wrong?' },
+      { skill: 'WRIT.PARA.L04.06', type: 'evidence', q: 'Which sentence is written the right way?', p: ['“Pass the challah, said Zevi.”', 'Pass the “challah,” said Zevi.', '“Pass the challah,” said Zevi.', '“Pass the challah” said, Zevi.'], a: 2, look: 'marks around only the spoken words, comma inside', say: 'Find the talking sentence written right.', how: 'Marks hug only what Zevi said.' },
+      { skill: 'WRIT.PARA.L04.06', type: 'evidence', q: 'Mr. Benhamou asked a question. Which sentence has the marks right?', p: ['“Did you bring the keys?” asked Mr. Benhamou.', '“Did you bring the keys”? asked Mr. Benhamou.', '“Did you bring the keys,” asked Mr. Benhamou?'], a: 0, look: 'the ? inside the closing mark', say: 'Find the question written right.', how: 'He asked a question. Where does the ? go?' },
+      { skill: 'WRIT.PARA.L04.07', type: 'evidence', q: 'Which line SHOWS that Gavriel is proud?', p: ['Gavriel was proud.', 'Gavriel felt very, very proud of his siddur all day long.', 'Gavriel held up his new siddur for everyone to see.', 'Gavriel was a proud boy.'], a: 2, look: 'something Gavriel does', say: 'Find the line that shows it.', how: 'Which one lets you see the feeling?' },
+      { skill: 'WRIT.PARA.L04.08', type: 'evidence', q: 'Yehuda packed his bag, and right then he left for the bus. Which tells it in order?', p: ['Long ago, Yehuda walked to the bus. Then he packed.', 'Yehuda packed his bag. After that, he walked to the bus.', 'At the start, Yehuda walked to the bus. He packed later.'], a: 1, look: 'packing first, then the bus', say: 'Find the sentences in the right order.', how: 'What did Yehuda do first?' },
+      { skill: 'WRIT.PARA.L04.09', type: 'evidence', q: 'Story: Pinchas forgot his lines in the Purim play. Which ending wraps it up?', p: ['The end. That was my whole story about the Purim play.', 'Then it began to snow outside, and everyone ran home fast.', 'His friend whispered the first word, and Pinchas finished with a big smile.', 'Then Pinchas woke up in bed. It was all a dream.'], a: 2, look: 'the ending that solves the problem', say: 'Find the ending that solves it.', how: 'Which one fixes the problem and shows a feeling?' }
+    ] });
+})();
+
+
+/* ---------- Grade 3 (L04), Unit 3 "Opinion with Reasons" (docs/core-growth/W13-map.md, W.3.1): the "Speak Up" page of The Shabbos Street News.
+   Rabbi Feld asks the club: should Shabbos Street have a Lag BaOmer bonfire or a barbecue? Chaim says bonfire, Dovid says barbecue.
+   Opinion writing with the SRSD strategy TREE: T = Topic sentence (my opinion), R = Reasons (3), E = Explain each reason, E = Ending.
+   Piece 7 (an opinion about a book with reasons from the text) uses the live C23 chapter book C1 "The Shabbos Street Club and the Missing
+   Map", chapter 1 (texts/C23/C23.B1.01): the Grade 3 C23 book C2 is not live yet. */
+(function () {
+  var LESSONS = {
+
+  'WRIT.ESSAY.L04.02':{name:'TREE Plan',
+  teach:[
+    {how:'An opinion is what you think or believe. Another boy may think differently. TREE helps you plan it: T Topic sentence, R Reasons, E Explain, E Ending.', q:'In TREE, what does the R stand for?', o:['Reasons','Read it again','Remember the title']},
+    {how:'T, the topic sentence, tells your opinion in one clear sentence: “Our street should have a bonfire on Lag BaOmer.”', q:'Which line could be the topic sentence of an opinion piece?', o:['Our street should have a barbecue on Lag BaOmer.','Lag BaOmer comes in the spring.','Dovid ate two hot dogs last year.']},
+    {how:'The first E, Explain, says more about a reason: why it matters, or an example.', q:'Reason: “A barbecue feeds everyone.” Which line explains it?', o:['Every family can bring kosher burgers and share.','Barbecues are a lot of fun.','My sister likes the color red.']}
+  ],
+  practice:[
+    {t:'order', q:'Put the parts of TREE in order.', tiles:['T: Topic sentence: my opinion','R: Reasons: three or more','E: Explain each reason','E: Ending: my opinion again'], h:'Say the TREE chant in your head.'},
+    {t:'pairs', q:'Match each part of TREE to its job.', pairs:[['T','tells my opinion'],['R','gives a reason why'],['E (Explain)','says more about a reason'],['E (Ending)','says my opinion again']],
+      h:'Think of what each letter stands for.'},
+    {t:'sort', q:'Mistake Detective. A good TREE plan, or a mistake?', bins:[{id:'G',label:'Good plan'},{id:'M',label:'Mistake'}],
+      items:[{label:'The topic sentence tells my opinion.',bin:'G'},{label:'Three reasons that support it.',bin:'G'},{label:'No ending at all.',bin:'M'},{label:'A reason for the other side.',bin:'M'}],
+      h:'Check each letter: T, R, E, E.'},
+    {t:'spotall', q:'Opinion: “Our street should have a barbecue.” Tap every reason that supports it.', cells:[{label:'Everyone can eat together.',ok:true},{label:'Families can share kosher food.',ok:true},{label:'It is safe for little kids.',ok:true},{label:'A bonfire is bright.',ok:false},{label:'My shoes are new.',ok:false}],
+      h:'Does it give a reason FOR a barbecue?'},
+    {t:'pairs', q:'Match each reason to the line that explains it.', pairs:[['We can sing together.','Everyone sits in a circle and sings.'],['A fire lights up the night.','We can see each other’s faces in the dark.'],['A bonfire is a Lag BaOmer custom.','Many Yidden light one that night.']],
+      h:'Which line says more about that reason?'},
+    {t:'order', q:'Put Chaim’s TREE plan in order.', tiles:['Our street should have a Lag BaOmer bonfire.','One reason is that we can sing together.','Everyone sits in a circle and sings.','That is why our street needs a bonfire.'], h:'Opinion, reason, explain, ending.'}
+  ],
+  check:[
+    {pic:'🐟', q:'Shimon’s plan, mixed up: “So let’s bring a fish tank to our class.” / “Our class should keep a fish tank.” / “Fish are calm to watch.” Which line is the ending?', o:['So let’s bring a fish tank to our class.','Fish are calm to watch.','Our class should keep a fish tank.'], h:'Which line says the opinion again, to wrap it up?'},
+    {pic:'👟', q:'Avi’s opinion: “Every boy should learn to tie his own shoes.” Which line is a reason that supports it?', o:['Then he will not trip on loose laces.','The shoe store opens at ten.','Avi has red laces with stripes.'], h:'Which line tells WHY every boy should learn?'},
+    {pic:'🚲', q:'Dovid’s plan: “Every boy should have a bike.” / “A bike helps you get places.” / “I ride to cheder in five minutes.” Which TREE part is “A bike helps you get places”?', o:['Reason','Explain','Ending'], h:'Does it tell WHY, say more about a why, or wrap up?'}
+  ],
+  re:[
+    {how:'A new way: a TREE has a trunk (your opinion), branches (reasons) and leaves (the details that explain).', q:'The branches of the TREE are the…', o:['reasons','ending','title']},
+    {how:'A simpler step: just say T, R, E, E.', q:'What comes first in TREE?', o:['the Topic sentence','the Ending','the Reasons']},
+    {how:'The skill underneath: you planned a story with POW + WWW. POW stays; for an opinion, TREE takes the place of W-W-W.', q:'For an opinion, O in POW means organize with…', o:['TREE','W-W-W','a map']}
+  ]},
+
+  'WRIT.PARA.L04.10':{name:'Introduce the Topic',
+  teach:[
+    {how:'An opinion piece starts by telling the topic and your opinion, in one clear sentence. Opinion words: I think, I believe, should, needs, the best.', q:'Which sentence states an opinion?', o:['I think every street should have a Lag BaOmer bonfire.','Lag BaOmer is the 33rd day of the Omer.','Our street has twelve houses on it.']},
+    {how:'A fact can be checked. An opinion is what someone thinks; another boy may disagree.', q:'Which one is a fact?', o:['The park opens at nine.','The park is the best place to play.','Everyone should go to the park.']},
+    {how:'Do not just name the topic. “I will tell you about Lag BaOmer” has no opinion. Tell what you think.', q:'Which opening is a mistake?', o:['I will tell you about Lag BaOmer.','Our street should have a bonfire this Lag BaOmer.','I believe a barbecue is the best way to spend Lag BaOmer.']}
+  ],
+  practice:[
+    {t:'sort', q:'Fact, or opinion?', bins:[{id:'F',label:'Fact'},{id:'O',label:'Opinion'}],
+      items:[{label:'Lag BaOmer comes in the spring.',bin:'F'},{label:'The shul has two doors.',bin:'F'},{label:'Bonfires are the best part of Lag BaOmer.',bin:'O'},{label:'Our street should have a barbecue.',bin:'O'}],
+      h:'Can you check it? Or is it what someone thinks?'},
+    {t:'sort', q:'Mistake Detective. A clear opinion sentence, or a mistake?', bins:[{id:'C',label:'Clear opinion'},{id:'M',label:'Mistake'}],
+      items:[{label:'Our club should paint the clubhouse blue.',bin:'C'},{label:'This is about the clubhouse.',bin:'M'},{label:'I believe the library should stay open late.',bin:'C'},{label:'I am going to write now.',bin:'M'}],
+      h:'Does it tell the topic AND what the writer thinks?'},
+    {t:'spotall', q:'Tap every opinion word.', cells:[{label:'I think',ok:true},{label:'should',ok:true},{label:'the best',ok:true},{label:'I believe',ok:true},{label:'on Sunday',ok:false},{label:'twelve',ok:false}],
+      h:'Which words show what someone thinks?'},
+    {t:'order', q:'Build an opinion sentence.', tiles:['I believe','our street should have','a Lag BaOmer bonfire.'], h:'Opinion words, then the topic.'},
+    {t:'pairs', q:'Match each topic to its opinion sentence.', pairs:[['the clubhouse','Our clubhouse needs a new roof.'],['recess','Recess should be ten minutes longer.'],['the library','The shul library should have more books about animals.']],
+      h:'Which opinion is about that topic?'},
+    {t:'sort', q:'Does it introduce the topic with an opinion?', bins:[{id:'Y',label:'Yes'},{id:'N',label:'Not yet'}],
+      items:[{label:'Every boy should help set up the sukkah.',bin:'Y'},{label:'The sukkah is in the yard.',bin:'N'},{label:'I think fish make the best class pets.',bin:'Y'},{label:'Let me tell you something.',bin:'N'}],
+      h:'Do you know the topic and what the writer thinks?'}
+  ],
+  check:[
+    {pic:'🪑', q:'Which sentence is an opinion?', o:['Shabbos Street needs a new bench by the shul.','Shabbos Street has a bench by the shul.','The bench by the shul is made of wood.'], h:'Which one tells what someone thinks? Can the others be checked?'},
+    {pic:'📚', q:'Yitzy’s piece is about the school library. Which first sentence introduces the topic AND his opinion?', o:['Our school library needs more books about science.','I am going to write about the library now.','The library has many shelves of books.'], h:'Which one names the topic and says what he thinks?'},
+    {pic:'🌷', q:'“Our shul should plant flowers by the door.” How do you know it is an opinion?', o:['Someone could disagree with it.','You can check it with a ruler.','It names a real place.'], h:'Could another boy think differently? Can you check it?'}
+  ],
+  re:[
+    {how:'A new way: a fact is like a ruler: you can measure it. An opinion is like a favorite color: it is yours.', q:'An opinion is…', o:['what someone thinks','something you can measure','always true']},
+    {how:'A simpler step: look for I think, I believe, should, or the best.', q:'“I believe…” starts…', o:['an opinion','a fact','a question']},
+    {how:'The skill underneath: a topic sentence tells what the paragraph is about (Paragraph Builder). An opinion topic sentence adds what you think.', q:'An opinion topic sentence tells…', o:['the topic and what I think','only the topic','only the ending']}
+  ]},
+
+  'WRIT.PARA.L04.11':{name:'Reasons That Support',
+  teach:[
+    {how:'A reason tells WHY you think so. A good reason really supports your opinion.', q:'Opinion: “Our class should have a reading corner.” Which reason supports it?', o:['Boys would read more in a cozy spot.','The classroom has a round clock.','Recess is at twelve o’clock.']},
+    {how:'A reason for the other side does not belong in your piece.', q:'Opinion: “We should have a barbecue.” Which reason is a mistake?', o:['A bonfire lets everyone sing together.','Everyone can eat together.','Families can share kosher food.']},
+    {how:'Saying your opinion again is not a reason. “It is good because it is good” gives no why.', q:'Which is a real reason?', o:['A garden gives us fresh vegetables.','A garden is good because it is good.','I want a garden because I want one.']}
+  ],
+  practice:[
+    {t:'sort', q:'Opinion: “Every boy should have a library card.” Does the reason support it?', bins:[{id:'Y',label:'Supports it'},{id:'N',label:'Does not'}],
+      items:[{label:'He can borrow books for free.',bin:'Y'},{label:'He can find books for school reports.',bin:'Y'},{label:'The library has a red door.',bin:'N'},{label:'Library cards are good because they are good.',bin:'N'}],
+      h:'Does it tell WHY he should have one?'},
+    {t:'sort', q:'Mistake Detective. A real reason, or a mistake?', bins:[{id:'R',label:'Real reason'},{id:'M',label:'Mistake'}],
+      items:[{label:'Trees give cool shade in summer.',bin:'R'},{label:'Trees are trees, so plant them.',bin:'M'},{label:'Birds can build nests in trees.',bin:'R'},{label:'My cousin has a new bike.',bin:'M'}],
+      h:'A real reason tells why. It does not repeat or wander off.'},
+    {t:'pairs', q:'Match each opinion to its reason.', pairs:[['Our club should meet on Sunday.','Nobody has cheder on Sunday afternoon.'],['Every boy should learn to swim.','Swimming keeps you safe near water.'],['The shul should have a bike rack.','Boys could ride to davening.']],
+      h:'Which reason tells why for that opinion?'},
+    {t:'spotall', q:'Opinion: “Our clubhouse needs a new roof.” Tap every reason that supports it.', cells:[{label:'Rain drips on our notebooks.',ok:true},{label:'The old roof has holes.',ok:true},{label:'Wind blows in on cold days.',ok:true},{label:'The clubhouse is in a garage.',ok:false},{label:'Avi likes jokes.',ok:false}],
+      h:'Which ones tell why it needs a new roof?'},
+    {t:'order', q:'Build a sentence with a reason.', tiles:['One reason is that','a reading corner','helps boys read more.'], h:'Start with “One reason is that”.'},
+    {t:'pairs', q:'Opinion: we should have a barbecue. Match each weak reason to what is wrong.', pairs:[['It is good because it is good.','It repeats the opinion.'],['A bonfire is bright.','It is for the other side.'],['My shoes are new.','It is off the topic.']],
+      h:'Does it repeat, switch sides, or wander off?'}
+  ],
+  check:[
+    {pic:'🧤', q:'Opinion: “Our shul should have a lost-and-found box.” Which reason supports it?', o:['Lost hats and gloves would be easy to find.','The shul has a big front door.','Boxes come in many sizes.'], h:'Which one tells WHY?'},
+    {pic:'🚲', q:'Opinion: “Our street should have a bike lane.” Which reason is a mistake?', o:['A bike lane is a bike lane, so we need one.','Boys could ride to cheder safely.','Cars would know where bikes go.'], h:'Which one gives no real why?'},
+    {pic:'🏠', q:'Opinion: “Our club should meet in Naftali’s garage.” Which reason does NOT support it?', o:['Chaim’s bike is blue and fast.','The garage has a big table for our map.','It stays dry there when it rains.'], h:'Which one is not about meeting in the garage?'}
+  ],
+  re:[
+    {how:'A new way: reasons are the legs of a table. Without legs, the opinion falls down.', q:'Reasons…', o:['hold up the opinion','repeat the opinion','end the piece']},
+    {how:'A simpler step: after your opinion, ask “Why?” The answer is a reason.', q:'To find a reason, ask…', o:['Why?','When?','Who?']},
+    {how:'The skill underneath: Details That Prove. Reasons prove an opinion the way details prove a topic.', q:'A good reason…', o:['proves the opinion','is about something else','is a title']}
+  ]},
+
+  'WRIT.PARA.L04.12':{name:'Linking Words',
+  teach:[
+    {how:'“Because” and “since” give a reason: “We should have a bonfire because we can sing together.”', q:'“Our street should have a barbecue ___ everyone gets to eat.” Which word fits?', o:['because','therefore','for example']},
+    {how:'“For example” gives an example that shows your reason: “A barbecue feeds everyone. For example, the Cohens can bring salad.”', q:'Which sentence gives an example?', o:['For example, the Levis can bring corn.','Therefore, we need a grill.','Since it is spring, we can eat outside.']},
+    {how:'“Therefore” means “so”. It comes before what should happen because of your reasons.', q:'“Bonfires are bright and warm. ___, our street should have one.” Which word fits?', o:['Therefore','For example','Since']}
+  ],
+  practice:[
+    {t:'sort', q:'What does each linking word do?', bins:[{id:'R',label:'Gives a reason'},{id:'X',label:'Gives an example'},{id:'S',label:'Means “so”'}],
+      items:[{label:'because',bin:'R'},{label:'since',bin:'R'},{label:'for example',bin:'X'},{label:'therefore',bin:'S'}],
+      h:'Does it tell why, show an example, or tell what follows?'},
+    {t:'sort', q:'Mistake Detective. Right linking word, or a mistake?', bins:[{id:'R',label:'Right'},{id:'M',label:'Mistake'}],
+      items:[{label:'We should plant trees because they give shade.',bin:'R'},{label:'We should plant trees therefore they give shade.',bin:'M'},{label:'Trees help birds. For example, robins nest in them.',bin:'R'},{label:'Trees help birds. Because, robins nest in them.',bin:'M'}],
+      h:'Because gives the why. For example gives an example.'},
+    {t:'pairs', q:'Match each start to its end.', pairs:[['We need a reading corner','because boys would read more.'],['Fruit is healthy. For example,','apples have vitamins.'],['The roof leaks. Therefore,','we need a new one.']],
+      h:'Read each pair out loud. Does it make sense?'},
+    {t:'spotall', q:'Tap every linking word.', cells:[{label:'because',ok:true},{label:'For example',ok:true},{label:'Therefore',ok:true},{label:'bonfire',ok:false},{label:'Lag BaOmer',ok:false}],
+      h:'Which words are bridges between ideas?'},
+    {t:'order', q:'Build a linked sentence.', tiles:['Our street should have a bonfire','because','we can sing together.'], h:'Opinion, then the linking word, then the reason.'},
+    {t:'order', q:'Put the paragraph in order.', tiles:['Our street should have a barbecue.','One reason is that everyone can eat together.','For example, every family can bring one dish.','Therefore, a barbecue is the best plan.'], h:'Opinion, reason, example, then “therefore”.'}
+  ],
+  check:[
+    {pic:'🌱', q:'“We should water the garden, ___ the plants look thirsty.” Which word gives the reason?', o:['since','therefore','for example'], h:'The second part tells why. Which word, like “because”, gives the why?'},
+    {pic:'🕰️', q:'“Zeidy’s workshop has all kinds of clocks. ___, one old clock has no hands at all.” Which words fit?', o:['For example','Therefore','Because'], h:'The second sentence names one of the clocks.'},
+    {pic:'🌧️', q:'“It is raining hard. ___, the club will meet inside.” Which word fits?', o:['Therefore','For example','Because'], h:'The rain makes something happen. Which word means “so”?'}
+  ],
+  re:[
+    {how:'A new way: linking words are bridges. Because crosses to the why. For example crosses to a sample. Therefore crosses to the result.', q:'“Because” leads to…', o:['the why','an example','the ending']},
+    {how:'A simpler step: use “because” after your opinion.', q:'“We should rest ___ we are tired.”', o:['because','therefore','for example']},
+    {how:'The skill underneath: you joined two sentences with and, but or so (Join It). Opinions have their own linking words.', q:'Which word gives the reason?', o:['because','but','or']}
+  ]},
+
+  'WRIT.PARA.L04.13':{name:'Concluding Statement',
+  teach:[
+    {how:'A concluding statement says your opinion again, in new words, at the end.', q:'Opinion: “Our street should have a bonfire.” Which is a strong concluding statement?', o:['So let’s gather around the fire this Lag BaOmer!','The end.','Also, fires are hot.']},
+    {how:'Do not add a new reason at the end. Your reasons go in the middle.', q:'Which ending is a mistake?', o:['Also, a bonfire is easy to build.','That is why our street needs a bonfire.','So come and sing with us at the fire!']},
+    {how:'A strong ending can ask the reader to do something: “Vote for the barbecue!”', q:'Which ending asks the reader to act?', o:['Come to the meeting and vote for the barbecue!','Barbecues have hot grills.','I like Lag BaOmer a lot.']}
+  ],
+  practice:[
+    {t:'sort', q:'Mistake Detective. A strong ending, or a weak one?', bins:[{id:'S',label:'Strong ending'},{id:'W',label:'Weak ending'}],
+      items:[{label:'So let’s plant trees on every corner!',bin:'S'},{label:'The end.',bin:'W'},{label:'Also, trees can be tall.',bin:'W'},{label:'That is why our street needs more trees.',bin:'S'}],
+      h:'A weak ending stops, or adds a new reason.'},
+    {t:'pairs', q:'Match each weak ending to what is wrong.', pairs:[['The end.','It just stops.'],['Also, fires are warm.','It adds a new reason.'],['Our street should have a bonfire.','It copies the topic sentence word for word.']],
+      h:'Does it stop, add, or copy?'},
+    {t:'spotall', q:'Opinion: “Every boy should learn to swim.” Tap every strong ending.', cells:[{label:'So sign up for swim lessons this summer!',ok:true},{label:'That is why every boy should learn to swim safely.',ok:true},{label:'The end.',ok:false},{label:'Also, pools have slides.',ok:false}],
+      h:'Which ones say the opinion again, or ask the reader to act?'},
+    {t:'order', q:'Build a concluding statement.', tiles:['That is why','our street needs','a Lag BaOmer bonfire.'], h:'Closing words, then the opinion again.'},
+    {t:'order', q:'Put the opinion piece in order.', tiles:['Our club should paint the clubhouse.','One reason is that the old paint is peeling off.','Another reason is that fresh paint would make it look new.','So grab a brush and help us paint!'], h:'Opinion, reasons, then the ending.'},
+    {t:'sort', q:'Does the ending say the opinion again, or ask the reader to act?', bins:[{id:'A',label:'Opinion again'},{id:'D',label:'Asks the reader to act'}],
+      items:[{label:'That is why our street needs a bonfire.',bin:'A'},{label:'Come and sing with us at the fire!',bin:'D'},{label:'A reading corner is the best idea for our class.',bin:'A'},{label:'Bring a book from home for our new corner!',bin:'D'}],
+      h:'Does it repeat what you think, or tell the reader what to do?'}
+  ],
+  check:[
+    {pic:'🚰', q:'Ari’s opinion: “Our shul should have a water fountain.” Which concluding statement is strong?', o:['So let’s ask the gabbai for a fountain by the door!','Fountains need pipes, so a plumber must come too.','The end, and that is all I have to say about it.'], h:'Which one wraps up: the opinion again, or asks the reader to act?'},
+    {pic:'🚲', q:'Eli’s piece says the shul should have a bike rack. It ends: “Also, a rack keeps bikes off the grass.” What is wrong?', o:['It brings in something new instead of wrapping up.','It says his opinion again.','Nothing, it is a strong ending.'], h:'What should an ending never add?'},
+    {pic:'🪪', q:'Opinion: “Every boy should have a library card.” Which ending says it again in NEW words?', o:['That is why every boy needs his own library card.','Every boy should have a library card.','Library cards are small enough for a wallet.'], h:'Which one says the same idea, but in new words?'}
+  ],
+  re:[
+    {how:'A new way: the ending is the last knock on the door. It reminds the reader what you want.', q:'A concluding statement…', o:['says the opinion again','adds a new reason','starts a story']},
+    {how:'A simpler step: start your ending with “That is why” or “So”.', q:'Which can start a concluding statement?', o:['That is why','Another reason','For example']},
+    {how:'The skill underneath: a strong close says the big idea a new way (Strong Close).', q:'In TREE, the concluding statement is the…', o:['Ending','Topic sentence','Reason']}
+  ]}
+  };
+
+  var TEACH = {
+  'WRIT.ESSAY.L04.02':{hook:'How do you get people to agree with you?', big:'Plan an opinion with TREE: Topic sentence, Reasons, Explain, Ending.',
+    intro:['T: tell your opinion in one clear sentence.','R: give three reasons why.','E: explain each reason: say more, or give an example.','E: end by saying your opinion again.'],
+    ex:[{q:'Chaim: a Lag BaOmer bonfire',steps:['T: Our street should have a bonfire.','R: We can sing together.','E: Everyone sits in a circle and sings.','E: That is why our street needs a bonfire.'],a:'A full TREE plan.'},
+        {q:'Dovid: a barbecue',steps:['R: Everyone can eat together.','E: Every family brings one kosher dish to share.'],a:'A reason, then its explanation.'}],
+    oops:{q:'Chaim’s plan for a bonfire.',wrong:'R: Barbecues are tasty.',right:'R: We can all sing together around the fire.',why:'A reason must support YOUR opinion, not the other side.'},
+    idea:['A TREE has a trunk (your opinion), branches (reasons) and leaves (the explaining).'],
+    try:{q:'Which is a reason for a bonfire?',o:['The fire lights up the night.','Burgers taste good.','My shoes are new.'],a:'The fire lights up the night.',steps:['Does it support the bonfire?']}},
+  'WRIT.PARA.L04.10':{hook:'How does a reader know what you think, right away?', big:'Introduce the topic and tell your opinion in the first sentence.',
+    intro:['Name the topic.','Tell what you think, with an opinion word: I think, I believe, should, the best.','A fact can be checked; an opinion is what you think.','Never just “I will tell you about…”.'],
+    ex:[{q:'Topic: the library',steps:['Topic: the school library.','What I think: it should stay open at lunch.'],a:'Our school library should stay open at lunch.'},
+        {q:'Fact or opinion?',steps:['“The park opens at nine.” You can check it: a fact.','“The park is the best place.” What someone thinks: an opinion.'],a:'Know the difference.'}],
+    oops:{q:'Opening an opinion piece.',wrong:'I will tell you about Lag BaOmer.',right:'Our street should have a bonfire this Lag BaOmer.',why:'Tell the topic AND what you think.'},
+    idea:['A fact is a ruler: you can measure it. An opinion is your favorite color.'],
+    try:{q:'Which is an opinion?',o:['Recess should be longer.','Recess is at noon.','Recess is in the yard.'],a:'Recess should be longer.',steps:['Look for “should”.']}},
+  'WRIT.PARA.L04.11':{hook:'How do you make your opinion strong?', big:'Give reasons that really support your opinion.',
+    intro:['After your opinion, ask: Why?','Each answer is a reason.','Keep only reasons that support YOUR side.','“It is good because it is good” is not a reason.'],
+    ex:[{q:'Opinion: our class should have a reading corner',steps:['Why? Boys would read more.','Why? A quiet spot helps us think.'],a:'Two real reasons.'},
+        {q:'Reasons from a book',steps:['Opinion: Chaim loves to read.','Proof from the book: “Chaim Weiss read every book in the shul library.”'],a:'A reason with proof from the text.'}],
+    oops:{q:'Opinion: we should have a barbecue.',wrong:'A bonfire lets everyone sing.',right:'Everyone can eat together.',why:'The first reason is for the other side.'},
+    idea:['Reasons are the legs of a table: no legs, and the opinion falls.'],
+    try:{q:'Which is a real reason?',o:['Trees give shade.','Trees are trees.','My bike is red.'],a:'Trees give shade.',steps:['Does it tell why?']}},
+  'WRIT.PARA.L04.12':{hook:'How do you join your reasons to your opinion?', big:'Link with because, since, therefore and for example.',
+    intro:['because, since: give the reason.','for example: show an example.','therefore: means “so”: what should happen.','Read it out loud: does it make sense?'],
+    ex:[{q:'Bonfire and singing',steps:['Opinion + because + reason.'],a:'We should have a bonfire because we can sing together.'},
+        {q:'A barbecue feeds everyone',steps:['Give an example.'],a:'For example, the Levis can bring corn.'}],
+    oops:{q:'Trees help birds. ___ robins nest in them.',wrong:'Because, robins nest in them.',right:'For example, robins nest in them.',why:'Robins are an example, so use “for example”.'},
+    idea:['Linking words are bridges: to the why, to an example, or to the result.'],
+    try:{q:'“We should rest ___ we are tired.”',o:['because','for example','therefore'],a:'because',steps:['The second part tells why.']}},
+  'WRIT.PARA.L04.13':{hook:'How do you end so the reader remembers what you want?', big:'End with a concluding statement: your opinion again, in new words.',
+    intro:['Say your opinion again in new words.','You can ask the reader to do something.','No new reasons at the end.','Never just “The end.”'],
+    ex:[{q:'Bonfire piece',steps:['Opinion again, new words.'],a:'That is why our street needs a Lag BaOmer bonfire.'},
+        {q:'Ask the reader to act',steps:['Tell him what to do.'],a:'So come and sing with us at the fire!'}],
+    oops:{q:'Ending of the bonfire piece.',wrong:'Also, a bonfire is easy to build.',right:'That is why our street needs a bonfire.',why:'A new reason does not end the piece.'},
+    idea:['The ending is the last knock on the door: it reminds the reader what you want.'],
+    try:{q:'Which can start an ending?',o:['That is why','Another reason','For example'],a:'That is why',steps:['Endings wrap up.']}}
+  };
+
+  var HOWTO = {
+  'WRIT.ESSAY.L04.02':{s:'T: tell your opinion.\nR: give three reasons.\nE: explain each reason.\nE: end with your opinion again.'},
+  'WRIT.PARA.L04.10':{s:'Name the topic.\nTell what you think: I think, I believe, should, needs, the best.\nA fact can be checked. An opinion is what you think.\nNever “I will tell you about…”.'},
+  'WRIT.PARA.L04.11':{s:'Ask: Why?\nEach answer is a reason.\nKeep reasons for YOUR side.\nRepeating the opinion is not a reason.'},
+  'WRIT.PARA.L04.12':{s:'because, since: the why.\nfor example: an example.\ntherefore: so.\nRead it out loud.'},
+  'WRIT.PARA.L04.13':{s:'Say your opinion again in new words.\nOr ask the reader to act.\nNo new reasons.\nNever “The end.”'}
+  };
+
+  var BITE = {
+  'WRIT.ESSAY.L04.02':{ band:'B23', pic:'🔥', today:'Plan an opinion with TREE', why:'A plan helps people see why you are right.',
+    ready:[{q:'In POW, W means…', o:['Write and say more','Wait for help','Wipe the board'], a:'Write and say more'}],
+    bridge:'WRIT.ESSAY.L04.01', bridgeName:'POW + WWW',
+    watch:{ q:'The Shabbos Street News has a new page: Speak Up! Rabbi Feld asks: a bonfire or a barbecue for Lag BaOmer?', m:{type:'scene', e:'🔥', t:'Chaim says, “A bonfire!” Dovid says, “A barbecue!” Each one must convince the street.'}, steps:[
+      {t:'An opinion is what you think. Others may think something else.'},
+      {t:'Chaim plans with TREE. T: “Our street should have a Lag BaOmer bonfire.”'},
+      {t:'R: Reasons. “We can sing together. The fire lights up the night.”'},
+      {t:'E: Explain. “Everyone sits in a circle and sings.”'},
+      {t:'E: Ending. “That is why our street needs a bonfire!”'},
+      {t:'Dovid plans too. His reasons are for the barbecue, not the bonfire.'},
+      {t:'Grow a TREE with me! Trunk, branches, leaves, then hands up high!', m:{type:'move', t:'Stand tall like a trunk: T! Arms out like branches: R! Wiggle your fingers like leaves: E! Hands high: E, the ending!'}}], a:'TREE: Topic sentence, Reasons, Explain, Ending.' },
+    oops:{ q:'Chaim’s plan for a bonfire.', wrong:'R: Barbecues are tasty.', right:'R: We can all sing together around the fire.', why:'A reason must support YOUR opinion, not the other side.' },
+    ways:['worked example','movement','story map','Mistake Detective','tap the sentence','put it in order','match it','fill the gap','listen'], done:'You can plan an opinion with TREE! Tell your chavrusa your opinion and one reason.',
+    board:{ key:'Show me answers (for the rebbe): So let’s bring a fish tank to our class. · Then he will not trip on loose laces. · Reason', one:'TREE: Topic sentence (my opinion), Reasons (3), Explain each reason, Ending (my opinion again).', activity:'Hold a class vote on a small question (the best Shabbos dessert, kosher of course). Each side builds a TREE plan on the board.', mistakes:['A reason for the other side','No explaining','No ending'] },
+    do:[
+      {type:'storymap', slots:['T · Topic sentence','R · Reason','E · Explain','E · Ending'], cards:['Our street should have a Lag BaOmer bonfire.','We can all sing together.','Everyone sits in a circle and sings.','That is why our street needs a bonfire.'], extra:['Barbecues are tasty.'],
+        say:'Build Chaim’s TREE plan.', how:'Opinion, a reason, say more about it, then the ending.'},
+      {type:'sort', q:'Chaim’s plan: a bonfire.', bins:['Fits the plan','Mistake'], cards:[['We can sing together.',0],['The fire lights up the night.',0],['Barbecues are tasty.',1],['My cousin lives in Toronto.',1]], mis:true,
+        say:'Mistake Detective! Does it fit Chaim’s plan?', how:'A reason must support a bonfire.'}],
+    your:[
+      {type:'evidence', q:'Dovid’s plan. Which line is his topic sentence?', p:['Everyone can eat together.','Our street should have a barbecue on Lag BaOmer.','Every family can bring one dish.','So vote for the barbecue!'], a:1, look:'his opinion',
+        say:'Find Dovid’s topic sentence.', how:'Which line tells what he thinks?'},
+      {type:'order', steps:['Our shul should have a coat rack.','One reason is that coats keep falling off the chairs.','Last Shabbos, Zevi’s coat landed in a puddle by the door.','That is why our shul needs a coat rack.'],
+        say:'Put Zevi’s TREE plan in order.', how:'Opinion, reason, explain, then the ending.'},
+      {type:'match', pairs:[['We can sing together.','Everyone sits in a circle and sings.'],['A barbecue feeds everyone.','Every family brings one kosher dish.'],['A fire lights the night.','We can see each other’s faces.']],
+        say:'Match each reason to the line that explains it.', how:'Which line says more about that reason?'},
+      {type:'cloze', t:'Yaakov’s plan. T: Our family should get a bird feeder. R: Birds would visit every day. ___: We could watch blue jays from the kitchen window.', o:['Explain','Topic sentence','Ending'], a:'Explain',
+        say:'Which TREE part is the last line?', how:'Does it give the opinion, say more about a reason, or end?'},
+      {type:'listen', q:'“That is why every boy should learn to swim.”', hear:'That is why every boy should learn to swim.', o:['the Ending','a Reason','the Explain'], a:'the Ending',
+        say:'Listen. Which part of TREE is it?', how:'Does it start, give a reason, or wrap up?'}] },
+
+  'WRIT.PARA.L04.10':{ band:'B23', pic:'📣', today:'Start an opinion piece with your opinion', why:'The reader should know what you think right away.',
+    ready:[{q:'In TREE, the T is…', o:['the topic sentence','a reason','the ending'], a:'the topic sentence'}],
+    bridge:'WRIT.ESSAY.L04.02', bridgeName:'TREE Plan',
+    watch:{ q:'Dovid wrote his first line for Speak Up: “I will tell you about Lag BaOmer.” Avi laughs: “But what do you THINK?”', m:{type:'scene', e:'📣', t:'A Speak Up piece must say what the writer thinks, right at the start.'}, steps:[
+      {t:'A fact can be checked: “Lag BaOmer is in the spring.”'},
+      {t:'An opinion is what you think: “A barbecue is the best way to spend Lag BaOmer.”'},
+      {t:'Opinion words help: I think, I believe, should, the best.'},
+      {t:'Dovid fixes it: “I believe our street should have a barbecue.”'},
+      {t:'Now the reader knows the topic AND what Dovid thinks.'},
+      {t:'Say it with me! Fist up for a fact, thumb up for an opinion!', m:{type:'move', t:'Fist up: “The park opens at nine.” A fact! Thumb up: “The park is the best!” An opinion!'}}], a:'Name the topic and say what you think.' },
+    oops:{ q:'Opening an opinion piece.', wrong:'I will tell you about Lag BaOmer.', right:'Our street should have a bonfire this Lag BaOmer.', why:'Tell the topic AND what you think.' },
+    ways:['worked example','movement','sort it','tap the sentence','match it','fill the gap','build with tiles','find them all','listen','Mistake Detective'], done:'You can start an opinion piece! Now your reader knows what you think.',
+    board:{ key:'Show me answers (for the rebbe): Shabbos Street needs a new bench by the shul. · Our school library needs more books about science. · Someone could disagree with it.', one:'Introduce the topic and state the opinion in one clear sentence; know fact from opinion.', activity:'Read ten sentences aloud. Boys show a fist for a fact and a thumb for an opinion, then fix two “I will tell you about…” openings.', mistakes:['“I will tell you about…”','A fact instead of an opinion','No topic named'] },
+    do:[
+      {type:'sort', q:'Opening lines for Speak Up.', bins:['Clear opinion','Mistake'], cards:[['Our club should paint the clubhouse blue.',0],['This is about the clubhouse.',1],['I believe the library should stay open late.',0],['I am going to write now.',1]], mis:true,
+        say:'Mistake Detective! Clear opinion, or a mistake?', how:'Does it name the topic AND say what the writer thinks?'},
+      {type:'findall', grid:['I think','on Sunday','should','twelve','the best','I believe'], find:['I think','should','the best','I believe'], findSay:'word that shows an opinion',
+        say:'Tap every opinion word.', how:'Which words show what someone thinks?'}],
+    your:[
+      {type:'sort', bins:['Fact','Opinion'], cards:[['Lag BaOmer comes in the spring.',0],['The shul has two doors.',0],['Bonfires are the best part of Lag BaOmer.',1],['Recess is too short.',1]],
+        say:'Fact or opinion? Sort them.', how:'Can you check it? Or is it what someone thinks?'},
+      {type:'evidence', q:'Which first line introduces the topic AND an opinion?', p:['The sukkah is in the yard.','Let me tell you something.','Every boy should help set up the sukkah.','Sukkos is in the fall.'], a:2, look:'the topic plus what the writer thinks',
+        say:'Find the line that tells the opinion.', how:'Which one says what the writer thinks?'},
+      {type:'tiles', w:['I believe','our street should have','a Lag BaOmer bonfire.'], extra:['I will tell you about'],
+        say:'Build Chaim’s opening sentence.', how:'Opinion words first, then the topic.'},
+      {type:'cloze', t:'Recess ___ ten minutes longer.', o:['should be','is','was'], a:'should be',
+        say:'Pick the word that makes it an opinion.', how:'Which word tells what the writer wants?'},
+      {type:'listen', q:'“The best day for a picnic is Sunday.”', hear:'The best day for a picnic is Sunday.', o:['an opinion','a fact','a question'], a:'an opinion',
+        say:'Listen. Is it a fact or an opinion?', how:'Listen for “the best”.'}] },
+
+  'WRIT.PARA.L04.11':{ band:'B23', pic:'🦵', today:'Give reasons that really support your opinion', why:'Strong reasons make people agree with you.',
+    ready:[{q:'“Bonfires are the best.” This is…', o:['an opinion','a fact','a reason'], a:'an opinion'}],
+    bridge:'WRIT.PARA.L04.10', bridgeName:'Introduce the Topic',
+    watch:{ q:'Dovid’s Speak Up piece says: “We should have a barbecue because barbecues are good.” Naftali shakes his head.', m:{type:'scene', e:'🦵', t:'Naftali’s Zeidy says: “Reasons are the legs of a table. Is your table standing?”'}, steps:[
+      {t:'A reason tells WHY. Ask your opinion: Why?'},
+      {t:'Why a barbecue? “Everyone can eat together.” A real reason!'},
+      {t:'“Because barbecues are good” just says the opinion again. No leg!'},
+      {t:'“A bonfire is bright” is a reason for the OTHER side. It does not hold up Dovid’s table.'},
+      {t:'Reasons can come from a book too: find the sentence that proves it.'},
+      {t:'Stamp with me! One stamp for every real reason: stamp, stamp, stamp!', m:{type:'move', t:'Stamp one foot for each real reason: everyone eats, families share, little kids are safe! Three legs, the table stands!'}}], a:'A real reason tells why and supports YOUR side.' },
+    oops:{ q:'Opinion: we should have a barbecue.', wrong:'A bonfire lets everyone sing.', right:'Everyone can eat together.', why:'The first reason is for the other side.' },
+    ways:['worked example','movement','sort it','tap the proof in the book','match it','fill the gap','put it in order','listen','Mistake Detective'], done:'You can give reasons that support your opinion! Tell your chavrusa one reason from a book.',
+    board:{ key:'Show me answers (for the rebbe): Lost hats and gloves would be easy to find. · A bike lane is a bike lane, so we need one. · Chaim’s bike is blue and fast.', one:'A reason tells why and supports YOUR opinion; no repeats, no other side, no wandering off; reasons can come from a text.', activity:'Write one opinion on the board. Boys call out reasons; the class keeps only the ones that tell why for that side.', mistakes:['Repeating the opinion as a reason','A reason for the other side','A reason about something else'] },
+    do:[
+      {type:'sort', q:'Opinion: our street should plant more trees.', bins:['Real reason','Mistake'], cards:[['Trees give cool shade in summer.',0],['Trees are trees, so plant them.',1],['Birds can build nests in trees.',0],['My cousin has a new bike.',1]], mis:true,
+        say:'Mistake Detective! Real reason, or a mistake?', how:'A real reason tells why. It does not repeat or wander off.'},
+      {type:'proof', text:'C23.B1.01', q:'Opinion: Avi is the club’s map expert. Tap a sentence that proves it.', proof:[32,41,42], look:'what the book says about Avi and maps',
+        say:'Open the book. Find the proof.', how:'Look for what Avi says about the map.'}],
+    your:[
+      {type:'match', pairs:[['Our club should meet on Sunday.','Nobody has cheder on Sunday afternoon.'],['Every boy should learn to swim.','Swimming keeps you safe near water.'],['The shul should have a bike rack.','Boys could ride to davening.']],
+        say:'Match each opinion to its reason.', how:'Which reason tells why for that opinion?'},
+      {type:'evidence', q:'Opinion: our clubhouse needs a new roof. Which reason supports it?', p:['The clubhouse is in a garage.','Rain drips on our notebooks.','Avi likes jokes.','Our roof needs fixing because it needs fixing.'], a:1, look:'why the roof needs fixing',
+        say:'Find the reason that supports it.', how:'Which one tells WHY it needs a roof?'},
+      {type:'cloze', t:'Opinion: every boy should have a library card. One reason is that ___.', o:['he can borrow books for free','the library has a red door','library cards are good'], a:'he can borrow books for free',
+        say:'Finish the reason.', how:'Which one tells a real why?'},
+      {type:'listen', q:'“A garden is good because it is good.”', hear:'A garden is good because it is good.', o:['It repeats the opinion.','It is a real reason.','It is for the other side.'], a:'It repeats the opinion.',
+        say:'Listen. What is wrong with this reason?', how:'Does it tell a real why?'},
+      {type:'order', steps:['Our street should have a barbecue.','One reason is that everyone can eat together.','Another reason is that families can share food.','That is why a barbecue is the best plan.'],
+        say:'Put Dovid’s piece in order.', how:'Opinion first, then the reasons, then the ending.'}] },
+
+  'WRIT.PARA.L04.12':{ band:'B23', pic:'🌉', today:'Link reasons with because, therefore and for example', why:'Linking words help the reader follow your thinking.',
+    ready:[{q:'“Shmuli was hungry, ___ he ate a bagel.” Which word joins them?', o:['so','or','but'], a:'so'}],
+    bridge:'WRIT.SENT.L04.01', bridgeName:'Join It',
+    watch:{ q:'Chaim’s Speak Up piece sounds choppy: “We should have a bonfire. We can sing. Fires are bright. We should have one.”', m:{type:'scene', e:'🌉', t:'Rabbi Feld says, “Build bridges between your sentences!”'}, steps:[
+      {t:'“Because” gives the reason: “We should have a bonfire because we can sing together.”'},
+      {t:'“Since” works the same way: “Since the fire is bright, we can see everyone.”'},
+      {t:'“For example” shows an example: “We can sing songs. For example, we can sing Bar Yochai.”'},
+      {t:'“Therefore” means “so”: “Bonfires are bright and warm. Therefore, our street should have one.”'},
+      {t:'Now Chaim’s reasons hold hands with his opinion.'},
+      {t:'Chant it with me, and clap on each linking word!', m:{type:'chant', lines:['Because and since, they tell you why,','For example shows, give it a try!','Therefore means so, it tells the end,','Linking words, a writer’s best friend!']}}], a:'because, since: why · for example: an example · therefore: so.' },
+    oops:{ q:'Trees help birds. ___ robins nest in them.', wrong:'Because, robins nest in them.', right:'For example, robins nest in them.', why:'Robins are an example, so use “for example”.' },
+    ways:['worked example','chant','combine sentences','sort it','tap the sentence','match it','fill the gap','put it in order','listen','Mistake Detective'], done:'You can link your reasons! Read one linked sentence to your chavrusa.',
+    board:{ key:'Show me answers (for the rebbe): since · For example · Therefore', one:'because and since give the reason; for example gives an example; therefore means so.', activity:'Give pairs two cut-up sentences and three linking-word cards. They choose the card that makes it make sense, and read it aloud.', mistakes:['“Because,” starting an example','“Therefore” before a reason','No linking words at all'] },
+    do:[
+      {type:'combine', a:'Our street should have a bonfire.', b:'We can sing together.', o:['because','therefore','or'], j:'because',
+        say:'Careful! Join the opinion to its reason.', how:'The second part tells why. Which word gives the why?'},
+      {type:'sort', q:'Linking words.', bins:['Right','Mistake'], cards:[['We should plant trees because they give shade.',0],['We should plant trees therefore they give shade.',1],['Trees help birds. For example, robins nest in them.',0],['Trees help birds. Because, robins nest in them.',1]], mis:true,
+        say:'Mistake Detective! Right word, or a mistake?', how:'Because gives the why. For example gives an example.'}],
+    your:[
+      {type:'match', pairs:[['because','gives the reason'],['for example','gives an example'],['therefore','means “so”']],
+        say:'Match each linking word to its job.', how:'Does it tell why, show, or tell what follows?'},
+      {type:'cloze', t:'Fruit makes a good snack. ___, apples are sweet and crunchy.', o:['For example','Therefore','Because'], a:'For example',
+        say:'Pick the linking words.', how:'Apples are one fruit. Is that an example?'},
+      {type:'evidence', q:'Which sentence uses “therefore” the right way?', p:['The roof leaks. Therefore, we need a new one.','We need a new roof. Therefore, the roof leaks.','The roof leaks. Therefore, rain is wet.','Therefore. The roof leaks, we need one.'], a:0, look:'what happens because of the first part',
+        say:'Find the right “therefore”.', how:'Read it out loud. Does “so” fit there?'},
+      {type:'listen', q:'“We should rest, since we walked all day.”', hear:'We should rest, since we walked all day.', o:['gives a reason','gives an example','means so'], a:'gives a reason',
+        say:'Listen. What does “since” do here?', how:'Does it tell why?'},
+      {type:'order', steps:['Our shul should have a bike rack.','One reason is that boys could ride to davening.','For example, Moshe and Yaakov could ride over from across town.','Therefore, the shul needs a bike rack.'],
+        say:'Put the paragraph in order.', how:'Opinion, reason, example, then “therefore”.'}] },
+
+  'WRIT.PARA.L04.13':{ band:'B23', pic:'🚪', today:'End an opinion piece strongly', why:'A strong ending makes the reader remember what you want.',
+    ready:[{q:'A strong close says the big idea…', o:['a new way','word for word again','with a brand-new detail'], a:'a new way'}],
+    bridge:'WRIT.PARA.L04.04', bridgeName:'Strong Close',
+    watch:{ q:'Chaim’s Speak Up piece ends: “Also, fires are warm. The end.” Avi says, “Wait, what do you want us to do?”', m:{type:'scene', e:'🚪', t:'The ending is the last knock on the door.'}, steps:[
+      {t:'A concluding statement says the opinion again, in new words.'},
+      {t:'“That is why our street needs a Lag BaOmer bonfire.”'},
+      {t:'It can also ask the reader to act: “Come and sing with us at the fire!”'},
+      {t:'Not a new reason at the end: “Also, fires are warm.” That belongs in the middle.'},
+      {t:'And never just “The end.”'},
+      {t:'Knock with me, three knocks, and say it: That is why!', m:{type:'move', t:'Knock, knock, knock on the desk! Then point to the class: That is why our street needs a bonfire!'}}], a:'Say the opinion again in new words, or ask the reader to act.' },
+    oops:{ q:'Ending of the bonfire piece.', wrong:'Also, a bonfire is easy to build.', right:'That is why our street needs a bonfire.', why:'A new reason does not end the piece.' },
+    ways:['worked example','movement','sort it','tap the sentence','match it','fill the gap','put it in order','story map','listen','Mistake Detective'], done:'You can end an opinion piece! Your Speak Up piece is ready to plan.',
+    board:{ key:'Show me answers (for the rebbe): So let’s ask the gabbai for a fountain by the door! · It brings in something new instead of wrapping up. · That is why every boy needs his own library card.', one:'End with the opinion again in new words, or ask the reader to act; no new reasons; never “The end.”', activity:'Read an opinion piece with three possible endings. The class votes for the strongest and says why the others are weak.', mistakes:['A new reason at the end','Copying the topic sentence word for word','“The end.”'] },
+    do:[
+      {type:'sort', q:'Endings for “our street should plant more trees”.', bins:['Strong ending','Weak ending'], cards:[['So let’s plant trees on every corner!',0],['The end.',1],['Also, trees can be tall.',1],['That is why our street needs more trees.',0]], mis:true,
+        say:'Mistake Detective! Strong ending, or weak?', how:'A weak ending stops, or adds a new reason.'},
+      {type:'match', pairs:[['The end.','It just stops.'],['Also, fires are warm.','It adds a new reason.'],['Our street should have a bonfire.','It copies the topic sentence.']],
+        say:'Match each weak ending to what is wrong.', how:'Does it stop, add, or copy?'}],
+    your:[
+      {type:'evidence', q:'Opinion: every boy should learn to swim. Which is the strong ending?', p:['Also, pools have slides.','The end.','So sign up for swim lessons this summer!','Every boy should learn to swim.'], a:2, look:'what the reader should do',
+        say:'Find the strong ending.', how:'Which one wraps up and asks the reader to act?'},
+      {type:'cloze', t:'Chaim’s last line: “___ our street needs a Lag BaOmer bonfire.”', o:['That is why','Another reason is that','For example,'], a:'That is why',
+        say:'Finish the concluding statement.', how:'Which words wrap up the piece?'},
+      {type:'storymap', slots:['T · Topic sentence','R · Reason','E · Explain','E · Ending'], cards:['Our club should paint the clubhouse.','The old paint is peeling off.','For example, paint chips fell on our map today.','So grab a brush and help us paint!'], extra:['Also, paint is wet.'],
+        say:'Build the opinion piece, ending last.', how:'Which card wraps it up?'},
+      {type:'listen', q:'“Come to the meeting and vote for the barbecue!”', hear:'Come to the meeting and vote for the barbecue!', o:['asks the reader to act','adds a new reason','copies the topic'], a:'asks the reader to act',
+        say:'Listen. What kind of ending is it?', how:'Does it tell the reader what to do?'},
+      {type:'order', steps:['Our club should paint the clubhouse.','One reason is that the old paint is peeling off.','Another reason is that fresh paint would make it look new.','So grab a brush and help us paint!'],
+        say:'Put the opinion piece in order.', how:'Opinion, reasons, then the ending.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+
+  /* Unit W13.U33 = Grade 3, Unit 3 "Opinion with Reasons". The real task (map: Gr 3 pieces 6 and 7): ONE Writing Workshop piece. The boy picks:
+     the "Speak Up" question (piece 6), or an opinion about the club book he read, with reasons from it (piece 7). */
+  var PIECE6 = { id: 'W13.OPIN3.01', title: 'Speak Up!', grade: 3, kind: 'opinion',
+    prompt: 'Write for the Speak Up page of The Shabbos Street News. Pick one: (1) Should our street have a Lag BaOmer bonfire or a barbecue? (2) Which club member would you want on your team to find the other half of the map? Look back at page 3 of “Half a Map” (chapter 1 of The Shabbos Street Club and the Missing Map) and give reasons from the book. Tell your opinion, give three reasons, explain each one, and end strongly.',
+    strategy: { name: 'POW + TREE', steps: [['P', 'Pick my idea'], ['O', 'Organize my notes: TREE'], ['W', 'Write and say more']],
+      more: [['T', 'Topic sentence: my opinion'], ['R', 'Reasons: three'], ['E', 'Explain each reason'], ['E', 'Ending: my opinion again']] },
+    plan: [ { k: 'topic', label: 'T · My opinion', hint: 'Our street should have a… / I want … on my team.' },
+            { k: 'r1', label: 'R + E · Reason 1 (and explain)', hint: 'One reason is… For example…' },
+            { k: 'r2', label: 'R + E · Reason 2 (and explain)', hint: 'Another reason is…' },
+            { k: 'r3', label: 'R + E · Reason 3 (and explain)', hint: 'Also… because…' },
+            { k: 'end', label: 'E · My ending', hint: 'That is why… / So come and…' } ],
+    starters: ['I believe', 'One reason is', 'because', 'For example,', 'Another reason is', 'Therefore,', 'That is why'],
+    min: 70,
+    checks: [
+      { t: 'I wrote at least 8 sentences.', sentences: 8 },
+      { t: 'My first sentence tells my opinion, with words from my plan.', first: 'topic' },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I linked my reasons with because, since, for example or therefore.', any: ['because', 'since', 'for example', 'therefore'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'Every reason supports MY opinion. (Book question: each reason comes from the chapter.)', self: true },
+      { t: 'For the book question: I used words from page 3 to prove each reason.', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['My opinion is clear at the start', 'Three reasons that support it', 'Each reason explained', 'Linking words', 'A strong concluding statement', 'Capitals, end marks and spelling'],
+    pics: ['🔥', '🌭', '🗺️', '📣'] };
+
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U33', title: 'Opinion with Reasons', c: 'WRIT', grade: 3,
+    skills: ['WRIT.ESSAY.L04.02', 'WRIT.PARA.L04.10', 'WRIT.PARA.L04.11', 'WRIT.PARA.L04.12', 'WRIT.PARA.L04.13'],
+    review: ['WRIT.ESSAY.L04.01', 'WRIT.PARA.L04.06', 'WRIT.PARA.L04.09'], n: 10, pre: 'lessons', task: PIECE6,
+    items: [
+      { skill: 'WRIT.ESSAY.L04.02', type: 'evidence', q: 'Meir’s reason: “A game gets everyone talking at the Shabbos table.” Which line explains it?', p: ['When we played a riddle game last Shabbos, even Bubby and the twins joined in.', 'Our family should start a Shabbos table game.', 'That is why we need a game.', 'Some games come in a big red box with many pieces, cards and a spinner in the middle.'], a: 0, look: 'more about the reason', say: 'Find the line that explains it.', how: 'Which line gives an example of everyone talking?' },
+      { skill: 'WRIT.PARA.L04.10', type: 'evidence', q: 'Which first line introduces the topic AND an opinion?', p: ['This piece is about our shul kiddush.', 'I believe our kiddush should have more fruit.', 'Our kiddush is in the big room.', 'Let me tell you all about the kiddush at our shul.'], a: 1, look: 'the topic plus what the writer thinks', say: 'Find the opening with an opinion.', how: 'Which one names the topic and says what the writer thinks?' },
+      { skill: 'WRIT.ESSAY.L04.02', type: 'evidence', q: 'Ezra’s plan: “Our class should grow a garden.” Which line is a reason?', p: ['Our class should grow a garden.', 'We could eat our own fresh cucumbers.', 'That is why we need a garden.', 'Gardens need dirt and many seeds and sun.'], a: 1, look: 'why the class should grow a garden', say: 'Find the reason in Ezra’s plan.', how: 'Which line answers “Why?”' },
+      { skill: 'WRIT.PARA.L04.10', type: 'evidence', q: 'Which sentence is an opinion?', p: ['The shul has a big clock on the wall.', 'The shul clock rings every hour.', 'The shul needs a quieter clock.', 'The shul clock is made of wood and brass.'], a: 2, look: 'what someone thinks', say: 'Find the opinion.', how: 'Which one can you not check? Which one tells what someone wants?' },
+      { skill: 'WRIT.PARA.L04.11', type: 'evidence', q: 'Opinion: “Our class should have a pet bird.” Which reason supports it?', p: ['A bird is a bird, so we want one.', 'Birds sing, and their songs are cheerful.', 'Cats like to chase birds in the yard.', 'My uncle lives in Monsey with his whole family.'], a: 1, look: 'a real why for a pet bird', say: 'Find the reason that supports it.', how: 'Which one gives a real why?' },
+      { skill: 'WRIT.PARA.L04.12', type: 'evidence', q: 'Which choice uses its linking word the right way?', p: ['We can sled down the hill. For example, snow is fun.', 'Snow is fun. For example, we can sled down the hill.', 'We can sled down the hill. Therefore, snow is white and cold.', 'Snow is fun. Therefore, for example, it is cold.'], a: 1, look: 'one example of how snow is fun', say: 'Find the linking word used right.', how: 'Sledding is one fun thing to do in snow. Which word brings in one example?' },
+      { skill: 'WRIT.PARA.L04.13', type: 'evidence', q: 'Opinion: “Our street should have a book swap.” Which concluding statement is strong?', p: ['Also, some books have hard covers and some books have soft covers.', 'The end of my piece is here.', 'So bring a book you love, and take home a new one!', 'Our street should have a book swap.'], a: 2, look: 'the opinion again, or what the reader should do', say: 'Find the strong ending.', how: 'Which one wraps up without a new reason or a copy?' },
+      { skill: 'WRIT.PARA.L04.12', type: 'cloze', t: 'We need a new ball ___ ours has a hole.', o: ['because', 'therefore', 'for example'], a: 'because', say: 'Pick the linking word.', how: 'The second part tells why. Which word gives the why?' }
+    ] });
+})();
+</script>

@@ -144,7 +144,9 @@ async function page(pg, rep) {
     if (!fails.length) oks.push('Reader: cover, pages, tap a word for its meaning, Back from Grade 3, chapter done and kept, tap the sentence that proves it (miss names the step, no early answer), K-1 band; button system only, no sideways scroll at 1366 and 390');
   }
   try { const k1 = await require('./corek1.js')(pg); k1.fails.forEach(f => fails.push(f)); k1.oks.forEach(o => oks.push(o)); } catch (e) { fail('K-1 games crashed: ' + String(e).slice(0, 200)); }
+  try { const ks = await require('./corestory.js')(pg); ks.fails.forEach(f => fails.push(f)); ks.oks.forEach(o => oks.push(o)); } catch (e) { fail('K-1 listen-along story test crashed: ' + String(e).slice(0, 200)); }   /* job F helper: the story piece (CoreK1.html) and CoreDataFH3 */
   try { const un = await require('./coreunits.js').page(pg); un.fails.forEach(f => fails.push(f)); un.oks.forEach(o => oks.push(o)); } catch (e) { fail('unit checks (page) crashed: ' + String(e).slice(0, 200)); }
+  try { const su = await require('./ssunits.js').page(pg); su.fails.forEach(f => fails.push(f)); su.oks.forEach(o => oks.push(o)); } catch (e) { fail('Social Studies unit checks crashed: ' + String(e).slice(0, 200)); }   /* HoS 2026-11-25 (#432): src/CoreDataS11.html */
   try { const cu = await require('./corewriteui.js')(pg); cu.fails.forEach(f => fails.push(f)); cu.oks.forEach(o => oks.push(o)); } catch (e) { fail('Writing Workshop screens crashed: ' + String(e).slice(0, 200)); }
   await pg.setViewportSize({ width: 390, height: 844 });
   try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push('390px: ' + f)); } catch (e) { fail('new activity kinds (390 px) crashed: ' + String(e).slice(0, 200)); }

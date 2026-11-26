@@ -1,0 +1,324 @@
+<script>
+/* CoreDataC68H3.html: Core Growth job C68, helper piece "Grade 8, Units 8.5-8.8" (docs/core-growth/C68-map.md, section 3), second data file. Keep this file under 150 KB.
+   Unit 8.8 "Old Stories, New Stories": new skills READ.LIT.L09.11 (an old pattern in a new story), READ.LIT.L09.12 (book and film),
+   READ.LIT.L09.13 (what the book means to me, proved), READ.FLU.L09.03 (a speech: pace, pause and the line people remember) with TLCORE.add,
+   and the existing READ.LIT.L09.02 "Long Book Builder" rebuilt as a One Bite lesson (TLCORE.upgrade).
+   Texts: texts/C68/C68.JRN.01 (story "The Long Way to the Chasuna"), C68.SP.01 (Akiva's graduation speech "The Last Edition").
+   Cast: The Beacon newsroom (docs/core-growth/W48-map.md, section 7). No double slash in this file. */
+(function () {
+  var LESSONS = {
+
+    /* ===== Unit 8.8, skill 2: an old pattern in a new story ===== */
+    'READ.LIT.L09.11':{name:'Old Pattern, New Story',
+      teach:[
+        {q:'Many stories, old and new, follow the same journey pattern. What usually comes first?', o:['the call: a reason to set out','the return home','the big test'], how:'The journey starts with a call: a reason the hero must leave home.'},
+        {q:'On the road, an older, wiser person helps the hero. What is he called in the pattern?', o:['the guide','the call','the return'], how:'The guide does not do the work for the hero. He shows him how.'},
+        {q:'At the end, the hero comes home changed. How do we know he has changed?', o:['he does for someone else what was done for him','he forgets the trip','he never travels again'], how:'The return shows the change: the hero now gives what he was given.'}
+      ],
+      practice:[
+        {t:'order', q:'Put the stages of the journey pattern in order.', tiles:['the call','the departure','the guide','the tests','the return'], h:'Leave, learn, come back changed.'},
+        {t:'pairs', q:'Match each part of Benny\'s story to its stage.', pairs:[['his brother\'s chasuna, far away','the call'],['Mr. Ashkenazi','the guide'],['asking strangers for a ride','the tests'],['sharing his apple with a younger boy','the return']], h:'Which stage does each moment play?'},
+        {t:'sort', q:'Stage, or just a detail?', bins:[{id:'s',label:'a stage of the pattern'},{id:'d',label:'a detail'}], items:[{label:'the bus breaks down',bin:'s'},{label:'an old man offers help',bin:'s'},{label:'the bus seats are blue',bin:'d'},{label:'he packed two apples',bin:'d'}], h:'Does it move the hero along the journey?'},
+        {t:'spotall', q:'Tap every sign that the hero has changed at the return.', cells:[{label:'he helps someone else the way he was helped',ok:true},{label:'he can do alone what he could not before',ok:true},{label:'he understands something new',ok:true},{label:'he gets home on time',ok:false}], h:'Change is inside the hero, not just on the map.'},
+        {t:'pairs', q:'Match each part of an old book, Kidnapped, to its stage.', pairs:[['a boy leaves home after his father dies','the call'],['a Highland fighter shows him how to survive','the guide'],['he is shipwrecked, alone on an island','the dark moment'],['he comes home and claims his family\'s house','the return']], h:'Old stories use the same stages.'},
+        {t:'sort', q:'Why do authors reuse an old pattern?', bins:[{id:'y',label:'a good reason'},{id:'n',label:'not a reason'}], items:[{label:'readers feel the shape and lean in',bin:'y'},{label:'it lets a new story echo great old ones',bin:'y'},{label:'it saves the author from thinking',bin:'n'},{label:'every story must be the same',bin:'n'}], h:'What does a familiar shape give the reader?'}
+      ],
+      check:[
+        {q:'In a new story, a boy\'s grandfather is ill far away, and the boy must travel to him alone. Which stage is this?', o:['the call','the guide','the return']},
+        {q:'On the trip, a ferry captain teaches the boy to read the tide charts. Which stage is he?', o:['the guide','the call','the dark moment']},
+        {q:'Back home, the boy teaches his little brother to read the tide charts. What does this show?', o:['he does for someone else what was done for him','he forgot the trip','the story has no pattern']}
+      ],
+      re:[
+        {q:'In a story, a fire closes the only road, so a boy must carry medicine to the next town. Which stage is this?', o:['the call','the guide','the return']},
+        {q:'An old shepherd shows the boy a path over the hill. Which stage is he?', o:['the guide','the call','the dark moment']},
+        {q:'Years later, the boy shows a lost traveler the same path. What does this show?', o:['he does for someone else what was done for him','he forgot the trip','the story has no pattern']}
+      ]},
+
+    /* ===== Unit 8.8, skill 3: book and film ===== */
+    'READ.LIT.L09.12':{name:'Book and Film',
+      teach:[
+        {q:'A book tells you what a character thinks. How can a film show it?', o:['through his face, his actions, or a voice-over','it cannot show it at all','by printing the words on the screen'], how:'A film must turn thoughts into pictures: a face, an action, a voice.'},
+        {q:'A film of a long book cuts some scenes. Why?', o:['to fit the time','because the scenes were wrong','to make it more confusing'], how:'A two-hour film cannot hold every page.'},
+        {q:'A film adds music when the bus breaks down. What does the music do?', o:['it tells the audience how to feel','it gives a fact','it changes the plot'], how:'Music sets the mood, the way word choice does in a book.'}
+      ],
+      practice:[
+        {t:'sort', q:'Who does it better?', bins:[{id:'b',label:'the book'},{id:'f',label:'the film'}], items:[{label:'what Benny is thinking',bin:'b'},{label:'how loud the rain sounds',bin:'f'},{label:'a long memory from 1961',bin:'b'},{label:'how fast the train moves',bin:'f'}], h:'Thoughts and memories: words. Sound and motion: film.'},
+        {t:'pairs', q:'Match each film choice to its reason.', pairs:[['cut the math test scene','to fit the time'],['add a voice-over of Benny','to show his thoughts'],['add soft music on the train','to set the mood'],['show his hands shaking','to show his fear without words']], h:'Why would a director make each change?'},
+        {t:'spotall', q:'Tap every way a film can show a character\'s feelings.', cells:[{label:'his face up close',ok:true},{label:'what he does',ok:true},{label:'a voice-over',ok:true},{label:'music',ok:true},{label:'a footnote',ok:false}], h:'A film shows; it does not explain in footnotes.'},
+        {t:'order', q:'Put the steps for comparing a book and its film in order.', tiles:['Read the scene in the book.','Watch the same scene in the film.','List what the film changed.','Ask why each change was made.'], h:'Book first, then film, then why.'},
+        {t:'sort', q:'Change that keeps the meaning, or change that breaks it?', bins:[{id:'k',label:'keeps the meaning'},{id:'x',label:'breaks the meaning'}], items:[{label:'Benny calls home in the rain, not in the bus',bin:'k'},{label:'the van becomes a pickup truck',bin:'k'},{label:'Benny never helps anyone',bin:'x'},{label:'Benny refuses to ask anyone',bin:'x'}], h:'Does the change hurt what the story teaches?'},
+        {t:'pairs', q:'Match each book moment to the best film choice.', pairs:[['"Asking was the hardest part."','a long close-up of his face'],['the train passing fields at dusk','a wide shot with soft music'],['his memory of the index card','a quick flash of the card']], h:'How would you show it without words on the screen?'}
+      ],
+      check:[
+        {q:'In the book, Dovid silently worries about his father. The film cannot print his thoughts. What could it use?', o:['through his face, his actions, or a voice-over','it cannot show it at all','by printing the words on the screen']},
+        {q:'A 300-page book becomes a 90-minute film, and the long boat chapter is gone. Why?', o:['to fit the time','because the chapter was wrong','to make it more confusing']},
+        {q:'The film plays slow, low music as the boys search the dark cellar. What does the music do?', o:['it tells the audience how to feel','it gives a fact','it changes the plot']}
+      ],
+      re:[
+        {q:'In the book, Yanky secretly regrets his words. The film cannot print his thoughts. What could it use?', o:['through his face, his actions, or a voice-over','it cannot show it at all','by printing the words on the screen']},
+        {q:'A long book becomes a short film, and two cousins become one character. Why?', o:['to fit the time','because the cousins were wrong','to make it more confusing']},
+        {q:'The film plays bright, fast music as the team runs onto the field. What does the music do?', o:['it tells the audience how to feel','it gives a fact','it changes the plot']}
+      ]},
+
+    /* ===== Unit 8.8, skill 4: what the book means to me, proved ===== */
+    'READ.LIT.L09.13':{name:'What It Means to Me',
+      teach:[
+        {q:'You say a story taught you something. What must you add?', o:['proof from the text','how long the story is','who your favorite character is'], how:'A personal reading is strongest when the text backs it up.'},
+        {q:'"This story teaches that asking for help is brave." Is that a theme or a summary?', o:['a theme','a summary','a fact'], how:'A summary tells what happened. A theme tells what it means.'},
+        {q:'Your reading says the story is about luck. The text shows Benny earning every step. Your reading is...', o:['not supported','supported by the text','a summary'], how:'If the text points the other way, your reading needs to change.'}
+      ],
+      practice:[
+        {t:'sort', q:'Theme, or summary?', bins:[{id:'t',label:'a theme'},{id:'s',label:'a summary'}], items:[{label:'Growing up means learning to ask.',bin:'t'},{label:'Benny takes a bus to Cleveland.',bin:'s'},{label:'Kindness opens doors.',bin:'t'},{label:'The bus breaks down in the rain.',bin:'s'}], h:'What it means, or what happened?'},
+        {t:'pairs', q:'Match each reading to its verdict.', pairs:[['"Kindness opens doors": he helps, then gets a ride.','supported by the text'],['"The story is about luck": every step is earned.','not supported'],['"Benny went to a wedding."','a summary']], h:'Does the text back it up?'},
+        {t:'order', q:'Put the steps for a proved personal reading in order.', tiles:['Say what the story means to you.','Find a sentence that shows it.','Explain how the sentence proves it.','Check that nothing in the text points the other way.'], h:'Meaning, proof, explanation, check.'},
+        {t:'spotall', q:'Tap every strong way to prove your reading.', cells:[{label:'quote the exact words',ok:true},{label:'explain how the words show it',ok:true},{label:'use more than one moment',ok:true},{label:'say "I just feel it"',ok:false},{label:'tell what happened in a different book',ok:false}], h:'Proof comes from the text.'},
+        {t:'sort', q:'Speech: "A newspaper is a promise." Which readings does the speech support?', bins:[{id:'y',label:'supported by the text'},{id:'n',label:'not supported'}], items:[{label:'Honesty matters beyond the newspaper.',bin:'y'},{label:'Mistakes are how you get better.',bin:'y'},{label:'The editors were glad it was over.',bin:'n'},{label:'Only good writers should try.',bin:'n'}], h:'Find words in the speech that back it up.'},
+        {t:'pairs', q:'Match each claim to the best proof.', pairs:[['Benny grew up on the trip.','He cut his last apple in half for a younger boy.'],['Asking was hard for Benny.','He wanted to sit down and wait.'],['The guide made Benny act for himself.','"You will not walk it. You will ask."']], h:'Which moment shows each claim?'}
+      ],
+      check:[
+        {q:'"The story is about a boy who loses a race." Is that a theme or a summary?', o:['a summary','a theme','a fact']},
+        {q:'Story: Moshe lost the spelling bee. That night he made 200 word cards and studied every one. A year later he won. Reading: "Hard work after a loss pays off." This reading is...', o:['supported by the text','not supported','a summary']},
+        {q:'A boy writes: "The story shows that cheating pays." In the text, the cheater loses his friends and the prize. His reading is...', o:['not supported','supported by the text','a summary']}
+      ],
+      re:[
+        {q:'"The story is about two brothers who build a boat." Is that a theme or a summary?', o:['a summary','a theme','a fact']},
+        {q:'Story: Dovi admits he broke the window. He pays for it from his savings, and his neighbor asks him to help in the store. Reading: "Honesty can cost you, and still pay you back." This reading is...', o:['supported by the text','not supported','a summary']},
+        {q:'A boy writes: "The story shows that friends do not matter." In the text, the hero is saved by his friends. His reading is...', o:['not supported','supported by the text','a summary']}
+      ]},
+
+    /* ===== Unit 8.8 fluency: a speech ===== */
+    'READ.FLU.L09.03':{name:'Give the Speech',
+      teach:[
+        {q:'A speech has one line the speaker wants people to remember. How should you say it?', o:['slow and clear, with a pause before it','fast, to get it over with','in a whisper'], how:'Pause, then say the line slowly and clearly. Let it land.'},
+        {q:'Where should a speaker pause?', o:['after an important sentence, before a new idea','in the middle of a word','never'], how:'A pause gives the listener time to think.'},
+        {q:'A speech has a list: "Check it. Be fair. Tell the truth." How do you read it?', o:['each part strong, with a short beat between','all in one breath','skip the middle one'], how:'Lists in speeches are built to be heard. Give each part its beat.'}
+      ],
+      practice:[
+        {t:'sort', q:'Slow down, or keep the pace?', bins:[{id:'s',label:'slow down'},{id:'k',label:'keep the pace'}], items:[{label:'the line people remember',bin:'s'},{label:'a list of three',bin:'s'},{label:'thanking the guests by name',bin:'k'},{label:'a story about the broken stapler',bin:'k'}], h:'Big ideas slow. Warm-ups move.'},
+        {t:'order', q:'Put the steps for practicing a speech in order.', tiles:['Read it silently for meaning.','Mark the pauses and the line to remember.','Read it aloud slowly.','Read it to a listener, looking up.'], h:'Understand, mark, practice, deliver.'},
+        {t:'spotall', q:'Tap every habit of a strong speaker.', cells:[{label:'look up at the listeners',ok:true},{label:'pause before the big line',ok:true},{label:'speak a little slower than talking',ok:true},{label:'read with your eyes glued to the page',ok:false},{label:'rush the ending',ok:false}], h:'What helps listeners hear and remember?'},
+        {t:'pairs', q:'Match each mark on a speech to what it means.', pairs:[['/','a short pause'],['//','a long pause'],['underline','say it with weight'],['(look up)','eyes on the listeners']], h:'Speakers mark their pages so they remember.'},
+        {t:'sort', q:'Akiva\'s speech. Which lines get a long pause before them?', bins:[{id:'p',label:'pause before it'},{id:'n',label:'no long pause'}], items:[{label:'A newspaper is a promise.',bin:'p'},{label:'Good. Now do it better.',bin:'p'},{label:'Our second issue came out two weeks late.',bin:'n'},{label:'To our parents: thank you.',bin:'n'}], h:'Pause before the lines that carry the message.'},
+        {t:'spotall', q:'Which make a line easy to remember? Tap every one.', cells:[{label:'it is short',ok:true},{label:'it comes back at the end',ok:true},{label:'it has a strong rhythm',ok:true},{label:'it is the longest sentence',ok:false}], h:'Think of lines you remember from speeches.'}
+      ],
+      check:[
+        {q:'Graduation speech: "So remember this: / Be kind, / and be brave." How should the speaker say the last part?', o:['slow and clear, with a pause before it','fast, to get it over with','in a whisper']},
+        {q:'"We came here as strangers. We leave as brothers." Where should the longest pause go?', o:['after an important sentence, before a new idea','in the middle of a sentence','at the very start']},
+        {q:'"Show up. Work hard. Help others." How do you read it?', o:['each part strong, with a short beat between','all in one breath','skip the middle one']}
+      ],
+      re:[
+        {q:'Speech: "And if you remember one thing, / remember this: / we are stronger together." How should the last part sound?', o:['slow and clear, with a pause before it','fast, to get it over with','in a whisper']},
+        {q:'"The river took our homes. It did not take our hope." Where should the longest pause go?', o:['after an important sentence, before a new idea','in the middle of a sentence','at the very start']},
+        {q:'"Learn. Ask. Give back." How do you read it?', o:['each part strong, with a short beat between','all in one breath','skip the middle one']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.LIT.L09.11':{ hook:'Why do so many great stories feel familiar? Because they walk the same road.',
+      big:'Many stories, from the oldest to the newest, follow a journey pattern. The call: a reason the hero must leave home. The departure: he sets out. The guide: an older, wiser person who shows him how, without doing it for him. The dark moment: when it seems he will fail; often the guide appears here. The tests: hard moments that ask him to grow. The return: he comes home changed, and often does for someone else what was done for him. In "The Long Way to the Chasuna", Benny\'s call is his brother\'s wedding, his guide is Mr. Ashkenazi, his tests are asking and helping, and his return is the apple he shares. Authors reuse the pattern because readers feel its shape and lean in.',
+      intro:['Find the call: why must the hero leave?','Find the guide and the tests.','Find the dark moment.','Find the return: how has he changed?'],
+      ex:[{q:'Benny\'s bus breaks down in the rain.', steps:['His plan has failed.','He feels small and alone.','This is the dark moment.'], a:'the dark moment'},
+          {q:'Benny shares his apple with a younger boy.', steps:['A younger boy is alone, like Benny was.','Benny asks the same question Mr. Ashkenazi asked.','He gives what he was given.'], a:'the return'}],
+      oops:{ q:'"Mr. Ashkenazi is the hero, because he solves the problem." Right?', wrong:'Yes: he finds the train', right:'No: he is the guide; Benny must act', why:'The guide shows the way, but the hero does the asking and the helping.' },
+      idea:['A guide shows the way. The hero must walk it.'],
+      'try':{ q:'At the end, the hero comes home changed. How do we know he has changed?', o:['he does for someone else what was done for him','he forgets the trip'], a:'he does for someone else what was done for him', steps:['Look at the last scene.','What does he do now that he could not do before?'] } },
+    'READ.LIT.L09.12':{ hook:'Every film of a book is a translation. What gets lost, and what gets found?',
+      big:'A book and a film can tell the same story in very different ways. A book can tell you exactly what a character is thinking, or take you into a long memory. A film must show those things in pictures: a face up close, an action, a voice-over. A film has sound and motion: rain, music, a train rushing past. A film must also fit its time, so it cuts scenes, combines characters, or moves events. When you compare them, list what the film changed, then ask why. A good change keeps the story\'s meaning. A bad change breaks it, like a film of Benny\'s story where he never helps anyone.',
+      intro:['Read the scene in the book.','Watch or picture the same scene in a film.','List what changed.','Ask why, and whether the meaning survives.'],
+      ex:[{q:'Book: "Asking was the hardest part."', steps:['That is a thought.','A film cannot print it.','It could show a long close-up of Benny\'s face as he walks to the driver.'], a:'show it through his face'},
+          {q:'Film: the math test scene is cut.', steps:['Does the story need it?','It only explains why he travels alone.','A line of dialogue can do that.'], a:'to fit the time'}],
+      oops:{ q:'"The film changed a scene, so the film is wrong." Right?', wrong:'Yes: any change is a mistake', right:'No: ask why it changed, and if the meaning survives', why:'Films must change things. Judge each change by whether it keeps the story\'s meaning.' },
+      idea:['A good change keeps the meaning. A bad change breaks it.'],
+      'try':{ q:'A book tells you what a character thinks. How can a film show it?', o:['through his face, his actions, or a voice-over','it cannot show it at all'], a:'through his face, his actions, or a voice-over', steps:['A film shows; it does not explain.','How do you see a thought?'] } },
+    'READ.LIT.L09.13':{ hook:'A great book changes something in you. Can you prove what, from the text?',
+      big:'After a long book, a good reader asks: what does this mean to me? That answer is personal, but it is not just a feeling. It is strongest when it is a theme, what the story means, not a summary of what happened, and when the text backs it up. To prove it: say what the story means to you, find a sentence that shows it, explain how the words show it, and check that nothing in the text points the other way. "This story teaches that asking for help is brave" is a theme, and Benny\'s walk to the driver proves it. "The story is about luck" is not supported, because the text shows Benny earning every step.',
+      intro:['Say what the story means to you.','Find a sentence that shows it.','Explain how the words prove it.','Check that nothing points the other way.'],
+      ex:[{q:'Reading: "Kindness opens doors."', steps:['Benny lifts the suitcase without thinking.','Because of it, he gets a ride.','The text supports it.'], a:'supported by the text'},
+          {q:'Reading: "Benny was lucky."', steps:['He asked many people.','He helped first, then got a ride.','Each step was earned, not luck.'], a:'not supported'}],
+      oops:{ q:'"The story is about Benny going to a wedding." Is that a theme?', wrong:'Yes: it is what the story is about', right:'No: that is a summary', why:'A theme tells what the story means, not what happens.' },
+      idea:['Your reading is yours, and the text is your proof.'],
+      'try':{ q:'You say a story taught you something. What must you add?', o:['proof from the text','how long the story is'], a:'proof from the text', steps:['Find the words.','Explain how they show it.'] } },
+    'READ.FLU.L09.03':{ hook:'Most speeches are forgotten by dinner. A few lines are remembered for years. Delivery makes the difference.',
+      big:'A speech is written to be heard, not read silently. A good speaker reads it a little slower than talking, looks up at the listeners, and pauses after an important sentence, before a new idea. Lists of three ("Check it. Be fair. Tell the truth.") get a short beat between each part. Most of all, every speech has one line the speaker wants people to remember. Say it slow and clear, with a pause before it, and let it land. In Akiva\'s graduation speech, that line is "Good. Now do it better." It comes at the start and again at the end, so the listeners carry it home.',
+      intro:['Read it silently for meaning.','Mark the pauses and the line to remember.','Practice it aloud, a little slower than talking.','Deliver it, looking up.'],
+      ex:[{q:'"A newspaper is a promise."', steps:['This is a big idea.','Pause before it.','Say it slowly, with weight.'], a:'slow and clear, with a pause before it'},
+          {q:'"Check it. Be fair. Tell the truth."', steps:['A list of three.','A short beat between each part.','Each part strong.'], a:'each part strong, with a short beat between'}],
+      oops:{ q:'Shimon rushed the last line so he could sit down. What went wrong?', wrong:'Nothing: the speech was over anyway', right:'The line to remember was lost', why:'The most important line needs the most time.' },
+      idea:['The pause is part of the speech.'],
+      'try':{ q:'A speech has one line the speaker wants people to remember. How should you say it?', o:['slow and clear, with a pause before it','fast, to get it over with'], a:'slow and clear, with a pause before it', steps:['Find the line.','Give it time.'] } }
+  };
+
+  var HOWTO = {
+    'READ.LIT.L09.11':{ s:'Find the call, the guide, the tests and the return.\nAsk what job each moment does.\nAt the return: how has the hero changed?',
+      q:{ 'In a new story, a boy\'s grandfather is ill far away, and the boy must travel to him alone. Which stage is this?':'Is this the reason he must set out?',
+          'On the trip, a ferry captain teaches the boy to read the tide charts. Which stage is he?':'Who shows the hero how?',
+          'Back home, the boy teaches his little brother to read the tide charts. What does this show?':'What was done for him? What does he do now?',
+          'In a story, a fire closes the only road, so a boy must carry medicine to the next town. Which stage is this?':'Is this the reason he must set out?',
+          'An old shepherd shows the boy a path over the hill. Which stage is he?':'Who shows the hero how?',
+          'Years later, the boy shows a lost traveler the same path. What does this show?':'What was done for him? What does he do now?' } },
+    'READ.LIT.L09.12':{ s:'List what the film changed.\nAsk why: time, pictures, sound, mood?\nDoes the meaning survive?',
+      q:{ 'In the book, Dovid silently worries about his father. The film cannot print his thoughts. What could it use?':'How do you see a thought in a film?',
+          'A 300-page book becomes a 90-minute film, and the long boat chapter is gone. Why?':'How long is a film?',
+          'The film plays slow, low music as the boys search the dark cellar. What does the music do?':'How does the music make you feel?',
+          'In the book, Yanky secretly regrets his words. The film cannot print his thoughts. What could it use?':'How do you see a thought in a film?',
+          'A long book becomes a short film, and two cousins become one character. Why?':'How long is a film?',
+          'The film plays bright, fast music as the team runs onto the field. What does the music do?':'How does the music make you feel?' } },
+    'READ.LIT.L09.13':{ s:'Theme: what it means. Summary: what happened.\nProve your reading with words from the text.\nCheck nothing points the other way.',
+      q:{ '"The story is about a boy who loses a race." Is that a theme or a summary?':'Does it tell what happened, or what it means?',
+          'Story: Moshe lost the spelling bee. That night he made 200 word cards and studied every one. A year later he won. Reading: "Hard work after a loss pays off." This reading is...':'What did Moshe do between the two contests?',
+          'A boy writes: "The story shows that cheating pays." In the text, the cheater loses his friends and the prize. His reading is...':'Does the text point the other way?',
+          '"The story is about two brothers who build a boat." Is that a theme or a summary?':'Does it tell what happened, or what it means?',
+          'Story: Dovi admits he broke the window. He pays for it from his savings, and his neighbor asks him to help in the store. Reading: "Honesty can cost you, and still pay you back." This reading is...':'What did honesty cost Dovi? What did it bring him?',
+          'A boy writes: "The story shows that friends do not matter." In the text, the hero is saved by his friends. His reading is...':'Does the text point the other way?' } },
+    'READ.FLU.L09.03':{ s:'Slow down for the line people remember.\nPause after a big sentence, before a new idea.\nGive each part of a list its beat.',
+      q:{ 'Graduation speech: "So remember this: / Be kind, / and be brave." How should the speaker say the last part?':'Is this the line to remember?',
+          '"We came here as strangers. We leave as brothers." Where should the longest pause go?':'Where does one big idea end?',
+          '"Show up. Work hard. Help others." How do you read it?':'A list of three: how many beats?',
+          'Speech: "And if you remember one thing, / remember this: / we are stronger together." How should the last part sound?':'Is this the line to remember?',
+          '"The river took our homes. It did not take our hope." Where should the longest pause go?':'Where does one big idea end?',
+          '"Learn. Ask. Give back." How do you read it?':'A list of three: how many beats?' } }
+  };
+
+  var BITE = {
+    'READ.LIT.L09.11':{ band:'M68', pic:'🧭', today:'See how a new story walks an old road',
+      why:'Great stories often follow an old pattern: a call, a guide, tests and a return. See it, and every new story you read connects to all the old ones.',
+      ready:[{q:'In a long story, why does each part matter?', o:['each part has a job in the whole story','long stories need extra pages','only the ending matters'], a:'each part has a job in the whole story'}],
+      bridge:'READ.LIT.L09.02', bridgeName:'Long Book Builder',
+      watch:{ q:'The Long Way to the Chasuna', m:{type:'scene', e:'🚌', t:'"Your first time traveling alone?" he asked. ... "Mine was in 1961," the man said.'}, steps:[
+        {t:'The call: Benny must reach his brother\'s chasuna, five hundred miles away, alone.'},
+        {t:'The departure: the first bus, an index card, and feeling almost grown up.'},
+        {t:'The dark moment: the bus breaks down in the rain. His voice comes out small.'},
+        {t:'The guide: Mr. Ashkenazi. He does not solve it. He says, "You will ask."'},
+        {t:'The tests: asking strangers, and helping before he is helped.'},
+        {t:'The return: he asks a younger boy the same question, and shares his apple.'},
+        {t:'Teach it back: tell your chavrusa each stage, with one moment from the story.'}], a:'Call, departure, dark moment, guide, tests, return changed.' },
+      oops:{ q:'"Mr. Ashkenazi is the hero, because he finds the train." Right?', wrong:'Yes: he solves the problem', right:'No: he is the guide; Benny must act', why:'The guide shows the way. The hero walks it.' },
+      ways:['worked example','read the whole story','compare to old stories','chavrusa','sort','teach it back'], done:'You can see an old pattern inside a new story!',
+      board:{ one:'The journey pattern: call, departure, guide, tests, dark moment, return changed.', activity:'Draw the road on the board. Boys place moments from Benny\'s story at each stage, then do the same with an old story they know, and compare.', mistakes:['Calling the guide the hero','Missing the dark moment','Thinking the return means only getting home'] },
+      do:[
+        {type:'read', text:'C68.JRN.01', say:'Read "The Long Way to the Chasuna".', how:'Mark each stage of Benny\'s journey.'},
+        {type:'evidence', mis:true, q:'Who is the hero of the story?', p:['Benny: he does the asking and the helping.','Mr. Ashkenazi: he finds the train.','The van driver: he gives the ride.'], a:0, look:'who acts and changes', say:'Watch the trap! Who is the hero?', how:'The guide shows the way. Who walks it?'}],
+      your:[
+        {type:'proof', text:'C68.JRN.01', q:'Which sentence shows Benny passing his test of kindness?', proof:'Without thinking, Benny reached up and lifted it down for her', look:'Benny helping before he is helped', say:'Find the proof in the story.', how:'Read page 3.'},
+        {type:'match', pairs:[['the call','his brother\'s chasuna, far away'],['the guide','Mr. Ashkenazi'],['the return','sharing his apple']], say:'Match each stage to its moment.', how:'Which moment plays each part?'},
+        {type:'order', steps:['the call','the departure','the guide','the tests','the return'], say:'Put the journey stages in order.', how:'Leave, learn, come back changed.'},
+        {type:'listen', hear:'In an old book, a boy is shipwrecked and lost. A Highland fighter teaches him to cross the hills safely.', o:['the guide','the call','the return'], a:'the guide', cap:'Which stage is the Highland fighter?', say:'Listen to an old book. Which stage is it?', how:'Who shows the hero the way?'},
+        {type:'cloze', t:'At the return, the hero does for someone else what was done for ___.', o:['him','nobody','money'], a:'him', say:'Challenge! Tap the word that fits.', how:'Think of Benny and the younger boy.'}] },
+    'READ.LIT.L09.12':{ band:'M68', pic:'🎬', today:'Compare a book and its film: what changes, and why',
+      why:'Many books are also made into recordings, plays or short films. Knowing what a film must change makes you a sharper reader and viewer.',
+      ready:[{q:'What can a book tell you that is hard to show in pictures?', o:['a character\'s thoughts','the color of the sky','how fast a car moves'], a:'a character\'s thoughts'}],
+      bridge:'READ.LIT.L09.11', bridgeName:'Old Pattern, New Story',
+      watch:{ q:'The Beacon films Benny\'s story', m:{type:'scene', e:'🎥', t:'Gavriel wants to turn "The Long Way to the Chasuna" into a ten-minute film for The Beacon\'s website.'}, steps:[
+        {t:'Problem 1: the book tells us how hard asking felt to Benny. That is a thought. Gavriel shows Benny\'s face as he walks to the driver.'},
+        {t:'Problem 2: ten minutes cannot hold every scene. He cuts the math test; one line explains it.'},
+        {t:'Problem 3: the bus breaks down. He adds the sound of rain and low music. Music sets the mood.'},
+        {t:'Check each change: does the story still teach the same thing? Benny still asks, and still helps.'},
+        {t:'A change that broke the meaning, like cutting the suitcase, would be a bad change.'},
+        {t:'Teach it back: tell your chavrusa three changes Gavriel made, and why each one keeps the meaning.'}], a:'Films turn thoughts into pictures, cut to fit the time, and add sound for mood.' },
+      oops:{ q:'"The film cut the math test, so the film is wrong." Right?', wrong:'Yes: it changed the book', right:'No: ask why, and if the meaning survives', why:'Films must change things. A change is good if the story still means the same.' },
+      ways:['worked example','compare book and film','tap the reason','debate','Mistake Detective','teach it back'], done:'You can compare a book and its film, and judge each change!',
+      board:{ one:'Book: thoughts and memories in words. Film: faces, actions, sound, music, voice-over. Judge each change: does the meaning survive?', activity:'Boys plan a one-minute film of one page of the story, listing each shot and sound, then defend which book details they cut.', mistakes:['Calling every change a mistake','Forgetting that films must show, not tell','Missing how music changes the mood'] },
+      do:[
+        {type:'read', text:'C68.JRN.01', say:'Read the story. Picture it as a film.', how:'Which moments are thoughts? Which are sounds and motion?'},
+        {type:'sort', mis:true, bins:['A good change','A bad change'], cards:[['cut the math test scene',0],['add rain and soft music',0],['Benny never helps anyone',1],['the old man solves everything',1]], say:'Watch the trap! Good change or bad change?', how:'Does the story still mean the same thing?'}],
+      your:[
+        {type:'proof', text:'C68.JRN.01', q:'Which sentence is a thought a film would have to show without words?', proof:'Asking was the hardest part', look:'Benny\'s inner feeling', say:'Find the proof in the story.', how:'Read the start of page 3.'},
+        {type:'match', pairs:[['a voice-over','shows his thoughts'],['soft music','sets the mood'],['a close-up of his face','shows a feeling']], say:'Match each film tool to its job.', how:'How does a film show what a book tells?'},
+        {type:'evidence', q:'Which book moment is hardest for a film?', p:['Benny thinks the boy looks exactly the way he once looked.','The bus stops on the highway.','The baby falls asleep on his shoulder.'], a:0, look:'a thought, not an action', say:'Tap the hardest moment to film.', how:'Which one happens only inside Benny\'s mind?'},
+        {type:'listen', hear:'In the book, Benny calls his mother from inside the bus. In Gavriel\'s film, he calls her outside, in the pouring rain.', o:['it keeps the meaning, and adds mood','it breaks the meaning','it is a mistake'], a:'it keeps the meaning, and adds mood', cap:'Is this a good change?', say:'Listen. Judge the change.', how:'Is Benny still alone and worried?'},
+        {type:'cloze', t:'A film cuts scenes from a long book mainly to fit the ___.', o:['time','music','actors'], a:'time', say:'Challenge! Tap the word that fits.', how:'How long is a film?'}] },
+    'READ.LIT.L09.13':{ band:'M68', pic:'💭', today:'Say what a story means to you, and prove it',
+      why:'The books you read become part of you. Saying what one means to you, with proof, is how you make it yours.',
+      ready:[{q:'Which is a theme?', o:['Courage means acting when you are afraid.','The boy took a bus.','The story has four pages.'], a:'Courage means acting when you are afraid.'}],
+      bridge:'READ.LIT.L09.12', bridgeName:'Book and Film',
+      watch:{ q:'What Benny\'s trip means to me', m:{type:'scene', e:'🍎', t:'Yoni writes for The Beacon: "To me, Benny\'s story means that growing up is learning to ask, and learning to give."'}, steps:[
+        {t:'First, Yoni says what it means to him: growing up is learning to ask, and to give.'},
+        {t:'Is it a theme or a summary? It tells what the story means, so it is a theme.'},
+        {t:'Proof one: "Asking was the hardest part." Benny asks anyway.'},
+        {t:'Proof two: the apple at the end. Benny gives what he was given.'},
+        {t:'Check: does anything point the other way? No. Benny grows at every step.'},
+        {t:'Teach it back: tell your chavrusa what the story means to you, with two proofs.'}], a:'A theme, proved with two moments, and checked.' },
+      oops:{ q:'"The story means Benny is lucky." Is this supported?', wrong:'Yes: things worked out', right:'No: the text shows him earning each step', why:'A reading must fit the text. Benny asks, helps, and earns his ride.' },
+      ways:['worked example','read the whole story','find the proof','teach it back','challenge round','sort'], done:'You can say what a story means to you, and prove it from the text!',
+      board:{ one:'Theme (what it means), not summary (what happened). Prove it with the text. Check nothing points the other way.', activity:'Each boy writes one sentence: "To me, this story means..." His chavrusa must find a proof in the text, or show the text points the other way.', mistakes:['Writing a summary instead of a theme','Giving a feeling with no proof','Ignoring parts of the text that disagree'] },
+      do:[
+        {type:'read', text:'C68.JRN.01', say:'Read the story again. What does it mean to you?', how:'Mark two moments that show it.'},
+        {type:'sort', mis:true, bins:['A theme','A summary'], cards:[['Growing up means learning to ask.',0],['Benny rides a bus and a train.',1],['Kindness comes back to you.',0],['The chuppah was at nine thirty.',1]], say:'Watch the trap! Theme or summary?', how:'What it means, or what happened?'}],
+      your:[
+        {type:'proof', text:'C68.JRN.01', q:'Which sentence states, in Benny\'s own words, what he learned?', proof:'without asking, and without helping', look:'Benny\'s answer to Mr. Ashkenazi', say:'Find the proof in the story.', how:'Read the phone call at the end.'},
+        {type:'match', pairs:[['"Kindness opens doors."','He lifts the suitcase, then gets a ride.'],['"Asking is hard but brave."','He walks to the driver anyway.'],['"We pass on what we get."','He shares his apple with a younger boy.']], say:'Match each reading to its proof.', how:'Which moment shows each one?'},
+        {type:'evidence', q:'Which reading does the story NOT support?', p:['Benny got there by luck alone.','Benny learned to ask for help.','Benny passed on a kindness.'], a:0, look:'a reading the text points against', say:'Tap the unsupported reading.', how:'Does the text show luck, or effort?'},
+        {type:'order', steps:['Say what the story means to you.','Find a sentence that shows it.','Explain how the sentence proves it.','Check nothing points the other way.'], say:'Put the steps in order.', how:'Meaning, proof, explanation, check.'},
+        {type:'cloze', t:'"Benny takes a bus to Cleveland" is a ___, not a theme.', o:['summary','proof','question'], a:'summary', say:'Challenge! Tap the word that fits.', how:'Does it tell what happened, or what it means?'}] },
+    'READ.FLU.L09.03':{ band:'M68', pic:'🎤', today:'Give a speech: pace, pause and the line people remember',
+      why:'Someday you will speak at a siyum, a simcha, or a graduation. The right pause can make one line stay with people for years.',
+      ready:[{q:'What does a pause after a sentence give the listener?', o:['time to think','nothing','a chance to leave'], a:'time to think'}],
+      bridge:'READ.FLU.L09.02', bridgeName:'Theatre: A Mystery Scene',
+      watch:{ q:'The Last Edition', m:{type:'scene', e:'🎓', t:'"A newspaper is a promise. It is a promise to the reader that you looked carefully, that you were fair, and that you told the truth."'}, steps:[
+        {t:'Read it silently first. What is the big idea? A newspaper is a promise.'},
+        {t:'Mark a long pause // before "A newspaper is a promise." Let the room get quiet.'},
+        {t:'Say the big line slowly, a little slower than talking.'},
+        {t:'The list: "Check it. Be fair. Tell the truth." A short beat between each part.'},
+        {t:'Find the line to remember: "Good. Now do it better." It comes back at the very end.'},
+        {t:'Teach it back: read one paragraph to your chavrusa, and tell him where you paused and why.'}], a:'Pause before the big lines, beat the list, and land the last line slowly.' },
+      oops:{ q:'Shimon read "Good. Now do it better." fast, while sitting down. What went wrong?', wrong:'Nothing: it is only five words', right:'The line to remember got no time', why:'Short lines need the most time. Pause, look up, say it slowly.' },
+      ways:['worked example','read it aloud','mark the speech','chavrusa','challenge round','teach it back'], done:'You can deliver a speech so one line stays with your listeners!',
+      board:{ one:'Mark / and //. Slow down for the line to remember. Give each part of a list its beat. Look up.', activity:'Each boy marks one paragraph of Akiva\'s speech, then delivers it to the class. The class names the one line they remember.', mistakes:['Rushing the last line','Reading with eyes glued to the page','Reading a list in one breath'] },
+      do:[
+        {type:'read', text:'C68.SP.01', say:'Read Akiva\'s graduation speech.', how:'Mark the big lines and the line to remember.'},
+        {type:'listen', mis:true, hear:'Eli practiced Akiva\'s ending: "To all of us check it be fair tell the truth good now do it better," all in one breath.', o:['he rushed the list and the last line','he read it perfectly','he paused too much'], a:'he rushed the list and the last line', cap:'What went wrong?', say:'Mistake Detective! What went wrong?', how:'Where should the beats and pauses be?'}],
+      your:[
+        {type:'proof', text:'C68.SP.01', q:'Which sentence turns the newspaper promise into a lesson for life?', proof:'It is a good promise for a whole life', look:'where Akiva widens the promise', say:'Find the proof in the speech.', how:'Read page 2.'},
+        {type:'sort', bins:['Slow down','Keep the pace'], cards:[['A newspaper is a promise.',0],['Good. Now do it better.',0],['Our second issue came out late.',1],['To our parents: thank you.',1]], say:'Slow down, or keep the pace?', how:'Big ideas slow. Warm-ups move.'},
+        {type:'match', pairs:[['/','a short pause'],['//','a long pause'],['underline','say it with weight']], say:'Match each mark to its meaning.', how:'Speakers mark their pages.'},
+        {type:'order', steps:['Read it silently for meaning.','Mark the pauses and the line to remember.','Read it aloud slowly.','Read it to a listener, looking up.'], say:'Put the speech practice steps in order.', how:'Understand, mark, practice, deliver.'},
+        {type:'cloze', t:'Say the line people remember slow and clear, with a ___ before it.', o:['pause','laugh','cough'], a:'pause', say:'Challenge! Tap the word that fits.', how:'What lets a big line land?'}] }
+  };
+
+  /* The existing skill "Long Book Builder" (READ.LIT.L09.02), rebuilt as a One Bite lesson. Its own questions stay as practice and Show me. */
+  var UP = {
+    'READ.LIT.L09.02':{ band:'M68', pic:'📚', today:'Hold a whole story in your head, part by part',
+      why:'Long books are built from parts that each have a job. See the parts, and you never get lost in a long book again.',
+      ready:[{q:'A flashback is...', o:['a jump back in time','a hint about the end','the last chapter'], a:'a jump back in time'}],
+      bridge:'READ.LIT.L08.01', bridgeName:'Theme Tracker',
+      watch:{ q:'The Long Way to the Chasuna', m:{type:'scene', e:'🗺️', t:'Page 1: the plan. Page 2: the breakdown and the guide. Page 3: asking and helping. Page 4: the chasuna and the return.'}, steps:[
+        {t:'Read the whole story once. Then name each part in a few words.'},
+        {t:'Page 1 sets up the trip and the plan. Its job: show what Benny expects.'},
+        {t:'Page 2 breaks the plan, and brings the guide. Mr. Ashkenazi even tells a memory from 1961: a look back in time.'},
+        {t:'Page 3 is the test: asking, and helping. Page 4 is the payoff, and the return.'},
+        {t:'Notice: one line from page 2 comes back at the very end, in a new mouth. That is an echo. You will find it.'},
+        {t:'Teach it back: tell your chavrusa each page\'s job, and the line that echoes.'}], a:'Set-up, problem and guide, test, payoff. One line echoes from page 2 to the end.' },
+      oops:{ q:'"Page 3 is just people saying no. It does not matter." Right?', wrong:'Yes: nothing happens there', right:'No: it is the test that changes Benny', why:'Every part of a long story has a job. The hard middle is where the hero grows.' },
+      ways:['timeline','read the whole story','reciprocal teaching','retrieval','find the proof','teach it back'], done:'You can hold a whole story in your head, part by part!',
+      board:{ one:'Name each part. Give it a job: set-up, problem, test, payoff. Watch for flashbacks and echoes.', activity:'Reciprocal teaching: four boys each take one page of the story, teach its job to the group, and ask one question about it.', mistakes:['Skipping the slow middle','Missing a flashback inside a scene','Missing a line that echoes at the end'] },
+      do:[
+        {type:'read', text:'C68.JRN.01', say:'Read the whole story, start to finish.', how:'After each page, name its job in three words.'},
+        {type:'sort', mis:true, bins:['Happens on the trip','A memory from long ago'], cards:[['the bus breaks down',0],['a train ride in 1961',1],['the van ride with the baby',0],['missing his sister\'s wedding by a day',1]], say:'Watch the trap! Now, or long ago?', how:'Mr. Ashkenazi tells a memory. Which parts are from it?'}],
+      your:[
+        {type:'proof', text:'C68.JRN.01', q:'Which sentence shows Benny now in Mr. Ashkenazi\'s place?', proof:'This time he sat next to a younger boy who was traveling alone for the first time', look:'Benny beside a boy like his old self', say:'Find the proof in the story.', how:'Read the last paragraph.'},
+        {type:'storymap', slots:['Page 1','Page 2','Page 3','Page 4'], cards:['the plan','the breakdown and the guide','asking and helping','the chasuna and the return'], extra:['the math test answers'], say:'Build the story\'s map, page by page.', how:'What is each page\'s job?'},
+        {type:'match', pairs:[['a set-up','shows what the hero expects'],['a flashback','jumps back in time'],['an echo','repeats a line later, with new meaning'],['entries day by day','show the hero changing step by step']], say:'Match each part to its job.', how:'What does each part do for the reader?'},
+        {type:'evidence', q:'Which line echoes from page 2 to the end?', p:['"Your first time traveling alone?"','"Change in the car."','"It is just a bus."'], a:0, look:'a line said twice, by two people', say:'Tap the echo.', how:'Who says it first? Who says it last?'},
+        {type:'cloze', t:'The slow middle of a story is often where the hero is ___.', o:['tested','asleep','finished'], a:'tested', say:'Challenge! Tap the word that fits.', how:'What happens to Benny on page 3?'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C68', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('C68', { bite: UP });
+
+  if (window.TLCORE && TLCORE.units && TLCORE.units.add) TLCORE.units.add({ id:'C68.U88', title:'Old Stories, New Stories', c:'READ', grade:8,
+    skills:['READ.LIT.L09.02','READ.LIT.L09.11','READ.LIT.L09.12','READ.LIT.L09.13','READ.FLU.L09.03'],
+    review:['READ.COMP.L09.18','READ.COMP.L09.01','READ.LIT.L09.10'], n:12, pre:'lessons',
+    items:[
+      {type:'evidence', skill:'READ.LIT.L09.11', q:'A new story: Yehoshua must cross the mountains to bring his family the harvest money. Which one is the guide?', p:['A stranger on the road who offers to carry the money the rest of the way.','An old trader who shows him the safe pass, then turns back.','His mother, waiting at home for the money.'], a:1, look:'who shows the hero the way', how:'The guide shows the way but does not walk it for him.'},
+      {type:'evidence', skill:'READ.LIT.L09.12', q:'In the book, Yoni\'s thoughts tell us he is scared of the dark attic. The film has no words for his thoughts. Which film choice shows his fear best?', p:['A sign on the attic door that says KEEP OUT.','A wide shot of the dark house from across the street at night.','A close-up of his hand shaking on the rail as he climbs.'], a:2, look:'a way to see a feeling', how:'Which one lets us see what HE feels, not just the place?'},
+      {type:'evidence', skill:'READ.LIT.L09.13', q:'Story: Shmuel\'s chavrusa makes the same mistake every day. Shmuel does not say it in front of the class. After seder he shows him quietly, and soon his chavrusa gets it right. Which theme does the story prove (not a summary)?', p:['Helping a friend kindly and privately helps him grow.','Shmuel shows his chavrusa the mistake after seder.','You should never point out a friend\'s mistake, even quietly.'], a:0, look:'what the story means, and the text backs it up', how:'Is it what happened, or what it means? Does the story prove it?'},
+      {type:'evidence', skill:'READ.FLU.L09.03', q:'Akiva\'s speech at the Beacon\'s last edition: "We built this paper one page at a time. We argued, we fixed, we tried again. And we learned that the truth is worth the work." Where should the longest pause go?', p:['between "one page" and "at a time"','after "We argued, we fixed," so the list of three is split in two','just before "And we learned that the truth is worth the work."'], a:2, look:'the pause before the line to remember', how:'Find the line people should remember. Where does a pause let it land?'},
+      {type:'evidence', skill:'READ.LIT.L09.02', q:'A book opens with Reuven, now old, dancing at his grandson\'s chasunah. Chapter 2 jumps back sixty years, to the day he came to America alone. Why open at the end of his story?', p:['So we know it ends well and wonder how he got there.','So the ending stays a surprise right up until the very last page.','So we meet his grandson before we meet young Reuven.'], a:0, look:'what the order makes the reader feel', how:'What do we know after Chapter 1? What do we want to find out?'},
+      {type:'evidence', skill:'READ.LIT.L09.11', q:'On the road to his Zeidy\'s farm, Dani is offered a ride if he skips the errand his father gave him. He says no and walks on in the rain. Which stage is this?', p:['the guide: someone shows him the way','a test: he must choose to do right','the return: he comes home changed'], a:1, look:'a hard choice on the road', how:'Is someone helping him, or is he being tried?'},
+      {type:'evidence', skill:'READ.LIT.L09.12', q:'A film of a book cuts the hero\'s kindness to a stranger. At the end of the book, that same stranger saves him. Is the cut a good change?', p:['Yes: films must cut scenes so the story fits inside two hours.','No: the ending needs that kindness, so the meaning breaks.','No: a film must keep every scene of the book.'], a:1, look:'whether the meaning survives', how:'Take the scene out. Does the ending still make sense?'},
+      {type:'evidence', skill:'READ.LIT.L09.13', q:'Story: Avi practices every night but still loses the race. He walks over and cheers for the winner. Which theme does the text best support?', p:['How you act after a loss shows who you are.','If you practice enough, you will always win.','Avi loses the race and cheers for the winner.'], a:0, look:'a theme the whole story backs up', how:'What does Avi do after he loses? What does that show?'},
+      {type:'evidence', skill:'READ.FLU.L09.03', q:'Siyum speech: "We learned in the cold. We learned in the heat. We learned until the last daf." Which marked copy is ready to read aloud?', p:['We learned in the cold, we learned in the heat, we learned until the last daf.','We learned / in the cold. We learned / in the heat. We learned / until the last daf.','We learned in the cold. / We learned in the heat. / We learned until the last daf.'], a:2, look:'a beat between the parts, not inside them', how:'Where does each part end? Put the beat there.'},
+      {type:'evidence', skill:'READ.LIT.L09.02', q:'In Chapter 2, a stranger at the ship tells young Reuven, "Hold on to your name." In the last chapter, old Reuven says the same words to his grandson. What does the repeated line do?', p:['It jumps back in time to the day Reuven first came to America.','It echoes the opening and shows how far he has come.','It hints at what will happen next.'], a:1, look:'a line said twice, by two people', how:'Who says it first, and who says it last?'}
+    ] });
+})();
+</script>

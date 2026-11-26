@@ -234,6 +234,10 @@ async function admin(action, key, a) {
   }
   if (action === 'selfSet') { DB = DB || new Firestore(); await DB.collection('sys').doc('selfbuild').set({ on: !!a.on, at: new Date().toISOString() }); SELF.at = 0; Object.keys(store).forEach(k => delete store[k]); return { ok: true, result: { on: !!a.on } }; }
   if (action === 'photoCron') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('photoCron', []); return r.error ? { ok: false, error: String(r.error).slice(0, 200) } : { ok: true, result: r.result }; }
+  /* FLAG CHECKER (HoS 2026-11-24): the hourly checker (workflow flag-checker.yml) reads the open "Report a problem" flags
+     (question, reasons, boys' notes with names blanked; never an id or name) and marks each one fine / fixed / open. Reports.js rpBot*. */
+  if (action === 'flagList') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('rpBotList_', []); return r.error ? { ok: false, error: String(r.error).slice(0, 300) } : { ok: true, result: r.result }; }
+  if (action === 'flagMark') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('rpBotMark_', [Array.isArray(a.marks) ? a.marks.slice(0, 60) : [], Number(a.upTo) || 0]); return r.error ? { ok: false, error: String(r.error).slice(0, 300) } : { ok: true, result: r.result }; }
   if (action === 'goOff') { await DB.collection('sys').doc('live').set({ on: false, since: new Date().toISOString() }); LIVE = null; return { ok: true, result: { live: false } }; }
   return { ok: false, error: 'Unknown admin action.' };
 }
@@ -295,6 +299,12 @@ function allowed(fn) {
       console.log('allow list: ' + ALLOW.size + ' functions'); } catch (e) { console.error('allow list failed', e.message); ALLOW = null; return true; } }
   return ALLOW.has(fn);
 }
+/* KESER GIRLS 3.0 (HoS 2026-11-26): the girls' records live in their own Firestore database "keser" (M. Heinemann, choice 1).
+   Only server/keser.js gets that database, and it gets nothing else: no boys' database, no boys' server code. Loaded on the first girls' call. */
+let KDB = null;
+const keserDb = () => KDB || (KDB = new Firestore({ databaseId: 'keser' }));
+function keserIp(req) { const f = String((req.headers && req.headers['x-forwarded-for']) || '').split(',').map(x => x.trim()).filter(Boolean); return f.length ? f[f.length - 1] : String(req.ip || ''); }
+async function keserCall(body, req) { return require('./app/server/keser.js').route(body, keserIp(req), keserDb, process.env.TL_EXPORT_KEY || ''); }
 /* log any very large answer, by name only */
 function noteSize(fn, body) { try { const n = Buffer.byteLength(body); if (n > 4e6) console.warn('large answer', fn, Math.round(n / 1e6) + ' MB'); } catch (e) {} }
 exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2, timeoutSeconds: 300, secrets: ['TL_EXPORT_KEY'], maxInstances: 50, minInstances: 1 }, async (req, res) => {
@@ -306,6 +316,7 @@ exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2
     }
     if (req.method !== 'POST') return res.status(200).json({ ok: true, result: 'Tashbar server' });
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body && Object.keys(req.body).length ? req.body : JSON.parse((req.rawBody || '{}').toString()));
+    if (body && body.api === 1 && body.keser) return res.status(200).json(await keserCall(body, req));   /* Keser Girls 3.0: the girls' records only, never the boys' code or database */
     if (body && body.api === 1 && body.admin) return res.status(200).json(await admin(String(body.admin), String(body.key || ''), body.a || {}).catch(e => ({ ok: false, error: 'admin step failed: ' + String(e.message || e).slice(0, 300) })));
     const fn = String((body && body.fn) || '');
     if (!body || body.api !== 1 || !/^[a-z][A-Za-z0-9]*$/.test(fn)) return res.status(200).json({ ok: false, error: 'Not an app request.' });

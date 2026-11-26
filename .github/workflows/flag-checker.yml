@@ -1,0 +1,43 @@
+name: flag-checker
+# The hourly flag checker's door to the live flags (HoS 2026-11-24: "every hour, you fix it, some sort of automatic way").
+# A scheduled Claude Code session runs this with action=list, reads the open flags from the log, checks each question in this
+# repository, fixes real problems in a normal pull request (auto-publish sends it live after the tests), then runs this again
+# with action=mark. How the checker works: docs/FLAG-CHECKER.md. Prints questions and notes only: never an id or a name.
+on:
+  workflow_dispatch:
+    inputs:
+      action: { description: 'list or mark', required: true, default: 'list' }
+      marks: { description: 'mark only: JSON list of {skill, item, verdict: fine|fixed|open, why}', required: false, default: '[]' }
+      upTo: { description: 'mark only: the upTo number the list gave', required: false, default: '0' }
+concurrency: { group: flag-checker, cancel-in-progress: false }
+permissions:
+  contents: read
+  id-token: write
+env:
+  PROJECT: tashbar-learning-live
+  WIF_PROVIDER: projects/594290752127/locations/global/workloadIdentityPools/github/providers/tashbar-app
+  DEPLOY_SA: github-deploy@tashbar-learning-live.iam.gserviceaccount.com
+  API_URL: https://api-q26c275eaa-uk.a.run.app
+jobs:
+  inbox:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.DEPLOY_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Flags (key read from Secret Manager, never printed)
+        env:
+          FLAG_ACTION: ${{ inputs.action }}
+          FLAG_MARKS: ${{ inputs.marks }}
+          FLAG_UPTO: ${{ inputs.upTo }}
+        run: |
+          TL_EXPORT_KEY="$(gcloud secrets versions access latest --secret=tl-export-key --project="$PROJECT")"
+          echo "::add-mask::$TL_EXPORT_KEY"
+          TL_EXPORT_KEY="$TL_EXPORT_KEY" node tools/flag-inbox.js

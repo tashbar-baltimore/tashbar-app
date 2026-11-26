@@ -151,24 +151,27 @@ const G={};
 function el(){ let d=document.getElementById('mdx'); if(!d){ d=document.createElement('div'); d.id='mdx'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Mistake Detective'); document.body.appendChild(d); } return d; }
 function open(){ if(window.TL_MD_OFF) return; const list=build(); if(!list){ return; } G.list=list; G.i=0; G.pts=0; G.solved=0; G.step=0; G.lock=false; el().className='on'; intro(); }
 function close(){ const d=document.getElementById('mdx'); if(d){ d.className=''; d.innerHTML=''; } try{ speechSynthesis.cancel(); }catch(e){} }
+/* button system (HoS 2026-11-23): information is kit labels (rank violet for points, progress blue for cases, do-this-now yellow for the step), buttons are kit buttons, words only */
+function PL(k,t){ return window.TLK?TLK.pill(k,t):'<span class="mdpts">'+E(t)+'</span>'; }
+function GO(t,a){ return window.TLK?TLK.main(t,a):'<button type="button" class="mdgo" '+a+'>'+E(t)+'</button>'; }
 function top(){ const n=G.list.length; let dots=''; for(let i=0;i<n;i++) dots+=`<i class="mddot${i<G.i?' done':''}${i===G.i?' cur':''}"></i>`;
- return `<div class="mdtop"><button type="button" class="mdx-close" data-md="close" aria-label="Close">✕</button><div class="mdtitle">🕵️ MISTAKE DETECTIVE</div><div class="mdpts" aria-label="Points">⭐ ${G.pts}</div></div><div class="mddots">${dots}</div>`; }
+ return `<div class="mdtop">${window.TLK?TLK.x('data-md="close"',''):'<button type="button" class="mdx-close" data-md="close" aria-label="Close">✕</button>'}<div class="mdtitle">🕵️ MISTAKE DETECTIVE</div><span class="mdptw" aria-label="Points">${PL('rank','⭐ '+G.pts+' point'+(G.pts===1?'':'s'))}</span></div><div class="mddots">${dots}${G.i<n?`<span class="mdcn">${PL('prog','Case '+(G.i+1)+' of '+n)}</span>`:''}</div>`; }
 function intro(){ const best=getBest(); el().innerHTML=`<div class="mdwrap mdintro">${top()}
  <div class="mdhero"><div class="mdglass" aria-hidden="true">🔍</div><h1>Can you catch the mistake?</h1>
  <p class="mdbig">${G.list.length} cases from lessons <b>you</b> learned.</p>
  <div class="mdsteps"><div><b>1</b><span>SPOT IT</span><small>Is he right?</small></div><div><b>2</b><span>FIX IT</span><small>What is right?</small></div><div><b>3</b><span>PROVE IT</span><small>Why?</small></div></div>
  <p class="mdwarn">Careful, detective: some answers are <b>right</b>. Don't get tricked!</p>
- ${best?`<p class="mdbest">Your best: ⭐ ${best}</p>`:''}
- <button type="button" class="mdgo" data-md="start">Open case #1 ▶</button></div></div>`; focusGo(); }
-function caseHead(c){ return `<div class="mdcase${RM?'':' mdin'}"><div class="mdfile"><span class="mdno">CASE #${G.i+1}</span><span class="mdtopic">${E(nameOf(c.id))}</span></div>
- <div class="mdq"><small>The question</small><div class="mdqt">${E(c.q)}</div><button type="button" class="mdspk" data-md="say" aria-label="Read it to me">🔊</button></div>
+ ${best?`<p class="mdbest">${PL('rank','Your best: ⭐ '+best)}</p>`:''}
+ ${GO('Open case #1','data-md="start"')}</div></div>`; focusGo(); }
+function caseHead(c){ return `<div class="mdcase${RM?'':' mdin'}"><div class="mdfile">${PL('prog','Case #'+(G.i+1))}${PL('subj',nameOf(c.id))}</div>
+ <div class="mdq"><small>The question</small><div class="mdqt">${E(c.q)}</div>${window.TLK?'<span class="mdspkw">'+TLK.tool('🔊','Read it to me','data-md="say"')+'</span>':'<button type="button" class="mdspk" data-md="say" aria-label="Read it to me">🔊</button>'}</div>
  <div class="mdans"><div class="mdface" aria-hidden="true">🧒</div><div><small>${E(c.who)} answered:</small><div class="mdshown">“${E(c.shown)}”</div></div></div>`; }
 function step1(){ const c=G.list[G.i]; G.step=1; G.lock=false; el().innerHTML=`<div class="mdwrap">${top()}${caseHead(c)}
- <div class="mdprompt"><span class="mdstep">1 · SPOT IT</span> Is ${E(c.who)} right?</div>
+ <div class="mdprompt">${PL('now','Step 1 · Spot it')} Is ${E(c.who)} right?</div>
  <div class="mdbtns two"><button type="button" class="mdb mdok" data-md="s1" data-v="1"><b>1</b> 👍 He is right</button><button type="button" class="mdb mdnob" data-md="s1" data-v="0"><b>2</b> 👎 He made a mistake</button></div><div class="mdfb" aria-live="polite"></div></div></div>`; }
 function opts(arr,kind){ return `<div class="mdbtns">${arr.map((t,i)=>`<button type="button" class="mdb opt" data-md="${kind}" data-i="${i}"><b>${i+1}</b> ${E(t)}</button>`).join('')}</div>`; }
-function step2(){ const c=G.list[G.i]; G.step=2; G.lock=false; const box=el().querySelector('.mdnext'); el().querySelector('.mdcase').insertAdjacentHTML('beforeend',`<div class="mdnext"><div class="mdprompt"><span class="mdstep">2 · FIX IT</span> What is the right answer?</div>${opts(c.fix,'s2')}<div class="mdfb" aria-live="polite"></div></div>`); if(box) box.remove(); scrollEnd(); }
-function step3(){ const c=G.list[G.i]; G.step=3; G.lock=false; el().querySelector('.mdcase').insertAdjacentHTML('beforeend',`<div class="mdnext"><div class="mdprompt"><span class="mdstep">3 · PROVE IT</span> Which clue cracks the case?</div>${opts(c.whys,'s3')}<div class="mdfb" aria-live="polite"></div></div>`); scrollEnd(); }
+function step2(){ const c=G.list[G.i]; G.step=2; G.lock=false; const box=el().querySelector('.mdnext'); el().querySelector('.mdcase').insertAdjacentHTML('beforeend',`<div class="mdnext"><div class="mdprompt">${PL('now','Step 2 · Fix it')} What is the right answer?</div>${opts(c.fix,'s2')}<div class="mdfb" aria-live="polite"></div></div>`); if(box) box.remove(); scrollEnd(); }
+function step3(){ const c=G.list[G.i]; G.step=3; G.lock=false; el().querySelector('.mdcase').insertAdjacentHTML('beforeend',`<div class="mdnext"><div class="mdprompt">${PL('now','Step 3 · Prove it')} Which clue cracks the case?</div>${opts(c.whys,'s3')}<div class="mdfb" aria-live="polite"></div></div>`); scrollEnd(); }
 function scrollEnd(){ try{ const w=el().querySelector('.mdwrap'); w.scrollTo({top:w.scrollHeight,behavior:RM?'auto':'smooth'}); }catch(e){} }
 function lockBtns(scope,good,bad){ scope.querySelectorAll('.mdb').forEach(b=>{ b.disabled=true; }); if(good) good.classList.add('mdright'); if(bad&&bad!==good) bad.classList.add('mdwrong'); }
 function lastScope(){ const n=el().querySelectorAll('.mdnext'); return n.length?n[n.length-1]:el().querySelector('.mdwrap'); }
@@ -187,15 +190,15 @@ function answer(kind,btn){ if(G.lock) return; G.lock=true; const c=G.list[G.i], 
 function closed(lastOk){ const c=G.list[G.i]; G.solved++; SND.stamp(); const d=el();
  d.querySelector('.mdcase').insertAdjacentHTML('beforeend',`<div class="mdnext mdsolved"><div class="mdstamp${RM?'':' go'}" aria-hidden="true">SOLVED</div>
  <div class="mdtruth"><div><small>Right answer</small><b>${E(c.right)}</b></div>${c.trap?'':`<div class="mdx-wrong"><small>The mistake</small><s>${E(c.wrong)}</s></div>`}<div class="mdwhy">💡 ${E(c.why)}</div></div>
- <button type="button" class="mdgo" data-md="next">${G.i+1<G.list.length?'Next case ▶':'See my rank ▶'}</button></div>`); scrollEnd(); setTimeout(focusGo,300); }
+ ${GO(G.i+1<G.list.length?'Next case':'See my rank','data-md="next"')}</div>`); scrollEnd(); setTimeout(focusGo,300); }
 function rankOf(p,max){ const s=Math.round(p*18/Math.max(1,max)); for(const r of RANKS) if(s>=r[0]) return r; return RANKS[RANKS.length-1]; }
 function end(){ const max=G.list.reduce((s,c)=>s+3,0), r=rankOf(G.pts,max), best=getBest(), nb=G.pts>best; if(nb) setBest(G.pts); SND.fanfare();
  el().innerHTML=`<div class="mdwrap mdend">${top()}<div class="mdhero"><div class="mdbadge${RM?'':' pop'}">${r[2]}</div><h1>${E(r[1])}!</h1>
- <p class="mdbig">⭐ ${G.pts} of ${max} · ${G.solved} cases closed</p>${nb&&best?'<p class="mdbest">🎉 New best!</p>':''}
+ <p class="mdbig mdpl">${PL('rank','⭐ '+G.pts+' of '+max+' points')}${PL('prog',G.solved+' case'+(G.solved===1?'':'s')+' closed')}</p>${nb&&best?'<p class="mdbest">'+PL('rank','🎉 New best!')+'</p>':''}
  <p class="mdtip">Detectives learn the most from mistakes. Every clue you read today makes the right answer stick.</p>
- <div class="mdbtns two"><button type="button" class="mdgo" data-md="again">🔁 New cases</button><button type="button" class="mdgo mdalt" data-md="close">Done</button></div></div></div>`; if(!RM) confetti(); focusGo(); }
+ ${window.TLK?`<div class="mdkit">${TLK.main('New cases','data-md="again"')}${TLK.quiet('Done','data-md="close"')}</div>`:'<div class="mdbtns two"><button type="button" class="mdgo" data-md="again">New cases</button><button type="button" class="mdgo mdalt" data-md="close">Done</button></div>'}</div></div>`; if(!RM) confetti(); focusGo(); }
 function confetti(){ const d=el(); for(let i=0;i<60;i++){ const p=document.createElement('i'); p.className='mdcf'; p.style.left=(Math.random()*100)+'vw'; p.style.background=['#FACC15','#F43F5E','#22C55E','#3B82F6','#A855F7','#FB923C'][i%6]; p.style.animationDelay=(Math.random()*.6)+'s'; p.style.animationDuration=(1.6+Math.random()*1.4)+'s'; d.appendChild(p); setTimeout(()=>p.remove(),3500); } }
-function focusGo(){ try{ const b=el().querySelector('.mdgo'); if(b) b.focus({preventScroll:true}); }catch(e){} }
+function focusGo(){ try{ const b=el().querySelector('.mdgo,#mdx .tlk-main'); if(b) b.focus({preventScroll:true}); }catch(e){} }
 document.addEventListener('click',function(e){ const tile=e.target.closest&&e.target.closest('[data-hp="open"][data-k="mdcard"]'); if(tile&&!window.TL_MD_OFF){ e.preventDefault(); e.stopPropagation(); return open(); }
  const t=e.target.closest&&e.target.closest('[data-md],[data-mdopen]'); if(!t) return;
  if(t.hasAttribute('data-mdopen')){ e.preventDefault(); e.stopPropagation(); return open(); }
@@ -207,9 +210,9 @@ document.addEventListener('click',function(e){ const tile=e.target.closest&&e.ta
 document.addEventListener('keydown',function(e){ const d=document.getElementById('mdx'); if(!d||d.className!=='on') return;
  if(e.key==='Escape'){ e.preventDefault(); return close(); }
  const n=parseInt(e.key,10); if(n>=1&&n<=4&&!G.lock){ const sc=lastScope(); const bs=[...sc.querySelectorAll('.mdb:not([disabled])')]; if(bs[n-1]){ e.preventDefault(); bs[n-1].click(); } }
- else if(e.key==='Enter'){ const g=d.querySelector('.mdgo'); if(g&&document.activeElement!==g){ e.preventDefault(); g.click(); } } },true);
+ else if(e.key==='Enter'){ const g=d.querySelector('.mdgo,#mdx .tlk-main'); if(g&&document.activeElement!==g){ e.preventDefault(); g.click(); } } },true);
 function card(st){ if(window.TL_MD_OFF) return ''; let n=0; try{ n=pool().length; }catch(e){ return ''; } if(n<3) return ''; const best=getBest();
- return `<section class="mdcard"><div class="mdch"><span class="mdci" aria-hidden="true">🕵️</span><div><b>Mistake Detective</b><small>Spot it. Fix it. Prove it. ${ROUND} cases from your lessons.</small></div></div><div class="mdcb"><button type="button" class="mdcbtn" data-mdopen="1">🔍 Start a case</button>${best?`<span class="mdcbest">Best: ⭐ ${best}</span>`:''}</div></section>`; }
+ return `<section class="mdcard"><div class="mdch"><span class="mdci" aria-hidden="true">🕵️</span><div><b>Mistake Detective</b><small>Spot it. Fix it. Prove it. ${ROUND} cases from your lessons.</small></div></div><div class="mdcb">${window.TLK?TLK.quiet('Start a case','data-mdopen="1"'):'<button type="button" class="mdcbtn" data-mdopen="1">Start a case</button>'}${best?PL('rank','Best: ⭐ '+best):''}</div></section>`; }
 const _find=window.tlFindLevelCard;
 window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ h+=card(st); }catch(e){ console.error('Mistake Detective card',e); } return h; };
 try{ if(!document.getElementById('tl-md-css')){ const s=document.createElement('style'); s.id='tl-md-css'; s.textContent=`
@@ -222,7 +225,8 @@ try{ if(!document.getElementById('tl-md-css')){ const s=document.createElement('
 #mdx .mdtop{display:flex;align-items:center;gap:12px}.mdtitle{flex:1;font-weight:900;letter-spacing:.08em;font-size:clamp(18px,3.2vw,26px);color:#0F766E;text-shadow:0 2px 0 #CCFBF1}
 .mdpts{font-weight:900;font-size:clamp(20px,3.4vw,28px);background:#FACC15;color:#1F2937;border-radius:999px;padding:4px 16px}
 .mdx-close{border:0;background:#fff;box-shadow:0 2px 8px rgba(15,23,42,.12);color:#0F172A;font-size:22px;width:46px;height:46px;border-radius:14px;cursor:pointer}
-.mddots{display:flex;gap:8px;justify-content:center;margin:10px 0 14px}.mddot{width:16px;height:16px;border-radius:50%;background:#CBD5E1}.mddot.done{background:#22C55E}.mddot.cur{background:#F59E0B;box-shadow:0 0 0 4px rgba(245,158,11,.25)}
+.mddots{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin:10px 0 14px}.mddot{width:16px;height:16px;border-radius:50%;background:var(--tlk-lock-bg,#E2E8F0);box-shadow:inset 0 0 0 1.5px #CBD5E1}.mddot.done{background:var(--tlk-prog-fg,#075985);box-shadow:none}.mddot.cur{background:var(--tlk-now-bg,#FEF3C7);box-shadow:inset 0 0 0 3px var(--tlk-now-fg,#92400E)}.mdcn{margin-left:6px}
+#mdx .tlk-pill{font-size:16px}#mdx .mdtop .tlk-pill{font-size:18px;padding:6px 12px}.mdpl{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.mdpl .tlk-pill{font-size:20px;padding:6px 14px}.mdprompt .tlk-pill{margin-right:8px;vertical-align:middle}#mdx .tlk-main{margin:8px}#mdx .mdsolved .tlk-main,#mdx .mdhero>.tlk-main{min-width:200px}
 .mdhero{text-align:center;padding:10px 0}.mdhero h1{font-size:clamp(30px,6vw,54px);margin:6px 0;line-height:1.1;color:#0F172A}
 .mdglass{font-size:clamp(70px,13vw,120px);display:inline-block;animation:mdsweep 2.6s ease-in-out infinite}
 @keyframes mdsweep{0%,100%{transform:translateX(-30px) rotate(-12deg)}50%{transform:translateX(30px) rotate(12deg)}}
@@ -234,10 +238,11 @@ try{ if(!document.getElementById('tl-md-css')){ const s=document.createElement('
 .mdcase{background:#FFFBEB;color:#1F2937;border-radius:24px;padding:16px;box-shadow:0 14px 36px rgba(15,23,42,.14);position:relative;border:3px solid #FDE68A}
 .mdcase.mdin{animation:mdslide .45s cubic-bezier(.2,.9,.3,1.2)}@keyframes mdslide{from{transform:translateY(40px) rotate(-2deg);opacity:0}to{transform:none;opacity:1}}
 .mdfile{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.mdno{background:#B91C1C;color:#fff;font-weight:900;letter-spacing:.1em;border-radius:8px;padding:4px 12px;font-size:18px}.mdtopic{font-weight:800;color:#78350F;font-size:17px}
-.mdq{position:relative;background:#fff;border:2px dashed #D97706;border-radius:16px;padding:12px 56px 12px 14px}.mdq small,.mdans small,.mdtruth small{display:block;font-weight:800;color:#92400E;font-size:15px;text-transform:uppercase;letter-spacing:.06em}
-.mdqt{font-size:clamp(22px,3.6vw,32px);font-weight:800;line-height:1.25;margin-top:4px}.mdspk{position:absolute;right:8px;top:8px;border:0;background:#FEF3C7;border-radius:12px;width:42px;height:42px;font-size:22px;cursor:pointer}
+.mdq{position:relative;background:#fff;border:2px dashed #D97706;border-radius:16px;padding:12px 64px 12px 14px}.mdq small,.mdans small,.mdtruth small{display:block;font-weight:800;color:#92400E;font-size:15px;text-transform:uppercase;letter-spacing:.06em}
+.mdspkw .tlk-tool{position:absolute;right:8px;top:8px}.mdqt{font-size:clamp(22px,3.6vw,32px);font-weight:800;line-height:1.25;margin-top:4px}.mdspk{position:absolute;right:8px;top:8px;border:0;background:#FEF3C7;border-radius:12px;width:42px;height:42px;font-size:22px;cursor:pointer}
 .mdans{display:flex;gap:12px;align-items:center;margin:12px 0;background:#EFF6FF;border-radius:16px;padding:10px 14px}.mdface{font-size:44px}.mdshown{font-size:clamp(22px,3.6vw,32px);font-weight:900;color:#1E3A8A}
 .mdprompt{font-size:clamp(21px,3.4vw,28px);font-weight:900;margin:14px 0 8px;color:#111827}.mdstep{display:inline-block;background:#0F766E;color:#fff;border-radius:10px;padding:2px 10px;font-size:.7em;letter-spacing:.08em;margin-right:8px;vertical-align:middle}
+.mdkit{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:8px}   /* the end buttons are the kit's (button system step 5): New cases = MAIN, Done = QUIET, words only */
 .mdbtns{display:grid;gap:10px}.mdbtns.two{grid-template-columns:1fr 1fr}
 .mdb{display:flex;align-items:center;gap:10px;text-align:left;border:3px solid #CBD5E1;background:#fff;color:#111827;border-radius:16px;padding:12px 14px;min-height:60px;font-size:clamp(18px,3vw,24px);font-weight:800;font-family:inherit;cursor:pointer;transition:transform .12s}
 .mdb b{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#E2E8F0;font-size:17px}.mdb:hover:not([disabled]){transform:translateY(-2px);border-color:#0F766E}

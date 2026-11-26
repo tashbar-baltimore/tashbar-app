@@ -49,22 +49,28 @@ function obkStep(wrong) {
       if (s.sel < 0) return tap('card', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); return tap('box', i); }
     case 'parts': case 'dictation': case 'order': { if (OBK.ready(d, s)) return check(); const list = d.parts || d.w || d.steps, i = s.slots.indexOf(-1), want = S(list[i]);
       return tap(d.type === 'parts' ? 'part' : d.type === 'order' ? 'strip' : 'tile', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); }
+    /* the two Reader kinds (src/CoreKitActs.html): the book opens over the lesson; read every page to the end, or tap the proof sentence */
+    case 'read': case 'proof': { const R = window.TLCORE && TLCORE.reader, cr = document.getElementById('crd'), cq = sel => cr && cr.querySelector(sel);
+      if (R && R.isOpen() && cr) { const st = R.state();
+        if (d.type === 'proof' && st.ask && !st.ask.over) { const pf = st.ask.proof[0], all = [...cr.querySelectorAll('[data-crds]')].map(x => +x.getAttribute('data-crds'));
+          const i = w && st.ask.tries === 0 ? all.find(k => st.ask.proof.indexOf(k) < 0) : pf; return click(cq('[data-crds="' + i + '"]')) ? 'proof' : 'no proof sentence on the page'; }
+        return click(cq('[data-crd=start]') || cq('[data-crd=next]') || cq('[data-crd=finish]')) ? 'page' : 'no way forward in the book'; }
+      if (s.busy) return 'book opening';
+      if (s.msg && /did not open/.test(s.msg)) return 'no book: ' + s.msg;
+      return tap('open'); }
   }
   return 'unknown type ' + d.type;
 }
 
-module.exports = async function oneBiteTests(pg) {
-  const out = { fails: [], oks: [], counts: {} };
-  await pg.evaluate(src => { window.__obkStep = (0, eval)('(' + src + ')'); }, obkStep.toString());
-  const size = pg.viewportSize();
-  await pg.setViewportSize({ width: 390, height: 844 });
-  const r = await pg.evaluate(async () => {
+/* Runs in the page (step 1 below). On the main page: the well-formed checks and the Activity Kit fixtures; returns the list of bites
+   to play. On every page: leaves the player (window.__obPlay) for step 2. worker = true: an extra page that only plays bites. */
+async function oneBiteSetup(worker) {
     const sleep = ms => new Promise(res => setTimeout(res, ms)), o = { bad: [], played: 0, mastered: 0, steps: {}, notTest: null, bites: 0, kitBites: 0, kitTypes: {}, kitActs: 0 };
     if (!window.OB || !window.ONE_BITE) { o.bad.push('OneBite.html did not load (window.OB missing)'); return o; }
     if (!window.OBK) { o.bad.push('OneBiteKit.html did not load (window.OBK missing)'); return o; }
     const has = id => !!((typeof BANK_ALL !== 'undefined' && BANK_ALL[id]) || (typeof GEN !== 'undefined' && GEN[id]));
     const ids = Object.keys(ONE_BITE); o.bites = ids.length;
-    ids.forEach(id => { const b = ONE_BITE[id], m = s => o.bad.push(id + ': ' + s);
+    if (!worker) ids.forEach(id => { const b = ONE_BITE[id], m = s => o.bad.push(id + ': ' + s);
       if (!has(id)) m('is not a real lesson id');
       if (!/^(K1|B23|E45|M68)$/.test(b.band || '')) m('band must be K1, B23, E45 or M68');
       if (!b.today || String(b.today).split(/\s+/).length > 10) m('needs a short today line (10 words or fewer)');
@@ -109,6 +115,7 @@ module.exports = async function oneBiteTests(pg) {
           if (key !== lastKey) { lastKey = key; const e = kitScreen(p, id + ' ' + st + ' ' + (k.i + 1) + ' (' + k.acts[k.i].type + ')'); if (e) { s.err = e; break; } o.kitTypes[k.acts[k.i].type] = 1; }
           const wrong = st === 'your' && opt.wrongAt === k.i; const a = window.__obkStep(wrong);
           if (/^no |missing|unknown|nokit/.test(a)) { s.err = st + ' ' + (k.i + 1) + ' (' + k.acts[k.i].type + '): ' + a; break; }
+          if (/^(book opening|page|proof|open)$/.test(a)) { s.screens--; await sleep(40); continue; }   /* the book (a Reader kind) loads and turns its pages: these steps do not count as screens */
           await sleep(2); continue; }
         if (st !== 'q') { seen[st] = 1;
           const dots = document.querySelectorAll('#app .ob-dots li').length, go = document.querySelectorAll('#app .ob-foot .ob-go').length, say = document.querySelector('#app .ob-say');
@@ -133,8 +140,10 @@ module.exports = async function oneBiteTests(pg) {
         else if (p.ob.bite.band === 'K1' && !document.querySelector('#app .ob-party')) s.err = 'no Little Learners celebration on Bite Done';
         else s.ok = true; }
       return s; }
+    window.__obO = o; window.__obPlay = id => play(id); window.__obWorldOf = worldOf;
+    if (worker) return null;
 
-    const prev = window.OB_LIVE; window.OB_LIVE = 'test';
+    o.prev = window.OB_LIVE; window.OB_LIVE = 'test';
     const FIX = ['MATH.OPS.L01.04', 'MATH.CNT.L01.01'].find(has) || Object.keys(BANK_ALL).find(x => /^MATH\..*\.L01\./.test(x)) || Object.keys(BANK_ALL)[0];
     const keep = ONE_BITE[FIX];
     const base = { band: 'K1', pic: '🔢', today: 'Kit test bite', why: 'Testing every activity.', watch: { q: 'Watch', steps: ['One.', 'Two.'] }, oops: { wrong: '1', right: '2', why: 'x' }, ways: ['a', 'b'] };
@@ -174,24 +183,46 @@ module.exports = async function oneBiteTests(pg) {
     if (keep) ONE_BITE[FIX] = keep; else delete ONE_BITE[FIX];
     OBK.list.forEach(t => { if (!o.kitTypes[t]) o.bad.push('Activity Kit: the ' + t + ' activity was never shown and played by tap'); });
 
-    /* ---- every real bite (and 6 auto-bites) to mastered ---- */
-    const auto = Object.keys(BANK_ALL).filter((x, i) => i % 230 === 7).slice(0, 6);
-    for (const id of ids.concat(auto)) { let s;
+    /* ---- every real bite (and 6 auto-bites) to mastered: played in step 2 (module.exports) ---- */
+    o.list = ids.concat(Object.keys(BANK_ALL).filter((x, i) => i % 230 === 7).slice(0, 6));
+    return o;
+}
+
+/* pg: the kid page. more: extra kid pages opened the same way (tests/run.js), used only to play the real bites side by side so the
+   kit finishes in time; every bite is still played, start to finish, with the same checks, on exactly one page.
+   part (tests/run.js PART): this run plays only the bites part.mine picks; the other parts' runs play the rest. */
+module.exports = async function oneBiteTests(pg, more, part) {
+  const out = { fails: [], oks: [], counts: {} }, pages = [pg].concat(more || []);
+  const size = pg.viewportSize();
+  /* step 1, on every page: the player helpers (the main page also runs the well-formed checks and the Activity Kit fixtures) */
+  const setup = async (page, worker) => { await page.setViewportSize({ width: 390, height: 844 });
+    await page.evaluate(src => { window.__obkStep = (0, eval)('(' + src + ')'); }, obkStep.toString());
+    return page.evaluate(oneBiteSetup, worker); };
+  const [r] = await Promise.all(pages.map((page, k) => setup(page, k > 0)));
+  /* step 2: every real bite (and 6 auto-bites) to mastered, the list shared out over the pages */
+  const list = (r.list || []).filter(part ? part.mine : () => true), parts = pages.length;
+  const got = await Promise.all(pages.map((page, k) => page.evaluate(async ({ list, part, parts }) => {
+    const res = []; window.OB_LIVE = 'test';
+    for (let i = part; i < list.length; i += parts) { const id = list[i]; let s;
       /* the boy's page signs out after 5 minutes with no tap (SignOutBar.html IDLE); scripted clicks are not taps, and with 260+ bites
          this loop runs longer than that, so the test boy was signed out mid-run (A.st null). Count each lesson as a tap. */
       try { document.dispatchEvent(new Event('pointerdown')); } catch (e) {}
-      try { s = await play(id); } catch (e) { s = { err: String(e && e.stack || e).slice(0, 200) }; }
-      if (s.err) o.bad.push(id + ': ' + s.err); else { o.played++; o.mastered++; o.kitActs += s.kit || 0; }
-      o.steps[id] = s.screens; }
+      try { s = await window.__obPlay(id); } catch (e) { s = { err: String(e && e.stack || e).slice(0, 200) }; }
+      res.push({ i, id, err: s.err, kit: s.kit, screens: s.screens }); }
+    return { res, kitTypes: window.__obO.kitTypes }; }, { list, part: k, parts })));
+  got.map(g => g.res).flat().sort((a, b) => a.i - b.i).forEach(s => { if (s.err) r.bad.push(s.id + ': ' + s.err); else { r.played++; r.mastered++; r.kitActs += s.kit || 0; } r.steps[s.id] = s.screens; });
+  got.forEach(g => Object.assign(r.kitTypes, g.kitTypes));
+  /* step 3, on the main page: a boy who is not a TEST- boy does not get One Bite; put the page back */
+  if (r.list) r.notTest = await pg.evaluate(() => { let notTest; const o = window.__obO, ids = Object.keys(ONE_BITE);
     try { A.overlay = null; A.play = null; A.res = null; A.st = loadStudent({ id: 'BOY-77', name: 'Made-up Boy B' }); A.view = 'hub'; render(); const id = ids[0] || Object.keys(BANK_ALL)[0];
-      startMission(worldOf(id), id, 'skill'); o.notTest = !!(A.play && A.play.ob); } catch (e) { o.notTest = 'crash ' + e; }
-    window.OB_LIVE = prev; A.play = null; A.res = null; A.overlay = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = 'hub'; render();
-    return o; });
+      startMission(window.__obWorldOf(id), id, 'skill'); notTest = !!(A.play && A.play.ob); } catch (e) { notTest = 'crash ' + e; }
+    window.OB_LIVE = o.prev; A.play = null; A.res = null; A.overlay = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = 'hub'; render();
+    return notTest; });
   if (size) await pg.setViewportSize(size);
   r.bad.forEach(b => out.fails.push('One Bite: ' + b));
   if (r.notTest !== false) out.fails.push('One Bite: a boy who is not a TEST- boy must not get One Bite while OB_LIVE is "test" (got ' + r.notTest + ')');
   out.counts = { oneBiteHandWritten: r.bites, oneBiteWithActivities: r.kitBites, oneBitePlayed: r.played, oneBiteMastered: r.mastered };
-  if (!out.fails.length) out.oks.push('One Bite: ' + r.bites + ' hand-written bites well-formed (' + r.kitBites + ' with activities); Activity Kit: all ' + Object.keys(r.kitTypes).length + ' activity types played by tap at 390 px, 3-in-a-row stop works; ' + r.mastered + ' of ' + (r.played) + ' bites played through all 6 steps to Bite Done (one button, 6 dots, read-aloud, no pop-ups); real boys untouched while in test');
+  if (!out.fails.length) out.oks.push('One Bite: ' + r.bites + ' hand-written bites well-formed (' + r.kitBites + ' with activities); Activity Kit: all ' + Object.keys(r.kitTypes).length + ' activity types played by tap at 390 px, 3-in-a-row stop works; ' + r.mastered + ' of ' + (r.played) + ' bites' + ((part && part.tag) || '') + ' played through all 6 steps to Bite Done (one button, 6 dots, read-aloud, no pop-ups); real boys untouched while in test');
   return out;
 };
 module.exports.obkStep = obkStep;

@@ -85,7 +85,7 @@ TL_PIC_ADD({
     'LK.GEM.L06.02|On the daf, which comes first?': { id: G, mark: [MISHNA], cap: "A real daf: Berachos daf 2, amud aleph (Vilna Shas)" },
     'LK.GEM.L06.04|Which comes first?': { id: G, mark: [MISHNA], cap: "A real daf: Berachos daf 2, amud aleph (Vilna Shas)" },
     'LK.GEM.L06.04|What is in the middle of the daf?': { id: G, mark: [KING], cap: CAP },
-    'LK.GEM.L06.01|What do we call the back side of a daf?': { id: G, mark: [], cap: "A real daf from the Vilna Shas" },
+    'LK.GEM.L06.01|What do we call the back side of a daf?': { id: G, mark: [], cap: "A real daf from the Vilna Shas. This is the front side." },
     'LK.GEM.L07.05|Are Rashi letters a different alphabet?': { id: G, mark: [{ box: RASHI.box, label: 'Rashi script', from: 'left', at: 0.3 }], cap: 'Rashi script: the same letters, a different shape' },
     'LK.GEM.L06.01|Daf Check 3. On the daf, what is printed in the middle in big letters?': look0,
     'LK.GEM.L06.02|Mishna or Gemara 6. Put them in the order they come on the daf.': look0,
@@ -228,8 +228,8 @@ function rpHTML(use) { const P = window.TL_PICS[use.id]; if (!P) return '';
     `<div class="rpbox" style="aspect-ratio:${P.w}/${P.h}"><img src="${RP_BASE + rpEsc(P.file)}" alt="" loading="eager" decoding="async" onerror="this.closest('.rp').classList.add('rpno')">${rpMarks(use.mark)}</div>` +
     `<figcaption>${rpEsc(use.cap || P.alt)}<button type="button" class="rpz" aria-label="Make the picture bigger">🔍</button></figcaption></figure>`; }
 function rpZoom(fig) { const id = fig.getAttribute('data-rp'), P = window.TL_PICS[id]; if (!P) return; const d = document.createElement('div'); d.className = 'rpzoom';
-  d.innerHTML = `<div class="rpzin">${fig.querySelector('.rpbox').outerHTML}<p class="rpcred">Picture: ${rpEsc(P.author)} · ${rpEsc(P.licence)}</p><button type="button" class="rpclose">Close ✕</button></div>`;
-  d.addEventListener('click', e => { if (e.target === d || e.target.classList.contains('rpclose')) d.remove(); }); document.body.appendChild(d); requestAnimationFrame(() => rpFit(d.querySelector('.rpbox'))); }
+  d.innerHTML = `<div class="rpzin">${fig.querySelector('.rpbox').outerHTML}<p class="rpcred">Picture: ${rpEsc(P.author)} · ${rpEsc(P.licence)}</p></div>${window.TLK?TLK.x('data-rpx="1"','tr'):'<button type="button" class="rpclose" data-rpx="1" aria-label="Close">✕</button>'}`;
+  d.addEventListener('click', e => { if (e.target === d || e.target.closest('[data-rpx]')) d.remove(); }); document.body.appendChild(d); requestAnimationFrame(() => rpFit(d.querySelector('.rpbox'))); }
 function rpDecorate() { try { if (typeof A === 'undefined' || A.view !== 'play' || !A.play) return; const p = A.play, it = p.items[p.i]; const card = document.querySelector('.qcard'); if (!card || card.querySelector('.rp')) return;
   const use = rpFind(p.id, it); if (!use) return; const h = rpHTML(use); if (!h) return;
   const old = card.querySelector('.tlpic');   /* an emoji picture is replaced; Hebrew text the boy must read (a Rashi, a pasuk) always stays */
@@ -13235,7 +13235,7 @@ TL_PIC_ADD({
   "id": "yarden-river",
   "mark": []
  },
- "SS.GEO.L07.01|The Jordan River ends in which sea? The Dead Sea, or the Mediterranean Sea?": {
+ "SS.GEO.L07.01|The Jordan River ends in which sea? The Dead Sea, the Mediterranean Sea, or the Red Sea?": {
   "id": "yarden-river",
   "mark": []
  },
@@ -13323,7 +13323,7 @@ TL_PIC_ADD({
   "id": "wooden-ballot-box",
   "mark": []
  },
- "SS.CIV.L09.02|Serving on a jury is a citizen's what? Duty, or holiday?": {
+ "SS.CIV.L09.02|Serving on a jury is a citizen's what? A duty, a right he may skip, or a holiday?": {
   "id": "courtroom-jury-box",
   "mark": []
  },
@@ -28260,7 +28260,7 @@ TL_PIC_ADD({
   "id": "ww1-trench-sandbags",
   "mark": []
  },
- "SS.HIST.L08.03|Which side was Germany on? The Central Powers, or the Allies?": {
+ "SS.HIST.L08.03|Which side was Germany on in World War I? The Central Powers, the Allies, or neither side?": {
   "id": "ww1-trench-sandbags",
   "mark": []
  },
@@ -34101,7 +34101,7 @@ TL_PIC_ADD({
   "id": "courtroom-judge-bench-wood",
   "mark": []
  },
- "SS.CIV.L09.02|Serving on a jury is a citizen's what? Duty, or holiday?": {
+ "SS.CIV.L09.02|Serving on a jury is a citizen's what? A duty, a right he may skip, or a holiday?": {
   "id": "courtroom-judge-bench-wood",
   "mark": []
  },

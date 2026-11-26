@@ -1,0 +1,489 @@
+<script>
+/* CoreDataC45H4.html: Core Growth job C45 (helper piece: fluency passages, Grade 5), lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md).
+   Keep this file under 150 KB. No double slash in this file (HtmlService rule).
+   "Read It 3 Times" lessons: each one opens a fluency passage from the content store (texts/C45/C45.FL5.*) with the "read"
+   kind: read 1 = listen to the Reader's voice and follow the lit words, read 2 = read along with it, read 3 = read it alone, out loud
+   (no recording and no timers, HoS 2026-11-24). Then hands-on work on one fluency skill (end marks, phrasing, character voices, stress,
+   pace, poems, self-correcting) on the same passage. Show me checks the skill on a different, cold passage (PASS, c45f_ keys).
+   Plan and minutes: docs/core-growth/C45H-fluency.md. Cast: the Glen Avenue Crew (docs/core-growth/C45-map.md, section 5). */
+(function () {
+  var READ3 = 'Read it 3 times. 1: tap 🔊 and follow the lit words. 2: read along with the voice. 3: read it alone, out loud. Then tap Next.';
+  var P = {
+c45f_gulf: { title: "A River in the Ocean", text: "How did people find it? In the 1700s, ships carried mail between England and America. The English mail ships took about two weeks longer to reach America than the American merchant ships did. Nobody understood why.\nThen Benjamin Franklin, who was in charge of the mail, asked a sea captain named Timothy Folger. Folger laughed and said the answer was simple: the English captains were sailing straight into the Gulf Stream, against the current, and losing days." },
+    c45f_weathermap: { title: "The First Weather Map", text: "Good morning. My name is Rabbi Adler, and today I have a question: how did people first know a storm was coming?\nIn 1849, a scientist named Joseph Henry asked telegraph men in many cities to send him the weather each morning. A few years later, he hung a big map on the wall of the Smithsonian in Washington. A white card meant fair weather. A black card meant rain.\nWhy did this matter? Because for the first time, people could see a storm before it arrived." },
+    c45f_tide: { title: "The Tide", text: "Who is pulling? Who is pushing,\nfar above the foam?\nNot a giant, not a wind,\nnot a whale come home.\nIt's the moon! The quiet moon,\nhanging in the sky,\ntugging at the ocean's coat\nas it passes by." },
+    c45f_river: { title: "The River by Our Shul", text: "The river runs beside our shul,\nit hurries past the trees,\nand carries every falling leaf\ndown to the far-off seas.\nWho sends it? Who keeps\nit moving night and day?\nThe rain that falls upon the hills\nand finds the river's way." },
+    c45f_deep: { title: "A Letter from the Deep Ocean", text: "We are floating above the Mariana Trench, the deepest place in all the oceans. If you dropped Mount Everest into the deepest part of the trench, its top would still be more than a mile under water. That is how deep it is: almost seven miles straight down.\nDown there, it is completely dark. No sunlight reaches that far, not even a little.\nSo you are probably wondering: is anything alive down there? Yes!" },
+    c45f_pole: { title: "A Letter from the South Pole", text: "Dear Shimmy,\nGreetings from the research station at the South Pole! Here is a fact for you: the ice under my feet is almost two miles thick. Two miles! In winter, the sun does not come up for six months.\nSo you are wondering: is it cold here? Freezing! Colder than our freezer at home, by a lot.\nGive Bubby a hug from me, and keep learning hard.\nLove, Uncle Yaakov" },
+    c45f_galileo: { title: "Galileo Looks Up", text: "One clear night, he pointed his tube at the moon.\nWhat did he see? Until then, many people believed the moon was perfectly smooth, like a polished ball. But through his tube, Galileo saw mountains, with long shadows behind them. He saw valleys and deep round holes, the ones we now call craters.\nThe moon was not smooth at all." },
+    c45f_magnet: { title: "The Earth Is a Magnet", text: "Boys, look at this compass. Why does its needle always point north?\nIn the year 1600, an English doctor named William Gilbert wanted to know. He made a little ball out of magnet stone, and he moved a tiny needle all around it. Again and again, the needle pointed to the top of the ball.\nThen he understood. The whole earth is a giant magnet!\nSo, boys, what will you test this week?" },
+    c45f_eagle: { title: "The Eagle Has Landed (a play)", text: "NARRATOR: The fuel is running low.\nDUKE: Sixty seconds.\nNARRATOR: The Eagle keeps flying.\nALDRIN: Forward. Drifting right.\nDUKE: Thirty seconds.\nNARRATOR: Then, at last, a light turns on in the Eagle.\nALDRIN: Contact light!\nARMSTRONG: Houston, Tranquility Base here. The Eagle has landed." },
+    c45f_launch: { title: "The Launch (a play)", text: "NARRATOR: The rocket stands on the pad, white and tall.\nCONTROL: Ten seconds.\nNARRATOR: In the crowd, Shmuel holds his Abba's hand.\nCONTROL: Five. Four. Three. Two. One.\nNARRATOR: Fire bursts out under the rocket. It rises, slowly, then faster.\nSHMUEL: It's up! It's really up!\nABBA: Baruch Hashem. They are on their way." },
+    c45f_footprint: { title: "Footprints on the Moon", text: "But on the moon, a footprint\nlies pressed in the gray dust,\njust where a boot first stepped on it,\nas still as old, cold crust.\nNo wind will ever blow it.\nNo rain will ever fall.\nNo waves will ever wash it out.\nIt does not change at all." },
+    c45f_snowman: { title: "Our Snowman", text: "We built a snowman, tall and round,\nwith buttons on his chest.\nWe laughed and threw snow all around,\nand gave him Zeidy's vest!\nBut in the night, the warm wind came.\nBy morning he was small.\nNo hat, no vest, no button eyes.\nNo snowman there at all." },
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+'READ.FLU.L06.20':{name:"Read It 3 Times: A River in the Ocean",
+      teach:[
+        {p:"c45f_gulf", q:"\"In the 1700s, ships carried mail.\" How do you say \"1700s\" out loud?", o:["the seventeen hundreds", "the one seven zero zeros", "the seventeen zero zeros"], how:"Read a year in two parts: 17 and 00. The s means a hundred years."},
+        {p:"c45f_gulf", q:"\"Then Benjamin Franklin asked a sea captain named Timothy Folger.\" How do you read each name?", o:["Read the whole name as one scoop", "Stop between the first and last name", "Skip the hard name"], how:"A first name and a last name belong together."},
+        {p:"c45f_gulf", q:"\"Nobody understood why.\" Then comes the answer. What do you do before it?", o:["Pause, then give the answer", "Rush into the answer", "Stop reading"], how:"A short pause lets the listeners wonder for a moment."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_gulf", q:"Mistake Detective. Clear science talk, or mistake?", bins:[{id:"c", label:"Clear"}, {id:"m", label:"Mistake"}],
+          items:[{label:"\"Benjamin Franklin\" read as one scoop", bin:"c"}, {label:"\"1700s\" read as \"one seven zero zero s\"", bin:"m"}, {label:"A pause after \"How did people find it?\"", bin:"c"}, {label:"Mumbling \"Timothy Folger\"", bin:"m"}],
+          h:"Could the class catch every name and date?", how:"Names, dates and numbers carry the facts. Read them slowly and clearly."},
+        {t:"pairs", p:"c45f_gulf", q:"Match each number to how you say it.", pairs:[["1700s", "the seventeen hundreds"], ["1776", "seventeen seventy-six"], ["50 miles", "fifty miles"]],
+          h:"Years go in two parts.", how:"Say the first two digits, then the last two."},
+        {t:"order", p:"c45f_gulf", q:"Put the story of the map in order.", tiles:["The English mail ships are slow.", "Franklin asks Captain Folger.", "Folger explains the current.", "They draw and print a map."],
+          h:"What came first?", how:"Smooth readers still follow the story."},
+        {t:"spotall", p:"c45f_gulf", q:"Tap every name of a person.", cells:[{label:"Benjamin Franklin", ok:true}, {label:"Timothy Folger", ok:true}, {label:"England", ok:false}, {label:"Gulf Stream", ok:false}],
+          h:"Which ones are people?", how:"A person's whole name is read as one smooth scoop."},
+        {t:"sort", p:"c45f_gulf", q:"A question to the listeners, or its answer?", bins:[{id:"q", label:"Question"}, {id:"a", label:"Answer"}],
+          items:[{label:"How did people find it?", bin:"q"}, {label:"In the 1700s, ships carried mail between England and America.", bin:"a"}, {label:"Folger laughed and said the answer was simple", bin:"a"}],
+          h:"Look for the question mark.", how:"A speaker asks, pauses, then answers."},
+        {t:"pairs", p:"c45f_gulf", q:"Match each word to its meaning.", pairs:[["current", "water moving one way, like a river"], ["mail", "letters sent from place to place"], ["milder", "not as cold"]],
+          h:"Think back to the talk.", how:"Knowing the words helps you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_weathermap", q:"Find the scientist's name. Which is the right way to read it?", o:["Joseph Henry, in one smooth scoop", "Joseph (stop) Henry", "Jo-seph Hen-ry, one part at a time"], how:"A first name and a last name belong together."},
+        {p:"c45f_weathermap", q:"Find the speaker's second question. Which word starts its answer?", o:["Because", "For", "People"], how:"Find the question, pause, then look at the very next word."},
+        {p:"c45f_weathermap", q:"Find the year in the talk. How do you say it out loud?", o:["eighteen forty-nine", "eighteen fifty-nine", "seventeen forty-nine"], how:"Read a year in two parts."}
+      ],
+      re:[
+        {p:"c45f_gulf", q:"Years are read...", o:["in two parts, like seventeen seventy-six", "one digit at a time", "backwards"], how:"Two parts."},
+        {p:"c45f_gulf", q:"A person's full name is read...", o:["Read the whole name as one scoop", "with a stop in the middle", "very fast"], how:"First and last name go together."},
+        {p:"c45f_gulf", q:"After a speaker's question, you...", o:["Pause, then give the answer", "rush on", "stop the talk"], how:"Let them wonder."}
+      ]},
+
+    'READ.FLU.L06.21':{name:"Read It 3 Times: The Tide",
+      teach:[
+        {p:"c45f_tide", q:"\"tugging at the ocean's coat\" There is no mark at the end of this line. What do you do?", o:["Keep going: no mark, no stop", "Stop for a long time", "Make it a question"], how:"A line end is not always a stop. Look for a mark."},
+        {p:"c45f_tide", q:"\"far above the foam?\" What does the mark tell you?", o:["Read it as a question", "Keep going: no mark, no stop", "Stop and whisper"], how:"The poem is wondering who moves the sea."},
+        {p:"c45f_tide", q:"\"It's the moon!\" How should this sound?", o:["Strong: the big answer", "Soft and unsure", "Read it as a question"], how:"After the questions, here is the answer, with a !"}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_tide", q:"At the end of each line: keep going, or pause?", bins:[{id:"k", label:"Keep going: no mark, no stop"}, {id:"p", label:"Pause a little, then go on"}],
+          items:[{label:"tugging at the ocean's coat", bin:"k"}, {label:"hanging in the sky,", bin:"p"}, {label:"Not a giant, not a wind,", bin:"p"}],
+          h:"Look at the very end of each line.", how:"No mark: keep going. A comma: a little pause."},
+        {t:"sort", p:"c45f_tide", q:"Mistake Detective. Smooth poet, or mistake?", bins:[{id:"s", label:"Smooth poet"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Stops hard after \"coat\"", bin:"m"}, {label:"Reads \"coat as it passes by\" as one flow", bin:"s"}, {label:"Questions read as questions", bin:"s"}, {label:"\"It's the moon!\" read softly, unsure", bin:"m"}],
+          h:"Does the sentence stay whole?", how:"Stopping where there is no mark breaks the sentence in half."},
+        {t:"order", p:"c45f_tide", q:"Put the lines in order.", tiles:["It's the moon! The quiet moon,", "hanging in the sky,", "tugging at the ocean's coat", "as it passes by."],
+          h:"One sentence across four lines.", how:"Read it as one long, smooth sentence."},
+        {t:"pairs", p:"c45f_tide", q:"Match the rhyming words.", pairs:[["sand", "land"], ["foam", "home"], ["sky", "by"]],
+          h:"Read the line ends.", how:"Rhymes sit at the ends of lines, but the sense can run on."},
+        {t:"spotall", p:"c45f_tide", q:"Tap every line end with NO mark.", cells:[{label:"tugging at the ocean's coat", ok:true}, {label:"hanging in the sky,", ok:false}, {label:"as it passes by.", ok:false}, {label:"far above the foam?", ok:false}],
+          h:"Look at the very last character of each line.", how:"No mark means the sentence keeps going."},
+        {t:"pairs", p:"c45f_tide", q:"Match each word to its meaning.", pairs:[["creeping", "moving slowly and quietly"], ["foam", "white bubbles on the water"], ["tugging", "pulling again and again"]],
+          h:"Think back to the poem.", how:"Knowing the words helps you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_river", q:"Find the line that ends with \"leaf\". What do you do at its end?", o:["Keep going: no mark, no stop", "Stop at the period", "Pause a little, then go on"], how:"Look at the very end of that line."},
+        {p:"c45f_river", q:"Find the line that ends with \"day\". How do you read it?", o:["Read it as a question", "Keep going: no mark, no stop", "Stop and whisper"], how:"Look at the mark after \"day\"."},
+        {p:"c45f_river", q:"How many sentences are in the river poem? Count the marks that end a thought.", o:["4", "8", "2"], how:"Lines are not sentences. Count only . ? and !"}
+      ],
+      re:[
+        {p:"c45f_tide", q:"A line with no mark at the end...", o:["Keep going: no mark, no stop", "always stops", "is a question"], how:"Look for the mark."},
+        {p:"c45f_tide", q:"A line ending in a comma...", o:["Pause a little, then go on", "stop for a long time", "read faster"], how:"Comma = little pause."},
+        {p:"c45f_tide", q:"In a poem, a sentence can...", o:["run across several lines", "only be one line", "have no words"], how:"Follow the marks, not the lines."}
+      ]},
+
+    'READ.FLU.L06.22':{name:"Read It 3 Times: From the Deep Ocean",
+      teach:[
+        {p:"c45f_deep", q:"\"That is how deep it is: almost seven miles straight down.\" How do you read this big fact?", o:["Slow down and let it sink in", "Rush past it", "Whisper it"], how:"A big fact needs time to land."},
+        {p:"c45f_deep", q:"\"is anything alive down there? Yes!\" What do you do before \"Yes!\"?", o:["Pause, then give the answer", "Rush into it", "Skip the question"], how:"Let Dovid wonder for a moment."},
+        {p:"c45f_deep", q:"How should the whole letter sound?", o:["Warm, like talking to someone you love", "Strong, like a warning", "Flat, like a list"], how:"An uncle is writing to his nephew."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_deep", q:"Mistake Detective. Good letter reader, or mistake?", bins:[{id:"g", label:"Good"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Slows down for \"almost seven miles straight down\"", bin:"g"}, {label:"Races through the big numbers", bin:"m"}, {label:"A pause before \"Yes!\"", bin:"g"}, {label:"A cold, flat voice for \"Dear Dovid\"", bin:"m"}],
+          h:"Would Dovid feel the wonder?", how:"Big facts slow. Letters warm."},
+        {t:"order", p:"c45f_deep", q:"Put the letter in order.", tiles:["Dear Dovid,", "How deep the trench is", "What lives down there", "Shabbos on the ship", "Love, Uncle Reuven"],
+          h:"How does a letter go?", how:"Greeting, news, more news, closing."},
+        {t:"pairs", p:"c45f_deep", q:"Match each fact to its number.", pairs:[["how deep the trench is", "almost seven miles"], ["Everest's top in the trench", "more than a mile under water"], ["the pressure", "more than a thousand times the air"]],
+          h:"Find each number in the letter.", how:"Big numbers are read slowly so they sink in."},
+        {t:"spotall", p:"c45f_deep", q:"Tap every big fact that needs a slow voice.", cells:[{label:"almost seven miles straight down", ok:true}, {label:"No sunlight reaches that far", ok:true}, {label:"Dear Dovid", ok:false}, {label:"Here is where we are.", ok:false}],
+          h:"Which ones are amazing facts?", how:"Slow down for facts that make you say wow."},
+        {t:"sort", p:"c45f_deep", q:"Big fact, or warm family line?", bins:[{id:"f", label:"Big fact"}, {id:"w", label:"Warm family line"}],
+          items:[{label:"The water is just above freezing.", bin:"f"}, {label:"Learn hard, help your Ima.", bin:"w"}, {label:"It would crush a submarine like a soda can.", bin:"f"}, {label:"I will show you the video of the robot.", bin:"w"}],
+          h:"Is it science, or love?", how:"Your voice changes: slow for facts, warm for family."},
+        {t:"pairs", p:"c45f_deep", q:"Match each word to its meaning.", pairs:[["pressure", "the force of pressing hard"], ["enormous", "very, very big"], ["creatures", "living things"]],
+          h:"Think back to the letter.", how:"Knowing the words helps you read smoothly."}
+      ],
+      check:[
+        {p:"c45f_pole", q:"Find the big fact Uncle Yaakov says twice. Which is it? Read it slowly both times.", o:["two miles", "six months", "our freezer"], how:"Look for words he says again right away."},
+        {p:"c45f_pole", q:"Find the question in the letter. Which word answers it? Pause before it.", o:["Freezing!", "Two miles!", "Love"], how:"Find the ? mark. What comes right after it?"},
+        {p:"c45f_pole", q:"Find the line with Bubby in it. How do you read it?", o:["Warm, like talking to someone you love", "Slow down and let it sink in", "Strong, like a warning"], how:"Is it a big fact, or a family line?"}
+      ],
+      re:[
+        {p:"c45f_deep", q:"A huge fact is read...", o:["Slow down and let it sink in", "fast", "as a question"], how:"Give it time."},
+        {p:"c45f_deep", q:"A letter to family sounds...", o:["Warm, like talking to someone you love", "like a warning", "flat"], how:"Family."},
+        {p:"c45f_deep", q:"After a question in a letter, you...", o:["Pause, then give the answer", "rush on", "skip it"], how:"Let the reader wonder."}
+      ]},
+
+    'READ.FLU.L06.23':{name:"Read It 3 Times: Galileo Looks Up",
+      teach:[
+        {p:"c45f_galileo", q:"\"The moon was not smooth at all.\" Which word carries the surprise?", o:["not", "moon", "was"], how:"Stress the word that says people were wrong."},
+        {p:"c45f_galileo", q:"\"What did he see?\" Then comes the answer. How should the answer build?", o:["Build up, then stress the big discovery", "Flat, all the same", "As fast as you can"], how:"Mountains, valleys, holes: each one bigger news."},
+        {p:"c45f_galileo", q:"\"In the year 1609\" How do you say 1609?", o:["sixteen oh nine", "one six zero nine", "sixteen hundred nine nine"], how:"Two parts: 16, then 09 (oh nine)."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_galileo", q:"Mistake Detective. Good storyteller, or mistake?", bins:[{id:"g", label:"Good"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Stresses \"not\" in \"not smooth at all\"", bin:"g"}, {label:"Reads the discovery like a grocery list", bin:"m"}, {label:"Builds: mountains, valleys, craters", bin:"g"}, {label:"Says 1609 as \"one six zero nine\"", bin:"m"}],
+          h:"Does the listener feel the surprise?", how:"Build up to the discovery, and stress the key word."},
+        {t:"order", p:"c45f_galileo", q:"Put Galileo's discoveries in order.", tiles:["He builds his own tube.", "He sees mountains on the moon.", "He finds moons around Jupiter.", "He writes The Starry Messenger."],
+          h:"What came first?", how:"A good reader follows the story as he reads."},
+        {t:"pairs", p:"c45f_galileo", q:"Match what people thought to what Galileo saw.", pairs:[["the moon is perfectly smooth", "mountains and craters"], ["the Milky Way is a cloud", "countless stars"], ["Jupiter is alone", "four moons circling it"]],
+          h:"Think back to the talk.", how:"Each discovery surprised people. Stress the surprise."},
+        {t:"spotall", p:"c45f_galileo", q:"Tap every word that should get extra stress.", cells:[{label:"not (smooth at all)", ok:true}, {label:"moons (circling around Jupiter)", ok:true}, {label:"the", ok:false}, {label:"his", ok:false}],
+          h:"Which words carry the big news?", how:"Stress the words that carry the surprise."},
+        {t:"sort", p:"c45f_galileo", q:"Build-up, or the big discovery?", bins:[{id:"b", label:"Build-up"}, {id:"d", label:"Discovery"}],
+          items:[{label:"One clear night, he pointed his tube at the moon.", bin:"b"}, {label:"What did he see?", bin:"b"}, {label:"The moon was not smooth at all.", bin:"d"}],
+          h:"Which line is the big news?", how:"Read the build-up calmly, then let the discovery land."},
+        {t:"pairs", p:"c45f_galileo", q:"Match each word to its meaning.", pairs:[["lenses", "curved glass that makes things look bigger"], ["countless", "too many to count"], ["faint", "very weak and hard to see"]],
+          h:"Think back to the talk.", how:"Knowing the words helps you read smoothly."}
+      ],
+      check:[
+        {p:"c45f_magnet", q:"Find the sentence just before Gilbert's big discovery. Which is it? Pause after it, then stress the discovery.", o:["Then he understood.", "Boys, look at this compass.", "Again and again, the needle pointed to the top of the ball."], how:"Find the sentence that starts \"The whole\", then read the one before it."},
+        {p:"c45f_magnet", q:"Find the year in the talk. How do you say it out loud?", o:["sixteen hundred", "sixteen oh nine", "eighteen forty-nine"], how:"Read a year in two parts."},
+        {p:"c45f_magnet", q:"Find the sentence with a ! mark. How do you read it?", o:["Strong: the big discovery", "Flat, like a list", "Soft and unsure"], how:"What has Gilbert just figured out?"}
+      ],
+      re:[
+        {p:"c45f_galileo", q:"A big discovery is read...", o:["Build up, then stress the big discovery", "flat", "fast"], how:"Let it land."},
+        {p:"c45f_galileo", q:"1700 is read...", o:["seventeen hundred", "one seven zero zero", "seventy hundred"], how:"Two parts."},
+        {p:"c45f_galileo", q:"A question at the end of a talk is asked to...", o:["the listeners", "the speaker", "nobody"], how:"He wants the boys to think."}
+      ]},
+
+    'READ.FLU.L06.24':{name:"Read It 3 Times: The Eagle Has Landed",
+      teach:[
+        {p:"c45f_eagle", q:"DUKE: \"Sixty seconds.\" How should Duke read it?", o:["Slow and steady, one number at a time", "One fast rush", "Read it as a question"], how:"Every second counts. The voice stays calm and steady."},
+        {p:"c45f_eagle", q:"ALDRIN: \"Forward. Drifting right.\" How does it sound?", o:["Quick and tense", "Slow and sleepy", "Excited and loud"], how:"Short words, said fast, while flying."},
+        {p:"c45f_eagle", q:"ARMSTRONG: \"The Eagle has landed.\" How does it sound?", o:["Relief: let your voice relax", "Quick and tense", "Read it as a question"], how:"The danger is over."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_eagle", q:"Mistake Detective. Right pace, or mistake?", bins:[{id:"r", label:"Right pace"}, {id:"m", label:"Mistake"}],
+          items:[{label:"\"Sixty seconds.\" slow and steady", bin:"r"}, {label:"\"Thirty seconds.\" in a cheerful rush", bin:"m"}, {label:"\"The Eagle has landed.\" with relief", bin:"r"}, {label:"Reading \"DUKE:\" out loud", bin:"m"}],
+          h:"Does the pace match the moment?", how:"Tense moments: steady. The landing: relief. Names are not read."},
+        {t:"order", p:"c45f_eagle", q:"Put the landing in order.", tiles:["The fuel is running low.", "Sixty seconds.", "Thirty seconds.", "Contact light!", "The Eagle has landed."],
+          h:"Follow the countdown.", how:"The tension grows until the landing."},
+        {t:"pairs", p:"c45f_eagle", q:"Match each line to its voice.", pairs:[["Sixty seconds.", "Slow and steady, one number at a time"], ["Forward. Drifting right.", "Quick and tense"], ["The Eagle has landed.", "Relief: let your voice relax"]],
+          h:"How does each moment feel?", how:"The pace follows the danger."},
+        {t:"spotall", p:"c45f_eagle", q:"Tap every line that should sound tense.", cells:[{label:"The fuel is running low.", ok:true}, {label:"Thirty seconds.", ok:true}, {label:"The Eagle has landed.", ok:false}, {label:"We're breathing again.", ok:false}],
+          h:"Which lines come before the landing?", how:"Before the landing, everyone is tense."},
+        {t:"sort", p:"c45f_eagle", q:"Before the landing, or after?", bins:[{id:"b", label:"Before"}, {id:"a", label:"After"}],
+          items:[{label:"Program alarm.", bin:"b"}, {label:"Sixty seconds.", bin:"b"}, {label:"We're breathing again.", bin:"a"}, {label:"Thanks a lot!", bin:"a"}],
+          h:"Is the Eagle still flying?", how:"After the landing, the voices relax."},
+        {t:"pairs", p:"c45f_eagle", q:"Match each word to its meaning.", pairs:[["crater", "a big round hole"], ["boulders", "very large rocks"], ["drifting", "moving slowly, pushed along"]],
+          h:"Think back to the play.", how:"Knowing the words helps you read smoothly."}
+      ],
+      check:[
+        {p:"c45f_launch", q:"Find the countdown. Which mark comes after each number?", o:["a period", "a comma", "a question mark"], how:"Look right after Five, Four, Three. Each one stands alone."},
+        {p:"c45f_launch", q:"Find the line right after the rocket rises. Whose line is it, and how should it sound?", o:["Shmuel: excited and loud", "Abba: relief, let your voice relax", "CONTROL: slow and steady, one number at a time"], how:"Find \"It rises\", then read the next name tag."},
+        {p:"c45f_launch", q:"Find the narrator's line when the fire bursts out. How should its pace go?", o:["Start slow, then speed up with the rocket", "One flat speed", "Read it as a question"], how:"Read how the rocket moves in that line."}
+      ],
+      re:[
+        {p:"c45f_eagle", q:"A countdown is read...", o:["Slow and steady, one number at a time", "fast", "as a question"], how:"Calm and steady."},
+        {p:"c45f_eagle", q:"Happy shouting sounds...", o:["Excited and loud", "sleepy", "tense"], how:"Joy!"},
+        {p:"c45f_eagle", q:"When the danger is over, the voice...", o:["Relief: let your voice relax", "gets tense", "stops"], how:"Breathe again."}
+      ]},
+
+    'READ.FLU.L06.25':{name:"Read It 3 Times: Footprints on the Moon",
+      teach:[
+        {p:"c45f_footprint", q:"\"On the beach at Ocean City, I wrote my name in sand.\" How should the beach part sound?", o:["Light and playful", "Slow and still", "Read it as a question"], how:"A boy is playing at the beach."},
+        {p:"c45f_footprint", q:"\"No wind will ever blow it.\" How should the moon part sound?", o:["Slow and still", "Light and playful", "Excited and loud"], how:"On the moon, nothing moves."},
+        {p:"c45f_footprint", q:"\"No wind... No rain... No waves...\" How do you read lines that start the same way?", o:["Same pattern, same steady voice", "Faster each time", "Read them as questions"], how:"The pattern is the music. Keep it steady."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_footprint", q:"Beach part, or moon part?", bins:[{id:"b", label:"Light and playful"}, {id:"m", label:"Slow and still"}],
+          items:[{label:"I wrote my name in sand.", bin:"b"}, {label:"the water licked it clean", bin:"b"}, {label:"No rain will ever fall.", bin:"m"}, {label:"It does not change at all.", bin:"m"}],
+          h:"Where is the poem?", how:"The poem turns from the beach to the moon. So does your voice."},
+        {t:"sort", p:"c45f_footprint", q:"Mistake Detective. Smooth poet, or mistake?", bins:[{id:"s", label:"Smooth poet"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Slows down at \"But on the moon\"", bin:"s"}, {label:"Reads the moon part in a bouncy beach voice", bin:"m"}, {label:"Same steady voice for \"No wind... No rain...\"", bin:"s"}, {label:"Speeds up on each \"No\" line", bin:"m"}],
+          h:"Does the voice follow the turn?", how:"Playful at the beach, still on the moon."},
+        {t:"order", p:"c45f_footprint", q:"Put the \"No\" lines in order.", tiles:["No wind will ever blow it.", "No rain will ever fall.", "No waves will ever wash it out.", "It does not change at all."],
+          h:"Wind, rain, waves.", how:"Read the pattern steadily."},
+        {t:"pairs", p:"c45f_footprint", q:"Match what happens on the beach to the moon.", pairs:[["the wind blew it", "no wind"], ["the water licked it clean", "no waves"], ["gone by evening", "still there after fifty years"]],
+          h:"Compare the two places.", how:"The poem shows why the footprint stays."},
+        {t:"spotall", p:"c45f_footprint", q:"Tap the word where the poem turns.", cells:[{label:"But", ok:true}, {label:"By", ok:false}, {label:"The", ok:false}, {label:"So", ok:false}],
+          h:"Which word changes the direction?", how:"A turn word tells your voice to change."},
+        {t:"pairs", p:"c45f_footprint", q:"Match each word to its meaning.", pairs:[["licked", "touched lightly"], ["pressed", "pushed down into something soft"], ["crust", "a hard, dry top layer"]],
+          h:"Think back to the poem.", how:"Knowing the words helps you read smoothly."}
+      ],
+      check:[
+        {p:"c45f_snowman", q:"Find the line where the poem turns. How does your voice change there?", o:["From light and playful to slow and still", "From slow to fast and bouncy", "It stays the same"], how:"Find the turn word. What happens to the snowman after it?"},
+        {p:"c45f_snowman", q:"Find the two lines in a row that start the same way. Which is the second one?", o:["No snowman there at all.", "By morning he was small.", "with buttons on his chest."], how:"Look at the first word of each line near the end."},
+        {p:"c45f_snowman", q:"Find the line about Zeidy. How should it sound?", o:["Light and playful", "Slow and still", "Read it as a question"], how:"What are the boys doing in that part?"}
+      ],
+      re:[
+        {p:"c45f_footprint", q:"When a poem turns, your voice...", o:["changes with it", "stays the same", "stops"], how:"Follow the turn."},
+        {p:"c45f_footprint", q:"Lines that start the same are read...", o:["Same pattern, same steady voice", "faster", "as questions"], how:"Steady."},
+        {p:"c45f_footprint", q:"A still, quiet part is read...", o:["Slow and still", "Light and playful", "loud"], how:"Nothing moves."}
+      ]},
+  };
+
+  var TEACH = {
+'READ.FLU.L06.20':{
+      hook:"A science talk is full of names, dates and numbers. Mumble one, and the listeners lose the story.",
+      big:"Read it 3 times. Read each full name as one scoop, say years in two parts, and pause before the answer to a question.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the names, dates and numbers.", "Read 3: read it alone, like Mr. Halpern in front of the class.", "Read the whole name as one scoop. Years in two parts. Pause, then give the answer."],
+      ex:[{q:"In the 1700s, ships carried mail between England and America.", steps:["1700s: two parts, 17 and 00.", "Say it: the seventeen hundreds.", "Then the rest, smoothly."], a:"the seventeen hundreds"},
+          {q:"How did people find it? ... Then Benjamin Franklin asked a sea captain named Timothy Folger.", steps:["The question: let the listeners wonder.", "Pause, then give the answer.", "Benjamin Franklin: one scoop. Timothy Folger: one scoop."], a:"Pause before the answer; names as one scoop."}],
+      oops:{q:"In the 1700s", wrong:"In the one seven zero zero s", right:"In the seventeen hundreds", why:"A year is said in two parts, the way people talk."},
+      idea:["Names, dates and numbers are the bones of a science talk. Say them clearly, and the story stands up."],
+      try:{q:"How do you say 1776?", o:["seventeen seventy-six", "one seven seven six"], a:"seventeen seventy-six", steps:["Two parts: 17, 76."]}
+    },
+    'READ.FLU.L06.21':{
+      hook:"In a poem, the end of a line is not always the end of a thought. The marks tell you where to stop.",
+      big:"Read it 3 times. Where a line ends with no mark, keep going. Pause at commas, stop at periods, and read questions as questions.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Look at the end of every line.", "Read 3: read it alone, following the marks, not the lines.", "Keep going: no mark, no stop. Pause a little, then go on, at a comma."],
+      ex:[{q:"tugging at the ocean's coat / as it passes by.", steps:["No mark after coat.", "Keep going: no mark, no stop.", "tugging at the ocean's coat as it passes by. (stop)"], a:"One smooth line."},
+          {q:"Who is pulling? Who is pushing, / far above the foam?", steps:["Two questions.", "Read it as a question: wondering.", "The answer comes next: It's the moon!"], a:"Questions, then the answer."}],
+      oops:{q:"tugging at the ocean's coat / as it passes by.", wrong:"tugging at the ocean's coat. (full stop) as it passes by.", right:"tugging at the ocean's coat as it passes by.", why:"There is no mark after coat. Stopping there breaks the sentence in half."},
+      idea:["Line ends are like the end of a train car: the train keeps going unless there is a station sign."],
+      try:{q:"A line ends with no mark. You...", o:["Keep going: no mark, no stop", "Stop for a long time"], a:"Keep going: no mark, no stop", steps:["Look for the mark."]}
+    },
+    'READ.FLU.L06.22':{
+      hook:"An uncle on a ship writes home about the deepest place in the world. Read it so his nephew can feel the wonder, and the love.",
+      big:"Read it 3 times. Slow down for the big facts so they sink in, pause before an answer, and read the family parts warmly.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the big facts.", "Read 3: read it alone, as Uncle Reuven.", "Slow down and let it sink in. Warm, like talking to someone you love."],
+      ex:[{q:"That is how deep it is: almost seven miles straight down.", steps:["A huge fact.", "Slow down and let it sink in.", "almost... seven... miles... straight down."], a:"Slow, so it lands."},
+          {q:"is anything alive down there? Yes!", steps:["The question: let Dovid wonder.", "Pause, then give the answer.", "Yes!"], a:"Pause, then Yes!"}],
+      oops:{q:"almost seven miles straight down", wrong:"almostsevenmilesstraightdown (one rush)", right:"almost seven miles... straight down.", why:"A big fact read in a rush is forgotten at once."},
+      idea:["A big fact is like a giant wave: slow down and let it reach the shore."],
+      try:{q:"\"Learn hard, help your Ima.\" How?", o:["Warm, like talking to someone you love", "Strong, like a warning"], a:"Warm, like talking to someone you love", steps:["Who is talking to whom?"]}
+    },
+    'READ.FLU.L06.23':{
+      hook:"Galileo pointed a tube at the sky and changed what the world believed. Your voice can make the boys feel that moment.",
+      big:"Read it 3 times. Build up to each discovery, stress the word that carries the surprise, and say years in two parts.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find each discovery.", "Read 3: read it alone, like the teacher with the tube.", "Build up, then stress the big discovery. A question at the end is asked to the listeners."],
+      ex:[{q:"Until then, many people believed the moon was perfectly smooth. But through his tube, Galileo saw mountains.", steps:["What people believed: calm.", "But: the turn.", "mountains: stress the surprise."], a:"Build up, then stress the big discovery."},
+          {q:"In the year 1609", steps:["Two parts: 16 and 09.", "Say it: sixteen oh nine."], a:"sixteen oh nine"}],
+      oops:{q:"The moon was not smooth at all.", wrong:"the moon was not smooth at all (flat, like a list)", right:"The moon was NOT smooth at all!", why:"The surprise word is not. Without stress, the discovery is lost."},
+      idea:["A discovery is like a curtain opening: a little build-up, then the big reveal."],
+      try:{q:"How do you say 1700?", o:["seventeen hundred", "one seven zero zero"], a:"seventeen hundred", steps:["Two parts."]}
+    },
+    'READ.FLU.L06.24':{
+      hook:"Thirty seconds of fuel. Two men, one machine, and the whole world holding its breath. Read it right, and your listeners hold their breath too.",
+      big:"Read it 3 times. Countdowns slow and steady, flying words quick and tense, and relief when the Eagle lands.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Notice who is talking.", "Read 3: read it alone, with every voice.", "Slow and steady, one number at a time. Quick and tense. Then relief: let your voice relax. When people cheer: excited and loud."],
+      ex:[{q:"DUKE: Sixty seconds. ... DUKE: Thirty seconds.", steps:["Numbers that count down.", "Slow and steady, one number at a time.", "The listeners feel the time running out."], a:"Slow and steady."},
+          {q:"ARMSTRONG: Houston, Tranquility Base here. The Eagle has landed.", steps:["The danger is over.", "Relief: let your voice relax."], a:"Relief."}],
+      oops:{q:"DUKE: Thirty seconds.", wrong:"Duke: thirty seconds! (cheerful, name read)", right:"Thirty seconds. (slow, steady, no name)", why:"It is the tensest moment, and the name is not read aloud."},
+      idea:["Pace is the music of a story: slow drums for danger, a big sigh when it is over."],
+      try:{q:"\"Thirty seconds.\" How?", o:["Slow and steady, one number at a time", "Excited and loud"], a:"Slow and steady, one number at a time", steps:["Is it danger or joy?"]}
+    },
+    'READ.FLU.L06.25':{
+      hook:"A poem can turn like a road. This one starts at the beach and ends on the moon, and your voice has to turn with it.",
+      big:"Read it 3 times. Light and playful at the beach, slow and still on the moon, and the same steady voice for lines that repeat a pattern.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the turn word.", "Read 3: read it alone, changing your voice at the turn.", "Light and playful, then slow and still. Same pattern, same steady voice."],
+      ex:[{q:"On the beach at Ocean City, I wrote my name in sand.", steps:["A boy playing.", "Light and playful."], a:"Light and playful."},
+          {q:"No wind will ever blow it. No rain will ever fall.", steps:["The moon: nothing moves.", "Slow and still.", "Same pattern, same steady voice."], a:"Slow, still and steady."}],
+      oops:{q:"No wind will ever blow it.", wrong:"no-wind-will-ever-blow-it! (bouncy beach voice)", right:"No wind... will ever... blow it.", why:"The moon part is still. A bouncy voice breaks the picture."},
+      idea:["A turn in a poem is like walking from a noisy street into a quiet shul: your voice changes."],
+      try:{q:"\"It does not change at all.\" How?", o:["Slow and still", "Light and playful"], a:"Slow and still", steps:["Which part of the poem is it?"]}
+    },
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+'READ.FLU.L06.20':{ band:"E45", pic:"🌊", today:"Read names, dates and numbers clearly in a talk",
+      why:"In a science talk, the names, dates and numbers are the facts. Read them clearly and the listeners can follow the story.",
+      ready:[{q:"A date and a new name in a talk are read...", o:["a little slower, so they are clear", "fast, to get past them"], a:"a little slower, so they are clear"},
+             {q:"Easy words in a talk are read...", o:["at talking speed", "one word at a time"], a:"at talking speed"}],
+      bridge:"READ.FLU.L06.03", bridgeName:"Pace It",
+      watch:{ q:"Mr. Halpern's river in the ocean", m:{type:"scene", e:"🌊", t:"How did people find it? In the 1700s, ships carried mail between England and America."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the names, dates and numbers."},
+        {t:"Read 3: I read it alone, like the teacher in front of the class."},
+        {t:"\"How did people find it?\" Pause, then give the answer. 1700s: the seventeen hundreds. Benjamin Franklin: read the whole name as one scoop."}],
+        a:"Names as one scoop, years in two parts, a pause before the answer." },
+      oops:{ q:"In the 1700s, ships carried mail.", wrong:"In the one seven zero zero s, ships carried mail.", right:"In the seventeen hundreds, ships carried mail.", why:"A year is said in two parts, the way people talk." },
+      ways:["repeated reading with a model", "names and numbers", "phrase scoops", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"Every name and date came through clearly! Give the river talk to your chavrusa, and ask him who drew the map.",
+      board:{ key:"Show me answers (for the rebbe): Joseph Henry, in one smooth scoop · Because · eighteen forty-nine", one:"Science talks: names as one scoop, years in two parts, pause before the answer to a question.", activity:"Name and date relay: the rebbe writes 5 names and years on the board; pairs take turns reading them aloud in a sentence until each one is smooth.", mistakes:["Reading years digit by digit", "A stop in the middle of a name", "No pause before the answer"] },
+      do:[
+        {type:"read", text:"C45.FL5.10", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"sort", mis:true, bins:["Clear", "Mistake"], cards:[["\"Benjamin Franklin\" as one scoop", 0], ["\"1700s\" as \"one seven zero zero s\"", 1], ["A pause after \"How did people find it?\"", 0], ["Mumbling \"Timothy Folger\"", 1]],
+          say:"Mistake Detective: clear science talk, or mistake?", how:"Could the class catch every name and date?",
+          why:{q:"Why read years in two parts?", o:["That is how people say years", "It is faster to skip them", "Years are not important"], a:"That is how people say years"}}],
+      your:[
+        {type:"evidence", q:"Which sentence starts the answer to \"How did people find it?\"", p:["How did people find it?", "In the 1700s, ships carried mail between England and America.", "Nobody understood why.", "It moves faster than a person can walk, day and night, and it never stops."], a:1, look:"the start of the answer",
+          say:"Read each one. Where does the answer begin?", how:"The speaker asks, pauses, then starts telling the story.",
+          why:{q:"What do you do between the question and this line?", o:["Pause, then give the answer", "Rush on", "Stop the talk"], a:"Pause, then give the answer"}},
+        {type:"proof", text:"C45.FL5.10", q:"Which sentence tells the color of the Gulf Stream's water?", proof:"a deeper blue and warmer", look:"the color of the water",
+          say:"Open the talk. Find the sentence that proves it.", how:"Look in the part about the whale hunters."},
+        {type:"tiles", w:["Then Benjamin Franklin,", "who was in charge of the mail,", "asked a sea captain", "named Timothy Folger."], extra:["Franklin who"],
+          say:"Build the sentence in smooth scoops.", how:"Keep each name whole. Pause a little at each comma."},
+        {type:"match", pairs:[["1700s", "the seventeen hundreds"], ["fifty miles", "how wide the river is"], ["two weeks", "how much slower the English mail ships were"]],
+          say:"Match each number to what it means.", how:"Find each number in the talk."},
+        {type:"findall", grid:["Benjamin", "England", "Franklin", "ships", "Timothy", "mail", "Folger", "current"], find:["Benjamin", "Franklin", "Timothy", "Folger"], findSay:"parts of people's names",
+          say:"Tap every part of a person's name.", how:"Names of people start with a capital, but so do places. Is it a person?"}] },
+
+    'READ.FLU.L06.21':{ band:"E45", pic:"🌙", today:"Read a poem by its marks, not its lines",
+      why:"A poem's sentences can flow across lines. Follow the marks, and the poem makes sense; stop at every line end, and it breaks.",
+      ready:[{q:"A comma tells your voice to...", o:["pause a little", "stop for a long time"], a:"pause a little"},
+             {q:"A period means...", o:["stop", "keep going"], a:"stop"}],
+      bridge:"READ.FLU.L06.04", bridgeName:"Poetry Aloud",
+      watch:{ q:"Who moves the sea?", m:{type:"scene", e:"🌙", t:"It's the moon! The quiet moon, / hanging in the sky, / tugging at the ocean's coat / as it passes by."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I look at the end of every line."},
+        {t:"Read 3: I read it alone, following the marks."},
+        {t:"\"coat\" has no mark: keep going, no mark, no stop. \"sky,\" has a comma: pause a little, then go on. Questions: read it as a question."}],
+        a:"Follow the marks, not the lines." },
+      oops:{ q:"tugging at the ocean's coat / as it passes by.", wrong:"tugging at the ocean's coat. (full stop) as it passes by.", right:"tugging at the ocean's coat as it passes by.", why:"There is no mark after coat. Stopping breaks the sentence in half." },
+      ways:["repeated reading with a model", "poetry aloud", "dictation", "Mistake Detective", "tap the reason", "chavrusa"], done:"You read the tide as one flowing sea! Read the poem to your chavrusa, and let him listen for any wrong stops.",
+      board:{ key:"Show me answers (for the rebbe): Keep going: no mark, no stop · Read it as a question · 4", one:"Poems: follow the marks. No mark at a line end: keep going. Comma: little pause. Period: stop.", activity:"Mark hunt: pairs copy the poem and circle every line end with no mark in green (keep going) and every period in red (stop), then read it 3 times.", mistakes:["Stopping at every line end", "Running through periods", "Questions read flat"] },
+      do:[
+        {type:"read", text:"C45.FL5.11", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"evidence", mis:true, q:"Moishe stopped hard at one line end where he should keep going. Which line?", p:["Who is pulling? Who is pushing,", "tugging at the ocean's coat", "It's the moon! The quiet moon,", "hanging in the sky,"], a:1, look:"a line end with no mark at all",
+          say:"Mistake Detective: where was Moishe wrong to stop?", how:"Look at the very end of each line.",
+          why:{q:"How do you know?", o:["There is no mark at its end", "It is the longest line", "It rhymes"], a:"There is no mark at its end"}}],
+      your:[
+        {type:"tiles", w:["So when I stand", "upon the shore", "and feel the water flow,"], extra:["shore and"],
+          say:"Build the line as smooth scoops.", how:"The sentence flows across the line end. Keep each scoop whole."},
+        {type:"listen", q:"\"It's the moon!\"", hear:"It's the moon!", o:["Strong: the big answer", "Soft and unsure", "Read it as a question"], a:"Strong: the big answer",
+          say:"Listen, then decide: how should this line sound?", how:"It comes right after the questions. Look at its mark.",
+          why:{q:"Why strong?", o:["It answers the poem's questions", "It is the first line", "It is a question"], a:"It answers the poem's questions"}},
+        {type:"order", steps:["It's the moon! The quiet moon,", "hanging in the sky,", "tugging at the ocean's coat", "as it passes by."],
+          say:"Put the sentence back together. Let the marks help you.", how:"One sentence runs across four lines."},
+        {type:"match", pairs:[["tugging at the ocean's coat", "keep going"], ["hanging in the sky,", "pause a little"], ["swallowing the land.", "stop"]],
+          say:"Match each line end to what your voice does.", how:"Look at the very last mark of each line."},
+        {type:"dictation", hear:"tugging at the ocean's coat as it passes by.", w:["tugging", "at", "the", "ocean's", "coat", "as", "it", "passes", "by."], extra:["coat."],
+          say:"Listen, then build it as one sentence.", how:"Is there a stop after coat? Build it the way the poet wrote it."}] },
+
+    'READ.FLU.L06.22':{ band:"E45", pic:"🤿", today:"Read a letter, slowing down for big facts",
+      why:"A big fact read in a rush is forgotten. Read it slowly, and your listener feels the wonder.",
+      ready:[{q:"A big number like \"two thousand feet down\" is read...", o:["slowly and clearly", "as fast as you can"], a:"slowly and clearly"},
+             {q:"An easy sentence like \"It is dark.\" is read...", o:["at talking speed", "one word at a time"], a:"at talking speed"}],
+      bridge:"READ.FLU.L06.03", bridgeName:"Pace It",
+      watch:{ q:"Uncle Reuven's letter", m:{type:"scene", e:"🤿", t:"That is how deep it is: almost seven miles straight down. Down there, it is completely dark."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the big facts."},
+        {t:"Read 3: I read it alone, as Uncle Reuven writing to Dovid."},
+        {t:"Big facts: slow down and let it sink in. Before an answer: pause, then give the answer. Family lines: warm, like talking to someone you love."}],
+        a:"Slow for facts, warm for family." },
+      oops:{ q:"almost seven miles straight down", wrong:"almostsevenmilesstraightdown (one rush)", right:"almost seven miles... straight down.", why:"A big fact read in a rush is forgotten at once." },
+      ways:["repeated reading with a model", "big facts", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"Your voice took Dovid seven miles down! Read the letter to your chavrusa, and see which fact surprises him most.",
+      board:{ key:"Show me answers (for the rebbe): two miles · Freezing! · Warm, like talking to someone you love", one:"Letters with big facts: slow down so they sink in, pause before answers, warm for family.", activity:"Fact or family: the rebbe reads lines from the letter; the class holds up a fish card (big fact, slow) or a heart card (family, warm).", mistakes:["Rushing big numbers", "A cold voice for family lines", "No pause before the answer"] },
+      do:[
+        {type:"read", text:"C45.FL5.12", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"listen", q:"\"So you are probably wondering: is anything alive down there? Yes!\"", hear:"So you are probably wondering: is anything alive down there? Yes!", o:["Pause before Yes!", "Rush straight into Yes!", "Read Yes! as a question"], a:"Pause before Yes!",
+          say:"Listen, then decide: where should the pause go?", how:"The uncle asks, then answers.",
+          why:{q:"Why pause there?", o:["So Dovid can wonder before the answer", "Because Yes is a long word", "To end the letter"], a:"So Dovid can wonder before the answer"}}],
+      your:[
+        {type:"order", steps:["Dear Dovid,", "How deep the trench is", "What lives down there", "Shabbos on the ship", "Love, Uncle Reuven"],
+          say:"Put the letter in order.", how:"Greeting, news, more news, closing."},
+        {type:"sort", mis:true, bins:["Good letter reader", "Mistake"], cards:[["Slows down for \"almost seven miles\"", 0], ["Races through the pressure fact", 1], ["A warm voice for \"Learn hard, help your Ima\"", 0], ["A cold, flat \"Love, Uncle Reuven\"", 1]],
+          say:"Mistake Detective: good letter reader, or mistake?", how:"Would Dovid feel the wonder, and the love?"},
+        {type:"proof", text:"C45.FL5.12", q:"Which sentence tells how cold the water is down there?", proof:"just above freezing", look:"the temperature",
+          say:"Open the letter. Find the sentence that proves it.", how:"Look in the part that tells what it is like down there."},
+        {type:"cloze", t:"That is how deep it is: almost ___ miles straight down.", o:["seven", "seventy", "eleven"], a:"seven",
+          say:"Fill in the big number. Then read it slowly.", how:"Think back to the trench. Then read the whole sentence slowly.",
+          why:{q:"How do you read that sentence?", o:["Slow down and let it sink in", "Rush past it", "Read it as a question"], a:"Slow down and let it sink in"}},
+        {type:"evidence", q:"Which line should sound warm, like talking to someone you love?", p:["The water is just above freezing.", "It would crush a submarine like a soda can.", "Learn hard, help your Ima, and keep building your machines.", "No sunlight reaches that far, not even a little."], a:2, look:"the uncle talking to Dovid",
+          say:"Read each line. Which one is about family?", how:"Three are science facts. One is an uncle's love."}] },
+
+    'READ.FLU.L06.23':{ band:"E45", pic:"🔭", today:"Build up to a discovery, then stress it",
+      why:"A discovery is exciting only if the listener feels the surprise. Your build-up and stress make that happen.",
+      ready:[{q:"How do you say 1776?", o:["seventeen seventy-six", "one seven seven six"], a:"seventeen seventy-six"},
+             {q:"To stress a word means to...", o:["say it a little stronger", "skip it"], a:"say it a little stronger"}],
+      bridge:"READ.FLU.L06.03", bridgeName:"Pace It",
+      watch:{ q:"Galileo points his tube", m:{type:"scene", e:"🔭", t:"Until then, many people believed the moon was perfectly smooth. But through his tube, Galileo saw mountains."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find each discovery."},
+        {t:"Read 3: I read it alone, like the teacher holding the tube."},
+        {t:"Build up, then stress the big discovery: the moon was NOT smooth at all! 1609: sixteen oh nine. The last question is asked to the listeners."}],
+        a:"Build up, stress the surprise, and ask the listeners." },
+      oops:{ q:"The moon was not smooth at all.", wrong:"the moon was not smooth at all (flat, like a list)", right:"The moon was NOT smooth at all!", why:"The surprise word is not. Without stress, the discovery is lost." },
+      ways:["repeated reading with a model", "word parts", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"You made the listeners see the moon's mountains! Read the Jupiter part to your chavrusa, and stress the surprise.",
+      board:{ key:"Show me answers (for the rebbe): Then he understood. · sixteen hundred · Strong: the big discovery", one:"History talks: build up, then stress the discovery; years in two parts; the closing question is asked to the listeners.", activity:"Build-up practice: pairs read \"many people believed... But Galileo saw...\" three times, each time making the turn at \"But\" clearer.", mistakes:["Reading discoveries like a list", "No stress on the surprise word", "Years read digit by digit"] },
+      do:[
+        {type:"read", text:"C45.FL5.13", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"order", steps:["He builds his own tube.", "He sees mountains on the moon.", "He finds moons around Jupiter.", "He writes The Starry Messenger."],
+          say:"Put Galileo's discoveries in order.", how:"Think back to the talk, from the tube to the book.",
+          why:{q:"How do you read a discovery so listeners feel it?", o:["Build up, then stress the surprise", "Read it like a list", "Rush to the end"], a:"Build up, then stress the surprise"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Good storyteller", "Mistake"], cards:[["Stresses \"not\" in \"not smooth at all\"", 0], ["Reads the discoveries like a list", 1], ["Says 1609 as \"sixteen oh nine\"", 0], ["Says 1609 as \"one six zero nine\"", 1]],
+          say:"Mistake Detective: good storyteller, or mistake?", how:"Does the listener feel the surprise? Are the years said the way people talk?"},
+        {type:"evidence", q:"Which sentence is the big surprise about the moon?", p:["One clear night, he pointed his tube at the moon.", "What did he see?", "Until then, many people believed the moon was perfectly smooth, like a polished ball.", "The moon was not smooth at all."], a:3, look:"the sentence that says people were wrong",
+          say:"Read each one. Which needs your strongest voice?", how:"Build-up lines lead to it. The surprise comes after the turn.",
+          why:{q:"Which word gets the stress?", o:["not", "moon", "all"], a:"not"}},
+        {type:"proof", text:"C45.FL5.13", q:"Which sentence tells what the little lights next to Jupiter really were?", proof:"they were moons, circling around Jupiter", look:"what Galileo realized",
+          say:"Open the talk. Find the sentence that proves it.", how:"Look after the lights changed places night after night."},
+        {type:"parts", parts:["count", "less"], mean:"too many to count",
+          say:"Build the long word from the talk.", how:"Find the main word first. Then add the ending that means without."},
+        {type:"listen", q:"\"So, boys, here is my question for you. What could you see, if you did the same?\"", hear:"So, boys, here is my question for you. What could you see, if you did the same?", o:["Asked to the boys, so they think", "Flat, like a list", "Rushed, to finish"], a:"Asked to the boys, so they think",
+          say:"Listen, then decide: how should the last question sound?", how:"Who is the teacher talking to?"}] },
+
+    'READ.FLU.L06.24':{ band:"E45", pic:"🚀", today:"Read a tense play at the right pace",
+      why:"In a tense moment, pace is everything. Read the countdown steady and the landing with relief, and your listeners live it.",
+      ready:[{q:"In a play, the names before lines are...", o:["not read aloud", "read loudly"], a:"not read aloud"},
+             {q:"\"Ten, nine, eight\" is a...", o:["countdown", "question"], a:"countdown"}],
+      bridge:"READ.FLU.L06.02", bridgeName:"Who Is Talking?",
+      watch:{ q:"Mission Control, July 1969", m:{type:"scene", e:"🚀", t:"DUKE: Sixty seconds. ... DUKE: Thirty seconds. ... ARMSTRONG: The Eagle has landed."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words. I watch the name tags."},
+        {t:"Read 2: I read along. I feel the danger grow."},
+        {t:"Read 3: I read it alone, with every voice."},
+        {t:"Sixty seconds: slow and steady, one number at a time. Forward, drifting right: quick and tense. The Eagle has landed: relief, let your voice relax. When people cheer: excited and loud."},
+        {t:"\"Then, at last, a light turns on.\" The words set my pace: at last, I slow down."}],
+        a:"Steady countdown, tense flying, then relief." },
+      oops:{ q:"DUKE: Thirty seconds.", wrong:"Duke: thirty seconds! (cheerful, name read)", right:"Thirty seconds. (slow, steady, no name)", why:"It is the tensest moment, and the name is not read aloud." },
+      ways:["repeated reading with a model", "Readers' Theatre", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"The Eagle landed, and your voice landed with it! Read the play with friends: one is Duke, one is Armstrong, one is the narrator.",
+      board:{ key:"Show me answers (for the rebbe): a period · Shmuel: excited and loud · Start slow, then speed up with the rocket", one:"Tense plays: countdowns slow and steady, action quick and tense, relief when the danger ends. Names are not read aloud.", activity:"Readers' Theatre in four parts; the class holds its breath from \"Sixty seconds\" until \"The Eagle has landed\".", mistakes:["Cheerful voice in the tense part", "Rushing the countdown", "Reading the names aloud"] },
+      do:[
+        {type:"read", text:"C45.FL5.14", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"match", pairs:[["Sixty seconds.", "Slow and steady, one number at a time"], ["Forward. Drifting right.", "Quick and tense"], ["The Eagle has landed.", "Relief: let your voice relax"]],
+          say:"Match each line to its voice.", how:"How does each moment feel: danger, action, or safe?",
+          why:{q:"Why is the countdown slow and steady?", o:["Every second counts, so each one is clear", "Duke is sleepy", "It is a question"], a:"Every second counts, so each one is clear"}}],
+      your:[
+        {type:"proof", text:"C45.FL5.14", q:"Find the sentence where Charlie Duke says the men can breathe again.", proof:"We're breathing again", look:"Duke's words after the landing",
+          say:"Open the play. Find the line that proves it.", how:"Look after Armstrong's big line."},
+        {type:"sort", mis:true, bins:["Right pace", "Mistake"], cards:[["\"Sixty seconds.\" slow and steady", 0], ["\"Thirty seconds.\" in a cheerful rush", 1], ["\"The Eagle has landed.\" with relief", 0], ["Reading \"DUKE:\" out loud", 1]],
+          say:"Mistake Detective: right pace, or mistake?", how:"Does the pace match the moment?"},
+        {type:"tiles", w:["Houston,", "Tranquility Base here.", "The Eagle has landed."], extra:["Base here The"],
+          say:"Build Armstrong's famous words in scoops.", how:"Each scoop is one idea. Pause a little after each."},
+        {type:"evidence", q:"Which line is the tensest moment?", p:["July 20, 1969.", "DUKE: Thirty seconds.", "DUKE: Thanks a lot!", "NARRATOR: For the first time ever, people had landed on the moon."], a:1, look:"the least fuel left",
+          say:"Read each line. Where is the danger biggest?", how:"Think about the fuel.",
+          why:{q:"How should that line be read?", o:["Slow and steady, one number at a time", "Excited and loud", "Relief: let your voice relax"], a:"Slow and steady, one number at a time"}},
+        {type:"findall", grid:["Sixty", "fuel", "Eagle", "Thirty", "seconds", "light", "Houston", "moon"], find:["Sixty", "Thirty"], findSay:"countdown numbers",
+          say:"Tap every countdown number.", how:"Which words count the time left?"}] },
+
+    'READ.FLU.L06.25':{ band:"E45", pic:"👣", today:"Turn your voice when the poem turns",
+      why:"Some poems change in the middle. A reader who turns his voice with the poem helps the listener feel the change.",
+      ready:[{q:"\"But\" often means...", o:["a turn is coming", "the poem is over"], a:"a turn is coming"},
+             {q:"Lines that start the same way make a...", o:["pattern", "question"], a:"pattern"}],
+      bridge:"READ.FLU.L06.04", bridgeName:"Poetry Aloud",
+      watch:{ q:"From the beach to the moon", m:{type:"scene", e:"👣", t:"On the beach at Ocean City, I wrote my name in sand. ... But on the moon, a footprint lies pressed in the gray dust."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the turn word: But."},
+        {t:"Read 3: I read it alone, changing my voice at the turn."},
+        {t:"Beach: light and playful. Moon: slow and still. No wind... No rain... No waves...: same pattern, same steady voice."}],
+        a:"Light and playful, then slow and still, with a steady pattern." },
+      oops:{ q:"No wind will ever blow it.", wrong:"no-wind-will-ever-blow-it! (bouncy beach voice)", right:"No wind... will ever... blow it.", why:"The moon part is still. A bouncy voice breaks the picture." },
+      ways:["repeated reading with a model", "poetry aloud", "Mistake Detective", "tap the reason", "compare two places", "chavrusa"], done:"Your voice went from the beach to the moon! Read the poem to your chavrusa: you read the beach, he reads the moon.",
+      board:{ key:"Show me answers (for the rebbe): From light and playful to slow and still · No snowman there at all. · Light and playful", one:"Poems that turn: change your voice at the turn word; repeated patterns get a steady voice.", activity:"Two-part reading: half the class reads the beach stanzas lightly, the other half the moon stanzas slowly; then switch.", mistakes:["One voice for the whole poem", "Speeding up on repeated lines", "A bouncy voice in the still part"] },
+      do:[
+        {type:"read", text:"C45.FL5.15", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"sort", mis:true, bins:["Smooth poet", "Mistake"], cards:[["Slows down at \"But on the moon\"", 0], ["The moon part in a bouncy beach voice", 1], ["Same steady voice for each \"No\" line", 0], ["Speeds up on each \"No\" line", 1]],
+          say:"Mistake Detective: smooth poet, or mistake?", how:"Does the voice follow the turn?",
+          why:{q:"Why slow down at \"But on the moon\"?", o:["The poem turns from playful to still", "The line is long", "It is a question"], a:"The poem turns from playful to still"}}],
+      your:[
+        {type:"match", pairs:[["the wind blew it", "no wind"], ["the water licked it clean", "no waves"], ["gone by evening", "still there after fifty years"]],
+          say:"Match the beach to the moon.", how:"Compare what happens to the name and to the footprint."},
+        {type:"evidence", q:"Which line is where the poem turns?", p:["On the beach at Ocean City, I wrote my name in sand.", "By evening it was gone again, washed smooth by sea and land.", "But on the moon, a footprint lies pressed in the gray dust,", "It does not change at all."], a:2, look:"the turn word",
+          say:"Read each line. Where does the poem change?", how:"Look for a small word that changes direction.",
+          why:{q:"How does your voice change there?", o:["From light and playful to slow and still", "From slow to fast", "It does not change"], a:"From light and playful to slow and still"}},
+        {type:"order", steps:["I wrote my name in sand.", "The wind and water washed it clean.", "But on the moon, a footprint lies in the gray dust.", "No wind will ever blow it."],
+          say:"Put the poem's path in order, from the beach to the moon.", how:"Find the turn word. What comes before it, and what comes after?"},
+        {type:"listen", q:"\"No wind will ever blow it. No rain will ever fall.\"", hear:"No wind will ever blow it. No rain will ever fall.", o:["Same pattern, same steady voice", "Faster each time", "Read them as questions"], a:"Same pattern, same steady voice",
+          say:"Listen, then decide: how should these lines sound?", how:"Look at how each line starts."},
+        {type:"cloze", t:"No rain will ever ___. / It does not change at all.", o:["fall", "fail", "fill"], a:"fall",
+          say:"Fill the gap. Then read both lines slowly.", how:"Read the line after it. Which word rhymes and makes sense?"}] },
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

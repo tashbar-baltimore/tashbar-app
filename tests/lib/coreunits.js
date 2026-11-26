@@ -46,6 +46,8 @@ function server() {
   if (!c2 || !c2.row.passed || c2.row.tries !== 2) f('9 of 10 must pass (' + JSON.stringify(c2) + ')');
   const c3 = res('cuSave', A.token, 'ZZTEST.U01', 'check', { right: 1, total: 10, missed: [show[1]] });
   if (!c3 || !c3.row.passed) f('a passed unit must stay passed');
+  const sx = res('cuSave', A.token, 'ZZTEST.U03', 'pre', { shown: ['SS.GEO.L05.01', 'SS.HIST.L05.02', 'SCI.SKY.L05.01', 'NOPE.X.L05.01'] });   /* Social Studies (#432): its skill ids are kept like Science's */
+  if (!sx || !sx.ok || sx.row.shown.join() !== 'SS.GEO.L05.01,SS.HIST.L05.02,SCI.SKY.L05.01') f('a Social Studies pre-check must keep its SS skill ids, and drop an unknown id (' + JSON.stringify(sx && sx.row && sx.row.shown) + ')');
   const m = res('cuMine', A.token); if (!m || !m.units || !m.units['ZZTEST.U01'] || !m.live) f('cuMine must give his units, and say the checks are on');
   if (res('cuMine', B.token).units['ZZTEST.U01'].pre !== true) f('boy B keeps his own row');
   if (!res('cuSave', 'cu-staff', 'ZZTEST.U01', 'pre', { shown: [] }).error) f('a staff token must be refused');
@@ -55,8 +57,32 @@ function server() {
   return { fails, oks: fails.length ? [] : ['unit checks (server): one pre-check per unit, shown skills leave the path (on for every boy; the test switch still keeps it to TEST- boys), a missed skill comes back, 80% passes and stays passed, no money or mastery'] };
 }
 
+const LONG_OLD = ['C68.U75', 'W13.U31', 'S.U04', 'S.U06', 'S.U07', 'S.U08'];   /* may only shrink */
 async function page(pg) {
   const fails = [], oks = [];
+  /* every live unit: a lesson question keeps its reading passage in the boss level (the lesson keeps it in pic), and the unit's own
+     "tap the proof" items do not all put the right sentence in the same place (that kind is never shuffled: a boy learns "tap the top one") */
+  const live = await pg.evaluate((LONG_OLD) => { const bad = [], U = TLCORE.units; let lessonQs = 0;
+    U.list.forEach(u => {
+      const src = {}; (u.skills || []).concat(u.review || []).forEach(id => { let it = []; try { it = buildMission(id).filter(x => x.phase === 'check'); } catch (e) {} it.forEach(x => { src[id + '|' + x.q] = x; }); });
+      for (let r = 0; r < 4; r++) (U.questions(u, 'check') || []).forEach(q => { if (q.kind !== 'mc' && q.kind !== 'order') return; lessonQs++; const x = src[q.skill + '|' + q.q];
+        if (x && !x.p && x.pic && /[A-Za-z0-9]/.test(String(x.pic)) && q.p !== String(x.pic)) bad.push(u.id + ' ' + q.skill + ': "' + String(q.q).slice(0, 50) + '" loses its passage'); });
+      const ev = (u.items || []).filter(x => x.type === 'evidence' && !Array.isArray(x.a));
+      if (ev.length >= 3 && ev.every(x => +x.a === +ev[0].a)) bad.push(u.id + ': all ' + ev.length + ' "tap the proof" items have the answer in place ' + (+ev[0].a + 1));
+      /* "tap the longest answer" must not pass a boss level: the right answer may be the longest choice in at most half of the unit's own items
+         (re-score 26 Nov). LONG_OLD: units that broke this before the rule; fix them and take them off, never add one. */
+      const tap = (u.items || []).filter(x => (x.type === 'evidence' && !Array.isArray(x.a)) || x.type === 'cloze');
+      const longest = tap.filter(x => { const o = (x.type === 'cloze' ? x.o : x.p).map(String), k = x.type === 'cloze' ? o.indexOf(String(x.a)) : +x.a; return k >= 0 && o.every((t, i) => i === k || t.length < o[k].length); }).length;
+      if (tap.length >= 4 && longest * 2 > tap.length && LONG_OLD.indexOf(u.id) < 0) bad.push(u.id + ': the right answer is the longest choice in ' + longest + ' of ' + tap.length + ' items (a boy who taps the longest answer passes)');
+    });
+    /* the unit-check chain: the "earlier unit" of each unit is the one just before it in id order (same job and subject), never one
+       that only loaded earlier (26 Nov: W13.U32 loads after W13.U36; W13.U25 was chained behind W13.U36) */
+    if (U.prev) U.list.forEach(u => { const want = U.list.filter(x => x.c === u.c && x.id.split('.')[0] === u.id.split('.')[0] && x.id < u.id).sort((a, b) => a.id < b.id ? -1 : 1).pop() || null, got = U.prev(u);
+      if (got !== want) bad.push(u.id + ': its earlier unit should be ' + (want ? want.id : 'none') + ', not ' + (got ? got.id : 'none')); });
+    else bad.push('TLCORE.units.prev is missing');
+    return { bad: bad.filter((x, i, a) => a.indexOf(x) === i), units: U.list.length, lessonQs }; }, LONG_OLD).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 200)] }));
+  live.bad.slice(0, 12).forEach(b => fails.push('live units: ' + b)); if (live.bad.length > 12) fails.push('live units: ... and ' + (live.bad.length - 12) + ' more');
+  if (!live.bad.length) oks.push('unit checks (live units): ' + live.units + ' units, ' + live.lessonQs + ' lesson questions drawn: every passage shows; "tap the proof" answers are not all in one place; the longest choice is not the key in most items; each unit’s earlier unit is the one before it in id order');
   for (const vp of [{ width: 1366, height: 768 }, { width: 390, height: 844 }]) {
     await pg.setViewportSize(vp); const at = vp.width + 'px: ';
     const r = await pg.evaluate(async () => {
@@ -65,12 +91,14 @@ async function page(pg) {
       if (ids.length < 4) { out.bad.push('not enough Level 5 Reading lessons for the made-up unit'); return out; }
       const KEEP = { st: A.st, view: A.view, play: A.play, overlay: A.overlay, live: window.OB_LIVE };
       window.OB_LIVE = 'test'; A.overlay = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.st.skills = {};   /* a TEST- boy: One Bite and the unit checks are on for him */
-      const U = TLCORE.units; const unit = { id: 'ZZTEST.U77', title: 'Made-up Unit', c: 'READ', grade: 4, skills: ids.slice(0, 3), review: [ids[3]], n: 8 };
+      const U = TLCORE.units; const unit = { id: 'ZZTEST.U77', title: 'Made-up Unit', c: 'READ', grade: 4, skills: ids.slice(0, 3), review: [ids[3]], n: 8,
+        task: { id: 'ZZTEST.PROJ.01', title: 'My made-up project', grade: 4, kind: 'information', prompt: 'Tell what you found out.', strategy: { name: 'TIDE', steps: [['T', 'Topic'], ['I', 'Important details'], ['E', 'Ending']] }, plan: [{ k: 'topic', label: 'Topic' }, { k: 'd1', label: 'Detail' }, { k: 'end', label: 'Ending' }], min: 25, checks: [{ t: 'I wrote at least 3 sentences.', sentences: 3 }, { t: 'Capitals and end marks.', caps: true }, { t: 'I read it out loud.', self: true }], rubric: ['Clear topic', 'Details'] } };
       out.err = U.err(unit); U.add(unit); U.reset();
       const orig = window.google.script.run;
       const chain = (okf, nof) => new Proxy({}, { get(_, k) { if (k === 'withSuccessHandler') return f => chain(f, nof); if (k === 'withFailureHandler') return f => chain(okf, f); if (k === 'withUserObject') return () => chain(okf, nof);
         return (...a) => setTimeout(() => { if (k === 'cuSave') { out.saves.push([a[1], a[2], a[3]]); return okf && okf({ ok: true, row: { unit: a[1], pre: a[2] === 'pre', passed: a[2] === 'check' && a[3].right / a[3].total >= .8, shown: a[3].shown || [] } }); }
-          if (k === 'cuMine') return okf && okf({ ok: true, live: true, units: {} }); return orig.withSuccessHandler(okf).withFailureHandler(nof)[k](...a); }, 10); } });
+          if (k === 'cuMine') return okf && okf({ ok: true, live: true, units: {} });
+          if (k === 'cwMine') return okf && okf({ ok: true, pieces: window.__cwPieces || [] }); return orig.withSuccessHandler(okf).withFailureHandler(nof)[k](...a); }, 10); } });
       window.google.script.run = chain(null, null);
       const look = async name => { await sleep(80); const el = Q('#cun'); if (!el) { out.bad.push(name + ': not open'); return; } const all = [...el.querySelectorAll('button')];
         out.looks.push({ name, mains: el.querySelectorAll('.tlk-main').length, own: all.filter(b => !b.classList.contains('tlk')).length, wide: document.documentElement.scrollWidth > innerWidth + 1 || el.scrollWidth > innerWidth + 1, x: !!el.querySelector('.tlk-x.tlk-at-tl') }); };
@@ -80,7 +108,14 @@ async function page(pg) {
           await sleep(10); if (n === 1) await look('question'); Q('#cun [data-cu=next]').click(); await sleep(10); } };
       /* 1. the boss level, all right */
       let p = U.check(unit); await sleep(60); await look('entrance'); out.n = U.state() && U.state().n; out.kinds = U.state() && U.state().kinds; out.review = U.state() && U.state().skills.indexOf(ids[3]) >= 0;
-      Q('#cun [data-cu=start]').click(); await sleep(20); await play(true); await look('win'); out.win = (Q('#cun .cu-end h2') || {}).textContent; Q('#cun [data-cu=done]').click(); out.r1 = await p;
+      Q('#cun [data-cu=start]').click(); await sleep(20); await play(true); await look('win'); out.win = (Q('#cun .cu-end h2') || {}).textContent;
+      /* the unit project: "Start your project" opens his Writing Workshop piece; U.projects() lists it until the piece is sent */
+      out.projBtn = !!Q('#cun [data-cu=project]'); window.__cwPieces = []; out.projList = (await U.projects()).map(x => x.task);
+      if (out.projBtn) Q('#cun [data-cu=project]').click(); else Q('#cun [data-cu=done]').click(); out.r1 = await p; await sleep(80);
+      out.projOpen = !!document.getElementById('cwr') && TLCORE.write.state() && TLCORE.write.state().task; TLCORE.write.close();
+      window.__cwPieces = [{ id: 'x', task: 'ZZTEST.PROJ.01', status: 'sent' }]; out.projAfterSend = (await U.projects()).length; window.__cwPieces = [];
+      out.ssOk = U.err(Object.assign({}, unit, { id: 'ZZTEST.U79', c: 'SS' })); out.xxBad = U.err(Object.assign({}, unit, { id: 'ZZTEST.U79', c: 'XX' }));   /* Social Studies has a path (#432); an unknown subject is still refused */
+      out.badTask = U.err(Object.assign({}, unit, { id: 'ZZTEST.U78', task: { id: 'ZZTEST.PROJ.02', title: 'x' } }));
       /* 2. all wrong: practice the missed lesson */
       p = U.check(unit); await sleep(60); Q('#cun [data-cu=start]').click(); await sleep(20); await play(false); await look('almost'); out.almost = (Q('#cun .cu-end h2') || {}).textContent;
       out.practice = [...document.querySelectorAll('#cun [data-cu=practice]')].map(b => b.getAttribute('data-k'));
@@ -109,6 +144,10 @@ async function page(pg) {
     if (r.err) fails.push(at + 'the made-up unit was refused: ' + r.err);
     if (!(r.n >= 4) || !r.review) fails.push(at + 'the unit check must mix every skill and a review skill (' + r.n + ' questions, review ' + r.review + ')');
     if (r.win !== 'Unit cleared!' || !r.r1.passed) fails.push(at + 'all right must clear the unit (' + r.win + ')');
+    if (!r.projBtn || !r.r1.project || r.projOpen !== 'ZZTEST.PROJ.01') fails.push(at + '"Unit cleared!" must offer "Start your project", and it must open the unit\'s Writing Workshop piece (' + JSON.stringify({ btn: r.projBtn, open: r.projOpen }) + ')');
+    if (JSON.stringify(r.projList) !== '["ZZTEST.PROJ.01"]' || r.projAfterSend !== 0) fails.push(at + 'TLCORE.units.projects() must list the project of a passed unit until its piece is sent (' + JSON.stringify([r.projList, r.projAfterSend]) + ')');
+    if (r.ssOk !== '' || !/^c must be READ, WRIT, SCI or SS/.test(r.xxBad || '')) fails.push(at + 'a Social Studies unit (c: SS) must be taken and an unknown subject refused (' + JSON.stringify([r.ssOk, r.xxBad]) + ')');
+    if (!/^task \(the unit project\)/.test(r.badTask || '')) fails.push(at + 'a unit with a broken project task must be refused (' + r.badTask + ')');
     if (r.almost !== 'Almost there!' || r.r2.passed || !r.practice.length) fails.push(at + 'all wrong must say "Almost there!" with lessons to practice');
     if (!r.started || r.started[1] !== r.practice[0] || !r.started[3]) fails.push(at + '"Practice" must open exactly the missed lesson, as a One Bite lesson (' + JSON.stringify(r.started) + ')');
     if (!r.noWait) fails.push(at + 'before his unit results load, a lesson must open at once (never wait on the internet)');
@@ -119,7 +158,7 @@ async function page(pg) {
     if (r.hook !== 'pre') fails.push(at + 'starting the first lesson of a unit (TEST- boy) must open the pre-check first (got ' + r.hook + ')');
   }
   await pg.setViewportSize({ width: 1366, height: 768 });
-  if (!fails.length) oks.push('unit checks (page): boss entrance, cleared at 80%+, "Almost there!" with Practice that opens exactly the missed lesson, pre-check skips what he showed, the pre-check opens before a unit (TEST- boys); button system only at 1366 and 390');
+  if (!fails.length) oks.push('unit checks (page): boss entrance, cleared at 80%+ with "Start your project" (the unit Workshop piece, listed by projects() until sent), "Almost there!" with Practice that opens exactly the missed lesson, pre-check skips what he showed, the pre-check opens before a unit (TEST- boys); button system only at 1366 and 390');
   return { fails: fails.map(x => 'unit checks: ' + x), oks };
 }
 module.exports = { server, page };

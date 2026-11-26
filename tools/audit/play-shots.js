@@ -1,14 +1,15 @@
 /* Plays chosen lessons as a made-up boy at 390px and saves a picture of every screen (pop-ups included).
-   Run: IDS=MATH.OPS.L05.02,LK.KRI.L01.07.c node tools/audit/play-shots.js   Output: tools/audit/out/shots/ + shots.json */
+   Run: IDS=MATH.OPS.L05.02,LK.KRI.L01.07.c node tools/audit/play-shots.js   Output: tools/audit/out/shots/ + shots.json
+   Options: VW=1366 VH=768 (Chromebook size; default 390x844 phone), DPR=2, DIR=name (output folder under out/). */
 const fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
 const B = require('../../tests/lib/build.js');
-const OUT = path.join(__dirname, 'out', process.env.OB ? 'shots-ob' : 'shots'); fs.mkdirSync(OUT, { recursive: true });
+const OUT = path.join(__dirname, 'out', process.env.DIR || (process.env.OB ? 'shots-ob' : 'shots')); fs.mkdirSync(OUT, { recursive: true });
 const FAKE = require('./fake.js');
 (async () => {
   const K = B.kid(); const errs = [];
   const browser = await chromium.launch();
-  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  const ctx = await browser.newContext({ viewport: { width: +(process.env.VW || 390), height: +(process.env.VH || 844) }, deviceScaleFactor: +(process.env.DPR || 1) });
   await ctx.addInitScript(FAKE, { tools: K.tools, parts: K.parts });
   const ids = (process.env.IDS || '').split(',').filter(Boolean); const rec = {};
   for (const id of ids) {

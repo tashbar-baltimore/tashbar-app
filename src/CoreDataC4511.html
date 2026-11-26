@@ -1,0 +1,350 @@
+<script>
+/* CoreDataC4511.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 4 Unit 4.6 "Who's telling?" (point of view), topic set: The first airplanes (docs/core-growth/C45-map.md). READ.LIT.L05.02 is not
+   rebuilt here. Short lesson passages go in PASS under c45_av keys. Each lesson teaches on its own passages and checks on a different, cold one:
+   What the Narrator Knows: Dovid's first flight (and the same day told from outside) -> the paper airplane contest;
+   Firsthand or Secondhand?: Dovid's flight, Avrumi's news report, the Wright brothers article -> a pilot's morning, Zeidy's first flight, the first passengers;
+   Two Accounts, One Event: December 17, 1903 (an imagined diary + a history book) -> the glider contest (Binyamin + Nosson);
+   Does It Make Sense?: how wings lift -> the wind tunnel. The imagined diary says on its face that its words are made up and its facts are real.
+   No real person is quoted. The E45 passage-card style lives in CoreDataC451.html. */
+(function () {
+  var P = {
+    c45_avflight: { title: 'Up Over Baltimore', text: 'By Dovid Lerner\nMy uncle, Reb Mordechai, has flown airplanes for twenty years. Last Sunday, he took me up in his small plane for the first time.\nBefore we took off, Uncle Mordechai walked all the way around the plane. He checked the wings, the tires and the propeller. Then he read a checklist out loud, one line at a time. I buckled my seat belt twice, just to be sure.\nThe engine roared, and the whole plane shook. We raced down the runway, faster and faster. Then, all at once, the bumping stopped. We were in the air! My stomach did a flip, and I grabbed the edge of my seat.\nBelow us, the houses looked like tiny blocks. I spotted the harbor shining in the sun and a long gray train crawling along its track. I wanted to remember everything.\nUncle Mordechai talked into his headset to a voice on the radio. He looked calm, but I wondered if he was ever scared up here. I did not ask.\nWhen we landed, my legs felt wobbly. Uncle Mordechai shook my hand as if I were a real pilot. "Next time," he said, "you can hold the controls for a minute."\nI could not stop smiling all the way home.' },
+    c45_avthird: { title: 'Up Over Baltimore, Told from Outside', text: 'Last Sunday, Reb Mordechai Lerner took his nephew Dovid up in his small plane for the first time. Before takeoff, he walked around the plane and checked every part. Dovid buckled his seat belt twice.\nAs the plane raced down the runway, Dovid\'s stomach did a flip. He grabbed the edge of his seat.\nReb Mordechai talked calmly into his headset. Inside, though, he was thinking about the wind. It was gustier than he liked, so he kept a careful eye on it. He did not want Dovid to worry, so he said nothing.\nBack home, Dovid\'s little brother Shuki pressed his nose against the window. He was hoping to see the plane fly over the house.\nWhen they landed, Reb Mordechai felt proud of his nephew. Dovid could not stop smiling all the way home.' },
+    c45_avcontest: { title: 'The Paper Airplane Contest', text: 'By Tzvi Hirsch Gold\nMr. Halpern gave every boy in our class one sheet of paper. "Fold the best airplane you can," he said. "The plane that flies farthest down the hall wins."\nI folded mine fast, with long, pointy wings. Binyamin folded his slowly. He pressed every fold flat with his thumbnail.\nMy plane went first. I threw it as hard as I could. It shot up, flipped over and crashed into the wall. Everyone laughed, and my face felt hot. I wanted to disappear.\nThen Binyamin stepped up. He held his plane gently and gave it a smooth push. It glided all the way past the water fountain and landed near the office door. Mr. Halpern measured it with a long tape. "Forty-two feet!" he called out.\nI walked over to Binyamin. "How did you do that?" I asked.\n"Do not throw it hard," he said. "Let the air carry it."\nOn my second try, I folded more carefully and threw it softly. It flew halfway down the hall. It did not win, but I felt proud of it.\nMr. Halpern smiled and wrote something on his clipboard.' },
+    c45_avnews: { title: 'Dovid Flies Over Baltimore', text: 'By Avrumi Katz, for the Glen Avenue News\nLast Sunday, our classmate Dovid Lerner flew in a small airplane for the first time. His uncle, Reb Mordechai Lerner, is a pilot. Only the two of them were in the plane.\nOn Monday, I asked Dovid to tell me all about it. Dovid says the engine was so loud that the whole plane shook. He says his stomach did a flip when the wheels left the ground. From the air, he could see the harbor and a long gray train.\nReb Mordechai has been a pilot for twenty years. I also looked up some facts at the library. Many small planes like his have four seats and one propeller. They fly much lower and slower than a big passenger jet.\nDovid says his uncle promised him a turn at the controls next time. The whole class wants to hear about it!' },
+    c45_avfirst: { title: 'The Day the Wright Brothers Flew', text: 'On December 17, 1903, two brothers from Dayton, Ohio, made history on the windy sand hills of North Carolina. Wilbur and Orville Wright ran a bicycle shop. For four years, they had studied birds, flown kites and gliders, and tested more than two hundred small wing shapes.\nTheir airplane, the Flyer, had two long wings, one above the other. A small engine, built with the help of their mechanic, Charlie Taylor, turned two propellers.\nThat cold morning, a strong wind blew across the sand hills near Kitty Hawk. Five men from the area came to watch. At about 10:35, with the engine already running, Orville lay down on the bottom wing. The Flyer rolled along a wooden rail and lifted into the air. It flew for 12 seconds and covered 120 feet, about the length of three school buses.\nThe brothers took turns and made four flights that day. We know the times and distances because they wrote them down. One of the five men, John Daniels, snapped a photograph of the first flight. That photograph still helps us see the moment today.\nToday, the Flyer hangs in a museum in Washington, D.C.' },
+    c45_avpilot: { title: 'Up Before the Sun', text: 'By Captain Rafael Benaim, Yehuda Benaim\'s uncle\nI am an airline captain. Here is what my workday was like last Tuesday.\nMy alarm rang at four o\'clock in the morning. I said Modeh Ani, packed my tefillin and a sandwich, and drove to the airport in the dark.\nBefore every flight, I walk all the way around the airplane with a flashlight. That morning, I checked the tires, the wings and the two big engines. Everything looked right.\nIn the cockpit, my first officer and I read our checklist together, line by line. Then the control tower gave us permission to take off. I pushed the throttles forward, and the jet roared down the runway. When the wheels left the ground, I felt the same little thrill I felt on my very first flight.\nWe climbed up through gray clouds. Suddenly we burst out on top, and the sun was rising over a sea of white. I have seen it a thousand times, and it still makes me smile.\nTwo hours later, we landed in Florida. After the passengers were off, I davened Shacharis in a quiet corner of the airport.' },
+    c45_avzeidy: { title: 'Zeidy\'s First Flight', text: 'By Binyamin Yusupov\nLong before I was born, my Zeidy Yusupov flew in an airplane for the first time. He was eleven years old. His family was moving from Uzbekistan to a new home in America. Last Shabbos, while we ate plov, Zeidy told me the whole story. On Sunday, I wrote it all down.\nZeidy says he wore his best jacket and held his little brother\'s hand all the way up the stairs to the plane. He had never seen anything so big. When the engines started, the noise made his teeth buzz.\nHe says he did not sleep at all. He pressed his face to the window and watched the clouds below turn pink, then orange, then gold. A kind flight attendant gave him a cup of tea with two cubes of sugar. He kept the paper wrapper from the sugar for years.\nWhen the plane landed, everyone clapped. Zeidy says he felt as if he were stepping into a brand-new world.\n"That was the first of many flights," Zeidy told me. "But it is the one I remember best."' },
+    c45_avpass: { title: 'The First Passengers', text: 'After December 1903, the Wright brothers kept making their airplane better. But for almost five years, only the pilot rode in it.\nIn May 1908, the brothers went back to the sand hills near Kitty Hawk to test a newer Flyer. This one had two seats side by side, so the pilot could sit up and take a passenger along. On May 14, a mechanic named Charlie Furnas climbed into the seat next to Wilbur. He became the first airplane passenger. Their flight lasted less than half a minute. Later that day, Charlie flew again, this time with Orville, for a few minutes.\nSix years later, on January 1, 1914, the first airline with airplanes on a regular schedule began flying across Tampa Bay in Florida. The pilot, Tony Jannus, flew a flying boat that took off and landed on water. His first passenger was Abe Pheil, a former mayor of St. Petersburg. The trip took about 23 minutes. By boat or train, going around the bay took hours.\nToday, millions of people fly on airplanes every day.' },
+    c45_avtwo1903: { title: 'December 17, 1903: Two Accounts', text: 'Account 1: An imagined diary page. Its words are made up for this lesson, told the way Orville Wright might have told them. The facts in it are real.\nThursday, December 17, 1903. A cold wind blew hard all morning, and ice covered the puddles near our camp. Wilbur and I waited, hoping the wind would calm down. It did not, so we decided to try anyway. It was my turn to fly. I lay down on the lower wing, and my heart was pounding. The engine roared and shook. Wilbur ran beside the wing to hold it level. Then the bumping stopped. I was flying! Cold air rushed past my face. The machine bobbed up and down, and it was hard to keep it steady. Twelve seconds later, I came down on the sand. My hands are so cold that I can hardly write.\nAccount 2: From a history book, written long after.\nOn December 17, 1903, near Kitty Hawk, North Carolina, Orville Wright made the first flight in an airplane with an engine. It lasted 12 seconds and covered 120 feet. The wind that day blew at more than 20 miles an hour. The brothers took turns and made four flights. The longest, by Wilbur, lasted 59 seconds and covered 852 feet. After the flights, the brothers walked to the weather station in Kitty Hawk and sent a telegram home to their father in Dayton, Ohio. At first, few people believed the news. Today, the Flyer hangs in a museum in Washington, D.C.' },
+    c45_avglide: { title: 'The Glider Contest: Two Accounts', text: 'Account 1: By Binyamin Yusupov, who flew a glider that day.\nOn Tuesday, our class held a glider contest in the park behind the yeshiva. When Mr. Halpern called my name, my hands were shaking. I held my balsa glider up high and waited for the breeze to stop. Then I let it go. It floated over the grass, turned left and landed softly near the big oak tree. My heart was pounding. Then Dovid threw his glider. It sailed past the oak, all the way to the fence. Dovid won! I felt a little sad, but I clapped for him anyway. Next time, I will sand my wings smoother, the way Dovid did.\nAccount 2: By Nosson Abergel, for the Glen Avenue News.\nOn Tuesday, I was home sick, so I missed the glider contest. My classmates and Mr. Halpern told me all about it. Twenty boys flew balsa gliders in the park behind the yeshiva. Each boy had one throw. Dovid Lerner won. His glider flew 64 feet. Binyamin Yusupov came in second, with 51 feet. Next week, the winners will show the Grade 2 boys how to build gliders of their own.' },
+    c45_avlift: { title: 'How Wings Lift', text: 'Watch a big jet race down the runway. Faster and faster it goes. Then its nose tips up, and the whole heavy plane rises into the sky. How can something so heavy fly?\nThe secret is in the wings. An airplane wing is curved on top and tilted up a little at the front. As the plane moves forward, air flows over and under the wing.\nThe shape and tilt of the wing bend the moving air downward. When the wing pushes air down, the air pushes the wing up. This upward push is called lift.\nThere is another way to see it. Air rushing over the curved top of the wing speeds up, and its pressure drops. Now the air under the wing presses up harder than the air on top presses down.\nThe faster a plane moves, the more lift its wings make. That is why a jet needs a long runway. It must go fast enough for lift to carry its weight.\nThe Wright brothers learned about lift by watching birds and testing small wings. Today\'s giant jets fly because of the same idea.' },
+    c45_avtunnel: { title: 'The Wind Tunnel', text: 'In 1901, Wilbur and Orville Wright had a big problem. Their glider did not lift as much as they expected. The tables of numbers that other experts had made seemed to be wrong. So the brothers decided to find the right numbers themselves.\nIn their bicycle shop in Dayton, they built a wind tunnel. It was a wooden box about six feet long. A fan at one end blew a steady stream of air through it.\nInside the box, they placed small model wings made of thin metal. They measured how hard the air pushed on each one. They tested more than two hundred wing shapes: flat, curved, thick, thin, long and short.\nTheir careful work paid off. In 1902, they built a new glider with longer, thinner wings. It flew far better than their old ones. The brothers made hundreds of glides over the sand hills near Kitty Hawk.\nNow they were ready for the next step: adding an engine.' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+
+  var LESSONS = {
+    'READ.LIT.L05.07':{name:'What the Narrator Knows',
+      teach:[
+        {p:'c45_avflight', q:'Dovid tells us, "My stomach did a flip". Can he know this? How?', o:['It is his own thought or feeling', 'He saw or heard it', 'He cannot know it'], how:'Ask: did this happen outside Dovid, or inside him?'},
+        {p:'c45_avflight', q:'Dovid tells us the houses below looked like tiny blocks. Can he know this? How?', o:['He saw or heard it', 'It is his own thought or feeling', 'He cannot know it'], how:'Ask: was Dovid there? Which of his senses brought him this detail?'},
+        {p:'c45_avflight', q:'Was Uncle Mordechai ever scared up there? Can Dovid tell us for sure?', o:['He cannot know it', 'He saw or heard it', 'It is his own thought or feeling'], how:'Find the part where Dovid wonders about it. Did his uncle ever say?'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_avflight', q:'Could Dovid, the "I" narrator, know each thing?', bins:[{id:'c', label:'He can know it'}, {id:'n', label:'He cannot know it'}],
+          items:[{label:'The engine roared.', bin:'c'}, {label:'He wanted to remember everything.', bin:'c'}, {label:'The harbor was shining in the sun.', bin:'c'}, {label:'What the voice on the radio was thinking', bin:'n'}, {label:'Whether his uncle was secretly scared', bin:'n'}, {label:'What his family was thinking at home', bin:'n'}],
+          h:'For each one, ask: was it outside where Dovid could see or hear it, or inside his own head?', how:'An "I" narrator knows what he sees, hears, thinks and feels. He cannot see into other people\'s heads, or into places where he is not.'},
+        {t:'sort', p:'c45_avflight', q:'How could Dovid know each thing? Sort it.', bins:[{id:'s', label:'He saw or heard it'}, {id:'f', label:'It is his own thought or feeling'}, {id:'n', label:'He cannot know it'}],
+          items:[{label:'A long gray train crawled along its track.', bin:'s'}, {label:'Uncle Mordechai talked into his headset.', bin:'s'}, {label:'He wanted to remember everything.', bin:'f'}, {label:'His legs felt wobbly.', bin:'f'}, {label:'What his uncle was thinking about the wind', bin:'n'}],
+          h:'Eyes and ears, his own heart and head, or someone else\'s head?', how:'Outside things come in through his eyes and ears. Inside things are his own. Another person\'s head is closed to him.'},
+        {t:'sort', p:'c45_avflight', q:'Mistake Detective. Did each boy get it right?', bins:[{id:'r', label:'Right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'Eli: Dovid can tell us his stomach flipped. It is his own feeling.', bin:'r'}, {label:'Moishe: Dovid sat next to his uncle, so he knows his uncle\'s secret worries.', bin:'w'}, {label:'Shmuel: Dovid can tell us the houses looked tiny. He saw them.', bin:'r'}, {label:'Chaim: Dovid can tell us what his little brother did at home that minute.', bin:'w'}],
+          h:'Sitting close to someone does not open his head. Being far away means you do not see.', how:'The trap: thinking an "I" narrator knows everything because he was nearby.'},
+        {t:'pairs', p:'c45_avflight', q:'Match each line to how Dovid knows it.', pairs:[['"The engine roared"', 'He heard it.'], ['"the houses looked like tiny blocks"', 'He saw it.'], ['"My stomach did a flip"', 'He felt it inside.'], ['"I wondered if he was ever scared up here"', 'He thought it.']],
+          h:'Ears, eyes, body or mind?', how:'Ask which part of Dovid each line comes from.'},
+        {t:'spotall', p:'c45_avthird', q:'This telling is from outside. Tap every thing Dovid, as "I", could NOT tell.', cells:[{label:'he was thinking about the wind', ok:true}, {label:'Reb Mordechai felt proud of his nephew', ok:true}, {label:'He did not want Dovid to worry', ok:true}, {label:'Dovid buckled his seat belt twice', ok:false}, {label:'He grabbed the edge of his seat', ok:false}],
+          h:'Which ones happen inside someone else\'s head?', how:'This outside narrator can tell every person\'s thoughts. An "I" narrator cannot.'},
+        {t:'order', p:'c45_avflight', q:'Put the steps for checking a narrator in order.', tiles:['Find the narrator: is it "I"?', 'Pick one detail he tells.', 'Ask: did he see it, hear it, think it or feel it?', 'Decide: can he know it, or not?'],
+          h:'You cannot judge a detail before you know who is telling.', how:'Who is telling? What does he tell? How could he know? Then decide.'}
+      ],
+      check:[
+        {p:'c45_avcontest', q:'"I wanted to disappear." Can Tzvi Hirsch, the "I", know this? How?', o:['It is his own thought or feeling', 'He saw or heard it', 'He cannot know it']},
+        {p:'c45_avcontest', q:'"It glided all the way past the water fountain". Can Tzvi Hirsch know this?', o:['He saw or heard it', 'It is his own thought or feeling', 'He cannot know it']},
+        {p:'c45_avcontest', q:'Could Tzvi Hirsch tell us Binyamin\'s secret thoughts as he folded?', o:['He cannot know it', 'He saw or heard it', 'It is his own thought or feeling']}
+      ],
+      re:[
+        {p:'c45_avflight', q:'A first-person narrator tells the story using...', o:['I, me and my', 'he, she and they', 'only names'], how:'Who is talking in "Up Over Baltimore"?'},
+        {p:'c45_avflight', q:'Can an "I" narrator see inside another person\'s head?', o:['No, only his own', 'Yes, always', 'Only if he is the hero'], how:'Think of Dovid and his uncle.'},
+        {q:'An "I" narrator can tell us what he...', o:['sees, hears, thinks and feels', 'never saw or heard', 'did not find out'], how:'Think of the ways a person learns things for himself.'}
+      ]},
+    'READ.COMP.L05.22':{name:'Firsthand or Secondhand?',
+      teach:[
+        {p:'c45_avflight', q:'Dovid wrote "Up Over Baltimore." What kind of account is it?', o:['Firsthand account (the writer was there)', 'Secondhand account (the writer was not there)'], how:'Ask: was the writer in the plane, or did someone else tell him about it?'},
+        {p:'c45_avfirst', q:'What kind of account is "The Day the Wright Brothers Flew"?', o:['Secondhand account (the writer was not there)', 'Firsthand account (the writer was there)'], how:'Look for clues about when it was written. Does the writer say what he saw himself, or does he tell what others wrote down?'},
+        {p:'c45_avnews', q:'Avrumi uses the word "I" in his report. What kind of account is it?', o:['Secondhand account (the writer was not there)', 'Firsthand account (the writer was there)'], how:'Do not stop at the word "I". Ask: who was in the plane? Where did Avrumi get his facts?'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_avnews', q:'Which kind of account does each clue point to?', bins:[{id:'f', label:'Clue: firsthand'}, {id:'s', label:'Clue: secondhand'}],
+          items:[{label:'The writer tells what he saw with his own eyes.', bin:'f'}, {label:'The writer tells how he felt at that moment.', bin:'f'}, {label:'The writer says, "He told me about it."', bin:'s'}, {label:'The writer was born long after it happened.', bin:'s'}, {label:'The writer says, "I was there that day."', bin:'f'}],
+          h:'For each clue, ask: does it show the writer was there, or that he got it from someone else?', how:'Firsthand clues come from being there. Secondhand clues show the facts came from other people or old records.'},
+        {t:'sort', p:'c45_avnews', q:'Mistake Detective. Did each boy name the account right?', bins:[{id:'r', label:'Right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'"Up Over Baltimore" is firsthand: Dovid was in the plane.', bin:'r'}, {label:'Avrumi\'s report has "I", so it must be firsthand.', bin:'w'}, {label:'The Wright brothers article is secondhand: it was written long after.', bin:'r'}, {label:'The Wright brothers article has true facts, so it must be firsthand.', bin:'w'}],
+          h:'The word "I" and true facts can show up in both kinds.', how:'The trap: deciding by the word "I" or by true facts. The only test is: was the writer there?'},
+        {t:'pairs', p:'c45_avnews', q:'Match each account to how its writer knows what happened.', pairs:[['"Up Over Baltimore"', 'Dovid was in the plane.'], ['Avrumi\'s news report', 'Dovid told Avrumi about it.'], ['"The Day the Wright Brothers Flew"', 'Its writer used records and a photograph.']],
+          h:'Think about where each writer was when it happened.', how:'For each writer, ask: did he see it, or did he hear or read about it?'},
+        {t:'spotall', p:'c45_avfirst', q:'Tap every clue that this writer was NOT there in 1903.', cells:[{label:'We know the times and distances because they wrote them down', ok:true}, {label:'That photograph still helps us see the moment today', ok:true}, {label:'Today, the Flyer hangs in a museum', ok:true}, {label:'a strong wind blew across the sand hills', ok:false}, {label:'Orville lay down on the bottom wing', ok:false}],
+          h:'Look for words about today, and about where the writer got his facts.', how:'A clue shows how the writer knows. A plain fact about the flight is not a clue about the writer.'},
+        {t:'type', p:'c45_avnews', q:'Avrumi was not in the plane. Who told him about the flight? Type the name.', a:'Dovid', alt:['dovid', 'Dovid Lerner', 'dovid lerner'], kb:'abc',
+          h:'Find the sentence that starts "On Monday".', how:'A secondhand writer gets his facts from someone. Find who Avrumi asked.'},
+        {t:'order', p:'c45_avnews', q:'Put the steps for naming an account in order.', tiles:['Read who wrote it.', 'Ask: was the writer there when it happened?', 'Check the clues: "I saw" or "he told me".', 'Decide: firsthand or secondhand.'],
+          h:'You need the writer before you can ask about him.', how:'Writer, question, clues, then decide.'}
+      ],
+      check:[
+        {p:'c45_avpilot', q:'What kind of account is "Up Before the Sun"?', o:['Firsthand account (the writer was there)', 'Secondhand account (the writer was not there)']},
+        {p:'c45_avzeidy', q:'Binyamin writes "I" in "Zeidy\'s First Flight." What kind of account is it?', o:['Secondhand account (the writer was not there)', 'Firsthand account (the writer was there)']},
+        {p:'c45_avpass', q:'What kind of account is "The First Passengers"?', o:['Secondhand account (the writer was not there)', 'Firsthand account (the writer was there)']}
+      ],
+      re:[
+        {p:'c45_avflight', q:'A firsthand account is written by someone who...', o:['was there', 'read about it', 'was not born yet'], how:'First hand: he saw it with his own eyes.'},
+        {p:'c45_avnews', q:'A report by someone who heard it from others is...', o:['secondhand', 'firsthand', 'a poem'], how:'Second hand: it came through someone else first.'},
+        {q:'Does the word "I" always mean firsthand?', o:['No. Ask if the writer was there.', 'Yes, always.', 'Only in a diary.'], how:'Remember Avrumi\'s report.'}
+      ]},
+    'READ.COMP.L05.23':{name:'Two Accounts, One Event',
+      teach:[
+        {p:'c45_avtwo1903', q:'Which account tells that Orville\'s heart was pounding?', o:['Only the firsthand account', 'Only the secondhand account', 'Both accounts'], how:'Search Account 1, then Account 2, for his heart. Check both before you tap.'},
+        {p:'c45_avtwo1903', q:'Which account tells how fast the wind blew, in miles an hour?', o:['Only the secondhand account', 'Only the firsthand account', 'Both accounts'], how:'Look in each account for a number with "miles an hour".'},
+        {p:'c45_avtwo1903', q:'Which account tells that the first flight lasted 12 seconds?', o:['Both accounts', 'Only the firsthand account', 'Only the secondhand account'], how:'A number can be written two ways: 12 or twelve. Look in each account for either one.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_avtwo1903', q:'Where does each fact show up?', bins:[{id:'f', label:'Only the firsthand account'}, {id:'s', label:'Only the secondhand account'}, {id:'b', label:'Both accounts'}],
+          items:[{label:'Ice covered the puddles.', bin:'f'}, {label:'The machine bobbed up and down.', bin:'f'}, {label:'The longest flight lasted 59 seconds.', bin:'s'}, {label:'They sent a telegram to their father.', bin:'s'}, {label:'The first flight lasted twelve seconds.', bin:'b'}],
+          h:'Check each fact in Account 1 and in Account 2.', how:'Look in Account 1 and in Account 2 every time. Then decide where the fact lives.'},
+        {t:'sort', p:'c45_avtwo1903', q:'Mistake Detective. Is each boy\'s compare right?', bins:[{id:'r', label:'Right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'Akiva: The diary shows how it felt. The book adds numbers.', bin:'r'}, {label:'Eli: The two accounts tell different things, so one is wrong.', bin:'w'}, {label:'Shmuel: Both tell about the 12-second flight.', bin:'r'}, {label:'Chaim: The book writer felt the cold wind that day.', bin:'w'}],
+          h:'Different is not the same as wrong. And who was really there?', how:'The trap: thinking two accounts must match word for word, or forgetting who was there.'},
+        {t:'pairs', p:'c45_avtwo1903', q:'Match each fact to where you can find it.', pairs:[['Ice covered the puddles.', 'only in the diary'], ['A telegram went home.', 'only in the history book'], ['The first flight lasted 12 seconds.', 'in both accounts']],
+          h:'Look in Account 1, then Account 2, for each fact.', how:'Check Account 1 and Account 2 before you match.'},
+        {t:'spotall', p:'c45_avtwo1903', q:'Tap every detail that is ONLY in the firsthand account.', cells:[{label:'my heart was pounding', ok:true}, {label:'Cold air rushed past my face', ok:true}, {label:'Wilbur ran beside the wing', ok:true}, {label:'12 seconds', ok:false}, {label:'a telegram home', ok:false}, {label:'more than 20 miles an hour', ok:false}],
+          h:'Is the detail in Account 2 too?', how:'Find each detail in Account 1. Then check: is it in Account 2 too?'},
+        {t:'sort', p:'c45_avtwo1903', q:'What does each account focus on?', bins:[{id:'f', label:'Firsthand focus'}, {id:'s', label:'Secondhand focus'}],
+          items:[{label:'how it felt to be there', bin:'f'}, {label:'what he saw and heard up close', bin:'f'}, {label:'exact numbers from records', bin:'s'}, {label:'what happened later, even today', bin:'s'}],
+          h:'Who could tell each one best: the person in the plane, or a writer long after?', how:'Someone who was there tells it from the inside. A later writer can step back and see the big picture.'},
+        {t:'order', p:'c45_avtwo1903', q:'Use both accounts. Put the events of the day in order.', tiles:['A cold wind blew hard that morning.', 'Orville lay down on the lower wing.', 'The Flyer flew for 12 seconds.', 'Wilbur made the longest flight, 59 seconds.', 'The brothers sent a telegram home.'],
+          h:'Start in the morning. End with the news going home.', how:'Each account gives some of the events. Put them together in time order.'}
+      ],
+      check:[
+        {p:'c45_avglide', q:'Which account tells that Binyamin\'s hands were shaking?', o:['Only the firsthand account', 'Only the secondhand account', 'Both accounts']},
+        {p:'c45_avglide', q:'Which account tells how far the top two gliders flew, in feet?', o:['Only the secondhand account', 'Only the firsthand account', 'Both accounts']},
+        {p:'c45_avglide', q:'Which account tells who won the contest?', o:['Both accounts', 'Only the firsthand account', 'Only the secondhand account']}
+      ],
+      re:[
+        {p:'c45_avtwo1903', q:'A firsthand account often tells...', o:['how it felt to be there', 'only numbers', 'what happened 100 years later'], how:'Think of Orville on the wing.'},
+        {p:'c45_avtwo1903', q:'A secondhand account can add...', o:['facts and what happened later', 'the writer\'s own feelings at the event', 'nothing new'], how:'Think of the history book.'},
+        {q:'Two accounts of one event can have a different...', o:['focus', 'event', 'day it happened'], how:'They tell the same event. What can change is what each one pays attention to.'}
+      ]},
+    'READ.FLU.L05.05':{name:'Does It Make Sense?',
+      teach:[
+        {p:'c45_avlift', q:'Text: "the wing pushes air down". Avi reads: "the wing pushes hair down". What now?', o:['Does not make sense: fix it and reread', 'Makes sense: keep reading'], how:'Say Avi\'s words out loud. Could a wing really do that?'},
+        {p:'c45_avlift', q:'Text: "Watch a big jet race". Avi reads: "Watch a large jet race". What now?', o:['Makes sense: keep reading', 'Does not make sense: fix it and reread'], how:'Does Avi\'s word change what the sentence means?'},
+        {p:'c45_avlift', q:'Text: "a long runway." Avi reads: "a long runaway." What now?', o:['Does not make sense: fix it and reread', 'Makes sense: keep reading'], how:'Picture what Avi said. Does a jet need that to take off?'}
+      ],
+      practice:[
+        {t:'type', p:'c45_avlift', q:'Avi read: "When the wing pushes hair down..." Fix it. Type the word that makes sense.', a:'air', alt:['Air'], kb:'abc',
+          h:'Look at the letters of the word that went wrong. Find it in the passage.', how:'Think about what a wing really pushes. Then check the letters in the text.'},
+        {t:'sort', p:'c45_avlift', q:'Each boy misread one word. What should he do?', bins:[{id:'x', label:'Does not make sense: fix it and reread'}, {id:'k', label:'Makes sense: keep reading'}],
+          items:[{label:'Text: "bend the moving air" · read: "bend the moving hair"', bin:'x'}, {label:'Text: "carry its weight" · read: "carry its height"', bin:'x'}, {label:'Text: "tilted up" · read: "tilled up"', bin:'x'}, {label:'Text: "its nose tips up" · read: "the nose tips up"', bin:'k'}, {label:'Text: "into the sky" · read: "up into the sky"', bin:'k'}],
+          h:'Say each misread sentence. Does the meaning break, or stay the same?', how:'A slip that breaks the meaning must be fixed. A slip that keeps the meaning can be left.'},
+        {t:'sort', p:'c45_avlift', q:'Mistake Detective. Did each reader do the right thing?', bins:[{id:'r', label:'Right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'Eli read "hair", stopped, fixed it to "air" and reread the sentence.', bin:'r'}, {label:'Moishe read "runaway" and kept going, though it made no sense.', bin:'w'}, {label:'Shmuel read "large" for "big" and kept going.', bin:'r'}, {label:'Chaim fixed "spends" to "speeds" but never reread the sentence.', bin:'w'}],
+          h:'Did the meaning break? Did he fix it all the way?', how:'Two traps: going on when it makes no sense, and fixing a word without rereading the sentence.'},
+        {t:'pairs', p:'c45_avlift', q:'Match each step to what you do.', pairs:[['Notice', 'Ask: does that make sense?'], ['Find', 'Point to the word that went wrong.'], ['Fix', 'Look at all its letters again.'], ['Reread', 'Read the whole sentence again.']],
+          h:'Say the four steps in your head as you match.', how:'Each step has one job. Notice it, find it, fix it, reread it.'},
+        {t:'spotall', p:'c45_avlift', q:'Avi read: "The faster a plane moves, the more left its wings make. That is why a jet needs a long runaway." Tap every misread word.', cells:[{label:'faster', ok:false}, {label:'plane', ok:false}, {label:'left', ok:true}, {label:'wings', ok:false}, {label:'long', ok:false}, {label:'runaway', ok:true}],
+          h:'Read Avi\'s lines next to the passage, word by word.', how:'A misread word makes the meaning break. Compare each word with the text.'},
+        {t:'order', p:'c45_avlift', q:'Put the fix-it steps in order.', tiles:['Notice: "Huh? That does not make sense."', 'Find the word that went wrong.', 'Look at all its letters again.', 'Reread the whole sentence.'],
+          h:'You cannot fix a slip before you notice it.', how:'Notice, find, fix, reread.'}
+      ],
+      check:[
+        {p:'c45_avtunnel', q:'Text: "made of thin metal." Eli reads: "made of thin meat." What now?', o:['Does not make sense: fix it and reread', 'Makes sense: keep reading']},
+        {p:'c45_avtunnel', q:'Text: "made hundreds of glides". Eli reads: "did hundreds of glides". What now?', o:['Makes sense: keep reading', 'Does not make sense: fix it and reread']},
+        {p:'c45_avtunnel', q:'Text: "They tested more than two hundred wing shapes". Eli reads "tasted". What now?', o:['Does not make sense: fix it and reread', 'Makes sense: keep reading']}
+      ],
+      re:[
+        {p:'c45_avlift', q:'While you read, keep asking yourself...', o:['Does it make sense?', 'How many pages are left?', 'What is for supper?'], how:'Reading is about meaning.'},
+        {p:'c45_avlift', q:'After you fix a word, you...', o:['reread the whole sentence', 'skip the sentence', 'close the book'], how:'Hear the sentence the right way.'},
+        {q:'Your word means the same as the word in the text. You...', o:['keep reading', 'start the page again', 'stop for good'], how:'Did the meaning break?'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.LIT.L05.07':{
+      hook:'Dovid was in the plane, right next to his uncle. Could he tell what his uncle was thinking?',
+      big:'An "I" narrator tells only what he sees, hears, thinks and feels. Other people\'s thoughts are closed to him.',
+      intro:['Find the narrator. If he says "I", he is inside the story.', 'He can tell what his eyes see and his ears hear.', 'He can tell his own thoughts and feelings.', 'He cannot see into anyone else\'s head, or into a place where he is not. He can only wonder.'],
+      ex:[{q:'"My stomach did a flip"', steps:['Who is telling? Dovid, the "I".', 'Where did it happen? Inside Dovid.', 'He feels his own stomach.'], a:'He can know it: it is his own feeling.'},
+          {q:'Was Uncle Mordechai scared up there?', steps:['That is inside his uncle\'s head.', 'His uncle never said.', 'Dovid writes, "I wondered."'], a:'He cannot know it. He can only wonder.'}],
+      oops:{q:'Can Dovid tell us his uncle was secretly worried about the wind?', wrong:'Yes. Dovid sat right next to him.', right:'No. A secret thought is inside his uncle\'s head.', why:'Sitting close is not enough. Dovid can only wonder what is in his uncle\'s head.'},
+      idea:['An "I" narrator is like a camera on one boy\'s head, with a microphone on his heart. It catches what he sees, hears and feels. It cannot film inside anyone else.'],
+      try:{q:'"I could not stop smiling". Can Dovid know it?', o:['Yes, it is his own feeling', 'No, it is inside someone else'], a:'Yes, it is his own feeling', steps:['Whose smile is it?', 'Is it inside Dovid or someone else?']}
+    },
+    'READ.COMP.L05.22':{
+      hook:'Two boys tell you about a plane ride. One was in the plane. One heard about it. Whose story do you trust for what it felt like?',
+      big:'A firsthand account is written by someone who was there. A secondhand account is written by someone who learned it from others.',
+      intro:['Find the writer.', 'Ask: was he there when it happened?', 'Firsthand clues: "I saw", "I felt", "I was there".', 'Secondhand clues: "he told me", facts from books, written long after. The word "I" alone is not the test.'],
+      ex:[{q:'"Up Over Baltimore" by Dovid', steps:['Dovid was in the plane.', 'He tells what he saw and felt.'], a:'Firsthand: the writer was there.'},
+          {q:'Avrumi\'s news report', steps:['Avrumi writes "I", but only Dovid and his uncle were in the plane.', 'He says, "I asked Dovid to tell me all about it."'], a:'Secondhand: the writer was not there.'}],
+      oops:{q:'Avrumi writes, "I asked Dovid to tell me all about it."', wrong:'It has "I", so it is firsthand.', right:'Avrumi was not in the plane, so it is secondhand.', why:'"I" shows who is writing, not where he was. Ask: was the writer there?'},
+      idea:['Firsthand is like holding the ball yourself. Secondhand is like hearing about the catch from a friend.'],
+      try:{q:'A history book about 1903, written last year. Which kind?', o:['Secondhand', 'Firsthand'], a:'Secondhand', steps:['Was the writer alive in 1903?', 'Where did he get his facts?']}
+    },
+    'READ.COMP.L05.23':{
+      hook:'One man flew the plane. One writer came long after. Put them together, and you see the whole day.',
+      big:'A firsthand and a secondhand account of one event have a different focus. Each gives facts the other leaves out.',
+      intro:['Read both accounts of the same event.', 'Find what only the firsthand account tells: feelings, sights and sounds up close.', 'Find what only the secondhand account tells: numbers, records and what came after.', 'Find what both tell. Then say how their focus is different.'],
+      ex:[{q:'Orville\'s pounding heart', steps:['Look in Account 1: "my heart was pounding."', 'Look in Account 2: no heart.'], a:'Only the diary tells it.'},
+          {q:'The first flight lasted 12 seconds.', steps:['Account 1: "Twelve seconds later".', 'Account 2: "It lasted 12 seconds".'], a:'Both tell it.'}],
+      oops:{q:'The diary has no wind speed. The book has no icy puddles.', wrong:'So one account must be wrong.', right:'They have a different focus. Together they tell more.', why:'Each writer tells what he could know best. Different is not the same as wrong.'},
+      idea:['Two accounts are like two cameras at one event: one close up, one far away. You need both for the full picture.'],
+      try:{q:'Which account tells about the telegram?', o:['Only the history book', 'Only the diary'], a:'Only the history book', steps:['Search Account 1.', 'Search Account 2.']}
+    },
+    'READ.FLU.L05.05':{
+      hook:'A pilot checks his instruments all the time. A good reader checks one thing all the time: does it make sense?',
+      big:'When what you read does not make sense, stop, fix the word and reread the sentence.',
+      intro:['As you read, keep asking: does that make sense?', 'If not, find the word that went wrong.', 'Look at all its letters again and say the word that fits.', 'Reread the whole sentence. If your slip kept the same meaning, keep going.'],
+      ex:[{q:'"When the wing pushes hair down..."', steps:['Huh? A wing has no hair.', 'The word that went wrong: hair.', 'Its letters: a-i-r. It says air!', 'Reread: "When the wing pushes air down."'], a:'Fixed and reread.'},
+          {q:'"Watch a large jet race" (the text says big)', steps:['Does it still make sense? Yes.', 'Large and big mean the same.'], a:'The meaning did not break, so keep going.'}],
+      oops:{q:'Avi reads, "a long runaway."', wrong:'Keep going. Nobody will notice.', right:'Stop, fix it to "runway", and reread.', why:'A slip that breaks the meaning makes the rest foggy.'},
+      idea:['Your ears are a smoke alarm. When a sentence sounds silly, the alarm rings. Stop and fix it.'],
+      try:{q:'Avi reads, "This upward push is called left." What now?', o:['Fix it to "lift" and reread', 'Keep reading'], a:'Fix it to "lift" and reread', steps:['Does "called left" make sense?', 'Look at the letters again.']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.LIT.L05.07':{ band:'E45', pic:'👁️', today:'Find what an "I" narrator can and cannot know',
+      why:'Then you can tell a fact in the story from a guess.',
+      ready:[{q:'"I grabbed the edge of my seat." Who is telling?', o:['a narrator inside the story','a narrator outside the story','nobody'], a:'a narrator inside the story'},
+             {q:'Which words show a first-person narrator?', o:['I, me, my','he, she, they','the, a, an'], a:'I, me, my'}],
+      bridge:'READ.LIT.L05.02', bridgeName:'Who\'s Telling?',
+      watch:{ q:'Up Over Baltimore', m:{type:'scene', e:'🛩️', t:'Uncle Mordechai talked into his headset to a voice on the radio. He looked calm, but I wondered if he was ever scared up here. I did not ask.'}, steps:[
+        {t:'Dovid is the "I". He tells his own story.'},
+        {t:'The engine roared. Dovid heard that with his own ears.'},
+        {t:'His stomach did a flip. That is inside Dovid.'},
+        {t:'Was his uncle scared? That is inside his uncle\'s head.'},
+        {t:'Dovid only wonders. His uncle never told him.'}],
+        a:'An "I" narrator tells what he sees, hears, thinks and feels.' },
+      oops:{ q:'Can Dovid tell us his uncle was secretly worried?', wrong:'Yes. Dovid sat right next to him.', right:'No. A secret worry is inside his uncle\'s head.', why:'Sitting close is not enough. An "I" narrator cannot see inside another person.' },
+      ways:['worked example','evidence tap','Mistake Detective','tap the reason','first and third person side by side','chavrusa'], done:'You know what an "I" narrator can and cannot know! Tell your chavrusa one thing Dovid could only wonder about.',
+      board:{ one:'An "I" narrator tells only what he sees, hears, thinks and feels.', activity:'Hot seat: one boy tells a short story as "I"; the class asks questions, and he answers "I know" or "I can only guess" for each one.', mistakes:['Thinking the narrator knows another person\'s thoughts because he was nearby','Mixing up what the narrator wonders with what he knows','Forgetting he cannot see places where he is not'] },
+      do:[
+        {type:'evidence', q:'Which sentence shows something Dovid cannot know for sure?', p:['The engine roared, and the whole plane shook.','Below us, the houses looked like tiny blocks.','He looked calm, but I wondered if he was ever scared up here.','When we landed, my legs felt wobbly.'], a:2, look:'a place where Dovid only wonders',
+          say:'Tap the sentence where Dovid can only wonder.', how:'Look for a feeling inside someone else, not inside Dovid.',
+          why:{q:'Why can\'t Dovid know it for sure?', o:['It is inside his uncle\'s head','Dovid was asleep','The plane was too loud'], a:'It is inside his uncle\'s head'}},
+        {type:'sort', mis:true, bins:['He can know it','He cannot know it'], cards:[['The engine roared.',0],['His uncle\'s secret worry',1],['His own stomach flipped.',0],['What the voice on the radio thought',1]],
+          say:'Mistake Detective: could Dovid really tell each thing?', how:'Sitting close does not open a head. Being away means he cannot see.'}],
+      your:[
+        {type:'cloze', mis:true, t:'Dovid wondered if his uncle was scared. Dovid ___ know it for sure.', o:['cannot','can','must'], a:'cannot',
+          say:'Pick the word that makes the sentence true.', how:'An "I" narrator knows what he sees, hears, thinks and feels. Which is this?',
+          why:{q:'Why not?', o:['His uncle never told him, and thoughts are hidden','Dovid was not in the plane','The story is too short'], a:'His uncle never told him, and thoughts are hidden'}},
+        {type:'match', pairs:[['"The engine roared"','He heard it.'],['"the houses looked like tiny blocks"','He saw it.'],['"My stomach did a flip"','He felt it inside.'],['"I wondered if he was ever scared up here"','He thought it.']],
+          say:'Match each line to how Dovid knows it.', how:'Ears, eyes, body or mind?'},
+        {type:'evidence', q:'This telling is from outside. Which sentence could Dovid NOT tell as "I"?', p:['Dovid buckled his seat belt twice.','He grabbed the edge of his seat.','Inside, though, he was thinking about the wind.','Dovid could not stop smiling all the way home.'], a:2, look:'a thought inside Reb Mordechai\'s head',
+          say:'Tap the sentence only an outside narrator could tell.', how:'Find a thought that belongs to someone other than Dovid.',
+          why:{q:'Why can an outside narrator tell it?', o:['This outside narrator can tell every person\'s thoughts','He sat in the plane','He asked Dovid'], a:'This outside narrator can tell every person\'s thoughts'}},
+        {type:'sort', bins:['He saw or heard it','It is his own thought or feeling','He cannot know it'], cards:[['A train crawled along its track.',0],['Uncle talked into his headset.',0],['He wanted to remember everything.',1],['His legs felt wobbly.',1],['What Uncle thought about the wind',2]],
+          say:'Sort each detail by how Dovid could know it.', how:'Eyes and ears, his own heart and head, or someone else\'s head?',
+          why:{q:'Why is the wind thought in the last box?', o:['It is in his uncle\'s head, not Dovid\'s','Dovid could not hear the wind','It is a long sentence'], a:'It is in his uncle\'s head, not Dovid\'s'}},
+        {type:'order', steps:['Find the narrator: is it "I"?','Pick one detail he tells.','Ask: did he see it, hear it, think it or feel it?','Decide: can he know it, or not?'],
+          say:'Put the narrator check in order.', how:'Who tells, what he tells, how he could know, then decide.'}] },
+    'READ.COMP.L05.22':{ band:'E45', pic:'✈️', today:'Tell a firsthand account from a secondhand one',
+      why:'Then you know whose eyes you are reading through.',
+      ready:[{q:'"I grabbed my seat." The narrator is...', o:['first person','third person','nobody'], a:'first person'},
+             {q:'"He grabbed his seat." The narrator is...', o:['third person','first person','nobody'], a:'third person'}],
+      bridge:'READ.LIT.L05.02', bridgeName:'Who\'s Telling?',
+      watch:{ q:'Two writers, one flight', m:{type:'scene', e:'📰', t:'Dovid wrote: "My stomach did a flip". Avrumi wrote: "On Monday, I asked Dovid to tell me all about it."'}, steps:[
+        {t:'Dovid was in the plane. He saw it himself.'},
+        {t:'So "Up Over Baltimore" is a firsthand account.'},
+        {t:'Avrumi writes "I", but he was not in the plane.'},
+        {t:'Dovid told him. So his report is secondhand.'},
+        {t:'One question decides it: was the writer there?'}],
+        a:'Firsthand: the writer was there. Secondhand: he learned it from others.' },
+      oops:{ q:'Avrumi\'s report says, "I asked Dovid to tell me all about it."', wrong:'It has "I", so it is firsthand.', right:'Avrumi was not in the plane, so it is secondhand.', why:'"I" is not the test. Ask: was the writer there when it happened?' },
+      ways:['worked example','Mistake Detective','evidence tap','tap the reason','two-column map','building knowledge: the first airplanes'], done:'You can tell firsthand from secondhand! Tell your chavrusa one firsthand thing you saw this week.',
+      board:{ one:'Was the writer there? Yes: firsthand. No, he heard or read it: secondhand.', activity:'Two reporters: one boy does a short action; a second boy tells it to a third, who did not see it. Both write one line, and the class names each account.', mistakes:['Calling anything with "I" firsthand','Calling true facts firsthand','Forgetting to ask where the writer was'] },
+      do:[
+        {type:'sort', mis:true, bins:['Firsthand','Secondhand'], cards:[['Dovid\'s "Up Over Baltimore"',0],['Avrumi\'s report, with "I asked Dovid"',1],['An article about 1903, written today',1],['A pilot\'s own story of his morning flight',0]],
+          say:'Mistake Detective: careful with "I". Was the writer there?', how:'For each one, ask: did the writer see it himself?'},
+        {type:'evidence', q:'Which sentence proves Avrumi was not in the plane?', p:['Last Sunday, our classmate Dovid Lerner flew in a small airplane for the first time.','His uncle, Reb Mordechai Lerner, is a pilot.','Only the two of them were in the plane.','The whole class wants to hear about it!'], a:2, look:'who was in the plane',
+          say:'Tap the sentence that shows who was in the plane.', how:'Read each sentence. Which one rules Avrumi out?',
+          why:{q:'So what kind of account is Avrumi\'s report?', o:['Secondhand','Firsthand','A diary'], a:'Secondhand'}}],
+      your:[
+        {type:'cloze', mis:true, t:'Avrumi wrote, "I asked Dovid to tell me all about it." His report is ___.', o:['secondhand','firsthand','a diary'], a:'secondhand',
+          say:'Pick the word that names Avrumi\'s report.', how:'Use the one test question about the writer.',
+          why:{q:'Why that word?', o:['Avrumi learned it from Dovid','Avrumi used the word I','The report is short'], a:'Avrumi learned it from Dovid'}},
+        {type:'match', pairs:[['"Up Over Baltimore"','Dovid was in the plane.'],['Avrumi\'s news report','Dovid told Avrumi about it.'],['"The Day the Wright Brothers Flew"','Its writer used records and a photograph.']],
+          say:'Match each account to how its writer knows.', how:'Where was each writer when it happened?'},
+        {type:'evidence', q:'Which sentence shows this writer was not there in 1903?', p:['That cold morning, a strong wind blew across the sand hills near Kitty Hawk.','At about 10:35, with the engine already running, Orville lay down on the bottom wing.','It flew for 12 seconds and covered 120 feet, about the length of three school buses.','Today, the Flyer hangs in a museum in Washington, D.C.'], a:3, look:'a clue about when it was written',
+          say:'Tap the clue that the writer lives long after 1903.', how:'Which sentence could only be written long after 1903?',
+          why:{q:'Why does that sentence help?', o:['It is written from today, long after','It has a time in it','It names a place'], a:'It is written from today, long after'}},
+        {type:'storymap', slots:['Writer','Was he there?','Kind of account'], cards:['Avrumi Katz','No: Dovid told him.','Secondhand'], extra:['Firsthand'],
+          say:'Fill the account card for Avrumi\'s report.', how:'First the writer, then where he was, then the kind.'},
+        {type:'sort', bins:['Firsthand','Secondhand'], cards:[['Orville\'s own diary from that day',0],['A history book about 1903',1],['A letter Dovid wrote right after his flight',0],['Avrumi\'s report for the class',1],['A pilot telling about his own flight',0]],
+          say:'Sort each account: firsthand or secondhand.', how:'Ask each time: was the writer there?'}] },
+    'READ.COMP.L05.23':{ band:'E45', pic:'📰', today:'Compare a firsthand and a secondhand account',
+      why:'Two accounts together show you more than one alone.',
+      ready:[{q:'A diary written on the day of the event is usually...', o:['firsthand','secondhand','a poem'], a:'firsthand'},
+             {q:'A writer who learned it from others wrote a...', o:['secondhand account','firsthand account','diary'], a:'secondhand account'}],
+      bridge:'READ.COMP.L05.22', bridgeName:'Firsthand or Secondhand?',
+      watch:{ q:'December 17, 1903: Two Accounts', m:{type:'scene', e:'🛩️', t:'Diary: "I was flying! Cold air rushed past my face." History book: "It lasted 12 seconds and covered 120 feet."'}, steps:[
+        {t:'Account 1 is an imagined diary, told as Orville.'},
+        {t:'It tells feelings: "my heart was pounding."'},
+        {t:'Account 2 is a history book, written long after.'},
+        {t:'It adds numbers, and what came after.'},
+        {t:'Both tell the 12-second flight. Their focus is different.'}],
+        a:'Up close, the diary shows feelings. The book shows numbers and the big picture.' },
+      oops:{ q:'The diary has no wind speed. The book has no icy puddles.', wrong:'So one of them is wrong.', right:'They have a different focus. Together they tell more.', why:'Each writer tells what he could know best. Compare them; do not throw one out.' },
+      ways:['two-column map','worked example','Mistake Detective','evidence tap','tap the reason','building knowledge: the first airplanes'], done:'You can compare two accounts! Tell your chavrusa one thing only the diary told you.',
+      board:{ one:'Same event, different focus: up close and feelings, or numbers and the big picture.', activity:'Two columns on the board: the boys read both 1903 accounts and put each fact on a sticky note in the diary column, the book column, or the middle.', mistakes:['Thinking a missing fact means an account is wrong','Checking only one account','Forgetting who was really there'] },
+      do:[
+        {type:'storymap', slots:['Diary: who tells it','Diary: what it shows best','Book: who tells it','Book: what it shows best'], cards:['Orville (imagined words), who was there','how it felt to fly','a writer, long after','numbers and what came after'], extra:['a pilot today'],
+          say:'Fill the two columns: the diary and the book.', how:'Who was there? Who wrote later? What can each one tell best?',
+          why:{q:'Why does only the diary tell feelings?', o:['It is told by the man in the plane','The book is too short','Feelings are not true'], a:'It is told by the man in the plane'}},
+        {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['The diary shows feelings. The book adds numbers.',0],['They tell different things, so one is wrong.',1],['Both tell about the 12-second flight.',0],['The book writer felt the cold wind that day.',1]],
+          say:'Mistake Detective: is each compare right?', how:'Different is not wrong. Who was really there?'}],
+      your:[
+        {type:'evidence', q:'Which sentence is ONLY in the firsthand account?', p:['I lay down on the lower wing, and my heart was pounding.','It lasted 12 seconds and covered 120 feet.','The brothers took turns and made four flights.','Today, the Flyer hangs in a museum in Washington, D.C.'], a:0, look:'a feeling from inside the plane',
+          say:'Tap the sentence only the diary tells.', how:'Which one could only the man on the wing tell?',
+          why:{q:'Why is it only in the diary?', o:['It is a feeling inside Orville','It is a number','It happened later'], a:'It is a feeling inside Orville'}},
+        {type:'sort', bins:['Only the firsthand account','Only the secondhand account','Both accounts'], cards:[['Ice covered the puddles.',0],['The machine bobbed up and down.',0],['The longest flight: 59 seconds',1],['A telegram went home to Dayton.',1],['The first flight: twelve seconds',2]],
+          say:'Sort each fact: diary only, book only, or both.', how:'Look in Account 1 and in Account 2 every time.'},
+        {type:'cloze', t:'The diary tells how it felt. The history book adds ___.', o:['numbers and what came after','Orville\'s pounding heart','the ice on the puddles'], a:'numbers and what came after',
+          say:'Finish the sentence that compares the focus.', how:'What does the book have that the diary does not?',
+          why:{q:'Why can the book tell what came after?', o:['It was written long after','Its writer flew the plane','It is a diary'], a:'It was written long after'}},
+        {type:'match', pairs:[['Ice covered the puddles.','only in the diary'],['A telegram went home.','only in the history book'],['The first flight lasted 12 seconds.','in both accounts']],
+          say:'Match each fact to where you find it.', how:'Check Account 1 and Account 2 before you match.'},
+        {type:'order', steps:['A cold wind blew hard that morning.','Orville lay down on the lower wing.','The Flyer flew for 12 seconds.','Wilbur made the longest flight, 59 seconds.','The brothers sent a telegram home.'],
+          say:'Use both accounts. Put the day in order.', how:'Start in the morning. End with the news going home.'}] },
+    'READ.FLU.L05.05':{ band:'E45', pic:'🛫', today:'Notice a misread, fix it and reread',
+      why:'Reading is about meaning. A good reader catches his own slips.',
+      ready:[{q:'When a part makes no sense, first you...', o:['notice it and try a fix-up','skip the page','give up'], a:'notice it and try a fix-up'},
+             {q:'To clarify means to...', o:['fix a part that confuses you','read faster','guess the end'], a:'fix a part that confuses you'}],
+      bridge:'READ.COMP.L05.19', bridgeName:'Clarify It',
+      watch:{ q:'How Wings Lift', m:{type:'scene', e:'✈️', t:'When the wing pushes air down, the air pushes the wing up. This upward push is called lift.'}, steps:[
+        {t:'I read: "When the wing pushes hair down..."'},
+        {t:'Huh? A wing has no hair. Something went wrong.'},
+        {t:'I find the word that went wrong: hair.'},
+        {t:'I look at all its letters: a-i-r. Air!'},
+        {t:'I reread the whole sentence. Now it is clear.'}],
+        a:'Notice the slip, find the word, fix it, reread the sentence.' },
+      oops:{ q:'Avi reads, "a long runaway."', wrong:'Keep going. Nobody will notice.', right:'Stop, fix it to "runway", and reread.', why:'A slip that breaks the meaning makes the rest of the page foggy.' },
+      ways:['worked example','Mistake Detective','fix the word','tap the reason','repeated reading','chavrusa'], done:'You catch your own slips! Read "How Wings Lift" to your chavrusa. He says "check!" if a word sounds wrong.',
+      board:{ one:'Does it make sense? If not: find the word, look at its letters, reread the sentence.', activity:'Silly slips: the rebbe reads a page aloud with a few silly slips; the boys raise a hand at each one, fix the word, and the class rereads the sentence together.', mistakes:['Reading on when nothing makes sense','Fixing the word but not rereading the sentence','Stopping for a small slip that keeps the meaning'] },
+      do:[
+        {type:'cloze', t:'Air rushing over the curved top of the wing ___ up, and its pressure drops.', o:['speeds','spends','spills'], a:'speeds',
+          say:'Avi read "spends". Pick the word that makes sense.', how:'Read the sentence with each word. Which one tells what air does?',
+          why:{q:'Why does "speeds" fit?', o:['The air moves faster over the top','It is the shortest word','It rhymes with weeds'], a:'The air moves faster over the top'}},
+        {type:'sort', mis:true, bins:['Fix it and reread','Keep reading'], cards:[['"pushes hair down" for "pushes air down"',0],['"a large jet" for "a big jet"',1],['"a long runaway" for "a long runway"',0],['"the nose tips up" for "its nose tips up"',1]],
+          say:'Mistake Detective: which slips break the meaning?', how:'Say each slip. Does the sentence still mean the same thing?'}],
+      your:[
+        {type:'evidence', mis:true, q:'Avi read these lines aloud. Which line has a slip that breaks the meaning?', p:['As the plane moves forward, air flows over and under the wing.','This upward push is called left.','The faster a plane moves, the more lift its wings make.','Today\'s giant jets fly because of the same idea.'], a:1, look:'a word that does not fit',
+          say:'Tap the line that does not make sense.', how:'Read each line. Ask: does that make sense?',
+          why:{q:'Why does that line break?', o:['"Left" is a direction, not a push','The line is too short','It has no capital letter'], a:'"Left" is a direction, not a push'}},
+        {type:'order', steps:['Notice: "Huh? That does not make sense."','Find the word that went wrong.','Look at all its letters again.','Reread the whole sentence.'],
+          say:'Put the fix-it steps in order.', how:'You cannot fix a slip before you notice it.'},
+        {type:'match', pairs:[['hair','air'],['runaway','runway'],['spends','speeds'],['height','weight']],
+          say:'Match each slip to the word in the text.', how:'Look at the letters. Which text word looks or sounds like it?'},
+        {type:'sort', bins:['Fix it and reread','Keep reading'], cards:[['"tilled up" for "tilted up"',0],['"carry its height" for "carry its weight"',0],['"up into the sky" for "into the sky"',1],['"bend the moving hair" for "bend the moving air"',0],['"a huge jet" for "a big jet"',1]],
+          say:'Sort each slip: fix it, or keep reading?', how:'Does the slip break the meaning, or keep it?',
+          why:{q:'Why keep reading after "a huge jet"?', o:['Huge and big mean almost the same','Jets are big','It is the last word'], a:'Huge and big mean almost the same'}},
+        {type:'cloze', t:'That is why a jet needs a long ___.', o:['runway','runaway','rainway'], a:'runway',
+          say:'Pick the word that makes sense.', how:'What does a jet race down before it lifts off?'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

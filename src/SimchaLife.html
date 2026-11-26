@@ -447,9 +447,9 @@ function cardHTML(){ const s=story(); return `<section class="hmcard"><div class
 const _find=window.tlFindLevelCard;
 window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ if(st&&A.view==='hub'&&window.SIM_LIVE!==false) h+=cardHTML(); }catch(e){} return h; };
 function openStory(){ const s=story(); if(!s) return;
-  overlay(`<div class="oe">📖</div><h2>${E(s.title)}</h2><div class="hm-story">${E(s.text||((s.first||'')+' '+(s.then||'')))}</div><div class="hm-ask">🕯️ For the Shabbos table: ${E(s.ask||'')}</div><p style="margin-top:14px"><button class="btn go big" data-act="closeov">Back</button></p>`);
+  overlay(`<div class="oe">📖</div><h2>${E(s.title)}</h2><div class="hm-story">${E(s.text||((s.first||'')+' '+(s.then||'')))}</div><div class="hm-ask">🕯️ For the Shabbos table: ${E(s.ask||'')}</div>${window.TLK?TLK.x('data-act="closeov"','tr'):'<button type="button" class="btn" data-act="closeov" aria-label="Close">✕</button>'}`);
   try{ if(typeof speak==='function') speak(s.text||''); }catch(e){} }
-function openGame(){ overlay(`<div class="oe">${tlOri('cheer')}</div><h2>Gam Zu L'Tovah</h2><div id="gz-root"></div><p style="margin-top:14px"><button class="btn" data-act="closeov">Back to my day</button></p>`);
+function openGame(){ overlay(`<div class="oe">${tlOri('cheer')}</div><h2>Gam Zu L'Tovah</h2><div id="gz-root"></div>${window.TLK?TLK.x('data-act="closeov"','tr'):'<button type="button" class="btn" data-act="closeov" aria-label="Close">✕</button>'}`);
   setTimeout(()=>{ const r=document.getElementById('gz-root'); if(r&&window.TL_GAMZU) TL_GAMZU.mount(r,{band:band(),rounds:5,seed:String((A.st&&A.st.id)||'')+week()}); },30); }
 document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-hm]'); if(!b) return; if(b.dataset.hm==='story') openStory(); else openGame(); });
 window.tlHashemMoment=openStory; window.tlGamZu=openGame;

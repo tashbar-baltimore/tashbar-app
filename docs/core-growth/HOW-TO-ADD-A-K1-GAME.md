@@ -48,6 +48,16 @@ Also follow the One Bite rules for K–1 (`docs/ONE-BITE-PLAYBOOK.md`):
 
 **The skill row still comes first:** list the skill with `tools/core/add-skill.js` (it puts it on the ladder for the staff grid and placement). The game is what a K–1 boy plays.
 
+## A listen-along story in a game
+A K–1 game cannot use `read` or `proof` (they open the Reader from a lesson), but it can start with **one story piece**:
+```js
+{ type: 'story', text: 'F.LA.K01', say: "Listen to the story of Eli's first day." }
+```
+- It shows the book's title and one big **Listen ▶** button. The Reader opens over the game in the K–1 band: every page is read aloud with the words lighting up, each page shows its picture (`[pic: …]`, see `HOW-TO-ADD-A-TEXT.md`), and he can tap a rich word to hear what it means.
+- When he reaches the end, the game goes on to its questions about the story. If he closes the book early, the button says **Keep listening ▶**.
+- One story at most per game. It counts as one of the 4–8 pieces and as one kind, but **not** for stars: the stars come from the questions.
+- Example: `src/CoreDataFH3.html`. Tests: `tests/lib/corestory.js`.
+
 ## What the tests check (`tests/lib/corek1.js`)
 At 1366 and 390, with a made-up K boy and a made-up game:
 - the game sits right after its `after` game, locked until that game is passed;

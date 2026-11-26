@@ -1,0 +1,348 @@
+<script>
+/* CoreDataC4510.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 5 Unit 5.5 "How texts are built", topic set: The moon and space travel (docs/core-growth/C45-map.md): built two ways, one chapter in
+   the whole book, stanzas and scenes, poetry aloud. READ.COMP.L06.02 (Feature Finder) is an existing lesson and is not rebuilt here.
+   Short lesson passages (under 300 words) go in PASS under c45_ keys; each lesson teaches on one passage and checks on a different, cold passage:
+   COMP.L06.13 moonroad (+ jewishmonth) -> cratertwo, LIT.L06.10 b4chapters -> telescope, LIT.L06.11 levana + landingplay -> rocketplay,
+   FLU.L06.04 moonmonth -> sunrises.
+   c45_b4chapters retells Book B4 (The Map in Zeidy's Attic) ch. 1-6 only; nothing from the later chapters.
+   Halacha (c45_jewishmonth, c45_levana): the month follows the moon; the molad announced in shul on the Shabbos before Rosh Chodesh in most
+   months; Kiddush Levana said outside by men and boys while the moon is growing, from a few days after the molad until the middle of the
+   month, often on Motzaei Shabbos, only when the moon can be seen; rising on the toes three times; "Shalom aleichem". REBBE: review after live.
+   The E45 passage-card style lives in CoreDataC451.html. */
+(function () {
+  var P = {
+    c45_moonroad: { title: 'Two Texts About the Moon Landing', text: 'TEXT A: The Road to the Moon\nIn 1957, a country called the Soviet Union sent the first satellite, Sputnik, around the Earth. The race to space had begun. In 1961, President John F. Kennedy said that America should land a man on the moon before 1970. Next, in December 1968, the three astronauts of Apollo 8 became the first people to circle the moon. Then, on July 16, 1969, a giant rocket lifted Apollo 11 off the ground in Florida. Four days later, on July 20, Neil Armstrong and Buzz Aldrin landed on the moon. Michael Collins stayed above, circling the moon. Finally, on July 24, all three astronauts splashed down safely in the Pacific Ocean.\nTEXT B: How Do You Land on the Moon?\nLanding on the moon was full of problems. The first problem was that the moon has no air, so wings and parachutes cannot slow a spaceship down. The solution was a lander with a rocket engine that pointed down and fired to slow it. The second problem was getting home, since there is no launch pad on the moon. The solution was to build the lander in two parts. The bottom half became the launch pad, and the top half flew back up. The last problem came in the final minutes. The landing spot was full of boulders. To solve it, Armstrong flew the lander himself, past the rocks, to a smooth place. He landed with less than a minute of fuel left.' },
+    c45_jewishmonth: { title: 'The Moon and the Jewish Month', text: 'The Jewish calendar follows the moon. Each month starts when a new moon begins, about every twenty-nine and a half days.\nAt the start of the month, the moon is between the Earth and the sun. Its sunny side faces away from us, so we cannot see it. This moment is called the molad, the "birth" of the new moon. In most months, the time of the molad is announced in shul on the Shabbos before Rosh Chodesh.\nA day or two later, a thin silver curve appears in the evening sky. Night after night, the curve grows wider. About a week into the month, half of the moon is lit. In the middle of the month, the whole moon shines. That is why Pesach and Sukkos, which start on the fifteenth of the month, always come with a full moon. Then the moon shrinks again, night after night, until it disappears and a new month begins.\nWhile the moon is growing, men and boys go outside on a clear night, often on Motzaei Shabbos, to say Kiddush Levana, a special bracha we say when we see the moon. It is said from a few days after the molad until the middle of the month.' },
+    c45_cratertwo: { title: 'Two Texts About Moon Craters', text: 'TEXT A: Why the Moon Is Covered with Craters\nLook at the full moon through binoculars, and you will see round holes everywhere. These holes are called craters. They were made by rocks from space that crashed into the moon. When a big space rock hits, it blasts out a bowl-shaped hole, so a crater forms. Small space rocks burn up when they fly through air. The moon has no air, so even small rocks smash into it. And because the moon has no wind or rain to wear them away, its craters stay for billions of years.\nTEXT B: Two Neighbors in Space\nThe Earth and the moon are neighbors, but they are very different. Both were hit by rocks from space long ago. The Earth is wrapped in air, while the moon has none. On Earth, wind, rain and rivers slowly wear old craters away, and plants grow over them. On the moon, nothing wears them away. The Earth is full of color: blue seas, green forests and white clouds. The moon, unlike the Earth, is gray and dusty from end to end. Even a footprint left on the moon could last for millions of years.' },
+    c45_b4chapters: { title: 'The Map in Zeidy\'s Attic: Chapters 1 to 6 in Short', text: 'Chapter 1, One Box a Year: On Chanukah, Yehuda finds an old map of Baltimore in Zeidy\'s attic, with a tiny star near the harbor and three Hebrew letters. Zeidy says his own Zeidy, Mottel, carried "the most precious thing in Baltimore" out of a great fire. What is under the star?\nChapter 2, Six Heads Around a Map: The crew studies the map. They find an old street name, shading that stops at a stream, and a building marked with a tiny cap. On the back, faint pencil says: "Messenger. February 10. Page 6."\nChapter 3, The Paper from 1904: At the library, the boys find that old newspaper page. It tells of a young man carrying a bundle away from the fire. But it also says the minyan fears its sacred scroll was lost.\nChapter 4, The Water Stain: At the history society, a shul\'s old minute book says the scroll was carried out of the fire. Then Yehuda sees Zeidy\'s umbrella there. Zeidy has been searching alone.\nChapter 5, Next Week: At the Shabbos table, Yehuda asks too many questions, and Zeidy leaves the table. After Havdalah, Zeidy tells him to lock the box. "Some things," says Zeidy, "should stay lost."\nChapter 6, Under the Tape: The crew wants to keep searching in secret, but a Rav says to honor Zeidy. In the attic, Yehuda sees tiny words under the old tape, and his hand stops.\nThe book has 12 chapters. Chapters 7 to 12 are still ahead.' },
+    c45_telescope: { title: 'The Telescope on the Porch (a short chapter book)', text: 'Chapter 1, Science Night: Dovid Lerner wants to show the moon\'s craters at the class science night, one week away. His Zeidy lends him an old telescope, and Dovid sets it up on the back porch. But when he looks through it, the moon is only a gray blur.\nChapter 2, The Empty Pocket: Binyamin reads Zeidy\'s old instruction sheet. It says the telescope needs a small lens, called an eyepiece, right by your eye. Then Dovid finds an empty felt pocket in the lid of the case. Now he knows why the moon looked like a blur: the eyepiece is missing.\nChapter 3, Clouds All Week: Zeidy searches every closet, but the eyepiece is gone. The store cannot send a new one until after science night. And every night that week, thick clouds cover the sky.\nChapter 4, Science Night: Abba remembers Zeidy\'s old magnifying glass. Dovid fits its lens into a cardboard tube to make a new eyepiece. On science night, the clouds move away, and the whole class sees the craters, sharp and clear.' },
+    c45_levana: { title: 'Under the New Moon (a poem by Avrumi Katz)', text: 'Shabbos is out, Havdalah done,\nthe flame is gone, the week begun,\nAbba and I step out the door\nto see the moon once more.\n\nClouds have covered every star.\nWe cannot see it, near or far.\nAbba says, "Wait patiently.\nWe say it only when we see."\n\nWind blows. The clouds slide by,\nthere\'s the moon, up in the sky!\nWe say it, and rise three times,\n"Shalom aleichem," like chimes!\n\nThe moon goes dark, then new;\nit starts again; we can too.\nLeave old mistakes behind;\na fresh start is there to find.' },
+    c45_landingplay: { title: 'The Night of the Landing (a short play)', text: 'SCENE 1. A living room in Baltimore, July 20, 1969. A radio sits on the table.\nSHMUEL (age 11): Abba, the radio says they are almost at the moon!\nABBA: Sit, Shmuel\'ke. Tonight, history happens.\nSCENE 2. The same room, a few minutes later. Everyone leans toward the radio.\nRADIO: The lander is low on fuel. They are still searching for a safe place to land.\nSHMUEL (whispering): What if they cannot find one?\nABBA: Then we wait, and we hope.\nSCENE 3. The same room. A voice crackles from the radio.\nRADIO: "Houston, Tranquility Base here. The Eagle has landed."\nSHMUEL (jumping up): They did it! They are on the moon!\nSCENE 4. Many years later. Zeidy Shmuel Katz sits with his grandson, Avrumi.\nZEIDY: That night I learned something, Avrumi. Big things take patience, and many people working together.\nAVRUMI: Like a sefer Torah, Zeidy. One careful letter at a time.' },
+    c45_rocketplay: { title: 'The Model Rocket (a short play)', text: 'SCENE 1. Dovid\'s basement, Sunday. Cardboard and tools cover the table.\nDOVID: Science night is Thursday. Our rocket will fly higher than the roof!\nBINYAMIN: First, we read the directions. All of them.\nSCENE 2. The park, Tuesday. Mr. Lerner stands far back, holding the launch button.\nMR. LERNER: Three, two, one!\n(The rocket wobbles, flips over and crashes into the grass. One fin snaps off.)\nDOVID: Only two days left, and it is broken!\nSCENE 3. Dovid\'s basement, Tuesday night.\nBINYAMIN: Look. The three fins were never the same size. That is why it wobbled.\nDOVID (slowly): So we make new fins and measure every one.\n(Wednesday, in the park, the new rocket shoots straight up.)\nDOVID: It works!\nSCENE 4. Science night, Thursday. The class claps for the rocket.\nDOVID: It flew straight because we slowed down and measured.\nBINYAMIN: Fast hands build a rocket. Careful hands make it fly.' },
+    c45_moonmonth: { title: 'The Moon\'s Month (a poem)', text: 'A new month. A curve of white\nhangs low above the trees,\na thread of borrowed light\nthat seems to ride the breeze.\n\nEach night the silver grows\nfrom half to nearly round,\nthen, on the fifteenth, throws\nits light on all the ground.\n\nSlowly, slowly, it grows thin\nand fades into the night.\nBut wait. New months begin\nwith one more thread of light.' },
+    c45_sunrises: { title: 'Sixteen Sunrises (a poem)', text: 'On the station, far from home,\nthe astronauts float free.\nThey watch the Earth below,\nall cloud and land and sea.\n\nThey race around so fast\nthe sun climbs up, and then\nin about an hour has passed\nfrom day to night again.\n\nSleeping bags hang on the wall,\nthey chase each floating drop,\nand sixteen sunrises in all\nlight up their day nonstop.' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+    'READ.COMP.L06.13':{name:'Built Two Ways',
+      teach:[
+        {p:'c45_moonroad', q:'How is Text A built?', o:['Time order', 'Problem and solution', 'Cause and effect', 'Compare and contrast'], how:'Look at how the sentences start: years, dates and words like next. What pattern do they follow?'},
+        {p:'c45_moonroad', q:'How is Text B built?', o:['Problem and solution', 'Time order', 'Cause and effect', 'Compare and contrast'], how:'Find the words the author uses again and again in Text B. They name the parts of its pattern.'},
+        {p:'c45_moonroad', q:'Both texts are about the moon landing. What is the big difference between them?', o:['How they are built', 'What they are about', 'Which one is true'], how:'Same topic? Then look at the shape: in what pattern do the facts come?'}
+      ],
+      practice:[
+        {t:'pairs', p:'c45_moonroad', q:'Match the signal words to how a text is built.', pairs:[['in 1957, next, then, finally', 'Time order'], ['the problem was, the solution was', 'Problem and solution'], ['so, because, as a result', 'Cause and effect'], ['both, while, unlike', 'Compare and contrast']],
+          h:'Which words tell when? Which tell why? Which put two things side by side?', how:'Signal words are road signs. Each set points to one pattern.'},
+        {t:'sort', p:'c45_moonroad', q:'Which pattern does each sentence show?', bins:[{id:'t', label:'Time order (Text A)'}, {id:'p', label:'Problem and solution (Text B)'}],
+          items:[{label:'In 1961, President John F. Kennedy said that America should land a man on the moon before 1970.', bin:'t'}, {label:'Finally, on July 24, all three astronauts splashed down safely in the Pacific Ocean.', bin:'t'}, {label:'The solution was to build the lander in two parts.', bin:'p'}, {label:'The landing spot was full of boulders.', bin:'p'}],
+          h:'Does the sentence move the clock forward, or name a problem or its fix?', how:'Time order moves through dates. Problem and solution names a problem, then its fix.'},
+        {t:'order', p:'c45_moonroad', q:'Text A is built in time order. Put its events in order.', tiles:['Sputnik goes around the Earth.', 'Kennedy sets a moon-landing goal.', 'Apollo 8 circles the moon.', 'Apollo 11 lifts off in Florida.', 'Armstrong and Aldrin land on the moon.'],
+          h:'Follow the years and dates.', how:'In a time-order text, the dates are your map. Start with the earliest year.'},
+        {t:'pairs', p:'c45_moonroad', q:'Text B: match each problem to its solution.', pairs:[['No air to slow the spaceship', 'A rocket engine that fired downward'], ['No launch pad on the moon', 'The lander\'s bottom half became the launch pad'], ['Boulders at the landing spot', 'Armstrong flew past them to a smooth place']],
+          h:'Find each problem in Text B. The fix comes right after it.', how:'In a problem-and-solution text, every problem is followed by its fix.'},
+        {t:'sort', p:'c45_moonroad', q:'Mistake Detective. Is the structure named right?', bins:[{id:'r', label:'Right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Text A is time order: it follows dates.', bin:'r'}, {label:'Text B is problem and solution: each problem gets a fix.', bin:'r'}, {label:'Text B is time order, because it says "first."', bin:'m'}, {label:'Both texts are built the same way, because they have the same topic.', bin:'m'}, {label:'Text A is problem and solution, because going to the moon was hard.', bin:'m'}],
+          h:'Look at the pattern of the WHOLE text, not one word.', how:'Check the pattern of the whole text, not one word or the topic.'},
+        {t:'spotall', p:'c45_jewishmonth', q:'This moon text is built in time order too. Tap every time-order signal.', cells:[{label:'At the start of the month', ok:true}, {label:'A day or two later', ok:true}, {label:'About a week into the month', ok:true}, {label:'In the middle of the month', ok:true}, {label:'the moon is between the Earth and the sun', ok:false}, {label:'a thin silver curve', ok:false}],
+          h:'Which words move the month forward?', how:'Time-order signals tell WHEN. Skip words that tell what or where.'}
+      ],
+      check:[
+        {p:'c45_cratertwo', q:'How is Text A built?', o:['Cause and effect', 'Compare and contrast', 'Time order', 'Problem and solution']},
+        {p:'c45_cratertwo', q:'How is Text B built?', o:['Compare and contrast', 'Cause and effect', 'Time order', 'Problem and solution']},
+        {p:'c45_cratertwo', q:'Which words show how Text B is built?', o:['both, while, unlike', 'so, because', 'in 1957, next']}
+      ],
+      re:[
+        {p:'c45_moonroad', q:'Dates and words like "next" and "finally" show...', o:['time order', 'problem and solution', 'compare and contrast'], how:'These words tell when.'},
+        {p:'c45_moonroad', q:'"So" and "because" often show...', o:['cause and effect', 'time order', 'compare and contrast'], how:'These words tell why.'},
+        {p:'c45_moonroad', q:'"Both," "but" and "unlike" often show...', o:['compare and contrast', 'time order', 'problem and solution'], how:'These words put two things side by side.'}
+      ]},
+    'READ.LIT.L06.10':{name:'One Chapter, Whole Book',
+      teach:[
+        {p:'c45_b4chapters', q:'What job does Chapter 1 do for the whole book?', o:['Sets up the problem', 'Adds a clue', 'Makes the problem harder', 'Solves the problem'], how:'Ask: what does the reader learn here for the first time? Who, where, and what big question?'},
+        {p:'c45_b4chapters', q:'What job does Chapter 2 do for the whole book?', o:['Adds a clue', 'Sets up the problem', 'Solves the problem'], how:'Does the mystery start here, or do the boys learn something new about it?'},
+        {p:'c45_b4chapters', q:'Chapter 3 ends with the newspaper saying the scroll may have burned. How does Chapter 4 fit after it?', o:['It brings a new source that says the scroll was saved.', 'It starts a brand-new mystery.', 'It ends the book.'], how:'A chapter\'s ending pulls you into the next one. What does Chapter 4 answer?'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_b4chapters', q:'What job does each chapter do for the book?', bins:[{id:'s', label:'Sets up the problem'}, {id:'c', label:'Adds a clue'}, {id:'h', label:'Makes the problem harder'}],
+          items:[{label:'Chapter 1: the map, the star and the big question', bin:'s'}, {label:'Chapter 2: an old street name and a pencil note', bin:'c'}, {label:'Chapter 4: the minute book and Zeidy\'s umbrella', bin:'c'}, {label:'Chapter 5: Zeidy says to lock the box', bin:'h'}],
+          h:'Does the chapter start the mystery, add to it, or put something in the way?', how:'Ask of each chapter: what would the book be missing without it?'},
+        {t:'pairs', p:'c45_b4chapters', q:'Each ending pulls you into the next chapter. Match them.', pairs:[['Ch. 2 ends: "Messenger. February 10. Page 6."', 'Ch. 3: the boys find that newspaper page.'], ['Ch. 3 ends: the newspaper says the scroll may be lost.', 'Ch. 4: a minute book says it was carried out.'], ['Ch. 4 ends: Zeidy has been searching alone.', 'Ch. 5: Yehuda\'s questions upset Zeidy.']],
+          h:'What question does each ending leave? Which chapter picks it up?', how:'A hook at the end of a chapter is a rope to the next chapter.'},
+        {t:'order', p:'c45_b4chapters', q:'Put the events of the six chapters in book order.', tiles:['Yehuda finds the map in the attic.', 'The crew finds a pencil note on the back.', 'The boys read the 1904 newspaper.', 'A minute book says the scroll was saved.', 'Zeidy tells Yehuda to lock the box.'],
+          h:'Chapter 1 first, then one chapter at a time.', how:'Each chapter builds on the one before it. Find the first event, then ask: what came next?'},
+        {t:'sort', p:'c45_b4chapters', q:'Mistake Detective. Does it tell how the chapter fits the book?', bins:[{id:'f', label:'Tells how it fits'}, {id:'m', label:'Mistake: only retells'}],
+          items:[{label:'Chapter 2 adds clues that move the search forward.', bin:'f'}, {label:'Chapter 5 makes the problem harder: now Zeidy wants it stopped.', bin:'f'}, {label:'Chapter 2: the boys look at a map at a table.', bin:'m'}, {label:'Chapter 5: the family eats a Shabbos meal.', bin:'m'}],
+          h:'Does it say what the chapter DOES for the book, or only what happens in it?', how:'Retelling says what happens. Fitting says what the chapter adds to the whole story.'},
+        {t:'spotall', p:'c45_b4chapters', q:'Tap every chapter whose job is to add a clue.', cells:[{label:'Chapter 2, Six Heads Around a Map', ok:true}, {label:'Chapter 4, The Water Stain', ok:true}, {label:'Chapter 1, One Box a Year', ok:false}, {label:'Chapter 5, Next Week', ok:false}],
+          h:'Do the boys learn something new about the mystery there?', how:'A clue chapter moves the search forward. A set-up chapter starts it; a harder chapter blocks it.'},
+        {t:'type', p:'c45_b4chapters', q:'Chapter 3 leaves a question: was the scroll lost? Which chapter answers it? Type its number.', a:'4', alt:['four', 'Four'], kb:'num',
+          h:'Read the line for the chapter right after Chapter 3.', how:'Look for the chapter that brings a new source about the scroll.'}
+      ],
+      check:[
+        {p:'c45_telescope', q:'What job does Chapter 2 do for the whole book?', o:['Adds a clue', 'Makes the problem harder', 'Solves the problem', 'Sets up the problem']},
+        {p:'c45_telescope', q:'What job does Chapter 3 do for the whole book?', o:['Makes the problem harder', 'Adds a clue', 'Solves the problem', 'Sets up the problem']},
+        {p:'c45_telescope', q:'What job does Chapter 4 do for the whole book?', o:['Solves the problem', 'Adds a clue', 'Makes the problem harder', 'Sets up the problem']}
+      ],
+      re:[
+        {p:'c45_b4chapters', q:'A chapter that shows who, where and the big question...', o:['sets up the problem', 'solves the problem', 'adds a clue'], how:'Where does a book start?'},
+        {p:'c45_b4chapters', q:'A chapter that ends on a hook...', o:['pulls you into the next chapter', 'ends the whole book', 'repeats the first chapter'], how:'What does a hook make you want to do?'},
+        {p:'c45_b4chapters', q:'The last chapters of a book usually...', o:['solve the problem', 'start a new problem', 'show the setting for the first time'], how:'Think of the end of the plot mountain.'}
+      ]},
+    'READ.LIT.L06.11':{name:'Stanzas and Scenes',
+      teach:[
+        {p:'c45_levana', q:'What job does stanza 1 do for the poem?', o:['Sets the scene', 'Brings the problem', 'Turns it around', 'Ends with the big idea'], how:'Ask: does this stanza tell when, where and who? Or does something go wrong?'},
+        {p:'c45_levana', q:'How does stanza 3 connect to stanza 2?', o:['Stanza 2 hides the moon; stanza 3 uncovers it.', 'Stanza 3 says stanza 2 again.', 'Stanza 3 starts a new poem.'], how:'Read the end of stanza 2 and the start of stanza 3. What changes?'},
+        {p:'c45_landingplay', q:'In the play, what job does Scene 2 do?', o:['Brings the problem', 'Sets the scene', 'Ends with the big idea'], how:'In this scene, what are they worried about?'}
+      ],
+      practice:[
+        {t:'pairs', p:'c45_levana', q:'Match each stanza to its job in the poem.', pairs:[['Stanza 1', 'Sets the scene'], ['Stanza 2', 'Brings the problem'], ['Stanza 3', 'Turns it around'], ['Stanza 4', 'Ends with the big idea']],
+          h:'Read one stanza at a time. Ask: what does it add?', how:'Stanzas are like steps. Each one does a job, and the next one builds on it.'},
+        {t:'order', p:'c45_landingplay', q:'Put the scenes of the play in order.', tiles:['A radio sits on the table, July 20, 1969.', 'The lander is low on fuel.', '"The Eagle has landed."', 'Zeidy tells Avrumi what he learned.'],
+          h:'Each scene starts with SCENE and a number.', how:'A play moves scene by scene. Find each scene\'s main moment.'},
+        {t:'sort', p:'c45_levana', q:'Mistake Detective. Right job, or a mistake?', bins:[{id:'r', label:'Right job'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Stanza 2 brings the problem: clouds hide the moon.', bin:'r'}, {label:'Stanza 4 ends with the big idea: we can start again.', bin:'r'}, {label:'Stanza 4 is just more about the moon.', bin:'m'}, {label:'Each stanza is its own poem; they do not connect.', bin:'m'}, {label:'Scene 3 of the play sets the scene, because it is the same room.', bin:'m'}],
+          h:'Does it say what the part DOES for the whole?', how:'Every stanza and scene is a step. A last stanza often tells what the whole thing means.'},
+        {t:'spotall', p:'c45_levana', q:'Tap every line where the poem turns around.', cells:[{label:'Wind blows. The clouds slide by,', ok:true}, {label:'there\'s the moon, up in the sky!', ok:true}, {label:'Clouds have covered every star.', ok:false}, {label:'We cannot see it, near or far.', ok:false}, {label:'Abba and I step out the door', ok:false}],
+          h:'Find where the problem ends.', how:'The turn is where things change from bad to good. Look for the moment the moon comes back.'},
+        {t:'sort', p:'c45_landingplay', q:'Which job does each line of the play help do?', bins:[{id:'s', label:'Sets the scene'}, {id:'p', label:'Brings the problem'}, {id:'t', label:'Turns it around'}],
+          items:[{label:'A radio sits on the table.', bin:'s'}, {label:'The lander is low on fuel.', bin:'p'}, {label:'What if they cannot find one?', bin:'p'}, {label:'"Houston, Tranquility Base here. The Eagle has landed."', bin:'t'}],
+          h:'Does the line show where and when, a worry, or the worry ending?', how:'Scenes have jobs too: set the scene, bring the problem, turn it around.'},
+        {t:'type', p:'c45_levana', q:'Which stanza holds the poem\'s big idea? Type its number.', a:'4', alt:['four', 'Four'], kb:'num',
+          h:'Where does the speaker stop telling what happened and tell what it means?', how:'Look for the stanza that talks about people, not only the moon.'}
+      ],
+      check:[
+        {p:'c45_rocketplay', q:'In "The Model Rocket," what job does Scene 2 do?', o:['Brings the problem', 'Sets the scene', 'Turns it around', 'Ends with the big idea']},
+        {p:'c45_rocketplay', q:'In "The Model Rocket," what job does Scene 3 do?', o:['Turns it around', 'Brings the problem', 'Sets the scene', 'Ends with the big idea']},
+        {p:'c45_rocketplay', q:'In "The Model Rocket," what job does Scene 4 do?', o:['Ends with the big idea', 'Turns it around', 'Brings the problem', 'Sets the scene']}
+      ],
+      re:[
+        {p:'c45_levana', q:'A stanza is...', o:['a group of lines in a poem, like a paragraph', 'one word in a poem', 'the title of a poem'], how:'Look for the blank lines in a poem.'},
+        {p:'c45_landingplay', q:'A scene is...', o:['one part of a play, in one place and time', 'a word in brackets', 'the list of characters'], how:'Look for the word SCENE in the play.'},
+        {p:'c45_levana', q:'The last stanza or scene often...', o:['ends with the big idea', 'sets the scene', 'brings the problem'], how:'Where does a poem or play tell what it all means?'}
+      ]},
+    'READ.FLU.L06.04':{name:'Poetry Aloud',
+      teach:[
+        {p:'c45_moonmonth', q:'Line 1 ends "a curve of white" with no mark. What do you do there?', o:['Keep going', 'Short pause', 'Long pause'], how:'Look at the very end of the line. Is there a comma, a period, or nothing?'},
+        {p:'c45_moonmonth', q:'Line 2 ends "above the trees," with a comma. What do you do there?', o:['Short pause', 'Keep going', 'Long pause'], how:'A comma is a little rest for your voice.'},
+        {p:'c45_moonmonth', q:'After stanza 1 there is a blank line. What do you do there?', o:['Long pause', 'Keep going', 'Short pause'], how:'A blank line is the end of a stanza, like the end of a paragraph.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_moonmonth', q:'What does your voice do at the end of each line?', bins:[{id:'k', label:'Keep going'}, {id:'s', label:'Short pause'}, {id:'f', label:'Full stop'}],
+          items:[{label:'A new month. A curve of white', bin:'k'}, {label:'hangs low above the trees,', bin:'s'}, {label:'that seems to ride the breeze.', bin:'f'}, {label:'Each night the silver grows', bin:'k'}, {label:'from half to nearly round,', bin:'s'}],
+          h:'Look only at the last mark of each line.', how:'No mark: keep going. A comma: a short pause. A period: a full stop.'},
+        {t:'pairs', p:'c45_moonmonth', q:'Match each sign to what your voice does.', pairs:[['No mark at the end of a line', 'Keep going'], ['A comma', 'Short pause'], ['A period', 'Full stop'], ['A blank line between stanzas', 'Long pause']],
+          h:'Which sign is the biggest stop? Which is no stop at all?', how:'The marks lead your voice, not the ends of the lines.'},
+        {t:'sort', p:'c45_moonmonth', q:'Mistake Detective. Good reading, or a mistake?', bins:[{id:'g', label:'Good reading'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Reads on from "throws" into "its light on all the ground" with no stop.', bin:'g'}, {label:'Takes a long pause at the blank line between stanzas.', bin:'g'}, {label:'Stops dead at the end of every line, mark or not.', bin:'m'}, {label:'Reads in a sing-song voice, banging every beat.', bin:'m'}],
+          h:'Does the voice follow the marks and the meaning?', how:'Does the voice follow the marks and the meaning?'},
+        {t:'order', p:'c45_moonmonth', q:'Put the steps for reading a poem aloud in order.', tiles:['Read the poem silently first.', 'Find the mark at the end of each line.', 'Tap the beat lightly with a finger.', 'Read it aloud: pause where the marks say.', 'Reread it, smoother each time.'],
+          h:'What do you do before you read aloud?', how:'Look first, then feel the beat, then read, then reread.'},
+        {t:'spotall', p:'c45_moonmonth', q:'Tap every line where you keep going, with no pause.', cells:[{label:'A new month. A curve of white', ok:true}, {label:'a thread of borrowed light', ok:true}, {label:'then, on the fifteenth, throws', ok:true}, {label:'Slowly, slowly, it grows thin', ok:true}, {label:'hangs low above the trees,', ok:false}, {label:'and fades into the night.', ok:false}],
+          h:'Look at the last word of each line. Is a mark after it?', how:'A line with no mark at its end runs on into the next line.'},
+        {t:'type', p:'c45_moonmonth', q:'The poem has 3 stanzas. How many long pauses between stanzas? Type the number.', a:'2', alt:['two', 'Two'], kb:'num',
+          h:'Count the blank lines, not the stanzas.', how:'A long pause comes at each blank line between two stanzas.'}
+      ],
+      check:[
+        {p:'c45_sunrises', q:'"They race around so fast": what do you do at the end of this line?', o:['Keep going', 'Short pause', 'Long pause']},
+        {p:'c45_sunrises', q:'"On the station, far from home": what do you do at the end of this line?', o:['Short pause', 'Keep going', 'Long pause']},
+        {p:'c45_sunrises', q:'What do you do after "all cloud and land and sea"?', o:['Long pause', 'Keep going', 'Short pause']}
+      ],
+      re:[
+        {p:'c45_moonmonth', q:'At a line with no mark at its end, you...', o:['keep going into the next line', 'stop dead', 'skip the next line'], how:'Follow the sentence, not the line.'},
+        {p:'c45_moonmonth', q:'A blank line between stanzas means...', o:['a long pause', 'read faster', 'the poem is over'], how:'It is like the end of a paragraph.'},
+        {p:'c45_moonmonth', q:'Reading a poem in a sing-song voice is...', o:['a mistake: let the meaning lead', 'the best way', 'a long pause'], how:'Feel the beat, but tell the poem like you mean it.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L06.13':{
+      hook:'Two builders can use the same bricks and build two very different houses. Two authors can do that with one topic.',
+      big:'Texts on the same topic can be built in different ways: time order, problem and solution, cause and effect, or compare and contrast. Signal words show the pattern.',
+      intro:['Read both texts. Make sure they share one topic.', 'Look for signal words in each: dates and "next," "the problem was," "so" and "because," "both" and "but."', 'Name the pattern of each text: how is it built?', 'Compare: what does each pattern help the reader see?'],
+      ex:[{q:'Text A, "The Road to the Moon"', steps:['Signal words: In 1957, In 1961, Next, Then, Finally.', 'They move the clock forward.', 'So the text tells events in the order they happened.'], a:'Time order'},
+          {q:'Text B, "How Do You Land on the Moon?"', steps:['Signal words: The first problem, The solution was, To solve it.', 'Each problem is followed by its fix.', 'So the text is built around problems and fixes.'], a:'Problem and solution'}],
+      oops:{q:'Text B says "The first problem was..." How is Text B built?', wrong:'Time order, because it says "first."', right:'Problem and solution: each problem is followed by its solution.', why:'Here "first" counts problems, not dates. Look at the pattern of the whole text, not one word.'},
+      idea:['A text\'s structure is its skeleton. Two animals can be the same color and still have very different skeletons.'],
+      try:{q:'"Because the moon has no wind, footprints stay." Which pattern do these words show?', o:['Cause and effect', 'Time order', 'Problem and solution'], a:'Cause and effect', steps:['Find the signal word.', 'Does it tell why, when, or a fix?']}
+    },
+    'READ.LIT.L06.10':{
+      hook:'A book is like a building. Every chapter is a floor, and every floor holds up the next one.',
+      big:'Each chapter has a job in the whole book: it sets up the problem, adds a clue, makes the problem harder, or solves it. Each ending hooks you into the next chapter.',
+      intro:['Read the chapter, or its short summary.', 'Ask: what does this chapter add that the book did not have before?', 'Name its job: set up, add a clue, make it harder, or solve.', 'Look at its ending: what question does it pass to the next chapter?'],
+      ex:[{q:'The Map in Zeidy\'s Attic, Chapter 1', steps:['We meet Yehuda, Zeidy, the map and the star.', 'We get the big question: what is under the star?', 'Every later chapter chases that question.'], a:'Sets up the problem'},
+          {q:'The Map in Zeidy\'s Attic, Chapter 5', steps:['Yehuda asks too many questions at the Shabbos table.', 'Zeidy tells him to lock the box.', 'Now the search has a new, harder problem: Zeidy wants it stopped.'], a:'Makes the problem harder'}],
+      oops:{q:'How does Chapter 2 fit the whole book?', wrong:'The boys sit at a table and look at a map.', right:'It adds clues that move the search forward.', why:'That only retells what happens. Say what the chapter DOES for the whole book.'},
+      idea:['Chapters are links in a chain. Pull out one link, and the chain falls apart.'],
+      try:{q:'Chapter 4 brings the minute book and Zeidy\'s umbrella. What is its job?', o:['Adds a clue', 'Sets up the problem', 'Solves the problem'], a:'Adds a clue', steps:['Is the mystery new here?', 'Do the boys learn something new about it?']}
+    },
+    'READ.LIT.L06.11':{
+      hook:'A poem is a staircase. Each stanza is one step up, and you need every step to reach the top.',
+      big:'The stanzas of a poem and the scenes of a play fit together. Each one has a job: it sets the scene, brings the problem, turns it around, or ends with the big idea.',
+      intro:['Find the parts: stanzas are groups of lines with a blank line between; scenes start with SCENE and a number.', 'Read one part at a time and ask: what does it add?', 'Name its job: set the scene, bring the problem, turn it around, or end with the big idea.', 'Ask how it connects to the part before it and the part after it.'],
+      ex:[{q:'"Under the New Moon," stanza 2', steps:['Stanza 1 brought us outside to see the moon.', 'Stanza 2: clouds cover every star. We cannot see it.', 'Something is in the way.'], a:'Brings the problem'},
+          {q:'"The Night of the Landing," Scene 3', steps:['Scene 2 worried: low fuel, no safe place.', 'Scene 3: "The Eagle has landed."', 'The worry ends. Things change from bad to good.'], a:'Turns it around'}],
+      oops:{q:'How does stanza 4 fit the poem?', wrong:'It is just more about the moon.', right:'It ends with the big idea: like the moon, we can start again.', why:'The last stanza often tells what the whole poem means. Ask what the speaker learned.'},
+      idea:['Scenes in a play are like rooms in a house. Each room has its own job, and a door leads to the next.'],
+      try:{q:'Scene 1 of the landing play: a living room, July 20, 1969, a radio. What is its job?', o:['Sets the scene', 'Brings the problem', 'Turns it around'], a:'Sets the scene', steps:['Does it tell where, when and who?', 'Does anything go wrong yet?']}
+    },
+    'READ.FLU.L06.04':{
+      hook:'A poem is music made of words. Read it right, and people can hear the music.',
+      big:'Read a poem by its marks, not its line ends: no mark means keep going, a comma means a short pause, a period means a full stop, and a blank line between stanzas means a long pause. Feel the beat, but let the meaning lead.',
+      intro:['Read the poem silently first.', 'Look at the end of every line: a comma, a period, or no mark?', 'Tap the beat lightly, but do not sing-song.', 'Read it aloud, pausing where the marks say. Then reread it, smoother each time.'],
+      ex:[{q:'"A new month. A curve of white / hangs low above the trees,"', steps:['Line 1 has no mark at its end.', 'So I keep going: "a curve of white hangs low above the trees."', 'Then a comma: a short pause.'], a:'Keep going, then a short pause'},
+          {q:'"that seems to ride the breeze." then a blank line', steps:['A period: a full stop.', 'Then a blank line: the stanza is over.', 'I take a long pause before the next stanza.'], a:'A full stop, then a long pause'}],
+      oops:{q:'"A new month. A curve of white / hangs low above the trees,"', wrong:'Stopping dead after "white."', right:'Reading on: "a curve of white hangs low above the trees."', why:'No mark at the end of a line means the sentence goes on. Keep going.'},
+      idea:['Line ends are like the edge of a page: the sentence just keeps going on the next line. Only the marks are traffic lights.'],
+      try:{q:'"and fades into the night." What do you do after "night"?', o:['Full stop', 'Keep going', 'Long pause'], a:'Full stop', steps:['Look at the end of the line.', 'Is it a comma, a period, or nothing? Is a blank line next?']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.COMP.L06.13':{ band:'E45', pic:'🚀', today:'Compare how two texts on one topic are built',
+      why:'When you see how a text is built, you know where to look for what you need.',
+      ready:[{q:'"First," "next" and "finally" tell...', o:['the order things happened','an opinion','a problem'], a:'the order things happened'},
+             {q:'"Because" tells...', o:['why something happened','when it happened','where it happened'], a:'why something happened'}],
+      bridge:'READ.COMP.L05.14', bridgeName:'Signal Words',
+      watch:{ q:'Two Texts About the Moon Landing', m:{type:'scene', e:'🚀', t:'Text A: The Road to the Moon. Text B: How Do You Land on the Moon?'}, steps:[
+        {t:'Two texts, one topic: the first moon landing.'},
+        {t:'Text A: In 1957, In 1961, Next, Then, Finally.'},
+        {t:'Dates and time words: Text A is built in time order.'},
+        {t:'Text B: the first problem, the solution, the last problem.'},
+        {t:'Problems and fixes: Text B is problem and solution.'}],
+        a:'Same topic, built two ways. Signal words show each pattern.' },
+      oops:{ q:'Text B says "The first problem..." How is it built?', wrong:'Time order, because it says "first."', right:'Problem and solution: each problem gets a fix.', why:'Here "first" counts problems, not dates.' },
+      ways:['two-text table','worked example','Mistake Detective','tap the reason','topic set (the moon)'], done:'You can compare how two texts are built! Tell your chavrusa which moon text you would read first, and why.',
+      board:{ one:'Same topic, different skeletons. Find the signal words, name each pattern, then say what each pattern helps the reader see.', activity:'Two-text table: pairs get two short texts on one topic, highlight the signal words in two colors, and fill in a table: topic, signal words, pattern.', mistakes:['Thinking the same topic means the same pattern','Calling a text time order because it says "first"','Naming the topic instead of the pattern'] },
+      do:[
+        {type:'match', pairs:[['in 1957, next, finally','Time order'],['the problem was, the solution was','Problem and solution'],['so, because, as a result','Cause and effect'],['both, but, unlike','Compare and contrast']],
+          say:'Match the signal words to how a text is built.', how:'Ask: do the words tell when, a fix, why, or side by side?'},
+        {type:'sort', bins:['Time order','Problem and solution'], cards:[['In 1961, Kennedy set a goal.',0],['Finally, on July 24, they splashed down.',0],['The solution was to build the lander in two parts.',1],['The landing spot was full of boulders.',1]],
+          say:'Which pattern does each sentence show?', how:'Does it move the clock forward, or name a problem or its fix?',
+          why:{q:'Why does "Finally, on July 24" show time order?', o:['It moves to a later date','It names a problem','It compares two things'], a:'It moves to a later date'}}],
+      your:[
+        {type:'evidence', q:'Which sentence shows that Text B is problem and solution?', p:['In 1961, President John F. Kennedy said that America should land a man on the moon before 1970.','The solution was to build the lander in two parts.','Four days later, on July 20, Neil Armstrong and Buzz Aldrin landed on the moon.'], a:1, look:'a signal word that names a fix',
+          say:'Tap the sentence with a problem-and-solution signal.', how:'Dates show time order. Look for the word that names a fix.',
+          why:{q:'Why does it prove problem and solution?', o:['It names the fix for a problem','It gives a date','It names an astronaut'], a:'It names the fix for a problem'}},
+        {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['Text A is time order: it follows dates.',0],['Text B is problem and solution: each problem gets a fix.',0],['Text B is time order, because it says "first."',1],['Same topic, so they are built the same way.',1]],
+          say:'Mistake Detective: is the pattern named right?', how:'Look at the whole text, not one word. Same topic can mean different patterns.'},
+        {type:'storymap', slots:['Text A is built in','Text A signal words','Text B is built as','Text B signal words'], cards:['Time order','In 1957, Next, Finally','Problem and solution','The problem was, The solution was'], extra:['Compare and contrast'],
+          say:'Fill in the two-text table.', how:'Find each text\'s signal words, then name its pattern.'},
+        {type:'cloze', t:'Both texts tell about the moon landing, but each one is built in a different ___.', o:['pattern','topic','year'], a:'pattern',
+          say:'Fill the gap: what is different about the two texts?', how:'The topic is the same. What else can be different?',
+          why:{q:'Why not "topic"?', o:['Both texts are about the moon landing','Topic is a long word','The texts have no topic'], a:'Both texts are about the moon landing'}},
+        {type:'listen', q:'Challenge: "At the start of the month... A day or two later... In the middle of the month..."', hear:'How is this moon text built?', o:['Time order','Problem and solution','Compare and contrast'], a:'Time order',
+          say:'Challenge! How is this moon text built?', how:'Listen for the signal words. Do they tell when, a fix, or side by side?',
+          why:{q:'Which clue shows it?', o:['Time words that walk through the month','A problem and its fix','Two things side by side'], a:'Time words that walk through the month'}}] },
+    'READ.LIT.L06.10':{ band:'E45', pic:'🗺️', today:'See how one chapter fits the whole book',
+      why:'A chapter is one piece of a puzzle. See where it fits, and the whole book makes sense.',
+      ready:[{q:'The problem in a story is...', o:['what goes wrong or needs solving','the title','the last page'], a:'what goes wrong or needs solving'},
+             {q:'A story\'s events happen...', o:['in an order, one after another','in any order at all','all at once'], a:'in an order, one after another'}],
+      bridge:'READ.LIT.L05.03', bridgeName:'Story Map',
+      watch:{ q:'The Map in Zeidy\'s Attic, chapters 1 to 6', m:{type:'scene', e:'🗺️', t:'Yehuda finds an old map with a star. Six chapters of clues and trouble follow.'}, steps:[
+        {t:'Ask of each chapter: what job does it do for the book?'},
+        {t:'Chapter 1 shows the map, the star and the big question.'},
+        {t:'That sets up the problem the whole book will chase.'},
+        {t:'Chapter 2: a street name and a pencil note. New clues!'},
+        {t:'Chapter 5: Zeidy says to lock the box. Harder now.'}],
+        a:'Each chapter does a job, and each ending hooks the next.' },
+      oops:{ q:'How does Chapter 2 fit the whole book?', wrong:'The boys sit at a table and look at a map.', right:'It adds clues that move the search forward.', why:'Retelling is not enough. Say what the chapter does for the book.' },
+      ways:['book map','worked example','Mistake Detective','tap the reason','retrieval','real book (evidence in the Reader)'], done:'You can see how a chapter fits the whole book! Tell your chavrusa the job of the last chapter you read.',
+      board:{ one:'Every chapter has a job in the whole book. Name the job, do not just retell. Each ending hooks into the next chapter.', activity:'Book chain: each pair gets one chapter card of the class book, writes its job on a paper link, and the class joins the links in order into one chain.', mistakes:['Retelling the chapter instead of naming its job','Thinking every chapter is the most important one','Forgetting that a chapter\'s ending leads into the next one'] },
+      do:[
+        {type:'storymap', slots:['Chapter 1','Chapter 2','Chapter 5'], cards:['Sets up the problem','Adds a clue','Makes the problem harder'], extra:['Solves the problem'],
+          say:'Give each chapter its job in the book.', how:'Does the chapter start the mystery, add to it, or block it?'},
+        {type:'evidence', q:'Which chapter ending pulls you into the newspaper search?', p:['Chapter 1 ends: "What do you think is under that star?"','Chapter 2 ends: "Messenger. February 10. Page 6."','Chapter 5 ends: "what do you do when the person you most want to help asks you to stop?"'], a:1, look:'the ending that points to a newspaper page',
+          say:'Tap the ending that leads into Chapter 3.', how:'Chapter 3 happens at the library, with an old newspaper. Which ending points there?',
+          why:{q:'Why does that ending lead into Chapter 3?', o:['It names the paper, the date and the page','It is the shortest ending','It is the first chapter'], a:'It names the paper, the date and the page'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Tells how it fits','Mistake: only retells'], cards:[['Chapter 2 adds clues that move the search forward.',0],['Chapter 5 makes it harder: Zeidy wants it stopped.',0],['Chapter 2: the boys look at a map at a table.',1],['Chapter 5: the family eats a Shabbos meal.',1]],
+          say:'Mistake Detective: does it tell how the chapter fits?', how:'Fitting says what the chapter adds. Retelling only says what happens.'},
+        {type:'match', pairs:[['Ch. 2 ends with a pencil note','Ch. 3: the boys find that newspaper.'],['Ch. 3 ends: the scroll was lost?','Ch. 4: a minute book says it was saved.'],['Ch. 4 ends: Zeidy searched alone.','Ch. 5: Yehuda\'s questions upset Zeidy.']],
+          say:'Match each ending to the chapter it leads into.', how:'What question does the ending leave? Which chapter picks it up?'},
+        {type:'order', steps:['Yehuda finds the map in the attic.','The crew finds a pencil note on the back.','The boys read the 1904 newspaper.','A minute book says the scroll was saved.','Zeidy tells Yehuda to lock the box.'],
+          say:'Put the events of six chapters in book order.', how:'Each chapter builds on the one before it.',
+          why:{q:'Why must Chapter 3 come after Chapter 2?', o:['Chapter 2 finds the note that sends them to the paper','Chapter 3 is longer','The library opens on Sunday'], a:'Chapter 2 finds the note that sends them to the paper'}},
+        {type:'proof', text:'C45.B4.03', q:'Find the hook at the very end of Chapter 3.', proof:'one of them is wrong', look:'the last thing Yehuda says',
+          say:'Open the book. Tap the hook at the end of Chapter 3.', how:'Go to the last page. Find the line that leaves a big question.'},
+        {type:'listen', q:'Challenge: chapters 7 to 12 are still ahead.', hear:'What job will the last chapter most likely do?', o:['Solves the problem','Sets up the problem','Adds a clue'], a:'Solves the problem',
+          say:'Challenge! What job will the last chapter most likely do?', how:'Think of where a book ends on the plot mountain.',
+          why:{q:'Why?', o:['A book ends by solving its problem','Last chapters are the longest','Every chapter sets up the problem'], a:'A book ends by solving its problem'}}] },
+    'READ.LIT.L06.11':{ band:'E45', pic:'🌙', today:'See how stanzas and scenes fit together',
+      why:'Each part of a poem or play has a job. Together, the parts build one big idea.',
+      ready:[{q:'The turning point of a story is...', o:['where it changes direction','the first line','the title'], a:'where it changes direction'},
+             {q:'A group of lines in a poem is called a...', o:['stanza','chapter','scene'], a:'stanza'}],
+      bridge:'READ.LIT.L06.09', bridgeName:'The Turning Point',
+      watch:{ q:'Under the New Moon (a poem by Avrumi Katz)', m:{type:'scene', e:'🌙', t:'Motzaei Shabbos. Avrumi and his Abba step out to say Kiddush Levana.'}, steps:[
+        {t:'Ask of each stanza: what job does it do?'},
+        {t:'Stanza 1: Motzaei Shabbos, outside. It sets the scene.'},
+        {t:'Stanza 2: clouds hide the moon. It brings the problem.'},
+        {t:'Stanza 3: the clouds slide by. It turns it around.'},
+        {t:'Stanza 4: like the moon, we can start again.'}],
+        a:'Stanza 4 ends with the big idea. Each stanza builds on the last.' },
+      oops:{ q:'How does stanza 4 fit the poem?', wrong:'It is just more about the moon.', right:'It ends with the big idea: we can start again.', why:'A last stanza often tells what the whole poem means.' },
+      ways:['part map','worked example','Mistake Detective','tap the reason','Readers\' Theatre (the landing play)','retrieval'], done:'You can see how stanzas and scenes fit together! Read the landing play with your chavrusa, one part each.',
+      board:{ one:'Stanzas and scenes are steps. Ask of each one: what does it add? How does it connect to the step before?', activity:'Readers\' Theatre: groups read the landing play aloud, then hold up a card after each scene saying what job that scene did.', mistakes:['Thinking each stanza is a separate poem','Naming what a part is about instead of its job','Missing the big idea in the last stanza or scene'] },
+      do:[
+        {type:'storymap', slots:['Stanza 1','Stanza 2','Stanza 3','Stanza 4'], cards:['Sets the scene','Brings the problem','Turns it around','Ends with the big idea'], extra:['Solves a mystery'],
+          say:'Give each stanza its job in the poem.', how:'Read each stanza. Ask: what does it add to the poem?'},
+        {type:'evidence', q:'Which line turns the poem around?', p:['Clouds have covered every star.','We cannot see it, near or far.','Wind blows. The clouds slide by,','Abba and I step out the door'], a:2, look:'the moment the problem ends',
+          say:'Tap the line where the poem turns around.', how:'Find where things change from bad to good.',
+          why:{q:'Why is that the turn?', o:['The clouds move, so they can see the moon','It is the first line','It rhymes'], a:'The clouds move, so they can see the moon'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Right job','Mistake'], cards:[['Stanza 2 brings the problem: clouds hide the moon.',0],['Stanza 4 ends with the big idea: we can start again.',0],['Stanza 4 is just more about the moon.',1],['Each stanza is its own poem. They do not connect.',1]],
+          say:'Mistake Detective: right job, or a mistake?', how:'Does it say what the part DOES for the whole poem?'},
+        {type:'order', steps:['A radio sits on the table, July 20, 1969.','The lander is low on fuel.','"The Eagle has landed."','Zeidy tells Avrumi what he learned.'],
+          say:'Put the scenes of the landing play in order.', how:'Scene 1 sets the scene. What comes after it?'},
+        {type:'match', pairs:[['Scene 1','Sets the scene'],['Scene 2','Brings the problem'],['Scene 3','Turns it around'],['Scene 4','Ends with the big idea']],
+          say:'Match each scene of the landing play to its job.', how:'Where and when? A worry? The worry ends? What it means?',
+          why:{q:'Why is Scene 4 the big idea?', o:['Zeidy tells what that night taught him','It is the loudest scene','It is in the same room'], a:'Zeidy tells what that night taught him'}},
+        {type:'cloze', t:'Stanza 2 brings the problem. Stanza ___ turns it around.', o:['3','1','4'], a:'3',
+          say:'Which stanza turns the poem around?', how:'Find the stanza where the problem ends.'},
+        {type:'listen', q:'Challenge: remember "The Oak Behind the Shul"? Its last stanza: plant your roots deep.', hear:'What job does a last stanza like that do?', o:['Ends with the big idea','Sets the scene','Brings the problem'], a:'Ends with the big idea',
+          say:'Challenge! What job does that last stanza do?', how:'Does it tell where, a problem, or what it all means?',
+          why:{q:'How can you tell?', o:['The speaker tells what it all means','It names a place','Something goes wrong'], a:'The speaker tells what it all means'}}] },
+    'READ.FLU.L06.04':{ band:'E45', pic:'🌒', today:'Read a poem aloud with its rhythm and pauses',
+      why:'A poem is made to be heard. Pause in the right places, and it sounds like music and makes sense.',
+      ready:[{q:'A comma tells your voice to...', o:['pause a little','shout','skip a word'], a:'pause a little'},
+             {q:'A period tells your voice to...', o:['stop','speed up','whisper'], a:'stop'}],
+      bridge:'READ.FLU.L05.04', bridgeName:'Punctuation Tells Your Voice',
+      watch:{ q:'The Moon\'s Month (a poem)', m:{type:'chant', lines:['A new month. A curve of white','hangs low above the trees,','a thread of borrowed light','that seems to ride the breeze.']}, steps:[
+        {t:'First I look at the end of every line.'},
+        {t:'"a curve of white" has no mark. I keep going.'},
+        {t:'"above the trees," has a comma. A short pause.'},
+        {t:'"ride the breeze." has a period. A full stop.'},
+        {t:'A blank line ends the stanza. A long pause.'}],
+        a:'The marks lead my voice, not the ends of the lines.' },
+      oops:{ q:'"a curve of white / hangs low above the trees,"', wrong:'Stopping dead after "white."', right:'Reading on: "a curve of white hangs low above the trees."', why:'No mark at a line end means keep going.' },
+      ways:['repeated reading with a model','chant','Mistake Detective','tap the reason','chavrusa'], done:'You can read a poem aloud! Read "The Moon\'s Month" to your chavrusa twice: the second time, smoother.',
+      board:{ one:'Read by the marks, not the line ends. Feel the beat, but let the meaning lead. Reread it smoother.', activity:'Traffic lights: pairs mark a poem\'s line ends with green (no mark), yellow (comma) and red (period) dots, then read it aloud to each other twice.', mistakes:['Stopping at the end of every line','Sing-song reading that bangs every beat','Rushing past the stanza break'] },
+      do:[
+        {type:'sort', bins:['Keep going','Short pause','Full stop'], cards:[['A new month. A curve of white',0],['hangs low above the trees,',1],['a thread of borrowed light',0],['that seems to ride the breeze.',2]],
+          say:'What does your voice do at the end of each line?', how:'Look only at the last mark: none, a comma, or a period.'},
+        {type:'match', pairs:[['No mark at a line end','Keep going'],['A comma','Short pause'],['A period','Full stop'],['A blank line between stanzas','Long pause']],
+          say:'Match each sign to what your voice does.', how:'Which sign is the biggest stop? Which is no stop at all?'}],
+      your:[
+        {type:'sort', mis:true, bins:['Good reading','Mistake'], cards:[['Reads two lines in one breath when there is no mark.',0],['Takes a long pause at the blank line.',0],['Stops dead at the end of every line.',1],['Reads in a sing-song voice, banging every beat.',1]],
+          say:'Mistake Detective: good reading, or a mistake?', how:'Does the voice follow the marks and the meaning?'},
+        {type:'evidence', q:'Which line runs on into the next, with no pause?', p:['hangs low above the trees,','a thread of borrowed light','that seems to ride the breeze.'], a:1, look:'a line with no mark at its end',
+          say:'Tap the line that runs on with no pause.', how:'Look at the end of each line. Which has no mark?',
+          why:{q:'How do you know?', o:['It has no mark at its end','It is the longest line','It has a hard word'], a:'It has no mark at its end'}},
+        {type:'tiles', w:['then, on the fifteenth,','throws its light','on all the ground.'], extra:['the silver grows'],
+          say:'Build the sentence that runs across two lines.', how:'Follow the words past the line end, all the way to the period.'},
+        {type:'order', steps:['Read the poem silently first.','Find the mark at the end of each line.','Tap the beat lightly with a finger.','Read it aloud: pause where the marks say.','Reread it, smoother each time.'],
+          say:'Put the steps for reading a poem aloud in order.', how:'Look first, feel the beat, read, then reread.',
+          why:{q:'Why reread at the end?', o:['The second time, it gets smoother','To finish faster','To skip the hard lines'], a:'The second time, it gets smoother'}},
+        {type:'listen', q:'Challenge: "Slowly, slowly, it grows thin / and fades into the night."', hear:'What do you do after the word thin?', o:['Keep going','Long pause','Full stop'], a:'Keep going',
+          say:'Challenge! What do you do after the word "thin"?', how:'Is there a mark after "thin"? Then follow the sentence.',
+          why:{q:'Why keep going?', o:['There is no mark after "thin"','It is the last line','It rhymes with "begin"'], a:'There is no mark after "thin"'}}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

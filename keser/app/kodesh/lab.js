@@ -1,0 +1,921 @@
+/* KESER GIRLS 3.0 · KODESH: the Chumash & Timeline Lab, copied from 1.0 (src/ChumashLab.html, #529 and #549, 2026-11-26)
+   and made right for girls (HoS 2026-11-26: "the Chumash learning lab ... should be put into Kodesh already, and it should be adapted").
+   Keser keeps its own copy (keser/README.md), so a later change in 1.0 never reaches the girls without an approver's yes.
+   Changes from 1.0: it speaks to a girl (English "her own", "talmidah"; every Hebrew instruction in the feminine, e.g. לַחֲצִי, בַּחֲרִי);
+   it opens from Kodesh in her world (no door on a home page, no grade gate yet: sign-in comes in piece 2); progress stays on her computer
+   ("clab:keser-girl"); the buttons come from the Keser kit (kodesh/tlk.js) and the look from kodesh/lab.css. The lessons, questions and
+   "How to do it" boxes are unchanged. Kodesh: reviewed by a rebbe after it is live; the feminine Hebrew wording is listed in keser/FEATURES.md. */
+(function(){
+ if(window.CLAB&&window.CLAB.ready) return;
+ const X=window.CLAB={ready:true,open:false,view:'hub'};
+ window.CLAB_LIVE=window.CLAB_LIVE||'on';   /* 'on' = grade 3 and up + TEST- girls, 'test' = TEST- boys only, 'off' */
+ const D=()=>window.CLAB_DATA;
+ const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const rnd=n=>Math.floor(Math.random()*n), pick=a=>a[rnd(a.length)], uniq=a=>[...new Set(a)];
+ const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+ const heWrap=s=>String(s).replace(/[֐-׿][֐-׿\s׳״]*[֐-׿׳״]|[֐-׿]/g,m=>'<span class="clab-he">'+m+'</span>');
+ const noTrop=s=>String(s).replace(/[֑-ֽ֯]/g,'');
+ const plainHeb=s=>String(s).replace(/[֑-ׇ]/g,'').replace(/[ךםןףץ]/g,c=>({'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'}[c]));
+ const graphemes=w=>{const g=[];for(const ch of String(w)){if(/[א-ת]/.test(ch)||!g.length)g.push(ch);else g[g.length-1]+=ch;}return g;};
+ const wordsOf=m=>String(m).toLowerCase().split(/[^a-z]+/).filter(x=>x.length>1&&['the','and','out','over','down','points','of','an','is'].indexOf(x)<0);
+ const T=()=>window.TLK;
+ const snd=k=>{try{if(window.SND&&SND.on!==false&&typeof SND[k]==='function')SND[k]();}catch(e){}};
+
+ /* ---------------- who is learning ---------------- */
+ function me(){ return {id:'keser-girl',name:''}; }   /* Keser: one girl per computer until her sign-in (piece 2) */
+ function grade(){ try{ const M=window.TL_MAP||(typeof TL_MAP!=='undefined'?TL_MAP:null); if(M&&M.grade!=null&&M.grade!=='') return Number(M.grade); }catch(e){} return null; }
+ const young=()=>{const g=grade();return T()?T().young(g):false;};
+ function eligible(){ const live=window.CLAB_LIVE; if(live==='off') return false; const id=me().id; if(!id) return false; if(/^TEST/.test(id)) return true; if(live==='test') return false; const g=grade(); return g!=null&&!isNaN(g)&&g>=3; }
+
+ /* ---------------- progress (on this computer, for this girl) ---------------- */
+ let P=null;
+ const blank=()=>({done:{sh:[],ml:[],ps:[],tr:[],pw:[]},steps:{},tl:{lang:'en',done:{},best:{}}});
+ function load(){ const k='clab:'+(me().id||'guest'); let p=null; try{ p=JSON.parse(localStorage.getItem(k)||'null'); }catch(e){} P=Object.assign(blank(),p||{}); P.done=Object.assign(blank().done,P.done||{}); P.tl=Object.assign(blank().tl,P.tl||{}); P._k=k; }
+ function save(){ try{ const c=Object.assign({},P); delete c._k; localStorage.setItem(P._k,JSON.stringify(c)); }catch(e){} }
+ const stepOK=(key,st)=>!!(P.steps[key]&&P.steps[key][st]);
+ function markStep(key,st){ P.steps[key]=P.steps[key]||{}; if(!P.steps[key][st]){ P.steps[key][st]=Date.now(); save(); } }
+ function markDone(lab,i){ if(P.done[lab].indexOf(i)<0){ P.done[lab].push(i); save(); } }
+
+ /* ---------------- the look ---------------- */
+ function css(){ if(document.getElementById('clab-css')) return;
+  try{ if(!document.getElementById('clab-font')){ const l=document.createElement('link'); l.id='clab-font'; l.rel='stylesheet'; l.href='https:'+'/'+'/fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@500;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap'; document.head.appendChild(l); } }catch(e){}   /* Hebrew with nikud and trop (same way as ChumashPage.html) */
+  const s=document.createElement('style'); s.id='clab-css'; s.textContent=`
+#clab{position:fixed;inset:0;z-index:900;background:#FFF5FA;color:#3A1240;font-family:'Nunito',system-ui,sans-serif;display:flex;flex-direction:column}
+#clab *{box-sizing:border-box}
+#clab .clab-top{position:relative;display:flex;align-items:center;gap:10px;min-height:68px;padding:12px 16px;background:#fff;border-bottom:1.5px solid #F3D3E3}
+#clab .clab-top .tlk-at-tl{position:static}
+#clab .clab-top h1{flex:1;min-width:0;margin:0;font:800 20px/1.2 'Fredoka','Nunito',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#clab .clab-top h1 small{display:block;font:700 13px 'Nunito',sans-serif;color:#7A4A6E}
+#clab .clab-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:18px 16px 60px}
+#clab .clab-wrap{max-width:900px;margin:0 auto;display:grid;gap:16px}
+#clab .clab-card{background:#fff;border:1.5px solid #F3D3E3;border-radius:20px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0}
+#clab .clab-card>*{min-width:0}
+#clab .clab-wrap{grid-template-columns:minmax(0,1fr)}
+#clab h2{margin:0;font:800 22px/1.2 'Fredoka','Nunito',sans-serif} #clab h3{margin:0;font:800 18px/1.2 'Fredoka','Nunito',sans-serif}
+#clab p{margin:0;line-height:1.45}
+#clab .clab-mut{color:#7A4A6E}
+#clab .heb{font-family:'Frank Ruhl Libre','Noto Serif Hebrew','Times New Roman',serif;font-weight:700;direction:rtl;unicode-bidi:isolate;font-size:1.2em}
+#clab .clab-he{font-family:'Frank Ruhl Libre','Noto Serif Hebrew','Times New Roman',serif;font-weight:700;direction:rtl;unicode-bidi:isolate}
+#clab .clab-trop{font-family:'Noto Serif Hebrew','Frank Ruhl Libre','Times New Roman',serif;direction:rtl;unicode-bidi:isolate}
+#clab .clab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+#clab .clab-lab{padding:0;min-height:150px}
+#clab .clab-lab .b{display:grid;gap:6px;padding:14px 16px;width:100%}
+#clab .clab-lab .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;color:#fff;width:100%}
+#clab .clab-lab .hd .ic{font-size:34px;line-height:1} #clab .clab-lab .hd .clab-he{font-size:24px}
+#clab .clab-lab b{font-size:19px} #clab .clab-lab small{color:#7A4A6E;font-size:14px;line-height:1.35}
+#clab .c-sh{background:#0f7a6c}#clab .c-ml{background:#1d6fd8}#clab .c-ps{background:#c2410c}#clab .c-tr{background:#b42335}#clab .c-pw{background:#5b2a86}#clab .c-tl{background:#1f4e8c}
+#clab .clab-path{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+#clab .clab-unit{padding:12px 14px;min-height:96px;gap:4px}
+#clab .clab-unit b{font-size:16px} #clab .clab-unit .pk{font-size:17px;color:#7A4A6E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
+#clab .clab-unit[disabled]{opacity:.55;cursor:default}
+#clab .clab-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+#clab .clab-step{padding:14px 16px;gap:4px;min-height:96px}
+#clab .clab-step small{color:#7A4A6E;font-size:14px;line-height:1.35}
+#clab .clab-step .n{font:800 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#B0306F}
+#clab .clab-step[disabled]{opacity:.55;cursor:default}
+#clab .clab-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center} #clab .clab-center{justify-content:center}
+#clab .clab-wl{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+#clab .clab-wl>div{background:#FFF5FA;border-radius:12px;padding:8px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+#clab .clab-wl .clab-he{font-size:24px}
+#clab .clab-wl.dts{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}#clab .clab-wl.dts>div{justify-content:flex-start;gap:14px}#clab .clab-wl.dts span:last-child{text-align:start}
+#clab .clab-teach{background:#FCE4F0;border-radius:16px;padding:16px 18px;display:grid;gap:8px;font-size:17px;line-height:1.5}
+#clab .clab-teach .clab-he{font-size:1.2em}
+#clab .clab-how{background:#FEF3C7;color:#5B3A00;border-radius:12px;padding:10px 14px;font-size:15px;line-height:1.45}
+#clab .clab-how b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px;color:#92400E}
+#clab .clab-q{font-size:19px;font-weight:800;text-align:center}
+#clab .clab-stage{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-weight:700;font-size:clamp(44px,11vw,76px);text-align:center;direction:rtl;line-height:1.25}
+#clab .clab-stage.en{font-family:'Fredoka','Nunito',sans-serif;font-size:clamp(26px,6vw,36px);direction:ltr}
+#clab .clab-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#clab .clab-opt{min-height:60px;padding:12px;font-size:18px;font-weight:700;align-items:center;justify-content:center;text-align:center}
+#clab .clab-opt.he{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-size:28px;direction:rtl}
+#clab .clab-opt.pic{justify-content:flex-start;padding:8px;gap:6px}
+#clab .clab-opt.pic img{width:100%;aspect-ratio:1.58;object-fit:cover;border-radius:8px;border:2px solid #c8202f;background:#fff}
+#clab .clab-opt.pic img.tall{object-fit:contain}
+#clab .clab-opt.right,#clab .tw.right,#clab .piece.right{border-color:#1f8a5b!important;background:#DCF3E8!important}
+#clab .clab-opt.wrong,#clab .tw.wrong{border-color:#c2410c!important;background:#FDE7DC!important}
+#clab .clab-opt.picked{border-color:#B0306F!important;background:#FCE4F0!important}
+#clab .clab-opt .num{position:absolute;top:10px;left:10px;width:34px;height:34px;border-radius:50%;background:#B0306F;color:#fff;display:grid;place-items:center;font-weight:800}
+#clab .clab-opt{position:relative}
+#clab .clab-fb{border-radius:14px;padding:12px 16px;text-align:center;font-weight:700;display:grid;gap:8px}
+#clab .clab-fb.good{background:#DCF3E8;color:#14532d} #clab .clab-fb.bad{background:#FDE7DC;color:#7c2d12}
+#clab .clab-bar{height:12px;border-radius:99px;background:#F3D3E3;overflow:hidden} #clab .clab-bar i{display:block;height:100%;background:#0f7a6c;border-radius:99px;transition:width .3s}
+#clab .parts{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;direction:rtl}
+#clab .part{border-radius:10px;padding:4px 10px;font-size:14px;font-weight:700;background:#fff;border:2px solid #F3D3E3;direction:ltr;display:flex;gap:6px;align-items:center}
+#clab .part .clab-he{font-size:22px}
+#clab .part.p{border-color:#c2410c} #clab .part.s{border-color:#B0306F} #clab .part.b{border-color:#0f7a6c}
+#clab .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:#7A4A6E;justify-content:center}
+#clab .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+#clab .legend .lp::before{background:#c2410c} #clab .legend .lb::before{background:#0f7a6c} #clab .legend .ls::before{background:#B0306F}
+#clab .wc .p{color:#c2410c} #clab .wc .b{color:#0f7a6c} #clab .wc .s{color:#B0306F}
+#clab .clab-ex{display:flex;flex-wrap:wrap;direction:rtl;gap:6px 14px;align-items:center;padding:10px 0;border-bottom:1px solid #F3D3E3}
+#clab .clab-ex .w{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-weight:700;font-size:32px;white-space:nowrap}
+#clab .clab-ex .t{direction:ltr;font-weight:800;font-size:16px} #clab .clab-ex .r{font-size:13px;color:#7A4A6E;margin-inline-start:auto}
+#clab .clab-pas{background:#fff;border-radius:14px;padding:10px 12px;display:grid;gap:4px}
+#clab .clab-pas .l{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-size:24px;direction:rtl;line-height:1.6}
+#clab .clab-pas mark{background:#FEF3C7;border-radius:6px;padding:0 4px;box-shadow:0 0 0 2px #d99a00;color:inherit}
+#clab .clab-flash{border-radius:20px;padding:22px 16px;display:grid;gap:12px;justify-items:center;text-align:center;background:#FFF5FA;border:2px solid #F3D3E3}
+#clab .clab-flash .big{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-weight:700;font-size:clamp(52px,14vw,90px);line-height:1.1;direction:rtl}
+#clab .clab-flash .mean{font:700 26px 'Fredoka','Nunito',sans-serif}
+#clab .letters{display:flex;gap:8px;direction:rtl;justify-content:center}
+#clab .letters span{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-weight:700;font-size:38px;width:56px;height:64px;border-radius:14px;display:grid;place-items:center;background:#DCF3EF;color:#0f7a6c;border:2px solid #0f7a6c}
+#clab .letters span.blank{background:#fff;border-style:dashed;color:transparent}
+#clab .slots{min-height:76px;border:3px dashed #EFC9DC;border-radius:16px;display:flex;gap:8px;justify-content:center;align-items:center;direction:rtl;flex-wrap:wrap;padding:10px}
+#clab .bank{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;direction:rtl}
+#clab .piece{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-weight:700;font-size:30px;min-height:58px;min-width:58px;padding:6px 14px;flex-direction:column;align-items:center}
+#clab .piece small{font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:#7A4A6E;direction:ltr}
+#clab .piece.p{border-color:#c2410c;background:#FDE7DC} #clab .piece.b{border-color:#0f7a6c;background:#DCF3EF} #clab .piece.s{border-color:#B0306F;background:#FCE4F0}
+#clab .piece[disabled]{opacity:.3}
+#clab span.piece{display:inline-flex;border:1.5px solid #EFC9DC;border-radius:14px;background:#fff}
+#clab .hkb{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;direction:rtl;width:100%;max-width:440px}
+#clab .hk{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-size:26px;min-height:48px;padding:0}
+#clab .pasuk{font-family:'Noto Serif Hebrew','Frank Ruhl Libre',serif;font-size:clamp(24px,5.6vw,34px);direction:rtl;line-height:2;display:flex;flex-wrap:wrap;gap:4px 2px;align-items:center}
+#clab .tw{border:2px solid transparent;background:transparent;border-radius:12px;padding:0 6px;font:inherit;line-height:1.7;min-height:44px;color:inherit}
+#clab button.tw{cursor:pointer} #clab button.tw:hover:not([disabled]){border-color:#B0306F;background:#FCE4F0}
+#clab .tw.hi{background:#FEF3C7;border-color:#d99a00}
+#clab .gap{width:22px;min-height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0;cursor:pointer}
+#clab .gap::before{content:"";width:4px;height:26px;border-radius:4px;background:#EFC9DC}
+#clab .gap.on::before{width:8px;height:44px;background:#c2410c} #clab .gap.ok::before{width:8px;height:44px;background:#1f8a5b}
+#clab .gap.miss::before{width:8px;height:44px;background:repeating-linear-gradient(#1f8a5b 0 6px,transparent 6px 10px)} #clab .gap.bad::before{background:#c2410c}
+#clab .ref{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-size:15px;color:#7A4A6E;direction:rtl;text-align:right}
+#clab .chunkp{display:flex;flex-wrap:wrap;gap:6px;direction:rtl;padding:10px;border-radius:16px;background:#FFF5FA;align-items:flex-start}
+#clab .chunkp.done{background:#DCF3E8}
+#clab .wsw{display:grid;justify-items:center;gap:2px;border:2px solid #EFC9DC;border-radius:14px;padding:6px 10px;background:#fff;min-height:44px;min-width:60px;font:inherit;color:inherit}
+#clab .wsw .clab-trop{font-size:clamp(22px,5.4vw,30px);line-height:1.7}
+#clab .wsw small{font-size:12px;font-weight:800;color:#0f7a6c;max-width:120px;text-align:center;direction:ltr}
+#clab .wsw.now{border-color:#c2410c;box-shadow:0 0 0 3px #FDE7DC} #clab .wsw.ok{border-color:#1f8a5b;background:#DCF3E8}
+#clab .sign{display:grid;justify-items:center;gap:6px}
+#clab .octa{width:110px;height:110px;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);display:grid;place-items:center;color:#fff;font-family:'Noto Serif Hebrew',serif;font-size:60px;line-height:1}
+#clab .octa.red{background:#d62828}#clab .octa.orange{background:#f77f00}#clab .octa.yellow{background:#ffc300;color:#2a1a00}#clab .octa.sm{width:54px;height:54px;font-size:28px}
+#clab .mgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#clab .mc{aspect-ratio:1/1;font-size:14px;font-weight:800;padding:6px;text-align:center;align-items:center;justify-content:center;background:#B0306F;color:#fff;border-color:#B0306F}
+#clab .mc.open{background:#fff;color:#3A1240} #clab .mc.open.he{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-size:clamp(20px,5vw,30px)}
+#clab .mc.done{background:#DCF3E8;color:#14532d;border-color:#1f8a5b}
+#clab .numpad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;max-width:420px;margin:0 auto;width:100%}
+#clab .numpad .tlk{min-height:50px;padding:0;font-size:22px}
+#clab .numshow{font:800 34px 'Fredoka','Nunito',sans-serif;text-align:center;min-height:54px;border:2.5px solid #EFC9DC;border-radius:14px;background:#fff;max-width:260px;margin:0 auto;width:100%;display:grid;place-items:center;direction:ltr}
+#clab .tl-strip{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;min-height:44px;padding-bottom:4px}
+#clab .tl-slot{flex:0 0 54px;width:54px;height:34px;aspect-ratio:1.58;border-radius:5px;background:#F3D3E3;overflow:hidden}
+#clab .tl-slot img{width:100%;height:100%;object-fit:cover;display:block}
+#clab .tl-hero{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+#clab .tl-hero img,#clab .tl-hero .nopic{width:100%;aspect-ratio:1.58;object-fit:cover;border-radius:6px;border:2px solid #c8202f;display:block}
+#clab .clab-opt.pic .nopic{width:100%;font-size:16px}
+#clab .tcard img.tall,#clab .tl-hero img.tall{object-fit:contain;background:#fff}
+#clab .bigpic{display:block;width:100%;max-width:480px;margin:0 auto;border-radius:12px;border:3px solid #c8202f;background:#fff;aspect-ratio:1.58;object-fit:contain}
+#clab .nopic{display:grid;place-items:center;aspect-ratio:1.58;border-radius:8px;border:2px solid #c8202f;background:#FFF7ED;font-weight:800;color:#7c2d12;padding:6px;text-align:center;font-size:14px}
+#clab .chips{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+#clab .chipx{display:inline-flex;align-items:center;gap:8px;background:#E0F2FE;color:#075985;border-radius:12px;padding:10px 14px;font-weight:800;font-size:18px}
+#clab .fact{background:#FEF3C7;border-radius:12px;padding:12px 16px;border-inline-start:5px solid #d99a00}
+#clab .track{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;min-height:178px;align-items:flex-start;padding:12px;background:#fff;border:1.5px solid #F3D3E3;border-radius:16px}
+#clab .tcard{flex:0 0 124px;width:124px;min-height:150px;background:#FFF5FA;border-radius:10px;padding:6px;text-align:center}
+#clab .tcard img,#clab .tcard .nopic{width:100%;aspect-ratio:1.58;object-fit:cover;border-radius:6px;border:2px solid #c8202f;display:block}
+#clab .tcard .tn{font-size:13px;font-weight:800;line-height:1.25;margin-top:4px} #clab .tcard .ty{font-size:13px;color:#1d6fd8;font-weight:800}
+#clab .tcard.slot{border:3px dashed #1d6fd8;display:grid;place-items:center;min-height:110px;font:800 32px 'Fredoka',sans-serif;color:#1d6fd8}
+#clab .gpool{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+#clab .gpool .clab-opt.glow{border-color:#d99a00!important;box-shadow:0 0 0 4px #FEF3C7}
+#clab .dir-rtl{direction:rtl;text-align:right}
+#clab .clab-modal{position:fixed;inset:0;z-index:950;background:rgba(20,10,35,.5);display:grid;place-items:center;padding:16px}
+#clab .clab-modal .clab-card{max-width:420px;width:100%;position:relative}
+#clab-door{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:60;flex-direction:row!important;align-items:center!important;gap:10px;padding:10px 18px 10px 12px!important;min-height:56px;border-radius:18px!important;font-weight:800;font-size:17px;max-width:calc(100% - 32px)}
+#clab-door .i{font-size:28px;line-height:1}
+@media (max-width:560px){#clab .clab-opts{grid-template-columns:1fr}#clab .mgrid{grid-template-columns:repeat(3,minmax(0,1fr))}#clab .clab-card{padding:14px}#clab .clab-top h1{font-size:17px}}
+@media (prefers-reduced-motion:reduce){#clab *{transition:none!important}}
+`; document.head.appendChild(s); }
+
+ /* ---------------- the frame: top bar (out buttons on the left) and a body ---------------- */
+ let root=null, NAV=null;
+ function frame(title,sub,nav,body,right){
+  /* nav: 'hub' = the house only (closes the lab); 'page' = Back + house; 'run' = the lesson X (asks first) */
+  NAV=nav; const y=young(); const Q=T();
+  const left=nav==='run'?Q.x('data-c="quit"','',T().WORDS.leaveLesson):nav==='page'?Q.back('data-c="back"','',y)+Q.home('data-c="close"','',y):Q.home('data-c="close"','',y);
+  root.innerHTML=`<div class="clab-top">${left}<h1 dir="auto">${E(title)}${sub?`<small>${sub}</small>`:''}</h1>${right||''}</div><div class="clab-body"><div class="clab-wrap">${body}</div></div>`;
+  root.querySelector('.clab-body').scrollTop=0;
+ }
+ const bodyEl=()=>root.querySelector('.clab-wrap');
+ let BACK=null, QUIT=null;
+ function onTop(e){ const b=e.target.closest('[data-c]'); if(!b||!root.contains(b)) return; const c=b.dataset.c;
+  if(c==='close'){ snd('tap'); X.close(); }
+  else if(c==='back'){ snd('tap'); (BACK||hub)(); }
+  else if(c==='quit'){ snd('tap'); askLeave(); } }
+ function askLeave(){ const m=document.createElement('div'); m.className='clab-modal'; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+  m.innerHTML=`<div class="clab-card">${T().ask({title:T().WORDS.leaveLesson,text:'What you finished stays done.',yes:T().WORDS.keepLearning,yesAttrs:'data-m="stay"',no:T().WORDS.leave,noAttrs:'data-m="leave"'})}</div>`;
+  root.appendChild(m); m.addEventListener('click',e=>{ const b=e.target.closest('[data-m]'); if(e.target===m||(b&&b.dataset.m==='stay')){ m.remove(); return; } if(b&&b.dataset.m==='leave'){ m.remove(); clearTimers(); (QUIT||BACK||hub)(); } }); }
+ let TIMERS=[]; const later=(f,ms)=>{const t=setTimeout(f,ms);TIMERS.push(t);return t;}; function clearTimers(){ TIMERS.forEach(clearTimeout); TIMERS=[]; if(G&&G.iv){clearInterval(G.iv);} }
+
+ const how=t=>`<div class="clab-how"><b>How to do it</b>${t}</div>`;
+ const LEGEND='<div class="legend"><span class="lp">prefix (front)</span><span class="lb">base word / shoresh</span><span class="ls">suffix (end)</span></div>';
+ const partsHTML=parts=>`<div class="parts">${parts.map(p=>`<span class="part ${p.k}"><span class="clab-he">${p.h}</span>${E(p.m)}</span>`).join('')}</div>`;
+ function exHTML(ex){ if(!ex) return ''; return `<div class="clab-pas"><div class="l">${ex.cut[0]?'… ':''}${ex.w.map((w,i)=>i===ex.hi?`<mark>${w}</mark>`:w).join(' ')}${ex.cut[1]?' …':''}</div><div class="ref">${ex.ref}</div></div>`; }
+ const pill=(k,t)=>T().pill(k,t);
+ const tile=(cls,attrs,inner,dis)=>`<button type="button" class="tlk tlk-tile ${cls}" ${attrs}${dis?' disabled':''}>${inner}</button>`;
+
+ /* ================= HUB ================= */
+ const LABS=[
+  {k:'sh',ic:'🌱',he:'שָׁרָשִׁים',t:'Shorashim',p:'The 200 shorashim that come up most in Bereishis, 10 at a time.'},
+  {k:'ml',ic:'📖',he:'מִלִּים',t:'Milim',p:'The everyday words of Chumash, 10 at a time.'},
+  {k:'ps',ic:'🧩',he:'אוֹתִיּוֹת הַשִּׁמּוּשׁ',t:'Prefixes & Suffixes',p:'The letters stuck to the front and the end of a word, and what they mean.'},
+  {k:'tr',ic:'🛑',he:'טְעָמִים',t:'Stop Signs',p:'The trop stop signs, and how they break a pasuk into parts.'},
+  {k:'pw',ic:'🛠️',he:'פָּסוּק',t:'Pasuk Workshop',p:'Put it all together: learn a real pasuk on your own, word by word.'},
+  {k:'tl',ic:'⏳',he:'צִיר הַזְּמַן',t:'Timeline',p:'From Creation to today: which came first? In English or in Hebrew.'}];
+ function counts(k){ const d=D(); if(k==='sh') return [P.done.sh.length,SHG.length,'groups']; if(k==='ml') return [P.done.ml.length,MLG.length,'groups']; if(k==='ps') return [P.done.ps.length,d.UNITS.length,'units'];
+  if(k==='tr') return [P.done.tr.length,d.TUNITS.length,'units']; if(k==='pw') return [P.done.pw.length,d.WORK.length,'pesukim']; return [Object.keys(P.tl.done).length,4,'levels']; }
+ function hub(){ clearTimers(); X.view='hub'; BACK=null;
+  frame('Chumash & Timeline Lab','',' hub',`<div class="clab-card"><h2>Welcome to the Lab${me().name?', '+E(String(me().name).split(/\s+/)[0]):''}!</h2>
+   <p>Here you learn the tools a talmidah uses to learn Chumash on her own: shorashim, milim, prefixes and suffixes, and the trop. Then you use them on a real pasuk. And the Timeline shows when everything happened.</p>
+   <p class="clab-mut">Pick a lab. Start at the first group or unit. Each one has a lesson, practice, a game and a quiz.</p><div class="clab-crowns" aria-label="The three crowns: Keter Torah, Keter Kehuna, Keter Malchus"><img src="/pics/keser-keter-torah.webp" alt="Keter Torah"><img src="/pics/keser-keter-kehuna.webp" alt="Keter Kehuna"><img src="/pics/keser-keter-malchut.webp" alt="Keter Malchus"></div></div>
+   <div class="clab-grid">${LABS.map(l=>{const [d,n,u]=counts(l.k);return tile('clab-lab','data-lab="'+l.k+'"',`<span class="hd c-${l.k}"><span class="ic" aria-hidden="true">${l.ic}</span><span class="clab-he">${l.he}</span></span><span class="b"><b>${E(l.t)}</b><small>${E(l.p)}</small>${pill(d?'prog':'now',d?d+' of '+n+' '+u+' done':'Start here')}</span>`);}).join('')}</div>`);
+  NAV='hub';
+  bodyEl().querySelectorAll('[data-lab]').forEach(b=>b.onclick=()=>{ snd('tap'); const k=b.dataset.lab; if(k==='sh'||k==='ml') listLab(k); else if(k==='ps') psLab(); else if(k==='tr') trLab(); else if(k==='pw') pwLab(); else tlHome(); }); }
+
+ /* a path of units: done ones, the next one open, later ones locked */
+ function pathHTML(lab,n,label,peek){ const done=P.done[lab]; const cur=[...Array(n).keys()].find(i=>done.indexOf(i)<0); const reach=cur==null?n:cur;
+  return `<div class="clab-path">${[...Array(n).keys()].map(i=>{const d=done.indexOf(i)>=0, open=d||i<=reach;
+   return tile('clab-unit','data-u="'+i+'" aria-label="'+E(String(label(i)).replace(/<[^>]+>/g,''))+(d?', done':open?'':', locked')+'"',`<b>${label(i)}</b>${peek?`<span class="pk clab-he">${peek(i)}</span>`:''}${d?pill('prog','Done'):i===reach?pill('now','Up next'):open?'':pill('lock','Locked')}`,!open);}).join('')}</div>`; }
+ const wireUnits=f=>bodyEl().querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{ snd('tap'); f(+b.dataset.u); });
+
+ /* ================= ASK: one question of any kind; done(ok) when she taps Next ================= */
+ function ask(box,Q,done,opt){ opt=opt||{};
+  const fin=(ok,rightText)=>{ snd(ok?'right':'wrong'); if(opt.fast){ later(()=>done(ok),ok?350:900); return; }
+   const extra=Q.parts?partsHTML(Q.parts):Q.x&&Q.x.ex&&!ok&&Q.kind!=='hunt'?exHTML(Q.x.ex):'';
+   box.querySelector('.fbx').innerHTML=`<div class="clab-fb ${ok?'good':'bad'}"><div>${ok?pick(['Yes!','Right!','You got it!','Beautiful!','Excellent!']):rightText}</div>${Q.why?`<span style="font-weight:600">${Q.why}</span>`:''}${extra}</div><div class="clab-row clab-center">${T().main(T().WORDS.next,'data-a="nx"')}</div>`;
+   const nx=box.querySelector('[data-a=nx]'); nx.onclick=()=>{ snd('tap'); done(ok); }; try{ nx.focus({preventScroll:true}); nx.scrollIntoView({block:'nearest'}); }catch(e){} };
+  const head=(opt.head||'')+`<p class="clab-q">${Q.q||''}</p>`;
+  const tail=how(Q.how||'Read it carefully, then tap your answer.')+'<div class="fbx" aria-live="polite"></div>';
+  const lockAll=()=>box.querySelectorAll('.clab-opt,.piece,button.tw,.hk,[data-a=del],[data-a=chk],[data-a=undo]').forEach(b=>b.disabled=true);
+  if(Q.kind==='spot'){ const on=new Set(); X.cur={Q,want:Q.want};
+   box.innerHTML=`${head}<div class="bank" style="font-size:1.2em">${Q.g.map((c,i)=>`<button type="button" class="tlk tlk-tile piece gtile" data-g="${i}" aria-pressed="false">${c}</button>`).join('')}</div>
+    <div class="clab-row clab-center">${T().main(T().WORDS.check,'data-a="chk"')}</div>${tail}`;
+   box.querySelectorAll('.gtile').forEach(b=>b.onclick=()=>{ const i=+b.dataset.g; if(on.has(i)) on.delete(i); else on.add(i); b.classList.toggle('picked'); b.setAttribute('aria-pressed',String(on.has(i))); snd('tap'); });
+   box.querySelector('[data-a=chk]').onclick=()=>{ if(!on.size) return; const ok=Q.want.every((w,i)=>w===on.has(i)); box.querySelectorAll('.gtile').forEach(b=>{ b.disabled=true; if(Q.want[+b.dataset.g]) b.classList.add('right'); }); box.querySelector('[data-a=chk]').disabled=true;
+    fin(ok,`The ${Q.side==='p'?'prefix':'suffix'} is <span class="clab-he" style="font-size:28px">${Q.g.filter((_,i)=>Q.want[i]).join('')}</span>, marked in green above. In the word: <span class="clab-he wc" style="font-size:28px">${colorWord(Q.x)}</span> (prefix orange, suffix purple).`); }; return; }
+  if(Q.kind==='spell'||Q.kind==='buildparts'||Q.kind==='affix'){
+   const items=Q.kind==='spell'?[...Q.tiles.map((t,i)=>({t,i})),...Q.extra.map(t=>({t,i:-1}))]:Q.kind==='affix'?[...Q.order.map((p,i)=>({t:p.h,i})),...Q.extra.map(p=>({t:p.h,i:-1}))]:[...Q.x.parts.map((p,i)=>({t:p.h,p,i})),...Q.extra.map(p=>({t:p.h,p,i:-1}))];
+   const tiles=shuffle(items); let built=[]; X.cur={Q,tiles};
+   box.innerHTML=`${head}${Q.kind==='buildparts'?LEGEND:''}<div class="slots"></div><div class="bank">${tiles.map((t,j)=>`<button type="button" class="tlk tlk-tile piece ${t.p?t.p.k:''}" data-j="${j}">${t.t}${t.p?`<small>${E(t.p.m)}</small>`:''}</button>`).join('')}</div>
+    <div class="clab-row clab-center">${T().quiet('Undo','data-a="undo"')}${T().main(T().WORDS.check,'data-a="chk"')}</div>${tail}`;
+   const draw=()=>{ box.querySelector('.slots').innerHTML=built.map(j=>`<span class="piece ${tiles[j].p?tiles[j].p.k:''}">${tiles[j].t}</span>`).join(''); box.querySelectorAll('.bank .piece').forEach(b=>b.disabled=built.indexOf(+b.dataset.j)>=0); };
+   box.querySelectorAll('.bank .piece').forEach(b=>b.onclick=()=>{ built.push(+b.dataset.j); snd('tap'); draw(); });
+   box.querySelector('[data-a=undo]').onclick=()=>{ built.pop(); draw(); };
+   box.querySelector('[data-a=chk]').onclick=()=>{ if(!built.length) return; let ok;
+    if(Q.kind==='spell') ok=plainHeb(built.map(j=>tiles[j].t).join(''))===plainHeb(Q.right); else { const need=Q.kind==='affix'?Q.order.length:Q.x.parts.length; ok=built.length===need&&built.every((j,n)=>tiles[j].i===n); }
+    lockAll(); fin(ok,Q.kind==='affix'?`The word is <span class="clab-he wc" style="font-size:28px">${colorWord(Q.x)}</span>: ${Q.order.map(p=>`<span class="clab-he">${p.h}</span> = ${E(p.m)}`).join(', ')}.`:Q.kind==='spell'?`It is spelled <span class="clab-he" style="font-size:28px">${Q.right}</span>.`:`The word is <span class="clab-he" style="font-size:28px">${Q.x.w}</span>.`); };
+   draw(); return; }
+  if(Q.kind==='hunt'||Q.kind==='tap'){
+   const toks=Q.kind==='hunt'?Q.ex.w.map((w,i)=>({w,a:i===Q.ex.hi})):Q.toks.map((t,i)=>({w:t.w,a:Q.ans[i]})); X.cur={Q,toks};
+   box.innerHTML=`${head}<div class="pasuk">${Q.kind==='hunt'&&Q.ex.cut[0]?'<span class="tw">…</span>':''}${toks.map((t,i)=>`<button type="button" class="tw" data-i="${i}">${t.w}</button>`).join('')}${Q.kind==='hunt'&&Q.ex.cut[1]?'<span class="tw">…</span>':''}</div><p class="ref">${Q.kind==='hunt'?Q.ex.ref:Q.ref}</p>${tail}`;
+   box.querySelectorAll('button.tw').forEach(b=>b.onclick=()=>{ const ok=toks[+b.dataset.i].a; box.querySelectorAll('button.tw').forEach(o=>{ o.disabled=true; if(toks[+o.dataset.i].a) o.classList.add('right'); }); if(!ok) b.classList.add('wrong'); fin(ok,Q.kind==='hunt'?'It is the word in green.':'The right word is in green.'); }); return; }
+  if(Q.kind==='root'){
+   const ch=shuffle(Q.roots); X.cur={Q,ch};
+   box.innerHTML=`${opt.head||''}<p class="clab-q">Step 1: What is the <b>shoresh</b> of this word?</p><div class="clab-stage">${Q.word}</div><p class="ref" style="text-align:center">${Q.ref}</p>
+    <div class="clab-opts s1">${ch.map((c,i)=>`<button type="button" class="tlk tlk-tile clab-opt he" data-i="${i}">${c}</button>`).join('')}</div><div class="s2"></div>${tail}`;
+   box.querySelectorAll('.s1 .clab-opt').forEach(b=>b.onclick=()=>{ const ok1=ch[+b.dataset.i]===Q.right; box.querySelectorAll('.s1 .clab-opt').forEach(o=>{ o.disabled=true; if(ch[+o.dataset.i]===Q.right) o.classList.add('right'); }); if(!ok1) b.classList.add('wrong'); snd(ok1?'right':'wrong');
+    const m=shuffle(Q.meanOpts);
+    box.querySelector('.s2').innerHTML=`<p class="clab-q">${ok1?'Right! ':`The shoresh is <span class="clab-he">${Q.right}</span>. `}Step 2: What does <span class="clab-he">${Q.right}</span> mean?</p><div class="clab-opts s2o">${m.map((c,i)=>`<button type="button" class="tlk tlk-tile clab-opt" data-i="${i}">${E(c)}</button>`).join('')}</div>`;
+    box.querySelectorAll('.s2o .clab-opt').forEach(b2=>b2.onclick=()=>{ const ok2=m[+b2.dataset.i]===Q.x.m; box.querySelectorAll('.s2o .clab-opt').forEach(o=>{ o.disabled=true; if(m[+o.dataset.i]===Q.x.m) o.classList.add('right'); }); if(!ok2) b2.classList.add('wrong');
+     fin(ok1&&ok2,`<span class="clab-he">${Q.word}</span> comes from the shoresh <span class="clab-he">${Q.right}</span>, which means “${E(Q.x.m)}”.`); }); }); return; }
+  if(Q.kind==='break'){
+   const Pq=Q.P, want=Pq.t.map((_,i)=>!!Pq.s[i]&&i<Pq.t.length-1), on=new Set(); X.cur={Q,want};
+   box.innerHTML=`${head}<div class="pasuk">${Pq.t.map((w,i)=>`<span class="tw">${w}</span>${i<Pq.t.length-1?`<button type="button" class="gap" data-i="${i}" aria-label="Break after word ${i+1}"></button>`:''}`).join('')}</div><p class="ref">${Pq.ref}</p>
+    <div class="clab-row clab-center">${T().main(T().WORDS.check,'data-a="chk"')}</div>${tail}`;
+   box.querySelectorAll('.gap').forEach(g=>g.onclick=()=>{ const i=+g.dataset.i; if(on.has(i)) on.delete(i); else on.add(i); g.classList.toggle('on'); snd('tap'); });
+   box.querySelector('[data-a=chk]').onclick=()=>{ box.querySelector('[data-a=chk]').disabled=true; let ok=true;
+    box.querySelectorAll('.gap').forEach(g=>{ const i=+g.dataset.i; g.disabled=true; g.classList.remove('on'); if(want[i]&&on.has(i)) g.classList.add('ok'); else if(want[i]){ g.classList.add('miss'); ok=false; } else if(on.has(i)){ g.classList.add('bad'); ok=false; } });
+    const parts=[]; let cur=[]; Pq.t.forEach((w,i)=>{ cur.push(noTrop(w)); if(Pq.s[i]){ parts.push(cur.join(' ')); cur=[]; } }); if(cur.length) parts.push(cur.join(' '));
+    fin(ok,`Not quite. The parts are:<div style="display:grid;gap:4px">${parts.map(p=>`<span class="clab-he" style="font-size:22px">${p}</span>`).join('')}</div>`); }; return; }
+  /* tap one answer (also true/false, prefix or suffix, stop sign or not) */
+  const ch=Q.keep?Q.opts:shuffle(Q.opts); X.cur={Q,ch};
+  box.innerHTML=`${head}${Q.stage?`<div class="clab-stage ${Q.stageEn?'en':''}">${Q.stageRaw?Q.stage:E(Q.stage)}</div>`:''}${Q.html||''}
+   <div class="clab-opts">${ch.map((c,i)=>`<button type="button" class="tlk tlk-tile clab-opt ${Q.he?'he':''}" data-i="${i}">${Q.raw?c:E(c)}</button>`).join('')}</div>${tail}`;
+  box.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ const ok=ch[+b.dataset.i]===Q.right; box.querySelectorAll('.clab-opt').forEach(o=>{ o.disabled=true; if(ch[+o.dataset.i]===Q.right) o.classList.add('right'); }); if(!ok) b.classList.add('wrong');
+   fin(ok,Q.wrongText||`It is <span class="${Q.he?'clab-he':''}">${Q.raw?Q.right:E(Q.right)}</span>.`); });
+ }
+
+ /* a run of questions in the frame. mode 'mastery': each item right twice; 'quiz': score with a pass mark; 'set': a short game */
+ function runQs(o){ /* o: {title, sub, back, items|qs, make, mode, pass, onPass, onEnd, endLabel} */
+  BACK=o.back; QUIT=o.back; clearTimers();
+  frame(o.title,o.sub||'','run','<div class="clab-card"><div class="clab-row" style="justify-content:space-between"><span class="cnt"></span></div><div class="clab-bar"><i style="width:0"></i></div><div class="qbox" style="display:grid;gap:14px"></div></div>');
+  const box=bodyEl().querySelector('.qbox'), bar=bodyEl().querySelector('.clab-bar i'), cnt=bodyEl().querySelector('.cnt');
+  const end=html=>{ box.innerHTML=html; bodyEl().querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{ snd('tap'); const a=b.dataset.a; if(a==='again') runQs(o); else if(a==='go'&&o.go) o.go(); else (o.back)(); }); };
+  if(o.mode==='mastery'){ const need=new Map(o.items.map(x=>[x.id,2])); let queue=shuffle(o.items), right=0, total=o.items.length*2;
+   const next=()=>{ const dn=[...need.values()].filter(v=>v===0).length; cnt.innerHTML=pill('prog',dn+' of '+o.items.length+' learned'); bar.style.width=(right/total*100)+'%';
+    if(!queue.length){ snd('win'); o.onEnd&&o.onEnd(); end(`<p class="clab-q">You know them all! ★</p><div class="clab-row clab-center">${o.go?T().main(o.endLabel||'Take the quiz','data-a="go"'):''}${T().quiet('Back to the unit','data-a="bk"')}</div>`); return; }
+    const x=queue.shift(); const Q=o.make(x);
+    ask(box,Q,ok=>{ if(ok){ const n=need.get(x.id)-1; need.set(x.id,n); right++; if(n>0) queue.splice(Math.min(queue.length,3+rnd(3)),0,x); } else { right-=Math.min(right,2-need.get(x.id)); need.set(x.id,2); queue.splice(Math.min(queue.length,2),0,x); } next(); }); };
+   next(); return; }
+  const qs=o.qs; let i=0, c=0;
+  const next=()=>{ bar.style.width=(i/qs.length*100)+'%'; cnt.innerHTML=o.mode==='quiz'?pill('now','Pass: '+o.pass+' of '+qs.length)+' '+pill('prog',c+' right'):pill('prog',c+' of '+qs.length+' right');
+   if(i>=qs.length){ const ok=o.mode!=='quiz'||c>=o.pass; if(ok){ snd('win'); o.onPass&&o.onPass(c); } o.onEnd&&o.onEnd(c);
+    end(`<div class="clab-stage en">${c} / ${qs.length}</div><p class="clab-q">${o.mode==='quiz'?(ok?'You passed! ★ The next one is open.':'Almost! Practice a little more and try again.'):c===qs.length?'Perfect!':'Good work!'}</p>
+     <div class="clab-row clab-center">${o.mode==='quiz'&&!ok?T().main(T().WORDS.tryAgain,'data-a="again"'):o.mode!=='quiz'?T().main('Play again','data-a="again"'):''}${ok&&o.mode==='quiz'?T().main('Continue','data-a="bk"'):T().quiet('Back to the unit','data-a="bk"')}</div>`); return; }
+   const Q=qs[i]; ask(box,Q,ok=>{ if(ok) c++; i++; next(); },{fast:o.fast,head:Q.tag?`<p style="text-align:center">${pill('subj',Q.tag)}</p>`:''}); };
+  next(); }
+
+ /* ================= SHORASHIM + MILIM ================= */
+ let SHG=[], MLG=[];
+ function groups(){ if(SHG.length) return; const d=D(); const ch=(a,n)=>a.reduce((g,x,i)=>{if(i%n===0)g.push([]);g[g.length-1].push(x);return g;},[]);
+  const tag=g=>Object.assign(g.items,{label:g.label,parsha:true}); SHG=[...ch(d.sh,10),...(d.shp||[]).map(tag)]; MLG=[...ch(d.ml,10),...(d.mlp||[]).map(tag)]; }
+ const LL={sh:{name:'Shorashim',he:'שָׁרָשִׁים',noun:'shorashim',one:'shoresh'},ml:{name:'Milim',he:'מִלִּים',noun:'words',one:'word'}};
+ const G_=k=>k==='sh'?SHG:MLG, heOf=(k,x)=>k==='sh'?x.r:x.w, mainN=k=>G_(k).filter(g=>!g.parsha).length;
+ const PARSHA_HE={Shelach:'פָּרָשַׁת שְׁלַח',Korach:'פָּרָשַׁת קֹרַח'};
+ const gname=(k,g)=>{ const x=G_(k)[g]; return x&&x.parsha?x.label:'Group '+(g+1); };
+ function listLab(k){ clearTimers(); const L=LL[k], Gs=G_(k), M=mainN(k); BACK=hub;
+  const par=Gs.map((g,i)=>({g,i})).filter(o=>o.g.parsha);
+  const learned=Gs.filter((_,i)=>P.done[k].indexOf(i)>=0).flat();
+  frame(L.name+' Lab',`<span class="clab-he">${L.he}</span>`,'page',`<div class="clab-card"><div class="clab-teach">
+    ${k==='sh'?'<p>A <b>shoresh</b> is the 3-letter root of a word. Many words grow from one shoresh: <span class="clab-he">אָמַר · וַיֹּאמֶר · לֵאמֹר</span> all come from <span class="clab-he">אמר</span>, “say”.</p><p>Know the shoresh and you can figure out hundreds of words in the Chumash on your own.</p>'
+     :'<p>Some words come again and again in the Chumash: <span class="clab-he">כֹּל · אֶרֶץ · בַּיִת · יוֹם</span>. Learn them once and you will know them every time you see them.</p>'}
+    <p>Each group of 10: <b>1. Meet</b> them, <b>2. Practice</b> until you know every one, <b>3.</b> play a <b>game</b>, then <b>4.</b> pass the <b>quiz</b>. Each quiz also reviews earlier groups, so you never forget them.</p></div>
+    ${pathHTML(k,M,i=>'Group '+(i+1),i=>Gs[i].slice(0,4).map(x=>heOf(k,x)).join(' · '))}</div>
+   ${par.length?`<div class="clab-card"><h2>${E(L.noun[0].toUpperCase()+L.noun.slice(1))} from the parsha</h2><p class="clab-mut">New ${L.noun} from the parsha, each with its pasuk. Open any time.</p>
+    <div class="clab-path">${par.map(({g,i})=>tile('clab-unit','data-pu="'+i+'"',`<b>${E(g.label)}</b><span class="pk clab-he">${g.slice(0,4).map(x=>heOf(k,x)).join(' · ')}</span>${P.done[k].indexOf(i)>=0?pill('prog','Done'):pill('subj',PARSHA_HE[g.label.split(' ')[0]]?g.label.split(' ')[0]:'Parsha')}`)).join('')}</div></div>`:''}
+   ${learned.length?`<div class="clab-card"><h2>My ${L.noun} list</h2><div class="clab-wl">${learned.map(x=>`<div><span class="clab-he">${heOf(k,x)}</span><span>${E(x.m)}</span></div>`).join('')}</div></div>`:''}`);
+  wireUnits(i=>groupScreen(k,i)); bodyEl().querySelectorAll('[data-pu]').forEach(b=>b.onclick=()=>{ snd('tap'); groupScreen(k,+b.dataset.pu); }); }
+ const LG=[{id:'match',name:'Match-Up',p:'Flip two cards to match each one with its meaning.'},{id:'spell',name:'Spell It',p:'Build each one from letter tiles.'},{id:'hunt',name:'Pasuk Hunt',p:'Find the word hiding in a real pasuk.'}];
+ function groupScreen(k,g){ clearTimers(); const L=LL[k], items=G_(k)[g], key=k+g, done=P.done[k].indexOf(g)>=0; BACK=()=>listLab(k);
+  const games=LG.filter(x=>x.id!=='hunt'||items.filter(y=>y.ex).length>=4);
+  const quizOpen=done||(stepOK(key,'meet')&&stepOK(key,'practice'));
+  const ok=st=>stepOK(key,st)?pill('prog','Done'):'';
+  frame(L.name+' · '+gname(k,g),done?'Passed ★':'','page',`<div class="clab-card"><div class="clab-wl">${items.map(x=>`<div><span class="clab-he">${heOf(k,x)}</span><span>${E(x.m)}</span></div>`).join('')}</div></div>
+   <div class="clab-steps">
+    ${tile('clab-step','data-s="meet"',`<span class="n">Step 1 · Lesson</span><b>Meet them</b><small>${k==='sh'?'See each shoresh, then spell it from memory.':'See each word, what it means, and where it is in a pasuk.'}</small>${ok('meet')}`)}
+    ${tile('clab-step','data-s="practice"',`<span class="n">Step 2</span><b>Practice</b><small>Build them and find them in pesukim, until you get each one right twice.</small>${ok('practice')}`)}
+    ${games.map(x=>tile('clab-step','data-s="g:'+x.id+'"',`<span class="n">Step 3 · Game</span><b>${x.name}</b><small>${x.p}</small>${stepOK(key,'g_'+x.id)?pill('prog','Played'):''}`)).join('')}
+    ${tile('clab-step','data-s="quiz"',`<span class="n">Step 4</span><b>Quiz</b><small>${quizOpen?'Every '+L.one+' in this group, plus review. Pass with 80%.':'Opens after Meet them and Practice.'}</small>${done?pill('prog','Passed'):quizOpen?'':pill('lock','Locked')}`,!quizOpen)}
+   </div>`);
+  bodyEl().querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ snd('tap'); const s=b.dataset.s; if(s==='meet') meet(k,g,0); else if(s==='practice') practiceList(k,g); else if(s==='quiz') quizList(k,g); else listGame(k,g,s.slice(2)); }); }
+ function meet(k,g,i,spell){ const items=G_(k)[g], x=items[i], L=LL[k]; BACK=()=>groupScreen(k,g); QUIT=BACK;
+  const tips=k==='sh'?['Say it out loud 3 times: the shoresh, then what it means.','Trace the 3 letters with your finger while you say the meaning.','Make up a sentence in English with this meaning.','Close your eyes. Can you picture the 3 letters?']
+   :['Read the word, then cover the meaning and say it yourself.','Say the word and its meaning 3 times, fast!','Use the meaning in a sentence of your own.','Look at the word in the pasuk. Can you read the words around it?'];
+  const goNext=()=>{ if(i<items.length-1) meet(k,g,i+1); else { markStep(k+g,'meet'); practiceList(k,g); } };
+  const top=`<div class="clab-row" style="justify-content:space-between"><h2>Meet the ${L.noun}</h2>${pill('prog',(i+1)+' of '+items.length)}</div><div class="clab-bar"><i style="width:${(i+1)/items.length*100}%"></i></div>`;
+  if(k==='sh'&&spell){ const ans=graphemes(x.r).map(c=>c[0]); let typed=[], tries=0, solved=false;
+   frame('Meet them · '+gname(k,g),'','run',`<div class="clab-card">${top}<div class="clab-flash"><p style="font-weight:800">Spell the shoresh from memory</p><div class="mean">${E(x.m)}</div>
+    <div class="letters ty">${ans.map(()=>'<span class="blank"></span>').join('')}</div><p class="sfb" aria-live="polite">Tap the letters in order, starting from the right.</p>
+    <div class="hkb">${'אבגדהוזחטיכךלמםנןסעפףצץקרשת'.split('').map(c=>`<button type="button" class="tlk tlk-quiet hk" data-c="${c}">${c}</button>`).join('')}</div>
+    <div class="clab-row clab-center">${T().quiet('Delete','data-a="del"')}${T().quiet('Peek','data-a="peek"')}</div></div>
+    ${how('Think of the meaning. Say the shoresh to yourself. Tap its 3 letters from right to left. A wrong try shows the letters, then you try again.')}
+    <div class="clab-row clab-center">${T().quiet('See it again','data-a="prev"')}${T().main(i<items.length-1?T().WORDS.next:'Now practice','data-a="next" disabled')}</div></div>`);
+   const B=bodyEl(); const draw=()=>{ B.querySelector('.ty').innerHTML=ans.map((_,j)=>`<span class="${typed[j]?'':'blank'}">${typed[j]||''}</span>`).join(''); };
+   const check=()=>{ const ok=plainHeb(typed.join(''))===plainHeb(ans.join(''));
+    if(ok){ solved=true; snd('right'); B.querySelector('.ty').innerHTML=graphemes(x.r).map(c=>`<span>${c}</span>`).join(''); B.querySelector('.sfb').innerHTML='<b style="color:#1f8a5b">You spelled it! ★</b>'; const n=B.querySelector('[data-a=next]'); n.disabled=false; n.focus({preventScroll:true}); B.querySelectorAll('.hk,[data-a=del],[data-a=peek]').forEach(b=>b.disabled=true); }
+    else { tries++; snd('wrong'); B.querySelector('.sfb').innerHTML=tries>=2?`It is <b class="clab-he" style="font-size:22px">${x.r}</b>. Now tap it yourself.`:'Not quite. Try again!'; typed=[]; later(draw,450); } };
+   B.querySelectorAll('.hk').forEach(b=>b.onclick=()=>{ if(solved||typed.length>=ans.length) return; typed.push(b.dataset.c); snd('tap'); draw(); if(typed.length===ans.length) check(); });
+   B.querySelector('[data-a=del]').onclick=()=>{ typed.pop(); draw(); };
+   B.querySelector('[data-a=peek]').onclick=()=>{ B.querySelector('.ty').innerHTML=graphemes(x.r).map(c=>`<span>${c}</span>`).join(''); later(()=>{ if(!solved) draw(); },1500); };
+   B.querySelector('[data-a=prev]').onclick=()=>meet(k,g,i); B.querySelector('[data-a=next]').onclick=()=>{ snd('tap'); goNext(); }; return; }
+  frame('Meet them · '+gname(k,g),'','run',`<div class="clab-card">${top}<div class="clab-flash">${k==='sh'?`<div class="letters">${graphemes(x.r).map(c=>`<span>${c}</span>`).join('')}</div>`:`<div class="big">${x.w}</div>`}<div class="mean">${E(x.m)}</div>
+    ${x.ex?`<p style="font-weight:700">${k==='sh'?'A word with this shoresh in the Chumash:':'Find it in the Chumash:'}</p>${exHTML(x.ex)}`:''}</div>
+    ${how(tips[i%tips.length])}
+    <div class="clab-row clab-center">${i?T().quiet('‹ Back','data-a="prev"'):''}${T().main(k==='sh'?'Spell it':i<items.length-1?T().WORDS.next:'Now practice','data-a="next"')}</div></div>`);
+  const B=bodyEl(); const pv=B.querySelector('[data-a=prev]'); if(pv) pv.onclick=()=>meet(k,g,i-1); B.querySelector('[data-a=next]').onclick=()=>{ snd('tap'); if(k==='sh') meet(k,g,i,true); else goNext(); }; }
+ const sofit=t=>t.slice(0,-1)+({'כ':'ך','מ':'ם','נ':'ן','פ':'ף','צ':'ץ'}[t.slice(-1)]||t.slice(-1));
+ const rootWord=x=>D().rootw&&D().rootw[plainHeb(x.r)];
+ const HOW={he:'Read the Hebrew. Think: what does it mean? Tap the meaning. Not sure? Look for a word you know inside it.',
+  en:'Read the meaning. Find the Hebrew that says it. Tap it.',
+  tf:'Read the Hebrew and the meaning under it. Is that what it means? Tap True or False.',
+  spell:'Say it slowly. Tap the tiles in order, starting from the right. Then tap Check. Undo takes back the last tile.',
+  huntS:'Read the pasuk. Look for a word that has the 3 letters of the shoresh inside it, in order. Tap that word.',
+  hunt:'Read the pasuk slowly. Find the word that means this. Tap it.',
+  root:'Cover the letters stuck on the front and the end. The 3 letters left are the shoresh. Then remember what it means.'};
+ function listQ(k,x,pool,kinds){
+  kinds=(kinds||['he','en','spell','hunt']).filter(t=>(t!=='hunt'||x.ex)&&(t!=='spell'||graphemes(heOf(k,x)).length<=7)&&(t!=='root'||(k==='sh'&&rootWord(x))));
+  const kind=pick(kinds.length?kinds:['he']); const cw=wordsOf(x.m), one=LL[k].one, he=heOf(k,x);
+  const others=shuffle(pool.filter(y=>y!==x&&y.m!==x.m&&!wordsOf(y.m).some(w=>cw.indexOf(w)>=0))).slice(0,3);
+  if(kind==='root'){ const rw=rootWord(x); const wc=graphemes(rw.w).map(c=>c[0]).join(''), rc=plainHeb(x.r);
+   const wins=uniq([0,1,2,3].map(a=>wc.slice(a,a+3)).filter(t=>t.length===3&&plainHeb(t)!==rc).map(sofit));
+   const roots=[x.r,...shuffle(wins).slice(0,2)]; for(const y of shuffle(pool.filter(y=>y!==x&&plainHeb(y.r)!==rc))){ if(roots.length>=4) break; if(!roots.some(z=>plainHeb(z)===plainHeb(y.r))) roots.push(y.r); }
+   return {kind:'root',id:x.id,x,word:rw.w,ref:rw.ref,roots,right:x.r,meanOpts:[x.m,...others.map(y=>y.m)],how:HOW.root}; }
+  if(kind==='en') return {kind:'mc',id:x.id,x,q:`Which ${one} means…`,stage:x.m,stageEn:true,right:he,opts:[he,...others.map(y=>heOf(k,y))],he:true,how:HOW.en};
+  if(kind==='tf'){ const truth=Math.random()<.5, shown=truth?x.m:(others[0]||x).m, t=truth||shown===x.m; return {kind:'mc',id:x.id,x,q:'True or false?',stage:`${he}`,html:`<p class="clab-q" style="font-size:22px">means “${E(shown)}”</p>`,opts:['True','False'],keep:true,right:t?'True':'False',wrongText:`<span class="clab-he">${he}</span> means “${E(x.m)}”.`,how:HOW.tf}; }
+  if(kind==='spell'){ const tiles=graphemes(he); const extra=shuffle(uniq(pool.filter(y=>y!==x).flatMap(y=>graphemes(heOf(k,y))).filter(t=>tiles.indexOf(t)<0))).slice(0,2);
+   return {kind:'spell',id:x.id,x,q:k==='sh'?`Spell the shoresh that means “${E(x.m)}”`:`Build the word that means “${E(x.m)}”`,tiles,extra,right:he,how:HOW.spell}; }
+  if(kind==='hunt') return {kind:'hunt',id:x.id,x,q:k==='sh'?`Tap the word that has the shoresh <span class="clab-he">${he}</span> (${E(x.m)}).`:`Tap the word that means “${E(x.m)}”.`,ex:x.ex,right:he,how:k==='sh'?HOW.huntS:HOW.hunt};
+  return {kind:'mc',id:x.id,x,q:`What does this ${one} mean?`,stage:he,right:x.m,opts:[x.m,...others.map(y=>y.m)],how:HOW.he}; }
+ function practiceList(k,g){ const items=G_(k)[g], pool=G_(k).slice(0,Math.max(g+1,3)).flat();
+  runQs({title:'Practice · '+gname(k,g),back:()=>groupScreen(k,g),mode:'mastery',items,make:x=>listQ(k,x,pool,['spell','spell','hunt','hunt']),onEnd:()=>markStep(k+g,'practice'),go:()=>quizList(k,g)}); }
+ function quizList(k,g){ const Gs=G_(k), items=Gs[g], pool=Gs.slice(0,Math.max(g+1,3)).flat();
+  const prev=shuffle(Gs.filter((_,i)=>i!==g&&P.done[k].indexOf(i)>=0).flat()).slice(0,10);
+  const kinds=k==='sh'?['root','root','root','he','tf']:['he','he','en','en','tf','hunt']; const all=pool.concat(prev);
+  const qs=shuffle([...items.map(x=>Object.assign(listQ(k,x,all,kinds),{tag:'This group'})),...prev.map(x=>Object.assign(listQ(k,x,all,kinds),{tag:'Review'}))]);
+  runQs({title:'Quiz · '+gname(k,g),back:()=>groupScreen(k,g),mode:'quiz',qs,pass:Math.ceil(qs.length*(prev.length?.85:.8)),onPass:()=>{ markDone(k,g); markStep(k+g,'quiz'); }}); }
+ function listGame(k,g,id){ const items=G_(k)[g], pool=G_(k).slice(0,Math.max(g+1,3)).flat(), back=()=>groupScreen(k,g), done=()=>markStep(k+g,'g_'+id);
+  if(id==='match') return matchGame(items.map(x=>({he:heOf(k,x),en:x.m})),back,done,'Match-Up · '+gname(k,g));
+  if(id==='spell') return runQs({title:'Spell It · '+gname(k,g),back,mode:'set',qs:shuffle(items).slice(0,8).map(x=>listQ(k,x,pool,['spell'])),onEnd:done});
+  return runQs({title:'Pasuk Hunt · '+gname(k,g),back,mode:'set',qs:shuffle(items.filter(x=>x.ex)).slice(0,8).map(x=>listQ(k,x,pool,['hunt'])),onEnd:done}); }
+ function matchGame(pairs,back,onEnd,title){ BACK=back; QUIT=back; clearTimers();
+  const six=shuffle(pairs).slice(0,6), cards=shuffle(six.flatMap((p,i)=>[{i,t:p.he,he:1},{i,t:p.en}])); let open=[], done=new Set(), flips=0, lock=false;
+  frame(title,'','run',`<div class="clab-card"><div class="clab-row" style="justify-content:space-between"><h2>Match-Up</h2><span class="fl"></span></div><div class="mgrid"></div>${how('Tap a card to flip it, then tap another. If the Hebrew and the meaning go together, they stay open. If not, they flip back: remember where they were!')}<div class="mfb"></div></div>`);
+  const B=bodyEl();
+  const draw=()=>{ B.querySelector('.fl').innerHTML=pill('prog',flips+' flips'); B.querySelector('.mgrid').innerHTML=cards.map((c,j)=>{const o=open.indexOf(j)>=0||done.has(c.i);return `<button type="button" class="tlk tlk-tile mc ${o?'open':''} ${done.has(c.i)?'done':''} ${o&&c.he?'he':''}" data-k="${j}" ${done.has(c.i)?'disabled':''} aria-label="${o?E(c.t):'Hidden card'}">${o?E(c.t):'?'}</button>`;}).join('');
+   B.querySelectorAll('.mc').forEach(b=>b.onclick=()=>flip(+b.dataset.k)); };
+  const flip=j=>{ if(lock||open.indexOf(j)>=0||done.has(cards[j].i)) return; open.push(j); snd('tap'); draw();
+   if(open.length===2){ flips++; const [a,b]=open;
+    if(cards[a].i!==cards[b].i&&!!cards[a].he!==!!cards[b].he&&six[cards[a].i].en===six[cards[b].i].en){ const en=cards[a].he?b:a, he=en===a?b:a, twin=cards.findIndex((c,j)=>j!==en&&!c.he&&c.i===cards[he].i); if(twin>=0) cards[twin].i=cards[en].i; cards[en].i=cards[he].i; }
+    if(cards[a].i===cards[b].i){ done.add(cards[a].i); open=[]; snd('right'); draw(); if(done.size===six.length){ snd('win'); onEnd&&onEnd(); B.querySelector('.mfb').innerHTML=`<div class="clab-fb good">All matched in ${flips} flips!</div><div class="clab-row clab-center">${T().main('Play again','data-a="again"')}${T().quiet('Back to the unit','data-a="bk"')}</div>`;
+      B.querySelector('[data-a=again]').onclick=()=>matchGame(pairs,back,onEnd,title); B.querySelector('[data-a=bk]').onclick=back; } }
+    else { lock=true; later(()=>{ open=[]; lock=false; draw(); },900); } } };
+  draw(); }
+
+ /* ================= PREFIXES & SUFFIXES ================= */
+ const UN=()=>D().UNITS;
+ let psReady=false;
+ function psPrep(){ if(psReady) return; psReady=true; const U=UN(), Q=D().QUIZW; U.forEach((u,ui)=>{ u.items.forEach((x,i)=>x.id='p'+ui+'_'+i); u.quiz=Q[ui]||[]; u.quiz.forEach((x,i)=>x.id='q'+ui+'_'+i); }); }
+ const partPool=(ui,k)=>uniq(UN().slice(0,ui+1).flatMap(u=>u.items.flatMap(x=>x.parts.filter(p=>p.k===k).map(p=>p.m))));
+ function colorWord(x){ const strip=s=>s.replace(/[֑-ׇ]/g,''); const g=graphemes(x.w), cons=g.map(c=>c[0]); let a=0, b=g.length;
+  for(const p of x.parts.filter(p=>p.k==='p')){ const pc=strip(p.h); if(cons.slice(a,a+pc.length).join('')===pc) a+=pc.length; else break; }
+  for(const p of x.parts.filter(p=>p.k==='s').reverse()){ const pc=strip(p.h); if(pc&&cons.slice(b-pc.length,b).join('')===pc&&b-pc.length>a) b-=pc.length; else break; }
+  return `<span class="p">${g.slice(0,a).join('')}</span><span class="b">${g.slice(a,b).join('')}</span><span class="s">${g.slice(b).join('')}</span>`; }
+ const exRows=items=>items.map(x=>`<div class="clab-ex"><span class="w wc">${colorWord(x)}</span>${partsHTML(x.parts)}<span class="t">${E(x.t)}</span><span class="r">${x.ref}</span></div>`).join('');
+ function psLab(){ clearTimers(); psPrep(); BACK=hub; const U=UN();
+  frame('Prefixes & Suffixes','<span class="clab-he">אוֹתִיּוֹת הַשִּׁמּוּשׁ</span>','page',`<div class="clab-card"><div class="clab-teach"><p>A <b>prefix</b> is a letter stuck to the <b>front</b> of a word. A <b>suffix</b> is stuck to the <b>end</b>. They change what the word means.</p>
+   <p><span class="clab-he">הָאָרֶץ</span> = <span class="clab-he">הָ</span> “the” + <span class="clab-he">אֶרֶץ</span> “land”. Peel off the front and the end, and the middle is a word you know.</p><p>Each unit: the lesson, practice, a game, then the quiz. Every quiz reviews the units before it.</p></div>
+   ${pathHTML('ps',U.length,i=>'Unit '+(i+1)+': '+heWrap(U[i].title))}</div>`);
+  wireUnits(psUnit); }
+ /* Staff request (2026-11-26): a girl works only with the prefixes and suffixes, never translating the base word or the whole word.
+    Kinds: spot (tap the prefix or suffix letters), affix (tap the Hebrew prefix/suffix for each meaning, the base word is given),
+    pos (prefix or suffix?), part (what does this prefix/suffix mean?). The lesson still shows each word's meaning as help. */
+ const PSHOW={part:'Find the letters stuck to the front or the end (the colored ones). Think back to the lesson: what does that prefix or suffix mean?',
+  spot:'Read the word from the right. A prefix is stuck on the front (the right side). A suffix is stuck on the end (the left side). Tap each of its letters, then tap Check.',
+  pos:'Look where the letters sit. At the front of the word = a prefix. At the end of the word = a suffix.',
+  affix:'Read the meanings in order, from the front of the word. For each one, tap the Hebrew prefix or suffix that means it. The base word is already there.'};
+ const affOf=x=>x.parts.filter(p=>p.k!=='b');
+ function spotInfo(x){ const strip=s=>s.replace(/[֑-ׇ]/g,''); const g=graphemes(x.w), cons=g.map(c=>c[0]); let a=0, b=g.length;
+  for(const p of x.parts.filter(p=>p.k==='p')){ const pc=strip(p.h); if(cons.slice(a,a+pc.length).join('')===pc) a+=pc.length; else break; }
+  for(const p of x.parts.filter(p=>p.k==='s').reverse()){ const pc=strip(p.h); if(pc&&cons.slice(b-pc.length,b).join('')===pc&&b-pc.length>a) b-=pc.length; else break; }
+  return {g,a,b}; }
+ function psQ(ui,x,kinds){ const U=UN(), aff=affOf(x), sp=spotInfo(x);
+  kinds=(kinds||['spot','affix','pos']).filter(t=>aff.length&&(t!=='spot'||sp.a>0||sp.b<sp.g.length));
+  const kind=pick(kinds.length?kinds:['pos']);
+  if(kind==='spot'){ const sides=[]; if(sp.a>0) sides.push('p'); if(sp.b<sp.g.length) sides.push('s'); const k=pick(sides);
+   const want=sp.g.map((_,i)=>k==='p'?i<sp.a:i>=sp.b);
+   return {kind:'spot',id:x.id,x,side:k,g:sp.g,want,q:`Tap the letters of the <b>${k==='p'?'prefix (front)':'suffix (end)'}</b> in this word.`,parts:x.parts,how:PSHOW.spot}; }
+  if(kind==='affix'){ const letters=h=>h.replace(/[֑-ׇ]/g,''); const own=aff.map(p=>letters(p.h)), ownM=aff.map(p=>p.m);
+   const extra=shuffle(U.slice(0,Math.max(ui+1,3)).flatMap(u=>u.items.flatMap(y=>affOf(y)))).filter(p=>own.indexOf(letters(p.h))<0&&ownM.indexOf(p.m)<0).filter((p,i,a)=>a.findIndex(q=>letters(q.h)===letters(p.h))===i).slice(0,2);
+   const base=x.parts.filter(p=>p.k==='b').map(p=>p.h).join(' ');
+   const line=[...x.parts.filter(p=>p.k==='p').map(p=>'“'+E(p.m)+'”'),`<span class="clab-he">${base}</span>`,...x.parts.filter(p=>p.k==='s').map(p=>'“'+E(p.m)+'”')].join(' + ');
+   return {kind:'affix',id:x.id,x,order:[...x.parts.filter(p=>p.k==='p'),...x.parts.filter(p=>p.k==='s')],extra,q:`Make the word: ${line}. Tap the prefixes and suffixes in order, front first.`,parts:x.parts,how:PSHOW.affix}; }
+  if(kind==='part'){ const p=pick(aff); const c=shuffle(partPool(Math.max(ui,3),p.k).filter(m=>m!==p.m&&!wordsOf(m).some(w=>wordsOf(p.m).indexOf(w)>=0))).slice(0,3);
+   if(c.length===3) return {kind:'mc',id:x.id,x,q:`What does the ${p.k==='p'?'prefix':'suffix'} <span class="clab-he">${p.h}</span> mean in this word?`,stage:`<span class="wc">${colorWord(x)}</span>`,stageRaw:true,right:p.m,opts:[p.m,...c],parts:x.parts,how:PSHOW.part}; }
+  const p=pick(aff); return {kind:'mc',id:x.id,x,q:`Is <span class="clab-he" style="font-size:30px">${p.h}</span> a prefix or a suffix in this word?`,stage:`<span class="wc">${colorWord(x)}</span>`,stageRaw:true,opts:['Prefix (front)','Suffix (end)'],keep:true,right:p.k==='p'?'Prefix (front)':'Suffix (end)',parts:x.parts,how:PSHOW.pos}; }
+ const affPairs=ui=>{ const seen={}; return UN().slice(0,ui+1).flatMap(u=>u.items.flatMap(affOf)).filter(p=>{ const k=p.h.replace(/[֑-ׇ]/g,'')+'|'+p.m; if(seen[k]) return false; seen[k]=1; return true; }).map(p=>({he:p.h,en:p.m})); };
+ function psUnit(ui){ clearTimers(); psPrep(); const u=UN()[ui], key='ps'+ui, done=P.done.ps.indexOf(ui)>=0; BACK=psLab; markStep(key,'lesson');
+  const okp=st=>stepOK(key,st)?pill('prog','Done'):'';
+  frame('Unit '+(ui+1)+' · Prefixes & Suffixes',done?'Passed ★':'','page',`<div class="clab-card"><h2>${heWrap(u.title)}</h2><div class="clab-teach">${u.teach.map(t=>`<p>${t}</p>`).join('')}</div>${LEGEND}<div>${exRows(u.items)}</div>
+    ${how('Read each word from the right. Find the colored letters at the front and the end, and learn what each prefix and suffix means. You only need to know the prefixes and suffixes; the English of the whole word is there to help you.')}</div>
+   <div class="clab-steps">${tile('clab-step','data-s="practice"',`<span class="n">Step 2</span><b>Practice</b><small>Spot the prefix or suffix, and add the right one to a word, until each is right twice.</small>${okp('practice')}`)}
+    ${tile('clab-step','data-s="g:build"',`<span class="n">Step 3 · Game</span><b>Add the Prefix</b><small>Tap the Hebrew prefix or suffix that matches each meaning.</small>${okp('g_build')}`)}
+    ${tile('clab-step','data-s="g:pos"',`<span class="n">Step 3 · Game</span><b>Front or Back?</b><small>Is it a prefix or a suffix? Decide fast.</small>${okp('g_pos')}`)}
+    ${tile('clab-step','data-s="g:match"',`<span class="n">Step 3 · Game</span><b>Match-Up</b><small>Match each prefix and suffix to what it means.</small>${okp('g_match')}`)}
+    ${tile('clab-step','data-s="quiz"',`<span class="n">Step 4</span><b>Quiz</b><small>New words with this unit's prefixes and suffixes, plus review. Pass with 80%.</small>${done?pill('prog','Passed'):''}`)}</div>`);
+  bodyEl().querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ snd('tap'); const s=b.dataset.s; const back=()=>psUnit(ui), pool=UN().slice(0,ui+1).flatMap(v=>v.items);
+   if(s==='practice') runQs({title:'Practice · Unit '+(ui+1),back,mode:'mastery',items:u.items,make:x=>psQ(ui,x,['spot','affix','spot','affix']),onEnd:()=>markStep(key,'practice'),go:()=>psQuiz(ui)});
+   else if(s==='g:build') runQs({title:'Add the Prefix · Unit '+(ui+1),back,mode:'set',qs:shuffle(u.items).slice(0,6).map(x=>psQ(ui,x,['affix'])),onEnd:()=>markStep(key,'g_build')});
+   else if(s==='g:match') matchGame(affPairs(ui),back,()=>markStep(key,'g_match'),'Match-Up · Unit '+(ui+1));
+   else if(s==='g:pos') runQs({title:'Front or Back? · Unit '+(ui+1),back,mode:'set',fast:true,qs:shuffle(pool.filter(x=>x.parts.some(p=>p.k!=='b'))).slice(0,10).map(x=>psQ(UN().findIndex(v=>v.items.indexOf(x)>=0),x,['pos'])),onEnd:()=>markStep(key,'g_pos')});
+   else psQuiz(ui); }); }
+ function psQuiz(ui){ const U=UN(), u=U[ui];
+  const fresh=shuffle(u.quiz).slice(0,6).map(x=>Object.assign(psQ(ui,x,['part','part','spot','pos']),{tag:'New word'}));
+  const seen=shuffle(u.items).slice(0,Math.max(0,8-fresh.length)).map(x=>Object.assign(psQ(ui,x,['part','spot']),{tag:'This unit'}));
+  const prevI=shuffle(U.slice(0,ui).flatMap(v=>v.quiz.length?v.quiz:v.items)).slice(0,4);
+  const qs=shuffle([...fresh,...seen,...prevI.map(x=>Object.assign(psQ(U.findIndex(v=>v.items.indexOf(x)>=0||v.quiz.indexOf(x)>=0),x,['part','spot']),{tag:'Review'}))]);
+  runQs({title:'Quiz · Unit '+(ui+1),back:()=>psUnit(ui),mode:'quiz',qs,pass:Math.ceil(qs.length*.8),onPass:()=>{ markDone('ps',ui); markStep('ps'+ui,'quiz'); }}); }
+
+ /* ================= STOP SIGNS (trop) ================= */
+ const SG=()=>D().SIGNS, TU=()=>D().TUNITS, PES=()=>D().pes;
+ const sOf=(p,i)=>p.s[String(i)]||'';
+ const sList=p=>p.t.map((_,i)=>sOf(p,i));
+ const octa=(k,sm)=>`<span class="octa ${SG()[k].color} ${sm?'sm':''}" aria-hidden="true">${k==='sof'?'׃':SG()[k].glyph.replace('◌',' ')}</span>`;
+ const knownSigns=ui=>['sof','esn','zk','zg','rv'].slice(0,[1,2,4,5,5,5][Math.min(ui,5)]);
+ let KNOWN=['sof','esn','zk','zg','rv'];
+ const pesWith=(f,max)=>PES().filter(p=>p.t.length<=(max||16)&&f(sList(p)));
+ function trLab(){ clearTimers(); BACK=hub; const reach=knownSigns(Math.min(P.done.tr.length,5));
+  frame('Stop Signs','<span class="clab-he">טְעָמִים</span>','page',`<div class="clab-card"><div class="clab-teach"><p>The trop tells you where to <b>stop</b> when you read a pasuk, like stop signs on a road.</p><p>Big stops end the pasuk or split it in half. Smaller stops split it into smaller parts. Learn a pasuk one part at a time, and it is much easier!</p></div>
+   <div class="clab-row clab-center" style="gap:16px">${Object.keys(SG()).map(k=>`<div class="sign" style="${reach.indexOf(k)>=0?'':'opacity:.3'}">${octa(k,true)}<span class="clab-he" style="font-size:16px">${reach.indexOf(k)>=0?SG()[k].he:'?'}</span></div>`).join('')}</div>
+   ${pathHTML('tr',TU().length,i=>'Unit '+(i+1)+': '+heWrap(TU()[i].title))}</div>`);
+  wireUnits(trUnit); }
+ function trLesson(u){ const S=SG();
+  if(u.id==='t5') return `<div class="clab-teach"><p>Now you know all five stop signs. Look at the mark on a word and say its name.</p><p><b>Big stops</b> (red): <span class="clab-he">${S.sof.he}</span>, <span class="clab-he">${S.esn.he}</span>. <b>Medium stops</b> (orange): <span class="clab-he">${S.zk.he}</span>, <span class="clab-he">${S.zg.he}</span>. <b>Small stop</b> (yellow): <span class="clab-he">${S.rv.he}</span>.</p></div>`;
+  if(u.id==='t6') return `<div class="clab-teach"><p>Every stop sign ends a <b>part</b> of the pasuk. When you learn a pasuk, learn it one part at a time.</p><p>Tap the space <b>after</b> each word that has a stop sign. The <span class="clab-he">אֶתְנַחְתָּא</span> splits the pasuk in half, and the <span class="clab-he">זָקֵף</span> and <span class="clab-he">רְבִיעִי</span> split it into smaller parts.</p></div>`;
+  const ks=[u.sign,u.also].filter(Boolean); const ex=pesWith(s=>s.indexOf(u.sign)>=0,12); const Pq=ex.length?ex[rnd(Math.min(ex.length,40))]:null;
+  return ks.map(k=>`<div class="clab-teach" style="justify-items:center;text-align:center">${octa(k)}<span class="clab-he" style="font-size:30px">${S[k].he}</span><p><b>${S[k].size}.</b> ${S[k].what}</p><div class="clab-trop" style="font-size:68px;line-height:1.3">${k==='sof'?'הָאָֽרֶץ׃':'א'+S[k].glyph.slice(1)+'וֹר'}</div></div>`).join('')+
+   (Pq?`<div class="clab-pas"><p class="clab-mut">In a real pasuk (the stop sign is in yellow):</p><div class="pasuk">${Pq.t.map((w,i)=>`<span class="tw ${sOf(Pq,i)===u.sign||(u.also&&sOf(Pq,i)===u.also)?'hi':''}">${w}</span>`).join('')}</div><p class="ref">${Pq.ref}</p></div>`:''); }
+ const TRHOW={endTap:'Look at the end of each word for ׃ (two little diamonds). That is the סוֹף פָּסוּק: the pasuk ends there.',
+  count:'Every pasuk ends with ׃. Count the ׃ marks.', tap:'Look above and below every word for the stop sign\'s mark. Tap the word that has it.',
+  half:'Find the אֶתְנַחְתָּא (the little arch under a word). The pasuk splits right after that word.',
+  name:'Look at the mark on the yellow word. Which of your stop signs looks like that? Red = big, orange = medium, yellow = small.',
+  break:'Find every word with a stop sign. Tap the thin space right after it. Tap a space again to take it back. Then Check.',
+  stopgo:'Is the mark one of the stop signs you learned? Then it is a stop. Any other mark: keep going!',
+  scount:'Count every word that has a stop sign, the סוֹף פָּסוּק too.'};
+ const book=r=>String(r).split(' ')[0];
+ function backToBack(n){ const D_=PES(); for(let t=0;t<400;t++){ const i=rnd(D_.length-n); let ok=true; for(let j=1;j<n;j++) if(D_[i+j].n!==D_[i].n+j||book(D_[i+j].ref)!==book(D_[i].ref)) ok=false; if(ok) return i; } return 0; }
+ function trQ(type){ const [kind,arg]=type.split(':'), S=SG(), D_=PES();
+  if(kind==='endTap'){ const i=backToBack(2), A_=D_[i], B_=D_[i+1]; const toks=[...A_.t.map((w,j)=>({w,e:j===A_.t.length-1})),...B_.t.map(w=>({w,e:false}))];
+   return {kind:'tap',q:'Two pesukim are written together. Tap the word where the <b>first pasuk ends</b>.',toks,ans:toks.map(x=>x.e),ref:A_.ref+' – '+B_.ref,how:TRHOW.endTap}; }
+  if(kind==='count'){ const n=2+rnd(2), i=backToBack(n), ps=D_.slice(i,i+n);
+   return {kind:'mc',q:'How many pesukim are written here?',html:`<div class="pasuk">${ps.flatMap(p=>p.t).map(w=>`<span class="tw">${w}</span>`).join('')}</div><p class="ref">${ps[0].ref}</p>`,right:String(n),opts:['1','2','3','4'],keep:true,why:`Count the ׃ signs. There are ${n}.`,how:TRHOW.count}; }
+  if(kind==='tap'){ const keys=arg==='zk'?['zk','zg']:[arg]; const Pq=pick(pesWith(s=>s.some(x=>keys.indexOf(x)>=0),arg==='rv'?16:14));
+   return {kind:'tap',q:`Tap the word with the <span class="clab-he">${keys.map(k=>S[k].he).join(' or ')}</span>.`,toks:Pq.t.map(w=>({w})),ans:sList(Pq).map(s=>keys.indexOf(s)>=0),ref:Pq.ref,why:S[keys[0]].what,how:TRHOW.tap}; }
+  if(kind==='half'){ const Pq=pick(pesWith(s=>s.filter(x=>x==='esn').length===1,13).filter(p=>p.t.length>=5)); const sl=sList(Pq), e=sl.indexOf('esn');
+   const cuts=uniq([e,...shuffle(Pq.t.map((_,i)=>i).filter(i=>i!==e&&i<Pq.t.length-1)).slice(0,2)]);
+   const show=c=>`${Pq.t.slice(0,c+1).map(noTrop).join(' ')} ‖ ${Pq.t.slice(c+1).map(noTrop).join(' ')}`;
+   return {kind:'mc',q:'Where does the pasuk split in half? Tap the right split.',html:`<div class="pasuk">${Pq.t.map(w=>`<span class="tw">${w}</span>`).join('')}</div><p class="ref">${Pq.ref}</p>`,right:show(e),opts:cuts.map(show),he:true,why:'The אֶתְנַחְתָּא splits the pasuk in half.',how:TRHOW.half}; }
+  if(kind==='name'){ const k=pick(KNOWN); const Pq=pick(pesWith(s=>s.indexOf(k)>=0,16)); const j=sList(Pq).indexOf(k);
+   return {kind:'mc',q:'What is the name of the stop sign on the yellow word?',html:`<div class="pasuk">${Pq.t.map((w,i)=>`<span class="tw ${i===j?'hi':''}">${w}</span>`).join('')}</div><p class="ref">${Pq.ref}</p>`,right:S[k].he,opts:KNOWN.map(x=>S[x].he),he:true,why:S[k].he+': '+S[k].what,how:TRHOW.name}; }
+  return breakQ(kind==='break1'?1:kind==='break3'?3:2); }
+ const BREAKLV={1:[2,3,12],2:[3,5,16],3:[4,8,27]}; let lastBreak=[];
+ function breakQ(lv,src){ const [lo,hi,max]=BREAKLV[lv]; const pool=PES().filter(p=>(src!=='shelach'||p.sh)&&p.t.length<=max&&p.t.length>=4);
+  let c=pool.filter(p=>{ const n=Object.keys(p.s).length; return n>=lo&&n<=hi&&lastBreak.indexOf(p.ref)<0&&sList(p).every(x=>!x||KNOWN.indexOf(x)>=0); }); if(!c.length) c=pool.filter(p=>Object.keys(p.s).length>=2);
+  const Pq=pick(c); lastBreak=[Pq.ref,...lastBreak].slice(0,40); return {kind:'break',q:'Tap the spaces where this pasuk should be broken up: after every word with a stop sign.',P:{t:Pq.t,s:sList(Pq),ref:Pq.ref},how:TRHOW.break}; }
+ function trWordQ(kind){ const S=SG();
+  if(kind==='stopgo'){ const stop=Math.random()<.5; let Pq, j;
+   for(let t=0;t<80;t++){ Pq=pick(PES()); const sl=sList(Pq); const idx=Pq.t.map((_,i)=>i).filter(i=>stop?(KNOWN.indexOf(sl[i])>=0&&sl[i]!=='sof'):(!sl[i]&&/[֣-֧]/.test(Pq.t[i])&&!/[֑-֢֨-֮]/.test(Pq.t[i])&&i<Pq.t.length-1)); if(idx.length){ j=pick(idx); break; } }
+   const isStop=!!sOf(Pq,j); return {kind:'mc',q:'Is the mark on this word a stop sign?',stage:Pq.t[j],opts:['Stop sign','Keep going'],keep:true,right:isStop?'Stop sign':'Keep going',wrongText:isStop?`It is a stop sign: <span class="clab-he">${S[sOf(Pq,j)].he}</span>.`:'That mark is not one of our stop signs. Keep going!',how:TRHOW.stopgo}; }
+  const Pq=pick(pesWith(s=>s.every(x=>!x||KNOWN.indexOf(x)>=0),12)); const n=Object.keys(Pq.s).length;
+  return {kind:'mc',q:'How many stop signs are in this pasuk? (Count the סוֹף פָּסוּק too.)',html:`<div class="pasuk">${Pq.t.map(w=>`<span class="tw">${w}</span>`).join('')}</div><p class="ref">${Pq.ref}</p>`,right:String(n),opts:uniq([n,n+1,Math.max(1,n-1),n+2].map(String)).slice(0,4),why:'They are on: '+Pq.t.filter((_,i)=>sOf(Pq,i)).map(w=>`<span class="clab-he">${noTrop(w)}</span>`).join(', '),how:TRHOW.scount}; }
+ function trUnit(ui){ clearTimers(); const u=TU()[ui], key='tr'+ui, done=P.done.tr.indexOf(ui)>=0; BACK=trLab; KNOWN=knownSigns(ui); markStep(key,'lesson');
+  const okp=st=>stepOK(key,st)?pill('prog','Done'):''; const games=ui===0?[]:[['stopgo','Stop or Keep Going?','Is the mark a stop sign? Decide fast!'],['count','Stop Sign Count','How many stop signs are in this pasuk?']];
+  frame('Unit '+(ui+1)+' · Stop Signs',done?'Passed ★':'','page',`<div class="clab-card"><h2>${heWrap(u.title)}</h2>${trLesson(u)}</div>
+   <div class="clab-steps">${tile('clab-step','data-s="practice"',`<span class="n">Step 2</span><b>Find it in pesukim</b><small>${u.id==='t6'?'12 pesukim, from short and easy to long and tricky.':'8 real pesukim.'}</small>${okp('practice')}`)}
+    ${games.map(g=>tile('clab-step','data-s="g:'+g[0]+'"',`<span class="n">Step 3 · Game</span><b>${g[1]}</b><small>${g[2]}</small>${okp('g_'+g[0])}`)).join('')}
+    ${u.id==='t6'?tile('clab-step','data-s="shelach"',`<span class="n">More practice</span><b>Parshas Shelach</b><small>Break up pesukim from <span class="clab-he">פָּרָשַׁת שְׁלַח</span>.</small>${okp('shelach')}`):''}
+    ${tile('clab-step','data-s="quiz"',`<span class="n">Step 4</span><b>Quiz</b><small>10 questions, with the signs you learned before. Pass with 8.</small>${done?pill('prog','Passed'):''}`)}</div>`);
+  bodyEl().querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ snd('tap'); const s=b.dataset.s, back=()=>trUnit(ui); KNOWN=knownSigns(ui);
+   if(s==='practice'){ const n=u.id==='t6'?12:8; const types=u.id==='t6'?[...Array(n)].map((_,i)=>i<4?'break1':i<8?'break':'break3'):[...Array(n)].map(()=>pick(u.types)); runQs({title:'Practice · Unit '+(ui+1),back,mode:'set',qs:types.map(trQ),onEnd:()=>markStep(key,'practice')}); }
+   else if(s==='shelach') runQs({title:'Break It Up · Shelach',back,mode:'set',qs:[...Array(10)].map((_,i)=>breakQ(i<3?1:i<7?2:3,'shelach')),onEnd:()=>markStep(key,'shelach')});
+   else if(s==='quiz'){ const n=10; const types=u.id==='t6'?[...Array(n)].map((_,i)=>i<8?['break1','break','break','break3'][i%4]:pick(TU().slice(0,ui).flatMap(t=>t.types))):[...Array(n)].map((_,i)=>i<6||!ui?pick(u.types):pick(TU().slice(0,ui).flatMap(t=>t.types)));
+    runQs({title:'Quiz · Unit '+(ui+1),back,mode:'quiz',qs:types.map(trQ),pass:8,onPass:()=>{ markDone('tr',ui); markStep(key,'quiz'); }}); }
+   else { const g=s.slice(2); runQs({title:(g==='stopgo'?'Stop or Keep Going?':'Stop Sign Count'),back,mode:'set',fast:g==='stopgo',qs:[...Array(g==='stopgo'?12:6)].map(()=>trWordQ(g)),onEnd:()=>markStep(key,'g_'+g)}); } }); }
+
+ /* ================= PASUK WORKSHOP ================= */
+ const WK=()=>D().WORK;
+ const workPasuk=wi=>{ const W=WK()[wi]; const p=PES().find(p=>p.ref===W.ref&&p.t.length===W.words.length); return p?{t:p.t,s:sList(p),ref:p.ref}:null; };
+ function pwLab(){ clearTimers(); BACK=hub;
+  frame('Pasuk Workshop','<span class="clab-he">לוֹמְדִים פָּסוּק</span>','page',`<div class="clab-card"><div class="clab-teach"><p>This is where it all comes together. For each pasuk:</p><p><b>1.</b> Find the stop signs and break it into parts. <b>2.</b> Figure out every word with your prefixes, suffixes, shorashim and milim. <b>3.</b> Put each part together. <b>4.</b> Read the whole pasuk on your own!</p></div>
+   ${pathHTML('pw',WK().length,i=>WK()[i].ref,i=>{const Pq=workPasuk(i);return Pq?Pq.t.slice(0,3).map(noTrop).join(' '):'';})}</div>`);
+  bodyEl().querySelectorAll('.clab-unit b').forEach(b=>b.classList.add('clab-he')); wireUnits(workshop); }
+ function workshop(wi){ const W=WK()[wi], Pq=workPasuk(wi); if(!Pq) return pwLab(); BACK=pwLab; QUIT=pwLab; clearTimers();
+  const N=Pq.t.length, chunkOf=[]; let c=0; Pq.t.forEach((_,i)=>{ chunkOf.push(c); if(Pq.s[i]) c++; }); const nCh=Math.max(c,chunkOf[N-1]+1);
+  const want=Pq.s.map((s,i)=>!!s&&i<N-1); let stage=1, cur=0, pendCh=null; const wordDone=new Set(), chDone=new Set();
+  const allM=uniq(WK().flatMap(w=>w.words.map(x=>x.m)));
+  const render=()=>{ let body='';
+   if(stage===1) body=`<h3>Step 1: Break it into parts</h3><div class="pasuk">${Pq.t.map((w,i)=>`<span class="tw">${w}</span>${i<N-1?`<button type="button" class="gap" data-i="${i}" aria-label="Break after word ${i+1}"></button>`:''}`).join('')}</div><p class="ref">${W.ref}</p>
+    ${how(TRHOW.break)}<div class="clab-row clab-center">${T().quiet('Show me','data-a="show"')}${T().main(T().WORDS.check,'data-a="chk"')}</div><div class="fbx"></div>`;
+   else { const chunks=[...Array(nCh)].map((_,k)=>Pq.t.map((w,i)=>({w,i})).filter(o=>chunkOf[o.i]===k));
+    body=`<h3>${stage===2?'Step 2 and 3: Figure out each word, then each part':'Step 4: Read the whole pasuk'}</h3>
+     <div style="display:grid;gap:10px">${chunks.map((ch,k)=>`<div class="chunkp ${chDone.has(k)?'done':''}">${ch.map(o=>`<span class="wsw ${wordDone.has(o.i)?'ok':o.i===cur&&stage===2&&pendCh==null?'now':''}"><span class="clab-trop">${o.w}</span>${wordDone.has(o.i)?`<small>${E(W.words[o.i].m)}</small>`:''}</span>`).join('')}${chDone.has(k)?`<p style="width:100%;direction:ltr;font-weight:700">${E(W.chunks[k]||'')}</p>`:''}</div>`).join('')}</div><div class="askw"></div>
+     ${stage===3?`<div class="clab-teach" style="text-align:center"><p style="font-weight:800">${W.chunks.map(E).join(' ')}</p><p class="ref" style="text-align:center">${W.ref}</p><p>Now read the pasuk out loud, one part at a time, and say what it means. You did it on your own!</p></div><div class="clab-row clab-center">${T().main('I can learn this pasuk!','data-a="fin"')}</div>`:''}`; }
+   frame('Pasuk Workshop',W.ref,'run',`<div class="clab-card">${body}</div>`); const B=bodyEl();
+   if(stage===1){ const on=new Set(); B.querySelectorAll('.gap').forEach(g=>g.onclick=()=>{ const i=+g.dataset.i; if(on.has(i)) on.delete(i); else on.add(i); g.classList.toggle('on'); snd('tap'); });
+    const check=reveal=>{ let ok=true; B.querySelectorAll('.gap').forEach(g=>{ const i=+g.dataset.i; g.disabled=true; g.classList.remove('on'); if(want[i]&&on.has(i)) g.classList.add('ok'); else if(want[i]){ g.classList.add('miss'); ok=false; } else if(on.has(i)){ g.classList.add('bad'); ok=false; } });
+     snd(ok&&!reveal?'right':'wrong'); B.querySelector('.fbx').innerHTML=`<div class="clab-fb ${ok&&!reveal?'good':'bad'}">${ok&&!reveal?'Great! The pasuk has '+nCh+' parts.':'Here are the parts. Each stop sign ends a part.'}</div><div class="clab-row clab-center">${T().main('Start on the words','data-a="go2"')}</div>`;
+     B.querySelector('[data-a=chk]').disabled=true; B.querySelector('[data-a=show]').disabled=true; B.querySelector('[data-a=go2]').onclick=()=>{ snd('tap'); stage=2; render(); }; };
+    B.querySelector('[data-a=chk]').onclick=()=>check(false); B.querySelector('[data-a=show]').onclick=()=>check(true); return; }
+   if(stage===3){ B.querySelector('[data-a=fin]').onclick=()=>{ snd('win'); markDone('pw',wi); pwLab(); }; return; }
+   const box=B.querySelector('.askw');
+   if(pendCh!=null){ const k=pendCh; const opts=shuffle(uniq(W.chunks)).slice(0,4); if(opts.indexOf(W.chunks[k])<0) opts[0]=W.chunks[k]; const ch=shuffle(opts); X.curW={chunk:k,right:W.chunks[k]};
+    const words=Pq.t.map((w,i)=>i).filter(i=>chunkOf[i]===k);
+    box.innerHTML=`<div class="clab-pas" style="gap:12px"><p class="clab-q">Part ${k+1} is done! Which English matches this part?</p><div class="pasuk" style="justify-content:center">${words.map(i=>`<span class="tw hi">${noTrop(Pq.t[i])}</span>`).join('')}</div>
+     <div class="clab-opts">${ch.map((c,i)=>`<button type="button" class="tlk tlk-tile clab-opt" data-i="${i}">${E(c)}</button>`).join('')}</div>
+     ${how('Read the meanings under the words of this part, from right to left. Put them together into one English sentence. Which choice says that?')}<div class="fbx"></div></div>`;
+    box.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ const ok=ch[+b.dataset.i]===W.chunks[k]; snd(ok?'right':'wrong'); if(!ok){ b.classList.add('wrong'); b.disabled=true; box.querySelector('.fbx').innerHTML=`<div class="clab-fb bad">Not this one. The words in this part mean: ${words.map(i=>E(W.words[i].m)).join(' · ')}</div>`; return; }
+     chDone.add(k); pendCh=null; if(cur>=N) stage=3; render(); }); return; }
+   const x=W.words[cur]; X.curW={x,want};
+   const done1=()=>{ wordDone.add(cur); const k=chunkOf[cur]; cur++; if(Pq.t.every((_,i)=>chunkOf[i]!==k||wordDone.has(i))) pendCh=k; render(); };
+   if(x.parts.length>=2){ const letters=h=>String(h).replace(/[֑-ׇ]/g,''); const own=x.parts.map(p=>letters(p.h));
+    const extra=shuffle(uniq(WK().flatMap(w=>w.words.flatMap(y=>y.parts)).filter(p=>own.indexOf(letters(p.h))<0).map(p=>JSON.stringify(p)))).slice(0,2).map(t=>JSON.parse(t));
+    const tiles=shuffle([...x.parts.map((p,i)=>({p,i})),...extra.map(p=>({p,i:-1}))]); let built=[]; X.curW={x,want,tiles};
+    box.innerHTML=`<div class="clab-pas" style="gap:12px"><p class="clab-q">Build <span class="clab-trop" style="font-size:30px">${noTrop(Pq.t[cur])}</span> from its pieces. Tap them in order.</p>${LEGEND}<div class="slots"></div>
+     <div class="bank">${tiles.map((t,j)=>`<button type="button" class="tlk tlk-tile piece ${t.p.k}" data-j="${j}">${t.p.h}<small>${E(t.p.m)}</small></button>`).join('')}</div>
+     <div class="clab-row clab-center">${T().quiet('Undo','data-a="undo"')}${T().main(T().WORDS.check,'data-a="wchk"')}</div>
+     ${how('Look at the word. Which letters are stuck on the front (prefix)? Which letters are at the end (suffix)? The middle is the shoresh or base word. Tap the pieces from the front of the word: prefix, then base, then suffix.')}<div class="fbx"></div></div>`;
+    const draw=()=>{ box.querySelector('.slots').innerHTML=built.map(j=>`<span class="piece ${tiles[j].p.k}">${tiles[j].p.h}</span>`).join(''); box.querySelectorAll('.bank .piece').forEach(b=>b.disabled=built.indexOf(+b.dataset.j)>=0); };
+    box.querySelectorAll('.bank .piece').forEach(b=>b.onclick=()=>{ built.push(+b.dataset.j); snd('tap'); draw(); });
+    box.querySelector('[data-a=undo]').onclick=()=>{ built.pop(); draw(); };
+    box.querySelector('[data-a=wchk]').onclick=()=>{ if(!built.length) return; const ok=built.length===x.parts.length&&built.every((j,n)=>tiles[j].i===n); snd(ok?'right':'wrong');
+     if(!ok){ box.querySelector('.fbx').innerHTML=`<div class="clab-fb bad">Not quite. This word has ${x.parts.length} pieces: ${x.parts.map(p=>`<span class="clab-he">${p.h}</span> (${E(p.m)})`).join(' + ')}. Try again.</div>`; built=[]; draw(); return; }
+     box.querySelector('.fbx').innerHTML=`<div class="clab-fb good">Yes! ${x.parts.map(p=>E(p.m)).join(' + ')} = <b>${E(x.m)}</b></div><div class="clab-row clab-center">${T().main(T().WORDS.next,'data-a="wnx"')}</div>`;
+     box.querySelectorAll('.bank .piece,[data-a=undo],[data-a=wchk]').forEach(b=>b.disabled=true); box.querySelector('[data-a=wnx]').onclick=()=>{ snd('tap'); done1(); }; };
+    draw(); return; }
+   const ch=shuffle([x.m,...shuffle(allM.filter(m=>m!==x.m&&!wordsOf(m).some(w=>wordsOf(x.m).indexOf(w)>=0))).slice(0,3)]);
+   box.innerHTML=`<div class="clab-pas" style="gap:12px"><p class="clab-q">What does <span class="clab-trop" style="font-size:30px">${noTrop(Pq.t[cur])}</span> mean here?</p>
+    ${x.parts.length?`${LEGEND}${partsHTML(x.parts)}`:''}<div class="clab-opts">${ch.map((c,i)=>`<button type="button" class="tlk tlk-tile clab-opt" data-i="${i}">${E(c)}</button>`).join('')}</div>
+    ${how(x.parts.length?'The box shows the shoresh or base word and what it means. Which meaning fits this word in this pasuk?':'This word has no prefix or suffix. It is a name or a word you know from the Milim Lab. Which meaning fits?')}<div class="fbx"></div></div>`;
+   box.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ const ok=ch[+b.dataset.i]===x.m; snd(ok?'right':'wrong'); if(!ok){ b.classList.add('wrong'); b.disabled=true; box.querySelector('.fbx').innerHTML=`<div class="clab-fb bad">Not this one. ${x.parts.length?'Look at the box: '+x.parts.map(p=>E(p.m)).join(' + ')+'.':'Read the words around it: what would make sense here?'} Try again.</div>`; return; }
+    done1(); }); };
+  render(); }
+
+ /* ================= TIMELINE (English or Hebrew) ================= */
+ const CARDS=[["Creation","שֵׁשֶׁת יְמֵי בְּרֵאשִׁית","Day 0",1],["10 Generations: Adam to Noach","עֲשָׂרָה דּוֹרוֹת מֵאָדָם עַד נֹחַ","0 – 1056",2],["The Flood","הַמַּבּוּל","1656",3],["10 Generations: Noach to Avraham","עֲשָׂרָה דּוֹרוֹת מִנֹּחַ עַד אַבְרָהָם","1056 – 1948",4],
+  ["Life of Avraham","חַיֵּי אַבְרָהָם","1948 – 2123",5],["Tower of Bavel","מִגְדַּל בָּבֶל","1996",6],["Lech-Lecha","לֶךְ לְךָ","2023",7],["Life of Yitzchak","חַיֵּי יִצְחָק","2048 – 2228",8],["Life of Yaakov","חַיֵּי יַעֲקֹב","2108 – 2255",9],["Life of Yosef","חַיֵּי יוֹסֵף","2199 – 2309",10],
+  ["The Egyptian Exile","גָּלוּת מִצְרַיִם","2309 – 2448",11],["The Ten Makos","עֶשֶׂר הַמַּכּוֹת","2448",12],["The Exodus","יְצִיאַת מִצְרַיִם","2448",13],["Matan Torah","מַתַּן תּוֹרָה","2448",14],["Forty Year Trek","אַרְבָּעִים שָׁנָה בַּמִּדְבָּר","2448 – 2488",15],
+  ["Era of Judges","הַשּׁוֹפְטִים, שָׁאוּל וְדָוִד","2488 – 2892",16],["The First Bais Hamikdash","בַּיִת רִאשׁוֹן","2928 – 3338",17],["First Bais Hamikdash Destroyed","חֻרְבַּן בַּיִת רִאשׁוֹן","3338",18],["The Babylonian Exile","גָּלוּת בָּבֶל","3338",19],["The Persian Empire","מַלְכוּת פָּרַס","3400",20],
+  ["Purim","פּוּרִים","3405",21],["The Second Bais Hamikdash","בַּיִת שֵׁנִי","3408",22],["The Greek Empire","מַלְכוּת יָוָן","3442",23],["Chanuka","חֲנֻכָּה","3622",24],["Second Bais Hamikdash Destroyed","חֻרְבַּן בַּיִת שֵׁנִי","3828",25],
+  ["Galus Edom (The Roman Exile)","גָּלוּת אֱדוֹם","3828",26],["The Mishna","הַמִּשְׁנָה","3948",27],["The Gemara","הַגְּמָרָא","4260",28],["The Gaonim","הַגְּאוֹנִים בְּבָבֶל","4450 – 4800",29],["Rashi","רַשִׁ״י","4800",30],
+  ["The Crusades","מַסְעֵי הַצְּלָב","4856",31],["The Rambam","הָרַמְבַּ״ם","4894",32],["The Expulsion from Spain","גֵּרוּשׁ סְפָרַד","5252",33],["Shulchan Aruch","שֻׁלְחָן עָרוּךְ","5325",34],["The Baal Shem Tov","הַבַּעַל שֵׁם טוֹב","5494",35],
+  ["The Vilna Gaon","הַגְּרָ״א וְהַיְשִׁיבוֹת","5558",36],["Jews Return to Eretz Yisrael (5570)","עֲלִיָּה לְאֶרֶץ יִשְׂרָאֵל","5570",37],["Sarah Schenirer","שָׂרָה שְׁנִירֶר וּבֵית יַעֲקֹב","5677",38],["The Holocaust","חֻרְבַּן אֵירוֹפָּה","5699",39],
+  ["Jews Return to Eretz Yisrael (5708)","שִׁיבָה לְאֶרֶץ יִשְׂרָאֵל","5708",40],["Jews in America","יְהוּדֵי אָמֵרִיקָה","5700 – 57__",41],["Mashiach","מָשִׁיחַ וְקִבּוּץ גָּלֻיּוֹת","Year: ____",42],["The Third Bais Hamikdash","בַּיִת שְׁלִישִׁי","Year: ____",43],["Techias Hamesim","תְּחִיַּת הַמֵּתִים","Year: ____",44]];
+ /* the card pictures (publisher's permission). 12, 13, 33 and 39 have no picture on purpose (picture rules): the card shows its name */
+ const PICS={1:'tlab-card-01.webp',2:'tlab-card-02.webp',3:'tlab-card-03.webp',4:'tlab-card-04.webp',5:'tlab-card-05.webp',6:'tlab-card-06.webp',7:'tlab-card-07.webp',8:'tlab-card-08.webp',9:'tlab-card-09.webp',10:'tlab-card-10.webp',
+  11:'tlab-card-11.webp',14:'tlab-card-14.webp',15:'tlab-card-15.webp',16:'tlab-card-16.webp',17:'tlab-card-17.webp',18:'tlab-card-18.webp',19:'tlab-card-19.webp',20:'tlab-card-20.webp',21:'tlab-card-21.webp',22:'tlab-card-22.webp',
+  23:'tlab-card-23.webp',24:'tlab-card-24.webp',25:'tlab-card-25.webp',26:'tlab-card-26.webp',27:'tlab-card-27.webp',28:'tlab-card-28.webp',29:'tlab-card-29.webp',30:'tlab-card-30.webp',31:'tlab-card-31.webp',32:'tlab-card-32.webp',
+  34:'tlab-card-34.webp',35:'tlab-card-35.webp',36:'tlab-card-36.webp',37:'tlab-card-37.webp',38:'tlab-card-38.webp',40:'tlab-card-40.webp',41:'tlab-card-41.webp',42:'tlab-card-42.webp',43:'tlab-card-43.webp',44:'tlab-card-44.webp'};
+ const TALL={1:1,3:1,5:1,6:1,24:1,28:1,35:1,36:1,44:1};
+ const CY={},HE={},PIC={}; CARDS.forEach(([k,h,y,p])=>{ CY[k]=y; HE[k]=h; PIC[k]=p; });
+ const DATES12=[["1656","The Flood","הַמַּבּוּל",3],["1948","Avraham is born","אַבְרָהָם נוֹלַד",5],["2048","Yitzchak is born","יִצְחָק נוֹלַד",8],["2448","The Ten Makos, the Exodus and Matan Torah","עֶשֶׂר הַמַּכּוֹת, יְצִיאַת מִצְרַיִם וּמַתַּן תּוֹרָה",14],
+  ["2488","Bnei Yisrael enter Eretz Yisrael","בְּנֵי יִשְׂרָאֵל נִכְנְסוּ לְאֶרֶץ יִשְׂרָאֵל",16],["2928","The First Bais Hamikdash is built","בִּנְיַן בַּיִת רִאשׁוֹן",17],["3338","The First Bais Hamikdash is destroyed","חֻרְבַּן בַּיִת רִאשׁוֹן",18],
+  ["3405","Purim","פּוּרִים",21],["3408","The Second Bais Hamikdash is built","בִּנְיַן בַּיִת שֵׁנִי",22],["3622","Chanuka","חֲנֻכָּה",24],["3828","The Second Bais Hamikdash is destroyed","חֻרְבַּן בַּיִת שֵׁנִי",25]];
+ const DY={},DPIC={}; DATES12.forEach(([y,k,h,p])=>{ DY[k]=y; if(!(k in HE)) HE[k]=h; DPIC[k]=p; });
+ const DFACT={"The Flood":"Noach was 600 years old when the Mabul came.","Avraham is born":"Avraham was born 292 years after the Flood, and Noach was still alive!","Yitzchak is born":"Avraham was 100 years old and Sarah was 90 when Yitzchak was born.",
+  "The Ten Makos, the Exodus and Matan Torah":"Yetzias Mitzrayim, Krias Yam Suf and Matan Torah were all in one year!",
+  "Bnei Yisrael enter Eretz Yisrael":"After 40 years in the midbar, Yehoshua led Bnei Yisrael into Eretz Yisrael.","The First Bais Hamikdash is built":"Shlomo Hamelech built the first Bais Hamikdash 480 years after Yetzias Mitzrayim.",
+  "The First Bais Hamikdash is destroyed":"Nevuchadnetzar, king of Bavel, destroyed the first Bais Hamikdash on Tisha B'Av.","Purim":"Haman's plan was turned upside down. That is the idea of וְנַהֲפוֹךְ הוּא!",
+  "The Second Bais Hamikdash is built":"The second Bais Hamikdash was built 70 years after the first was destroyed, just as Yirmiyahu said.","Chanuka":"The Chashmonaim found one jar of pure oil, and it burned for eight days.",
+  "The Second Bais Hamikdash is destroyed":"The Romans destroyed the second Bais Hamikdash on Tisha B'Av. We are still in Galus Edom today."};
+ const FHE={"The Tower of Bavel was built 340 years after the Flood. Avraham was 48 years old then!": "מִגְדַּל בָּבֶל נִבְנָה 340 שָׁנָה אַחֲרֵי הַמַּבּוּל. אַבְרָהָם הָיָה אָז בֶּן 48!", "425 years passed from the time Avraham went Lech-Lecha until Matan Torah.": "425 שָׁנָה עָבְרוּ מִלֶּךְ לְךָ שֶׁל אַבְרָהָם עַד מַתַּן תּוֹרָה.", "Avraham was Yosef's great-grandfather: Avraham → Yitzchak → Yaakov → Yosef.": "אַבְרָהָם הָיָה סַבָּא רַבָּא שֶׁל יוֹסֵף: אַבְרָהָם ← יִצְחָק ← יַעֲקֹב ← יוֹסֵף.", "Yitzchak was 60 years old when Yaakov and Eisav were born.": "יִצְחָק הָיָה בֶּן 60 כְּשֶׁנּוֹלְדוּ יַעֲקֹב וְעֵשָׂו.", "Bnei Yisrael were in Mitzrayim for 210 years before Hashem took them out.": "בְּנֵי יִשְׂרָאֵל הָיוּ בְּמִצְרַיִם 210 שָׁנָה עַד שֶׁה׳ הוֹצִיא אוֹתָם.", "After 40 years in the midbar, Yehoshua brought Bnei Yisrael into Eretz Yisrael. Then came the Shoftim.": "אַחֲרֵי 40 שָׁנָה בַּמִּדְבָּר הֵבִיא יְהוֹשֻׁעַ אֶת בְּנֵי יִשְׂרָאֵל לְאֶרֶץ יִשְׂרָאֵל. אַחֲרָיו בָּאוּ הַשּׁוֹפְטִים.", "The first Bais Hamikdash stood for 410 years. The second stood for 420 years.": "בַּיִת רִאשׁוֹן עָמַד 410 שָׁנָה. בַּיִת שֵׁנִי עָמַד 420 שָׁנָה.", "Persia ruled first. Then Alexander of Greece took over the Persian empire.": "קֹדֶם מָשְׁלָה פָּרַס. אַחַר כָּךְ כָּבַשׁ אֲלֶכְּסַנְדֶּר מוּקְדוֹן אֶת מַלְכוּת פָּרַס.", "Purim happened when Persia ruled. Chanuka happened when Greece ruled, 217 years later.": "נֵס פּוּרִים הָיָה בִּזְמַן מַלְכוּת פָּרַס. נֵס חֲנֻכָּה הָיָה בִּזְמַן מַלְכוּת יָוָן, 217 שָׁנָה אַחַר כָּךְ.", "There are four galuyos: Bavel, Paras, Yavan and Edom. We are still in Galus Edom today.": "יֵשׁ אַרְבַּע גָּלֻיּוֹת: בָּבֶל, פָּרַס, יָוָן וֶאֱדוֹם. הַיּוֹם אֲנַחְנוּ עֲדַיִן בְּגָלוּת אֱדוֹם.", "Yosef was 17 years old when his brothers sold him.": "יוֹסֵף הָיָה בֶּן 17 כְּשֶׁאֶחָיו מָכְרוּ אוֹתוֹ.", "The Ten Makos came almost 200 years after Yaakov passed away.": "עֶשֶׂר הַמַּכּוֹת בָּאוּ כִּמְעַט 200 שָׁנָה אַחֲרֵי פְּטִירַת יַעֲקֹב.", "Nevuchadnetzar, king of Bavel, destroyed the first Bais Hamikdash on Tisha B'Av.": "נְבוּכַדְנֶצַּר מֶלֶךְ בָּבֶל הֶחֱרִיב אֶת בַּיִת רִאשׁוֹן בְּתִשְׁעָה בְּאָב.", "Only three years after Purim, the second Bais Hamikdash was built.": "רַק שָׁלֹשׁ שָׁנִים אַחֲרֵי פּוּרִים נִבְנָה בַּיִת שֵׁנִי.", "The Romans destroyed the second Bais Hamikdash 206 years after the miracle of Chanuka.": "הָרוֹמָאִים הֶחֱרִיבוּ אֶת בַּיִת שֵׁנִי 206 שָׁנָה אַחֲרֵי נֵס חֲנֻכָּה.", "Noach lived until Avraham was 58 years old!": "נֹחַ חַי עַד שֶׁאַבְרָהָם הָיָה בֶּן 58!", "We count the Omer for seven weeks, from Pesach until Shavuos, the day of Matan Torah.": "סוֹפְרִים אֶת הָעֹמֶר שִׁבְעָה שָׁבוּעוֹת, מִפֶּסַח עַד שָׁבוּעוֹת, יוֹם מַתַּן תּוֹרָה.", "Galus Bavel lasted 70 years, just as the navi Yirmiyahu said.": "גָּלוּת בָּבֶל נִמְשְׁכָה 70 שָׁנָה, כְּמוֹ שֶׁאָמַר יִרְמְיָהוּ הַנָּבִיא.", "From Avraham Avinu all the way to Shlomo Hamelech building the Bais Hamikdash.": "מֵאַבְרָהָם אָבִינוּ וְעַד שֶׁשְּׁלֹמֹה הַמֶּלֶךְ בָּנָה אֶת בֵּית הַמִּקְדָּשׁ.", "These are the four galuyos in order: Bavel, Paras (Purim), Yavan (Chanuka) and Edom.": "אֵלֶּה אַרְבַּע הַגָּלֻיּוֹת לְפִי הַסֵּדֶר: בָּבֶל, פָּרַס (פּוּרִים), יָוָן (חֲנֻכָּה) וֶאֱדוֹם.", "Purim was just 3 years before the second Bais Hamikdash was built.": "פּוּרִים הָיָה רַק 3 שָׁנִים לִפְנֵי שֶׁנִּבְנָה בַּיִת שֵׁנִי.", "A trick to remember: 3338 + 70 = 3408.": "דֶּרֶךְ לִזְכֹּר: 3338 + 70 = 3408.", "That was 1,959 years ago. We daven every day for the third Bais Hamikdash.": "זֶה הָיָה לִפְנֵי 1,959 שָׁנָה. אֲנַחְנוּ מִתְפַּלְּלִים כָּל יוֹם עַל בַּיִת שְׁלִישִׁי.", "Avraham was 48 at the Tower of Bavel and 75 when he went Lech-Lecha.": "אַבְרָהָם הָיָה בֶּן 48 בְּמִגְדַּל בָּבֶל וּבֶן 75 בְּלֶךְ לְךָ.", "Yaakov was 91 years old when Yosef was born.": "יַעֲקֹב הָיָה בֶּן 91 כְּשֶׁנּוֹלַד יוֹסֵף.", "Achashveirosh was the king of Persia.": "אֲחַשְׁוֵרוֹשׁ הָיָה מֶלֶךְ פָּרַס.", "Rashi was still alive during the First Crusade.": "רַשִׁ״י עוֹד הָיָה חַי בְּמַסַּע הַצְּלָב הָרִאשׁוֹן.", "Rav Chaim of Volozhin, a talmid of the Vilna Gaon, opened the famous Volozhin yeshiva.": "רַבִּי חַיִּים מִוּוֹלוֹזִ׳ין, תַּלְמִיד הַגְּרָ״א, פָּתַח אֶת יְשִׁיבַת וּוֹלוֹזִ׳ין הַמְּפֻרְסֶמֶת.", "The second Bais Hamikdash was built while Persia ruled. Greece took over later.": "בַּיִת שֵׁנִי נִבְנָה בִּזְמַן מַלְכוּת פָּרַס. יָוָן מָשְׁלָה אַחַר כָּךְ.", "Rav Yosef Karo was a small child when his family was forced out of Spain.": "רַבִּי יוֹסֵף קָארוֹ הָיָה יֶלֶד קָטָן כְּשֶׁמִּשְׁפַּחְתּוֹ גֹּרְשָׁה מִסְּפָרַד.", "After the Gemara was finished, the Gaonim in Bavel led Klal Yisrael.": "אַחֲרֵי שֶׁנִּגְמְרָה הַגְּמָרָא, הַגְּאוֹנִים בְּבָבֶל הִנְהִיגוּ אֶת כְּלַל יִשְׂרָאֵל.", "Bnei Yisrael stayed in the midbar for 40 years because of the Chet Hameraglim.": "בְּנֵי יִשְׂרָאֵל נִשְׁאֲרוּ בַּמִּדְבָּר 40 שָׁנָה בִּגְלַל חֵטְא הַמְּרַגְּלִים.", "Rabbi Yehuda Hanasi wrote down the Mishna so that the Torah Sheb'al Peh would not be forgotten.": "רַבִּי יְהוּדָה הַנָּשִׂיא כָּתַב אֶת הַמִּשְׁנָה כְּדֵי שֶׁהַתּוֹרָה שֶׁבְּעַל פֶּה לֹא תִּשָּׁכַח.", "We still use the Shulchan Aruch to learn halacha today.": "גַּם הַיּוֹם לוֹמְדִים הֲלָכָה מֵהַשֻּׁלְחָן עָרוּךְ.", "There were 10 generations from Noach to Avraham.": "הָיוּ 10 דּוֹרוֹת מִנֹּחַ עַד אַבְרָהָם.", "Avraham was 48 when he saw the Tower of Bavel. He did not join them.": "אַבְרָהָם הָיָה בֶּן 48 כְּשֶׁרָאָה אֶת מִגְדַּל בָּבֶל. הוּא לֹא הִצְטָרֵף אֲלֵיהֶם.", "The pasuk tells us: Avraham was 75 years old when he left Charan.": "הַפָּסוּק אוֹמֵר: אַבְרָהָם הָיָה בֶּן 75 כְּשֶׁיָּצָא מֵחָרָן.", "One year for each day that the Meraglim spied out the land.": "שָׁנָה אַחַת לְכָל יוֹם שֶׁהַמְּרַגְּלִים תָּרוּ אֶת הָאָרֶץ.", "We wait every day for Mashiach to come, the third Bais Hamikdash to be built, and Techias Hamesim.": "כָּל יוֹם אֲנַחְנוּ מְחַכִּים לְבִיאַת הַמָּשִׁיחַ, לְבִנְיַן בַּיִת שְׁלִישִׁי וְלִתְחִיַּת הַמֵּתִים.", "Noach was born in 1056 and lived until 2006, when Avraham was 58.": "נֹחַ נוֹלַד בִּשְׁנַת 1056 וְחַי עַד שְׁנַת 2006, כְּשֶׁאַבְרָהָם הָיָה בֶּן 58.", "Avraham lived until Yaakov was 15. Rashi says Yaakov cooked the lentil soup on the day Avraham passed away.": "אַבְרָהָם חַי עַד שֶׁיַּעֲקֹב הָיָה בֶּן 15. רַשִׁ״י אוֹמֵר שֶׁיַּעֲקֹב בִּשֵּׁל אֶת נְזִיד הָעֲדָשִׁים בַּיּוֹם שֶׁאַבְרָהָם נִפְטַר.", "Yitzchak was even still alive when Yosef was sold!": "יִצְחָק עוֹד הָיָה חַי אֲפִלּוּ כְּשֶׁיּוֹסֵף נִמְכַּר!", "Yosef was born 76 years after Avraham passed away.": "יוֹסֵף נוֹלַד 76 שָׁנָה אַחֲרֵי פְּטִירַת אַבְרָהָם.", "The hard work in Mitzrayim began only after Yosef and his brothers had passed away.": "הַשִּׁעְבּוּד בְּמִצְרַיִם הִתְחִיל רַק אַחֲרֵי שֶׁיּוֹסֵף וְאֶחָיו נִפְטְרוּ.", "From the Mishna to the Holocaust is more than 1,700 years.": "מֵהַמִּשְׁנָה עַד הַשּׁוֹאָה עָבְרוּ יוֹתֵר מִ-1,700 שָׁנָה.", "Chazal say that Daryavesh, who allowed the Bais Hamikdash to be built, was the son of Esther.": "חֲזַ״ל אוֹמְרִים שֶׁדָּרְיָוֶשׁ, שֶׁהִרְשָׁה לִבְנוֹת אֶת בֵּית הַמִּקְדָּשׁ, הָיָה בְּנָהּ שֶׁל אֶסְתֵּר.", "The pasuk in Melachim says it was 480 years. Your math matches the pasuk!": "הַפָּסוּק בִּמְלָכִים אוֹמֵר 480 שָׁנָה. הַחֶשְׁבּוֹן שֶׁלָּךְ מַתְאִים לַפָּסוּק!", "Matan Torah was 3,339 years ago, and we still learn the same Torah today!": "מַתַּן תּוֹרָה הָיָה לִפְנֵי 3,339 שָׁנָה, וְהַיּוֹם אֲנַחְנוּ עֲדַיִן לוֹמְדִים אֶת אוֹתָהּ תּוֹרָה!", "Noach was 600 years old when the Mabul came.": "נֹחַ הָיָה בֶּן 600 כְּשֶׁבָּא הַמַּבּוּל.", "Avraham was born 292 years after the Flood, and Noach was still alive!": "אַבְרָהָם נוֹלַד 292 שָׁנָה אַחֲרֵי הַמַּבּוּל, וְנֹחַ עוֹד הָיָה חַי!", "The second Bais Hamikdash was built 70 years after the first was destroyed, just as Yirmiyahu said.": "בַּיִת שֵׁנִי נִבְנָה 70 שָׁנָה אַחֲרֵי חֻרְבַּן בַּיִת רִאשׁוֹן, כְּמוֹ שֶׁאָמַר יִרְמְיָהוּ.", "Avraham was 100 years old and Sarah was 90 when Yitzchak was born.": "אַבְרָהָם הָיָה בֶּן 100 וְשָׂרָה בַּת 90 כְּשֶׁנּוֹלַד יִצְחָק.", "Yetzias Mitzrayim, Krias Yam Suf and Matan Torah were all in one year!": "יְצִיאַת מִצְרַיִם, קְרִיעַת יַם סוּף וּמַתַּן תּוֹרָה הָיוּ כֻּלָּם בְּשָׁנָה אַחַת!", "After 40 years in the midbar, Yehoshua led Bnei Yisrael into Eretz Yisrael.": "אַחֲרֵי 40 שָׁנָה בַּמִּדְבָּר הִכְנִיס יְהוֹשֻׁעַ אֶת בְּנֵי יִשְׂרָאֵל לְאֶרֶץ יִשְׂרָאֵל.", "Shlomo Hamelech built the first Bais Hamikdash 480 years after Yetzias Mitzrayim.": "שְׁלֹמֹה הַמֶּלֶךְ בָּנָה אֶת בַּיִת רִאשׁוֹן 480 שָׁנָה אַחֲרֵי יְצִיאַת מִצְרַיִם.", "Haman's plan was turned upside down. That is the idea of וְנַהֲפוֹךְ הוּא!": "הַתָּכְנִית שֶׁל הָמָן הִתְהַפְּכָה. זֶה הָרַעְיוֹן שֶׁל וְנַהֲפוֹךְ הוּא!", "The Chashmonaim found one jar of pure oil, and it burned for eight days.": "הַחַשְׁמוֹנָאִים מָצְאוּ פַּךְ אֶחָד שֶׁל שֶׁמֶן טָהוֹר, וְהוּא דָּלַק שְׁמוֹנָה יָמִים.", "The Romans destroyed the second Bais Hamikdash on Tisha B'Av. We are still in Galus Edom today.": "הָרוֹמָאִים הֶחֱרִיבוּ אֶת בַּיִת שֵׁנִי בְּתִשְׁעָה בְּאָב. הַיּוֹם אֲנַחְנוּ עֲדַיִן בְּגָלוּת אֱדוֹם."};
+ const factOf=f=>HEB()&&FHE[f]?FHE[f]:f;
+ const HEW={BEFORE:'לִפְנֵי',AFTER:'אַחֲרֵי',Yes:'כֵּן',No:'לֹא'};
+ const HEB=()=>P.tl.lang==='he';
+ const L2=(en,he)=>HEB()&&he?he:en;
+ const Qx=(en,he)=>({en,he});
+ const nameOf=k=>HEB()&&HEW[k]?HEW[k]:HEB()&&HE[k]?HE[k]:k;
+ const yearOf=k=>CY[k]||DY[k];
+ const picOf=k=>PIC[k]||DPIC[k]||0;
+ const imgHTML=(p,name,cls)=>p&&PICS[p]?`<img src="/pics/${PICS[p]}" alt="${E(name||'')}" class="${cls||''}${TALL[p]?' tall':''}" loading="lazy">`:`<span class="nopic">${E(name||'')}</span>`;
+ const TPL={first:Qx("Which came first?","מָה הָיָה קֹדֶם?"),last:Qx("Which came last?","מָה הָיָה אַחֲרוֹן?"),order:Qx("Tap the cards in order, first to last.","לַחֲצִי עַל הַכְּרָטִיסִים לְפִי הַסֵּדֶר, מֵהָרִאשׁוֹן עַד הָאַחֲרוֹן."),
+  which:Qx("Which card is this?","אֵיזֶה כַּרְטִיס זֶה?"),when:Qx("What year did this happen?","בְּאֵיזוֹ שָׁנָה זֶה קָרָה?")};
+ const PARTS={first:Qx("Which came first?","מָה הָיָה קֹדֶם?"),last:Qx("Which came last?","מָה הָיָה אַחֲרוֹן?"),ba:Qx("Before or after?","לִפְנֵי אוֹ אַחֲרֵי?"),order:Qx("Put it in order","לְפִי הַסֵּדֶר"),
+  match:Qx("Match the year","בְּאֵיזוֹ שָׁנָה?"),fl:Qx("First and last","רִאשׁוֹן וְאַחֲרוֹן"),between:Qx("What comes in between?","מָה בָּאֶמְצַע?"),years:Qx("How many years?","כַּמָּה שָׁנִים?"),
+  think:Qx("Think about it","חִשְׁבִי"),alive:Qx("Alive at the same time?","חָיוּ בְּאוֹתוֹ זְמַן?"),what:Qx("Important Dates: what happened?","תַּאֲרִיכִים חֲשׁוּבִים: מָה קָרָה?"),
+  year:Qx("Important Dates: what year?","תַּאֲרִיכִים חֲשׁוּבִים: בְּאֵיזוֹ שָׁנָה?"),mem:Qx("Which came first? (from memory)","מָה הָיָה קֹדֶם? (בְּעַל פֶּה)"),use:Qx("Use the Important Dates","חֶשְׁבּוֹן עִם הַתַּאֲרִיכִים"),chal:Qx("Challenge","אֶתְגָּר")};
+ const TLHOW={first:Qx("Look at each card's year (tap Show the dates if you need them). The smaller year happened first.","הִסְתַּכְּלִי בַּשָּׁנָה שֶׁל כׇּל כַּרְטִיס. הַשָּׁנָה הַקְּטַנָּה יוֹתֵר הָיְתָה קֹדֶם."),
+  last:Qx("Look at each card's year. The biggest year happened last.","הִסְתַּכְּלִי בַּשָּׁנִים. הַשָּׁנָה הַגְּדוֹלָה בְּיוֹתֵר הָיְתָה אַחֲרוֹנָה."),
+  fl:Qx("Put the four cards in order in your head. Then pick the first one or the last one.","סַדְּרִי אֶת אַרְבַּעַת הַכְּרָטִיסִים בָּרֹאשׁ, וּבַחֲרִי אֶת הָרִאשׁוֹן אוֹ אֶת הָאַחֲרוֹן."),
+  ba:Qx("Compare the two years. If the first one is smaller, it was BEFORE.","הַשְׁוִי אֶת שְׁתֵּי הַשָּׁנִים. אִם הָרִאשׁוֹנָה קְטַנָּה יוֹתֵר, הִיא הָיְתָה לִפְנֵי."),
+  order:Qx("Tap the earliest card first, then the next one, all the way to the latest. Made a mistake? Tap Start over.","לַחֲצִי קֹדֶם עַל הַכַּרְטִיס הַמֻּקְדָּם בְּיוֹתֵר, וְכָךְ הָלְאָה עַד הָאַחֲרוֹן."),
+  match:Qx("Think of the Important Dates. Which year goes with this event?","חִשְׁבִי עַל הַתַּאֲרִיכִים הַחֲשׁוּבִים. אֵיזוֹ שָׁנָה מַתְאִימָה?"),
+  year:Qx("Remember the Important Dates. Use the dates just before and just after to help you.","זִכְרִי אֶת הַתַּאֲרִיכִים הַחֲשׁוּבִים. הַתַּאֲרִיכִים לְפָנָיו וְאַחֲרָיו יַעַזְרוּ לָךְ."),
+  what:Qx("Find the year in the Important Dates. What happened that year?","מִצְאִי אֶת הַשָּׁנָה בַּתַּאֲרִיכִים הַחֲשׁוּבִים. מָה קָרָה בָּהּ?"),
+  between:Qx("Put the two cards in order. Which card's year is in the middle?","סַדְּרִי אֶת שְׁנֵי הַכְּרָטִיסִים. אֵיזֶה כַּרְטִיס בָּא בָּאֶמְצַע?"),
+  years:Qx("Subtract: the bigger year minus the smaller year.","חַסְּרִי: הַשָּׁנָה הַגְּדוֹלָה פָּחוֹת הַשָּׁנָה הַקְּטַנָּה."),
+  use:Qx("Find both years in the Important Dates. Subtract: the bigger year minus the smaller year.","מִצְאִי אֶת שְׁתֵּי הַשָּׁנִים וְחַסְּרִי: הַגְּדוֹלָה פָּחוֹת הַקְּטַנָּה."),
+  chal:Qx("This year minus the year it happened.","הַשָּׁנָה הַזֹּאת פָּחוֹת הַשָּׁנָה שֶׁבָּהּ זֶה קָרָה."),
+  alive:Qx("When was the first person born, and how long did he live? Was he still alive in the year of the second?","מָתַי נוֹלַד הָרִאשׁוֹן, וְעַד מָתַי חַי? הַאִם עוֹד הָיָה חַי בַּשָּׁנָה שֶׁל הַשֵּׁנִי?"),
+  mem:Qx("Remember the Important Dates. The smaller year happened first.","זִכְרִי אֶת הַתַּאֲרִיכִים הַחֲשׁוּבִים. הַשָּׁנָה הַקְּטַנָּה הָיְתָה קֹדֶם."),
+  game:Qx("Which card happened earliest of all the cards left? Tap it. Two cards with the same year can go in either order. Stuck? Tap Show me.","אֵיזֶה כַּרְטִיס קָרָה הֲכִי מֻקְדָּם מִכׇּל הַכְּרָטִיסִים שֶׁנִּשְׁאֲרוּ? לַחֲצִי עָלָיו. תְּקוּעָה? לַחֲצִי עַל ״הַרְאִי לִי״."),
+  think:Qx("Read the years on the last three cards. What does a blank year mean?","קִרְאִי אֶת הַשָּׁנִים בִּשְׁלֹשֶׁת הַכְּרָטִיסִים הָאַחֲרוֹנִים. מָה פֵּרוּשׁ שָׁנָה רֵיקָה?")};
+ const qtext=q=>typeof q==='string'?L2(TPL[q].en,TPL[q].he):L2(q.en,q.he);
+ const Pk=(part,q,opts,ans,x)=>Object.assign({t:'pick',part,q,opts,ans},x||{}), Or=(part,q,items,x)=>Object.assign({t:'order',part,q,items},x||{}), Ty=(part,q,ans,x)=>Object.assign({t:'type',part,q,ans},x||{});
+ const H=(...ks)=>ks;
+ const idxD=k=>DATES12.findIndex(d=>d[1]===k);
+ function around(i){ const o=[]; if(i>0) o.push(L2('Just before: ','לִפְנֵי זֶה: ')+DATES12[i-1][0]+' – '+nameOf(DATES12[i-1][1])); if(i<DATES12.length-1) o.push(L2('Just after: ','אַחֲרֵי זֶה: ')+DATES12[i+1][0]+' – '+nameOf(DATES12[i+1][1])); return o; }
+ const NUM=k=>{ const y=CY[k]; return y==='Day 0'?0:parseInt(y,10); };
+ const SKIP={2:1,4:1,37:1,40:1,41:1,42:1,43:1,44:1};
+ const poolTo=max=>CARDS.filter(c=>c[3]<=max&&!SKIP[c[3]]).map(c=>c[0]);
+ const POINT=k=>!/–/.test(CY[k]);
+ const sample=(a,n)=>shuffle(a).slice(0,n);
+ const SPAN=k=>{ const y=CY[k]; if(y==='Day 0') return [0,0]; const m=String(y).match(/[0-9]+/g)||[]; return [+m[0],+(m[1]||m[0])]; };
+ const overlap=s=>s.some((a,i)=>s.some((b,j)=>{ if(i>=j) return false; const A=SPAN(a),B=SPAN(b); return A[0]<=B[1]&&B[0]<=A[1]; }));
+ function distinct(pool,n,test){ for(let t=0;t<300;t++){ const s=sample(pool,n), ys=s.map(NUM); if(new Set(ys).size===n&&!overlap(s)&&(!test||test(s))) return s; } return null; }
+ const byTime=s=>[...s].sort((a,b)=>PIC[a]-PIC[b]);
+ const apart=(a,b)=>Math.abs(NUM(b)-NUM(a));
+ const gFirst=pool=>()=>{ const s=distinct(pool,2); if(!s) return null; const [a,b]=byTime(s); return Pk('first','first',s,s.indexOf(a),{f:`${a} came about ${apart(a,b)} years before ${b}.`}); };
+ const gLast=(pool,n)=>()=>{ const s=distinct(pool,n||3); if(!s) return null; const o=byTime(s), z=o[o.length-1]; return Pk('last','last',s,s.indexOf(z),{f:`${o[0]} came first and ${z} came last.`}); };
+ const gFL=pool=>()=>{ const s=distinct(pool,4); if(!s) return null; const o=byTime(s), first=Math.random()<.5, k=first?o[0]:o[3]; return Pk('fl',first?'first':'last',s,s.indexOf(k)); };
+ const gBA=pool=>()=>{ const s=distinct(pool,2); if(!s) return null; const [a,b]=s; return Pk('ba',Qx('Did the first one happen BEFORE or AFTER the second one?','הַאִם הָרִאשׁוֹן קָרָה לִפְנֵי אוֹ אַחֲרֵי הַשֵּׁנִי?'),['BEFORE','AFTER'],PIC[a]<PIC[b]?0:1,{ctx:[a,b],num:true,hint:H(a,b)}); };
+ const gOrder=(pool,n)=>()=>{ const s=distinct(pool,n); if(!s) return null; return Or('order','order',byTime(s)); };
+ const gBetween=max=>()=>{ const full=CARDS.filter(c=>c[3]<=max).map(c=>c[0]);
+  for(let t=0;t<100;t++){ const i=rnd(full.length-2), [a,m,b]=full.slice(i,i+3); if([a,m,b].some(k=>[37,40,41,42,43,44].indexOf(PIC[k])>=0)) continue;
+   const others=sample(full.filter(k=>[a,m,b].indexOf(k)<0&&[37,40].indexOf(PIC[k])<0),2), opts=shuffle([m,...others]); return Pk('between',Qx('Which card comes between these two?','אֵיזֶה כַּרְטִיס בָּא בֵּין שְׁנֵי אֵלֶּה?'),opts,opts.indexOf(m),{ctx:[a,b],hint:H(a,b)}); } return null; };
+ const gYears=pool=>()=>{ const s=distinct(pool.filter(POINT),2,s=>apart(s[0],s[1])<2500); if(!s) return null; const [a,b]=byTime(s); return Ty('years',Qx('How many years apart were these two events?','כַּמָּה שָׁנִים עָבְרוּ בֵּין שְׁנֵי הַמְּאֹרָעוֹת?'),apart(a,b),{ctx:[a,b],hint:H(a,b)}); };
+ const DKEYS=DATES12.map(d=>d[1]);
+ const dDistinct=n=>{ for(let t=0;t<200;t++){ const s=sample(DKEYS,n); if(new Set(s.map(k=>DY[k])).size===n) return s; } };
+ const gMem=()=>{ const s=dDistinct(2), a=+DY[s[0]]<+DY[s[1]]?s[0]:s[1]; return Pk('mem','first',s,s.indexOf(a),{hint:s}); };
+ const gDiff=()=>{ const s=dDistinct(2).sort((a,b)=>DY[a]-DY[b]); return Ty('use',Qx('How many years apart were these two events?','כַּמָּה שָׁנִים עָבְרוּ בֵּין שְׁנֵי הַמְּאֹרָעוֹת?'),DY[s[1]]-DY[s[0]],{ctx:s,hint:s}); };
+ const gMatch=max=>()=>{ const ks=DKEYS.filter(k=>+DY[k]<=max), k=pick(ks); const wrong=sample(uniq(DATES12.map(d=>d[0])).filter(y=>y!==DY[k]),2), opts=shuffle([DY[k],...wrong]);
+  return Pk('match',Qx('What year was this?','בְּאֵיזוֹ שָׁנָה זֶה הָיָה?'),opts,opts.indexOf(DY[k]),{ctx:[k],hint:around(idxD(k)),f:DFACT[k]}); };
+ const TY_=(k,q)=>Ty('year',q,+DY[k],{hint:around(idxD(k)),f:DFACT[k]});
+ function yearToEvent(){ return DATES12.map(([y,k],i)=>{ const others=shuffle(DATES12.filter((_,j)=>j!==i).map(d=>d[1])).slice(0,3), opts=shuffle([k,...others]); return Pk('what',Qx('What happened in '+y+'?','מָה קָרָה בִּשְׁנַת '+y+'?'),opts,opts.indexOf(k),{hint:around(i),f:DFACT[k]}); }); }
+ function buildFrom(Lv){ const cur=Lv.cur(), seen=new Set(), out=[];
+  for(const [part,nc,gen,ng] of Lv.plan){ const sec=sample(cur.filter(q=>q.part===part),nc);
+   for(let t=0;sec.length<nc+ng&&gen&&t<ng*6;t++){ const q=gen(); if(!q) continue; const key=q.part+'|'+qtext(q.q)+'|'+[...(q.opts||q.items||[]),...(q.ctx||[])].map(String).sort().join(','); if(seen.has(key)) continue; seen.add(key); sec.push(q); }
+   out.push(...shuffle(sec)); } return out; }
+ const LEVELS={
+  l1:{shape:'●',name:Qx('Level 1','רָמָה א׳'),what:Qx('Which came first? Which came last? Before or after? From Creation to Galus Edom.','מָה הָיָה קֹדֶם? מָה הָיָה אַחֲרוֹן? מִבְּרִיאַת הָעוֹלָם עַד גָּלוּת אֱדוֹם.'),range:26,cur:()=>[
+   Pk('first','first',["The Flood","Tower of Bavel"],0,{f:"The Tower of Bavel was built 340 years after the Flood. Avraham was 48 years old then!"}),
+   Pk('first','first',["Matan Torah","Lech-Lecha"],1,{f:"425 years passed from the time Avraham went Lech-Lecha until Matan Torah."}),
+   Pk('first','first',["Life of Yosef","Life of Avraham"],1,{f:"Avraham was Yosef's great-grandfather: Avraham → Yitzchak → Yaakov → Yosef."}),
+   Pk('first','first',["Life of Yaakov","Life of Yitzchak"],1,{f:"Yitzchak was 60 years old when Yaakov and Eisav were born."}),
+   Pk('first','first',["The Exodus","The Egyptian Exile"],1,{f:"Bnei Yisrael were in Mitzrayim for 210 years before Hashem took them out."}),
+   Pk('first','first',["Era of Judges","Forty Year Trek"],1,{f:"After 40 years in the midbar, Yehoshua brought Bnei Yisrael into Eretz Yisrael. Then came the Shoftim."}),
+   Pk('first','first',["The First Bais Hamikdash","The Second Bais Hamikdash"],0,{f:"The first Bais Hamikdash stood for 410 years. The second stood for 420 years."}),
+   Pk('first','first',["The Greek Empire","The Persian Empire"],1,{f:"Persia ruled first. Then Alexander of Greece took over the Persian empire."}),
+   Pk('first','first',["Purim","Chanuka"],0,{f:"Purim happened when Persia ruled. Chanuka happened when Greece ruled, 217 years later."}),
+   Pk('first','first',["The Babylonian Exile","Galus Edom (The Roman Exile)"],0,{f:"There are four galuyos: Bavel, Paras, Yavan and Edom. We are still in Galus Edom today."}),
+   Pk('last','last',["Creation","The Flood","Tower of Bavel"],2),
+   Pk('last','last',["Lech-Lecha","Life of Yosef","Tower of Bavel"],1,{f:"Yosef was 17 years old when his brothers sold him."}),
+   Pk('last','last',["The Ten Makos","Life of Yaakov","Life of Yitzchak"],0,{f:"The Ten Makos came almost 200 years after Yaakov passed away."}),
+   Pk('last','last',["First Bais Hamikdash Destroyed","Era of Judges","Matan Torah"],0,{f:"Nevuchadnetzar, king of Bavel, destroyed the first Bais Hamikdash on Tisha B'Av."}),
+   Pk('last','last',["Purim","The Second Bais Hamikdash","The Persian Empire"],1,{f:"Only three years after Purim, the second Bais Hamikdash was built."}),
+   Pk('last','last',["Chanuka","The Greek Empire","Second Bais Hamikdash Destroyed"],2,{f:"The Romans destroyed the second Bais Hamikdash 206 years after the miracle of Chanuka."}),
+   Pk('ba',Qx("The Flood was ______ Avraham was born.","הַמַּבּוּל הָיָה ______ לֵידַת אַבְרָהָם."),["BEFORE","AFTER"],0,{hint:H("The Flood","Life of Avraham"),f:"Noach lived until Avraham was 58 years old!"}),
+   Pk('ba',Qx("Matan Torah was ______ the Egyptian Exile.","מַתַּן תּוֹרָה הָיָה ______ גָּלוּת מִצְרַיִם."),["BEFORE","AFTER"],1,{hint:H("Matan Torah","The Egyptian Exile"),f:"We count the Omer for seven weeks, from Pesach until Shavuos, the day of Matan Torah."}),
+   Pk('ba',Qx("The Forty Year Trek was ______ the Era of Judges.","אַרְבָּעִים הַשָּׁנִים בַּמִּדְבָּר הָיוּ ______ תְּקוּפַת הַשּׁוֹפְטִים."),["BEFORE","AFTER"],0,{hint:H("Forty Year Trek","Era of Judges")}),
+   Pk('ba',Qx("The Babylonian Exile was ______ the Second Bais Hamikdash was built.","גָּלוּת בָּבֶל הָיְתָה ______ בִּנְיַן בַּיִת שֵׁנִי."),["BEFORE","AFTER"],0,{hint:H("The Babylonian Exile","The Second Bais Hamikdash"),f:"Galus Bavel lasted 70 years, just as the navi Yirmiyahu said."}),
+   Pk('ba',Qx("Purim was ______ the Second Bais Hamikdash was built.","פּוּרִים הָיָה ______ בִּנְיַן בַּיִת שֵׁנִי."),["BEFORE","AFTER"],0,{hint:H("Purim","The Second Bais Hamikdash")}),
+   Pk('ba',Qx("Chanuka was ______ the Second Bais Hamikdash was destroyed.","חֲנֻכָּה הָיְתָה ______ חֻרְבַּן בַּיִת שֵׁנִי."),["BEFORE","AFTER"],0,{hint:H("Chanuka","Second Bais Hamikdash Destroyed")}),
+   Or('order','order',["Life of Avraham","Life of Yosef","Matan Torah","The First Bais Hamikdash"],{f:"From Avraham Avinu all the way to Shlomo Hamelech building the Bais Hamikdash."}),
+   Or('order','order',["The Babylonian Exile","Purim","Chanuka","Galus Edom (The Roman Exile)"],{f:"These are the four galuyos in order: Bavel, Paras (Purim), Yavan (Chanuka) and Edom."}),
+   Pk('match',Qx("When was the Flood?","בְּאֵיזוֹ שָׁנָה הָיָה הַמַּבּוּל?"),["3405","1656","3828"],1,{hint:around(idxD("The Flood")),f:DFACT["The Flood"]}),
+   Pk('match',Qx("When was Purim?","בְּאֵיזוֹ שָׁנָה הָיָה נֵס פּוּרִים?"),["3405","2448","3338"],0,{hint:around(idxD("Purim")),f:"Purim was just 3 years before the second Bais Hamikdash was built."}),
+   Pk('match',Qx("When was the Second Bais Hamikdash built?","בְּאֵיזוֹ שָׁנָה נִבְנָה בַּיִת שֵׁנִי?"),["3828","3408","1948"],1,{hint:around(idxD("The Second Bais Hamikdash is built")),f:"A trick to remember: 3338 + 70 = 3408."}),
+   Pk('match',Qx("When was the First Bais Hamikdash destroyed?","בְּאֵיזוֹ שָׁנָה נֶחֱרַב בַּיִת רִאשׁוֹן?"),["3338","3622","2928"],0,{hint:around(idxD("The First Bais Hamikdash is destroyed"))}),
+   Pk('match',Qx("When was the Second Bais Hamikdash destroyed?","בְּאֵיזוֹ שָׁנָה נֶחֱרַב בַּיִת שֵׁנִי?"),["3405","1656","3828"],2,{hint:around(idxD("The Second Bais Hamikdash is destroyed")),f:"That was 1,959 years ago. We daven every day for the third Bais Hamikdash."})],
+   plan:[['first',4,gFirst(poolTo(26)),5],['last',3,gLast(poolTo(26)),3],['ba',3,gBA(poolTo(26)),3],['order',1,gOrder(poolTo(26),4),1],['match',2,gMatch(3828),2]]},
+  l2:{shape:'■',name:Qx('Level 2','רָמָה ב׳'),what:Qx('First and last of four, what comes in between, and counting the years.','רִאשׁוֹן וְאַחֲרוֹן, מָה בָּאֶמְצַע, וְחֶשְׁבּוֹן שָׁנִים.'),range:40,cur:()=>[
+   Pk('first','first',["Tower of Bavel","Lech-Lecha"],0,{f:"Avraham was 48 at the Tower of Bavel and 75 when he went Lech-Lecha."}),
+   Pk('first','first',["Life of Yaakov","Life of Yosef"],0,{f:"Yaakov was 91 years old when Yosef was born."}),
+   Pk('first','first',["The Persian Empire","Purim"],0,{f:"Achashveirosh was the king of Persia."}),
+   Pk('first','first',["The Crusades","The Rambam"],0,{f:"Rashi was still alive during the First Crusade."}),
+   Pk('first','first',["The Vilna Gaon","The Baal Shem Tov"],1,{f:"Rav Chaim of Volozhin, a talmid of the Vilna Gaon, opened the famous Volozhin yeshiva."}),
+   Pk('first','first',["The Greek Empire","The Second Bais Hamikdash"],1,{f:"The second Bais Hamikdash was built while Persia ruled. Greece took over later."}),
+   Pk('first','first',["The Expulsion from Spain","Shulchan Aruch"],0,{f:"Rav Yosef Karo was a small child when his family was forced out of Spain."}),
+   Pk('first','first',["The Gaonim","The Gemara"],1,{f:"After the Gemara was finished, the Gaonim in Bavel led Klal Yisrael."}),
+   Pk('fl','first',["The Egyptian Exile","Life of Yitzchak","Forty Year Trek","Tower of Bavel"],3),
+   Pk('fl','last',["The Egyptian Exile","Life of Yitzchak","Forty Year Trek","Tower of Bavel"],2,{f:"Bnei Yisrael stayed in the midbar for 40 years because of the Chet Hameraglim."}),
+   Pk('fl','first',["Chanuka","The Babylonian Exile","Purim","The Mishna"],1),
+   Pk('fl','last',["Chanuka","The Babylonian Exile","Purim","The Mishna"],3,{f:"Rabbi Yehuda Hanasi wrote down the Mishna so that the Torah Sheb'al Peh would not be forgotten."}),
+   Pk('fl','first',["Rashi","Shulchan Aruch","The Gemara","The Crusades"],2),
+   Pk('fl','last',["Rashi","Shulchan Aruch","The Gemara","The Crusades"],1,{f:"We still use the Shulchan Aruch to learn halacha today."}),
+   Or('order','order',["The Flood","Life of Avraham","The Exodus","First Bais Hamikdash Destroyed","Purim","Second Bais Hamikdash Destroyed"]),
+   Pk('between',Qx("Which card comes between the Flood and Life of Avraham?","אֵיזֶה כַּרְטִיס בָּא בֵּין ״הַמַּבּוּל״ וּבֵין ״חַיֵּי אַבְרָהָם״?"),["Lech-Lecha","10 Generations: Noach to Avraham","Tower of Bavel"],1,{f:"There were 10 generations from Noach to Avraham."}),
+   Pk('between',Qx("Which card comes between Purim and the Greek Empire?","אֵיזֶה כַּרְטִיס בָּא בֵּין ״פּוּרִים״ וּבֵין ״מַלְכוּת יָוָן״?"),["The Second Bais Hamikdash","Chanuka","The Persian Empire"],0),
+   Pk('between',Qx("Which card comes between Matan Torah and the Era of Judges?","אֵיזֶה כַּרְטִיס בָּא בֵּין ״מַתַּן תּוֹרָה״ וּבֵין ״הַשּׁוֹפְטִים״?"),["The Egyptian Exile","The First Bais Hamikdash","Forty Year Trek"],2),
+   Pk('between',Qx("Which card comes between the Rambam and Shulchan Aruch?","אֵיזֶה כַּרְטִיס בָּא בֵּין ״הָרַמְבַּ״ם״ וּבֵין ״שֻׁלְחָן עָרוּךְ״?"),["The Crusades","The Expulsion from Spain","The Baal Shem Tov"],1),
+   Ty('years',Qx("How old was Avraham at the Tower of Bavel?","בֶּן כַּמָּה הָיָה אַבְרָהָם בְּמִגְדַּל בָּבֶל?"),48,{hint:H("Life of Avraham","Tower of Bavel"),f:"Avraham was 48 when he saw the Tower of Bavel. He did not join them."}),
+   Ty('years',Qx("How old was Avraham when he went Lech-Lecha?","בֶּן כַּמָּה הָיָה אַבְרָהָם כְּשֶׁהָלַךְ לֶךְ לְךָ?"),75,{hint:H("Life of Avraham","Lech-Lecha"),f:"The pasuk tells us: Avraham was 75 years old when he left Charan."}),
+   Ty('years',Qx("How many years were there from the Flood until Avraham was born?","כַּמָּה שָׁנִים עָבְרוּ מֵהַמַּבּוּל עַד לֵידַת אַבְרָהָם?"),292,{hint:H("The Flood","Life of Avraham")}),
+   Ty('years',Qx("How many years did the First Bais Hamikdash stand?","כַּמָּה שָׁנִים עָמַד בַּיִת רִאשׁוֹן?"),410,{hint:H("The First Bais Hamikdash")}),
+   Ty('years',Qx("How many years did the Second Bais Hamikdash stand?","כַּמָּה שָׁנִים עָמַד בַּיִת שֵׁנִי?"),420,{hint:H("The Second Bais Hamikdash")}),
+   Ty('years',Qx("How many years was the trek in the desert?","כַּמָּה שָׁנִים הָיוּ בְּנֵי יִשְׂרָאֵל בַּמִּדְבָּר?"),40,{hint:H("Forty Year Trek"),f:"One year for each day that the Meraglim spied out the land."}),
+   Pk('think',Qx("Mashiach, the Third Bais Hamikdash and Techias Hamesim have no year on their cards. Why?","לָמָּה אֵין שָׁנָה עַל הַכְּרָטִיסִים שֶׁל מָשִׁיחַ, בַּיִת שְׁלִישִׁי וּתְחִיַּת הַמֵּתִים?"),
+    [Qx("Nobody remembers the year","לֹא זוֹכְרִים אֶת הַשָּׁנָה"),Qx("They haven't happened yet","הֵם עֲדַיִן לֹא קָרוּ"),Qx("They happened before Creation","הֵם הָיוּ לִפְנֵי בְּרִיאַת הָעוֹלָם")],1,{hint:[Qx("Look at the last three cards on your timeline.","הִסְתַּכְּלִי עַל שְׁלֹשֶׁת הַכְּרָטִיסִים הָאַחֲרוֹנִים.")],f:"We wait every day for Mashiach to come, the third Bais Hamikdash to be built, and Techias Hamesim."})],
+   plan:[['first',4,gFirst(poolTo(40)),4],['fl',4,gFL(poolTo(40)),2],['order',0,gOrder(poolTo(40),6),2],['between',2,gBetween(40),2],['years',3,gYears(poolTo(40)),3],['think',1,null,0]]},
+  l3:{shape:'▲',name:Qx('Level 3','רָמָה ג׳'),what:Qx('Who was alive together, picture dates, and the Important Dates from memory.','מִי חַי בְּאוֹתוֹ זְמַן, וְהַתַּאֲרִיכִים הַחֲשׁוּבִים בְּעַל פֶּה.'),range:44,cur:()=>[
+   Pk('alive',Qx("Was Noach still alive when Avraham was born?","הַאִם נֹחַ עוֹד הָיָה חַי כְּשֶׁנּוֹלַד אַבְרָהָם?"),["Yes","No"],0,{hint:["The Flood","Avraham is born",Qx("Noach was 600 at the Flood and lived 950 years.","נֹחַ הָיָה בֶּן 600 בַּמַּבּוּל, וְחַי 950 שָׁנָה.")],f:"Noach was born in 1056 and lived until 2006, when Avraham was 58."}),
+   Pk('alive',Qx("Was Avraham still alive when Yaakov was born?","הַאִם אַבְרָהָם עוֹד הָיָה חַי כְּשֶׁנּוֹלַד יַעֲקֹב?"),["Yes","No"],0,{hint:H("Life of Avraham","Life of Yaakov"),f:"Avraham lived until Yaakov was 15. Rashi says Yaakov cooked the lentil soup on the day Avraham passed away."}),
+   Pk('alive',Qx("Was Yitzchak still alive when Yosef was born?","הַאִם יִצְחָק עוֹד הָיָה חַי כְּשֶׁנּוֹלַד יוֹסֵף?"),["Yes","No"],0,{hint:H("Life of Yitzchak","Life of Yosef"),f:"Yitzchak was even still alive when Yosef was sold!"}),
+   Pk('alive',Qx("Was Avraham still alive when Yosef was born?","הַאִם אַבְרָהָם עוֹד הָיָה חַי כְּשֶׁנּוֹלַד יוֹסֵף?"),["Yes","No"],1,{hint:H("Life of Avraham","Life of Yosef"),f:"Yosef was born 76 years after Avraham passed away."}),
+   Pk('alive',Qx("Was Yaakov still alive when the hard work (shibud) in Mitzrayim began?","הַאִם יַעֲקֹב עוֹד הָיָה חַי כְּשֶׁהִתְחִיל הַשִּׁעְבּוּד בְּמִצְרַיִם?"),["Yes","No"],1,{hint:H("Life of Yaakov","The Egyptian Exile"),f:"The hard work in Mitzrayim began only after Yosef and his brothers had passed away."}),
+   Or('order','order',["The Mishna","The Gemara","The Gaonim","Rashi","The Expulsion from Spain","The Baal Shem Tov","Sarah Schenirer","The Holocaust"],{f:"From the Mishna to the Holocaust is more than 1,700 years."}),
+   ...yearToEvent(),
+   Pk('year','when',["3338","3828","3408"],1,{show:"Second Bais Hamikdash Destroyed",hint:around(idxD("The Second Bais Hamikdash is destroyed")),f:DFACT["The Second Bais Hamikdash is destroyed"]}),
+   Ty('year','when',3405,{show:"Purim",hint:around(idxD("Purim")),f:DFACT["Purim"]}),
+   TY_("Avraham is born",Qx("What year was Avraham born?","בְּאֵיזוֹ שָׁנָה נוֹלַד אַבְרָהָם?")),
+   TY_("Yitzchak is born",Qx("What year was Yitzchak born?","בְּאֵיזוֹ שָׁנָה נוֹלַד יִצְחָק?")),
+   Ty('year','when',1656,{show:"The Flood",hint:around(idxD("The Flood")),f:DFACT["The Flood"]}),
+   TY_("The First Bais Hamikdash is built",Qx("What year was the First Bais Hamikdash built?","בְּאֵיזוֹ שָׁנָה נִבְנָה בַּיִת רִאשׁוֹן?")),
+   Ty('year','when',3622,{show:"Chanuka",hint:around(idxD("Chanuka")),f:DFACT["Chanuka"]}),
+   TY_("Bnei Yisrael enter Eretz Yisrael",Qx("What year did Bnei Yisrael enter Eretz Yisrael?","בְּאֵיזוֹ שָׁנָה נִכְנְסוּ בְּנֵי יִשְׂרָאֵל לְאֶרֶץ יִשְׂרָאֵל?")),
+   Ty('year','when',3338,{show:"First Bais Hamikdash Destroyed",hint:around(idxD("The First Bais Hamikdash is destroyed")),f:DFACT["The First Bais Hamikdash is destroyed"]}),
+   Pk('mem','first',["Purim","The Second Bais Hamikdash is built"],0,{hint:["Purim","The Second Bais Hamikdash is built"],f:"Chazal say that Daryavesh, who allowed the Bais Hamikdash to be built, was the son of Esther."}),
+   Pk('mem','first',["Yitzchak is born","The Flood"],1,{hint:["Yitzchak is born","The Flood"]}),
+   Pk('mem','first',["Chanuka","The First Bais Hamikdash is destroyed"],1,{hint:["Chanuka","The First Bais Hamikdash is destroyed"]}),
+   Ty('use',Qx("How old was Avraham when Yitzchak was born?","בֶּן כַּמָּה הָיָה אַבְרָהָם כְּשֶׁנּוֹלַד יִצְחָק?"),100,{hint:["Avraham is born","Yitzchak is born"],f:DFACT["Yitzchak is born"]}),
+   Ty('use',Qx("How many years after Yetzias Mitzrayim did Shlomo Hamelech build the First Bais Hamikdash?","כַּמָּה שָׁנִים אַחֲרֵי יְצִיאַת מִצְרַיִם בָּנָה שְׁלֹמֹה הַמֶּלֶךְ אֶת בַּיִת רִאשׁוֹן?"),480,{hint:["The Ten Makos, the Exodus and Matan Torah","The First Bais Hamikdash is built"],f:"The pasuk in Melachim says it was 480 years. Your math matches the pasuk!"}),
+   Ty('use',Qx("How many years did the First Bais Hamikdash stand?","כַּמָּה שָׁנִים עָמַד בַּיִת רִאשׁוֹן?"),410,{hint:["The First Bais Hamikdash is built","The First Bais Hamikdash is destroyed"]}),
+   Ty('use',Qx("How many years did the Second Bais Hamikdash stand?","כַּמָּה שָׁנִים עָמַד בַּיִת שֵׁנִי?"),420,{hint:["The Second Bais Hamikdash is built","The Second Bais Hamikdash is destroyed"]}),
+   Ty('use',Qx("How many years after the First Bais Hamikdash was destroyed was the Second Bais Hamikdash built?","כַּמָּה שָׁנִים אַחֲרֵי חֻרְבַּן בַּיִת רִאשׁוֹן נִבְנָה בַּיִת שֵׁנִי?"),70,{hint:["The First Bais Hamikdash is destroyed","The Second Bais Hamikdash is built"],f:DFACT["The Second Bais Hamikdash is built"]}),
+   Ty('use',Qx("How many years after Chanuka was the Second Bais Hamikdash destroyed?","כַּמָּה שָׁנִים אַחֲרֵי חֲנֻכָּה נֶחֱרַב בַּיִת שֵׁנִי?"),206,{hint:["Chanuka","The Second Bais Hamikdash is destroyed"]}),
+   Ty('chal',Qx("This year is 5787. How many years ago was Matan Torah?","הַשָּׁנָה הִיא 5787. לִפְנֵי כַּמָּה שָׁנִים הָיָה מַתַּן תּוֹרָה?"),3339,{hint:[Qx("This year: 5787","הַשָּׁנָה: 5787"),"The Ten Makos, the Exodus and Matan Torah"],f:"Matan Torah was 3,339 years ago, and we still learn the same Torah today!"})],
+   plan:[['alive',3,null,0],['order',0,gOrder(poolTo(40),8),1],['what',6,null,0],['year',6,null,0],['mem',2,gMem,3],['use',4,gDiff,2],['chal',1,null,0]]},
+  dates:{shape:'★',name:Qx('Important Dates','תַּאֲרִיכִים חֲשׁוּבִים'),what:Qx('Learn the Important Dates by heart. Tap the year for each event.','לִמְדִי בְּעַל פֶּה אֶת הַתַּאֲרִיכִים הַחֲשׁוּבִים. בַּחֲרִי אֶת הַשָּׁנָה שֶׁל כׇּל מְאֹרָע.'),range:44,cur:()=>[
+   ...shuffle(DATES12.map(([y,k],i)=>Ty('year','when',+y,{ev:k,hint:around(i),f:DFACT[k]}))),
+   Ty('year',Qx('What year is it now?','אֵיזוֹ שָׁנָה עַכְשָׁו?'),5787,{hint:[Qx('Last year was 5786.','שָׁנָה שֶׁעָבְרָה הָיְתָה 5786.')],f:'5787 is the year ה׳תשפ״ז.'})],plan:[['year',12,null,0]]}};
+ const UI_={title:Qx('Timeline: Which Came First?','צִיר הַזְּמַן: מָה הָיָה קֹדֶם?'),
+  sub:Qx('Lay out your timeline cards. Every right answer adds a card to your timeline. Stuck? Tap Show the dates. Pick a level to begin.','הַנִּיחִי אֶת כַּרְטִיסֵי צִיר הַזְּמַן. כׇּל תְּשׁוּבָה נְכוֹנָה מוֹסִיפָה כַּרְטִיס לַצִּיר שֶׁלָּךְ. צְרִיכָה עֶזְרָה? לַחֲצִי עַל ״הַרְאִי אֶת הַשָּׁנִים״. בַּחֲרִי רָמָה כְּדֵי לְהַתְחִיל.'),
+  opener:Qx('How a timeline works: every event has a year, counted from the creation of the world. A smaller year happened earlier. A bigger year happened later. So to find which came first, compare the years!','אֵיךְ עוֹבֵד צִיר הַזְּמַן: לְכׇל מְאֹרָע יֵשׁ שָׁנָה, מִבְּרִיאַת הָעוֹלָם. שָׁנָה קְטַנָּה יוֹתֵר הָיְתָה קֹדֶם, וְשָׁנָה גְּדוֹלָה יוֹתֵר הָיְתָה אַחַר כָּךְ. כְּדֵי לָדַעַת מָה הָיָה קֹדֶם, הַשְׁוִי אֶת הַשָּׁנִים!'),
+  qs:Qx('Questions','שְׁאֵלוֹת'),game:Qx('Timeline Game','מִשְׂחַק צִיר הַזְּמַן'),tl:Qx('Your timeline','צִיר הַזְּמַן שֶׁלָּךְ'),dates:Qx('Show the dates','הַרְאִי אֶת הַשָּׁנִים'),hide:Qx('Hide the dates','הַסְתִּירִי אֶת הַשָּׁנִים'),
+  dyk:Qx('Did you know?','הֲיָדַעַתְּ?'),wrong:Qx('Not that one. Look at your cards and try again.','לֹא זֶה. הִסְתַּכְּלִי בַּכְּרָטִיסִים וְנַסִּי שׁוּב.'),compare:Qx('Tap Show the dates and compare the years: the smaller year came first.','לַחֲצִי עַל ״הַרְאִי אֶת הַשָּׁנִים״ וְהַשְׁוִי: הַשָּׁנָה הַקְּטַנָּה יוֹתֵר הָיְתָה קֹדֶם.'),
+  wrongOrder:Qx('Some cards are out of order. Tap Start over and try again.','חֵלֶק מֵהַכְּרָטִיסִים לֹא בַּסֵּדֶר. לַחֲצִי עַל ״מֵהַהַתְחָלָה״ וְנַסִּי שׁוּב.'),over:Qx('Start over','מֵהַהַתְחָלָה'),
+  needNum:Qx('Tap a number first.','בַּחֲרִי מִסְפָּר קֹדֶם.'),notYet:Qx('Not yet. Try again.','עוֹד לֹא. נַסִּי שׁוּב.'),subtract:Qx('Not yet. Subtract the smaller year from the bigger year.','עוֹד לֹא. חַסְּרִי אֶת הַשָּׁנָה הַקְּטַנָּה מֵהַשָּׁנָה הַגְּדוֹלָה.'),
+  right:Qx('right on the first try','נָכוֹן בַּפַּעַם הָרִאשׁוֹנָה'),practice:Qx('Practice these again','כְּדַאי לְתַרְגֵּל שׁוּב'),perfect:Qx('Every one right on the first try!','הַכֹּל נָכוֹן בַּפַּעַם הָרִאשׁוֹנָה!'),built:Qx('The timeline you built','צִיר הַזְּמַן שֶׁבָּנִית'),
+  praise:[Qx('Right!','נָכוֹן!'),Qx('You got it!','יָפֶה מְאֹד!'),Qx('Yes!','מְצֻיָּן!'),Qx('Exactly!','כׇּל הַכָּבוֹד!'),Qx('Great job!','אַשְׁרַיִךְ!')],
+  how:Qx('How to do it','How to do it · אֵיךְ עוֹשִׂים'),and:Qx('and','וְ'),gtap:Qx('Tap the card that comes next on the timeline.','לַחֲצִי עַל הַכַּרְטִיס הַבָּא בְּצִיר הַזְּמַן.'),
+  gwrong:Qx('Not yet! That card comes later on the timeline.','עוֹד לֹא! הַכַּרְטִיס הַזֶּה בָּא מְאֻחָר יוֹתֵר.'),gglow:Qx('Look for the glowing card. It comes next!','חַפְּשִׂי אֶת הַכַּרְטִיס הַזּוֹהֵר. הוּא הַבָּא!'),
+  gdone:Qx('You built the whole timeline!','בָּנִית אֶת כׇּל צִיר הַזְּמַן!'),hint:Qx('Show me','הַרְאִי לִי'),again:Qx('Play again','שׁוּב'),cards:Qx('cards','כְּרָטִיסִים')};
+ const u=k=>{ const q=UI_[k]; return L2(q.en,q.he); };
+ const thow=part=>{ const h=TLHOW[part]||TLHOW.first; return `<div class="clab-how ${HEB()?'dir-rtl':''}"><b>${E(u('how'))}</b>${E(L2(h.en,h.he))}</div>`; };
+ const nm=k=>{ const h=nameOf(k); return h!==k?`<span class="clab-he">${E(h)}</span>`:E(h); };
+ const label=o=>typeof o==='object'?E(L2(o.en,o.he)):nm(o);
+ function tlHome(){ clearTimers(); BACK=hub; X.view='tl';
+  const tog=`<div class="clab-row clab-center" role="group" aria-label="Language">${HEB()?T().quiet('English','data-lang="en"')+T().main('עִבְרִית','data-lang="he" aria-pressed="true"'):T().main('English','data-lang="en" aria-pressed="true"')+T().quiet('עִבְרִית','data-lang="he"')}</div>`;
+  frame(L2('Timeline','צִיר הַזְּמַן'),HEB()?'עִבְרִית':'English','page',`<div class="clab-card ${HEB()?'dir-rtl':''}"><h2>${E(u('title'))}</h2>
+   <div class="tl-hero">${[3,9,14,17,24,30].map(n=>imgHTML(n,'','')).join('')}</div>
+   <div class="clab-teach">${E(u('opener'))}</div><p class="clab-mut">${E(u('sub'))}</p>${tog}</div>
+   <div class="clab-grid">${Object.entries(LEVELS).map(([k,Lv])=>`<div class="clab-card ${HEB()?'dir-rtl':''}"><h3>${Lv.shape} ${E(L2(Lv.name.en,Lv.name.he))} ${P.tl.done[k]?pill('prog',L2('Done','הוּשְׁלַם')):''}</h3><p class="clab-mut">${E(L2(Lv.what.en,Lv.what.he))}</p>
+    <div class="clab-row">${T().main(u('qs'),'data-k="'+k+'" data-m="q"')}${T().quiet(u('game'),'data-k="'+k+'" data-m="g"')}</div></div>`).join('')}</div>`);
+  const B=bodyEl(); B.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{ snd('tap'); P.tl.lang=b.dataset.lang; save(); tlHome(); });
+  B.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{ snd('tap'); if(b.dataset.m==='g') tlGame(b.dataset.k); else tlStart(b.dataset.k); }); }
+ let S=null;
+ function meetDates(k){ BACK=tlHome; QUIT=tlHome;
+  frame(L2('The Important Dates','הַתַּאֲרִיכִים הַחֲשׁוּבִים'),'','run',`<div class="clab-card ${HEB()?'dir-rtl':''}"><div class="clab-teach">${E(L2('These are the Important Dates. Read each one out loud: the year, then what happened. Then cover the years with your hand and say them from memory. When you know them, start.','אֵלֶּה הַתַּאֲרִיכִים הַחֲשׁוּבִים. קִרְאִי כׇּל אֶחָד בְּקוֹל: הַשָּׁנָה, וּמָה קָרָה. אַחַר כָּךְ כַּסִּי אֶת הַשָּׁנִים בְּיָדֵךְ וְאִמְרִי אוֹתָן בְּעַל פֶּה. כְּשֶׁאַתְּ יוֹדַעַת אוֹתָן, הַתְחִילִי.'))}</div>
+   <div class="clab-wl dts">${DATES12.map(([y,key])=>`<div><b style="font-size:20px">${y}</b><span>${nm(key)}</span></div>`).join('')}</div>${thow('year')}<div class="clab-row clab-center">${T().main(T().WORDS.start,'data-a="go"')}</div></div>`);
+  bodyEl().querySelector('[data-a=go]').onclick=()=>{ snd('tap'); tlStart(k,null,true); }; }
+ function cardsIn(q){ const ks=[...(q.opts||[]),...(q.items||[])].filter(k=>typeof k==='string'&&PIC[k]); if(q.show) ks.push(q.show); if(q.ev){ const c=Object.keys(PIC).find(k=>PIC[k]===DPIC[q.ev]); if(c) ks.push(c); } return ks; }
+ function tlStart(k,again,met){ clearTimers(); if(!again&&!met&&(k==='l3'||k==='dates')) return meetDates(k); const Lv=LEVELS[k], qs=again||Lv.build();
+  const pool=uniq(qs.flatMap(cardsIn)).sort((a,b)=>PIC[a]-PIC[b]);
+  S={k,Lv,qs,i:0,first:0,missed:[],pool,got:new Set()}; tlRender(); }
+ const tlTop=()=>`<div class="clab-row" style="justify-content:space-between">${pill('subj',S.Lv.shape+' '+L2(S.Lv.name.en,S.Lv.name.he))}${pill('prog',(Math.min(S.i+1,S.qs.length))+' / '+S.qs.length)}</div><div class="clab-bar"><i style="width:${Math.round(S.i/S.qs.length*100)}%"></i></div>
+   ${S.pool.length?`<div><p class="clab-mut" style="font-size:13px;font-weight:800">${E(u('tl'))} · ${S.got.size} / ${S.pool.length}</p><div class="tl-strip">${S.pool.map(k=>`<div class="tl-slot" title="${E(nameOf(k))}">${S.got.has(k)&&PICS[PIC[k]]?`<img src="/pics/${PICS[PIC[k]]}" alt="${E(nameOf(k))}">`:S.got.has(k)?'<span class="nopic" style="font-size:9px;border:0">✓</span>':''}</div>`).join('')}</div></div>`:''}`;
+ function hintLines(q){ if(q.hint) return q.hint.map(h=>typeof h==='object'?L2(h.en,h.he):yearOf(h)?nameOf(h)+': '+yearOf(h):h); return (q.opts||q.items||[]).filter(n=>typeof n==='string'&&CY[n]).map(n=>nameOf(n)+': '+CY[n]); }
+ function tlRender(){ if(S.i>=S.qs.length) return tlFinish(); const q=S.qs[S.i]; X.curTl=q; let tries=0, solved=false, order=[], typed='';
+  BACK=tlHome; QUIT=tlHome;
+  const optHTML=(o,i)=>{ const p=(typeof o==='string'&&!q.show)?picOf(o):0; const lab=label(o);
+   return `<button type="button" class="tlk tlk-tile clab-opt ${p?'pic':''} ${HEB()?'he':''}" data-i="${i}">${p?imgHTML(p,'',''):''}<span>${lab}</span></button>`; };
+  let body='';
+  if(q.t==='pick') body=`<div class="clab-opts">${q.opts.map((o,i)=>optHTML(o,i)).join('')}</div>`;
+  else if(q.t==='order'){ q.shown=q.shown||shuffle(q.items); body=`<div class="clab-opts">${q.shown.map((o,i)=>optHTML(o,i)).join('')}</div><div class="clab-row">${T().quiet(u('over'),'data-a="undo"')}</div>`; }
+  else body=`<div class="numshow" aria-live="polite">?</div><div class="numpad">${[1,2,3,4,5,6,7,8,9,0].map(n=>T().quiet(String(n),'data-n="'+n+'"')).join('')}</div><div class="clab-row clab-center">${T().quiet('Delete','data-a="del"')}${T().main(T().WORDS.check,'data-a="chk"')}</div>`;
+  let big=q.show?`<img class="bigpic" src="/pics/${PICS[PIC[q.show]]||''}" alt="${E(nameOf(q.show))}">`:'';
+  if(q.show&&!PICS[PIC[q.show]]) big=`<div class="chips"><span class="chipx">${nm(q.show)}</span></div>`;
+  if(q.ctx) big+=`<div class="chips">${q.ctx.map((k,i)=>`<span class="chipx">${q.num?(i+1)+'. ':''}${nm(k)}</span>`).join(q.num?'':' <span class="clab-mut">'+E(u('and'))+'</span> ')}</div>`;
+  if(q.ev){ const p=DPIC[q.ev]; big=(p&&PICS[p]?`<img class="bigpic" src="/pics/${PICS[p]}" alt="">`:'')+`<div class="chips"><span class="chipx" style="font-size:22px">${nm(q.ev)}</span></div>`; }
+  const pt=PARTS[q.part]||PARTS.first;
+  frame(u('title'),'','run',`<div class="clab-card ${HEB()?'dir-rtl':''}">${tlTop()}<div>${pill('now',L2(pt.en,pt.he))}</div><p class="clab-q">${E(qtext(q.q))}</p>${big}
+   <div>${T().quiet(u('dates'),'data-a="hint" aria-expanded="false"','tlk-small')}</div><div class="clab-how hb" hidden style="background:#E0F2FE;color:#075985">${hintLines(q).map(l=>`<div>${E(l)}</div>`).join('')}</div>
+   ${body}${thow(q.part)}<div class="fbx" aria-live="polite"></div><div class="factbox"></div><div class="clab-row clab-center nxr"></div></div>`);
+  const B=bodyEl(); const fb=(m,g)=>{ B.querySelector('.fbx').innerHTML=`<div class="clab-fb ${g?'good':'bad'}">${E(m)}</div>`; };
+  B.querySelector('[data-a=hint]').onclick=e=>{ const hb=B.querySelector('.hb'); hb.hidden=!hb.hidden; e.currentTarget.textContent=hb.hidden?u('dates'):u('hide'); e.currentTarget.setAttribute('aria-expanded',String(!hb.hidden)); S.usedHint=true; };
+  S.usedHint=false;
+  const solve=()=>{ solved=true; if(tries===0&&!S.usedHint) S.first++; else S.missed.push(q); snd('right');
+   const add=cardsIn(q).filter(k=>!S.got.has(k)); const keep=q.t==='order'?add:add.filter(k=>k===q.show||(q.ev&&PIC[k]===DPIC[q.ev])||(q.opts&&q.opts[q.ans]===k)); keep.forEach(k=>S.got.add(k));
+   const pr=pick(UI_.praise); fb(L2(pr.en,pr.he),true);
+   if(q.f) B.querySelector('.factbox').innerHTML=`<div class="fact"><b>${E(u('dyk'))}</b><div ${HEB()&&FHE[q.f]?'dir="rtl"':'style="direction:ltr;text-align:left"'}>${E(factOf(q.f))}</div></div>`;
+   B.querySelector('.nxr').innerHTML=T().main(T().WORDS.next,'data-a="nx"'); const nx=B.querySelector('[data-a=nx]'); nx.onclick=()=>{ snd('tap'); S.i++; tlRender(); }; try{ nx.scrollIntoView({block:'nearest'}); }catch(e){} };
+  if(q.t==='pick') B.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ if(solved||b.classList.contains('wrong')) return; if(+b.dataset.i===q.ans){ b.classList.add('right'); B.querySelectorAll('.clab-opt').forEach(o=>o.disabled=true); solve(); } else { b.classList.add('wrong'); tries++; snd('wrong'); fb(u('wrong')+(['first','last','fl','mem','ba','between'].indexOf(q.part)>=0?' '+u('compare'):''),false); } });
+  if(q.t==='order'){ const reset=()=>{ if(solved) return; order=[]; B.querySelectorAll('.clab-opt').forEach(o=>{ o.classList.remove('picked','wrong'); const n=o.querySelector('.num'); if(n) n.remove(); }); B.querySelector('.fbx').innerHTML=''; };
+   B.querySelector('[data-a=undo]').onclick=reset;
+   B.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ if(solved||b.classList.contains('picked')) return; b.classList.add('picked'); order.push(+b.dataset.i); snd('tap'); b.insertAdjacentHTML('afterbegin',`<span class="num">${order.length}</span>`);
+    if(order.length===q.items.length){ const ok=order.every((si,pos)=>q.shown[si]===q.items[pos]);
+     if(ok){ B.querySelectorAll('.clab-opt').forEach(o=>{ o.classList.add('right'); o.disabled=true; }); B.querySelector('[data-a=undo]').disabled=true; solve(); }
+     else { tries++; snd('wrong'); B.querySelectorAll('.clab-opt').forEach(o=>{ const si=+o.dataset.i, pos=order.indexOf(si); if(q.items[pos]!==q.shown[si]) o.classList.add('wrong'); }); fb(u('wrongOrder'),false); } } }); }
+  if(q.t==='type'){ const show=()=>{ B.querySelector('.numshow').textContent=typed||'?'; };
+   B.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{ if(solved||typed.length>=5) return; typed+=b.dataset.n; snd('tap'); show(); });
+   B.querySelector('[data-a=del]').onclick=()=>{ typed=typed.slice(0,-1); show(); };
+   B.querySelector('[data-a=chk]').onclick=()=>{ if(solved) return; if(!typed){ fb(u('needNum'),false); return; } const v=parseInt(typed,10);
+    if(v===q.ans){ B.querySelectorAll('[data-n],[data-a=del],[data-a=chk]').forEach(b=>b.disabled=true); B.querySelector('.numshow').style.borderColor='#1f8a5b'; solve(); }
+    else { tries++; snd('wrong'); typed=''; show(); fb(tries>=2&&['years','use','chal'].indexOf(q.part)>=0?u('subtract'):u('notYet'),false); } }; } }
+ function tlFinish(){ const n=S.qs.length, f=S.first, k=S.k; if(f/n>=.8){ P.tl.done[k]=1; save(); } snd('win');
+  const got=S.pool.filter(x=>S.got.has(x));
+  const desc=q=>{ const ans=q.t==='pick'?label(q.opts[q.ans]):q.t==='order'?q.items.map(label).join(' → '):E(q.ans); return `<div class="clab-pas" style="font-size:15px"><b>${E(qtext(q.q))}</b>${q.ctx?`<div>${q.ctx.map(nm).join(' · ')}</div>`:q.ev?`<div>${nm(q.ev)}</div>`:''}<div style="color:#1f8a5b;font-weight:800">${ans}</div></div>`; };
+  BACK=tlHome; QUIT=tlHome;
+  frame(u('title'),'','page',`<div class="clab-card ${HEB()?'dir-rtl':''}" style="text-align:center"><div class="clab-stage en">${f} / ${n}</div><p>${E(u('right'))}</p>
+   <h3>${E(u('built'))}</h3><div class="gpool">${got.map(x=>`<div class="tcard">${imgHTML(PIC[x],nameOf(x),'')}<div class="tn">${nm(x)}</div><div class="ty">${E(CY[x])}</div></div>`).join('')}</div>
+   ${S.missed.length?`<h3>${E(u('practice'))}</h3><div style="display:grid;gap:8px;text-align:start">${S.missed.map(desc).join('')}</div>`:`<p><b>${E(u('perfect'))}</b></p>`}
+   <div class="clab-row clab-center">${S.missed.length?T().main(L2('Practice these '+S.missed.length+' again','לְתַרְגֵּל אֶת '+S.missed.length+' אֵלֶּה שׁוּב'),'data-a="pr"'):T().main(u('again'),'data-a="ag"')}${T().quiet(L2('Pick a level','בַּחֲרִי רָמָה'),'data-a="hm"')}</div></div>`);
+  const B=bodyEl(); const pr=B.querySelector('[data-a=pr]'), ag=B.querySelector('[data-a=ag]');
+  if(pr) pr.onclick=()=>tlStart(k,S.missed.map(q=>Object.assign({},q,{shown:null}))); if(ag) ag.onclick=()=>tlStart(k);
+  B.querySelector('[data-a=hm]').onclick=tlHome; }
+ /* the Timeline Game: tap the cards in order to build the whole timeline */
+ let G=null;
+ function gameItems(k){ if(k==='dates') return DATES12.map(([y,key,,p],i)=>({key,pic:p,year:y,rank:i,tie:y}));
+  return CARDS.filter(c=>c[3]<=LEVELS[k].range).map(([key,,y,p])=>({key,pic:p,year:y.indexOf('Year')===0?'?':y,rank:p,tie:(y==='2448'||y.indexOf('–')>=0)?'card'+p:y})); }
+ const mmss=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+ function tlGame(k){ clearTimers(); const Lv=LEVELS[k], items=gameItems(k).sort((a,b)=>a.rank-b.rank); BACK=tlHome; QUIT=tlHome;
+  G=X.game={k,items,next:0,miss:0,row:0,hints:0,t0:Date.now(),done:false};
+  const cardName=it=>nm(it.key);
+  frame(u('game'),Lv.shape+' '+L2(Lv.name.en,Lv.name.he),'run',`<div class="clab-card ${HEB()?'dir-rtl':''}"><div class="clab-row"><span class="gc"></span><span class="gt"></span><span class="gm"></span>${P.tl.best[k]?pill('rank','Best '+mmss(P.tl.best[k])):''}</div>
+   <div class="track" aria-label="${E(u('tl'))}"><div class="tcard slot">?</div></div>
+   <div class="clab-row" style="justify-content:space-between"><b>${E(u('gtap'))}</b>${T().quiet(u('hint'),'data-a="gh"','tlk-small')}</div>
+   ${thow('game')}<div class="gfb" aria-live="polite" style="font-weight:800;min-height:24px"></div>
+   <div class="gpool">${shuffle(items).map(it=>`<button type="button" class="tlk tlk-tile clab-opt pic" data-i="${items.indexOf(it)}">${imgHTML(it.pic,'','')}<span>${cardName(it)}</span></button>`).join('')}</div></div>`);
+  const B=bodyEl(); const st=()=>{ B.querySelector('.gc').innerHTML=pill('prog',G.next+' / '+items.length+' '+u('cards')); B.querySelector('.gm').innerHTML=pill('lock','✗ '+G.miss); }; st();
+  G.iv=setInterval(()=>{ if(!G||G.done) return; const el=B.querySelector('.gt'); if(el) el.innerHTML=pill('now','⏱ '+mmss(Math.round((Date.now()-G.t0)/1000))); },1000);
+  const glow=()=>{ const want=G.items[G.next]; B.querySelectorAll('.gpool .clab-opt').forEach(b=>{ const it=G.items[+b.dataset.i]; b.classList.toggle('glow',it.tie===want.tie); }); };
+  B.querySelector('[data-a=gh]').onclick=()=>{ G.hints++; glow(); };
+  const gfb=(m,g)=>{ const f=B.querySelector('.gfb'); f.textContent=m; f.style.color=g?'#1f8a5b':'#c2410c'; };
+  B.querySelectorAll('.gpool .clab-opt').forEach(b=>b.onclick=()=>{ if(G.done) return; const i=+b.dataset.i, it=G.items[i], want=G.items[G.next];
+   if(it===want||it.tie===want.tie){ if(it!==want){ const j=G.items.indexOf(want); G.items[i]=want; G.items[j]=it; B.querySelectorAll('.gpool .clab-opt').forEach(o=>{ const v=+o.dataset.i; if(v===i) o.dataset.i=j; else if(v===j) o.dataset.i=i; }); }
+    G.next++; G.row=0; b.remove(); B.querySelectorAll('.glow').forEach(o=>o.classList.remove('glow')); snd('right');
+    B.querySelector('.track .slot').insertAdjacentHTML('beforebegin',`<div class="tcard">${imgHTML(it.pic,nameOf(it.key),'')}<div class="tn">${nm(it.key)}</div><div class="ty">${E(it.year)}</div></div>`);
+    const tr=B.querySelector('.track'); tr.scrollLeft=HEB()?-tr.scrollWidth:tr.scrollWidth; st(); gfb(L2(pick(['Yes!','Right!','Great!','Keep going!']),pick(['כֵּן!','נָכוֹן!','יָפֶה!','הָלְאָה!'])),true);
+    if(G.next===G.items.length){ G.done=true; clearInterval(G.iv); const secs=Math.round((Date.now()-G.t0)/1000), best=P.tl.best[k], isBest=!best||secs<best; if(isBest){ P.tl.best[k]=secs; save(); } snd('win');
+     B.querySelector('.track .slot').remove(); gfb('',true);
+     B.querySelector('.gpool').outerHTML=`<div class="clab-fb good"><b style="font-size:20px">${E(u('gdone'))}</b><span>⏱ ${mmss(secs)} · ✗ ${G.miss} · ${G.hints} ${L2('hints','רְמָזִים')}${isBest?' · '+L2('New best time!','שִׂיא חָדָשׁ!'):''}</span></div><div class="clab-row clab-center">${T().main(u('again'),'data-a="ga"')}${T().quiet(L2('Pick a level','בַּחֲרִי רָמָה'),'data-a="gh2"')}</div>`;
+     B.querySelector('[data-a=ga]').onclick=()=>tlGame(k); B.querySelector('[data-a=gh2]').onclick=tlHome; } }
+   else { G.miss++; G.row++; st(); snd('wrong'); b.classList.add('wrong'); later(()=>b.classList.remove('wrong'),400); gfb(u('gwrong'),false); if(G.row>=3){ glow(); gfb(u('gglow'),false); } } }); }
+ for(const Lv of Object.values(LEVELS)) Lv.build=()=>buildFrom(Lv);
+
+ /* ================= open / close, and the door on the home ================= */
+ X.openLab=function(where){ if(!D()){ return; } css(); load(); groups();
+  if(!root){ root=document.createElement('div'); root.id='clab'; root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Chumash and Timeline Lab'); root.addEventListener('click',onTop); }
+  document.body.appendChild(root); X.open=true; document.body.classList.add('clab-open'); door();
+  if(where==='tl') tlHome(); else if(where==='ps') psLab(); else if(where==='tr') trLab(); else if(where==='pw') pwLab(); else if(where==='sh'||where==='ml') listLab(where); else hub(); };
+ X.close=function(){ clearTimers(); if(root&&root.parentNode) root.parentNode.removeChild(root); X.open=false; document.body.classList.remove('clab-open'); door(); };
+ X.hub=()=>hub(); X.tlHome=()=>tlHome(); X.prog=()=>P; X.save=()=>save(); X.LEVELS=LEVELS; X.CARDS=CARDS; X.PICS=PICS; X.trQ=trQ; X.breakQ=breakQ; X.listQ=listQ; X.psQ=psQ; X.groups=()=>{ groups(); return {SHG,MLG}; };
+ function door(){ try{ const on=!X.open&&!!D()&&typeof A!=='undefined'&&A&&A.view==='hub'&&document.body.classList.contains('gm-on')&&typeof GM!=='undefined'&&GM&&GM.tab==='home'&&eligible();
+   let d=document.getElementById('clab-door');
+   if(on&&!d&&T()){ css(); d=document.createElement('button'); d.type='button'; d.id='clab-door'; d.className='tlk tlk-tile'; d.setAttribute('aria-label','Open the Chumash and Timeline Lab'); d.innerHTML='<span class="i" aria-hidden="true">📜</span><span>Chumash & Timeline Lab</span>'; d.addEventListener('click',()=>{ snd('tap'); X.openLab(); }); document.body.appendChild(d); }
+   else if(!on&&d) d.remove(); }catch(e){} }
+ X.door=door;
+ /* Keser: no door; her world opens the lab from Kodesh */
+})();
