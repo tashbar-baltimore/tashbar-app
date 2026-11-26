@@ -45,7 +45,7 @@ _From `node tools/core/ledger.js`, 2026-11-25 17:15 UTC (coordinator). Grade 1 s
 | A4 | P0 | K–1 game bugs #402 (tiny text), #378 (word over instruction), #343 (no "how" after a miss) | OPEN | | | |
 | A6 | P0 | A lesson can start before all its parts load and quietly skip activities (seen in the coordinator's play-through: 1 "with me" + 2 "your turn" played). Find out if a slow Chromebook gives a boy a short lesson with no warning; if so, wait for the parts or show a message; add a test | OPEN | | | |
 | B1a | P1 | Review Round 2: F, all K–1 games, W13 | OPEN | | | |
-| B1b | P1 | Review Round 2: C45 and S | OPEN | | | |
+| B1b | P1 | Review Round 2: C45 and S | TAKEN | https://claude.ai/code/session_01A6aeygGDJYGYoKVNbunetu | 2026-11-26 01:30 | First the "Re-review needed" items #493 and #499 (C45 "Read It 3 Times" batches 2–3: 21 lessons): fresh re-score, fix every point under 4, re-score the fixes. Files `src/CoreDataC45H1.html`/`H2.html` only. Then the rest of C45 Round 2 |
 | B1c | P1 | Review Round 2: G and W48 | OPEN | | | |
 | B2a | P1 | Fix Round 1 failed lessons: W48 Grades 4–5 | DONE | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf (W48 owner) | 2026-11-25 21:00 | Live in #497: all 14 ✗ lessons fixed and re-scored 4–5 by a fresh reviewer (write minimums wait for A3a/A3b; WRIT.PARA.L05.07 check 3 is A2) |
 | B2b | P1 | Fix Round 1 failed lessons: W48 Grades 6–8 | DONE | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf (W48 owner) | 2026-11-25 23:00 | Live in #518: all 19 ✗ lessons fixed and re-scored 4–5 by fresh reviewers (write minimums wait for A3a/A3b) |
