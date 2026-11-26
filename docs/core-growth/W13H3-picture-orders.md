@@ -7,7 +7,7 @@ The process is the same as job F's (`docs/core-growth/F-picture-orders.md`) and 
 
 Until a picture arrives, the TODAY WE LEARN screen keeps its big emoji, never an empty box.
 
-## Order W13H3-1 (2026-11-26) · Grade 3 Unit 4 "Explain It" · status: SENT
+## Order W13H3-1 (2026-11-26) · Grade 3 Unit 4 "Explain It" · status: LIVE (6 of 6)
 
 **Style:** B23 · Builders. Warm storybook watercolor and ink, like a classic chapter book; light texture, clear faces with expression, a detailed cozy setting. Colors: brick red, golden wheat, slate blue, leaf green, paper cream.
 
@@ -43,4 +43,11 @@ Until a picture arrives, the TODAY WE LEARN screen keeps its big emoji, never an
 
 | # | Status | Where it goes live |
 |---|---|---|
-| 1–6 | SENT 2026-11-26 | waiting |
+| 1 | LIVE | `core-w13-g3u4-opener.webp` on `WRIT.ESSAY.L04.03|@today` |
+| 2 | LIVE | `core-w13-tide-today.webp` on `WRIT.ESSAY.L04.03|@watch` |
+| 3 | LIVE | `core-w13-groups-today.webp` on `WRIT.ESSAY.L04.04|@today` |
+| 4 | LIVE | `core-w13-define-today.webp` on `WRIT.PARA.L04.14|@today` |
+| 5 | LIVE | `core-w13-linking-today.webp` on `WRIT.PARA.L04.15|@today` |
+| 6 | LIVE | `core-w13-ending-today.webp` on `WRIT.PARA.L04.16|@today` |
+
+All 6 arrived on 2026-11-26 as 1600 × 900 PNG and were checked by eye, zoomed in: boys and men only, kippah and tzitzis, the cast as on their cards, no letters or numerals (the clock faces have tick marks only, and the book spines carry no lettering), no brands. They were saved as WebP at 1100 × 619 (123–152 KB), with the originals as JPEG.
