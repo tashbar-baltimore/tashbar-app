@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A0B2E">
+<title>Keser Girls · Her world</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; overflow:hidden; color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--night);
+  -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; }
+body{ background:
+  radial-gradient(ellipse at 50% 70%, rgba(255,95,162,.30) 0, transparent 50%),
+  radial-gradient(ellipse at 12% 0%, rgba(185,140,255,.38) 0, transparent 50%),
+  radial-gradient(ellipse at 92% 8%, rgba(95,227,207,.16) 0, transparent 40%),
+  linear-gradient(175deg, #34104F 0%, var(--night) 55%, #0E0418 100%); }
+#scene,#fx{ position:fixed; inset:0; width:100%; height:100%; display:block; }
+#fx{ pointer-events:none; z-index:20; }
+#stage{ position:fixed; inset:0; touch-action:pan-y; z-index:1; cursor:grab; }
+#stage:active{ cursor:grabbing; }
+body.intro .hud{ opacity:0; transform:translateY(14px); }
+.hud{ position:fixed; z-index:5; transition:opacity .6s var(--glide), transform .7s var(--glide); }
+body.in .hud{ opacity:0; pointer-events:none; transform:translateY(20px); }
+.corner{ top:max(16px,env(safe-area-inset-top)); right:16px; display:flex; gap:10px; }
+.side{ top:50%; margin-top:-24px; }
+.side.l{ left:max(18px,3vw); } .side.r{ right:max(18px,3vw); }
+.bottom{ left:0; right:0; bottom:max(22px,4vh,env(safe-area-inset-bottom)); display:flex; flex-direction:column; align-items:center; gap:16px; pointer-events:none; padding:0 16px; }
+.bottom > *{ pointer-events:auto; }
+.bottom::before{ content:""; position:absolute; left:50%; bottom:-30px; width:min(760px,140vw); height:260px; transform:translateX(-50%); z-index:-1; pointer-events:none;
+  background:radial-gradient(ellipse at 50% 70%, rgba(18,4,32,.62) 0, rgba(18,4,32,.3) 45%, transparent 70%); }
+.name{ position:relative; text-align:center; min-height:1em; pointer-events:none; }
+.name .he{ display:block; font-size:18px; font-weight:700; letter-spacing:.14em; color:var(--gold1); opacity:.85; height:22px; text-shadow:0 0 14px rgba(245,196,81,.6); }
+.name .k-foil{ display:block; font-size:clamp(40px,5.4vw,64px); line-height:1.05; }
+.name.swap .k-foil,.name.swap .he{ animation:pop .6s var(--spring); }
+@keyframes pop{ 0%{ opacity:0; transform:translateY(10px) scale(.92); filter:blur(4px) } 100%{ opacity:1; transform:none; filter:none } }
+
+/* inside a place */
+#room{ position:fixed; inset:0; z-index:6; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:0 16px max(8vh,40px);
+  opacity:0; pointer-events:none; transition:opacity .5s var(--glide); }
+body.inside #room{ opacity:1; pointer-events:auto; }
+#room .card{ text-align:center; padding:26px 44px 30px; border-radius:30px; background:linear-gradient(160deg,rgba(70,20,90,.62),rgba(30,6,48,.55));
+  border:1px solid rgba(255,241,184,.4); box-shadow:0 30px 80px rgba(20,0,40,.5), inset 0 1px 0 rgba(255,255,255,.35);
+  backdrop-filter:blur(16px) saturate(1.5); -webkit-backdrop-filter:blur(16px) saturate(1.5); transform:translateY(30px) scale(.96); transition:transform .7s var(--spring); }
+body.inside #room .card{ transform:none; }
+#room .k-foil{ font-size:clamp(38px,5vw,58px); margin:0; }
+#room .soon{ margin:10px 0 0; font-size:15px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold1); opacity:.9; }
+#room .back{ position:fixed; top:max(16px,env(safe-area-inset-top)); left:16px; }
+
+/* no 3D on this computer: still cards instead (the same places, dots and button) */
+.flat{ display:none; position:fixed; left:0; right:0; top:16%; height:46%; z-index:2; pointer-events:none; }
+.nogl #scene{ display:none; }
+.nogl .flat{ display:block; }
+.flat .track{ position:absolute; left:50%; top:0; height:100%; display:flex; gap:28px; transition:transform .6s var(--spring); }
+.flat .place{ pointer-events:auto; cursor:pointer; width:min(48vw,240px); height:100%; flex:none; border-radius:32px; display:grid; place-items:center;
+  background:radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--c) 45%, transparent), transparent 70%), linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.04));
+  border:1px solid rgba(255,241,184,.4); box-shadow:0 20px 60px rgba(20,0,40,.45), inset 0 1px 0 rgba(255,255,255,.3); transform:scale(.78); opacity:.5; transition:transform .6s var(--spring), opacity .4s; }
+.flat .place[aria-current="true"]{ transform:scale(1); opacity:1; box-shadow:0 20px 70px color-mix(in srgb, var(--c) 55%, transparent), inset 0 1px 0 rgba(255,255,255,.4); }
+.flat .place svg{ width:62%; height:62%; filter:drop-shadow(0 0 18px var(--c)); }
+.flat .crown{ position:fixed; left:50%; top:max(18px,3vh); width:120px; transform:translateX(-50%); filter:drop-shadow(0 0 22px rgba(245,196,81,.55)); pointer-events:auto; cursor:pointer; }
+@media (max-width:600px){ .side{ display:none } .flat{ top:15% } #room .soon{ letter-spacing:.12em; font-size:13px; white-space:nowrap } #room .card{ padding:22px 26px 24px } }
+@media (max-height:560px){ .name .k-foil{ font-size:36px } .bottom{ gap:10px } }
+@media (prefers-reduced-motion: reduce){ .hud,#room,#room .card,.flat .track,.flat .place{ transition:none } .name.swap .k-foil,.name.swap .he{ animation:none } }
+</style>
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+</head>
+<body class="intro">
+<canvas id="scene" aria-hidden="true"></canvas>
+<div id="stage" aria-hidden="true"></div>
+
+<div class="flat" aria-hidden="true">
+  <svg class="crown" viewBox="0 0 150 118"><defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1B8"/><stop offset=".45" stop-color="#F5C451"/><stop offset="1" stop-color="#C98A1E"/></linearGradient></defs>
+    <path d="M18 92 L24 34 L50 64 L75 16 L100 64 L126 34 L132 92 Z" fill="url(#fg)" stroke="#FFF6D6" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect x="15" y="88" width="120" height="18" rx="9" fill="url(#fg)" stroke="#FFF6D6" stroke-width="2.5"/><g id="flatgems"></g></svg>
+  <div class="track"></div>
+</div>
+
+<div class="hud corner">
+  <button class="k-icon small" id="sound" aria-label="Sound" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/></svg></button>
+  <button class="k-icon small" id="lite" aria-label="Light mode for slow computers" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4C10 4 5 9 4 20M20 4c0 9-5 13-12 12M20 4L9 15"/></svg></button>
+</div>
+<button class="hud side l k-icon" id="prev" aria-label="Previous place"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+<button class="hud side r k-icon" id="next" aria-label="Next place"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+<div class="hud bottom">
+  <div class="name" aria-live="polite"><span class="he" lang="he" dir="rtl"></span><span class="k-foil" id="placeName"></span></div>
+  <div class="k-dots" id="dots" role="tablist" aria-label="Places"></div>
+  <button class="k-btn" id="enter"><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>Enter</button>
+</div>
+
+<div id="room" aria-hidden="true">
+  <button class="k-icon back" id="back" aria-label="Back to my world"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="card"><p class="k-foil" id="roomName"></p><p class="soon">✦ Lessons coming soon ✦</p></div>
+</div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<script type="module" src="world.js"></script>
+</body>
+</html>

@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1A0B2E">
 <title>Keser Girls 3.0</title>
+<link rel="stylesheet" href="kit.css">
+<link rel="prefetch" href="world.html">
 <style>
 :root{ --night:#1A0B2E; --pink:#FF5FA2; --lilac:#C49BFF; --gold1:#FFF1B8; --gold2:#F5C451; --gold3:#C98A1E; }
 *{ box-sizing:border-box; }
@@ -26,6 +28,8 @@ h1{ margin:0; font-family:"Didot","Bodoni 72","Bodoni MT","Playfair Display",Geo
   background-size:250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:foil 4s linear infinite;
   filter:drop-shadow(0 4px 18px rgba(245,196,81,.35)); }
 @keyframes foil{ 0%{ background-position:100% 0 } 100%{ background-position:-150% 0 } }
+.title .k-btn{ margin-top:20px; pointer-events:auto; }
+body.leaving{ transition:opacity .7s ease, transform .7s ease; opacity:0; transform:scale(1.06); }
 .soon{ display:inline-block; margin-top:16px; padding:10px 24px; border-radius:999px; font-weight:800; font-size:13px; letter-spacing:.3em; text-transform:uppercase;
   color:#fff; background:linear-gradient(90deg,rgba(255,95,162,.85),rgba(181,92,255,.85)); border:1px solid rgba(255,255,255,.45);
   box-shadow:0 0 24px rgba(255,95,162,.55), inset 0 1px 0 rgba(255,255,255,.5); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
@@ -48,7 +52,7 @@ h1{ margin:0; font-family:"Didot","Bodoni 72","Bodoni MT","Playfair Display",Geo
 <div class="title">
   <p class="he" lang="he" dir="rtl">כתר</p>
   <h1>Keser Girls</h1>
-  <span class="soon">Coming soon</span>
+  <a class="k-btn" id="enter" href="world.html"><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>Enter</a>
 </div>
 
 <script type="module">
@@ -159,7 +163,8 @@ const glints = sparkles.map((p, i) => { const s = new THREE.Sprite(new THREE.Spr
 const aim = { x: 0, y: 0 }, cur = { x: 0, y: 0 };
 addEventListener('pointermove', e => { aim.x = e.clientX / innerWidth * 2 - 1; aim.y = e.clientY / innerHeight * 2 - 1; });
 addEventListener('deviceorientation', e => { if (e.gamma == null) return; aim.x = Math.max(-1, Math.min(1, e.gamma / 30)); aim.y = Math.max(-1, Math.min(1, (e.beta - 45) / 30)); });
-let spinBoost = 0; addEventListener('pointerdown', () => { spinBoost = 6; });   // a tap gives the crown a happy twirl
+let spinBoost = 0; addEventListener('pointerdown', () => { spinBoost = 6; });
+document.getElementById('enter').addEventListener('click', e => { if (calm) return; e.preventDefault(); spinBoost = 14; document.body.classList.add('leaving'); setTimeout(() => { location.href = 'world.html'; }, 650); });   // a tap gives the crown a happy twirl
 
 function fit() {
   const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h;

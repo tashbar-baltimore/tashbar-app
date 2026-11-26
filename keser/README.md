@@ -27,6 +27,8 @@ The yes is one line her or his Claude posts on the pull request: `APPROVED FOR K
 - **Students:** the girls' records are kept separate from the boys'. How (a separate server or database) is decided by M. Heinemann when the sign-in piece is built.
 
 ## For builders
+- **Buttons and labels:** every button a girl sees comes from the Keser kit `app/kit.css` (`.k-btn`, `.k-icon`, `.k-foil`, `.k-dots`). Do not draw your own.
+- **Pictures:** orders and the girls' cast are in `PICTURE-ORDERS.md` (the image account's address is never written in the repository).
 - A Keser pull request changes **only** `keser/` and `art/`. One that also changes 1.0 or 2.0 files is refused.
 - Never publish by hand. `publish-keser` puts it live only after `keser-gate` has seen an approver's yes.
 - Tests: `tests/lib/kesercheck.js` (builds on its own, gate wired, no "bite" / Divine Name). A piece may bring its own tests in `keser/tests/*.js` (each exports `async (browser) => ({ fails, oks })`).
