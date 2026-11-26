@@ -834,7 +834,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
 
   /* Unit 7: an underwater bubble world */
   function underwater() {
-    setEnv({ bg: '#2EB8D4', fog: ['#3CC3DA', 14, 55], sun: ['#E6FFFF', 2.2, [-3, 14, 6]], hemi: ['#7FDCF5', '#A8B890', 0.55], rim: ['#9CF2FF', 1.5], front: ['#C8FFF4', 0.3], exposure: 0.76, bloom: 0.26, vib: 0.28,
+    setEnv({ bg: '#2EB8D4', fog: ['#3CC3DA', 14, 55], sun: ['#E6FFFF', 2.2, [-3, 14, 6]], hemi: ['#8FE4F7', '#CDEFF2', 0.6], rim: ['#9CF2FF', 1.5], front: ['#C8FFF4', 0.3], exposure: 0.76, bloom: 0.26, vib: 0.28,
       box: ['#FFC93C', '#FFFFFF', '#E0A52A'], css: '#2EB8D4' });
     skyDome('#BFF6FF', '#4CCDE2', '#2AAFCB', [0, 1, -0.2]);
     const sand = paint(1024, 1024, (x, w) => { x.fillStyle = '#F4E2B6'; x.fillRect(0, 0, w, w); const R = rng(23); for (let i = 0; i < 14000; i++) { x.fillStyle = ['rgba(210,180,120,.35)', 'rgba(255,255,255,.5)', 'rgba(255,220,180,.4)'][i % 3]; x.fillRect(R() * w, R() * w, 1.6, 1.6); }
@@ -857,7 +857,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     [[-8, -14, 3, 0.16], [-2, -16, 4, 0.2], [5, -13, 2.6, 0.14], [11, -17, 3.6, 0.18]].forEach(([x, z, w, op], i) => { const b = new THREE.Mesh(new THREE.PlaneGeometry(w, 30), new THREE.MeshBasicMaterial({ map: beamT, color: '#E8FFFF', transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); b.position.set(x, 15, z); b.rotation.z = 0.25; far.add(b); anim.push((t) => { b.material.opacity = op * (0.7 + 0.3 * Math.sin(t * 0.5 + i * 1.9)); }); });
     fishSchool(0, 5, -10, 9, 9, ['#FFC93C', '#FF8A3D', '#FFFFFF'], 0.22, far); fishSchool(-6, 7, -20, 7, 7, ['#7FE7FF', '#3AA8FF'], -0.18, far); fishSchool(8, 3, -4, 6, 5, ['#FF6FA3', '#FFD23F'], 0.3, far);
     farify(far);
-    stage((x, c) => { const g = x.createRadialGradient(c, c, 0, c, c, c); g.addColorStop(0, '#FFF6DE'); g.addColorStop(0.75, '#F6E6BE'); g.addColorStop(0.9, '#8FE3E8'); g.addColorStop(1, '#4CC9D8'); x.fillStyle = g; x.fillRect(0, 0, 2 * c, 2 * c);
+    stage((x, c) => { const g = x.createRadialGradient(c, c, 0, c, c, c); g.addColorStop(0, '#F4FBF9'); g.addColorStop(0.75, '#EDEBD6'); g.addColorStop(0.9, '#8FE3E8'); g.addColorStop(1, '#4CC9D8'); x.fillStyle = g; x.fillRect(0, 0, 2 * c, 2 * c);
       const R = rng(9); for (let i = 0; i < 40; i++) { const a = i / 40 * Math.PI * 2 + R() * 0.05, r = c * 0.9; x.fillStyle = ['#FFFFFF', '#FFD6E0', '#FFE7B0', '#C9F3FF'][i % 4]; x.beginPath(); x.ellipse(c + Math.cos(a) * r, c + Math.sin(a) * r, c * 0.04, c * 0.03, a, 0, 7); x.fill(); } }, { edge: '#F4E2B6', sheen: 0.3 });
     scatter(46, 7.2, 11.5, 91, (x, z, Rr, i) => { const k = i % 5; if (k === 0) starfish(x, z, 0.6 + Rr() * 0.4, ['#FF8A3D', '#FF6FA3', '#B98CFF'][i % 3], near); else if (k === 1) shell(x, z, 0.6 + Rr() * 0.4, ['#FFFFFF', '#FFD6E0', '#FFE7B0'][i % 3], near); else if (k === 2) seaweed(x, z, 1.2 + Rr(), '#3FD68A', near); else if (k === 3) coralBranch(x, z, 1.1, CC[i % 6], i, near); else mesh(G.ball, pm('#9FB7C9', { roughness: 0.8, clearcoat: 0 }), x, 0.08, z, 0.35, 0.22, 0.3, near); });
     motes({ n: 130, colors: ['#FFFFFF', '#DFFBFF'], size: 0.22, box: [-12, 12, 0.2, 10, -14, -1.5], kind: 'rise', speed: 0.035, seed: 19, tex: bubbleTex(), add: false, opacity: 0.85 });

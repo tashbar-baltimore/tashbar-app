@@ -1016,6 +1016,9 @@ export function startGame(cfg) {
   const ZONES = { top: [0, PLANK_Y + 0.55, 0], under: [0, 0.45, 0], left: [-2.3, 0.55, 0], right: [2.3, 0.55, 0], front: [0, 0.55, 2.1], behind: [0, 0.55, -2.3] };
   const ZWORD = { top: 'on top of', under: 'under', left: 'next to', right: 'next to', front: 'in front of', behind: 'behind' };
   function makeBridge() {
+    const TB = LK && LK.treasures.bridge ? LK.treasures.bridge(PLANK_Y) : null;   /* under the sea: a stone bridge on coral rocks (treasures.js) */
+    if (TB) { const ring = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.06, 12, 40), new THREE.MeshBasicMaterial({ color: '#F5B400' })); ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
+      TB.position.set(0, 0, POS_Z()); scene.add(TB); return { g: TB, ring }; }
     const g = new THREE.Group(), m1 = new THREE.MeshPhysicalMaterial({ color: '#E03A33', roughness: 0.35, clearcoat: 1 }), m2 = new THREE.MeshPhysicalMaterial({ color: '#1F6FEB', roughness: 0.35, clearcoat: 1 });
     [-1.05, 1.05].forEach(x => { const c = new THREE.Mesh(new RoundedBoxGeometry(0.8, PLANK_Y - 0.1, 0.8, 4, 0.08), m1); c.position.set(x, (PLANK_Y - 0.1) / 2, 0); c.castShadow = c.receiveShadow = true; g.add(c); });
     const plank = new THREE.Mesh(new RoundedBoxGeometry(3.0, 0.22, 1.1, 4, 0.08), m2); plank.position.set(0, PLANK_Y + 0.02, 0); plank.castShadow = plank.receiveShadow = true; g.add(plank);

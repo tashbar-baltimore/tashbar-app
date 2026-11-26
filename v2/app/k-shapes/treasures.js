@@ -245,7 +245,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
       if (kind === 'cone') return { mat: [M(solidTex('nose' + col, 512, 256, (x, w, h) => { x.fillStyle = col; x.fillRect(0, 0, w, h); x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, w, h * 0.22); x.fillRect(0, h * 0.62, w, h * 0.08); })), M(null, { color: '#E6ECF5' })] };   /* a rocket nose */
     }
     if (world === 'underwater') {
-      if (kind === 'sphere') return { mat: new PM({ color: tint(col, 0.55), roughness: 0.12, clearcoat: 1, sheen: 1, sheenColor: C('#FFD6F0'), iridescence: 0.8, emissive: '#FFC400', emissiveIntensity: 0 }) };   /* a pearl, tinted */
+      if (kind === 'sphere') return { mat: new PM({ color: tint(col, 0.3), roughness: 0.1, clearcoat: 1, sheen: 1, sheenColor: C('#FFE0F4'), iridescence: 1, iridescenceIOR: 1.6, envMapIntensity: 1.1, emissive: '#FFC400', emissiveIntensity: 0 }) };   /* a shiny pearl, tinted */
       if (kind === 'cube') return { mat: M(solidTex('chest' + col, 256, 256, (x, w, h) => { lightWash(x, w, h, col, 0.2, 0.85); x.strokeStyle = 'rgba(60,30,10,.35)'; x.lineWidth = 4; for (let i = 1; i < 4; i++) { x.beginPath(); x.moveTo(0, i * h / 4); x.lineTo(w, i * h / 4); x.stroke(); }
         x.fillStyle = '#E8C35A'; x.fillRect(0, 0, w, 16); x.fillRect(0, h - 16, w, 16); x.fillRect(0, 0, 16, h); x.fillRect(w - 16, 0, 16, h); }), { roughness: 0.55 }) };   /* a treasure box: planks and gold bands */
       if (kind === 'cyl') { const side = M(solidTex('barrel' + col, 512, 256, (x, w, h) => { lightWash(x, w, h, col, 0.2, 0.85); x.strokeStyle = 'rgba(60,30,10,.3)'; x.lineWidth = 4; for (let i = 0; i < 16; i++) { x.beginPath(); x.moveTo(i * w / 16, 0); x.lineTo(i * w / 16, h); x.stroke(); }
@@ -322,6 +322,22 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   T.towerMat = (color) => world === 'snow' ? new PM({ color: tint(keepHue(vivid(color)), 0.15), roughness: 0.15, clearcoat: 1, transmission: 0.12, thickness: 0.5, emissive: '#FFC400', emissiveIntensity: 0 }) : null;
   T.towerTop = () => { if (world !== 'snow') return null; const m = new THREE.Mesh(new THREE.SphereGeometry(0.36, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), new PM({ color: '#FFFFFF', roughness: 0.7, sheen: 1, sheenColor: C('#DCEBFF') })); m.scale.set(1, 0.32, 1); return m; };
   if (world !== 'snow') { T.towerMat = null; T.towerTop = null; T.rod = null; }
+
+  /* ================= UNDER THE SEA: the bridge for "where is it?" is a smooth sandstone slab on two coral-pink rocks, with little shells
+     (the same size and place as the block bridge, so on top / under / next to / in front / behind are exactly the same) ================= */
+  T.bridge = (PLANK_Y) => {
+    if (world !== 'underwater') return null;
+    const g = new THREE.Group(), rockM = new PM({ color: '#F28C8C', roughness: 0.6, clearcoat: 0.3, sheen: 0.6, sheenColor: C('#FFD6D6') });
+    [-1.05, 1.05].forEach(x => { const geo = new THREE.CylinderGeometry(0.36, 0.44, PLANK_Y - 0.1, 28, 6), p = geo.attributes.position, v = new THREE.Vector3();
+      for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const a = Math.atan2(v.z, v.x), k = 1 + 0.08 * Math.sin(a * 5 + v.y * 6 + x) + 0.05 * Math.sin(v.y * 13); p.setXYZ(i, v.x * k, v.y, v.z * k); }
+      geo.computeVertexNormals(); const c = new THREE.Mesh(geo, rockM); c.position.set(x, (PLANK_Y - 0.1) / 2, 0); g.add(c);
+      for (let k = 0; k < 6; k++) { const b = new THREE.Mesh(new THREE.SphereGeometry(0.07, 12, 8), new PM({ color: ['#FFB3C1', '#FFFFFF', '#FFD39A'][k % 3], roughness: 0.4 })); b.position.set(x + Math.cos(k * 1.7) * 0.4, 0.2 + k * 0.17, Math.sin(k * 1.7) * 0.4); g.add(b); } });
+    const slabT = paint(256, 128, (x, w, h) => { x.fillStyle = '#EBCB96'; x.fillRect(0, 0, w, h); const R = rng(4); for (let i = 0; i < 300; i++) { x.fillStyle = R() < 0.5 ? 'rgba(255,255,255,.18)' : 'rgba(150,100,50,.12)'; x.beginPath(); x.arc(R() * w, R() * h, 1 + R() * 2.5, 0, 7); x.fill(); } });
+    const slab = new THREE.Mesh(new RoundedBoxGeometryLite(3.0, 0.22, 1.1, 0.08), new PM({ color: '#FFFFFF', map: slabT, roughness: 0.7 })); slab.position.set(0, PLANK_Y + 0.02, 0); g.add(slab);
+    const shellM = new PM({ color: '#FFE3D6', roughness: 0.3, clearcoat: 1 });
+    [[-1.2, 0.35], [1.25, -0.3], [0.5, 0.42]].forEach(([x, z]) => { const sh = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), shellM); sh.position.set(x, PLANK_Y + 0.13, z); sh.scale.set(1, 0.5, 1.2); g.add(sh); });
+    return shadowy(g);
+  };
 
   /* ================= what each world offers kit.js ================= */
   /* T.bead(type, B, shapeFn): a pattern item, or null to keep the plain bead */
