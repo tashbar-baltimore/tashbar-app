@@ -239,13 +239,19 @@
  function ask(box,Q,done,opt){ opt=opt||{};
   const fin=(ok,rightText)=>{ snd(ok?'right':'wrong'); if(opt.fast){ later(()=>done(ok),ok?350:900); return; }
    const extra=Q.parts?partsHTML(Q.parts):Q.x&&Q.x.ex&&!ok&&Q.kind!=='hunt'?exHTML(Q.x.ex):'';
-   box.querySelector('.fbx').innerHTML=`<div class="clab-fb ${ok?'good':'bad'}">${ok?pick(['Yes!','Right!','You got it!','Beautiful!','Excellent!']):rightText}${Q.why?`<span style="font-weight:600">${Q.why}</span>`:''}${extra}</div><div class="clab-row clab-center">${T().main(T().WORDS.next,'data-a="nx"')}</div>`;
+   box.querySelector('.fbx').innerHTML=`<div class="clab-fb ${ok?'good':'bad'}"><div>${ok?pick(['Yes!','Right!','You got it!','Beautiful!','Excellent!']):rightText}</div>${Q.why?`<span style="font-weight:600">${Q.why}</span>`:''}${extra}</div><div class="clab-row clab-center">${T().main(T().WORDS.next,'data-a="nx"')}</div>`;
    const nx=box.querySelector('[data-a=nx]'); nx.onclick=()=>{ snd('tap'); done(ok); }; try{ nx.focus({preventScroll:true}); nx.scrollIntoView({block:'nearest'}); }catch(e){} };
   const head=(opt.head||'')+`<p class="clab-q">${Q.q||''}</p>`;
   const tail=how(Q.how||'Read it carefully, then tap your answer.')+'<div class="fbx" aria-live="polite"></div>';
   const lockAll=()=>box.querySelectorAll('.clab-opt,.piece,button.tw,.hk,[data-a=del],[data-a=chk],[data-a=undo]').forEach(b=>b.disabled=true);
-  if(Q.kind==='spell'||Q.kind==='buildparts'){
-   const items=Q.kind==='spell'?[...Q.tiles.map((t,i)=>({t,i})),...Q.extra.map(t=>({t,i:-1}))]:[...Q.x.parts.map((p,i)=>({t:p.h,p,i})),...Q.extra.map(p=>({t:p.h,p,i:-1}))];
+  if(Q.kind==='spot'){ const on=new Set(); X.cur={Q,want:Q.want};
+   box.innerHTML=`${head}<div class="bank" style="font-size:1.2em">${Q.g.map((c,i)=>`<button type="button" class="tlk tlk-tile piece gtile" data-g="${i}" aria-pressed="false">${c}</button>`).join('')}</div>
+    <div class="clab-row clab-center">${T().main(T().WORDS.check,'data-a="chk"')}</div>${tail}`;
+   box.querySelectorAll('.gtile').forEach(b=>b.onclick=()=>{ const i=+b.dataset.g; if(on.has(i)) on.delete(i); else on.add(i); b.classList.toggle('picked'); b.setAttribute('aria-pressed',String(on.has(i))); snd('tap'); });
+   box.querySelector('[data-a=chk]').onclick=()=>{ if(!on.size) return; const ok=Q.want.every((w,i)=>w===on.has(i)); box.querySelectorAll('.gtile').forEach(b=>{ b.disabled=true; if(Q.want[+b.dataset.g]) b.classList.add('right'); }); box.querySelector('[data-a=chk]').disabled=true;
+    fin(ok,`The ${Q.side==='p'?'prefix':'suffix'} is <span class="clab-he" style="font-size:28px">${Q.g.filter((_,i)=>Q.want[i]).join('')}</span>, marked in green above. In the word: <span class="clab-he wc" style="font-size:28px">${colorWord(Q.x)}</span> (prefix orange, suffix purple).`); }; return; }
+  if(Q.kind==='spell'||Q.kind==='buildparts'||Q.kind==='affix'){
+   const items=Q.kind==='spell'?[...Q.tiles.map((t,i)=>({t,i})),...Q.extra.map(t=>({t,i:-1}))]:Q.kind==='affix'?[...Q.order.map((p,i)=>({t:p.h,i})),...Q.extra.map(p=>({t:p.h,i:-1}))]:[...Q.x.parts.map((p,i)=>({t:p.h,p,i})),...Q.extra.map(p=>({t:p.h,p,i:-1}))];
    const tiles=shuffle(items); let built=[]; X.cur={Q,tiles};
    box.innerHTML=`${head}${Q.kind==='buildparts'?LEGEND:''}<div class="slots"></div><div class="bank">${tiles.map((t,j)=>`<button type="button" class="tlk tlk-tile piece ${t.p?t.p.k:''}" data-j="${j}">${t.t}${t.p?`<small>${E(t.p.m)}</small>`:''}</button>`).join('')}</div>
     <div class="clab-row clab-center">${T().quiet('Undo','data-a="undo"')}${T().main(T().WORDS.check,'data-a="chk"')}</div>${tail}`;
@@ -253,8 +259,8 @@
    box.querySelectorAll('.bank .piece').forEach(b=>b.onclick=()=>{ built.push(+b.dataset.j); snd('tap'); draw(); });
    box.querySelector('[data-a=undo]').onclick=()=>{ built.pop(); draw(); };
    box.querySelector('[data-a=chk]').onclick=()=>{ if(!built.length) return; let ok;
-    if(Q.kind==='spell') ok=plainHeb(built.map(j=>tiles[j].t).join(''))===plainHeb(Q.right); else ok=built.length===Q.x.parts.length&&built.every((j,n)=>tiles[j].i===n);
-    lockAll(); fin(ok,Q.kind==='spell'?`It is spelled <span class="clab-he" style="font-size:28px">${Q.right}</span>.`:`The word is <span class="clab-he" style="font-size:28px">${Q.x.w}</span>.`); };
+    if(Q.kind==='spell') ok=plainHeb(built.map(j=>tiles[j].t).join(''))===plainHeb(Q.right); else { const need=Q.kind==='affix'?Q.order.length:Q.x.parts.length; ok=built.length===need&&built.every((j,n)=>tiles[j].i===n); }
+    lockAll(); fin(ok,Q.kind==='affix'?`The word is <span class="clab-he wc" style="font-size:28px">${colorWord(Q.x)}</span>: ${Q.order.map(p=>`<span class="clab-he">${p.h}</span> = ${E(p.m)}`).join(', ')}.`:Q.kind==='spell'?`It is spelled <span class="clab-he" style="font-size:28px">${Q.right}</span>.`:`The word is <span class="clab-he" style="font-size:28px">${Q.x.w}</span>.`); };
    draw(); return; }
   if(Q.kind==='hunt'||Q.kind==='tap'){
    const toks=Q.kind==='hunt'?Q.ex.w.map((w,i)=>({w,a:i===Q.ex.hi})):Q.toks.map((t,i)=>({w:t.w,a:Q.ans[i]})); X.cur={Q,toks};
@@ -427,38 +433,53 @@
    <p><span class="clab-he">הָאָרֶץ</span> = <span class="clab-he">הָ</span> “the” + <span class="clab-he">אֶרֶץ</span> “land”. Peel off the front and the end, and the middle is a word you know.</p><p>Each unit: the lesson, practice, a game, then the quiz. Every quiz reviews the units before it.</p></div>
    ${pathHTML('ps',U.length,i=>'Unit '+(i+1)+': '+heWrap(U[i].title))}</div>`);
   wireUnits(psUnit); }
+ /* Staff request (2026-11-26): a boy works only with the prefixes and suffixes, never translating the base word or the whole word.
+    Kinds: spot (tap the prefix or suffix letters), affix (tap the Hebrew prefix/suffix for each meaning, the base word is given),
+    pos (prefix or suffix?), part (what does this prefix/suffix mean?). The lesson still shows each word's meaning as help. */
  const PSHOW={part:'Find the letters stuck to the front or the end (the colored ones). Think back to the lesson: what does that prefix or suffix mean?',
-  word:'Peel off the prefix and the suffix. What is the word in the middle? Put the meanings together.',
+  spot:'Read the word from the right. A prefix is stuck on the front (the right side). A suffix is stuck on the end (the left side). Tap each of its letters, then tap Check.',
   pos:'Look where the letters sit. At the front of the word = a prefix. At the end of the word = a suffix.',
-  build:'Prefix first, then the base word, then the suffix. The small English under each piece tells you what it means. Tap them in order.'};
- function psQ(ui,x,kinds){ const U=UN(), pool=U.slice(0,Math.max(ui+1,2)).flatMap(u=>[...u.items,...u.quiz]), aff=x.parts.filter(p=>p.k!=='b');
-  kinds=(kinds||['build','pos','part']).filter(t=>(t!=='part'&&t!=='pos')||aff.length); const kind=pick(kinds.length?kinds:['word']);
-  if(kind==='pos'){ const p=pick(aff); return {kind:'mc',id:x.id,x,q:`Is <span class="clab-he" style="font-size:30px">${p.h}</span> a prefix or a suffix in this word?`,stage:`<span class="wc">${colorWord(x)}</span>`,stageRaw:true,opts:['Prefix (front)','Suffix (end)'],keep:true,right:p.k==='p'?'Prefix (front)':'Suffix (end)',parts:x.parts,why:`<span class="clab-he">${x.w}</span> = ${E(x.t)}`,how:PSHOW.pos}; }
-  if(kind==='build'){ const letters=h=>h.replace(/[֑-ׇ]/g,''); const ownL=x.parts.map(p=>letters(p.h)), ownM=x.parts.map(p=>p.m);
-   const extra=shuffle(U.slice(0,Math.max(ui+1,3)).flatMap(u=>u.items.flatMap(y=>y.parts)).filter(p=>ownL.indexOf(letters(p.h))<0&&ownM.indexOf(p.m)<0)).filter((p,i,a)=>a.findIndex(q=>letters(q.h)===letters(p.h))===i).slice(0,3);
-   return {kind:'buildparts',id:x.id,x,extra,q:`Build the word that means “${E(x.t)}”. Tap the pieces in order.`,how:PSHOW.build}; }
+  affix:'Read the meanings in order, from the front of the word. For each one, tap the Hebrew prefix or suffix that means it. The base word is already there.'};
+ const affOf=x=>x.parts.filter(p=>p.k!=='b');
+ function spotInfo(x){ const strip=s=>s.replace(/[֑-ׇ]/g,''); const g=graphemes(x.w), cons=g.map(c=>c[0]); let a=0, b=g.length;
+  for(const p of x.parts.filter(p=>p.k==='p')){ const pc=strip(p.h); if(cons.slice(a,a+pc.length).join('')===pc) a+=pc.length; else break; }
+  for(const p of x.parts.filter(p=>p.k==='s').reverse()){ const pc=strip(p.h); if(pc&&cons.slice(b-pc.length,b).join('')===pc&&b-pc.length>a) b-=pc.length; else break; }
+  return {g,a,b}; }
+ function psQ(ui,x,kinds){ const U=UN(), aff=affOf(x), sp=spotInfo(x);
+  kinds=(kinds||['spot','affix','pos']).filter(t=>aff.length&&(t!=='spot'||sp.a>0||sp.b<sp.g.length));
+  const kind=pick(kinds.length?kinds:['pos']);
+  if(kind==='spot'){ const sides=[]; if(sp.a>0) sides.push('p'); if(sp.b<sp.g.length) sides.push('s'); const k=pick(sides);
+   const want=sp.g.map((_,i)=>k==='p'?i<sp.a:i>=sp.b);
+   return {kind:'spot',id:x.id,x,side:k,g:sp.g,want,q:`Tap the letters of the <b>${k==='p'?'prefix (front)':'suffix (end)'}</b> in this word.`,parts:x.parts,how:PSHOW.spot}; }
+  if(kind==='affix'){ const letters=h=>h.replace(/[֑-ׇ]/g,''); const own=aff.map(p=>letters(p.h)), ownM=aff.map(p=>p.m);
+   const extra=shuffle(U.slice(0,Math.max(ui+1,3)).flatMap(u=>u.items.flatMap(y=>affOf(y)))).filter(p=>own.indexOf(letters(p.h))<0&&ownM.indexOf(p.m)<0).filter((p,i,a)=>a.findIndex(q=>letters(q.h)===letters(p.h))===i).slice(0,2);
+   const base=x.parts.filter(p=>p.k==='b').map(p=>p.h).join(' ');
+   const line=[...x.parts.filter(p=>p.k==='p').map(p=>'“'+E(p.m)+'”'),`<span class="clab-he">${base}</span>`,...x.parts.filter(p=>p.k==='s').map(p=>'“'+E(p.m)+'”')].join(' + ');
+   return {kind:'affix',id:x.id,x,order:[...x.parts.filter(p=>p.k==='p'),...x.parts.filter(p=>p.k==='s')],extra,q:`Make the word: ${line}. Tap the prefixes and suffixes in order, front first.`,parts:x.parts,how:PSHOW.affix}; }
   if(kind==='part'){ const p=pick(aff); const c=shuffle(partPool(Math.max(ui,3),p.k).filter(m=>m!==p.m&&!wordsOf(m).some(w=>wordsOf(p.m).indexOf(w)>=0))).slice(0,3);
-   if(c.length===3) return {kind:'mc',id:x.id,x,q:`What does the ${p.k==='p'?'prefix':'suffix'} <span class="clab-he">${p.h}</span> mean in this word?`,stage:x.w,right:p.m,opts:[p.m,...c],parts:x.parts,why:`<span class="clab-he">${x.w}</span> = ${E(x.t)}`,how:PSHOW.part}; }
-  const others=shuffle(pool.filter(y=>y!==x&&y.t!==x.t)).slice(0,3);
-  return {kind:'mc',id:x.id,x,q:'What does this word mean?',stage:x.w,right:x.t,opts:[x.t,...others.map(y=>y.t)],parts:x.parts,how:PSHOW.word}; }
+   if(c.length===3) return {kind:'mc',id:x.id,x,q:`What does the ${p.k==='p'?'prefix':'suffix'} <span class="clab-he">${p.h}</span> mean in this word?`,stage:`<span class="wc">${colorWord(x)}</span>`,stageRaw:true,right:p.m,opts:[p.m,...c],parts:x.parts,how:PSHOW.part}; }
+  const p=pick(aff); return {kind:'mc',id:x.id,x,q:`Is <span class="clab-he" style="font-size:30px">${p.h}</span> a prefix or a suffix in this word?`,stage:`<span class="wc">${colorWord(x)}</span>`,stageRaw:true,opts:['Prefix (front)','Suffix (end)'],keep:true,right:p.k==='p'?'Prefix (front)':'Suffix (end)',parts:x.parts,how:PSHOW.pos}; }
+ const affPairs=ui=>{ const seen={}; return UN().slice(0,ui+1).flatMap(u=>u.items.flatMap(affOf)).filter(p=>{ const k=p.h.replace(/[֑-ׇ]/g,'')+'|'+p.m; if(seen[k]) return false; seen[k]=1; return true; }).map(p=>({he:p.h,en:p.m})); };
  function psUnit(ui){ clearTimers(); psPrep(); const u=UN()[ui], key='ps'+ui, done=P.done.ps.indexOf(ui)>=0; BACK=psLab; markStep(key,'lesson');
   const okp=st=>stepOK(key,st)?pill('prog','Done'):'';
   frame('Unit '+(ui+1)+' · Prefixes & Suffixes',done?'Passed ★':'','page',`<div class="clab-card"><h2>${heWrap(u.title)}</h2><div class="clab-teach">${u.teach.map(t=>`<p>${t}</p>`).join('')}</div>${LEGEND}<div>${exRows(u.items)}</div>
-    ${how('Read each word from the right. Find the colored letters at the front and the end. The small boxes show what each piece means. Then read the whole meaning.')}</div>
-   <div class="clab-steps">${tile('clab-step','data-s="practice"',`<span class="n">Step 2</span><b>Practice</b><small>Build the words and spot the prefix or suffix, until each one is right twice.</small>${okp('practice')}`)}
-    ${tile('clab-step','data-s="g:build"',`<span class="n">Step 3 · Game</span><b>Build the Word</b><small>Snap the prefix, base word and suffix together.</small>${okp('g_build')}`)}
+    ${how('Read each word from the right. Find the colored letters at the front and the end, and learn what each prefix and suffix means. You only need to know the prefixes and suffixes; the English of the whole word is there to help you.')}</div>
+   <div class="clab-steps">${tile('clab-step','data-s="practice"',`<span class="n">Step 2</span><b>Practice</b><small>Spot the prefix or suffix, and add the right one to a word, until each is right twice.</small>${okp('practice')}`)}
+    ${tile('clab-step','data-s="g:build"',`<span class="n">Step 3 · Game</span><b>Add the Prefix</b><small>Tap the Hebrew prefix or suffix that matches each meaning.</small>${okp('g_build')}`)}
     ${tile('clab-step','data-s="g:pos"',`<span class="n">Step 3 · Game</span><b>Front or Back?</b><small>Is it a prefix or a suffix? Decide fast.</small>${okp('g_pos')}`)}
+    ${tile('clab-step','data-s="g:match"',`<span class="n">Step 3 · Game</span><b>Match-Up</b><small>Match each prefix and suffix to what it means.</small>${okp('g_match')}`)}
     ${tile('clab-step','data-s="quiz"',`<span class="n">Step 4</span><b>Quiz</b><small>New words with this unit's prefixes and suffixes, plus review. Pass with 80%.</small>${done?pill('prog','Passed'):''}`)}</div>`);
   bodyEl().querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ snd('tap'); const s=b.dataset.s; const back=()=>psUnit(ui), pool=UN().slice(0,ui+1).flatMap(v=>v.items);
-   if(s==='practice') runQs({title:'Practice · Unit '+(ui+1),back,mode:'mastery',items:u.items,make:x=>psQ(ui,x,['build','pos','build']),onEnd:()=>markStep(key,'practice'),go:()=>psQuiz(ui)});
-   else if(s==='g:build') runQs({title:'Build the Word · Unit '+(ui+1),back,mode:'set',qs:shuffle(u.items).slice(0,6).map(x=>psQ(ui,x,['build'])),onEnd:()=>markStep(key,'g_build')});
+   if(s==='practice') runQs({title:'Practice · Unit '+(ui+1),back,mode:'mastery',items:u.items,make:x=>psQ(ui,x,['spot','affix','spot','affix']),onEnd:()=>markStep(key,'practice'),go:()=>psQuiz(ui)});
+   else if(s==='g:build') runQs({title:'Add the Prefix · Unit '+(ui+1),back,mode:'set',qs:shuffle(u.items).slice(0,6).map(x=>psQ(ui,x,['affix'])),onEnd:()=>markStep(key,'g_build')});
+   else if(s==='g:match') matchGame(affPairs(ui),back,()=>markStep(key,'g_match'),'Match-Up · Unit '+(ui+1));
    else if(s==='g:pos') runQs({title:'Front or Back? · Unit '+(ui+1),back,mode:'set',fast:true,qs:shuffle(pool.filter(x=>x.parts.some(p=>p.k!=='b'))).slice(0,10).map(x=>psQ(UN().findIndex(v=>v.items.indexOf(x)>=0),x,['pos'])),onEnd:()=>markStep(key,'g_pos')});
    else psQuiz(ui); }); }
  function psQuiz(ui){ const U=UN(), u=U[ui];
-  const fresh=shuffle(u.quiz).slice(0,6).map(x=>Object.assign(psQ(ui,x,['part','part','word','pos']),{tag:'New word'}));
-  const seen=shuffle(u.items).slice(0,Math.max(0,8-fresh.length)).map(x=>Object.assign(psQ(ui,x,['part','word']),{tag:'This unit'}));
+  const fresh=shuffle(u.quiz).slice(0,6).map(x=>Object.assign(psQ(ui,x,['part','part','spot','pos']),{tag:'New word'}));
+  const seen=shuffle(u.items).slice(0,Math.max(0,8-fresh.length)).map(x=>Object.assign(psQ(ui,x,['part','spot']),{tag:'This unit'}));
   const prevI=shuffle(U.slice(0,ui).flatMap(v=>v.quiz.length?v.quiz:v.items)).slice(0,4);
-  const qs=shuffle([...fresh,...seen,...prevI.map(x=>Object.assign(psQ(U.findIndex(v=>v.items.indexOf(x)>=0||v.quiz.indexOf(x)>=0),x,['part','word']),{tag:'Review'}))]);
+  const qs=shuffle([...fresh,...seen,...prevI.map(x=>Object.assign(psQ(U.findIndex(v=>v.items.indexOf(x)>=0||v.quiz.indexOf(x)>=0),x,['part','spot']),{tag:'Review'}))]);
   runQs({title:'Quiz · Unit '+(ui+1),back:()=>psUnit(ui),mode:'quiz',qs,pass:Math.ceil(qs.length*.8),onPass:()=>{ markDone('ps',ui); markStep('ps'+ui,'quiz'); }}); }
 
  /* ================= STOP SIGNS (trop) ================= */
