@@ -23,7 +23,7 @@ export default function setup(E, { struggled, unit }) {
   const board = new THREE.Group(); E.scene.add(board);
   const plank = E.mesh(E.rbox(6.4, 1.9, .3, .1), E.M(0x3f7fe0, { roughness: .4, clearcoat: .6 }), 0, 0, -.2); board.add(plank);
   const face = E.mesh(E.rbox(6.1, 1.6, .1, .08), E.M(0xfff6e4, { roughness: .5 }), 0, 0, -.02); board.add(face);
-  const endStar = E.star3d(.2); board.add(endStar);   /* the end of the word (the left end) */
+  const endStar = E.star3d(.3); board.add(endStar);   /* the end of the word (the left end) */
   const slotM = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffd36a, emissiveIntensity: .7, transparent: true, opacity: .6 });
   const slot = E.mesh(new THREE.TorusGeometry(.62, .05, 10, 40), slotM, 0, 0, .15, false); board.add(slot);
   const glow = E.glowSprite('#fff7b0', 2.0, 0); E.scene.add(glow);
@@ -32,7 +32,7 @@ export default function setup(E, { struggled, unit }) {
   const tileX = (i, n) => ((n - 1) / 2 - i) * step;   /* right to left */
   const cardHome = i => P ? new THREE.Vector3(i ? -.9 : .9, .9, 2.0) : new THREE.Vector3(i ? -1.4 : 1.4, .75, 2.4);
   E.onLayout(p => { P = p;
-    if (p) { E.camBase.set(0, 2.5, 11); E.camTarget.set(0, 2.2, 0); board.position.set(0, 3.2, 0); board.scale.setScalar(.62); kid.visible = false; }
+    if (p) { E.camBase.set(0, 2.5, 11); E.camTarget.set(0, 2.2, 0); board.position.set(0, 2.75, .3); board.scale.setScalar(.78); kid.visible = false; }
     else { E.camBase.set(0, 2.5, 9.8); E.camTarget.set(0, 1.7, 0); board.position.set(.4, 2.65, 0); board.scale.setScalar(1); kid.visible = true; kid.position.set(-4.7, 0, 1.0); }
     cards.forEach((c, i) => { if (c !== drag && !c.userData.busy) c.position.copy(cardHome(i)); c.scale.setScalar(P ? .8 : 1); });
   });
@@ -70,6 +70,7 @@ export default function setup(E, { struggled, unit }) {
       busy = false; const r = resolveTask; resolveTask = null; r && r();
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; wrongInRow++; kid.mood('think'); await back(c); await E.shake(c, .12);
+      E.hop(endStar, .4, 500); slotM.opacity = 1; slot.scale.setScalar(1.3);   /* the star and the empty place light up */
       await E.say(E.LETTERS[k].partner ? NM(k) + ' goes only at the end of a word.' : 'This is the end of the word!');
       await E.say(atEnd() ? 'At the end, ' + NM(plainOf(k)) + ' wears Shabbos clothes.' : 'Here we need plain ' + NM(want) + '.');
       if (wrongInRow >= 2 || mistakes >= 3) help = true; kid.mood('calm'); busy = false;
@@ -83,7 +84,7 @@ export default function setup(E, { struggled, unit }) {
       const p0 = c.position.clone(), p1 = slotWorld(); await E.tween(1200, q => { c.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(c.position); E.hand.at(a, b); }); E.hand.hide(); enabled = true; busy = false; await drop(c, true); }
     else { busy = false; enabled = true; document.body.dataset.endReady = ++done; await E.say('Which one goes there?'); }
     await p; enabled = false;
-    tiles.forEach(t => E.popOut(t, 250)); await E.wait(300);
+    tiles.forEach(t => E.popOut(t, 250)); cards.forEach(c => { E.popOut(c, 250); setTimeout(() => E.scene.remove(c), 300); }); cards = []; await E.wait(300);   /* the other card goes too */
   }
   return async () => {
     const list = WORDS.slice(1).sort(() => Math.random() - .5); E.setProgress(list.length, 0);

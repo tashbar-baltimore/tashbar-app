@@ -17,12 +17,16 @@ export default function setup(E, { struggled, unit }) {
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   const H = 2.3, arrows = [E.arrow3d(.45), E.arrow3d(.45)], marks = [E.glowSprite('#ffe680', 1.4, 0), E.glowSprite('#ffe680', 1.4, 0)], hint = [E.glowSprite('#fff7b0', 1.5, 0), E.glowSprite('#fff7b0', 1.5, 0)];
   const pads = [0, 1].map(() => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(1.25, 1.35, .25, 40), E.M(0xfff6e4, { roughness: .4, clearcoat: .6 }), 0, .12, 0)); { const rg = E.mesh(new THREE.TorusGeometry(1.3, .05, 10, 48), E.M(0xf2c14e, { metalness: .5, roughness: .3 }), 0, .26, 0); rg.rotation.x = Math.PI / 2; p.add(rg); } E.scene.add(p); return p; });
+  /* the line where ordinary letters stop: a long leg goes below it */
+  const lines = [0, 1].map(() => { const g = new THREE.Group(); g.add(E.mesh(E.rbox(2.1, .07, .08, .03), E.M(0xf2c14e, { metalness: .5, roughness: .3, emissive: 0x6a4200, emissiveIntensity: .3 }), 0, 0, 0, false)); E.scene.add(g); return g; });
   let P = false, A = null, B = null, R = null, busy = true, active = false, misses = 0, mistakes = 0, help = struggled, resolveFind = null, card = null, cardHome = new THREE.Vector3(), drag = null, grab = new THREE.Vector3(), resolveCard = null, cardMissed = false;
   const X = () => P ? 1.15 : 2.0, Y = () => P ? 2.9 : 1.95, S2 = () => P ? .62 : 1;
   E.onLayout(p => { P = p;
     if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.4, 0); kid.visible = false; cardHome.set(0, .95, 2.2); } else { E.camBase.set(0, 2.5, 9.5); E.camTarget.set(0, 1.6, 0); kid.visible = true; kid.position.set(-4.9, 0, 1.2); cardHome.set(0, .7, 2.6); }
-    pads.forEach((pd, i) => { pd.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .35, 0); pd.scale.setScalar(S2()); });
-    if (A) { A.position.set(X(), Y() + A.userData.below * S2(), .3); A.scale.setScalar(S2()); } if (B) { B.position.set(-X(), Y() + B.userData.below * S2(), .3); B.scale.setScalar(S2()); }   /* a long leg stands on its stand, never through it */
+    const drop = H * S2() * .42;   /* room under the line for a long leg */
+    pads.forEach((pd, i) => { pd.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .35 - drop, 0); pd.scale.setScalar(S2()); });
+    lines.forEach((ln, i) => { ln.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .02, .05); ln.scale.setScalar(S2()); });
+    if (A) { A.position.set(X(), Y(), .3); A.scale.setScalar(S2()); } if (B) { B.position.set(-X(), Y(), .3); B.scale.setScalar(S2()); }   /* both on the gold line; a long leg hangs below it, above the stand */
     if (card && !drag) card.position.copy(cardHome);
   });
   E.onFrame(t => { [A, B].forEach((l, i) => { if (l) l.rotation.y = Math.sin(t * .9 + i) * .12; }); marks.forEach(m => m.visible && (m.material.opacity = m.userData.on ? .65 + Math.sin(t * 5) * .25 : 0)); hint.forEach(h => h.material.opacity = help && active ? .35 + Math.sin(t * 4) * .2 : 0);
@@ -51,7 +55,7 @@ export default function setup(E, { struggled, unit }) {
       hint[0].position.copy(spot(R.a, R.b, A)).setZ(.1); hint[1].position.copy(spot(R.b, R.a, B)).setZ(.1);
       const ok = await new Promise(r => resolveFind = r); active = false; busy = true;
       if (ok) { E.sfx.chime(); kid.mood('cheer'); E.sparkle(spot(R.a, R.b, A), 14, .7); E.sparkle(spot(R.b, R.a, B), 14, .7); await showDiff(); await E.say('You found it!'); await E.say(R.la); await E.say(R.lb); hideDiff(); kid.mood('calm'); return; }
-      E.sfx.boop(); misses++; if (misses === 1) mistakes++; kid.mood('think'); await E.say(R.where === 'bottom' ? 'Look at the bottom of the letters!' : 'Look at the top of the letters!'); kid.mood('calm');
+      E.sfx.boop(); misses++; if (misses === 1) mistakes++; kid.mood('think'); hint.forEach(h => { h.material.opacity = .8; }); const was = help; help = true; setTimeout(() => { help = was || misses >= 2; }, 1400 * E.F);   /* a soft glow shows where to look */ await E.say(R.where === 'bottom' ? 'Look at the bottom of the letters!' : 'Look at the top of the letters!'); kid.mood('calm');
       if (misses >= 2) help = true;
     }
   }
@@ -63,7 +67,7 @@ export default function setup(E, { struggled, unit }) {
       if (l) { E.sfx.boop(); if (!cardMissed) mistakes++; cardMissed = true; await E.say('Look! ' + (k === R.a ? R.la : R.lb)); } busy = false; }
   }
   async function playRound(r, demo) {
-    R = r; [A, B].forEach(l => l && E.scene.remove(l)); A = E.letter(r.a, H); B = E.letter(r.b, H); A.position.set(X(), Y() + A.userData.below * S2(), .3); B.position.set(-X(), Y() + B.userData.below * S2(), .3); A.scale.setScalar(S2()); B.scale.setScalar(S2()); E.scene.add(A, B); await Promise.all([E.popIn(A, S2()), E.popIn(B, S2())]);
+    R = r; [A, B].forEach(l => l && E.scene.remove(l)); A = E.letter(r.a, H); B = E.letter(r.b, H); A.position.set(X(), Y(), .3); B.position.set(-X(), Y(), .3); A.scale.setScalar(S2()); B.scale.setScalar(S2()); E.scene.add(A, B); await Promise.all([E.popIn(A, S2()), E.popIn(B, S2())]);
     await E.say(['This is ' + NM(r.a) + '. This is ' + NM(r.b) + '.']);
     if (demo) { await E.say('Watch me. I look carefully at the bottom.'); const [x, y] = E.toScreen(spot(r.b, r.a, B)); E.hand.at(x, y, true); await E.wait(900); E.hand.hide(); E.sfx.chime(); await showDiff(); await E.say(r.la); await E.say(r.lb); hideDiff();
       card = E.letter(r.b, 1.3); card.position.copy(cardHome); card.scale.setScalar(P ? .75 : 1); E.scene.add(card); await E.popIn(card, P ? .75 : 1);   /* show, then try: the hand puts a card with its twin */
