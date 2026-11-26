@@ -54,14 +54,17 @@ export function mount(host, opt) {
   tex('garden-ground.jpg', t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(14, 11); gMat.map = t; gMat.needsUpdate = true; });
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(140, 110), gMat); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
   /* the painted garden far behind, softly curved like a film backdrop */
-  if (!FAST) tex('garden.jpg', t => { t.repeat.x = -1; t.offset.x = 1; const R = 40, span = 1.7, H = R * span * t.image.height / t.image.width;
-    const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 80, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, fog: false }));
-    back.position.set(0, H * 0.45 - 1.2, 6); scene.add(back); });
+  /* the painted garden panorama (painted for us: order N6), wrapped far behind like a film backdrop; its grassy foot sinks into our grass */
+  if (!FAST) tex('garden-panorama.jpg', t => { t.wrapS = THREE.MirroredRepeatWrapping; t.repeat.x = -2; t.offset.x = 1; const R = 40, span = 2.6, H = R * span / 2 * t.image.height / t.image.width;   /* twice round, so the garden looks far away */
+    const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, fog: false }));
+    back.position.set(0, H * 0.12 + 1, 6); scene.add(back); });   /* the fence line (about 62% down the picture) sits just above our ground's far edge */
 
   /* the path: a soft sandy track joining the stones, a start mat and a finish flag */
-  const track = new THREE.Mesh(new THREE.BoxGeometry((N - 1) * STEP + 1.6, 0.06, 1.15), new THREE.MeshStandardMaterial({ color: '#EBD3A2', roughness: 1 }));
+  const tMat = new THREE.MeshStandardMaterial({ color: '#F6E6C8', roughness: 1 });
+  tex('path-sand.jpg', t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(N * 1.2, 1); tMat.map = t; tMat.needsUpdate = true; });
+  const track = new THREE.Mesh(new THREE.BoxGeometry((N - 1) * STEP + 1.6, 0.06, 1.15), tMat);
   track.position.set((X(opt.to, opt.from) + X(opt.from, opt.from)) / 2, 0.03, 0); track.receiveShadow = true; scene.add(track);
-  const stoneTex = tex('garden-stone-surface.jpg');
+  const stoneTex = tex('stone-top.jpg');
   const stones = [], tops = [], rings = [];
   for (let n = opt.from; n <= opt.to; n++) {
     const g = new THREE.Group(); g.position.set(X(n, opt.from), 0, 0); scene.add(g);
@@ -79,6 +82,9 @@ export function mount(host, opt) {
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.2, 12), new THREE.MeshStandardMaterial({ color: '#FFFFFF' })); pole.position.y = 1.1; pole.castShadow = true; flag.add(pole);
   const cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.6, 8, 1), new THREE.MeshStandardMaterial({ color: '#FF5A4E', side: THREE.DoubleSide, roughness: 0.7 })); cloth.position.set(0.47, 1.85, 0); flag.add(cloth);
   const knob = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), new THREE.MeshStandardMaterial({ color: '#FFD23D', metalness: 0.3, roughness: 0.3 })); knob.position.y = 2.24; flag.add(knob);
+  /* the painted finish flag (order N6) replaces the drawn one when it loads; it always faces the camera */
+  tex('finish-flag.png', t => { flag.clear(); const fm = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 2.4), new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.05, toneMapped: false }));
+    fm.position.y = 1.15; fm.onBeforeRender = () => fm.quaternion.copy(camera.quaternion); flag.add(fm); });
   const mat = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.05, 40), new THREE.MeshStandardMaterial({ color: '#7FD67A' })); mat.position.set(X(opt.from, opt.from) - 1.3, 0.03, 0.2); scene.add(mat);
 
   /* the garden around: flowers, bushes, round trees (none in front of the stones) */
@@ -149,7 +155,7 @@ export function mount(host, opt) {
 
   /* ---------------- camera: fit the path into the free band; follow on a phone ---------------- */
   let W = 1, Hh = 1, camX = X(mid, opt.from), wantX = camX, span = N * STEP;
-  const DIR = new THREE.Vector3(0, 0.42, 0.9).normalize(), V = 32;
+  const DIR = new THREE.Vector3(0, 0.27, 0.96).normalize(), V = 32;
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function narrow() { return W < Hh * 0.95 || W < 700; }
   function fit() {
@@ -227,11 +233,9 @@ export function mount(host, opt) {
 /* ---------------- the spinner: a big round wheel with one dot and two dots; it lands where we choose ---------------- */
 export function spinner(el) {
   el.classList.add('spin6');
-  el.innerHTML = '<svg viewBox="0 0 200 200" class="wheel"><defs><radialGradient id="sp1" cx="40%" cy="35%"><stop offset="0" stop-color="#FFF4B0"/><stop offset="1" stop-color="#FFC93D"/></radialGradient>' +
-    '<radialGradient id="sp2" cx="40%" cy="35%"><stop offset="0" stop-color="#C8F0FF"/><stop offset="1" stop-color="#2FB5E8"/></radialGradient></defs>' +
-    '<circle cx="100" cy="100" r="96" fill="#fff"/><path d="M100 100 L100 8 A92 92 0 0 1 100 192 Z" fill="url(#sp1)"/><path d="M100 100 L100 192 A92 92 0 0 1 100 8 Z" fill="url(#sp2)"/>' +
-    '<circle cx="146" cy="100" r="15" fill="#3B2A7A"/>' +
-    '<circle cx="54" cy="78" r="15" fill="#3B2A7A"/><circle cx="54" cy="122" r="15" fill="#3B2A7A"/><circle cx="100" cy="100" r="96" fill="none" stroke="#fff" stroke-width="7"/></svg>' +
+  el.innerHTML = '<img src="art/spinner.png" alt="" class="wheelpic">' +   /* the painted wooden wheel (order N6): yellow right, blue left */
+    '<svg viewBox="0 0 200 200" class="wheel"><circle cx="146" cy="100" r="15" fill="#3B2A7A"/>' +
+    '<circle cx="54" cy="78" r="15" fill="#3B2A7A"/><circle cx="54" cy="122" r="15" fill="#3B2A7A"/></svg>' +
     '<svg viewBox="0 0 200 200" class="arrow"><path d="M100 30 L118 92 L100 104 L82 92 Z" fill="#FF5A4E" stroke="#fff" stroke-width="6" stroke-linejoin="round"/><circle cx="100" cy="100" r="16" fill="#fff"/><circle cx="100" cy="100" r="9" fill="#FF5A4E"/></svg>';
   let turn = 0; const arrow = el.querySelector('.arrow');
   return {
