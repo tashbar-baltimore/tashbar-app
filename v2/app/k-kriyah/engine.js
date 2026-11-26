@@ -332,6 +332,39 @@ export function house({ lit = true, wall = 0xffa552, roof = 0xe8322b, bushes = t
   return h;
 }
 
+/* ---------------- people as painted picture cards (HoS 2026-11-26: the 3D people looked scary to young children) ----------------
+   Rabbi Khaver's cartoon pictures (art/obj/<name>-<pose>.webp, cut out of white). A card stands on the ground facing the boy;
+   the game's moods pick the pose: calm and walk = stand, wave = wave, cheer = cheer, think = think (a grown-up without a
+   cheer or think picture waves or stands). The card keeps the 3D person's handles (armR, head ...) so every game works the same.
+   If a picture can't load, the friendly 3D person is used instead. */
+const CARD_POSES = { mendy: 4, shloimy: 4, ari: 4, dovid: 4, eli: 4, avi: 4, tzvi: 4, yaakov: 4, rebbe: 4, tatty: 2, mommy: 2, bubby: 2, zeidy: 2 };
+const cardTex = {}; let texLoader = null;
+function cardTexture(file) { texLoader = texLoader || new THREE.TextureLoader();
+  if (!cardTex[file]) cardTex[file] = new Promise(res => texLoader.load('art/obj/' + file + '.webp', t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; res(t); }, undefined, () => res(null)));
+  return cardTex[file]; }
+export function pictureCard(name, fallback, height = 1.78) {
+  const b = new THREE.Group(), n = CARD_POSES[name] || 2;
+  const pose = m => m === 'wave' ? 'wave' : m === 'cheer' ? (n > 2 ? 'cheer' : 'wave') : m === 'think' ? (n > 2 ? 'think' : 'stand') : 'stand';
+  const mat = new THREE.MeshBasicMaterial({ transparent: true, alphaTest: .08, depthWrite: true, side: THREE.DoubleSide, toneMapped: false });
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat); plane.visible = false; plane.renderOrder = 1; b.add(plane);
+  const shadow = new THREE.Mesh(new THREE.CircleGeometry(.36, 28), new THREE.MeshBasicMaterial({ color: 0x1d2b3a, transparent: true, opacity: .18, depthWrite: false }));
+  shadow.rotation.x = -Math.PI / 2; shadow.position.set(0, .01, .05); shadow.scale.set(1, .45, 1); b.add(shadow);
+  const dummy = () => { const o = new THREE.Object3D(); b.add(o); return o; };
+  b.userData = { armR: dummy(), armL: dummy(), head: dummy(), legL: dummy(), legR: dummy(), eyes: [], mood: 'calm', card: true, name };
+  let shown = null, fell = false;
+  async function show(m) { const want = name + '-' + pose(m); if (want === shown) return; shown = want; const t = await cardTexture(want);
+    if (shown !== want) return;
+    if (!t) { if (!fell && fallback) { fell = true; plane.visible = false; shadow.visible = false; const p = fallback(); b.add(p); b.userData = Object.assign(p.userData, { card: false }); b.mood = p.mood; } return; }
+    const a = t.image.width / t.image.height; mat.map = t; mat.needsUpdate = true;
+    plane.scale.set(height * a, height, 1); plane.position.set(0, height / 2, 0); plane.visible = true; }
+  b.mood = m => { b.userData.mood = m; show(m); };
+  onFrame(t => { if (!b.visible || !plane.visible) return; const m = b.userData.mood;
+    plane.position.y = height / 2 + (m === 'cheer' ? Math.abs(Math.sin(t * 7)) * .12 : m === 'walk' ? Math.abs(Math.sin(t * 9)) * .05 : 0);   /* a little hop for joy, a bob for walking */
+    plane.rotation.z = m === 'think' ? Math.sin(t * 1.5) * .03 : 0; });
+  show('calm');
+  return b;
+}
+
 /* ---------------- people (round, friendly, modest; kippah and tzitzis) ---------------- */
 export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, kippah = 0x1f3c88, hair = 0x6b4423, beard = null, hat = false, jacket = null, tzitzis = true, woman = false, dress = 0x7b4fa0, eye = 0x5a3a1e } = {}) {
   /* a friendly toy-style person: real eyes (white, colour, shine), eyebrows, ears, nose, hair, collar, buttons, hands with thumbs and shoes */
@@ -404,16 +437,16 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
   b.mood = m => { const u = b.userData; u.mood = m; if (m !== 'wave' && m !== 'cheer' && m !== 'think') { u.armR.rotation.set(0, 0, .2); u.armL.rotation.set(0, 0, -.2); } if (m !== 'walk') { u.legL.position.z = u.legR.position.z = 0; } if (m !== 'think') u.armR.rotation.x = 0; };
   return b;
 }
-export const mendy = () => person({ kippah: 0x1f3c88 });
-export const tatty = () => { const p = person({ beard: 0x6b4423, hat: true, jacket: 0x2c4a7a, pants: 0x26324a, hair: 0x6b4423 });   /* navy jacket and brown beard: not the rebbe */ p.scale.setScalar(1.45); return p; };
-export const rebbe = () => { const p = person({ beard: 0x8a8a8a, hat: true, jacket: 0x1d2433, pants: 0x1d2433, hair: 0x8a8a8a, skin: 0xf6c9a2 }); p.scale.setScalar(1.5); return p; };
-export const mommy = () => { const p = person({ woman: true, hair: 0x5a3a22, dress: 0x3f5fa8, shirt: 0x3f5fa8 });   /* long sleeves in the dress colour */ p.scale.setScalar(1.35); return p; };
-export const ari = () => person({ kippah: 0xd97706, hair: 0x3b2a1a });
-export const shloimy = () => person({ kippah: 0x2e8b57, hair: 0x8a5a3c });
-export const dovid = () => person({ kippah: 0x6a3fa0, hair: 0x2b1d12, shirt: 0xeaf4ff });
+export const mendy = () => pictureCard('mendy', () => person({ kippah: 0x1f3c88 }));
+export const tatty = () => { const p = pictureCard('tatty', () => person({ beard: 0x6b4423, hat: true, jacket: 0x2c4a7a, pants: 0x26324a, hair: 0x6b4423 }));   /* navy jacket and brown beard: not the rebbe */ p.scale.setScalar(1.45); return p; };
+export const rebbe = () => { const p = pictureCard('rebbe', () => person({ beard: 0x8a8a8a, hat: true, jacket: 0x1d2433, pants: 0x1d2433, hair: 0x8a8a8a, skin: 0xf6c9a2 })); p.scale.setScalar(1.5); return p; };
+export const mommy = () => { const p = pictureCard('mommy', () => person({ woman: true, hair: 0x5a3a22, dress: 0x3f5fa8, shirt: 0x3f5fa8 }));   /* long sleeves in the dress colour */ p.scale.setScalar(1.35); return p; };
+export const ari = () => pictureCard('ari', () => person({ kippah: 0xd97706, hair: 0x3b2a1a }));
+export const shloimy = () => pictureCard('shloimy', () => person({ kippah: 0x2e8b57, hair: 0x8a5a3c }));
+export const dovid = () => pictureCard('dovid', () => person({ kippah: 0x6a3fa0, hair: 0x2b1d12, shirt: 0xeaf4ff }));
 /* each unit's own boy: Mendy, Shloimy, Ari, Dovid */
 export const unitBoy = n => ({ 2: shloimy, 3: ari, 4: dovid }[n] || mendy)();
-export const yaakov = () => person({ kippah: 0xc0392b, hair: 0xb5532a, shirt: 0xfff7e0, skin: 0xffdcc2 });
+export const yaakov = () => pictureCard('yaakov', () => person({ kippah: 0xc0392b, hair: 0xb5532a, shirt: 0xfff7e0, skin: 0xffdcc2 }));
 
 /* a little jump, used for joy */
 export function hop(o, h = .5, ms = 450) { const y0 = o.position.y; return tween(ms, k => { o.position.y = y0 + Math.sin(k * Math.PI) * h; }, ease.out).then(() => { o.position.y = y0; }); }
