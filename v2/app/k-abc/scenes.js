@@ -2,7 +2,7 @@
    built from the meadow kit (kit3d.js), kept CALM (Esti 2026-11-24: "engaging, but not too overwhelming"):
    a soft background that fades away, so the pictures, Mendy and the things he touches stay bright.
    Also the set pieces games use: trees, rocks, a pond, lily pads, stumps, baskets, a fence, a little train track, a beehive. */
-import { THREE, C, rnd, clamp, smooth, ease, toon, glow, merge, M4, sky, clouds, hills, ground, grass, flowers, flowerGeo, sparkles, butterflies, party, blob, Q } from './kit3d.js';
+import { THREE, FAST, C, rnd, clamp, smooth, ease, toon, glow, merge, M4, sky, clouds, hills, ground, grass, flowers, flowerGeo, sparkles, butterflies, party, blob, Q } from './kit3d.js';
 
 const PLAIN = /[?&]plain=1/.test(location.search);
 export const PALETTES = {
@@ -20,10 +20,12 @@ export function base(S, pal, o = {}) {
   const P = PALETTES[pal] || PALETTES.morning;
   sky(S, Object.assign({ fog: o.fog || 0xD8ECFF, hemiSky: 0xC6E6FF, hemiGround: P.g[0], fogNear: 14, fogFar: 78 }, P.sky));
   clouds(S, 4, { rim: 0xFFEBD0 });
-  ground(S, { height: o.height || hills, g1: P.g[0], g2: P.g[1], g3: P.g[2], g4: P.g[3], paint: o.paint });
-  const play = (x, z) => Math.abs(x) < (o.clearW || 6) && z > -3.2 && z < 3.5;   /* the play area stays clear */
+  const sunny = C(o.clearing || 0xC8EA7A), warm = C(0xF2E2A0);   /* a soft sunlit clearing where the play happens */
+  ground(S, { height: o.height || hills, g1: P.g[0], g2: P.g[1], g3: P.g[2], g4: P.g[3], paint: (x, z, c) => { const d = Math.hypot(x / 1.6, z + 0.5);
+    c.lerp(sunny, smooth(9, 2.5, d) * 0.55); c.lerp(warm, smooth(5, 1, d) * 0.18); if (o.paint) o.paint(x, z, c); } });
+  const play = (x, z) => Math.abs(x) < (o.clearW || 6) && z > -3.2 && z < 2.3;   /* the play area stays clear; grass in the front and all around */
   const skip = (x, z) => play(x, z) || (o.skip && o.skip(x, z));
-  grass(S, { colors: P.grass, tip: P.tip, skip, count: PLAIN ? 1 : 5000, tall: 0.55 });
+  grass(S, { colors: P.grass, tip: P.tip, skip, count: PLAIN || (FAST && !/tier=/.test(location.search)) ? 1 : 5000, tall: 0.55 });   /* the automatic test draws no grass blades */
   flowers(S, { count: 40, size: 1.05, skip, colors: P.flowers });
   sparkles(S, { count: 30 }); butterflies(S, 1);
   return { P: party(S), pal: P };

@@ -29,7 +29,7 @@ export function makeGame(host, o) {
 
   /* ---------- Mendy ---------- */
   G.mendy = painted(S, 'mendy', { height: 2.6 });
-  G.mendyAt = { wide: [-4.6, 1.4, 0.92], narrow: [-1.75, 2.6, 0.7] };
+  G.mendyAt = { wide: [-4.6, 1.4, 0.92], narrow: [-1.4, 3.7, 0.55] };
   const placeMendy = () => { const m = G.mendyAt[G.narrow() ? 'narrow' : 'wide']; G.mendy.place(m[0], m[1], m[2]); };
   S.onTap(G.mendy.hit, () => { G.mendy.set('happy', 0.8); G.mendy.hopNow(); audio.boing(300); });
 
@@ -54,7 +54,7 @@ export function makeGame(host, o) {
     return it;
   };
   S.tick((t, dt) => G.items.forEach(it => { if (!it.live && it.k === 0) return; it.spin = Math.max(0, it.spin - dt * 1.6);
-    const s = it.size * it.k * (1 + Math.sin(t * 2 + it.bob) * 0.02) * (it === drag.it ? 1.12 : 1);
+    const s = it.size * it.k * (1 + Math.sin(t * 2 + it.bob) * 0.02) * (it === drag.it ? 1.12 : 1) * (G.narrow() ? 0.86 : 1);   /* a little smaller on a phone */
     if (it.live) it.obj.scale.setScalar(Math.max(0.001, s));
     it.obj.userData.inner.position.y = Math.sin(t * 1.6 + it.bob) * it.hover * 0.5;
     it.obj.rotation.y = Math.sin(t * 0.7 + it.bob) * 0.18 + it.spin * Math.PI * 2;
@@ -66,6 +66,7 @@ export function makeGame(host, o) {
   const drag = { it: null, z: 0, off: new THREE.Vector3(), moved: 0, start: null };
   G.tap = (obj, fn) => { G.taps.push({ obj, fn }); };
   G.onDrop = fn => { G.dropFn = fn; };
+  G.dragItem = () => drag.it;
   G.locked = false;
   /* which of these is nearest the dropped picture, as the boy sees it on the screen (within about a finger's width) */
   G.near = (it, list, px = 120) => { const a = it.screen(), k = Math.min(innerWidth, innerHeight) / 768; let best = null, bd = 1e9;

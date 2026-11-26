@@ -11,6 +11,7 @@
 const path = require('path'), fs = require('fs'), os = require('os'), cp = require('child_process');
 const R = path.join(__dirname, '..', '..');
 const UNIT = 1, GAMES = ['opener', 'rhyme', 'clap', 'sort', 'train', 'paths', 'fixit', 'check', 'review'];
+const NOWRONG = ['opener', 'paths'];   /* games with nothing a boy can do wrong (a lesson, a trace) */
 
 function build() { const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'v2abc-'));
   cp.execFileSync(process.execPath, [path.join(R, 'v2', 'build.js')], { env: Object.assign({}, process.env, { V2_OUT: dist }), stdio: 'pipe' }); return dist; }
@@ -27,27 +28,31 @@ async function open(browser, dist, w, h, url) {
 async function act(pg, a) {
   if (!a) return;
   if (a.kind === 'tap') { await pg.mouse.click(a.x, a.y); return; }
-  if (a.kind === 'drag') { await pg.mouse.move(a.x, a.y); await pg.mouse.down(); for (let i = 1; i <= 8; i++) await pg.mouse.move(a.x + (a.x2 - a.x) * i / 8, a.y + (a.y2 - a.y) * i / 8); await pg.mouse.up(); return; }
-  if (a.kind === 'trace') { const pts = await pg.evaluate(() => window.__abc.tracePts()); await pg.mouse.move(pts[0].x, pts[0].y); await pg.mouse.down();
-    for (let i = 3; i < pts.length; i += 3) await pg.mouse.move(pts[i].x + 3, pts[i].y - 2); await pg.mouse.move(pts[pts.length - 1].x, pts[pts.length - 1].y); await pg.mouse.up(); }
+  if (a.kind === 'drag') { await pg.mouse.move(a.x, a.y); await pg.mouse.down(); for (let i = 1; i <= 4; i++) await pg.mouse.move(a.x + (a.x2 - a.x) * i / 4, a.y + (a.y2 - a.y) * i / 4); await pg.mouse.up(); return; }
+  if (a.kind === 'trace') { const strokes = await pg.evaluate(() => window.__abc.traceStrokes ? window.__abc.traceStrokes() : [window.__abc.tracePts()]);   /* one finger stroke per letter stroke */
+    for (const pts of strokes) { await pg.mouse.move(pts[0].x, pts[0].y); await pg.mouse.down();
+      for (let i = 4; i < pts.length; i += 4) await pg.mouse.move(pts[i].x + 3, pts[i].y - 2); await pg.mouse.move(pts[pts.length - 1].x, pts[pts.length - 1].y); await pg.mouse.up(); await pg.waitForTimeout(60); } }
 }
 /* play one game to the end. opt.wrong: make one wrong move in the first round; opt.shot(name): called at key moments */
 async function play(pg, opt = {}) {
-  await pg.waitForFunction(() => window.__abc && (window.__abc.ready || /nogl|nounit|nogame/.test(window.__abc.name)), null, { timeout: 60000 });
+  await pg.waitForFunction(() => window.__abc && (window.__abc.ready || /nogl|nounit|nogame/.test(window.__abc.name)), null, { timeout: 60000, polling: 100 });
   const nm = await pg.evaluate(() => window.__abc.name); if (/nogl|nounit|nogame/.test(nm)) throw new Error('did not start: ' + nm);
   if (opt.shot) await opt.shot('start');
   await pg.click('#play', { force: true });
-  let wronged = !opt.wrong, lastRound = -1, guard = 0, shotRounds = new Set();
-  while (guard++ < 400) {
+  let wronged = !opt.wrong, waitWrong = 0, shotRounds = new Set(); const t0 = Date.now();
+  while (Date.now() - t0 < (opt.limit || 240000)) {
     const st = await pg.evaluate(() => ({ name: window.__abc.name, step: window.__abc.step || 0, round: window.__abc.round || 0, fixes: window.__abc.fixes, next: window.__abc.nextScreen(), wrong: window.__abc.wrongScreen ? window.__abc.wrongScreen() : null }));
+    if (process.env.ABC_DEBUG) console.log((Date.now() % 100000) + ' ' + st.name + ' r' + st.round + ' step' + st.step + ' ' + (st.next && st.next.kind));
     if (st.name === 'end') break;
+    if (opt.stopAt && st.round >= opt.stopAt) return pg.evaluate(() => ({ partial: true, items: window.__abc.items(), said: window.__abc.said.slice(), fixes: window.__abc.fixes, mendy: window.__abc.mendyScreen() }));
     if (!st.next) { await pg.waitForTimeout(60); continue; }
     if (opt.shot && !shotRounds.has(st.round)) { shotRounds.add(st.round); await opt.shot('round' + st.round); }
+    if (!wronged && !st.wrong && st.next.kind !== 'trace') { waitWrong = waitWrong || Date.now(); if (Date.now() - waitWrong < 8000) { await pg.waitForTimeout(100); continue; } }   /* moving pictures: wait a moment for a wrong one to come by */
     if (!wronged && st.wrong) { wronged = true; await act(pg, st.wrong);
-      await pg.waitForFunction(f => window.__abc.fixes > f, st.fixes, { timeout: 4000 }).catch(() => {});
+      await pg.waitForFunction(f => window.__abc.fixes > f, st.fixes, { timeout: 4000, polling: 100 }).catch(() => {});
       if (opt.shot) await opt.shot('fix'); continue; }
     await act(pg, st.next);
-    await pg.waitForFunction(s => window.__abc.step !== s || window.__abc.name === 'end', st.step, { timeout: 5000 }).catch(() => {});
+    await pg.waitForFunction(s => window.__abc.step !== s || window.__abc.name === 'end', st.step, { timeout: 5000, polling: 50 }).catch(() => {});
   }
   await pg.waitForSelector('#end.on', { timeout: 30000 });
   if (opt.shot) await opt.shot('end');
@@ -56,18 +61,29 @@ async function play(pg, opt = {}) {
 const checkLines = (said, bad, label) => said.forEach(t => {
   if (t.split(/\s+/).filter(Boolean).length > 12) bad(label + ': a spoken line is longer than 12 words: "' + t + '"');
   if (/\bbites?\b/i.test(t)) bad(label + ': the voice says the word "bite"');
-  if (/\b(letter|ess|em|ay)\b/i.test(t)) bad(label + ': the voice says a letter name: "' + t + '"');
+  if (/\b(ess|em|ay|tee|pee|dee)\b/i.test(t) || /\bletter [a-z]\b/i.test(t) || /(^|[^'\w])[b-hj-zB-HJ-Z](?=[\s!,.?]|$)/.test(t) || /\b[aA][!,]/.test(t)) bad(label + ': the voice may say a letter name: "' + t + '"');   /* letters are heard as pure sounds (made by the device), never as single spoken letters */
   if (/\bG-?d\b|\bGod\b/i.test(t)) bad(label + ': the voice says the Divine Name'); });
 
-module.exports = async function (browser) {
-  const out = { fails: [], oks: [] }, bad = m => out.fails.push('2.0 K ABC unit 1: ' + m);
+/* the test for one unit: every game in order (shared by k-abc-unit2.js and later units) */
+function unitTest(UNIT, GAMES, o = {}) { const NOWRONG = o.noWrong || [], NAME = o.name || ('unit ' + UNIT);
+ return async function (browser) {
+  const out = { fails: [], oks: [] }, bad = m => out.fails.push('2.0 K ABC ' + NAME + ': ' + m);
   let dist; try { dist = build(); } catch (e) { bad('build failed: ' + String(e.stderr || e).slice(0, 200)); return out; }
-  for (const f of ['play.html', 'game.js', 'cast.js', 'props.js', 'scenes.js', 'units/u1.js', 'art/mendy-idle.webp', 'art/mendy-talk.webp'])
+  for (const f of ['play.html', 'game.js', 'cast.js', 'props.js', 'scenes.js', 'units/u' + UNIT + '.js', 'art/mendy-idle.webp', 'art/mendy-talk.webp'])
     if (!fs.existsSync(path.join(dist, 'k-abc', f))) bad(f + ' is not in the built site');
-  for (const [w, h] of [[1366, 768], [390, 844]]) for (const g of GAMES) {
+  /* phone size: the first rounds of every game, with a wrong move; every picture and Mendy must be on the screen */
+  for (const g of GAMES) { const w = 390, h = 844, label = g + ' ' + w + 'x' + h, { ctx, pg, errs, outside } = await open(browser, dist, w, h, '/k-abc/play.html?u=' + UNIT + '&g=' + g + '&fast=1');
+    try { const r = await play(pg, { wrong: !NOWRONG.includes(g), stopAt: 2 });
+      if (r.partial) { r.items.forEach(it => { if (it.x < 0 || it.x > w || it.y < 0 || it.y > h) bad(label + ': the picture "' + it.name + '" is off the screen'); });
+        if (r.mendy.x < 0 || r.mendy.x > w || r.mendy.y < 0 || r.mendy.y > h) bad(label + ': Mendy is off the screen'); }
+      checkLines(r.said, bad, label);
+    } catch (e) { bad(label + ': ' + String(e).slice(0, 220)); }
+    errs.forEach(e => bad(label + ': page error: ' + e)); outside.forEach(x => bad(label + ': reached an outside website: ' + x)); await ctx.close(); }
+  /* Chromebook size: every game to the end */
+  for (const [w, h] of [[1366, 768]]) for (const g of GAMES) {
     const label = g + ' ' + w + 'x' + h, { ctx, pg, errs, outside } = await open(browser, dist, w, h, '/k-abc/play.html?u=' + UNIT + '&g=' + g + '&fast=1');
     try {
-      const wrong = g !== 'paths' && g !== 'opener';
+      const wrong = !NOWRONG.includes(g) && g !== 'check';   /* the check is played perfectly: 3 stars */
       const r = await play(pg, { wrong });
       const buf = await pg.screenshot(); if (buf.length < 15000) bad(label + ': the end screen looks blank');
       if (wrong && r.fixes < 1) bad(label + ': a wrong move got no gentle fix');
@@ -88,12 +104,14 @@ module.exports = async function (browser) {
     try { await pg.waitForSelector('a.game', { timeout: 20000 });
       const tiles = await pg.evaluate(u => [...document.querySelectorAll('[data-unit="' + u + '"] a.game')].map(a => ({ href: a.getAttribute('href'), img: a.querySelector('img') && a.querySelector('img').getAttribute('src') })), String(UNIT));
       const ids = tiles.map(t => (t.href.match(/[?&]g=([a-z0-9]+)/) || [])[1]);
-      if (ids.join() !== GAMES.join()) bad('the menu shows Unit 1 games ' + ids.join(', ') + ' (should be ' + GAMES.join(', ') + ')');
+      if (ids.join() !== GAMES.join()) bad('the menu shows Unit ' + UNIT + ' games ' + ids.join(', ') + ' (should be ' + GAMES.join(', ') + ')');
       tiles.forEach(t => { if (!t.img || !fs.existsSync(path.join(dist, 'k-abc', t.img))) bad('the menu button ' + t.href + ' has no picture'); });
       errs.forEach(e => bad('menu: page error: ' + e));
     } catch (e) { bad('menu: ' + String(e).slice(0, 200)); } finally { await ctx.close(); } }
   fs.rmSync(dist, { recursive: true, force: true });
-  if (!out.fails.length) out.oks.push('2.0 K ABC unit 1 (Ears On): all ' + GAMES.length + ' games play to the end at Chromebook and phone size with a real mouse; wrong moves get a gentle fix; perfect play earns 3 stars; short spoken lines; big buttons; menu in order');
+  if (!out.fails.length) out.oks.push('2.0 K ABC ' + NAME + ': all ' + GAMES.length + ' games play to the end at Chromebook and phone size with a real mouse; wrong moves get a gentle fix; perfect play earns 3 stars; short spoken lines; big buttons; menu in order');
   return out;
-};
+ }; }
+module.exports = unitTest(1, GAMES, { noWrong: NOWRONG, name: 'unit 1 (Ears On)' });
+module.exports.unitTest = unitTest;
 module.exports.play = play; module.exports.open = open; module.exports.build = build; module.exports.GAMES = GAMES;

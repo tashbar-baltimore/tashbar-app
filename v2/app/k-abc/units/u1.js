@@ -14,7 +14,7 @@
 import { THREE, V, shuffle, rnd, audio, echo, WORDS, FAST, ease } from '../game.js';
 import { base, tree, rock, pond, lilypad, stump, basket, fence, hive, track, shelf } from '../scenes.js';
 import { prop } from '../props.js';
-import { tracer, strokePoints, glow, C, toon } from '../kit3d.js';
+import { tracer, strokePoints, glow, C, toon, growTube } from '../kit3d.js';
 
 export const ORDER = ['opener', 'rhyme', 'clap', 'sort', 'train', 'paths', 'fixit', 'check', 'review'];
 const say = w => (WORDS[w] ? WORDS[w].say : w);
@@ -44,10 +44,10 @@ function bigDrum(G, x, y, z, s = 1) {
 /* =========================================================== opener =========================================================== */
 const opener = {
   world(G) { const W = base(G.S, 'morning'); tree(G.S, -9, -6, { s: 1.5 }); tree(G.S, 8.5, -7, { s: 1.7, c1: 0xE85A9E, c2: 0xFFC2E2 }); rock(G.S, 6.5, 1.5, 0.5);
-    G.table = shelf(G.S, -3.2, 3.2, -0.6, 1.1, 0xE8B87A, 1.6);   /* Mendy's garden table: everything he shows stands on it */
-    G.view({ wide: [-0.4, 1.8, 11.6, 5.8, 0.3], narrow: [0, 2.2, 5.8, 9.0, 0.34] }); return W; },
+    G.table = shelf(G.S, -3.2, 3.2, -0.6, 1.1, 0xC98A4B, 1.6);   /* Mendy's garden table: everything he shows stands on it */
+    G.view({ wide: [-0.4, 2.0, 11.6, 5.8, 0.17], narrow: [0, 2.2, 5.0, 7.6, 0.2] }); return W; },
   async play(G) {
-    const n = G.narrow(); G.rounds(4);
+    const n = G.narrow(); G.rounds(5);
     await G.say('Hi! I am Mendy.', 'This week, we put our ears on!');
     /* 1. listen */
     G.newRound(); const bell = G.item('bell', () => V(0.3, 1.95, -0.6), { size: 1.4 }); bell.onTap = () => { audio.bell(); bell.poke(); };
@@ -71,10 +71,15 @@ const opener = {
     G.newRound(); const moon = G.item('moon', () => V(0.3, 2.0, -0.6), { size: 1.5 }); moon.onTap = () => { sound.m(); moon.poke(); };
     await G.say('Moon.', 'Mmm... moon.', echo(() => sound.m()), 'Moon starts with mmm.', 'Tap the moon and say mmm!');
     await tapOnce(G, moon); await G.right(moon.obj.position, 'Mmm, moon!'); await moon.remove();
+    /* 5. left to right */
+    G.newRound(); const row = ['hat', 'moon', 'fish'].map((w, i) => G.item(w, () => G.narrow() ? V(-1.3 + i * 1.3, 1.85, -0.6) : V(-2.0 + i * 2.0, 1.85, -0.6), { size: 1.1 }));
+    await G.say('When we read, we go this way.', echo(async () => { for (const it of row) { it.glow(true); await it.say(); await G.wait(250); it.glow(false); } }), 'Tap the one we say first.');
+    await tapOnce(G, row[0], row[2]); await G.right(row[0].obj.position, 'Yes! We start on this side.'); await clearItems(G);
     /* the song: getting ready for cheder, clap along */
     G.A.name = 'song';
     await G.say('Now our clapping song! Clap with me.');
-    for (const l of ['Wash my hands,', 'Kippah on,', 'Tzitzis on,', 'Off to cheder!']) { await G.say(l); for (let i = 0; i < 2; i++) { G.mendy.set('clap', 0.4); audio.clap(); await G.wait(380); } }
+    for (const [l, parts] of [['Wash my hands, splash, splash, splash!', ['splash', 'splash', 'splash']], ['Kippah on, quick as a flash!', ['Kip', 'pah']], ['Tzitzis on, I\'m on my way.', ['Tzit', 'zis']], ['Off to cheder, learn today!', ['Che', 'der']]]) {
+      await G.say(l); for (const b of parts) { G.mendy.set('clap', 0.4); audio.clap(); await audio.say(b); await G.wait(200); } }   /* one clap for each part */
     G.A.name = 'play';
     await G.done('Your ears are on! Let\'s play!');
   }
@@ -83,15 +88,15 @@ const opener = {
 /* =========================================================== rhyme: Rhyme Pond =========================================================== */
 const SETS = [[['cat', 'hat'], ['sun', 'bun'], ['goat', 'boat']], [['bee', 'tree'], ['star', 'car'], ['fish', 'dish']], [['clock', 'sock'], ['bell', 'shell'], ['moon', 'spoon']]];
 const rhyme = {
-  world(G) { const W = base(G.S, 'pond', { clearW: 8, skip: (x, z) => Math.hypot(x / 2.1, z + 0.6) < 2.9 }); pond(G.S, 0, -0.6, 2.75, 2.05); tree(G.S, -10, -7, { s: 1.6 }); tree(G.S, 9, -6, { s: 1.5 });
+  world(G) { const W = base(G.S, 'pond', { clearW: 8, skip: (x, z) => Math.hypot(x / 2.1, z + 0.4) < 3.2 }); pond(G.S, 0, -0.4, 3.0, 1.75); tree(G.S, -10, -7, { s: 1.6 }); tree(G.S, 9, -6, { s: 1.5 });
     [[-7, 1.2, .5], [6.8, 0.8, .4], [-6.2, -3.5, .55]].forEach(([x, z, r]) => rock(G.S, x, z, r, 0xE3D7C9));
     const pads = []; for (let i = 0; i < 6; i++) { const p = lilypad(G.S, 0.75); pads.push(p); } G.pads = pads; G.cur = [];
     G.S.tick(t => pads.forEach((p, i) => { p.rotation.y = i + Math.sin(t * 0.5 + i) * 0.1; const it = G.cur[i];   /* each picture floats on its own lily pad */
       if (it && it.live && !it.placed) { p.visible = true; p.position.set(it.home.x, 0.1, it.home.z); } else p.visible = false; }));
-    G.view({ wide: [0, 1.5, 11.6, 5.6, 0.42], narrow: [0, 1.6, 5.8, 9.0, 0.5] }); return W; },
+    G.view({ wide: [0, 1.7, 11.6, 5.4, 0.3], narrow: [0, 1.4, 5.0, 7.6, 0.42] }); G.mendyAt = { wide: [-5.0, -0.6, 1.0], narrow: [-1.4, 3.7, 0.55] }; return W; },
   async play(G) {
     const extra = []; G.rounds(6);
-    const rowZ = [1.5, 0.0, -1.5], spot = (side, i) => () => G.narrow() ? V(-1.75 + i * 1.75, 0.8, side ? -2.0 : 1.6) : V(side ? 2.7 : -2.7, 0.8, rowZ[i]);   /* standing on lily pads in the pond */
+    const rowZ = [1.8, 0.0, -1.8], spot = (side, i) => () => G.narrow() ? V(-1.45 + i * 1.6, 0.8, side ? -2.6 : 0.4) : V(side ? 3.4 : -3.4, 0.8, rowZ[i]);   /* standing on lily pads in the pond */
     let first = true;
     for (let si = 0; si < 3; si++) {
       if (si === 2) { if (G.A.firstTry < 6) break; G.rounds(3); await G.say('Bonus pond! Quick ears, here we go!'); }
@@ -115,7 +120,7 @@ const rhyme = {
           if (hit.name === it.data.pair) { it.glow(false); hit.glow(false); G.onDrop(null);
             it.size *= 0.78; hit.size *= 0.78; await pairUp(G, it, hit, G.narrow() ? V((k - 1) * 1.95, 0.7, -4.0) : V(0, 0.75, rowZ[k]), G.narrow() ? 0.45 : 0.55);   /* a matched pair shares a lily pad in the middle (phone: on the far bank) */
             await G.right(hit.obj.position, say(it.name) + ', ' + say(hit.name) + '!'); res(); return true; }
-          await G.wrong(['Listen: ' + say(it.name) + ', ' + say(hit.name) + '.', 'Not the same end. Try another!'], hit); return false; }); });
+          await G.wrong(['Listen: ' + say(it.name) + ', ' + say(hit.name) + '.', 'Listen to the end. Try another!'], hit); return false; }); });
       }
       await clearItems(G);
     }
@@ -127,14 +132,14 @@ const rhyme = {
 /* =========================================================== clap: Drum Hill =========================================================== */
 const clap = {
   world(G) { const W = base(G.S, 'golden'); tree(G.S, -9, -5, { s: 1.6, c1: 0x5A9E2A, c2: 0xD8E04A }); tree(G.S, 9.5, -6, { s: 1.4, c1: 0x6AAE2A, c2: 0xF2C84A }); rock(G.S, -6.5, 2, 0.5, 0xF0D8C8);
-    G.view({ wide: [-0.3, 1.6, 11.2, 5.6, 0.3], narrow: [0, 1.9, 5.8, 8.6, 0.36] }); return W; },
+    G.view({ wide: [-0.3, 2.0, 11.2, 5.6, 0.17], narrow: [0, 2.0, 5.0, 7.6, 0.2] }); return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow(); const drum = bigDrum(G, 1.6, 0, 0.6, 1); const place = () => drum.move(n() ? 0.9 : 1.6, 0.6); place(); G.W.layout = place;
     /* the beat dots that light up above the drum */
     const dots = []; for (let i = 0; i < 4; i++) { const d = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), glow(0xFFB020, 1.8)); d.visible = false; S.scene.add(d); dots.push(d); }
     const showDots = (c, ghost) => dots.forEach((d, i) => { d.visible = i < c; d.position.set(drum.D.position.x + (i - (c - 1) / 2) * 0.6, drum.D.position.y + 1.5, 0.8); d.material.color.set(ghost ? 0x8899AA : 0xFFB020).multiplyScalar(ghost ? 1 : 1.8); });
     const picAt = () => n() ? V(-1.1, 0.85, -0.2) : V(-2.0, 0.9, -0.2);
-    const words = shuffle(['sun', 'apple', 'banana']).concat(shuffle(['hat', 'cupcake', 'butterfly']));
+    const words = ['sun', 'apple', 'banana', 'hat', 'cupcake', 'butterfly'];   /* one part, two, three, then again */
     G.rounds(words.length);
     await G.say('Welcome to Drum Hill!', 'Words have parts. We clap each part.');
     const w0 = G.item('candles', picAt, { size: 1.3 });
@@ -147,12 +152,13 @@ const clap = {
       await G.say(say(w) + '.', sayParts, 'Tap the drum for each part.');
       const setExp = () => { G.expect(c < need ? { kind: 'tap', at: drum.D } : { kind: 'button', sel: '#ok' }); G.A.wrongMove = c === 0 ? null : c === need ? { kind: 'tap', at: drum.D } : { kind: 'button', sel: '#ok' }; };
       setExp();
-      G.hint(async () => { showDots(need, true); await G.say('Watch the dots.', sayParts); });
+      G.hint(async () => { await G.say('Watch the dots.'); for (let k = 1; k <= need; k++) { showDots(k, true); await audio.say(WORDS[w].beats[k - 1]); await G.wait(250); } });
       G.taps = G.taps.filter(x => x.obj !== drum.hit);
       G.tap(drum.hit, () => { drum.boom(); c++; G.mendy.set('clap', 0.3); showDots(Math.min(4, c)); const b = WORDS[w].beats[c - 1]; if (b) audio.say(b); G.button('ok', true); setExp(); });
       for (;;) {
         await G.pressed('ok'); G.button('ok', false);
-        if (c === need) { await G.right(drum.D.position, say(w) + '. ' + ['One', 'Two', 'Three'][need - 1] + (need > 1 ? ' parts!' : ' part!')); break; }
+        if (c === need) { const pad = beatPad(S, need); pad.position.copy(drum.D.position).add(V(0, 1.6, 0.6)); pad.scale.setScalar(0.8);   /* the dot stone for this many parts (used again in the check) */
+          await G.right(drum.D.position, say(w) + '. ' + ['One', 'Two', 'Three'][need - 1] + (need > 1 ? ' parts!' : ' part!')); S.scene.remove(pad); break; }
         c = 0; showDots(0); setExp(); await G.wrong(['Let\'s clap it together.', sayParts, 'Now you!']);
       }
       showDots(0); G.taps = G.taps.filter(x => x.obj !== drum.hit); await it.remove(); tries++;
@@ -166,7 +172,7 @@ const sort = {
   world(G) { const W = base(G.S, 'garden'); tree(G.S, -8.5, -5.5, { s: 1.5, c1: 0x188F3E, c2: 0xA6E64A }); tree(G.S, 9, -7, { s: 1.6, c1: 0xE85A9E, c2: 0xFFC2E2 }); fence(G.S, -9, 9, -4.2);
     G.shelfW = shelf(G.S, -4.9, 4.9, -1.6, 1.3, 0xD9A066); G.shelfN = shelf(G.S, -2.7, 2.7, -1.2, 1.3, 0xD9A066); G.shelfN2 = shelf(G.S, -2.7, 2.7, -2.8, 2.6, 0xD9A066);
     G.W_lay = () => { const n = G.narrow(); G.shelfW.visible = !n; G.shelfN.visible = G.shelfN2.visible = n; }; G.W_lay();
-    G.view({ wide: [0, 1.9, 11.6, 6.0, 0.3], narrow: [0, 2.4, 5.8, 9.4, 0.34] }); return W; },
+    G.view({ wide: [0, 2.1, 11.6, 5.8, 0.2], narrow: [0, 2.3, 5.0, 7.8, 0.22] }); return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow();
     const bM = basket(S, 0xD8A060, 1.05), bS = basket(S, 0xC8925A, 1.05);
@@ -215,35 +221,37 @@ function makeTrain(S) {
     const rim = new THREE.Mesh(new THREE.BoxGeometry(1.36, 0.08, 1.0), gold); rim.position.y = 0.64; car.add(rim); wheel(-0.4, car); wheel(0.4, car); car.traverse(o => { if (o.isMesh) o.castShadow = true; });
     const slot = new THREE.Mesh(new THREE.RingGeometry(0.5, 0.62, 40), new THREE.MeshBasicMaterial({ color: C(0xFFF3A0).multiplyScalar(1.6), transparent: true, opacity: 0, side: THREE.DoubleSide })); slot.position.set(0, 1.4, 0.4); car.add(slot); car.userData.slot = slot;
     G.add(car); return car; });
-  S.scene.add(G); let smoke = 0; return { G, eng, cars, chim };
+  const flag = new THREE.Group(), pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.9, 10), toon(0xFFFFFF, { clear: 1 })); pole.position.y = 0.95; flag.add(pole);   /* the green start flag */
+  const cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.75, 0.48, 8, 1), toon(0x2ED16B, { side: THREE.DoubleSide, emissive: 0x0A6A2A, ei: .3 })); cloth.position.set(0.4, 1.62, 0); flag.add(cloth); G.add(flag);
+  S.tick(t => { const p = cloth.geometry.attributes.position; for (let i = 0; i < p.count; i++) p.setZ(i, Math.sin(t * 4 + p.getX(i) * 6) * 0.05 * (p.getX(i) + 0.375)); p.needsUpdate = true; });
+  S.scene.add(G); return { G, eng, cars, chim, flag };
 }
 const train = {
   world(G) { const W = base(G.S, 'hills', { clearW: 9 }); tree(G.S, -9, -7, { s: 1.4 }); tree(G.S, 10, -6, { s: 1.6, c1: 0x13924A, c2: 0x9BE94F }); track(G.S, -14, 14, 0.4); G.plat = shelf(G.S, -4.6, 4.6, -1.7, 1.2, 0xE0B070, 1.3);   /* the station platform */
-    G.view({ wide: [0, 1.5, 11.6, 5.4, 0.3], narrow: [0, 1.9, 5.8, 8.6, 0.36] }); return W; },
+    G.view({ wide: [0, 1.8, 11.6, 5.4, 0.2], narrow: [0, 1.8, 5.0, 7.4, 0.22] }); return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow(); const T = makeTrain(S);
-    const lay = () => { T.G.scale.setScalar(n() ? 0.62 : 1); T.eng.position.set(-2.4, 0, 0); T.cars.forEach((c, i) => c.position.set(-0.6 + i * 1.5, 0, 0)); T.G.position.set(n() ? 0.15 : 0.3, 0, 0.4); T.G.updateMatrixWorld(true); };
+    const lay = () => { T.G.scale.setScalar(n() ? 0.62 : 1); T.eng.position.set(2.75, 0, 0); T.cars.forEach((c, i) => c.position.set(-2.3 + i * 1.5, 0, 0)); T.flag.position.set(-3.55, 0, 0.55); T.G.position.set(n() ? -0.3 : 0.3, 0, 0.4); T.G.updateMatrixWorld(true); };
     lay(); G.W.layout = lay;
     let run = 0; S.tick((t, dt) => { T.G.position.y = 0.04 + (run ? Math.abs(Math.sin(t * 14)) * 0.03 : 0); });
     const slotPos = i => { T.G.updateMatrixWorld(true); return T.cars[i].localToWorld(V(0, 1.25, 0.2)); };
     const SETS2 = [['cat', 'sun', 'boat'], ['bee', 'cake', 'drum']];
     G.rounds(8);
-    await G.say('All aboard the picture train!', 'The train goes this way.', echo(async () => { T.eng.position.x += 0; G.P.twinkle(slotPos(0), 3); G.P.twinkle(slotPos(2), 3); }));
+    await G.say('All aboard the picture train!', 'The engine pulls the train this way.', echo(async () => { T.eng.position.x += 0; G.P.twinkle(slotPos(0), 3); G.P.twinkle(slotPos(2), 3); }));
     for (let r = 0; r < 2; r++) {
       const spot = i => () => n() ? V(-1.75 + i * 1.75, 1.95, -1.7) : V(-2.8 + i * 2.8, 1.95, -1.7);   /* waiting on the platform */
       const pics = shuffle(SETS2[r]).map((w, i) => G.item(w, spot(i), { drag: true, size: 1.0 })), loaded = [];
-      if (r === 0) { await G.say('Watch me. The first car is by the engine.'); G.mendy.set('point', 2); T.cars[0].userData.slot.material.opacity = 0.8; await G.trail(pics[0].obj.position, slotPos(0)); T.cars[0].userData.slot.material.opacity = 0; await G.say('Now you! Fill the cars, starting by the engine.'); }
-      else await G.say('A new train! Start by the engine.');
+      if (r === 0) { await G.say('Watch me. We start at the green flag.'); G.mendy.set('point', 2); T.cars[0].userData.slot.material.opacity = 0.8; await G.trail(pics[0].obj.position, slotPos(0)); T.cars[0].userData.slot.material.opacity = 0; await G.say('Now you! Fill the cars, starting at the flag.'); }
+      else await G.say('A new train! Start at the green flag.');
       for (let k = 0; k < 3; k++) {
         G.newRound(); T.cars.forEach((c, i) => c.userData.slot.material.opacity = i === k ? 0.85 : 0);
         const cur = pics.find(p => !p.placed); G.expect({ kind: 'drag', from: cur, to: () => slotPos(k) }); G.A.wrongMove = k < 2 ? { kind: 'drag', from: cur, to: () => slotPos(2) } : null;
         G.hint(async () => { await G.trail(pics.find(p => !p.placed).obj.position, slotPos(k)); });
         await new Promise(res => { G.onDrop(async (it, at) => {
-          const near = [0, 1, 2].map(i => ({ i, d: slotPos(i).distanceTo(at) })).sort((a, b) => a.d - b.d)[0];
-          if (near.d > 1.4) return false;
+          const sp = [0, 1, 2].map(slotPos), hitP = G.near(it, sp, 130); if (!hitP) return false; const near = { i: sp.indexOf(hitP) };
           if (near.i === k) { G.onDrop(null); it.placed = true; loaded.push(it); it.size *= 0.85; await it.moveTo(slotPos(k), 300); it.home = slotPos(k);
             T.cars[k].userData.slot.material.opacity = 0; audio.pop(); G.A.rounds++; if (G.missed() === 0) G.A.firstTry++; const d = document.getElementById('pips').children[G.ri++]; if (d) d.className = G.missed() ? 'done' : 'star'; res(); return true; }
-          await G.wrong(['This train fills from the engine side.', 'Start here, next to the engine.']); T.cars[k].userData.slot.material.opacity = 1; return false; }); });
+          await G.wrong(['We start at the green flag.', 'Fill this car first.']); T.cars[k].userData.slot.material.opacity = 1; return false; }); });
       }
       /* the train "reads" left to right */
       G.A.name = 'reading'; await G.say('Choo choo! The train reads this way.');
@@ -251,11 +259,11 @@ const train = {
       G.A.name = 'play';
       G.newRound(); await G.say('Where do we start? Tap the first picture.');
       await new Promise(res => { G.expect({ kind: 'tap', at: loaded[0] }); G.A.wrongMove = { kind: 'tap', at: loaded[2] };
-        G.hint(async () => { loaded[0].glow(true); await G.say('Start by the engine.'); });
-        loaded.forEach((it, i) => { it.onTap = async () => { it.poke(); if (i === 0) { loaded.forEach(x => { x.onTap = () => x.say(); x.glow(false); }); await G.right(it.obj.position, 'Yes! We start on this side.'); res(); } else await G.wrong(['We start on this side, by the engine.']); }; }); });
+        G.hint(async () => { loaded[0].glow(true); await G.say('Start at the green flag.'); });
+        loaded.forEach((it, i) => { it.onTap = async () => { it.poke(); if (i === 0) { loaded.forEach(x => { x.onTap = () => x.say(); x.glow(false); }); await G.right(it.obj.position, 'Yes! We start on this side.'); res(); } else await G.wrong(['We start on this side, by the flag.']); }; }); });
       /* off it goes */
-      run = 1; audio.choo(); const x0 = T.G.position.x; await S.tween(1600, e => { T.G.position.x = x0 + e * 16; loaded.forEach((it, k) => { it.moving = true; it.obj.position.copy(slotPos(k)); }); }, ease.inOut);
-      loaded.forEach(it => { it.live = false; S.scene.remove(it.obj); }); G.items = []; run = 0; T.G.position.x = -16; await S.tween(1200, e => { T.G.position.x = -16 + e * (16 + x0); }, ease.out); lay();
+      run = 1; T.flag.visible = false; audio.choo(); const x0 = T.G.position.x; await S.tween(1600, e => { T.G.position.x = x0 + e * 16; loaded.forEach((it, k) => { it.moving = true; it.obj.position.copy(slotPos(k)); }); }, ease.inOut);
+      loaded.forEach(it => { it.live = false; S.scene.remove(it.obj); }); G.items = []; run = 0; T.G.position.x = -16; await S.tween(1200, e => { T.G.position.x = -16 + e * (16 + x0); }, ease.out); T.flag.visible = true; lay();
     }
     await G.done('You read the train this way!');
   }
@@ -271,7 +279,7 @@ const PATHS = [
 ];
 const paths = {
   world(G) { const W = base(G.S, 'meadow'); const t = tree(G.S, -8.5, -4, { s: 1.6 }); hive(G.S, -7.2, 3.7, -3.4); tree(G.S, 9, -6, { s: 1.5, c1: 0xE85A9E, c2: 0xFFC2E2 });
-    G.view({ wide: [0, 2.6, 10.5, 6.6], narrow: [0, 3.2, 5.8, 9.2] }); return W; },
+    G.view({ wide: [0, 2.6, 10.5, 6.6], narrow: [0, 2.8, 5.4, 8.6] }); return W; },
   async play(G) {
     const S = G.S, bee = prop('bee'); bee.scale.setScalar(0.7); S.scene.add(bee); bee.position.set(-6, 4, 0);
     const flower = prop('tree'); flower.visible = false;
@@ -282,8 +290,9 @@ const paths = {
     await G.say('Buzz! The bee needs your help.', 'Draw her path to the flower.');
     for (let r = 0; r < PATHS.length; r++) {
       G.newRound(); const P = PATHS[r], pts = strokePoints(P.d, 0.06, 0, 2.6, 0);
+      const trailG = growTube(pts, () => 0.13, (t, nr, c) => c.set(0xFFC93C).lerp(C(0xFFF3B0), Math.max(0, nr.z) * 0.5), 10), trail = new THREE.Mesh(trailG, toon(0xffffff, { vc: true, emissive: 0x664400, ei: 0.5, clear: 1 })); trailG.userData.grow(0); S.scene.add(trail);   /* the golden line he draws */
       const end = pts[pts.length - 1]; bloom.position.copy(end).add(V(0, 0, 0.1)); await S.tween(300, e => bloom.scale.setScalar(0.4 + e * 0.4));
-      const T = tracer(S, [pts], { onMove: T => { const p = pts[T.k]; bee.position.copy(p).add(V(0, 0.15, 0.4)); audio.boing(500 + T.k * 4); G.A.trace = T.progress(); },
+      const T = tracer(S, [pts], { onMove: T => { const p = pts[T.k]; bee.position.copy(p).add(V(0, 0.15, 0.4)); trailG.userData.grow(T.progress()); audio.boing(500 + T.k * 4); G.A.trace = T.progress(); },
         onFar: () => { if (!G.R.busy) G.say('Start at the green light.'); }, onLost: () => { if (!G.R.busy) G.say('Keep going from the bee.'); }, onOff: () => {} });
       G.A.tracePts = () => pts.map(p => S.toScreen(p)); G.A.trace = 0;
       /* watch me: the bee flies it first */
@@ -294,9 +303,9 @@ const paths = {
       await G.say('Now you! Start at the green light.');
       G.expect({ kind: 'trace' }); G.A.wrongMove = null; T.on = true; T.lastProgress = S.t;
       await new Promise(res => { T.onDone = () => res(); const nag = setInterval(() => { if (!T.on) return clearInterval(nag); if (!T.down && S.t - T.lastProgress > 7 && !G.R.busy) { T.lastProgress = S.t; G.say('Put your finger on the green light.'); } }, 1000); });
-      S.scene.remove(T.dots, T.start); await S.tween(500, e => bloom.scale.setScalar(0.8 + e * 0.6), ease.back);
+      trailG.userData.grow(1); S.scene.remove(T.dots, T.start); await S.tween(500, e => bloom.scale.setScalar(0.8 + e * 0.6), ease.back);
       await G.right(end, ['Yum, a flower!', 'Buzz! You did it!', 'The bee is happy!', 'What a path!', 'Zig zag, yes!'][r]);
-      await S.tween(300, e => bloom.scale.setScalar(1.4 * (1 - e) + 0.001));
+      await S.tween(300, e => bloom.scale.setScalar(1.4 * (1 - e) + 0.001)); S.scene.remove(trail);
     }
     await G.done('Your finger is ready to write!');
   }
@@ -306,22 +315,23 @@ const paths = {
 const FIX = [
   { a: 'sun', b: 'map', ok: false, fix: ['bun', 'car'], kind: 'rhyme' },
   { a: 'cat', b: 'hat', ok: true, kind: 'rhyme' },
-  { a: 'sock', claim: 'm', ok: false, fix: ['mouse', 'snake'], kind: 'first' },
+  { a: 'sock', claim: 'm', ok: false, kind: 'first' },
   { a: 'moon', b: 'spoon', ok: true, kind: 'rhyme' },
   { a: 'bee', b: 'car', ok: false, fix: ['tree', 'mop'], kind: 'rhyme' }
 ];
 const fixit = {
   world(G) { const W = base(G.S, 'meadow', { clearW: 7 }); fence(G.S, -9, 9, -3.6, 0xFFF0DC); tree(G.S, -9, -7, { s: 1.6 }); tree(G.S, 8.5, -7.5, { s: 1.4 });
-    G.view({ wide: [-0.3, 1.5, 11.2, 5.4, 0.3], narrow: [0, 1.7, 5.8, 8.6, 0.36] }); return W; },
+    G.view({ wide: [-0.3, 1.8, 11.2, 5.4, 0.2], narrow: [0, 1.8, 5.0, 7.4, 0.24] }); return W; },
   async play(G) {
     const n = () => G.narrow(); G.rounds(FIX.length);
-    await G.say('My friend Eli is learning too.', 'Sometimes he gets mixed up. Can you help?');
+    await G.say('Sometimes I get mixed up.', 'Check me! Thumbs up if I\'m right.');
     for (const f of FIX) {
       G.newRound();
       const A = G.item(f.a, () => n() ? V(-1.15, 1.0, -0.4) : V(-1.7, 1.0, -0.4), { size: 1.35 });
       let B = f.b ? G.item(f.b, () => n() ? V(1.15, 1.0, -0.4) : V(1.7, 1.0, -0.4), { size: 1.35 }) : null;
-      if (f.kind === 'rhyme') await G.say('Eli says ' + say(f.a) + ' and ' + say(f.b) + ' rhyme.', 'Is he right?');
-      else await G.say('Eli says ' + say(f.a) + ' starts with ' + (f.claim === 'm' ? 'mmm.' : 'sss.'), 'Is he right?');
+      G.mendy.set('point', 2);
+      if (f.kind === 'rhyme') await G.say(say(f.a) + ' and ' + say(f.b) + ' rhyme!', 'Am I right?');
+      else await G.say(say(f.a) + ' starts with ' + (f.claim === 'm' ? 'mmm.' : 'sss.'), 'Am I right?');
       G.button('yes', true); G.button('no', true);
       for (;;) {
         G.expect({ kind: 'button', sel: f.ok ? '#yes' : '#no' }); G.A.wrongMove = { kind: 'button', sel: f.ok ? '#no' : '#yes' };
@@ -330,13 +340,24 @@ const fixit = {
         await G.wrong(f.kind === 'rhyme' ? ['Listen again.', say(f.a) + '... ' + say(f.b) + '.'] : ['Listen again.', say(f.a) + '.', echo(() => sound[f.claim === 'm' ? 's' : 'm']())]);
       }
       G.button('yes', false); G.button('no', false);
-      if (f.ok) { await G.right(V(0, 3.4, 0.5), 'Yes! Eli is right. ' + say(f.a) + ', ' + say(f.b) + '!'); await clearItems(G); continue; }
-      await G.say('Right, Eli got mixed up.', 'Let\'s fix it!');
+      if (f.ok) { await G.right(V(0, 3.4, 0.5), 'Yes! I was right. ' + say(f.a) + ', ' + say(f.b) + '!'); await clearItems(G); continue; }
+      await G.say('Oops, I got mixed up!', 'Let\'s fix it!');
       if (B) await B.remove();
+      if (f.kind === 'first') {   /* the sock goes to the sss basket (the snake), not the mmm basket (the moon) */
+        const bk = [['moon', 'm'], ['snake', 's']].map(([k, snd2], i) => { const b = basket(G.S, 0xD8A060, 0.85); const at = () => n() ? V(-1.2 + i * 2.4, 0, 2.0) : V(-0.8 + i * 3.2, 0, 1.6); b.position.copy(at()); b.scale.setScalar(n() ? 0.8 : 1);
+          const key = prop(k); key.scale.setScalar(0.55); key.position.copy(at()).add(V(0, 1.25, 0.9)); G.S.scene.add(key); return { b, key, snd2, at }; });
+        A.drag = true; await G.say('Sock. Sss... sock!', echo(() => sound.s()), 'Drag the sock to its basket.');
+        const tgt = () => bk[1].b.position.clone().add(V(0, 0.9, 0));
+        G.expect({ kind: 'drag', from: A, to: tgt }); G.A.wrongMove = { kind: 'drag', from: A, to: () => bk[0].b.position.clone().add(V(0, 0.9, 0)) };
+        G.hint(async () => { A.glow(true); await G.trail(A.obj.position, tgt()); });
+        await new Promise(res => G.onDrop(async (it, at) => { const h = G.near(it, bk.map(x => x.b.position.clone().add(V(0, 0.9, 0))), 150); if (!h) return false;
+          if (Math.abs(h.x - bk[1].b.position.x) < 0.01) { G.onDrop(null); it.placed = true; await it.moveTo(tgt(), 300); await G.right(tgt(), 'Sss, sock! Fixed!'); res(); return true; }
+          await G.wrong(['Sock. Listen to the start.', echo(() => sound.s())], it); return false; }));
+        bk.forEach(x => { G.S.scene.remove(x.b); G.S.scene.remove(x.key); }); await clearItems(G); continue; }
       const want = f.fix[0], opts = shuffle(f.fix).map((w, i) => G.item(w, () => n() ? V(-1.0 + i * 2.0, 0.7, 2.3) : V(-1.4 + i * 2.8, 0.7, 2.2), { drag: true, size: 0.95 }));
       const slot = () => n() ? V(1.15, 1.0, -0.4) : V(1.7, 1.0, -0.4), ring = new THREE.Mesh(new THREE.RingGeometry(0.62, 0.78, 48), new THREE.MeshBasicMaterial({ color: C(0xFFF3A0).multiplyScalar(1.6), transparent: true, opacity: 0.8, side: THREE.DoubleSide, depthWrite: false }));
       ring.position.copy(slot()); G.S.scene.add(ring); G.S.tick(() => ring.scale.setScalar(1 + Math.sin(G.S.t * 5) * 0.08));   /* the empty spot glows */
-      await G.say(f.kind === 'rhyme' ? 'Drag the picture that rhymes with ' + say(f.a) + '.' : 'Drag a picture that starts with mmm.');
+      await G.say('Drag the picture that rhymes with ' + say(f.a) + '.');
       const good = opts.find(o => o.name === want), bad = opts.find(o => o.name !== want);
       G.expect({ kind: 'drag', from: good, to: slot }); G.A.wrongMove = { kind: 'drag', from: bad, to: slot };
       G.hint(async () => { good.glow(true); await G.trail(good.obj.position, slot()); });
@@ -346,22 +367,22 @@ const fixit = {
         await G.wrong(f.kind === 'rhyme' ? [say(f.a) + ', ' + say(it.name) + '. Not the same end.'] : [say(it.name) + '. That is not mmm.'], it); return false; }); });
       G.S.scene.remove(ring); await clearItems(G);
     }
-    await G.done('Thank you for helping Eli!');
+    await G.done('Thank you for checking me!');
   }
 };
 
 /* =========================================================== check: the mastery check =========================================================== */
 const CHECK = [
-  { q: 'rhyme', w: 'cat', opts: ['hat', 'sun', 'mop'] },
+  { q: 'rhyme', w: 'cat', opts: ['hat', 'sun', 'mop'], goal: 'hat' },
   { q: 'claps', w: 'banana', n: 3 },
   { q: 'first', k: 'm', opts: ['mug', 'sock', 'bee'] },
-  { q: 'rhyme', w: 'goat', opts: ['cake', 'boat', 'fish'] },
+  { q: 'rhyme', w: 'snake', opts: ['cake', 'sun', 'mop'], goal: 'cake' },
   { q: 'claps', w: 'apple', n: 2 },
   { q: 'first', k: 's', opts: ['moon', 'soup', 'cat'] }
 ];
 const check = {
   world(G) { const W = base(G.S, 'sunset'); tree(G.S, -9, -6, { s: 1.5, c1: 0x3A9E5A, c2: 0xB8E06A }); tree(G.S, 9.5, -7, { s: 1.6, c1: 0xC85AA8, c2: 0xFFC2E2 }); stump(G.S, 0, -1.6, 0.9, 1.1);
-    G.view({ wide: [-0.3, 1.5, 11.2, 5.4, 0.3], narrow: [0, 1.7, 5.8, 8.6, 0.36] }); return W; },
+    G.view({ wide: [-0.3, 1.8, 11.2, 5.4, 0.2], narrow: [0, 1.8, 5.0, 7.4, 0.24] }); return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow(); G.rounds(CHECK.length);
     await G.say('Show me your listening!', 'Tap the right one each time.');
@@ -370,21 +391,21 @@ const check = {
       const pos = i => () => n() ? V(-1.75 + i * 1.75, 0.8, 1.4) : V(-3 + i * 3, 0.8, 1.0);
       if (c.q === 'claps') {
         const pic = G.item(c.w, () => V(0, 2.05, -1.6), { size: 1.2 });
-        const sayParts = echo(async () => { for (const b of WORDS[c.w].beats) { audio.clap(); await audio.say(b); await G.wait(200); } });
+        const sayParts = echo(async () => { for (const b of WORDS[c.w].beats) { await audio.say(b); await G.wait(200); } });   /* parts said, never clapped: he counts them himself */
         targets = [1, 2, 3].map((k, i) => { const p = beatPad(S, k); const at = pos(i); p.position.copy(at()); p.userData.k = k; p.userData.at = at; return p; });
         G.W.layout = () => targets.forEach(p => p.position.copy(p.userData.at()));
-        ask = [say(c.w) + '.', sayParts, 'How many claps? Tap the dots.'];
+        ask = [say(c.w) + '.', sayParts, 'How many parts? Tap the stone with that many dots.'];
         right = targets[c.n - 1];
         G.expect({ kind: 'tap', at: () => right.position }); G.A.wrongMove = { kind: 'tap', at: () => targets[c.n === 1 ? 1 : 0].position };
         await G.say(ask);
-        await new Promise(res => { let tries = 0; targets.forEach(p => G.tap(p, async () => { for (let i = 0; i < p.userData.k; i++) { audio.clap(); await G.wait(140); }
+        await new Promise(res => { let tries = 0; targets.forEach(p => G.tap(p, async () => { audio.pop();
           if (p === right) { await G.right(p.position, say(c.w) + '. ' + ['One', 'Two', 'Three'][c.n - 1] + ' claps!'); res(); }
           else { tries++; await G.wrong(tries < 2 ? ['Hmm. Listen again.', sayParts] : ['Count with me.', sayParts]); if (tries >= 2) { right.scale.setScalar(1.2); } } })); });
         targets.forEach(p => { S.scene.remove(p); }); G.taps = []; G.W.layout = null; await pic.remove();
         continue;
       }
       const its = c.opts.map((w, i) => G.item(w, pos(i), { size: 1.1 }));
-      const goal = c.q === 'rhyme' ? its.find(i => (c.w === 'cat' ? 'hat' : 'boat') === i.name) : its.find(i => WORDS[i.name].say[0] === (c.k === 'm' ? 'm' : 's'));
+      const goal = c.q === 'rhyme' ? its.find(i => c.goal === i.name) : its.find(i => WORDS[i.name].say[0] === (c.k === 'm' ? 'm' : 's'));
       let key = null; if (c.q === 'rhyme') key = G.item(c.w, () => V(0, 2.05, -1.6), { size: 1.2 });
       ask = c.q === 'rhyme' ? ['Tap the picture that rhymes with ' + say(c.w) + '.'] : ['Tap the picture that starts with ' + (c.k === 'm' ? 'mmm.' : 'sss.'), echo(() => sound[c.k]())];
       await G.say(ask);
@@ -402,7 +423,7 @@ const check = {
 /* =========================================================== review: The Listening Walk =========================================================== */
 const review = {
   world(G) { const W = base(G.S, 'morning', { clearW: 7 }); tree(G.S, -9, -6, { s: 1.5 }); tree(G.S, 9, -6, { s: 1.6, c1: 0x13924A, c2: 0x9BE94F }); pond(G.S, 7.5, -6, 2.2, 1.6); rock(G.S, -6.5, 2, 0.45);
-    G.view({ wide: [-0.3, 1.5, 11.2, 5.4, 0.3], narrow: [0, 1.7, 5.8, 8.6, 0.36] }); return W; },
+    G.view({ wide: [-0.3, 1.8, 11.2, 5.4, 0.2], narrow: [0, 1.8, 5.0, 7.4, 0.24] }); return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow(); G.rounds(4);
     await G.say('A listening walk! A little of everything.');
@@ -413,7 +434,7 @@ const review = {
       G.hint(async () => { good.glow(true); await G.say('Star... car.'); });
       await new Promise(res => G.onDrop(async (it, at) => { const hit = G.near(it, opts); if (!hit) return false;
         if (hit === good) { G.onDrop(null); await pairUp(G, a, good, n() ? V(0, 0.8, 0.4) : V(0, 0.8, 0.4)); await G.right(good.obj.position, 'Star, car!'); res(); return true; }
-        await G.wrong(['Star, sock. Not the same end.'], hit); return false; }));
+        await G.wrong(['Star, sock. Listen to the end. Try another!'], hit); return false; }));
       await clearItems(G); }
     /* 2. clap */
     G.newRound(); { const drum = bigDrum(G, n() ? 0.9 : 1.6, 0, 0.6, n() ? 0.8 : 1), pic = G.item('tomato', () => n() ? V(-1.1, 0.8, -0.4) : V(-2.0, 0.85, -0.2), { size: 1.3 }); let c = 0;
@@ -430,9 +451,9 @@ const review = {
       await new Promise(res => its.forEach(it => it.onTap = async () => { it.poke(); await it.say(); if (it === goal) { await G.right(it.obj.position, 'Sss, sun!'); res(); } else await G.wrong(['Listen for sss.', echo(() => sound.s())], it); }));
       await clearItems(G); }
     /* 4. left to right: which do we say first? */
-    G.newRound(); { const row = ['hat', 'moon', 'fish'].map((w, i) => G.item(w, () => n() ? V(-1.75 + i * 1.75, 0.85, 0.4) : V(-3 + i * 3, 0.85, 0.2), { size: 1.1 }));
+    G.newRound(); { const row = ['hat', 'moon', 'fish'].map((w, i) => G.item(w, () => n() ? V(-1.3 + i * 1.55, 0.85, 0.4) : V(-3 + i * 3, 0.85, 0.2), { size: 1.1 }));
       await G.say('We read this way.', echo(async () => { for (const it of row) { it.glow(true); await G.wait(350); it.glow(false); } }), 'Which picture do we say first?');
-      G.expect({ kind: 'tap', at: row[0] }); G.A.wrongMove = { kind: 'tap', at: row[2] };
+      G.expect({ kind: 'tap', at: row[0] }); G.A.wrongMove = { kind: 'tap', at: row[2] }; G.hint(async () => { row[0].glow(true); await G.say('Start here, on this side.'); });
       await new Promise(res => row.forEach((it, i) => it.onTap = async () => { it.poke(); if (i === 0) { await G.right(it.obj.position, 'Yes! Hat, moon, fish.'); res(); } else await G.wrong(['We start on this side.'], it); }));
       await clearItems(G); }
     await G.done('What a listening walk!');

@@ -61,7 +61,7 @@ var UNITS = [
     var h = '<div class="badge"><b>' + U.icon + '</b></div><div class="path">';
     U.games.forEach(function (g) { var n = stars['u' + U.u + '.' + g] || 0, st = '';
       for (var i = 0; i < 3; i++) st += '<i' + (i < n ? ' class="on"' : '') + '></i>';
-      h += '<a class="game" href="play.html?u=' + U.u + '&g=' + g + '" aria-label="unit ' + U.u + ' ' + g + '"><img src="art/thumb-u' + U.u + '-' + g + '.webp" alt=""><span class="st">' + st + '</span>' + play + '</a>'; });
+      h += '<a class="game" href="play.html?u=' + U.u + '&g=' + g + '" aria-label="unit ' + U.u + ' ' + g + '"><img src="art/thumb-u' + U.u + '-' + g + '.webp" alt="" onerror="this.style.visibility=\'hidden\'"><span class="st">' + st + '</span>' + play + '</a>'; });
     sec.innerHTML = h + '</div>'; host.appendChild(sec); }); })();
 </script>
 <main class="looks">

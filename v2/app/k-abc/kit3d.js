@@ -67,7 +67,7 @@ export function stage(host, o = {}) {
   }
   function applyTier() {
     const dpr = Math.min(devicePixelRatio || 1, S.tier === 2 ? 1.75 : 1);
-    R.setPixelRatio(S.tier === 0 ? Math.min(devicePixelRatio || 1, 1) * (FAST ? 0.5 : 0.75) : dpr);   /* the simplest picture also draws fewer dots */
+    R.setPixelRatio(S.tier === 0 ? Math.min(devicePixelRatio || 1, 1) * (FAST ? (FORCE_TIER == null ? 0.3 : 0.5) : 0.75) : dpr);   /* the simplest picture also draws fewer dots */
     R.shadowMap.enabled = S.tier > 0;
     scene.traverse(m => { if (m.material) [].concat(m.material).forEach(x => x.needsUpdate = true); });
     if (S.sun) { S.sun.castShadow = S.tier > 0; const s = S.tier === 2 ? 2048 : 1024; if (S.sun.shadow.map) { S.sun.shadow.map.dispose(); S.sun.shadow.map = null; } S.sun.shadow.mapSize.set(s, s); }
@@ -518,6 +518,15 @@ audio.drum = (f = 110) => { audio.drumN++; const c = audio.ctx(); if (!c || FAST
 audio.choo = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime; [[523, 659], [587, 740]].forEach(([a, b], k) => { [a, b].forEach(f => { const o = c.createOscillator(), g = c.createGain(); o.type = 'triangle'; o.frequency.value = f;
   g.gain.setValueAtTime(0, t + k * 0.45); g.gain.linearRampToValueAtTime(0.09, t + k * 0.45 + 0.05); g.gain.setValueAtTime(0.09, t + k * 0.45 + 0.3); g.gain.linearRampToValueAtTime(0, t + k * 0.45 + 0.4); o.connect(g); g.connect(c.destination); o.start(t + k * 0.45); o.stop(t + k * 0.45 + 0.45); }); }); };
 audio.bell = () => audio.chime([1319, 1760, 2093]);
+/* the short sounds: t (a crisp tongue tap, no "uh") and p (a soft lip puff, no "uh"), made by the device */
+audio.tN = 0; audio.pN = 0;
+audio.burst = (f, q, ms, gain, type = 'highpass') => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, s = c.createBufferSource(); s.buffer = noiseBuf(c, 0.2);
+  const bp = c.createBiquadFilter(); bp.type = type; bp.frequency.value = f; bp.Q.value = q; const g = c.createGain(); g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.001, t + ms / 1000);
+  s.connect(bp); bp.connect(g); g.connect(c.destination); s.start(t); s.stop(t + ms / 1000 + 0.02); };
+audio.tick = () => { audio.tN++; audio.burst(3800, 0.8, 70, 0.55); audio.burst(5200, 2, 40, 0.25, 'bandpass'); return new Promise(r => setTimeout(r, FAST ? 0 : 260)); };
+audio.puff = () => { audio.pN++; audio.burst(700, 0.7, 110, 0.6, 'lowpass'); audio.burst(1400, 1, 60, 0.2, 'bandpass'); return new Promise(r => setTimeout(r, FAST ? 0 : 280)); };
+/* every letter's pure sound, made by the device (letters added unit by unit) */
+audio.letter = ch => ({ s: () => audio.hiss(750), a: () => audio.vowelA(450), t: () => audio.tick(), p: () => audio.puff(), m: () => audio.hum(750) }[ch] || (() => Promise.resolve()))();
 audio.whoosh = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, s = c.createBufferSource(); s.buffer = noiseBuf(c, 0.5); const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.5; bp.frequency.setValueAtTime(400, t); bp.frequency.exponentialRampToValueAtTime(2400, t + 0.35);
   const g = c.createGain(); g.gain.setValueAtTime(0.001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.12); g.gain.exponentialRampToValueAtTime(0.001, t + 0.45); s.connect(bp); bp.connect(g); g.connect(c.destination); s.start(t); s.stop(t + 0.5); };
 audio.hmm = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(330, t); o.frequency.linearRampToValueAtTime(262, t + 0.35);
