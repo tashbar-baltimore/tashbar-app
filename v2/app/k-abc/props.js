@@ -184,7 +184,45 @@ const B = {
     G.add(mesh(cyl(0.05, 0.07, 0.2, 8), mat(0x4A7A2A), 0, 0.38, 0)); return G; },
   faucet() { const G = new THREE.Group(), m = mat(0xD8E2EE, { metal: .8, rough: .15 }); G.add(mesh(cyl(0.12, 0.12, 0.6, 20), m, -0.35, -0.1, 0)); const arm = mesh(tor(0.3, 0.1, Math.PI), m, -0.05, 0.2, 0); G.add(arm);
     G.add(mesh(cyl(0.12, 0.1, 0.15, 20), m, 0.25, 0.12, 0)); const k = mesh(cyl(0.12, 0.12, 0.08, 16), mat(0x4FA8FF), -0.35, 0.48, 0); G.add(k);
-    const drop = mesh(sph(0.08, 14), toon(0x7FD8FF, { transparent: true, opacity: .8, clear: 1 }), 0.25, -0.12, 0); drop.scale.y = 1.4; G.add(drop); G.userData.drip = drop; return G; }   /* a water tap */
+    const drop = mesh(sph(0.08, 14), toon(0x7FD8FF, { transparent: true, opacity: .8, clear: 1 }), 0.25, -0.12, 0); drop.scale.y = 1.4; G.add(drop); G.userData.drip = drop; return G; },   /* a water tap */
+  pinwheel() { const G = new THREE.Group(); G.add(mesh(cyl(0.04, 0.04, 1.2, 10), mat(0xE8B070), 0, -0.45, 0)); const wh = new THREE.Group(); wh.position.set(0, 0.2, 0.05); G.add(wh);
+    [0xFF4F6D, 0xFFB020, 0x4DDB6A, 0x4DB2FF, 0xB46BFF, 0xFFE14D].forEach((c, i) => { const sh = new THREE.Shape(); sh.moveTo(0, 0); sh.quadraticCurveTo(0.36, 0.05, 0.42, 0.36); sh.lineTo(0.05, 0.1); sh.closePath();
+      const b = new THREE.Mesh(new THREE.ShapeGeometry(sh, 8), toon(c, { side: THREE.DoubleSide, clear: 1, rough: .3 })); b.rotation.z = i / 6 * Math.PI * 2; wh.add(b); });
+    wh.add(mesh(sph(0.06, 10), mat(0xFFD23F), 0, 0, 0.02)); G.userData.wheel = wh; return G; },
+  /* ---- Unit 3 (i n m d) ---- */
+  igloo() { const G = new THREE.Group(), w = mat(0xF4FAFF, { rough: .35, clear: .6, sheen: .6, sheenC: 0xBFE6FF }); const d = mesh(new THREE.SphereGeometry(0.6, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), w, 0, -0.45, 0); G.add(d);
+    for (let i = 1; i < 4; i++) { const r = mesh(tor(0.6 * Math.cos(i * 0.36), 0.012, Math.PI * 2), mat(0xBFD8F0), 0, -0.45 + 0.6 * Math.sin(i * 0.36), 0); r.rotation.x = Math.PI / 2; G.add(r); }
+    const door = mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.5, 24, 1, false, 0, Math.PI), w, 0, -0.45, 0.5); door.rotation.set(Math.PI / 2, Math.PI / 2, 0); G.add(door);
+    const hole = mesh(new THREE.CircleGeometry(0.17, 20, 0, Math.PI), mat(0x3A5A8A), 0, -0.44, 0.76); G.add(hole); G.rotation.x = 0.25; return G; },
+  inchworm() { const G = new THREE.Group(), g = mat(0x8FD84A, { clear: .8, rough: .3 }); for (let i = 0; i < 7; i++) { const a = i / 6 * Math.PI, b = mesh(sph(0.17 - Math.abs(i - 3) * 0.008), g, -0.6 + i * 0.2, -0.3 + Math.sin(a) * 0.5, 0); G.add(b); }
+    const h = mesh(sph(0.2), g, 0.66, -0.2, 0); G.add(h); const e = eye(0.06, {}); e.position.set(0.74, -0.12, 0.15); G.add(e); const e2 = eye(0.06, {}); e2.position.set(0.66, -0.1, 0.17); G.add(e2); return G; },
+  ink() { const G = new THREE.Group(); G.add(mesh(cyl(0.34, 0.38, 0.55, 28), mat(0x2A3A8A, { clear: 1, rough: .1, transparent: true, opacity: .85 }), 0, -0.2, 0), mesh(cyl(0.18, 0.2, 0.18, 20), mat(0x1A1A2A), 0, 0.15, 0));
+    const f = mesh(new THREE.ConeGeometry(0.06, 0.9, 12), mat(0xF4F0E8, { rough: .6 }), 0.15, 0.55, 0); f.rotation.z = -0.35; G.add(f); const tip = mesh(new THREE.ConeGeometry(0.03, 0.12, 8), mat(0x2A3A8A), 0.31, 0.12, 0); tip.rotation.z = Math.PI - 0.35; G.add(tip); return G; },   /* an ink bottle with a feather pen */
+  nest() { const G = new THREE.Group(), b = mat(0xA0703A, { rough: .9 }); for (let i = 0; i < 26; i++) { const t = mesh(tor(0.45 + (i % 4) * 0.04, 0.035, Math.PI * 2), b, 0, -0.25 + (i % 5) * 0.04, 0); t.rotation.set(Math.PI / 2 + rnd(-.25, .25), 0, rnd(0, 6)); G.add(t); }
+    [[-0.12, 0], [0.13, 0.05], [0, -0.12]].forEach(([x, z]) => { const e = mesh(sph(0.16, 18), mat(0xA8D8FF, { clear: .8 }), x, -0.05, z); e.scale.y = 1.25; G.add(e); }); G.rotation.x = 0.45; return G; },
+  nut() { const G = new THREE.Group(); const b = mesh(sph(0.4, 28), mat(0xB8703A, { clear: .7, rough: .3 }), 0, -0.15, 0); b.scale.y = 1.15; G.add(b); const cap = mesh(new THREE.SphereGeometry(0.44, 28, 12, 0, Math.PI * 2, 0, Math.PI / 2), mat(0x7A4A22, { rough: .9 }), 0, 0.12, 0); cap.scale.y = 0.6; G.add(cap);
+    G.add(mesh(cyl(0.04, 0.05, 0.18, 8), mat(0x5A3A1A), 0, 0.42, 0)); return G; },   /* an acorn */
+  noodles() { const G = new THREE.Group(); G.add(mesh(lathe([[0, -0.32], [0.3, -0.32], [0.55, -0.1], [0.62, 0.15], [0.58, 0.15], [0.5, -0.06], [0, -0.14]], 40), mat(0xFFE0B0, { clear: 1 })));
+    for (let i = 0; i < 12; i++) { const n = mesh(tor(rnd(0.12, 0.3), 0.025, Math.PI * 1.6), mat(0xFFD27A), rnd(-0.2, 0.2), 0.12, rnd(-0.2, 0.2)); n.rotation.set(Math.PI / 2 + rnd(-.4, .4), 0, rnd(0, 6)); G.add(n); } G.rotation.x = 0.55; return G; },   /* a bowl of noodles */
+  dog() { const G = new THREE.Group(), b = mat(0xD8A060, { rough: .55, sheen: .7 }), d = mat(0x8A5A2A); const body = mesh(sph(0.42), b, -0.1, -0.22, 0); body.scale.set(1.3, 0.85, 0.85); G.add(body); G.add(mesh(sph(0.3), b, 0.42, 0.12, 0.05));
+    const sn = mesh(sph(0.16), mat(0xF4D8B0), 0.62, 0.05, 0.12); sn.scale.set(1.2, 0.8, 0.9); G.add(sn); G.add(mesh(sph(0.06, 10), mat(0x2A1A1A), 0.76, 0.1, 0.2));
+    [-1, 1].forEach(s => { const e = mesh(sph(0.14), d, 0.36, 0.2, s * 0.25); e.scale.set(0.5, 1.4, 0.6); e.rotation.z = 0.3; G.add(e); }); const e = eye(0.06, {}); e.position.set(0.55, 0.22, 0.24); G.add(e);
+    [[-0.4, 1], [-0.4, -1], [0.15, 1], [0.15, -1]].forEach(([x, s]) => G.add(mesh(cyl(0.07, 0.07, 0.35, 10), b, x, -0.6, s * 0.2))); const t = mesh(new THREE.CapsuleGeometry(0.05, 0.3, 4, 8), b, -0.65, 0.0, 0); t.rotation.z = 0.8; G.add(t); G.rotation.y = -0.35; return G; },
+  duck() { const G = new THREE.Group(), y = mat(0xFFD23F, { clear: .8, rough: .3 }); const b = mesh(sph(0.42), y, 0, -0.2, 0); b.scale.set(1.3, 0.85, 0.9); G.add(b); G.add(mesh(sph(0.27), y, 0.35, 0.25, 0));
+    const bk = mesh(sph(0.12), mat(0xFF8A2A), 0.6, 0.2, 0); bk.scale.set(1.4, 0.45, 0.9); G.add(bk); const e = eye(0.06, {}); e.position.set(0.48, 0.34, 0.18); G.add(e);
+    const w = mesh(sph(0.22), mat(0xFFC21E), -0.1, -0.12, 0.3); w.scale.set(1.3, 0.6, 0.3); G.add(w); const t = mesh(new THREE.ConeGeometry(0.12, 0.25, 10), y, -0.6, -0.05, 0); t.rotation.z = Math.PI / 2 + 0.5; G.add(t); G.rotation.y = -0.3; return G; },
+  door() { const G = new THREE.Group(); G.add(mesh(box(0.9, 1.3, 0.12), mat(0xC0673A, { rough: .6, clear: .3 }))); [[0.25], [-0.25]].forEach(([y]) => G.add(mesh(box(0.7, 0.45, 0.04), mat(0xA8552E), 0, y, 0.07)));
+    G.add(mesh(sph(0.06, 12), mat(0xFFD23F, { metal: .5 }), 0.3, 0, 0.12)); G.add(mesh(box(1.05, 0.08, 0.16), mat(0xFFF6E8), 0, 0.69, 0)); return G; },
+  donut() { const G = new THREE.Group(); G.add(mesh(new THREE.TorusGeometry(0.36, 0.2, 20, 36), mat(0xE0A060, { rough: .5 }))); const ic = mesh(new THREE.TorusGeometry(0.36, 0.205, 20, 36, Math.PI * 2), mat(0xFF8AC2, { clear: .8 }), 0, 0, 0.03); ic.scale.set(1, 1, 0.6); G.add(ic);
+    for (let i = 0; i < 14; i++) { const a = rnd(0, 6.28), r = rnd(0.25, 0.48), s = mesh(cyl(0.015, 0.015, 0.08, 6), mat([0xFFFFFF, 0x4FC3FF, 0xFFD23F][i % 3]), Math.cos(a) * r, Math.sin(a) * r, 0.2); s.rotation.set(Math.PI / 2, 0, a); G.add(s); } return G; },
+  pin() { const G = new THREE.Group(); G.add(mesh(sph(0.2, 20), mat(0xE8434F, { clear: 1 }), 0, 0.4, 0)); G.add(mesh(cyl(0.025, 0.012, 0.85, 10), mat(0xD8E2EE, { metal: .6, rough: .2 }), 0, -0.05, 0)); G.rotation.z = -0.5; return G; },   /* a sewing pin */
+  tin() { const G = new THREE.Group(), m = mat(0xC8D2DE, { metal: .6, rough: .25 }); G.add(mesh(cyl(0.36, 0.36, 0.8, 32), m)); [0.32, -0.32].forEach(y => { const r = mesh(tor(0.36, 0.03), m, 0, y, 0); r.rotation.x = Math.PI / 2; G.add(r); });
+    G.add(mesh(cyl(0.365, 0.365, 0.4, 32, 1, true), mat(0x4FA8FF, { side: THREE.DoubleSide }), 0, 0, 0)); G.rotation.x = 0.2; return G; },   /* a tin can with a plain blue label */
+  mat() { const G = new THREE.Group(); const m = mesh(box(1.3, 0.06, 0.9), mat(0xE8434F, { rough: .8, sheen: .6 })); G.add(m); for (let i = 0; i < 4; i++) G.add(mesh(box(1.3, 0.065, 0.06), mat(0xFFF0D8), 0, 0, -0.33 + i * 0.22));
+    for (let i = 0; i < 8; i++) G.add(mesh(cyl(0.012, 0.012, 0.12, 4), mat(0xFFF0D8), -0.55 + i * 0.157, 0, 0.5)); G.rotation.x = 0.9; return G; },   /* a small rug */
+  mailbox() { const G = new THREE.Group(), b = mat(0x3D7BE8, { clear: 1, rough: .25 }); const body = mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.8, 28, 1, false, 0, Math.PI), b, 0, 0.1, 0); body.rotation.z = Math.PI / 2; body.rotation.y = Math.PI / 2; G.add(body);
+    G.add(mesh(box(0.8, 0.4, 0.8), b, 0, -0.1, 0)); G.add(mesh(cyl(0.06, 0.06, 0.6, 10), mat(0x8A5A3A), 0, -0.6, 0)); const fl = mesh(box(0.05, 0.3, 0.12), mat(0xE8434F), 0.42, 0.25, 0.1); G.add(fl);
+    G.add(mesh(box(0.42, 0.07, 0.02), mat(0x1A2A4A), 0, 0.18, 0.41)); return G; }
 };
 
 /* every picture word: how it is said; beats for clapping (each beat is said on its own) */
@@ -203,7 +241,11 @@ export const WORDS = {
   ant: { say: 'ant', beats: ['ant'] }, alligator: { say: 'alligator', beats: ['al', 'li', 'ga', 'tor'] }, anchor: { say: 'anchor', beats: ['an', 'chor'] },
   top: { say: 'top', beats: ['top'] }, tent: { say: 'tent', beats: ['tent'] }, turtle: { say: 'turtle', beats: ['tur', 'tle'] }, teapot: { say: 'teapot', beats: ['tea', 'pot'] },
   penguin: { say: 'penguin', beats: ['pen', 'guin'] }, pot: { say: 'pot', beats: ['pot'] }, pear: { say: 'pear', beats: ['pear'] }, pan: { say: 'pan', beats: ['pan'] }, pumpkin: { say: 'pumpkin', beats: ['pump', 'kin'] },
-  faucet: { say: 'tap', beats: ['tap'] }
+  faucet: { say: 'tap', beats: ['tap'] }, pinwheel: { say: 'pinwheel', beats: ['pin', 'wheel'] },
+  igloo: { say: 'igloo', beats: ['ig', 'loo'] }, inchworm: { say: 'inchworm', beats: ['inch', 'worm'] }, ink: { say: 'ink', beats: ['ink'] },
+  nest: { say: 'nest', beats: ['nest'] }, nut: { say: 'nut', beats: ['nut'] }, noodles: { say: 'noodles', beats: ['noo', 'dles'] },
+  dog: { say: 'dog', beats: ['dog'] }, duck: { say: 'duck', beats: ['duck'] }, door: { say: 'door', beats: ['door'] }, donut: { say: 'donut', beats: ['do', 'nut'] },
+  pin: { say: 'pin', beats: ['pin'] }, tin: { say: 'tin', beats: ['tin'] }, mat: { say: 'mat', beats: ['mat'] }, mailbox: { say: 'mailbox', beats: ['mail', 'box'] }
 };
 
 export function prop(name) {
@@ -216,6 +258,7 @@ export function animateProp(W, t) {
   const G = W.userData.inner, u = G.userData; if (!G) return;
   if (u.spin) G.rotation.z = t * u.spin;
   if (u.spinY) G.rotation.y = t * u.spinY;
+  if (u.wheel) u.wheel.rotation.z = -t * 2;
   if (u.drip) { const k = (t * 0.8) % 1; u.drip.position.y = -0.12 - k * 0.5; u.drip.scale.setScalar(k < 0.9 ? 1 : 0.01); }
   if (u.flap) G.children.forEach((c, i) => { if (c.scale.z < 0.3 && c.geometry && c.geometry.type === 'SphereGeometry') c.rotation.y = Math.sin(t * 14 + i) * 0.5; });
   if (u.swim) G.rotation.y = Math.sin(t * 2) * 0.25;
