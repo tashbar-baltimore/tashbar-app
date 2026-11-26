@@ -90,10 +90,10 @@ module.exports = async function (browser) {
   /* the map */
   let m;
   try {
-    m = await open('index.html', 1366, 768, { games: { 'u1-opener': { best: 3, passed: true }, peek: { best: 2, passed: true } } });
+    m = await open('index.html', 1366, 768, { games: { 'u1-opener': { best: 3, passed: true }, meet123: { best: 2, passed: true } } });
     await m.pg.waitForSelector('.stop', { timeout: 10000 });
     const st = await m.pg.evaluate(() => [...document.querySelectorAll('.stop')].map(s => ({ lock: s.classList.contains('lock'), now: s.classList.contains('now'), stars: s.querySelectorAll('.st svg').length })));
-    if (st.length !== 6) bad('the map should show Unit 1\'s 6 stops (got ' + st.length + ')');
+    if (st.length !== 8) bad('the map should show Unit 1\'s 8 stops (got ' + st.length + ')');
     if (!st[2] || !st[2].now || st[2].lock) bad('on the map, the stop after the last passed one should shine');
     if (st.slice(3).some(s => !s.lock)) bad('on the map, later stops should be locked');
     if (st[0].stars !== 3 || st[1].stars !== 2) bad('on the map, passed stops should show their stars');
