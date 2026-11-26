@@ -45,6 +45,8 @@ function staticChecks() {
   conflictMarks();
   /* SHARED ART LIBRARY (HoS 2026-11-24): every file in art/ cataloged, sources and licences recorded, size limits, no duplicates */
   try { const a = require('./lib/art.js')(); a.fails.forEach(fail); a.oks.forEach(ok); } catch (e) { fail('art library check crashed: ' + String(e).slice(0, 200)); }
+  /* CSS FONT SHORTHAND (gap A4, issue #402): no "font:<size> inherit", which the browser drops */
+  try { const cf = require('./lib/cssfont.js')(); cf.fails.forEach(fail); cf.oks.forEach(ok); } catch (e) { fail('CSS font check crashed: ' + String(e).slice(0, 200)); }
 }
 
 /* No leftover merge-conflict marks in any text file in the repository (25 Nov: #484 left them in docs/CORE-GROWTH-LANES.md). */
