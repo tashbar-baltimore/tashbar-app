@@ -45,7 +45,8 @@
     if (kind === 'swap') { var t = w[at]; w[at] = w[at + 1]; w[at + 1] = t; }
     return w;
   }
-  var PLAN = [{ len: 5, kind: 'skip', at: 3 }, { len: 5, kind: 'none' }, { len: 6, kind: 'twice', at: 3 }, { len: 6, kind: 'swap', at: 2 }];
+  /* island rule: only mistakes the demo showed (skipping a number, saying one twice); the first two rounds are skips */
+  var PLAN = [{ len: 5, kind: 'skip', at: 3 }, { len: 5, kind: 'skip', at: 2 }, { len: 5, kind: 'twice', at: 3 }, { len: 5, kind: 'none' }];
   function bubble(i) { var b = document.createElement('div'); b.className = 'said'; b.innerHTML = '<span class="u2mini">' + U2.dots(R.w[i]) + '</span>'; P.stones[i].appendChild(b); }
   async function count(F) {
     P.reset(); P.stones.forEach(function (s) { s.classList.add('tapme'); });
@@ -101,6 +102,12 @@
       P = U2.path($('path'), { from: 1, to: 4 }); R = { who: 'Mendy', kind: 'skip', w: words(4, 'skip', 2), bad: 2, misses: 0 };
       await F.say('Mendy counts. Did he make a mistake?'); await count(F);
       await F.say('Look! He said four on the three stone.');
+      await F.handTo(P.stones[2]); await F.handTap(); NK.sound.yes();
+      await showRight(F);
+      /* the second kind of mistake: saying a number twice */
+      P = U2.path($('path'), { from: 1, to: 4 }); R = { who: 'Mendy', kind: 'twice', w: words(4, 'twice', 2), bad: 2, misses: 0 };
+      await F.say('Now Mendy says a number twice. Listen!'); await count(F);
+      await F.say('Two, two! He said two twice.');
       await F.handTo(P.stones[2]); await F.handTap(); NK.sound.yes();
       await showRight(F); await F.handTo($('ok')); await F.say('No mistake? Tap thumbs up.');
     },
