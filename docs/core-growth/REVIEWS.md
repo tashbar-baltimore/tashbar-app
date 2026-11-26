@@ -6,6 +6,65 @@ Job V builds no lessons and never reviews its own work. It scores every job's le
 
 ---
 
+## Round 2 (part B1c) · 2026-11-26 · G and W48
+
+### For the Head of School (plain words)
+
+Rabbi Khaver: **the new Grammar lessons are uneven, and the new Writing lessons for Grades 4–8 are not yet at your bar.**
+
+- **Grammar (G): 22 of 53 new lessons pass every point (42%).**
+  - The Grade 2–4 lessons are good: 13 of 18 pass.
+  - From Grade 5 up they get weaker. Only 2 of the 17 Grade 7–8 lessons pass.
+  - Why: the end-of-lesson check often repeats an answer the boy has already seen, or gives only two choices.
+  - Ten Grade 7–8 lessons are all built the same way, and that shape is too easy for those grades.
+- **Writing for Grades 4–8 (W48): 0 of 63 new lessons pass.**
+  - The writing is warm and the examples are good.
+  - But every lesson uses only match, sort and tile games, and the boy never writes.
+  - These are the same two problems the first review found on 24 Nov. These lessons were built after it, and they repeat them.
+  - Gap A3b (in progress) adds the real writing pieces. W48 also needs harder activity kinds.
+- **A boy can be marked wrong, or is told to do something he cannot see, in 13 places. I checked each one in the code.**
+  - Grammar (2): a Yosef "coat of many colors" card keyed the wrong way, and "busy as a bee", where "idiom" is also right.
+  - Writing (11):
+    - Four checks tell him to "leave out" a line that never appears (the same bug as the first review).
+    - Two checks have two right orders.
+    - Two checks have a second fair answer.
+    - Four activities ask about an article or a source the lesson never shows him.
+
+### Results by job
+
+| Job | Scored | Pass | % | Detail |
+|---|---|---|---|---|
+| G · Grammar and words | 53 | 22 | 42% | `reviews/R2-G.md` |
+| W48 · Writing Gr 4–8 | 63 | 0 | 0% | `reviews/R2-W48.md` |
+| **All (B1c)** | **116** | **22** | **19%** | |
+
+### URGENT (each one checked again in the code; full rows and copy-ready fixes in the detail files)
+
+| Item | Job | Problem |
+|---|---|---|
+| `READ.VOC.L08.05` do 2 | G | "A coat of many colors means a very colorful coat." is keyed Right (it points to Yosef) |
+| `READ.VOC.L08.01` check | G | "busy as a bee" keyed simile; "idiom" is defensible |
+| `WRIT.PARA.L08.08`, `.L08.10`, `.L08.11` check 3 | W48 | "Leave out the …" line is never shown (`order` ignores `extra`) |
+| `WRIT.ESSAY.L08.07` check 3 | W48 | Two right orders, and an unseen "leave out" line |
+| `WRIT.PARA.L05.18` check 3 | W48 | Two right orders; `L06.12` keys the other one right |
+| `WRIT.PARA.L06.09` check 2 | W48 | "so the reader remembers it" is defensible |
+| `WRIT.ESSAY.L06.06` your 4, `WRIT.PARA.L06.10` do 2 | W48 | Keyed against an article the boy never sees |
+| `WRIT.RES.L05.03` your 3, `WRIT.RES.L06.02` your 3 | W48 | He is never shown which source said what |
+| `WRIT.RES.L07.02` check 1 | W48 | A definition keyed "quote it"; "paraphrase" is also right |
+
+**For job T (tests):** a test that fails any engine `order` check whose hint says "leave out" while the question has an `extra` would stop this bug from coming back a third time.
+
+### How part B1c was done
+- **What was scored:**
+  - Every G and W48 lesson live on `origin/main` at 26 Nov 19:08 UTC that Round 1 did not score.
+  - The 10 G Grade 6–8 lessons rebuilt after Round 1.
+  - Not scored again: the Round 1 ✗ lessons, which are gap B2c (G) and the fresh re-scores in #497 and #518 (W48).
+- **The checks:** `tools/audit/unitpool.js` dumped every distinct check question each lesson can draw (25 builds per skill).
+- **The reviewers:** 7 fresh reviewers each scored one batch. None of them, and not this builder, wrote any of these lessons.
+- **What a boy sees:** one lesson per job was played as a made-up TEST- boy at both sizes, to Level clear. Pictures: `docs/screens/b1c-r2/`.
+
+---
+
 ## Round 1 · 2026-11-24 · all 151 live Core Growth lessons
 
 ### For the Head of School (plain words)
