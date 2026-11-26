@@ -200,7 +200,7 @@ export function mount(host, opt) {
     sideSpot(i) { return spot('side' + i, sides[i].g, { cls: 'side', r: W / 2 - 0.3, y: 0.2, min: 64 }); },
     treeSpot() { return spot('tree', tree, { cls: 'tree', r: 1.1, y: 2.3, min: 90 }); },
     /* see-saw apples */
-    setSaw(nl, nr) { const S = seesaw(); sides.forEach(s => { s.g.visible = false; }); S.n = [nl, nr];
+    setSaw(nl, nr) { const S = seesaw(); S.g.scale.setScalar(narrow ? 0.9 : 1); sides.forEach(s => { s.g.visible = false; }); S.n = [nl, nr];
       S.trays.forEach((tr, k) => { while (tr.children.length > 1) tr.remove(tr.children[1]); const ps = sawSlots(S.n[k]); ps.forEach(p => { const a = apple(); a.scale.setScalar(0.85); a.position.copy(p); tr.add(a); }); }); },
     async sawAdd(k, d) { const S = seesaw(); const n = S.n[k] + d; if (n < 0 || n > 10) return false; S.n[k] = n; const tr = S.trays[k];
       while (tr.children.length > 1) tr.remove(tr.children[1]); sawSlots(n).forEach(p => { const a = apple(); a.scale.setScalar(0.85); a.position.copy(p); tr.add(a); }); NK.sound[d > 0 ? 'pop' : 'back'](); return true; },

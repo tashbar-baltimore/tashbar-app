@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The See-Saw — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 7 "More, less, the same": THE SEE-SAW. A wooden see-saw in the orchard holds apples on both ends.
+     The side with more apples goes down; the side with fewer goes up. "Make it the same!" He taps the high side's tray to add
+     one apple at a time, and the see-saw slowly rises until it is level: the same. Later rounds also need one taken away (the
+     orange button takes one from the low side). A slip (adding to the low side): "Look! That side went down more." -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>.b-orange{ --b:#FF8A3D; --b-l:#FFC08A; --b-d:#C85A10; } #less svg{ width:60%; height:60%; position:relative; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <button id="less" class="bigbtn btn3d b-orange" aria-label="Take one away from the low side"><svg viewBox="0 0 48 48"><path d="M10 24h28" stroke="#fff" stroke-width="8" stroke-linecap="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './orchard7.js';
+const $ = id => document.getElementById(id);
+let O, S, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function low() { return S.n[0] > S.n[1] ? 0 : 1; }   /* the side with more is low */
+function hooks() {
+  const d = S.n[0] - S.n[1]; if (!d) { GAME.right = GAME.wrong = null; return; }
+  const hi = 1 - low();
+  GAME.right = () => [{ tap: R.mode === 'take' ? '#less' : '.tspot[data-id="saw' + hi + '"]' }];
+  GAME.wrong = () => [{ tap: '.tspot[data-id="saw' + low() + '"]' }];
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+async function level() {
+  await FR.wait(NK.fast ? 40 : 700); O.sparkle(O.seesaw().g.position);
+  await FR.yes($('less'), FR.pick(['Level! The same on both sides!', 'The same! ' + FR.Word(S.n[0]) + ' and ' + FR.word(S.n[1]) + '.']));
+  const d = done; done = null; d(R.misses === 0);
+}
+async function add(k, el) {
+  if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
+  if (k === low()) { FR.oops(el); R.misses++; await O.sawAdd(k, 1); await FR.wait(NK.fast ? 30 : 500);
+    await FR.say('Look! That side went down more. More apples go down.'); await O.sawAdd(k, -1); await FR.say('Add to the side up high.'); open(); return; }
+  await O.sawAdd(k, 1); NK.say(FR.Word(S.n[k]) + '!', { noRepeat: true });
+  if (S.n[0] === S.n[1]) return level(); open();
+}
+async function less() {
+  NK.unlock(); if (GAME.phase !== 'answer' || S.n[0] === S.n[1]) return; GAME.phase = 'busy'; FR.lock(true);
+  const k = low(); await O.sawAdd(k, -1); NK.say(FR.Word(S.n[k]) + '.', { noRepeat: true });
+  if (S.n[0] === S.n[1]) return level(); open();
+}
+const PLAN = [[3, 5, 'add'], [6, 4, 'add'], [2, 5, 'add'], [7, 6, 'take'], [4, 7, 'add'], [9, 7, 'take']];
+function play(F, i) {
+  return new Promise(async res => {
+    const [a, b, mode] = PLAN[i]; R = { mode, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true);
+    O.setSaw(a, b); S = O.seesaw(); O.sawSpot(0); O.sawSpot(1); $('less').hidden = mode !== 'take'; $('panel').style.visibility = mode === 'take' ? '' : 'hidden';
+    await F.wait(NK.fast ? 40 : 900);
+    await F.say(F.Word(Math.max(a, b)) + ' goes down. ' + F.Word(Math.min(a, b)) + ' goes up.');
+    open();
+    await F.say(mode === 'take' ? 'Make it the same! Take one away.' : 'Make it the same! Add apples up high.', { repeat: mode === 'take' ? 'Tap orange to take one from the low side.' : 'Tap the high side to add an apple.' });
+  });
+}
+FR.game({
+  id: 'u7-seesaw', title: 'The See-Saw', rounds: 6,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() {
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band });
+    O.onTap = (id, el) => { if (id.startsWith('saw')) add(+id[3], el); };
+    $('less').addEventListener('click', less);
+  },
+  demo: async F => {
+    O.setSaw(2, 3); S = O.seesaw(); O.sawSpot(0); O.sawSpot(1); $('less').hidden = true; R = { misses: 0 };
+    await F.wait(NK.fast ? 40 : 900); await F.say('Three goes down. More is heavier! Watch me.');
+    await F.handTo(document.querySelector('.tspot[data-id="saw0"]')); await F.handTap(); await O.sawAdd(0, 1);
+    await F.wait(NK.fast ? 40 : 700); await F.say('Three and three. Level! The same.');
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You made it the same every time!' : 'Good balancing! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
