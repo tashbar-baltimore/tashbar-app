@@ -1,7 +1,8 @@
 <script>
 /* CoreUnits.html: UNIT CHECKS (the "boss level") AND TEST-OUT (the pre-check), Core Growth job T, T-5, 2026-11-24. Server: src/CoreChecks.js.
    A job lists its units in its data file:  TLCORE.units.add({ id:'C45.U01', title:'Main Idea Detectives', c:'READ', grade:5,
-     skills:['READ.COMP.L06.13', ...] (the unit's small skills, in order), review:['READ.COMP.L05.01', ...] (2-3 from earlier units; only the first 3 are asked), n:10 });
+     skills:['READ.COMP.L06.13', ...] (the unit's small skills, in order), review:['READ.COMP.L05.01', ...] (2-3 from earlier units; only the first 3 are asked), n:10,
+     pre:'lessons' (optional: the pre-check asks the lessons' own check questions, so the unit's own items stay new for the boss level) });
    PRE-CHECK (before the unit): one question per skill. A skill he answers right is "shown": the server takes it out of his path, so he never
      sits through what he already knows. One pre-check per unit.
    UNIT CHECK (after the unit): 8-12 questions mixing every skill of the unit plus 2-3 review skills, one try each, a dramatic entrance and a
@@ -56,10 +57,10 @@
   }
   function build(u, mode) {
     var used = {}, out = [], extra = (u.items || []).filter(function (x) { var ty = x && W.OBK && OBK.types[x.type]; return x && x.skill && !(ty && ty.reader); });   /* again here: a unit added before the kit loaded was not checked for Reader kinds */
-    /* own items are picked at random (a retake is not the same check); the pre-check asks the lesson's own check question first,
-       so the unit's own items stay new for the boss level (reviews 26 Nov: the pre-check and the boss asked the same items) */
+    /* own items are picked at random (a retake is not the same check). A unit with pre:'lessons' (its lessons' check questions all have
+       3+ choices) gets a pre-check from those lesson questions, so its own items stay new for the boss level (reviews 26 Nov) */
     var ownOf = function (id) { var c = extra.filter(function (x) { return x.skill === id && !x.__used; }); var o = c[Math.floor(Math.random() * c.length)]; if (!o) return null; o.__used = 1; return { skill: id, kind: 'kit', act: o }; };
-    var per = function (id) { if (mode === 'pre') return fromSkill(id, used) || ownOf(id); return ownOf(id) || fromSkill(id, used); };
+    var per = function (id) { if (mode === 'pre' && u.pre === 'lessons') return fromSkill(id, used) || ownOf(id); return ownOf(id) || fromSkill(id, used); };
     u.skills.forEach(function (id) { var q = per(id); if (q) out.push(q); });
     if (mode === 'check') {
       (u.review || []).slice(0, 3).forEach(function (id) { var q = per(id); if (q) { q.review = true; out.push(q); } });
