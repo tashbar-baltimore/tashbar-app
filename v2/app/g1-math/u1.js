@@ -135,6 +135,7 @@ async function hopRound(start, hops, o = {}) {
 }
 /* FIX THE WALL: a piece of the 120-chart wall (rows of 10) with gaps; he drags each loose stone into its gap */
 async function wallRound(firstRow, rows, gapNums, o = {}) {
+  if (gapNums.some(n => n < firstRow || n >= firstRow + rows * 10)) throw new Error('wall gap outside the wall: ' + gapNums);
   clearTemp(); G.q = (G.q || 0) + 1; G.ask = { kind: 'wall', gaps: gapNums.slice() };
   const bw = 1.9, bh = 1.05, wall = keep(new THREE.Group()), top = 1.4 + rows * bh, bricks = {}, holes = {};
   const brickM = [MATS.phys('#E7D6BA', { roughness: 0.75, clearcoat: 0.1 }), MATS.phys('#DCC8A6', { roughness: 0.75, clearcoat: 0.1 })], holeM = MATS.matte('#5E4B3A');
@@ -374,7 +375,7 @@ async function check() {
   const items = shuffle([
     () => hopRound(rnd(64, 85), rnd(3, 5), { check: true }),
     () => { const s = rnd(96, 99); return hopRound(s, rnd(Math.max(3, 101 - s), 6), { check: true }); },
-    async () => (await wallRound(41, 3, [57, 66, 75], { check: true })) === 0,
+    async () => (await wallRound(41, 3, [48, 57, 66], { check: true })) === 0,
     async () => (await wallRound(91, 3, [104, 113, 118], { check: true })) === 0,
     () => crateRound(rnd(4, 9) * 10 + rnd(1, 9), { check: true }),
     () => crateRound(100 + rnd(11, 19), { check: true }),
