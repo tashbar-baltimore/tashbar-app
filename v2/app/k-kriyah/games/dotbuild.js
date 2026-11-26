@@ -5,7 +5,7 @@
    Round 3: all four, mixed. Show-then-try for each new move. A wrong place is never just "wrong": the dot stays there a moment,
    he sees and hears the letter he made ("Look! Dot on the left: that is Sin."), then the rule, and he tries again.
    If he struggles, the right place glows. Every line is 12 words or fewer. */
-export default function setup(E, { struggled, unit }) {
+export default function setup(E, { struggled, unit, game }) {
   const { THREE, S } = E, NM = k => E.LETTERS[k].name;
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   /* a soft velvet cushion on a little gold stand, where the letter rests */
@@ -59,7 +59,7 @@ export default function setup(E, { struggled, unit }) {
     const g = want && enabled && help ? goodSpot(want) : null; if (g && g !== at) { helpGlow.position.copy(spotPos(g)).add(new THREE.Vector3(0, 0, -.1)); helpGlow.material.opacity = .6 + Math.sin(t * 5) * .3; } else helpGlow.material.opacity = 0;
   });
   window.__info = () => { const spots = {}; [...spotsFor()].forEach(n => spots[n] = E.toScreen(spotPos(n)));
-    const g = want && goodSpot(want), bad = want && (shape === 'ש' ? (g === 'right' ? 'left' : 'right') : (want === 'tav' ? 'dish' : 'in'));
+    const g = want && goodSpot(want), b0 = want && (shape === 'ש' ? (g === 'right' ? 'left' : 'right') : (want === 'tav' ? 'dish' : 'in')), bad = b0 && b0 !== at ? b0 : null;   /* a wrong place he can really drop on */
     return { ready: enabled && !busy, want, dot: E.toScreen(dot.position), spots, good: g, bad, at }; };
   /* dragging the dot */
   const grab = new THREE.Vector3();
@@ -108,6 +108,14 @@ export default function setup(E, { struggled, unit }) {
   }
   const mix = (a, first) => { let d; do { d = a.slice().sort(() => Math.random() - .5); } while (first && d[0] !== first); return d; };
   return async () => {
+    if (game && game.review) {   /* a later unit's review: a quick reminder, then all four mixed */
+      total = 6; E.setProgress(total, 0); setShape('ש'); at = 'dish'; dot.position.copy(spotPos('dish'));
+      await E.say('Remember the dot? Let’s build letters again!');
+      await demo('sin', 'The dot is on the left head. This is Sin.'); await moveDot('dish', 400); mistakes = 0;
+      for (const k of mix(['shin', 'tav', 'sin', 'sav', 'shin', 'tav'])) await task(k);
+      const stars = mistakes <= 1 ? 3 : mistakes <= 2 ? 2 : 1;
+      return { stars, line: stars >= 2 ? 'You still know the dots! Great!' : null };
+    }
     E.setProgress(total, 0);
     setShape('ש'); at = 'dish'; dot.position.copy(spotPos('dish'));
     await E.say('The dot makes the letter! Let’s build letters with a dot.');

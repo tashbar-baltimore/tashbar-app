@@ -243,7 +243,7 @@ function starTex() { const cv = document.createElement('canvas'); cv.width = cv.
 
 export const world = { group: null, clouds: [] };
 /* ---------------- painted backgrounds (made with ChatGPT; art/bg) ---------------- */
-export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5: 'picnic', 6: 'farm', 7: 'playroom' };
+export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5: 'picnic', 6: 'farm', 7: 'playroom', 9: 'kitchen' };   /* Unit 8 is the 3D shul (buildShul) */
 export const KIND_BACKDROP = { mastery: 'classroom', bonus: 'beach', story: 'street', detective: 'street', hunt: null };   /* the sukkah hunt keeps its 3D world */
 export const backdropFor = (game, unitN) => game && 'bg' in game ? game.bg : game && game.kind in KIND_BACKDROP ? KIND_BACKDROP[game.kind] : UNIT_BACKDROP[unitN || (game && game.unit) || 1] || null;
 export let backdrop = null;
@@ -515,7 +515,7 @@ export const eli = () => pictureCard('eli', () => person({ kippah: 0x1f7a8c, hai
 export const bubby = () => { const p = pictureCard('bubby', () => person({ woman: true, hair: 0xb8a48c, dress: 0x6b4f8a, shirt: 0x6b4f8a, skin: 0xf6cfae })); p.scale.setScalar(1.3); return p; };   /* a light sheitel and a long dress */
 export const dovid = () => pictureCard('dovid', () => person({ kippah: 0x6a3fa0, hair: 0x2b1d12, shirt: 0xeaf4ff }));
 /* each unit's own boy: Mendy, Shloimy, Ari, Dovid */
-export const unitBoy = n => ({ 2: shloimy, 3: ari, 4: dovid, 5: eli, 6: avi, 7: tzvi }[n] || mendy)();
+export const unitBoy = n => ({ 2: shloimy, 3: ari, 4: dovid, 5: eli, 6: avi, 7: tzvi, 9: shloimy }[n] || mendy)();
 export const yaakov = () => pictureCard('yaakov', () => person({ kippah: 0xc0392b, hair: 0xb5532a, shirt: 0xfff7e0, skin: 0xffdcc2 }));
 
 /* a little jump, used for joy */
@@ -549,11 +549,13 @@ export const LETTERS = { alef: { ch: 'א', name: 'Alef', quiet: true }, beis: { 
   lamed: { ch: 'ל', name: 'Lamed', snd: 'l' }, mem: { ch: 'מ', name: 'Mem', snd: 'm' }, nun: { ch: 'נ', name: 'Nun', snd: 'n' },
   samech: { ch: 'ס', name: 'Samech', snd: 's' }, ayin: { ch: 'ע', name: 'Ayin', quiet: true }, pei: { ch: 'פ', name: 'Pei', dagesh: true, snd: 'p' }, fei: { ch: 'פ', name: 'Fei', snd: 'f' },
   tzadik: { ch: 'צ', name: 'Tzadik', snd: 'tz' }, kuf: { ch: 'ק', name: 'Kuf', snd: 'k' }, reish: { ch: 'ר', name: 'Reish', snd: 'r' },
-  shin: { ch: 'ש', name: 'Shin', snd: 'sh', top: 'right' }, sin: { ch: 'ש', name: 'Sin', snd: 's', top: 'left' }, tav: { ch: 'ת', name: 'Tuf', dagesh: true, snd: 't' }, sav: { ch: 'ת', name: 'Suf', snd: 's' } };   /* Shin and Sin: the dot on top, right or left; Tuf has the dagesh, Suf has none (ת without a dot says s) */
+  shin: { ch: 'ש', name: 'Shin', snd: 'sh', top: 'right' }, sin: { ch: 'ש', name: 'Sin', snd: 's', top: 'left' }, tav: { ch: 'ת', name: 'Tuf', dagesh: true, snd: 't' }, sav: { ch: 'ת', name: 'Suf', snd: 's' },
+  chafsofis: { ch: 'ך', name: 'Chaf Sofis', snd: 'ch', partner: 'chaf' }, memsofis: { ch: 'ם', name: 'Mem Sofis', snd: 'm', partner: 'mem' }, nunsofis: { ch: 'ן', name: 'Nun Sofis', snd: 'n', partner: 'nun' },
+  feisofis: { ch: 'ף', name: 'Fei Sofis', snd: 'f', partner: 'fei' }, tzadiksofis: { ch: 'ץ', name: 'Tzadik Sofis', snd: 'tz', partner: 'tzadik' } };   /* the final letters (Unit 9): each says the same sound as its partner, and comes only at the end of a word */   /* Shin and Sin: the dot on top, right or left; Tuf has the dagesh, Suf has none (ת without a dot says s) */
 /* a quiet letter (Alef, Ayin) has no sound of its own; 'an' or 'a' before a letter's name */
 export const quiet = k => !!LETTERS[k].quiet;
 export const an = k => (/^[AEIOU]/.test(LETTERS[k].name) ? 'an ' : 'a ') + LETTERS[k].name;
-export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB', lamed: '\u05DC', mem: '\u05DE', nun: '\u05E0', samech: '\u05E1', ayin: '\u05E2', pei: '\u05E4\u05BC', fei: '\u05E4', tzadik: '\u05E6', kuf: '\u05E7', reish: '\u05E8', shin: '\u05E9\u05C1', sin: '\u05E9\u05C2', tav: '\u05EA\u05BC', sav: '\u05EA' };
+export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB', lamed: '\u05DC', mem: '\u05DE', nun: '\u05E0', samech: '\u05E1', ayin: '\u05E2', pei: '\u05E4\u05BC', fei: '\u05E4', tzadik: '\u05E6', kuf: '\u05E7', reish: '\u05E8', shin: '\u05E9\u05C1', sin: '\u05E9\u05C2', tav: '\u05EA\u05BC', sav: '\u05EA', chafsofis: '\u05DA', memsofis: '\u05DD', nunsofis: '\u05DF', feisofis: '\u05E3', tzadiksofis: '\u05E5' };
 /* letters that can hold a dagesh: where the dot sits (Beis/Veis, Kaf/Chaf share one shape each) */
 /* the full letter height in font units (baseline to the top of the roof's little tag), and its middle */
 const REF_H = 64.7, REF_CY = 32.35;
@@ -600,9 +602,9 @@ export function arrow3d(size = .35, dir = 'down') {
 export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [135, 375, 'left'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [205, 440, 'left'],
   beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'],
   lamed: [90, 820, 'down'], mem: [130, 55, 'right'], nun: [310, 50, 'left'],
-  reish: [445, 540, 'left'], kuf: [70, -60, 'right'], tzadik: [470, 560, 'left'], tav: [45, 90, 'right'], sav: [45, 90, 'right'], shin: [660, 745, 'down'], sin: [115, 745, 'down'] };   /* Tuf and Suf: the little foot at the bottom left; Shin and Sin: the dot on top */   /* Tzadik: its little arm up on the right */   /* Reish: round on top; Kuf: its long leg */   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
+  reish: [445, 540, 'left'], kuf: [70, -60, 'right'], tzadik: [470, 560, 'left'], tav: [45, 90, 'right'], sav: [45, 90, 'right'], shin: [660, 745, 'down'], sin: [115, 745, 'down'], memsofis: [70, 45, 'right'], nunsofis: [225, -170, 'left'], chafsofis: [450, -170, 'left'], feisofis: [505, -170, 'left'], tzadiksofis: [175, -170, 'left'] };   /* the final letters: Mem Sofis's square corner, the others' long leg */   /* Tuf and Suf: the little foot at the bottom left; Shin and Sin: the dot on top */   /* Tzadik: its little arm up on the right */   /* Reish: round on top; Kuf: its long leg */   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
 /* a place to look that depends on the look-alike beside it: Tes's closed round bottom (beside Mem) */
-const PAIR_FEAT = { 'tes|mem': [60, 70, 'right'], 'kaf|pei': false, 'pei|kaf': [190, 300, 'right'], 'daled|reish': [420, 500, 'left'], 'hei|kuf': [60, 150, 'right'], 'ayin|tzadik': [60, 30, 'right'], 'ches|tav': [105, 60, 'right'], 'ches|sav': [105, 60, 'right'], 'tav|ches': [45, 90, 'right'], 'tav|hei': [45, 90, 'right'], 'sav|ches': [45, 90, 'right'], 'sav|hei': [45, 90, 'right'] };   /* Ches beside Tuf: the bottom of its leg, where Tuf has a foot */   /* Ayin's tail at the bottom left; Tzadik is flat there */   /* Daled's corner beside Reish's round top; Hei's short leg beside Kuf's long one */   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+const PAIR_FEAT = { 'tes|mem': [60, 70, 'right'], 'kaf|pei': false, 'pei|kaf': [190, 300, 'right'], 'daled|reish': [420, 500, 'left'], 'hei|kuf': [60, 150, 'right'], 'ayin|tzadik': [60, 30, 'right'], 'ches|tav': [105, 60, 'right'], 'ches|sav': [105, 60, 'right'], 'tav|ches': [45, 90, 'right'], 'tav|hei': [45, 90, 'right'], 'sav|ches': [45, 90, 'right'], 'sav|hei': [45, 90, 'right'], 'samech|memsofis': [290, -40, 'up'], 'vov|nunsofis': [255, 30, 'left'], 'reish|chafsofis': [455, 30, 'left'] };   /* Samech round at the bottom; Vov and Reish stop at the line */   /* Ches beside Tuf: the bottom of its leg, where Tuf has a foot */   /* Ayin's tail at the bottom left; Tzadik is flat there */   /* Daled's corner beside Reish's round top; Hei's short leg beside Kuf's long one */   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
 /* the place to look on k when it might be taken for other: the dot place for a dot pair or any lone dotted letter, the shape for Beis/Kaf */
 export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : (k + '|' + other) in PAIR_FEAT ? PAIR_FEAT[k + '|' + other] : (((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]));
@@ -687,7 +689,7 @@ export function flatFallback(keys = ['alef', 'beis', 'veis']) {
    Every answer here and in the mastery check is remembered on his device, per letter (save.letters). */
 export function noteLetter(k, right) { const s = loadSave(); s.letters = s.letters || {}; const m = s.letters[k] || { r: 0, w: 0, at: 0 };
   if (right) m.r++; else { m.w++; m.lastWrong = Date.now(); } m.at = Date.now(); m.ok = right; s.letters[k] = m; writeSave(s); }
-const REV_LOOK = { shin: ['sin'], sin: ['shin'], tav: ['sav', 'ches'], sav: ['tav'], beis: ['veis', 'kaf'], veis: ['beis'], gimmel: ['nun'], daled: ['reish'], hei: ['ches', 'kuf'], vov: ['zayin'], zayin: ['vov'], ches: ['hei', 'tav'], tes: ['mem'], kaf: ['chaf', 'beis', 'pei'], chaf: ['kaf'], mem: ['tes'], nun: ['gimmel'], pei: ['fei', 'kaf'], fei: ['pei'], reish: ['daled'], kuf: ['hei'] };
+const REV_LOOK = { memsofis: ['samech'], samech: ['memsofis'], nunsofis: ['vov'], chafsofis: ['reish'], shin: ['sin'], sin: ['shin'], tav: ['sav', 'ches'], sav: ['tav'], beis: ['veis', 'kaf'], veis: ['beis'], gimmel: ['nun'], daled: ['reish'], hei: ['ches', 'kuf'], vov: ['zayin'], zayin: ['vov'], ches: ['hei', 'tav'], tes: ['mem'], kaf: ['chaf', 'beis', 'pei'], chaf: ['kaf'], mem: ['tes'], nun: ['gimmel'], pei: ['fei', 'kaf'], fei: ['pei'], reish: ['daled'], kuf: ['hei'] };
 /* two letters with the same sound (Kuf and Kaf; Samech, Sin and Suf), or both quiet: never asked side by side */
 export const sameSound = (a, b) => a !== b && ((LETTERS[a].quiet && LETTERS[b].quiet) || (!!LETTERS[a].snd && LETTERS[a].snd === LETTERS[b].snd));
 export function reviewPicks(known, n = 3) {

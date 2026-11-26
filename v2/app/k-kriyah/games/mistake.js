@@ -11,6 +11,9 @@ const PLAN = {
   6: { R: [['samech', 'samech'], ['pei', 'fei'], ['ayin', 'ayin'], ['pei', 'kaf'], ['fei', 'fei'], ['kaf', 'pei']], demo: ['fei', 'pei', 'Hmm. Watch me. No dot. That is not a Pei!'] },
   7: { R: [['reish', 'reish'], ['daled', 'reish'], ['kuf', 'kuf'], ['hei', 'kuf'], ['tzadik', 'tzadik'], ['reish', 'daled']], demo: ['kuf', 'hei', 'Hmm. Watch me. A long leg! That is not a Hei!'] },   /* the demo is not one of his own questions */
   8: { bySound: true, R: [['shin', 'shin'], ['sin', 'shin'], ['tav', 'tav'], ['sav', 'tav'], ['sin', 'sin'], ['shin', 'sin']], demo: ['sav', 'tav', 'Hmm. Watch me. No dot. It does not say t!'] },   /* Unit 8's twist: Yaakov says the SOUND, not the name */
+  9: { words: true, R: [['memsofis', 'memsofis', ['shin', 'lamed', 'vov'], 'Shalom'], ['mem', 'memsofis', ['lamed', 'ches'], 'Lechem, bread'], ['nunsofis', 'nunsofis', ['gimmel'], 'Gan, a garden'],
+      ['tzadik', 'tzadiksofis', ['alef', 'reish'], 'Eretz, the land'], ['chafsofis', 'chafsofis', ['mem', 'lamed'], 'Melech, a king'], ['fei', 'feisofis', ['kaf'], 'Kaf, a spoon']],
+    demo: ['nun', 'nunsofis', ['alef', 'beis'], 'Even, a stone', 'Hmm. Watch me. The end needs Shabbos clothes!'] },   /* Unit 9's twist: Yaakov writes a word; is its LAST letter right? */
   2: { R: [['gimmel', 'gimmel'], ['daled', 'hei'], ['hei', 'hei'], ['gimmel', 'daled'], ['beis', 'beis'], ['veis', 'beis']],   /* the last two bring back Unit 1 */ demo: ['daled', 'gimmel', 'Hmm. Watch me. No foot. That is not a Gimmel!'] },
 };
 /* what to look for, in a few words */
@@ -49,13 +52,21 @@ export default function setup(E, { struggled, unit }) {
     tiles: tiles.filter(t => t.visible).map(t => ({ k: t.userData.key, xy: E.toScreen(E.worldPos(t)) })), board: E.toScreen(E.worldPos(board)) });
   let curClaim = null;
 
-  function showLetter(k) { if (shown) board.remove(shown); shown = E.letter(k, 1.3); if (shown.userData.below) { shown.scale.setScalar(.8); shown.position.set(0, shown.userData.below * .8, .3); } else shown.position.set(0, 0, .3);   /* Kuf smaller and higher, so its leg stays on the sign */ board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown); }
+  /* Unit 9: a word on a wide sign; the letter in question is the last one (the left end) */
+  let prefix = null, prefixL = [];
+  const wideBack = E.mesh(E.rbox(4.2, 2.0, .16, .1), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0), wideFace = E.mesh(E.rbox(3.92, 1.72, .1, .06), E.M(0xfffaf0, { roughness: .4 }), 0, 0, .06);
+  wideBack.visible = wideFace.visible = false; board.add(wideBack, wideFace);
+  function showWord(k) { prefixL.forEach(l => board.remove(l)); prefixL = []; const all = [...prefix, k], n = all.length, x = i => ((n - 1) / 2 - i) * 1.0;
+    board.children.slice(0, 2).forEach(m => m.visible = false); wideBack.visible = wideFace.visible = true;
+    prefix.forEach((p, i) => { const l = E.letter(p, .95); l.position.set(x(i), l.userData.below * .5, .3); if (l.userData.below) l.scale.setScalar(.85); board.add(l); prefixL.push(l); });
+    if (shown) board.remove(shown); shown = E.letter(k, .95); if (shown.userData.below) shown.scale.setScalar(.85); shown.position.set(x(n - 1), shown.userData.below * .5, .3); board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown, shown.scale.x); }
+  function showLetter(k) { if (plan.words && prefix) return showWord(k); if (shown) board.remove(shown); shown = E.letter(k, 1.3); if (shown.userData.below) { shown.scale.setScalar(.8); shown.position.set(0, shown.userData.below * .8, .3); } else shown.position.set(0, 0, .3);   /* Kuf smaller and higher, so its leg stays on the sign */ board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown); }
   /* the ring circles the dot place (Beis/Veis, Kaf/Chaf); an orange arrow points at any other shape difference */
   const arrow = E.arrow3d(.4);
-  const mark = k => { const s = shown.userData; if (s.dotHome && (!curClaim || E.sameShape(k, curClaim))) { ring.position.copy(s.dotHome).setZ(.6); ring.visible = true; return true; } return E.pointAt(arrow, shown, k, 1.3, curClaim ? E.featFor(k, curClaim) : undefined); };   /* a ring round the dot place (same shape, dot or no dot); otherwise an arrow at the shape difference */
+  const mark = k => { if (plan.words) { arrow.setDir('down'); arrow.position.set(0, .75, .5); if (arrow.parent !== shown) shown.add(arrow); arrow.visible = true; return true; } const s = shown.userData; if (s.dotHome && (!curClaim || E.sameShape(k, curClaim))) { ring.position.copy(s.dotHome).setZ(.6); ring.visible = true; return true; } return E.pointAt(arrow, shown, k, 1.3, curClaim ? E.featFor(k, curClaim) : undefined); };   /* a ring round the dot place (same shape, dot or no dot); otherwise an arrow at the shape difference */
   const unmark = () => { ring.visible = false; arrow.visible = false; };
   /* why the letter is not what Yaakov said, in a few words */
-  const why = (k, c) => k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
+  const why = (k, c) => plan.words ? 'Look again. It is the end. ' + E.LETTERS[k].name + ' needs Shabbos clothes!' : k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
     : k === 'beis' && c === 'veis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
     : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : lookOf(k, c)) + ' This is ' + E.LETTERS[k].name + '.';
   const an = k => E.an(k);
@@ -92,12 +103,14 @@ export default function setup(E, { struggled, unit }) {
     await E.say(E.quiet(k) ? 'Now Yaakov has his ' + E.LETTERS[k].name + '! Thank you!' : E.LETTERS[k].snd === 'ch' ? 'Now Yaakov has his ' + E.LETTERS[k].name + '! Thank you!' : ['Now Yaakov has his ' + E.LETTERS[k].name + '!', ...E.nameLine(k)]);   /* 12 words or fewer */
     yak.mood('calm');
   }
-  async function roundOf(shownKey, claim, demo = false) {
+  async function roundOf(shownKey, claim, pre, said, demo = false) {
+    if (plan.words) prefix = pre;
     missed = false; curClaim = claim; yak.mood('calm'); await showLetter(shownKey); yak.mood('wave'); E.hop(yak, .25);
-    await E.say(plan.bySound ? ['Yaakov says this letter says', S(E.LETTERS[claim].snd), '. Is he right?'] : 'Yaakov says this is ' + an(claim) + '. Is he right?'); yak.mood('calm');
-    if (help && mark(shownKey)) { await E.say(ring.visible ? 'Look at the dot place!' : 'Look carefully here!'); unmark(); }
+    if (plan.words) await E.say(['Yaakov wrote ' + said + '.']);
+    await E.say(plan.words ? 'Is the last letter right?' : plan.bySound ? ['Yaakov says this letter says', S(E.LETTERS[claim].snd), '. Is he right?'] : 'Yaakov says this is ' + an(claim) + '. Is he right?'); yak.mood('calm');
+    if (help && mark(shownKey)) { await E.say(plan.words ? 'Look at the end of the word!' : ring.visible ? 'Look at the dot place!' : 'Look carefully here!'); unmark(); }
     const right = shownKey === claim; let saysRight;
-    if (demo) { mark(shownKey); await E.say(plan.demo[2]); unmark(); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
+    if (demo) { mark(shownKey); await E.say(plan.demo[plan.words ? 4 : 2]); unmark(); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
     else saysRight = await ask();
     if (saysRight === right) {
       if (right) { yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say(E.LETTERS[shownKey].snd === 'ch' ? 'Yes! Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.' : ['Yes! Yaakov is right.', ...E.nameLine(shownKey)]);   /* 12 words or fewer */ yak.mood('calm'); }
@@ -105,7 +118,7 @@ export default function setup(E, { struggled, unit }) {
     } else {
       E.sfx.boop(); if (!demo && !missed) mistakes++; missed = true; yak.mood('think'); help = help || mistakes >= 2;
       mark(shownKey);
-      if (right) { await E.say(shownKey === 'alef' ? 'Look again. It is Alef, not a house shape.' : 'Look again. ' + lookOf(shownKey, curClaim) + ' It is ' + E.LETTERS[shownKey].name + '.'); unmark(); yak.mood('calm');
+      if (right) { await E.say(plan.words ? 'Look again. It is the end, with ' + E.LETTERS[shownKey].name + '.' : shownKey === 'alef' ? 'Look again. It is Alef, not a house shape.' : 'Look again. ' + lookOf(shownKey, curClaim) + ' It is ' + E.LETTERS[shownKey].name + '.'); unmark(); yak.mood('calm');
         await E.say('So is Yaakov right? Try again.');               /* he answers again (it doesn't count) */
         if (await ask()) { E.sfx.chime(); yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say('Yes! Yaakov is right.'); }
         else await E.say('Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.');
@@ -118,10 +131,10 @@ export default function setup(E, { struggled, unit }) {
     E.setProgress(R.length, 0);
     await E.say('This is Yaakov. Sometimes he makes a mistake.');
     await E.say('Watch me find his mistake.');
-    await roundOf(plan.demo[0], plan.demo[1], true);
+    await roundOf(plan.demo[0], plan.demo[1], plan.demo[2], plan.demo[3], true);
     await E.say('Now you! Is Yaakov right? Tap yes or no.');
     mistakes = 0;
-    for (let i = 0; i < R.length; i++) { await roundOf(...R[i]); E.setProgress(R.length, i + 1); }
+    for (let i = 0; i < R.length; i++) { const [a, b, c, d] = R[i]; await roundOf(a, b, c, d); E.setProgress(R.length, i + 1); }
     const stars = mistakes === 0 ? 3 : mistakes <= 2 ? 2 : 1;   /* Yaakov is right half the time: always tapping one button makes 3 mistakes and can't pass */
     return { stars, line: stars >= 2 ? 'You found all of Yaakov’s mistakes!' : null };
   };

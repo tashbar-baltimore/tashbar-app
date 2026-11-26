@@ -117,3 +117,31 @@ P.dotbuild = async (pg, shot, log) => {
       log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Look!'), 15000)); return true; }
     await K.drag(pg, i.dot, i.spots[i.good]); if (++n === 5) { await pg.waitForTimeout(400); await shot('2-middle'); } await pg.waitForTimeout(500); return true; });
 };
+P.story9 = P.story;
+/* Partner Match (Unit 9): each final letter under its partner; one wrong partner first */
+P.partners = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-partner-ready]', { timeout: 180000 }); await shot('1-start'); let wrong = false, n = 0;
+  await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready || !i.cards.length) return false; const c = i.cards[0];
+    if (!wrong) { wrong = true; const w = Object.keys(i.places).find(k => k !== i.partnerOf[c.k]); await K.drag(pg, c.xy, i.places[w]); await pg.waitForTimeout(700); await shot('3-wrong');
+      log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Its partner is'), 15000)); return true; }
+    await K.drag(pg, c.xy, i.places[i.partnerOf[c.k]]); if (++n === 6) { await pg.waitForTimeout(400); await shot('2-middle'); } await pg.waitForTimeout(400); return true; });
+};
+/* End of the Word (Unit 9): the plain letter or its final partner into the empty place; one wrong card first */
+P.endword = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-end-ready]', { timeout: 180000 }); await shot('1-start'); let wrong = false, n = 0;
+  await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready || !i.want || i.cards.length < 2) return false;
+    const right = i.cards.find(c => c.k === i.want), bad = i.cards.find(c => c.k !== i.want);
+    if (!wrong) { wrong = true; await K.drag(pg, bad.xy, i.slot); await pg.waitForTimeout(700); await shot('3-wrong');
+      log.wrongHandled = !!(await K.until(pg, () => /only at the end|end of the word/.test(window.__lines.join(' ')), 15000)); return true; }
+    await K.drag(pg, right.xy, i.slot); if (++n === 3) { await pg.waitForTimeout(400); await shot('2-middle'); } await pg.waitForTimeout(500); return true; });
+};
+/* Spot the Difference (Unit 9): tap the place that differs (one tap elsewhere first), then put the card with its twin */
+P.spotdiff = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-spot-ready]', { timeout: 180000 }); await shot('1-start'); let wrong = false, n = 0;
+  await loop(pg, async () => { const i = await K.info(pg); if (!i) return false;
+    if (i.card) { await K.drag(pg, i.card.xy, i.card.to[i.card.k]); await pg.waitForTimeout(500); return true; }
+    if (!i.ready || !i.spots.length) return false;
+    if (!wrong) { wrong = true; await pg.mouse.click(...i.away); await pg.waitForTimeout(600); await shot('3-wrong');
+      log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Look at the'), 15000)); return true; }
+    await pg.mouse.click(...i.spots[n % 2]); if (++n === 2) { await pg.waitForTimeout(800); await shot('2-middle'); } await pg.waitForTimeout(500); return true; });
+};
