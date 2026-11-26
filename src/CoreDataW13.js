@@ -30,5 +30,9 @@ CORE_SKILLS.W13 = [
   ["WRIT.ESSAY.L04.04", "Group the Facts", "Group facts that go together, and add a picture with a caption", { std: "W.3.2a", file: "CoreDataW13H1", min: 7 }],
   ["WRIT.PARA.L04.14", "Facts, Definitions, Details", "Build the topic with facts, definitions and details", { std: "W.3.2b", file: "CoreDataW13H1", min: 7 }],
   ["WRIT.PARA.L04.15", "Fact Linking Words", "Link facts with also, another, and, more and but", { std: "W.3.2c", file: "CoreDataW13H1", min: 7 }],
-  ["WRIT.PARA.L04.16", "Concluding Section", "End an information piece with a strong concluding section", { std: "W.3.2d", file: "CoreDataW13H1", min: 7 }]
+  ["WRIT.PARA.L04.16", "Concluding Section", "End an information piece with a strong concluding section", { std: "W.3.2d", file: "CoreDataW13H1", min: 7 }],
+  ["WRIT.RES.L04.01", "Good Question", "Ask a research question he can answer by reading", { after: "WRIT.PARA.L04.16", std: "W.3.7", file: "CoreDataW13H2", min: 7 }],
+  ["WRIT.RES.L04.02", "Notes, Not Copies", "Take notes in his own words: a few key words that answer the question", { std: "W.3.8", file: "CoreDataW13H2", min: 7 }],
+  ["WRIT.RES.L04.03", "Sort My Notes", "Sort notes into groups with headings, one paragraph for each group", { std: "W.3.8", file: "CoreDataW13H2", min: 7 }],
+  ["WRIT.RES.L04.04", "Where I Found It", "Name the source of his facts: the title and the author", { std: "W.3.8", file: "CoreDataW13H2", min: 6 }]
 ];

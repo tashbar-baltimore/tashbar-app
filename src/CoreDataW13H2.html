@@ -1,0 +1,329 @@
+<script>
+/* CoreDataW13H2.html: Core Growth job W13 (helper piece: Grade 3, Units 4-6), lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md).
+   Keep this file under 150 KB. No double slash in this file (HtmlService rule).
+   This part: Grade 3 (L04), Unit 5 "Little Researcher" (docs/core-growth/W13-map.md, W.3.7 and W.3.8).
+   The Shabbos Street News has a mystery question: "Why do leaves change color?" The club finds out from a real article,
+   texts/W13/W13.LEAF.01.txt "Why Do Leaves Change Color?" by Mr. Levi Adler (an original text, a made-up author).
+   Cast: the Shabbos Street Club (docs/core-growth/F-map.md section 8): Naftali, Avi, Chaim (the club librarian), Dovid, Rabbi Feld.
+   In engine lessons the FIRST choice in o is the right one. Show me checks are cold: each gives a new question, note or source.
+   The teacher board (board.key, never shown to a boy) has the Show me answers. */
+(function () {
+  var LESSONS = {
+
+  'WRIT.RES.L04.01':{name:'Good Question',
+  teach:[
+    {how:'A research question is a question you can answer by reading. It asks HOW or WHY about something real, like “Why do leaves change color?”', q:'Which is a good research question?', o:['Why do leaves change color in the fall?','Do you like the fall?','Is a leaf green?']},
+    {how:'A yes-or-no question is too small. “Is a leaf green?” is answered in one word, so there is nothing to find out.', q:'“Do birds fly?” What is wrong with it?', o:['It is a yes-or-no question.','It is too long.','Nothing, it is good.']},
+    {how:'A question about what you like cannot be answered in a book. “Which tree is the prettiest?” is only an opinion. A question about everything, like “All about nature”, is too big.', q:'Which question can a book NOT answer?', o:['Which tree is the prettiest?','How do trees drink water?','Why do leaves fall?']}
+  ],
+  practice:[
+    {t:'sort', q:'Good research question, or a mistake?', bins:[{id:'G',label:'Good question'},{id:'M',label:'Mistake'}],
+      items:[{label:'How do squirrels get ready for winter?',bin:'G'},{label:'Why do leaves change color?',bin:'G'},{label:'Do you like squirrels?',bin:'M'},{label:'Is snow cold?',bin:'M'}],
+      h:'Can you answer it by reading? Is it more than yes or no?'},
+    {t:'pairs', q:'Match each weak question to what is wrong.', pairs:[['Is a leaf green?','Yes or no: too small'],['Which tree is the nicest?','Only an opinion'],['Everything about the world','Much too big']],
+      h:'Too small, only an opinion, or too big?'},
+    {t:'spotall', q:'Tap every question that starts a real search.', cells:[{label:'Why',ok:true},{label:'How',ok:true},{label:'Do you like',ok:false},{label:'Is it',ok:false}],
+      h:'Which words start a how-or-why question?'},
+    {t:'order', q:'Build a research question.', tiles:['Why do','leaves change color','in the fall?'], h:'Question word, then what, then when.'},
+    {t:'sort', q:'Can a book answer it?', bins:[{id:'Y',label:'A book can answer it'},{id:'N',label:'Only my opinion'}],
+      items:[{label:'How does a bee make honey?',bin:'Y'},{label:'Why does the moon look different each night?',bin:'Y'},{label:'What is the best snack?',bin:'N'},{label:'Which color is the prettiest?',bin:'N'}],
+      h:'A book tells facts. It cannot tell what you like.'},
+    {t:'order', q:'Put the research steps in order.', tiles:['Ask a good question.','Read to find out.','Write what you learned.'], h:'First ask, then read, then write.'}
+  ],
+  check:[
+    {q:'Dovid wants to write for the newspaper about spiders. Which is his best research question?', o:['How do spiders spin webs?','Are spiders small?','Do you like spiders?'], h:'Which question asks how or why, and can be answered by reading?'},
+    {q:'Avi asked: “Is the ocean big?” What is wrong with his question?', o:['It is a yes-or-no question.','It is only an opinion.','Nothing, it is a good question.'], h:'How many words does it take to answer it?'},
+    {q:'Chaim asked: “Which fruit is the yummiest?” What is wrong with his question?', o:['It is only an opinion.','It is a yes-or-no question.','It is much too big.'], h:'Can a book tell which fruit you like best?'}
+  ],
+  re:[
+    {how:'A new way: a good question is like a door. A yes-or-no question is a wall. You cannot walk in.', q:'A good research question asks…', o:['how or why','yes or no','what you like']},
+    {how:'A simpler step: start your question with “Why” or “How”.', q:'Which word can start a good research question?', o:['How','Is','Do you like']},
+    {how:'The skill underneath: a topic sentence tells what the piece is about (Paragraph Builder).', q:'A research question tells…', o:['what I want to find out','how I feel','the ending']}
+  ]},
+
+  'WRIT.RES.L04.02':{name:'Notes, Not Copies',
+  teach:[
+    {how:'A note is a few key words that hold one fact. You do not copy the whole sentence. You write only the words that matter.', q:'Sentence: “A green material inside the leaf catches the sunlight.” Which is a good note?', o:['green stuff catches sun','A green material inside the leaf catches the sunlight.','leaf']},
+    {how:'Key words answer your question. Little words like “the”, “a” and “is” are not key words.', q:'Which are key words?', o:['days shorter, nights cooler','the, a, is','and, so, then']},
+    {how:'Copying a writer’s sentence and calling it yours is not fair. Notes in your own words show you understood, and they keep you honest.', q:'Why do we take notes in our own words?', o:['to show we understood','to make it longer','to copy faster']}
+  ],
+  practice:[
+    {t:'sort', q:'A good note, or a copy?', bins:[{id:'N',label:'Good note'},{id:'C',label:'Copy (a mistake)'}],
+      items:[{label:'tree stops making green',bin:'N'},{label:'yellow hiding all summer',bin:'N'},{label:'In the fall, the days get shorter and the nights get cooler.',bin:'C'},{label:'The tree gets ready to rest for the winter.',bin:'C'}],
+      h:'A note is a few key words, not the whole sentence.'},
+    {t:'pairs', q:'Match each sentence to its note.', pairs:[['Chlorophyll is what makes a leaf look green.','chlorophyll = green'],['Sugar gets trapped in their leaves.','sugar stuck, turns red'],['The leaf cannot get water anymore.','no water, leaf dries']],
+      h:'Which few words hold the same fact?'},
+    {t:'spotall', q:'“The green fades away little by little.” Tap the key words.', cells:[{label:'green',ok:true},{label:'fades',ok:true},{label:'the',ok:false},{label:'by',ok:false}],
+      h:'Which words hold the fact?'},
+    {t:'order', q:'Build a short note.', tiles:['maples','make','new red'], h:'Who, does what, what.'},
+    {t:'sort', q:'Does the note answer the question “Why do leaves change color?”', bins:[{id:'Y',label:'Answers it'},{id:'N',label:'Off the question'}],
+      items:[{label:'green fades in fall',bin:'Y'},{label:'yellow was hiding',bin:'Y'},{label:'squirrels hide nuts',bin:'N'},{label:'I like raking',bin:'N'}],
+      h:'Keep only notes that help answer your question.'},
+    {t:'order', q:'Put the note-taking steps in order.', tiles:['Read one part.','Look away from the page.','Write a few key words.'], h:'Read, look away, then write it your way.'}
+  ],
+  check:[
+    {q:'A book says: “Bees carry pollen from flower to flower on their fuzzy legs.” Which is Naftali’s best note?', o:['bees carry pollen on legs','Bees carry pollen from flower to flower on their fuzzy legs.','fuzzy'], h:'A few key words that hold the fact.'},
+    {q:'A book says: “A camel stores fat in its hump, so it can go a long time without food.” Which note is a copy, not a note?', o:['A camel stores fat in its hump, so it can go a long time without food.','hump holds fat','fat = food for later'], h:'Which one is the whole sentence?'},
+    {q:'Dovid’s question: “How do owls hunt at night?” Which note should he keep?', o:['big eyes see in dark','owls are brown','I saw an owl at camp'], h:'Which note helps answer his question?'}
+  ],
+  re:[
+    {how:'A new way: a note is like a text message to yourself. Short, and only what matters.', q:'A good note is…', o:['a few key words','a whole copied sentence','one little word like “the”']},
+    {how:'A simpler step: read, look away, then write it the way you would say it.', q:'After you read a part, you…', o:['look away and write it your way','copy every word','stop reading']},
+    {how:'The skill underneath: details must prove the topic (Details That Prove).', q:'Keep a note only if it…', o:['helps answer your question','is long','is funny']}
+  ]},
+
+  'WRIT.RES.L04.03':{name:'Sort My Notes',
+  teach:[
+    {how:'After you take notes, sort them into groups. Notes about the same part of the answer go together. Each group becomes one paragraph.', q:'Notes that tell the same part of the answer…', o:['go in one group','go anywhere','are thrown away']},
+    {how:'Name each group with a short heading, like “Why green?” or “Why red?”. Then check each note: does it fit its heading?', q:'Heading: “Why leaves turn red.” Which note fits?', o:['sugar trapped, turns red','green fades away','leaf falls off']},
+    {how:'Put each note in the ONE group it fits best. A note that fits no group is not about your question. Leave it out.', q:'Your question is about leaves. Which note should you leave out?', o:['Avi has a new rake.','Chlorophyll makes leaves green.','Yellow was hiding all summer.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort Chaim’s notes into two groups.', bins:[{id:'S',label:'In the summer'},{id:'F',label:'In the fall'}],
+      items:[{label:'lots of green',bin:'S'},{label:'long sunny days',bin:'S'},{label:'green fades',bin:'F'},{label:'nights get cooler',bin:'F'}],
+      h:'When does it happen?'},
+    {t:'sort', q:'Mistake Detective. Right group, or a mistake?', bins:[{id:'R',label:'Right group'},{id:'M',label:'Mistake'}],
+      items:[{label:'“sugar turns red” under Why Red',bin:'R'},{label:'“yellow was hiding” under Why Yellow',bin:'R'},{label:'“leaf falls off” under Why Green',bin:'M'},{label:'“chlorophyll = green” under Why Red',bin:'M'}],
+      h:'Does the note answer its heading?'},
+    {t:'pairs', q:'Match each note to its heading.', pairs:[['chlorophyll catches sun','Why leaves are green'],['yellow was hiding','Why leaves turn yellow'],['sugar trapped in maple leaves','Why some turn red']],
+      h:'Which heading does each note answer?'},
+    {t:'spotall', q:'Heading: “Why leaves fall.” Tap every note that fits.', cells:[{label:'thin wall grows',ok:true},{label:'no more water',ok:true},{label:'leaf dries up',ok:true},{label:'maples turn red',ok:false}],
+      h:'Which notes tell why the leaf comes off?'},
+    {t:'order', q:'Put the groups in the order things happen.', tiles:['Why leaves are green','Why the green fades','Why the leaves fall'], h:'Summer first, then fall, then the end.'},
+    {t:'order', q:'Put the steps in order.', tiles:['Take notes.','Sort them into groups.','Write one paragraph for each group.'], h:'Notes, groups, then paragraphs.'}
+  ],
+  check:[
+    {q:'Avi’s question: “How do squirrels get ready for winter?” His headings are “Food” and “Nest”. Where does the note “hides acorns in the ground” go?', o:['Food','Nest','Leave it out'], h:'Which heading does the note answer?'},
+    {q:'Dovid’s question: “How do owls hunt at night?” His notes: “big eyes”, “quiet wings”, “my cousin likes owls”. Which note should he leave out?', o:['my cousin likes owls','big eyes','quiet wings'], h:'Which note is not about how owls hunt?'},
+    {q:'Chaim’s question: “How do beavers build dams?” His headings are “Cutting trees” and “Piling up”. Which note goes under “Cutting trees”?', o:['sharp teeth chew through trunks','push sticks and mud into a pile','my uncle saw a beaver'], h:'Which note is about cutting?'}
+  ],
+  re:[
+    {how:'A new way: sorting notes is like setting the Shabbos table. Forks with forks, cups with cups.', q:'Each group of notes becomes…', o:['one paragraph','one word','the title']},
+    {how:'A simpler step: read the heading, then ask of each note: does it answer this?', q:'A heading…', o:['names a group of notes','is a copied sentence','ends the report']},
+    {how:'The skill underneath: group the facts, with a heading for each group (Group the Facts).', q:'A note that fits no group…', o:['is left out','goes first','is the title']}
+  ]},
+
+  'WRIT.RES.L04.04':{name:'Where I Found It',
+  teach:[
+    {how:'A good researcher tells where his facts came from. He names the source: its title and its author. The title is the name of the book or article. The author is who wrote it.', q:'“Why Do Leaves Change Color?” by Mr. Levi Adler. What is the title?', o:['Why Do Leaves Change Color?','Mr. Levi Adler','leaves']},
+    {how:'The author’s name usually comes after the word “by”.', q:'“Bees at Work” by Mr. Dan Weiss. Who is the author?', o:['Mr. Dan Weiss','Bees at Work','bees']},
+    {how:'At the end of a report, write one line: “I found my facts in” the title, “by” the author. Then a reader can check your facts.', q:'Why do we name the source?', o:['so a reader can check the facts','to make it longer','to show off']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each part to what it is.', pairs:[['title','the name of the book or article'],['author','the person who wrote it'],['source','where the facts came from']],
+      h:'Title, author, source: which is which?'},
+    {t:'sort', q:'“Owls at Night” by Rabbi Moshe Stern. Title or author?', bins:[{id:'T',label:'Title'},{id:'A',label:'Author'}],
+      items:[{label:'Owls at Night',bin:'T'},{label:'Rabbi Moshe Stern',bin:'A'}],
+      h:'The author comes after “by”.'},
+    {t:'sort', q:'Mistake Detective. A good source line, or a mistake?', bins:[{id:'G',label:'Good source line'},{id:'M',label:'Mistake'}],
+      items:[{label:'I found my facts in “Bees at Work” by Mr. Dan Weiss.',bin:'G'},{label:'I found my facts in “Owls at Night” by Rabbi Moshe Stern.',bin:'G'},{label:'I found my facts in a book.',bin:'M'},{label:'I just know it.',bin:'M'}],
+      h:'Does it name the title AND the author?'},
+    {t:'spotall', q:'Tap every part a source line needs.', cells:[{label:'the title',ok:true},{label:'the author',ok:true},{label:'my favorite color',ok:false},{label:'the date I was born',ok:false}],
+      h:'What does a reader need to find the source?'},
+    {t:'order', q:'Build a source line.', tiles:['I found my facts in','“Why Do Leaves Change Color?”','by Mr. Levi Adler.'], h:'I found my facts in, the title, then by the author.'},
+    {t:'order', q:'Put the report parts in order.', tiles:['My question','What I learned','Where I found it'], h:'Ask, tell, then name the source.'}
+  ],
+  check:[
+    {q:'Naftali read “How Clocks Tick” by Mr. Yaakov Toledano. Which is his source line?', o:['I found my facts in “How Clocks Tick” by Mr. Yaakov Toledano.','I found my facts in a clock book.','Clocks have gears.'], h:'Which line names the title and the author?'},
+    {q:'“Rain and Clouds” by Rabbi Yosef Gold. Who is the author?', o:['Rabbi Yosef Gold','Rain and Clouds','clouds'], h:'Who comes after “by”?'},
+    {q:'Dovid’s source line is: I found my facts in “Snow and Ice”. What is missing?', o:['the author','the title','a picture'], h:'Find the title in quotation marks. Then look for “by” and a name.'}
+  ],
+  re:[
+    {how:'A new way: naming the source is like saying who told you the news. Then people can ask him too.', q:'The author is…', o:['the person who wrote it','the name of the book','the reader']},
+    {how:'A simpler step: the author comes right after “by”.', q:'In “Snow” by Mr. Ari Blum, “Snow” is the…', o:['title','author','note']},
+    {how:'The skill underneath: notes in your own words (Notes, Not Copies).', q:'We name the source so a reader can…', o:['check the facts','skip the report','draw a picture']}
+  ]}
+  };
+
+  var TEACH = {
+  'WRIT.RES.L04.01':{hook:'How do real writers find out something new?', big:'Ask a research question you can answer by reading: how or why, not yes-or-no, not just your opinion.',
+    intro:['Start with “Why” or “How”.','Make it about something real you can read about.','Not yes-or-no: that is too small.','Not just what you like, and not “everything”: that is too big.'],
+    ex:[{q:'Is a leaf green?',steps:['Yes or no: too small.','Ask why instead.'],a:'Why do leaves change color in the fall?'},
+        {q:'Which tree is the prettiest?',steps:['Only an opinion: a book cannot answer it.','Ask how instead.'],a:'How do trees drink water?'}],
+    oops:{q:'Dovid’s question for the newspaper.',wrong:'Do you like leaves?',right:'Why do leaves change color?',why:'A book cannot tell what you like. Ask how or why.'},
+    idea:['A good question is a door you can walk through by reading.'],
+    try:{q:'Which is a good research question?',o:['How do bees make honey?','Is honey sweet?'],a:'How do bees make honey?',steps:['Does it start with how or why?']}},
+  'WRIT.RES.L04.02':{hook:'How do you remember what you read without copying it?', big:'Take notes: a few key words in your own words, only what answers your question.',
+    intro:['Read one part.','Look away from the page.','Write a few key words, your way.','Keep only notes that answer your question.'],
+    ex:[{q:'A green material inside the leaf catches the sunlight.',steps:['Key words: green, catches, sun.'],a:'Note: green stuff catches sun'},
+        {q:'In the fall, the days get shorter.',steps:['Key words: fall, days, shorter.'],a:'Note: fall = shorter days'}],
+    oops:{q:'Note for: “The tree stops making new chlorophyll.”',wrong:'The tree stops making new chlorophyll.',right:'tree stops making green',why:'That is a copy. A note is a few key words, your way.'},
+    idea:['A note is a text message to yourself: short, and only what matters.'],
+    try:{q:'Which is a note?',o:['maples turn red','Some trees, like maples, also make a brand new color.'],a:'maples turn red',steps:['A few key words.']}},
+  'WRIT.RES.L04.03':{hook:'Ten notes, all mixed up. Now what?', big:'Sort your notes into groups with headings. Each group becomes one paragraph.',
+    intro:['Read all your notes.','Find notes that tell the same part of the answer.','Give each group a heading.','Leave out a note that fits no group.'],
+    ex:[{q:'Notes: green fades, sugar turns red, yellow was hiding',steps:['Why the green goes: green fades.','Why yellow and red: yellow was hiding, sugar turns red.'],a:'Two groups, two paragraphs.'},
+        {q:'Note: Avi has a new rake.',steps:['Is it about why leaves change color? No.'],a:'Leave it out.'}],
+    oops:{q:'Heading: Why leaves turn red.',wrong:'green fades away',right:'sugar trapped, turns red',why:'The note must answer its heading.'},
+    idea:['Sorting notes is setting the table: forks with forks, cups with cups.'],
+    try:{q:'“thin wall grows” goes under…',o:['Why leaves fall','Why leaves turn red'],a:'Why leaves fall',steps:['What does the thin wall do?']}},
+  'WRIT.RES.L04.04':{hook:'How can a reader check your facts?', big:'Name your source: the title and the author, in one line at the end.',
+    intro:['The title is the name of the book or article.','The author is who wrote it: the name after “by”.','Write: I found my facts in “title” by author.','Now a reader can check your facts.'],
+    ex:[{q:'“Why Do Leaves Change Color?” by Mr. Levi Adler',steps:['Title: Why Do Leaves Change Color?','Author: Mr. Levi Adler'],a:'I found my facts in “Why Do Leaves Change Color?” by Mr. Levi Adler.'},
+        {q:'“Bees at Work” by Mr. Dan Weiss',steps:['Who comes after “by”?'],a:'The author is Mr. Dan Weiss.'}],
+    oops:{q:'Avi’s source line.',wrong:'I found my facts in a book.',right:'I found my facts in “Owls at Night” by Rabbi Moshe Stern.',why:'Which book? Name the title and the author.'},
+    idea:['Naming the source is saying who told you the news.'],
+    try:{q:'In “Snow” by Mr. Ari Blum, the author is…',o:['Mr. Ari Blum','Snow'],a:'Mr. Ari Blum',steps:['Look after “by”.']}}
+  };
+
+  var HOWTO = {
+  'WRIT.RES.L04.01':{s:'Start with Why or How.\nIt must be answered by reading.\nNot yes-or-no.\nNot just what you like.'},
+  'WRIT.RES.L04.02':{s:'Read one part.\nLook away.\nWrite a few key words, your way.\nKeep only notes that answer your question.'},
+  'WRIT.RES.L04.03':{s:'Put notes that go together in a group.\nGive each group a heading.\nEach note must answer its heading.\nEach group is one paragraph.'},
+  'WRIT.RES.L04.04':{s:'The title is the name of the book.\nThe author comes after “by”.\nWrite: I found my facts in “title” by author.'}
+  };
+
+  var BITE = {
+  'WRIT.RES.L04.01':{ band:'B23', pic:'❓', today:'Ask a question you can research', why:'Every real report starts with a good question.',
+    ready:[{q:'A topic sentence…', o:['tells what it is about','ends the piece','is a detail'], a:'tells what it is about'}],
+    bridge:'WRIT.PARA.L04.01', bridgeName:'Paragraph Builder',
+    watch:{ q:'A mystery for The Shabbos Street News!', m:{type:'scene', e:'🍂', t:'Leaves are falling on Shabbos Street. Red, orange, yellow. Dovid asks: “Why?”'}, steps:[
+      {t:'Chaim, the club librarian, says: “Let’s find out from a real article!”'},
+      {t:'First they need a good question. “Do you like leaves?” Only an opinion.'},
+      {t:'“Is a leaf green?” Too small: yes or no. “All about trees?” Too big: a whole library!'},
+      {t:'“Why do leaves change color?” A book can answer that!'},
+      {t:'Clap the question words with me!', m:{type:'chant', lines:['How and why, how and why,','ask a question, give it a try!','Not yes-or-no, not what I like,','a question I can read about, right!']}}], a:'Ask how or why about something real you can read about.' },
+    oops:{ q:'Dovid’s question for the newspaper.', wrong:'Do you like leaves?', right:'Why do leaves change color?', why:'A book cannot tell what you like. Ask how or why.' },
+    ways:['worked example','chant','Mistake Detective','sort it','match it','tap the sentence','build with tiles','fill the gap','listen','find them all'], done:'You can ask a real research question! Ask one at your Shabbos table.',
+    board:{ key:'Show me answers (for the rebbe): How do spiders spin webs? · It is a yes-or-no question. · It is only an opinion.', one:'A research question asks how or why, can be answered by reading, and is not yes-or-no or only an opinion.', activity:'Each boy writes one question about the fall. The class sorts them: good question, too small, only an opinion, too big. Fix the weak ones together.', mistakes:['A yes-or-no question','An opinion question','A question that is much too big'] },
+    do:[
+      {type:'sort', q:'Good research question, or a mistake?', bins:['Good question','Mistake'], cards:[['How do squirrels get ready for winter?',0],['Why does the moon look different each night?',0],['Do you like the fall?',1],['Is snow cold?',1]], mis:true,
+        say:'Mistake Detective! Good question, or a mistake?', how:'Can you answer it by reading? Is it more than yes or no?'},
+      {type:'match', pairs:[['Is a leaf green?','Yes or no: too small'],['Which tree is the nicest?','Only an opinion'],['All about the world','Much too big']],
+        say:'Match each weak question to its problem.', how:'Too small, only an opinion, or too big?'}],
+    your:[
+      {type:'evidence', q:'Avi wants to write about bees. Which is his best research question?', p:['Do bees sting?','How do bees make honey?','Which bug is the cutest?','Everything about bugs'], a:1, look:'a how-or-why question a book can answer',
+        say:'Find Avi’s best research question.', how:'How or why? Can a book answer it?'},
+      {type:'cloze', t:'Naftali fixed his question: “___ birds fly south for the winter?”', o:['Why do','Do','Do you like it when'], a:'Why do',
+        say:'Pick the words that make a research question.', how:'Yes or no? Only an opinion? Or how or why?'},
+      {type:'tiles', w:['How do','beavers','build dams?'], extra:['Do you like'],
+        say:'Build a research question.', how:'Start with how, then who, then what.'},
+      {type:'listen', q:'“Is the sun hot?”', hear:'Is the sun hot?', o:['too small: yes or no','a good research question','only an opinion'], a:'too small: yes or no',
+        say:'Listen. What kind of question is it?', how:'Can it be answered in one word?'},
+      {type:'findall', grid:['Why','Is it','How','Do you like','Why does','Which is best'], find:['Why','How','Why does'], findSay:'good question starters',
+        say:'Tap every good way to start a research question.', how:'Which ones ask how or why?'}] },
+
+  'WRIT.RES.L04.02':{ band:'B23', pic:'📝', today:'Take notes in your own words', why:'Notes help you remember facts and write them your way.',
+    ready:[{q:'A good research question asks…', o:['how or why','yes or no','what you like'], a:'how or why'}],
+    bridge:'WRIT.RES.L04.01', bridgeName:'Good Question',
+    watch:{ q:'Chaim reads the article “Why Do Leaves Change Color?” Naftali takes notes.', m:{type:'scene', e:'📝', t:'Naftali starts to copy the whole page. Chaim says: “Stop! Just the key words!”'}, steps:[
+      {t:'Read one part: “A green material inside the leaf catches the sunlight.”'},
+      {t:'Look away from the page. What did it say?'},
+      {t:'Write a few key words, your way: “green stuff catches sun”.'},
+      {t:'Keep only notes that answer the question: why do leaves change color?'},
+      {t:'Do it with me: read, look away, write!', m:{type:'move', t:'Eyes on the page! Turn your head away! Write in the air with your finger!'}}], a:'Read, look away, write a few key words your way.' },
+    oops:{ q:'Note for: “The tree stops making new chlorophyll.”', wrong:'The tree stops making new chlorophyll.', right:'tree stops making green', why:'That is a copy. A note is a few key words, your way.' },
+    ways:['worked example','movement','read a real article','find the proof','Mistake Detective','sort it','match it','fill the gap','tap the sentence','build with tiles'], done:'You can take notes in your own words!',
+    board:{ key:'Show me answers (for the rebbe): bees carry pollen on legs · A camel stores fat in its hump, so it can go a long time without food. · big eyes see in dark', one:'A note is a few key words, in your own words, that answer your question. Read, look away, write.', activity:'Read one paragraph of a science text aloud. Boys close their books and write three notes of three or four words each. Compare: did anyone copy?', mistakes:['Copying the whole sentence','Notes with only little words (the, a, is)','Notes that do not answer the question'] },
+    do:[
+      {type:'read', text:'W13.LEAF.01', say:'Read the article. Think: why do leaves change color?', how:'Read every page. Tap a word to see what it means.'},
+      {type:'sort', bins:['Good note','Copy (a mistake)'], cards:[['tree stops making green',0],['yellow hiding all summer',0],['In the fall, the days get shorter and the nights get cooler.',1],['The tree gets ready to rest for the winter.',1]], mis:true,
+        say:'Mistake Detective! A good note, or a copy?', how:'A note is a few key words, not the whole sentence.'}],
+    your:[
+      {type:'proof', text:'W13.LEAF.01', q:'What makes a leaf look green? Find the sentence.', proof:'Chlorophyll is what makes a leaf look green', look:'the sentence about the green material', say:'Find the fact in the article.', how:'Read page 1.'},
+      {type:'evidence', q:'The article says: “Sugar gets trapped in their leaves, and the leaf uses it to make a new red color.” Which is the best note?', p:['Sugar gets trapped in their leaves, and the leaf uses it to make a new red color.','sugar','trapped sugar makes red','I like sugar'], a:2, look:'a few key words that hold the fact',
+        say:'Pick the best note.', how:'Not a copy, not one word: a few key words.'},
+      {type:'match', pairs:[['Chlorophyll is what makes a leaf look green.','chlorophyll = green'],['The leaf cannot get water anymore.','no water, leaf dries'],['Yellow and orange were there the whole time!','yellow was hiding']],
+        say:'Match each sentence to its note.', how:'Which few words hold the same fact?'},
+      {type:'cloze', t:'Article: “In the fall, the days get shorter.” Naftali’s note: fall = ___ days', o:['shorter','sunny','happy'], a:'shorter',
+        say:'Finish Naftali’s note.', how:'Which key word holds the fact?'},
+      {type:'tiles', w:['maples','make','new red'], extra:['Some trees, like maples,'],
+        say:'Build a short note, not a copy.', how:'Use only the key words.'}] },
+
+  'WRIT.RES.L04.03':{ band:'B23', pic:'🗃️', today:'Sort your notes into groups', why:'Sorted notes turn into clear paragraphs.',
+    ready:[{q:'Facts about the same thing…', o:['go together in one group','go in the title','are left out'], a:'go together in one group'}],
+    bridge:'WRIT.ESSAY.L04.04', bridgeName:'Group the Facts',
+    watch:{ q:'Naftali has eight notes about leaves, all mixed up.', m:{type:'scene', e:'🗃️', t:'Notes on little cards everywhere! Avi says: “Let’s make piles.”'}, steps:[
+      {t:'Pile 1, heading “Why green”: chlorophyll = green, catches sun.'},
+      {t:'Pile 2, heading “Why yellow and red”: yellow was hiding, sugar makes red.'},
+      {t:'Pile 3, heading “Why they fall”: thin wall grows, no more water.'},
+      {t:'“Avi has a new rake” fits no pile. Leave it out!'},
+      {t:'Sort with me! Left hand, middle, right hand!', m:{type:'move', t:'Left hand: why green! Both hands: yellow and red! Right hand: why they fall!'}}], a:'Notes in groups with headings; each group becomes a paragraph.' },
+    oops:{ q:'Heading: Why leaves turn red.', wrong:'green fades away', right:'sugar trapped, turns red', why:'The note must answer its heading.' },
+    ways:['worked example','movement','Mistake Detective','story map','sort it','match it','tap the sentence','fill the gap','put it in order','find them all'], done:'You can sort your notes into groups! Each group is a paragraph.',
+    board:{ key:'Show me answers (for the rebbe): Food · my cousin likes owls · sharp teeth chew through trunks', one:'Sort notes into groups with headings; leave out notes that fit no group; each group becomes a paragraph.', activity:'Give pairs ten note cards about bears in winter (two off-topic). They sort them under two headings and set aside the ones that do not fit.', mistakes:['A note under the wrong heading','Keeping a note that is not about the question','One giant group with no headings'] },
+    do:[
+      {type:'storymap', slots:['Why leaves are green','Why they turn yellow','Why they fall'], cards:['chlorophyll catches sun','yellow was hiding','thin wall grows'], extra:['Avi has a new rake'],
+        say:'Put each note under its heading.', how:'Which heading does each note answer?'},
+      {type:'sort', bins:['Right group','Mistake'], cards:[['“sugar makes red” under Why Red',0],['“no more water” under Why They Fall',0],['“leaf falls off” under Why Green',1],['“chlorophyll = green” under Why Red',1]], mis:true,
+        say:'Mistake Detective! Right group, or a mistake?', how:'Read the heading. Does the note answer it?'}],
+    your:[
+      {type:'evidence', q:'Avi’s question: “How do bears get ready for winter?” Which note fits the heading “Eating”?', p:['sleeps in a cave','eats lots of berries','my cousin saw a bear','fur gets thick'], a:1, look:'a note about food',
+        say:'Find the note for the heading.', how:'Which note is about eating?'},
+      {type:'findall', grid:['thin wall grows','maples turn red','no more water','leaf dries up','green catches sun','Avi rakes'], find:['thin wall grows','no more water','leaf dries up'], findSay:'notes about why leaves fall',
+        say:'Tap every note about why leaves fall.', how:'Which notes tell why the leaf comes off?'},
+      {type:'match', pairs:[['chlorophyll catches sun','Why leaves are green'],['yellow was hiding','Why leaves turn yellow'],['sugar trapped in maple leaves','Why some turn red']],
+        say:'Match each note to its heading.', how:'Which heading does each note answer?'},
+      {type:'order', steps:['Take notes.','Sort them into groups.','Give each group a heading.','Write one paragraph for each group.'],
+        say:'Put the research steps in order.', how:'Notes, groups, headings, then paragraphs.'},
+      {type:'cloze', t:'Chaim has three groups of notes, so his report will have three ___.', o:['paragraphs','titles','questions'], a:'paragraphs',
+        say:'Finish the sentence.', how:'What does each group of notes become?'}] },
+
+  'WRIT.RES.L04.04':{ band:'B23', pic:'📚', today:'Say where you found your facts', why:'Naming the source lets a reader check your facts.',
+    ready:[{q:'Each group of notes becomes…', o:['one paragraph','one word','the title'], a:'one paragraph'}],
+    bridge:'WRIT.RES.L04.03', bridgeName:'Sort My Notes',
+    watch:{ q:'Rabbi Feld reads the club’s report. “Where did you find these facts?”', m:{type:'scene', e:'📚', t:'Chaim holds up the article. “Right here!” Rabbi Feld smiles: “Then write it down.”'}, steps:[
+      {t:'The title is the name of the article: “Why Do Leaves Change Color?”'},
+      {t:'The author is who wrote it. His name comes after “by”: Mr. Levi Adler.'},
+      {t:'One line at the end: I found my facts in “Why Do Leaves Change Color?” by Mr. Levi Adler.'},
+      {t:'Now any reader can check the facts.'},
+      {t:'Say it with me, and point to the book!', m:{type:'chant', lines:['Title, author, say it true,','where I found it, I tell you!','After “by”, the writer’s name,','check my facts, they are the same!']}}], a:'Name the title and the author: I found my facts in “title” by author.' },
+    oops:{ q:'Avi’s source line.', wrong:'I found my facts in a book.', right:'I found my facts in “Owls at Night” by Rabbi Moshe Stern.', why:'Which book? Name the title and the author.' },
+    ways:['worked example','chant','Mistake Detective','sort it','match it','tap the sentence','fill the gap','build with tiles','put it in order','listen'], done:'You can name your source like a real researcher! Your report is ready to write.',
+    board:{ key:'Show me answers (for the rebbe): I found my facts in “How Clocks Tick” by Mr. Yaakov Toledano. · Rabbi Yosef Gold · the author', one:'Name the source: the title and the author (after “by”). I found my facts in “title” by author.', activity:'Hold up three classroom books. Boys find each title and author and say the source line aloud.', mistakes:['Mixing up the title and the author','“I found it in a book” with no title','Leaving out the source'] },
+    do:[
+      {type:'match', pairs:[['title','the name of the book'],['author','the person who wrote it'],['by','the word before the author']],
+        say:'Match each word to what it means.', how:'Title, author, by: which is which?'},
+      {type:'sort', bins:['Good source line','Mistake'], cards:[['I found my facts in “Bees at Work” by Mr. Dan Weiss.',0],['I found my facts in “Owls at Night” by Rabbi Moshe Stern.',0],['I found my facts in a book.',1],['I just know it.',1]], mis:true,
+        say:'Mistake Detective! Good source line, or a mistake?', how:'Does it name the title AND the author?'}],
+    your:[
+      {type:'evidence', q:'“The Busy Beaver” by Mr. Eli Frank. Which part is the author?', p:['The Busy Beaver','by','Mr. Eli Frank','Beaver'], a:2, look:'the name after “by”',
+        say:'Find the author.', how:'Who comes after “by”?'},
+      {type:'cloze', t:'I found my facts in “Owls at Night” ___ Rabbi Moshe Stern.', o:['by','and','the'], a:'by',
+        say:'Pick the word that comes before the author.', how:'Which word tells who wrote it?'},
+      {type:'tiles', w:['I found my facts in','“Why Do Leaves Change Color?”','by Mr. Levi Adler.'], extra:['in a book.'],
+        say:'Build the club’s source line.', how:'I found my facts in, the title, then by the author.'},
+      {type:'listen', q:'“I found my facts in a book.”', hear:'I found my facts in a book.', o:['missing the title and author','a good source line','a research question'], a:'missing the title and author',
+        say:'Listen. Is this a good source line?', how:'Can a reader find that book?'},
+      {type:'order', steps:['My question','What I learned','Where I found it'],
+        say:'Put the parts of a report in order.', how:'Ask, tell, then name the source.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+
+  /* Unit W13.U35 = Grade 3, Unit 5 "Little Researcher". The real task: Gr 3 piece 10, a short research report, in the Writing Workshop (scored by the teacher). */
+  var PIECE10 = { id: 'W13.RES3.01', title: 'Why Do Leaves Change Color?', grade: 3, kind: 'information',
+    prompt: 'Write a short research report for The Shabbos Street News: why do leaves change color in the fall? Use your notes from the article “Why Do Leaves Change Color?” by Mr. Levi Adler. Write two paragraphs in your own words, and name your source at the end.',
+    strategy: { name: 'Research', steps: [['Q', 'My question: how or why'], ['N', 'Notes: key words, my own way'], ['S', 'Sort: one group for each paragraph'], ['F', 'Found it: title and author']] },
+    plan: [ { k: 'topic', label: 'Q · My question and my topic sentence', hint: 'Why do leaves… Every fall,…' },
+            { k: 'g1', label: 'Group 1 · Why the green goes away (my notes)', hint: 'chlorophyll… shorter days…' },
+            { k: 'g2', label: 'Group 2 · Why yellow, orange and red show (my notes)', hint: 'hiding… sugar…' },
+            { k: 'src', label: 'F · Where I found it', hint: 'I found my facts in…' } ],
+    starters: ['Every fall,', 'This is because', 'Also,', 'Another reason is', 'This means', 'I found my facts in'],
+    min: 70,
+    checks: [
+      { t: 'I wrote at least 6 sentences.', sentences: 6 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I used the word chlorophyll and said what it means.', any: ['chlorophyll'] },
+      { t: 'I named the title of my source, in quotation marks.', any: ['“why do leaves change color', '"why do leaves change color'] },
+      { t: 'I named the author of my source.', any: ['adler'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I wrote it in my own words, not copied.', self: true } ],
+    rubric: ['A clear research question or topic sentence', 'Two paragraphs, each about one group of notes', 'Facts in my own words, with a hard word explained', 'My source named: title and author', 'Capitals, end marks and spelling'],
+    pics: ['🍂', '🍁', '🌳', '📚'] };
+
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U35', title: 'Little Researcher', c: 'WRIT', grade: 3,
+    skills: ['WRIT.RES.L04.01', 'WRIT.RES.L04.02', 'WRIT.RES.L04.03', 'WRIT.RES.L04.04'],
+    review: ['WRIT.ESSAY.L04.04', 'WRIT.PARA.L04.14', 'WRIT.PARA.L04.16'], n: 11, task: PIECE10,
+    items: [
+      { skill: 'WRIT.RES.L04.01', type: 'evidence', q: 'Dovid wants to write about snow. Which is his best research question?', p: ['Is snow white?', 'How do snowflakes form?', 'Do you like snow?', 'Everything about weather'], a: 1, look: 'a how-or-why question a book can answer', say: 'Find the best research question.', how: 'How or why? Can a book answer it?' },
+      { skill: 'WRIT.RES.L04.01', type: 'cloze', t: 'Avi asked: “Which pet is the best?” That question is only an ___.', o: ['opinion', 'answer', 'article'], a: 'opinion', say: 'What is wrong with Avi’s question?', how: 'Can a book tell which pet is best?' },
+      { skill: 'WRIT.RES.L04.02', type: 'evidence', q: 'A book says: “Frogs breathe through their skin when they are under water.” Which is the best note?', p: ['Frogs breathe through their skin when they are under water.', 'frogs', 'skin breathes under water', 'frogs are green'], a: 2, look: 'a few key words that hold the fact', say: 'Pick the best note.', how: 'Not a copy, not one word: a few key words.' },
+      { skill: 'WRIT.RES.L04.02', type: 'evidence', q: 'Dovid’s question: “How do whales breathe?” Which note should he keep?', p: ['breathe air through a hole on top', 'whales are huge', 'I saw a whale picture', 'Whales breathe air through a blowhole on the top of their heads.'], a: 0, look: 'a short note that answers his question', say: 'Pick the note to keep.', how: 'Short, your own words, and it answers the question.' },
+      { skill: 'WRIT.RES.L04.03', type: 'cloze', t: 'Avi’s question: “How do robins live?” His headings are “Homes” and “Food”. The note “eat seeds and worms” goes under ___.', o: ['Food', 'Homes', 'the title'], a: 'Food', say: 'Where does the note go?', how: 'Is the note about a home or about food?' },
+      { skill: 'WRIT.RES.L04.03', type: 'evidence', q: 'Naftali’s question: “How do ants build a nest?” His headings are “Digging” and “Carrying”. Which note goes under “Carrying”?', p: ['tunnels go deep', 'carry crumbs in their jaws', 'ants are tiny', 'I saw ants at the park'], a: 1, look: 'a note about moving things', say: 'Find the note for the heading.', how: 'Which note is about carrying?' },
+      { skill: 'WRIT.RES.L04.04', type: 'evidence', q: '“Life in the Desert” by Rabbi Ezra Cohen. Which part is the title?', p: ['by', 'Rabbi Ezra Cohen', 'Life in the Desert', 'Desert'], a: 2, look: 'the name of the book', say: 'Find the title.', how: 'The title is the name of the book, before “by”.' },
+      { skill: 'WRIT.RES.L04.04', type: 'cloze', t: 'Chaim’s report ends: I found my facts in “Busy Bees”. He forgot the ___.', o: ['author', 'title', 'question'], a: 'author', say: 'What did Chaim forget?', how: 'Who wrote the book?' }
+    ] });
+})();
+</script>
