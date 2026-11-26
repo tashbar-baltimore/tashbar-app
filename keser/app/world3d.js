@@ -1,5 +1,5 @@
 /* HER WORLD in 3D, built from the painted art (picture order 2, keser/PICTURE-ORDERS.md): a twilight sky with rose-crystal arches,
-   a rose-quartz jewel-box stage, five glass domes (one per subject) gliding round it, and her jeweled crown floating above.
+   a rose-quartz jewel-box stage, a picture for each place gliding round it, and her gold Keser crown floating above.
    HoS 2026-11-26: "the crown looks very cheap ... use the pictures that ChatGPT is giving." So nothing here is drawn as plain shapes:
    every object is a painting; code only adds depth, light, glitter, drifting petals, glints and glow.
    Her progress: each subject has a jewel on the crown; it is dim until she starts and glows and glints more as she learns.
@@ -11,11 +11,11 @@ import { UnrealBloomPass } from './vendor/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from './vendor/postprocessing/OutputPass.js';
 
 const TAU = Math.PI * 2, R = 5.0;
-const ART = { sky: '/pics/keser-world-sky.webp', crown: '/pics/keser-crown.webp', stage: '/pics/keser-stage.webp',
-  kodesh: '/pics/keser-place-kodesh.webp', reading: '/pics/keser-place-reading.webp', math: '/pics/keser-place-math.webp',
-  science: '/pics/keser-place-science.webp', writing: '/pics/keser-place-writing.webp' };
-/* where each subject's jewel sits on the painted crown (0..1 across and down the picture) */
-const GEMS = { kodesh: [0.496, 0.521, 1.5], reading: [0.766, 0.702, 1], math: [0.232, 0.702, 1], science: [0.34, 0.694, 1], writing: [0.88, 0.757, 1] };
+/* M. Heinemann 2026-11-26: the Keser Academy colors (royal purple and gold) and the gold Keser crown from the school logo (sent by Mrs. David).
+   Each place shows its own picture (places.js: art); the stage painting is tinted royal purple. */
+const ART = { crown: '/pics/keser-academy-crown.webp', stage: '/pics/keser-stage.webp' };
+/* where each place's jewel sits on the Keser crown (0..1 across and down the picture): the diamond in the middle, and the two at the sides */
+const GEMS = { kodesh: [0.496, 0.67, 1.5], general: [0.053, 0.36, 1], timeline: [0.939, 0.36, 1] };
 
 export function start(o) {
   const { canvas, places, progress, calm } = o;
@@ -37,7 +37,7 @@ export function start(o) {
   const radial = (stops, size = 128) => { const c = document.createElement('canvas'); c.width = c.height = size; const x = c.getContext('2d'), g = x.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
     stops.forEach(([p, col]) => g.addColorStop(p, col)); x.fillStyle = g; x.fillRect(0, 0, size, size); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
   const SOFT = radial([[0, 'rgba(255,255,255,1)'], [0.3, 'rgba(255,255,255,.45)'], [1, 'rgba(255,255,255,0)']]);
-  const DIM = radial([[0, 'rgba(40,10,50,.82)'], [0.55, 'rgba(40,10,50,.6)'], [1, 'rgba(40,10,50,0)']]);
+  const DIM = radial([[0, 'rgba(28,10,48,.82)'], [0.55, 'rgba(28,10,48,.6)'], [1, 'rgba(28,10,48,0)']]);
   const STAR = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
     g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.2, 'rgba(255,255,255,.8)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64);
     x.globalCompositeOperation = 'lighter'; x.fillStyle = '#fff'; x.beginPath(); x.moveTo(32, 0); x.lineTo(34.5, 29.5); x.lineTo(64, 32); x.lineTo(34.5, 34.5); x.lineTo(32, 64); x.lineTo(29.5, 34.5); x.lineTo(0, 32); x.lineTo(29.5, 29.5); x.closePath(); x.fill();
@@ -45,20 +45,23 @@ export function start(o) {
   const glowSprite = (map, color, s, op) => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map, color, transparent: true, opacity: op == null ? 1 : op, depthWrite: false, blending: THREE.AdditiveBlending })); m.scale.set(s, s, 1); return m; };
 
   /* the sky: a wide painting far behind, a little larger than the view so it can drift as she moves */
-  const sky = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: tex(ART.sky), depthWrite: false, fog: false }));
+  const skyTex = (() => { const c = document.createElement('canvas'); c.width = 512; c.height = 256; const x = c.getContext('2d'), g = x.createRadialGradient(256, 110, 10, 256, 128, 300);
+    g.addColorStop(0, '#8A55BC'); g.addColorStop(0.35, '#5D2B88'); g.addColorStop(0.7, '#3A1660'); g.addColorStop(1, '#1C0A30'); x.fillStyle = g; x.fillRect(0, 0, 512, 256);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();   /* royal purple, deepening at the edges */
+  const sky = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: skyTex, depthWrite: false, fog: false }));
   sky.renderOrder = -10; scene.add(sky);
 
   /* the stage: the rose-quartz jewel box, always facing her; a soft glow beneath it */
-  const stageGlow = glowSprite(SOFT, 0xff8fc8, 1, 0.45); scene.add(stageGlow);
-  const stage = painting(ART.stage, 1, 1600 / 756); stage.renderOrder = -5; scene.add(stage);
+  const stageGlow = glowSprite(SOFT, 0xd4aa50, 1, 0.35); scene.add(stageGlow);
+  const stage = painting(ART.stage, 1, 1600 / 756); stage.material.color.set(0x9070d0); stage.renderOrder = -5; scene.add(stage);
 
   /* the five places: painted glass domes on a ring that turns; each has a halo and a host girl from the cast */
   const ring = new THREE.Group(); scene.add(ring);
-  const ASPECT = { kodesh: 761 / 900, reading: 703 / 900, math: 570 / 900, science: 543 / 900, writing: 722 / 900 };
+  const ASPECT = { kodesh: 690 / 860, general: 703 / 900, timeline: 900 / 760 };
   const pav = places.map((pl, i) => {
     const th = i / places.length * TAU, g = new THREE.Group(); g.position.set(Math.sin(th) * R, 0, Math.cos(th) * R); ring.add(g);
     const halo = glowSprite(SOFT, pl.hex, 4.4, 0.35); halo.position.y = 1.9; g.add(halo);
-    const dome = painting(ART[pl.id], 3.6, ASPECT[pl.id]); dome.center.set(0.5, 0); g.add(dome);
+    const dome = painting(pl.art, pl.id === 'timeline' ? 2.9 : 3.6, ASPECT[pl.id]); dome.center.set(0.5, 0); g.add(dome);
     const host = cameo(pl.pic, pl.color); host.position.set(1.75, 2.7, 0.3); g.add(host);
     const motes = [...Array(lite ? 3 : 6)].map((_, k) => { const s = glowSprite(STAR, [0xffffff, 0xfff1b8, pl.hex][k % 3], 0.2); s.userData.k = k; g.add(s); return s; });
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 4, 10), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 2; hit.userData.idx = i; g.add(hit);
@@ -67,18 +70,18 @@ export function start(o) {
 
   /* her crown: the painted tiara high in the middle, with a jewel per subject that lights up as she learns */
   const crownRig = new THREE.Group(); crownRig.position.set(0, 5.6, 0); scene.add(crownRig);
-  const crownHalo = glowSprite(radial([[0, 'rgba(255,214,140,.75)'], [0.45, 'rgba(255,95,162,.25)'], [1, 'rgba(255,95,162,0)']]), 0xffffff, 7.5, 0.9); crownRig.add(crownHalo);
-  const crownH = 2.3, crownW = crownH * 1126 / 634;
-  const crown = painting(ART.crown, crownH, 1126 / 634); crownRig.add(crown);
+  const crownHalo = glowSprite(radial([[0, 'rgba(255,214,140,.75)'], [0.45, 'rgba(140,80,200,.3)'], [1, 'rgba(140,80,200,0)']]), 0xffffff, 7.5, 0.9); crownRig.add(crownHalo);
+  const crownH = 2.8, crownW = crownH * 655 / 515;
+  const crown = painting(ART.crown, crownH, 655 / 515); crownRig.add(crown);
   const jewels = places.map((pl, i) => { const [u, v, big] = GEMS[pl.id], p = progress[pl.id] || 0;
     const pos = new THREE.Vector3((u - 0.5) * crownW, (0.5 - v) * crownH, 0.02);
-    const dim = new THREE.Sprite(new THREE.SpriteMaterial({ map: DIM, transparent: true, depthWrite: false, opacity: p > 0 ? 0 : 1 })); dim.scale.set(0.34 * big, 0.34 * big, 1); dim.position.copy(pos); crownRig.add(dim);
+    const dim = new THREE.Sprite(new THREE.SpriteMaterial({ map: DIM, transparent: true, depthWrite: false, opacity: 0 }));   /* the Keser crown is gold line art: a jewel not started yet simply has no glow */ dim.scale.set(0.34 * big, 0.34 * big, 1); dim.position.copy(pos); crownRig.add(dim);
     const glow = glowSprite(SOFT, pl.hex, (0.35 + p * 0.55) * big, p > 0 ? 0.35 + p * 0.5 : 0); glow.position.copy(pos); crownRig.add(glow);
     const glint = glowSprite(STAR, 0xffffff, 0.01); glint.position.copy(pos).add(new THREE.Vector3(0, 0, 0.04)); crownRig.add(glint);
     return { glint, glow, p, i }; });
   const bubby = cameo('/pics/keser-cast-bubby.webp', '#B98CFF'); bubby.position.set(2.9, -0.3, 0.1); bubby.scale.set(1.1, 1.34, 1); crownRig.add(bubby);   /* Bubby waits by her crown */
   const crownHit = new THREE.Mesh(new THREE.SphereGeometry(1.5, 10, 8), new THREE.MeshBasicMaterial({ visible: false })); crownRig.add(crownHit);
-  const crownSparks = [...Array(12)].map((_, i) => { const s = glowSprite(STAR, [0xffffff, 0xfff1b8, 0xffc2dd][i % 3], 0.01); s.userData.off = i * 0.83; crownRig.add(s); return s; });
+  const crownSparks = [...Array(12)].map((_, i) => { const s = glowSprite(STAR, [0xffffff, 0xf6e3b0, 0xd4aa50][i % 3], 0.01); s.userData.off = i * 0.83; crownRig.add(s); return s; });
 
   /* a girl from the cast in a gold oval frame that always faces her */
   function cameo(src, color) {
@@ -99,20 +102,20 @@ export function start(o) {
   }
 
   /* ---------- glitter, bokeh and drifting rose petals ---------- */
-  const palette = [0xffffff, 0xfff1b8, 0xffc2dd, 0xd9c2ff, 0xbff5ee].map(c => new THREE.Color(c)), glitter = [];
+  const palette = [0xffffff, 0xf6e3b0, 0xd4aa50, 0xd9c2ff, 0xfff1d0].map(c => new THREE.Color(c)), glitter = [];   /* gold glitter */
   for (const [count, size, spread] of [[phoneish ? 700 : 1400, 0.07, 20], [phoneish ? 160 : 320, 0.16, 16]]) {
     const pos = new Float32Array(count * 3), col = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) { pos[i * 3] = (Math.random() - 0.5) * spread * 2; pos[i * 3 + 1] = Math.random() * spread * 0.6 - 0.5; pos[i * 3 + 2] = (Math.random() - 0.5) * spread * 1.6; const c = palette[i % 5]; col.set([c.r, c.g, c.b], i * 3); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     const p = new THREE.Points(g, new THREE.PointsMaterial({ size, map: STAR, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); scene.add(p); glitter.push(p); }
-  const bokeh = [...Array(14)].map((_, i) => { const s = glowSprite(SOFT, [0xff5fa2, 0xb98cff, 0xffd27a, 0x5fe3cf][i % 4], 1.2 + Math.random() * 2.4, 0.14); const a = Math.random() * TAU;
+  const bokeh = [...Array(14)].map((_, i) => { const s = glowSprite(SOFT, [0x8a55bc, 0xd4aa50, 0xb08ad8, 0xf6e3b0][i % 4], 1.2 + Math.random() * 2.4, 0.14); const a = Math.random() * TAU;
     s.position.set(Math.cos(a) * (10 + Math.random() * 6), 1 + Math.random() * 8, -4 - Math.random() * 8); scene.add(s); return s; });
   const petalShape = new THREE.Shape(); petalShape.moveTo(0, -0.12); petalShape.bezierCurveTo(0.12, -0.08, 0.13, 0.08, 0, 0.13); petalShape.bezierCurveTo(-0.13, 0.08, -0.12, -0.08, 0, -0.12);
   const petalGeo = new THREE.ShapeGeometry(petalShape, 10); { const p = petalGeo.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setZ(i, x * x * 3 + y * 0.2); } petalGeo.computeVertexNormals(); }
-  const PN = phoneish ? 70 : 120, petals = new THREE.InstancedMesh(petalGeo, new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, emissive: 0x501830, emissiveIntensity: 0.6 }), PN);
+  const PN = phoneish ? 70 : 120, petals = new THREE.InstancedMesh(petalGeo, new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, emissive: 0x3a1660, emissiveIntensity: 0.6 }), PN);
   scene.add(new THREE.AmbientLight(0xffe4f0, 1.4)); const sun = new THREE.DirectionalLight(0xfff1d0, 1.2); sun.position.set(3, 8, 6); scene.add(sun);
   const pdat = [...Array(PN)].map(() => ({ x: (Math.random() - 0.5) * 20, z: (Math.random() - 0.5) * 14 + 1, y: Math.random() * 11, sp: 0.25 + Math.random() * 0.35, ph: Math.random() * TAU, rs: new THREE.Vector3(Math.random(), Math.random(), Math.random()) }));
-  const pcols = [0xffb3d1, 0xff7aa8, 0xfff0f5, 0xe5c7ff, 0xffd6e6].map(c => new THREE.Color(c)); pdat.forEach((_, i) => petals.setColorAt(i, pcols[i % 5])); scene.add(petals);
+  const pcols = [0xd4aa50, 0xf6e3b0, 0xb08ad8, 0x8a55bc, 0xfff1d0].map(c => new THREE.Color(c));   /* gold and purple petals */ pdat.forEach((_, i) => petals.setColorAt(i, pcols[i % 5])); scene.add(petals);
 
   /* ---------- glow ---------- */
   const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
