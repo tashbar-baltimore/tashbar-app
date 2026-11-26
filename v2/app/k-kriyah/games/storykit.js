@@ -62,7 +62,7 @@ export function makeStory(E, unit, script) {
         const has = hasPic(st.pic), pic = has ? PIC[st.pic]() : new THREE.Group(); const who = st.near === 'grown' && grown ? grown : boy;   /* a painting not here yet: the letter appears on its own */
         pic.position.set(who.position.x + .9, 2.0, who.position.z + .4); pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
         if (st.act) st.act(E, pic, boy, grown);
-        if (has) for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);
+        for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);   /* the story is told even before its painting comes */
         await toCentre(pic); await morph(pic, st.letter);
         for (const line of st.after) await E.say(line);
         await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
