@@ -48,7 +48,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var KINDS = ['apple', 'dots', 'orange', 'candle', 'pear', 'dots'], plan, R, done, FF, H;
   function readLayout(n) {
-    $('prompt').innerHTML = ''; $('work').innerHTML = ''; $('prompt').appendChild(U4.numCard(n));
+    $('prompt').innerHTML = ''; $('work').innerHTML = ''; $('prompt').appendChild(U4.numCard(n, true));
     var both = document.createElement('div'); both.className = 'both'; FF = U4.frame5(0, true); both.appendChild(FF.el);
     var b2 = document.createElement('div'); b2.className = 'bighand'; H = FR.fingers(0, true); b2.appendChild(H.el); both.appendChild(b2); $('work').appendChild(both);
   }
@@ -102,7 +102,7 @@
         if (task === 'match') {
           var g = F.card(n, KINDS[i % KINDS.length]); g.id = 'target'; $('prompt').appendChild(g);
           var others = F.shuffle([0, 1, 2, 3, 4, 5].filter(function (x) { return x !== n; })).slice(0, 2), opts = F.shuffle([n].concat(others)), box = document.createElement('div'); box.className = 'srcs';
-          opts.forEach(function (x, k) { var c = U4.numCard(x); c.id = 'o' + k; box.appendChild(c); }); $('work').appendChild(box);
+          opts.forEach(function (x, k) { var c = U4.numCard(x, true); c.id = 'o' + k; box.appendChild(c); }); $('work').appendChild(box);
           done = res; GAME.phase = 'answer'; F.lock(false); hooks();
           await F.say('Drag the number that tells how many.', { repeat: 'Drag the number that tells how many.' });
           return;

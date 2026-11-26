@@ -57,7 +57,9 @@
       setNum(2); FF.set(0);
       await F.say('This is a five-frame. Five boxes.');
       await F.say('This says two. Watch me fill two.');
-      for (var i = 0; i < 2; i++) { await F.handTo(FF.box(i)); await F.handTap(); FF.box(i).innerHTML = '<i class="ctr"></i>'; NK.sound.pop(); }
+      for (var i = 0; i < 3; i++) { await F.handTo(FF.box(i)); await F.handTap(); FF.box(i).innerHTML = '<i class="ctr"></i>'; NK.sound.pop(); }
+      await F.say('Oops, that is three. Take one out.');   /* show taking one out: tap a counter */
+      await F.handTo(FF.box(2)); await F.handTap(); FF.box(2).innerHTML = ''; NK.sound.back();
       await F.handTo($('check')); await F.handTap(); await F.yes($('ffw'), 'Two! Three boxes are empty.');
     },
     reset: function () { A.reset(); },
@@ -79,7 +81,7 @@
       for (var k = 0; k < nums.length; k++) {
         await new Promise(async function (res) {
           var n = nums[k]; helping = false; R = { n: n, misses: 0 }; FF.set(0); FF.lock(true); setNum(n); GAME.phase = 'busy'; F.lock(true);
-          await F.say('Quick! Look at the number.', { repeat: 'Fill the frame with that number.' });
+          await F.say('Quick! Look: ' + F.word(n) + '. Remember it!', { repeat: 'Fill the frame with ' + F.word(n) + '.' });
           await F.wait(1200); $('num').style.opacity = '.08';
           done = res; GAME.phase = 'answer'; F.lock(false); FF.lock(false); hooks();
           await F.say('Now fill the frame!');
