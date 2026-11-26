@@ -96,3 +96,13 @@ _From `node tools/core/ledger.js`, 2026-11-26 01:00 UTC (coordinator). Grade 1 s
 - #475 W13 Grade 2 Unit 1 polish (a 3; only 2 of 4 lessons pictured)
 - #474 C68 Grade 8 Unit 8.5 (a 3)
 Still to re-score: the unit checks in #483 and #481 (not fully scored).
+
+**Added 26 Nov 01:00 (coordinator audit of lesson PRs merged since 25 Nov 17:15):**
+- #499 C45 fluency batch 3: six 2s and 3s (L05.27, L05.29, L06.26, L06.28) raised to 4 by the author, not re-reviewed
+- #493 C45 fluency batch 2: three 3s (L05.21, L05.25) raised to 4 by the author; the camp passages were rewritten after the last review
+- #496 C68 Units 8.5/8.6: 8 new unit-check items with no fresh review, no table, no pictures
+- #506 W13: POW Power left at "3 → fixed"; the two new Writing Workshop tasks were not scored
+- #498 W13 Grade 1 Unit 2: Feeling Ending left at "3 → fixed"
+- Unit checks never scored in a table: C23.U21 (#516), C68.U88 (#486), C68.U77 (#501) and C68.U78 (#513), which got a verdict only, and the replaced items in #495
+- #497: Belongs or Not? check 3 and the Grade 6 "Claim About a Character" change were not scored
+- Pictures for only part of the lessons: #513, #501, #495, #506
