@@ -357,13 +357,20 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
   const skull = mesh(new THREE.SphereGeometry(.34, 36, 28), skinM); skull.scale.set(1, .98, .96); head.add(skull);
   [-1, 1].forEach(s => { const e = mesh(new THREE.SphereGeometry(.07, 14, 10), skinM, s * .325, -.02, 0); e.scale.set(.5, 1, .8); head.add(e); });   /* ears */
   const ns = mesh(new THREE.SphereGeometry(.042, 14, 10), nose, 0, -.03, .33, false); ns.scale.set(1.1, .9, .9); head.add(ns);
-  const eyes = [];
-  [-.12, .12].forEach(x => { const e = new THREE.Group(); e.position.set(x, .045, .285); const sc = mesh(new THREE.SphereGeometry(.068, 18, 14), white, 0, 0, 0, false); sc.scale.set(.95, 1.05, .55); e.add(sc);
-    e.add(mesh(new THREE.SphereGeometry(.045, 16, 12), M(eye, { roughness: .2, clearcoat: 1 }), 0, -.005, .026, false)); e.add(mesh(new THREE.SphereGeometry(.026, 12, 10), dark, 0, -.005, .046, false));
-    e.add(mesh(new THREE.SphereGeometry(.014, 8, 6), white, .016, .02, .062, false)); head.add(e); eyes.push(e);
-    const br = mesh(new THREE.CapsuleGeometry(.013, .07, 4, 8), beard ? M(beard) : hairM, x, .14, .3, false); br.rotation.z = Math.PI / 2 + (x > 0 ? -.12 : .12); head.add(br);   /* eyebrows */
-    if (!beard) head.add(mesh(new THREE.SphereGeometry(.055, 12, 10), M(0xff8f8f, { transparent: true, opacity: .45 }), x * 1.65, -.08, .255, false)); });   /* rosy cheeks */
-  const sm = mesh(new THREE.TorusGeometry(.085, .019, 8, 20, Math.PI), M(0x9b3b3b, { roughness: .4 }), 0, -.09, .31, false); sm.rotation.z = Math.PI; head.add(sm);
+  /* kind cartoon eyes (HoS 2026-11-26: the people looked scary): big, tall eyes set low and close, a large iris that fills the eye
+     (only a thin edge of white, so they never stare), two soft shines, eyebrows lifted, and a wide warm smile */
+  const eyes = [], cheekM = M(0xff8f8f, { transparent: true, opacity: .42 });
+  [-.11, .11].forEach(x => { const e = new THREE.Group(); e.position.set(x, .0, .29); const sc = mesh(new THREE.SphereGeometry(.078, 20, 16), white, 0, 0, 0, false); sc.scale.set(.9, 1.18, .5); e.add(sc);
+    const ir = mesh(new THREE.SphereGeometry(.07, 20, 16), M(eye, { roughness: .35, clearcoat: .6 }), 0, -.006, .016, false); ir.scale.set(.9, 1.12, .62); e.add(ir);
+    const pu = mesh(new THREE.SphereGeometry(.042, 16, 12), dark, 0, -.01, .04, false); pu.scale.set(.95, 1.1, .6); e.add(pu);
+    const shine = M(0xffffff, { roughness: 1, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .6 }); [[-.024, .03, .018], [.022, -.034, .009]].forEach(([sx, sy, r]) => { const h = mesh(new THREE.CircleGeometry(r, 14), shine, sx, sy, .065, false); e.add(h); });   /* two shines */
+    head.add(e); eyes.push(e);
+    const br = mesh(new THREE.TorusGeometry(.055, .012, 6, 14, Math.PI * .7), beard ? M(beard) : hairM, x, .145, .3, false); br.rotation.z = Math.PI * .15; head.add(br);   /* soft, lifted eyebrows */
+    const ck = mesh(new THREE.SphereGeometry(.058, 12, 10), cheekM, x * 1.6, beard ? -.06 : -.085, beard ? .27 : .258, false); ck.scale.set(1, .7, .5); head.add(ck); });   /* rosy cheeks */
+  const sm = mesh(new THREE.TorusGeometry(.09, .02, 8, 22, Math.PI), M(0xb5454a, { roughness: .4 }), 0, -.11, .3, false); sm.rotation.z = Math.PI; head.add(sm);   /* a wide, warm smile */
+  const tongue = mesh(new THREE.SphereGeometry(.07, 16, 8, 0, Math.PI * 2, Math.PI * .5, Math.PI * .5), M(0xc7525a, { roughness: .5 }), 0, -.115, .292, false); tongue.scale.set(1.1, .62, .4); head.add(tongue);   /* an open, happy mouth */
+  ns.position.y = -.07; ns.scale.set(.9, .75, .8);
+  if (!beard && !woman) { head.scale.setScalar(1.1); head.position.y = 1.35; }   /* a child's head is a little bigger: rounder and softer */
   /* hair */
   if (woman) { const h = mesh(new THREE.SphereGeometry(.375, 30, 20, 0, Math.PI * 2, 0, Math.PI * .5), hairM, 0, .1, -.04); h.scale.set(1.05, 1.05, 1.02); head.add(h);
     head.add(mesh(new THREE.CapsuleGeometry(.21, .22, 6, 14), hairM, 0, -.2, -.15)); [-1, 1].forEach(sd => head.add(mesh(new THREE.CapsuleGeometry(.1, .3, 6, 12), hairM, sd * .31, -.14, -.02)));
@@ -374,7 +381,7 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
   if (hat) { head.add(mesh(new THREE.CylinderGeometry(.47, .47, .03, 32), dark, 0, .22, 0)); head.add(mesh(new THREE.CylinderGeometry(.27, .3, .3, 28), dark, 0, .37, 0)); head.add(mesh(new THREE.CylinderGeometry(.302, .302, .05, 28), M(0x0d1420), 0, .25, 0)); }
   else if (!woman) { const k = mesh(new THREE.SphereGeometry(.25, 28, 12, 0, Math.PI * 2, 0, Math.PI / 2.4), M(kippah, { roughness: .45, clearcoat: .4 }), 0, .21, -.04); k.rotation.x = -.25; head.add(k); }
   if (beard) { const bm = M(beard, { roughness: .85, clearcoat: 0 }); const bd = mesh(new THREE.SphereGeometry(.3, 26, 18, 0, Math.PI * 2, Math.PI * .6, Math.PI * .4), bm, 0, -.02, .07); bd.scale.set(1.0, 1.5, 1); head.add(bd);
-    const mu = mesh(new THREE.CapsuleGeometry(.03, .14, 4, 10), bm, 0, -.065, .315, false); mu.rotation.z = Math.PI / 2; head.add(mu); sm.position.set(0, -.115, .34); sm.scale.set(.55, .45, .55); }   /* a small smile under the moustache */
+    const mu = mesh(new THREE.CapsuleGeometry(.028, .13, 4, 10), bm, 0, -.115, .315, false); mu.rotation.z = Math.PI / 2; head.add(mu); sm.position.set(0, -.175, .372); sm.scale.set(.7, .55, .6); sm.material = M(0xd4636a, { roughness: .4 }); tongue.visible = false; }   /* a small smile under the moustache */
   b.userData = { armR, armL, head, eyes, legL, legR, mood: 'calm', blinkAt: 2 + Math.random() * 3 };
   onFrame(t => { const u = b.userData; if (!b.visible) return;
     if (t > u.blinkAt) { u.eyes.forEach(e => e.scale.y = .1); if (t > u.blinkAt + .12) { u.eyes.forEach(e => e.scale.y = 1); u.blinkAt = t + 2.5 + Math.random() * 3; } }
