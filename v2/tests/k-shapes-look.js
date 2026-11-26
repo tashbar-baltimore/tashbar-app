@@ -11,7 +11,11 @@ module.exports = async function (browser) {
   const out = { fails: [], oks: [] }, bad = m => out.fails.push('2.0 K shapes look: ' + m);
   /* every game names a world, and that world has its painted pictures */
   const look = fs.readFileSync(path.join(APP, 'look.js'), 'utf8');
-  for (const f of fs.readdirSync(APP).filter(x => x.endsWith('.html'))) {
+  /* the look-around page (index.html) opens every game, nothing locked */
+  const idx = fs.existsSync(path.join(APP, 'index.html')) ? fs.readFileSync(path.join(APP, 'index.html'), 'utf8') : '';
+  if (!idx) bad('index.html (the page of all games) is missing');
+  for (const f of fs.readdirSync(APP).filter(x => x.endsWith('.html') && x !== 'index.html')) if (idx && !idx.includes('href="' + f + '"')) bad('index.html does not open ' + f);
+  for (const f of fs.readdirSync(APP).filter(x => x.endsWith('.html') && x !== 'index.html')) {
     const m = fs.readFileSync(path.join(APP, f), 'utf8').match(/world: '([a-z]+)'/);
     if (!m) { bad(f + ' has no world'); continue; }
     if (!new RegExp('function ' + m[1] + '\\(').test(look)) bad(f + ' names a world that does not exist: ' + m[1]);
