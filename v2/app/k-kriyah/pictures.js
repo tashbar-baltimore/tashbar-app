@@ -157,46 +157,41 @@ export function makePictures(E) {
         const an = mesh(new THREE.CylinderGeometry(.012, .012, .25, 4), bm, .36, .22, s * .06, false); an.rotation.z = -.5; g.add(an);
         [-.12, 0, .12].forEach(x => { const lg = mesh(new THREE.CylinderGeometry(.015, .015, .3, 4), bm, x, -.12, s * .14, false); lg.rotation.x = s * .7; g.add(lg); }); }); return g; },
   };
-  /* the ChatGPT pictures (art/obj) replace the simple 3D ones; each stands as a flat card that always faces the boy */
-  const IMG = { dag: ['fish', 1.24], dov: ['bear', .85], gamal: ['camel', 1.02], gezer: ['carrot', .84], har: ['mountain', 1.27], bayis: ['house', 1.14], vered: ['rose', .88], zevuv: ['fly', 1.06], zayis: ['olives', 1.23],
-    chatul: ['cat', .82], chamor: ['donkey', .79], taleh: ['lamb', .91], tavas: ['peacock', 1.06], yonah: ['dove', 1.1], yad: ['hand', .91], kadur: ['beachball', 1], kelev: ['dog', .94], limon: ['lemon', .86], mayim: ['water', .85],
-    melafefon: ['cucumber', 1.16], nemalah: ['ant', 1.06],
-    sus: ['horse', .9], sulam: ['ladder', .66], eitz: ['tree', 1.03], anan: ['cloud', 1.6], parpar: ['butterfly', 1.21], pil: ['elephant', 1.19] };
-  const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp'); t.colorSpace = THREE.SRGBColorSpace; return t; })());
-  for (const [w, [f, a]] of Object.entries(IMG)) P[w] = () => { const g = new THREE.Group(), h = 1.7, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex(f), transparent: true, alphaTest: .4 }));
-    sp.scale.set(h * a, h, 1); g.add(sp); g.userData.card = sp; return g; };
+  /* the painted pictures (art/obj), each a flat card that always faces the boy. Its width follows the picture's own shape. */
+  const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp', () => fit.filter(x => x.f === f).forEach(x => x.go())); t.colorSpace = THREE.SRGBColorSpace; return t; })());
+  const fit = [];
+  for (const w of Object.keys(WORDS)) { const f = WORDS[w].file || w, m = WORDS[w].model; if (!HAVE.has(f) && m && P[m]) { P[w] = P[m]; continue; } P[w] = () => { const g = new THREE.Group(), h = 1.7, t = tex(f), sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, alphaTest: .4 }));
+    const go = () => { const im = t.image; if (im && im.width) sp.scale.set(h * Math.min(1.6, im.width / im.height), h, 1); }; sp.scale.set(h, h, 1); go(); fit.push({ f, go }); g.add(sp); g.userData.card = sp; return g; }; }
   return P;
 }
 const texCache = {};   /* each picture loads once */
-/* the words, each with the letter it starts with and the short line he hears */
+/* the words (HoS 2026-11-26: the boys' first language is English, so a picture goes with the letter its ENGLISH name starts with:
+   a dog goes to Daled). Each word: the letter of its first sound, the painted picture (file, if not the word itself) and what he hears.
+   No English word starts with Ches's or Tzadik's sound, so they use words every boy knows: challah and tzitzis.
+   Alef and Ayin are quiet: they have no picture. A letter with two sounds' worth of look-alikes is never asked by a word that could fit both. */
 export const WORDS = {
-  bayis: { letter: 'beis', say: 'Bayis. A house!' },
-  gefen: { letter: 'gimmel', say: 'Gefen. A grapevine!' },
-  gamal: { letter: 'gimmel', say: 'Gamal. A camel!' },
-  gezer: { letter: 'gimmel', say: 'Gezer. A carrot!' },
-  dag: { letter: 'daled', say: 'Dag. A fish!' },
-  dov: { letter: 'daled', say: 'Dov. A bear!' },
-  har: { letter: 'hei', say: 'Har. A mountain!' },
-  vered: { letter: 'vov', say: 'Vered. A rose!' },
-  vov: { letter: 'vov', say: 'A vov. A hook!' },
-  zevuv: { letter: 'zayin', say: 'Zevuv. A fly!' },
-  zayis: { letter: 'zayin', say: 'Zayis. An olive!' },
-  chatul: { letter: 'ches', say: 'Chatul. A cat!' },
-  chamor: { letter: 'ches', say: 'Chamor. A donkey!' },
-  taleh: { letter: 'tes', say: 'Taleh. A lamb!' },
-  tavas: { letter: 'tes', say: 'Tavas. A peacock!' },
-  yad: { letter: 'yud', say: 'Yad. A hand!' },
-  yonah: { letter: 'yud', say: 'Yonah. A dove!' },
-  kadur: { letter: 'kaf', say: 'Kadur. A ball!' },
-  limon: { letter: 'lamed', say: 'Limon. A lemon!' },
-  sus: { letter: 'samech', say: 'Sus. A horse!' },
-  sulam: { letter: 'samech', say: 'Sulam. A ladder!' },
-  eitz: { letter: 'ayin', say: 'Eitz. A tree!' },
-  anan: { letter: 'ayin', say: 'Anan. A cloud!' },
-  parpar: { letter: 'pei', say: 'Parpar. A butterfly!' },
-  pil: { letter: 'pei', say: 'Pil. An elephant!' },
-  mayim: { letter: 'mem', say: 'Mayim. Water!' },
-  melafefon: { letter: 'mem', say: 'Melafefon. A cucumber!' },
-  nemalah: { letter: 'nun', say: 'Nemalah. An ant!' },
+  bear: { letter: 'beis', say: 'A bear!' }, balloon: { letter: 'beis', say: 'A balloon!' }, ball: { letter: 'beis', file: 'beachball', say: 'A ball!' }, basket: { letter: 'beis', say: 'A basket!' },
+  goat: { letter: 'gimmel', say: 'A goat!' }, grapes: { letter: 'gimmel', model: 'gefen', say: 'Grapes!' }, gift: { letter: 'gimmel', say: 'A present! A gift!' }, goose: { letter: 'gimmel', say: 'A goose!' },
+  dog: { letter: 'daled', say: 'A dog!' }, donkey: { letter: 'daled', say: 'A donkey!' }, drum: { letter: 'daled', say: 'A drum!' },
+  house: { letter: 'hei', say: 'A house!' }, horse: { letter: 'hei', say: 'A horse!' }, hand: { letter: 'hei', say: 'A hand!' },
+  van: { letter: 'vov', say: 'A van!' }, vase: { letter: 'vov', say: 'A vase!' }, violin: { letter: 'vov', say: 'A violin!' },
+  zebra: { letter: 'zayin', say: 'A zebra!' }, zipper: { letter: 'zayin', say: 'A zipper!' },
+  challah: { letter: 'ches', model: 'challah', say: 'Challah!' },
+  turtle: { letter: 'tes', say: 'A turtle!' }, table: { letter: 'tes', say: 'A table!' }, tree: { letter: 'tes', say: 'A tree!' },
+  yoyo: { letter: 'yud', say: 'A yo-yo!' }, yarn: { letter: 'yud', say: 'Yarn!' },
+  cat: { letter: 'kaf', say: 'A cat!' }, cake: { letter: 'kaf', say: 'A cake!' }, carrot: { letter: 'kaf', say: 'A carrot!' }, camel: { letter: 'kaf', say: 'A camel!' },
+  lemon: { letter: 'lamed', say: 'A lemon!' }, lamb: { letter: 'lamed', say: 'A lamb!' }, ladder: { letter: 'lamed', say: 'A ladder!' },
+  mountain: { letter: 'mem', say: 'A mountain!' }, monkey: { letter: 'mem', file: 'toymonkey', say: 'A monkey!' },
+  nest: { letter: 'nun', say: 'A nest!' }, nut: { letter: 'nun', say: 'A nut!' },
+  sun: { letter: 'samech', say: 'The sun!' }, sock: { letter: 'samech', say: 'A sock!' },
+  pear: { letter: 'pei', say: 'A pear!' }, peacock: { letter: 'pei', say: 'A peacock!' }, pomegranate: { letter: 'pei', say: 'A pomegranate!' },
+  fish: { letter: 'fei', say: 'A fish!' }, flower: { letter: 'fei', say: 'A flower!' }, fly: { letter: 'fei', say: 'A fly!' },
+  tzitzis: { letter: 'tzadik', say: 'Tzitzis!' },
+  kite: { letter: 'kuf', say: 'A kite!' }, key: { letter: 'kuf', say: 'A key!' },
+  rabbit: { letter: 'reish', say: 'A rabbit!' }, rose: { letter: 'reish', say: 'A rose!' },
+  shoe: { letter: 'shin', say: 'A shoe!' }, sheep: { letter: 'shin', say: 'A sheep!' },
+  teapot: { letter: 'tav', say: 'A teapot!' },
 };
-export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah', sus: 'Sus', sulam: 'Sulam', eitz: 'Eitz', anan: 'Anan', parpar: 'Parpar', pil: 'Pil' };
+export const HAVE = new Set(["ant", "apple", "backpack", "balloon", "basket", "beachball", "bear", "bird", "blocks", "butterfly", "cake", "camel", "carrot", "cat", "clock", "cloud", "cucumber", "dog", "donkey", "dove", "drum", "elephant", "fish", "flower", "fly", "hand", "horse", "house", "ladder", "lamb", "lemon", "mountain", "olives", "peacock", "pear", "pomegranate", "rabbit", "rose", "sun", "table", "toymonkey", "toytrain", "tree", "turtle", "water"]);   /* painted objects on disk (made by a script); a word whose painting hasn't come yet has no picture */
+export const hasPic = w => !!WORDS[w] && (HAVE.has(WORDS[w].file || w) || !!WORDS[w].model);   /* a painting, or until it comes, a simple 3D model */
+export const WORD_NAME = Object.fromEntries(Object.keys(WORDS).map(w => [w, { yoyo: 'Yo-yo', ball: 'Ball' }[w] || w[0].toUpperCase() + w.slice(1)]));
