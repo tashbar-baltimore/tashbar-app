@@ -395,7 +395,7 @@ async function check() {
   const missed = {};
   for (let i = 0; i < items.length; i++) { G.round = i; if (await items[i]()) right++; else { const g = { hop: 'hop', wall: 'wall', crates: 'crates', hear: 'crates' }[G.ask.kind]; missed[g] = (missed[g] || 0) + 1; } dots(R, i + 1); }
   G.right = right; G.mastered = right >= 7;
-  clearTemp(); const m = keep(addKid(S, 'mendy', V(0, 0, 0))); S.frame(V(0, 1.4, 0), 10, 7, V(0, 0.45, 1));
+  clearTemp(); const m = keep(addKid(S, 'mendy', V(PORTRAIT ? 0 : -3.2, 0, 0))); m.rotation.y = PORTRAIT ? 0 : 0.4; S.frame(V(0, PORTRAIT ? -0.6 : 1.4, 0), 10, 7, V(0, 0.45, 1));
   if (G.mastered) { m.act('cheer', 3); confetti(S, V(0, 3, 0), 80); await say('You did it! You count to 120!'); }
   else { m.act('wave', 2); await say('Good work! Let us practice and try again.');
     G.practice = Object.keys(missed).sort((a, b) => missed[b] - missed[a])[0] || 'hop';   /* the game for what he missed most */ document.getElementById('onward').href = 'unit1.html?g=' + G.practice; }
