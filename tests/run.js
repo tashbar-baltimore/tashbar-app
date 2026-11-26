@@ -4,6 +4,7 @@
      ALL=1          play every lesson (slow: about 2 hours)
      UPDATE=1       rewrite tests/baseline.json from this run (use only when a number is meant to change)
      PAGES=4        how many kid pages play lessons side by side (default 4; PAGES=1 plays them all on one page, as before)
+     LANE=keser     the Keser-only lane: static checks, art library, 2.0 and Keser checks and Keser tests only (CI uses it for keser/ + art/ changes)
      PART=1/2       play only this part of the lessons (sampled lessons and One Bite bites, every 2nd one starting with the 1st);
                     everything else runs in full. CI runs every part on its own machine and passes only if every part passed.
    Everything runs against a pretend server with made-up kids. No Google account, no real student data.
@@ -38,11 +39,14 @@ function staticChecks() {
     if (h !== p[1] || b.length !== p[2]) { fail('packs/' + name + '.html does not match ContentPacks.js (sha256 ' + h.slice(0, 12) + ', ' + b.length + ' bytes; table says ' + p[1].slice(0, 12) + ', ' + p[2] + ')'); bad++; }
   }
   if (!bad) ok(Object.keys(T).length + ' lesson packs match ContentPacks.js');
+  try { const wm = require('./lib/writemin.js').source(); wm.fails.forEach(fail); wm.oks.forEach(ok); } catch (e) { fail('writing check crashed: ' + String(e).slice(0, 200)); }   /* gap A3a: a write is never right on its own */
   report.counts.packs = Object.keys(T).length;
   picsCheck();
   conflictMarks();
   /* SHARED ART LIBRARY (HoS 2026-11-24): every file in art/ cataloged, sources and licences recorded, size limits, no duplicates */
   try { const a = require('./lib/art.js')(); a.fails.forEach(fail); a.oks.forEach(ok); } catch (e) { fail('art library check crashed: ' + String(e).slice(0, 200)); }
+  /* CSS FONT SHORTHAND (gap A4, issue #402): no "font:<size> inherit", which the browser drops */
+  try { const cf = require('./lib/cssfont.js')(); cf.fails.forEach(fail); cf.oks.forEach(ok); } catch (e) { fail('CSS font check crashed: ' + String(e).slice(0, 200)); }
 }
 
 /* No leftover merge-conflict marks in any text file in the repository (25 Nov: #484 left them in docs/CORE-GROWTH-LANES.md). */
@@ -70,6 +74,12 @@ function picsCheck() {
     const lines = String((e.stdout || '') + (e.stderr || '') || e).trim().split('\n');
     lines.slice(0, -1).slice(0, 40).forEach(l => fail('pictures: ' + l)); fail('pictures: ' + lines[lines.length - 1]);
   } finally { try { fs.unlinkSync(tmp); } catch (e) {} }
+}
+
+/* Keser Girls 3.0 (keser/README.md): every test a Keser piece brings in keser/tests/*.js runs here */
+async function keserTests(browser) {
+  try { const KT = path.join(__dirname, '..', 'keser', 'tests'); if (fs.existsSync(KT)) for (const f of fs.readdirSync(KT).filter(x => x.endsWith('.js')).sort()) {
+      try { const r = await require(path.join(KT, f))(browser); (r.fails || []).forEach(fail); (r.oks || []).forEach(ok); } catch (e) { fail('Keser test ' + f + ' crashed: ' + String(e).slice(0, 200)); } } } catch (e) { fail('Keser tests could not run: ' + String(e).slice(0, 200)); }
 }
 
 const FAKE = ({ tools, parts }) => {
@@ -118,9 +128,7 @@ async function kidTests(browser) {
   /* 2.0 (v2/README.md): every test a 2.0 piece brings in v2/tests/*.js runs here; each exports async (browser) => { fails, oks } */
   try { const V2T = path.join(__dirname, '..', 'v2', 'tests'); if (fs.existsSync(V2T)) for (const f of fs.readdirSync(V2T).filter(x => x.endsWith('.js')).sort()) {
       try { const r = await require(path.join(V2T, f))(browser); (r.fails || []).forEach(fail); (r.oks || []).forEach(ok); } catch (e) { fail('2.0 test ' + f + ' crashed: ' + String(e).slice(0, 200)); } } } catch (e) { fail('2.0 tests could not run: ' + String(e).slice(0, 200)); }
-  /* Keser Girls 3.0 (keser/README.md): every test a Keser piece brings in keser/tests/*.js runs here */
-  try { const KT = path.join(__dirname, '..', 'keser', 'tests'); if (fs.existsSync(KT)) for (const f of fs.readdirSync(KT).filter(x => x.endsWith('.js')).sort()) {
-      try { const r = await require(path.join(KT, f))(browser); (r.fails || []).forEach(fail); (r.oks || []).forEach(ok); } catch (e) { fail('Keser test ' + f + ' crashed: ' + String(e).slice(0, 200)); } } } catch (e) { fail('Keser tests could not run: ' + String(e).slice(0, 200)); }
+  await keserTests(browser);
   /* lessons */
   /* the lessons page, plus PAGES-1 more kid pages opened the same way: the sampled lessons and the One Bite bites are shared out over them
      and played side by side (the kit had grown past 40 minutes on one page). Every lesson is still played once, with the same checks. */
@@ -248,6 +256,12 @@ async function kidTests(browser) {
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* CORE GROWTH (tests/lib/core.js, job T): every core lesson reached the page, no clash with an existing lesson */
   try { const cg = await require('./lib/core.js').page(pg); cg.fails.forEach(fail); cg.oks.forEach(ok); } catch (e) { fail('core skills page check crashed: ' + String(e).slice(0, 200)); }
+  /* A WRITE IS NEVER RIGHT ON ITS OWN (tests/lib/writemin.js, gap A3a): blank and short pieces fail, grade minimums */
+  try { const wm = await require('./lib/writemin.js').page(pg); wm.fails.forEach(fail); wm.oks.forEach(ok); } catch (e) { fail('writing page check crashed: ' + String(e).slice(0, 200)); }
+  /* A LESSON NEVER STARTS WITHOUT ITS ACTIVITY KINDS (tests/lib/latekinds.js, gap A6): the new kinds are in the kit the moment it exists */
+  try { const lk = await require('./lib/latekinds.js').page(pg); lk.fails.forEach(fail); lk.oks.forEach(ok); } catch (e) { fail('late kinds check crashed: ' + String(e).slice(0, 200)); }
+  /* EVERY LIVE WRITING UNIT ENDS IN A WORKSHOP PIECE (tests/lib/unitpieces.js, gap A3c): Grade 2+ W13 units, at the grade minimum */
+  try { const up = await require('./lib/unitpieces.js').page(pg); up.fails.forEach(fail); up.oks.forEach(ok); } catch (e) { fail('writing units check crashed: ' + String(e).slice(0, 200)); }
   /* SCIENCE INDEX NAMES (tests/lib/sciindex.js, issue #391): staff see the same name as the Science lesson a boy really gets */
   try { const si = await require('./lib/sciindex.js').page(pg); si.fails.forEach(fail); si.oks.forEach(ok); } catch (e) { fail('science index page check crashed: ' + String(e).slice(0, 200)); }
   /* ONE BITE player (tests/lib/onebite.js) */
@@ -263,6 +277,9 @@ async function kidTests(browser) {
   /* BLOCK BUILDERS workbook (tests/lib/blockbuilders.js, HoS 2026-11-22) */
   try { const bb = await require('./lib/blockbuilders.js')(pg); bb.fails.forEach(fail); bb.oks.forEach(ok); Object.assign(report.counts, bb.counts); }
   catch (e) { fail('Block Builders test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* CHUMASH & TIMELINE LAB, its own curriculum (tests/lib/chumashlab.js, 2026-11-26) */
+  try { const cl = await require('./lib/chumashlab.js')(pg); cl.fails.forEach(fail); cl.oks.forEach(ok); }
+  catch (e) { fail('Chumash Lab test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* Store Fun tab (tests/lib/storefx.js, HoS 2026-11-22): no two items share a name, a picture, a tap blast, a trail or nearly the same app colors */
   /* THE BUTTON SYSTEM (tests/lib/uikit.js, src/UiKit.html, HoS 2026-11-23): every part of the kit, measured inside the real page */
   try { const uk = await require('./lib/uikit.js')(pg); uk.fails.forEach(fail); uk.oks.forEach(ok); }
@@ -290,6 +307,18 @@ async function staffTests(browser) {
 
 (async () => {
   staticChecks();
+  /* KESER-ONLY LANE (HoS 2026-11-26): the test check runs LANE=keser for a pull request that changes only keser/ and art/ (and at least one keser/ file).
+     Such a change cannot reach 1.0 or 2.0 code, so the boys' lesson and staff pages are not played; everything that CAN be affected still runs:
+     every static check above (files parse, packs, picture links, conflict marks, the art library), the 2.0 and Keser checks, and every Keser test. */
+  if (process.env.LANE === 'keser') {
+    const browser = await chromium.launch();
+    try { await keserTests(browser); } catch (e) { fail('Keser lane crashed: ' + String(e && e.stack || e).slice(0, 400)); }
+    await browser.close();
+    try { const v = require('./lib/v2check.js')(); v.fails.forEach(fail); v.oks.forEach(ok); } catch (e) { fail('2.0 check crashed: ' + String(e).slice(0, 200)); }
+    try { const k = require('./lib/kesercheck.js')(); k.fails.forEach(fail); k.oks.forEach(ok); } catch (e) { fail('Keser Girls 3.0 check crashed: ' + String(e).slice(0, 200)); }
+    console.log('\nKESER-ONLY LANE: boys\' lesson and staff pages not played (this change touches only keser/ and art/)');
+    console.log(fails.length ? '\n' + fails.length + ' FAILURE(S)' : '\nALL TESTS PASSED'); process.exit(fails.length ? 1 : 0);
+  } else if (process.env.LANE) { console.log('FAIL  LANE must be "keser" or not set (got "' + process.env.LANE + '")'); process.exit(1); }
   const browser = await chromium.launch();
   try { await kidTests(browser); await staffTests(browser); } catch (e) { fail('test run crashed: ' + String(e && e.stack || e).slice(0, 400)); }
   try { const v = require('./lib/v2check.js')(); v.fails.forEach(fail); v.oks.forEach(ok); } catch (e) { fail('2.0 check crashed: ' + String(e).slice(0, 200)); }

@@ -181,7 +181,8 @@ body.gm-k2 #gm-nav button{font-size:13px}
 #gm .gm-score b{display:block;font-size:24px;color:#39FF88;font-family:'JetBrains Mono',ui-monospace,monospace}
 #gm .gm-score small{font-size:10px;color:#A9A6E8;font-weight:900;letter-spacing:.06em}
 #gm .gm-chest{margin-top:10px;border-radius:14px;padding:9px 12px;background:rgba(255,216,77,.12);border:2px solid rgba(255,216,77,.4);font-weight:800;font-size:13px;color:#FFE9A8}
-#gm .gm-cta{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:31}
+#gm .gm-cta{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(28px + env(safe-area-inset-bottom,0px));z-index:31}
+@media (max-width:600px){#gm .gm-cta{bottom:calc(72px + env(safe-area-inset-bottom,0px))}}
 #gm .gm-cta .gm-play{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #gm .gm-play2 small{display:block;margin-top:3px;font-size:13px;font-style:normal;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis}
 #gm .gm-lock{margin-top:16px;border-radius:24px;padding:20px 16px;text-align:center;background:rgba(0,0,0,.35);border:3px dashed rgba(255,255,255,.25)}
@@ -264,6 +265,8 @@ body.gm-k2 #gm-nav{--gmhalo:70px}
 #gm .gm-ladder span{flex:1;border-radius:10px;padding:5px 0;font-size:20px;background:rgba(255,255,255,.06);filter:grayscale(1);opacity:.45}
 #gm .gm-ladder span.got{filter:none;opacity:1;background:rgba(255,226,89,.16)}
 #gm .gm-ladder span.cur{outline:3px solid #FFE259}
+#gm .gm-rkp{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:6px}
+#gm .gm-stk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}#gm .gm-stk .tlk-box{display:grid;width:100%;box-sizing:border-box;text-align:left;padding:12px 14px}#gm .gm-stk .tlk-box b{font-size:30px}
 #gm .gm-stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 #gm .gm-stat div{border-radius:18px;padding:12px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12)}
 #gm .gm-stat b{display:block;font-size:32px;font-weight:900;line-height:1.05}
@@ -409,7 +412,9 @@ body.gm-nav .stkpis b{color:#39FF88!important}body.gm-nav .stkpis small,body.gm-
 #gm-room .hd button:not(.tlk){border:0;border-radius:14px;padding:10px 14px;font-family:inherit;font-weight:900;font-size:15px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 4px 0 #B36B00;cursor:pointer}
 #gm-room .bd{flex:1;overflow:auto;padding:14px}
 #gm-room .bd>*{max-width:900px;margin-left:auto!important;margin-right:auto!important}
-#gm-room .bd .panel,#gm-room .bd section{border-radius:22px!important}
+#gm-room .bd .panel,#gm-room .bd section{border-radius:22px!important;color:#1E1B4B}   /* the room is white text; its panels are white cards, so their words are dark (the titles were invisible) */
+#gm-room .bd .tlk-pill{border:0!important;box-shadow:none!important;text-transform:none;letter-spacing:0}#gm-room .bd .tlk-pill.tlk-money{background:var(--tlk-money-bg)!important;color:var(--tlk-money-fg)!important}#gm-room .bd .tlk-pill.tlk-prog{background:var(--tlk-prog-bg)!important;color:var(--tlk-prog-fg)!important}#gm-room .bd .tlk-pill.tlk-rank{background:var(--tlk-rank-bg)!important;color:var(--tlk-rank-fg)!important}
+#gm-room .bd .tier.tlk-pill{font-size:11px;padding:2px 8px;align-self:flex-start;width:max-content}#gm-room .bd .p3h .tlk-quiet{margin-left:auto}#gm-room .bd .p3shab.tlk,#gm-room .bd .tlk-main.tlk-wide{margin-top:12px}
 #gm-room [id^=p3w]{color:#5B3FD9!important;-webkit-text-fill-color:#5B3FD9!important}
 body.gm-nav .hpdraw{background:rgba(10,7,38,.8)!important}
 body.gm-nav .hpsheet{border-left:4px solid #FFD84D!important;box-shadow:-10px 0 40px rgba(0,0,0,.5)!important;background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%)!important;color:#fff}
@@ -831,9 +836,9 @@ function growthHTML(ws){ const n=steps(), R=rankOf(n), wk=weekCounts(), s=(A.st&
  const ladder=RANKS.map(r=>`<span class="${n>=r[0]?'got':''}${r===R.r?' cur':''}" title="${r[2]}: ${r[0]} steps">${r[1]}</span>`).join('');
  const L=learnedList(), learned=L.length?L.map(id=>{ const x=nm(id), W=WORLDS[subjOfId(id)]||['⭐','']; return `<div><i>${W[0]}</i><span>${esc(x[0])}${x[1]?`<small>${/ Level \d+$/.test(x[1])?esc(x[1]):'I learned: '+esc(x[1])}</small>`:''}</span></div>`; }).join(''):'<div><i>🌱</i><span>Nothing yet this week<small>Clear a level and it shows up here!</small></span></div>';
  let bdg=''; try{ if(typeof BADGES!=='undefined'&&A.st&&A.st.badges) bdg=BADGES.map(b=>`<div class="${A.st.badges.includes(b[0])?'':'no'}" title="${esc(b[3])}"><b>${b[1]}</b>${esc(b[2])}</div>`).join(''); }catch(e){ bdg=''; }
- return `<div class="gm-rk"><div class="md">${R.r[1]}</div><h1>${R.r[2]}</h1><small>⚡ ${(n*100).toLocaleString()} XP · ${n} step${n===1?'':'s'} mastered${R.nx?` · ${R.nx[0]-n} to ${R.nx[2]}`:' · TOP RANK!'}</small><div class="gm-ladder">${ladder}</div></div>
+ return `<div class="gm-rk"><div class="md">${R.r[1]}</div><h1>${R.r[2]}</h1>${window.TLK?`<div class="gm-rkp">${TLK.pill('rank','⚡ '+(n*100).toLocaleString()+' XP')}${TLK.pill('prog',n+' step'+(n===1?'':'s')+' mastered')}${R.nx?TLK.pill('prog',(R.nx[0]-n)+' to '+R.nx[2]):TLK.pill('rank','Top rank!')}</div>`:`<small>⚡ ${(n*100).toLocaleString()} XP · ${n} step${n===1?'':'s'} mastered${R.nx?` · ${R.nx[0]-n} to ${R.nx[2]}`:' · TOP RANK!'}</small>`}<div class="gm-ladder">${ladder}</div></div>
  <div class="gm-cheer">${cheer}</div>
- <div class="gm-stat"><div><small>📈 THIS WEEK</small><b>${wk.w}</b></div><div><small>⏪ LAST WEEK</small><b style="color:#A9A6E8">${wk.p}</b></div><div><small>🔥 DAYS IN A ROW</small><b style="color:#FFB86B">${s}</b></div><div><small>🏰 BOSSES BEATEN</small><b style="color:#FF8AB0">${bb}</b></div></div>
+ ${window.TLK?`<div class="gm-stk">${TLK.box('prog','This week',wk.w)}${TLK.box('prog','Last week',wk.p)}${TLK.box('rank','Days in a row',s)}${TLK.box('rank','Bosses beaten',bb)}</div>`:`<div class="gm-stat"><div><small>📈 THIS WEEK</small><b>${wk.w}</b></div><div><small>⏪ LAST WEEK</small><b style="color:#A9A6E8">${wk.p}</b></div><div><small>🔥 DAYS IN A ROW</small><b style="color:#FFB86B">${s}</b></div><div><small>🏰 BOSSES BEATEN</small><b style="color:#FF8AB0">${bb}</b></div></div>`}
  <div class="gm-sec">🧠 WHAT I LEARNED THIS WEEK</div><div class="gm-learned">${learned}</div>
  ${bdg?`<div class="gm-sec">🏅 MY BADGES</div><div class="gm-bdg">${bdg}</div>`:''}`; }
 /* ===== WIN MOMENTS: right after he masters a level and comes back to the map (his success only, once each).
@@ -953,6 +958,9 @@ function stuffHTML(){ const M=document.querySelector('.hlx-mine'); if(!M) return
  return `<div class="gm-room-h" style="--a:#00C46A;--b:#00B3FF"><div class="s">🎒 MY STUFF</div><h1>My Stuff</h1><small>Your bank, trophies, Torah passport, Shabbos page and more.</small></div><div class="gm-tiles">${tiles}</div>${mixH}${qH}${nH}`; }
 function room(t){ try{ SND.tap(); }catch(e){} const map={bank:['.bank','🏦 My bank'],badges:['.badgepanel','🏅 My badges'],map:['.journey','🗺️ My journey map'],week:['.p3week','🚀 Look how far you\'ve come']}, m=map[t]; if(!m) return;
  let html=''; try{ const tpl=document.createElement('div'); tpl.innerHTML=(window.HP&&HP._vHub?HP._vHub():vHub()); const e=tpl.querySelector(m[0]); html=e?e.outerHTML:''; }catch(e){ html=''; }
+ /* button system (HoS 2026-11-23): in these old rooms the information is kit labels (one color per meaning) and the buttons are kit buttons, words only */
+ if(window.TLK&&html){ html=html.replace(/class="bpc"/g,'class="bpc tlk-pill tlk-prog"').replace(/class="rew"/g,'class="rew tlk-pill tlk-money"').replace(/class="earned"/g,'class="earned tlk-pill tlk-prog"').replace(/class="tier"/g,'class="tier tlk-pill tlk-rank"')
+   .replace(/<button class="btn" data-act="p3replay">[^<]*<\/button>/,TLK.quiet('Play my week','data-act="p3replay"')).replace(/<button class="btn[^"]*p3shab" data-act="p3shab">[^<]*<\/button>/,TLK.main('My Shabbos page','data-act="p3shab"','tlk-wide')); }
  let r=document.getElementById('gm-room'); if(!r){ r=document.createElement('div'); r.id='gm-room'; r.setAttribute('role','dialog'); document.body.appendChild(r); }
  r.innerHTML=`<div class="hd"><b>${m[1]}</b>${window.TLK?TLK.x('data-gm="roomx"',''):'<button type="button" data-gm="roomx" aria-label="Close">✕</button>'}</div><div class="bd">${html||'<p>Nothing here yet.</p>'}</div>`; }
 function noMapHTML(){ const lv=document.querySelector('#app [data-hp=levels]'), lg=document.querySelector('#app [data-hp=check]');
@@ -1142,7 +1150,7 @@ let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.p
 .overlay:has(.gmw){background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%)!important;backdrop-filter:none!important}
 .ocard:has(.gmw){background:transparent!important;box-shadow:none!important;border:0!important;max-width:560px!important;width:100%!important;padding:0!important}
 .ocard{position:relative}
-body:has(.overlay,#hlx-shelf,#lg-games,#gm-room,#tlstore,.hpdraw,.kkov,.tq-ov,.tt-ov,#bl-ov,.rpzoom,#tr-ov,#mdx.on) :is(#pr-av,#bbx-door,#tlmenu){visibility:hidden!important}
+body:has(.overlay,#hlx-shelf,#lg-games,#gm-room,#tlstore,.hpdraw,.kkov,.tq-ov,.tt-ov,#bl-ov,.rpzoom,#tr-ov,#mdx.on) :is(#pr-av,#bbx-door,#tlmenu,#clab-door){visibility:hidden!important}
 .ocard:has(>.tlk-x) .oband{padding-left:24px!important;padding-right:80px!important;box-sizing:border-box}
 .ocard:has(.gmw) .oband{display:none}
 .gmw{color:#fff;text-align:center;padding:8px 14px 14px;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
@@ -1175,7 +1183,7 @@ body #gm .gm-l small{color:#5B5FA8}body #gm .gm-l .k{color:#C2410C}body #gm .gm-
 body #gm .gm-l.now{background:#FFFBEA;border:3px solid #FFB800}
 body #gm .gm-unit{background:#fff;color:#1E1B4B;border-color:#FFD84D}body #gm .gm-unit small{color:#5B5FA8}body #gm .gm-unit .left{color:#C2410C}
 body #gm .gm-more{background:#fff;color:#047857}
-#gm .gm-chg{flex:none;border:0;background:none;color:#4338CA;font:800 14px/1.2 inherit;font-family:inherit;text-decoration:underline;text-underline-offset:3px;padding:10px 4px;min-height:44px;cursor:pointer;white-space:nowrap}
+#gm .gm-chg{flex:none;border:0;background:none;color:#4338CA;font-weight:800;font-size:14px;line-height:1.2;font-family:inherit;text-decoration:underline;text-underline-offset:3px;padding:10px 4px;min-height:44px;cursor:pointer;white-space:nowrap}
 #gm .gm-pg{margin-top:14px;text-align:center;color:#fff}
 #gm .gm-pg h1{margin:0;font:900 italic 34px/1.05 var(--display,'Rubik'),'Inter',sans-serif;text-transform:uppercase;text-shadow:0 3px 0 rgba(43,20,120,.35)}
 #gm .gm-why{margin:6px 0 0;font-weight:800;font-size:16px;color:#F4F2FF}
