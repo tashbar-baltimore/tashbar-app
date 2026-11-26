@@ -181,18 +181,155 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     return o;
   };
 
+  /* ================= TRAIN TOWN: pattern items are toy train cars (the colour is the car's paint), shape items are signal signs
+     (all the same paint, so only the shape changes), the bell is a shiny locomotive bell; they ride on a real track behind a little engine ================= */
+  const wheelGeo = () => once('wheelGeo', () => { const g = new THREE.CylinderGeometry(0.11, 0.11, 0.06, 28); g.rotateX(Math.PI / 2); return g; });
+  const wheelM = () => once('wheelM', () => new PM({ color: '#2E3440', roughness: 0.4, clearcoat: 0.6 }));
+  const hubM = () => once('hubM', () => new PM({ color: '#E8C35A', metalness: 0.5, roughness: 0.3 }));
+  function wheels(g, xs, y, z) { xs.forEach(x => [-1, 1].forEach(sd => { const w = new THREE.Mesh(wheelGeo(), wheelM()); w.position.set(x, y, sd * z); g.add(w);
+    const h = new THREE.Mesh(once('hubGeo', () => { const q = new THREE.CylinderGeometry(0.045, 0.045, 0.07, 16); q.rotateX(Math.PI / 2); return q; }), hubM()); h.position.set(x, y, sd * (z + 0.005)); g.add(h); })); }
+  function trainCar(color) {
+    const g = new THREE.Group(), col = keepHue(vivid(color)), paintM = new PM({ color: col, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.12, emissive: '#FFC400', emissiveIntensity: 0 });
+    const body = new THREE.Mesh(once('carGeo', () => new RoundedBoxGeometryLite(0.7, 0.44, 0.46, 0.06)), paintM); body.position.y = -0.08; g.add(body);
+    const roof = new THREE.Mesh(once('roofGeo', () => new RoundedBoxGeometryLite(0.78, 0.07, 0.54, 0.03)), once('roofM', () => new PM({ color: '#F7F2E8', roughness: 0.35, clearcoat: 0.8 }))); roof.position.y = 0.18; g.add(roof);
+    const winM = once('winM', () => new PM({ color: '#FFF6D8', roughness: 0.2, clearcoat: 1, emissive: '#FFE9A8', emissiveIntensity: 0.25 }));
+    [-0.17, 0.17].forEach(x => { const w = new THREE.Mesh(once('winGeo', () => new RoundedBoxGeometryLite(0.2, 0.16, 0.48, 0.03)), winM); w.position.set(x, -0.02, 0); g.add(w); });
+    const base = new THREE.Mesh(once('chassis', () => new THREE.BoxGeometry(0.74, 0.06, 0.4)), wheelM()); base.position.y = -0.31; g.add(base);
+    wheels(g, [-0.2, 0.2], -0.33, 0.2);
+    g.material = paintM; g.userData.recolor = c => paintM.color.set(keepHue(vivid(c)));
+    return shadowy(g);
+  }
+  function signalSign(shape) {
+    const g = new THREE.Group(), front = new PM({ color: '#FFC000', roughness: 0.25, clearcoat: 1, emissive: '#FFC400', emissiveIntensity: 0 });
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.08, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04, bevelSegments: 4, curveSegments: 48 }); geo.translate(0, 0, -0.04); geo.scale(0.5, 0.5, 1);
+    const plate = new THREE.Mesh(geo, [front, once('signEdgeM', () => new PM({ color: '#FFFFFF', roughness: 0.3, clearcoat: 1 }))]); plate.position.y = 0.06; g.add(plate);
+    const rim = insetLine(shape, { color: '#FFFFFF', r: 0.035, at: 0.8 }, '#FFFFFF'); rim.scale.set(0.5, 0.5, 1); rim.position.z = 0.085; plate.add(rim);
+    const post = new THREE.Mesh(once('postGeo', () => new THREE.CylinderGeometry(0.035, 0.035, 0.42, 12)), once('postM', () => new PM({ color: '#8E99A6', metalness: 0.4, roughness: 0.35 }))); post.position.y = -0.24; g.add(post);
+    g.material = front; return shadowy(g);
+  }
+  function trainBell(color) {
+    const g = new THREE.Group(), brass = new PM({ color: '#E2B23A', metalness: 0.7, roughness: 0.22, clearcoat: 1, emissive: '#FFC400', emissiveIntensity: 0 });
+    const pts = []; for (let i = 0; i <= 16; i++) { const u = i / 16; pts.push(new THREE.Vector2(0.06 + 0.24 * Math.pow(u, 1.6) + (u > 0.9 ? (u - 0.9) * 0.5 : 0), 0.22 - u * 0.5)); }
+    const bell = new THREE.Mesh(new THREE.LatheGeometry(pts, 40), brass); g.add(bell);
+    const top = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 12), brass); top.position.y = 0.24; g.add(top);
+    const yoke = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.025, 8, 24, Math.PI), once('yokeM', () => new PM({ color: '#2E3440', roughness: 0.4 }))); yoke.position.y = 0.05; g.add(yoke);
+    void color; g.material = brass; return shadowy(g);
+  }
+  function engine() {
+    const g = new THREE.Group(), red = once('engRed', () => new PM({ color: '#D9342B', roughness: 0.3, clearcoat: 1 })), black = wheelM();
+    const boiler = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.62, 28), once('engGreen', () => new PM({ color: '#1F7A4D', roughness: 0.3, clearcoat: 1 }))); boiler.rotation.z = Math.PI / 2; boiler.position.set(0.12, -0.08, 0); g.add(boiler);
+    const cab = new THREE.Mesh(new RoundedBoxGeometryLite(0.36, 0.5, 0.48, 0.05), red); cab.position.set(-0.3, 0.0, 0); g.add(cab);
+    const roof = new THREE.Mesh(new RoundedBoxGeometryLite(0.46, 0.06, 0.56, 0.03), black); roof.position.set(-0.3, 0.27, 0); g.add(roof);
+    const stack = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.2, 16), black); stack.position.set(0.3, 0.18, 0); g.add(stack);
+    const front = new THREE.Mesh(new THREE.CylinderGeometry(0.205, 0.205, 0.04, 28), hubM()); front.rotation.z = Math.PI / 2; front.position.set(0.44, -0.08, 0); g.add(front);
+    const base = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.06, 0.4), black); base.position.y = -0.31; g.add(base);
+    wheels(g, [-0.3, 0.0, 0.28], -0.33, 0.2); return shadowy(g);
+  }
+  /* a rounded box made here (treasures.js does not load the kit's RoundedBoxGeometry) */
+  function RoundedBoxGeometryLite(w, h, d, r) { const sh = new THREE.Shape(), x = w / 2 - r, y = h / 2 - r;
+    sh.moveTo(-x, -h / 2); sh.lineTo(x, -h / 2); sh.quadraticCurveTo(w / 2, -h / 2, w / 2, -y); sh.lineTo(w / 2, y); sh.quadraticCurveTo(w / 2, h / 2, x, h / 2); sh.lineTo(-x, h / 2); sh.quadraticCurveTo(-w / 2, h / 2, -w / 2, y); sh.lineTo(-w / 2, -y); sh.quadraticCurveTo(-w / 2, -h / 2, -x, -h / 2);
+    const g = new THREE.ExtrudeGeometry(sh, { depth: d - 2 * r, bevelEnabled: true, bevelThickness: r, bevelSize: r * 0.5, bevelSegments: 3, curveSegments: 6 }); g.translate(0, 0, -(d - 2 * r) / 2); return g; }
+
+  /* ================= SOLIDS: the exact sphere, cube, cylinder and cone, painted as a real thing from the world =================
+     returns { mat: material or [materials by face], extras: [small details that do not change the solid's form] } */
+  function solidTex(key, w, h, draw) { return once('sol' + key, () => paint(w, h, draw)); }
+  function bands(col, n, lite) { return (x, w, h) => { x.fillStyle = col; x.fillRect(0, 0, w, h); for (let i = 0; i < n; i++) { x.fillStyle = i % 2 ? tint(col, lite) : shade(col, 0.82); x.globalAlpha = 0.7; x.fillRect(0, h * (i + 0.3) / n, w, h * (0.25 + (i % 3) * 0.12) / n); } x.globalAlpha = 1; }; }
+  T.solid = (kind, color) => {
+    const col = keepHue(vivid(color)), M = (map, o = {}) => new PM(Object.assign({ color: '#FFFFFF', map, roughness: 0.4, clearcoat: 0.6, emissive: '#FFC400', emissiveIntensity: 0 }, o));
+    if (world === 'space') {
+      if (kind === 'sphere') return { mat: M(solidTex('planet' + col, 512, 256, bands(col, 7, 0.45)), { roughness: 0.55, clearcoat: 0.2 }) };   /* a planet with soft bands */
+      if (kind === 'cube') return { mat: M(solidTex('cargo' + col, 256, 256, (x, w, h) => { lightWash(x, w, h, col, 0.2, 0.9); x.strokeStyle = 'rgba(255,255,255,.7)'; x.lineWidth = 10; x.strokeRect(14, 14, w - 28, h - 28);
+        x.fillStyle = '#EEF3FF'; [[30, 30], [w - 30, 30], [30, h - 30], [w - 30, h - 30]].forEach(([a, b]) => { x.beginPath(); x.arc(a, b, 8, 0, 7); x.fill(); }); }), { metalness: 0.15 }) };   /* a cargo box */
+      if (kind === 'cyl') { const side = M(solidTex('tank' + col, 512, 256, (x, w, h) => { x.fillStyle = col; x.fillRect(0, 0, w, h); x.fillStyle = '#F4F7FF'; x.fillRect(0, h * 0.12, w, h * 0.1); x.fillRect(0, h * 0.78, w, h * 0.1); }), { metalness: 0.2 });
+        return { mat: [side, M(null, { color: '#E6ECF5', metalness: 0.4 }), M(null, { color: '#E6ECF5', metalness: 0.4 })] }; }   /* a fuel tank */
+      if (kind === 'cone') return { mat: [M(solidTex('nose' + col, 512, 256, (x, w, h) => { x.fillStyle = col; x.fillRect(0, 0, w, h); x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, w, h * 0.22); x.fillRect(0, h * 0.62, w, h * 0.08); })), M(null, { color: '#E6ECF5' })] };   /* a rocket nose */
+    }
+    if (world === 'underwater') {
+      if (kind === 'sphere') return { mat: new PM({ color: tint(col, 0.55), roughness: 0.12, clearcoat: 1, sheen: 1, sheenColor: C('#FFD6F0'), iridescence: 0.8, emissive: '#FFC400', emissiveIntensity: 0 }) };   /* a pearl, tinted */
+      if (kind === 'cube') return { mat: M(solidTex('chest' + col, 256, 256, (x, w, h) => { lightWash(x, w, h, col, 0.2, 0.85); x.strokeStyle = 'rgba(60,30,10,.35)'; x.lineWidth = 4; for (let i = 1; i < 4; i++) { x.beginPath(); x.moveTo(0, i * h / 4); x.lineTo(w, i * h / 4); x.stroke(); }
+        x.fillStyle = '#E8C35A'; x.fillRect(0, 0, w, 16); x.fillRect(0, h - 16, w, 16); x.fillRect(0, 0, 16, h); x.fillRect(w - 16, 0, 16, h); }), { roughness: 0.55 }) };   /* a treasure box: planks and gold bands */
+      if (kind === 'cyl') { const side = M(solidTex('barrel' + col, 512, 256, (x, w, h) => { lightWash(x, w, h, col, 0.2, 0.85); x.strokeStyle = 'rgba(60,30,10,.3)'; x.lineWidth = 4; for (let i = 0; i < 16; i++) { x.beginPath(); x.moveTo(i * w / 16, 0); x.lineTo(i * w / 16, h); x.stroke(); }
+        x.fillStyle = '#B9C2CC'; x.fillRect(0, h * 0.15, w, h * 0.07); x.fillRect(0, h * 0.78, w, h * 0.07); }), { roughness: 0.6 }); const top = M(null, { color: shade(col, 0.9), roughness: 0.6 }); return { mat: [side, top, top] }; }   /* a little barrel */
+      if (kind === 'cone') return { mat: [M(solidTex('spire' + col, 512, 256, (x, w, h) => { x.fillStyle = tint(col, 0.35); x.fillRect(0, 0, w, h); x.strokeStyle = shade(col, 0.85); x.lineWidth = 10; for (let i = -4; i < 8; i++) { x.beginPath(); x.moveTo(i * w / 4, 0); x.lineTo(i * w / 4 + w / 2, h); x.stroke(); } }), { roughness: 0.25, clearcoat: 1 }), M(null, { color: tint(col, 0.5) })] };   /* a spiral sea shell */
+    }
+    if (world === 'party') {
+      if (kind === 'sphere') { const knot = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.12, 16), new PM({ color: col, roughness: 0.3, clearcoat: 1 })); knot.position.y = -0.66; knot.rotation.x = Math.PI;
+        return { mat: new PM({ color: col, roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.05, emissive: '#FFC400', emissiveIntensity: 0 }), extras: [knot] }; }   /* a balloon (a tiny knot underneath) */
+      if (kind === 'cube') return { mat: M(solidTex('gift' + col, 256, 256, (x, w, h) => { lightWash(x, w, h, col, 0.2, 0.9); x.fillStyle = '#FFF4D6'; x.fillRect(w * 0.42, 0, w * 0.16, h); x.fillRect(0, h * 0.42, w, h * 0.16); })) };   /* a gift box with a ribbon */
+      if (kind === 'cyl') { const side = M(solidTex('cake' + col, 512, 256, (x, w, h) => { x.fillStyle = col; x.fillRect(0, 0, w, h); x.fillStyle = '#FFF8EE'; x.fillRect(0, 0, w, h * 0.22);
+        for (let i = 0; i < 18; i++) { x.beginPath(); x.ellipse((i + 0.5) * w / 18, h * 0.22, w / 40, h * (0.08 + (i % 3) * 0.05), 0, 0, Math.PI); x.fill(); } x.fillStyle = 'rgba(255,255,255,.8)'; for (let i = 0; i < 24; i++) { x.beginPath(); x.arc((i + 0.5) * w / 24, h * 0.88, 6, 0, 7); x.fill(); } }));
+        return { mat: [side, M(null, { color: '#FFF8EE', roughness: 0.5 }), M(null, { color: '#E9D3B0' })] }; }   /* a round cake: frosting drips and piped pearls (no candles, no writing) */
+      if (kind === 'cone') { const pom = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 12), new PM({ color: '#FFFFFF', roughness: 0.9, sheen: 1 })); pom.position.y = 0.66;
+        return { mat: [M(solidTex('hat' + col, 512, 256, (x, w, h) => { x.fillStyle = col; x.fillRect(0, 0, w, h); x.fillStyle = 'rgba(255,255,255,.85)'; for (let i = 0; i < 40; i++) { x.beginPath(); x.arc((i * 53) % w, ((i * 97) % h), 7, 0, 7); x.fill(); } })), M(null, { color: '#FFFFFF' })], extras: [pom] }; }   /* a party hat with dots and a pom-pom */
+    }
+    return null;
+  };
+
+  /* ================= BOXES that belong to the world (same size, the shape picture stays on the front) =================
+     the box's own planks are repainted (planks whose material is the box body), and small details are added outside the opening */
+  const BOXLOOK = {
+    farm: { body: '#C8423A', rim: '#FFFFFF', name: 'a red farm wagon', wheels: '#3A3330', hubs: '#F2C94C' },
+    bakery: { body: 'stripes', rim: '#FFFFFF', name: 'a pink-and-cream pastry box' },
+    garden: { body: '#B98450', rim: '#7DBE4A', name: 'a wooden garden planter', leaves: true },
+    space: { body: '#DDE4EF', rim: '#9C72FF', name: 'a silver cargo hold', rivets: true, metal: 0.4 },
+    underwater: { body: '#B57A45', rim: '#E8C35A', name: 'a treasure chest', corners: '#E8C35A' },
+    traintown: { body: '#2F80FF', rim: '#FFFFFF', name: 'a train wagon', wheels: '#2E3440', hubs: '#E8C35A' },
+    jungle: { body: '#A8743F', rim: '#4FAE4A', name: 'a wooden jungle crate', leaves: true },
+    snow: { body: '#E9F4FF', rim: '#FFFFFF', name: 'a sled box with snow on top', snowcap: true },
+    party: { body: '#FF7FB3', rim: '#FFD23F', name: 'a gift box with a bow', bow: '#FFD23F' },
+    beach: { body: '#2FB7C9', rim: '#FFFFFF', name: 'a beach-toy crate', shells: true },
+    sky: { body: '#F7F2E8', rim: '#9FD3FF', name: 'a balloon basket', wicker: true },
+    toyland: { body: '#FF8FB1', rim: '#FFFFFF', name: 'a toy chest' }
+  };
+  T.decorBox = (g, BX) => {
+    const B = BOXLOOK[world]; if (!B || FAST) return;
+    let bodyM;
+    if (B.body === 'stripes') { const t = once('pastryStripes', () => { const q = paint(256, 64, (x, w, h) => { for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#FFF4E6' : '#F7A8BE'; x.fillRect(i * w / 8, 0, w / 8, h); } }); q.wrapS = THREE.RepeatWrapping; q.repeat.set(2, 1); return q; }); bodyM = new PM({ color: '#FFFFFF', map: t, roughness: 0.6 }); }
+    else if (B.wicker) { const t = once('wicker', () => { const q = paint(128, 128, (x, w, h) => { x.fillStyle = '#C99456'; x.fillRect(0, 0, w, h); for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) { x.fillStyle = (i + j) % 2 ? '#E0B477' : '#B07D44'; x.fillRect(i * 16 + 1, j * 16 + 1, 14, 14); } }); q.wrapS = q.wrapT = THREE.RepeatWrapping; q.repeat.set(3, 1); return q; }); bodyM = new PM({ color: '#FFFFFF', map: t, roughness: 0.75 }); }
+    else bodyM = new PM({ color: B.body, roughness: 0.35, clearcoat: 0.8, metalness: B.metal || 0 });
+    const rimM = new PM({ color: B.rim, roughness: 0.3, clearcoat: 1 });
+    /* repaint: the box's planks are its first five meshes (floor, back, front, left, right), then four rim planks */
+    const planks = g.children.filter(c => c.isMesh);
+    planks.forEach((p, i) => { if (i >= 1 && i <= 4) p.material = bodyM; else if (i >= 5 && i <= 8) p.material = rimM; });
+    const add = o => { o.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } }); g.add(o); return o; };
+    if (B.wheels) { const wg = new THREE.CylinderGeometry(0.24, 0.24, 0.1, 28); wg.rotateZ(Math.PI / 2); const wm = new PM({ color: B.wheels, roughness: 0.5 }), hm = new PM({ color: B.hubs, roughness: 0.3, clearcoat: 1 });
+      [-1, 1].forEach(sx => [-1, 1].forEach(sz => { const w = add(new THREE.Mesh(wg, wm)); w.position.set(sx * (BX.w / 2 + 0.05), 0.12, sz * BX.d * 0.3);
+        const h = add(new THREE.Mesh(new THREE.SphereGeometry(0.08, 14, 10), hm)); h.position.set(sx * (BX.w / 2 + 0.1), 0.12, sz * BX.d * 0.3); })); }
+    if (B.corners) { const cm = new PM({ color: B.corners, metalness: 0.5, roughness: 0.3 }); [-1, 1].forEach(sx => [-1, 1].forEach(sz => { const c = add(new THREE.Mesh(new THREE.BoxGeometry(0.16, BX.h + 0.04, 0.16), cm)); c.position.set(sx * BX.w / 2, BX.h / 2, sz * BX.d / 2); })); }
+    if (B.rivets) { const rm = new PM({ color: '#F4F7FF', metalness: 0.5, roughness: 0.3 }); for (let i = 0; i < 6; i++) { const r = add(new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), rm)); r.position.set(-BX.w / 2 + 0.2 + i * (BX.w - 0.4) / 5, BX.h * 0.72, BX.d / 2 + 0.01); } }
+    if (B.leaves) { const lm = new PM({ color: '#5DBB4A', roughness: 0.5, clearcoat: 0.4, side: THREE.DoubleSide }), sh = new THREE.Shape(); sh.moveTo(0, 0); sh.quadraticCurveTo(0.12, 0.12, 0, 0.3); sh.quadraticCurveTo(-0.12, 0.12, 0, 0); const lg = new THREE.ShapeGeometry(sh, 8);
+      [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz], i) => { for (let k = 0; k < 3; k++) { const l = add(new THREE.Mesh(lg, lm)); l.position.set(sx * (BX.w / 2 - 0.05), BX.h + 0.02, sz * (BX.d / 2 - 0.05)); l.rotation.set(-0.6, (k - 1) * 0.9 + i, sx * 0.5); } }); }
+    if (B.snowcap) { const sm = new PM({ color: '#FFFFFF', roughness: 0.7, sheen: 1, sheenColor: C('#DCEBFF') }); [-1, 1].forEach(sz => { const c = add(new THREE.Mesh(new THREE.CapsuleGeometry(0.09, BX.w - 0.1, 4, 10), sm)); c.rotation.z = Math.PI / 2; c.position.set(0, BX.h + 0.07, sz * (BX.d / 2 - 0.08)); }); }
+    if (B.bow) { const bm = new PM({ color: B.bow, roughness: 0.3, clearcoat: 1 }); [-1, 1].forEach(sd => { const l = add(new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.04, 10, 24), bm)); l.position.set(sd * 0.14, BX.h + 0.02, -BX.d / 2 + 0.08); l.rotation.y = sd * 0.6; });
+      add(new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 10), bm)).position.set(0, BX.h + 0.02, -BX.d / 2 + 0.08); }
+    if (B.shells) { const sm2 = new PM({ color: '#FFD9C7', roughness: 0.3, clearcoat: 1 }); [-1, 1].forEach(sx => { const s2 = add(new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), sm2)); s2.rotation.x = Math.PI / 2; s2.position.set(sx * (BX.w / 2 - 0.25), BX.h * 0.72, BX.d / 2 + 0.01); }); }
+  };
+  T.boxName = () => (BOXLOOK[world] || {}).name || 'a toy box';
+
   /* ================= what each world offers kit.js ================= */
   /* T.bead(type, B, shapeFn): a pattern item, or null to keep the plain bead */
   T.bead = (type, B, shapeFn) => {
+    if (world === 'traintown') {
+      if (B.kind === 'drum') return drum(B.color);
+      if (type === 'bell') return trainBell(B.color);
+      if (B.kind && B.kind !== 'cube') return signalSign(shapeFn());
+      return trainCar(B.color);
+    }
     if (world !== 'bakery') return null;
     if (B.kind === 'drum') return drum(B.color);
     if (type === 'bell') return bell(B.color);
-    if (B.kind && B.kind !== 'cube') return cookie(shapeFn(), B.color, B.kind);
+    if (B.kind && B.kind !== 'cube') return cookie(shapeFn(), '#F0458E', B.kind);   /* every shape cookie has the same pink icing: only the shape changes */
     if (T.painted && CUP[String(B.color).toUpperCase()]) return paintedCupcake(B.color);
     return cupcake(B.color, B.topping);
   };
   /* where the next one goes: an empty paper case with a soft golden glow (bakery) */
   T.marker = () => {
+    if (world === 'traintown') {
+      const g = new THREE.Group(), glowM = new THREE.MeshStandardMaterial({ color: '#FFE08A', emissive: '#FFC94A', emissiveIntensity: 0.7, roughness: 0.5 });
+      const deck = new THREE.Mesh(new THREE.BoxGeometry(0.74, 0.06, 0.44), glowM); deck.position.y = -0.27; g.add(deck);
+      wheels(g, [-0.2, 0.2], -0.33, 0.2);
+      return g;
+    }
     if (world !== 'bakery') return null;
     const g = new THREE.Group(), glowM = new PM({ color: '#FFF3D6', map: linerTex(), emissive: '#FFC94A', emissiveIntensity: 0.55, roughness: 0.6, side: THREE.DoubleSide });
     const l = new THREE.Mesh(linerGeo(), glowM); g.add(l);
@@ -201,6 +338,14 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   };
   /* where the pattern items sit: a long cake board on little feet (bakery), instead of a bead string */
   T.board = (len) => {
+    if (world === 'traintown') {
+      const g = new THREE.Group(), railM = once('railM', () => new PM({ color: '#B9C2CC', metalness: 0.6, roughness: 0.3 })), tieM = once('tieM', () => new PM({ color: '#9A6237', roughness: 0.7 }));
+      const L2 = len + 1.4;
+      [-0.2, 0.2].forEach(z => { const r = new THREE.Mesh(new THREE.BoxGeometry(L2, 0.05, 0.05), railM); r.position.set(-0.7, -0.44, z); g.add(r); });
+      for (let x = -L2 / 2; x <= L2 / 2; x += 0.32) { const t = new THREE.Mesh(once('tieGeo', () => new THREE.BoxGeometry(0.14, 0.04, 0.62)), tieM); t.position.set(x - 0.7, -0.48, 0); g.add(t); }
+      const e = engine(); e.position.set(-len / 2 - 0.62, 0, 0); g.add(e);   /* the little engine pulls the pattern */
+      return shadowy(g);
+    }
     if (world !== 'bakery') return null;
     const g = new THREE.Group();
     const top = new THREE.Mesh(new THREE.BoxGeometry(len, 0.07, 0.95), once('boardM', () => new PM({ color: '#FFFFFF', roughness: 0.35, clearcoat: 0.9, sheen: 0.3 })));
@@ -273,9 +418,9 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
         x.globalAlpha = 0.07; x.fillStyle = '#000'; for (let i = 0; i < 60; i++) x.fillRect(R() * w, R() * h, 1.5, 12 + R() * 20); x.globalAlpha = 1; },
       rough: 0.6, coat: 0.2, inset: { color: '#FFFFFF', r: 0.04, at: 0.8 } },
     /* party: shiny foil balloons in the shape (soft crinkle shine) */
-    party: { side: c => new PM({ color: shade(c, 0.9), metalness: 0.55, roughness: 0.22, clearcoat: 1 }),
+    party: { side: c => new PM({ color: shade(c, 0.9), roughness: 0.22, clearcoat: 1 }),
       cap: (x, w, h, c, R) => { lightWash(x, w, h, c, 0.4, 0.78); for (let i = 0; i < 14; i++) { const g = x.createLinearGradient(R() * w, 0, R() * w, h); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, 'rgba(255,255,255,.14)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, w, h); } },
-      rough: 0.25, coat: 1, metal: 0.12, inset: null }
+      rough: 0.22, coat: 1, metal: 0, inset: null }
   };
   const SK = SKINS[world] || null;
   /* very light colours (yellow, light orange) are drawn a little deeper, so the bright sun never washes them to cream: yellow stays yellow */
@@ -330,7 +475,9 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     snow: { round: { pic: 'winter-snowball-round.png', side: '#E8F2FF' }, box: { pic: 'winter-ice-surface.jpg', side: '#CFE6FF' }, pointy: { pic: 'winter-ice-surface.jpg', side: '#CFE6FF' }, many: { pic: 'winter-ice-surface.jpg', side: '#CFE6FF' } }
   };
   /* the pictures that have arrived and been checked by eye (k-shapes-art-requests.md); only these are loaded */
-  const HAVE = new Set([]);
+  const HAVE = new Set(['beach-ball-round.png', 'beach-sail-surface.jpg', 'beach-sand-surface.jpg', 'farm-barnroof-surface.jpg', 'farm-hay-surface.jpg', 'farm-honeycomb-surface.jpg',
+    'farm-tire-round.png', 'garden-sunflower-round.png', 'party-bunting-surface.jpg', 'party-cake-round.png', 'party-gift-surface.jpg', 'sky-basket-surface.jpg', 'sky-cloudtile-surface.jpg',
+    'sky-goldstar-surface.jpg', 'space-fin-surface.jpg', 'space-panel-surface.jpg', 'space-planet-round.png', 'space-solar-surface.jpg', 'toy-drum-round.png']);
   T.artList = () => [...HAVE];
   const loader = new THREE.TextureLoader(), texCache = {};
   function artTex(pic) { return texCache[pic] || (texCache[pic] = (() => { const t = loader.load('art/' + pic); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO; t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; })()); }
@@ -342,7 +489,10 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
       if (fam === 'half circle') { const r = w / 2, cy = b.min.y; t.repeat.set(1 / (2 * r), 1 / (2 * r)); t.offset.set(0.5, 0.5 - cy / (2 * r)); }
       else { const h = b.max.y - b.min.y, cx = (b.max.x + b.min.x) / 2, cy = (b.max.y + b.min.y) / 2; t.repeat.set(1 / w, 1 / h); t.offset.set(0.5 - cx / w, 0.5 - cy / h); }
       t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
-    } else { t.repeat.set(0.55, 0.55); t.offset.set(0.5, 0.5); }   /* a surface: laid across the shape at the same scale on every piece */
+    } else {   /* a surface: the picture covers the shape's frame once (no repeat seams), centred */
+      const b = bbox(shape), w = b.max.x - b.min.x, h = b.max.y - b.min.y, m = Math.max(w, h) * 1.04, cx = (b.max.x + b.min.x) / 2, cy = (b.max.y + b.min.y) / 2;
+      t.repeat.set(1 / m, 1 / m); t.offset.set(0.5 - cx / m, 0.5 - cy / m); t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
+    }
     return new PM({ color: entry.tint ? C(color) : C('#FFFFFF'), map: t, roughness: 0.55, clearcoat: entry.tint ? 0.5 : 0.25, clearcoatRoughness: 0.3, emissive: '#FFC400', emissiveIntensity: 0, transparent: false });
   }
 

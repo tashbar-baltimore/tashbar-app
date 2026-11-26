@@ -168,6 +168,7 @@ export function startGame(cfg) {
     plank(BX.t, BX.h, BX.d, BX.w / 2 - BX.t / 2, BX.h / 2, 0);
     if (BM) { plank(BX.w + 0.06, 0.1, BX.t + 0.06, 0, BX.h, -BX.d / 2 + BX.t / 2, BM.rim); plank(BX.w + 0.06, 0.1, BX.t + 0.06, 0, BX.h * 0.8, BX.d / 2 - BX.t / 2, BM.rim);
       plank(BX.t + 0.06, 0.1, BX.d + 0.06, -BX.w / 2 + BX.t / 2, BX.h, 0, BM.rim); plank(BX.t + 0.06, 0.1, BX.d + 0.06, BX.w / 2 - BX.t / 2, BX.h, 0, BM.rim); }
+    if (LK && LK.treasures.decorBox) LK.treasures.decorBox(g, BX);   /* the box belongs to the world: a farm wagon, a treasure chest, a pastry box ... */
     const paintM = new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 });
     if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none */
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16, 0.24, 40), paintM); ring.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(ring); }
@@ -242,8 +243,10 @@ export function startGame(cfg) {
     const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: LK ? bev * 1.25 : bev, bevelSize: bev, bevelSegments: LK && (!FAST || SHOT) ? 6 : 3, curveSegments: LK && (!FAST || SHOT) ? 64 : 48 });
     if (!solid) geo.translate(0, 0, -dep / 2);
     const TP = LK && !solid && LK.treasures.piece ? LK.treasures.piece(k, color, s, FAMILY(k)) : null;   /* the world's own thing in this exact outline (treasures.js) */
-    const mat = TP ? TP.mats : LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
+    const TS = LK && solid && LK.treasures.solid ? LK.treasures.solid(solid, color) : null;   /* the world's own thing in this exact solid (planet, gift box ...) */
+    const mat = TS ? TS.mat : TP ? TP.mats : LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
+    if (TS && TS.extras) TS.extras.forEach(x => mesh.add(x));
     if (TP) TP.extras.forEach(x => { const front = x.clone(); front.position.z = dep / 2 + bev * 1.25 + 0.004; mesh.add(front); const back = x.clone(); back.rotation.y = Math.PI; back.position.z = -(dep / 2 + bev * 1.25 + 0.004); mesh.add(back); });
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
