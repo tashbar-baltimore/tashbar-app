@@ -3,6 +3,9 @@
      PLAY=ID,ID     also play these lesson ids (or id prefixes, e.g. LK.CHU.L03)
      ALL=1          play every lesson (slow: about 2 hours)
      UPDATE=1       rewrite tests/baseline.json from this run (use only when a number is meant to change)
+     PAGES=4        how many kid pages play lessons side by side (default 4; PAGES=1 plays them all on one page, as before)
+     PART=1/2       play only this part of the lessons (sampled lessons and One Bite bites, every 2nd one starting with the 1st);
+                    everything else runs in full. CI runs every part on its own machine and passes only if every part passed.
    Everything runs against a pretend server with made-up kids. No Google account, no real student data.
    Fails on: a file that does not parse, a changed web-app access setting, a lesson pack that does not match
    ContentPacks.js, any page error or console error, a lesson that cannot be built or played to "mastered",
@@ -12,6 +15,9 @@ const { chromium } = require('playwright');
 const B = require('./lib/build.js');
 const fails = [], notes = [], report = { timings: {}, counts: {} };
 const fail = m => { fails.push(m); console.log('FAIL  ' + m); }, ok = m => console.log('ok    ' + m);
+const PART = (() => { const m = /^(\d+)\/(\d+)$/.exec(process.env.PART || '1/1'); const k = m ? +m[1] : 0, n = m ? +m[2] : 0;
+  if (!(n >= 1 && k >= 1 && k <= n)) { console.log('FAIL  PART must look like 1/2 (got "' + process.env.PART + '")'); process.exit(1); }
+  return { k: k - 1, n, mine: (_, i) => i % n === k - 1, tag: n > 1 ? ' (part ' + k + ' of ' + n + ')' : '' }; })();
 
 function staticChecks() {
   const files = fs.readdirSync(B.SRC);
@@ -100,8 +106,12 @@ async function kidTests(browser) {
   try { const V2T = path.join(__dirname, '..', 'v2', 'tests'); if (fs.existsSync(V2T)) for (const f of fs.readdirSync(V2T).filter(x => x.endsWith('.js')).sort()) {
       try { const r = await require(path.join(V2T, f))(browser); (r.fails || []).forEach(fail); (r.oks || []).forEach(ok); } catch (e) { fail('2.0 test ' + f + ' crashed: ' + String(e).slice(0, 200)); } } } catch (e) { fail('2.0 tests could not run: ' + String(e).slice(0, 200)); }
   /* lessons */
-  const { ctx, pg, errs } = await openPage(browser, K.page, K, 0); await pg.goto('http://app.test/');
-  await pg.waitForFunction(() => window.TLT && typeof BANK_ALL !== 'undefined' && Object.keys(BANK_ALL).length > 500, null, { timeout: 180000 }); await pg.waitForTimeout(20000);
+  /* the lessons page, plus PAGES-1 more kid pages opened the same way: the sampled lessons and the One Bite bites are shared out over them
+     and played side by side (the kit had grown past 40 minutes on one page). Every lesson is still played once, with the same checks. */
+  const kidPage = async () => { const P = await openPage(browser, K.page, K, 0); await P.pg.goto('http://app.test/');
+    await P.pg.waitForFunction(() => window.TLT && typeof BANK_ALL !== 'undefined' && Object.keys(BANK_ALL).length > 500, null, { timeout: 180000 }); await P.pg.waitForTimeout(20000); return P; };
+  const [main, ...extra] = await Promise.all(Array.from({ length: Math.max(1, Number(process.env.PAGES || 4)) }, kidPage));
+  const { ctx, pg, errs } = main, pages = [pg].concat(extra.map(P => P.pg));
   const audit = await pg.evaluate(() => { const out = { skills: 0, broken: [], untaught: [] }; const low = x => String(x == null ? '' : x).toLowerCase().replace(/\s+/g, ' ').trim();
     for (const id of Object.keys(BANK_ALL)) { out.skills++; let items; try { items = buildMission(id); } catch (e) { out.broken.push(id + ': cannot build (' + String(e).slice(0, 80) + ')'); continue; }
       if (!items || !items.length) { out.broken.push(id + ': no questions'); continue; }
@@ -112,11 +122,12 @@ async function kidTests(browser) {
     return out; });
   report.counts.lessons = audit.skills; report.counts.checkAnswersNeverTaught = audit.untaught.length; report.untaught = audit.untaught;
   audit.broken.forEach(b => fail('broken lesson: ' + b)); if (!audit.broken.length) ok(audit.skills + ' lessons build with well-formed questions');
-  const all = await pg.evaluate(() => { window.OB_LIVE = 'off'; window.TL_CHEM_SING = false; return Object.keys(BANK_ALL); }); let ids = [];   /* the engine's own flow; One Bite has its own test below. The Chemdas song screen (TorahTracks.html) waits for a tap before LK.CHEM.L04.* starts, so it is switched off here like One Bite. */
+  const all = (await Promise.all(pages.map(p => p.evaluate(() => { window.OB_LIVE = 'off'; window.TL_CHEM_SING = false; return Object.keys(BANK_ALL); }))))[0]; let ids = [];   /* the engine's own flow; One Bite has its own test below. The Chemdas song screen (TorahTracks.html) waits for a tap before LK.CHEM.L04.* starts, so it is switched off here like One Bite. */
   if (process.env.ALL) ids = all; else { const n = Math.max(1, Number(process.env.SAMPLE || 40)); const step = Math.max(1, Math.floor(all.length / n)); for (let i = 0; i < all.length && ids.length < n; i += step) ids.push(all[i]);
     (process.env.PLAY || '').split(',').filter(Boolean).forEach(p => all.filter(id => id.indexOf(p) === 0).forEach(id => { if (ids.indexOf(id) < 0) ids.push(id); })); }
-  let done = 0;
-  for (const id of ids) { const r = await pg.evaluate(async id => { const sleep = ms => new Promise(r => setTimeout(r, ms)); const o = { id, steps: 0, noBox: 0 };
+  let done = 0; const mine = ids.filter(PART.mine);
+  const played = (await Promise.all(pages.map((p, k) => (async () => { const out = [];
+    for (let i = k; i < mine.length; i += pages.length) { const id = mine[i]; out.push([i, await p.evaluate(async id => { const sleep = ms => new Promise(r => setTimeout(r, ms)); const o = { id, steps: 0, noBox: 0 };
       try { document.dispatchEvent(new Event('wheel')); A.overlay = null; SRV.token = 't'; SRV.states = {}; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.session = 0; A.view = 'hub';
         const pre = id.split('.')[0], map = /^(LK|HEB)$/.test(pre) ? 'LK' : /^(READ|WRIT|LANG)$/.test(pre) ? 'READ' : /^(SS|SOC|FACT)$/.test(pre) ? 'SS' : /^(COMP|VOC)$/.test(pre) ? 'COMP' : pre; const subj = WORLD[pre] ? pre : WORLD[map] ? map : Object.keys(WORLD)[0];
         startMission(subj, id, 'skill'); const p = A.play;
@@ -125,7 +136,9 @@ async function kidTests(browser) {
           p.shownAt = 0; p.cool = 0; if (it.t === 'write') p.text = new Array((it.min || 5) + 2).join('word ');
           answer(it.t === 'num' ? String(it.a) : it.t === 'write' ? p.text : it.correct); if (!(p.fb && p.fb.ok)) { o.err = 'right answer not accepted at question ' + p.i + ' (' + it.t + '): ' + String(it.q).slice(0, 60); break; }
           await sleep(5); next(); await sleep(5); }
-        o.m = !!(A.st && A.st.skills[id] && A.st.skills[id].m); } catch (e) { o.err = String(e && e.stack || e).slice(0, 240); } return o; }, id);
+        o.m = !!(A.st && A.st.skills[id] && A.st.skills[id].m); } catch (e) { o.err = String(e && e.stack || e).slice(0, 240); } return o; }, id)]); }
+    return out; })()))).flat().sort((x, y) => x[0] - y[0]).map(x => x[1]);
+  for (const r of played) { const id = r.id;
     if (!r.m || r.err) fail('lesson ' + id + ' did not play to mastered: ' + (r.err || 'not mastered after ' + r.steps + ' questions')); else done++;
     if (r.noBox) notes.push(id + ': ' + r.noBox + ' teach or practice screen(s) with no "How to do it" box'); }
   /* the boy's map home (GameMap.html), drawn from a real kmMyMap answer (tests/lib/kidmap.js, made-up boys): shows on the home with his
@@ -222,7 +235,7 @@ async function kidTests(browser) {
   /* SCIENCE INDEX NAMES (tests/lib/sciindex.js, issue #391): staff see the same name as the Science lesson a boy really gets */
   try { const si = await require('./lib/sciindex.js').page(pg); si.fails.forEach(fail); si.oks.forEach(ok); } catch (e) { fail('science index page check crashed: ' + String(e).slice(0, 200)); }
   /* ONE BITE player (tests/lib/onebite.js) */
-  try { const ob = await require('./lib/onebite.js')(pg); ob.fails.forEach(fail); ob.oks.forEach(ok); Object.assign(report.counts, ob.counts); }
+  try { const ob = await require('./lib/onebite.js')(pg, pages.slice(1), PART); ob.fails.forEach(fail); ob.oks.forEach(ok); Object.assign(report.counts, ob.counts); }
   catch (e) { fail('One Bite test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* PICS-2 teaching pictures (tests/lib/teachpics.js): TODAY WE LEARN, WATCH ME and passages show a linked picture and do not break the screen */
   try { const tp = await require('./lib/teachpics.js')(pg); tp.fails.forEach(fail); tp.oks.forEach(ok); }
@@ -246,8 +259,9 @@ async function kidTests(browser) {
   try { const sf = require('./lib/storefx.js'), n = sf.names(), e = await sf.effects(pg); n.fails.concat(e.fails).forEach(fail);
     if (!n.fails.length && !e.fails.length) ok('store Fun tab: ' + n.count + ' items, no two share a name, picture, tap blast, trail or app colors (closest app colors: ' + (e.closest && e.closest.d) + ')'); }
   catch (e) { fail('store check crashed: ' + String(e && e.stack || e).slice(0, 300)); }
-  report.counts.lessonsPlayed = ids.length; report.counts.lessonsMastered = done; report.counts.screensWithNoHowToBox = notes.length; if (done === ids.length) ok(done + ' of ' + ids.length + ' sampled lessons played to mastered');
+  report.counts.lessonsPlayed = mine.length; report.counts.lessonsMastered = done; report.counts.screensWithNoHowToBox = notes.length; if (done === mine.length) ok(done + ' of ' + mine.length + ' sampled lessons played to mastered' + (PART.n > 1 ? PART.tag + ', ' + ids.length + ' in all' : ''));
   (await pg.evaluate(() => window.__srvErr)).forEach(e => fail('server call failed: ' + e)); errs.forEach(e => fail('kid page: ' + e)); await ctx.close();
+  for (const P of extra) { (await P.pg.evaluate(() => window.__srvErr)).forEach(e => fail('server call failed: ' + e)); P.errs.forEach(e => fail('kid page: ' + e)); await P.ctx.close(); }
 }
 
 async function staffTests(browser) {
