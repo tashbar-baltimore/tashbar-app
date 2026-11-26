@@ -156,6 +156,9 @@ body{background:linear-gradient(#3fb4ff 0%,#8fd8ff 45%,#dff6ff 75%,#fff6d8 100%)
 #rev button:active{transform:translateY(4px)}
 #rev button.right{background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#eaffea 40%,#9fe0a6 100%);box-shadow:0 0 0 8px #7bd94a88,0 7px 0 #5fae62}
 #rev button.wrong{animation:revshake .45s}
+body[data-review] #again{z-index:10}
+#rev button.right{animation:revpop .5s}
+@keyframes revpop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
 #rev .dots{display:flex;gap:10px}#rev .dots i{width:18px;height:18px;border-radius:50%;background:#d6e2ee}#rev .dots i.on{background:#ffcf3a}
 @keyframes revshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}75%{transform:translateX(12px)}}
 @media (max-width:700px){#rev button{width:100px;height:120px;font-size:76px;border-radius:26px}#rev .row{gap:12px}}
@@ -596,8 +599,13 @@ export function noteLetter(k, right) { const s = loadSave(); s.letters = s.lette
   if (right) m.r++; else { m.w++; m.lastWrong = Date.now(); } m.at = Date.now(); m.ok = right; s.letters[k] = m; writeSave(s); }
 const REV_LOOK = { beis: ['veis', 'kaf'], veis: ['beis'], gimmel: ['nun'], daled: ['reish'], hei: ['ches', 'kuf'], vov: ['zayin'], zayin: ['vov'], ches: ['hei'], tes: ['mem'], kaf: ['chaf', 'beis', 'pei'], chaf: ['kaf'], mem: ['tes'], nun: ['gimmel'], pei: ['fei', 'kaf'], fei: ['pei'], reish: ['daled'], kuf: ['hei'] };
 const REV_SAME = { vov: 'veis', veis: 'vov', chaf: 'ches', ches: 'chaf', alef: 'ayin', ayin: 'alef', samech: 'sin', sin: 'samech', kaf: 'kuf', kuf: 'kaf', tes: 'tav', tav: 'tes', sav: 'samech' };
-export function reviewPicks(known, n = 3) {
-  const L = loadSave().letters || {}, now = Date.now();
+/* what to look for when he mixes up a look-alike pair: "want/tapped" */
+const REV_CLUE = { 'beis/veis': 'Beis has a dot.', 'veis/beis': 'Veis has no dot.', 'beis/kaf': 'Beis has a tail at the bottom.', 'kaf/beis': 'Kaf is round at the bottom.',
+  'kaf/chaf': 'Kaf has a dot.', 'chaf/kaf': 'Chaf has no dot.', 'vov/zayin': 'Vov has no crown.', 'zayin/vov': 'Zayin has a crown.', 'hei/ches': 'Hei\u2019s leg doesn\u2019t touch the roof.', 'ches/hei': 'Ches\u2019s leg touches the roof.',
+  'gimmel/nun': 'Gimmel has a foot.', 'nun/gimmel': 'Nun is flat at the bottom.', 'tes/mem': 'Tes is closed at the bottom.', 'mem/tes': 'Mem has an opening at the bottom.',
+  'pei/kaf': 'Pei has a little tongue inside.', 'kaf/pei': 'Kaf has no little tongue.', 'pei/fei': 'Pei has a dot.', 'fei/pei': 'Fei has no dot.', 'daled/reish': 'Daled has a corner.', 'reish/daled': 'Reish is round on top.', 'hei/kuf': 'Hei has a short leg.', 'kuf/hei': 'Kuf has a long leg.' };
+export function reviewPicks(known, n = 3, skip = []) {
+  const L = loadSave().letters || {}, now = Date.now(); known = known.filter(k => !skip.includes(k));   /* not the letters this game just practised: that would not be spaced */
   const score = k => { const m = L[k]; if (!m) return 1e12; return (m.ok === false ? 2e12 : 0) + (m.w > m.r ? 1e11 : 0) + (now - (m.at || 0)); };   /* missed last time first, then weaker, then not seen for longest */
   const order = known.slice().sort(() => Math.random() - .5).sort((a, b) => score(b) - score(a));
   const out = []; for (const k of order) { if (out.length >= n) break; if (out.some(o => REV_SAME[o] === k)) continue; out.push(k); }
@@ -605,7 +613,11 @@ export function reviewPicks(known, n = 3) {
 }
 export async function quickReview(unit, game) {
   if (!unit || !unit.known || !unit.known.length || !game || game.mastery || game.bonus || /^story/.test(game.kind)) return;
-  const pool = [...unit.known, ...unit.letters], picks = reviewPicks(unit.known), box = $('#rev'), row = box.querySelector('.row'), dots = box.querySelector('.dots');
+  const used = [...unit.letters, ...(game.pairs || []).flat(), ...(game.stands || []), ...(game.order || []), ...(game.reviewOf && UNITS[game.reviewOf - 1] ? UNITS[game.reviewOf - 1].letters : [])];
+  unit.letters.forEach(k => (REV_LOOK[k] || []).forEach(o => used.push(o)));   /* and the look-alikes this game compared */
+  let picks = reviewPicks(unit.known, 3, used); if (picks.length < 3) picks = [...picks, ...reviewPicks(unit.known, 3 - picks.length, [...picks, ...unit.letters])];
+  const pool = [...unit.known, ...unit.letters], box = $('#rev'), row = box.querySelector('.row'), dots = box.querySelector('.dots');
+  const firstEver = !loadSave().revDemo; if (firstEver) { const sv = loadSave(); sv.revDemo = 1; writeSave(sv); }
   dots.innerHTML = picks.map(() => '<i></i>').join(''); box.classList.add('show'); document.body.dataset.review = 1;
   await say('Remember these?');
   for (let qi = 0; qi < picks.length; qi++) {
@@ -618,13 +630,17 @@ export async function quickReview(unit, game) {
     await new Promise(res => {
       const btns = [...row.querySelectorAll('button')];
       window.__review = { want: k, at: Object.fromEntries(btns.map(b => { const r = b.getBoundingClientRect(); return [b.dataset.k, [r.x + r.width / 2, r.y + r.height / 2]]; })) };
-      let busy = true; say('Tap ' + LETTERS[k].name + '.').then(() => { busy = false; window.__review.ready = 1; });
+      const bySound = qi === 1 && LETTERS[k].snd && !set.some(c => c !== k && LETTERS[c].snd === LETTERS[k].snd);   /* one question by its sound, never with a same-sound letter beside it */
+      const ask = bySound ? ['Which letter says', S(LETTERS[k].snd), '? Tap it.'] : 'Tap ' + LETTERS[k].name + '.';
+      let busy = true;
+      (async () => { if (qi === 0 && firstEver) { await say('Watch me. Tap ' + LETTERS[k].name + '.'); const r = btns.find(x => x.dataset.k === k).getBoundingClientRect(); hand.at(r.x + r.width / 2, r.y + r.height / 2 + 20, true); await wait(900); hand.hide(); await say('Now you!'); }
+        await say(ask); busy = false; window.__review.ready = 1; })();
       btns.forEach(b => b.onclick = async () => { if (busy) return; const c = b.dataset.k;
         if (c === k) { busy = true; b.classList.add('right'); sfx.chime(); if (firstTry) noteLetter(k, true); dots.children[qi].classList.add('on');
           await say(k === 'alef' || k === 'ayin' ? [LETTERS[k].name + '! ' + LETTERS[k].name + ' is quiet.'] : [LETTERS[k].name + '! ' + LETTERS[k].name + ' says', S(LETTERS[k].snd)]); res(); }
         else { busy = true; sfx.boop(); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); if (firstTry) noteLetter(k, false); firstTry = false;
           const r = btns.find(x => x.dataset.k === k); r.classList.add('right');
-          await say('That is ' + LETTERS[c].name + '. This is ' + LETTERS[k].name + '.'); r.classList.remove('right'); busy = false; } });
+          await say('That is ' + LETTERS[c].name + '. This is ' + LETTERS[k].name + '.'); if (REV_CLUE[k + '/' + c]) await say(REV_CLUE[k + '/' + c]); r.classList.remove('right'); busy = false; } });
     });
     window.__review = null; await wait(250);
   }
