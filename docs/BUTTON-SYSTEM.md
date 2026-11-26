@@ -15,6 +15,7 @@ The look lives in ONE file, `src/UiKit.html`, and the test `tests/lib/uikit.js` 
 | Tile | Opens a place | The whole card is the button; no "OPEN ▶" inside | class `tlk tlk-tile` |
 
 - Every button **floats** (soft lift: solid color + soft wide shadow) and **settles** onto the page when tapped. Hand pointer; yellow ring with the keyboard.
+- **Shape by size** (HoS 2026-11-26): small icon buttons are perfect circles (✕, house, Back, tools, speakers, 🚩); in-between buttons (`tlk-small`) are pills; big buttons (main, quiet, tiles) are rounded squares.
 - **Icon or words, never both.** No "✕ Close", no "▶ Start". The exceptions: the K–3 Home and Back buttons (house + "Home", arrow + "Back"). The ▶ only ever means "play a sound or video".
 - Never an underlined web link for an action.
 
