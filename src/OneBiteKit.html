@@ -326,6 +326,7 @@ document.addEventListener('pointerup',e=>endDrag(e,false),true);
 document.addEventListener('pointercancel',e=>endDrag(e,true),true);
 
 /* ---------- look (same family as the K-1 games: big, round, calm) ---------- */
+try{ if(window.TLCORE&&typeof TLCORE.joinActs==='function') TLCORE.joinActs(); }catch(e){}   /* gap A6: the Core activity kinds join the moment the kit exists, not on a held timer */
 OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=document.createElement('style'); s.id='obk-css'; s.textContent=`
 .obk{ display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; }
 .obk button{ font-family:inherit; color:#1F2A44; cursor:pointer; -webkit-tap-highlight-color:transparent; }

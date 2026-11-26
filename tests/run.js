@@ -43,6 +43,8 @@ function staticChecks() {
   conflictMarks();
   /* SHARED ART LIBRARY (HoS 2026-11-24): every file in art/ cataloged, sources and licences recorded, size limits, no duplicates */
   try { const a = require('./lib/art.js')(); a.fails.forEach(fail); a.oks.forEach(ok); } catch (e) { fail('art library check crashed: ' + String(e).slice(0, 200)); }
+  /* LOAD RACE (gap A6): the Core activity kinds are in the kit as soon as it exists, even with the loader holding every timer */
+  try { const lr = require('./lib/loadrace.js').held(); lr.fails.forEach(fail); lr.oks.forEach(ok); } catch (e) { fail('load race check crashed: ' + String(e).slice(0, 200)); }
 }
 
 /* No leftover merge-conflict marks in any text file in the repository (25 Nov: #484 left them in docs/CORE-GROWTH-LANES.md). */
@@ -250,6 +252,8 @@ async function kidTests(browser) {
   try { const cg = await require('./lib/core.js').page(pg); cg.fails.forEach(fail); cg.oks.forEach(ok); } catch (e) { fail('core skills page check crashed: ' + String(e).slice(0, 200)); }
   /* SCIENCE INDEX NAMES (tests/lib/sciindex.js, issue #391): staff see the same name as the Science lesson a boy really gets */
   try { const si = await require('./lib/sciindex.js').page(pg); si.fails.forEach(fail); si.oks.forEach(ok); } catch (e) { fail('science index page check crashed: ' + String(e).slice(0, 200)); }
+  /* LOAD RACE (gap A6, tests/lib/loadrace.js): a lesson set up before the Core activity kinds joined still gets every activity */
+  try { const lr = await require('./lib/loadrace.js').page(pg); lr.fails.forEach(fail); lr.oks.forEach(ok); } catch (e) { fail('load race page check crashed: ' + String(e).slice(0, 200)); }
   /* ONE BITE player (tests/lib/onebite.js) */
   try { const ob = await require('./lib/onebite.js')(pg, pages.slice(1), PART); ob.fails.forEach(fail); ob.oks.forEach(ok); Object.assign(report.counts, ob.counts); }
   catch (e) { fail('One Bite test crashed: ' + String(e && e.stack || e).slice(0, 300)); }

@@ -271,8 +271,12 @@
   W.TLCORE = W.TLCORE || {}; W.TLCORE.acts = T;
   /* join the kit as soon as it exists (OneBiteKit.html loads right after the core files) */
   var tries = 0;
+  /* gap A6: the join is also callable at once (OneBiteKit.html calls it the moment the kit exists, and OneBite.html before a lesson is set up).
+     The loader holds every timer until the last piece has run, so the 50 ms retry below came after a held tap had already started a lesson:
+     its new-kind activities were dropped as "unknown" and the boy got a short lesson with no warning. */
+  W.TLCORE.joinActs = function () { if (!(W.OBK && W.OBK.types)) return false; css(); Object.keys(T).forEach(function (k) { if (!W.OBK.types[k]) W.OBK.types[k] = T[k]; }); W.TLCORE.actsJoined = true; return true; };
   (function join() {
-    if (W.OBK && W.OBK.types) { css(); Object.keys(T).forEach(function (k) { if (!W.OBK.types[k]) W.OBK.types[k] = T[k]; }); W.TLCORE.actsJoined = true; return; }   /* OBK.list stays the first ten (tests/lib/onebite.js plays those); these seven are played by tests/lib/coreacts.js */
+    if (W.TLCORE.joinActs()) return;   /* OBK.list stays the first ten (tests/lib/onebite.js plays those); these seven are played by tests/lib/coreacts.js */
     if (tries++ < 1200) setTimeout(join, 50);
   })();
 })();
