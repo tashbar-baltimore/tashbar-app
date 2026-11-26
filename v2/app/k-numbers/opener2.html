@@ -59,7 +59,9 @@
       return new Promise(async function (res) {
         GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on');
         await SLIDES[i](F);
-        done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#go' }]; }; GAME.wrong = null; F.lock(false); $('go').classList.add('on');
+        $('go').classList.add('on');
+        if (i === 0) { await F.handTo($('go')); await F.say('Tap the arrow to go on.'); F.handHide(); }   /* island rule: show the arrow the first time */
+        done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#go' }]; }; GAME.wrong = null; F.lock(false);
       });
     }
   });

@@ -79,6 +79,14 @@
       F.handHide(); await F.say('Four? Oops! One apple has two stickers.');
       await F.handTo(els[1], .5, .5); await F.handTap(); els[1].classList.add('lit'); await F.yes(null, 'This one! I touched it two times.'); els[1].classList.remove('lit'); F.handHide();
       await F.say('Really three apples. Touch each one once!');
+      /* the other mistake: one apple gets no touch at all */
+      U.clear(); els = pts.map(function (p, i) { return U.put('apple', p, Math.max(15, U.itemW(3)), i); });
+      await F.say('Another mistake. Watch.');
+      order = [0, 2];
+      for (i = 0; i < order.length; i++) { await F.handTo(els[order[i]], .5, .45); await F.handTap(); sticker(els[order[i]]); NK.sound.pop(); await F.say(F.Word(i + 1), { noRepeat: true }); }
+      F.handHide(); await F.say('Two? Oops! One apple has no sticker.');
+      await F.handTo(els[1], .5, .5); await F.handTap(); els[1].classList.add('lit'); await F.yes(null, 'This one! I missed it.'); els[1].classList.remove('lit'); F.handHide();
+      await F.say('Every apple gets one touch.');
     },
     reset: function (F, again, slow) { easy = slow ? 3 : 0; misses = 0; },   /* he did not pass last time: start on the easier path */
     round: async function (F, i) {

@@ -35,21 +35,24 @@
       var rolls = [[12, 64], [24, 64], [36, 64], [48, 64], [60, 64], [72, 64], [84, 64]].map(function (p, i) { return U.put('roll', p, 10.5, i, 'pile'); });
       await F.say('Bubby needs two challah rolls.');
       await F.say('Watch me give her two.');
-      var to = [[45, 27], [55, 27]];
-      for (var i = 0; i < 2; i++) { await F.handTo(rolls[i]); await F.handTap(); U.place(rolls[i], to[i]); NK.sound.pop(); await F.say(F.Word(i + 1), { noRepeat: true }); }
+      var to = [[40, 27], [50, 27], [60, 27]];
+      for (var i = 0; i < 3; i++) { await F.handTo(rolls[i]); await F.handTap(); U.place(rolls[i], to[i]); NK.sound.pop(); await F.say(F.Word(i + 1), { noRepeat: true }); }
+      /* show taking one off: "Take one off" is a hint he may hear later */
+      await F.say('Oops, three! Bubby needs two. I take one off.');
+      await F.handTo(rolls[2]); await F.handTap(); U.place(rolls[2], [36, 64]); NK.sound.back(); await F.say('Now two.', { noRepeat: true });
       await F.say('Two. I stop. Now I press check.');
       await F.handTo($('check')); await F.handTap();
       await F.yes(pl, 'Two rolls for Bubby!');
     },
     round: async function (F, i) {
       var help = easy > 0, n = help ? F.pick([2, 3, 4]) : PLAN[i]; if (easy > 0) easy--;
-      if (i === 2 && !help) await F.say('Now you count by yourself!');
+      if (i === 2 && !help) { await U.silentDemo(F, 'roll'); await F.say('Now you count by yourself!'); }
       /* the voice counts with him only in rounds 1-2, or as help after two misses */
       var first = await U.giveRound(F, { n: n, silent: !(i < 2 || help) });
       if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
       return first;
     },
-    bonus: async function (F) { await U.giveRound(F, { n: F.pick([8, 9]), silent: true }); }
+    bonus: async function (F) { await U.giveRound(F, { n: 7, silent: true }); }   /* one step past round 5's six */
   });
 })();
 </script>
