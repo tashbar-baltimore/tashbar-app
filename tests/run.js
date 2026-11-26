@@ -251,6 +251,8 @@ async function kidTests(browser) {
   try { const cg = await require('./lib/core.js').page(pg); cg.fails.forEach(fail); cg.oks.forEach(ok); } catch (e) { fail('core skills page check crashed: ' + String(e).slice(0, 200)); }
   /* A WRITE IS NEVER RIGHT ON ITS OWN (tests/lib/writemin.js, gap A3a): blank and short pieces fail, grade minimums */
   try { const wm = await require('./lib/writemin.js').page(pg); wm.fails.forEach(fail); wm.oks.forEach(ok); } catch (e) { fail('writing page check crashed: ' + String(e).slice(0, 200)); }
+  /* A LESSON NEVER STARTS WITHOUT ITS ACTIVITY KINDS (tests/lib/latekinds.js, gap A6): the new kinds are in the kit the moment it exists */
+  try { const lk = await require('./lib/latekinds.js').page(pg); lk.fails.forEach(fail); lk.oks.forEach(ok); } catch (e) { fail('late kinds check crashed: ' + String(e).slice(0, 200)); }
   /* SCIENCE INDEX NAMES (tests/lib/sciindex.js, issue #391): staff see the same name as the Science lesson a boy really gets */
   try { const si = await require('./lib/sciindex.js').page(pg); si.fails.forEach(fail); si.oks.forEach(ok); } catch (e) { fail('science index page check crashed: ' + String(e).slice(0, 200)); }
   /* ONE BITE player (tests/lib/onebite.js) */

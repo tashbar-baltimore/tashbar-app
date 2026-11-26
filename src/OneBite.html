@@ -249,7 +249,8 @@ document.addEventListener('keydown',e=>{ const p=P(); if(!p||p.ob.stage==='q') r
 
 
 /* ---------- round 2: the Activity Kit in steps 3 and 4 ---------- */
-function kitSetup(p){ const ob=p.ob, b=ob.bite, K=window.OBK; ob.kitDo=[]; ob.kitYour=[]; ob.krec=[];
+function kitSetup(p){ try{ if(window.TLCORE&&window.TLCORE.joinActs&&!window.TLCORE.actsJoined) window.TLCORE.joinActs(); }catch(e){}   /* gap A6: never pick activities before the new kinds (CoreKitActs.html) have joined the kit */
+  const ob=p.ob, b=ob.bite, K=window.OBK; ob.kitDo=[]; ob.kitYour=[]; ob.krec=[];
   if(K&&(isA(b.do)||isA(b.your))){ const ok=d=>{ const e=K.err(d,b.band); if(e) console.warn('OneBite: skipped an activity in '+p.id+': '+e); return !e; };
     ob.kitDo=(b.do||[]).filter(ok).slice(0,3); const last=ob.kitDo.length?ob.kitDo[ob.kitDo.length-1].type:'';
     ob.kitYour=noTwice((b.your||[]).filter(ok),last).slice(0,Math.max(3,8-ob.kitDo.length)); }

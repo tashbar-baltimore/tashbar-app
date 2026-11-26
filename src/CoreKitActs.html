@@ -269,10 +269,19 @@
     '.cka-bk{font-size:64px;line-height:1}.cka-bt{font:800 22px/1.3 inherit;color:#1F2A44}.cka-bw{font:600 18px/1.4 inherit;color:#33415C}.cka-book.busy{opacity:.6}.cka-open{min-height:64px;font-size:20px}';
 
   W.TLCORE = W.TLCORE || {}; W.TLCORE.acts = T;
-  /* join the kit as soon as it exists (OneBiteKit.html loads right after the core files) */
+  /* join the kit as soon as it exists (OneBiteKit.html loads right after the core files).
+     Gap A6 (2026-11-26): the parts loader (Speed.js) HOLDS every timer a piece starts until all pieces have run, then replays a boy's
+     held tap at 0 ms, while this retry ran 50 ms later; his lesson started without these kinds and the player dropped them with no
+     message. So joinActs() is also called by OneBiteKit.html the moment the kit exists, and by the player before it picks activities.
+     It is safe to call any number of times. tests/lib/latekinds.js checks it. */
+  W.TLCORE.joinActs = function () {
+    if (!W.OBK || !W.OBK.types) return false;
+    if (!W.TLCORE.actsJoined) css();
+    Object.keys(T).forEach(function (k) { if (!W.OBK.types[k]) W.OBK.types[k] = T[k]; }); W.TLCORE.actsJoined = true; return true;   /* OBK.list stays the first ten (tests/lib/onebite.js plays those); these seven are played by tests/lib/coreacts.js */
+  };
   var tries = 0;
   (function join() {
-    if (W.OBK && W.OBK.types) { css(); Object.keys(T).forEach(function (k) { if (!W.OBK.types[k]) W.OBK.types[k] = T[k]; }); W.TLCORE.actsJoined = true; return; }   /* OBK.list stays the first ten (tests/lib/onebite.js plays those); these seven are played by tests/lib/coreacts.js */
+    if (W.TLCORE.joinActs()) return;
     if (tries++ < 1200) setTimeout(join, 50);
   })();
 })();
