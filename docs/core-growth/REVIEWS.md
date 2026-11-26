@@ -6,6 +6,70 @@ Job V builds no lessons and never reviews its own work. It scores every job's le
 
 ---
 
+## Round 2 (part B1a) · 2026-11-26 · F, all K–1 games, little books and listen-along stories, W13
+
+### For the Head of School (plain words)
+
+Rabbi Khaver: **the new reading and writing work for the youngest boys is mostly good, but it is not yet at your bar.**
+
+- **103 of 145 new lessons and games (71%) pass every point.** The finish line is 90%.
+- **By group:**
+  - Grade 2 phonics and fluency lessons: 79% pass.
+  - Kindergarten and Grade 1 reading games: 75% pass.
+  - Kindergarten and Grade 1 writing games: 33% pass. Too many of their "find the mistake" pieces are a thumbs up or thumbs down, so a boy can guess.
+- **10 problems a boy would hit. I checked each one in the code myself.**
+  - **Food:** a crab picture (not kosher) in two Kindergarten games.
+  - **Marked wrong for a right answer (7):**
+    - **Pictures with two names (5):** a cat a boy may call "kitty" (in two games); "friend" and "people" pictures that both fit two boys; a caterpillar where a bee is also a bug; and a frog a boy may call "toad".
+    - **A story match:** the baby falls asleep in the sukkah, so "sleep" fits two places.
+    - **Unit checks:** a question loses its picture, so "snoop" and "cafe" are marked wrong.
+  - **Writing:** a Grade 3 boy cannot send his letter if he ends it "Thank you,".
+  - **Too long, and gives the answer away:** one Grade 1 writing game says a 21-word line out loud, and the line gives the answer.
+- **The phonics unit checks are not real checks yet.** 5 of the 6 have no questions of their own. They repeat questions the boy already answered in the lessons.
+- **The books are good.** 34 of 37 stories, plays and little readers pass. Three Kindergarten books have a small story mix-up.
+- **Kindergarten and Grade 1 boys don't yet write anything a teacher sees.** The picture pieces for them are not built yet.
+
+### Results by job
+
+| Job | Part | Scored | Pass | % | Detail |
+|---|---|---|---|---|---|
+| F | Grade 2 lessons | 24 | 19 | 79% | `reviews/R2-F.md` batches 1–2 |
+| F | K–1 games | 87 | 65 | 75% | `reviews/R2-F.md` batches 3–6 |
+| F | Unit checks | 6 | 0 | 0% | `reviews/R2-F.md` batch 2 |
+| F | Texts | 37 | 34 | 92% | `reviews/R2-F.md` batches 2, 3, 5 |
+| W13 | K–1 games | 15 | 5 | 33% | `reviews/R2-W13.md` batch 7 |
+| W13 | Grade 2–3 lessons | 19 | 14 | 74% | `reviews/R2-W13.md` batches 7–8 |
+| W13 | Unit checks | 5 | 3 | 60% | `reviews/R2-W13.md` |
+| **All lessons and games** | | **145** | **103** | **71%** | |
+
+### URGENT (each checked again in the code; full rows in the detail files)
+
+| Item | Job | Problem | Fix |
+|---|---|---|---|
+| `READ.PHON.L01.25`, `READ.PA.L01.15` | F | 🦀 crab (not kosher) | 🧲 / 🐍 |
+| `READ.PA.L01.15` piece 4 | F | 🐱 keyed 3 sounds; "kitty" has 4 | swap the card |
+| `READ.PA.L02.20` sort 1 | F | 🐱 keyed one beat; "kitty" has 2 | 🔑 |
+| `READ.FLU.L02.23` match | F | 👦👦 is also "people" | 🤝 for friend |
+| `READ.PA.L01.14` piece 5 | F | 🐝 is also a bug | pin → pan |
+| `READ.PHON.L01.16` piece 4 | F | 🐸 frog or toad | 🔥 |
+| `READ.LIT.L01.02` piece 6 | F | 😴 fits the sukkah too (story) | 🦉–🌙 |
+| Unit checks F.U22, F.U24 | F / T | picture dropped, so "snoop" / "cafe" are marked wrong | own unit items, or keep the picture in `fromSkill()` |
+| `W13.U36` letter piece | W13 | "Thank you," and "Hi Avi!" can never pass the checklist, so the letter cannot be sent | widen the `any` lists |
+| `WRIT.PARA.L02.06` piece 1 | W13 | 21-word spoken line that says the answer | the shorter line in R2-W13 |
+
+**For job T (tests):**
+- **K–1 spoken lines:** the K–1 game gate counts only `say`, but `how` and `hear` are spoken too, and over a dozen lines run 13–21 words.
+- **Decodable check:** the little-reader check (`tests/lib/corefound.js`, F-map section 7) does not exist yet.
+
+### How part B1a was done
+- **What was scored:** every F and W13 item live on `origin/main` at `db6e493` that Round 1 did not score (the R1 ✗ lessons are gap B2c), plus the W13 Grade 2 lessons fixed on 25 Nov.
+- **The checks:** for each One Bite lesson and unit check, `tools/audit/unitpool.js` dumped every distinct check question the engine can draw (25 builds per skill).
+- **The reviewers:** 8 fresh reviewers each scored one batch. None of them, and not this builder, wrote any of the lessons.
+- **What a boy sees:** one lesson per job was played as a made-up TEST- boy at both sizes, with the Reader opened, to Level clear. Pictures: `docs/screens/b1a-r2/`.
+- **Not done:** the K–1 games were scored from their data, not played. Part B1b (C45 and S) and part B1c (G and W48) come next.
+
+---
+
 ## Round 1 · 2026-11-24 · all 151 live Core Growth lessons
 
 ### For the Head of School (plain words)
