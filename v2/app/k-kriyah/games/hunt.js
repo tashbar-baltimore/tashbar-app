@@ -51,7 +51,7 @@ export default function setup(E, { struggled }) {
   });
   E.setSway(.5);
   const SIZE = () => E.portrait ? .72 : .9;
-  function placeAt(l, i) { const s = spots[i]; l.userData.spot = i; l.position.copy(s.p); l.rotation.y = s.ry; l.userData.base = s.p.clone(); }
+  function placeAt(l, i) { const s = spots[i]; l.userData.spot = i; l.position.copy(s.p); l.lookAt(E.cam.position); l.userData.base = s.p.clone(); }   /* every tile faces the boy, so no letter is squashed (reviewer: floor and side-wall letters looked like other letters) */
   E.onFrame(t => {
     letters.forEach((l, i) => { if (l.visible && l.userData.base && !l.userData.busy) { l.position.y = l.userData.base.y + Math.sin(t * 1.6 + i) * .03; l.rotation.z = Math.sin(t * 1.3 + i) * .05; } });
     if (helpOn && helpOn.visible) { glow.position.copy(helpOn.position).add(new THREE.Vector3(0, 0, -.2)); glow.material.opacity = .6 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
@@ -71,7 +71,7 @@ export default function setup(E, { struggled }) {
     l.userData.got = true; l.userData.busy = true; helpOn = null; E.hand.hide(); found++; E.joy(E.worldPos(l)); boy.mood('cheer'); setTimeout(() => boy.mood('think'), 900 * E.F);
     const p0 = l.position.clone(), top = new THREE.Vector3(0, E.portrait ? 4.6 : 4.0, 1);
     E.say(want === 'beis' ? ['A Beis!', E.S('b')] : ['A Veis!', E.S('v')], false);
-    await E.tween(650, k => { l.position.lerpVectors(p0, top, k); l.scale.setScalar(1 - k * .7); l.rotation.y = k * Math.PI * 2; });
+    await E.tween(650, k => { l.position.lerpVectors(p0, top, k); l.scale.setScalar(1 - k * .7); l.rotation.y = Math.sin(k * Math.PI * 2) * .3; });   /* a wobble, never backwards */
     l.visible = false; E.sparkle(top, 14); E.setProgress(need, found);
     if (found >= need && resolveRound) { const r = resolveRound; resolveRound = null; r(); }
   }

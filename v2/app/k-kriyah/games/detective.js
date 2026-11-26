@@ -14,7 +14,7 @@ export default function setup(E, { struggled }) {
   const cardHome = new THREE.Vector3(); let HS = 1, CS = 1, dragging = false, busy = true, dragEnabled = false, help = struggled, t0 = 0;
   E.onLayout(p => {
     HS = p ? .64 : 1; CS = p ? 1.1 : 1;
-    if (p) { E.camBase.set(0, 3.0, 10.8); E.camTarget.set(0, 2.4, 0); HB.position.set(1.4, 0, 0); HV.position.set(-1.4, 0, 0);   /* Beis on the right, Veis on the left: Hebrew order */ cardHome.set(0, 4.1, 1.5); }
+    if (p) { E.camBase.set(0, 3.2, 12.6); E.camTarget.set(0, 2.3, 0); HB.position.set(1.3, 0, .4); HV.position.set(-1.3, 0, .4);   /* phone: both houses whole on screen (reviewer) */   /* Beis on the right, Veis on the left: Hebrew order */ cardHome.set(0, 4.7, 1.0); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.4, 0); HB.position.set(3.6, 0, 0); HV.position.set(-3.6, 0, 0); cardHome.set(0, 1.9, 1.4); }
     HB.scale.setScalar(HS); HV.scale.setScalar(HS); if (card.visible && !dragging && !busy) { card.position.copy(cardHome); card.scale.setScalar(CS); }
   });
