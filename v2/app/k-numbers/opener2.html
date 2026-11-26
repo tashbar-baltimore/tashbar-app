@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn it: Counting — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 2 OPENER: a short, warm lesson: the counting words always go in the same order; we can start
+     from any number; we can count down. With the unit chant ("One to ten, and back again!") and a stand-up jump-and-count. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="u2.css">
+<style>
+.stage{ grid-template-rows:auto 1fr auto; }
+#go{ width:clamp(100px,15vh,130px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; visibility:hidden; animation:pulse 1.2s infinite; justify-self:center; }
+#go.on{ visibility:visible; } #go svg{ width:52%; height:52%; position:relative; }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="carrow" id="carrow"></div>
+  <div id="path"></div>
+  <button id="go" class="btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit2.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, P, done;
+  var SLIDES = [
+    async function (F) { P = U2.path($('path'), { from: 1, to: 10 }); await F.say('Hi! This unit we learn to count out loud.'); await U2.countAlong(P, 0, 9); await F.say('Counting words always go in the same order.'); },
+    async function (F) { P = U2.path($('path'), { from: 1, to: 5 }); await F.say('Stand up! Jump each time I count!');
+      for (var i = 0; i < 5; i++) { NK.sound.clap(); P.place(i, true); await F.say(U2.Word(i + 1) + '! Jump!', { noRepeat: true }); } await F.say('Great jumping!'); },
+    async function (F) { await F.chant('One, two, three, four, five, six, seven, eight, nine, ten!'); },
+    async function (F) { P = U2.path($('path'), { from: 1, to: 10 }); await F.say('We can start at any number.'); await F.say('Start at four!'); await U2.countAlong(P, 3, 6); },
+    async function (F) { P = U2.path($('path'), { from: 1, to: 10, reverse: true }); $('carrow').innerHTML = U2.CAR; await F.say('We can count down, too. From ten!');
+      await U2.countAlong(P, 0, 9); await F.say('Zero! Vroom!', { noRepeat: true }); $('car').classList.add('go'); NK.sound.win(); await F.wait(900); },
+    /* his turn: he taps the stones in order and counts with the voice */
+    async function (F) { $('carrow').innerHTML = ''; P = U2.path($('path'), { from: 1, to: 5 }); P.stones.forEach(function (s) { s.classList.add('tapme'); });
+      await F.say('Your turn! Tap each stone and count.');
+      await new Promise(function (ok) {
+        turn = function (i) {
+          if (i !== P.at + 1) { var nx = P.stones[P.at + 1]; nx.classList.remove('bad'); void nx.offsetWidth; nx.classList.add('bad'); NK.say('Tap this one next.', { noRepeat: true }); return; }
+          P.place(i, true); NK.hush(); NK.say(U2.Word(i + 1) + '!', { noRepeat: true });
+          if (i === 4) { turn = null; GAME.phase = 'busy'; GAME.right = null; setTimeout(ok, NK.fast ? 10 : 900); } else hookTurn();
+        };
+        function hookTurn() { GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#st' + (P.at + 1) }]; }; GAME.wrong = null; }
+        hookTurn(); F.lock(false);
+      });
+      GAME.phase = 'busy'; await F.say('You counted to five!'); await F.say("Let's count and jump!"); }
+  ];
+  var turn = null;
+  document.addEventListener('pointerdown', function (e) { var s = e.target.closest('#path .u2stone'); if (s && turn) { e.preventDefault(); NK.unlock(); turn(+s.dataset.i); } });
+  FR.game({
+    id: 'u2-opener', title: 'Counting!', rounds: SLIDES.length, stars: function () { return 3; },
+    hero: '<div style="width:56%">' + U2.DRUM + '</div>',
+    endSay: function () { return 'Great! Now let\'s count and jump!'; },
+    init: function () { $('go').addEventListener('click', function () { if (GAME.phase !== 'answer') return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; var d = done; done = null; d(true); }); },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on');
+        await SLIDES[i](F);
+        $('go').classList.add('on');
+        if (i === 0) { await F.handTo($('go')); await F.say('Tap the arrow to go on.'); F.handHide(); }   /* island rule: show the arrow the first time */
+        done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#go' }]; }; GAME.wrong = null; F.lock(false);
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

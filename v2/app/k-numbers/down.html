@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Countdown — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 2, game 3: COUNTDOWN. Skill: counting back from 10. Tatty's car is ready to drive to shul.
+     The stones go ten down to one; the voice counts down and stops at an empty stone; he drags the right loose stone in.
+     When the count reaches one: "Zero! Vroom!" and Tatty's car drives off. Same mistake help as What Comes Next. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="u2.css">
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="carrow" id="carrow"></div>
+  <div id="path"></div>
+  <div class="u2loose" id="loose"></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit2.js"></script>
+<script>
+U2.gapGame({
+  id: 'u2-down', title: 'Countdown', rounds: 5, reverse: true, finish: true,
+  hero: '<div style="width:80%">' + U2.CAR.replace('id="car"', '').replace('class="u2car"', 'style="width:100%"') + '</div>',
+  init: function () { document.getElementById('carrow').innerHTML = U2.CAR; },
+  plan: function (i) {
+    if (i === 0) return { from: 1, to: 5, startN: 5, gapN: 3, say: 'Tatty is going to shul. Count down!' };
+    var P = [[10, 7], [10, 5], [8, 4], [6, 2]][i - 1]; return { from: 1, to: 10, startN: P[0], gapN: P[1], say: P[0] === 10 && i === 1 ? 'Now count down from ten!' : null };
+  },
+  bonus: { from: 6, to: 15, startN: 15, gapN: 12, say: 'Bonus! Count down from fifteen!' },
+  beforeRound: async function () { document.getElementById('car').classList.remove('go'); },
+  afterRight: async function (P) {
+    if (P.at === P.nums.length - 1 && P.nums[P.at] === 1) { await FR.say('Zero! Vroom!', { noRepeat: true }); document.getElementById('car').classList.add('go'); NK.sound.win(); await FR.wait(900); }
+  },
+  demo: async function (F, setup) {
+    var x = setup({ from: 1, to: 5, startN: 5, gapN: 2 });
+    await F.say('Tatty starts the car at zero.');
+    await F.say('Count down with me. Watch.');
+    await U2.countAlong(x.P, 0, 2); await F.say('What comes next?');
+    var good = document.querySelector('#loose .u2stone[data-n="2"]');
+    await F.handTo(good); await F.handTap(); await F.say('Two!', { noRepeat: true });
+    await F.handDrag(good, x.P.stones[3]); good.remove(); x.P.fill(3); x.P.place(3, true);
+    await U2.countAlong(x.P, 4, 4); await F.say('Zero! Vroom!', { noRepeat: true }); document.getElementById('car').classList.add('go'); await F.wait(900);
+    await F.yes(x.P.stones[3], 'Five, four, three, two, one. Yes!');
+  }
+});
+</script>
+</body>
+</html>
