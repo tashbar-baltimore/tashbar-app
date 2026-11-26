@@ -57,13 +57,13 @@ module.exports = async function (browser) {
   /* answer whatever the current round asks (used by the games, the check and the review) */
   async function solve(pg, q) {
     await W(pg, q => (__g1.q || 0) > q, q);
-    const a = await pg.evaluate(() => __g1.ask);
+    const [a, cur] = await pg.evaluate(() => [__g1.ask, __g1.q]);   /* this round's number, read with its question (the next one may open at once) */
     if (a.kind === 'hop') { await W(pg, () => __g1.state === 'ask'); await tap(pg, 'hit.stone', a.answer); }
     else if (a.kind === 'wall') { await W(pg, () => __g1.state === 'ask'); for (const n of await pg.evaluate(() => __g1.looseLeft())) await drag(pg, n, n); }
     else if (a.kind === 'crates') { await W(pg, () => __g1.state === 'tapcount'); const t = Math.floor(a.answer / 10), o = a.answer % 10;
       for (let i = 0; i < t; i++) await tap(pg, 'hit.crate', i); for (let i = 0; i < o; i++) await tap(pg, 'hit.apple', i); await typePad(pg, a.answer); }
     else if (a.kind === 'hear') await typePad(pg, a.answer);
-    return pg.evaluate(() => __g1.q);
+    return cur;
   }
   async function drag(pg, n, to) { const f = await pg.evaluate(n => __g1.hit.loose(n), n), t = await pg.evaluate(n => __g1.hit.gap(n), to);
     await pg.mouse.move(f.x, f.y); await pg.mouse.down(); await pg.mouse.move((f.x + t.x) / 2, (f.y + t.y) / 2, { steps: 4 }); await pg.mouse.move(t.x, t.y, { steps: 4 }); await pg.mouse.up(); await pg.waitForTimeout(120); }
