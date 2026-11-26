@@ -30,6 +30,7 @@ module.exports = async function (browser) {
   async function act(pg, list) {
     for (const a of list) {
       if (a.tap) { await pg.click(a.tap, { force: true }); await pg.waitForTimeout(40); }
+      if (a.path) { const P = a.path; await pg.mouse.move(P[0][0], P[0][1]); await pg.mouse.down(); for (const p of P.slice(1)) await pg.mouse.move(p[0], p[1], { steps: 2 }); await pg.mouse.up(); await pg.waitForTimeout(40); }
       if (a.drag) { const s = await pg.locator(a.drag[0]).boundingBox(), t = await pg.locator(a.drag[1]).boundingBox();
         await pg.mouse.move(s.x + s.width / 2, s.y + s.height / 2); await pg.mouse.down(); await pg.mouse.move(s.x + s.width / 2 + 20, s.y + s.height / 2 + 20, { steps: 3 });
         await pg.mouse.move(t.x + t.width / 2, t.y + t.height / 2, { steps: 5 }); await pg.mouse.up(); await pg.waitForTimeout(40); }

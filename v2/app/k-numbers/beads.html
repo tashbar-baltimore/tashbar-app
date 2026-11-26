@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bead Push — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 5, game 2: BEAD PUSH (the bead rack, from the Netherlands). Skill: make 6-10 in ONE move,
+     as five red and some white, instead of counting by ones. "Push eight": he taps (or slides) the bead that makes eight and
+     it and all the beads before it slide over together. First mistake: five red is five, look again; second: the moved beads
+     light up, "Eight is five red and three white. Push one more." -->
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css">
+<style>
+.stage{ grid-template-rows:auto 1fr auto; justify-items:center; align-items:center; gap:10px; }
+.ask{ display:flex; align-items:center; gap:18px; }
+.ask .panel{ display:flex; align-items:center; gap:16px; padding:8px 22px; }
+.ask .tf{ width:min(26vw,230px); }
+.rackwrap{ width:min(96vw,1100px); }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ask .tf{ width:40vw; } .rackwrap{ width:96vw; } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="ask"><div class="panel"><div class="unum" id="num"></div><div id="pic"></div></div></div>
+  <div class="rackwrap" id="rackwrap"></div>
+  <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var K, P, R, done, plan, easy = 0, streak = 0;
+  function ready() { var c = $('check'); c.classList.toggle('dim', K.count() === 0); c.classList.toggle('ready', K.count() > 0 && GAME.phase === 'answer'); }
+  function taps(k) { return K.moves(k).map(function (m) { return { tap: '#rackwrap .bead[data-r="' + m[0] + '"][data-i="' + m[1] + '"]' }; }).concat([{ tap: '#check' }]); }
+  function hooks() { GAME.right = function () { return taps(R.n); }; GAME.wrong = function () { return taps(R.n === 10 ? 9 : R.n + 1); }; }
+  function some(n) { return n === 10 ? 'Ten is five red and five white.' : FR.Word(n) + ' is five red and ' + FR.word(n - 5) + ' white.'; }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer') return; var have = K.count(); if (!have) { FR.say('Tap a bead to push it.'); return; }
+    GAME.phase = 'busy'; FR.lock(true); K.lock(true);
+    if (have === R.n) { $('pic').classList.remove('hiddenpic'); K.el.classList.add('glowmoved'); await FR.yes(K.el, R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + some(R.n)); K.el.classList.remove('glowmoved'); var d = done; done = null; d(R.misses === 0); return; }
+    FR.oops(K.el); R.misses++;
+    if (R.misses === 1) { await FR.say("Let's look again. Five red is five."); await FR.say('Fix your beads.'); }
+    else { $('pic').classList.remove('hiddenpic'); mark(true); K.el.classList.add('glowmoved'); await FR.say(some(R.n)); var k = R.n - have; await FR.say(k > 0 ? 'Push ' + FR.word(k) + ' more.' : 'Push ' + FR.word(-k) + ' back.'); K.el.classList.remove('glowmoved'); }
+    GAME.phase = 'answer'; FR.lock(false); K.lock(false); ready(); hooks();
+  }
+  function ask(n) { U5.setNum($('num'), n); P.set(n); }
+  function mark(on) { K.el.querySelectorAll('.bead').forEach(function (b) { b.classList.remove('hint-bead'); }); if (on) { var b = K.bead(0, R.n - 1); if (b) b.classList.add('hint-bead'); } }
+  function play(F, n, line, noPic) {
+    return new Promise(async function (res) {
+      R = { n: n, misses: 0 }; ask(n); K.set(0, 0); $('pic').classList.toggle('hiddenpic', !!noPic); GAME.phase = 'busy'; F.lock(true); ready(); mark(easy > 0);
+      await F.say(line, { repeat: 'Push ' + F.word(n) + ' beads. Try one move!' });
+      if (easy > 0) await F.say('Tap the bead with the ring.');
+      done = function (first) { mark(false); if (R.misses >= 2) { easy = 2; streak = 0; } else if (first) streak++; else streak = 0; res(first); };
+      GAME.phase = 'answer'; F.lock(false); K.lock(false); ready(); hooks();
+    });
+  }
+  FR.game({
+    id: 'u5-beads', title: 'Bead Push', rounds: 6,
+    hero: '<div id="herorack"></div>',
+    init: function (F) {
+      var h = U5.rack(false); h.set(7, 0); h.el.style.cssText = 'width:100%;margin-top:14%'; $('herorack').appendChild(h.el);
+      K = U5.rack(true); $('rackwrap').appendChild(K.el); K.onChange = ready; K.lock(true);
+      P = U5.frame(0, false); $('pic').appendChild(P.el); $('check').addEventListener('click', check);
+    },
+    reset: function (F, again) { plan = F.shuffle([6, 7, 8, 9, 10]).concat([F.pick([6, 7, 8, 9])]); if (!again) { easy = 0; streak = 0; } },
+    demo: async function (F) {
+      R = { n: 8, misses: 0 }; ask(8); K.set(0, 0);
+      await F.say('A bead rack! Five red, five white.');
+      await F.say('Watch me push eight in one move.');
+      await F.handTo(K.bead(0, 8)); await F.handTap(); K.tap(0, 8); await F.wait(500);
+      await F.say('Oops, that is nine. Tap a bead to push one back.');
+      await F.handTo(K.bead(0, 8)); await F.handTap(); K.tap(0, 8); await F.wait(500);
+      await F.say('Five red and three white. Eight!');
+      await F.handTo($('check')); await F.handTap();
+      K.el.classList.add('glowmoved'); await F.yes(K.el, 'One push. No counting!'); K.el.classList.remove('glowmoved');
+    },
+    round: function (F, i) {
+      var n = easy > 0 ? F.pick([6, 7]) : plan[i], noPic = streak >= 3 && easy === 0; if (easy > 0) easy--;
+      return play(F, n, noPic ? 'No picture now. Push ' + F.word(n) + '!' : i === 0 ? 'Push ' + F.word(n) + '. Try one move!' : 'Push ' + F.word(n) + '.', noPic);
+    },
+    bonus: async function (F) { var ns = F.shuffle([8, 9, 10]); for (var b = 0; b < 2; b++) await play(F, ns[b], (b === 0 ? 'Just the number! ' : '') + 'Push ' + F.word(ns[b]) + '!', true); }
+  });
+})();
+</script>
+</body>
+</html>
