@@ -18,7 +18,7 @@ function cuRows_() { var sh = cuTab_(), n = sh.getLastRow(); return n < 2 ? [] :
 function cuJson_(t, d) { try { return JSON.parse(t || '') || d; } catch (e) { return d; } }
 function cuKid_(token) { var s = msSession_(token); if (!s || s.role !== 'kid' || !s.sid) throw new Error('This is for students only.'); return String(s.sid); }
 function cuOkUnit_(id) { id = String(id || ''); if (!/^[A-Z][A-Z0-9]*\.U\d{2}$/.test(id)) throw new Error('Unknown unit.'); return id; }
-function cuIds_(a) { return (Array.isArray(a) ? a : []).map(String).filter(function (x) { return /^(READ|LANG|WRIT|SCI)\.[A-Z]+\.L\d\d\.\d\d(\.[a-z])?$/.test(x); }).slice(0, 12); }   /* a unit has at most 12 skills */
+function cuIds_(a) { return (Array.isArray(a) ? a : []).map(String).filter(function (x) { return /^(READ|LANG|WRIT|SCI|SS)\.[A-Z]+\.L\d\d\.\d\d(\.[a-z])?$/.test(x); }).slice(0, 12); }   /* a unit has at most 12 skills */
 function cuRow_(r) { return { unit: String(r[1]), pre: !!Number(r[2]), shown: cuJson_(r[3], []), passed: !!Number(r[4]), right: Number(r[5]) || 0, total: Number(r[6]) || 0, missed: cuJson_(r[7], []), tries: Number(r[8]) || 0, at: r[9] ? new Date(r[9]).getTime() : 0 }; }
 
 function cuSave(token, unitId, kind, result) {
@@ -53,7 +53,8 @@ function coreUnitPlanPatch_(sid, out) {
   cuRows_().forEach(function (r) { if (String(r[0]) !== String(sid)) return; cuJson_(r[3], []).forEach(function (id) { shown[id] = 1; }); cuJson_(r[7], []).forEach(function (id) { missed[id] = 1; }); });
   Object.keys(missed).forEach(function (id) { delete shown[id]; });
   if (!Object.keys(shown).length) return;
-  ['READ', 'WRIT', 'SCI'].forEach(function (k) { var o = out[k]; if (!o || !o.path || !o.path.length) return;
+  ['READ', 'WRIT', 'SCI', 'SS'].forEach(function (k) { var o = out[k];   /* SS: Social Studies (#432); it has no server path yet, so this skips it until one exists */
+    if (!o || !o.path || !o.path.length) return;
     var path = o.path.filter(function (id) { return !shown[id]; }); if (path.length === o.path.length || !path.length) return;
     o.skippedShown = (o.skippedShown || 0) + (o.path.length - path.length); o.path = path; if (shown[o.start]) o.start = path[0]; });
 }

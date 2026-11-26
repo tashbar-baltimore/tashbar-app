@@ -226,6 +226,28 @@
 
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
   /* Units: W13.U<grade><unit> (K = 0): W13.U31 = Grade 3, Unit 1 (docs/core-growth/HOW-TO-ADD-A-UNIT.md) */
+  /* The unit's real task (map: Gr 3 piece): a Writing Workshop piece for The Shabbos Street News. It opens from "Unit cleared!";
+     his teacher scores it in the writing inbox (docs/core-growth/HOW-TO-ADD-A-WRITING-TASK.md). */
+  var PIECE = { id: 'W13.G3.P1', title: 'For The Shabbos Street News', grade: 3, kind: 'information',
+    prompt: 'Write a paragraph for The Shabbos Street News about something your family or class did together: building the sukkah, baking for Shabbos, or a chesed project. Open with a hook, then a topic sentence. Give three details that prove it. End with a strong close.',
+    strategy: { name: 'Paragraph Builder', steps: [['H', 'Hook the reader'], ['T', 'Topic sentence'], ['D', 'Details that prove'], ['C', 'Strong close']] },
+    plan: [ { k: 'hook', label: 'H · My hook', hint: 'A question, a surprising fact, or a sound word' },
+            { k: 'topic', label: 'T · Topic sentence', hint: 'Our family built the sukkah together.' },
+            { k: 'd1', label: 'D · Detail 1 (exact)', hint: 'who, what, how many, how' },
+            { k: 'd2', label: 'D · Detail 2 (exact)' },
+            { k: 'd3', label: 'D · Detail 3 (exact)' },
+            { k: 'close', label: 'C · Strong close', hint: 'The big idea in new words, plus a final thought' } ],
+    starters: ['Did you ever', 'Bang, bang!', 'First,', 'We used', 'Now', 'In the end,'],
+    min: 45,
+    checks: [
+      { t: 'I wrote at least 6 sentences.', sentences: 6 },
+      { t: 'I started with my hook.', first: 'hook' },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'My details are exact: who, what, how many or how.', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['A hook about the topic', 'Details that prove the topic sentence', 'A strong close with a final thought', 'Capitals, end marks and spelling'],
+    pics: ['📰', '🏕️', '🍞', '🤝'] };
   if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U31', title: 'Paragraph Builder', c: 'WRIT', grade: 3,
     skills: ['WRIT.PARA.L04.01', 'WRIT.PARA.L04.02', 'WRIT.PARA.L04.03', 'WRIT.SENT.L04.01', 'WRIT.PARA.L04.04'],
     review: ['WRIT.ESSAY.L03.01', 'WRIT.PARA.L03.04', 'WRIT.PARA.L03.05'], n: 8,
@@ -236,6 +258,6 @@
       { skill: 'WRIT.PARA.L04.03', type: 'cloze', t: 'Topic: The club worked hard. Detail: They raked ___ before lunch.', o: ['twelve bags of leaves', 'a lot', 'stuff'], a: 'twelve bags of leaves', say: 'Pick the words that make the detail strong.', how: 'Which words show exactly how hard they worked?' },
       { skill: 'WRIT.PARA.L04.04', type: 'evidence', q: 'Topic: The club baked for a new family. Which is the strong close?', p: ['The club baked for a new family.', 'The end.', 'Now the Levins feel welcome on our street.', 'Chaim has a sled.'], a: 2, look: 'new words for the big idea, plus a final thought', say: 'Tap the strong close.', how: 'New words for the big idea, plus a final thought.' },
       { skill: 'WRIT.PARA.L04.04', type: 'cloze', t: 'Topic: Naftali learned to fix watches. Close: Now Naftali can fix any watch, and ___.', o: ['Zeidy is proud of him', 'he has a sled', 'the end'], a: 'Zeidy is proud of him', say: 'Pick the final thought.', how: 'It must stay on the big idea: a feeling or why it matters.' }
-    ] });
+    ], task: PIECE });
 })();
 </script>

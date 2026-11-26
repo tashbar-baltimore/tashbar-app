@@ -1,0 +1,228 @@
+<script>
+/* CoreDataC231.html: Core Growth job C23 (Comprehension Grades 2-3, docs/core-growth/C23-map.md). Keep this file under 150 KB.
+   Unit 2.1 "Story Detectives": new skills READ.COMP.L03.04 (ask questions), READ.COMP.L03.05 (who, what, where, when),
+   READ.COMP.L03.06 (why and how) with TLCORE.add, with the existing One Bite lesson READ.LIT.L03.01 "Retell It" (src/OneBiteDataRead2.html) as the unit's fourth skill.
+   Texts: texts/C23/C23.B1.01-02 (Book C1 ch. 1-2), C23.ST.01-02 (stories). Cast: the Shabbos Street Club (docs/core-growth/C23-map.md, section 5).
+   No double slash in this file. */
+(function () {
+  var LESSONS = {
+
+    /* ===== Unit 2.1, skill 1: ask questions before and while you read ===== */
+    'READ.COMP.L03.04':{name:'Ask As You Read',
+      teach:[
+        {q:'When do good readers ask questions?', o:['before, while and after you read','only after you finish','never'], how:'Good readers wonder the whole time: before, while and after.'},
+        {q:'Before you read, what can help you ask a question?', o:['the title and the picture','the page number','the color of the cover'], how:'Look at the title and the picture. Ask: what will happen?'},
+        {q:'You asked a question. How do you find the answer?', o:['keep reading the story','stop reading','guess and close the book'], how:'The answer is usually waiting in the next pages.'}
+      ],
+      practice:[
+        {t:'sort', q:'Story: "The Lost Kite". Sort each question.', bins:[{id:'g',label:'a good reading question'},{id:'n',label:'not about the story'}], items:[{label:'Where did the kite go?',bin:'g'},{label:'Who will find it?',bin:'g'},{label:'What is my favorite food?',bin:'n'},{label:'How old is my uncle?',bin:'n'}], h:'Is the question about the story?'},
+        {t:'order', q:'Put a reader\'s steps in order.', tiles:['Look at the title and picture.','Ask: what will happen?','Read and keep wondering.','Find the answer in the story.'], h:'Ask first. Find the answer last.'},
+        {t:'pairs', q:'Match each question word to what it asks.', pairs:[['Who','a person'],['Where','a place'],['When','a time'],['Why','a reason']], h:'What kind of answer does each word want?'},
+        {t:'spotall', q:'Title: "The Big Snow". Tap every good question to ask before reading.', cells:[{label:'Will school close?',ok:true},{label:'Who will build a snowman?',ok:true},{label:'What will the boys do?',ok:true},{label:'What is ten plus ten?',ok:false}], h:'Which questions are about the snow story?'},
+        {t:'sort', q:'Before, or while you read?', bins:[{id:'b',label:'before you read'},{id:'w',label:'while you read'}], items:[{label:'What will this story be about?',bin:'b'},{label:'What does the title tell me?',bin:'b'},{label:'Why did he do that?',bin:'w'},{label:'What will happen next?',bin:'w'}], h:'Have you started reading yet?'},
+        {t:'pairs', q:'Match each question to when you ask it.', pairs:[['What will it be about?','before you read'],['Why did the boy run?','while you read'],['What did I learn?','after you read']], h:'When can each question be answered?'}
+      ],
+      check:[
+        {q:'When should a reader ask questions?', o:['before, while and after you read','only after you finish','never']},
+        {q:'"Shloimy heard a knock at night." Avi asks, "Who is knocking?" That is...', o:['a good reading question','not about the story','the answer']},
+        {q:'Before reading "Snow Day", Dovid asked, "Will school close?" How can he find out?', o:['keep reading the story','stop reading','guess and close the book']}
+      ],
+      re:[
+        {q:'When does a good reader wonder about a story?', o:['before, while and after you read','only after you finish','never']},
+        {q:'"The bus did not come." Chaim asks, "Where is the bus?" That is...', o:['a good reading question','not about the story','the answer']},
+        {q:'Before reading "The Broken Clock", Naftali asked, "Who will fix it?" How can he find out?', o:['keep reading the story','stop reading','guess and close the book']}
+      ]},
+
+    /* ===== Unit 2.1, skill 2: who, what, where, when ===== */
+    'READ.COMP.L03.05':{name:'Who, What, Where, When',
+      teach:[
+        {q:'"Dovid ate a pear." Which question does "Dovid" answer?', o:['who','where','when'], how:'Who asks for a person. Dovid is a person.'},
+        {q:'"In the park, the boys played ball." Which question does "in the park" answer?', o:['where','who','when'], how:'Where asks for a place.'},
+        {q:'"On Sunday, Avi went fishing." Which question does "on Sunday" answer?', o:['when','where','what'], how:'When asks for a time.'}
+      ],
+      practice:[
+        {t:'sort', q:'Who, or where?', bins:[{id:'w',label:'who'},{id:'p',label:'where'}], items:[{label:'Naftali',bin:'w'},{label:'Rabbi Feld',bin:'w'},{label:'in the garage',bin:'p'},{label:'at the shul',bin:'p'}], h:'A person, or a place?'},
+        {t:'sort', q:'When, or what?', bins:[{id:'t',label:'when'},{id:'h',label:'what'}], items:[{label:'on Shabbos',bin:'t'},{label:'after school',bin:'t'},{label:'found a map',bin:'h'},{label:'fixed a clock',bin:'h'}], h:'A time, or something that happened?'},
+        {t:'pairs', q:'"On Tuesday, Chaim found a nest by the tree." Match each part.', pairs:[['On Tuesday','when'],['Chaim','who'],['found a nest','what'],['by the tree','where']], h:'Ask the question word for each part.'},
+        {t:'spotall', q:'Tap every WHERE answer.', cells:[{label:'in the sukkah',ok:true},{label:'by the river',ok:true},{label:'at the grocery',ok:true},{label:'at night',ok:false},{label:'Dovid',ok:false}], h:'Where is a place.'},
+        {t:'order', q:'Build the sentence: who, what, where, when.', tiles:['Avi','fed the ducks','at the pond','on Sunday.'], h:'Who first. Then what. Then where. Then when.'},
+        {t:'sort', q:'Which question does each part answer?', bins:[{id:'w',label:'who'},{id:'h',label:'what'},{id:'t',label:'when'}], items:[{label:'Mr. Klein',bin:'w'},{label:'brought a ladder',bin:'h'},{label:'at four thirty',bin:'t'},{label:'Dovid',bin:'w'}], h:'A person, an action, or a time?'}
+      ],
+      check:[
+        {q:'"Yanky fed the cat." Which question does "Yanky" answer?', o:['who','what','where']},
+        {q:'"In the library, Moshe found a book." Which question does "in the library" answer?', o:['where','who','when']},
+        {q:'"After dinner, Shmuel read to his brother." Which question does "after dinner" answer?', o:['when','where','who']}
+      ],
+      re:[
+        {q:'"Eli built a tower." Which question does "Eli" answer?', o:['who','what','where']},
+        {q:'"At the bakery, Ari bought rolls." Which question does "at the bakery" answer?', o:['where','who','when']},
+        {q:'"On Friday morning, Dov swept the porch." Which question does "on Friday morning" answer?', o:['when','where','who']}
+      ]},
+
+    /* ===== Unit 2.1, skill 3: why and how ===== */
+    'READ.COMP.L03.06':{name:'Why and How',
+      teach:[
+        {q:'Which word often points to a WHY answer?', o:['because','first','where'], how:'Because and so tell the reason. Read the words after "because": that answers why.'},
+        {q:'"First he got a ladder. Then he climbed up." What does this tell?', o:['how he did it','why he did it','where he was'], how:'First, then, next: the steps tell how.'},
+        {q:'Where do you find the answer to a why or how question?', o:['in the words of the story','in your guess','in the title only'], how:'Look back at the story. Find the words that tell.'}
+      ],
+      practice:[
+        {t:'sort', q:'Why words, or how words?', bins:[{id:'y',label:'why words'},{id:'h',label:'how words'}], items:[{label:'because',bin:'y'},{label:'so',bin:'y'},{label:'first',bin:'h'},{label:'then',bin:'h'}], h:'Reasons, or steps?'},
+        {t:'pairs', q:'Match each question to its answer.', pairs:[['Why was Chaim late?','He saved a nest.'],['How did the nest go back?','Mr. Klein used a ladder.'],['Why were his shoes muddy?','He held the ladder.']], h:'Why wants a reason. How wants the steps.'},
+        {t:'spotall', q:'"Dovid wore a coat because it was cold. He zipped it up and put on gloves." Tap every HOW part.', cells:[{label:'He zipped it up',ok:true},{label:'put on gloves',ok:true},{label:'because it was cold',ok:false}], h:'Which parts are steps?'},
+        {t:'order', q:'How did Chaim save the nest? Put the steps in order.', tiles:['He saw the nest on the sidewalk.','He knocked on Mr. Klein\'s door.','Mr. Klein brought a ladder.','The nest went back in the tree.'], h:'What happened first?'},
+        {t:'sort', q:'Does it answer why, or how?', bins:[{id:'y',label:'why he did it'},{id:'h',label:'how he did it'}], items:[{label:'because the eggs were in danger',bin:'y'},{label:'so the eggs would be safe',bin:'y'},{label:'he climbed the ladder',bin:'h'},{label:'he held it with two hands',bin:'h'}], h:'A reason, or the steps?'},
+        {t:'pairs', q:'Match each signal word to its question.', pairs:[['because','why'],['first','how'],['where','a place']], h:'Reason words: why. Step words: how.'}
+      ],
+      check:[
+        {q:'"Avi brought an umbrella because the sky was dark." Which words tell WHY he brought it?', o:['the words after "because"','the words before "brought"','the very first word']},
+        {q:'"First Naftali mixed the dough. Then he shaped the challah." What does this tell?', o:['how he did it','why he did it','where he was']},
+        {q:'A question asks, "Why did the dog bark?" Where do you look for the answer?', o:['in the words of the story','in your guess','in the title only']}
+      ],
+      re:[
+        {q:'"Moshe ran home because it began to rain." Which words tell WHY he ran?', o:['the words after "because"','the words before "ran"','the very first word']},
+        {q:'"First Ari folded the paper. Then he cut a star." What does this tell?', o:['how he did it','why he did it','where he was']},
+        {q:'A question asks, "How did the boys find the key?" Where do you look for the answer?', o:['in the words of the story','in your guess','in the title only']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L03.04':{ hook:'Detectives ask questions. Readers do too!',
+      big:'Good readers wonder the whole time. Before you read, look at the title and the picture and ask: what will happen? While you read, ask: why did he do that? Who is that? What will happen next? After you read, ask: what did I learn? Then keep reading to find the answers. Your questions make you a story detective.',
+      intro:['Look at the title and picture.','Ask: what will happen?','Read and keep wondering.','Find the answers in the story.'],
+      ex:[{q:'Title: "Half a Map"', steps:['The title says half a map.','I wonder: where is the other half?','I keep reading to find out.'], a:'Where is the other half?'},
+          {q:'"Zeidy smiled a small smile."', steps:['Why did Zeidy smile?','Does he know something?','I keep reading.'], a:'Why did Zeidy smile?'}],
+      oops:{ q:'Dovid asked, "What is my favorite food?" while reading a story about a map. Good question?', wrong:'Yes, any question is good', right:'No, ask about the story', why:'Reading questions are about the story: who, what, where, why.' },
+      idea:['Ask, read, find out.'],
+      'try':{ q:'When do good readers ask questions?', o:['before, while and after you read','only after you finish'], a:'before, while and after you read', steps:['Think about the whole time you read.'] } },
+    'READ.COMP.L03.05':{ hook:'Four little words help you find a story\'s secrets: who, what, where, when.',
+      big:'Every story has a who (the people), a what (what happens), a where (the place) and a when (the time). Ask each question word, then look for the words that answer it. Who wants a person. Where wants a place. When wants a time. What wants something that happened.',
+      intro:['Who: a person.','What: what happened.','Where: a place.','When: a time.'],
+      ex:[{q:'"On Sunday, Naftali found a map in the workshop."', steps:['Who? Naftali.','What? found a map.','Where? in the workshop.','When? on Sunday.'], a:'Naftali, found a map, in the workshop, on Sunday'},
+          {q:'"At night, Dovid heard a noise in the sukkah."', steps:['When? at night.','Where? in the sukkah.'], a:'at night, in the sukkah'}],
+      oops:{ q:'"At four o\'clock, Chaim came." Which question does "at four o\'clock" answer?', wrong:'where', right:'when', why:'Four o\'clock is a time, not a place.' },
+      idea:['Who, what, where, when: four keys to every story.'],
+      'try':{ q:'"In the park, the boys played ball." Which question does "in the park" answer?', o:['where','who'], a:'where', steps:['Is it a person, a place or a time?'] } },
+    'READ.COMP.L03.06':{ hook:'Why and how questions make you dig deeper.',
+      big:'A why question asks for a reason. Look for words like because and so. A how question asks for the steps or the way something happened. Look for words like first, then, next and last. The answer is always in the words of the story, so look back and find it.',
+      intro:['Why: look for because or so.','How: look for first, then, next.','Look back at the story.','Answer with the story\'s words.'],
+      ex:[{q:'"Chaim was late because he saved a nest."', steps:['Why was he late?','Find because.','He saved a nest.'], a:'because he saved a nest'},
+          {q:'"Mr. Klein brought a ladder and put the nest back."', steps:['How did the nest go back?','Find the steps.','A ladder, then up the tree.'], a:'with a ladder'}],
+      oops:{ q:'"Why was Chaim late?" Dovid answered, "He came at four thirty." Right?', wrong:'Yes, that is when he came', right:'No, that tells when, not why', why:'Why wants a reason. Look for because.' },
+      idea:['Why: because. How: first, then, next.'],
+      'try':{ q:'Which word often points to a WHY answer?', o:['because','first'], a:'because', steps:['Which word gives a reason?'] } }
+  };
+
+  var HOWTO = {
+    'READ.COMP.L03.04':{ s:'Look at the title and picture.\nAsk: what will happen?\nKeep reading to find out.',
+      q:{ 'When should a reader ask questions?':'Think about the whole time you read.',
+          '"Shloimy heard a knock at night." Avi asks, "Who is knocking?" That is...':'Is the question about the story?',
+          'Before reading "Snow Day", Dovid asked, "Will school close?" How can he find out?':'Where is the answer waiting?',
+          'When does a good reader wonder about a story?':'Think about the whole time you read.',
+          '"The bus did not come." Chaim asks, "Where is the bus?" That is...':'Is the question about the story?',
+          'Before reading "The Broken Clock", Naftali asked, "Who will fix it?" How can he find out?':'Where is the answer waiting?' } },
+    'READ.COMP.L03.05':{ s:'Who: a person. Where: a place.\nWhen: a time. What: what happened.\nAsk the question word, then find the answer.',
+      q:{ '"Yanky fed the cat." Which question does "Yanky" answer?':'Is Yanky a person, a place or a time?',
+          '"In the library, Moshe found a book." Which question does "in the library" answer?':'Is it a person, a place or a time?',
+          '"After dinner, Shmuel read to his brother." Which question does "after dinner" answer?':'Is it a person, a place or a time?',
+          '"Eli built a tower." Which question does "Eli" answer?':'Is Eli a person, a place or a time?',
+          '"At the bakery, Ari bought rolls." Which question does "at the bakery" answer?':'Is it a person, a place or a time?',
+          '"On Friday morning, Dov swept the porch." Which question does "on Friday morning" answer?':'Is it a person, a place or a time?' } },
+    'READ.COMP.L03.06':{ s:'Why: look for because or so.\nHow: look for first, then, next.\nAnswer with the story\'s words.',
+      q:{ '"Avi brought an umbrella because the sky was dark." Which words tell WHY he brought it?':'Find because. Where is the reason?',
+          '"First Naftali mixed the dough. Then he shaped the challah." What does this tell?':'Do you see first and then?',
+          'A question asks, "Why did the dog bark?" Where do you look for the answer?':'Where are the answers to a story?',
+          '"Moshe ran home because it began to rain." Which words tell WHY he ran?':'Find because. Where is the reason?',
+          '"First Ari folded the paper. Then he cut a star." What does this tell?':'Do you see first and then?',
+          'A question asks, "How did the boys find the key?" Where do you look for the answer?':'Where are the answers to a story?' } }
+  };
+
+  var BITE = {
+    'READ.COMP.L03.04':{ band:'B23', pic:'🔍', today:'Ask questions before and while you read',
+      why:'Questions turn you into a story detective. You read to find the answers!',
+      ready:[{q:'Which is a question?', o:['Where is the map?','The map is old.','I like maps.'], a:'Where is the map?'},{q:'What does a title tell you?', o:['what the story is about','who wrote the page number','nothing'], a:'what the story is about'}],
+      bridge:'READ.COMP.L02.01', bridgeName:'Ask and Answer',
+      watch:{ q:'Half a Map', m:{type:'scene', e:'🗺️', t:'Naftali pulled the drawer. At the bottom was a piece of yellow paper, folded four times.'}, steps:[
+        {t:'Before I read, I look at the title: "Half a Map".'},
+        {t:'I wonder: half a map? Where is the other half?'},
+        {t:'While I read, I wonder more: what is on the yellow paper?'},
+        {t:'I keep reading to find the answers. That is how a detective reads!'},
+        {t:'Detective move!', m:{type:'move', t:'Hold up a pretend magnifying glass. Say: "I wonder... I wonder... I wonder!"'}},
+        {t:'Tell your chavrusa one question you asked, and where you found the answer.'}], a:'Ask before, while and after. Then find the answers.' },
+      oops:{ q:'While reading about a map, Dovid asks, "What is for lunch?" Is that a good reading question?', wrong:'Yes, any question is good', right:'No, ask about the story', why:'Reading questions are about the story: who, what, where, why.' },
+      ways:['worked example','read the chapter','detective move','sort','Mistake Detective','find the proof'], done:'You are a story detective who asks great questions!',
+      board:{ one:'Ask before, while and after you read. Then read on to find the answers.', activity:'Show the class the cover of chapter 1. Boys call out questions; write them on the board, then read and check off each one that gets answered.', mistakes:['Asking questions that are not about the story','Stopping reading instead of reading on to find out','Only asking questions at the end'] },
+      do:[
+        {type:'read', text:'C23.B1.01', say:'Read chapter 1. Wonder as you read!', how:'Ask: what will happen? Then keep reading.'},
+        {type:'sort', mis:true, bins:['A good reading question','Not about the story'], cards:[['Where is the other half?',0],['What is in the drawer?',0],['What is for lunch?',1],['Is my brother home yet?',1]], say:'Watch the trap! Which questions are about the story?', how:'Is the question about the map story?'}],
+      your:[
+        {type:'proof', text:'C23.B1.01', q:'Why is only half of the map there? Find the sentence.', proof:'the paper was torn right down the middle', look:'what happened to the paper', say:'Find the answer in the story.', how:'Read page 2.'},
+        {type:'order', steps:['Look at the title and picture.','Ask: what will happen?','Read and keep wondering.','Find the answer in the story.'], say:'Put the detective steps in order.', how:'Ask first. Find the answer last.'},
+        {type:'match', pairs:[['Who','a person'],['Where','a place'],['Why','a reason']], say:'Match each question word.', how:'What kind of answer does it want?'},
+        {type:'listen', hear:'The title is "The Lost Puppy." Before you read, which question is best?', o:['Where did the puppy go?','What is your name?','How many days are in a week?'], a:'Where did the puppy go?', say:'Listen. Pick the best question.', how:'Which question is about the puppy story?'},
+        {type:'cloze', t:'If you have a question, keep ___ to find the answer.', o:['reading','sleeping','eating'], a:'reading', say:'Challenge! Tap the word that fits.', how:'Where is the answer?'}] },
+    'READ.COMP.L03.05':{ band:'B23', pic:'🧭', today:'Find who, what, where and when in a story',
+      why:'Who, what, where and when are the four keys that open every story.',
+      ready:[{q:'Which word is a person?', o:['Chaim','park','Sunday'], a:'Chaim'},{q:'Which word is a place?', o:['shul','Dovid','morning'], a:'shul'}],
+      bridge:'READ.COMP.L02.01', bridgeName:'Ask and Answer',
+      watch:{ q:'The Noise in the Sukkah', m:{type:'scene', e:'🌙', t:'On the fourth night of Sukkos, Dovid Katz could not fall asleep. He was sleeping in the sukkah with his big brother, Ari.'}, steps:[
+        {t:'WHO is in the story? Dovid and his brother Ari.'},
+        {t:'WHERE are they? In the sukkah.'},
+        {t:'WHEN is it? On the fourth night of Sukkos.'},
+        {t:'WHAT happens? Dovid hears a noise. I will read to find out more!'},
+        {t:'Sing the four keys!', m:{type:'chant', t:'Clap and chant: "Who, what, where, when, ask them all and ask again!"'}},
+        {t:'Tell your chavrusa the who, where and when of the story.'}], a:'Who: Dovid and Ari. Where: the sukkah. When: night.' },
+      oops:{ q:'"At four o\'clock, Chaim came." Which question does "at four o\'clock" answer?', wrong:'where', right:'when', why:'Four o\'clock is a time, not a place.' },
+      ways:['worked example','read the story','chant','sort','Mistake Detective','find the proof'], done:'You can find who, what, where and when!',
+      board:{ one:'Who: a person. What: what happened. Where: a place. When: a time.', activity:'Four corners: label the room Who, What, Where, When. Read a sentence; boys run to the corner its part answers.', mistakes:['Mixing up where and when','Giving a place for who','Answering with a guess instead of the story\'s words'] },
+      do:[
+        {type:'read', text:'C23.ST.01', say:'Read "The Noise in the Sukkah".', how:'Look for who, what, where and when.'},
+        {type:'sort', mis:true, bins:['Where','When'], cards:[['in the sukkah',0],['by the table',0],['at night',1],['in the morning',1]], say:'Watch the trap! A place, or a time?', how:'Where is a place. When is a time.'}],
+      your:[
+        {type:'proof', text:'C23.ST.01', q:'WHAT made the scratching noise? Find the sentence.', proof:'It was a little gray squirrel', look:'what Dovid saw with his flashlight', say:'Find the proof in the story.', how:'Read the start of page 2.'},
+        {type:'match', pairs:[['Who heard it?','Dovid'],['Where was he?','in the sukkah'],['When was it?','at night']], say:'Match each question to its answer in the story.', how:'Look back at the story.'},
+        {type:'order', steps:['Dovid','heard a noise','in the sukkah','at night.'], say:'Build the sentence in order.', how:'Who, what, where, when.'},
+        {type:'listen', hear:'In the morning, Dovid told the whole club about the squirrel.', o:['in the morning','the squirrel','the club'], a:'in the morning', cap:'Which part answers WHEN?', say:'Listen. Which part tells when?', how:'When is a time.'},
+        {type:'cloze', t:'A word like "Sunday" answers the question ___.', o:['when','who','where'], a:'when', say:'Challenge! Tap the word that fits.', how:'Is Sunday a person, a place or a time?'}] },
+    'READ.COMP.L03.06':{ band:'B23', pic:'💡', today:'Answer why and how questions with the story',
+      why:'Why and how questions help you understand the whole story, not just the parts.',
+      ready:[{q:'Which word tells a reason?', o:['because','table','green'], a:'because'},{q:'Which word starts the steps?', o:['first','happy','door'], a:'first'}],
+      bridge:'READ.COMP.L03.05', bridgeName:'Who, What, Where, When',
+      watch:{ q:'Why Chaim Was Late', m:{type:'scene', e:'🪺', t:'"On the way here, I saw this nest on the sidewalk. The wind blew it out of the tree. There are two eggs inside."'}, steps:[
+        {t:'The question: WHY was Chaim late?'},
+        {t:'I look back at the story for the reason.'},
+        {t:'He found a nest with eggs and saved it. That is the reason!'},
+        {t:'Now a HOW question: how did the nest go back? I look for the steps.'},
+        {t:'Move it!', m:{type:'move', t:'Point up for WHY: "Because!" Then step, step, step for HOW: "First, then, next!"'}},
+        {t:'Tell your chavrusa why Chaim was late, and how he fixed it.'}], a:'Why: he saved a nest. How: Mr. Klein\'s ladder.' },
+      oops:{ q:'"Why was Chaim late?" Dovid answered, "At four thirty." Right?', wrong:'Yes, that is when he came', right:'No, that tells when, not why', why:'Why wants a reason. Look for because.' },
+      ways:['worked example','read the story','move it','sort','Mistake Detective','find the proof'], done:'You can answer why and how with the story\'s words!',
+      board:{ one:'Why: a reason (because, so). How: the steps (first, then, next).', activity:'Hold up a WHY card and a HOW card. Read a line from the story; boys point to the card it answers and say the clue word.', mistakes:['Answering why with when','Guessing instead of looking back','Giving one step for a how question'] },
+      do:[
+        {type:'read', text:'C23.ST.02', say:'Read "Why Chaim Was Late".', how:'Look for the reason, and the steps.'},
+        {type:'sort', mis:true, bins:['Why he was late','When he came'], cards:[['he saved a nest',0],['the eggs were in danger',0],['at four thirty',1],['after four o\'clock',1]], say:'Watch the trap! A reason, or a time?', how:'Why wants a reason, not a time.'}],
+      your:[
+        {type:'proof', text:'C23.ST.02', q:'WHY did Chaim knock on Mr. Klein\'s door? Find the sentence.', proof:'I could not reach the branch', look:'what Chaim could not do', say:'Find the proof in the story.', how:'Read page 2.'},
+        {type:'order', steps:['He saw the nest on the sidewalk.','He knocked on Mr. Klein\'s door.','Mr. Klein brought a ladder.','The nest went back in the tree.'], say:'How did Chaim save the nest?', how:'What happened first?'},
+        {type:'match', pairs:[['because','why'],['first','how'],['in the park','where']], say:'Match each word to its question.', how:'Reason words: why. Step words: how.'},
+        {type:'listen', hear:'Dovid ate two apples because he was very hungry.', o:['he was very hungry','he ate two apples','Dovid'], a:'he was very hungry', cap:'Why did Dovid eat two apples?', say:'Listen. Find the reason.', how:'Listen for because.'},
+        {type:'cloze', t:'"Chaim was late ___ he saved a nest."', o:['because','first','where'], a:'because', say:'Challenge! Tap the word that fits.', how:'Which word gives the reason?'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C23', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+
+  if (window.TLCORE && TLCORE.units && TLCORE.units.add) TLCORE.units.add({ id:'C23.U21', title:'Story Detectives', c:'READ', grade:2,
+    skills:['READ.COMP.L03.04','READ.COMP.L03.05','READ.COMP.L03.06','READ.LIT.L03.01'],
+    review:['READ.COMP.L02.01','READ.LIT.L02.01'], n:8,
+    items:[
+      {type:'cloze', skill:'READ.COMP.L03.04', t:'Before you read "The Snowman", look at the title and ___.', o:['picture','page number','last word'], a:'picture', how:'What helps you guess what will happen?'},
+      {type:'evidence', skill:'READ.COMP.L03.04', q:'Title: "The Lost Glove". Which is the best question to ask?', p:['Who lost the glove?','What is for dinner?','How tall is the door?'], a:0, look:'a question about the story', how:'Which question is about the glove?'},
+      {type:'cloze', skill:'READ.COMP.L03.05', t:'"At the river, Avi saw a frog." "At the river" tells ___.', o:['where','who','when'], a:'where', how:'Is it a person, a place or a time?'},
+      {type:'evidence', skill:'READ.COMP.L03.05', q:'Which sentence tells WHEN?', p:['Before Shabbos, the boys swept the shul.','The boys swept the shul.','The shul was clean.'], a:0, look:'a time', how:'Find the words that tell a time.'},
+      {type:'cloze', skill:'READ.COMP.L03.06', t:'"Dovid wore his boots ___ the ground was wet."', o:['because','first','where'], a:'because', how:'Which word gives the reason?'},
+      {type:'evidence', skill:'READ.COMP.L03.06', q:'Which sentence tells HOW Naftali fixed the bike?', p:['First he tightened the chain, then he pumped the tire.','Naftali was happy.','The bike was red.'], a:0, look:'the steps', how:'Look for first and then.'},
+      {type:'evidence', skill:'READ.LIT.L03.01', q:'Which is the best retell of a story?', p:['Moshe lost his hat. He looked everywhere. His brother found it in the car.','Moshe had a hat.','The car was blue.'], a:0, look:'beginning, middle and end', how:'Which one tells the big parts in order?'},
+      {type:'evidence', skill:'READ.LIT.L03.01', q:'Which retell has a beginning, middle, end AND the lesson?', p:['Moshe teased the new boy. Then he saw him sitting alone. He said sorry and played with him. The lesson: be kind to new friends.','Moshe played ball at recess.','The new boy had a red hat.'], a:0, look:'all the parts, in order, and the lesson', how:'Count the parts: beginning, middle, end, lesson.'}
+    ] });
+})();
+</script>

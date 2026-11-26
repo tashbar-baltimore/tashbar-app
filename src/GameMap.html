@@ -332,8 +332,8 @@ body.gm-nav .stbox{background:#140A44;color:#F4F2FF;border:3px solid #FFD84D;box
 body.gm-nav .sthead{background:linear-gradient(120deg,#FF2E63,#B5179E 50%,#7C4DFF)}
 body.gm-nav .sthead h2{font-style:italic;text-transform:uppercase;letter-spacing:-.01em}
 body.gm-nav .stbal b{color:#FFE259;text-shadow:0 3px 0 rgba(0,0,0,.25)}
-body.gm-nav .sttabs button{background:rgba(0,0,0,.28);color:#fff}
-body.gm-nav .sttabs button.on{background:#140A44;color:#FFE259}
+body.gm-nav .sttabs button:not(.tlk){background:rgba(0,0,0,.28);color:#fff}
+body.gm-nav .sttabs button.on:not(.tlk){background:#140A44;color:#FFE259}
 body.gm-nav .stintro{color:#C9C4FF}
 body.gm-nav .stcard{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#F4F2FF;box-shadow:none}
 body.gm-nav .stcard h4{color:#fff}
@@ -426,6 +426,7 @@ body.gm-home #gm .gm-sun{position:absolute;inset:0 0 auto 0;height:220px;pointer
 #gm .gm-hi h1{margin:0;font-size:34px;line-height:1.1;font-weight:900;color:#1E1B4B;letter-spacing:-.01em}
 #gm .gm-hi p{margin:8px 0 0;font-size:19px;font-weight:800;color:#3F3A7A;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 #gm .gm-hi .dots{display:inline-flex;gap:6px}
+#gm .gm-hi .gm-out{margin-left:auto;display:inline-flex}
 #gm .gm-hi .dots i{width:18px;height:18px;border-radius:50%;background:#E3E0F5;border:2px solid #C9C4EA}
 #gm .gm-hi .dots i.on{background:#22C55E;border-color:#15803D}
 #gm .gm-hts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
@@ -599,7 +600,8 @@ function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\
  tiles+=tile('store','🛍️','Store',pill('money','You have '+money()),'data-gmnav="money"');
  tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':pill('lock','Locked'));
  tiles+=tile('things',pfAv('pr-tav'),'My profile','Badges, levels, my stuff','data-gmnav="more"');   /* HoS 2026-11-24: My things became My profile (his picture on the tile) */
- return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
+ const out=window.TLK?`<span class="gm-out">${TLK.quiet('Sign out','data-gm="pfout"','tlk-small')}</span>`:'';   /* HoS 2026-11-25: "the kids can't figure out how to log out": a clear Sign out on the home, not only in the corner menu and My profile */
+ return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}${out}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
 /* ===== MY PROFILE (HoS 2026-11-24, boss cleared the general page; mock-up from Claude Chat): "My things" became "My profile".
    One page with who he is (his picture, name, grade, days in a row, badges, lessons), his settings, Sign out,
    his levels in every subject, what he finished lately, his badges, his bank, what he bought, his things from the store, and the doors
@@ -1002,7 +1004,7 @@ function sync(){
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
  const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>
- <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${pill('subj',cur.name+' · Level '+cur.level)}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?pill('prog',l+' to the boss'):pill('now','Boss now!'); })():pill('prog','Cleared')}</div>${GM.view==='tree'?'<button type="button" class="gm-chg" data-gm="tree">🗺️ Back to my path</button>':ws.length>1?'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>':''}</div>
+ <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${pill('subj',cur.name+' · Level '+cur.level)}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?pill('prog',l+' to the boss'):pill('now','Boss now!'); })():pill('prog','Cleared')}</div>${GM.view==='tree'?(window.TLK?TLK.quiet('Back to my path','data-gm="tree"','tlk-small'):'<button type="button" class="gm-chg" data-gm="tree">Back to my path</button>'):ws.length>1?(window.TLK?TLK.quiet('Change subject','data-gmnav="subjects"','tlk-small'):'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>'):''}</div>
  ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play gm-play2" data-gm="play" data-id="${esc(cur.now)}">▶ Play<small>${esc(nm(cur.now)[0])}</small></button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
@@ -1233,7 +1235,7 @@ body #gm .gm-more{background:#fff;color:#047857}
 /* INFORMATION ON THE KIT (button system step 5): the labels on the home tiles, My map, My work and the money page are kit pills and boxes.
    Their holders are flat (no shadow, no outline), so nothing a boy only reads looks like something to tap. The money by the house is a pill, not a button. */
 #gm .gm-hud .gm-mny{display:inline-flex;flex:none}#gm .gm-hud .gm-mny .tlk-pill{font-size:16px;padding:7px 12px}
-#gm .gm-ht .bdg,#gm .gm-ht.work.now .bdg{background:none;box-shadow:none;padding:0;border-radius:0;letter-spacing:0}
+body #gm .gm-ht .bdg,body #gm .gm-ht.work.now .bdg{background:none;box-shadow:none;padding:0;border-radius:8px;letter-spacing:0;display:flex}
 #gm .gm-ht .bdg .tlk-pill{font-size:14px;padding:6px 10px}
 #gm .gm-ht .bot small .tlk-pill{font-size:15px;white-space:normal}
 #gm .gm-hi p .tlk-pill{font-size:17px;padding:5px 12px}

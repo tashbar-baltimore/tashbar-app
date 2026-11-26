@@ -10,6 +10,8 @@
 (function(){
 if(typeof render!=='function'||typeof vHub!=='function'||typeof A==='undefined') return;
 const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* button system step 7: the page's action buttons are the kit's (MAIN = the one thing to do now, QUIET = every other choice), words only */
+const KB=(main,t,a,x)=>window.TLK?(main?TLK.main(t,a,x):TLK.quiet(t,a,x)):'<button class="chm-btn'+(main?' g':'')+'" '+a+'>'+E(t)+'</button>';
 const PAR=[['Bereishis','בְּרֵאשִׁית'],['Noach','נֹחַ'],['Lech Lecha','לֶךְ לְךָ'],['Vayeira','וַיֵּרָא'],['Chayei Sarah','חַיֵּי שָׂרָה'],['Toldos','תּוֹלְדֹת'],['Vayeitzei','וַיֵּצֵא'],['Vayishlach','וַיִּשְׁלַח'],['Vayeishev','וַיֵּשֶׁב'],['Mikeitz','מִקֵּץ'],['Vayigash','וַיִּגַּשׁ'],['Vayechi','וַיְחִי'],
  ['Shemos','שְׁמוֹת'],["Va'eira",'וָאֵרָא'],['Bo','בֹּא'],['Beshalach','בְּשַׁלַּח'],['Yisro','יִתְרוֹ'],['Mishpatim','מִשְׁפָּטִים'],['Terumah','תְּרוּמָה'],['Tetzaveh','תְּצַוֶּה'],['Ki Sisa','כִּי תִשָּׂא'],['Vayakheil','וַיַּקְהֵל'],['Pekudei','פְּקוּדֵי'],
  ['Vayikra','וַיִּקְרָא'],['Tzav','צַו'],['Shemini','שְׁמִינִי'],['Tazria','תַּזְרִיעַ'],['Metzora','מְצֹרָע'],['Acharei Mos','אַחֲרֵי מוֹת'],['Kedoshim','קְדֹשִׁים'],['Emor','אֱמֹר'],['Behar','בְּהַר'],['Bechukosai','בְּחֻקֹּתַי'],
@@ -58,7 +60,7 @@ function load(name,cb){ if(C.cache[name]) return cb(C.cache[name]);
  if(window.TL_CHM_DATA&&window.TL_CHM_DATA[name]){ C.cache[name]=prep(window.TL_CHM_DATA[name]); return cb(C.cache[name]); }
  if(C.busy===name) return; C.busy=name;
  run('chmParsha',SRV.token,name).then(r=>{ C.busy=null; try{ C.cache[name]=prep(typeof r==='string'?JSON.parse(r):r); cb(C.cache[name]); }catch(e){ console.error('Chumash',e); fail(); } }).catch(e=>{ C.busy=null; console.error('Chumash',e); fail(); }); }
-function fail(){ const b=document.querySelector('#chm-ov .chm-body'); if(b) b.innerHTML='<div class="chm-msg">The Chumash could not open just now. <button class="chm-btn" data-chm="retry">Try again</button></div>'; }
+function fail(){ const b=document.querySelector('#chm-ov .chm-body'); if(b) b.innerHTML='<div class="chm-msg">The Chumash could not open just now. '+KB(1,'Try again','data-chm="retry"')+'</div>'; }
 function prep(d){
  d.p.forEach((ps,i)=>{ ps.i=i; ps.W=ps.w.map((w,j)=>{ const segs=w[0].split('/'), ms=w[1].split('/'), st=w[3]; const L=d.lex[w[2]]||['','', 'word',0];
    const pre=[], suf=[]; segs.forEach((s,k)=>{ if(k<st) pre.push({s:s,m:ms[k]||'',c:cons(s).charAt(0)}); else if(k>st) suf.push({s:s,m:ms[k]||''}); });
@@ -110,6 +112,7 @@ body.oh-sky #chm-ov{right:var(--skyw,96px)}
 #chm-ov .chm-hero .nm{font-family:'Times New Roman',serif;font-size:34px;font-weight:700;color:#5a2e06}
 #chm-ov .chm-lv{display:inline-flex;gap:6px;align-items:center;margin-top:6px;font-size:14px}
 #chm-ov .chm-lv b{background:#5a2e06;color:#fff;border-radius:999px;padding:3px 10px}
+#chm-ov .chm-nav{gap:10px}#chm-ov .chm-top .tlk-quiet{flex:none}
 #chm-ov .chm-pl2{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}#chm-ov .chm-hero .tlk-pill{white-space:normal}
 #chm-ov .chm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin:10px 0}
 #chm-ov .chm-act{border:2px solid #e3c98f;background:#fff;border-radius:16px;padding:12px;cursor:pointer;text-align:left;font:inherit;color:inherit}
@@ -176,7 +179,7 @@ function close(){ const ov=document.getElementById('chm-ov'); if(ov) ov.remove()
 function top(){ const opts=SEF.map(s=>'<optgroup label="'+E(s[0])+'">'+PAR.slice(s[2],s[3]).map(p=>'<option value="'+E(p[0])+'"'+(p[0]===C.name?' selected':'')+'>'+E(p[0])+' · '+E(p[1])+'</option>').join('')+'</optgroup>').join('');
  return '<div class="chm-top">'+(window.TLK&&C.view!=='home'?TLK.back('data-chm="home"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'')+(window.TLK?TLK.home('data-chm="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button class="chm-btn x" data-chm="close" aria-label="Home">🏠</button>')+'<h2>Chumash <span class="he">חוּמָשׁ</span></h2>'
   +(C.view!=='home'?(window.TLK?'':'<button class="chm-btn" data-chm="home">⬅ '+E(C.name)+'</button>'):'<select data-chm="par" aria-label="Parsha">'+opts+'</select>')
-  +'<button class="chm-btn" data-chm="levels">Level '+C.lv+(rebbeLv()?' ✓':'')+'</button></div>'; }
+  +KB(0,'Level '+C.lv,'data-chm="levels"','tlk-small')+'</div>'; }
 function draw(){ const ov=document.getElementById('chm-ov'); if(!ov) return;
  ov.innerHTML=top()+'<div class="chm-body"><div class="chm-msg">📜 Opening Parshas '+E(C.name)+'…</div></div>';
  if(C.view==='levels') return drawLevels();
@@ -199,7 +202,7 @@ function homeHTML(d){ const L=LV[C.lv], ps=PS(C.name), wk=weekParsha()===C.name;
  h+='</div>';
  if((d.hi||[]).length){ h+='<h3>⭐ Pesukim to know</h3><div class="chm-hi">'+d.hi.map(i=>'<div class="chm-pl star" data-chm="pas" data-i="'+i+'">'+pasukHTML(d.p[i],{plain:true})+'<span class="rf">'+E(d.p[i].r)+'</span></div>').join('')+'</div>'; }
  const R=rng(d); h+='<h3>📖 Your pesukim ('+R.length+')</h3><div class="chm-pesall">'+R.slice(0,12).map(p=>'<div class="chm-pl" data-chm="pas" data-i="'+p.i+'">'+pasukHTML(p,{plain:true})+'<span class="rf">'+E(p.r)+'</span></div>').join('')+'</div>'
-  +'<div class="chm-nav"><button class="chm-btn" data-chm="all">All '+d.p.length+' pesukim of the Parsha</button></div>';
+  +'<div class="chm-nav">'+KB(0,'All '+d.p.length+' pesukim of the Parsha','data-chm="all"')+'</div>';
  return h; }
 function allHTML(d){ let h='<h3>Parshas '+E(C.name)+' · every pasuk</h3><div class="chm-pesall">'; let per='';
  d.p.forEach(p=>{ const c=p.r.split(':')[0]; if(c!==per){ per=c; h+='<h3>Perek '+E(c)+'</h3>'; } h+='<div class="chm-pl'+((d.hi||[]).includes(p.i)?' star':'')+'" data-chm="pas" data-i="'+p.i+'">'+pasukHTML(p,{plain:true})+'<span class="rf">'+E(p.r)+'</span></div>'; });
@@ -209,13 +212,13 @@ function readHTML(d){ const p=d.p[C.pi]; if(!p) return '';
  h+='<div style="font-size:13px;color:#8a6a3a">'+E(C.name)+' '+E(p.r)+((d.hi||[]).includes(p.i)?' · ⭐ a pasuk to know':'')+'</div>';
  h+='<div class="chm-pas">'+pasukHTML(p,{sel:C.wi})+'</div>';
  if(C.wi>=0&&p.W[C.wi]) h+=wordCard(p.W[C.wi]);
- h+='<div class="chm-nav"><button class="chm-btn" data-chm="en">'+(C.en?'Hide':'Show')+' the English</button>'+(C.lv>=4&&p.ra&&p.ra.length?'<button class="chm-btn" data-chm="ra">'+(C.ra?'Hide':'Show')+' Rashi ('+p.ra.length+')</button>':'')+'</div>';
+ h+='<div class="chm-nav">'+KB(0,(C.en?'Hide':'Show')+' the English','data-chm="en"')+''+(C.lv>=4&&p.ra&&p.ra.length?KB(0,(C.ra?'Hide':'Show')+' Rashi ('+p.ra.length+')','data-chm="ra"'):'')+'</div>';
  if(C.en) h+='<div class="chm-en">'+E(p.e)+'</div>';
  if(C.ra&&C.lv>=4&&p.ra) h+=p.ra.map(r=>'<div class="chm-rashi"><div class="rh'+(C.lv>=5?' rs':'')+'"><b>'+E(r[0])+'.</b> '+E(r[1])+'</div>'+(C.en?'<div class="re"><b>'+E(r[2])+'.</b> '+E(r[3])+'</div>':'')+'</div>').join('');
- h+='<div class="chm-nav"><button class="chm-btn" data-chm="prev"'+(C.pi<=0?' disabled':'')+'>⬅ Previous pasuk</button><button class="chm-btn g" data-chm="next"'+(C.pi>=d.p.length-1?' disabled':'')+'>Next pasuk ➡</button></div>';
+ h+='<div class="chm-nav">'+KB(0,'Previous pasuk','data-chm="prev"'+(C.pi<=0?' disabled':''))+KB(1,'Next pasuk','data-chm="next"'+(C.pi>=d.p.length-1?' disabled':''))+'</div>';
  return h; }
 function drawLevels(){ const ov=document.getElementById('chm-ov'); const b=ov&&ov.querySelector('.chm-body'); if(!b) return;
- const rl=rebbeLv(); if(rl){ b.innerHTML='<div class="chm-done"><div class="big">📖</div><h2>Your rebbe set your level: Level '+rl+' · שָׁלָב '+LV[rl].h+'</h2><p>'+E(LV[rl].t)+'</p><p>When you are ready for the next level, show your rebbe your 🏅 Parsha medals!</p><button class="chm-btn g" data-chm="home">Back</button></div>'; return; }
+ const rl=rebbeLv(); if(rl){ b.innerHTML='<div class="chm-done"><div class="big">📖</div><h2>Your rebbe set your level: Level '+rl+' · שָׁלָב '+LV[rl].h+'</h2><p>'+E(LV[rl].t)+'</p><p>When you are ready for the next level, show your rebbe your 🏅 Parsha medals!</p>'+KB(1,'Back to the Parsha','data-chm="home"')+'</div>'; return; }
  b.innerHTML='<h3>Choose your level</h3><p>Your rebbe can tell you which level is yours. Every level has all the Parshiyos.</p><div class="chm-lvs">'
   +LV.slice(1).map((L,i)=>'<button class="chm-act'+(i+1===C.lv?' big':'')+'" data-chm="lv" data-n="'+(i+1)+'"><div class="t">Level '+(i+1)+' · שָׁלָב '+L.h+'</div><div class="d">'+E(L.t)+'</div></button>').join('')+'</div>'; }
 
@@ -268,7 +271,7 @@ function qHTML(d){ const q=C.q, r=C.round; if(!q) return '';
   h+='<div class="chm-opts">'+q.opts.map((o,i)=>'<button class="chm-opt'+(q.he?' he':'')+(q.sm?' sm':'')+(q.done&&o===q.a?' ok':'')+(q.done&&q.pickN===i&&o!==q.a?' no':'')+'" data-chm="opt" data-n="'+i+'">'+E(o)+'</button>').join('')+'</div>'; }
  h+='<div class="chm-fb '+(q.done?(q.right?'ok':'no'):'')+'">'+(q.done?(q.right?pick(['Yes! ✨','Right! Chazak!','Beautiful! 🌟','You got it!']):'Good try! The answer is: '+E(q.a)):'')+'</div>';
  if(q.done&&q.w&&q.k!=='build') h+=wordCard(q.w);
- if(q.done) h+='<div class="chm-nav" style="justify-content:center"><button class="chm-btn g" data-chm="nextq">Next ➡</button></div>';
+ if(q.done) h+='<div class="chm-nav" style="justify-content:center">'+KB(1,'Next','data-chm="nextq"')+'</div>';
  return h+'</div>'; }
 function answer(ok){ const q=C.q, r=C.round; q.done=true; q.right=!!ok; r.n++; if(ok) r.ok++;
  /* v202: every answer is recorded like any Kodesh answer (staff "This week", reports). The Olam Haba cloud lights from this record (OlamHaba watchEv) */
@@ -285,7 +288,7 @@ function finish(){ const r=C.round, ps=PS(C.name); const st=r.ok>=r.total?3:(r.o
 function doneHTML(d){ const x=C.lastRound||{}; const L=LV[C.lv];
  return '<div class="chm-done"><div class="big">'+(x.mast?'🏅':(x.st>=2?'🌟':'📜'))+'</div><h2>'+(x.mast?'Parshas '+E(C.name)+' — mastered at Level '+C.lv+'!':'You got '+x.ok+' of '+x.total)+'</h2>'
   +(x.k!=='test'?stars(x.st):'')+'<p>'+(x.mast?(C.lv<8?'Ask your rebbe if you are ready for Level '+(C.lv+1)+'.':'You finished the highest level!'):(x.k==='test'&&x.ok<8?'You need 8 to master the Parsha. Practice and try again!':'Keep going!'))+'</p>'
-  +'<div class="chm-nav" style="justify-content:center"><button class="chm-btn g" data-chm="start" data-k="'+E(x.k)+'">Again</button><button class="chm-btn" data-chm="home">Back to Parshas '+E(C.name)+'</button></div></div>'; }
+  +'<div class="chm-nav" style="justify-content:center">'+KB(1,'Try again','data-chm="start" data-k="'+E(x.k)+'"')+KB(0,'Back to Parshas '+C.name,'data-chm="home"')+'</div></div>'; }
 
 /* ---------- clicks ---------- */
 function onChange(e){ const t=e.target; if(t&&t.dataset&&t.dataset.chm==='par'){ C.name=t.value; S().last=C.name; C.view='home'; draw(); } }

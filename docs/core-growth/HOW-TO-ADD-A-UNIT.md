@@ -17,7 +17,7 @@ In your data file, next to `TLCORE.add(...)`:
 if (window.TLCORE && TLCORE.units) TLCORE.units.add({
   id: 'C45.U01',                          /* job letters, .U, two digits; units of a job run in this order */
   title: 'Main Idea Detectives',
-  c: 'READ',                              /* READ, WRIT or SCI: the subject of his path (Social Studies has no skill-by-skill path yet) */
+  c: 'READ',                              /* READ, WRIT, SCI or SS (Social Studies, HoS 2026-11-25): the subject of his path */
   grade: 5,
   skills: ['READ.COMP.L06.13', 'READ.COMP.L06.14', 'READ.COMP.L06.15', 'READ.COMP.L06.16'],   /* the unit's small skills, in order (2-12) */
   review: ['READ.COMP.L05.03', 'READ.VOC.L05.02'],   /* 2-3 skills from earlier units (at most 4) */
@@ -38,6 +38,8 @@ A unit's real writing or hands-on task (prompt section 3, step 2) goes in `task`
 - The teacher reads, scores and publishes it in the writing inbox, like any piece. No money.
 
 ## When the boy meets it
+**Social Studies (`c: 'SS'`):** the boy's Explorer Trail starts each lesson the same way, so the pre-check, the unit check and the project work as for Science. A unit's check opens when he starts the next Social Studies unit (Grade 4 → 5 → 6 → 7 → 8), so units must be listed in trail order. Social Studies has no server path yet, so a skill he showed in the pre-check is skipped right then (he goes to the first lesson he still needs) but the trail still lists it.
+
 **On for every boy** (HoS decision 2026-11-24; the switch is `CU_LIVE` in `src/CoreUnits.html` and `src/CoreChecks.js`: `'on'`, `'test'` for TEST- boys only, or `'off'`):
 - Starting the **first lesson of a unit** (no lesson of it mastered yet, and 3 or more skills) opens the **pre-check** first. If that lesson was shown, he goes straight to the first lesson he still needs.
 - Starting a lesson of a unit whose **earlier unit is finished but not passed** opens that earlier unit's **check** first, once per visit. If he passes it or closes it, his lesson opens. If he does not pass, the screen gives him Practice buttons for exactly the lessons he missed, and the check comes back next time.
@@ -45,7 +47,7 @@ A unit's real writing or hands-on task (prompt section 3, step 2) goes in `task`
 - Code can open them at any time: `TLCORE.units.pre('C45.U01')` and `TLCORE.units.check('C45.U01')`. Both return a Promise of `{ done, passed, shown, missed }`, or `{ skipped: true }` when the unit has fewer than 2 tap questions. The questions are picked at random from each lesson's check questions, so a retry is not the same test.
 
 ## The rules the tests check
-- `TLCORE.units.err(unit)` refuses a bad unit: bad id, no title, unknown subject, fewer than 2 skills, or `n` outside 6–12.
+- `TLCORE.units.err(unit)` refuses a bad unit: bad id, no title, unknown subject (only READ, WRIT, SCI, SS), fewer than 2 skills, or `n` outside 6–12.
 - `tests/lib/coreunits.js`, on the server:
   - one pre-check per unit, so no second try to fish for skips;
   - shown skills leave the path, and a missed skill comes back;
