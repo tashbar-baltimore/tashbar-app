@@ -16,7 +16,7 @@
 import { startGame } from './kit.js';
 const rock = (w, s) => ({ look: 'rock', word: 'rock', w, s });
 const ball = (w, s, color) => ({ look: 'ball', word: 'ball', w, s, color: color || '#F0458E' });
-const block = (w, s, color) => ({ look: 'block', word: 'block', w, s, color: color || '#1F6FEB' });
+const block = (w, s, color) => ({ look: 'block', word: 'hay bale', w, s, color: color || '#1F6FEB' });
 const feather = () => ({ look: 'feather', word: 'feather', w: 1, color: '#6FB3E6' });
 startGame({
   id: 'balance', world: 'farm', mode: 'balance', boxes: [],
@@ -25,8 +25,8 @@ startGame({
   balanceLesson: { items: [rock(6, 1.1), ball(2, 1.25, '#12A766')], first: 'Which is heavier, the rock or the big ball?',
     rule: ['The heavy side goes down.', 'The light side goes up.'], chant: [['Heavy goes down!', 3], ['Light goes up!', 3], ['Big is not always heavy!', 2]] },
   rounds: [
-    { items: [block(5, 1, '#E03A33'), feather()], watchDone: 'The block side went down. The block is heavier!' },
-    { items: [feather(), block(5, 1, '#F2A900')], ask: 'heavier', say: 'A feather and a block.' },
+    { items: [block(5, 1, '#E03A33'), feather()], watchDone: 'The hay bale side went down. It is heavier!' },
+    { items: [feather(), block(5, 1, '#F2A900')], ask: 'heavier', say: 'A feather and a hay bale.' },
     { items: [ball(1, 0.7, '#1F6FEB'), rock(5, 1)], ask: 'lighter', say: 'Now find the lighter one.' },
     { items: [rock(6, 1.1), ball(2, 1.3, '#F0458E')], ask: 'heavier', say: 'A big ball and a rock.', big: true },
     { items: [block(4, 1.1, '#7C4DFF'), feather()], ask: 'lighter', say: 'Which is lighter?' },

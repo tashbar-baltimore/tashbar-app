@@ -188,8 +188,8 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   const hubM = () => once('hubM', () => new PM({ color: '#E8C35A', metalness: 0.5, roughness: 0.3 }));
   function wheels(g, xs, y, z) { xs.forEach(x => [-1, 1].forEach(sd => { const w = new THREE.Mesh(wheelGeo(), wheelM()); w.position.set(x, y, sd * z); g.add(w);
     const h = new THREE.Mesh(once('hubGeo', () => { const q = new THREE.CylinderGeometry(0.045, 0.045, 0.07, 16); q.rotateX(Math.PI / 2); return q; }), hubM()); h.position.set(x, y, sd * (z + 0.005)); g.add(h); })); }
-  function trainCar(color) {
-    const g = new THREE.Group(), col = keepHue(vivid(color)), paintM = new PM({ color: col, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.12, emissive: '#FFC400', emissiveIntensity: 0 });
+  function trainCar(color, exact) {
+    const g = new THREE.Group(), col = exact ? color : keepHue(vivid(color)), paintM = new PM({ color: col, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.12, emissive: '#FFC400', emissiveIntensity: 0 });
     const body = new THREE.Mesh(once('carGeo', () => new RoundedBoxGeometryLite(0.7, 0.44, 0.46, 0.06)), paintM); body.position.y = -0.08; g.add(body);
     const roof = new THREE.Mesh(once('roofGeo', () => new RoundedBoxGeometryLite(0.78, 0.07, 0.54, 0.03)), once('roofM', () => new PM({ color: '#F7F2E8', roughness: 0.35, clearcoat: 0.8 }))); roof.position.y = 0.18; g.add(roof);
     const winM = once('winM', () => new PM({ color: '#FFF6D8', roughness: 0.2, clearcoat: 1, emissive: '#FFE9A8', emissiveIntensity: 0.25 }));
@@ -207,8 +207,17 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     const post = new THREE.Mesh(once('postGeo', () => new THREE.CylinderGeometry(0.035, 0.035, 0.42, 12)), once('postM', () => new PM({ color: '#8E99A6', metalness: 0.4, roughness: 0.35 }))); post.position.y = -0.24; g.add(post);
     g.material = front; return shadowy(g);
   }
+  function shapeCar(shape) {
+    const g = trainCar('#F6EEDD', true);   /* every shape car is the same cream car: only the shape on it changes */
+    const front = new PM({ color: '#E0372E', roughness: 0.25, clearcoat: 1 });
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 3, curveSegments: 40 }); geo.scale(0.34, 0.34, 1);
+    const sign = new THREE.Mesh(geo, [front, once('signEdgeM2', () => new PM({ color: '#FFFFFF', roughness: 0.3 }))]); sign.position.set(0, 0.22 + 0.17, 0.0); g.add(sign);
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.18, 8), once('postM2', () => new PM({ color: '#8E99A6', metalness: 0.4, roughness: 0.35 }))); post.position.set(0, 0.25, 0); g.add(post);
+    g.userData.recolor = () => {}; g.material = front;
+    return shadowy(g);
+  }
   function trainBell(color) {
-    const g = new THREE.Group(), brass = new PM({ color: '#E2B23A', metalness: 0.7, roughness: 0.22, clearcoat: 1, emissive: '#FFC400', emissiveIntensity: 0 });
+    const g = new THREE.Group(), brass = new PM({ color: '#F4C64E', metalness: 0.45, roughness: 0.25, envMapIntensity: 0.8, clearcoat: 1, emissive: '#FFC400', emissiveIntensity: 0 });
     const pts = []; for (let i = 0; i <= 16; i++) { const u = i / 16; pts.push(new THREE.Vector2(0.06 + 0.24 * Math.pow(u, 1.6) + (u > 0.9 ? (u - 0.9) * 0.5 : 0), 0.22 - u * 0.5)); }
     const bell = new THREE.Mesh(new THREE.LatheGeometry(pts, 40), brass); g.add(bell);
     const top = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 12), brass); top.position.y = 0.24; g.add(top);
@@ -340,21 +349,30 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     return shadowy(g);
   };
 
+  /* the soft golden halo a pattern item lights when the voice says "that part repeats" (the item's own colour never changes) */
+  function addHalo(g, r = 0.55, y = -0.05) {
+    const h = new THREE.Mesh(new THREE.CircleGeometry(r, 40), new THREE.MeshBasicMaterial({ color: '#FFD45A', transparent: true, opacity: 0, depthWrite: false, fog: false, toneMapped: false }));
+    h.position.set(0, y, -0.32); h.renderOrder = -1; g.add(h);
+    h.onBeforeRender = () => { const q = new THREE.Quaternion(); g.getWorldQuaternion(q); h.quaternion.copy(q.invert().multiply(T.camera.quaternion)); };
+    g.userData.glow = on => { h.material.opacity = on ? 0.6 : 0; };
+    return g;
+  }
+
   /* ================= what each world offers kit.js ================= */
   /* T.bead(type, B, shapeFn): a pattern item, or null to keep the plain bead */
   T.bead = (type, B, shapeFn) => {
     if (world === 'traintown') {
-      if (B.kind === 'drum') return drum(B.color);
-      if (type === 'bell') return trainBell(B.color);
-      if (B.kind && B.kind !== 'cube') return signalSign(shapeFn());
-      return trainCar(B.color);
+      if (B.kind === 'drum') return addHalo(drum(B.color));
+      if (type === 'bell') return addHalo(trainBell(B.color));
+      if (B.kind && B.kind !== 'cube') return addHalo(shapeCar(shapeFn()));   /* a cream train car carrying its shape sign: every item on the train is a car */
+      return addHalo(trainCar(B.color));
     }
     if (world !== 'bakery') return null;
-    if (B.kind === 'drum') return drum(B.color);
-    if (type === 'bell') return bell(B.color);
-    if (B.kind && B.kind !== 'cube') return cookie(shapeFn(), '#F0458E', B.kind);   /* every shape cookie has the same pink icing: only the shape changes */
-    if (T.painted && CUP[String(B.color).toUpperCase()]) return paintedCupcake(B.color);
-    return cupcake(B.color, B.topping);
+    if (B.kind === 'drum') return addHalo(drum(B.color));
+    if (type === 'bell') return addHalo(bell(B.color));
+    if (B.kind && B.kind !== 'cube') return addHalo(cookie(shapeFn(), '#F0458E', B.kind));   /* every shape cookie has the same pink icing: only the shape changes */
+    if (T.painted && CUP[String(B.color).toUpperCase()]) return addHalo(paintedCupcake(B.color), 0.55, 0.05);
+    return addHalo(cupcake(B.color, B.topping));
   };
   /* where the next one goes: an empty paper case with a soft golden glow (bakery) */
   T.marker = () => {

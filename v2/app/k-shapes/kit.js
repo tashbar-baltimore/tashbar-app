@@ -58,6 +58,8 @@ function shapeOf(k) {
 const DOTS = { 0: [], 1: [[0, 0]], 2: [[-0.4, 0], [0.4, 0]], 3: [[-0.45, -0.3], [0.45, -0.3], [0, 0.42]], 4: [[-0.4, -0.4], [0.4, -0.4], [0.4, 0.4], [-0.4, 0.4]],
   5: [[-0.45, -0.4], [0.45, -0.4], [0.45, 0.4], [-0.45, 0.4], [0, 0]], 6: [[-0.45, -0.45], [0, -0.45], [0.45, -0.45], [-0.45, 0.45], [0, 0.45], [0.45, 0.45]] };
 export function iconSVG(k, fill, cross) {
+  if (k === 'cupcakes') return '<svg viewBox="0 0 64 64">' + [14, 32, 50].map((x, i) => '<path d="M' + (x - 8) + ' 40 L' + (x + 8) + ' 40 L' + (x + 6) + ' 54 L' + (x - 6) + ' 54Z" fill="' + fill + '" opacity=".55"/><circle cx="' + x + '" cy="' + (34 - i % 2 * 0) + '" r="9" fill="' + fill + '"/><circle cx="' + x + '" cy="26" r="5" fill="' + fill + '"/>').join('') + (cross ? '<path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/>' : '') + '</svg>';
+  if (k === 'train') return '<svg viewBox="0 0 64 64">' + [4, 24, 44].map(x => '<rect x="' + x + '" y="24" width="17" height="16" rx="3" fill="' + fill + '"/><circle cx="' + (x + 5) + '" cy="44" r="3.5" fill="' + fill + '"/><circle cx="' + (x + 12) + '" cy="44" r="3.5" fill="' + fill + '"/>').join('') + '<path d="M4 50 H60" stroke="' + fill + '" stroke-width="3"/>' + (cross ? '<path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/>' : '') + '</svg>';
   if (k === 'beads') return '<svg viewBox="0 0 64 64"><path d="M6 32 H58" stroke="' + fill + '" stroke-width="3"/>' + [12, 25, 39, 52].map((x, i) => '<circle cx="' + x + '" cy="32" r="' + (i % 2 ? 6 : 8) + '" fill="' + fill + '"/>').join('') + (cross ? '<path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/>' : '') + '</svg>';
   if (/^dots\d$/.test(k)) {   /* a number of dots ("how many corners"); none = an empty ring */
     const n = +k[4], d = n ? DOTS[n].map(p => '<circle cx="' + (32 + p[0] * 26).toFixed(1) + '" cy="' + (32 - p[1] * 26).toFixed(1) + '" r="7" fill="' + fill + '"/>').join('') : '<circle cx="32" cy="32" r="20" fill="none" stroke="' + fill + '" stroke-width="6"/>';
@@ -224,8 +226,8 @@ export function startGame(cfg) {
       if (LK && kid.userData.body) kid.userData.body.scale.set(1 - e * 0.06 + (t > 0.9 ? 0 : 0), 1 + e * 0.1, 1 - e * 0.06); }).then(() => { kid.position.y = y0; if (LK && kid.userData.body) LK.squash(kid.userData.body, 1, 0.14); });
   }
   const F = cfg.mistake.friend;
-  /* Mendy and his friend: painted pictures (?kids=painted, when the pictures are there) or the 3D boys. Esti chooses. */
-  const PAINTED = LK && (!FAST || SHOT || LOOKTEST) && /[?&]kids=painted/.test(location.search);
+  /* Mendy and his friend: painted pictures (Esti chose them, 2026-11-26) */
+  const PAINTED = LK && (!FAST || SHOT || LOOKTEST) && !/[?&]kids=3d/.test(location.search);   /* Esti, 2026-11-26: painted characters (the redrawn 3D boys stay at ?kids=3d) */
   if (LK) LK.treasures.painted = PAINTED;   /* the painted look also uses the painted cupcakes */
   const mendy = PAINTED ? LK.makePaintedKid('mendy') : makeKid(LK ? '#A9CFF2' : '#FFFFFF', LK ? '#7A4E2C' : '#B5773E'), friend = PAINTED ? LK.makePaintedKid(LK.friendArt(F)) : makeKid(F.shirt, F.hair, F.glasses); friend.visible = false;
 
@@ -820,18 +822,18 @@ export function startGame(cfg) {
     return Promise.all([say(line || PS.R.seq.slice(0, list.length).map(t => BEADS[t].word).join(', ') + '.'), bounce]);
   }
   const wordsOf = (seq, k) => seq.slice(0, k).map(t => BEADS[t].word).join(', ');
-  function coreGlow(on) { const c = PS.R.core || 2; PS.beads.slice(0, c).forEach(m => { m.material.emissive = new THREE.Color(on ? '#FFC400' : '#000000'); m.material.emissiveIntensity = on ? 0.5 : 0; }); }
+  function coreGlow(on) { const c = PS.R.core || 2; PS.beads.slice(0, c).forEach(m => { if (m.userData.glow) { m.userData.glow(on); return; } m.material.emissive = new THREE.Color(on ? '#FFC400' : '#000000'); m.material.emissiveIntensity = on ? 0.5 : 0; }); }   /* world items glow with a soft halo behind them, so their own colour never changes (a red car stays red) */
   function patternRound(R, bonus, help) {
     return new Promise(resolve => {
       setName(bonus ? 'bonus' : 'find'); dots(2); setPattern(R); allow = true;
-      const ask = [R.fixAt != null ? 'Find the wrong bead. Put the right one on it.' : R.copy ? 'Make the same pattern below.' : 'What comes next?']; task = ask;
+      const ask = [R.fixAt != null ? 'Find the wrong one. Put the right one on it.' : R.copy ? 'Make the same pattern below.' : 'What comes next?']; task = ask;
       idleFn = n => { const t = shapes.find(o => o.box === 0 && !o.inBox); if (!t) return; W.reminders = (W.reminders || 0) + 1;
         play(n === 1 ? [() => sing(), ...ask, () => pointAt(t)] : [cfg.hint2, () => pointAt(t)]); };
       idle();
       onDrop = (o, bi) => {
         idle();
-        if (bi < 0) { goHome(o); play(['Put it on the string.']); return; }
-        if (bi === 2) { goHome(o); play(['That bead is right.', 'Find the wrong one.']); return; }
+        if (bi < 0) { goHome(o); play([cfg.putLine || 'Put it on the string.']); return; }
+        if (bi === 2) { goHome(o); play(['That one is right.', 'Find the wrong one.']); return; }
         if (o.box === 0) {
           chime(true); const last = PS.R.fixAt != null || PS.next + 1 >= PS.n;
           if (last) { allow = false; onDrop = null; stopIdle(); }
@@ -843,9 +845,9 @@ export function startGame(cfg) {
           return;
         }
         if (!bonus) W.misses++; chime(false); goHome(o);
-        const steps = ['Not that one.', () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, R.copy ? 'Look at the beads above.' : null)];
+        const steps = ['Not that one.', () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, R.copy ? 'Look at the pattern above.' : null)];
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember, () => coreGlow(true), () => say(wordsOf(R.seq, R.core || 2) + ' repeats.'), () => wait(600), () => coreGlow(false));
-          if (R.fixAt != null) steps.push(() => { PS.showRing = true; markNext(); }, 'The wrong bead is in the ring.'); }
+          if (R.fixAt != null) steps.push(() => { PS.showRing = true; markNext(); }, 'The wrong one is in the ring.'); }
         steps.push(...ask);
         play(steps);
       };
@@ -858,7 +860,7 @@ export function startGame(cfg) {
     PS.parts.forEach(p => { if (p.isGroup || p.isMesh) { p.position.z += 1.0; p.position.y += 0.3; } });
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, () => sing(null, L.say), 'The same part repeats!',
       () => coreGlow(true), L.coreLine, () => wait(500), () => coreGlow(false),
-      'Your turn! Tap each bead to sing.', () => { setName('tap'); task = ['Tap each bead.']; return tapBeads(); }, () => { setName('learn'); task = null; },
+      'Your turn! Tap each one to sing.', () => { setName('tap'); task = ['Tap each one.']; return tapBeads(); }, () => { setName('learn'); task = null; },
       () => { chant(true); }, 'Clap the pattern with me!'];
     L.chant.forEach(c => steps.push(c[0], () => claps({ marks: [], g: PS.parts[0] }, c[1])));
     steps.push(() => { chant(false); return cheer(mendy); });
@@ -867,7 +869,7 @@ export function startGame(cfg) {
   function tapBeads() {   /* he taps the beads one by one; each sings its note and the voice says its name */
     return new Promise(done => {
       const left = PS.beads.slice(); let nag = null;
-      const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (cornerTap) { say('Tap each bead.'); remind(); } }, FAST ? 1e9 : 9000); };
+      const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (cornerTap) { say('Tap each one.'); remind(); } }, FAST ? 1e9 : 9000); };
       W.cornerPtsP = () => left.map(m => toScreen(m.getWorldPosition(new THREE.Vector3())));
       cornerTap = (cx, cy) => {
         let best = -1, bd = 1e9; left.forEach((m, i) => { const p = toScreen(m.getWorldPosition(new THREE.Vector3())); const d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
@@ -1065,15 +1067,16 @@ export function startGame(cfg) {
     });
   }
   W.zonePt = z => toScreen(zoneWorld(z)); if (POSITIONED) W.wrongBox = 1;
+  const BW = cfg.ballWord || 'ball';   /* what the voice calls the round thing (under the sea: a pearl) */
   async function posLesson() {
     const L = cfg.posLesson; if (!BR) BR = makeBridge();
     const ball = makeShape('lball', 'sphere', '#F2A900', 0, 0.55); ball.slot = null; ball.busy = true; ball.g.position.copy(zoneWorld('left'));
-    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, 'Look at the ball. Where is it?'];
+    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, 'Look at the ' + BW + '. Where is it?'];
     for (const z of ['top', 'under', 'right', 'front', 'behind']) steps.push(() => placeAt(ball, z).then(() => { ball.busy = true; }), cap(ZWORD[z]) + ' the bridge!');
     const ball2 = () => { const b2 = makeShape('lball2', 'sphere', '#12A766', 0, 0.55); b2.slot = null; b2.busy = true; b2.g.position.copy(zoneWorld('under')); return b2; };
     let b2 = null;
-    steps.push(() => placeAt(ball, 'top').then(() => { b2 = ball2(); }), 'Two balls. One is on top. One is under.',
-      'Tap the ball on top!', () => { setName('tap'); task = ['Tap the ball on top.']; return tapShape(ball, 'Tap the ball on top.', () => Promise.all([say('Yes! On top!'), solidAction(ball, 'spin')])); }, () => { setName('learn'); task = null; },
+    steps.push(() => placeAt(ball, 'top').then(() => { b2 = ball2(); }), 'Two ' + BW + 's. One is on top. One is under.',
+      'Tap the ' + BW + ' on top!', () => { setName('tap'); task = ['Tap the ' + BW + ' on top.']; return tapShape(ball, 'Tap the ' + BW + ' on top.', () => Promise.all([say('Yes! On top!'), solidAction(ball, 'spin')])); }, () => { setName('learn'); task = null; },
       ...L.rule, () => { chant(true); }, 'Clap it with me! Tap the hands.');
     L.chant.forEach(c => steps.push(c[0], () => claps(ball, c[1])));
     steps.push(() => { chant(false); return cheer(mendy); }, () => { [ball, b2].forEach(o => { if (o) { scene.remove(o.g); shapes.splice(shapes.indexOf(o), 1); } }); });
