@@ -33,9 +33,9 @@ function hooks() {
   GAME.wrong = () => [{ tap: '.tspot[data-id="saw' + low() + '"]' }];
 }
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
-async function level() {
+async function level(el) {
   await FR.wait(NK.fast ? 40 : 700); O.sparkle(O.seesaw().g.position);
-  await FR.yes(document.querySelector('.tspot[data-id="saw0"]'), FR.pick(['Level! The same on both sides!', 'The same! ' + FR.Word(S.n[0]) + ' and ' + FR.word(S.n[1]) + '.']));
+  await FR.yes(el || document.querySelector('.tspot[data-id="saw0"]'), FR.pick(['Level! The same on both sides!', 'The same! ' + FR.Word(S.n[0]) + ' and ' + FR.word(S.n[1]) + '.']));
   const d = done; done = null; d(R.misses === 0);
 }
 async function add(k, el) {
@@ -43,7 +43,7 @@ async function add(k, el) {
   if (k === low()) { FR.oops(el); R.misses++; await O.sawAdd(k, 1); await FR.wait(NK.fast ? 30 : 500);
     await FR.say('Look! That side went down more. More apples go down.'); await O.sawAdd(k, -1); await FR.say(R.mode === 'take' ? 'Take one from the low side.' : 'Add to the side up high.'); open(); return; }
   await O.sawAdd(k, 1); NK.say(FR.Word(S.n[k]) + '!', { noRepeat: true });
-  if (S.n[0] === S.n[1]) return level(); open();
+  if (S.n[0] === S.n[1]) return level(el); open();
 }
 async function less() {
   NK.unlock(); if (GAME.phase !== 'answer' || S.n[0] === S.n[1]) return; GAME.phase = 'busy'; FR.lock(true);

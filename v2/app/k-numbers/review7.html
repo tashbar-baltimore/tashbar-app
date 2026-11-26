@@ -33,7 +33,7 @@ function hooks() { const k = R.n, bad = k === 9 ? 8 : k + 1;
   GAME.right = () => { P.focus(k, true); return [{ drag: ['#mchip', '.stone[data-n="' + k + '"]'] }]; };
   GAME.wrong = () => { P.focus(bad, true); return [{ drag: ['#mchip', '.stone[data-n="' + bad + '"]'] }]; }; }
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
-function nearest(n) { return ANCHORS.slice().sort((a, b) => Math.abs(a - n) - Math.abs(b - n))[0]; }
+function nearest(n) { return ANCHORS.filter(a => a <= n).pop(); }   /* always count up, from 0 or 5 (gentler than counting back) */
 async function drop(chip, stone) {
   if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n;
   if (n === R.n) { M.show(true); M.pose('happy'); await M.hop(n); P.shown(n, true); P.lift(n); P.petals(n); await FR.yes(stone, FR.pick(['Yes! ' + FR.Word(n) + ' lives there!', 'Right! That is ' + FR.word(n) + '.']));
@@ -43,7 +43,7 @@ async function drop(chip, stone) {
   for (let k = a; k !== R.n + dir; k += dir) { P.focus(k); P.glow(k, true); await FR.say(FR.Word(k) + (k === R.n ? '!' : ','), { noRepeat: true }); P.glow(k, false); }
   if (R.misses > 1) P.el(R.n).classList.add('hint'); await FR.say('Bring Mendy to ' + FR.word(R.n) + '.'); open();
 }
-const PLAN = [3, 7, 9, 2, 6, 4];
+const PLAN = [3, 7, 1, 9, 2, 6];
 function play(F, i) {
   return new Promise(async res => {
     R = { n: PLAN[i], misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); for (let k = 0; k <= 10; k++) P.el(k).classList.remove('hint');

@@ -136,7 +136,7 @@ export function mount(host, opt) {
     m.userData.v = new THREE.Vector3((Math.random() - .5) * .09, .08 + Math.random() * .06, (Math.random() - .5) * .09); m.userData.t = 0; scene.add(m); bits.push(m); } }
 
   /* ---------------- camera ---------------- */
-  let Wd = 1, Hh = 1; const DIR = new THREE.Vector3(0, 0.62, 0.78).normalize(), V = 34; let dist = 20, center = new THREE.Vector3(0, 0.6, 0);
+  let Wd = 1, Hh = 1; const DIR = new THREE.Vector3(0, 0.46, 0.89).normalize(), V = 34;   /* low enough that the painted orchard shows behind */ let dist = 20, center = new THREE.Vector3(0, 0.6, 0);
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false);

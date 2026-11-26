@@ -9,7 +9,7 @@
 - Two picnic blankets (painted blue-and-cream checks) with glossy 3D apples (painted apple skin). Dovid and Shmuel (the painted friends from Shapes) stand beside their blankets.
 - Pairing: partners line up in columns facing each other, joined by a golden ribbon; the apples left over show who has more.
 - An apple drops from the tree in an arc (one more); one rolls back (one less). A wooden see-saw (painted plank) tips toward the side with more and levels when the same.
-- Phones and Chromebooks: the blankets are one behind the other, so partners line up straight. Every tap spot is at least 64 px, and apples sit 0.92 apart so their spots never overlap.
+- Phones and Chromebooks: the blankets are one behind the other, so partners line up straight. Every tap spot is at least 64 px. On a phone, neighbouring apple spots can overlap a little, so a paired apple stops taking taps and a tap always reaches a free apple.
 
 ## Eight stops, eight different ways to play
 | Stop | How he plays | New to the Numbers year |
