@@ -1,0 +1,58 @@
+name: keser-gate
+# KESER GIRLS 3.0 RULE (HoS 2026-11-26): nothing goes into Keser Girls 3.0 until an approver (keser/APPROVERS.json) says yes. The yes is a
+# comment that person's Claude posts on the pull request:   APPROVED FOR KESER — <name>
+# It must come AFTER the pull request's newest commit. This workflow always runs from main, so a pull request cannot change how it decides.
+# For a pull request that changes keser/:
+#   - it must change ONLY keser/ and the shared art library art/;
+#   - its tests must have passed on its newest commit;
+#   - no yes yet -> private look link (publish-keser preview) and wait;
+#   - a yes for its newest commit -> merge it and put Keser Girls 3.0 live (publish-keser live).
+on:
+  workflow_dispatch:
+    inputs:
+      pr: { description: 'pull request number', required: true }
+  issue_comment:
+    types: [created]
+concurrency: { group: 'keser-gate-${{ inputs.pr || github.event.issue.number }}', cancel-in-progress: false }
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+jobs:
+  gate:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.pull_request && contains(github.event.comment.body, 'APPROVED FOR KESER'))
+    runs-on: ubuntu-24.04
+    env: { GH_TOKEN: '${{ github.token }}', REPO: '${{ github.repository }}' }
+    steps:
+      - name: Decide
+        run: |
+          set -euo pipefail
+          n='${{ inputs.pr || github.event.issue.number }}'
+          [[ "$n" =~ ^[0-9]+$ ]] || { echo "No pull request."; exit 0; }
+          pr=$(gh api "repos/$REPO/pulls/$n"); [ "$(jq -r .state <<<"$pr")" = open ] || { echo "PR #$n is not open."; exit 0; }
+          [ "$(jq -r .head.repo.full_name <<<"$pr")" = "$REPO" ] || { echo "PR #$n is from outside this repository."; exit 0; }
+          sha=$(jq -r .head.sha <<<"$pr")
+          files=$(gh api --paginate "repos/$REPO/pulls/$n/files" --jq '.[].filename')
+          grep -q '^keser/' <<<"$files" || { echo "PR #$n does not change Keser Girls 3.0."; exit 0; }
+          if grep -Eqv '^(keser|art)/' <<<"$files"; then
+            echo "PR #$n mixes Keser Girls 3.0 with other changes:"; grep -Ev '^(keser|art)/' <<<"$files"
+            gh api "repos/$REPO/issues/$n/comments" --jq '.[].body' | grep -q 'keser-gate: mixed' || gh pr comment "$n" --repo "$REPO" --body "keser-gate: mixed. This pull request changes Keser Girls 3.0 (keser/) and also other files. A Keser pull request may change only keser/ and the shared art library art/. Please split it. Nothing was merged."
+            exit 0; fi
+          concl=$(gh api "repos/$REPO/commits/$sha/check-runs?check_name=test" --jq '[.check_runs[] | select(.status=="completed")][0].conclusion // "none"')
+          [ "$concl" = success ] || { echo "PR #$n: tests on $sha are '$concl'; waiting for them to pass."; exit 0; }
+          # the newest commit's time: a yes must come after it
+          since=$(gh api "repos/$REPO/commits/$sha" --jq '.commit.committer.date')
+          yes=$(gh api --paginate "repos/$REPO/issues/$n/comments" --jq ".[] | select(.created_at > \"$since\") | select(.user.type != \"Bot\") | .body" \
+                | grep -ioP '^\s*APPROVED FOR KESER\s*(?:-|–|—|:)\s*\K[^\r\n]+' | sed 's/[[:space:].!]*$//' | grep -m1 . || true)
+          if [ -z "$yes" ]; then
+            echo "PR #$n: no approver has said yes after its newest commit ($sha, $since). Making a look link."
+            gh api -X POST "repos/$REPO/actions/workflows/publish-keser.yml/dispatches" -f ref=main -f 'inputs[what]=preview' -f "inputs[pr]=$n"
+            exit 0; fi
+          names=$(gh api "repos/$REPO/contents/keser/APPROVERS.json?ref=main" --jq .content | base64 -d | jq -r '.approvers[].name')
+          grep -Fxiq -- "$yes" <<<"$names" || { echo "PR #$n: '$yes' is not on keser/APPROVERS.json (main). Nothing was merged."; exit 0; }
+          echo "PR #$n: approved by $yes for $sha. Letting it into Keser Girls 3.0."
+          gh api -X PUT "repos/$REPO/pulls/$n/merge" -f merge_method=squash -f sha="$sha" -f commit_title="$(jq -r .title <<<"$pr") (#$n, approved by $yes)" --jq .message
+          gh api -X POST "repos/$REPO/actions/workflows/publish-keser.yml/dispatches" -f ref=main -f 'inputs[what]=live'
+          gh pr comment "$n" --repo "$REPO" --body "Approved by $yes. It is going into Keser Girls 3.0 now: https://keser-girls-3.web.app (live in about 5 minutes)."

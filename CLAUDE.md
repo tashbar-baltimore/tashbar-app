@@ -36,13 +36,18 @@ You are a builder on the Tashbar Baltimore learning app for the Head of School (
 - Mrs. Khaver and Esti work on 2.0 in their own Claude with `v2/START-PROMPT.md`: one small piece of 1.0 at a time (look at it, decide, build it their way, approve).
 - **Post that line only for the person working on 2.0 who, in the same conversation, looked at the newest look link and said to approve. Never post it otherwise, never ask anyone to post it, never merge or publish 2.0 by hand.**
 
+## Keser Girls 3.0 (HoS 2026-11-26)
+- A third, separate, clean learning app **for girls**, in `keser/`, at its own site https://keser-girls-3.web.app. Read `keser/README.md` before touching `keser/`. 1.0 and 2.0 stay as they are.
+- A Keser pull request changes only `keser/` and the shared `art/` library. It goes in only when an approver on `keser/APPROVERS.json` (today: Rabbi Khaver) has his or her Claude post `APPROVED FOR KESER — <name>` after looking at its newest look link. Same rule as 2.0: never post it otherwise, never ask anyone to post it, never merge or publish by hand.
+- Every school rule applies, written for girls (girls' names and stories). Pictures may show girls and women, modestly, marked "Keser Girls only" in the catalog; those never appear in 1.0 or 2.0.
+
 ## Shared art library (HoS 2026-11-24, binding on 1.0, 2.0 and every future app)
 HoS: "I want the graphics for 1.0 and 2.0 to all be shared." All art (pictures, photos, drawings, icons, sounds, recorded clips, 3D models saved as files) lives once in `art/` and every app uses it from there. How: `art/README.md`.
 - (a) Search `art/CATALOG.md` before ordering or making any art, and reuse what fits.
 - (b) Everything made or received goes into `art/` in the same pull request that first uses it: the original (`art/originals/`), the app-ready file (`art/pics/`, `art/sounds/`, `art/models/`) and a catalog row (`node tools/art-catalog.js`, then fill in the row). That covers art made by Claude in code, art from the HoS's image account, and art from any other account. A pull request that changes only `art/` goes live by itself after the tests; one that also changes `v2/` still needs a 2.0 approver.
 - (c) Never delete, replace or rename a library item without the HoS.
 - (d) Order new pictures from the HoS's image account by email, as a numbered order list with file names, the screen, the size and the exact prompt (example: `docs/core-growth/F-picture-orders.md`). Check the inbox for replies.
-- (e) Every item follows the picture rules in `docs/HANDOFF-PICS.md`: boys and men only; modest, frum family life; kosher food; no text inside pictures; no other religions' symbols; no Divine Name. Check every item that arrives against its order before adding it.
+- (e) Every item follows the picture rules in `docs/HANDOFF-PICS.md`: boys and men only (exception, HoS 2026-11-26: art for Keser Girls 3.0 may show girls and women, modestly, marked "Keser Girls only" and never used in 1.0 or 2.0); modest, frum family life; kosher food; no text inside pictures; no other religions' symbols; no Divine Name. Check every item that arrives against its order before adding it.
 - (f) Cast characters look the same in every picture. Use the cast notes in `docs/CORE-GROWTH-LANES.md` and earlier pictures of them (search the catalog by cast name) as the reference.
 - Any future app follows the same rule: its art lives in `art/`. `node tests/run.js` fails on a library file with no catalog row, a row with a missing file, an item with no source, licence or alt text, a picture over its size limit, or the same file twice.
 
