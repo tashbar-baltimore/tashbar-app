@@ -40,8 +40,21 @@ function staticChecks() {
   if (!bad) ok(Object.keys(T).length + ' lesson packs match ContentPacks.js');
   report.counts.packs = Object.keys(T).length;
   picsCheck();
+  conflictMarks();
   /* SHARED ART LIBRARY (HoS 2026-11-24): every file in art/ cataloged, sources and licences recorded, size limits, no duplicates */
   try { const a = require('./lib/art.js')(); a.fails.forEach(fail); a.oks.forEach(ok); } catch (e) { fail('art library check crashed: ' + String(e).slice(0, 200)); }
+}
+
+/* No leftover merge-conflict marks in any text file in the repository (25 Nov: #484 left them in docs/CORE-GROWTH-LANES.md). */
+function conflictMarks() {
+  const { execFileSync } = require('child_process'); let list = [];
+  try { list = execFileSync('git', ['ls-files'], { cwd: B.ROOT, stdio: 'pipe', maxBuffer: 64 << 20 }).toString().split('\n').filter(Boolean); } catch (e) { ok('conflict marks: not a git checkout, skipped'); return; }
+  const TEXT = /\.(js|mjs|cjs|json|html|css|md|txt|yml|yaml|py|sh|csv)$/i; let bad = 0, n = 0;
+  for (const f of list.filter(x => TEXT.test(x))) {
+    let t; try { t = fs.readFileSync(path.join(B.ROOT, f), 'utf8'); } catch (e) { continue; } n++;
+    const lines = t.split('\n'); for (let i = 0; i < lines.length; i++) if (/^(<{7}|>{7})( |$)/.test(lines[i])) { fail(f + ':' + (i + 1) + ' has a leftover merge-conflict mark'); bad++; break; }
+  }
+  if (!bad) ok('no merge-conflict marks in ' + n + ' text files');
 }
 
 /* PICS-1: every picture link must pass tools/pics-check.js (real screen, real file, licence recorded, size limits,
