@@ -83,6 +83,8 @@ function runOne(browser0, id, kind, label) {
       await startGame(pg); await pg.waitForSelector('body[data-drawn]', { timeout: 60000 }); await pg.waitForTimeout(800);
       const col = await canvasColours(pg); if (col >= 12) oks.push(tag + ': loads and shows real 3D (' + col + ' colours on screen)'); else fails.push(tag + ': the screen looks blank (' + col + ' colours)');
       await P[kind](pg, shotF, log);
+      for (let t = Date.now(); Date.now() - t < 60000 && !(await pg.evaluate(() => !!document.querySelector('#endbar.show')));) {   /* answer "Remember these?" if the player stopped before it */
+        const r = await pg.evaluate(() => window.__review && window.__review.ready ? window.__review : null); if (r) { log.reviewed = (log.reviewed || 0) + 1; await pg.mouse.click(...r.at[r.want]); } await pg.waitForTimeout(250); }
       await pg.waitForSelector('#endbar.show', { timeout: 60000 }); await pg.waitForTimeout(300); await shotF('4-end');
       const stars = Number(await pg.evaluate(() => document.body.dataset.stars));
       if (stars >= 2) oks.push(tag + ': can be won (' + stars + ' stars, after one mistake)'); else fails.push(tag + ': could not be won (' + stars + ' stars)');
@@ -92,6 +94,8 @@ function runOne(browser0, id, kind, label) {
       const longLines = await pg.evaluate(() => window.__lines.filter(l => l.split(/\s+/).filter(w => /[A-Za-z\u0590-\u05FF\[]/.test(w)).length > 12));   /* HoS rule: 12 words or fewer (a sound counts as one) */
       if (longLines.length) fails.push(tag + ': a spoken line is longer than 12 words: ' + longLines[0]); else oks.push(tag + ': every spoken line is 12 words or fewer');
       if (log.wrongHandled) oks.push(tag + ': a wrong answer gets a kind correction'); else fails.push(tag + ': a wrong answer was not handled');
+      if (/^(story|feel)/.test(kind)) { const said = await pg.evaluate(() => window.__lines.filter(l => /^Say it with me: /.test(l)).length);   /* RESEARCH.md: he says each new letter out loud */
+        if (said >= 3) oks.push(tag + ': asks him to say each new letter out loud (' + said + ' times)'); else fails.push(tag + ': "Say it with me" came ' + said + ' times'); }
       const sv = await saved(pg); if (sv.games && sv.games[id] && sv.games[id].stars === stars) oks.push(tag + ': saves the stars'); else fails.push(tag + ': stars were not saved');
       errs.forEach(e => fails.push(tag + ': ' + e));
       await ctx.close();

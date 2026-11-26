@@ -47,6 +47,7 @@ export default function setup(E) {
     const ds = dad.scale.x; dad.position.set(P ? -1.4 : -2.4, 0, 1.4); if (P) dad.scale.setScalar(ds * .68); dad.mood('wave');
     await E.say('Abba starts with Alef.'); dad.mood('calm');
     await E.say('Alef is quiet. It waits for its nekudah.');
+    await E.sayWithMe('alef');
     await E.say('Tap Alef!');
     await tapIt(alef, 'Alef. Alef is quiet. Shh!');
     await E.popOut(dad); dad.scale.setScalar(ds);
@@ -68,6 +69,7 @@ export default function setup(E) {
     E.sparkle(E.worldPos(beis.userData.dot), 24); E.sfx.sparkle(); float(beis);
     await E.say('This is Beis. Mendy is the dot inside.');
     await E.say(['Beis says', S('b')]);
+    await E.sayWithMe('beis');
     await E.say('Tap Beis!');
     await tapIt(beis, ['Beis says', S('b')]);
     /* 4. Veis: nobody home */
@@ -79,6 +81,7 @@ export default function setup(E) {
     E.sparkle(new THREE.Vector3(1.2, 3.6, 1), 14);
     await E.say('Nobody home. No dot. This is Veis.');
     await E.say(['Veis says', S('v')]);
+    await E.sayWithMe('veis');
     await E.say('Tap Veis!');
     await tapIt(veis, ['Veis says', S('v')]);
     /* 5. all three in a row (right to left: Alef, Beis, Veis), and a short chant */
