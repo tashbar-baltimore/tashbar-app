@@ -1,6 +1,6 @@
 # C45 helper · Fluency passages, Grades 4 and 5 ("Read It 3 Times")
 
-Helper piece from the Helpers list (`docs/CORE-GROWTH-LANES.md`), owner job C45 (`docs/core-growth/C45-map.md`). Files: passages in `texts/C45/C45.FL4.*` and `texts/C45/C45.FL5.*`; lessons in `src/CoreDataC45H1.html` (Grade 4) and `src/CoreDataC45H2.html` (Grade 5), rows in `src/CoreDataC45.js`.
+Helper piece from the Helpers list (`docs/CORE-GROWTH-LANES.md`), owner job C45 (`docs/core-growth/C45-map.md`). Files: passages in `texts/C45/C45.FL4.*` and `texts/C45/C45.FL5.*`; lessons in `src/CoreDataC45H1.html` (Grade 4) and `src/CoreDataC45H2.html` (Grade 5) for batch 1, `src/CoreDataC45H3.html`/`H4.html` for batch 2 and `H5.html`/`H6.html` for batch 3, rows in `src/CoreDataC45.js`.
 
 **The HoS's request, in his words:** "beef up all their lessons to contain about a half a year's worth of work … the variety of different ways to learn based on proven research … no downtime and fluff." The plan asks for **25 fluency passages per grade** ("read it 3 times", C45 ledger), taken from the unit texts.
 
