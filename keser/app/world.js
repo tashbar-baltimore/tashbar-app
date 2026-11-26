@@ -11,7 +11,7 @@ const save = (k, v) => { try { store && store.setItem(k, v ? '1' : '0'); } catch
 const progress = readProgress(q, store);
 const N = PLACES.length;
 const START = Math.max(0, PLACES.findIndex(p => p.id === (/[?&]place=([a-z]+)/.exec(q) || [])[1]));   /* ?place=kodesh: she came from that globe in her treasure house */
-const S = { focus: (/[?&]place=/.test(q) && START >= 0) ? START : 1, entered: false, gl: false, lite: /[?&]lite=1\b/.test(q) || pref('keser.lite', false), calm, sound: pref('keser.sound', true), frames: 0, taps: 0 };
+const S = { focus: (/[?&]place=/.test(q) && START >= 0) ? START : 0, entered: false, gl: false, lite: /[?&]lite=1\b/.test(q) || pref('keser.lite', false), calm, sound: pref('keser.sound', true), frames: 0, taps: 0 };
 let world = null;
 
 /* ---------- sparkles: a tiny burst of stars wherever she taps ---------- */
@@ -47,11 +47,13 @@ function chime(semi, soft) {
 
 /* ---------- the buttons, dots and name ---------- */
 const dots = $('dots'), nameEl = document.querySelector('.name'), he = nameEl.querySelector('.he');
-PLACES.forEach((p, i) => { const b = document.createElement('button'); b.style.setProperty('--c', p.color); b.setAttribute('role', 'tab'); b.setAttribute('aria-label', p.name);
+PLACES.forEach((p, i) => { const b = document.createElement('button'); b.style.setProperty('--c', p.color); b.setAttribute('role', 'tab'); b.setAttribute('aria-label', p.label || p.name);
   b.onclick = e => { tapAt(e, p.color); go(i); }; dots.appendChild(b); });
+/* a Hebrew name (קודש) is written right to left */
+function setName(el, p) { el.textContent = p.name; if (p.lang) { el.setAttribute('lang', p.lang); el.setAttribute('dir', 'rtl'); } else { el.removeAttribute('lang'); el.removeAttribute('dir'); } }
 function show() {
   const p = PLACES[S.focus];
-  $('placeName').textContent = p.name; he.textContent = p.he || '';
+  setName($('placeName'), p); he.textContent = p.he || '';
   nameEl.classList.remove('swap'); void nameEl.offsetWidth; nameEl.classList.add('swap');
   [...dots.children].forEach((d, i) => d.setAttribute('aria-current', i === S.focus ? 'true' : 'false'));
   document.querySelectorAll('.flat .place').forEach((c, i) => c.setAttribute('aria-current', i === S.focus ? 'true' : 'false'));
@@ -66,7 +68,7 @@ function go(i, quiet) {
 }
 function enter() {
   if (S.entered) return; S.entered = true; const p = PLACES[S.focus];
-  chime(p.note); chime(p.note + 7, true); const lab = p.id === 'kodesh'; body.classList.toggle('kodesh', lab); $('openLab').hidden = !lab; $('roomSoon').hidden = lab; $('roomName').textContent = p.name; $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
+  chime(p.note); chime(p.note + 7, true); const lab = !!p.lab; body.classList.toggle('kodesh', p.id === 'kodesh'); $('openLab').hidden = !lab; $('roomSoon').hidden = lab; if (lab) $('labName').textContent = p.labName; setName($('roomName'), p); $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
   world && world.enter(S.focus); setTimeout(() => { if (S.entered) { body.classList.add('inside'); $('room').setAttribute('aria-hidden', 'false'); $('back').focus({ preventScroll: true }); } }, calm ? 50 : 750);
 }
 function back() {
@@ -90,7 +92,7 @@ function loadLab() {
   return labLoading;
 }
 $('openLab').onclick = e => { tapAt(e, '#F5C451'); chime(7); $('openLab').disabled = true;
-  loadLab().then(() => { window.CLAB.openLab(); }).catch(err => console.warn('Kodesh lab: ' + err.message)).finally(() => { $('openLab').disabled = false; }); };
+  loadLab().then(() => { window.CLAB.openLab(PLACES[S.focus].lab === 'tl' ? 'tl' : undefined); }).catch(err => console.warn('Kodesh lab: ' + err.message)).finally(() => { $('openLab').disabled = false; }); };
 $('sound').onclick = e => { S.sound = !S.sound; save('keser.sound', S.sound); $('sound').setAttribute('aria-pressed', String(S.sound)); tapAt(e); chime(4, true); };
 $('lite').onclick = e => { setLite(!S.lite, true); tapAt(e); chime(9, true); };
 function setLite(on, byHer) { S.lite = on; if (byHer) save('keser.lite', on); $('lite').setAttribute('aria-pressed', String(on)); html.classList.toggle('lite', on); world && world.setLite(on); }
@@ -143,7 +145,7 @@ function greet() {
 }
 
 /* ---------- start ---------- */
-window.KWORLD = { places: PLACES.map(p => p.id), progress, state: S, go, enter, back, next: () => go(S.focus + 1), prev: () => go(S.focus - 1), setLite };
+window.KWORLD = { places: PLACES.map(p => p.id), progress, state: S, layout: () => (world && world.layout ? world.layout() : null), go, enter, back, next: () => go(S.focus + 1), prev: () => go(S.focus - 1), setLite };
 show();
 if (S.lite) { html.classList.add('lite'); $('lite').setAttribute('aria-pressed', 'true'); }
 setTimeout(() => body.classList.remove('intro'), calm ? 0 : 900);

@@ -16,13 +16,18 @@
 html,body{ margin:0; height:100%; overflow:hidden; color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--night); -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; }
 .scene{ position:fixed; inset:0; transition:opacity .9s var(--glide); }
 .bg{ position:absolute; inset:-4%; width:108%; height:108%; object-fit:cover; }
+.bg.sky{ background:radial-gradient(ellipse at 50% 38%, #8A55BC 0, #5D2B88 32%, #3A1660 62%, #1C0A30 100%); }   /* Keser royal purple (M. Heinemann 2026-11-26) */
+.globe .mark{ grid-row:1; } .globe .orb{ grid-row:2; grid-column:1; } .globe > span{ grid-row:3; }
+/* Timeline's clear globe holds its timeline picture, layered inside the glass */
+.globe .inside{ grid-row:2; grid-column:1; align-self:start; justify-self:center; width:calc(clamp(90px,13vw,170px) * .58); margin-top:calc(clamp(90px,13vw,170px) * .2); pointer-events:none; filter:drop-shadow(0 0 8px rgba(255,214,140,.7)); animation:float 4s ease-in-out infinite; }
+@media (max-width:600px){ .globe .inside{ width:calc(clamp(80px,26vw,130px) * .58); margin-top:calc(clamp(80px,26vw,130px) * .2); } }
 .veil{ position:absolute; inset:0; background:radial-gradient(ellipse at 40% 45%, rgba(26,11,46,.05), rgba(26,11,46,.6) 75%), linear-gradient(180deg, rgba(26,11,46,.1), rgba(26,11,46,.55)); }
 #fx{ position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:30; }
 
 /* 1. the vault */
 #vault .wrap{ position:absolute; inset:0; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); align-items:center; gap:3vw; padding:4vh 5vw; }
 .door-box{ position:relative; justify-self:center; width:min(48vw,72vh,560px); aspect-ratio:1; perspective:1400px; }
-.door-glow{ position:absolute; inset:-14%; border-radius:50%; background:radial-gradient(circle, rgba(255,214,140,.55), rgba(255,95,162,.2) 45%, transparent 70%); animation:breathe 4s ease-in-out infinite; }
+.door-glow{ position:absolute; inset:-14%; border-radius:50%; background:radial-gradient(circle, rgba(255,214,140,.55), rgba(140,80,200,.2) 45%, transparent 70%); animation:breathe 4s ease-in-out infinite; }
 @keyframes breathe{ 50%{ opacity:.65; transform:scale(1.05) } }
 .portal{ position:absolute; inset:9%; border-radius:50%; background:url(/pics/keser-vault-inside.webp) 52% 45%/260% auto no-repeat;
   box-shadow:0 0 0 6px rgba(201,138,30,.8), 0 0 60px 20px rgba(255,214,140,.7), inset 0 0 50px rgba(255,241,184,.9); opacity:0; transition:opacity .5s; }
@@ -48,12 +53,12 @@ body.flying .flylogo{ animation:flythrough 2.2s cubic-bezier(.5,0,.4,1) both; }
 .globe.waiting .mark{ filter:drop-shadow(0 3px 5px rgba(40,0,40,.6)) saturate(.6); }
 .slots{ display:flex; gap:16px; }
 .slot{ width:26px; height:26px; transform:rotate(45deg); border-radius:6px; border:2px solid rgba(255,241,184,.7); background:rgba(255,255,255,.06); transition:all .35s var(--spring); }
-.slot.on{ background:linear-gradient(135deg,#fff,#FF8FBF 40%,#FF3D8E); border-color:#FFF1B8; box-shadow:0 0 18px #FF5FA2; transform:rotate(45deg) scale(1.12); }
+.slot.on{ background:linear-gradient(135deg,#fff,#F6E3B0 40%,#D4AA50); border-color:#FFF1B8; box-shadow:0 0 18px #8A55BC; transform:rotate(45deg) scale(1.12); }
 .slots.bad .slot{ border-color:#FF5F7E; background:rgba(255,95,126,.35); }
 .keys{ display:grid; grid-template-columns:repeat(3,72px); gap:14px; }
 .key{ appearance:none; border:0; padding:0; width:72px; height:72px; cursor:pointer; position:relative; background:url(/pics/keser-key-gem.webp) center/contain no-repeat;
   font:700 30px/1 var(--serif); color:#5B1238; text-shadow:0 1px 0 rgba(255,255,255,.7); filter:drop-shadow(0 6px 12px rgba(60,0,40,.45)); transition:transform .25s var(--spring), filter .2s; }
-.key:hover{ transform:scale(1.07); filter:drop-shadow(0 8px 16px rgba(255,95,162,.6)); }
+.key:hover{ transform:scale(1.07); filter:drop-shadow(0 8px 16px rgba(140,80,200,.6)); }
 .key:active{ transform:scale(.88); }
 .key:focus-visible{ outline:3px solid var(--gold1); outline-offset:3px; border-radius:50%; }
 .key.small{ font:800 15px/1 system-ui,sans-serif; letter-spacing:.04em; }
@@ -81,7 +86,7 @@ body.home #fly{ opacity:0; }
   filter:drop-shadow(0 0 6px rgba(255,214,140,.9)); }
 .globes{ position:absolute; left:0; right:0; bottom:9vh; height:40vh; touch-action:pan-y; cursor:grab; }
 .globes::before{ content:""; position:absolute; left:50%; bottom:2%; width:min(74vw,900px); height:16%; translate:-50% 0; border-radius:50%;
-  background:radial-gradient(ellipse, rgba(255,214,140,.55), rgba(255,95,162,.18) 55%, transparent 72%); box-shadow:0 0 0 2px rgba(245,196,81,.35) inset; }
+  background:radial-gradient(ellipse, rgba(255,214,140,.55), rgba(140,80,200,.18) 55%, transparent 72%); box-shadow:0 0 0 2px rgba(245,196,81,.35) inset; }
 .globe{ appearance:none; border:0; background:none; padding:0; cursor:pointer; position:absolute; left:50%; bottom:6%; display:grid; justify-items:center; gap:6px; color:#fff;
   font:700 16px/1.1 var(--serif); transform-origin:50% 100%; will-change:transform, opacity; opacity:0; transition:opacity .8s; }
 body.home .globe{ opacity:1; }
@@ -114,7 +119,7 @@ body.home .globe{ opacity:1; }
 </head>
 <body>
 <section class="scene" id="vault">
-  <img class="bg" src="/pics/keser-world-sky.webp" alt=""><div class="veil"></div>
+  <div class="bg sky"></div><div class="veil"></div>
   <div class="wrap">
     <div class="door-box" id="doorBox"><div class="door-glow"></div><div class="portal"></div>
       <div class="door"><img class="d" src="/pics/keser-vault-door.webp" alt="A jeweled vault door"><div class="dial" id="dial"><img src="/pics/keser-vault-dial.webp" alt="The crown dial"></div></div>
