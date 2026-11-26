@@ -38,7 +38,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   });
   E.onFrame(t => {
     puffs.forEach((p, i) => { const k = ((t * .8 + i / 4) % 1); p.position.set(-.35 - k * .5, 1.4 + k * .9, 0); p.scale.setScalar(.6 + k * 1.2); p.material.opacity = .8 * (1 - k); });
-    cars.forEach((c, i) => { if (!c.userData.on && c !== drag && !c.userData.busy && c.visible) { c.position.y = homes[c.userData.home ?? i].y + Math.sin(t * 2 + i) * .05; } c.userData.letter.rotation.y = Math.sin(t * 1.3 + i) * .2; if (P) c.userData.letter.scale.setScalar(c.userData.on ? (swapPairs.length ? 1.4 : ORDER.length >= 6 ? 1.25 : 1.2) : 1.3);   /* in the mix-up round the letters on the train are bigger, so the dots show */ });   /* on a phone, letters on the train are bigger */
+    cars.forEach((c, i) => { if (!c.userData.on && c !== drag && !c.userData.busy && c.visible) { c.position.y = homes[c.userData.home ?? i].y + Math.sin(t * 2 + i) * .05; } c.userData.letter.rotation.y = Math.sin(t * 1.3 + i) * .2; if (P) c.userData.letter.scale.setScalar(c.userData.on ? (swapPairs.length ? 1.15 : ORDER.length >= 6 ? 1.25 : 1.2) : 1.3);   /* in the mix-up round the letters on the train are bigger, so the dots show */ });   /* on a phone, letters on the train are bigger */
     const need = nextNeeded(), g = swapPairs.length ? cars.find(c => swapPairs.some(p => p.includes(c.userData.slot))) : need != null && cars.find(c => c.userData.key === ORDER[need] && !c.userData.on);   /* in the mix-up round, a mixed-up car glows */
     if (help && g && enabled) { glow.position.copy(g.position).add(new THREE.Vector3(0, .9 * g.scale.x, -.4)); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
@@ -138,10 +138,12 @@ export default function setup(E, { struggled, unit, game = {} }) {
     const prs = [[1, 2], [3, 4], [5, 6]].filter(p => p[1] < n); gaps = null;
     const at = i => { const p = prs.find(q => q.includes(i)); return p ? (p[0] === i ? p[1] : p[0]) : i; };   /* the car standing in place i */
     const lx = LX; loco.position.x = lx + 10;
-    cars.forEach((c, i) => { c.userData.on = true; c.userData.slot = at(i); c.scale.setScalar(S); c.visible = true; c.position.copy(slotPos(c.userData.slot)).add(new THREE.Vector3(10, 0, 0)); });
+    /* on a phone the cars park in two short lines (right to left, top line first), big enough to see every dot */
+    const park = i => { const r = i < 4 ? 0 : 1, j = r ? i - 4 : i, m = r ? n - 4 : Math.min(4, n); return new THREE.Vector3(((m - 1) / 2 - j) * 1.15, r ? 1.25 : 2.9, .8); };
+    cars.forEach((c, i) => { c.userData.on = true; c.userData.slot = at(i); c.scale.setScalar(P ? .82 : S); c.visible = true; c.position.copy(P ? park(c.userData.slot) : slotPos(c.userData.slot)).add(new THREE.Vector3(10, 0, 0)); });
+    if (P) { loco.visible = false; track.visible = false; E.camBase.set(0, 2.3, 10.5); E.camTarget.set(0, 2.0, 0); }
     const sx = cars.map(c => c.position.x);
-    await E.tween(1600, q => { loco.position.x = lx + 10 * (1 - q); cars.forEach((c, i) => c.position.x = sx[i] - 10 * q); }, E.ease.out);
-    if (P) { E.camBase.set(.1, 1.6, 11.2); E.camTarget.set(.1, 1.0, 0); }   /* on a phone the camera comes a little closer to the train (it still fits the width) */
+    await E.tween(1600, q => { if (!P) loco.position.x = lx + 10 * (1 - q); cars.forEach((c, i) => c.position.x = sx[i] - 10 * q); }, E.ease.out);
     await E.say('Oh no! Yaakov mixed up some cars.');
     swapPairs = prs.slice(); enabled = false;
     const d = prs[0], first = cars.find(c => c.userData.slot === d[0]);
