@@ -28,7 +28,7 @@ export default function setup(E, { struggled, unit }) {
   const glowT = E.glowSprite('#fff7b0', 2.2, 0); E.scene.add(glowT);
   let P = false, help = struggled, mistakes = 0, missed = false, dragT = null, grab = new THREE.Vector3(), fixKey = null, resolveFix = null, busy = false;
   E.onLayout(p => { P = p;
-    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.2, 0); yak.position.set(-1.75, 0, .9); yak.scale.setScalar(.62); board.position.set(.55, 3.1, .4); board.scale.setScalar(.85); }
+    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.2, 0); yak.position.set(-1.6, 0, 1.3); yak.scale.setScalar(.85); board.position.set(.55, 3.1, .4); board.scale.setScalar(.85); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); yak.position.set(-3.3, 0, 1.2); yak.scale.setScalar(1.1); board.position.set(.2, 2.35, .4); board.scale.setScalar(1); }
     tiles.forEach((t, i) => { if (t !== dragT) t.position.copy(tileHome(i)); });
   });
