@@ -31,7 +31,7 @@ export default function setup(E, { struggled, unit, game }) {
   function lay() { const p = P;
     if (three()) {   /* three boxes: smaller, side by side; the card waits above them */
       if (p) { E.camBase.set(0, 3.0, 11.2); E.camTarget.set(0, 2.3, 0); [1.55, 0, -1.55].forEach((x, i) => crates[i].position.set(x, 0, .3)); crates.forEach(c => c.scale.setScalar(.62)); cardHome.set(0, 4.1, 1.5); kid.visible = false; }
-      else { E.camBase.set(0, 2.8, 10.2); E.camTarget.set(0, 1.7, 0); [3.1, 0, -3.1].forEach((x, i) => crates[i].position.set(x, 0, 0)); crates.forEach(c => c.scale.setScalar(.86)); cardHome.set(0, 3.55, 1.6); kid.visible = true; kid.position.set(-5.2, 0, 1.4); } }
+      else { E.camBase.set(0, 2.8, 10.2); E.camTarget.set(0, 1.7, 0); [3.1, 0, -3.1].forEach((x, i) => crates[i].position.set(x, 0, 0)); crates.forEach(c => c.scale.setScalar(.86)); cardHome.set(0, 3.55, 1.6); kid.visible = true; kid.position.set(-4.75, 0, 1.6); } }
     else if (p) { E.camBase.set(0, 3.0, 11.2); E.camTarget.set(0, 2.3, 0); crates[0].position.set(1.3, 0, .3); crates[1].position.set(-1.3, 0, .3); crates.forEach(c => c.scale.setScalar(.82)); cardHome.set(0, 4.3, 1.5); kid.visible = false; }   /* phone: bigger crates and card (graphics pass) */
     else { E.camBase.set(0, 2.7, 9.8); E.camTarget.set(0, 1.5, 0); crates[0].position.set(2.6, 0, 0); crates[1].position.set(-2.6, 0, 0); crates.forEach(c => c.scale.setScalar(1)); cardHome.set(0, 2.1, 1.5); kid.visible = true; kid.position.set(-4.7, 0, 1.4); }
     crates[2].visible = !!three();

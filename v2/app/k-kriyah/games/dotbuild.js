@@ -61,7 +61,8 @@ export default function setup(E, { struggled, unit, game }) {
   });
   window.__info = () => { const spots = {}; [...spotsFor()].forEach(n => spots[n] = E.toScreen(spotPos(n)));
     const g = want && goodSpot(want), b0 = want && (shape === 'ש' ? (g === 'right' ? 'left' : 'right') : (want === 'tav' ? 'dish' : 'in')), bad = b0 && b0 !== at ? b0 : null;   /* a wrong place he can really drop on */
-    return { ready: enabled && !busy, want, dot: E.toScreen(dot.position), spots, good: g, bad, at }; };
+    const r = okBtn.style.display !== 'none' ? okBtn.getBoundingClientRect() : null;
+    return { ready: enabled && !busy, want, dot: E.toScreen(dot.position), spots, good: g, bad, at, ok: r ? [r.x + r.width / 2, r.y + r.height / 2] : null }; };
   /* dragging the dot */
   const grab = new THREE.Vector3();
   E.onPointer('down', e => { if (!enabled || busy) return; if (E.pickFrom(e, [dot])) { dragging = true; const p = E.planePoint(e, dot.position.z); if (p) grab.copy(dot.position).sub(p); dot.scale.setScalar(1.25); E.sfx.pop && E.sfx.pop(); } });
@@ -77,6 +78,13 @@ export default function setup(E, { struggled, unit, game }) {
   async function dropAt(spot) {
     if (!spot || spot === at) { busy = true; await moveDot(at, 300); busy = false; if (!spot && shape === 'ש') await E.say('Put the dot on top of a head!'); return; }
     busy = true; enabled = false; await moveDot(spot, 220);
+    await judge();
+  }
+  /* Tuf and Suf: the dot may already be in or out; if the letter is already right, he taps the green check */
+  const okBtn = document.createElement('button'); okBtn.className = 'ui btn green'; okBtn.id = 'dotok'; okBtn.setAttribute('aria-label', 'It is ready');
+  okBtn.style.cssText = 'left:50%;bottom:34px;transform:translateX(-50%);width:110px;height:110px;display:none'; okBtn.innerHTML = E.ICON.yes.replace('<svg', '<svg style="width:60px;height:60px"'); document.body.appendChild(okBtn);
+  okBtn.onclick = async () => { if (!enabled || busy) return; E.sfx.pop && E.sfx.pop(); busy = true; enabled = false; await judge(); };
+  async function judge() {
     const k = made();
     if (k === want) {
       wrongInRow = 0; L.setKey && L.setKey(k); if (L.userData.dot) L.userData.dot.visible = false;
@@ -87,18 +95,19 @@ export default function setup(E, { struggled, unit, game }) {
       if (k) { E.hop(L, .15, 300); await E.say(shape === 'ש' ? 'Look! Dot on the ' + at + ': that is ' + NM(k) + '.' : at === 'in' ? 'Look! A dot inside: that is Tuf.' : 'Look! No dot: that is Suf.'); }
       await E.say(RULE[want]);
       if (wrongInRow >= 2 || mistakes >= 3) help = true;
-      await moveDot(want === 'sav' ? 'in' : 'dish', 450); kid.mood('calm');
+      if (shape === 'ש') await moveDot('dish', 450); kid.mood('calm');
       busy = false; enabled = true; await E.say('Try again! Make it ' + NM(want) + '.');
     }
   }
   async function task(k) {
-    const sh = SHAPE_OF[k]; if (shape !== sh) { setShape(sh); at = k === 'sav' ? 'in' : 'dish'; dot.position.copy(spotPos(at)); await E.wait(350); }
-    if (k === 'sav' && at !== 'in') { busy = true; await moveDot('in'); }
-    if (k !== 'sav' && at !== 'dish') { busy = true; await moveDot('dish'); }
+    const sh = SHAPE_OF[k]; if (shape !== sh) { setShape(sh); at = 'dish'; dot.position.copy(spotPos(at)); await E.wait(350); }
+    if (sh === 'ש' && at !== 'dish') { busy = true; await moveDot('dish'); }
+    if (sh === 'ת') { const start = Math.random() < .5 ? 'in' : 'dish'; if (start !== at) { busy = true; await moveDot(start); } if (at === 'in') { L.setKey && L.setKey('tav'); } if (L.userData.dot) L.userData.dot.visible = false; }   /* in or out at random: sometimes it is already right */
+    okBtn.style.display = sh === 'ת' ? 'grid' : 'none';
     want = k; missed = false;
     const p = new Promise(r => resolveTask = r);
     await E.say(k === 'sav' ? 'Make it Suf!' : ['Make it ' + NM(k) + '!']); busy = false; enabled = true; document.body.dataset.dotReady = ++done;
-    await p; enabled = false; want = null; E.setProgress(total, done);
+    await p; enabled = false; want = null; okBtn.style.display = 'none'; E.setProgress(total, done);
   }
   async function demo(k, line) {
     want = k; busy = true; await E.say('Watch me. Make it ' + NM(k) + '!');
@@ -126,7 +135,9 @@ export default function setup(E, { struggled, unit, game }) {
     await E.say('Great! Now Tuf and Suf.');
     setShape('ת'); at = 'dish'; dot.position.copy(spotPos('dish')); await E.wait(300);
     await demo('tav', 'The dot goes inside. This is Tuf.');
-    await E.say('Suf has no dot at all.');
+    await E.say('Suf has no dot at all.'); await moveDot('dish', 400);
+    okBtn.style.display = 'grid'; { const r = okBtn.getBoundingClientRect(); E.hand.at(r.x + r.width / 2, r.y + 20, true); }
+    await E.say('Already right? Tap the green check!'); E.hand.hide(); okBtn.style.display = 'none';
     for (const k of ['sav', 'tav', 'sav', 'tav']) await task(k);
     await E.say('Now all four, mixed up!');
     for (const k of mix(['sin', 'sav', 'shin', 'tav'])) await task(k);

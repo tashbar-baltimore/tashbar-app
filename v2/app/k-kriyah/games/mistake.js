@@ -66,7 +66,7 @@ export default function setup(E, { struggled, unit }) {
   const mark = k => { if (plan.words) { arrow.setDir('down'); arrow.position.set(0, .75, .5); if (arrow.parent !== shown) shown.add(arrow); arrow.visible = true; return true; } const s = shown.userData; if (s.dotHome && (!curClaim || E.sameShape(k, curClaim))) { ring.position.copy(s.dotHome).setZ(.6); ring.visible = true; return true; } return E.pointAt(arrow, shown, k, 1.3, curClaim ? E.featFor(k, curClaim) : undefined); };   /* a ring round the dot place (same shape, dot or no dot); otherwise an arrow at the shape difference */
   const unmark = () => { ring.visible = false; arrow.visible = false; };
   /* why the letter is not what Yaakov said, in a few words */
-  const why = (k, c) => plan.words ? 'Look again. It is the end. ' + E.LETTERS[k].name + ' needs Shabbos clothes!' : k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
+  const why = (k, c) => plan.words ? 'Look again. It is the end. ' + E.LETTERS[k].name + ' needs Shabbos clothes!' : plan.bySound ? ['Look again. This is ' + E.LETTERS[k].name + '. It says', S(E.LETTERS[k].snd), ', not', S(E.LETTERS[c].snd), '.'] : k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
     : k === 'beis' && c === 'veis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
     : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : lookOf(k, c)) + ' This is ' + E.LETTERS[k].name + '.';
   const an = k => E.an(k);
@@ -86,14 +86,14 @@ export default function setup(E, { struggled, unit }) {
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; t.userData.busy = true; await E.tween(350, k => t.position.lerpVectors(p0, home, k), E.ease.out); await E.shake(t, .15); t.userData.busy = false;
       const has = k => tiles.some(x => x.userData.key === k), cue = fixKey === 'kaf' && has('beis') ? 'round at the bottom' : fixKey === 'kaf' && has('pei') ? 'with no little tongue' : fixKey === 'pei' && has('kaf') ? 'with the little tongue inside' : fixKey === 'daled' && has('reish') ? 'with the corner' : fixKey === 'hei' && has('kuf') ? 'with the short leg' : CUE[fixKey];   /* Beis and Pei have a dot too */
-      await E.say('That is ' + E.LETTERS[t.userData.key].name + '. Find ' + E.LETTERS[fixKey].name + (cue ? ', ' + cue : '') + '!');
+      await E.say(plan.bySound ? ['That says', S(E.LETTERS[t.userData.key].snd), '. Find the one that says', S(E.LETTERS[fixKey].snd), '!'] : 'That is ' + E.LETTERS[t.userData.key].name + '. Find ' + E.LETTERS[fixKey].name + (cue ? ', ' + cue : '') + '!');
       help = true;
     }
   }
   async function fix(k, demo) {
     fixKey = k; if (P) yak.visible = false;   /* on a phone, Yaakov steps out of the way of the letters */
     makeTiles(); await E.wait(450);
-    await E.say(['Yaakov wanted ' + an(k) + '. Drag', E.LETTERS[k].name, 'onto the sign!']);
+    await E.say(plan.bySound ? ['Yaakov said', S(E.LETTERS[k].snd), '. Drag the letter that says', S(E.LETTERS[k].snd), '!'] : ['Yaakov wanted ' + an(k) + '. Drag', E.LETTERS[k].name, 'onto the sign!']);
     const done = new Promise(r => resolveFix = r);
     if (demo) { busy = false; const t = tiles.find(x => x.userData.key === k); let [x, y] = E.toScreen(E.worldPos(t)); E.hand.at(x, y); await E.wait(350); dragT = t;
       const p0 = t.position.clone(), p1 = E.worldPos(board).add(new THREE.Vector3(0, -.2, 1.5)); await E.tween(1100, q => { t.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(t.position); E.hand.at(a, b); }); dragT = null; E.hand.hide(); placeTile(t, true); }
@@ -118,7 +118,7 @@ export default function setup(E, { struggled, unit }) {
     } else {
       E.sfx.boop(); if (!demo && !missed) mistakes++; missed = true; yak.mood('think'); help = help || mistakes >= 2;
       mark(shownKey);
-      if (right) { await E.say(plan.words ? 'Look again. It is the end, with ' + E.LETTERS[shownKey].name + '.' : shownKey === 'alef' ? 'Look again. It is Alef, not a house shape.' : 'Look again. ' + lookOf(shownKey, curClaim) + ' It is ' + E.LETTERS[shownKey].name + '.'); unmark(); yak.mood('calm');
+      if (right) { await E.say(plan.words ? 'Look again. It is the end, with ' + E.LETTERS[shownKey].name + '.' : plan.bySound ? ['Look again. It is ' + E.LETTERS[shownKey].name + '. It says', S(E.LETTERS[shownKey].snd), '.'] : shownKey === 'alef' ? 'Look again. It is Alef, not a house shape.' : 'Look again. ' + lookOf(shownKey, curClaim) + ' It is ' + E.LETTERS[shownKey].name + '.'); unmark(); yak.mood('calm');
         await E.say('So is Yaakov right? Try again.');               /* he answers again (it doesn't count) */
         if (await ask()) { E.sfx.chime(); yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say('Yes! Yaakov is right.'); }
         else await E.say('Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.');
