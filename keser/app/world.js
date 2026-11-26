@@ -10,7 +10,8 @@ const pref = (k, d) => { try { const v = store && store.getItem(k); return v == 
 const save = (k, v) => { try { store && store.setItem(k, v ? '1' : '0'); } catch (e) {} };
 const progress = readProgress(q, store);
 const N = PLACES.length;
-const S = { focus: 0, entered: false, gl: false, lite: /[?&]lite=1\b/.test(q) || pref('keser.lite', false), calm, sound: pref('keser.sound', true), frames: 0, taps: 0 };
+const START = Math.max(0, PLACES.findIndex(p => p.id === (/[?&]place=([a-z]+)/.exec(q) || [])[1]));   /* ?place=kodesh: she came from that globe in her treasure house */
+const S = { focus: (/[?&]place=/.test(q) && START >= 0) ? START : 0, entered: false, gl: false, lite: /[?&]lite=1\b/.test(q) || pref('keser.lite', false), calm, sound: pref('keser.sound', true), frames: 0, taps: 0 };
 let world = null;
 
 /* ---------- sparkles: a tiny burst of stars wherever she taps ---------- */
@@ -67,7 +68,7 @@ function go(i, quiet) {
 }
 function enter() {
   if (S.entered) return; S.entered = true; const p = PLACES[S.focus];
-  chime(p.note); chime(p.note + 7, true); const lab = !!p.lab; $('openLab').hidden = !lab; $('roomSoon').hidden = lab; if (lab) $('labName').textContent = p.labName; setName($('roomName'), p); $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
+  chime(p.note); chime(p.note + 7, true); const lab = !!p.lab; body.classList.toggle('kodesh', p.id === 'kodesh'); $('openLab').hidden = !lab; $('roomSoon').hidden = lab; if (lab) $('labName').textContent = p.labName; setName($('roomName'), p); $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
   world && world.enter(S.focus); setTimeout(() => { if (S.entered) { body.classList.add('inside'); $('room').setAttribute('aria-hidden', 'false'); $('back').focus({ preventScroll: true }); } }, calm ? 50 : 750);
 }
 function back() {

@@ -65,7 +65,7 @@ module.exports = async (browser) => {
       errs.forEach(e => fails.push('Keser world (' + tag + '): ' + e)); await ctx.close();
     }
     /* the girls' cast (Keser Girls only pictures) is in the site, and every place has its host */
-    { const want = ['keser-cast-group', 'keser-cast-ayelet', 'keser-cast-malka', 'keser-cast-ima', 'keser-cast-bubby', 'keser-academy-crown', 'keser-place-torah', 'keser-place-timeline'];
+    { const want = ['keser-cast-group', 'keser-cast-ayelet', 'keser-cast-malka', 'keser-cast-ima', 'keser-cast-bubby', 'keser-logo-mark', 'keser-place-torah', 'keser-place-timeline'];
       const miss = want.filter(n => !fs.existsSync(path.join(out, 'pics', n + '.webp'))); if (miss.length) fails.push('Keser world: these cast pictures are not in the built site: ' + miss.join(', '));
       const places = fs.readFileSync(path.join(__dirname, '..', 'app', 'places.js'), 'utf8'); if ((places.match(/host: '/g) || []).length !== 3) fails.push('Keser world: every place needs a host girl from the cast'); }
     /* the full look (mirror, glow, crystal) also starts with no errors */
@@ -88,7 +88,7 @@ module.exports = async (browser) => {
       if (await pg.evaluate(() => Object.values(KWORLD.progress).some(v => v !== 0))) fails.push('Keser world: unreadable saved progress is not treated as a fresh start'); await ctx.close(); }
     /* the welcome page leads into her world */
     { const ctx = await browser.newContext({ viewport: { width: 390, height: 800 } }), pg = await ctx.newPage(); await pg.goto(url);
-      const href = await pg.getAttribute('#enter', 'href'); if (href !== 'world.html') fails.push('Keser welcome: the Enter button does not lead to her world');
+      const href = await pg.getAttribute('#enter', 'href'); if (href !== 'signin.html') fails.push('Keser welcome: the Enter button does not lead to her sign-in');
       await ctx.close(); }
   } catch (e) { fails.push('Keser world test stopped: ' + String(e).slice(0, process.env.KESER_LONG ? 3000 : 200)); }
   finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }

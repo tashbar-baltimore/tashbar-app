@@ -42,7 +42,26 @@ All 8 arrived the same day with see-through backgrounds and were checked by eye 
 | 3 | `keser-stage` | the round stage | 1600 × 900, cut-out | rose-quartz jewel-box stage, gold star-rose inlay, row of pearls |
 | 4–8 | `keser-place-kodesh`, `-reading`, `-math`, `-science`, `-writing` | the five places | 1200 × 1200, cut-out | jeweled glass domes: Shabbos candlesticks, Kiddush cup and covered challah; open storybook; crystal shapes; mint flask, microscope and atom; rose-gold pen, inkwell and quill |
 
-## Order 3 (2026-11-26) · the girls in the Keser uniform · status: SENT 2026-11-26 to M. Heinemann (the owner), who makes the pictures; waiting for them
+## Order 3 (2026-11-26) · status: ARRIVED, all 10 checked and in the library
+HoS: "a super glam code punch-in ... the crown turns like the safe ... you fly into the safe ... this storehouse in the heavens that have these globes with these treasures." No people.
+All 10 arrived the same day (cut-outs with see-through backgrounds) and were checked by eye (no words, letters or symbols; kosher; no people). Changes: stray edge specks removed; the vault door's original was shrunk to 900 px to fit the library's 1.5 MB limit. In use: the jewel-vault sign-in (`signin.html`) and her treasure house.
+
+| # | File name | Screen | Prompt (short; full prompts in the order email) |
+|---|---|---|---|
+| 1 | `keser-vault-door` | sign-in: the vault door | round rose-gold vault door with pink diamonds, pearls, gems, empty centre |
+| 2 | `keser-vault-dial` | sign-in: the crown dial that turns | round jeweled dial, tick marks, small crown in the middle |
+| 3 | `keser-key-gem` | sign-in: each key of her code pad | round pink gem in a gold diamond bezel (the app writes the number) |
+| 4 | `keser-vault-inside` | sign-in: flying through the open vault | open jeweled vault door, golden light, clouds, treasure chests |
+| 5 | `keser-treasure-house` | her treasure house in the heavens | rose-quartz and gold hall in the clouds with shelves of glowing globes |
+| 6–10 | `keser-globe-empty`, `-kodesh`, `-reading`, `-math`, `-science` | her treasures (Writing uses the empty globe for now) | crystal globes on rose-gold stands holding a tiny subject treasure |
+
+## The Keser logo and the Three Crowns (2026-11-26, sent by the HoS) · in the library
+HoS: "this is the Keser logo ... the Keser logos should be incorporated throughout, and a lot of pride. And there should be fly-ins ... Make it very branded." Miriam David's originals, polished on the HoS's image account.
+- `keser-logo` (the logo as a cut-out; the builder removed its white background), `keser-logo-mark` (the crown mark only, cut from it, for small places), `keser-logo-plum` (the logo on plum velvet).
+- `keser-keter-torah`, `keser-keter-kehuna`, `keser-keter-malchut`: the Three Crowns banners. They have Hebrew words in the artwork on purpose (titles and pesukim; the Divine Name is written ה׳). The tiny letters under the tribe names on the Choshen and the tiny script in the Sefer Torah are decoration, not exact text. **REBBE: review.**
+- Where: the logo flies in on the welcome page; it flies in over the vault, rides with her through it, and crowns every treasure globe and the "Your Treasures" title; it is the loading crown, it sits above the sisters' welcome, and its crown mark sits top left in her world and in the Kodesh lab's top bar. The Three Crowns rise behind the card when she enters Kodesh and stand on the Kodesh lab's home.
+
+## Order 4 (2026-11-26) · the girls in the Keser uniform · status: SENT 2026-11-26 to M. Heinemann (the owner), who makes the pictures; waiting for them
 M. Heinemann: "Make sure that the uniform ... matches in the app." The Keser Academy uniform (from the school's own pictures, sent by Mrs. David; those photos are **not** used or kept, they show real girls): a **purple polo shirt** with a collar, a **black button-up cardigan** with a **small gold Keser crown** embroidered on the left chest (the crown only, no letters), a **black pleated skirt** well below the knee, **black tights**, **white sneakers**. Each girl's face, hair and age stay exactly as in order 1. New file names; the order 1 pictures stay in the library.
 
 | # | File name | Screen | Size | Prompt |

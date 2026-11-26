@@ -1,5 +1,5 @@
 /* Keser Girls 3.0 welcome page: builds, is served like the real site, opens at Chromebook (1366x768) and phone size with no errors,
-   shows the name, fits the screen, the gold Keser crown (from the Keser Academy logo) loads on royal purple, and Enter leads to her world. */
+   shows the name, fits the screen, the Keser logo and the purple sky show, and Enter leads to her sign-in. */
 const path = require('path'), os = require('os'), fs = require('fs'), cp = require('child_process'), http = require('http');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.webp': 'image/webp', '.png': 'image/png', '.mp3': 'audio/mpeg' };
 module.exports = async (browser) => {
@@ -15,16 +15,16 @@ module.exports = async (browser) => {
       pg.on('pageerror', e => errs.push(String(e))); pg.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
       pg.on('requestfailed', q => errs.push('could not load ' + q.url()));
       await pg.goto(url); await pg.waitForTimeout(2500);
-      const r = await pg.evaluate(() => { const c = document.querySelector('#crown img'), s = document.querySelector('.sky'); return { text: document.body.innerText, wide: document.documentElement.scrollWidth > window.innerWidth,
-        flat: !(c && c.complete && c.naturalWidth > 0 && /keser-academy-crown/.test(c.src) && s && /gradient/.test(getComputedStyle(s).backgroundImage)), enter: (document.getElementById('enter') || {}).getAttribute && document.getElementById('enter').getAttribute('href') }; });
-      if (r.enter !== 'world.html') fails.push('Keser welcome (' + name + '): the Enter button does not lead to her world');
+      const r = await pg.evaluate(() => { const c = document.querySelector('#crown img[src*="keser-logo"]'), s = document.querySelector('.sky'); return { text: document.body.innerText, wide: document.documentElement.scrollWidth > window.innerWidth,
+        flat: !(c && c.complete && c.naturalWidth > 0 && s && /gradient/.test(getComputedStyle(s).backgroundImage)),   /* the sky is Keser royal purple (M. Heinemann 2026-11-26) */ enter: (document.getElementById('enter') || {}).getAttribute && document.getElementById('enter').getAttribute('href') }; });
+      if (r.enter !== 'signin.html') fails.push('Keser welcome (' + name + '): the Enter button does not lead to her sign-in (the jewel vault)');
       if (!/Keser Girls/.test(r.text)) fails.push('Keser welcome (' + name + '): the name "Keser Girls" is not shown');
       if (r.wide) fails.push('Keser welcome (' + name + '): the page is wider than the screen');
-      if (r.flat) fails.push('Keser welcome (' + name + '): the Keser crown or the purple sky did not show');
+      if (r.flat) fails.push('Keser welcome (' + name + '): the Keser logo or the purple sky did not show');
       errs.forEach(e => fails.push('Keser welcome (' + name + '): ' + e));
       await pg.screenshot({ path: path.join(shots, 'keser-welcome-' + name + '.png') }); await ctx.close();
     }
   } finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
-  if (!fails.length) oks.push('Keser Girls 3.0 welcome page: the gold Keser crown on royal purple shows at Chromebook and phone size, Enter leads to her world, no errors, fits the screen');
+  if (!fails.length) oks.push('Keser Girls 3.0 welcome page: the Keser logo flies in over the royal purple sky at Chromebook and phone size, Enter leads to her sign-in, no errors, fits the screen');
   return { fails, oks };
 };

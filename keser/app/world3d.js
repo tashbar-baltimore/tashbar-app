@@ -11,11 +11,11 @@ import { UnrealBloomPass } from './vendor/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from './vendor/postprocessing/OutputPass.js';
 
 const TAU = Math.PI * 2, R = 5.0;
-/* M. Heinemann 2026-11-26: the Keser Academy colors (royal purple and gold) and the gold Keser crown from the school logo (sent by Mrs. David).
+/* M. Heinemann 2026-11-26: the Keser Academy colors (royal purple and gold) and the Keser crown mark from the school logo (keser-logo-mark).
    Each place shows its own picture (places.js: art); the stage painting is tinted royal purple. */
-const ART = { crown: '/pics/keser-academy-crown.webp', stage: '/pics/keser-stage.webp' };
+const ART = { crown: '/pics/keser-logo-mark.webp', stage: '/pics/keser-stage.webp' };
 /* where each place's jewel sits on the Keser crown (0..1 across and down the picture): the diamond in the middle, and the two at the sides */
-const GEMS = { kodesh: [0.496, 0.67, 1.5], general: [0.053, 0.36, 1], timeline: [0.939, 0.36, 1] };
+const GEMS = { kodesh: [0.5, 0.67, 1.5], general: [0.045, 0.33, 1], timeline: [0.955, 0.35, 1] };
 
 export function start(o) {
   const { canvas, places, progress, calm } = o;
@@ -71,8 +71,8 @@ export function start(o) {
   /* her crown: the painted tiara high in the middle, with a jewel per subject that lights up as she learns */
   const crownRig = new THREE.Group(); crownRig.position.set(0, 5.6, 0); scene.add(crownRig);
   const crownHalo = glowSprite(radial([[0, 'rgba(255,214,140,.75)'], [0.45, 'rgba(140,80,200,.3)'], [1, 'rgba(140,80,200,0)']]), 0xffffff, 7.5, 0.9); crownRig.add(crownHalo);
-  const crownH = 2.8, crownW = crownH * 655 / 515;
-  const crown = painting(ART.crown, crownH, 655 / 515); crownRig.add(crown);
+  const crownH = 2.8, crownW = crownH * 600 / 472;
+  const crown = painting(ART.crown, crownH, 600 / 472); crownRig.add(crown);
   const jewels = places.map((pl, i) => { const [u, v, big] = GEMS[pl.id], p = progress[pl.id] || 0;
     const pos = new THREE.Vector3((u - 0.5) * crownW, (0.5 - v) * crownH, 0.02);
     const dim = new THREE.Sprite(new THREE.SpriteMaterial({ map: DIM, transparent: true, depthWrite: false, opacity: 0 }));   /* the Keser crown is gold line art: a jewel not started yet simply has no glow */ dim.scale.set(0.34 * big, 0.34 * big, 1); dim.position.copy(pos); crownRig.add(dim);
