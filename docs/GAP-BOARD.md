@@ -47,6 +47,7 @@ _From `node tools/core/ledger.js`, 2026-11-25 17:15 UTC (coordinator). Grade 1 s
 | B1a | P1 | Review Round 2: F, all K–1 games, W13 | OPEN | | | |
 | B1b | P1 | Review Round 2: C45 and S | OPEN | | | |
 | B1c | P1 | Review Round 2: G and W48 | OPEN | | | |
+| B1d | P1 | Re-review needed (26 Nov list): unit checks never scored in a table: C68.U85 and C68.U86 (incl. the 8 new items of #496), C68.U77 (#501), C68.U78 (#513), C68.U88 (#486), C23.U21 (#516). Fresh reviewer scores every item, fix every point under 4, fresh re-score of the fixes | TAKEN | https://claude.ai/code/session_01NmKrTheArRrvmB8BX96mxf | 2026-11-26 02:00 | Claimed. Pulling every item of the 6 checks for a fresh reviewer; fixes go in the checks' own files only (src/CoreDataC68H1/H2/H3.html, the C23 file) |
 | B2a | P1 | Fix Round 1 failed lessons: W48 Grades 4–5 | DONE | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf (W48 owner) | 2026-11-25 21:00 | Live in #497: all 14 ✗ lessons fixed and re-scored 4–5 by a fresh reviewer (write minimums wait for A3a/A3b; WRIT.PARA.L05.07 check 3 is A2) |
 | B2b | P1 | Fix Round 1 failed lessons: W48 Grades 6–8 | DONE | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf (W48 owner) | 2026-11-25 23:00 | Live in #518: all 19 ✗ lessons fixed and re-scored 4–5 by fresh reviewers (write minimums wait for A3a/A3b) |
 | B2c | P1 | Fix Round 1 failed lessons: G (11), F (5), C45 (4) | OPEN | | | |
