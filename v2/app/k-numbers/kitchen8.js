@@ -28,7 +28,7 @@ export function mount(host, opt) {
 
   /* the kitchen: a wooden floor, a painted kitchen all around, and the table */
   const floorMat = new THREE.MeshStandardMaterial({ color: '#D9B48A', roughness: 0.9 });
-  tex('table-wood.jpg', t => { floorMat.map = rep(t, 16, 16); floorMat.color.set('#E8C9A2'); floorMat.needsUpdate = true; });
+  tex('table-wood.jpg', t => { floorMat.map = rep(t, 16, 16); floorMat.color.set('#B8987C'); floorMat.needsUpdate = true; });
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), floorMat); floor.rotation.x = -Math.PI / 2; floor.position.y = -2.6; floor.receiveShadow = true; scene.add(floor);
   if (!FAST) tex('kitchen-panorama.jpg', t => { t.wrapS = THREE.MirroredRepeatWrapping; t.repeat.x = -2; t.offset.x = 1; const R = 24, span = 2.8, H = R * span / 2 * t.image.height / t.image.width;
     const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide }));
@@ -86,7 +86,7 @@ export function mount(host, opt) {
     m.userData.v = new THREE.Vector3((Math.random() - .5) * .08, .07 + Math.random() * .05, (Math.random() - .5) * .08); m.userData.t = 0; scene.add(m); bits.push(m); } }
 
   /* ---------------- camera ---------------- */
-  let Wd = 1, Hh = 1, narrow = false; const DIR = new THREE.Vector3(0, 0.62, 0.78).normalize(), V = 34; let dist = 14; const center = new THREE.Vector3(0, 0.3, 0.2);
+  let Wd = 1, Hh = 1, narrow = false; const DIR = new THREE.Vector3(0, 0.44, 0.9).normalize(), V = 34; let dist = 14;   /* low enough to see Bubby's kitchen behind */ const center = new THREE.Vector3(0, 0.3, 0.2);
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function layout() {
     cup.position.set(narrow ? 1.6 : 2.9, 0, narrow ? -1.2 : -0.7);
