@@ -57,10 +57,12 @@ window.MeetGame = function (o) {   /* o: { id, title, hero, meet: [n...], ask: [
       await F.say('Watch me. This is ' + F.word(o.demo) + '. ' + F.Word(o.demo) + ' apples.');
       await F.say('I tap the hand. One finger each tap.');
       for (var k = 0; k < o.demo; k++) { await F.handTo(H.el, .45, .75); await F.handTap(); H.finger(k).classList.remove('down'); NK.sound.pop(); await F.say(F.Word(k + 1) + '.', { noRepeat: true }); }
+      await F.say('Oops, one more. Too many!'); await F.handTo(H.el, .45, .75); await F.handTap(); H.finger(o.demo).classList.remove('down'); NK.sound.pop();
+      await F.say('Too many? Tap the arrow. One goes down.'); var dn = H.el.querySelector('.fdown'); await F.handTo(dn); await F.handTap(); H.finger(o.demo).classList.add('down'); NK.sound.back();
       await F.handTo($('check')); await F.handTap();
       await F.yes($('bighand'), F.Word(o.demo) + '! Same as the apples.'); H.set(0);
     },
-    round: function (F, i) { var p = plan[i]; return round(F, p[0], o.kinds[i % o.kinds.length], p[1]); },
+    round: async function (F, i) { if (i === 0 && o.howMany) await F.say(o.howMany); var p = plan[i]; return round(F, p[0], o.kinds[i % o.kinds.length], p[1]); },
     bonus: async function (F) { var b = F.shuffle(o.bonus).slice(0, 2); for (var k = 0; k < b.length; k++) await round(F, b[k], o.kinds[(k + 1) % o.kinds.length], false); }
   });
 };

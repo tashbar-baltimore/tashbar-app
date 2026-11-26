@@ -36,7 +36,7 @@
       '<svg id="hand" viewBox="0 0 100 100" aria-hidden="true"><use href="#nkHand"/></svg>' +
       '<svg class="yesbadge" id="yesbadge" viewBox="0 0 100 100"><use href="#nkStar"/></svg>' +
       '<div class="over" id="start"><h1 class="title">' + cfg.title + '</h1><div class="hero" id="hero">' + (cfg.hero || '') + '</div>' +
-      '<button class="play btn3d b-green" id="play" aria-label="Play"><svg viewBox="0 0 48 48"><path d="M12 6 42 24 12 42z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg></button></div>' +
+      '<div class="playwrap"><button class="play btn3d b-green" id="play" aria-label="Play"><svg viewBox="0 0 48 48"><path d="M12 6 42 24 12 42z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg></button><svg class="starthand" viewBox="0 0 100 100" aria-hidden="true"><use href="#nkHand"/></svg></div></div>' +
       '<div class="over" id="end" hidden><div class="stars" id="stars"></div><div class="row">' +
       '<button class="big btn3d b-sun" id="replay" aria-label="Play again"><svg viewBox="0 0 48 48"><path d="M38 24a14 14 0 1 1-4.1-9.9" stroke="#2B2350" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M36 6v10H26" stroke="#2B2350" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
       '<button class="big btn3d b-green" id="next" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>';
@@ -216,6 +216,7 @@
     $('stars').innerHTML = h; $('next').hidden = stars < 2 && !cfg.practice; $('end').hidden = false; NK.sound.win(); burst();
     $('stars').querySelectorAll('svg').forEach(function (s, i) { setTimeout(function () { s.classList.add('on'); }, 150 + i * 250); });
     await F.say(cfg.endSay ? cfg.endSay(stars) : stars === 3 ? 'Wow! Three stars!' : stars === 2 ? 'You did it! Two stars!' : 'Nice try! Let\'s play once more.');
+    await F.say(stars < 2 && !cfg.practice ? 'Tap yellow to play again.' : 'Yellow plays again. Green goes on.', { noRepeat: true });
     GAME.phase = 'done';
   }
   function burst() {

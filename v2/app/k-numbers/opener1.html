@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Learn it: How many? — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 1 OPENER: a short, warm lesson that shows and tells what we learn this unit:
-     seeing small amounts at a glance ("I did not count. I saw it!"), with fruit, dice dots, fingers and Shabbos candles,
+     seeing small amounts at a glance ("I saw it, fast!"), with fruit, dice dots, fingers and Shabbos candles,
      a stand-up "show me four fingers", and a last peek where he shows the number on his own fingers. He taps the big arrow to go on. -->
 <link rel="stylesheet" href="frame.css">
 <style>
@@ -29,19 +29,19 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); }, card, done;
   var SLIDES = [
-    { n: 2, k: 'apple', L: 1, peek: true, lines: ['Hi! Today we learn to see how many.', 'Look fast!'], after: ['Two! I did not count. I saw it!'] },
+    { n: 2, k: 'apple', L: 1, peek: true, lines: ['Hi! Today we learn to see how many.', 'Look fast!'], after: ['Two! I saw it, fast!'] },
     { n: 3, k: 'dots', L: 1, lines: ['Three dots. One on top, two below.', 'You see it fast!'] },
-    { n: 4, k: 'fingers', lines: ['Four fingers. Two and two.', 'Stand up! Hold up four fingers!'] },
+    { n: 4, k: 'fingers', lines: ['Look. Four fingers. Two and two.', 'Soon you will show it too!'] },
     { n: 5, k: 'dots', L: 0, lines: ['Five! Four corners and one in the middle.'] },
     { n: 2, k: 'candle', L: 1, lines: ['Two Shabbos candles. One and one. Two!'] },
-    { n: 4, k: 'orange', L: 0, peek: true, lines: ['Peek with me! Hold up your fingers!'], after: ['Four! Did you show four?', 'Seeing fast is like magic!'] }
+    { n: 4, k: 'orange', L: 0, peek: true, lines: ['Peek with me!'], after: ['Four! Seeing fast is like magic!'] }
   ];
   function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
   FR.game({
     id: 'u1-opener', title: 'How many?', rounds: SLIDES.length, stars: function () { return 3; },
     hero: '<svg viewBox="0 0 100 80"><path d="M50 16 C 38 8, 16 8, 6 12 V 70 C 16 66, 38 66, 50 74 Z" fill="#FFF8E8" stroke="#3B2A7A" stroke-width="4" stroke-linejoin="round"/><path d="M50 16 C 62 8, 84 8, 94 12 V 70 C 84 66, 62 66, 50 74 Z" fill="#fff" stroke="#3B2A7A" stroke-width="4" stroke-linejoin="round"/><circle cx="26" cy="34" r="6" fill="#E5322D"/><circle cx="34" cy="48" r="6" fill="#E5322D"/><circle cx="66" cy="32" r="6" fill="#22B45E"/><circle cx="78" cy="32" r="6" fill="#22B45E"/><circle cx="72" cy="46" r="6" fill="#22B45E"/></svg>',
     endSay: function () { return 'Great! Now let\'s play Peek!'; },
-    init: function () { $('go').addEventListener('click', function () { if (GAME.phase !== 'answer') return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; var d = done; done = null; d(true); }); },
+    init: function () { $('go').addEventListener('click', function () { if (GAME.phase !== 'answer') return; FR.handHide(); NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; var d = done; done = null; d(true); }); },
     round: function (F, i) {
       return new Promise(async function (res) {
         var s = SLIDES[i]; GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on');
@@ -62,6 +62,7 @@
         else if (!s.peek && s.n > 1) await F.showShape(card, false, true);   /* light up the parts while he looks */
         for (k = 0; s.after && k < s.after.length; k++) await F.say(s.after[k]);
         done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#go' }]; }; GAME.wrong = null; F.lock(false); $('go').classList.add('on');
+        if (i === 0) { await F.say('Tap the arrow to go on.'); await F.handTo($('go')); }
       });
     }
   });
