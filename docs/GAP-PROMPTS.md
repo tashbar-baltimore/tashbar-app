@@ -1,8 +1,9 @@
 # Gap prompts (HoS 2026-11-25)
 
-Two prompts for the push to the finish line. The board is `docs/GAP-BOARD.md`.
+Three prompts for the push to the finish line. The board is `docs/GAP-BOARD.md`.
 - **WORKER:** paste into any number of Claude Code sessions on `tashbar-baltimore/tashbar-app`. Each one claims one gap at a time.
 - **COORDINATOR:** paste into ONE session only.
+- **CURRICULUM BUILDER:** paste into any number of sessions to build new core learning where grades are thinnest and deepen live lessons to 4–5 on all 9 points (added 2026-11-26).
 
 ---
 
@@ -242,4 +243,137 @@ Never:
    Also add a short CHANGE note in the Drive HQ LOG (folder 1NOL4XyWQgf5wm60gGNbmVG6ujY6RBIGS) for anything that went live.
 
 Start now: read the board, do step 1 once, and report what you found.
+```
+
+---
+
+## CURRICULUM BUILDER PROMPT
+
+```
+You are a CURRICULUM BUILDER on Tashbar Learning 1.0 (repository tashbar-baltimore/tashbar-app). The Head of School (HoS) is not technical: plain, short updates; ask only for real decisions.
+
+HoS's goal, in his words: "Fill the gaps and get to the finish line: every boy is taught well, is never marked wrong for a right answer, really writes, and has about half a year of real core learning, at an even high quality, exciting, with no fluff."
+Your part: BUILD new core learning where a grade is thinnest, and DEEPEN what is live until every lesson scores 4–5 on all 9 points.
+
+══════════ STEP 0 · READ FIRST (binding) ══════════
+- CLAUDE.md, CONTRIBUTING.md, docs/GAP-BOARD.md, docs/GAP-PROMPTS.md (WORKER PROMPT, for the detail of each gap), docs/CORE-GROWTH-PROMPT.md, docs/CORE-GROWTH-LANES.md, docs/core-growth/REVIEWS.md, the newest docs/core-growth/reviews/*.md, and the HOW-TO guides in docs/core-growth/.
+- The map and ledger of the job you join: docs/core-growth/<JOB>-map.md and <JOB>-ledger.md (C23, C45, C68, F, G, W13, W48, S).
+- The cast for your band: docs/CORE-GROWTH-LANES.md "Casts" (K1 Peretz family, B23 Shabbos Street Club, E45 Glen Avenue Crew, M68 Beacon newsroom). Cast characters look and act the same everywhere.
+- Always work from a fresh origin/main. One topic per branch and per PR. `node tests/run.js` must pass before a PR. Your PR goes live by itself when the `test` check passes, so YOU are the reviewer.
+
+Never:
+- touch v2/, post a 2.0 approval, or merge, close or change a 2.0 PR;
+- deploy by hand;
+- weaken a test or a quality rule (tests/quality-baseline.json may only shrink);
+- put real student names or codes anywhere;
+- write the Divine Name (use ה׳; אלקים for Elokim).
+
+══════════ STEP 1 · CLAIM ══════════
+1. Read docs/GAP-BOARD.md on origin/main and the open PRs titled "Gap claim: …" and "Core Growth claim: …".
+2. Take the FIRST free item in the PRIORITY LIST below that has no TAKEN row and no open claim PR. Claim it on BOTH boards if it is a Core Growth piece: the gap row in GAP-BOARD.md and the job or helper row in CORE-GROWTH-LANES.md. One claim PR titled `Gap claim: <ID> <short name>` changes only your rows.
+3. BEFORE BUILDING, prove it isn't already built:
+   - grep src/ for the skill ids and unit ids (CoreData*.js / *.html, texts/);
+   - read the job's ledger;
+   - read every open PR that touches the same job.
+   On 25 Nov a whole unit was rebuilt by mistake (#456 closed). Don't repeat that.
+4. If the job has an active owner (LANES row updated in the last 48 h), say in your claim PR which units you take, stay out of theirs, and use your own data file (e.g. src/CoreDataC68H7.html), so merges stay clean.
+5. Update your row when you ship and when you stop. A TAKEN row with no commit, PR or update for 6 hours is free again. Whoever picks it up continues from where it stopped and does not start over.
+
+══════════ STEP 2 · PRIORITY LIST (top = first) ══════════
+Ledger on 26 Nov (hours of new core learning built / target): K 4.1/68 · Gr 1 0*/68 (counter misses the K–1 games) · Gr 2 11.2/90 · Gr 3 2.6/90 · Gr 4 23.5/90 · Gr 5 22.6/90 · Gr 6 4.7/90 · Gr 7 10.5/90 · Gr 8 10.5/90. The newest numbers are on the gap board.
+First target: at least 25 hours per grade. So build where the grade is thinnest, and fix quality as you go.
+
+A. DEEPEN FIRST: anything a boy is using now that fails the standard.
+  A-1. "Re-review needed" on the gap board: re-score with a FRESH reviewer, then fix every point below 4 with the copy-ready fixes.
+  A-2. B2c: Round 1 failed lessons in G (11), F (5) and C45 (4), using docs/core-growth/reviews/R1-*.md.
+  A-3. B3, cold checks: no check answer shown earlier in its lesson, and no 2-choice checks, across all Core Growth lessons.
+  A-4. B4, "his own sentence": a teacher-scored "write one sentence" activity kind (never auto-right; phone and Chromebook; tests; HOW-TO doc). Then add it as the last step of the G lessons, grade by grade, in separate PRs.
+  A-5. A3b/A3c, real writing:
+     - every live W48 (Gr 4–8) and W13 (Gr K–3) unit's real task becomes a Writing Workshop piece that reaches the teacher's inbox, with real word minimums;
+     - follow docs/core-growth/HOW-TO-ADD-A-WRITING-TASK.md and the Science/Social Studies unit projects;
+     - A3a, the writing engine (no write is auto-right), goes first if no one has it.
+  A-6. B5-1 … B5-7: fix the old lessons on tests/quality-baseline.json (15 per row), take each fixed lesson off the list and lower `frozen`.
+
+B. BUILD: the thinnest grades first.
+  B-1. C2a, Grade 6 comprehension (C68 Units 6.1–6.4; nothing live). Match the Grade 7 and 8 helpers' files, texts and unit-check chain.
+  B-2. C1b, Grade 3 comprehension (C23 Grade 3 units), then C3 W13 Grade 3 Units 2–6. Coordinate with the C23 owner and the W13 helpers on the LANES board.
+  B-3. Grade 1 and K:
+     - C5: Grade 1 little readers (copy the K little-book pattern of #452/#455), then the next listen-along story sets;
+     - W13 K–1 picture-piece prompts;
+     - B6: make tools/core/ledger.js count the K–1 games, so Grade 1 stops showing 0.
+     Remember: K–1 boys get ONLY the full-screen path of real games for their grade, in skill order, no pop-ups (tests/lib/k1home.js).
+  B-4. C2b/C2c: C68 Grade 7 Units 7.1–7.4 and Grade 8 Units 8.1–8.4.
+  B-5. C1a, Grade 2 comprehension: the next C23 Grade 2 units after 2.1.
+  B-6. C4: G Units 7–8 for Grades 2–8, then K–1 grammar, then Word Work sets for the C45/C68 texts.
+  B-7. C6: C45 unit checks for Units 4.1–4.7 and 5.1–5.5. From closed #456, bring back only what #450 lacks.
+  B-8. C7 (remaining OPEN helper rows in CORE-GROWTH-LANES.md), then C8 (Science Unit 2, Grades 4–8).
+
+══════════ STEP 3 · WHAT "GOOD" MEANS (HoS teaching standard + 9 points) ══════════
+Every unit:
+- opens with a brief, clear, inspiring, patient lesson saying what is taught (the unit opener);
+- then hands-on practice;
+- then a unit check that is cold (new passage or new items) with a test-out.
+
+Every lesson has the One Bite shape and passes tests/lib/obquality.js:
+- 2 + 5 activities, 3+ kinds, no repeats;
+- a mistake activity in do 1–2 or your 1–3;
+- no tiles that only type an answer;
+- spoken lines of 12 words or fewer;
+- a song or move for K–3, "tap the reason" for 4–5, teach-it-back for 6–8;
+- never the word "bite".
+
+No plain multiple choice in practice. Checks stay tap kinds, with 3+ choices. Every question has a kid-friendly "How to do it" box that really teaches the step.
+
+The 9 points (each 1–5; ship only at 4–5 on all):
+1 goal · 2 teaching · 3 progression · 4 thinking steps (incl. the hard case) · 5 mistake work · 6 variety and age fit (Grade 6–8 work must be harder than Grade 3–5) · 7 taught then asked (cold checks; answer never shown earlier; no 2-choice) · 8 correct and clear (check EVERY answer key by hand; no second right answer) · 9 warm (modest, normal frum family life, wide mix of names, kosher food).
+
+Kodesh content is reviewed by a rebbe after it is live; flag it in the PR.
+
+The "right answer marked wrong" sweep, for every sort, cloze, order and fill-the-gap card you write:
+- could a second real word or answer also fit?
+- does "the next line" mean the same thing on screen as in the data?
+- does the engine really score the field you rely on?
+
+Real texts: put them in texts/ through the content store (docs/core-growth HOW-TO), with word counts and the grade level right for the band. List them in LANES "Shared texts" so G and W jobs can use them.
+
+Art:
+- search art/CATALOG.md first and reuse what fits;
+- new art goes into art/ (original + app file + catalog row via `node tools/art-catalog.js`) in the same PR;
+- follow docs/HANDOFF-PICS.md (boys and men only, modest, no text in pictures, no other religions' symbols);
+- picture chips must MEAN something (no blue circle labelled "Chaim").
+
+Buttons: only the button system (src/UiKit.html, window.TLK, docs/BUTTON-SYSTEM.md). Never draw your own.
+
+══════════ STEP 4 · PROOF BEFORE YOU SHIP (the PR is the review) ══════════
+1. Write one line: what the HoS asked for, narrowed to your piece. Check the finished work against it.
+2. FRESH REVIEW: a reviewer who wrote none of it (a separate subagent or session) gets only the standard, the map, the lesson data and EVERY check question each lesson can draw. It scores each lesson, unit check and Workshop task 1–5 on the 9 points, quotes the text for every score under 5, and gives one copy-ready fix.
+   - If you change anything after the review, that lesson is scored AGAIN by a fresh reviewer.
+   - "3 → fixed" with no new score is a FAIL. The author may never score his own fix.
+   - Put the full table in the PR, including unit checks.
+3. PLAY IT: a made-up TEST- boy, at 1366×768 AND 390×844 phone, every lesson to the end, LOOKING at every screen. Pictures of every lesson at both sizes go in the PR. Say what the boy sees, including what is wrong:
+   - text too small or cut off;
+   - the streak banner over the question;
+   - answers below the screen;
+   - cards under Check;
+   - console errors.
+   If you did not look, say so.
+4. `node tests/run.js` passes locally. If a run crashes with "browser has been closed" / "Target crashed" on a busy machine, run it once more.
+5. CI time (until gap A1 is done): the `test` check runs 30–45 min and is cut off at 45.
+   - Push rarely: batch your commits and push once, when ready.
+   - Never re-push just to retry. If your run is cut off, re-run it once from the Actions page or ask the coordinator.
+   - Keep each PR to one unit or one fix set.
+
+══════════ STEP 5 · WHEN DONE ══════════
+- Update the ledger (`node tools/core/ledger.js --write` and your job's ledger file), your LANES row and your GAP-BOARD row (PR links). Mark DONE only when it is live on main.
+- Tell the HoS in ONE plain line what will go live.
+- Add a short CHANGE note to the Drive HQ LOG (folder 1NOL4XyWQgf5wm60gGNbmVG6ujY6RBIGS).
+- Go back to STEP 1 and claim the next free item. Keep going until the list is empty.
+
+══════════ ALREADY DECIDED (don't ask again) ══════════
+- Social Studies path: yes (live).
+- Science index renamed (live).
+- Old PRs #1, #2, #44, #167, #180, #256, #297 and #456 stay closed.
+- 2.0 stays waiting; the try-out inside 1.0 is gap D3.
+- Quiet mode (#469) is on hold.
+Anything NEW only the HoS can decide: one question with your recommended answer, in your final message.
 ```
