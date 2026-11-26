@@ -40,7 +40,7 @@ async function countTogether() {
 }
 async function tap(n, el) {
   if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
-  if (n === R.n) { M.show(true); M.pose('happy'); await M.hop(n, k => FR.say(FR.Word(k) + (k === n ? '!' : ','), { noRepeat: true })); M.pose('idle'); P.petals(n);
+  if (n === R.n) { if (R.kind === 'bed') P.bed(null); M.show(true); M.pose('happy'); await M.hop(n, k => FR.say(FR.Word(k) + (k === n ? '!' : ','), { noRepeat: true })); M.pose('idle'); P.petals(n);
     await FR.yes(el, FR.pick(['Yes! You remember!', 'Right! ' + FR.Word(n) + '.', 'Great counting!'])); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops(el); R.misses++;
   await FR.say("Let's look again."); await countTogether();
