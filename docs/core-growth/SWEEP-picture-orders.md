@@ -66,7 +66,7 @@ Checked by eye, zoomed where needed (domes, sails, palace, harbor town: no other
 | core-map-yetzias-mitzrayim | WATCH ME (`@watch`) of Parsha deep dives Masei, Bamidbar, Devarim (`LK.PAR.L02.42`, `.04`, `.43`). Not TODAY: there the big picture is the pasuk itself, which stays. |
 | core-map-avraham-journey | WATCH ME (`@watch`) of Lech Lecha (`LK.PAR.L03.05`) |
 | 11 Math openers | `MATH.OPS.L03.01`, `MATH.PV.L04.01`, `MATH.FRAC.L04.01`–`.05`, `MATH.PV.L05.02`, `MATH.FRAC.L05.01`, `.03`, `.04` (`@today`) |
-| core-gm-castle, 8 core-gm-world-* badges | library only, until the Game Map screen change (HoS yes) |
+| core-gm-castle, 8 core-gm-world-* badges | the boy's Game Map (`src/GameMap.html`): the castle on every unit's BOSS step and the "Boss beaten!" moment; the badges for Math, Reading, Writing, Science, Social Studies, Computing, Chumash and Gemara on the path, Change subject and the unit header. Other subjects keep their emoji. |
 | core-certificate-frame | library only, until a certificate screen uses it |
 
 ## Also still waiting
