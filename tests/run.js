@@ -323,6 +323,8 @@ async function staffTests(browser) {
   try { await kidTests(browser); await staffTests(browser); } catch (e) { fail('test run crashed: ' + String(e && e.stack || e).slice(0, 400)); }
   try { const v = require('./lib/v2check.js')(); v.fails.forEach(fail); v.oks.forEach(ok); } catch (e) { fail('2.0 check crashed: ' + String(e).slice(0, 200)); }
   try { const k = require('./lib/kesercheck.js')(); k.fails.forEach(fail); k.oks.forEach(ok); } catch (e) { fail('Keser Girls 3.0 check crashed: ' + String(e).slice(0, 200)); }   /* keser/README.md */
+  try { const kr = await require('./lib/keserserver.js')(); kr.fails.forEach(fail); if (!kr.fails.length) ok('Keser girls\' records (server/keser.js, made-up girls): ' + kr.oks.length + ' rules hold: own database, own codes, a girl sees only herself, codes shown once, never logged'); }
+  catch (e) { fail('Keser records test crashed: ' + String(e && e.stack || e).slice(0, 300)); }   /* Keser Girls 3.0 piece 1 */
   try { const c = await require('./lib/canteen.js')(); c.fails.forEach(fail); if (!c.fails.length) ok('canteen on the Firebase engine: sell, same sale charged once, crew cashier, two kiosks at once, last sale, undo'); report.timings.canteenSaleMs = c.ms.sale; }
   catch (e) { fail('canteen test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const sl = await require('./lib/saveload.js')(); sl.fails.forEach(fail); sl.oks.forEach(ok); }   /* a class saving lessons at once: no "busy" (MS_State/MS_Evidence row-merge) */
