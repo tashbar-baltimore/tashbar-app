@@ -28,7 +28,9 @@ module.exports = async function (pg) {
     out.data = { sh: D.sh.length, ml: D.ml.length, units: D.UNITS.length, tunits: D.TUNITS.length, work: D.WORK.length, pes: D.pes.length };
     D.WORK.forEach(w => { if (!D.pes.some(p => p.ref === w.ref && p.t.length === w.words.length)) out.bad.push('Workshop pasuk ' + w.ref + ' is not in the pesukim'); });
     const strip = s => String(s).replace(/[֑-ׇ]/g, '');
-    D.pes.forEach(p => p.t.forEach(w => { const s = strip(w); if (/יהוה|אלהים/.test(s) || /^(?:[לבו]?)?אדני$/.test(s.replace(/[׃־]/g, '')) && /דֹנָי/.test(w.replace(/[֑-֯]/g, ''))) out.bad.push('pasuk ' + p.ref + ' writes a Divine Name: ' + w); }));
+    D.pes.forEach(p => p.t.forEach(w => { const s = strip(w); if (/יהוה|אלהים/.test(s) || /(^|־)[לבוה]?אל($|־)/.test(s.replace(/[׃]/g, '')) && /אֵל/.test(w.replace(/[\u0591-\u05AF]/g, '')) || /^(?:[לבו]?)?אדני$/.test(s.replace(/[׃־]/g, '')) && /דֹנָי/.test(w.replace(/[֑-֯]/g, ''))) out.bad.push('pasuk ' + p.ref + ' writes a Divine Name: ' + w); }));
+    const banned = /בְּרֵאשִׁית (י״ט:(ה׳|ח׳|ל׳|ל״[א-ח])|ט׳:(כ׳|כ״[א-ה])|ל״ט:(ז׳|ח׳|ט׳|י׳|י״[א-ט]|כ׳))$/; D.pes.forEach(p => { if (banned.test(p.ref)) out.bad.push('pasuk ' + p.ref + ' is not for young boys'); });
+    D.ml.concat(D.sh).forEach(x => { if (x.ex && banned.test(x.ex.ref)) out.bad.push('example ' + x.ex.ref + ' is not for young boys'); });
     /* the boy */
     SRV.token = 't'; A.overlay = null; A.play = null; A.st = loadStudent({ id: 'TEST-CL1', name: 'Test Kid' }); A.view = 'hub'; render(); await sleep(30);
     try { localStorage.removeItem('clab:TEST-CL1'); } catch (e) {}
@@ -94,7 +96,11 @@ module.exports = async function (pg) {
     /* Workshop pasuk 1 */
     X.openLab('pw'); await sleep(10); scan(); root.querySelector('[data-u="0"]').click(); await sleep(10); scan();
     click('[data-a=show]'); await sleep(5); click('[data-a=go2]'); await sleep(5);
-    for (let i = 0; i < 40 && !root.querySelector('[data-a=fin]'); i++) { scan(); const w = X.curW; const b = [...root.querySelectorAll('.askw .clab-opt')].find(b => b.textContent === w.x.m); if (!b) { out.bad.push('Workshop: the meaning was not among the choices'); break; } b.click(); await sleep(5); }
+    for (let i = 0; i < 80 && !root.querySelector('[data-a=fin]'); i++) { scan(); const w = X.curW; if (!w) { out.bad.push('Workshop: no word to answer (' + (root.querySelector('.askw') || {}).innerHTML + ')'.slice(0, 200)); break; }
+      if (w.chunk != null) { const b = [...root.querySelectorAll('.askw .clab-opt')].find(b => b.textContent === w.right); if (!b) { out.bad.push('Workshop: the part\'s English was not among the choices'); break; } b.click(); }
+      else if (w.tiles) { for (let n = 0; n < w.x.parts.length; n++) click(root.querySelector('.askw .bank [data-j="' + w.tiles.findIndex(t => t.i === n) + '"]')); click('[data-a=wchk]'); await sleep(3); if (!click('[data-a=wnx]')) { out.bad.push('Workshop: building a word from its pieces was not accepted'); break; } }
+      else { const b = [...root.querySelectorAll('.askw .clab-opt')].find(b => b.textContent === w.x.m); if (!b) { out.bad.push('Workshop: the meaning was not among the choices'); break; } b.click(); }
+      await sleep(5); }
     click('[data-a=fin]'); await sleep(5); out.played.pw = P().done.pw.indexOf(0) >= 0;
     /* Timeline, English and Hebrew */
     for (const lang of ['en', 'he']) {

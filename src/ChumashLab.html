@@ -79,7 +79,8 @@
 #clab .clab-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center} #clab .clab-center{justify-content:center}
 #clab .clab-wl{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
 #clab .clab-wl>div{background:#F6F4FF;border-radius:12px;padding:8px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
-#clab .clab-wl .clab-he{font-size:24px} #clab .clab-wl span:last-child{font-size:14px;font-weight:700;text-align:right}
+#clab .clab-wl .clab-he{font-size:24px}
+#clab .clab-wl.dts{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}#clab .clab-wl.dts>div{justify-content:flex-start;gap:14px}#clab .clab-wl.dts span:last-child{text-align:start}
 #clab .clab-teach{background:#EDE9FE;border-radius:16px;padding:16px 18px;display:grid;gap:8px;font-size:17px;line-height:1.5}
 #clab .clab-teach .clab-he{font-size:1.2em}
 #clab .clab-how{background:#FEF3C7;color:#5B3A00;border-radius:12px;padding:10px 14px;font-size:15px;line-height:1.45}
@@ -405,6 +406,7 @@
    B.querySelectorAll('.mc').forEach(b=>b.onclick=()=>flip(+b.dataset.k)); };
   const flip=j=>{ if(lock||open.indexOf(j)>=0||done.has(cards[j].i)) return; open.push(j); snd('tap'); draw();
    if(open.length===2){ flips++; const [a,b]=open;
+    if(cards[a].i!==cards[b].i&&!!cards[a].he!==!!cards[b].he&&six[cards[a].i].en===six[cards[b].i].en){ const en=cards[a].he?b:a, he=en===a?b:a, twin=cards.findIndex((c,j)=>j!==en&&!c.he&&c.i===cards[he].i); if(twin>=0) cards[twin].i=cards[en].i; cards[en].i=cards[he].i; }
     if(cards[a].i===cards[b].i){ done.add(cards[a].i); open=[]; snd('right'); draw(); if(done.size===six.length){ snd('win'); onEnd&&onEnd(); B.querySelector('.mfb').innerHTML=`<div class="clab-fb good">All matched in ${flips} flips!</div><div class="clab-row clab-center">${T().main('Play again','data-a="again"')}${T().quiet('Back to the unit','data-a="bk"')}</div>`;
       B.querySelector('[data-a=again]').onclick=()=>matchGame(pairs,back,onEnd,title); B.querySelector('[data-a=bk]').onclick=back; } }
     else { lock=true; later(()=>{ open=[]; lock=false; draw(); },900); } } };
@@ -485,10 +487,12 @@
   break:'Find every word with a stop sign. Tap the thin space right after it. Tap a space again to take it back. Then Check.',
   stopgo:'Is the mark one of the stop signs you learned? Then it is a stop. Any other mark: keep going!',
   scount:'Count every word that has a stop sign, the סוֹף פָּסוּק too.'};
+ const book=r=>String(r).split(' ')[0];
+ function backToBack(n){ const D_=PES(); for(let t=0;t<400;t++){ const i=rnd(D_.length-n); let ok=true; for(let j=1;j<n;j++) if(D_[i+j].n!==D_[i].n+j||book(D_[i+j].ref)!==book(D_[i].ref)) ok=false; if(ok) return i; } return 0; }
  function trQ(type){ const [kind,arg]=type.split(':'), S=SG(), D_=PES();
-  if(kind==='endTap'){ const i=rnd(D_.length-2), A_=D_[i], B_=D_[i+1]; const toks=[...A_.t.map((w,j)=>({w,e:j===A_.t.length-1})),...B_.t.map(w=>({w,e:false}))];
+  if(kind==='endTap'){ const i=backToBack(2), A_=D_[i], B_=D_[i+1]; const toks=[...A_.t.map((w,j)=>({w,e:j===A_.t.length-1})),...B_.t.map(w=>({w,e:false}))];
    return {kind:'tap',q:'Two pesukim are written together. Tap the word where the <b>first pasuk ends</b>.',toks,ans:toks.map(x=>x.e),ref:A_.ref+' – '+B_.ref,how:TRHOW.endTap}; }
-  if(kind==='count'){ const n=2+rnd(2), i=rnd(D_.length-n), ps=D_.slice(i,i+n);
+  if(kind==='count'){ const n=2+rnd(2), i=backToBack(n), ps=D_.slice(i,i+n);
    return {kind:'mc',q:'How many pesukim are written here?',html:`<div class="pasuk">${ps.flatMap(p=>p.t).map(w=>`<span class="tw">${w}</span>`).join('')}</div><p class="ref">${ps[0].ref}</p>`,right:String(n),opts:['1','2','3','4'],keep:true,why:`Count the ׃ signs. There are ${n}.`,how:TRHOW.count}; }
   if(kind==='tap'){ const keys=arg==='zk'?['zk','zg']:[arg]; const Pq=pick(pesWith(s=>s.some(x=>keys.indexOf(x)>=0),arg==='rv'?16:14));
    return {kind:'tap',q:`Tap the word with the <span class="clab-he">${keys.map(k=>S[k].he).join(' or ')}</span>.`,toks:Pq.t.map(w=>({w})),ans:sList(Pq).map(s=>keys.indexOf(s)>=0),ref:Pq.ref,why:S[keys[0]].what,how:TRHOW.tap}; }
@@ -505,7 +509,7 @@
   const Pq=pick(c); lastBreak=[Pq.ref,...lastBreak].slice(0,40); return {kind:'break',q:'Tap the spaces where this pasuk should be broken up: after every word with a stop sign.',P:{t:Pq.t,s:sList(Pq),ref:Pq.ref},how:TRHOW.break}; }
  function trWordQ(kind){ const S=SG();
   if(kind==='stopgo'){ const stop=Math.random()<.5; let Pq, j;
-   for(let t=0;t<80;t++){ Pq=pick(PES()); const sl=sList(Pq); const idx=Pq.t.map((_,i)=>i).filter(i=>stop?(KNOWN.indexOf(sl[i])>=0&&sl[i]!=='sof'):(!sl[i]&&/[֑-֯]/.test(Pq.t[i])&&i<Pq.t.length-1)); if(idx.length){ j=pick(idx); break; } }
+   for(let t=0;t<80;t++){ Pq=pick(PES()); const sl=sList(Pq); const idx=Pq.t.map((_,i)=>i).filter(i=>stop?(KNOWN.indexOf(sl[i])>=0&&sl[i]!=='sof'):(!sl[i]&&/[֣-֧]/.test(Pq.t[i])&&!/[֑-֢֨-֮]/.test(Pq.t[i])&&i<Pq.t.length-1)); if(idx.length){ j=pick(idx); break; } }
    const isStop=!!sOf(Pq,j); return {kind:'mc',q:'Is the mark on this word a stop sign?',stage:Pq.t[j],opts:['Stop sign','Keep going'],keep:true,right:isStop?'Stop sign':'Keep going',wrongText:isStop?`It is a stop sign: <span class="clab-he">${S[sOf(Pq,j)].he}</span>.`:'That mark is not one of our stop signs. Keep going!',how:TRHOW.stopgo}; }
   const Pq=pick(pesWith(s=>s.every(x=>!x||KNOWN.indexOf(x)>=0),12)); const n=Object.keys(Pq.s).length;
   return {kind:'mc',q:'How many stop signs are in this pasuk? (Count the סוֹף פָּסוּק too.)',html:`<div class="pasuk">${Pq.t.map(w=>`<span class="tw">${w}</span>`).join('')}</div><p class="ref">${Pq.ref}</p>`,right:String(n),opts:uniq([n,n+1,Math.max(1,n-1),n+2].map(String)).slice(0,4),why:'They are on: '+Pq.t.filter((_,i)=>sOf(Pq,i)).map(w=>`<span class="clab-he">${noTrop(w)}</span>`).join(', '),how:TRHOW.scount}; }
@@ -532,14 +536,14 @@
   bodyEl().querySelectorAll('.clab-unit b').forEach(b=>b.classList.add('clab-he')); wireUnits(workshop); }
  function workshop(wi){ const W=WK()[wi], Pq=workPasuk(wi); if(!Pq) return pwLab(); BACK=pwLab; QUIT=pwLab; clearTimers();
   const N=Pq.t.length, chunkOf=[]; let c=0; Pq.t.forEach((_,i)=>{ chunkOf.push(c); if(Pq.s[i]) c++; }); const nCh=Math.max(c,chunkOf[N-1]+1);
-  const want=Pq.s.map((s,i)=>!!s&&i<N-1); let stage=1, cur=0; const wordDone=new Set(), chDone=new Set();
+  const want=Pq.s.map((s,i)=>!!s&&i<N-1); let stage=1, cur=0, pendCh=null; const wordDone=new Set(), chDone=new Set();
   const allM=uniq(WK().flatMap(w=>w.words.map(x=>x.m)));
   const render=()=>{ let body='';
    if(stage===1) body=`<h3>Step 1: Break it into parts</h3><div class="pasuk">${Pq.t.map((w,i)=>`<span class="tw">${w}</span>${i<N-1?`<button type="button" class="gap" data-i="${i}" aria-label="Break after word ${i+1}"></button>`:''}`).join('')}</div><p class="ref">${W.ref}</p>
     ${how(TRHOW.break)}<div class="clab-row clab-center">${T().quiet('Show me','data-a="show"')}${T().main(T().WORDS.check,'data-a="chk"')}</div><div class="fbx"></div>`;
    else { const chunks=[...Array(nCh)].map((_,k)=>Pq.t.map((w,i)=>({w,i})).filter(o=>chunkOf[o.i]===k));
     body=`<h3>${stage===2?'Step 2 and 3: Figure out each word, then each part':'Step 4: Read the whole pasuk'}</h3>
-     <div style="display:grid;gap:10px">${chunks.map((ch,k)=>`<div class="chunkp ${chDone.has(k)?'done':''}">${ch.map(o=>`<span class="wsw ${wordDone.has(o.i)?'ok':o.i===cur&&stage===2?'now':''}"><span class="clab-trop">${o.w}</span>${wordDone.has(o.i)?`<small>${E(W.words[o.i].m)}</small>`:''}</span>`).join('')}${chDone.has(k)?`<p style="width:100%;direction:ltr;font-weight:700">${E(W.chunks[k]||'')}</p>`:''}</div>`).join('')}</div><div class="askw"></div>
+     <div style="display:grid;gap:10px">${chunks.map((ch,k)=>`<div class="chunkp ${chDone.has(k)?'done':''}">${ch.map(o=>`<span class="wsw ${wordDone.has(o.i)?'ok':o.i===cur&&stage===2&&pendCh==null?'now':''}"><span class="clab-trop">${o.w}</span>${wordDone.has(o.i)?`<small>${E(W.words[o.i].m)}</small>`:''}</span>`).join('')}${chDone.has(k)?`<p style="width:100%;direction:ltr;font-weight:700">${E(W.chunks[k]||'')}</p>`:''}</div>`).join('')}</div><div class="askw"></div>
      ${stage===3?`<div class="clab-teach" style="text-align:center"><p style="font-weight:800">${W.chunks.map(E).join(' ')}</p><p class="ref" style="text-align:center">${W.ref}</p><p>Now read the pasuk out loud, one part at a time, and say what it means. You did it on your own!</p></div><div class="clab-row clab-center">${T().main('I can learn this pasuk!','data-a="fin"')}</div>`:''}`; }
    frame('Pasuk Workshop',W.ref,'run',`<div class="clab-card">${body}</div>`); const B=bodyEl();
    if(stage===1){ const on=new Set(); B.querySelectorAll('.gap').forEach(g=>g.onclick=()=>{ const i=+g.dataset.i; if(on.has(i)) on.delete(i); else on.add(i); g.classList.toggle('on'); snd('tap'); });
@@ -548,12 +552,37 @@
      B.querySelector('[data-a=chk]').disabled=true; B.querySelector('[data-a=show]').disabled=true; B.querySelector('[data-a=go2]').onclick=()=>{ snd('tap'); stage=2; render(); }; };
     B.querySelector('[data-a=chk]').onclick=()=>check(false); B.querySelector('[data-a=show]').onclick=()=>check(true); return; }
    if(stage===3){ B.querySelector('[data-a=fin]').onclick=()=>{ snd('win'); markDone('pw',wi); pwLab(); }; return; }
-   const x=W.words[cur]; X.curW={x,want}; const ch=shuffle([x.m,...shuffle(allM.filter(m=>m!==x.m&&!wordsOf(m).some(w=>wordsOf(x.m).indexOf(w)>=0))).slice(0,3)]);
-   const box=B.querySelector('.askw'); box.innerHTML=`<div class="clab-pas" style="gap:12px"><p class="clab-q">What does <span class="clab-trop" style="font-size:30px">${noTrop(Pq.t[cur])}</span> mean here?</p>
+   const box=B.querySelector('.askw');
+   if(pendCh!=null){ const k=pendCh; const opts=shuffle(uniq(W.chunks)).slice(0,4); if(opts.indexOf(W.chunks[k])<0) opts[0]=W.chunks[k]; const ch=shuffle(opts); X.curW={chunk:k,right:W.chunks[k]};
+    const words=Pq.t.map((w,i)=>i).filter(i=>chunkOf[i]===k);
+    box.innerHTML=`<div class="clab-pas" style="gap:12px"><p class="clab-q">Part ${k+1} is done! Which English matches this part?</p><div class="pasuk" style="justify-content:center">${words.map(i=>`<span class="tw hi">${noTrop(Pq.t[i])}</span>`).join('')}</div>
+     <div class="clab-opts">${ch.map((c,i)=>`<button type="button" class="tlk tlk-tile clab-opt" data-i="${i}">${E(c)}</button>`).join('')}</div>
+     ${how('Read the meanings under the words of this part, from right to left. Put them together into one English sentence. Which choice says that?')}<div class="fbx"></div></div>`;
+    box.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ const ok=ch[+b.dataset.i]===W.chunks[k]; snd(ok?'right':'wrong'); if(!ok){ b.classList.add('wrong'); b.disabled=true; box.querySelector('.fbx').innerHTML=`<div class="clab-fb bad">Not this one. The words in this part mean: ${words.map(i=>E(W.words[i].m)).join(' · ')}</div>`; return; }
+     chDone.add(k); pendCh=null; if(cur>=N) stage=3; render(); }); return; }
+   const x=W.words[cur]; X.curW={x,want};
+   const done1=()=>{ wordDone.add(cur); const k=chunkOf[cur]; cur++; if(Pq.t.every((_,i)=>chunkOf[i]!==k||wordDone.has(i))) pendCh=k; render(); };
+   if(x.parts.length>=2){ const letters=h=>String(h).replace(/[֑-ׇ]/g,''); const own=x.parts.map(p=>letters(p.h));
+    const extra=shuffle(uniq(WK().flatMap(w=>w.words.flatMap(y=>y.parts)).filter(p=>own.indexOf(letters(p.h))<0).map(p=>JSON.stringify(p)))).slice(0,2).map(t=>JSON.parse(t));
+    const tiles=shuffle([...x.parts.map((p,i)=>({p,i})),...extra.map(p=>({p,i:-1}))]); let built=[]; X.curW={x,want,tiles};
+    box.innerHTML=`<div class="clab-pas" style="gap:12px"><p class="clab-q">Build <span class="clab-trop" style="font-size:30px">${noTrop(Pq.t[cur])}</span> from its pieces. Tap them in order.</p>${LEGEND}<div class="slots"></div>
+     <div class="bank">${tiles.map((t,j)=>`<button type="button" class="tlk tlk-tile piece ${t.p.k}" data-j="${j}">${t.p.h}<small>${E(t.p.m)}</small></button>`).join('')}</div>
+     <div class="clab-row clab-center">${T().quiet('Undo','data-a="undo"')}${T().main(T().WORDS.check,'data-a="wchk"')}</div>
+     ${how('Look at the word. Which letters are stuck on the front (prefix)? Which letters are at the end (suffix)? The middle is the shoresh or base word. Tap the pieces from the front of the word: prefix, then base, then suffix.')}<div class="fbx"></div></div>`;
+    const draw=()=>{ box.querySelector('.slots').innerHTML=built.map(j=>`<span class="piece ${tiles[j].p.k}">${tiles[j].p.h}</span>`).join(''); box.querySelectorAll('.bank .piece').forEach(b=>b.disabled=built.indexOf(+b.dataset.j)>=0); };
+    box.querySelectorAll('.bank .piece').forEach(b=>b.onclick=()=>{ built.push(+b.dataset.j); snd('tap'); draw(); });
+    box.querySelector('[data-a=undo]').onclick=()=>{ built.pop(); draw(); };
+    box.querySelector('[data-a=wchk]').onclick=()=>{ if(!built.length) return; const ok=built.length===x.parts.length&&built.every((j,n)=>tiles[j].i===n); snd(ok?'right':'wrong');
+     if(!ok){ box.querySelector('.fbx').innerHTML=`<div class="clab-fb bad">Not quite. This word has ${x.parts.length} pieces: ${x.parts.map(p=>`<span class="clab-he">${p.h}</span> (${E(p.m)})`).join(' + ')}. Try again.</div>`; built=[]; draw(); return; }
+     box.querySelector('.fbx').innerHTML=`<div class="clab-fb good">Yes! ${x.parts.map(p=>E(p.m)).join(' + ')} = <b>${E(x.m)}</b></div><div class="clab-row clab-center">${T().main(T().WORDS.next,'data-a="wnx"')}</div>`;
+     box.querySelectorAll('.bank .piece,[data-a=undo],[data-a=wchk]').forEach(b=>b.disabled=true); box.querySelector('[data-a=wnx]').onclick=()=>{ snd('tap'); done1(); }; };
+    draw(); return; }
+   const ch=shuffle([x.m,...shuffle(allM.filter(m=>m!==x.m&&!wordsOf(m).some(w=>wordsOf(x.m).indexOf(w)>=0))).slice(0,3)]);
+   box.innerHTML=`<div class="clab-pas" style="gap:12px"><p class="clab-q">What does <span class="clab-trop" style="font-size:30px">${noTrop(Pq.t[cur])}</span> mean here?</p>
     ${x.parts.length?`${LEGEND}${partsHTML(x.parts)}`:''}<div class="clab-opts">${ch.map((c,i)=>`<button type="button" class="tlk tlk-tile clab-opt" data-i="${i}">${E(c)}</button>`).join('')}</div>
-    ${how('Break the word apart: the prefix, the shoresh or base word, and the suffix (the colored boxes show them). Put their meanings together, then tap the meaning.')}</div>`;
-   box.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ const ok=ch[+b.dataset.i]===x.m; snd(ok?'right':'wrong'); if(!ok){ b.classList.add('wrong'); b.disabled=true; return; }
-    wordDone.add(cur); const k=chunkOf[cur]; if(Pq.t.every((_,i)=>chunkOf[i]!==k||wordDone.has(i))) chDone.add(k); cur++; if(cur>=N) stage=3; render(); }); };
+    ${how(x.parts.length?'The box shows the shoresh or base word and what it means. Which meaning fits this word in this pasuk?':'This word has no prefix or suffix. It is a name or a word you know from the Milim Lab. Which meaning fits?')}<div class="fbx"></div></div>`;
+   box.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ const ok=ch[+b.dataset.i]===x.m; snd(ok?'right':'wrong'); if(!ok){ b.classList.add('wrong'); b.disabled=true; box.querySelector('.fbx').innerHTML=`<div class="clab-fb bad">Not this one. ${x.parts.length?'Look at the box: '+x.parts.map(p=>E(p.m)).join(' + ')+'.':'Read the words around it: what would make sense here?'} Try again.</div>`; return; }
+    done1(); }); };
   render(); }
 
  /* ================= TIMELINE (English or Hebrew) ================= */
@@ -561,10 +590,10 @@
   ["Life of Avraham","חַיֵּי אַבְרָהָם","1948 – 2123",5],["Tower of Bavel","מִגְדַּל בָּבֶל","1996",6],["Lech-Lecha","לֶךְ לְךָ","2023",7],["Life of Yitzchak","חַיֵּי יִצְחָק","2048 – 2228",8],["Life of Yaakov","חַיֵּי יַעֲקֹב","2108 – 2255",9],["Life of Yosef","חַיֵּי יוֹסֵף","2199 – 2309",10],
   ["The Egyptian Exile","גָּלוּת מִצְרַיִם","2309 – 2448",11],["The Ten Makos","עֶשֶׂר הַמַּכּוֹת","2448",12],["The Exodus","יְצִיאַת מִצְרַיִם","2448",13],["Matan Torah","מַתַּן תּוֹרָה","2448",14],["Forty Year Trek","אַרְבָּעִים שָׁנָה בַּמִּדְבָּר","2448 – 2488",15],
   ["Era of Judges","הַשּׁוֹפְטִים, שָׁאוּל וְדָוִד","2488 – 2892",16],["The First Bais Hamikdash","בַּיִת רִאשׁוֹן","2928 – 3338",17],["First Bais Hamikdash Destroyed","חֻרְבַּן בַּיִת רִאשׁוֹן","3338",18],["The Babylonian Exile","גָּלוּת בָּבֶל","3338",19],["The Persian Empire","מַלְכוּת פָּרַס","3400",20],
-  ["Purim","פּוּרִים","3405",21],["The Second Bais Hamikdash","בַּיִת שֵׁנִי","3408",22],["The Greek Empire","מַלְכוּת יָוָן","3580",23],["Chanuka","חֲנֻכָּה","3622",24],["Second Bais Hamikdash Destroyed","חֻרְבַּן בַּיִת שֵׁנִי","3828",25],
-  ["Galus Edom (The Roman Exile)","גָּלוּת אֱדוֹם","3828",26],["The Mishna","הַמִּשְׁנָה","3948",27],["The Gemora","הַגְּמָרָא","4260",28],["The Gaonim","הַגְּאוֹנִים בְּבָבֶל","4450 – 4800",29],["Rashi","רַשִׁ״י","4800",30],
-  ["The Crusades","מַסְעֵי הַצְּלָב","4856",31],["The Rambam","הָרַמְבַּ״ם","4894",32],["The Spanish Inquisition","גֵּרוּשׁ סְפָרַד","5252",33],["Shulchan Aruch","שֻׁלְחָן עָרוּךְ","5325",34],["The Baal Shem Tov","הַבַּעַל שֵׁם טוֹב","5494",35],
-  ["The Vilna Gaon","הַגְּרָ״א וְהַיְשִׁיבוֹת","5558",36],["Jews Return to Eretz Yisrael (5570)","עֲלִיָּה לְאֶרֶץ יִשְׂרָאֵל","5570",37],["Sarah Schenirer","שָׂרָה שְׁנִירֶר וּבֵית יַעֲקֹב","5674",38],["The Holocaust","חֻרְבַּן אֵירוֹפָּה","5699",39],
+  ["Purim","פּוּרִים","3405",21],["The Second Bais Hamikdash","בַּיִת שֵׁנִי","3408",22],["The Greek Empire","מַלְכוּת יָוָן","3442",23],["Chanuka","חֲנֻכָּה","3622",24],["Second Bais Hamikdash Destroyed","חֻרְבַּן בַּיִת שֵׁנִי","3828",25],
+  ["Galus Edom (The Roman Exile)","גָּלוּת אֱדוֹם","3828",26],["The Mishna","הַמִּשְׁנָה","3948",27],["The Gemara","הַגְּמָרָא","4260",28],["The Gaonim","הַגְּאוֹנִים בְּבָבֶל","4450 – 4800",29],["Rashi","רַשִׁ״י","4800",30],
+  ["The Crusades","מַסְעֵי הַצְּלָב","4856",31],["The Rambam","הָרַמְבַּ״ם","4894",32],["The Expulsion from Spain","גֵּרוּשׁ סְפָרַד","5252",33],["Shulchan Aruch","שֻׁלְחָן עָרוּךְ","5325",34],["The Baal Shem Tov","הַבַּעַל שֵׁם טוֹב","5494",35],
+  ["The Vilna Gaon","הַגְּרָ״א וְהַיְשִׁיבוֹת","5558",36],["Jews Return to Eretz Yisrael (5570)","עֲלִיָּה לְאֶרֶץ יִשְׂרָאֵל","5570",37],["Sarah Schenirer","שָׂרָה שְׁנִירֶר וּבֵית יַעֲקֹב","5677",38],["The Holocaust","חֻרְבַּן אֵירוֹפָּה","5699",39],
   ["Jews Return to Eretz Yisrael (5708)","שִׁיבָה לְאֶרֶץ יִשְׂרָאֵל","5708",40],["Jews in America","יְהוּדֵי אָמֵרִיקָה","5700 – 57__",41],["Mashiach","מָשִׁיחַ וְקִבּוּץ גָּלֻיּוֹת","Year: ____",42],["The Third Bais Hamikdash","בַּיִת שְׁלִישִׁי","Year: ____",43],["Techias Hamesim","תְּחִיַּת הַמֵּתִים","Year: ____",44]];
  /* the card pictures (publisher's permission). 12, 13, 33 and 39 have no picture on purpose (picture rules): the card shows its name */
  const PICS={1:'tlab-card-01.webp',2:'tlab-card-02.webp',3:'tlab-card-03.webp',4:'tlab-card-04.webp',5:'tlab-card-05.webp',6:'tlab-card-06.webp',7:'tlab-card-07.webp',8:'tlab-card-08.webp',9:'tlab-card-09.webp',10:'tlab-card-10.webp',
@@ -574,15 +603,17 @@
  const TALL={1:1,3:1,5:1,6:1,24:1,28:1,35:1,36:1,44:1};
  const CY={},HE={},PIC={}; CARDS.forEach(([k,h,y,p])=>{ CY[k]=y; HE[k]=h; PIC[k]=p; });
  const DATES12=[["1656","The Flood","הַמַּבּוּל",3],["1948","Avraham is born","אַבְרָהָם נוֹלַד",5],["2048","Yitzchak is born","יִצְחָק נוֹלַד",8],["2448","The Ten Makos, the Exodus and Matan Torah","עֶשֶׂר הַמַּכּוֹת, יְצִיאַת מִצְרַיִם וּמַתַּן תּוֹרָה",14],
-  ["2449","The Chet Ha'egel","חֵטְא הָעֵגֶל",0],["2488","Bnei Yisrael enter Eretz Yisrael","בְּנֵי יִשְׂרָאֵל נִכְנְסוּ לְאֶרֶץ יִשְׂרָאֵל",16],["2928","The First Bais Hamikdash is built","בִּנְיַן בַּיִת רִאשׁוֹן",17],["3338","The First Bais Hamikdash is destroyed","חֻרְבַּן בַּיִת רִאשׁוֹן",18],
+  ["2488","Bnei Yisrael enter Eretz Yisrael","בְּנֵי יִשְׂרָאֵל נִכְנְסוּ לְאֶרֶץ יִשְׂרָאֵל",16],["2928","The First Bais Hamikdash is built","בִּנְיַן בַּיִת רִאשׁוֹן",17],["3338","The First Bais Hamikdash is destroyed","חֻרְבַּן בַּיִת רִאשׁוֹן",18],
   ["3405","Purim","פּוּרִים",21],["3408","The Second Bais Hamikdash is built","בִּנְיַן בַּיִת שֵׁנִי",22],["3622","Chanuka","חֲנֻכָּה",24],["3828","The Second Bais Hamikdash is destroyed","חֻרְבַּן בַּיִת שֵׁנִי",25]];
  const DY={},DPIC={}; DATES12.forEach(([y,k,h,p])=>{ DY[k]=y; if(!(k in HE)) HE[k]=h; DPIC[k]=p; });
  const DFACT={"The Flood":"Noach was 600 years old when the Mabul came.","Avraham is born":"Avraham was born 292 years after the Flood, and Noach was still alive!","Yitzchak is born":"Avraham was 100 years old and Sarah was 90 when Yitzchak was born.",
-  "The Ten Makos, the Exodus and Matan Torah":"All in one year: the Makos, Yetzias Mitzrayim, Krias Yam Suf and Matan Torah!","The Chet Ha'egel":"The Chet Ha'egel happened on Shiva Asar B'Tammuz. That is one reason we fast on that day.",
+  "The Ten Makos, the Exodus and Matan Torah":"Yetzias Mitzrayim, Krias Yam Suf and Matan Torah were all in one year!",
   "Bnei Yisrael enter Eretz Yisrael":"After 40 years in the midbar, Yehoshua led Bnei Yisrael into Eretz Yisrael.","The First Bais Hamikdash is built":"Shlomo Hamelech built the first Bais Hamikdash 480 years after Yetzias Mitzrayim.",
   "The First Bais Hamikdash is destroyed":"Nevuchadnetzar, king of Bavel, destroyed the first Bais Hamikdash on Tisha B'Av.","Purim":"Haman's plan was turned upside down. That is the idea of וְנַהֲפוֹךְ הוּא!",
   "The Second Bais Hamikdash is built":"The second Bais Hamikdash was built 70 years after the first was destroyed, just as Yirmiyahu said.","Chanuka":"The Chashmonaim found one jar of pure oil, and it burned for eight days.",
   "The Second Bais Hamikdash is destroyed":"The Romans destroyed the second Bais Hamikdash on Tisha B'Av. We are still in Galus Edom today."};
+ const FHE={"The Tower of Bavel was built 340 years after the Flood. Avraham was 48 years old then!": "מִגְדַּל בָּבֶל נִבְנָה 340 שָׁנָה אַחֲרֵי הַמַּבּוּל. אַבְרָהָם הָיָה אָז בֶּן 48!", "425 years passed from the time Avraham went Lech-Lecha until Matan Torah.": "425 שָׁנָה עָבְרוּ מִלֶּךְ לְךָ שֶׁל אַבְרָהָם עַד מַתַּן תּוֹרָה.", "Avraham was Yosef's great-grandfather: Avraham → Yitzchak → Yaakov → Yosef.": "אַבְרָהָם הָיָה סַבָּא רַבָּא שֶׁל יוֹסֵף: אַבְרָהָם ← יִצְחָק ← יַעֲקֹב ← יוֹסֵף.", "Yitzchak was 60 years old when Yaakov and Eisav were born.": "יִצְחָק הָיָה בֶּן 60 כְּשֶׁנּוֹלְדוּ יַעֲקֹב וְעֵשָׂו.", "Bnei Yisrael were in Mitzrayim for 210 years before Hashem took them out.": "בְּנֵי יִשְׂרָאֵל הָיוּ בְּמִצְרַיִם 210 שָׁנָה עַד שֶׁה׳ הוֹצִיא אוֹתָם.", "After 40 years in the midbar, Yehoshua brought Bnei Yisrael into Eretz Yisrael. Then came the Shoftim.": "אַחֲרֵי 40 שָׁנָה בַּמִּדְבָּר הֵבִיא יְהוֹשֻׁעַ אֶת בְּנֵי יִשְׂרָאֵל לְאֶרֶץ יִשְׂרָאֵל. אַחֲרָיו בָּאוּ הַשּׁוֹפְטִים.", "The first Bais Hamikdash stood for 410 years. The second stood for 420 years.": "בַּיִת רִאשׁוֹן עָמַד 410 שָׁנָה. בַּיִת שֵׁנִי עָמַד 420 שָׁנָה.", "Persia ruled first. Then Alexander of Greece took over the Persian empire.": "קֹדֶם מָשְׁלָה פָּרַס. אַחַר כָּךְ כָּבַשׁ אֲלֶכְּסַנְדֶּר מוּקְדוֹן אֶת מַלְכוּת פָּרַס.", "Purim happened when Persia ruled. Chanuka happened when Greece ruled, 217 years later.": "נֵס פּוּרִים הָיָה בִּזְמַן מַלְכוּת פָּרַס. נֵס חֲנֻכָּה הָיָה בִּזְמַן מַלְכוּת יָוָן, 217 שָׁנָה אַחַר כָּךְ.", "There are four galuyos: Bavel, Paras, Yavan and Edom. We are still in Galus Edom today.": "יֵשׁ אַרְבַּע גָּלֻיּוֹת: בָּבֶל, פָּרַס, יָוָן וֶאֱדוֹם. הַיּוֹם אֲנַחְנוּ עֲדַיִן בְּגָלוּת אֱדוֹם.", "Yosef was 17 years old when his brothers sold him.": "יוֹסֵף הָיָה בֶּן 17 כְּשֶׁאֶחָיו מָכְרוּ אוֹתוֹ.", "The Ten Makos came almost 200 years after Yaakov passed away.": "עֶשֶׂר הַמַּכּוֹת בָּאוּ כִּמְעַט 200 שָׁנָה אַחֲרֵי פְּטִירַת יַעֲקֹב.", "Nevuchadnetzar, king of Bavel, destroyed the first Bais Hamikdash on Tisha B'Av.": "נְבוּכַדְנֶצַּר מֶלֶךְ בָּבֶל הֶחֱרִיב אֶת בַּיִת רִאשׁוֹן בְּתִשְׁעָה בְּאָב.", "Only three years after Purim, the second Bais Hamikdash was built.": "רַק שָׁלֹשׁ שָׁנִים אַחֲרֵי פּוּרִים נִבְנָה בַּיִת שֵׁנִי.", "The Romans destroyed the second Bais Hamikdash 206 years after the miracle of Chanuka.": "הָרוֹמָאִים הֶחֱרִיבוּ אֶת בַּיִת שֵׁנִי 206 שָׁנָה אַחֲרֵי נֵס חֲנֻכָּה.", "Noach lived until Avraham was 58 years old!": "נֹחַ חַי עַד שֶׁאַבְרָהָם הָיָה בֶּן 58!", "We count the Omer for seven weeks, from Pesach until Shavuos, the day of Matan Torah.": "סוֹפְרִים אֶת הָעֹמֶר שִׁבְעָה שָׁבוּעוֹת, מִפֶּסַח עַד שָׁבוּעוֹת, יוֹם מַתַּן תּוֹרָה.", "Galus Bavel lasted 70 years, just as the navi Yirmiyahu said.": "גָּלוּת בָּבֶל נִמְשְׁכָה 70 שָׁנָה, כְּמוֹ שֶׁאָמַר יִרְמְיָהוּ הַנָּבִיא.", "From Avraham Avinu all the way to Shlomo Hamelech building the Bais Hamikdash.": "מֵאַבְרָהָם אָבִינוּ וְעַד שֶׁשְּׁלֹמֹה הַמֶּלֶךְ בָּנָה אֶת בֵּית הַמִּקְדָּשׁ.", "These are the four galuyos in order: Bavel, Paras (Purim), Yavan (Chanuka) and Edom.": "אֵלֶּה אַרְבַּע הַגָּלֻיּוֹת לְפִי הַסֵּדֶר: בָּבֶל, פָּרַס (פּוּרִים), יָוָן (חֲנֻכָּה) וֶאֱדוֹם.", "Purim was just 3 years before the second Bais Hamikdash was built.": "פּוּרִים הָיָה רַק 3 שָׁנִים לִפְנֵי שֶׁנִּבְנָה בַּיִת שֵׁנִי.", "A trick to remember: 3338 + 70 = 3408.": "דֶּרֶךְ לִזְכֹּר: 3338 + 70 = 3408.", "That was 1,959 years ago. We daven every day for the third Bais Hamikdash.": "זֶה הָיָה לִפְנֵי 1,959 שָׁנָה. אֲנַחְנוּ מִתְפַּלְּלִים כָּל יוֹם עַל בַּיִת שְׁלִישִׁי.", "Avraham was 48 at the Tower of Bavel and 75 when he went Lech-Lecha.": "אַבְרָהָם הָיָה בֶּן 48 בְּמִגְדַּל בָּבֶל וּבֶן 75 בְּלֶךְ לְךָ.", "Yaakov was 91 years old when Yosef was born.": "יַעֲקֹב הָיָה בֶּן 91 כְּשֶׁנּוֹלַד יוֹסֵף.", "Achashveirosh was the king of Persia.": "אֲחַשְׁוֵרוֹשׁ הָיָה מֶלֶךְ פָּרַס.", "Rashi was still alive during the First Crusade.": "רַשִׁ״י עוֹד הָיָה חַי בְּמַסַּע הַצְּלָב הָרִאשׁוֹן.", "Rav Chaim of Volozhin, a talmid of the Vilna Gaon, opened the famous Volozhin yeshiva.": "רַבִּי חַיִּים מִוּוֹלוֹזִ׳ין, תַּלְמִיד הַגְּרָ״א, פָּתַח אֶת יְשִׁיבַת וּוֹלוֹזִ׳ין הַמְּפֻרְסֶמֶת.", "The second Bais Hamikdash was built while Persia ruled. Greece took over later.": "בַּיִת שֵׁנִי נִבְנָה בִּזְמַן מַלְכוּת פָּרַס. יָוָן מָשְׁלָה אַחַר כָּךְ.", "Rav Yosef Karo was a small child when his family was forced out of Spain.": "רַבִּי יוֹסֵף קָארוֹ הָיָה יֶלֶד קָטָן כְּשֶׁמִּשְׁפַּחְתּוֹ גֹּרְשָׁה מִסְּפָרַד.", "After the Gemara was finished, the Gaonim in Bavel led Klal Yisrael.": "אַחֲרֵי שֶׁנִּגְמְרָה הַגְּמָרָא, הַגְּאוֹנִים בְּבָבֶל הִנְהִיגוּ אֶת כְּלַל יִשְׂרָאֵל.", "Bnei Yisrael stayed in the midbar for 40 years because of the Chet Hameraglim.": "בְּנֵי יִשְׂרָאֵל נִשְׁאֲרוּ בַּמִּדְבָּר 40 שָׁנָה בִּגְלַל חֵטְא הַמְּרַגְּלִים.", "Rabbi Yehuda Hanasi wrote down the Mishna so that the Torah Sheb'al Peh would not be forgotten.": "רַבִּי יְהוּדָה הַנָּשִׂיא כָּתַב אֶת הַמִּשְׁנָה כְּדֵי שֶׁהַתּוֹרָה שֶׁבְּעַל פֶּה לֹא תִּשָּׁכַח.", "We still use the Shulchan Aruch to learn halacha today.": "גַּם הַיּוֹם לוֹמְדִים הֲלָכָה מֵהַשֻּׁלְחָן עָרוּךְ.", "There were 10 generations from Noach to Avraham.": "הָיוּ 10 דּוֹרוֹת מִנֹּחַ עַד אַבְרָהָם.", "Avraham was 48 when he saw the Tower of Bavel. He did not join them.": "אַבְרָהָם הָיָה בֶּן 48 כְּשֶׁרָאָה אֶת מִגְדַּל בָּבֶל. הוּא לֹא הִצְטָרֵף אֲלֵיהֶם.", "The pasuk tells us: Avraham was 75 years old when he left Charan.": "הַפָּסוּק אוֹמֵר: אַבְרָהָם הָיָה בֶּן 75 כְּשֶׁיָּצָא מֵחָרָן.", "One year for each day that the Meraglim spied out the land.": "שָׁנָה אַחַת לְכָל יוֹם שֶׁהַמְּרַגְּלִים תָּרוּ אֶת הָאָרֶץ.", "We wait every day for Mashiach to come, the third Bais Hamikdash to be built, and Techias Hamesim.": "כָּל יוֹם אֲנַחְנוּ מְחַכִּים לְבִיאַת הַמָּשִׁיחַ, לְבִנְיַן בַּיִת שְׁלִישִׁי וְלִתְחִיַּת הַמֵּתִים.", "Noach was born in 1056 and lived until 2006, when Avraham was 58.": "נֹחַ נוֹלַד בִּשְׁנַת 1056 וְחַי עַד שְׁנַת 2006, כְּשֶׁאַבְרָהָם הָיָה בֶּן 58.", "Avraham lived until Yaakov was 15. Rashi says Yaakov cooked the lentil soup on the day Avraham passed away.": "אַבְרָהָם חַי עַד שֶׁיַּעֲקֹב הָיָה בֶּן 15. רַשִׁ״י אוֹמֵר שֶׁיַּעֲקֹב בִּשֵּׁל אֶת נְזִיד הָעֲדָשִׁים בַּיּוֹם שֶׁאַבְרָהָם נִפְטַר.", "Yitzchak was even still alive when Yosef was sold!": "יִצְחָק עוֹד הָיָה חַי אֲפִלּוּ כְּשֶׁיּוֹסֵף נִמְכַּר!", "Yosef was born 76 years after Avraham passed away.": "יוֹסֵף נוֹלַד 76 שָׁנָה אַחֲרֵי פְּטִירַת אַבְרָהָם.", "The hard work in Mitzrayim began only after Yosef and his brothers had passed away.": "הַשִּׁעְבּוּד בְּמִצְרַיִם הִתְחִיל רַק אַחֲרֵי שֶׁיּוֹסֵף וְאֶחָיו נִפְטְרוּ.", "From the Mishna to the Holocaust is more than 1,700 years.": "מֵהַמִּשְׁנָה עַד הַשּׁוֹאָה עָבְרוּ יוֹתֵר מִ-1,700 שָׁנָה.", "Chazal say that Daryavesh, who allowed the Bais Hamikdash to be built, was the son of Esther.": "חֲזַ״ל אוֹמְרִים שֶׁדָּרְיָוֶשׁ, שֶׁהִרְשָׁה לִבְנוֹת אֶת בֵּית הַמִּקְדָּשׁ, הָיָה בְּנָהּ שֶׁל אֶסְתֵּר.", "The pasuk in Melachim says it was 480 years. Your math matches the pasuk!": "הַפָּסוּק בִּמְלָכִים אוֹמֵר 480 שָׁנָה. הַחֶשְׁבּוֹן שֶׁלְּךָ מַתְאִים לַפָּסוּק!", "Matan Torah was 3,339 years ago, and we still learn the same Torah today!": "מַתַּן תּוֹרָה הָיָה לִפְנֵי 3,339 שָׁנָה, וְהַיּוֹם אֲנַחְנוּ עֲדַיִן לוֹמְדִים אֶת אוֹתָהּ תּוֹרָה!", "Noach was 600 years old when the Mabul came.": "נֹחַ הָיָה בֶּן 600 כְּשֶׁבָּא הַמַּבּוּל.", "Avraham was born 292 years after the Flood, and Noach was still alive!": "אַבְרָהָם נוֹלַד 292 שָׁנָה אַחֲרֵי הַמַּבּוּל, וְנֹחַ עוֹד הָיָה חַי!", "The second Bais Hamikdash was built 70 years after the first was destroyed, just as Yirmiyahu said.": "בַּיִת שֵׁנִי נִבְנָה 70 שָׁנָה אַחֲרֵי חֻרְבַּן בַּיִת רִאשׁוֹן, כְּמוֹ שֶׁאָמַר יִרְמְיָהוּ.", "Avraham was 100 years old and Sarah was 90 when Yitzchak was born.": "אַבְרָהָם הָיָה בֶּן 100 וְשָׂרָה בַּת 90 כְּשֶׁנּוֹלַד יִצְחָק.", "Yetzias Mitzrayim, Krias Yam Suf and Matan Torah were all in one year!": "יְצִיאַת מִצְרַיִם, קְרִיעַת יַם סוּף וּמַתַּן תּוֹרָה הָיוּ כֻּלָּם בְּשָׁנָה אַחַת!", "After 40 years in the midbar, Yehoshua led Bnei Yisrael into Eretz Yisrael.": "אַחֲרֵי 40 שָׁנָה בַּמִּדְבָּר הִכְנִיס יְהוֹשֻׁעַ אֶת בְּנֵי יִשְׂרָאֵל לְאֶרֶץ יִשְׂרָאֵל.", "Shlomo Hamelech built the first Bais Hamikdash 480 years after Yetzias Mitzrayim.": "שְׁלֹמֹה הַמֶּלֶךְ בָּנָה אֶת בַּיִת רִאשׁוֹן 480 שָׁנָה אַחֲרֵי יְצִיאַת מִצְרַיִם.", "Haman's plan was turned upside down. That is the idea of וְנַהֲפוֹךְ הוּא!": "הַתָּכְנִית שֶׁל הָמָן הִתְהַפְּכָה. זֶה הָרַעְיוֹן שֶׁל וְנַהֲפוֹךְ הוּא!", "The Chashmonaim found one jar of pure oil, and it burned for eight days.": "הַחַשְׁמוֹנָאִים מָצְאוּ פַּךְ אֶחָד שֶׁל שֶׁמֶן טָהוֹר, וְהוּא דָּלַק שְׁמוֹנָה יָמִים.", "The Romans destroyed the second Bais Hamikdash on Tisha B'Av. We are still in Galus Edom today.": "הָרוֹמָאִים הֶחֱרִיבוּ אֶת בַּיִת שֵׁנִי בְּתִשְׁעָה בְּאָב. הַיּוֹם אֲנַחְנוּ עֲדַיִן בְּגָלוּת אֱדוֹם."};
+ const factOf=f=>HEB()&&FHE[f]?FHE[f]:f;
  const HEW={BEFORE:'לִפְנֵי',AFTER:'אַחֲרֵי',Yes:'כֵּן',No:'לֹא'};
  const HEB=()=>P.tl.lang==='he';
  const L2=(en,he)=>HEB()&&he?he:en;
@@ -595,7 +626,7 @@
   which:Qx("Which card is this?","אֵיזֶה כַּרְטִיס זֶה?"),when:Qx("What year did this happen?","בְּאֵיזוֹ שָׁנָה זֶה קָרָה?")};
  const PARTS={first:Qx("Which came first?","מָה הָיָה קֹדֶם?"),last:Qx("Which came last?","מָה הָיָה אַחֲרוֹן?"),ba:Qx("Before or after?","לִפְנֵי אוֹ אַחֲרֵי?"),order:Qx("Put it in order","לְפִי הַסֵּדֶר"),
   match:Qx("Match the year","בְּאֵיזוֹ שָׁנָה?"),fl:Qx("First and last","רִאשׁוֹן וְאַחֲרוֹן"),between:Qx("What comes in between?","מָה בָּאֶמְצַע?"),years:Qx("How many years?","כַּמָּה שָׁנִים?"),
-  think:Qx("Think about it","חֲשֹׁב"),alive:Qx("Alive at the same time?","חַיּוּ בְּאוֹתוֹ זְמַן?"),what:Qx("Important Dates: what happened?","תַּאֲרִיכִים חֲשׁוּבִים: מָה קָרָה?"),
+  think:Qx("Think about it","חֲשֹׁב"),alive:Qx("Alive at the same time?","חָיוּ בְּאוֹתוֹ זְמַן?"),what:Qx("Important Dates: what happened?","תַּאֲרִיכִים חֲשׁוּבִים: מָה קָרָה?"),
   year:Qx("Important Dates: what year?","תַּאֲרִיכִים חֲשׁוּבִים: בְּאֵיזוֹ שָׁנָה?"),mem:Qx("Which came first? (from memory)","מָה הָיָה קֹדֶם? (בְּעַל פֶּה)"),use:Qx("Use the Important Dates","חֶשְׁבּוֹן עִם הַתַּאֲרִיכִים"),chal:Qx("Challenge","אֶתְגָּר")};
  const TLHOW={first:Qx("Look at each card's year (tap Show the dates if you need them). The smaller year happened first.","הִסְתַּכֵּל בַּשָּׁנָה שֶׁל כׇּל כַּרְטִיס. הַשָּׁנָה הַקְּטַנָּה יוֹתֵר הָיְתָה קֹדֶם."),
   last:Qx("Look at each card's year. The biggest year happened last.","הִסְתַּכֵּל בַּשָּׁנִים. הַשָּׁנָה הַגְּדוֹלָה בְּיוֹתֵר הָיְתָה אַחֲרוֹנָה."),
@@ -623,7 +654,9 @@
  const poolTo=max=>CARDS.filter(c=>c[3]<=max&&!SKIP[c[3]]).map(c=>c[0]);
  const POINT=k=>!/–/.test(CY[k]);
  const sample=(a,n)=>shuffle(a).slice(0,n);
- function distinct(pool,n,test){ for(let t=0;t<300;t++){ const s=sample(pool,n), ys=s.map(NUM); if(new Set(ys).size===n&&(!test||test(s))) return s; } return null; }
+ const SPAN=k=>{ const y=CY[k]; if(y==='Day 0') return [0,0]; const m=String(y).match(/[0-9]+/g)||[]; return [+m[0],+(m[1]||m[0])]; };
+ const overlap=s=>s.some((a,i)=>s.some((b,j)=>{ if(i>=j) return false; const A=SPAN(a),B=SPAN(b); return A[0]<=B[1]&&B[0]<=A[1]; }));
+ function distinct(pool,n,test){ for(let t=0;t<300;t++){ const s=sample(pool,n), ys=s.map(NUM); if(new Set(ys).size===n&&!overlap(s)&&(!test||test(s))) return s; } return null; }
  const byTime=s=>[...s].sort((a,b)=>PIC[a]-PIC[b]);
  const apart=(a,b)=>Math.abs(NUM(b)-NUM(a));
  const gFirst=pool=>()=>{ const s=distinct(pool,2); if(!s) return null; const [a,b]=byTime(s); return Pk('first','first',s,s.indexOf(a),{f:`${a} came about ${apart(a,b)} years before ${b}.`}); };
@@ -673,11 +706,11 @@
    Pk('ba',Qx("Chanuka was ______ the Second Bais Hamikdash was destroyed.","חֲנֻכָּה הָיְתָה ______ חֻרְבַּן בַּיִת שֵׁנִי."),["BEFORE","AFTER"],0,{hint:H("Chanuka","Second Bais Hamikdash Destroyed")}),
    Or('order','order',["Life of Avraham","Life of Yosef","Matan Torah","The First Bais Hamikdash"],{f:"From Avraham Avinu all the way to Shlomo Hamelech building the Bais Hamikdash."}),
    Or('order','order',["The Babylonian Exile","Purim","Chanuka","Galus Edom (The Roman Exile)"],{f:"These are the four galuyos in order: Bavel, Paras (Purim), Yavan (Chanuka) and Edom."}),
-   Pk('match',Qx("When was the Flood?","בְּאֵיזוֹ שָׁנָה הָיָה הַמַּבּוּל?"),["3405","1656","3828"],1,{hint:H("The Flood"),f:DFACT["The Flood"]}),
-   Pk('match',Qx("When was Purim?","בְּאֵיזוֹ שָׁנָה הָיָה נֵס פּוּרִים?"),["3405","2448","3338"],0,{hint:H("Purim"),f:"Purim was just 3 years before the second Bais Hamikdash was built."}),
-   Pk('match',Qx("When was the Second Bais Hamikdash built?","בְּאֵיזוֹ שָׁנָה נִבְנָה בַּיִת שֵׁנִי?"),["3828","3408","1948"],1,{hint:H("The Second Bais Hamikdash"),f:"A trick to remember: 3338 + 70 = 3408."}),
-   Pk('match',Qx("When was the First Bais Hamikdash destroyed?","בְּאֵיזוֹ שָׁנָה נֶחֱרַב בַּיִת רִאשׁוֹן?"),["3338","3622","2928"],0,{hint:H("First Bais Hamikdash Destroyed")}),
-   Pk('match',Qx("When was the Second Bais Hamikdash destroyed?","בְּאֵיזוֹ שָׁנָה נֶחֱרַב בַּיִת שֵׁנִי?"),["3405","1656","3828"],2,{hint:H("Second Bais Hamikdash Destroyed"),f:"That was 1,959 years ago. We daven every day for the third Bais Hamikdash."})],
+   Pk('match',Qx("When was the Flood?","בְּאֵיזוֹ שָׁנָה הָיָה הַמַּבּוּל?"),["3405","1656","3828"],1,{hint:around(idxD("The Flood")),f:DFACT["The Flood"]}),
+   Pk('match',Qx("When was Purim?","בְּאֵיזוֹ שָׁנָה הָיָה נֵס פּוּרִים?"),["3405","2448","3338"],0,{hint:around(idxD("Purim")),f:"Purim was just 3 years before the second Bais Hamikdash was built."}),
+   Pk('match',Qx("When was the Second Bais Hamikdash built?","בְּאֵיזוֹ שָׁנָה נִבְנָה בַּיִת שֵׁנִי?"),["3828","3408","1948"],1,{hint:around(idxD("The Second Bais Hamikdash is built")),f:"A trick to remember: 3338 + 70 = 3408."}),
+   Pk('match',Qx("When was the First Bais Hamikdash destroyed?","בְּאֵיזוֹ שָׁנָה נֶחֱרַב בַּיִת רִאשׁוֹן?"),["3338","3622","2928"],0,{hint:around(idxD("The First Bais Hamikdash is destroyed"))}),
+   Pk('match',Qx("When was the Second Bais Hamikdash destroyed?","בְּאֵיזוֹ שָׁנָה נֶחֱרַב בַּיִת שֵׁנִי?"),["3405","1656","3828"],2,{hint:around(idxD("The Second Bais Hamikdash is destroyed")),f:"That was 1,959 years ago. We daven every day for the third Bais Hamikdash."})],
    plan:[['first',4,gFirst(poolTo(26)),5],['last',3,gLast(poolTo(26)),3],['ba',3,gBA(poolTo(26)),3],['order',1,gOrder(poolTo(26),4),1],['match',2,gMatch(3828),2]]},
   l2:{shape:'■',name:Qx('Level 2','רָמָה ב׳'),what:Qx('First and last of four, what comes in between, and counting the years.','רִאשׁוֹן וְאַחֲרוֹן, מָה בָּאֶמְצַע, וְחֶשְׁבּוֹן שָׁנִים.'),range:40,cur:()=>[
    Pk('first','first',["Tower of Bavel","Lech-Lecha"],0,{f:"Avraham was 48 at the Tower of Bavel and 75 when he went Lech-Lecha."}),
@@ -686,19 +719,19 @@
    Pk('first','first',["The Crusades","The Rambam"],0,{f:"Rashi was still alive during the First Crusade."}),
    Pk('first','first',["The Vilna Gaon","The Baal Shem Tov"],1,{f:"Rav Chaim of Volozhin, a talmid of the Vilna Gaon, opened the famous Volozhin yeshiva."}),
    Pk('first','first',["The Greek Empire","The Second Bais Hamikdash"],1,{f:"The second Bais Hamikdash was built while Persia ruled. Greece took over later."}),
-   Pk('first','first',["The Spanish Inquisition","Shulchan Aruch"],0,{f:"Rav Yosef Karo was a small child when his family was forced out of Spain."}),
-   Pk('first','first',["The Gaonim","The Gemora"],1,{f:"After the Gemara was finished, the Gaonim in Bavel led Klal Yisrael."}),
+   Pk('first','first',["The Expulsion from Spain","Shulchan Aruch"],0,{f:"Rav Yosef Karo was a small child when his family was forced out of Spain."}),
+   Pk('first','first',["The Gaonim","The Gemara"],1,{f:"After the Gemara was finished, the Gaonim in Bavel led Klal Yisrael."}),
    Pk('fl','first',["The Egyptian Exile","Life of Yitzchak","Forty Year Trek","Tower of Bavel"],3),
    Pk('fl','last',["The Egyptian Exile","Life of Yitzchak","Forty Year Trek","Tower of Bavel"],2,{f:"Bnei Yisrael stayed in the midbar for 40 years because of the Chet Hameraglim."}),
    Pk('fl','first',["Chanuka","The Babylonian Exile","Purim","The Mishna"],1),
    Pk('fl','last',["Chanuka","The Babylonian Exile","Purim","The Mishna"],3,{f:"Rabbi Yehuda Hanasi wrote down the Mishna so that the Torah Sheb'al Peh would not be forgotten."}),
-   Pk('fl','first',["Rashi","Shulchan Aruch","The Gemora","The Crusades"],2),
-   Pk('fl','last',["Rashi","Shulchan Aruch","The Gemora","The Crusades"],1,{f:"We still use the Shulchan Aruch to learn halacha today."}),
+   Pk('fl','first',["Rashi","Shulchan Aruch","The Gemara","The Crusades"],2),
+   Pk('fl','last',["Rashi","Shulchan Aruch","The Gemara","The Crusades"],1,{f:"We still use the Shulchan Aruch to learn halacha today."}),
    Or('order','order',["The Flood","Life of Avraham","The Exodus","First Bais Hamikdash Destroyed","Purim","Second Bais Hamikdash Destroyed"]),
    Pk('between',Qx("Which card comes between the Flood and Life of Avraham?","אֵיזֶה כַּרְטִיס בָּא בֵּין ״הַמַּבּוּל״ וּבֵין ״חַיֵּי אַבְרָהָם״?"),["Lech-Lecha","10 Generations: Noach to Avraham","Tower of Bavel"],1,{f:"There were 10 generations from Noach to Avraham."}),
    Pk('between',Qx("Which card comes between Purim and the Greek Empire?","אֵיזֶה כַּרְטִיס בָּא בֵּין ״פּוּרִים״ וּבֵין ״מַלְכוּת יָוָן״?"),["The Second Bais Hamikdash","Chanuka","The Persian Empire"],0),
    Pk('between',Qx("Which card comes between Matan Torah and the Era of Judges?","אֵיזֶה כַּרְטִיס בָּא בֵּין ״מַתַּן תּוֹרָה״ וּבֵין ״הַשּׁוֹפְטִים״?"),["The Egyptian Exile","The First Bais Hamikdash","Forty Year Trek"],2),
-   Pk('between',Qx("Which card comes between the Rambam and Shulchan Aruch?","אֵיזֶה כַּרְטִיס בָּא בֵּין ״הָרַמְבַּ״ם״ וּבֵין ״שֻׁלְחָן עָרוּךְ״?"),["The Crusades","The Spanish Inquisition","The Baal Shem Tov"],1),
+   Pk('between',Qx("Which card comes between the Rambam and Shulchan Aruch?","אֵיזֶה כַּרְטִיס בָּא בֵּין ״הָרַמְבַּ״ם״ וּבֵין ״שֻׁלְחָן עָרוּךְ״?"),["The Crusades","The Expulsion from Spain","The Baal Shem Tov"],1),
    Ty('years',Qx("How old was Avraham at the Tower of Bavel?","בֶּן כַּמָּה הָיָה אַבְרָהָם בְּמִגְדַּל בָּבֶל?"),48,{hint:H("Life of Avraham","Tower of Bavel"),f:"Avraham was 48 when he saw the Tower of Bavel. He did not join them."}),
    Ty('years',Qx("How old was Avraham when he went Lech-Lecha?","בֶּן כַּמָּה הָיָה אַבְרָהָם כְּשֶׁהָלַךְ לֶךְ לְךָ?"),75,{hint:H("Life of Avraham","Lech-Lecha"),f:"The pasuk tells us: Avraham was 75 years old when he left Charan."}),
    Ty('years',Qx("How many years were there from the Flood until Avraham was born?","כַּמָּה שָׁנִים עָבְרוּ מֵהַמַּבּוּל עַד לֵידַת אַבְרָהָם?"),292,{hint:H("The Flood","Life of Avraham")}),
@@ -713,8 +746,8 @@
    Pk('alive',Qx("Was Avraham still alive when Yaakov was born?","הַאִם אַבְרָהָם עוֹד הָיָה חַי כְּשֶׁנּוֹלַד יַעֲקֹב?"),["Yes","No"],0,{hint:H("Life of Avraham","Life of Yaakov"),f:"Avraham lived until Yaakov was 15. Rashi says Yaakov cooked the lentil soup on the day Avraham passed away."}),
    Pk('alive',Qx("Was Yitzchak still alive when Yosef was born?","הַאִם יִצְחָק עוֹד הָיָה חַי כְּשֶׁנּוֹלַד יוֹסֵף?"),["Yes","No"],0,{hint:H("Life of Yitzchak","Life of Yosef"),f:"Yitzchak was even still alive when Yosef was sold!"}),
    Pk('alive',Qx("Was Avraham still alive when Yosef was born?","הַאִם אַבְרָהָם עוֹד הָיָה חַי כְּשֶׁנּוֹלַד יוֹסֵף?"),["Yes","No"],1,{hint:H("Life of Avraham","Life of Yosef"),f:"Yosef was born 76 years after Avraham passed away."}),
-   Pk('alive',Qx("Was Yaakov still alive when the Egyptian Exile began?","הַאִם יַעֲקֹב עוֹד הָיָה חַי כְּשֶׁהִתְחִילָה גָּלוּת מִצְרַיִם?"),["Yes","No"],1,{hint:H("Life of Yaakov","The Egyptian Exile"),f:"The hard work in Mitzrayim began only after Yosef and his brothers had passed away."}),
-   Or('order','order',["The Mishna","The Gemora","The Gaonim","Rashi","The Spanish Inquisition","The Baal Shem Tov","Sarah Schenirer","The Holocaust"],{f:"From the Mishna to the Holocaust is more than 1,700 years."}),
+   Pk('alive',Qx("Was Yaakov still alive when the hard work (shibud) in Mitzrayim began?","הַאִם יַעֲקֹב עוֹד הָיָה חַי כְּשֶׁהִתְחִיל הַשִּׁעְבּוּד בְּמִצְרַיִם?"),["Yes","No"],1,{hint:H("Life of Yaakov","The Egyptian Exile"),f:"The hard work in Mitzrayim began only after Yosef and his brothers had passed away."}),
+   Or('order','order',["The Mishna","The Gemara","The Gaonim","Rashi","The Expulsion from Spain","The Baal Shem Tov","Sarah Schenirer","The Holocaust"],{f:"From the Mishna to the Holocaust is more than 1,700 years."}),
    ...yearToEvent(),
    Pk('year','when',["3338","3828","3408"],1,{show:"Second Bais Hamikdash Destroyed",hint:around(idxD("The Second Bais Hamikdash is destroyed")),f:DFACT["The Second Bais Hamikdash is destroyed"]}),
    Ty('year','when',3405,{show:"Purim",hint:around(idxD("Purim")),f:DFACT["Purim"]}),
@@ -723,10 +756,8 @@
    Ty('year','when',1656,{show:"The Flood",hint:around(idxD("The Flood")),f:DFACT["The Flood"]}),
    TY_("The First Bais Hamikdash is built",Qx("What year was the First Bais Hamikdash built?","בְּאֵיזוֹ שָׁנָה נִבְנָה בַּיִת רִאשׁוֹן?")),
    Ty('year','when',3622,{show:"Chanuka",hint:around(idxD("Chanuka")),f:DFACT["Chanuka"]}),
-   TY_("The Chet Ha'egel",Qx("What year was the Chet Ha'egel?","בְּאֵיזוֹ שָׁנָה הָיָה חֵטְא הָעֵגֶל?")),
    TY_("Bnei Yisrael enter Eretz Yisrael",Qx("What year did Bnei Yisrael enter Eretz Yisrael?","בְּאֵיזוֹ שָׁנָה נִכְנְסוּ בְּנֵי יִשְׂרָאֵל לְאֶרֶץ יִשְׂרָאֵל?")),
    Ty('year','when',3338,{show:"First Bais Hamikdash Destroyed",hint:around(idxD("The First Bais Hamikdash is destroyed")),f:DFACT["The First Bais Hamikdash is destroyed"]}),
-   Pk('mem','first',["The Chet Ha'egel","Matan Torah"],1,{hint:["The Chet Ha'egel","The Ten Makos, the Exodus and Matan Torah"],f:"Moshe Rabbeinu came down from Har Sinai with the Luchos and saw the Egel."}),
    Pk('mem','first',["Purim","The Second Bais Hamikdash is built"],0,{hint:["Purim","The Second Bais Hamikdash is built"],f:"Chazal say that Daryavesh, who allowed the Bais Hamikdash to be built, was the son of Esther."}),
    Pk('mem','first',["Yitzchak is born","The Flood"],1,{hint:["Yitzchak is born","The Flood"]}),
    Pk('mem','first',["Chanuka","The First Bais Hamikdash is destroyed"],1,{hint:["Chanuka","The First Bais Hamikdash is destroyed"]}),
@@ -738,14 +769,14 @@
    Ty('use',Qx("How many years after Chanuka was the Second Bais Hamikdash destroyed?","כַּמָּה שָׁנִים אַחֲרֵי חֲנֻכָּה נֶחֱרַב בַּיִת שֵׁנִי?"),206,{hint:["Chanuka","The Second Bais Hamikdash is destroyed"]}),
    Ty('chal',Qx("This year is 5787. How many years ago was Matan Torah?","הַשָּׁנָה הִיא 5787. לִפְנֵי כַּמָּה שָׁנִים הָיָה מַתַּן תּוֹרָה?"),3339,{hint:[Qx("This year: 5787","הַשָּׁנָה: 5787"),"The Ten Makos, the Exodus and Matan Torah"],f:"Matan Torah was 3,339 years ago, and we still learn the same Torah today!"})],
    plan:[['alive',3,null,0],['order',0,gOrder(poolTo(40),8),1],['what',6,null,0],['year',6,null,0],['mem',2,gMem,3],['use',4,gDiff,2],['chal',1,null,0]]},
-  dates:{shape:'★',name:Qx('Important Dates','תַּאֲרִיכִים חֲשׁוּבִים'),what:Qx('Learn the 12 dates by heart. Tap the year for each event.','לְמַד בְּעַל פֶּה אֶת 12 הַתַּאֲרִיכִים. כְּתֹב אֶת הַשָּׁנָה שֶׁל כׇּל מְאֹרָע.'),range:44,cur:()=>[
+  dates:{shape:'★',name:Qx('Important Dates','תַּאֲרִיכִים חֲשׁוּבִים'),what:Qx('Learn the Important Dates by heart. Tap the year for each event.','לְמַד בְּעַל פֶּה אֶת הַתַּאֲרִיכִים הַחֲשׁוּבִים. בְּחַר אֶת הַשָּׁנָה שֶׁל כׇּל מְאֹרָע.'),range:44,cur:()=>[
    ...shuffle(DATES12.map(([y,k],i)=>Ty('year','when',+y,{ev:k,hint:around(i),f:DFACT[k]}))),
-   Ty('year',Qx('What year is it now?','אֵיזוֹ שָׁנָה עַכְשָׁו?'),5787,{hint:[Qx('Last year was 5786.','שָׁנָה שֶׁעָבְרָה הָיְתָה 5786.')],f:'5787 is the year ה׳תשפ״ז.'})],plan:[['year',13,null,0]]}};
+   Ty('year',Qx('What year is it now?','אֵיזוֹ שָׁנָה עַכְשָׁו?'),5787,{hint:[Qx('Last year was 5786.','שָׁנָה שֶׁעָבְרָה הָיְתָה 5786.')],f:'5787 is the year ה׳תשפ״ז.'})],plan:[['year',12,null,0]]}};
  const UI_={title:Qx('Timeline: Which Came First?','צִיר הַזְּמַן: מָה הָיָה קֹדֶם?'),
   sub:Qx('Lay out your timeline cards. Every right answer adds a card to your timeline. Stuck? Tap Show the dates. Pick a level to begin.','הַנַּח אֶת כַּרְטִיסֵי צִיר הַזְּמַן. כׇּל תְּשׁוּבָה נְכוֹנָה מוֹסִיפָה כַּרְטִיס לַצִּיר שֶׁלְּךָ. צָרִיךְ עֶזְרָה? לְחַץ עַל ״הַרְאֵה אֶת הַשָּׁנִים״. בְּחַר רָמָה כְּדֵי לְהַתְחִיל.'),
   opener:Qx('How a timeline works: every event has a year, counted from the creation of the world. A smaller year happened earlier. A bigger year happened later. So to find which came first, compare the years!','אֵיךְ עוֹבֵד צִיר הַזְּמַן: לְכׇל מְאֹרָע יֵשׁ שָׁנָה, מִבְּרִיאַת הָעוֹלָם. שָׁנָה קְטַנָּה יוֹתֵר הָיְתָה קֹדֶם, וְשָׁנָה גְּדוֹלָה יוֹתֵר הָיְתָה אַחַר כָּךְ. כְּדֵי לָדַעַת מָה הָיָה קֹדֶם, הַשְׁוֵה אֶת הַשָּׁנִים!'),
   qs:Qx('Questions','שְׁאֵלוֹת'),game:Qx('Timeline Game','מִשְׂחַק צִיר הַזְּמַן'),tl:Qx('Your timeline','צִיר הַזְּמַן שֶׁלְּךָ'),dates:Qx('Show the dates','הַרְאֵה אֶת הַשָּׁנִים'),hide:Qx('Hide the dates','הַסְתֵּר אֶת הַשָּׁנִים'),
-  dyk:Qx('Did you know?','הֲיָדַעְתָּ?'),wrong:Qx('Not that one. Look at your cards and try again.','לֹא זֶה. הִסְתַּכֵּל בַּכְּרָטִיסִים וְנַסֵּה שׁוּב.'),
+  dyk:Qx('Did you know?','הֲיָדַעְתָּ?'),wrong:Qx('Not that one. Look at your cards and try again.','לֹא זֶה. הִסְתַּכֵּל בַּכְּרָטִיסִים וְנַסֵּה שׁוּב.'),compare:Qx('Tap Show the dates and compare the years: the smaller year came first.','לְחַץ עַל ״הַרְאֵה אֶת הַשָּׁנִים״ וְהַשְׁוֵה: הַשָּׁנָה הַקְּטַנָּה יוֹתֵר הָיְתָה קֹדֶם.'),
   wrongOrder:Qx('Some cards are out of order. Tap Start over and try again.','חֵלֶק מֵהַכְּרָטִיסִים לֹא בַּסֵּדֶר. לְחַץ עַל ״מֵהַהַתְחָלָה״ וְנַסֵּה שׁוּב.'),over:Qx('Start over','מֵהַהַתְחָלָה'),
   needNum:Qx('Tap a number first.','בְּחַר מִסְפָּר קֹדֶם.'),notYet:Qx('Not yet. Try again.','עוֹד לֹא. נַסֵּה שׁוּב.'),subtract:Qx('Not yet. Subtract the smaller year from the bigger year.','עוֹד לֹא. חַסֵּר אֶת הַשָּׁנָה הַקְּטַנָּה מֵהַשָּׁנָה הַגְּדוֹלָה.'),
   right:Qx('right on the first try','נָכוֹן בַּפַּעַם הָרִאשׁוֹנָה'),practice:Qx('Practice these again','כְּדַאי לְתַרְגֵּל שׁוּב'),perfect:Qx('Every one right on the first try!','הַכֹּל נָכוֹן בַּפַּעַם הָרִאשׁוֹנָה!'),built:Qx('The timeline you built','צִיר הַזְּמַן שֶׁבָּנִיתָ'),
@@ -767,8 +798,12 @@
   const B=bodyEl(); B.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{ snd('tap'); P.tl.lang=b.dataset.lang; save(); tlHome(); });
   B.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{ snd('tap'); if(b.dataset.m==='g') tlGame(b.dataset.k); else tlStart(b.dataset.k); }); }
  let S=null;
+ function meetDates(k){ BACK=tlHome; QUIT=tlHome;
+  frame(L2('The Important Dates','הַתַּאֲרִיכִים הַחֲשׁוּבִים'),'','run',`<div class="clab-card ${HEB()?'dir-rtl':''}"><div class="clab-teach">${E(L2('These are the Important Dates. Read each one out loud: the year, then what happened. Then cover the years with your hand and say them from memory. When you know them, start.','אֵלֶּה הַתַּאֲרִיכִים הַחֲשׁוּבִים. קְרָא כׇּל אֶחָד בְּקוֹל: הַשָּׁנָה, וּמָה קָרָה. אַחַר כָּךְ כַּסֵּה אֶת הַשָּׁנִים בְּיָדְךָ וֶאֱמֹר אוֹתָן בְּעַל פֶּה. כְּשֶׁאַתָּה יוֹדֵעַ אוֹתָן, הַתְחֵל.'))}</div>
+   <div class="clab-wl dts">${DATES12.map(([y,key])=>`<div><b style="font-size:20px">${y}</b><span>${nm(key)}</span></div>`).join('')}</div>${thow('year')}<div class="clab-row clab-center">${T().main(T().WORDS.start,'data-a="go"')}</div></div>`);
+  bodyEl().querySelector('[data-a=go]').onclick=()=>{ snd('tap'); tlStart(k,null,true); }; }
  function cardsIn(q){ const ks=[...(q.opts||[]),...(q.items||[])].filter(k=>typeof k==='string'&&PIC[k]); if(q.show) ks.push(q.show); if(q.ev){ const c=Object.keys(PIC).find(k=>PIC[k]===DPIC[q.ev]); if(c) ks.push(c); } return ks; }
- function tlStart(k,again){ clearTimers(); const Lv=LEVELS[k], qs=again||Lv.build();
+ function tlStart(k,again,met){ clearTimers(); if(!again&&!met&&(k==='l3'||k==='dates')) return meetDates(k); const Lv=LEVELS[k], qs=again||Lv.build();
   const pool=uniq(qs.flatMap(cardsIn)).sort((a,b)=>PIC[a]-PIC[b]);
   S={k,Lv,qs,i:0,first:0,missed:[],pool,got:new Set()}; tlRender(); }
  const tlTop=()=>`<div class="clab-row" style="justify-content:space-between">${pill('subj',S.Lv.shape+' '+L2(S.Lv.name.en,S.Lv.name.he))}${pill('prog',(Math.min(S.i+1,S.qs.length))+' / '+S.qs.length)}</div><div class="clab-bar"><i style="width:${Math.round(S.i/S.qs.length*100)}%"></i></div>
@@ -796,9 +831,9 @@
   const solve=()=>{ solved=true; if(tries===0&&!S.usedHint) S.first++; else S.missed.push(q); snd('right');
    const add=cardsIn(q).filter(k=>!S.got.has(k)); const keep=q.t==='order'?add:add.filter(k=>k===q.show||(q.ev&&PIC[k]===DPIC[q.ev])||(q.opts&&q.opts[q.ans]===k)); keep.forEach(k=>S.got.add(k));
    const pr=pick(UI_.praise); fb(L2(pr.en,pr.he),true);
-   if(q.f) B.querySelector('.factbox').innerHTML=`<div class="fact"><b>${E(u('dyk'))}</b><div style="direction:ltr;text-align:left">${E(q.f)}</div></div>`;
+   if(q.f) B.querySelector('.factbox').innerHTML=`<div class="fact"><b>${E(u('dyk'))}</b><div ${HEB()&&FHE[q.f]?'dir="rtl"':'style="direction:ltr;text-align:left"'}>${E(factOf(q.f))}</div></div>`;
    B.querySelector('.nxr').innerHTML=T().main(T().WORDS.next,'data-a="nx"'); const nx=B.querySelector('[data-a=nx]'); nx.onclick=()=>{ snd('tap'); S.i++; tlRender(); }; try{ nx.scrollIntoView({block:'nearest'}); }catch(e){} };
-  if(q.t==='pick') B.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ if(solved||b.classList.contains('wrong')) return; if(+b.dataset.i===q.ans){ b.classList.add('right'); B.querySelectorAll('.clab-opt').forEach(o=>o.disabled=true); solve(); } else { b.classList.add('wrong'); tries++; snd('wrong'); fb(u('wrong'),false); } });
+  if(q.t==='pick') B.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ if(solved||b.classList.contains('wrong')) return; if(+b.dataset.i===q.ans){ b.classList.add('right'); B.querySelectorAll('.clab-opt').forEach(o=>o.disabled=true); solve(); } else { b.classList.add('wrong'); tries++; snd('wrong'); fb(u('wrong')+(['first','last','fl','mem','ba','between'].indexOf(q.part)>=0?' '+u('compare'):''),false); } });
   if(q.t==='order'){ const reset=()=>{ if(solved) return; order=[]; B.querySelectorAll('.clab-opt').forEach(o=>{ o.classList.remove('picked','wrong'); const n=o.querySelector('.num'); if(n) n.remove(); }); B.querySelector('.fbx').innerHTML=''; };
    B.querySelector('[data-a=undo]').onclick=reset;
    B.querySelectorAll('.clab-opt').forEach(b=>b.onclick=()=>{ if(solved||b.classList.contains('picked')) return; b.classList.add('picked'); order.push(+b.dataset.i); snd('tap'); b.insertAdjacentHTML('afterbegin',`<span class="num">${order.length}</span>`);
