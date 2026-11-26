@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Equal parts</title>
+<!-- Tashbar Math Ladder, rung FR1 "Equal parts" (a SAMPLE lesson for Mrs. Khaver; plan: v2/curriculum/math-ladder/).
+     One skill: equal parts are the same size. Check by laying one part on the other, or by counting the squares.
+     Same size, not the same shape. Two equal parts are halves; four equal parts are fourths.
+     Order: the lesson (Ari and Yanky share a chocolate bar) -> a clap chant -> "Watch me" -> his turn: equal or not? ->
+     he checks (lays one part on the other, or counts) -> he cuts -> two Mistake Detectives -> fourths -> a check with no hand -> stars.
+     No reading needed: every instruction is spoken; the speaker button repeats it; the light bulb shows "How to do it".
+     The 3D table and food are drawn here (three.js, MIT licence, lib/). Add ?fast=1 for the automatic test. -->
+<style>
+:root{ --bg:#F6F1E7; --ink:#1F2A44; --card:#FFFFFF; --line:#E4DCCB; --green:#1E9E5A; --gold:#F5B400; --red:#D9534F; }
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow:hidden; user-select:none; -webkit-user-select:none; touch-action:none; }
+#view{ position:fixed; inset:0; display:block; width:100%; height:100%; touch-action:none; }
+.hud{ position:fixed; left:0; right:0; top:0; display:grid; grid-template-columns:96px 1fr 96px; justify-items:center; align-items:center; padding:10px 16px; pointer-events:none; z-index:3; }
+.hud > *{ pointer-events:auto; }
+.btn{ border:0; cursor:pointer; display:grid; place-items:center; border-radius:999px; min-width:72px; min-height:72px; background:var(--card); box-shadow:0 4px 0 var(--line), 0 6px 18px rgba(31,42,68,.12); }
+.btn:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--line); }
+.btn:focus-visible{ outline:4px solid #7FB3FF; outline-offset:3px; }
+#again,#help{ width:84px; height:84px; visibility:hidden; transition:opacity .25s; }
+#again svg,#help svg{ width:42px; height:42px; }
+#again.wait{ opacity:.45; }
+.dots{ display:flex; gap:7px; background:rgba(255,255,255,.8); padding:8px 12px; border-radius:999px; }
+.dots i{ width:12px; height:12px; border-radius:50%; background:var(--line); display:block; transition:background .3s; }
+.dots i.on{ background:var(--green); }
+#start{ position:fixed; left:50%; top:50%; width:170px; height:170px; margin:-85px 0 0 -85px; background:var(--green); box-shadow:0 8px 0 #157A45, 0 14px 34px rgba(30,158,90,.4); animation:pulse 1.4s ease-in-out infinite; z-index:4; }
+#start svg{ width:84px; height:84px; }
+@keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.07);} }
+#hand{ position:fixed; width:84px; height:84px; margin:-6px 0 0 -26px; pointer-events:none; display:none; filter:drop-shadow(0 6px 6px rgba(0,0,0,.25)); z-index:6; transition:left .7s ease, top .7s ease; }
+.bar{ position:fixed; left:0; right:0; bottom:22px; display:none; justify-content:center; gap:28px; z-index:4; }
+.bar.show{ display:flex; }
+.bar .btn{ width:112px; height:112px; }
+.bar svg{ width:66px; height:66px; }
+.shake{ animation:shake .45s; }
+@keyframes shake{ 0%,100%{ transform:none;} 20%,60%{ transform:translateX(-10px);} 40%,80%{ transform:translateX(10px);} }
+#howto{ position:fixed; right:16px; top:104px; width:min(330px,calc(100vw - 32px)); background:#FFFBEA; border:3px solid #F2D37A; border-radius:22px; padding:14px 16px; display:none; z-index:5; box-shadow:0 10px 30px rgba(0,0,0,.12); font-size:19px; line-height:1.35; }
+#howto.show{ display:block; }
+#howto b{ display:block; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:#9A6B00; margin-bottom:6px; }
+#howto ol{ margin:0; padding-left:24px; display:grid; gap:6px; }
+#howto .pic{ display:flex; gap:10px; align-items:center; margin-top:10px; }
+#howto .pic svg{ width:120px; height:44px; flex:none; }
+.end{ position:fixed; left:0; right:0; top:104px; display:none; flex-direction:column; align-items:center; gap:18px; z-index:4; }
+.end.show{ display:flex; }
+.stars{ display:flex; gap:14px; }
+.stars svg{ width:min(18vmin,104px); height:min(18vmin,104px); }
+.star{ transform:scale(0); }
+.star.pop{ animation:pops .45s cubic-bezier(.3,1.6,.5,1) forwards; }
+@keyframes pops{ to{ transform:scale(1);} }
+.endrow{ position:fixed; left:0; right:0; bottom:24px; display:flex; justify-content:center; gap:28px; }
+.endrow .btn{ width:104px; height:104px; }
+.endrow svg{ width:46px; height:46px; }
+#clapBtn{ position:fixed; left:50%; bottom:28px; width:132px; height:132px; margin-left:-66px; display:none; background:#FFF4D6; box-shadow:0 6px 0 #E8C36A, 0 10px 24px rgba(0,0,0,.12); z-index:4; }
+#clapBtn.show{ display:grid; }
+#clapBtn.beat{ animation:beat .25s ease-out; }
+@keyframes beat{ 0%{ transform:scale(1.18);} 100%{ transform:scale(1);} }
+#clapBtn svg{ width:84px; height:84px; }
+#nogl{ position:fixed; inset:0; display:none; place-items:center; text-align:center; padding:24px; font-size:22px; }
+.fast *{ animation-duration:.01s !important; transition-duration:.01s !important; animation-iteration-count:1 !important; }
+@media (min-width:900px){ #howto{ top:auto; bottom:150px; left:16px; right:auto; width:300px; } }
+@media (max-width:520px){ .bar .btn{ width:96px; height:96px; } .bar svg{ width:56px; height:56px; } #howto{ top:auto; bottom:136px; font-size:17px; } }
+</style>
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<canvas id="view"></canvas>
+<div class="hud">
+  <button class="btn" id="again" aria-label="Hear it again"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#1F2A44"/><path d="M33 16c3 2 5 5 5 8s-2 6-5 8M37 10c5 3 8 8 8 14s-3 11-8 14" stroke="#1F2A44" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></button>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+  <button class="btn" id="help" aria-label="How to do it"><svg viewBox="0 0 48 48"><path d="M24 6c-8 0-14 6-14 13.5 0 5 2.6 8 5 10.4 1.4 1.4 2 3 2 4.6V36h14v-1.5c0-1.6.6-3.2 2-4.6 2.4-2.4 5-5.4 5-10.4C38 12 32 6 24 6z" fill="#F5B400" stroke="#9A6B00" stroke-width="2.5" stroke-linejoin="round"/><rect x="17" y="38" width="14" height="4.5" rx="2" fill="#9A6B00"/></svg></button>
+</div>
+<button class="btn" id="start" aria-label="Start"><svg viewBox="0 0 48 48"><path d="M16 10 L38 24 L16 38Z" fill="#fff" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg></button>
+<svg id="hand" viewBox="-50 -60 100 110"><path d="M-10 0 L-10 -46 C-10 -56 6 -56 6 -46 L6 -22 L6 -26 C6 -34 20 -34 20 -26 L20 -20 C20 -28 34 -28 34 -20 L34 -14 C34 -22 46 -22 46 -14 L46 14 C46 36 30 46 12 46 L0 46 C-12 46 -18 38 -24 30 L-40 6 C-46 -2 -36 -10 -28 -4 L-10 10Z" fill="#FFFFFF" stroke="#1F2A44" stroke-width="4" stroke-linejoin="round"/></svg>
+<!-- equal or not equal -->
+<div class="bar" id="judge">
+  <button class="btn" id="yes" aria-label="Equal parts" style="background:#E3F6EA;box-shadow:0 6px 0 #9ED9B5"><svg viewBox="0 0 64 64"><rect x="6" y="14" width="24" height="36" rx="4" fill="#1E9E5A"/><rect x="34" y="14" width="24" height="36" rx="4" fill="#1E9E5A"/></svg></button>
+  <button class="btn" id="no" aria-label="Not equal parts" style="background:#FDE8E6;box-shadow:0 6px 0 #F2B8B2"><svg viewBox="0 0 64 64"><rect x="4" y="14" width="36" height="36" rx="4" fill="#D9534F"/><rect x="44" y="14" width="16" height="36" rx="4" fill="#D9534F"/></svg></button>
+</div>
+<!-- is he right? -->
+<div class="bar" id="right">
+  <button class="btn" id="thumbUp" aria-label="He is right" style="background:#E3F6EA;box-shadow:0 6px 0 #9ED9B5"><svg viewBox="0 0 64 64"><path d="M10 30h10v24H10zM24 30l10-18c2-3 7-2 7 2l-2 12h13c3 0 5 3 4 6l-5 16c-1 3-3 4-6 4H24z" fill="#1E9E5A" stroke="#157A45" stroke-width="2" stroke-linejoin="round"/></svg></button>
+  <button class="btn" id="thumbDown" aria-label="He made a mistake" style="background:#FDE8E6;box-shadow:0 6px 0 #F2B8B2"><svg viewBox="0 0 64 64"><g transform="rotate(180 32 32)"><path d="M10 30h10v24H10zM24 30l10-18c2-3 7-2 7 2l-2 12h13c3 0 5 3 4 6l-5 16c-1 3-3 4-6 4H24z" fill="#D9534F" stroke="#A83A36" stroke-width="2" stroke-linejoin="round"/></g></svg></button>
+</div>
+<!-- cutting -->
+<div class="bar" id="cutbar">
+  <button class="btn" id="undo" aria-label="Start over" style="width:88px;height:88px;align-self:center"><svg viewBox="0 0 48 48" style="width:44px;height:44px"><path d="M14 18 A14 14 0 1 1 12 30" stroke="#1F2A44" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M8 10 L14 20 L22 13Z" fill="#1F2A44"/></svg></button>
+  <button class="btn" id="done" aria-label="Check my cut" style="background:var(--green);box-shadow:0 6px 0 #157A45"><svg viewBox="0 0 64 64"><path d="M14 33 L27 46 L51 18" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<div id="howto" role="dialog" aria-label="How to do it"><b>How to do it</b><ol id="howlist"></ol>
+  <div class="pic"><svg viewBox="0 0 120 44"><rect x="4" y="8" width="52" height="28" rx="4" fill="#8B5A2B"/><rect x="64" y="8" width="52" height="28" rx="4" fill="#8B5A2B"/><path d="M60 2v40" stroke="#D9534F" stroke-width="3" stroke-dasharray="5 4"/></svg><span>Same size = equal parts</span></div></div>
+<div class="end" id="end"><div class="stars" id="stars"></div>
+  <div class="endrow">
+    <button class="btn" id="replay" aria-label="Play again"><svg viewBox="0 0 48 48"><path d="M36 16 A14 14 0 1 0 38 28" stroke="#1F2A44" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M30 8 L38 16 L28 20Z" fill="#1F2A44"/></svg></button>
+    <button class="btn" id="print" aria-label="Print this page"><svg viewBox="0 0 48 48"><rect x="12" y="6" width="24" height="12" rx="2" fill="none" stroke="#1F2A44" stroke-width="3.5"/><rect x="6" y="18" width="36" height="16" rx="4" fill="#1F2A44"/><rect x="12" y="28" width="24" height="14" rx="2" fill="#fff" stroke="#1F2A44" stroke-width="3.5"/></svg></button>
+  </div></div>
+<button class="btn" id="clapBtn" aria-label="Clap"><svg viewBox="0 0 64 64"><g fill="#F2C9A0" stroke="#B5742A" stroke-width="2.5" stroke-linejoin="round"><path d="M18 52 C10 44 8 34 12 24 L20 12 C22 9 26 10 25 14 L22 22 L32 8 C34 5 38 7 36 11 L30 22 L38 12 C40 9 44 11 42 15 L34 28 L40 22 C42 20 46 22 44 25 L34 42 C30 50 24 56 18 52Z"/></g><path d="M48 8 l4 -4 M54 16 l6 -2 M50 26 l6 2" stroke="#E8A13A" stroke-width="3" stroke-linecap="round"/></svg></button>
+<div id="nogl">This computer cannot show the 3D lesson.</div>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from './lib/RoomEnvironment.js';
+import { RoundedBoxGeometry } from './lib/RoundedBoxGeometry.js';
+
+const FAST = /[?&]fast=1/.test(location.search);
+if (FAST) document.documentElement.classList.add('fast');
+const $ = s => document.querySelector(s);
+const W = window.__eq = { name: 'start', ready: false, said: [], misses: 0, checkRight: 0, checkAsked: 0, stars: 0, done: false, again: 0, help: 0, log: [] };
+const wait = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
+const setName = n => { W.name = n; W.log.push(n); };
+
+/* ---------------- the 3D kitchen table ---------------- */
+const canvas = $('#view');
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: FAST }); }
+catch (e) { $('#nogl').style.display = 'grid'; $('#start').style.display = 'none'; throw e; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.82; renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#F3E6D0');
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 120);
+scene.add(new THREE.HemisphereLight('#FFF6E8', '#C9B48E', 0.5));
+const sun = new THREE.DirectionalLight('#FFF1DC', 1.8);
+sun.position.set(-4, 12, 6); sun.castShadow = true; sun.shadow.mapSize.set(FAST ? 512 : 2048, FAST ? 512 : 2048); sun.shadow.radius = 5; sun.shadow.bias = -0.0004;
+Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 30 }); scene.add(sun);
+
+const std = (color, rough = 0.6, extra = {}) => new THREE.MeshStandardMaterial(Object.assign({ color, roughness: rough }, extra));
+{ /* wall with a window and a shelf of seforim, a wooden table with a white cloth and a blue stripe, and a cutting board */
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(70, 24), std('#F4E3C6', 0.95)); wall.position.set(0, 6, -9); scene.add(wall);
+  const frame = new THREE.Mesh(new RoundedBoxGeometry(5, 3.6, 0.3, 3, 0.1), std('#FFFFFF', 0.5)); frame.position.set(-5, 5.2, -8.85); scene.add(frame);
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(4.4, 3), std('#BFE3FF', 0.4, { emissive: '#CFEAFF', emissiveIntensity: 0.6 })); glass.position.set(-5, 5.2, -8.68); scene.add(glass);
+  const shelf = std('#B87842'); [3.4, 5.2].forEach(y => { const s = new THREE.Mesh(new RoundedBoxGeometry(4.4, 0.16, 0.9, 2, 0.05), shelf); s.position.set(5, y, -8.5); s.castShadow = true; scene.add(s); });
+  const spines = ['#7A1F2B', '#1F3A6B', '#2E5D3A', '#5B2A6E', '#8A5A1E', '#1F3A6B', '#7A1F2B'];
+  [3.48, 5.28].forEach((y, r) => { let x = 3.1; spines.forEach((c, i) => { const h = 1.0 + ((i * 7 + r * 3) % 4) * 0.08, w = 0.3 + (i % 3) * 0.05;
+    const bk = new THREE.Mesh(new RoundedBoxGeometry(w, h, 0.7, 2, 0.03), std(c)); bk.position.set(x + w / 2, y + h / 2, -8.5); scene.add(bk); x += w + 0.05; }); });
+  const table = new THREE.Mesh(new RoundedBoxGeometry(17, 0.6, 10, 3, 0.2), std('#B07A4A', 0.55)); table.position.set(0, -0.3, 0); table.receiveShadow = true; scene.add(table);
+  const cloth = new THREE.Mesh(new THREE.BoxGeometry(14, 0.04, 8), std('#FFFFFF', 0.9)); cloth.position.set(0, 0.02, 0); cloth.receiveShadow = true; scene.add(cloth);
+  [-3.4, 3.4].forEach(z => { const st = new THREE.Mesh(new THREE.BoxGeometry(14, 0.045, 0.28), std('#3D6FB6', 0.9)); st.position.set(0, 0.025, z); scene.add(st); });
+  const board = new THREE.Mesh(new RoundedBoxGeometry(8.6, 0.22, 4.6, 3, 0.1), std('#D9A86C', 0.6)); board.position.set(0, 0.13, 0.2); board.receiveShadow = true; board.castShadow = true; scene.add(board);
+}
+const TOP = 0.24;   /* the board's top */
+
+/* ---------------- food made of squares ---------------- */
+const S = 1.06, FOOD = {
+  bar:   { body: '#3A1C0C', top: '#4A2510', h: 0.42, name: 'chocolate bar' },
+  cake:  { body: '#F0CF8E', top: '#9C5520', h: 0.72, name: 'honey cake' },
+  kugel: { body: '#E9D27A', top: '#C9A227', h: 0.62, name: 'kugel' },
+};
+const cellGeo = {}; const geoFor = h => cellGeo[h] || (cellGeo[h] = new RoundedBoxGeometry(S - 0.07, h, S - 0.07, 3, 0.07));
+const litMat = std('#FFD54A', 0.4, { emissive: '#FFB300', emissiveIntensity: 0.55 });
+const litMats = [litMat, std('#9FD4FF', 0.4, { emissive: '#3D8FE0', emissiveIntensity: 0.45 })];
+const redMat = std('#F07C74', 0.5, { emissive: '#D9534F', emissiveIntensity: 0.35 });
+let item = null;
+/* pieces(c, r) -> piece number; null = one whole */
+function makeItem(kind, cols, rows, pieces) {
+  const f = FOOD[kind], g = new THREE.Group(); g.position.y = TOP; scene.add(g);
+  const it = { kind, cols, rows, g, cells: [], groups: [], cuts: new Set(), grooves: [] };
+  const mats = [std(f.body, 0.55), std(f.body, 0.55), std(f.top, 0.45), std(f.body, 0.7), std(f.body, 0.55), std(f.body, 0.55)];
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const m = new THREE.Mesh(geoFor(f.h), mats); m.castShadow = true; m.receiveShadow = true;
+    m.position.set((c - (cols - 1) / 2) * S, f.h / 2, (r - (rows - 1) / 2) * S);
+    m.userData = { c, r, base: mats }; it.cells.push({ c, r, m });
+  }
+  group(it, pieces || (() => 0)); fitTo(cols, rows);
+  it.g.scale.setScalar(0.01); tween(380, k => it.g.scale.setScalar(Math.max(0.01, ease(k))));
+  return it;
+}
+function group(it, pieces) {
+  it.groups.forEach(gr => it.g.remove(gr)); it.groups = [];
+  it.cells.forEach(cl => { cl.p = pieces(cl.c, cl.r); });
+  const n = Math.max(...it.cells.map(cl => cl.p)) + 1;
+  for (let i = 0; i < n; i++) { const gr = new THREE.Group(); gr.userData.cells = it.cells.filter(cl => cl.p === i); gr.userData.cells.forEach(cl => gr.add(cl.m)); it.g.add(gr); it.groups.push(gr); }
+}
+function dropItem() { const it = item; item = null; if (!it) return Promise.resolve(); clearGrooves(it);
+  return tween(280, k => it.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => scene.remove(it.g)); }
+const sizes = it => it.groups.map(gr => gr.userData.cells.length);
+const centroid = gr => { const cs = gr.userData.cells; return { x: cs.reduce((a, c) => a + c.m.position.x, 0) / cs.length, z: cs.reduce((a, c) => a + c.m.position.z, 0) / cs.length }; };
+function spread(it, amt, ms = 450) {
+  const goals = it.groups.map(gr => { const c = centroid(gr); const sx = Math.abs(c.x) < 0.01 ? 0 : Math.sign(c.x), sz = Math.abs(c.z) < 0.01 ? 0 : Math.sign(c.z); return new THREE.Vector3(sx * amt, 0, (sx === 0 || it.groups.length > 2) ? sz * amt * 1.7 : 0); });
+  const starts = it.groups.map(gr => gr.position.clone());
+  if (amt) chop();
+  return tween(ms, k => it.groups.forEach((gr, i) => gr.position.lerpVectors(starts[i], goals[i], ease(k))));
+}
+/* lay the smaller part on the bigger one; the left-over squares glow red */
+function layOn(it) {
+  const [a0, b0] = it.groups, big = sizes(it)[0] >= sizes(it)[1] ? a0 : b0, small = big === a0 ? b0 : a0;
+  const bc = big.userData.cells, sc = small.userData.cells;
+  const minC = cs => ({ c: Math.min(...cs.map(x => x.c)), r: Math.min(...cs.map(x => x.r)) });
+  const mb = minC(bc), ms = minC(sc), dc = mb.c - ms.c, dr = mb.r - ms.r;
+  const key = (c, r) => c + ',' + r, under = new Set(sc.map(x => key(x.c + dc, x.r + dr)));
+  const left = bc.filter(x => !under.has(key(x.c, x.r))), match = !left.length && sc.length === bc.length;
+  const from = small.position.clone(), to = big.position.clone().add(new THREE.Vector3(dc * S, FOOD[it.kind].h + 0.04, dr * S));
+  return tween(900, k => { const e = ease(k); small.position.lerpVectors(from, to, e); small.position.y += Math.sin(Math.PI * e) * 1.4; })
+    .then(() => { left.forEach(x => { x.m.material = redMat; }); return match; })
+    .then(m => wait(900).then(() => m));
+}
+function liftOff(it) {
+  const [a0, b0] = it.groups, small = sizes(it)[0] >= sizes(it)[1] ? b0 : a0, from = small.position.clone(), to = from.clone(); to.y = 0;
+  const sgn = centroid(small).x >= 0 ? 1 : -1; to.x = sgn * 0.6; to.z = 0;
+  it.cells.forEach(x => { x.m.material = x.m.userData.base; });
+  return tween(700, k => { const e = ease(k); small.position.lerpVectors(from, to, e); small.position.y += Math.sin(Math.PI * e) * 1.2; });
+}
+/* count the squares in each part: they light up one by one, with the number above */
+const numSprites = [];
+function numSprite(n) {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128; const x = cv.getContext('2d');
+  x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(64, 64, 56, 0, 7); x.fill(); x.lineWidth = 8; x.strokeStyle = '#1F2A44'; x.stroke();
+  x.fillStyle = '#1F2A44'; x.font = 'bold 72px system-ui,sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(n), 64, 68);
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, toneMapped: false })); sp.scale.set(0.46, 0.46, 1); sp.renderOrder = 9; return sp;
+}
+const NUMW = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+const cap = s => s[0].toUpperCase() + s.slice(1);
+function numAt(it, cl, n) { const sp = numSprite(n), p = new THREE.Vector3(); cl.m.getWorldPosition(p); sp.position.copy(p).setY(p.y + FOOD[it.kind].h / 2 + 0.55); scene.add(sp); numSprites.push(sp); }
+function clearCount(it) { numSprites.splice(0).forEach(sp => scene.remove(sp)); if (it) it.cells.forEach(x => { x.m.material = x.m.userData.base; x.lit = false; }); if (it) it.counted = false; }
+async function countPart(it, gr, i0) {
+  const cs = gr.userData.cells.slice().sort((a, b) => a.r - b.r || a.c - b.c);
+  for (let i = 0; i < cs.length; i++) { cs[i].m.material = litMats[i0 % 2]; plink(i); numAt(it, cs[i], i + 1); await wait(330); }
+  await say(cap(NUMW[cs.length]) + '.');
+}
+/* count every part (part 1 yellow, part 2 blue); keep = leave the numbers up for explain() to clear */
+async function countAll(it, keep) { for (let i = 0; i < it.groups.length; i++) await countPart(it, it.groups[i], i); if (!keep) { await wait(300); clearCount(it); } }
+
+/* ---------------- cutting lines he taps ---------------- */
+const grooveMat = new THREE.MeshBasicMaterial({ color: '#1F2A44', transparent: true, opacity: 0.5, depthTest: false });
+const knifeMat = new THREE.MeshBasicMaterial({ color: '#D9534F', depthTest: false });
+const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
+function showGrooves(it) {
+  const h = FOOD[it.kind].h + 0.03;
+  const add = (vert, k) => { const len = (vert ? it.rows : it.cols) * S;
+    const line = new THREE.Mesh(new THREE.BoxGeometry(vert ? 0.13 : len, 0.02, vert ? len : 0.13), grooveMat); line.renderOrder = 8;
+    const hit = new THREE.Mesh(new THREE.BoxGeometry(vert ? 0.85 : len, 0.3, vert ? len : 0.85), hitMat);
+    const pos = vert ? new THREE.Vector3((k - it.cols / 2) * S, h, 0) : new THREE.Vector3(0, h, (k - it.rows / 2) * S);
+    line.position.copy(pos); hit.position.copy(pos); it.g.add(line); it.g.add(hit);
+    const gv = { id: (vert ? 'v' : 'h') + k, vert, k, line, hit }; hit.userData.groove = gv; it.grooves.push(gv); };
+  for (let k = 1; k < it.cols; k++) add(true, k);
+  for (let k = 1; k < it.rows; k++) add(false, k);
+}
+function clearGrooves(it) { it.grooves.forEach(gv => { it.g.remove(gv.line); it.g.remove(gv.hit); }); it.grooves = []; it.cuts.clear(); W.cuts = []; }
+function toggleCut(gv) { if (it_locked) return; if (item.cuts.has(gv.id)) { item.cuts.delete(gv.id); gv.line.material = grooveMat; gv.line.scale.set(1, 1, 1); }
+  else { item.cuts.add(gv.id); gv.line.material = knifeMat; gv.line.scale.set(gv.vert ? 1.6 : 1, 1, gv.vert ? 1 : 1.6); chop(); } W.cuts = [...item.cuts]; }
+let it_locked = true;
+/* which pieces do his cuts make? squares stay together unless a cut runs between them */
+function piecesFromCuts(it) {
+  const id = {}, key = (c, r) => c + ',' + r; let n = 0;
+  const sep = (c1, r1, c2, r2) => r1 === r2 ? it.cuts.has('v' + Math.max(c1, c2)) : it.cuts.has('h' + Math.max(r1, r2));
+  for (let r = 0; r < it.rows; r++) for (let c = 0; c < it.cols; c++) { if (id[key(c, r)] != null) continue;
+    const st = [[c, r]]; id[key(c, r)] = n;
+    while (st.length) { const [x, y] = st.pop(); [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => { const a = x + dx, b = y + dy;
+      if (a < 0 || b < 0 || a >= it.cols || b >= it.rows || id[key(a, b)] != null || sep(x, y, a, b)) return; id[key(a, b)] = n; st.push([a, b]); }); }
+    n++; }
+  return (c, r) => id[key(c, r)];
+}
+
+/* ---------------- camera, picking, animation ---------------- */
+/* the camera frames the food on the table: wide enough for its width, tall enough for its depth, seen from a little above */
+const look = new THREE.Vector3(0, 0.35, 0.15), fit = { w: 6.2, d: 3.6 };
+function placeCam() {
+  const vfov = THREE.MathUtils.degToRad(camera.fov), hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
+  const d = Math.max(fit.w / (2 * Math.tan(hfov / 2)), fit.d / (2 * Math.tan(vfov / 2))) * (camera.aspect < 0.8 ? 1.0 : 1.12);
+  camera.position.copy(look).add((camera.aspect < 0.8 ? new THREE.Vector3(0, 0.80, 0.60) : new THREE.Vector3(0, 0.66, 0.75)).normalize().multiplyScalar(d)); camera.lookAt(look); camera.updateProjectionMatrix();
+}
+function fitTo(cols, rows) { const w0 = fit.w, d0 = fit.d, w1 = cols * S + (camera.aspect < 0.8 ? 1.5 : 2.0), d1 = rows * S + 2.4;
+  return tween(500, k => { const e = ease(k); fit.w = w0 + (w1 - w0) * e; fit.d = d0 + (d1 - d0) * e; placeCam(); }); }
+function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; placeCam(); }
+addEventListener('resize', resize);
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+function toScreen(v) { const p = v.clone().project(camera); return { x: (p.x + 1) / 2 * innerWidth, y: (1 - p.y) / 2 * innerHeight }; }
+canvas.addEventListener('pointerdown', e => {
+  if (!item || !item.grooves.length || it_locked) return; scene.updateMatrixWorld();
+  ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
+  const hits = ray.intersectObjects(item.grooves.map(g => g.hit), false); if (hits.length) toggleCut(hits[0].object.userData.groove);
+});
+W.groovePts = () => item ? (scene.updateMatrixWorld(), camera.updateMatrixWorld(), item.grooves).map(g => { const p = new THREE.Vector3(); g.line.getWorldPosition(p); return Object.assign({ id: g.id, on: item.cuts.has(g.id) }, toScreen(p)); }) : [];
+W.sizes = () => item ? sizes(item) : [];
+const tweens = [], ease = k => k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+function tween(ms, fn) { return new Promise(res => { if (FAST) { fn(1); return res(); } tweens.push({ t0: performance.now(), ms, fn, res }); }); }
+function frame() { requestAnimationFrame(frame); const now = performance.now();
+  for (let i = tweens.length - 1; i >= 0; i--) { const t = tweens[i], k = Math.min(1, (now - t.t0) / t.ms); t.fn(k); if (k >= 1) { tweens.splice(i, 1); t.res(); } }
+  if (handTarget) placeHand(); if (!FAST) renderer.render(scene, camera); }
+W.render = () => renderer.render(scene, camera);   /* the automatic test draws only when it looks */
+
+/* ---------------- sound ---------------- */
+let AC = null;
+function ac() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
+function tone(freqs, type, gap, len, vol) { const c = ac(); if (!c || FAST) return; const t = c.currentTime;
+  freqs.forEach((f, i) => { const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t + i * gap); g.gain.linearRampToValueAtTime(vol, t + i * gap + .02); g.gain.exponentialRampToValueAtTime(.001, t + i * gap + len);
+    o.connect(g); g.connect(c.destination); o.start(t + i * gap); o.stop(t + i * gap + len + .05); }); }
+const chime = ok => ok ? tone([660, 880, 1320], 'sine', .1, .35, .14) : tone([330, 262], 'sine', .14, .3, .14);
+const plink = i => tone([784 + (i || 0) * 60], 'triangle', 0, .16, .1);
+function noise(len, freq, vol) { const c = ac(); if (!c || FAST) return; const n = c.sampleRate * len, b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 4);
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = b; f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = .8; g.gain.value = vol; s.connect(f); f.connect(g); g.connect(c.destination); s.start(); }
+const chop = () => noise(.09, 2600, .35), clap = () => noise(.12, 1400, .5);
+
+/* ---------------- the voice: the school's teacher voice, else the device voice ---------------- */
+const TTS = 'https:' + '/' + '/' + 'tts-q26c275eaa-uk.a.run.app', vcache = {}; let vtok = 0, audio = null;
+function hush() { vtok++; try { if (audio) audio.pause(); } catch (e) {} audio = null; try { speechSynthesis.cancel(); } catch (e) {} }
+function say(t) {
+  W.said.push(t); if (FAST) return Promise.resolve();
+  const my = vtok;
+  return new Promise(done => {
+    let fin = false; const end = () => { if (!fin) { fin = true; done(); } };
+    setTimeout(end, t.length * 85 + 2500);
+    const dev = () => { if (my !== vtok) return end(); try { const u = new SpeechSynthesisUtterance(t); u.rate = 0.9; u.pitch = 1.1; u.onend = end; u.onerror = end; speechSynthesis.speak(u); } catch (e) { end(); } };
+    const playUrl = url => { if (my !== vtok) return end(); const a = new Audio(url); audio = a; a.onended = end; a.onerror = dev; const p = a.play(); if (p && p.catch) p.catch(dev); };
+    if (vcache[t]) return playUrl(vcache[t]);
+    Promise.race([
+      fetch(TTS, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: t, voice: 'teacher' }) })
+        .then(r => r.json()).then(j => { if (j && j.ok && j.url) { vcache[t] = j.url; return j.url; } throw new Error('tts'); }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('slow')), 1800))
+    ]).then(playUrl).catch(dev);
+  });
+}
+function preload(lines) { if (FAST) return; lines.forEach(t => { if (!vcache[t]) fetch(TTS, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: t, voice: 'teacher' }) }).then(r => r.json()).then(j => { if (j && j.ok && j.url) vcache[t] = j.url; }).catch(() => {}); }); }
+/* a script: "spoken line" | {wait:ms} | function returning a promise */
+let runTok = 0, busy = false, task = null;
+const againBtn = $('#again');
+function play(script) {
+  const my = ++runTok; busy = true; againBtn.classList.add('wait'); hush();
+  return script.reduce((p, s) => p.then(() => { if (my !== runTok) return;
+    if (typeof s === 'string') return say(s); if (typeof s === 'function') return s(); if (s.wait) return wait(s.wait); }), Promise.resolve())
+    .then(() => { if (my === runTok) { busy = false; againBtn.classList.remove('wait'); } return my === runTok; });
+}
+againBtn.onclick = () => { W.again++; hush(); if (task) task.reduce((p, s) => p.then(() => say(s)), Promise.resolve()); };
+
+/* ---------------- "How to do it" (every question) ---------------- */
+const HOW = {
+  judge: { list: ['Lay one part on the other. Do they match?', 'Or count the squares in each part.', 'Same size? Then they are equal parts.'], say: 'Lay one part on the other. Or count the squares.' },
+  right: { list: ['Count the squares in each part.', 'Same number? Then they are equal parts.', 'Is he right? Tap the thumb.'], say: 'Count the squares in each part. Are they the same?' },
+  cut: { list: ['Tap a line to cut there.', 'Count the squares in each part.', 'Every part the same size? Tap the check.'], say: 'Tap a line. Then count the squares in each part.' },
+};
+let howKey = null;
+function setHow(k) { howKey = k; $('#help').style.visibility = k ? 'visible' : 'hidden'; if (!k) $('#howto').classList.remove('show'); }
+$('#help').onclick = () => { if (!howKey) return; W.help++; const h = HOW[howKey], box = $('#howto');
+  if (box.classList.contains('show')) { box.classList.remove('show'); return; }
+  $('#howlist').innerHTML = h.list.map(x => '<li>' + x + '</li>').join(''); box.classList.add('show'); hush(); say(h.say); };
+
+/* ---------------- progress dots and the "watch me" hand ---------------- */
+const STEPS = 6;   /* learn, watch, equal or not, cut, Mistake Detective, show what you know */
+function dots(n) { $('#dots').innerHTML = Array.from({ length: STEPS }, (_, i) => '<i' + (i < n ? ' class="on"' : '') + '></i>').join(''); }
+const hand = $('#hand'); let handTarget = null;
+function placeHand() { const r = handTarget.getBoundingClientRect(); hand.style.left = (r.left + r.width / 2) + 'px'; hand.style.top = (r.top + r.height / 2) + 'px'; }
+function pointAt(el) { handTarget = el; hand.style.display = 'block'; placeHand(); return wait(900); }
+function handOff() { handTarget = null; hand.style.display = 'none'; }
+function pointAt3D(obj) { scene.updateMatrixWorld(); const p = new THREE.Vector3(); obj.getWorldPosition(p); const s = toScreen(p); handTarget = null; hand.style.display = 'block'; hand.style.left = s.x + 'px'; hand.style.top = s.y + 'px'; return wait(1000); }
+function bump(el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+const showBar = id => { ['judge', 'right', 'cutbar'].forEach(b => $('#' + b).classList.toggle('show', b === id)); };
+
+/* ---------------- one question: equal or not? ---------------- */
+/* HE checks first (practice): he taps a part and it lays on the other, or he taps every square to count it */
+let tapWait = null;
+function pickCell(e) { if (!item) return null; scene.updateMatrixWorld(); ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
+  const hits = ray.intersectObjects(item.cells.map(c => c.m), false); return hits.length ? item.cells.find(c => c.m === hits[0].object) : null; }
+canvas.addEventListener('pointerdown', e => { if (!tapWait) return; const cl = pickCell(e); if (cl) tapWait(cl); });
+W.cellPts = () => item ? (scene.updateMatrixWorld(), camera.updateMatrixWorld(), item.cells).map(cl => { const p = new THREE.Vector3(); cl.m.getWorldPosition(p); p.y += FOOD[item.kind].h / 2; return Object.assign({ lit: !!cl.lit, p: cl.p }, toScreen(p)); }) : [];
+function nudge(lines, until) { if (FAST) return; const t = setInterval(() => { if (until()) return clearInterval(t); if (!busy) play(lines); }, 11000); }
+const sizeWords = it => cap(sizes(it).map(n => NUMW[n]).join(' and ')) + '.';
+const shown = { lay: false, count: false };   /* the hand shows each new tap once */
+async function boyChecks(it) {
+  if (it.groups.length === 2 && it.layable) {
+    const line = 'Tap a part. It goes on the other part.'; task = [line];
+    await play(['Check it yourself!', line, () => shown.lay ? null : pointAt3D(it.groups[1].userData.cells[0].m), () => { shown.lay = true; handOff(); }]);
+    await new Promise(res => { W.tapping = 'lay'; tapWait = () => { tapWait = null; W.tapping = null; res(); }; nudge([line], () => !tapWait); });
+    it.laid = await layOn(it);
+    await play([it.laid ? 'They match!' : 'Some is left over!']);
+  } else {
+    const line = 'Tap each square to count it.'; task = [line];
+    await play(['Check it yourself!', line, () => shown.count ? null : pointAt3D(it.cells[0].m), () => { shown.count = true; handOff(); }]);
+    const seen = it.groups.map(() => 0);
+    await new Promise(res => { W.tapping = 'count'; nudge([line], () => !tapWait);
+      tapWait = cl => { if (cl.lit) return; cl.lit = true; const n = ++seen[cl.p]; cl.m.material = litMats[cl.p % 2]; plink(n); numAt(it, cl, n);
+        if (it.cells.every(x => x.lit)) { tapWait = null; W.tapping = null; res(); } }; });
+    it.counted = true;
+    await play([sizeWords(it)]);
+  }
+}
+/* explain(): finish the check and say what it shows (lay one on the other for same-kind parts, else count the squares) */
+async function explain(it) {
+  const s = sizes(it), eq = s.every(x => x === s[0]);
+  if (it.groups.length === 2 && it.layable) {
+    let m = it.laid;
+    if (m == null) { await say('Lay one part on the other.'); m = await layOn(it); }
+    await say(m ? 'They match. Same size!' : 'Look, some is left over. Not the same size.'); await liftOff(it); it.laid = null;
+  } else {
+    if (!it.counted) { await say('Count the squares in each part.'); await countAll(it, true); }
+    await say(eq ? 'Every part is the same. Equal parts!' : 'They are not the same. Not equal parts.');
+    clearCount(it);
+  }
+  return eq;
+}
+function ask(btnYes, btnNo, correctIsYes, question, counted) {
+  return new Promise(res => {
+    let tries = 0, done = false;
+    const answer = async yes => {
+      if (done) return; done = true; W.asking = false; showBar(null); hush();
+      const right = yes === correctIsYes; tries++;
+      if (counted && tries === 1) { W.checkAsked++; if (right) W.checkRight++; }
+      if (!right) { W.misses++; chime(false); bump(yes ? btnYes : btnNo); }
+      else chime(true);
+      res({ right, tries, again: () => { done = false; showBar(btnYes.parentNode.id); W.asking = true; } });
+    };
+    btnYes.onclick = () => answer(true); btnNo.onclick = () => answer(false);
+    showBar(btnYes.parentNode.id); task = [question]; W.asking = true;
+  });
+}
+async function judge(spec, opts = {}) {
+  item = makeItem(spec.kind, spec.cols, spec.rows, spec.pieces); item.layable = !!spec.layable; await wait(400); await spread(item, 0.25);
+  const eq = sizes(item).every(x => x === sizes(item)[0]);
+  setHow('judge');
+  await play([spec.intro || 'Equal parts, or not equal?']);
+  if (!opts.counted) await boyChecks(item);
+  const q = opts.counted ? 'Equal parts, or not equal? Tap your answer.' : 'So, equal parts or not? Tap your answer.';
+  await play([q]);
+  let r = await ask($('#yes'), $('#no'), eq, q, opts.counted);
+  if (!r.right && !opts.counted) {               /* a miss: show why, then he answers again */
+    await play(['Let us look again.', () => explain(item), 'So, equal or not? Tap again.']);
+    r.again(); r = await new Promise(res => { $('#yes').onclick = () => { W.asking = false; showBar(null); if (eq) { chime(true); res({ right: false }); } else { chime(false); bump($('#yes')); play(['Not equal. The parts are not the same size.']).then(() => res({ right: false })); } };
+      $('#no').onclick = () => { W.asking = false; showBar(null); if (!eq) { chime(true); res({ right: false }); } else { chime(false); bump($('#no')); play(['They are equal. Every part is the same size.']).then(() => res({ right: false })); } }; });
+  } else if (!opts.counted) {
+    await play([eq ? 'Yes! Equal parts.' : 'Right! Not equal parts.', () => explain(item)]);
+  } else await play([r.right ? 'Good.' : 'Let us see.', () => r.right ? null : explain(item)]);
+  clearCount(item); setHow(null); await dropItem(); return r.right;
+}
+/* one question: cut it into n equal parts */
+async function cut(spec, opts = {}) {
+  item = makeItem(spec.kind, spec.cols, spec.rows, null); await wait(400); showGrooves(item); setHow('cut');
+  const want = spec.n, word = want === 2 ? 'two' : 'four', name = want === 2 ? 'halves' : 'fourths';
+  W.want = want; W.dims = { cols: spec.cols, rows: spec.rows };
+  await play([spec.intro || 'Cut it into ' + word + ' equal parts.', 'Tap a line, then tap the check.']);
+  let tries = 0;
+  for (;;) {
+    it_locked = false; showBar('cutbar'); task = ['Cut it into ' + word + ' equal parts.', 'Tap a line, then tap the check.'];
+    W.asking = true; const act = await new Promise(res => { $('#done').onclick = () => res('done'); $('#undo').onclick = () => res('undo'); }); W.asking = false;
+    if (act === 'undo') { [...item.grooves].forEach(gv => { if (item.cuts.has(gv.id)) toggleCut(gv); }); continue; }
+    if (!item.cuts.size) { bump($('#done')); await play(['First tap a line to cut.']); continue; }
+    it_locked = true; showBar(null); tries++; item.grooves.forEach(gv => { gv.line.visible = false; });
+    group(item, piecesFromCuts(item)); await spread(item, 0.3);
+    const s = sizes(item), eq = s.every(x => x === s[0]), ok = s.length === want && eq;
+    if (opts.counted && tries === 1) { W.checkAsked++; if (ok) W.checkRight++; }
+    if (ok) { chime(true); await play(opts.counted ? ['Good cutting.'] : ['Let us check.', () => countAll(item), 'Same size! ' + cap(word) + ' equal parts are ' + name + '.']); break; }
+    W.misses++; chime(false);
+    if (s.length !== want) await play(['That makes ' + NUMW[s.length] + ' parts.', 'We need ' + word + ' equal parts.']);
+    else await play(['Count the squares in each part.', () => countAll(item), opts.counted ? 'Not the same size.' : 'Not the same size. Try another line.']);
+    if (tries === 2 && spec.hint) await play(spec.hint);
+    group(item, () => 0); item.groups[0].position.set(0, 0, 0); item.grooves.forEach(gv => { gv.line.visible = true; }); it_locked = false; [...item.grooves].forEach(gv => { if (item.cuts.has(gv.id)) toggleCut(gv); });
+    if (opts.counted) break;
+    if (tries >= 3 && spec.sol) { await play(['Watch me cut it.']); spec.sol.forEach(id => toggleCut(item.grooves.find(g => g.id === id))); await play(['Now you tap the check.']); }
+  }
+  setHow(null); task = null; await dropItem();
+}
+
+/* ---------------- the lesson ---------------- */
+const half = (c, r, cols) => c < cols / 2 ? 0 : 1;
+const RECT_L = (c, r) => (r < 2 && c < 3) ? 0 : 1;          /* 4 x 3: a 3 x 2 block and an L, 6 squares each */
+async function learn() {
+  setName('learn'); dots(0); W.misses = 0; W.checkRight = 0; W.checkAsked = 0; $('#end').classList.remove('show');
+  item = makeItem('bar', 4, 2, null);
+  await play(['Today we learn equal parts.', 'Ari and his brother Yanky want to share one chocolate bar.', { wait: 300 }, 'Look at this cut.',
+    () => { group(item, (c) => c < 3 ? 0 : 1); return spread(item, 0.3); }, 'Ari gets this big part. Yanky gets this small part.',
+    'Is that a fair share?', () => { item.layable = true; return layOn(item); }, 'Lay one on the other. Some is left over!',
+    'The parts are not the same size.', 'A fair share means equal parts.', () => liftOff(item),
+    () => { group(item, () => 0); item.groups[0].position.set(0, 0, 0); return wait(300); },
+    'Now we cut right in the middle.', () => { group(item, (c) => half(c, 0, 4)); return spread(item, 0.3); },
+    'Lay one part on the other.', () => layOn(item), 'They match! Same size.', () => liftOff(item),
+    'Equal parts are the same size.', 'Two equal parts are called halves.', () => dropItem(),
+    () => { item = makeItem('cake', 4, 2, (c, r) => (c < 2 ? 0 : 1) + (r ? 2 : 0)); return wait(400).then(() => spread(item, 0.3)); },
+    'Here is a honey cake in four parts.', 'Count the squares in each part.', () => countAll(item),
+    'Two, two, two, two. All the same size!', 'Four equal parts are called fourths.', () => dropItem()]);
+  await chant();
+}
+let chantOn = false, clapWait = null;
+$('#clapBtn').onclick = () => { ac(); if (!chantOn) return; clap(); W.boyClaps = (W.boyClaps || 0) + 1; bump($('#clapBtn')); if (clapWait) clapWait(); };
+const waitClap = ms => new Promise(r => { if (FAST) return r(); const t = setTimeout(() => { clapWait = null; r(); }, ms); clapWait = () => { clearTimeout(t); clapWait = null; r('boy'); }; });
+async function chant() {
+  setName('chant'); chantOn = true; $('#clapBtn').classList.add('show'); task = ['Clap with me! Tap the hands.'];
+  item = makeItem('bar', 4, 2, (c) => half(c, 0, 4)); await spread(item, 0.3);
+  await play(['Clap with me! Tap the hands.']);
+  for (let round = 0; round < 2; round++) {
+    for (const [line, n] of [['Same size,', 1], ['same size,', 1], ['equal parts!', 2]]) {
+      const p = say(line); for (let i = 0; i < n; i++) { const by = await waitClap(1300); if (by !== 'boy') clap(); tone([523 + i * 130], 'triangle', 0, .25, .1); }
+      await p; }
+    W.chants = round + 1;
+  }
+  chantOn = false; $('#clapBtn').classList.remove('show'); task = null; await dropItem();
+  await watchMe();
+}
+async function watchMe() {
+  setName('watch'); dots(1);
+  item = makeItem('bar', 3, 2, (c) => (c < 2 ? 0 : 1)); item.layable = true; await spread(item, 0.25);
+  await play(['Watch me.', 'Is this cut into equal parts?', 'Let me check. Lay one part on the other.', () => layOn(item),
+    'Some is left over. Not equal parts.', () => liftOff(item), () => { showBar('judge'); return pointAt($('#no')); }, 'So I tap: not equal.', () => { bump($('#no')); chime(true); return wait(500); },
+    () => { handOff(); showBar(null); return dropItem(); }]);
+  /* same size, different shape: count */
+  item = makeItem('kugel', 4, 3, RECT_L); await spread(item, 0.3);
+  await play(['This kugel has two parts.', 'They look different. Let me count the squares.', () => countAll(item),
+    'Six and six. Same size!', 'Equal means the same size, not the same shape.', () => { showBar('judge'); return pointAt($('#yes')); }, 'So I tap: equal parts.',
+    () => { bump($('#yes')); chime(true); return wait(500); }, () => { handOff(); showBar(null); return dropItem(); }]);
+  /* how to cut */
+  item = makeItem('bar', 4, 2, null); await wait(400); showGrooves(item);
+  await play(['Watch me cut.', 'I tap a line to cut there.', () => pointAt3D(item.grooves.find(g => g.id === 'v2').line), () => { it_locked = false; toggleCut(item.grooves.find(g => g.id === 'v2')); it_locked = true; return wait(400); },
+    () => { showBar('cutbar'); return pointAt($('#done')); }, 'Then I tap the check.', () => { bump($('#done')); handOff(); showBar(null); item.grooves.forEach(gv => { gv.line.visible = false; }); group(item, (c) => half(c, 0, 4)); return spread(item, 0.3); },
+    () => countAll(item), 'Four and four. Two equal parts!', () => dropItem()]);
+  await yourTurn();
+}
+const JUDGE = [
+  { kind: 'cake', cols: 4, rows: 2, pieces: (c) => (c < 2 ? 0 : 1), layable: true, intro: 'Your turn! Is this cut into equal parts?' },
+  { kind: 'bar', cols: 5, rows: 2, pieces: (c) => (c < 3 ? 0 : 1), layable: true, intro: 'Is this cut into equal parts?' },
+  { kind: 'kugel', cols: 4, rows: 3, pieces: (c, r) => (r === 0 || c === 0) ? 0 : 1, intro: 'These parts look different. Are they equal?' },
+];
+let missesPractice = 0;
+async function yourTurn() {
+  setName('judge'); dots(2); missesPractice = 0;
+  for (const q of JUDGE) { if (!(await judge(q))) missesPractice++; }
+  setName('cut'); dots(3);
+  await cut({ kind: 'bar', cols: 4, rows: 2, n: 2, intro: 'Your turn to cut! Make two equal parts.', hint: ['Count the squares on each side of the line.'], sol: ['v2'] });
+  await mistakeDetective();
+}
+async function detective(spec, who, claim, shouldAgree) {
+  item = makeItem(spec.kind, spec.cols, spec.rows, spec.pieces); item.layable = !!spec.layable; await spread(item, 0.3); setHow('right');
+  await play([who + ' cut this ' + FOOD[spec.kind].name + '.', who + ' says: ' + claim, 'Is ' + who + ' right?']);
+  await boyChecks(item); await play(['Is ' + who + ' right? Tap your answer.']);
+  const r = await ask($('#thumbUp'), $('#thumbDown'), shouldAgree, 'Is ' + who + ' right? Tap your answer.');
+  if (!r.right) missesPractice++;
+  await play([r.right ? 'Good detective work! Let us show ' + who + '.' : 'Look again. Let us check.', () => explain(item)]);
+  setHow(null); return r.right;
+}
+async function mistakeDetective() {
+  setName('mistake'); dots(4);
+  await play(['Mistake Detective!']);
+  await detective({ kind: 'kugel', cols: 3, rows: 2, pieces: (c) => (c < 2 ? 0 : 1), layable: true }, 'Moishe', 'I made halves!', false);
+  await play(['Moishe made a mistake. These are not halves.', () => dropItem(), 'Let us help Moishe.']);
+  await cut({ kind: 'kugel', cols: 3, rows: 2, n: 2, intro: 'Cut the kugel into two equal parts.', hint: ['Try the long line in the middle.'], sol: ['h1'] });
+  await detective({ kind: 'cake', cols: 4, rows: 3, pieces: (c, r) => (r < 2 && c > 0) ? 0 : 1 }, 'Eliyahu', 'They look different, so they are not halves!', false);
+  await play(['Eliyahu made a mistake. Different shapes can be equal parts.', () => dropItem()]);
+  if (missesPractice >= 2) await reteach();
+  await cut({ kind: 'cake', cols: 4, rows: 2, n: 4, intro: 'Now cut the honey cake into four equal parts.', hint: ['You need more than one cut.', 'Count the squares in each part.'], sol: ['v2', 'h1'] });
+  await check();
+}
+async function reteach() {
+  setName('reteach');
+  item = makeItem('kugel', 4, 3, RECT_L); await spread(item, 0.3);
+  await play(['Let us look one more time.', 'These parts look different.', () => countAll(item), 'Six and six. Same size, so equal parts!', () => dropItem()]);
+}
+async function check() {
+  setName('check'); dots(5);
+  await play(['Now show what you know!']);
+  await judge({ kind: 'cake', cols: 4, rows: 3, pieces: (c, r) => (r === 2 || c === 3) ? 0 : 1, intro: 'Equal parts, or not equal?' }, { counted: true });
+  await judge({ kind: 'bar', cols: 5, rows: 2, pieces: (c) => (c < 2 ? 0 : 1), layable: true, intro: 'Equal parts, or not equal?' }, { counted: true });
+  await cut({ kind: 'kugel', cols: 5, rows: 2, n: 2, intro: 'Cut the kugel into two equal parts.' }, { counted: true });
+  await cut({ kind: 'bar', cols: 4, rows: 2, n: 4, intro: 'Cut the chocolate into four equal parts.' }, { counted: true });
+  end();
+}
+function end() {
+  const r = W.checkRight, stars = r >= 4 ? 3 : r >= 3 ? 2 : 1;
+  W.stars = stars; W.done = true; setName('end'); dots(STEPS); task = null; showBar(null); setHow(null);
+  const STAR = on => '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="' + (on ? '#F5B400' : '#EDE6D6') + '" stroke="' + (on ? '#C48F00' : '#D8CFBC') + '" stroke-width="4" stroke-linejoin="round"/></svg>';
+  $('#stars').innerHTML = [0, 1, 2].map(i => '<div class="star">' + STAR(i < stars) + '</div>').join('');
+  $('#end').classList.add('show'); chime(true);
+  document.querySelectorAll('.star').forEach((s, i) => setTimeout(() => s.classList.add('pop'), FAST ? 0 : 250 + i * 250));
+  item = makeItem('cake', 4, 2, (c) => half(c, 0, 4)); spread(item, 0.3);
+  play([stars === 3 ? 'You know equal parts! Same size, every time.' : 'Good work! Play again for more stars.', 'Tap the printer for a page to do at home.']);
+}
+$('#replay').onclick = () => { hush(); dropItem().then(learn); };
+$('#print').onclick = () => { W.printed = true; location.href = 'equal-parts-print.html'; };
+
+/* ---------------- start ---------------- */
+resize(); dots(0); frame();
+item = makeItem('bar', 4, 2, null);
+W.ready = true;
+preload(['Ari and Yanky want to share one chocolate bar.', 'Look at this cut.', 'Ari gets this big part. Yanky gets this small part.', 'Is that a fair share?']);
+$('#start').onclick = () => { ac(); $('#start').style.display = 'none'; againBtn.style.visibility = 'visible'; dropItem().then(learn); };
+</script>
+</body>
+</html>
