@@ -7,7 +7,7 @@ Usage: python3 .github/scripts/publish-v2.py <project-id> <site-id> <access-toke
 Creates the 2.0 site the first time if it does not exist. If Google refuses, it says what the HoS should click (it never changes permissions)."""
 import sys, os, json, gzip, hashlib, urllib.request, urllib.error
 proj, site, tokfile, where = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]; note = sys.argv[5] if len(sys.argv) > 5 else '2.0 publish'
-TOK = open(tokfile).read().strip(); ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'v2', 'dist')
+TOK = open(tokfile).read().strip(); ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), os.environ.get('PUBLISH_DIR', os.path.join('v2', 'dist')))   # Keser Girls 3.0 sets PUBLISH_DIR=keser/dist
 API = os.environ.get('V2_HOSTING_API', 'https://firebasehosting.googleapis.com/v1beta1')   # changed only by the self-test
 def call(method, url, body=None, raw=None, ctype='application/json'):
     data = raw if raw is not None else (json.dumps(body).encode() if body is not None else None)

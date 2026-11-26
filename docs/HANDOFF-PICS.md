@@ -74,6 +74,7 @@ CLAUDE.md wins where anything here differs: publish ONLY by pull request (auto-p
 ## Rules that do not bend
 1. **Picture rules:**
    - boys and men only: no women or girls anywhere, even small in the background;
+     (only exception, HoS 2026-11-26: pictures for the girls' app Keser Girls 3.0 may show girls and women, modestly dressed, in modest frum settings. Write "Keser Girls only" in the catalog's "what it shows" cell; such a picture is never used in 1.0 or 2.0, and the tests check that. See `keser/README.md`.)
    - frum, modest settings; kosher food;
    - no churches, crosses or other religions' symbols (also minarets, menhirs);
    - no alcohol, Halloween or fantasy creatures;
