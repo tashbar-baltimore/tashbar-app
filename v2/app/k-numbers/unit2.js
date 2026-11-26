@@ -13,11 +13,11 @@
     '.u2stone .dd i{ width:18.5%; aspect-ratio:1; border-radius:50%; flex:none; }',
     '.u2stone.glowme{ box-shadow:0 7px 0 #C98A00, 0 0 0 8px rgba(255,201,61,.85), 0 0 22px 8px rgba(255,201,61,.7); animation:u2gap 1s infinite; }',
     '.u2stone.redmark{ box-shadow:0 7px 0 #C0392B, 0 0 0 6px rgba(255,90,78,.55) !important; }',
-    '.u2stone svg.hear{ width:52%; height:52%; }',
+    '.u2stone svg.hear{ width:52% !important; height:52% !important; }',
     '.u2stone .dd i, .u2stone .dice i{ background:radial-gradient(circle at 35% 30%,#FF9B8A,#E5322D 55%,#8E0E17); box-shadow:0 2px 0 rgba(90,0,10,.35); }',
     '.u2stone .dice{ position:absolute; inset:8%; } .u2stone .dice i{ position:absolute; width:25%; aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%); }',
     '.u2stone.gap .dice{ display:none; }',
-    '.u2stone.star .dd{ display:flex; align-items:center; justify-content:center; } .u2stone.star svg{ width:56%; height:56%; }',
+    '.u2stone.star .dd{ display:flex; align-items:center; justify-content:center; inset:14%; } .u2stone.star svg{ width:100%; height:100%; }',
     '.u2stone.lit{ background:radial-gradient(circle at 40% 30%,#FFFBE0,#FFE27A 60%,#F4B400); box-shadow:0 7px 0 #C98A00, 0 0 0 6px rgba(255,201,61,.5); }',
     '.u2stone.been{ background:radial-gradient(circle at 40% 30%,#F1FFF5,#BDEFCF 60%,#7DD3A0); box-shadow:0 7px 0 #4FA674, 0 12px 16px rgba(40,70,140,.2); }',
     '.u2stone.gap{ background:rgba(255,255,255,.35); border:5px dashed #2FB5E8; box-shadow:none; animation:u2gap 1s infinite; }',
@@ -47,11 +47,11 @@
   /* dots: 1-5 as big dice faces (seen at a glance, Unit 1's shapes); 6-10 as "five and some more": 5 on top, the rest below */
   var DICE = { 1: [[50, 50]], 2: [[30, 30], [70, 70]], 3: [[26, 26], [50, 50], [74, 74]], 4: [[30, 30], [70, 30], [30, 70], [70, 70]], 5: [[26, 26], [74, 26], [50, 50], [26, 74], [74, 74]] };
   U2.dots = function (n) {
-    if (n === 0) return ''; if (n > 10 || n < 1) return '<span class="dd"><svg viewBox="0 0 100 100"><use href="#nkStar"/></svg></span>';
+    if (n === 0) return ''; if (n > 5 || n < 1) return '<span class="dd"><svg viewBox="0 0 100 100"><use href="#nkStar"/></svg></span>';
     if (n <= 5) return '<span class="dice">' + DICE[n].map(function (p) { return '<i style="left:' + p[0] + '%;top:' + p[1] + '%"></i>'; }).join('') + '</span>';
     var h = '<span class="dd"><b>'; for (var i = 0; i < 5; i++) h += '<i></i>'; h += '</b><b>'; for (i = 0; i < n - 5; i++) h += '<i></i>'; return h + '</b></span>';
   };
-  U2.stone = function (n) { var s = document.createElement('div'); s.className = 'u2stone' + (n > 10 ? ' star' : ''); s.dataset.n = n; s.innerHTML = U2.dots(n); return s; };
+  U2.stone = function (n) { var s = document.createElement('div'); s.className = 'u2stone' + (n > 5 ? ' star' : ''); s.dataset.n = n; s.innerHTML = U2.dots(n); return s; };
 
   /* the path: numbers from..to (or to..from when reverse) */
   U2.path = function (el, o) {
@@ -67,7 +67,7 @@
       if (hop) { ball.classList.remove('hop'); void ball.offsetWidth; ball.classList.add('hop'); NK.sound.pop(); }
       stones.forEach(function (x, k) { x.classList.toggle('lit', k === i); if (k < i && k >= (api.lo || 0) && !x.classList.contains('gap')) x.classList.add('been'); });
     };
-    api.reset = function () { stones.forEach(function (x) { x.className = 'u2stone' + (+x.dataset.n > 10 ? ' star' : ''); x.innerHTML = U2.dots(+x.dataset.n); }); api.lo = null; api.place(-1); };
+    api.reset = function () { stones.forEach(function (x) { x.className = 'u2stone' + (+x.dataset.n > 5 ? ' star' : ''); x.innerHTML = U2.dots(+x.dataset.n); }); api.lo = null; api.place(-1); };
     api.gap = function (i) { stones[i].classList.add('gap'); stones[i].classList.remove('lit', 'been'); };
     api.fill = function (i) { stones[i].classList.remove('gap'); };
     addEventListener('resize', function () { if (api.at >= 0) api.place(api.at); });
@@ -76,7 +76,7 @@
   /* count along the path from stone a to stone b (inclusive), saying each number */
   U2.countAlong = async function (P, a, b, gapStop) {
     if (P.lo == null || a < P.lo) P.lo = a;   /* stones before where we started stay plain */
-    for (var i = a; i <= b; i++) { if (gapStop && P.stones[i].classList.contains('gap')) return i; P.place(i, true); await FR.say(FR.Word(P.nums[i]) + (i === b ? '.' : ','), { noRepeat: true }); }
+    for (var i = a; i <= b; i++) { if (gapStop && P.stones[i].classList.contains('gap')) return i; P.place(i, true); await FR.say(U2.Word(P.nums[i]) + (i === b ? '.' : ','), { noRepeat: true }); }
     return -1;
   };
   U2.word = function (n) { var w = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty']; return w[n] || String(n); };
@@ -127,11 +127,17 @@
       id: o.id, title: o.title, rounds: o.rounds, hero: o.hero, endSay: o.endSay, chant: o.chant, bonusSay: o.bonus && o.bonus.say,
       init: function (F) {
         F.dragTap({ sources: '#loose .u2stone', targets: '#path .u2stone.gap', drop: drop });
-        document.addEventListener('pointerdown', function (e) { var s = e.target.closest('#loose .u2stone'); if (s && GAME.phase === 'answer') { NK.hush(); NK.say(U2.Word(+s.dataset.n) + '!', { noRepeat: true }); } });
+        document.addEventListener('pointerdown', function (e) { var s = e.target.closest('#loose .u2stone, #path .u2stone:not(.gap)'); if (s && GAME.phase === 'answer') { NK.hush(); NK.say(U2.Word(+s.dataset.n) + '!', { noRepeat: true }); } });
         if (o.init) o.init(F);
       },
       demo: o.demo ? async function (F) { await o.demo(F, function (pl) { return setup(pl); }); } : null,
-      bonus: o.bonus ? function (F) { var b = Object.assign({}, o.bonus); delete b.say; return round(F, 9, b); } : null,
+      bonus: o.bonus ? async function (F) {
+        var b = Object.assign({}, o.bonus); delete b.say;
+        /* island rule: before a count past ten, the voice counts it once to teach the new words */
+        GAME.phase = 'busy'; F.lock(true); var T = U2.path($('path'), { from: b.from, to: b.to, reverse: o.reverse }); $('loose').innerHTML = '';
+        await F.say('Listen to the new numbers first.'); await U2.countAlong(T, 0, T.nums.length - 1); await F.say('Now you!');
+        return round(F, 9, b);
+      } : null,
       /* a missed round adds a short, easier round (1-5) right after it; the main rounds stay the same */
       round: async function (F, i) {
         var r = await round(F, i, o.plan(i));
