@@ -39,7 +39,7 @@ export default function setup(E, { unit }) {
     if (u.key === want) { u.busy = true; caught++; E.joy(l.position.clone()); boy.mood('cheer'); setTimeout(() => boy.mood('calm'), 700);
       const p0 = l.position.clone(), to = basket.position.clone().add(new THREE.Vector3(0, .5, 0)); await E.tween(420, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * .6); });
       u.gone = true; E.scene.remove(l); E.sfx.pop(); }
-    else { wrong++; missRound++; u.t0 += 1200; E.pointAt(arrow, l, u.key, 1.0, E.sameShape(u.key, want) ? E.DOT_FEATURE[u.key] : E.FEATURES[u.key]); setTimeout(() => { if (arrow.parent === l) arrow.visible = false; }, 1300 * E.F); E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its leg doesn\u2019t touch the roof.', vov: 'No crown.', zayin: 'It has a crown.', ches: 'Its leg touches the roof.' })[u.key], false); }
+    else { wrong++; missRound++; pauseUntil = performance.now() + 1600 * E.F; u.t0 += 1200; E.pointAt(arrow, l, u.key, 1.0, E.sameShape(u.key, want) ? E.DOT_FEATURE[u.key] : E.FEATURES[u.key]); setTimeout(() => { if (arrow.parent === l) arrow.visible = false; }, 1300 * E.F); E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its leg doesn\u2019t touch the roof.', vov: 'No crown.', zayin: 'It has a crown.', ches: 'Its leg touches the roof.' })[u.key], false); }
   });
   async function round(k, n, every, ms) {
     want = k; missRound = 0; setSign(k); E.hop(boy, .3);
