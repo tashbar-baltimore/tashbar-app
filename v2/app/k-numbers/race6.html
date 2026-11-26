@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Path Race — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 6 "The path game" (v2/curriculum/k-numbers/MAP.md): PATH RACE in a 3D garden.
+     He spins (one dot or two dots), then taps the stone where Mendy will land, counting on from where Mendy stands.
+     Mendy hops there saying each number (one step forward is one more). Then Avi takes his turn. Six turns reach the flag at ten.
+     A wrong stone: Mendy hops it out slowly, counting, and he finds the right stone. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="who"><img src="art/mendy-happy.png" alt="" id="whoimg"></div>
+    <button id="spin" class="spin6" aria-label="Spin"></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount, spinner } from './path6.js';
+const $ = id => document.getElementById(id);
+let P, SP, M, A, R, done, plan, easy = 0;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function hooks() {
+  if (R.stage === 'spin') { GAME.right = () => [{ tap: '#spin' }]; GAME.wrong = null; return; }
+  const k = R.to, bad = R.to === 10 ? 9 : R.to + 1;
+  GAME.right = () => [{ tap: '.stone[data-n="' + k + '"]' }]; GAME.wrong = () => [{ tap: '.stone[data-n="' + bad + '"]' }];
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+async function spin() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'spin') return; GAME.phase = 'busy'; FR.lock(true); SP.glow(false);
+  await SP.spin(R.k); await FR.say(R.k === 1 ? 'One dot! One hop.' : 'Two dots! Two hops.');
+  R.stage = 'land'; P.focus(M.n + 1); open();
+  await FR.say('Where will Mendy land?', { repeat: 'Mendy is on ' + FR.word(M.n) + '. ' + (R.k === 1 ? 'One hop' : 'Two hops') + '. Where?' });
+}
+async function countHops(slow) {   /* Mendy hops, saying each number as he lands */
+  M.pose('happy'); await M.hop(R.to, async n => { P.glow(n, true); await FR.say(FR.Word(n) + (n === R.to ? '!' : ','), { noRepeat: true }); if (slow) await FR.wait(250); P.glow(n, false); }); M.pose('idle');
+}
+async function land(n, el) {
+  if (GAME.phase !== 'answer' || R.stage !== 'land') return; GAME.phase = 'busy'; FR.lock(true);
+  if (n === R.to) { el.classList.add('good'); await countHops(false); P.petals(n); await FR.yes(el, n === 10 ? 'The flag! Mendy made it to ten!' : FR.pick(['Yes! You counted on!', 'Right! One step is one more.', 'Yes! Great hopping!'])); el.classList.remove('good'); return next(); }
+  FR.oops(el); R.misses++;
+  if (R.misses === 1) {
+    await FR.say("Let's look. Start on " + FR.word(M.n) + '. Count the hops.');
+    const back = M.n; await countHops(true); await FR.wait(300); M.place(back); P.focus(back + 1);
+    await FR.say('Now you show me. Find that stone.'); open(); return;
+  }
+  P.el(R.to).classList.add('hint'); await FR.say('It is ' + FR.word(R.to) + '. Tap the shining stone.'); open();
+}
+async function next() {
+  P.el(R.to).classList.remove('hint'); const first = R.misses === 0; if (R.misses >= 2) easy = 1;
+  /* Avi's turn: he spins and hops (not past ten) */
+  if (A.n < 10) { $('whoimg').src = 'art/avi-happy.png'; const a = Math.min(10 - A.n, R.aviK); await FR.say("Avi's turn!", { noRepeat: true }); await SP.spin(a); P.focus(A.n + 1);
+    A.pose('happy'); await A.hop(A.n + a); A.pose('idle'); $('whoimg').src = 'art/mendy-happy.png'; P.focus(M.n + 1); }
+  const d = done; done = null; d(first);
+}
+function play(F, i) {
+  return new Promise(async res => {
+    const k = plan[i]; R = { k, to: M.n + k, misses: 0, stage: 'spin', aviK: [2, 1, 2, 2, 1, 2][i] }; done = res; P.focus(M.n + 1);
+    if (i === 0) await F.say('Your turn! Tap the spinner.', { repeat: 'Tap the spinner.' }); else await F.say(FR.pick(['Your turn! Spin!', 'Spin again!', 'Your turn!']), { repeat: 'Tap the spinner.' });
+    SP.glow(true); open();
+  });
+}
+FR.game({
+  id: 'u6-race', title: 'Path Race', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""><img src="art/avi-happy.png" alt="" style="height:80%"></div>',
+  init() {
+    P = mount($('world'), { kids: ['mendy', 'avi'], band }); M = P.kids.mendy; A = P.kids.avi; SP = spinner($('spin'));
+    $('spin').addEventListener('click', spin); P.onStone = (n, el) => land(n, el);
+  },
+  reset() { M.place(0); A.place(0); P.focus(1); plan = FR.shuffle([2, 2, 2, 1, 1]).concat([2]); if (plan.reduce((a, b) => a + b) !== 10) plan = [2, 1, 2, 1, 2, 2]; },
+  demo: async F => {
+    await F.say('A race to the flag at ten! Watch me.');
+    await F.handTo($('spin')); await F.handTap(); await SP.spin(2); await F.say('Two dots! Two hops.');
+    await F.say('Mendy is on zero. One step, one more.');
+    await F.handTo(P.el(2)); await F.handTap(); R = { to: 2 }; await countHops(false);
+    await F.say('He landed on two!'); M.place(0); P.focus(1);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'Mendy reached the flag! You can count on!' : 'Nice racing! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

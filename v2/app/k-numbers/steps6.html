@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Big Steps — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 6 "The path game": BIG STEPS. He stands up! The cloud card shows a number to reach.
+     Each tap on the green hop button: he hops once in the room, Mendy hops one stone, and we all say the number.
+     One step forward is one more; the orange button hops back one (one less). When Mendy is there, he taps the check.
+     Later rounds start part way along ("Start on three. Hop to seven.") and some go back down. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>
+.b-orange{ --b:#FF8A3D; --b-l:#FFC08A; --b-d:#C85A10; }
+#hop svg, #back svg{ width:64%; height:64%; }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="goal" id="goal"></div>
+    <button id="back" class="bigbtn btn3d b-orange" aria-label="Hop back"><svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button id="hop" class="bigbtn btn3d b-green" aria-label="Hop"><svg viewBox="0 0 48 48"><path d="M8 34c6-18 26-18 32 0" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M33 26l7 8 4-10" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './path6.js';
+const $ = id => document.getElementById(id);
+let P, M, R, done, want = 0, pumping = null;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+/* each tap asks for one more (or one less) hop; Mendy hops them one by one, saying the number */
+function pump() {
+  if (pumping) return pumping;
+  return (pumping = (async () => { while (M.n !== want) { await M.hop(M.n + (want > M.n ? 1 : -1), n => FR.say(FR.Word(n) + '!', { noRepeat: true })); } pumping = null; })());
+}
+function step(d) { NK.unlock(); if (GAME.phase !== 'answer') return; const t = want + d; if (t < 0 || t > 10) { NK.sound.oops(); return; } want = t; $('check').classList.add('ready'); pump(); }
+function moves(to) { const out = [], c = want; for (let k = c; k < to; k++) out.push({ tap: '#hop' }); for (let k = c; k > to; k--) out.push({ tap: '#back' }); return out; }
+function hooks() { GAME.right = () => moves(R.to).concat([{ tap: '#check' }]); GAME.wrong = () => moves(R.to === 10 ? 9 : R.to + 1).concat([{ tap: '#check' }]); }
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); $('check').classList.remove('ready'); await pump();
+  if (M.n === R.to) { P.petals(M.n); M.pose('happy'); await FR.yes(P.el(M.n), FR.pick(['Yes! ' + FR.Word(R.to) + '! Great hopping!', 'You made it to ' + FR.word(R.to) + '!', 'Yes! Sit down and rest.'])); M.pose('idle'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops(P.el(M.n)); R.misses++;
+  const d = R.to - M.n;
+  if (R.misses === 1) await FR.say('Look! Mendy is on ' + FR.word(M.n) + '. We need ' + FR.word(R.to) + '.');
+  else { P.glow(R.to, true); await FR.say(d > 0 ? 'Hop ' + FR.word(d) + ' more. One step is one more!' : 'Hop back ' + FR.word(-d) + '. One step back is one less.'); P.glow(R.to, false); }
+  GAME.phase = 'answer'; FR.lock(false); hooks();
+}
+function goal(n) { $('goal').innerHTML = U5.num(n); }
+const PLAN = [[0, 4], [0, 6], [2, 5], [3, 8], [7, 10], [9, 6]];   /* [start, reach]; the last one goes back */
+function play(F, i) {
+  return new Promise(async res => {
+    const [a, b] = PLAN[i]; R = { from: a, to: b, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true);
+    M.place(a); want = a; P.focus(a + (b > a ? 1.5 : -1.5)); goal(b); P.glow(null);
+    if (i === 0) await F.say('Stand up! Hop with Mendy.');
+    await F.say(a === 0 ? 'Hop to ' + F.word(b) + '!' : 'Start on ' + F.word(a) + '. Hop to ' + F.word(b) + '!', { repeat: 'Hop to ' + F.word(b) + '. Then tap check.' });
+    if (b < a) await F.say('Backwards! One step back is one less.');
+    GAME.phase = 'answer'; F.lock(false); hooks();
+  });
+}
+FR.game({
+  id: 'u6-steps', title: 'Big Steps', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-clap.png" alt=""></div>',
+  init() {
+    P = mount($('world'), { kids: ['mendy'], band }); M = P.kids.mendy;
+    $('hop').addEventListener('click', () => step(1)); $('back').addEventListener('click', () => step(-1)); $('check').addEventListener('click', check);
+  },
+  reset() { M.place(0); want = 0; goal(3); },
+  demo: async F => {
+    M.place(0); want = 0; goal(3); P.focus(1.5);
+    await F.say('Stand up! Watch me hop to three.');
+    for (let k = 1; k <= 3; k++) { await F.handTo($('hop')); await F.handTap(); want = k; await pump(); }
+    await F.handTo($('check')); await F.handTap(); P.petals(3); await F.say('Three! I stop and tap check.'); M.place(0); want = 0;
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'Great big steps! Sit down now.' : 'Good hopping! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

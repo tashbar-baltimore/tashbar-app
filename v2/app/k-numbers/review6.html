@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Review time — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 6 REVIEW (Units 3-5 come back, on the garden path): each round shows an amount three different ways,
+     and Mendy hops to that number. Flowers grow in the bed (count things, Unit 3), fingers on a hand (Units 1, 4, 5),
+     a ten-frame (five and some more, Unit 5). He taps the stone with that number; Mendy hops there, saying each number. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css">
+<style>
+#show{ display:flex; align-items:center; justify-content:center; background:#fff; border-radius:22px; padding:8px; box-shadow:0 6px 0 #C9D8EE, 0 10px 18px rgba(30,40,90,.2); }
+#show[hidden]{ display:none; } #show .tf{ width:min(30vw,250px); } #show .hands2{ width:min(22vw,180px); } #show .fhand{ width:min(14vw,110px); }
+@media (max-width:760px), (max-aspect-ratio:4/5){ #show .tf{ width:150px; } #show .hands2{ width:140px; } #show .fhand{ width:80px; } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <button id="left" class="bigbtn btn3d b-white" aria-label="Look left" hidden><svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div id="show" hidden></div>
+    <button id="right" class="bigbtn btn3d b-white" aria-label="Look right" hidden><svg viewBox="0 0 48 48"><path d="M18 10l14 14-14 14" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './path6.js';
+const $ = id => document.getElementById(id);
+let P, M, R, done, items = [];
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function hooks() { const k = R.n, bad = k === 10 ? 9 : k + 1;
+  GAME.right = () => { P.focus(k, true); return [{ tap: '.stone[data-n="' + k + '"]' }]; }; GAME.wrong = () => { P.focus(bad, true); return [{ tap: '.stone[data-n="' + bad + '"]' }]; }; }
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+async function countTogether() {
+  if (R.kind === 'bed') { for (let i = 0; i < items.length; i++) { const f = items[i]; f.scale.setScalar(1.3); await FR.say(FR.Word(i + 1) + (i === items.length - 1 ? '!' : ','), { noRepeat: true }); f.scale.setScalar(1); } return; }
+  if (R.kind === 'frame') { R.view.glow(true); await FR.say(R.n > 5 ? 'A full row is five, and ' + FR.word(R.n - 5) + ' more.' : 'Count the counters.'); R.view.glow(false); return; }
+  await FR.say(R.n > 5 ? 'One whole hand is five, and ' + FR.word(R.n - 5) + ' more.' : 'Count the fingers with me.');
+}
+async function tap(n, el) {
+  if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
+  if (n === R.n) { M.pose('happy'); await M.hop(n, k => FR.say(FR.Word(k) + (k === n ? '!' : ','), { noRepeat: true })); M.pose('idle'); P.petals(n);
+    await FR.yes(el, FR.pick(['Yes! You remember!', 'Right! ' + FR.Word(n) + '.', 'Great counting!'])); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops(el); R.misses++;
+  await FR.say("Let's look again."); await countTogether();
+  if (R.misses > 1) { P.focus(R.n); P.el(R.n).classList.add('hint'); await FR.say('It is ' + FR.word(R.n) + '. Find that stone.'); } else await FR.say('Find that stone.');
+  open();
+}
+const PLAN = [['bed', 8], ['hand', 3], ['frame', 6], ['bed', 5], ['frame', 9], ['hand', 7]];
+function play(F, i) {
+  return new Promise(async res => {
+    done = res; GAME.phase = 'busy'; F.lock(true); for (let n = 0; n <= 10; n++) P.el(n).classList.remove('hint');
+    const [kind, n] = PLAN[i]; R = { kind, n, misses: 0 }; M.place(0); P.focus(P.narrow() ? 1.5 : 5);
+    $('show').innerHTML = ''; $('show').hidden = kind === 'bed'; P.bed(null); items = [];
+    if (kind === 'bed') { items = P.bed(n); await F.say(FR.pick(['Flowers grew!', 'Look at the garden bed!'])); open(); await F.say('How many flowers? Hop Mendy there.', { repeat: 'Count the flowers. Tap that stone.' }); return; }
+    if (kind === 'frame') { const t = U5.frame(n, false); $('show').appendChild(t.el); R.view = t; await F.say('A ten-frame!'); open(); await F.say('How many? Hop Mendy there.', { repeat: 'How many counters? Tap that stone.' }); return; }
+    const h = n > 5 ? U5.hands(n, false) : F.fingers(n, false); $('show').appendChild(h.el); await F.say('Fingers!'); open(); await F.say('How many? Hop Mendy there.', { repeat: 'How many fingers? Tap that stone.' });
+  });
+}
+FR.game({
+  id: 'u6-review', title: 'Review Time', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""></div>',
+  init() {
+    P = mount($('world'), { kids: ['mendy'], band }); M = P.kids.mendy; P.onStone = (n, el) => tap(n, el);
+    if (P.narrow()) { $('left').hidden = $('right').hidden = false; $('left').onclick = () => { NK.sound.pop(); P.pan(-2); }; $('right').onclick = () => { NK.sound.pop(); P.pan(2); }; }
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You remember it all! Wonderful!' : 'Good work! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
