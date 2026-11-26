@@ -57,8 +57,27 @@ function server() {
   return { fails, oks: fails.length ? [] : ['unit checks (server): one pre-check per unit, shown skills leave the path (on for every boy; the test switch still keeps it to TEST- boys), a missed skill comes back, 80% passes and stays passed, no money or mastery'] };
 }
 
+const LONG_OLD = ['C68.U75', 'W13.U31', 'S.U04', 'S.U06', 'S.U07', 'S.U08'];   /* may only shrink */
 async function page(pg) {
   const fails = [], oks = [];
+  /* every live unit: a lesson question keeps its reading passage in the boss level (the lesson keeps it in pic), and the unit's own
+     "tap the proof" items do not all put the right sentence in the same place (that kind is never shuffled: a boy learns "tap the top one") */
+  const live = await pg.evaluate((LONG_OLD) => { const bad = [], U = TLCORE.units; let lessonQs = 0;
+    U.list.forEach(u => {
+      const src = {}; (u.skills || []).concat(u.review || []).forEach(id => { let it = []; try { it = buildMission(id).filter(x => x.phase === 'check'); } catch (e) {} it.forEach(x => { src[id + '|' + x.q] = x; }); });
+      for (let r = 0; r < 4; r++) (U.questions(u, 'check') || []).forEach(q => { if (q.kind !== 'mc' && q.kind !== 'order') return; lessonQs++; const x = src[q.skill + '|' + q.q];
+        if (x && !x.p && x.pic && /[A-Za-z0-9]/.test(String(x.pic)) && q.p !== String(x.pic)) bad.push(u.id + ' ' + q.skill + ': "' + String(q.q).slice(0, 50) + '" loses its passage'); });
+      const ev = (u.items || []).filter(x => x.type === 'evidence' && !Array.isArray(x.a));
+      if (ev.length >= 3 && ev.every(x => +x.a === +ev[0].a)) bad.push(u.id + ': all ' + ev.length + ' "tap the proof" items have the answer in place ' + (+ev[0].a + 1));
+      /* "tap the longest answer" must not pass a boss level: the right answer may be the longest choice in at most half of the unit's own items
+         (re-score 26 Nov). LONG_OLD: units that broke this before the rule; fix them and take them off, never add one. */
+      const tap = (u.items || []).filter(x => (x.type === 'evidence' && !Array.isArray(x.a)) || x.type === 'cloze');
+      const longest = tap.filter(x => { const o = (x.type === 'cloze' ? x.o : x.p).map(String), k = x.type === 'cloze' ? o.indexOf(String(x.a)) : +x.a; return k >= 0 && o.every((t, i) => i === k || t.length < o[k].length); }).length;
+      if (tap.length >= 4 && longest * 2 > tap.length && LONG_OLD.indexOf(u.id) < 0) bad.push(u.id + ': the right answer is the longest choice in ' + longest + ' of ' + tap.length + ' items (a boy who taps the longest answer passes)');
+    });
+    return { bad: bad.filter((x, i, a) => a.indexOf(x) === i), units: U.list.length, lessonQs }; }, LONG_OLD).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 200)] }));
+  live.bad.slice(0, 12).forEach(b => fails.push('live units: ' + b)); if (live.bad.length > 12) fails.push('live units: ... and ' + (live.bad.length - 12) + ' more');
+  if (!live.bad.length) oks.push('unit checks (live units): ' + live.units + ' units, ' + live.lessonQs + ' lesson questions drawn: every passage shows; "tap the proof" answers are not all in one place; the longest choice is not the key in most items');
   for (const vp of [{ width: 1366, height: 768 }, { width: 390, height: 844 }]) {
     await pg.setViewportSize(vp); const at = vp.width + 'px: ';
     const r = await pg.evaluate(async () => {
