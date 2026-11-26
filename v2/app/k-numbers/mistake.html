@@ -117,6 +117,13 @@
       for (var k = 0; k < 2; k++) { await F.handTo(H.el, .5, .7); await F.handTap(); H.finger(k).classList.remove('down'); NK.sound.pop(); }
       await F.handTo($('check')); await F.handTap();
       await F.yes($('fixrow'), 'Two! Thank you for helping Mendy!');
+      R = { n: 3, claim: 3, who: 'Ari', misses: 0, stage: 'demo' };
+      setPlate(3, 'orange'); setClaim(3); $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0);
+      await F.say('Ari says: three oranges! Is Ari right?');
+      await F.showShape($('plate'), true);
+      await F.say('Yes, three! Ari is right.');
+      await F.handTo($('up')); await F.handTap(); NK.sound.yes();
+      await F.say('Thumbs up means he is right.');
     },
     bonus: async function (F) {
       for (var b = 0; b < 2; b++) {
@@ -140,7 +147,7 @@
         setPlate(n, fr[0]); setClaim(claim); $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0);
         done = res; GAME.phase = 'busy'; F.lock(true);
         await F.say(who + ' says: ' + F.word(claim) + ' ' + (claim === 1 ? fr[0] : fr[1]) + '!', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
-        await F.wait(1500); $('plate').style.opacity = '0';
+        if (i >= 3) { await F.wait(1500); $('plate').style.opacity = '0'; }   /* first rounds: the plate stays in view */
         GAME.phase = 'answer'; F.lock(false); hooks();
         await F.say('Is ' + who + ' right?', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
       });
