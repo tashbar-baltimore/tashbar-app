@@ -31,7 +31,9 @@ module.exports = function kidMap() {
   const chk = (c, msg) => { if (!c) fails.push('kid map: ' + msg); };
   chk(M2 && M2.sid === 'TESTKM01', 'kmMyMap on its own gives the same boy');
   const txt = JSON.stringify(M); chk(txt.indexOf('TESTKM02') < 0 && txt.indexOf('Made-up Boy B') < 0, "boy A's map contains another boy's data");
-  chk(txt.indexOf('6123') < 0 && txt.indexOf('kmsalt') < 0, 'the map must not contain codes or salts');
+  /* the code as a whole number only: the map holds times in milliseconds, and a time like 1795664612300 (26 Nov 03:43:32.3 UTC)
+     has 6123 inside it, which failed a docs-only PR (#537). A real leak is the code on its own ("6123"), and that is still caught. */
+  chk(!/(^|[^0-9])6123([^0-9]|$)/.test(txt) && txt.indexOf('kmsalt') < 0, 'the map must not contain codes or salts');
   const mt = M.subjects.MATH; chk(mt && mt.level === 5, 'Math level 5 (got ' + (mt && mt.level) + ')');
   if (mt) {
     chk(mt.now && !stA.skills[mt.now], 'his goal now must be a step he has not mastered (got ' + mt.now + ')');
