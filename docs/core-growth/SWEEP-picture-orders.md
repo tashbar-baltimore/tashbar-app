@@ -8,7 +8,7 @@ Orders that came out of a sweep of 1.0 for screens with no picture. Same process
 - **Louisiana Purchase map** on the "How America grew" opener (`SS.HIST.L06.03|@today`): yes, done.
 - **Math openers next:** yes, order MATH-1 below.
 
-## Order SWEEP-1 (emailed 2026-11-26) · status: SENT, waiting
+## Order SWEEP-1 (emailed 2026-11-26) · status: ALL 19 ARRIVED 2026-11-26, checked, in `art/`
 Part A (16 K–1 listen-along pictures, the old LA-1) was cancelled the same day. Every prompt ends with: `Boys and men only, modest frum dress (kippah, tzitzis), no women or girls, no text, letters or numbers anywhere in the image, no logos, no religious symbols of other faiths.` Maps also have no labels.
 
 | # | File | Screen | Size | Prompt |
@@ -33,7 +33,7 @@ Part A (16 K–1 listen-along pictures, the old LA-1) was cancelled the same day
 | 34 | `core-gm-world-gemara.webp` | The boy's Game Map: the “Gemara” world badge (today an emoji) | 512 × 512 | Children's picture-book illustration, bright round friendly shapes, thick soft outlines, flat warm colors, simple background, soft cream background, for a Jewish boys' school; a round game badge showing a tall stack of large sefarim with brown leather spines, no letters, centered on a soft circle, plain cream background. No people. Boys and men only, modest frum dress (kippah, tzitzis), no women or girls, no text or letters in the image, no logos, no religious symbols of other faiths. |
 | 35 | `core-certificate-frame.webp` | The rebbe's printed certificate and the “Level finished” certificate (today plain text) | 1100 × 825 | Painterly realistic editorial illustration, calm muted palette, natural light, respectful mature tone, for a Jewish boys' middle school; an elegant certificate border: a frame of olive branches and wheat stalks in muted gold and deep green around a large empty cream center (the app writes the words in the middle). Calm and dignified. No people. Boys and men only, modest frum dress (kippah, tzitzis), no women or girls, no text or letters in the image, no logos, no religious symbols of other faiths. |
 
-## Order MATH-1 (emailed 2026-11-26) · status: SENT, waiting
+## Order MATH-1 (emailed 2026-11-26) · status: 11 of 12 LIVE; #8 `core-math-pv0501-today` held back (faint logo/watermark in the sky, top right), redo asked
 Math One Bite openers (`src/OneBiteDataMath*.html`), place value and fractions first. Each goes on `SKILL|@today`. Size 1100 × 620 (16:9), keep the middle third calm. Prompts end with the same line as above.
 
 | # | File | Screen | Prompt |
@@ -51,5 +51,24 @@ Math One Bite openers (`src/OneBiteDataMath*.html`), place value and fractions f
 | 11 | `core-math-frac0503-today.webp` | MATH.FRAC.L05.03 Grade 5 “Mixed numbers and improper fractions” | Clean graphic-novel illustration, confident ink lines, cel shading, dynamic angle, real-world detail, for a Jewish boys' school; In a busy home kitchen before a big Shabbos, Binyamin Yusupov scoops flour with a small quarter-size measuring cup into a huge mixing bowl, a row of empty measuring cups lined up beside it; Avrumi holds the bag of flour. Big trays ready for many challos. The boys are the Glen Avenue Crew, the same as their cast cards (core-c45-cast-yehuda, -avrumi, -dovid, -binyamin, -tzvi). |
 | 12 | `core-math-frac0504-today.webp` | MATH.FRAC.L05.04 Grade 5 “Turn tenths into hundredths, like dimes into cents” | Clean graphic-novel illustration, confident ink lines, cel shading, dynamic angle, real-world detail, for a Jewish boys' school; At a Chanukah shopping table in a toy store, Tzvi Hirsch Gold counts a neat row of silver dimes next to a pile of copper pennies sorted into stacks; a small dreidel and a box of Chanukah candles sit nearby. The coins show no writing. The boys are the Glen Avenue Crew, the same as their cast cards (core-c45-cast-yehuda, -avrumi, -dovid, -binyamin, -tzvi). |
 
+## Where each picture went (2026-11-26)
+Checked by eye, zoomed where needed (domes, sails, palace, harbor town: no other religions' symbols; no text). Converted to WebP under 200 KB; originals in `art/originals/`.
+
+| Picture | Screen |
+|---|---|
+| core-map-eretz-yisroel | `SS.GEO.L07.01|@today` |
+| core-map-us-five-regions | `SS.GEO.L05.01|@today` |
+| core-map-galus-bavel | `SS.HIST.L07.02|@today` |
+| core-map-poland-lithuania-kehillos | `SS.JHIST.L08.03|@today` |
+| core-map-explorer-sea-routes | `SS.HIST.L05.01|@today` |
+| core-map-silk-road | `SS.HIST.L10.01` question "Follow the Silk Road from east to west." (key in `RealPicsTeach.html`, which overrides camel-caravan-desert in `RealPics.html` for that one screen) |
+| core-map-chesapeake-bay | cover of text `C68.BAY.01` (`pic:` line) |
+| core-map-yetzias-mitzrayim | WATCH ME (`@watch`) of Parsha deep dives Masei, Bamidbar, Devarim (`LK.PAR.L02.42`, `.04`, `.43`). Not TODAY: there the big picture is the pasuk itself, which stays. |
+| core-map-avraham-journey | WATCH ME (`@watch`) of Lech Lecha (`LK.PAR.L03.05`) |
+| 11 Math openers | `MATH.OPS.L03.01`, `MATH.PV.L04.01`, `MATH.FRAC.L04.01`–`.05`, `MATH.PV.L05.02`, `MATH.FRAC.L05.01`, `.03`, `.04` (`@today`) |
+| core-gm-castle, 8 core-gm-world-* badges | library only, until the Game Map screen change (HoS yes) |
+| core-certificate-frame | library only, until a certificate screen uses it |
+
 ## Also still waiting
-- Order W13H4-1 (`W13H4-picture-orders.md`, 7 pictures): sent 2026-11-26, asked for again in the same thread.
+- Order W13H4-1 (`W13H4-picture-orders.md`, 7 pictures): the image account sent them to the W13 helper's inbox, not this one; that lane adds them.
+- MATH-1 #8 `core-math-pv0501-today`: redo asked 2026-11-26 (watermark).
