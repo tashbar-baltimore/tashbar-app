@@ -33,7 +33,7 @@ export default function setup(E, { struggled, unit, game }) {
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
   function setPair(pr) {   /* right crate: the first letter of the pair (as Hebrew reads), left crate: the second */
-    pair = pr; labels.forEach(l => l.parent && l.parent.remove(l)); labels = pr.map((k, i) => { const l = E.letter(k, 1.15); l.position.set(0, 1.95, .62); const lo = Math.max(...pr.map(x => E.letter(x, 1.15).userData.below)); if (lo) { l.scale.setScalar(.72); l.position.y += lo * .72 + .05; }   /* beside Kuf both letters are smaller and higher, so the long leg shows on the white label */ crates[i].add(l); crates[i].userData.key = k; return l; });
+    pair = pr; labels.forEach(l => l.parent && l.parent.remove(l)); labels = pr.map((k, i) => { const l = E.letter(k, 1.15); l.position.set(0, 1.95, .62); const lo = Math.max(...pr.map(x => E.letter(x, 1.15).userData.below)); if (lo) { l.scale.setScalar(.72); l.position.y += lo * .72 + .05; }   /* beside Kuf both letters are smaller and higher, so the long leg shows on the white label */ if (pr.some(x => E.topDot(x))) { l.scale.setScalar(.88); l.position.y -= .12; }   /* Shin and Sin: the dot on top stays on the white label */ crates[i].add(l); crates[i].userData.key = k; return l; });
     pr.forEach((k, i) => E.pointAt(arrows[i], labels[i], k, 1.3, feat(k, pr)));
   }
   E.onFrame(t => {

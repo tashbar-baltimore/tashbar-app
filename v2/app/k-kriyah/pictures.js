@@ -156,6 +156,21 @@ export function makePictures(E) {
       [-1, 1].forEach(s => { g.add(mesh(new THREE.SphereGeometry(.04, 8, 6), M(0xffffff), .38, .06, s * .08, false)); g.add(mesh(new THREE.SphereGeometry(.02, 8, 6), M(0x111111), .41, .06, s * .09, false));
         const an = mesh(new THREE.CylinderGeometry(.012, .012, .25, 4), bm, .36, .22, s * .06, false); an.rotation.z = -.5; g.add(an);
         [-.12, 0, .12].forEach(x => { const lg = mesh(new THREE.CylinderGeometry(.015, .015, .3, 4), bm, x, -.12, s * .14, false); lg.rotation.x = s * .7; g.add(lg); }); }); return g; },
+    /* ---- Unit 8 stand-ins until the painted pictures arrive (shoe, sock, teapot) ---- */
+    shoe() { const g = new THREE.Group(), red = M(0x2f6fe1, { roughness: .35, clearcoat: .8 }), wh = M(0xffffff, { roughness: .5 });   /* a blue sneaker */
+      const sole = mesh(E.rbox(1.15, .14, .48, .06), wh, 0, -.3, 0); g.add(sole);
+      const toe = mesh(new THREE.SphereGeometry(.3, 20, 14), red, .3, -.12, 0); toe.scale.set(1.25, .7, .78); g.add(toe);
+      const heel = mesh(new THREE.CapsuleGeometry(.22, .25, 8, 14), red, -.25, -.02, 0); heel.scale.set(1.15, 1, 1); g.add(heel);
+      g.add(mesh(new THREE.TorusGeometry(.17, .045, 8, 20), wh, -.22, .3, 0)).children.at(-1).rotation.x = Math.PI / 2;
+      for (let k = 0; k < 3; k++) { const l = mesh(new THREE.BoxGeometry(.04, .03, .34), wh, .02 + k * .12, .06 - k * .03, .03, false); l.rotation.z = -.4; g.add(l); } g.rotation.y = -.35; return g; },
+    sock() { const g = new THREE.Group(), c = M(0xe8322b, { roughness: .7 }), st = M(0xffffff, { roughness: .7 });   /* a striped sock */
+      g.add(mesh(new THREE.CapsuleGeometry(.17, .55, 8, 16), c, -.12, .12, 0)); const ft = mesh(new THREE.CapsuleGeometry(.17, .35, 8, 16), c, .12, -.33, 0); ft.rotation.z = Math.PI / 2; g.add(ft);
+      [.2, .38].forEach(y => g.add(mesh(new THREE.CylinderGeometry(.176, .176, .07, 20), st, -.12, y, 0))); g.add(mesh(new THREE.CylinderGeometry(.18, .18, .1, 20), st, -.12, .52, 0)); return g; },
+    teapot() { const g = new THREE.Group(), c = M(0x46c3ff, { roughness: .25, clearcoat: 1 }), wh = M(0xffffff, { roughness: .3 });   /* a round blue teapot */
+      const b = mesh(new THREE.SphereGeometry(.42, 24, 18), c, 0, -.08, 0); b.scale.set(1.15, .88, 1); g.add(b);
+      g.add(mesh(new THREE.CylinderGeometry(.2, .26, .1, 20), c, 0, .3, 0)); g.add(mesh(new THREE.SphereGeometry(.07, 12, 10), wh, 0, .4, 0));
+      const sp = mesh(new THREE.ConeGeometry(.08, .5, 14), c, .55, .05, 0); sp.rotation.z = -1.0; g.add(sp);
+      const h = mesh(new THREE.TorusGeometry(.2, .05, 10, 20, Math.PI * 1.2), c, -.48, -.05, 0); h.rotation.z = Math.PI * .4; g.add(h); return g; },
   };
   /* the ChatGPT pictures (art/obj) replace the simple 3D ones; each stands as a flat card that always faces the boy */
   const IMG = { dag: ['fish', 1.24], dov: ['bear', .85], gamal: ['camel', 1.02], gezer: ['carrot', .84], har: ['mountain', 1.27], bayis: ['house', 1.14], vered: ['rose', .88], zevuv: ['fly', 1.06], zayis: ['olives', 1.23],
@@ -163,12 +178,19 @@ export function makePictures(E) {
     melafefon: ['cucumber', 1.16], nemalah: ['ant', 1.06],
     sus: ['horse', .9], sulam: ['ladder', .66], eitz: ['tree', 1.03], anan: ['cloud', 1.6], parpar: ['butterfly', 1.21], pil: ['elephant', 1.19],
     tzipor: ['bird', .99], tzav: ['turtle', 1.19], kof: ['toymonkey', 1], kubiyot: ['blocks', 1.09], rakevet: ['toytrain', 1.2], rimon: ['pomegranate', 1.04],
-    shulchan: ['table', 1.32], shaon: ['clock', .99], tapuach: ['apple', .89], tof: ['drum', .97], tik: ['backpack', 1] };
+    table: ['table', 1.32], turtle: ['turtle', 1.19], sun: ['sun', 1.05] };   /* Unit 8: English words (HoS: the first sound of the English name) */
   const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp'); t.colorSpace = THREE.SRGBColorSpace; return t; })());
   for (const [w, [f, a]] of Object.entries(IMG)) P[w] = () => { const g = new THREE.Group(), h = 1.7, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex(f), transparent: true, alphaTest: .4 }));
     sp.scale.set(h * a, h, 1); g.add(sp); g.userData.card = sp; return g; };
+  /* ordered pictures (UNIT8-NOTES.md, TODO): the 3D stand-in shows until art/obj/<name>.webp is there, then the painted picture shows by itself */
+  P.sheep = P.taleh;   /* until sheep.webp: the painted lamb */
+  for (const w of ['shoe', 'sheep', 'sock', 'teapot']) { const stand = P[w]; P[w] = () => { const g = new THREE.Group(), s3 = stand(); g.add(s3);
+    ordered(THREE, w).then(t => { if (!t) return; const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, alphaTest: .4 })); sp.scale.set(1.7 * t.image.width / t.image.height, 1.7, 1); g.remove(s3); g.add(sp); g.userData.card = sp; });
+    if (s3.userData.card) g.userData.card = s3.userData.card; return g; }; }
   return P;
 }
+const ordCache = {};
+const ordered = (THREE, f) => ordCache[f] || (ordCache[f] = new Promise(res => { try { new THREE.TextureLoader().load('art/obj/' + f + '.webp', t => { t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, () => res(null)); } catch (e) { res(null); } }));
 const texCache = {};   /* each picture loads once */
 /* the words, each with the letter it starts with and the short line he hears */
 export const WORDS = {
@@ -206,10 +228,12 @@ export const WORDS = {
   mayim: { letter: 'mem', say: 'Mayim. Water!' },
   melafefon: { letter: 'mem', say: 'Melafefon. A cucumber!' },
   nemalah: { letter: 'nun', say: 'Nemalah. An ant!' },
-  shulchan: { letter: 'shin', say: 'Shulchan. A table!' },
-  shaon: { letter: 'shin', say: 'Sha\u2019on. A clock!' },
-  tapuach: { letter: 'tav', say: 'Tapuach. An apple!' },
-  tof: { letter: 'tav', say: 'Tof. A drum!' },
-  tik: { letter: 'tav', say: 'Tik. A backpack!' },
+  shoe: { letter: 'shin', say: 'A shoe!' },
+  sheep: { letter: 'shin', say: 'A sheep!' },
+  sun: { letter: 'sin', say: 'The sun!' },
+  sock: { letter: 'sin', say: 'A sock!' },
+  table: { letter: 'tav', say: 'A table!' },
+  teapot: { letter: 'tav', say: 'A teapot!' },
+  turtle: { letter: 'tav', say: 'A turtle!' },
 };
-export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah', sus: 'Sus', sulam: 'Sulam', eitz: 'Eitz', anan: 'Anan', parpar: 'Parpar', pil: 'Pil', tzipor: 'Tzipor', tzav: 'Tzav', kof: 'Kof', kubiyot: 'Kubiyos', rakevet: 'Rakeves', rimon: 'Rimon', shulchan: 'Shulchan', shaon: 'Sha\u2019on', tapuach: 'Tapuach', tof: 'Tof', tik: 'Tik' };
+export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah', sus: 'Sus', sulam: 'Sulam', eitz: 'Eitz', anan: 'Anan', parpar: 'Parpar', pil: 'Pil', tzipor: 'Tzipor', tzav: 'Tzav', kof: 'Kof', kubiyot: 'Kubiyos', rakevet: 'Rakeves', rimon: 'Rimon', shoe: 'Shoe', sheep: 'Sheep', sun: 'Sun', sock: 'Sock', table: 'Table', teapot: 'Teapot', turtle: 'Turtle' };

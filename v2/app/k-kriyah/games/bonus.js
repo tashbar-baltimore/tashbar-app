@@ -24,7 +24,7 @@ export default function setup(E, { unit }) {
       if (k >= 1 && !u.busy) { u.gone = true; E.sparkle(l.position, 6, .4); E.scene.remove(l); falling.splice(i, 1); } } });
   window.__info = () => ({ want, active, targets: falling.filter(l => !l.userData.busy && l.userData.key === want).map(l => E.toScreen(l.position)),
     others: falling.filter(l => !l.userData.busy && l.userData.key !== want).map(l => E.toScreen(l.position)), caught, targetsSoFar: targets });
-  function setSign(k) { if (signL) sign.remove(signL); signL = E.letter(k, .9); if (signL.userData.below) { signL.scale.setScalar(.7); signL.position.set(0, signL.userData.below * .45, .25); } else signL.position.set(0, 0, .25);   /* Kuf's leg stays on the sign */ sign.add(signL); E.popIn(signL); }
+  function setSign(k) { if (signL) sign.remove(signL); signL = E.letter(k, .9); if (signL.userData.below) { signL.scale.setScalar(.7); signL.position.set(0, signL.userData.below * .45, .25); } else if (E.topDot(k)) { signL.scale.setScalar(.8); signL.position.set(0, -.1, .25); }   /* Shin's and Sin's dot stays on the white, never on the gold frame */ else signL.position.set(0, 0, .25);   /* Kuf's leg stays on the sign */ sign.add(signL); E.popIn(signL); }
   const FALL_F = E.FAST ? (E.LITE ? 1.4 : 2.5) : 1;    /* quick test runs draw very few frames a second, so letters fall slower there to stay tappable */
   function drop(k, ms) {
     const l = E.letter(k, 1.0); let x; if (E.portrait) { const top = lx => Math.max(-9, ...falling.filter(f => !f.userData.busy && !f.userData.gone && Math.abs(f.userData.x - lx) < .5).map(f => f.position.y)); x = [-.25, 1.45].sort((a, b) => top(a) - top(b))[0]; }   /* a phone has two lanes: the one whose last letter is lowest */
