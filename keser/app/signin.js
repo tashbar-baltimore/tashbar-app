@@ -80,7 +80,7 @@ const STEP = Math.PI * 2 / N, front = () => ((Math.round(-ang / STEP) % N) + N) 
 function turnTo(i) { let d = (-i * STEP - aim) % (Math.PI * 2); if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; aim += d; idle = 0; }
 order.forEach((id, i) => { const p = PLACES.find(x => x.id === id), v = progress[id] || 0, b = document.createElement('button');
   b.type = 'button'; b.className = 'globe' + (v > 0 ? '' : ' waiting'); b.style.setProperty('--c', p.color); b.dataset.place = id;
-  b.innerHTML = '<img src="' + GLOBES[id] + '" alt=""><span>' + p.name + '</span>'; b.setAttribute('aria-label', p.name + (v > 0 ? '' : ', waiting for her first treasure'));
+  b.innerHTML = '<img class="mark" src="/pics/keser-logo-mark.webp" alt=""><img class="orb" src="' + GLOBES[id] + '" alt=""><span>' + p.name + '</span>';   /* the Keser crown mark sits on top of every globe */ b.setAttribute('aria-label', p.name + (v > 0 ? '' : ', waiting for her first treasure'));
   b.onclick = () => { if (moved) return; const r = b.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 3, 18, p.color); chime(p.note);
     turnTo(i); setTimeout(() => { location.href = 'world.html?place=' + id; }, calm ? 0 : 750); };
   $('globes').appendChild(b); globes.push(b); });
@@ -98,7 +98,7 @@ function ring(now) {
     if (calm) ang = aim; else { vel += (aim - ang) * 70 * dt; vel *= Math.exp(-11 * dt); ang += vel * dt; }
     tilt += (tiltAim - tilt) * .06;
     const W = ringEl.clientWidth, R = Math.min(W * .36, 430), f = front();
-    globes.forEach((g, i) => { const a = ang + i * STEP, x = Math.sin(a) * R, z = Math.cos(a), sc = .5 + Math.pow((z + 1) / 2, 2.2) * .92;   /* the front globe comes right up close */
+    globes.forEach((g, i) => { const a = ang + i * STEP, x = Math.sin(a) * R, z = Math.cos(a), sc = .48 + Math.pow((z + 1) / 2, 2.2) * .78;   /* the front globe comes right up close */
       g.style.transform = 'translateX(calc(-50% + ' + (x + tilt * 30 * z).toFixed(1) + 'px)) translateY(' + (-(1 - z) * 34 + (z > .9 ? 18 : 0)).toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
       g.style.zIndex = String(Math.round(z * 100) + 100); g.style.setProperty('--o', (.45 + (z + 1) * .275).toFixed(2)); g.style.setProperty('--lbl', z > .3 ? '1' : '0');
       g.classList.toggle('front', i === f); });

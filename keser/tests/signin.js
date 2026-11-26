@@ -22,7 +22,7 @@ module.exports = async (browser) => {
         document.querySelectorAll('#vault button').forEach(b => { const r = b.getBoundingClientRect(); if (r.left < -1 || r.top < -1 || r.right > vw + 1 || r.bottom > vh + 1 || r.width < 44) off.push(b.dataset.k); });
         return { keys: document.querySelectorAll('.key').length, pics, off, wide: document.documentElement.scrollWidth > vw + 1 }; });
       if (v.keys !== 12) fails.push('Keser sign-in (' + tag + '): expected 12 gem keys, got ' + v.keys);
-      if (!v.pics) fails.push('Keser sign-in (' + tag + '): the vault paintings did not load');
+      if (!v.pics) fails.push('Keser sign-in (' + tag + '): the vault paintings or the Keser logo did not load');
       if (v.off.length) fails.push('Keser sign-in (' + tag + '): keys off the screen or too small to tap: ' + v.off.join(', '));
       if (v.wide) fails.push('Keser sign-in (' + tag + '): the page is wider than the screen');
       if (tag === 'chromebook') await pg.screenshot({ path: path.join(shots, 'keser-signin-vault.png') });
@@ -34,7 +34,7 @@ module.exports = async (browser) => {
       const home = await pg.waitForFunction(() => KSIGN.state.stage === 'home' && document.body.classList.contains('home'), null, { timeout: 12000 }).then(() => true, () => false);
       if (!home) { fails.push('Keser sign-in (' + tag + '): the practice code did not open the vault into her treasure house'); errs.forEach(e => fails.push('Keser sign-in (' + tag + '): ' + e)); await ctx.close(); continue; }
       await pg.waitForTimeout(1200);
-      const t = await pg.evaluate(() => ({ globes: [...document.querySelectorAll('.globe')].map(g => ({ id: g.dataset.place, waiting: g.classList.contains('waiting'), ok: g.querySelector('img').complete && g.querySelector('img').naturalWidth > 0 })),
+      const t = await pg.evaluate(() => ({ globes: [...document.querySelectorAll('.globe')].map(g => ({ id: g.dataset.place, waiting: g.classList.contains('waiting'), ok: g.querySelector('.orb').complete && g.querySelector('.orb').naturalWidth > 0 && g.querySelector('.mark').naturalWidth > 0 })),
         text: document.body.innerText, house: document.querySelector('#house .bg').naturalWidth > 0 }));
       if (t.globes.map(g => g.id).join() !== 'kodesh,reading,math,science,writing' || t.globes.some(g => !g.ok) || !t.house) fails.push('Keser sign-in (' + tag + '): her treasure house must show five globes and its painting (' + JSON.stringify(t.globes) + ')');
       if (!t.globes.every(g => g.waiting)) fails.push('Keser sign-in (' + tag + '): with no progress yet, every globe should be waiting');

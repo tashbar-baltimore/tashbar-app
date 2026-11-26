@@ -37,7 +37,15 @@ html,body{ margin:0; height:100%; overflow:hidden; color:#fff; font-family:syste
 .pad{ justify-self:center; width:min(100%,400px); display:grid; gap:18px; justify-items:center; padding:26px 24px 22px; border-radius:30px;
   background:linear-gradient(160deg,rgba(70,20,90,.55),rgba(30,6,48,.5)); border:1px solid rgba(255,241,184,.45); box-shadow:0 30px 80px rgba(20,0,40,.45), inset 0 1px 0 rgba(255,255,255,.3);
   backdrop-filter:blur(14px) saturate(1.4); -webkit-backdrop-filter:blur(14px) saturate(1.4); transition:opacity .6s, transform .6s var(--glide); }
-.pad h1{ margin:0; font-size:clamp(30px,3.4vw,40px); }
+.pad h1{ margin:-6px 0 0; font-size:clamp(24px,2.6vw,32px); }
+/* the Keser logo: it flies in over the vault, rides with her through it, and crowns every treasure (HoS 2026-11-26) */
+.padlogo{ width:min(62%,220px); filter:drop-shadow(0 0 16px rgba(255,214,140,.6)) drop-shadow(0 4px 8px rgba(40,0,40,.6)); animation:logoin 1.8s cubic-bezier(.16,.9,.3,1.04) .2s both; }
+@keyframes logoin{ 0%{ opacity:0; transform:perspective(800px) translateZ(-900px) rotateY(-60deg) scale(.5); filter:blur(10px) brightness(2) } 60%{ opacity:1; filter:blur(0) brightness(1.5) } 100%{ opacity:1; transform:none } }
+.flylogo{ position:absolute; left:50%; top:44%; width:min(30vw,260px); translate:-50% -50%; opacity:0; filter:drop-shadow(0 0 30px rgba(255,241,184,.95)); }
+body.flying .flylogo{ animation:flythrough 2.2s cubic-bezier(.5,0,.4,1) both; }
+@keyframes flythrough{ 0%{ opacity:0; transform:scale(.3) } 30%{ opacity:1 } 75%{ opacity:1; transform:scale(1.4) } 100%{ opacity:0; transform:scale(4) } }
+.globe .mark{ position:absolute; left:50%; top:-20%; width:74%; z-index:2; translate:-50% 0; filter:drop-shadow(0 1px 1px rgba(40,0,40,.9)) drop-shadow(0 0 12px rgba(255,214,140,.95)) drop-shadow(0 3px 6px rgba(40,0,40,.7)); animation:float 4s ease-in-out infinite; pointer-events:none; }
+.globe.waiting .mark{ filter:drop-shadow(0 3px 5px rgba(40,0,40,.6)) saturate(.6); }
 .slots{ display:flex; gap:16px; }
 .slot{ width:26px; height:26px; transform:rotate(45deg); border-radius:6px; border:2px solid rgba(255,241,184,.7); background:rgba(255,255,255,.06); transition:all .35s var(--spring); }
 .slot.on{ background:linear-gradient(135deg,#fff,#FF8FBF 40%,#FF3D8E); border-color:#FFF1B8; box-shadow:0 0 18px #FF5FA2; transform:rotate(45deg) scale(1.12); }
@@ -62,32 +70,32 @@ body.flying #vault{ opacity:0; transform:scale(1.6); transition:opacity 1s .2s, 
 #house{ opacity:0; pointer-events:none; }
 body.home #house{ opacity:1; pointer-events:auto; }
 body.home #fly{ opacity:0; }
-#house .title{ position:absolute; top:max(4vh,18px); left:0; right:0; text-align:center; }
+#house .title{ position:absolute; top:max(1.5vh,10px); left:0; right:0; text-align:center; }
 #house .title{ display:grid; justify-items:center; gap:0; }
-#house .title .tcrown{ width:clamp(70px,8vw,110px); filter:drop-shadow(0 0 18px rgba(255,214,140,.9)) drop-shadow(0 4px 8px rgba(40,0,40,.6)); animation:float 4s ease-in-out infinite; }
-#house .title h1{ position:relative; margin:-4px 0 0; padding:4px 34px 10px; font-size:clamp(46px,6.4vw,86px); letter-spacing:.04em; line-height:1;
+#house .title .tcrown{ position:relative; z-index:2; width:clamp(90px,9vw,130px); margin-bottom:2px; filter:drop-shadow(0 0 18px rgba(255,214,140,.9)) drop-shadow(0 4px 8px rgba(40,0,40,.6)); animation:float 4s ease-in-out infinite; }
+#house .title h1{ position:relative; margin:-4px 0 0; padding:4px 34px 10px; font-size:clamp(40px,5.4vw,74px); letter-spacing:.04em; line-height:1;
   background-image:linear-gradient(100deg,#8A5A10 0%,#C98A1E 12%,#F5C451 28%,#FFF1B8 42%,#fff 50%,#FFF1B8 58%,#F5C451 72%,#C98A1E 88%,#8A5A10 100%); background-size:250% 100%;
   filter:drop-shadow(0 2px 0 #7A4A0A) drop-shadow(0 4px 6px rgba(40,0,40,.9)) drop-shadow(0 0 26px rgba(255,214,140,.85)); }
 #house .title .rule{ width:min(70vw,520px); height:14px; margin-top:2px;
   background:radial-gradient(circle at 50% 50%, #FFF1B8 0 3px, transparent 4px) center/14px 14px no-repeat, linear-gradient(90deg, transparent, #F5C451 25%, #FFF1B8 50%, #F5C451 75%, transparent) center/100% 2px no-repeat;
   filter:drop-shadow(0 0 6px rgba(255,214,140,.9)); }
-.globes{ position:absolute; left:0; right:0; bottom:11vh; height:44vh; touch-action:pan-y; cursor:grab; }
+.globes{ position:absolute; left:0; right:0; bottom:9vh; height:40vh; touch-action:pan-y; cursor:grab; }
 .globes::before{ content:""; position:absolute; left:50%; bottom:2%; width:min(74vw,900px); height:16%; translate:-50% 0; border-radius:50%;
   background:radial-gradient(ellipse, rgba(255,214,140,.55), rgba(255,95,162,.18) 55%, transparent 72%); box-shadow:0 0 0 2px rgba(245,196,81,.35) inset; }
 .globe{ appearance:none; border:0; background:none; padding:0; cursor:pointer; position:absolute; left:50%; bottom:6%; display:grid; justify-items:center; gap:6px; color:#fff;
   font:700 16px/1.1 var(--serif); transform-origin:50% 100%; will-change:transform, opacity; opacity:0; transition:opacity .8s; }
 body.home .globe{ opacity:1; }
-.globe img{ width:clamp(90px,13vw,170px); filter:drop-shadow(0 0 24px var(--c)) drop-shadow(0 14px 24px rgba(40,0,40,.4)); animation:float 4s ease-in-out infinite; }
-.globe:nth-child(2) img{ animation-delay:-.8s } .globe:nth-child(3) img{ animation-delay:-1.6s } .globe:nth-child(4) img{ animation-delay:-2.4s } .globe:nth-child(5) img{ animation-delay:-3.2s }
+.globe .orb{ width:clamp(90px,13vw,170px); filter:drop-shadow(0 0 24px var(--c)) drop-shadow(0 14px 24px rgba(40,0,40,.4)); animation:float 4s ease-in-out infinite; }
+.globe:nth-child(2) .orb{ animation-delay:-.8s } .globe:nth-child(3) .orb{ animation-delay:-1.6s } .globe:nth-child(4) .orb{ animation-delay:-2.4s } .globe:nth-child(5) .orb{ animation-delay:-3.2s }
 @keyframes float{ 50%{ translate:0 -10px } }
-.globe.waiting img{ filter:saturate(.35) brightness(.8) drop-shadow(0 14px 24px rgba(40,0,40,.4)); opacity:.8; }
+.globe.waiting .orb{ filter:saturate(.35) brightness(.8) drop-shadow(0 14px 24px rgba(40,0,40,.4)); opacity:.8; }
 .globe span{ text-shadow:0 2px 10px rgba(40,0,40,.8); opacity:var(--lbl,1); }
 .globe::before{ content:""; position:absolute; left:50%; top:42%; width:150%; aspect-ratio:1; translate:-50% -50%; border-radius:50%; z-index:-1;
   background:radial-gradient(circle, color-mix(in srgb, var(--c) 55%, transparent), transparent 65%); opacity:0; transition:opacity .5s; pointer-events:none; }
 .globe.front::before{ opacity:1; }
-.globe.front img{ filter:drop-shadow(0 0 34px var(--c)) drop-shadow(0 0 60px rgba(255,241,184,.55)) drop-shadow(0 18px 30px rgba(40,0,40,.5)); }
-.globe:not(.front) img{ filter:brightness(.92) drop-shadow(0 0 14px var(--c)) drop-shadow(0 12px 20px rgba(40,0,40,.45)); }
-.globe.waiting:not(.front) img{ filter:saturate(.45) brightness(.88) drop-shadow(0 12px 20px rgba(40,0,40,.45)); }
+.globe.front .orb{ filter:drop-shadow(0 0 34px var(--c)) drop-shadow(0 0 60px rgba(255,241,184,.55)) drop-shadow(0 18px 30px rgba(40,0,40,.5)); }
+.globe:not(.front) .orb{ filter:brightness(.92) drop-shadow(0 0 14px var(--c)) drop-shadow(0 12px 20px rgba(40,0,40,.45)); }
+.globe.waiting:not(.front) .orb{ filter:saturate(.45) brightness(.88) drop-shadow(0 12px 20px rgba(40,0,40,.45)); }
 .globe.front span{ font-size:24px; color:var(--gold1); letter-spacing:.04em; }
 .globe:focus-visible{ outline:3px solid var(--gold1); outline-offset:6px; border-radius:16px; }
 .spin{ position:absolute; bottom:28vh; }
@@ -97,11 +105,11 @@ body.home .globe{ opacity:1; }
 @media (max-width:760px), (max-aspect-ratio:1/1){
   #vault .wrap{ grid-template-columns:1fr; grid-template-rows:auto auto; align-content:center; gap:2vh; padding:3vh 16px; }
   .door-box{ width:min(62vw,36vh,320px); }
-  .pad{ padding:16px 16px 14px; gap:12px; }
+  .pad{ padding:12px 16px 14px; gap:10px; } .padlogo{ width:120px; } .pad h1{ font-size:20px; }
   .keys{ grid-template-columns:repeat(3,62px); gap:10px; } .key{ width:62px; height:62px; font-size:26px; }
-  .globes{ bottom:15vh; height:44vh; } .globe img{ width:clamp(80px,26vw,130px); } .spin{ display:none; }
+  .globes{ bottom:15vh; height:44vh; } .globe .orb{ width:clamp(80px,26vw,130px); } .spin{ display:none; }
 }
-@media (prefers-reduced-motion: reduce){ .door-glow,.globe img{ animation:none } .door,.dial,#fly .bg,.globe{ transition-duration:.01s } body.flying #vault{ transition:opacity .3s } }
+@media (prefers-reduced-motion: reduce){ .padlogo,.globe .mark,body.flying .flylogo{ animation:none } .door-glow,.globe .orb{ animation:none } .door,.dial,#fly .bg,.globe{ transition-duration:.01s } body.flying #vault{ transition:opacity .3s } }
 </style>
 </head>
 <body>
@@ -112,17 +120,17 @@ body.home .globe{ opacity:1; }
       <div class="door"><img class="d" src="/pics/keser-vault-door.webp" alt="A jeweled vault door"><div class="dial" id="dial"><img src="/pics/keser-vault-dial.webp" alt="The crown dial"></div></div>
     </div>
     <div class="pad">
-      <h1 class="k-foil">Your code</h1>
+      <img class="padlogo" src="/pics/keser-logo.webp" alt="Keser Academy for Girls"><h1 class="k-foil">Your code</h1>
       <div class="slots" id="slots" aria-live="polite"><span class="slot"></span><span class="slot"></span><span class="slot"></span><span class="slot"></span></div>
       <div class="keys" id="keys"></div>
       <p class="hint" id="hint">Practice code: 1 2 3 4</p>
     </div>
   </div>
 </section>
-<section class="scene" id="fly" aria-hidden="true"><img class="bg" src="/pics/keser-vault-inside.webp" alt=""></section>
+<section class="scene" id="fly" aria-hidden="true"><img class="bg" src="/pics/keser-vault-inside.webp" alt=""><img class="flylogo" src="/pics/keser-logo-mark.webp" alt=""></section>
 <section class="scene" id="house" aria-hidden="true">
   <img class="bg" src="/pics/keser-treasure-house.webp" alt=""><div class="veil" style="background:linear-gradient(180deg,rgba(26,11,46,.25),transparent 30%,transparent 60%,rgba(26,11,46,.55))"></div>
-  <div class="title"><img class="tcrown" src="/pics/keser-crown.webp" alt=""><h1 class="k-foil">Your Treasures</h1><div class="rule"></div></div>
+  <div class="title"><img class="tcrown" src="/pics/keser-logo-mark.webp" alt=""><h1 class="k-foil">Your Treasures</h1><div class="rule"></div></div>
   <div class="globes" id="globes"></div>
   <button class="k-icon spin l" id="spinL" aria-label="Turn the treasures left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
   <button class="k-icon spin r" id="spinR" aria-label="Turn the treasures right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>

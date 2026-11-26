@@ -54,3 +54,9 @@ All 10 arrived the same day (cut-outs with see-through backgrounds) and were che
 | 4 | `keser-vault-inside` | sign-in: flying through the open vault | open jeweled vault door, golden light, clouds, treasure chests |
 | 5 | `keser-treasure-house` | her treasure house in the heavens | rose-quartz and gold hall in the clouds with shelves of glowing globes |
 | 6–10 | `keser-globe-empty`, `-kodesh`, `-reading`, `-math`, `-science` | her treasures (Writing uses the empty globe for now) | crystal globes on rose-gold stands holding a tiny subject treasure |
+
+## The Keser logo and the Three Crowns (2026-11-26, sent by the HoS) · in the library
+HoS: "this is the Keser logo ... the Keser logos should be incorporated throughout, and a lot of pride. And there should be fly-ins ... Make it very branded." Miriam David's originals, polished on the HoS's image account.
+- `keser-logo` (the logo as a cut-out; the builder removed its white background), `keser-logo-mark` (the crown mark only, cut from it, for small places), `keser-logo-plum` (the logo on plum velvet).
+- `keser-keter-torah`, `keser-keter-kehuna`, `keser-keter-malchut`: the Three Crowns banners. They have Hebrew words in the artwork on purpose (titles and pesukim; the Divine Name is written ה׳). The tiny letters under the tribe names on the Choshen and the tiny script in the Sefer Torah are decoration, not exact text. **REBBE: review.**
+- Where: the logo flies in on the welcome page; it flies in over the vault, rides with her through it, and crowns every treasure globe and the "Your Treasures" title; it is the loading crown, it sits above the sisters' welcome, and its crown mark sits top left in her world and in the Kodesh lab's top bar. The Three Crowns rise behind the card when she enters Kodesh and stand on the Kodesh lab's home.

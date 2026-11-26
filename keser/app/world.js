@@ -66,7 +66,7 @@ function go(i, quiet) {
 }
 function enter() {
   if (S.entered) return; S.entered = true; const p = PLACES[S.focus];
-  chime(p.note); chime(p.note + 7, true); const lab = p.id === 'kodesh'; $('openLab').hidden = !lab; $('roomSoon').hidden = lab; $('roomName').textContent = p.name; $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
+  chime(p.note); chime(p.note + 7, true); const lab = p.id === 'kodesh'; body.classList.toggle('kodesh', lab); $('openLab').hidden = !lab; $('roomSoon').hidden = lab; $('roomName').textContent = p.name; $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
   world && world.enter(S.focus); setTimeout(() => { if (S.entered) { body.classList.add('inside'); $('room').setAttribute('aria-hidden', 'false'); $('back').focus({ preventScroll: true }); } }, calm ? 50 : 750);
 }
 function back() {
