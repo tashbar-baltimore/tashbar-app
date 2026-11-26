@@ -3,7 +3,7 @@
    A dot letter can come from the one before it losing its dot (Chaf from Kaf). Then the look-alikes stand side by side
    (an orange arrow at a shape difference, a ring only at the dot place), every letter so far is chanted right to left, and he taps each new one.
    Every spoken line is 12 words or fewer. */
-import { makePictures } from '../pictures.js';
+import { makePictures, hasPic } from '../pictures.js';
 export function makeStory(E, unit, script) {
   const { THREE, S } = E;
   const PIC = makePictures(E);
@@ -59,10 +59,10 @@ export function makeStory(E, unit, script) {
         await E.say('Tap ' + E.LETTERS[st.letter].name + '!'); await tapIt(ch, E.nameLine(st.letter));
         src.visible = true; src.position.copy(kp); float(src); await letterDone(st.fromDot); await letterDone(st.letter);
       } else {
-        const pic = PIC[st.pic](); const who = st.near === 'grown' && grown ? grown : boy;
+        const has = hasPic(st.pic), pic = has ? PIC[st.pic]() : new THREE.Group(); const who = st.near === 'grown' && grown ? grown : boy;   /* a painting not here yet: the letter appears on its own */
         pic.position.set(who.position.x + .9, 2.0, who.position.z + .4); pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
         if (st.act) st.act(E, pic, boy, grown);
-        for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);
+        for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);   /* the story is told even before its painting comes */
         await toCentre(pic); await morph(pic, st.letter);
         for (const line of st.after) await E.say(line);
         await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
