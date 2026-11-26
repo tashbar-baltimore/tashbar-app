@@ -1,0 +1,196 @@
+<script>
+/* CoreDataS11.html: Social Studies Unit 1 of Grades 4-8: the unit check (boss level), the test-out (pre-check) and the unit project
+   (a map or a timeline he builds, then writes about in the Writing Workshop). HoS decision 2026-11-25 (issue 432): Social Studies gets
+   a skill path (c:'SS' in src/CoreUnits.html), and every live Social Studies Unit 1 gets a unit check, a test-out and a project, exactly
+   like Science (src/CoreDataS1-S5.html). The lessons themselves are job S's (src/CoreDataS6-S10.html); this file adds no lesson.
+   Units: S.U06 Grade 4, S.U07 Grade 5, S.U08 Grade 6, S.U09 Grade 7, S.U10 Grade 8 (S-map.md section 3, order 6-10). They are added in
+   grade order, because a unit's check opens when he starts the next Social Studies unit. Each skill list follows the Explorer Trail order,
+   so the pre-check opens on the first lesson of the unit.
+   Every question is new (not one he answered in the lesson), has 3 choices and a "how" line. Grades 5-8 also review 2 skills of the
+   grade before. The Holocaust lessons (SS.JHIST.L08.04, SS.JHIST.L09.01) are held (TL_SS_HOLD), so they are in no unit and no question.
+   Cast: Grades 4-5 the Glen Avenue Crew (C45-map.md section 5) with Mr. Halpern; Grades 6-8 The Beacon newsroom (W48-map.md section 7).
+   No money anywhere. No double slash in this file. */
+(function () {
+  if (!(window.TLCORE && TLCORE.units)) return;
+  var U = TLCORE.units;
+
+  /* ===== Grade 4 · Unit S.U06 "Regions and Early America" (SS.*.L05) ===== */
+  var MAP4 = { id: 'S.PROJ4.SS1', title: 'My Map of America', grade: 4, kind: 'information',
+    prompt: 'Be a mapmaker! On a big sheet of paper, draw the United States. Color the five regions, each in its own color. Draw one line of latitude (39° north) and one line of longitude (76° west), and put a star where they cross: Baltimore! Mark where the 13 colonies were, and where the first Jews landed in 1654. Then write about your map.',
+    strategy: { name: 'Draw, Label, Tell', steps: [['D', 'Draw: the country and its five regions'], ['L', 'Label: the lines, Baltimore, the colonies'], ['T', 'Tell: what your map shows, and why it matters']] },
+    plan: [ { k: 'regions', label: 'D · The five regions', hint: 'I colored the Northeast…' },
+            { k: 'lines', label: 'L · My lines and Baltimore', hint: 'Baltimore is about 39° north…' },
+            { k: 'colonies', label: 'L · The 13 colonies', hint: 'The colonies were on the Atlantic coast…' },
+            { k: 'jews', label: 'L · The first Jews', hint: 'In 1654, 23 Jews came to…' },
+            { k: 'why', label: 'T · Why my map matters', hint: 'My map helps me see…' } ],
+    starters: ['On my map,', 'I colored', 'Baltimore is', 'The 13 colonies were', 'In 1654,', 'My map shows'],
+    min: 60,
+    checks: [
+      { t: 'I wrote at least 5 sentences.', sentences: 5 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I named a region and a line on my map.', any: ['northeast', 'southeast', 'midwest', 'southwest', 'west', 'latitude', 'longitude'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I drew my map and labeled it.', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['My map shows the five regions', 'I placed Baltimore with latitude and longitude', 'I marked the colonies and the first Jews', 'Clear sentences, capitals and end marks'],
+    pics: ['🗺️', '🌐', '⛵', '🕍'] };
+  U.add({ id: 'S.U06', title: 'Regions and Early America', c: 'SS', grade: 4,
+    skills: ['SS.GEO.L05.01', 'SS.GEO.L05.02', 'SS.HIST.L05.01', 'SS.HIST.L05.02', 'SS.JHIST.L05.01', 'SS.HIST.L05.03'], n: 8, task: MAP4,
+    items: [
+      { type: 'cloze', skill: 'SS.GEO.L05.01', t: 'Kansas, with flat wheat farms in the middle of the country, is in the ___.', o: ['Midwest', 'Southwest', 'Northeast'], a: 'Midwest', how: 'Find the region in the middle of the map, with flat farmland.' },
+      { type: 'evidence', skill: 'SS.GEO.L05.01', q: 'Georgia is a warm state on the Atlantic coast, right next to Florida. Which region is it in?', p: ['the Southwest', 'the Southeast', 'the Midwest'], a: 1, look: 'the region Florida is in', how: 'A state next to Florida, warm and on the coast, is in the same region.' },
+      { type: 'evidence', skill: 'SS.GEO.L05.02', q: 'Two cities are both at 40° north. What is the same about them?', p: ['They are in the same country.', 'They have the same longitude.', 'They are the same distance north of the equator.'], a: 2, look: 'what latitude tells', how: 'Latitude tells how far north or south of the equator a place is.' },
+      { type: 'cloze', skill: 'SS.GEO.L05.02', t: 'A city at 60° north is likely ___ than a city at 20° north.', o: ['colder', 'hotter', 'sandier'], a: 'colder', how: 'A bigger latitude is closer to the pole, where it is icy.' },
+      { type: 'evidence', skill: 'SS.HIST.L05.01', q: 'A sailor in 1500 says: "If I keep sailing west, I will come home from the east." Whose trip later proved him right?', p: ['Columbus', 'Magellan’s crew', 'the Pilgrims'], a: 1, look: 'the trip all the way around the world', how: 'Only one trip went all the way around the world and came home.' },
+      { type: 'order', skill: 'SS.HIST.L05.02', steps: ['⛵ Columbus sails west', '🏘️ Jamestown begins', '🌽 the Pilgrims land at Plymouth'], say: 'Put them in time order.', how: 'First the explorers, then the first colony that lasted, then the Pilgrims.' },
+      { type: 'evidence', skill: 'SS.JHIST.L05.01', q: 'Asser Levy asked to stand guard at night, like every other man in town. What was he really asking for?', p: ['to be paid more money', 'to become the governor', 'to be treated the same as everyone'], a: 2, look: 'what the right to stand guard meant', how: 'He did not want the Jews left out of a job every townsman shared.' },
+      { type: 'evidence', skill: 'SS.HIST.L05.03', q: 'Squanto showed the Pilgrims how to plant corn. Why did that matter so much?', p: ['Without a good harvest, they could not live through the next winter.', 'Corn was worth gold in England.', 'They needed corn to fix the ship.'], a: 0, look: 'why food mattered after that first winter', how: 'Remember how hard the first winter was.' }
+    ] });
+
+  /* ===== Grade 5 · Unit S.U07 "The New Nation" (SS.*.L06) ===== */
+  var LINE5 = { id: 'S.PROJ5.SS1', title: 'The Road to a Free Country', grade: 5, kind: 'information',
+    prompt: 'Be a historian! On a long strip of paper, build a timeline from 1765 to 1865. Put at least 6 dates on it, each with a picture and a few words: a tax, a war, a declaration, the Constitution, the Bill of Rights, the end of slavery. Add one Jew who helped build the new nation. Then write the story your timeline tells.',
+    strategy: { name: 'Date, Event, Why', steps: [['D', 'Date: when did it happen?'], ['E', 'Event: what happened?'], ['W', 'Why: why did it matter?']] },
+    plan: [ { k: 'start', label: 'D · How it began (1765–1775)', hint: 'Britain taxed the colonies…' },
+            { k: 'free', label: 'E · Becoming free (1776–1783)', hint: 'On July 4, 1776…' },
+            { k: 'plan', label: 'E · The plan for government (1787–1791)', hint: 'The Constitution set up three branches…' },
+            { k: 'split', label: 'E · Growing and splitting (1803–1865)', hint: 'The Louisiana Purchase…' },
+            { k: 'jew', label: 'W · A Jew who helped', hint: 'Haym Salomon…' } ],
+    starters: ['In 1765,', 'Then,', 'On July 4, 1776,', 'In 1787,', 'This mattered because', 'In 1865,'],
+    min: 60,
+    checks: [
+      { t: 'I wrote at least 6 sentences.', sentences: 6 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I told why something mattered, with "because".', any: ['because'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'My timeline has at least 6 dates, in order.', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['My dates are right and in order', 'I told what happened at each date', 'I explained why it mattered', 'Clear sentences, capitals and end marks'],
+    pics: ['📜', '🏛️', '🗽', '🫖'] };
+  U.add({ id: 'S.U07', title: 'The New Nation', c: 'SS', grade: 5,
+    skills: ['SS.HIST.L06.01', 'SS.HIST.L06.02', 'SS.JHIST.L06.01', 'SS.CIV.L06.01', 'SS.CIV.L06.02', 'SS.JHIST.L06.02', 'SS.HIST.L06.03'],
+    review: ['SS.HIST.L05.02', 'SS.GEO.L05.02'], n: 9, task: LINE5,
+    items: [
+      { type: 'evidence', skill: 'SS.HIST.L06.01', q: 'Which sentence shows why the colonists were angry about the Stamp Act?', p: ['They wanted to buy more stamps.', 'They had to pay a tax, but no one in Parliament spoke for them.', 'The king forgot to send them tea.'], a: 1, look: 'taxes with no voice', how: 'Remember the cry: "No taxation without representation!"' },
+      { type: 'evidence', skill: 'SS.HIST.L06.02', q: 'The Declaration came in 1776, but the war went on until 1783. What did the Declaration do?', p: ['It ended the war that same day.', 'It made Britain agree to leave.', 'It told the world the colonies were now free, a reason to keep fighting.'], a: 2, look: 'what a declaration is', how: 'To declare is to say it out loud to everyone. The war still had to be won.' },
+      { type: 'cloze', skill: 'SS.JHIST.L06.01', t: 'Haym Salomon gave his money to help the army, and he died poor. He was very ___.', o: ['generous', 'lazy', 'greedy'], a: 'generous', how: 'Think of a person who gives away what he has.' },
+      { type: 'evidence', skill: 'SS.CIV.L06.01', q: 'The President says no to a new law. Then two-thirds of both houses of Congress vote for it again, and it becomes law. What is this?', p: ['checks and balances', 'the Bill of Rights', 'a colony'], a: 0, look: 'one branch checking another', how: 'Each branch can stop another, so no one has all the power.' },
+      { type: 'cloze', skill: 'SS.CIV.L06.02', t: 'A newspaper may print that the mayor made a mistake. That is freedom of the ___.', o: ['press', 'religion', 'colonies'], a: 'press', how: 'The First Amendment protects religion, speech, the press and gathering.' },
+      { type: 'evidence', skill: 'SS.JHIST.L06.02', q: 'Which project today is most like Rebecca Gratz’s work?', p: ['opening a toy store to earn money', 'running for President', 'collecting coats for families in need'], a: 2, look: 'a project of chessed', how: 'Her life was chessed: orphans, poor families, and teaching children.' },
+      { type: 'evidence', skill: 'SS.HIST.L06.03', q: 'After 1865, could any state still allow slavery?', p: ['No. The 13th Amendment ended it everywhere.', 'Yes, in the South.', 'Yes, in the West.'], a: 0, look: 'what the 13th Amendment did', how: 'An amendment to the Constitution is a rule for the whole country.' },
+      { type: 'evidence', skill: 'SS.HIST.L05.02', q: 'Which colony has the name of our city?', p: ['Virginia', 'Maryland', 'Georgia'], a: 1, look: 'the colony of Lord Baltimore', how: 'Our city is named after Lord Baltimore, who started one colony.' },
+      { type: 'evidence', skill: 'SS.GEO.L05.02', q: 'Which pair of numbers could find Baltimore on a map?', p: ['0° north, 0° west', '90° north, 76° west', '39° north, 76° west'], a: 2, look: 'a spot far from the equator and the pole', how: '0° is the equator, and 90° north is the North Pole. Baltimore is in between.' }
+    ] });
+
+  /* ===== Grade 6 · Unit S.U08 "Ancient Empires and Eretz Yisroel" (SS.*.L07) ===== */
+  var MAP6 = { id: 'S.PROJ6.SS1', title: 'The Map of the Four Kingdoms', grade: 6, kind: 'information',
+    prompt: 'Make a map for The Beacon! Draw the lands around the Mediterranean Sea. Put Eretz Yisroel in the middle, with the Jordan River, the Kinneret and the Dead Sea. Mark the Nile and Mitzrayim, Bavel between its two rivers, Persia, Greece and Rome. Draw an arrow for each kingdom that ruled Eretz Yisroel, in order. Then write the article that goes with your map.',
+    strategy: { name: 'Place, Power, Proof', steps: [['P', 'Place: where is it on the map?'], ['P', 'Power: who ruled, and what happened to the Jews?'], ['P', 'Proof: a fact or date that shows it']] },
+    plan: [ { k: 'land', label: 'Place · Eretz Yisroel and its waters', hint: 'Eretz Yisroel sits where…' },
+            { k: 'nile', label: 'Place · Mitzrayim and the Nile', hint: 'The Nile flows north…' },
+            { k: 'bavel', label: 'Power · Bavel and Persia', hint: 'Nevuchadnetzar destroyed…' },
+            { k: 'greece', label: 'Power · Greece and the Chashmonaim', hint: 'Antiochus banned…' },
+            { k: 'rome', label: 'Power · Rome and the Churban', hint: 'Titus destroyed…' },
+            { k: 'torah', label: 'Proof · How the Torah lived on', hint: 'Rabbi Yehuda HaNasi wrote…' } ],
+    starters: ['Eretz Yisroel sits', 'The first kingdom was', 'After that,', 'Even so,', 'This shows that', 'Today,'],
+    min: 80,
+    checks: [
+      { t: 'I wrote at least 7 sentences.', sentences: 7 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I named the kingdoms.', any: ['persia', 'greece'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I drew and labeled my map, with an arrow for each kingdom.', self: true },
+      { t: 'I read it out loud and checked every date.', self: true } ],
+    rubric: ['My map places the lands and waters correctly', 'The four kingdoms are in the right order', 'I told how the Jews and the Torah lived on', 'Clear sentences, capitals and end marks'],
+    pics: ['🗺️', '🏜️', '🕎', '🧱'] };
+  U.add({ id: 'S.U08', title: 'Ancient Empires and Eretz Yisroel', c: 'SS', grade: 6,
+    skills: ['SS.GEO.L07.01', 'SS.HIST.L07.01', 'SS.HIST.L07.02', 'SS.HIST.L07.03', 'SS.HIST.L07.04', 'SS.JHIST.L07.01'],
+    review: ['SS.CIV.L06.01', 'SS.HIST.L06.02'], n: 10, task: MAP6,
+    items: [
+      { type: 'evidence', skill: 'SS.GEO.L07.01', q: 'A trader walks from Mitzrayim to Bavel. Which land does he cross?', p: ['Eretz Yisroel', 'Greece', 'Rome'], a: 0, look: 'the land between Africa and Asia', how: 'Eretz Yisroel is the bridge between Africa and Asia.' },
+      { type: 'evidence', skill: 'SS.GEO.L07.01', q: 'You sail from Eretz Yisroel straight west. Which sea are you on?', p: ['the Dead Sea', 'the Mediterranean', 'the Kinneret'], a: 1, look: 'the sea to the west', how: 'The Dead Sea and the Kinneret are inside the land. Which big sea is on its west?' },
+      { type: 'evidence', skill: 'SS.HIST.L07.01', q: 'A town in ancient Mitzrayim is far away from the Nile. What problem would it have?', p: ['too much rain', 'too many ships', 'no water to grow food'], a: 2, look: 'what the river gave', how: 'Mitzrayim is desert. Only the river brought water and rich mud.' },
+      { type: 'cloze', skill: 'SS.HIST.L07.01', t: 'The Pharaohs were buried in giant stone tombs called ___.', o: ['pyramids', 'castles', 'palaces'], a: 'pyramids', how: 'Think of the famous stone tombs of Mitzrayim.' },
+      { type: 'order', skill: 'SS.HIST.L07.02', steps: ['🔥 the first Beis Hamikdash is destroyed', '🏛️ the Jews live in galus in Bavel', '👑 Koresh lets the Jews go home', '🧱 the Jews rebuild'], say: 'Put them in time order.', how: 'Galus starts with the Churban. Going home comes after.' },
+      { type: 'evidence', skill: 'SS.HIST.L07.03', q: 'Alexander the Great and the idea of democracy came from which kingdom?', p: ['Persia', 'Greece', 'Rome'], a: 1, look: 'the third kingdom', how: 'Think of the kingdom whose king Antiochus fought the Chashmonaim.' },
+      { type: 'evidence', skill: 'SS.HIST.L07.04', q: 'Latin, long stone roads and a giant empire: which kingdom was this?', p: ['Persia', 'Bavel', 'Rome'], a: 2, look: 'the fourth kingdom', how: 'Bavel, Persia, Greece, then the fourth and last kingdom.' },
+      { type: 'cloze', skill: 'SS.JHIST.L07.01', t: 'The sages who taught the Mishnah are called the ___.', o: ['Tannaim', 'Amoraim', 'Geonim'], a: 'Tannaim', how: 'The Amoraim explained the Mishnah later, and the Geonim came after the Gemara.' },
+      { type: 'evidence', skill: 'SS.CIV.L06.01', q: 'A judge says a new law goes against the Constitution. Which branch is checking the others?', p: ['the executive branch', 'the judicial branch', 'the legislative branch'], a: 1, look: 'the branch of judges', how: 'Judges and courts make up one branch.' },
+      { type: 'evidence', skill: 'SS.HIST.L06.02', q: 'Which came first?', p: ['Britain agrees America is free', 'Washington becomes President', 'the Declaration of Independence'], a: 2, look: 'the start of independence', how: 'First America said it was free. Then it had to win the war.' }
+    ] });
+
+  /* ===== Grade 7 · Unit S.U09 "Wandering, and Coming to America" (SS.*.L08) ===== */
+  var LINE7 = { id: 'S.PROJ7.SS1', title: 'A Thousand Years on the Road', grade: 7, kind: 'information',
+    prompt: 'Build a timeline for The Beacon, from 1040 to 1924. Put at least 8 dates on it: great Torah leaders, expulsions, the kehillos of Poland and Lithuania, the voyage to America, and World War I. Use one color for hard times and another for times of Torah growth. Then write the feature article that walks a reader along your timeline.',
+    strategy: { name: 'When, What, So What', steps: [['W', 'When: the date'], ['W', 'What: what happened, and where'], ['S', 'So what: how it changed Jewish life']] },
+    plan: [ { k: 'leaders', label: 'When · Torah leaders (Rashi, the Rambam)', hint: 'Rashi was born in France in 1040…' },
+            { k: 'expel', label: 'What · The expulsions (1290–1497)', hint: 'England forced the Jews out in 1290…' },
+            { k: 'poland', label: 'What · Poland and Lithuania', hint: 'The Council of Four Lands…' },
+            { k: 'america', label: 'What · Coming to America (1880–1924)', hint: 'About two million Jews…' },
+            { k: 'war', label: 'What · World War I (1914–1918)', hint: 'In 1914…' },
+            { k: 'sowhat', label: 'So what · What I learned from it all', hint: 'Through every move…' } ],
+    starters: ['In 1040,', 'Later,', 'In 1492,', 'Meanwhile,', 'Even so,', 'This changed Jewish life because'],
+    min: 90,
+    checks: [
+      { t: 'I wrote at least 8 sentences.', sentences: 8 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I explained a change, with "because" or "so".', any: ['because', ' so '] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'My timeline has at least 8 dates, in order, in two colors.', self: true },
+      { t: 'I read it out loud and checked every date.', self: true } ],
+    rubric: ['My dates are right and in order', 'I told what happened, and where', 'I explained how each event changed Jewish life', 'Clear sentences, capitals and end marks'],
+    pics: ['📜', '🧳', '🏘️', '🗽'] };
+  U.add({ id: 'S.U09', title: 'Wandering, and Coming to America', c: 'SS', grade: 7,
+    skills: ['SS.JHIST.L08.01', 'SS.HIST.L08.01', 'SS.JHIST.L08.02', 'SS.JHIST.L08.03', 'SS.HIST.L08.02', 'SS.HIST.L08.03'],
+    review: ['SS.HIST.L07.04', 'SS.JHIST.L07.01'], n: 10, task: LINE7,
+    items: [
+      { type: 'evidence', skill: 'SS.JHIST.L08.01', q: 'Which Rishon was born in Spain and later lived in Egypt?', p: ['Rashi', 'the Vilna Gaon', 'the Rambam'], a: 2, look: 'the Rishon from Spain', how: 'Rashi lived in France. The Vilna Gaon lived in Lithuania, much later.' },
+      { type: 'evidence', skill: 'SS.JHIST.L08.01', q: 'A Jew in the year 900 has a hard question in halacha. Where could he send it?', p: ['to Rashi in France', 'to the Geonim in Bavel', 'to the Vilna Gaon'], a: 1, look: 'who answered questions in the year 900', how: 'Rashi was born in 1040, and the Vilna Gaon much later.' },
+      { type: 'evidence', skill: 'SS.HIST.L08.01', q: 'A knight lives on a lord’s land. What does the knight owe the lord?', p: ['to farm his fields', 'to rule the kingdom', 'to fight for him'], a: 2, look: 'a knight’s job', how: 'Peasants farmed. Knights did something else.' },
+      { type: 'cloze', skill: 'SS.HIST.L08.01', t: 'Peasants farmed land that belonged to the ___.', o: ['lord', 'ship captain', 'peasant next door'], a: 'lord', how: 'The king gave land to the lords. Others worked on it.' },
+      { type: 'evidence', skill: 'SS.JHIST.L08.02', q: 'Doña Gracia Nasi used her money and ships for what?', p: ['to help Jews escape to safe lands', 'to build a castle', 'to start a war'], a: 0, look: 'how she helped the refugees', how: 'She was a hero of the expulsions.' },
+      { type: 'order', skill: 'SS.JHIST.L08.03', steps: ['👶 the Baal Shem Tov is born', '🚢 the great move to America begins', '🏫 Sarah Schenirer opens Bais Yaakov'], say: 'Put them in time order.', how: 'The Baal Shem Tov lived in the 1700s. Bais Yaakov came after World War I began.' },
+      { type: 'cloze', skill: 'SS.HIST.L08.02', t: 'Most immigrants passed the Statue of Liberty and were checked before they could ___ America.', o: ['enter', 'leave', 'rule'], a: 'enter', how: 'Officials checked each person on the island before letting them in.' },
+      { type: 'evidence', skill: 'SS.HIST.L08.03', q: 'Before 1918, which empire ruled Eretz Yisroel?', p: ['Britain', 'Rome', 'the Ottoman Empire'], a: 2, look: 'the empire that lost the land in the war', how: 'Britain ruled it only after World War I.' },
+      { type: 'evidence', skill: 'SS.HIST.L07.04', q: 'How many Batei Mikdash have been destroyed?', p: ['two', 'one', 'four'], a: 0, look: 'the first and the second', how: 'Bavel destroyed the first. Rome destroyed the second.' },
+      { type: 'evidence', skill: 'SS.JHIST.L07.01', q: 'Which city had one of the great yeshivos of Bavel?', p: ['Yavneh', 'Pumbedisa', 'Rome'], a: 1, look: 'a city in Bavel', how: 'Yavneh is in Eretz Yisroel. The yeshivos of Bavel were in Sura and Pumbedisa.' }
+    ] });
+
+  /* ===== Grade 8 · Unit S.U10 "The 20th Century and Our Country" (SS.*.L09) ===== */
+  var LINE8 = { id: 'S.PROJ8.SS1', title: 'The Century on One Wall', grade: 8, kind: 'information',
+    prompt: 'Build a timeline of the 20th century for The Beacon, from 1914 to 1991. Put at least 8 dates on it: the two world wars, the Balfour Declaration, the United Nations vote, the State of Israel, and the end of the Soviet Union. For the wars, write about the battles and the dates. Under the line, add one way a citizen of our country takes part: a vote, a law, a jury. Then write the article that explains your timeline.',
+    strategy: { name: 'Date, Cause, Effect', steps: [['D', 'Date: when did it happen?'], ['C', 'Cause: why did it happen?'], ['E', 'Effect: what did it change?']] },
+    plan: [ { k: 'wars', label: 'Date · The two world wars', hint: 'In 1914… In September 1939…' },
+            { k: 'land', label: 'Date · The land and the State of Israel', hint: 'In 1917… On May 14, 1948…' },
+            { k: 'cold', label: 'Cause · The Cold War (1947–1991)', hint: 'America and the Soviet Union were rivals…' },
+            { k: 'citizen', label: 'Effect · A citizen’s part', hint: 'A bill becomes a law when…' },
+            { k: 'end', label: 'Effect · What it all changed', hint: 'By 1991…' } ],
+    starters: ['In 1914,', 'This happened because', 'As a result,', 'On May 14, 1948,', 'Meanwhile,', 'By 1991,'],
+    min: 100,
+    checks: [
+      { t: 'I wrote at least 8 sentences.', sentences: 8 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I showed a cause and an effect.', any: ['because', 'as a result', 'led to', ' so '] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'My timeline has at least 8 dates, in order.', self: true },
+      { t: 'I read it out loud and checked every date.', self: true } ],
+    rubric: ['My dates are right and in order', 'I explained causes and effects', 'I showed how a citizen takes part', 'Clear sentences, capitals and end marks'],
+    pics: ['🌍', '📅', '🏛️', '🗳️'] };
+  U.add({ id: 'S.U10', title: 'The 20th Century and Our Country', c: 'SS', grade: 8,
+    skills: ['SS.HIST.L09.01', 'SS.JHIST.L09.02', 'SS.CIV.L09.01', 'SS.CIV.L09.02', 'SS.ECON.L09.01', 'SS.HIST.L09.02'],
+    review: ['SS.HIST.L08.03', 'SS.HIST.L08.02'], n: 10, task: LINE8,
+    items: [
+      { type: 'evidence', skill: 'SS.HIST.L09.01', q: 'Why did Britain and France declare war in September 1939?', p: ['Japan attacked Pearl Harbor.', 'Germany invaded Poland.', 'The Allies landed at Normandy.'], a: 1, look: 'what started the war in Europe', how: 'Pearl Harbor and D-Day came later.' },
+      { type: 'evidence', skill: 'SS.HIST.L09.01', q: 'Which country fought on the Axis side?', p: ['Britain', 'the Soviet Union', 'Italy'], a: 2, look: 'Germany’s partners', how: 'The Axis: Germany, Italy and Japan.' },
+      { type: 'evidence', skill: 'SS.JHIST.L09.02', q: 'What did the United Nations vote do in November 1947?', p: ['It split the land into two parts.', 'It declared the State of Israel.', 'It ended British rule that same day.'], a: 0, look: 'what the vote decided', how: 'The State came later, in May 1948. The vote was about dividing the land.' },
+      { type: 'order', skill: 'SS.JHIST.L09.02', steps: ['📜 the Balfour Declaration', '🗳️ the United Nations vote', '📅 the State of Israel is declared'], say: 'Put them in time order.', how: 'Britain’s promise came during World War I. The vote came right before the State.' },
+      { type: 'evidence', skill: 'SS.CIV.L09.01', q: 'Why does a state with many people send more members to the House than a small state?', p: ['Big states pay the President more.', 'House seats depend on how many people live there.', 'The Senate decides it each year.'], a: 1, look: 'how the House is counted', how: 'The Senate has two per state. The House is different.' },
+      { type: 'evidence', skill: 'SS.CIV.L09.02', q: 'A Jewish store owner pays his taxes and follows fair business laws. Which rule of the Gemara is he keeping?', p: ['the Bill of Rights', 'the Balfour Declaration', 'dina d’malchusa dina'], a: 2, look: 'the Gemara’s rule about the law of the land', how: 'The law of the land is the law.' },
+      { type: 'evidence', skill: 'SS.ECON.L09.01', q: 'A new game becomes the gift every boy in town wants, but the store has no more than last week. What happens to the price?', p: ['It goes up.', 'It goes down.', 'It stays exactly the same.'], a: 0, look: 'demand going up', how: 'More people want it and there is no more to sell. What can the seller charge?' },
+      { type: 'cloze', skill: 'SS.ECON.L09.01', t: 'A farm grows twice as many strawberries this year, but people want the same amount. The price goes ___.', o: ['down', 'up', 'to zero'], a: 'down', how: 'More supply, same demand: sellers must lower the price to sell it all.' },
+      { type: 'evidence', skill: 'SS.HIST.L09.02', q: 'Why did Jews in the Soviet Union have to learn Torah in secret?', p: ['They lived too far from a shul.', 'It was always winter there.', 'The government shut down shuls and Hebrew teaching.'], a: 2, look: 'what the government did', how: 'The communist government did not allow religion to be taught.' },
+      { type: 'evidence', skill: 'SS.HIST.L08.03', q: 'Who were the Allies in World War I?', p: ['Germany, Austria-Hungary and the Ottoman Empire', 'only the United States', 'Britain, France, Russia, and later the United States'], a: 2, look: 'the side that won', how: 'The Central Powers were Germany’s side. The Allies were the other side.' },
+      { type: 'cloze', skill: 'SS.HIST.L08.02', t: 'Many Jewish immigrants first lived in New York on the Lower ___ Side.', o: ['East', 'West', 'North'], a: 'East', how: 'Remember the crowded streets of the Lower East Side.' }
+    ] });
+})();
+</script>

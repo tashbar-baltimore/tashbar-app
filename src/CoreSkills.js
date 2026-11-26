@@ -93,7 +93,12 @@ function coreMerge_() {
     if (typeof CI_INDEX !== 'undefined' && CI_INDEX) {
       var lk = { READ: 'READ', LANG: 'LANG', SCI: 'SCI', SOC: 'SOC' };
       Object.keys(lk).forEach(function (k) { var src = coreLadder_(k), lad = CI_INDEX.lad && CI_INDEX.lad[lk[k]]; if (!src || !lad) return;
-        if (Object.keys(placed).some(function (id) { return coreLadderKey_(id) === k; })) CI_INDEX.lad[lk[k]] = src.map(function (x) { return [x[0], x[1], x[2]]; }); });
+        if (Object.keys(placed).some(function (id) { return coreLadderKey_(id) === k; })) {
+          /* a PLANNED skill (in the index, not on the boy's ladder, e.g. the Torah-linked Science topics, issue #391) stays, right after the row it followed */
+          var onL = {}, nl = src.map(function (x) { onL[x[0]] = 1; return [x[0], x[1], x[2]]; });
+          lad.forEach(function (x, i) { if (onL[x[0]]) return; var prev = i ? lad[i - 1][0] : '', at = -1;
+            for (var q = 0; q < nl.length; q++) if (nl[q][0] === prev) at = q; nl.splice(at + 1, 0, [x[0], x[1], x[2]]); onL[x[0]] = 1; });
+          CI_INDEX.lad[lk[k]] = nl; } });
       /* no CI_INDEX.sk entry here: the Departments map counts an sk entry as "built", and a listed skill may not have its lesson yet.
          The ladder row already gives it its name there ("No lesson yet" until the index is rebuilt with lesson counts). */
       if (added) { var h = 0, key = Object.keys(placed).join('|'); for (var q = 0; q < key.length; q++) h = (h * 31 + key.charCodeAt(q)) | 0;

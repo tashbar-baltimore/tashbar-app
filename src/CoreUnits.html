@@ -33,7 +33,7 @@
   U.err = function (u) {
     if (!u || !/^[A-Z][A-Z0-9]*\.U\d{2}$/.test(String(u.id || ''))) return 'id must look like C45.U01';
     if (!u.title) return 'title is needed';
-    if (['READ', 'WRIT', 'SCI'].indexOf(u.c) < 0) return 'c must be READ, WRIT or SCI (the subjects with a skill-by-skill path)';
+    if (['READ', 'WRIT', 'SCI', 'SS'].indexOf(u.c) < 0) return 'c must be READ, WRIT, SCI or SS (the subjects with a skill-by-skill path)';   /* SS: Social Studies, HoS decision 2026-11-25 (#432) */
     if (!Array.isArray(u.skills) || u.skills.length < 2 || u.skills.length > 12) return 'skills must list 2 to 12 skill ids';
     if (u.review && (!Array.isArray(u.review) || u.review.length > 4)) return 'review must list at most 4 skill ids';
     if (u.n != null && !(u.n >= 6 && u.n <= 12)) return 'n (questions in the unit check) must be 6 to 12';
