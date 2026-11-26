@@ -64,7 +64,7 @@ Every answer key was checked by hand: the own items, the review questions and ev
 - **Lesson check questions** were fixed for a second answer, unclear wording or a missing chart, and the boss-level review questions were made cold. The test "check answers never taught" (baseline 850) went up to 874, because a cold answer is not word for word in the lesson. So:
   - the lesson checks asked only in a pre-check (before the boy sees the lesson) or in their own lesson are back to their earlier reviewed wording (19 of them);
   - the ones a boss level asks answer with the lesson's own taught words ("a news report", "a loaded word", "the text explains why", "reread when lost").
-  - The count is back to 850, and a fresh reviewer checked every late change (see below).
+  - The count is back to 850. A fresh reviewer checked all 24 late changes: every key is right, nothing URGENT, every unit still 4–5 (`R2-unitchecks-2026-11-26/6-late-changes.md`).
 - **Kosher:** "the best crabs in the world" is now a pizza shop sign (`packs/HowToDo3.html`).
 - **Shabbos:** "no computer to read it on" is now "at the Shabbos table, where no one reads a screen".
 - **Review skills:**
