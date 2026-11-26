@@ -909,7 +909,9 @@ export function startGame(cfg) {
   function setPuzzle(R) {
     if (PZ) scene.remove(PZ.g); shapes.splice(0).forEach(o => scene.remove(o.g));
     const g = new THREE.Group(), BS = tall ? 0.95 : 1.35; g.scale.setScalar(BS); g.position.copy(BOARD_AT());
-    const back = new THREE.Mesh(new RoundedBoxGeometry(R.w || 3.4, R.h || 3.4, 0.12, 4, 0.1), new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.8 })); back.position.z = -0.12; back.receiveShadow = true; g.add(back);
+    const backM = LK && cfg.world === 'beach' ? new THREE.MeshStandardMaterial({ color: '#EBCF98', roughness: 0.9 }) : new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.8 });   /* beach: a smooth wet-sand slab */
+    const back = new THREE.Mesh(new RoundedBoxGeometry(R.w || 3.4, R.h || 3.4, 0.12, 4, 0.1), backM); back.position.z = -0.12; back.receiveShadow = true; g.add(back);
+    if (LK && cfg.world === 'beach') { const rim = new THREE.Mesh(new RoundedBoxGeometry((R.w || 3.4) + 0.24, (R.h || 3.4) + 0.24, 0.1, 4, 0.12), new THREE.MeshStandardMaterial({ color: '#2FB7C9', roughness: 0.4 })); rim.position.z = -0.17; g.add(rim); }   /* a turquoise rim */
     const slots = R.slots.map((sl, i) => {
       const at = slotCenter(sl), hole = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(sl.k).s, 32), new THREE.MeshStandardMaterial({ color: '#CDBF9F', roughness: 0.9 }));
       hole.scale.setScalar(sl.s || 1); hole.rotation.z = sl.rot || 0; hole.position.set(at[0], at[1], -0.04 + (sl.z || 0)); g.add(hole);
@@ -1128,7 +1130,7 @@ export function startGame(cfg) {
     if (R.kind !== 'tall') {
       const line = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.03, tall ? 4.4 : 4.6), new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 0.3 }));
       line.position.set(LINE_X(), 0.08, ROW_Z(1)); scene.add(line); parts.push(line);
-      const flag = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.5, 3), new THREE.MeshStandardMaterial({ color: '#12A766' })); flag.position.set(LINE_X(), 0.35, ROW_Z(0) - 0.9); scene.add(flag); parts.push(flag);
+      const flag = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.5, 3), new THREE.MeshStandardMaterial({ color: '#12A766' })); flag.position.set(LINE_X(), 0.35, ROW_Z(0) - 0.9); if (LK) { flag.scale.setScalar(1.7); flag.position.y = 0.5; }   /* the start flag, big enough to see */ scene.add(flag); parts.push(flag);
       R.items.forEach((it, i) => { const o = makeRod('m' + (++msN), it.L * (tall ? 0.72 : 1), it.color, i); o.word = it.word;
         o.home.set(LINE_X() + o.len / 2 + (it.off || 0) * (tall ? 0.7 : 1), ROD_Y, ROW_Z(i)); o.g.position.copy(o.home); o.inBox = !!R.lined; if (R.lined) o.g.position.x = LINE_X() + o.len / 2; items.push(o); });
     } else {
