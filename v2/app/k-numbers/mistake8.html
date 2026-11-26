@@ -48,13 +48,13 @@ async function pick(c) {
   NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'find') return; GAME.phase = 'busy'; FR.lock(true); const el = $(ID[c]);
   if (c === R.bad) { el.classList.add('wrongc'); NK.sound.yes(); await FR.say('Yes! That number is wrong.'); R.stage = 'fix'; $('hp').hidden = $('check').hidden = false; H.set(0);
     open(); await FR.say('Show the right number on your fingers.', { repeat: 'Count the plates. Show the right number. Then check.' }); return; }
-  FR.oops(el); R.misses++; await FR.say('That one is right. Look at the plates.'); await countAll(); await FR.say('Which number is wrong?'); open();
+  FR.oops(el); R.misses++; await FR.say('That one is right. Look at the plates.'); await countAll(); if (R.misses >= 2) $(ID[R.bad]).classList.add('wrongc'); await FR.say(R.misses >= 2 ? 'The red one is wrong. Tap it.' : 'Which number is wrong?'); open();
 }
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'fix') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const k = truth(R.bad), el = $(ID[R.bad]);
   if (H.count() === k) { fill(ID[R.bad], k); el.classList.remove('wrongc'); K.sparkle(0, 0.4); await FR.yes(el, 'Fixed! ' + FR.Word(R.a) + ' and ' + FR.word(R.b) + ' make ' + FR.word(R.a + R.b) + '.'); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops($('check')); R.misses++;
-  if (R.bad === 'w') { await FR.say("Let's count all the slices."); await countAll(); }
+  if (R.bad === 'w') { await FR.say("Let's look. Count all the slices."); await countAll(); }
   else { const pl = K.plates[R.bad]; await FR.say("Let's count that plate."); await K.bumpAll(pl.children, i => FR.say(FR.Word(i + 1) + (i === pl.children.length - 1 ? '!' : ','), { noRepeat: true })); }
   H.set(0); await FR.say('Show me again.'); open();
 }

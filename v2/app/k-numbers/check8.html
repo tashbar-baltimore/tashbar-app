@@ -51,7 +51,7 @@ async function drop(card, slot) {
   if (GAME.phase !== 'answer' || R.kind !== 'bond' || slot.id !== ID[R.miss]) return; GAME.phase = 'busy'; FR.lock(true); const k = +card.dataset.n;
   if (k === want()) { fill(slot.id, k); K.setPlates(R.a, R.b); return fin(slot, FR.Word(R.a) + ' and ' + FR.word(R.b) + ' make ' + FR.word(R.a + R.b) + '!'); }
   FR.oops(slot); R.misses++;
-  if (R.miss === 'w') { await FR.say("Let's count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true })); }
+  if (R.miss === 'w') { await FR.say("Let's look. Count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true })); }
   else { const have = R.miss === 0 ? R.b : R.a; await FR.say("Let's look. Show " + FR.word(R.a + R.b) + ' fingers. Fold down ' + FR.word(have) + '.'); }
   await FR.say('Try again.'); open();
 }

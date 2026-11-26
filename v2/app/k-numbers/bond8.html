@@ -45,7 +45,7 @@ async function drop(card, slot) {
   if (k === w) { fill(slot.id, k); if (R.miss !== 'w') K.setPlates(R.a, R.b); K.sparkle(0, 0.4);
     await FR.yes(slot, FR.Word(R.a) + ' and ' + FR.word(R.b) + ' make ' + FR.word(R.a + R.b) + '!'); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops(slot); R.misses++;
-  if (R.miss === 'w') { await FR.say("Let's count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + (i === all.length - 1 ? '!' : ','), { noRepeat: true })); }
+  if (R.miss === 'w') { await FR.say("Let's look. Count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + (i === all.length - 1 ? '!' : ','), { noRepeat: true })); }
   else { const have = R.miss === 0 ? R.b : R.a, which = R.miss === 0 ? 'blue' : 'peach'; await FR.say("Let's look. " + FR.Word(R.a + R.b) + ' in all. The ' + which + ' plate has ' + FR.word(have) + '.');
     await FR.say('Show ' + FR.word(R.a + R.b) + ' fingers. Fold down ' + FR.word(have) + '.'); }
   open();
