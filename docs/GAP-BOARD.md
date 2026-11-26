@@ -69,7 +69,7 @@ _From `node tools/core/ledger.js`, 2026-11-26 01:00 UTC (coordinator). Grade 1 s
 | B10 | P1 | K–1 polish: K book pages (READ.LV.L01.08 "The Wet Dog") have no pictures; one wrong tap of 3 gives 1 star and "Good trying!" (harsh for K); Gr 1 plan boxes say "Tap a card, then here" (a Gr 1 boy can't read it; say it out loud or show a picture cue) | OPEN | | | |
 | C1a | P2 | C23 Comprehension Grade 2 (nothing built): map, ledger, units with texts and unit checks | TAKEN | https://claude.ai/code/session_01884AzCfwh1MCak9Ybr1uZi | 2026-11-25 19:45 | Claimed as Core Growth job C23 (CORE-GROWTH-LANES.md row 6): map and ledger first, then Grade 2 Unit 1 |
 | C1b | P2 | C23 Comprehension Grade 3 | TAKEN | https://claude.ai/code/session_01884AzCfwh1MCak9Ybr1uZi | 2026-11-25 19:45 | Claimed with C1a as job C23: Grade 3 Unit 1 after the map |
-| C2a | P2 | C68 Comprehension Grade 6 Units 6.1–6.4 (none live) | OPEN | | | |
+| C2a | P2 | C68 Comprehension Grade 6 Units 6.1–6.4 (none live) | TAKEN | https://claude.ai/code/session_01Cri5bNCM4L3QyPCuDWDj2R | 2026-11-26 14:25 | Claimed: W1 first, then Units 6.1–6.4 one PR each, in `src/CoreDataC68H7.html`; LANES helper row added |
 | C2b | P2 | C68 Grade 7 Units 7.1–7.4 | OPEN | | | |
 | C2c | P2 | C68 Grade 8 Units 8.1–8.4 | OPEN | | | |
 | C3 | P2 | W13 Writing K–3 Units 2–6 (start with the OPEN W13 helper rows in CORE-GROWTH-LANES.md) | OPEN | | | |
