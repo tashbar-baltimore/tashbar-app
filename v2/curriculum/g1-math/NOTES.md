@@ -22,9 +22,15 @@ Branches: `claude/v2-g1-math-map` (the map), then `claude/v2-g1-math-unit1`, `-u
 | 1 | Opener: past 100 | tap stones in order as they light (follow-along lesson) |
 | 1 | Hop ahead | predict a landing spot on a path, then watch the check |
 | 1 | Fix the wall | drag pieces into gaps of a grid (120 chart) |
-| 1 | Crate count | tap groups then singles to count, then write the number on the pad |
+| 1 | Crate count | tap groups then singles to count, then write the number on the pad; last round: hear a number and write it |
 | 1 | Find the mistake | find the wrong item in a row, then write the right number |
 | 1 | Mastery check | mixed: predict, drag-to-gap, count-and-write, hear-and-write |
 | 1 | Review | mixed Kindergarten items in the same world |
 
 Next units must check this table. For example, Unit 2 "Sail on" moves the boat by dragging along a line (not tapping a spot, not predicting).
+
+## Unit 1 notes (built)
+- Files: `v2/app/g1-math/unit1.html` (the hill and every game, `?g=`), `u1.js`, `kit3d.js`, `lib/` (three.js r180, MIT). Test: `v2/tests/g1-math-unit1.js`. Pictures: `v2/screens/g1-math-unit1/`.
+- Stars are kept on the device (localStorage) until a shared sign-in frame exists. 2 stars opens the next stone on the hill.
+- A boy who does not master the check is sent to the game for what he missed most.
+- Independent review: 3 rounds (scores in the pull request). Round 3: every point 4 or 5.
