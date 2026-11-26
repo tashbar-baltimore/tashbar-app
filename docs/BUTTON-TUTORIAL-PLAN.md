@@ -1,4 +1,4 @@
-# Button tutorial: plan (not built yet)
+# Button tutorial (built 26 Nov 2026)
 
 HoS ask (his words, one line): "simple cards on the real home screen; each card highlights one button or label, with a bubble underneath saying what it does and when to tap it, and a Next button to the next card."
 
@@ -37,6 +37,10 @@ HoS ask (his words, one line): "simple cards on the real home screen; each card 
 - Test in `tests/run.js`: the tour opens on the home, has 12 cards, every card lights something visible, Next walks to the end, ✕ closes it, and the page has no non-kit buttons in the bubble.
 - Pictures: each card for a made-up grade 2 and grade 5 boy at 1366×768 and 390 px.
 
-## Open questions for the HoS
-1. Should it play by itself the first time a boy signs in (once), or only when he taps "How the buttons work"?
-2. Grades K–3: a shorter tour (6 cards: gold, white, ✕, house, purple tool, and one card with all six colors) that reads each bubble out loud by itself?
+## HoS answers (26 Nov 2026) and what was built
+- It never plays by itself. It opens from a small round 💡 (purple tool) to the right of Sign out on the home, and from the "How the buttons work" card on the right side of My profile, under My levels (3 small previews; the whole card opens it).
+- For his first 10 sign-ins, a small pop-up by the 💡 says what it is and that it is also in My profile (once per sign-in, counted per boy on the device; never for K–1).
+- K–3: the short tour (6 cards) reads each bubble out loud by itself. Grade 4+: 12 cards with a Read it to me tool.
+- The words only say what a thing is and where it sits, and that labels are only to read (HoS: "not explaining too much").
+- The 💡 and Sign out sit flush with the right edge of the tiles.
+- Code: the end of `src/GameMap.html` (`window.TLTOUR`). Pictures: `docs/screens/tour-gr5-*.jpg`, `tour-gr2-*.jpg`. Check: `node tools/screens/tour.js OUT TAG GRADE`.

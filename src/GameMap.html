@@ -429,9 +429,9 @@ body.gm-home #gm .gm-sun{position:absolute;inset:0 0 auto 0;height:220px;pointer
 #gm .gm-in.gm-wide{max-width:1000px;padding:22px 20px calc(28px + env(safe-area-inset-bottom,0px))}
 #gm .gm-hi{padding:4px 110px 14px 4px}
 #gm .gm-hi h1{margin:0;font-size:34px;line-height:1.1;font-weight:900;color:#1E1B4B;letter-spacing:-.01em}
-#gm .gm-hi p{margin:8px 0 0;font-size:19px;font-weight:800;color:#3F3A7A;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#gm .gm-hi p{margin:8px -110px 0 0;font-size:19px;font-weight:800;color:#3F3A7A;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 #gm .gm-hi .dots{display:inline-flex;gap:6px}
-#gm .gm-hi .gm-out{margin-left:auto;display:inline-flex}
+#gm .gm-hi .gm-out{margin-left:auto;display:inline-flex;align-items:center;gap:10px}
 #gm .gm-hi .dots i{width:18px;height:18px;border-radius:50%;background:#E3E0F5;border:2px solid #C9C4EA}
 #gm .gm-hi .dots i.on{background:#22C55E;border-color:#15803D}
 #gm .gm-hts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
@@ -456,7 +456,7 @@ body.gm-home #gm .gm-sun{position:absolute;inset:0 0 auto 0;height:220px;pointer
 #gm .gm-ht.things{--c:linear-gradient(135deg,#FDBA74,#FB923C)}
 body.gm-home #gm .gm-none{background:#fff;color:#1E1B4B;border-radius:22px;margin-bottom:16px}
 body.gm-home #gm .gm-none p{color:#3F3A7A!important}body.gm-home #gm .gm-none h1{color:#1E1B4B!important;text-shadow:none!important}
-@media (max-width:760px){#gm .gm-hts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#gm .gm-ht{height:210px;border-radius:22px}#gm .gm-ht .ic{font-size:64px}#gm .gm-ht .bot{padding:8px 12px;gap:3px}#gm .gm-ht .bot b{font-size:22px}#gm .gm-ht .bot small{font-size:14px}#gm .gm-hi h1{font-size:27px}#gm .gm-hi p{font-size:16px}#gm .gm-hi{padding-right:60px}#gm .gm-ht .bdg{font-size:12px;top:8px;left:8px;padding:4px 8px}}
+@media (max-width:760px){#gm .gm-hts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#gm .gm-ht{height:210px;border-radius:22px}#gm .gm-ht .ic{font-size:64px}#gm .gm-ht .bot{padding:8px 12px;gap:3px}#gm .gm-ht .bot b{font-size:22px}#gm .gm-ht .bot small{font-size:14px}#gm .gm-hi h1{font-size:27px}#gm .gm-hi p{font-size:16px}#gm .gm-hi{padding-right:60px}#gm .gm-hi p{margin-right:-60px}#gm .gm-ht .bdg{font-size:12px;top:8px;left:8px;padding:4px 8px}}
 #gm-nav .gm-homebtn{flex:1;flex-direction:row;gap:12px;font-size:22px;color:#1E1B4B;letter-spacing:.02em}
 #gm-nav .gm-homebtn b{font-size:32px}
 body.gm-home #gm-nav{display:none!important}
@@ -605,7 +605,7 @@ function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\
  tiles+=tile('store','🛍️','Store',pill('money','You have '+money()),'data-gmnav="money"');
  tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':pill('lock','Locked'));
  tiles+=tile('things',pfAv('pr-tav'),'My profile','Badges, levels, my stuff','data-gmnav="more"');   /* HoS 2026-11-24: My things became My profile (his picture on the tile) */
- const out=window.TLK?`<span class="gm-out">${TLK.quiet('Sign out','data-gm="pfout"','tlk-small')}</span>`:'';   /* HoS 2026-11-25: "the kids can't figure out how to log out": a clear Sign out on the home, not only in the corner menu and My profile */
+ const out=window.TLK?`<span class="gm-out">${TLK.quiet('Sign out','data-gm="pfout"','tlk-small')}${TLK.tool('💡','How the buttons work','data-gm="pftour"')}</span>`:'';   /* HoS 2026-11-26: a small round lightbulb beside Sign out opens the button tour */   /* HoS 2026-11-25: "the kids can't figure out how to log out": a clear Sign out on the home, not only in the corner menu and My profile */
  return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}${out}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
 /* ===== MY PROFILE (HoS 2026-11-24, boss cleared the general page; mock-up from Claude Chat): "My things" became "My profile".
    One page with who he is (his picture, name, grade, days in a row, badges, lessons), his settings, Sign out,
@@ -638,7 +638,13 @@ function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2'), st=
   return `<div class="pr-lv"><div class="r">${Q.pill('subj',w.name)}${Q.pill('rank','Level '+w.level)}<span class="n">${dn} of ${tot} steps</span></div><span class="pr-bar" role="img" aria-label="${dn} of ${tot} steps"><i style="width:${pc}%"></i></span></div>`; }).join('');
  if(!lv) lv='<p class="pr-none">Your rebbe or teacher sets your levels. Until then, find your levels below.</p>';
  const find=document.querySelector('#app [data-hp=levels]');
- const levels=sec('My levels')+`<div class="pr-card">${lv}</div>`+(find?`<div class="pr-row">${Q.quiet('Find my levels',px(find).trim())}</div>`:'');
+ const levels=sec('My levels')+`<div class="pr-card">${lv}</div>`+(find?`<div class="pr-row">${Q.quiet('Find my levels',px(find).trim())}</div>`:'')
+  /* HoS 2026-11-26: the button tour has its own section here, with small previews of its cards; the whole card opens the tour */
+  +sec('How the buttons work')+`<button type="button" class="tlk tlk-tile pr-tour" data-gm="pftour" aria-label="Show me how the buttons work"><span class="pr-tprev" aria-hidden="true">`
+  +`<span class="pr-tc"><span class="tlk tlk-main tlk-small">Start</span><small>Gold button</small></span>`
+  +`<span class="pr-tc"><span class="tlk tlk-x">${TLK.X_SVG}</span><small>Round ✕</small></span>`
+  +`<span class="pr-tc">${Q.pill('money','$5')}${Q.pill('prog','2 of 3')}${Q.pill('now','Now')}<small>Colors</small></span>`
+  +`</span><span class="pr-tgo"><b>Show me how</b><small>A short tour on your home page</small></span></button>`;
  /* what he finished lately (his map's growth: mastered steps in the last 7 days) */
  const wk=((g&&g.week)||[]).slice(0,5), subjOf=id=>{ const w=ws.find(x=>x.ids.indexOf(id)>=0||((x.c&&x.c.skills)||[]).some(s=>s[0]===id)); return w?w.name:''; };
  const fin=sec('Recently finished')+`<div class="pr-card">${wk.length?wk.map(x=>`<div class="pr-li">${subjOf(x[0])?Q.pill('subj',subjOf(x[0])):''}<b>${esc(nm(x[0])[0])}</b><span class="sp"></span><span class="d">${esc(dayWord(x[1]))}</span></div>`).join(''):'<p class="pr-none">Nothing finished this week yet. Your next lesson is waiting on My map.</p>'}</div>`;
@@ -683,6 +689,7 @@ function pfClick(a,b){
  if(a==='pfsnd'){ const on=pfSoundOn(); try{ if(window.TL_MENU) TL_MENU.actions.setSound(!on); else { const s=document.createElement('button'); s.dataset.act='sound'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); } }catch(x){} setTimeout(()=>{ GM.sig=''; sync(); },60); return true; }
  if(a==='pfmus'){ try{ if(window.TL_MENU) TL_MENU.actions.openMusicPanel(); }catch(x){} return true; }
  if(a==='pfout'){ try{ if(window.TL_MENU) TL_MENU.actions.signOut(); else { const s=document.createElement('button'); s.dataset.act='signout'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); } }catch(x){} return true; }
+ if(a==='pftour'){ try{ SND.tap(); }catch(x){} GM.from=null; GM.tab='home'; GM.sig=''; try{ root().scrollTop=0; }catch(x){} sync(); setTimeout(()=>{ try{ window.TLTOUR&&TLTOUR.open(); }catch(x){ console.error('tour',x); } },250); return true; }   /* the button tour (HoS 2026-11-26) always plays on the real home */
  if(a==='pfshop'){ try{ SND.tap(); }catch(x){} try{ if(window.TLSTORE) TLSTORE.tab=b.dataset.t||'fun'; if(window.tlStore) tlStore(true); }catch(x){} return true; }
  return false; }
 /* the small round picture next to Workbook on the home, in front of the corner menu: opens My profile (the tile is the other way in) */
@@ -1205,6 +1212,10 @@ body #gm .gm-more{background:#fff;color:#047857}
 #gm .pr-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
 #gm .pr-boxes .tlk-box{padding:8px 4px}#gm .pr-boxes .tlk-box small{font-size:10px;letter-spacing:.03em}
 #gm .pr-sec{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:22px 0 8px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4C4A7A}
+#gm .pr-tour{width:100%;padding:14px;gap:12px}#gm .pr-tprev{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;pointer-events:none}
+#gm .pr-tc{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;align-content:center;min-height:96px;padding:10px 8px;border-radius:14px;background:#F5F3FF;text-align:center}
+#gm .pr-tc small{flex-basis:100%;font-size:12px;font-weight:700;color:#4B4778}#gm .pr-tc .tlk{box-shadow:none;cursor:inherit}#gm .pr-tc .tlk-pill{font-size:12px;padding:3px 7px}
+#gm .pr-tgo{display:grid;gap:2px}#gm .pr-tgo b{font-size:19px}#gm .pr-tgo small{font-size:14px;color:#4B4778}
 #gm .pr-sec .tlk-pill{text-transform:none;letter-spacing:0;font-size:13px}
 #gm .pr-me .pr-sec{align-self:flex-start;margin:6px 0 0}
 #gm .pr-set{display:flex;align-items:center;gap:8px;width:100%;justify-content:space-between;font-weight:700}
@@ -1445,5 +1456,91 @@ body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 5
   if(b.dataset.gmw==='play'){ A.overlay=null; render(); setTimeout(()=>{ const p=document.querySelector('#gm .gm-goal .gm-play'); if(p) p.click(); },60); } },true);
 })();
 try{ sync(); }catch(e){ console.error('GameMap',e); }
+})();
+/* BUTTON TOUR (HoS 2026-11-26, plan docs/BUTTON-TUTORIAL-PLAN.md): simple cards on the REAL home. Each card lights up one button or label,
+   with a bubble under it saying what it does and when to tap it, and Next. Never plays by itself: the round lightbulb beside Sign out
+   on the home and "How the buttons work" in My profile open it. K-3: a short tour (6 cards) that reads each bubble out loud by itself;
+   grade 4 and up: 12 cards with a Read it to me tool. Every button and label in it comes from the kit (window.TLK). No money, no rewards. */
+(function(){
+if(window.TLTOUR) return;
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const grade=()=>{ try{ return window.TL_MAP&&TL_MAP.grade; }catch(e){ return null; } };
+const Q=sel=>{ const e=document.querySelector(sel); if(!e) return null; const r=e.getBoundingClientRect(); return r.width>0&&r.height>0?e:null; };
+function cards(){ const T=window.TLK, y=T.young(grade());
+ const all={
+  main:{find:null,show:T.main('Start',''),name:'Gold button',what:'Starts, or goes on to the next part.',when:'Most screens have one, at the bottom.'},
+  quiet:{find:'#gm .gm-out [data-gm="pfout"]',show:T.quiet('Not now',''),name:'White button',what:'Other choices, like Not now or Sign out.',when:'Often next to the gold button.'},
+  x:{find:null,show:T.x(''),name:'Round ✕',what:'Closes a pop-up. In a lesson, it leaves the lesson.',when:'Top right of a pop-up, top left in a lesson.'},
+  home:{find:null,show:T.home('','',y),name:'House',what:'Goes back to your home page.',when:'Top left of a page.'},
+  back:{find:null,show:T.back('','',y),name:'Back',what:'Goes back to the page you came from.',when:'Top left, before the house.'},
+  tool:{find:'#gm .gm-out [data-gm="pftour"]',show:T.tool('🔊','Read it to me',''),name:'Purple circle',what:'A helper: it reads to you, plays music or shows you how.',when:'Next to what it helps with.'},
+  money:{find:'#gm .gm-hts .tlk-money',show:T.pill('money','$5.00'),name:'Green = money',what:'Shows money.',when:'A label is only to read. It is not a button.'},
+  prog:{find:'#gm .gm-hi .tlk-prog,#gm .gm-hts .tlk-prog',show:T.pill('prog','2 of 3 done'),name:'Blue = how far you got',what:'Shows how much you finished.',when:'A label is only to read. It is not a button.'},
+  now:{find:'#gm .gm-hts .tlk-now',show:T.pill('now','Do this now'),name:'Yellow = do this now',what:'Shows what to do next.',when:'A label is only to read. It is not a button.'},
+  rank:{find:'#gm .gm-hts .tlk-rank',show:T.pill('rank','Level 5'),name:'Purple = your rank',what:'Shows your rank, levels and trophies.',when:'A label is only to read. It is not a button.'},
+  lock:{find:'#gm .gm-hts .tlk-lock',show:T.pill('lock','Locked'),name:'Gray = not open yet',what:'Shows what is still locked.',when:'A label is only to read. It is not a button.'},
+  subj:{find:'#gm .gm-hts .tlk-subj',show:T.pill('subj','Math'),name:'Pink = the subject',what:'Shows which subject it is.',when:'A label is only to read. It is not a button.'},
+  colors:{find:null,show:['money','prog','now','rank','lock','subj'].map((k,i)=>T.pill(k,['Money','How far','Do now','Rank','Locked','Subject'][i])).join(' '),name:'Colors are labels',what:'Green money, blue how far, yellow do now, purple rank, gray locked, pink subject.',when:'Labels are only to read. They are not buttons.'} };
+ return (y?['main','quiet','x','home','tool','colors']:['main','quiet','x','home','back','tool','money','prog','now','rank','lock','subj']).map(k=>all[k]); }
+const S={i:0,list:null,el:null};
+function say(t){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.rate=.95; speechSynthesis.speak(u); }catch(e){} }
+function words(c){ return c.name.replace(/=/,'means')+'. '+c.what+' '+c.when; }
+function draw(){ const T=window.TLK, c=S.list[S.i], n=S.list.length, y=T.young(grade()), last=S.i===n-1;
+ const tgt=c.find?Q(c.find):null; if(tgt) try{ tgt.scrollIntoView({block:'center',behavior:'auto'}); }catch(e){}
+ const r=tgt?tgt.getBoundingClientRect():null, pad=8;
+ S.el.innerHTML=(r?`<div class="tlt-ring" style="left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;border-radius:${getComputedStyle(tgt).borderRadius==='50%'?'50%':(parseFloat(getComputedStyle(tgt).borderRadius)||10)+pad+'px'}"></div>`:'<div class="tlt-dim"></div>')+
+  `<div class="tlt-bub" role="dialog" aria-modal="true" aria-label="How the buttons work">${T.x('data-tlt="x"','tr')}
+   <div class="tlt-top">${T.pill('prog',(S.i+1)+' of '+n)}${y?'':T.tool('🔊','Read it to me','data-tlt="say"')}</div>
+   <div class="tlt-show" aria-hidden="true">${c.show}</div>
+   <h2>${E(c.name)}</h2><p>${E(c.what)}</p><p class="tlt-when">${E(c.when)}</p>
+   <div class="tlt-act">${S.i>0&&!y?T.quiet(T.WORDS.back,'data-tlt="back"'):''}${T.main(last?'Done':T.WORDS.next,'data-tlt="'+(last?'x':'next')+'"')}</div></div>`;
+ const b=S.el.querySelector('.tlt-bub'), bw=Math.min(380,innerWidth-24), bh=b.offsetHeight;
+ let top, left; if(r){ top=r.bottom+pad+14; if(top+bh>innerHeight-8) top=Math.max(8,r.top-pad-14-bh); left=Math.min(Math.max(12,r.left+r.width/2-bw/2),innerWidth-bw-12); b.classList.add(top>r.top?'tlt-under':'tlt-over'); b.style.setProperty('--ax',Math.max(20,Math.min(bw-20,r.left+r.width/2-left))+'px'); }
+ else { top=Math.max(12,(innerHeight-bh)/2); left=(innerWidth-bw)/2; }
+ b.style.width=bw+'px'; b.style.top=top+'px'; b.style.left=left+'px';
+ const g=b.querySelector('.tlk-main'); if(g) setTimeout(()=>{ try{ g.focus({preventScroll:true}); }catch(e){} },30);
+ if(y) say(words(c)); }
+function css(){ if(document.getElementById('tlt-css')) return; const s=document.createElement('style'); s.id='tlt-css'; s.textContent=`
+#tl-tour{position:fixed;inset:0;z-index:2147483300;font-family:inherit}
+#tl-tour .tlt-dim{position:absolute;inset:0;background:rgba(15,12,40,.55)}
+#tl-tour .tlt-ring{position:absolute;border-radius:18px;box-shadow:0 0 0 4px #FDE047,0 0 0 9999px rgba(15,12,40,.55);pointer-events:none;transition:all .2s}
+#tl-tour .tlt-bub{position:absolute;box-sizing:border-box;background:#fff;color:#1E1B4B;border-radius:20px;padding:18px 18px 16px;box-shadow:0 18px 40px rgba(15,12,40,.35)}
+#tl-tour .tlt-bub.tlt-under::before,#tl-tour .tlt-bub.tlt-over::after{content:"";position:absolute;left:var(--ax);margin-left:-11px;width:0;height:0;border:11px solid transparent}
+#tl-tour .tlt-bub.tlt-under::before{top:-21px;border-bottom-color:#fff;border-top:0;border-bottom-width:12px;top:-12px}#tl-tour .tlt-bub.tlt-over::after{bottom:-12px;border-top-color:#fff;border-bottom:0;border-top-width:12px}
+#tl-tour .tlt-top{display:flex;align-items:center;gap:10px;margin-right:52px}
+#tl-tour .tlt-show{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 4px;pointer-events:none}
+#tl-tour h2{margin:8px 0 4px;font-size:22px}#tl-tour p{margin:0 0 4px;font-size:17px;line-height:1.35}#tl-tour .tlt-when{font-weight:700}
+#tl-tour .tlt-act{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+@media (prefers-reduced-motion:reduce){#tl-tour .tlt-ring{transition:none}}
+#tl-tourhint{position:fixed;z-index:2147483200;box-sizing:border-box;background:#fff;color:#1E1B4B;border-radius:16px;padding:14px 56px 12px 16px;box-shadow:0 14px 34px rgba(15,12,40,.28);font-size:16px;line-height:1.35}
+#tl-tourhint::before{content:"";position:absolute;top:-12px;left:var(--ax);margin-left:-11px;width:0;height:0;border:11px solid transparent;border-top:0;border-bottom:12px solid #fff}
+#tl-tourhint p{margin:0 0 4px}`; document.head.appendChild(s); }
+function close(){ try{ speechSynthesis.cancel(); }catch(e){} if(S.el) S.el.remove(); S.el=null; removeEventListener('resize',draw); }
+function open(){ if(!window.TLK) return; close(); css(); S.list=cards(); S.i=0; S.el=document.createElement('div'); S.el.id='tl-tour'; document.body.appendChild(S.el);
+ S.el.addEventListener('click',e=>{ e.stopPropagation(); const b=e.target.closest('[data-tlt]'); if(!b) return; const a=b.dataset.tlt;
+  if(a==='x') return close(); if(a==='say') return say(words(S.list[S.i])); if(a==='next'&&S.i<S.list.length-1){ S.i++; draw(); } if(a==='back'&&S.i>0){ S.i--; draw(); } });
+ addEventListener('resize',draw); draw(); }
+document.addEventListener('keydown',e=>{ if(S.el&&e.key==='Escape') close(); },true);
+/* THE HINT (HoS 2026-11-26): for his first 10 sign-ins, a small pop-up by the lightbulb says what it is and that the tour is also in My profile.
+   Once per sign-in, counted per boy on this device; it goes away with its round X, when he taps the lightbulb, or when he leaves the home. */
+function sid(){ try{ return A.st&&A.st.id&&A.view!=='signin'?String(A.st.id):''; }catch(e){ return ''; } }
+const LS={ get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
+let hintFor='', hintEl=null;
+function hideHint(){ if(hintEl) hintEl.remove(); hintEl=null; }
+function hint(){ const id=sid(); if(!id){ hintFor=''; hideHint(); return; }
+ const bulb=Q('#gm .gm-out [data-gm="pftour"]');
+ if(hintEl){ if(!bulb||S.el||document.querySelector('.overlay,#gm-room,#mdx.on,#tlstore')) hideHint(); return; }
+ const gr=grade(); if(gr!=null&&gr!==''&&Number(gr)<=1) return;   /* K-1: games only, no pop-ups */
+ if(hintFor===id||!bulb||S.el||document.querySelector('.overlay,#gm-room,#mdx.on,#tlstore')) return;
+ hintFor=id; const k='tl-tourhint-'+id, n=+(LS.get(k)||0); if(n>=10) return; LS.set(k,String(n+1)); css();
+ const T=window.TLK, r=bulb.getBoundingClientRect(), w=Math.min(300,innerWidth-24);
+ hintEl=document.createElement('div'); hintEl.id='tl-tourhint'; hintEl.setAttribute('role','dialog'); hintEl.setAttribute('aria-label','The lightbulb');
+ hintEl.innerHTML=T.x('data-th="x"','tr')+'<p><b>💡 This is the lightbulb.</b></p><p>Tap it to learn how the buttons work.</p><p>You can also find it in <b>My profile</b>.</p>';
+ hintEl.style.width=w+'px'; hintEl.style.top=(r.bottom+14)+'px'; hintEl.style.left=Math.min(Math.max(12,r.left+r.width/2-w/2),innerWidth-w-12)+'px';
+ hintEl.style.setProperty('--ax',Math.max(22,Math.min(w-22,r.left+r.width/2-parseFloat(hintEl.style.left)))+'px');
+ document.body.appendChild(hintEl); hintEl.addEventListener('click',e=>{ if(e.target.closest('[data-th="x"]')){ e.stopPropagation(); hideHint(); } }); }
+document.addEventListener('click',e=>{ if(hintEl&&e.target.closest&&e.target.closest('[data-gm="pftour"]')) hideHint(); },true);
+(function tick(){ try{ hint(); }catch(e){} setTimeout(tick,2500); })();   /* one cheap look every 2.5 s, nothing else */
+window.TLTOUR={open,close,cards,hint};
 })();
 </script>
