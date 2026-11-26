@@ -117,7 +117,7 @@ module.exports = async function (browser) {
         const left = await P.pg.evaluate(() => __g1.looseLeft());
         if (r === 0) { if (left.length !== 2) bad(P.label + ': after the demo, 2 stones should be left'); await notBlank(P, 'the wall');
           const k = await P.pg.evaluate(() => __g1.said.length); await drag(P.pg, left[0], left[1]); await P.pg.waitForTimeout(200);
-          if (!(await saidSince(P.pg, k, 'This stone is'))) bad(P.label + ': a stone in the wrong gap gets no hint');
+          if (!(await saidSince(P.pg, k, 'comes right after|ten more than|Count along'))) bad(P.label + ': a stone in the wrong gap gets no hint');
           if ((await P.pg.evaluate(() => __g1.looseLeft())).length !== 2) bad(P.label + ': a stone in the wrong gap stayed there'); }
         for (const n of left) await drag(P.pg, n, n); }
       await finish(P, 2); });
