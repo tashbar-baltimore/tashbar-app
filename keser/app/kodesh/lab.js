@@ -221,7 +221,7 @@
  function hub(){ clearTimers(); X.view='hub'; BACK=null;
   frame('Chumash & Timeline Lab','',' hub',`<div class="clab-card"><h2>Welcome to the Lab${me().name?', '+E(String(me().name).split(/\s+/)[0]):''}!</h2>
    <p>Here you learn the tools a talmidah uses to learn Chumash on her own: shorashim, milim, prefixes and suffixes, and the trop. Then you use them on a real pasuk. And the Timeline shows when everything happened.</p>
-   <p class="clab-mut">Pick a lab. Start at the first group or unit. Each one has a lesson, practice, a game and a quiz.</p></div>
+   <p class="clab-mut">Pick a lab. Start at the first group or unit. Each one has a lesson, practice, a game and a quiz.</p><div class="clab-crowns" aria-label="The three crowns: Keter Torah, Keter Kehuna, Keter Malchus"><img src="/pics/keser-keter-torah.webp" alt="Keter Torah"><img src="/pics/keser-keter-kehuna.webp" alt="Keter Kehuna"><img src="/pics/keser-keter-malchut.webp" alt="Keter Malchus"></div></div>
    <div class="clab-grid">${LABS.map(l=>{const [d,n,u]=counts(l.k);return tile('clab-lab','data-lab="'+l.k+'"',`<span class="hd c-${l.k}"><span class="ic" aria-hidden="true">${l.ic}</span><span class="clab-he">${l.he}</span></span><span class="b"><b>${E(l.t)}</b><small>${E(l.p)}</small>${pill(d?'prog':'now',d?d+' of '+n+' '+u+' done':'Start here')}</span>`);}).join('')}</div>`);
   NAV='hub';
   bodyEl().querySelectorAll('[data-lab]').forEach(b=>b.onclick=()=>{ snd('tap'); const k=b.dataset.lab; if(k==='sh'||k==='ml') listLab(k); else if(k==='ps') psLab(); else if(k==='tr') trLab(); else if(k==='pw') pwLab(); else tlHome(); }); }
