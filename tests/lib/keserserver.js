@@ -147,6 +147,11 @@ module.exports = async function keserServer() {
       t(/already exist/.test(err(await sc('setupLead', ['made-up-setup-word', 'Someone Else']))), 'first time: works only once');
       const tok = (await sc('staffSignIn', [L1.result.code])).result.token; secrets.push(tok);
       const me2 = await sc('staffMe', [tok]); t(me2.ok && me2.result.name === 'Rabbi Made-up' && me2.result.role === 'lead', 'staffMe: a signed-in staff page knows who is signed in');
+      { const hdb = fake(); hdb.databaseId = 'keser'; hdb.docs.set('sys/setup', { hash: require('crypto').createHash('sha256').update('made-up hashed word 42').digest('hex') });
+        const hc = (fn, args) => K.route({ api: 1, keser: fn, args }, '10.1.2.3', () => hdb, KEY);
+        t(/not right/.test(err(await hc('setupLead', ['made-up hashed word 41', 'Rabbi Made-up']))), 'first time (word kept only as its hash): a wrong word is refused');
+        const H = await hc('setupLead', ['made-up hashed word 42', 'Rabbi Made-up']); secrets.push(H.result && H.result.code);
+        t(H.ok && H.result.staff.role === 'lead' && !hdb.docs.has('sys/setup'), 'first time (word kept only as its hash): the right word makes the lead; the hash is deleted'); }
       const fresh = fake(); fresh.databaseId = 'keser'; fresh.docs.set('sys/setup', { word: 'made-up-setup-word' });
       for (let i = 0; i < 10; i++) await K.route({ api: 1, keser: 'setupLead', args: ['guess-' + i + '-xxxx', 'X Y'] }, '10.9.0.1', () => fresh, KEY);
       t(/Too many tries/.test(err(await K.route({ api: 1, keser: 'setupLead', args: ['made-up-setup-word', 'X Y'] }, '10.9.0.1', () => fresh, KEY))), 'first time: 10 wrong setup words from one address, then it waits'); }

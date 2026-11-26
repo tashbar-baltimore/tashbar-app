@@ -45,3 +45,9 @@ Until this is done, every Keser call answers "The girls' records are not set up 
 3. Document ID: `setup`. Add one field: name `word`, type **string**, value: a setup word you make up (at least 8 letters; do not share it).
 4. Click **Save**.
 5. Open the Keser staff page, tap **First time**, type the same setup word and your name. Your staff code shows once: write it down. The setup word is then deleted by itself.
+
+## Or: the keser-setup job does both (HoS 2026-11-26: "I give you permission to create the girls database ... and the setup word")
+`.github/workflows/keser-setup.yml` (run by hand, main only, with the keyless Google pass the app is published with):
+it makes the `keser` database (us-east4, no web-page access) if it is missing, and puts in only the **sha256** of a setup word
+(`sys/setup.hash`), never the word. The Head of School is given the word privately and types it on the staff page's "First time" screen.
+Nothing is replaced once a lead exists.

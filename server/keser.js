@@ -192,7 +192,7 @@ const STAFF = {
     return makeStaff(db, name, 'staff'); },
   async staffMe(db, ip, token) { const s = await session(db, token, 'staff'); return { name: s.who.name, role: s.who.role }; },
   /* THE VERY FIRST STAFF CODE (the lead), with no secret key: Rabbi Khaver types a setup word of his own into the "keser" database
-     (collection sys, document setup, field word: at least 8 letters) in the Google Cloud console. The staff page's "First time" screen
+     (collection sys, document setup, field word: at least 8 letters, or field hash: the word's sha256, written by the keser-setup job) in the Google Cloud console. The staff page's "First time" screen
      sends that word and his name; the server makes the lead and her or his code (shown once), then deletes the word. It works only
      once, only while there are no staff, and wrong words count as wrong tries (10 per ten minutes). */
   async setupLead(db, ip, word, name) {
@@ -202,10 +202,11 @@ const STAFF = {
     const v = await db.runTransaction(async tx => { const t = await tx.get(tref), st = await tx.get(sref), m = await tx.get(mark); const td = t.exists ? t.data() : null;
       if (over(td, SETUP_TRIES)) return { many: true };
       if (m.exists) return { done: true };
-      const real = st.exists ? String(st.data().word || '').trim() : '';
-      if (!real) return { none: true };
-      if (real.length < 8) return { short: true };
-      if (!crypto.timingSafeEqual(Buffer.from(sha(real), 'hex'), Buffer.from(sha(word), 'hex'))) { tx.set(tref, counted(td)); return { bad: true }; }
+      const real = st.exists ? String(st.data().word || '').trim() : '', realHash = st.exists ? String(st.data().hash || '').toLowerCase() : '';
+      if (!real && !/^[0-9a-f]{64}$/.test(realHash)) return { none: true };
+      if (real && real.length < 8) return { short: true };
+      /* the setup word may be kept as the word itself, or only as its sha256 (hash), so that the word never has to be written anywhere public */
+      if (!crypto.timingSafeEqual(Buffer.from(real ? sha(real) : realHash, 'hex'), Buffer.from(sha(word), 'hex'))) { tx.set(tref, counted(td)); return { bad: true }; }
       tx.set(mark, { at: now() }); tx.delete(sref); return { ok: true }; });
     if (v.many) no('Too many tries. Wait ten minutes and try again.');
     if (v.done) no('Staff already exist. Sign in with your staff code.');
