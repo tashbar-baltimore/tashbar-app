@@ -84,7 +84,7 @@ module.exports = async (browser) => {
       if (await pg.evaluate(() => Object.values(KWORLD.progress).some(v => v !== 0))) fails.push('Keser world: unreadable saved progress is not treated as a fresh start'); await ctx.close(); }
     /* the welcome page leads into her world */
     { const ctx = await browser.newContext({ viewport: { width: 390, height: 800 } }), pg = await ctx.newPage(); await pg.goto(url);
-      const href = await pg.getAttribute('#enter', 'href'); if (href !== 'world.html') fails.push('Keser welcome: the Enter button does not lead to her world');
+      const href = await pg.getAttribute('#enter', 'href'); if (href !== 'signin.html') fails.push('Keser welcome: the Enter button does not lead to her sign-in');
       await ctx.close(); }
   } catch (e) { fails.push('Keser world test stopped: ' + String(e).slice(0, process.env.KESER_LONG ? 3000 : 200)); }
   finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
