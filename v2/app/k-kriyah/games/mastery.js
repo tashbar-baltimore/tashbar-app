@@ -56,7 +56,10 @@ export default function setup(E, { struggled, unit }) {
   const line = q => q.by === 'quiet' ? 'Which letter is quiet? Tap it.' : q.by === 'sound' ? ['Which letter says', S(E.LETTERS[q.k].snd), '? Tap it.'] : 'Tap ' + E.LETTERS[q.k].name + '.';
   const explain = k => k === 'alef' ? 'That is Alef. Alef is quiet.' : k === 'beis' ? ['That is Beis. It has a dot. Beis says', S('b')] : k === 'veis' ? ['That is Veis. No dot. Veis says', S('v')]
     : ['That is ' + E.LETTERS[k].name + '. ' + E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd)];
-  const Qs = QS[unit.n] || QS[1];
+  const Qs = (QS[unit.n] || QS[1]).slice();
+  /* the older letter he finds hardest (or hasn't seen longest) takes the last older-letter question (RESEARCH.md, gain 5) */
+  if (E.reviewPicks && unit.known.length) { const weak = E.reviewPicks(unit.known, 1)[0], at = Qs.map(q => unit.known.includes(q.k) && q.by === 'name').lastIndexOf(true);
+    if (weak && at >= 0 && !Qs.some(q => q.k === weak)) Qs[at] = { k: weak, by: 'name' }; }
   async function ask(q) {
     cur = q; await E.say(line(q)); active = true; document.body.dataset.askReady = 1;
     const got = await new Promise(r => resolveQ = r); active = false; delete document.body.dataset.askReady; return got;
@@ -74,6 +77,7 @@ export default function setup(E, { struggled, unit }) {
       const q = queue.shift(); await showSet(q.k);
       let easy = false; if (inRow >= 2 || (struggled && q.first && done < 3 && !q.again)) { const drop = set.find(k => k !== q.k && k !== PAIR[q.k]); hidden = L[drop]; hidden.visible = false; easy = true; }
       const got = await ask(q);
+      if (q.first && !easy && E.noteLetter) E.noteLetter(q.k, got === q.k);   /* remembered per letter, for the spaced review */
       if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
         await E.say(q.k === 'alef' ? 'Yes! Alef. Alef is quiet.' : ['Yes!', ...E.nameLine(q.k)]); rebbe.mood('calm'); }
       else { E.sfx.boop(); inRow++; rebbe.mood('think'); await E.shake(L[got], .15); await E.say(explain(got));
