@@ -132,6 +132,25 @@ module.exports = async function keserServer() {
     t(/sign in again/.test(err(await call('me', [Bt]))), 'a session that ran out is refused');
     t((await call('signOut', [ST])).ok && /sign in again/.test(err(await call('girls', [ST]))), 'sign out ends the session');
 
+    /* the very first staff code with Rabbi Khaver's setup word (no secret key) */
+    { const sdb = fake(); sdb.databaseId = 'keser'; const sc = (fn, args, ip) => K.route({ api: 1, keser: fn, args }, ip || '10.1.1.1', () => sdb, KEY);
+      t(/not in place yet/.test(err(await sc('setupLead', ['anything-long', 'Rabbi Made-up']))), 'first time: before the setup word is in the database, the page says so');
+      sdb.docs.set('sys/setup', { word: 'short' });
+      t(/at least 8 letters/.test(err(await sc('setupLead', ['short', 'Rabbi Made-up']))), 'first time: a setup word under 8 letters is refused');
+      sdb.docs.set('sys/setup', { word: 'made-up-setup-word' });
+      t(/not right/.test(err(await sc('setupLead', ['wrong-word-here', 'Rabbi Made-up']))), 'first time: a wrong setup word is refused');
+      t(/Type your name/.test(err(await sc('setupLead', ['made-up-setup-word', '']))), 'first time: a name is needed');
+      const L1 = await sc('setupLead', [' made-up-setup-word ', 'Rabbi Made-up']); secrets.push(L1.result && L1.result.code);
+      t(L1.ok && L1.result.staff.role === 'lead' && /^[0-9]{8}$/.test(L1.result.code), 'first time: the right setup word makes the lead and shows the code once');
+      t(!sdb.docs.has('sys/setup'), 'first time: the setup word is deleted once used');
+      sdb.docs.set('sys/setup', { word: 'made-up-setup-word' });
+      t(/already exist/.test(err(await sc('setupLead', ['made-up-setup-word', 'Someone Else']))), 'first time: works only once');
+      const tok = (await sc('staffSignIn', [L1.result.code])).result.token; secrets.push(tok);
+      const me2 = await sc('staffMe', [tok]); t(me2.ok && me2.result.name === 'Rabbi Made-up' && me2.result.role === 'lead', 'staffMe: a signed-in staff page knows who is signed in');
+      const fresh = fake(); fresh.databaseId = 'keser'; fresh.docs.set('sys/setup', { word: 'made-up-setup-word' });
+      for (let i = 0; i < 10; i++) await K.route({ api: 1, keser: 'setupLead', args: ['guess-' + i + '-xxxx', 'X Y'] }, '10.9.0.1', () => fresh, KEY);
+      t(/Too many tries/.test(err(await K.route({ api: 1, keser: 'setupLead', args: ['made-up-setup-word', 'X Y'] }, '10.9.0.1', () => fresh, KEY))), 'first time: 10 wrong setup words from one address, then it waits'); }
+
     /* nothing secret in any log */
     secrets.filter(Boolean).forEach(s => { if (logs.some(l => l.indexOf(s) >= 0)) fails.push('keser records: a code or token reached the log'); });
     oks.push('keser records: no code or token reached the log (' + logs.length + ' log lines)');

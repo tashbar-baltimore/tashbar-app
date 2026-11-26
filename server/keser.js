@@ -31,6 +31,7 @@
      girl:   signIn(code) · me(token) · saveSteps(token, steps) · signOut(token)
      staff:  staffSignIn(code) · girls(token) · addGirl(token, profile) · editGirl(token, id, profile)
              newCode(token, id) · girlCard(token, id) · addStaff(token, name) (lead only) · signOut(token)
+     staff:  staffMe(token) · setupLead(setup word, name): the first lead, once, with a setup word Rabbi Khaver puts in the database
      first:  firstLead(name) with body.key = the server's admin key; works only while there are no staff at all. */
 const crypto = require('crypto');
 
@@ -38,7 +39,7 @@ const DB_NAME = 'keser';
 const GIRL_CODE_LEN = 6, STAFF_CODE_LEN = 8;
 const GIRL_HOURS = 14, STAFF_HOURS = 12;
 const TRY_WINDOW_MS = 10 * 60 * 1000, GIRL_TRIES = 60, STAFF_TRIES = 15, DAY_TRIES = 300;
-const DAY_STEPS = 5000;
+const DAY_STEPS = 5000, SETUP_TRIES = 10;
 const GRADES = ['K', '1', '2', '3', '4', '5', '6', '7', '8'];
 const CROWNS = ['gold', 'rose', 'pearl', 'sapphire', 'emerald', 'amethyst', 'ruby'];
 const START = 'start';
@@ -189,6 +190,31 @@ const STAFF = {
     return Object.assign({ girl: girlOut(ref.id, g) }, summary(rows)); },
   async addStaff(db, ip, token, name) { const s = await session(db, token, 'staff'); if (s.role !== 'lead') no('Only the lead can add staff.');
     return makeStaff(db, name, 'staff'); },
+  async staffMe(db, ip, token) { const s = await session(db, token, 'staff'); return { name: s.who.name, role: s.who.role }; },
+  /* THE VERY FIRST STAFF CODE (the lead), with no secret key: Rabbi Khaver types a setup word of his own into the "keser" database
+     (collection sys, document setup, field word: at least 8 letters) in the Google Cloud console. The staff page's "First time" screen
+     sends that word and his name; the server makes the lead and her or his code (shown once), then deletes the word. It works only
+     once, only while there are no staff, and wrong words count as wrong tries (10 per ten minutes). */
+  async setupLead(db, ip, word, name) {
+    if (clean(name, 40).length < 2) no('Type your name.');
+    const pep = await pepper(db), tref = db.collection('throttle').doc(codeKey(pep, 'ip-setup', addrOf(ip))), sref = db.collection('sys').doc('setup'), mark = db.collection('sys').doc('firstLead');
+    word = String(word == null ? '' : word).trim();
+    const v = await db.runTransaction(async tx => { const t = await tx.get(tref), st = await tx.get(sref), m = await tx.get(mark); const td = t.exists ? t.data() : null;
+      if (over(td, SETUP_TRIES)) return { many: true };
+      if (m.exists) return { done: true };
+      const real = st.exists ? String(st.data().word || '').trim() : '';
+      if (!real) return { none: true };
+      if (real.length < 8) return { short: true };
+      if (!crypto.timingSafeEqual(Buffer.from(sha(real), 'hex'), Buffer.from(sha(word), 'hex'))) { tx.set(tref, counted(td)); return { bad: true }; }
+      tx.set(mark, { at: now() }); tx.delete(sref); return { ok: true }; });
+    if (v.many) no('Too many tries. Wait ten minutes and try again.');
+    if (v.done) no('Staff already exist. Sign in with your staff code.');
+    if (v.none) no('The setup word is not in place yet.');
+    if (v.short) no('The setup word must be at least 8 letters.');
+    if (v.bad) no('That setup word is not right.');
+    const any = await db.collection('staff').get(); if (any.size) no('Staff already exist. Sign in with your staff code.');
+    return makeStaff(db, name, 'lead');
+  },
   signOut: GIRL.signOut
 };
 async function girlRef(db, id) {
