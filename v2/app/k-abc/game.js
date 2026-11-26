@@ -32,6 +32,10 @@ export function makeGame(host, o) {
   G.mendyAt = { wide: [-4.6, 1.4, 0.92], narrow: [-1.4, 3.7, 0.55] };
   const placeMendy = () => { const m = G.mendyAt[G.narrow() ? 'narrow' : 'wide']; G.mendy.place(m[0], m[1], m[2]); };
   S.onTap(G.mendy.hit, () => { G.mendy.set('happy', 0.8); G.mendy.hopNow(); audio.boing(300); });
+  /* a friend (Eli, Ari ...): his painted picture stands on the other side, so a name always comes with his picture (MAP.md) */
+  G.friendAt = { wide: [3.85, 0.6, 0.9], narrow: [1.5, 3.7, 0.55] };
+  G.friend = async name => { const F = painted(S, name, { height: 2.5, poses: ['idle', 'think', 'happy'], talks: false }); const at = () => { const m = G.friendAt[G.narrow() ? 'narrow' : 'wide']; F.place(m[0], m[1], m[2]); };
+    at(); addEventListener('resize', at); S.onTap(F.hit, () => { F.set('happy', 0.8); F.hopNow(); audio.boing(340); }); await F.appear(); G.pal = F; return F; };
 
   /* ---------- pictures ---------- */
   const tmp = new THREE.Vector3();

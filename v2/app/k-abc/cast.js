@@ -4,7 +4,7 @@
 import { THREE, blob, audio, clamp } from './kit3d.js';
 
 const loader = new THREE.TextureLoader(), cache = {};
-function tex(url) { if (!cache[url]) { const t = loader.load(url); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; cache[url] = t; } return cache[url]; }
+function tex(url) { if (!cache[url]) { const t = loader.load(url, x => { t.userData.ratio = x.image.width / x.image.height; }); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; cache[url] = t; } return cache[url]; }
 
 export function painted(S, who = 'mendy', o = {}) {
   const poses = o.poses || ['idle', 'talk', 'point', 'happy', 'clap'], base = o.base || './art/';
@@ -25,8 +25,9 @@ export function painted(S, who = 'mendy', o = {}) {
     M.hold = Math.max(0, M.hold - dt); M.hop = Math.max(0, M.hop - dt * 1.8); M.wig = Math.max(0, M.wig - dt * 1.5);
     let p = M.pose; if (M.hold <= 0 && p !== 'idle') { p = M.pose = 'idle'; }
     if (p === 'idle' && M.talks && audio.talking) p = 'talk';
+    if (!T[p]) p = 'idle';
     if (mat.map !== T[p]) { mat.map = T[p]; mat.needsUpdate = true; }
-    const s = (G.userData.s || 1) * M.scale, w = H * (ratio[p] || 0.4);
+    const s = (G.userData.s || 1) * M.scale, w = H * (T[p].userData.ratio || ratio[p] || 0.4);   /* each picture keeps its own shape */
     const breathe = 1 + Math.sin(t * 2.1) * 0.012, jump = Math.sin(M.hop * Math.PI) * 0.45;
     card.scale.set(w * s, H * s * breathe, 1); card.position.set(0, H * s * breathe / 2 + jump * s, 0);
     card.rotation.z = Math.sin(t * 22) * 0.04 * M.wig + Math.sin(t * 0.9) * 0.012;
