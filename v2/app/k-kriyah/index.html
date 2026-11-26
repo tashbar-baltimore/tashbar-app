@@ -57,7 +57,7 @@ if (ok) {
   const cur = stops.find(s => s.userData.open && s.userData.stars < E.PASS && !s.userData.G.bonus) || stops.slice().reverse().find(s => s.userData.open && !s.userData.G.bonus);
   const boy = E.mendy(); E.scene.add(boy);
   const ring = E.glowSprite('#fff7b0', 3.2, 0); E.scene.add(ring);
-  const banner = new THREE.Group(); U.letters.forEach((k, i) => { const l = E.letter(k, 1.25); l.position.x = ((U.letters.length - 1) / 2 - i) * 1.35; banner.add(l); }); E.scene.add(banner);   /* the unit's letters, right to left */
+  const banner = new THREE.Group(), bgap = U.letters.some(k => E.topDot(k)) ? 1.75 : 1.35; U.letters.forEach((k, i) => { const l = E.letter(k, 1.25); l.position.x = ((U.letters.length - 1) / 2 - i) * bgap; banner.add(l); }); E.scene.add(banner);   /* wide Shin and Sin: more room, so each dot plainly belongs to its letter */   /* the unit's letters, right to left */
   let pebbles = [];
   E.onLayout(p => {
     const N = stops.length, P = stops.map((_, i) => p ? [i % 2 ? -.9 : .95, 3.4 - i * (7.8 / (N - 1))] : [4.6 - i * 9.2 / (N - 1), i % 2 ? 1.2 : 2.5]);   /* right to left, zig-zag */

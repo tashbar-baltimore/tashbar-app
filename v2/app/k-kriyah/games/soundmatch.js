@@ -13,13 +13,13 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4 + l.userData.below;   /* Kuf's long leg stands above the stand */ p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
-  const PS = () => P ? (peds.length > 3 ? .74 : tallDot ? .76 : .62) : (peds.length > 3 ? .88 : 1);   /* Shin's and Tav's dots: bigger on a phone, where there is room for three */
+  const PS = () => P ? (peds.length > 3 ? .74 : tallDot ? .7 : .62) : (peds.length > 3 ? .88 : 1);   /* Shin's and Tav's dots: bigger on a phone, where there is room for three */
   const card = new THREE.Group(); E.scene.add(card); card.visible = false;
   const cardGlow = E.glowSprite('#ffffff', 2.6, .7); cardGlow.position.z = -.4; card.add(cardGlow);
   const cardBack = E.mesh(E.rbox(2.05, 2.05, .08, .2), E.M(0xffe9b8, { roughness: .4, clearcoat: .6, depthWrite: false }), 0, 0, -.35, false); cardBack.renderOrder = -1; card.add(cardBack);   /* a white card behind the picture, so it never melts into the painting */
   const hint = E.glowSprite('#fff7b0', 2.8, 0); E.scene.add(hint);
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
-  E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? 1.12 : tallDot ? 1.62 : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
+  E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? 1.12 : tallDot ? 1.5 : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
     if (p) { if (peds.length > 3) { E.camBase.set(0, 5.6, 11.5); E.camTarget.set(0, 1.3, .8); cardHome.set(0, 3.6, -3.4); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, tallDot ? 4.15 : 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, tallDot ? 3.4 : 3.15, 2.2);   /* higher when a raised Kuf stands below */   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
     const m = peds.length, two = P && m > 3; peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -3.0 : 2.6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */

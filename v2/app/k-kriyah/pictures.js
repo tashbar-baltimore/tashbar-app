@@ -162,15 +162,18 @@ export function makePictures(E) {
       const toe = mesh(new THREE.SphereGeometry(.3, 20, 14), red, .3, -.12, 0); toe.scale.set(1.25, .7, .78); g.add(toe);
       const heel = mesh(new THREE.CapsuleGeometry(.22, .25, 8, 14), red, -.25, -.02, 0); heel.scale.set(1.15, 1, 1); g.add(heel);
       g.add(mesh(new THREE.TorusGeometry(.17, .045, 8, 20), wh, -.22, .3, 0)).children.at(-1).rotation.x = Math.PI / 2;
-      for (let k = 0; k < 3; k++) { const l = mesh(new THREE.BoxGeometry(.04, .03, .34), wh, .02 + k * .12, .06 - k * .03, .03, false); l.rotation.z = -.4; g.add(l); } g.rotation.y = -.35; return g; },
+      const ank = mesh(new THREE.CylinderGeometry(.2, .24, .3, 18), red, -.25, .2, 0); g.add(ank);   /* the ankle, so it reads as a shoe */
+      for (let k = 0; k < 3; k++) { const l = mesh(new THREE.BoxGeometry(.04, .03, .34), wh, .02 + k * .12, .06 - k * .03, .03, false); l.rotation.z = -.4; g.add(l); } g.rotation.set(.25, -.6, 0); g.scale.setScalar(1.35); return g; },
     sock() { const g = new THREE.Group(), c = M(0xe8322b, { roughness: .7 }), st = M(0xffffff, { roughness: .7 });   /* a striped sock */
       g.add(mesh(new THREE.CapsuleGeometry(.17, .55, 8, 16), c, -.12, .12, 0)); const ft = mesh(new THREE.CapsuleGeometry(.17, .35, 8, 16), c, .12, -.33, 0); ft.rotation.z = Math.PI / 2; g.add(ft);
-      [.2, .38].forEach(y => g.add(mesh(new THREE.CylinderGeometry(.176, .176, .07, 20), st, -.12, y, 0))); g.add(mesh(new THREE.CylinderGeometry(.18, .18, .1, 20), st, -.12, .52, 0)); return g; },
+      [.2, .38].forEach(y => g.add(mesh(new THREE.CylinderGeometry(.176, .176, .07, 20), st, -.12, y, 0))); g.add(mesh(new THREE.CylinderGeometry(.18, .18, .1, 20), st, -.12, .52, 0));
+      g.add(mesh(new THREE.SphereGeometry(.18, 16, 12), st, .42, -.33, 0)); g.add(mesh(new THREE.SphereGeometry(.17, 16, 12), st, -.14, -.34, 0));   /* a white toe and heel, so it reads as a sock (and not as a letter) */
+      g.rotation.set(.2, -.5, -.35); g.scale.setScalar(1.4); return g; },
     teapot() { const g = new THREE.Group(), c = M(0x46c3ff, { roughness: .25, clearcoat: 1 }), wh = M(0xffffff, { roughness: .3 });   /* a round blue teapot */
       const b = mesh(new THREE.SphereGeometry(.42, 24, 18), c, 0, -.08, 0); b.scale.set(1.15, .88, 1); g.add(b);
       g.add(mesh(new THREE.CylinderGeometry(.2, .26, .1, 20), c, 0, .3, 0)); g.add(mesh(new THREE.SphereGeometry(.07, 12, 10), wh, 0, .4, 0));
       const sp = mesh(new THREE.ConeGeometry(.08, .5, 14), c, .55, .05, 0); sp.rotation.z = -1.0; g.add(sp);
-      const h = mesh(new THREE.TorusGeometry(.2, .05, 10, 20, Math.PI * 1.2), c, -.48, -.05, 0); h.rotation.z = Math.PI * .4; g.add(h); return g; },
+      const h = mesh(new THREE.TorusGeometry(.2, .05, 10, 20, Math.PI * 1.2), c, -.48, -.05, 0); h.rotation.z = Math.PI * .4; g.add(h); g.scale.setScalar(1.35); return g; },
   };
   /* the ChatGPT pictures (art/obj) replace the simple 3D ones; each stands as a flat card that always faces the boy */
   const IMG = { dag: ['fish', 1.24], dov: ['bear', .85], gamal: ['camel', 1.02], gezer: ['carrot', .84], har: ['mountain', 1.27], bayis: ['house', 1.14], vered: ['rose', .88], zevuv: ['fly', 1.06], zayis: ['olives', 1.23],

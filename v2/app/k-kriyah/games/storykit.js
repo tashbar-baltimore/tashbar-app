@@ -33,13 +33,14 @@ export function makeStory(E, unit, script) {
   async function morph(picObj, k) {
     const from = E.worldPos(picObj), s0 = picObj.scale.x, l = L[k]; E.sfx.sparkle(); E.sfx.whoosh(); E.sparkle(from.clone().add(new THREE.Vector3(0, 0, .5)), 36, 1.4);
     l.position.set(P ? .35 : -.3, P ? 1.6 : 1.45, .6); l.visible = true; l.scale.setScalar(.01); glow.position.set(P ? .35 : -.3, 1.6, -.3);
-    await E.tween(1300, q => { picObj.scale.setScalar(Math.max(.001, s0 * (1 - q))); picObj.rotation.y = q * 3; l.scale.setScalar(.01 + q * .99); l.rotation.y = (1 - q) * Math.PI * 2; glow.material.opacity = q * .8; });
+    const S1 = P && l.userData.width > 2.4 ? .8 : 1;   /* on a phone a wide letter (Shin) is a little smaller, clear of Moshe */
+    await E.tween(1300, q => { picObj.scale.setScalar(Math.max(.001, s0 * (1 - q))); picObj.rotation.y = q * 3; l.scale.setScalar(.01 + q * (S1 - .01)); l.rotation.y = (1 - q) * Math.PI * 2; glow.material.opacity = q * .8; });
     picObj.visible = false; float(l);
   }
   async function letterDone(k) {   /* the new letters wait in a row along the top, right to left */
     const l = L[k]; float(l, false); const n = unit.letters.length, i = unit.letters.indexOf(k), gap = P ? (n > 3 ? 1.05 : 1.45) : (n > 3 ? 2.3 : 2.7);
-    const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? 4.4 + l.userData.below * .28 : 3.6), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
-    await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? .28 : .42))); glow.material.opacity = .8 * (1 - q); }); float(l);
+    const s0 = l.scale.x, p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? 4.4 + l.userData.below * .28 : 3.6), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
+    await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(s0 + q * ((P ? .28 : .42) - s0)); glow.material.opacity = .8 * (1 - q); }); float(l);
   }
   const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6), q)); };
   const say = async (who, line) => { if (who) { who.mood('wave'); setTimeout(() => who.mood('calm'), 1100 * E.F); } await E.say(line); };
@@ -49,7 +50,7 @@ export function makeStory(E, unit, script) {
     for (const line of script.intro) await say(boy, line);
     for (const [si, st] of script.steps.entries()) {
       if (st.fromDot) {   /* this letter is the last one without its dot (Chaf from Kaf) */
-        const src = L[st.fromDot]; float(src, false); const kp = src.position.clone(), ch = L[st.letter]; ch.position.copy(kp); ch.rotation.copy(src.rotation); ch.visible = true; ch.userData.dot.visible = true; src.visible = false;
+        const src = L[st.fromDot]; float(src, false); const kp = src.position.clone(), ch = L[st.letter]; ch.position.copy(kp); ch.rotation.copy(src.rotation); ch.scale.copy(src.scale); ch.visible = true; ch.userData.dot.visible = true; src.visible = false;
         await E.say('Now watch the dot!');
         const d = ch.userData.dot, dp = d.position.clone(); E.sfx.whoosh();
         if (st.move) {   /* Sin from Shin: the dot hops from the right to the left, and stays */
