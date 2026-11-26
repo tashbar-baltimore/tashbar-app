@@ -25,5 +25,10 @@ CORE_SKILLS.W13 = [
   ["WRIT.SENT.L01.03", "Point and Read", "Read his sentence back pointing to each word, and fix a missing word", { after: "WRIT.SENT.L01.02", std: "W.K.5", file: "CoreDataW135", min: 4 }],
   ["WRIT.PARA.L02.04", "Zoom In", "Write about one small moment, not the whole day", { after: "WRIT.SENT.L02.01", std: "W.1.3", file: "CoreDataW136", min: 5 }],
   ["WRIT.PARA.L02.05", "Time Words", "Use time words: first, then, after that, at the end", { after: "WRIT.PARA.L02.04", std: "W.1.3", file: "CoreDataW136", min: 5 }],
-  ["WRIT.PARA.L02.06", "Feeling Ending", "End a story with how it felt or what he learned", { after: "WRIT.PARA.L02.05", std: "W.1.3", file: "CoreDataW136", min: 5 }]
+  ["WRIT.PARA.L02.06", "Feeling Ending", "End a story with how it felt or what he learned", { after: "WRIT.PARA.L02.05", std: "W.1.3", file: "CoreDataW136", min: 5 }],
+  ["WRIT.ESSAY.L04.03", "TIDE Plan", "Plan an information piece with TIDE: Topic, Important details, Ending", { after: "WRIT.PARA.L04.04", std: "W.3.2", file: "CoreDataW13H1", min: 8 }],
+  ["WRIT.ESSAY.L04.04", "Group the Facts", "Group facts that go together, and add a picture with a caption", { std: "W.3.2a", file: "CoreDataW13H1", min: 7 }],
+  ["WRIT.PARA.L04.14", "Facts, Definitions, Details", "Build the topic with facts, definitions and details", { std: "W.3.2b", file: "CoreDataW13H1", min: 7 }],
+  ["WRIT.PARA.L04.15", "Fact Linking Words", "Link facts with also, another, and, more and but", { std: "W.3.2c", file: "CoreDataW13H1", min: 7 }],
+  ["WRIT.PARA.L04.16", "Concluding Section", "End an information piece with a strong concluding section", { std: "W.3.2d", file: "CoreDataW13H1", min: 7 }]
 ];

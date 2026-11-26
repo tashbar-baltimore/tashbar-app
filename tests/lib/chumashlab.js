@@ -48,7 +48,9 @@ module.exports = async function (pg) {
       const Q = X.listQ(k, it, pool, [[['he', 'en', 'tf', 'root'][t % 4], 'spell', 'hunt'][t % 3 ? 0 : 1]]); nq++;
       if (Q.opts && Q.opts.indexOf(Q.right) < 0) out.bad.push(k + ' ' + it.id + ': right answer not among the choices');
       if (Q.kind === 'root' && Q.roots.indexOf(Q.right) < 0) out.bad.push(k + ' ' + it.id + ': shoresh not among the choices');
-      const u = D.UNITS[t % 12], x = u.items[t % u.items.length], P2 = X.psQ(t % 12, x, [['build', 'pos', 'part', 'word'][t % 4]]); nq++;
+      const u = D.UNITS[t % 12], x = u.items[t % u.items.length], P2 = X.psQ(t % 12, x, [['affix', 'pos', 'part', 'spot'][t % 4]]); nq++;
+      if (/What does this word mean|Build the word that means/.test(P2.q || '')) out.bad.push('Prefixes & Suffixes asks to translate a whole word (staff: only the prefixes and suffixes)');
+      if (P2.kind === 'spot' && !P2.want.some(Boolean)) out.bad.push('unit ' + (t % 12 + 1) + ' ' + x.w + ': spot question with no letters to tap');
       if (P2.opts && P2.opts.indexOf(P2.right) < 0) out.bad.push('unit ' + (t % 12 + 1) + ' ' + x.w + ': right answer not among the choices');
       const tq = X.trQ(['endTap', 'count', 'tap:esn', 'half', 'name', 'break1', 'break', 'break3', 'tap:zk', 'tap:rv'][t % 10]); nq++;
       if (tq.opts && tq.opts.indexOf(tq.right) < 0) out.bad.push('stop signs ' + tq.kind + ': right answer not among the choices');
@@ -58,8 +60,9 @@ module.exports = async function (pg) {
     /* 4. play by taps */
     const click = sel => { const b = typeof sel === 'string' ? root.querySelector(sel) : sel; if (b && !b.disabled) { b.click(); return true; } return false; };
     const solve = async () => { const c = X.cur, Q = c && c.Q; if (!Q) return false;
-      if (Q.kind === 'spell' || Q.kind === 'buildparts') { const used = new Set();
-        const want = Q.kind === 'spell' ? (() => { const g = []; for (const ch of String(Q.right)) { if (/[א-ת]/.test(ch) || !g.length) g.push(ch); else g[g.length - 1] += ch; } return g; })() : Q.x.parts.map((_, i) => i);
+      if (Q.kind === 'spot') { root.querySelectorAll('.qbox .gtile').forEach(b => { if (c.want[+b.dataset.g]) b.click(); }); click('[data-a=chk]'); }
+      else if (Q.kind === 'spell' || Q.kind === 'buildparts' || Q.kind === 'affix') { const used = new Set();
+        const want = Q.kind === 'spell' ? (() => { const g = []; for (const ch of String(Q.right)) { if (/[א-ת]/.test(ch) || !g.length) g.push(ch); else g[g.length - 1] += ch; } return g; })() : (Q.kind === 'affix' ? Q.order : Q.x.parts).map((_, i) => i);
         for (const w of want) { const j = c.tiles.findIndex((t, j) => !used.has(j) && (Q.kind === 'spell' ? t.t === w : t.i === w)); if (j < 0) return false; used.add(j); click(root.querySelector('.bank [data-j="' + j + '"]')); }
         click('[data-a=chk]'); }
       else if (Q.kind === 'hunt' || Q.kind === 'tap') click(root.querySelectorAll('.qbox button.tw')[c.toks.findIndex(t => t.a)]);

@@ -15,7 +15,7 @@ const ITEMS = [
   ['storeask', `(async()=>{ A.st.balance=500; TLSTORE.tab='fun'; tlStore(true); await new Promise(r=>setTimeout(r,4000)); const b=document.querySelector('#tlstore [data-st="buy"]:not([disabled])'); if(b) b.click(); return !!b; })()`],
   ['k1path', `(()=>{ localStorage.setItem('tl-k1only','1'); K1O.grade=1; K1O.subj='MATH'; A.overlay=null; A.view='hub'; render(); return !!document.getElementById('k1o'); })()`],
   ['mdend', `(async()=>{ const s=ms=>new Promise(r=>setTimeout(r,ms)); TL_MD.open(); const t0=Date.now();
-     while(Date.now()-t0<120000 && !document.querySelector('#mdx .mdend')){ const b=[...document.querySelectorAll('#mdx .mdgo:not([data-md="again"]):not([data-md="close"]),#mdx .mdb:not([disabled])')].pop(); if(b) b.click(); await s(1300); }
+     while(Date.now()-t0<120000 && !document.querySelector('#mdx .mdend')){ const b=[...document.querySelectorAll('#mdx [data-md="start"],#mdx [data-md="next"],#mdx .mdb:not([disabled])')].pop(); if(b) b.click(); await s(1300); }
      return !!document.querySelector('#mdx .mdend'); })()`],
 ];
 /* information that looks like a button: a pill or box with a shadow, an outline or a hand pointer (one inside a tile button may show the tile's pointer) */

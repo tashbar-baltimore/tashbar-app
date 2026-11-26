@@ -63,5 +63,13 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - Not changed: Arena home's big colored tiles and topic cards, Chumash activity cards (they are cards, not yet `tlk-tile`), Workbook pen colors and answer chips.
 - Pictures: `docs/screens/step7-after-*.jpg`. Check: `node tools/screens/step7.js OUT TAG GRADE` (made-up Chumash Parsha, since the real one comes from Drive).
 
+## Done: labels and kit buttons on the pages that still lacked them (26 Nov 2026)
+- Mistake Detective (`src/Review.html`): points = rank label, "Case 2 of 6" = progress label (dots in kit colors), case number = progress, topic = subject, "Step 1 · Spot it" = do-this-now; "Open case #1" / "Next case" / "See my rank" = `TLK.main`, words only; 🔊 = `TLK.tool`; end score = rank + progress labels; the old home card's "Start a case" = quiet.
+- My week page (`growthHTML` in `src/GameMap.html`): XP = rank, steps / "N to Silver" = progress; the 4 stat boxes are `TLK.box` (weeks blue, streak and bosses violet).
+- Old rooms (`room()`): badge count, "Earned" = progress, rewards = money, tier = rank; "Play my week" quiet, "My Shabbos page" main. Fixed: the panels' titles and words were white on white; the Chumash & Timeline Lab door (`#clab-door`) now hides behind pop-ups.
+- Lessons: the "Learn it" card (`src/LearnFlow.html`) = now label, Read it to me tool, "I'm ready" main, "Show me step by step" quiet; "Help me" = quiet; the step names above the lesson are progress labels (the step he is on yellow). One Bite (`src/OneBite.html`): kit ✕ (asks "Leave this lesson?" with Keep learning main + Leave quiet), Read it to me and Easy-read tools, footer buttons main / quiet words only (no ▶), section tags = now labels, money earned = money label. Seen: a One Bite lesson and its "Leave this lesson?" (made-up boy, grade 5).
+- Arena home (`src/ArenaPage.html`): the 5 big colored buttons are kit tiles (`TILE()`), normal case. Chumash (`src/ChumashPage.html`): activity and level cards are kit tiles (`ACT()`), stars = rank label ("Not started" = locked), "Your level" = now label.
+- Pictures: `docs/screens/labels-before-*.jpg`, `labels-after-*.jpg` (grade 5), `labels-after-gr2-*.jpg` (grade 2). Check: `node tools/screens/labels.js OUT TAG GRADE` (prints any visible non-kit button and any label with a shadow).
+
 ## Next
-- Not yet on kit labels: Mistake Detective's points and case dots, the old Trophies/My week rooms, Canteen, lesson screens. Arena home tiles and Chumash activity cards are not kit tiles yet.
+- Classic lesson frame: the "‹ Map" back top left (should be the kit ✕ that asks first), "Say it again", 🚩, "Check", "Take a picture", "Teach me how" and the result screen's underlined links are not on the kit yet. Mistake Detective's answer buttons, Arena avatars and subject/topic cards are answer/picker cards, left as they are.

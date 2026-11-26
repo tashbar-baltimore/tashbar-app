@@ -115,11 +115,12 @@ body.oh-sky #chm-ov{right:var(--skyw,96px)}
 #chm-ov .chm-nav{gap:10px}#chm-ov .chm-top .tlk-quiet{flex:none}
 #chm-ov .chm-pl2{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}#chm-ov .chm-hero .tlk-pill{white-space:normal}
 #chm-ov .chm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin:10px 0}
-#chm-ov .chm-act{border:2px solid #e3c98f;background:#fff;border-radius:16px;padding:12px;cursor:pointer;text-align:left;font:inherit;color:inherit}
-#chm-ov .chm-act:hover{border-color:#b98a2c}
+#chm-ov .chm-act.tlk{padding:12px 14px;gap:2px;min-height:0;font:inherit;color:#3B2A12}#chm-ov .chm-act.tlk.big{grid-column:1/-1;background:#FFFBEB}#chm-ov .chm-act.tlk .tlk-pill{align-self:flex-start;margin-bottom:4px}#chm-ov .chm-act.tlk .stars{margin-top:6px;letter-spacing:0}
+#chm-ov .chm-act:not(.tlk){border:2px solid #e3c98f;background:#fff;border-radius:16px;padding:12px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+#chm-ov .chm-act:not(.tlk):hover{border-color:#b98a2c}
 #chm-ov .chm-act .ic{font-size:26px}#chm-ov .chm-act .t{font-weight:800;font-size:16px;margin:4px 0}#chm-ov .chm-act .d{font-size:13px;color:#6b5434}
 #chm-ov .chm-act .stars{color:#e0a100;font-size:15px;letter-spacing:2px}
-#chm-ov .chm-act.big{grid-column:1/-1;background:linear-gradient(135deg,#fff3c4,#ffe08a);border-color:#d9a400}
+#chm-ov .chm-act.big:not(.tlk){grid-column:1/-1;background:linear-gradient(135deg,#fff3c4,#ffe08a);border-color:#d9a400}
 #chm-ov h3{margin:16px 0 6px;font-size:17px;color:#5a2e06}
 #chm-ov .chm-hi{display:grid;gap:8px}
 #chm-ov .chm-pl{direction:rtl;text-align:right;font-family:'Times New Roman',serif;font-size:22px;line-height:1.7;background:#fff;border:1px solid #ead7a8;border-radius:12px;padding:8px 12px;cursor:pointer}
@@ -190,15 +191,17 @@ function draw(){ const ov=document.getElementById('chm-ov'); if(!ov) return;
   else if(C.view==='q') b.innerHTML=qHTML(d);
   else if(C.view==='done') b.innerHTML=doneHTML(d);
   if(C.view!=='q') ov.scrollTop=C.keepScroll?ov.scrollTop:0; C.keepScroll=false; }); }
-function stars(n){ return '<span class="stars">'+'★'.repeat(n||0)+'☆'.repeat(3-(n||0))+'</span>'; }
+function stars(n){ n=n||0; return window.TLK?'<span class="stars">'+TLK.pill(n?'rank':'lock',n?'★'.repeat(n)+'☆'.repeat(3-n):'Not started')+'</span>':'<span class="stars">'+'★'.repeat(n)+'☆'.repeat(3-n)+'</span>'; }
+/* button system: the activity cards are kit tiles (the whole card is the button); their stars are a rank label */
+function ACT(){ return window.TLK?'tlk tlk-tile chm-act':'chm-act'; }
 function homeHTML(d){ const L=LV[C.lv], ps=PS(C.name), wk=weekParsha()===C.name;
  const P=(k,t)=>window.TLK?TLK.pill(k,t):'<b>'+E(t)+'</b>';   /* button system step 5: information is kit pills, flat, never a button */
  let h='<div class="chm-hero"><div class="nm">פָּרָשַׁת '+E(HEBOF(C.name))+'</div><div class="chm-pl2">'+P('subj','Parshas '+C.name)+(wk?P('now','This week\'s Parsha from your rebbe'):'')+P('prog',d.p.length+' pesukim')+'</div>'
   +'<div class="chm-lv">'+P('rank','Level '+C.lv+' · שָׁלָב '+L.h)+' '+E(L.t)+'</div>'
   +(C.rebbeNew?'<div style="margin-top:6px">'+P('now','Your rebbe put you on Level '+C.lv+'!')+'</div>':'')
   +((ps.m||[]).length?'<div style="margin-top:6px">'+P('rank','Mastered at level '+ps.m.join(', '))+'</div>':'')+'</div>';
- h+='<div class="chm-grid"><button class="chm-act big" data-chm="start" data-k="test"><div class="ic">🏆</div><div class="t">Parsha Bechina · Level '+C.lv+'</div><div class="d">10 questions from everything in your level. Get 8 to master Parshas '+E(C.name)+'.</div></button>';
- L.k.forEach(k=>{ const K=KIND[k]; h+='<button class="chm-act" data-chm="'+(k==='read'?'read':'start')+'" data-k="'+k+'"><div class="ic">'+K[0]+'</div><div class="t">'+K[1]+'</div><div class="d">'+E(K[2])+'</div>'+(k!=='read'?stars(ps.k[k]):'')+'</button>'; });
+ h+='<div class="chm-grid"><button type="button" class="'+ACT()+' big" data-chm="start" data-k="test"><div class="ic">🏆</div><div class="t">Parsha Bechina · Level '+C.lv+'</div><div class="d">10 questions from everything in your level. Get 8 to master Parshas '+E(C.name)+'.</div></button>';
+ L.k.forEach(k=>{ const K=KIND[k]; h+='<button type="button" class="'+ACT()+'" data-chm="'+(k==='read'?'read':'start')+'" data-k="'+k+'"><div class="ic">'+K[0]+'</div><div class="t">'+K[1]+'</div><div class="d">'+E(K[2])+'</div>'+(k!=='read'?stars(ps.k[k]):'')+'</button>'; });
  h+='</div>';
  if((d.hi||[]).length){ h+='<h3>⭐ Pesukim to know</h3><div class="chm-hi">'+d.hi.map(i=>'<div class="chm-pl star" data-chm="pas" data-i="'+i+'">'+pasukHTML(d.p[i],{plain:true})+'<span class="rf">'+E(d.p[i].r)+'</span></div>').join('')+'</div>'; }
  const R=rng(d); h+='<h3>📖 Your pesukim ('+R.length+')</h3><div class="chm-pesall">'+R.slice(0,12).map(p=>'<div class="chm-pl" data-chm="pas" data-i="'+p.i+'">'+pasukHTML(p,{plain:true})+'<span class="rf">'+E(p.r)+'</span></div>').join('')+'</div>'
@@ -220,7 +223,7 @@ function readHTML(d){ const p=d.p[C.pi]; if(!p) return '';
 function drawLevels(){ const ov=document.getElementById('chm-ov'); const b=ov&&ov.querySelector('.chm-body'); if(!b) return;
  const rl=rebbeLv(); if(rl){ b.innerHTML='<div class="chm-done"><div class="big">📖</div><h2>Your rebbe set your level: Level '+rl+' · שָׁלָב '+LV[rl].h+'</h2><p>'+E(LV[rl].t)+'</p><p>When you are ready for the next level, show your rebbe your 🏅 Parsha medals!</p>'+KB(1,'Back to the Parsha','data-chm="home"')+'</div>'; return; }
  b.innerHTML='<h3>Choose your level</h3><p>Your rebbe can tell you which level is yours. Every level has all the Parshiyos.</p><div class="chm-lvs">'
-  +LV.slice(1).map((L,i)=>'<button class="chm-act'+(i+1===C.lv?' big':'')+'" data-chm="lv" data-n="'+(i+1)+'"><div class="t">Level '+(i+1)+' · שָׁלָב '+L.h+'</div><div class="d">'+E(L.t)+'</div></button>').join('')+'</div>'; }
+  +LV.slice(1).map((L,i)=>'<button type="button" class="'+ACT()+(i+1===C.lv?' big':'')+'" data-chm="lv" data-n="'+(i+1)+'">'+(i+1===C.lv&&window.TLK?TLK.pill('now','Your level'):'')+'<div class="t">Level '+(i+1)+' · שָׁלָב '+L.h+'</div><div class="d">'+E(L.t)+'</div></button>').join('')+'</div>'; }
 
 /* ---------- questions ---------- */
 function mkQ(d,k){ const R=rng(d), all=d.p; const L=LV[C.lv];
