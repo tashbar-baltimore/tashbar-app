@@ -94,7 +94,38 @@
 
   /* ---------- the answer step: show how many on the hands, press check ----------
      opts: { n, H, explain(F, misses) async, check (mastery check: explain once, then move on), praise } -> Promise(first try right) */
-  U.answer = function (F, opts) {
+  /* ISLAND RULE: Unit 1 taught 1-5 on ONE hand. The first time a game here asks for more than five, it first teaches two hands
+     (fill one whole hand: five; tap the second hand: six; the yellow arrow puts one down), then he practices "show six" once. */
+  U.twoTaught = false;
+  U.teachTwo = async function (F, H) {
+    U.twoTaught = true; GAME.phase = 'demo'; F.lock(true); H.set(0); H.lock(true);
+    await F.say('More than five? We use two hands. Watch.');
+    for (var k = 0; k < 5; k++) { await F.handTo(H.a.el, .5, .62); await F.handTap(); H.a.finger(k).classList.remove('down'); NK.sound.pop(); await F.say(F.Word(k + 1), { noRepeat: true }); }
+    await F.say('One whole hand. Five!');
+    await F.handTo(H.b.el, .5, .62); await F.handTap(); H.b.finger(0).classList.remove('down'); NK.sound.pop();
+    await F.say('Now the other hand. Six! Five and one more.');
+    var dn = H.b.el.querySelector('.fdown'); if (dn) { await F.handTo(dn); await F.handTap(); }
+    H.b.finger(0).classList.add('down'); NK.sound.back();
+    await F.say('Too many? The yellow arrow puts one down. Five.');
+    F.handHide(); H.set(0);
+    await F.say('Your turn. Show six on two hands.');
+    await U.answer0(F, { n: 6, H: H, ask: 'Show six. One whole hand, then one more.', praise: function () { return 'Yes! Six. Five and one more!'; },
+      explain: async function (F) { await F.say('Fill one whole hand. Then one more.'); } });
+  };
+  U.answer = async function (F, opts) {
+    if (opts.n > 5 && !U.twoTaught) { await U.teachTwo(F, opts.H); GAME.phase = 'busy'; F.lock(true); }
+    return U.answer0(F, opts);
+  };
+  /* show counting in your head, right where a game switches to "count by yourself" */
+  U.silentDemo = async function (F, kind) {
+    GAME.phase = 'demo'; F.lock(true); U.clear();
+    document.querySelectorAll('#hands .fg').forEach(function (f) { f.classList.add('down'); });   /* clear the last answer */
+    var els = U.line(3, 72).map(function (p, i) { return U.put(kind, p, U.itemW(3), i); });
+    await F.say('Now I count in my head. No voice.');
+    for (var i = 0; i < 3; i++) { await F.handTo(els[i]); await F.handTap(); els[i].classList.add('counted'); NK.sound.pop(); await F.wait(450); }
+    F.handHide(); await F.say('I counted three, in my head. Now you!'); U.clear();
+  };
+  U.answer0 = function (F, opts) {
     return new Promise(function (res) {
       var H = opts.H, misses = 0, btn = $('check');
       function ready() { btn.classList.toggle('dim', H.count() === 0); btn.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }

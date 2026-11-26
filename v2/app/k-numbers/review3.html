@@ -75,7 +75,7 @@
     id: 'u3-review', title: 'Review', rounds: 6,
     hero: '<svg viewBox="0 0 100 100"><use href="#nkPalm"/></svg><svg viewBox="0 0 100 100"><use href="#nkStar"/></svg>',
     init: function () { U.addArt(); H = U.hands($('hands')); H.lock(true); },
-    reset: function (F, again, slow) { if (!again) shown = {}; easy = slow ? 3 : 0; misses = 0; plan = [['peek', F.pick([2, 3])], ['next', F.pick([1, 2, 3])], ['peek', F.pick([4, 5])], ['next', F.pick([4, 5])], ['peek', F.pick([3, 4, 5])], ['next', F.pick([5, 6, 7])]]; },
+    reset: function (F, again, slow) { if (!again) shown = {}; easy = slow ? 3 : 0; misses = 0; plan = [['peek', F.pick([2, 3])], ['next', F.pick([1, 2])], ['peek', F.pick([4, 5])], ['next', F.pick([1, 2])], ['peek', F.pick([3, 4, 5])], ['next', F.pick([1, 2])]]; },
     endSay: function (s) { return s >= 2 ? 'You remember it all! Great review!' : 'Good try! Practice makes it stick.'; },
     /* easier path after two misses: small numbers and a longer peek */
     round: async function (F, i) {
@@ -85,7 +85,7 @@
       return first;
     },
     bonusSay: 'Bonus! Super quick!',
-    bonus: async function (F) { await peek(F, 5, 'dots', 900); await next(F, 7); }
+    bonus: async function (F) { await peek(F, 5, 'dots', 900); await next(F, 2);   /* answers stay at 5 or less: one hand, as Unit 1 taught */ }
   });
 })();
 </script>

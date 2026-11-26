@@ -94,7 +94,9 @@
       await F.say('I heard three. I stop!'); await F.handTo($('check')); await F.handTap();
       await F.yes(P.stones[2], 'Three! Yes!');
     },
-    bonus: function (F) { return round(F, 9, { from: 11, to: 20, t: 15 }); },
+    bonus: async function (F) {   /* island rule: the voice counts past ten once before he does */
+      GAME.phase = 'busy'; F.lock(true); P = U2.path($('path'), { from: 6, to: 15 }); await F.say('Listen to the new numbers first.'); await U2.countAlong(P, 0, 9);
+      return round(F, 9, { from: 6, to: 15, t: 13 }); },
     /* a missed round adds a short, easier round (1-5) right after it; the main rounds stay the same */
     round: async function (F, i) {
       var pl = i < 2 ? { from: 1, to: 5, t: [3, 5][i] } : { from: 1, to: 10, t: [6, 8, 10][i - 2] };
