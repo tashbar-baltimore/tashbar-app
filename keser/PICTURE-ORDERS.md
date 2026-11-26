@@ -30,3 +30,14 @@ All 8 arrived the same day and were checked by eye against the order and the rul
 | 6 | `keser-cast-malka.webp` | Library reference: Malka, Grades 6–8 | 1200 × 1200 | Same style, soft champagne-gold glow: Malka, a 12-year-old girl, tall, thin gold-framed glasses, long straight black hair with a navy velvet headband, navy pleated skirt below the knee and a white long-sleeved blouse with a high collar and a pearl button, holding a gold fountain pen, confident warm smile. Girl only. No words, letters or numbers anywhere. |
 | 7 | `keser-cast-ima.webp` | Library reference: Ima | 1200 × 1200 | Same style, soft rose glow, a bright frum kitchen behind her: Ima, a kind mother with a shoulder-length dark-brown sheitel covering all her hair, a modest rose-coloured dress below the knee with long sleeves, holding a tray of freshly braided challah, warm smile. Women only. No words, letters or numbers anywhere. |
 | 8 | `keser-cast-bubby.webp` | Library reference: Bubby | 1200 × 1200 | Same style, soft lilac glow, a cosy armchair behind her: Bubby, a grandmother with soft wrinkles and warm eyes, a silver snood with a small pearl band covering all her hair, a lilac long cardigan over a modest dress below the knee, holding a plate of rugelach, gentle smile. Women only. No words, letters or numbers anywhere. |
+
+## Order 2 (2026-11-26) · status: ARRIVED, all 8 checked and in the library
+HoS: "the crown looks very cheap ... if you need more pictures, use the pictures that ChatGPT is giving." Painted art to replace every shape drawn in code. No people.
+All 8 arrived the same day with see-through backgrounds and were checked by eye (no words, letters or symbols; kosher; no people). Only change: stray specks around the cut-out edges were removed. In use: the sky and the crown on the welcome page; in her world the sky, the stage, her crown (each subject's jewel lights up as she learns) and the five glass domes.
+
+| # | File name | Screen | Size | Prompt (short; the full prompts are in the order email) |
+|---|---|---|---|---|
+| 1 | `keser-world-sky` | sky behind her world and the welcome page | 2400 × 1200 | twilight plum and rose sky, clouds, glitter, far rose-crystal arches with pearl garlands |
+| 2 | `keser-crown` | her crown | 1200 × 1200, cut-out | rose-gold tiara, five pearls, pink diamond, lilac, mint and blue gems |
+| 3 | `keser-stage` | the round stage | 1600 × 900, cut-out | rose-quartz jewel-box stage, gold star-rose inlay, row of pearls |
+| 4–8 | `keser-place-kodesh`, `-reading`, `-math`, `-science`, `-writing` | the five places | 1200 × 1200, cut-out | jeweled glass domes: Shabbos candlesticks, Kiddush cup and covered challah; open storybook; crystal shapes; mint flask, microscope and atom; rose-gold pen, inkwell and quill |

@@ -104,21 +104,11 @@ const up = e => { if (!down || e.pointerId !== down.id) return; const dx = e.cli
 stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', () => { down = null; world && world.drag(0, true); });
 
 /* ---------- still cards, for computers that cannot draw 3D ---------- */
-const ICONS = {
-  kodesh: '<g fill="none" stroke="#FFF1B8" stroke-width="2.2" stroke-linejoin="round"><path d="M22 56h16l-3-6h-10zM30 50V36M26 36h8M44 56h16l-3-6h-10zM52 50V36M48 36h8"/></g><rect x="27" y="18" width="6" height="18" rx="1.5" fill="#fff"/><rect x="49" y="18" width="6" height="18" rx="1.5" fill="#fff"/><path d="M30 6c3 4 3 7 0 10-3-3-3-6 0-10zM52 6c3 4 3 7 0 10-3-3-3-6 0-10z" fill="#FFD27A"/>',
-  reading: '<path d="M40 22C30 15 18 16 10 19v34c8-3 20-4 30 3z" fill="#fff"/><path d="M40 22c10-7 22-6 30-3v34c-8-3-20-4-30 3z" fill="#FFE3F0"/><path d="M40 22v34" stroke="#FF5FA2" stroke-width="2"/><path d="M52 18v16l4-3 4 3V17" fill="#F5C451"/>',
-  math: '<rect x="10" y="36" width="22" height="22" rx="2" fill="#D9C2FF" stroke="#fff" stroke-width="1.5"/><path d="M48 58l12-30 12 30z" fill="#FF8FBF" stroke="#fff" stroke-width="1.5"/><circle cx="40" cy="20" r="11" fill="#BFF5EE" stroke="#fff" stroke-width="1.5"/>',
-  science: '<path d="M32 10h16M35 10v18L20 58c-1 3 1 5 4 5h32c3 0 5-2 4-5L45 28V10" fill="rgba(255,255,255,.25)" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M26 46h28l6 12c1 3-1 5-4 5H24c-3 0-5-2-4-5z" fill="#5FE3CF"/><circle cx="36" cy="40" r="2.5" fill="#fff"/><circle cx="44" cy="34" r="1.8" fill="#fff"/>',
-  writing: '<path d="M14 64c10-2 18-8 26-6s14 4 26-2" fill="none" stroke="#F5C451" stroke-width="2.5" stroke-linecap="round"/><g transform="rotate(40 44 30)"><rect x="40" y="2" width="9" height="38" rx="4" fill="#FF8FBF" stroke="#fff" stroke-width="1.2"/><rect x="40" y="26" width="9" height="4" fill="#F5C451"/><path d="M40 40h9l-4.5 12z" fill="#F5C451"/></g>',
-};
 function buildFlat() {
   const tr = document.querySelector('.flat .track'); tr.innerHTML = '';
   PLACES.forEach((p, i) => { const c = document.createElement('div'); c.className = 'place'; c.style.setProperty('--c', p.color);
-    c.innerHTML = '<div class="pic" style="background-image:url(' + p.pic + ')"></div><svg viewBox="0 0 80 70">' + ICONS[p.id] + '</svg>';
+    c.innerHTML = '<img class="dome" src="' + p.art + '" alt="">';
     c.onclick = e => { tapAt(e, p.color); if (i === S.focus) enter(); else go(i); }; tr.appendChild(c); });
-  const g = document.getElementById('flatgems'); g.innerHTML = '';
-  PLACES.forEach((p, i) => { const v = progress[p.id], x = 35 + i * 20;
-    g.insertAdjacentHTML('beforeend', v > 0 ? '<path d="M' + x + ' ' + (97 - 3 - v * 4) + 'l' + (3 + v * 4) + ' ' + (3 + v * 4) + '-' + (3 + v * 4) + ' ' + (3 + v * 4) + '-' + (3 + v * 4) + '-' + (3 + v * 4) + 'z" fill="' + p.color + '" stroke="#fff" stroke-width="1"/>' : '<circle cx="' + x + '" cy="97" r="3" fill="none" stroke="#FFF6D6" stroke-width="1.2"/>'); });
   document.querySelector('.flat .crown').onclick = e => { tapAt(e, '#F5C451'); chime(12); };
 }
 function flat() { html.classList.add('nogl'); S.gl = false; buildFlat(); show(); }

@@ -49,7 +49,7 @@ body.inside #room .card{ transform:none; }
 
 /* while the 3D world gets ready: a glowing crown, never a dark screen */
 #loading{ position:fixed; inset:0; z-index:8; display:grid; place-items:center; pointer-events:none; transition:opacity .8s var(--glide); }
-#loading svg{ width:min(34vw,150px); filter:drop-shadow(0 0 30px rgba(245,196,81,.7)); animation:breathe 1.6s ease-in-out infinite; }
+#loading img{ width:min(52vw,300px); filter:drop-shadow(0 0 30px rgba(245,196,81,.7)); animation:breathe 1.6s ease-in-out infinite; }
 body.ready #loading,.nogl #loading{ opacity:0; }
 @keyframes breathe{ 50%{ transform:scale(1.08); filter:drop-shadow(0 0 46px rgba(255,95,162,.8)) } }
 /* the sisters greet her when she arrives */
@@ -66,21 +66,20 @@ body.greeting .hud{ opacity:0; }
 /* the host girl inside each place */
 #room .host{ width:118px; height:144px; object-fit:cover; object-position:50% 12%; border-radius:50%; display:block; margin:-80px auto 10px; background:#fff1f7;
   box-shadow:0 0 0 4px #F5C451, 0 0 0 8px rgba(255,241,184,.35), 0 12px 40px rgba(255,95,162,.5); }
-.flat .place .pic{ position:absolute; inset:0; border-radius:inherit; background-size:cover; background-position:50% 18%; opacity:.9; }
 .flat .place{ position:relative; overflow:hidden; }
-.flat .place svg{ position:relative; width:42%; height:42%; align-self:end; margin-bottom:8%; }
-@media (prefers-reduced-motion: reduce){ #loading svg,#greet .frame::after{ animation:none } #greet .frame{ transition:none } }
+@media (prefers-reduced-motion: reduce){ #loading img,#greet .frame::after{ animation:none } #greet .frame{ transition:none } }
 /* no 3D on this computer: still cards instead (the same places, dots and button) */
 .flat{ display:none; position:fixed; left:0; right:0; top:16%; height:46%; z-index:2; pointer-events:none; }
 .nogl #scene{ display:none; }
+.nogl body{ background:linear-gradient(180deg,rgba(26,11,46,.15),rgba(26,11,46,.7)), url(/pics/keser-world-sky.webp) center 35%/cover no-repeat, var(--night); }
 .nogl .flat{ display:block; }
 .flat .track{ position:absolute; left:50%; top:0; height:100%; display:flex; gap:28px; transition:transform .6s var(--spring); }
 .flat .place{ pointer-events:auto; cursor:pointer; width:min(48vw,240px); height:100%; flex:none; border-radius:32px; display:grid; place-items:center;
   background:radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--c) 45%, transparent), transparent 70%), linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.04));
   border:1px solid rgba(255,241,184,.4); box-shadow:0 20px 60px rgba(20,0,40,.45), inset 0 1px 0 rgba(255,255,255,.3); transform:scale(.78); opacity:.5; transition:transform .6s var(--spring), opacity .4s; }
 .flat .place[aria-current="true"]{ transform:scale(1); opacity:1; box-shadow:0 20px 70px color-mix(in srgb, var(--c) 55%, transparent), inset 0 1px 0 rgba(255,255,255,.4); }
-.flat .place svg{ width:62%; height:62%; filter:drop-shadow(0 0 18px var(--c)); }
-.flat .crown{ position:fixed; left:50%; top:max(18px,3vh); width:120px; transform:translateX(-50%); filter:drop-shadow(0 0 22px rgba(245,196,81,.55)); pointer-events:auto; cursor:pointer; }
+.flat .place .dome{ width:86%; height:86%; object-fit:contain; filter:drop-shadow(0 0 18px var(--c)); }
+.flat .crown{ position:fixed; left:50%; top:max(10px,2vh); width:180px; transform:translateX(-50%); filter:drop-shadow(0 0 22px rgba(245,196,81,.55)); pointer-events:auto; cursor:pointer; }
 @media (max-width:600px){ .side{ display:none } .flat{ top:15% } #room .soon{ letter-spacing:.12em; font-size:13px; white-space:nowrap } #room .card{ padding:22px 26px 24px } }
 @media (max-height:560px){ .name .k-foil{ font-size:36px } .bottom{ gap:10px } }
 @media (prefers-reduced-motion: reduce){ .hud,#room,#room .card,.flat .track,.flat .place{ transition:none } .name.swap .k-foil,.name.swap .he{ animation:none } }
@@ -90,15 +89,11 @@ body.greeting .hud{ opacity:0; }
 <body class="intro">
 <canvas id="scene" aria-hidden="true"></canvas>
 <div id="stage" aria-hidden="true"></div>
-<div id="loading" aria-hidden="true"><svg viewBox="0 0 150 118"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1B8"/><stop offset=".45" stop-color="#F5C451"/><stop offset="1" stop-color="#C98A1E"/></linearGradient></defs>
-  <path d="M18 92 L24 34 L50 64 L75 16 L100 64 L126 34 L132 92 Z" fill="url(#lg)" stroke="#FFF6D6" stroke-width="2.5" stroke-linejoin="round"/><rect x="15" y="88" width="120" height="18" rx="9" fill="url(#lg)" stroke="#FFF6D6" stroke-width="2.5"/>
-  <circle cx="24" cy="31" r="7" fill="#FF5FA2"/><circle cx="126" cy="31" r="7" fill="#FF5FA2"/><path d="M75 4 l9 10 -9 10 -9 -10z" fill="#C49BFF"/></svg></div>
+<div id="loading" aria-hidden="true"><img src="/pics/keser-crown.webp" alt=""></div>
 <div id="greet" aria-hidden="true"><div class="frame"><img src="/pics/keser-cast-group.webp" alt=""></div><p class="k-foil">Welcome to your world</p></div>
 
 <div class="flat" aria-hidden="true">
-  <svg class="crown" viewBox="0 0 150 118"><defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1B8"/><stop offset=".45" stop-color="#F5C451"/><stop offset="1" stop-color="#C98A1E"/></linearGradient></defs>
-    <path d="M18 92 L24 34 L50 64 L75 16 L100 64 L126 34 L132 92 Z" fill="url(#fg)" stroke="#FFF6D6" stroke-width="2.5" stroke-linejoin="round"/>
-    <rect x="15" y="88" width="120" height="18" rx="9" fill="url(#fg)" stroke="#FFF6D6" stroke-width="2.5"/><g id="flatgems"></g></svg>
+  <img class="crown" src="/pics/keser-crown.webp" alt="">
   <div class="track"></div>
 </div>
 
