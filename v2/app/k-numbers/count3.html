@@ -42,7 +42,7 @@
     },
     round: async function (F, i) {
       var help = easy > 0, n = help ? F.pick([3, 4, 5]) : PLAN[i], line = help || i < 3; if (easy > 0) easy--;
-      if (i === 2 && !help) await F.say('Now you count by yourself!');
+      if (i === 2 && !help) { await U.silentDemo(F, 'siddur'); await F.say('Now you count by yourself!'); }
       if (i === 4 && !help) await F.say('New way! The books stay on the shelf.');
       /* the voice counts with him only in rounds 1-2, or as help after two misses; later he counts by himself (a soft pop per tap) */
       var first = await U.countRound(F, { n: n, kind: 'siddur', line: line, H: H, silent: !(i < 2 || help), stay: i === 4 && !help, intro: i < 3 || help || i === 4 });

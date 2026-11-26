@@ -82,7 +82,7 @@
     },
     round: async function (F, i) {
       var help = easy > 0, n = help ? F.pick([3, 4]) : PLAN[i]; if (easy > 0) easy--;
-      if (i === 2 && !help) await F.say('Count by yourself!');
+      if (i === 2 && !help) { await U.silentDemo(F, KINDS[i]); await F.say('Count by yourself!'); }
       var first = await play(F, { n: n, kind: KINDS[i], intro: i < 3 || help, silent: !(i < 2 || help) });
       if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
       return first;
