@@ -32,7 +32,7 @@ export default function setup(E, { struggled, unit }) {
   const tileHome = i => P ? new THREE.Vector3([1.5, -.2, -1.15][i], .5, 2.1) : new THREE.Vector3(2.3 - i * 1.55, .6, 1.9);   /* never in front of the sign's pole */
   E.onFrame(t => {
     if (shown) shown.rotation.y = Math.sin(t * 1.2) * .15;
-    tiles.forEach((tl, i) => { if (tl !== dragT && tl.visible && !tl.userData.busy) { tl.position.y = tileHome(i).y + Math.sin(t * 2 + i) * .05; } });
+    tiles.forEach((tl, i) => { if (tl !== dragT && tl.visible && !tl.userData.busy) { tl.position.y = tileHome(i).y + Math.sin(t * 2 + i) * .05; tl.lookAt(E.cam.position); }   /* each tile faces the boy, so Hei's gap always shows */ });
     const g = tiles.find(x => x.visible && x.userData.key === fixKey); glowT.material.opacity = help && g && !dragT ? .6 + Math.sin(t * 5) * .3 : 0; if (g) glowT.position.copy(g.position).add(new THREE.Vector3(0, 0, -.3));
   });
   /* the yes / no buttons (big, glossy, the same place every time) */
