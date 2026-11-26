@@ -31,6 +31,8 @@ if (window.TLCORE && TLCORE.units) TLCORE.units.add({
 
 **Keep it cold:** the unit check should not repeat the exact question he just answered in the lesson's Show me. Give each skill more than 3 check questions where you can, or add `items`.
 
+**Pre-check items of their own (`pre:'items'`):** a missed pre-check question shows the right answer. With `pre:'lessons'` that question is one of the lesson's Show me checks, so a boy who misses it meets the same question again as his "cold" check. To avoid that, set `pre:'items'` and mark one own item per skill `pre:true`: the pre-check asks only those, and the boss level never asks them (a skill with no pre item falls back to a lesson check question). First used by `C68.U61`.
+
 ## The unit project (its real task)
 A unit's real writing or hands-on task (prompt section 3, step 2) goes in `task`: a Writing Workshop task, for example "Model the moon's phases with a lamp and a ball, then tell what you saw". `TLCORE.units.err` refuses a task that `TLCORE.write.err` refuses.
 - **"Unit cleared!"** then shows **Start your project** and **Later**. Start opens his piece in the Workshop, and his draft is kept if he stops.

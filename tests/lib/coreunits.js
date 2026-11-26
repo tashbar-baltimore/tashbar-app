@@ -74,6 +74,12 @@ async function page(pg) {
       const tap = (u.items || []).filter(x => (x.type === 'evidence' && !Array.isArray(x.a)) || x.type === 'cloze');
       const longest = tap.filter(x => { const o = (x.type === 'cloze' ? x.o : x.p).map(String), k = x.type === 'cloze' ? o.indexOf(String(x.a)) : +x.a; return k >= 0 && o.every((t, i) => i === k || t.length < o[k].length); }).length;
       if (tap.length >= 4 && longest * 2 > tap.length && LONG_OLD.indexOf(u.id) < 0) bad.push(u.id + ': the right answer is the longest choice in ' + longest + ' of ' + tap.length + ' items (a boy who taps the longest answer passes)');
+      /* pre:'items' (gap C2a): a pre-check miss shows the right answer, so a pre item must never come back in the boss level, and the
+         pre-check must ask only pre items (or a lesson check for a skill that has none) */
+      if (u.pre === 'items') for (let r = 0; r < 6; r++) {
+        (U.questions(u, 'check') || []).forEach(q => { if (q.kind === 'kit' && q.act && q.act.pre) bad.push(u.id + ': the boss level asked a pre-check item (' + q.skill + ')'); });
+        (U.questions(u, 'pre') || []).forEach(q => { if (q.kind === 'kit' && q.act && !q.act.pre) bad.push(u.id + ': the pre-check asked a boss-level item (' + q.skill + ')'); });
+      }
     });
     return { bad: bad.filter((x, i, a) => a.indexOf(x) === i), units: U.list.length, lessonQs }; }, LONG_OLD).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 200)] }));
   live.bad.slice(0, 12).forEach(b => fails.push('live units: ' + b)); if (live.bad.length > 12) fails.push('live units: ... and ' + (live.bad.length - 12) + ' more');
