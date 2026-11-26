@@ -58,3 +58,9 @@ Unit 2 opens when Unit 1's mastery check is passed.
 
 ## What's next
 Unit 3: Vov, Zayin, Ches (ו ז ח), the first look-alike unit (ו/ז, ה/ח). It needs Detective and Letter Hunt made general, as Unit 2 did for the other games.
+
+## English picture words (Head of School, 2026-11-26)
+The boys' first language is English, so every picture now goes with the letter its **English** name starts with (a dog goes to Daled). The Hebrew picture words above (and in "For the rebbe") are no longer used.
+- Story: grapes (Gimmel), a donkey (Daled), a waving hand (Hei). Sound Match: bear, balloon (Beis); goat, gift, grapes (Gimmel); dog, donkey (Daled); house, horse (Hei).
+- Ches and Tzadik have no English word with their sound, so they use words every boy knows: challah and tzitzis. Alef and Ayin are quiet and have no picture.
+- **For the rebbe:** please confirm challah (Ches) and tzitzis (Tzadik) as the picture words, and that teaching "dog starts with d" now is fine (the map had first sounds with the nekudos).
