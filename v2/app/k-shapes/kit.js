@@ -177,7 +177,7 @@ export function startGame(cfg) {
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
-      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.4 })); b3.scale.setScalar(0.28); b3.position.set(0, BX.h * 0.45, BX.d / 2 + 0.18); b3.castShadow = true; g.add(b3);
+      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar(LK ? 0.42 : 0.28); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18)); b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (LK) {
       const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.42, BX.d / 2 + 0.07); lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed */
     } else {
