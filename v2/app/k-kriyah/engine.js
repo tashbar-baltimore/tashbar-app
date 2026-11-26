@@ -148,6 +148,17 @@ body{background:linear-gradient(#3fb4ff 0%,#8fd8ff 45%,#dff6ff 75%,#fff6d8 100%)
 #flat button{width:130px;height:150px;border-radius:30px;border:none;font-size:96px;line-height:1;font-family:"Noto Serif Hebrew","Times New Roman",serif;font-weight:800;color:#1f5fff;cursor:pointer;
  background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#e8f3ff 40%,#b9d8f5 100%);box-shadow:inset 0 -6px 10px #7aa9d655,0 7px 0 #6f9dc8,0 14px 22px #0b3a6640}
 #flat p{font-size:15px;max-width:460px;margin:0;background:#ffffffc0;padding:8px 14px;border-radius:14px}
+#rev{position:fixed;inset:0;display:none;z-index:8;background:radial-gradient(circle at 50% 45%,#ffffffee 0 38%,#eaf6ffd8 75%);align-items:center;justify-content:center;flex-direction:column;gap:26px;padding:20px}
+#rev.show{display:flex}
+#rev .row{display:flex;gap:22px;direction:rtl;flex-wrap:wrap;justify-content:center}
+#rev button{width:150px;height:170px;border-radius:34px;border:none;font-size:110px;line-height:1;font-family:"Noto Serif Hebrew","Times New Roman",serif;font-weight:800;color:#1f5fff;cursor:pointer;
+ background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#e8f3ff 40%,#b9d8f5 100%);box-shadow:inset 0 -6px 10px #7aa9d655,0 7px 0 #6f9dc8,0 14px 22px #0b3a6640;transition:transform .15s}
+#rev button:active{transform:translateY(4px)}
+#rev button.right{background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#eaffea 40%,#9fe0a6 100%);box-shadow:0 0 0 8px #7bd94a88,0 7px 0 #5fae62}
+#rev button.wrong{animation:revshake .45s}
+#rev .dots{display:flex;gap:10px}#rev .dots i{width:18px;height:18px;border-radius:50%;background:#d6e2ee}#rev .dots i.on{background:#ffcf3a}
+@keyframes revshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}75%{transform:translateX(12px)}}
+@media (max-width:700px){#rev button{width:100px;height:120px;font-size:76px;border-radius:26px}#rev .row{gap:12px}}
 @media (max-width:700px){#start{width:150px;height:150px}#start svg{width:70px;height:70px}.endbar .btn.big{width:100px;height:100px}.stars svg{width:80px;height:80px}.stars{gap:10px;padding:14px 18px}#prog{top:96px}#prog i{width:18px;height:18px}}
 `;
 const HAND = '<svg class="hand" id="hand" viewBox="0 0 64 64"><path d="M26 6c3 0 5 2 5 5v19l2-1c2-6 10-5 10 1l1-1c2-4 9-3 9 2v2c2-3 8-2 8 3v12c0 9-7 16-16 16h-6c-6 0-10-3-13-8L10 40c-2-4 2-8 6-5l5 5V11c0-3 2-5 5-5z" fill="#fff" stroke="#1d2b3a" stroke-width="3"/></svg>';
@@ -161,6 +172,7 @@ ${home ? `<button class="ui btn" id="home" aria-label="Back to the path">${ICON.
 <div class="ui endbar" id="endbar"></div>
 ${HAND}<div class="yay" id="yay"><div class="stars"></div></div>
 <div id="flat"></div>
+<div id="rev" aria-live="polite"><div class="dots"></div><div class="row"></div></div>
 <div class="note">The letter sounds are the computer voice for now; the rebbe's own recording will replace them.</div>`);
   $('#again').onclick = () => { sfx.pop(); again(); };
   if (home) $('#home').onclick = () => goPath();
@@ -235,7 +247,7 @@ export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5:
 export const KIND_BACKDROP = { mastery: 'classroom', bonus: 'beach', story: 'street', detective: 'street', hunt: null };   /* the sukkah hunt keeps its 3D world */
 export const backdropFor = (game, unitN) => game && 'bg' in game ? game.bg : game && game.kind in KIND_BACKDROP ? KIND_BACKDROP[game.kind] : UNIT_BACKDROP[unitN || (game && game.unit) || 1] || null;
 export let backdrop = null;
-export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `#8fd8ff url(art/bg/${name}.jpg) center 64% / cover no-repeat` : ''; }
+export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `radial-gradient(ellipse 70% 60% at 50% 58%, #ffffff40, #ffffff1a 70%, #ffffff10), url(art/bg/${name}.jpg) center 64% / cover no-repeat, #8fd8ff` : '';   /* a soft light veil: the painting stays, the letter stands out (RESEARCH.md: few distractions) */ }
 export function buildWorld({ trees = true, flowers = true, backdrop: bd = null } = {}) {
   if (bd) {   /* a painted scene behind; only a see-through ground that catches shadows, so the children and letters stand in it */
     setBackdrop(bd); const w = new THREE.Group(); scene.add(w); world.group = w;
@@ -354,13 +366,20 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
   const skull = mesh(new THREE.SphereGeometry(.34, 36, 28), skinM); skull.scale.set(1, .98, .96); head.add(skull);
   [-1, 1].forEach(s => { const e = mesh(new THREE.SphereGeometry(.07, 14, 10), skinM, s * .325, -.02, 0); e.scale.set(.5, 1, .8); head.add(e); });   /* ears */
   const ns = mesh(new THREE.SphereGeometry(.042, 14, 10), nose, 0, -.03, .33, false); ns.scale.set(1.1, .9, .9); head.add(ns);
-  const eyes = [];
-  [-.12, .12].forEach(x => { const e = new THREE.Group(); e.position.set(x, .045, .285); const sc = mesh(new THREE.SphereGeometry(.068, 18, 14), white, 0, 0, 0, false); sc.scale.set(.95, 1.05, .55); e.add(sc);
-    e.add(mesh(new THREE.SphereGeometry(.045, 16, 12), M(eye, { roughness: .2, clearcoat: 1 }), 0, -.005, .026, false)); e.add(mesh(new THREE.SphereGeometry(.026, 12, 10), dark, 0, -.005, .046, false));
-    e.add(mesh(new THREE.SphereGeometry(.014, 8, 6), white, .016, .02, .062, false)); head.add(e); eyes.push(e);
-    const br = mesh(new THREE.CapsuleGeometry(.013, .07, 4, 8), beard ? M(beard) : hairM, x, .14, .3, false); br.rotation.z = Math.PI / 2 + (x > 0 ? -.12 : .12); head.add(br);   /* eyebrows */
-    if (!beard) head.add(mesh(new THREE.SphereGeometry(.055, 12, 10), M(0xff8f8f, { transparent: true, opacity: .45 }), x * 1.65, -.08, .255, false)); });   /* rosy cheeks */
-  const sm = mesh(new THREE.TorusGeometry(.085, .019, 8, 20, Math.PI), M(0x9b3b3b, { roughness: .4 }), 0, -.09, .31, false); sm.rotation.z = Math.PI; head.add(sm);
+  /* kind cartoon eyes (HoS 2026-11-26: the people looked scary): big, tall eyes set low and close, a large iris that fills the eye
+     (only a thin edge of white, so they never stare), two soft shines, eyebrows lifted, and a wide warm smile */
+  const eyes = [], cheekM = M(0xff8f8f, { transparent: true, opacity: .42 });
+  [-.11, .11].forEach(x => { const e = new THREE.Group(); e.position.set(x, .0, .29); const sc = mesh(new THREE.SphereGeometry(.078, 20, 16), white, 0, 0, 0, false); sc.scale.set(.9, 1.18, .5); e.add(sc);
+    const ir = mesh(new THREE.SphereGeometry(.07, 20, 16), M(eye, { roughness: .35, clearcoat: .6 }), 0, -.006, .016, false); ir.scale.set(.9, 1.12, .62); e.add(ir);
+    const pu = mesh(new THREE.SphereGeometry(.042, 16, 12), dark, 0, -.01, .04, false); pu.scale.set(.95, 1.1, .6); e.add(pu);
+    const shine = M(0xffffff, { roughness: 1, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .6 }); [[-.024, .03, .018], [.022, -.034, .009]].forEach(([sx, sy, r]) => { const h = mesh(new THREE.CircleGeometry(r, 14), shine, sx, sy, .065, false); e.add(h); });   /* two shines */
+    head.add(e); eyes.push(e);
+    const br = mesh(new THREE.TorusGeometry(.055, .012, 6, 14, Math.PI * .7), beard ? M(beard) : hairM, x, .145, .3, false); br.rotation.z = Math.PI * .15; head.add(br);   /* soft, lifted eyebrows */
+    const ck = mesh(new THREE.SphereGeometry(.058, 12, 10), cheekM, x * 1.6, beard ? -.06 : -.085, beard ? .27 : .258, false); ck.scale.set(1, .7, .5); head.add(ck); });   /* rosy cheeks */
+  const sm = mesh(new THREE.TorusGeometry(.09, .02, 8, 22, Math.PI), M(0xb5454a, { roughness: .4 }), 0, -.11, .3, false); sm.rotation.z = Math.PI; head.add(sm);   /* a wide, warm smile */
+  const tongue = mesh(new THREE.SphereGeometry(.07, 16, 8, 0, Math.PI * 2, Math.PI * .5, Math.PI * .5), M(0xc7525a, { roughness: .5 }), 0, -.115, .292, false); tongue.scale.set(1.1, .62, .4); head.add(tongue);   /* an open, happy mouth */
+  ns.position.y = -.07; ns.scale.set(.9, .75, .8);
+  if (!beard && !woman) { head.scale.setScalar(1.1); head.position.y = 1.35; }   /* a child's head is a little bigger: rounder and softer */
   /* hair */
   if (woman) { const h = mesh(new THREE.SphereGeometry(.375, 30, 20, 0, Math.PI * 2, 0, Math.PI * .5), hairM, 0, .1, -.04); h.scale.set(1.05, 1.05, 1.02); head.add(h);
     head.add(mesh(new THREE.CapsuleGeometry(.21, .22, 6, 14), hairM, 0, -.2, -.15)); [-1, 1].forEach(sd => head.add(mesh(new THREE.CapsuleGeometry(.1, .3, 6, 12), hairM, sd * .31, -.14, -.02)));
@@ -371,7 +390,7 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
   if (hat) { head.add(mesh(new THREE.CylinderGeometry(.47, .47, .03, 32), dark, 0, .22, 0)); head.add(mesh(new THREE.CylinderGeometry(.27, .3, .3, 28), dark, 0, .37, 0)); head.add(mesh(new THREE.CylinderGeometry(.302, .302, .05, 28), M(0x0d1420), 0, .25, 0)); }
   else if (!woman) { const k = mesh(new THREE.SphereGeometry(.25, 28, 12, 0, Math.PI * 2, 0, Math.PI / 2.4), M(kippah, { roughness: .45, clearcoat: .4 }), 0, .21, -.04); k.rotation.x = -.25; head.add(k); }
   if (beard) { const bm = M(beard, { roughness: .85, clearcoat: 0 }); const bd = mesh(new THREE.SphereGeometry(.3, 26, 18, 0, Math.PI * 2, Math.PI * .6, Math.PI * .4), bm, 0, -.02, .07); bd.scale.set(1.0, 1.5, 1); head.add(bd);
-    const mu = mesh(new THREE.CapsuleGeometry(.03, .14, 4, 10), bm, 0, -.065, .315, false); mu.rotation.z = Math.PI / 2; head.add(mu); sm.position.set(0, -.115, .34); sm.scale.set(.55, .45, .55); }   /* a small smile under the moustache */
+    const mu = mesh(new THREE.CapsuleGeometry(.028, .13, 4, 10), bm, 0, -.115, .315, false); mu.rotation.z = Math.PI / 2; head.add(mu); sm.position.set(0, -.175, .372); sm.scale.set(.7, .55, .6); sm.material = M(0xd4636a, { roughness: .4 }); tongue.visible = false; }   /* a small smile under the moustache */
   b.userData = { armR, armL, head, eyes, legL, legR, mood: 'calm', blinkAt: 2 + Math.random() * 3 };
   onFrame(t => { const u = b.userData; if (!b.visible) return;
     if (t > u.blinkAt) { u.eyes.forEach(e => e.scale.y = .1); if (t > u.blinkAt + .12) { u.eyes.forEach(e => e.scale.y = 1); u.blinkAt = t + 2.5 + Math.random() * 3; } }
@@ -487,13 +506,13 @@ let sparkTex; const sparks = [], confs = []; let confGeo; const confCols = [0xff
 export function sparkle(pos, n = 18, spread = 1) { sparkTex = sparkTex || starTex(); for (let i = 0; i < n; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sparkTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
   s.position.copy(pos); const v = new THREE.Vector3((Math.random() - .5), (Math.random() - .2), (Math.random() - .5)).normalize().multiplyScalar(.03 + Math.random() * .06 * spread); s.userData = { v, life: 50 + Math.random() * 30 }; s.scale.setScalar(.12 + Math.random() * .16); scene.add(s); sparks.push(s); } }
 export function confetti(pos, n = 60) { confGeo = confGeo || new THREE.PlaneGeometry(.12, .07); for (let i = 0; i < n; i++) { const m = new THREE.Mesh(confGeo, new THREE.MeshStandardMaterial({ color: confCols[i % 6], side: THREE.DoubleSide, roughness: .4, metalness: .3 }));
-  m.position.copy(pos); m.userData = { v: new THREE.Vector3((Math.random() - .5) * .16, .08 + Math.random() * .14, (Math.random() - .5) * .1), r: new THREE.Vector3(Math.random() * .3, Math.random() * .3, Math.random() * .3), life: 110 }; scene.add(m); confs.push(m); } }
+  m.position.copy(pos); m.userData = { v: new THREE.Vector3((Math.random() - .5) * .16, .08 + Math.random() * .14, (Math.random() - .5) * .1), r: new THREE.Vector3(Math.random() * .3, Math.random() * .3, Math.random() * .3), life: 80 }; scene.add(m); confs.push(m); } }
 function stepParticles() {
   for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.position.add(s.userData.v); s.userData.v.multiplyScalar(.96); s.material.opacity = Math.min(1, s.userData.life / 25); s.material.rotation += .05; if (--s.userData.life <= 0) { scene.remove(s); s.material.dispose(); sparks.splice(i, 1); } }
   for (let i = confs.length - 1; i >= 0; i--) { const c = confs[i]; c.position.add(c.userData.v); c.userData.v.y -= .004; c.userData.v.x *= .99; c.rotation.x += c.userData.r.x; c.rotation.y += c.userData.r.y; if (--c.userData.life <= 0) { scene.remove(c); c.material.dispose(); confs.splice(i, 1); } }
 }
 /* joy: chime, sparkles, confetti (well under 2 seconds) */
-export function joy(pos, big = false) { sfx.chime(); sparkle(pos, big ? 30 : 20, 1.2); confetti(pos, big ? 80 : 50); }
+export function joy(pos, big = false) { sfx.chime(); sparkle(pos, big ? 22 : 12, 1.2); confetti(pos, big ? 45 : 22); }   /* short and light, so his eyes come back to the letter */
 
 /* ---------------- tweens ---------------- */
 const tweens = []; export const ease = { lin: t => t, out: t => 1 - Math.pow(1 - t, 3), inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, back: t => { const c = 1.7; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); } };
@@ -549,3 +568,56 @@ export function flatFallback(keys = ['alef', 'beis', 'veis']) {
   f.querySelectorAll('button').forEach(b => b.onclick = () => say(nameLine(b.dataset.k)));
   say('Tap a letter to hear it.');
 }
+
+/* ---------------- "Remember these?": spaced review at the end of a game (RESEARCH.md, gain 1) ----------------
+   Before the stars, three quick "hear it, tap it" questions about letters from EARLIER units, chosen by spacing:
+   a letter he got wrong comes back first, then the ones he hasn't seen for longest. Practice only: it never costs a star.
+   Every answer here and in the mastery check is remembered on his device, per letter (save.letters). */
+export function noteLetter(k, right) { const s = loadSave(); s.letters = s.letters || {}; const m = s.letters[k] || { r: 0, w: 0, at: 0 };
+  if (right) m.r++; else { m.w++; m.lastWrong = Date.now(); } m.at = Date.now(); m.ok = right; s.letters[k] = m; writeSave(s); }
+const REV_LOOK = { beis: ['veis', 'kaf'], veis: ['beis'], gimmel: ['nun'], daled: ['reish'], hei: ['ches', 'kuf'], vov: ['zayin'], zayin: ['vov'], ches: ['hei'], tes: ['mem'], kaf: ['chaf', 'beis', 'pei'], chaf: ['kaf'], mem: ['tes'], nun: ['gimmel'], pei: ['fei', 'kaf'], fei: ['pei'], reish: ['daled'], kuf: ['hei'] };
+const REV_SAME = { vov: 'veis', veis: 'vov', chaf: 'ches', ches: 'chaf', alef: 'ayin', ayin: 'alef', samech: 'sin', sin: 'samech', kaf: 'kuf', kuf: 'kaf', tes: 'tav', tav: 'tes', sav: 'samech' };
+export function reviewPicks(known, n = 3) {
+  const L = loadSave().letters || {}, now = Date.now();
+  const score = k => { const m = L[k]; if (!m) return 1e12; return (m.ok === false ? 2e12 : 0) + (m.w > m.r ? 1e11 : 0) + (now - (m.at || 0)); };   /* missed last time first, then weaker, then not seen for longest */
+  const order = known.slice().sort(() => Math.random() - .5).sort((a, b) => score(b) - score(a));
+  const out = []; for (const k of order) { if (out.length >= n) break; if (out.some(o => REV_SAME[o] === k)) continue; out.push(k); }
+  return out;
+}
+export async function quickReview(unit, game) {
+  if (!unit || !unit.known || !unit.known.length || !game || game.mastery || game.bonus || /^story/.test(game.kind)) return;
+  const pool = [...unit.known, ...unit.letters], picks = reviewPicks(unit.known), box = $('#rev'), row = box.querySelector('.row'), dots = box.querySelector('.dots');
+  dots.innerHTML = picks.map(() => '<i></i>').join(''); box.classList.add('show'); document.body.dataset.review = 1;
+  await say('Remember these?');
+  for (let qi = 0; qi < picks.length; qi++) {
+    const k = picks[qi], others = [];
+    (REV_LOOK[k] || []).filter(o => pool.includes(o)).slice(0, 1).forEach(o => others.push(o));   /* its look-alike, if he knows it */
+    for (const c of pool.slice().sort(() => Math.random() - .5)) if (others.length < 2 && c !== k && !others.includes(c) && REV_SAME[k] !== c && !others.some(o => REV_SAME[o] === c)) others.push(c);
+    const set = [k, ...others].sort((a, b) => AB(a) - AB(b));   /* right to left in Alef-Beis order */
+    row.innerHTML = set.map(c => `<button data-k="${c}" aria-label="${LETTERS[c].name}">${FLAT[c]}</button>`).join('');
+    let firstTry = true;
+    await new Promise(res => {
+      const btns = [...row.querySelectorAll('button')];
+      window.__review = { want: k, at: Object.fromEntries(btns.map(b => { const r = b.getBoundingClientRect(); return [b.dataset.k, [r.x + r.width / 2, r.y + r.height / 2]]; })) };
+      let busy = true; say('Tap ' + LETTERS[k].name + '.').then(() => { busy = false; window.__review.ready = 1; });
+      btns.forEach(b => b.onclick = async () => { if (busy) return; const c = b.dataset.k;
+        if (c === k) { busy = true; b.classList.add('right'); sfx.chime(); if (firstTry) noteLetter(k, true); dots.children[qi].classList.add('on');
+          await say(k === 'alef' || k === 'ayin' ? [LETTERS[k].name + '! ' + LETTERS[k].name + ' is quiet.'] : [LETTERS[k].name + '! ' + LETTERS[k].name + ' says', S(LETTERS[k].snd)]); res(); }
+        else { busy = true; sfx.boop(); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); if (firstTry) noteLetter(k, false); firstTry = false;
+          const r = btns.find(x => x.dataset.k === k); r.classList.add('right');
+          await say('That is ' + LETTERS[c].name + '. This is ' + LETTERS[k].name + '.'); r.classList.remove('right'); busy = false; } });
+    });
+    window.__review = null; await wait(250);
+  }
+  box.classList.remove('show'); delete document.body.dataset.review;
+}
+/* "Say it with me" (curriculum/k-kriyah/RESEARCH.md, gain 2): saying a letter out loud helps it stick (the production effect).
+   The voice says the name, then waits a moment for him to say it too, then says it again with him. */
+export async function sayWithMe(key) {
+  const L = LETTERS[key], name = L.name;
+  document.body.dataset.sayIt = key;
+  await say('Say it with me: ' + name + '!'); await wait(1300);
+  sfx.pop && sfx.pop(); await say(quietLetter(key) ? name + '! Quiet!' : [name + '!', S(L.snd)]);
+  delete document.body.dataset.sayIt;
+}
+const quietLetter = k => k === 'alef' || k === 'ayin';
