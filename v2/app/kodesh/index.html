@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kodesh · Chumash · Tashbar Learning 2.0</title>
+<link rel="stylesheet" href="/kodesh/shared/kit.css">
+<script src="/kodesh/shared/kit.js"></script>
+<style>
+/* 2.0 KODESH page: the Chumash & Timeline Lab as six separate daily items (HoS request 2026-11-26). Starts at the grade 2 level.
+   Each item is its own page; a boy does one short step in each one a day. Progress is kept on this device (localStorage "clab:device"). */
+html,body{margin:0;background:#F6F4FF;color:#1E1B4B;font-family:'Nunito',system-ui,sans-serif}
+*{box-sizing:border-box}
+.kd-top{display:flex;align-items:center;gap:10px;min-height:68px;padding:12px 16px;background:#fff;border-bottom:1.5px solid #E6E1FA}
+.kd-top .tlk-at-tl{position:static}
+.kd-top h1{flex:1;min-width:0;margin:0;font:800 20px/1.2 'Fredoka','Nunito',sans-serif}
+.kd-top h1 small{display:block;font-size:14px;font-weight:600;color:#4B4778}
+.kd-wrap{max-width:1000px;margin:0 auto;padding:16px;display:grid;gap:14px}
+.kd-card{background:#fff;border:1.5px solid #E6E1FA;border-radius:20px;padding:18px;display:grid;gap:10px}
+.kd-card h2{margin:0;font:800 22px/1.25 'Fredoka','Nunito',sans-serif}
+.kd-card p{margin:0;font-size:17px;line-height:1.45}
+.kd-bar{height:12px;border-radius:99px;background:#EEEAFB;overflow:hidden}.kd-bar i{display:block;height:100%;background:#1E9E5A;border-radius:99px}
+.kd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.kd-item{min-height:150px}
+.kd-item .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;color:#fff;width:100%}
+.kd-item .hd .ic{font-size:34px;line-height:1}
+.kd-item .hd .he{font-family:'Frank Ruhl Libre','SBL Hebrew','Times New Roman',serif;font-size:24px;direction:rtl}
+.kd-item .b{display:grid;gap:6px;padding:14px 16px;width:100%}
+.kd-item .n{font-size:13px;font-weight:800;color:#4B4778;text-transform:uppercase;letter-spacing:.04em}
+.kd-item b{font-size:19px}
+.kd-item small{color:#4B4778;font-size:14px;line-height:1.35}
+.c-sh{background:#0f7a6c}.c-ml{background:#1d6fd8}.c-ps{background:#c2410c}.c-tr{background:#b42335}.c-pw{background:#5b2a86}.c-tl{background:#1f4e8c}
+</style>
+</head>
+<body>
+<div class="kd-top" id="kd-top"></div>
+<main class="kd-wrap" id="kd"></main>
+<script>
+(function(){
+ var ITEMS=[
+  {k:'ml',url:'/kodesh/milim/',ic:'📖',he:'מִלִּים',t:'Milim',p:'The words that come again and again in the Chumash. Five new words at a time.'},
+  {k:'sh',url:'/kodesh/shorashim/',ic:'🌱',he:'שָׁרָשִׁים',t:'Shorashim',p:'The 3-letter roots that many words grow from. Five at a time.'},
+  {k:'ps',url:'/kodesh/prefixes/',ic:'🧩',he:'אוֹתִיּוֹת הַשִּׁמּוּשׁ',t:'Prefixes & Suffixes',p:'The letters stuck to the front and the end of a word, and what they mean.'},
+  {k:'tr',url:'/kodesh/stop-signs/',ic:'🛑',he:'טְעָמִים',t:'Stop Signs',p:'The trop stop signs, and how they break a pasuk into parts.'},
+  {k:'pw',url:'/kodesh/pasuk/',ic:'🛠️',he:'פָּסוּק',t:'Pasuk Workshop',p:'Put it all together: learn a real pasuk on your own, word by word.'},
+  {k:'tl',url:'/kodesh/timeline/',ic:'⏳',he:'צִיר הַזְּמַן',t:'Timeline',p:'From Creation to today: which came first? In English or in Hebrew.'}];
+ var T=window.TLK, young=T.young(2);
+ function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+ function today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+ var P={}; try{ P=JSON.parse(localStorage.getItem('clab:device')||'{}')||{}; }catch(e){}
+ var did=(P.day&&P.day.d===today()&&P.day.did)||{};
+ var n=ITEMS.filter(function(x){ return did[x.k]; }).length;
+ document.getElementById('kd-top').innerHTML=T.home('data-go="home"','',young)+'<h1>Kodesh · Chumash<small>Grade 2</small></h1>';
+ document.getElementById('kd').innerHTML=
+  '<div class="kd-card"><h2>'+(n===6?'All 6 done today! Well done!':'Today: your 6 Chumash lessons')+'</h2>'+
+  '<p>Every day, do one short lesson in each of the six. Each one takes you a step further.</p>'+
+  '<div style="display:flex;align-items:center;gap:10px">'+T.pill('prog',n+' of 6 done today')+'<div class="kd-bar" style="flex:1"><i style="width:'+Math.round(n/6*100)+'%"></i></div></div></div>'+
+  '<div class="kd-grid">'+ITEMS.map(function(x,i){
+   return '<button type="button" class="tlk tlk-tile kd-item" data-url="'+x.url+'" aria-label="'+esc(x.t)+(did[x.k]?', done today':'')+'">'+
+    '<span class="hd c-'+x.k+'"><span class="ic" aria-hidden="true">'+x.ic+'</span><span class="he">'+x.he+'</span></span>'+
+    '<span class="b"><span class="n">'+(i+1)+' of 6</span><b>'+esc(x.t)+'</b><small>'+esc(x.p)+'</small>'+(did[x.k]?T.pill('prog','Done today ✓'):T.pill('now','Today'))+'</span></button>';
+  }).join('')+'</div>';
+ document.body.addEventListener('click',function(e){ var b=e.target.closest('[data-url],[data-go]'); if(!b) return; location.href=b.dataset.url||'/'; });
+})();
+</script>
+<noscript>This page needs JavaScript.</noscript>
+</body>
+</html>

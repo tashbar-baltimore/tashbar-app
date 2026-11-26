@@ -24,6 +24,7 @@ The HoS decides the order. The list grows as pieces are found.
 | Money (T$), store, canteen, prizes | Money.js, Store.js, Canteen.js | Not looked at yet | |
 | Arena, class mode, teacher mode | Arena.js, ClassMode.html, TeacherMode.js | Not looked at yet | |
 | Pathfinder (several versions) | Pathfinder*.js | Not looked at yet | Many versions overlap; pick one. |
+| Chumash & Timeline Lab (its own curriculum) | ChumashLab.html, ChumashLabData.html | Moving now | In 2.0 as **Kodesh · Chumash** (`v2/app/kodesh/`): six separate items, each its own page (Milim, Shorashim, Prefixes & Suffixes, Stop Signs, Pasuk Workshop, Timeline). Part of the daily plan: each item opens with "Today's lesson", one short step a day, and the Kodesh page shows which of the six are done today. Starts at the grade 2 level (5 words a group, big Home/Back buttons). No sign-in yet; progress kept on the device. Waits for an approver's yes. Kodesh: rebbe review applies. |
 | Block Builders | BlockBuilders*.html | Not looked at yet | |
 | Music, jokes, Simcha pages, themes | Music.html, JokeJar.html, Simcha*.html, Theme.html | Not looked at yet | |
 | Departments, School Builder, curriculum tools | Dept*.js, SchoolBuilder.js, Curriculum*.js | Not looked at yet | |
