@@ -50,7 +50,7 @@ body.inside #room{ opacity:1; pointer-events:auto; }
 .crowns img:nth-child(1){ rotate:-6deg; transition-delay:.15s } .crowns img:nth-child(2){ transition-delay:.3s } .crowns img:nth-child(3){ rotate:6deg; transition-delay:.45s }
 body.inside.kodesh .crowns img{ opacity:1; transform:none; }
 @media (max-width:600px){ .crowns img{ height:34vh } .brand{ width:56px } }
-#room .card{ text-align:center; padding:26px 44px 30px; border-radius:30px; background:linear-gradient(160deg,rgba(70,20,90,.62),rgba(30,6,48,.55));
+#room .card{ text-align:center; padding:26px 44px 30px; border-radius:30px; background:linear-gradient(160deg,color-mix(in srgb,var(--c,#5D2B88) 58%,rgba(30,6,48,.6)),rgba(30,6,48,.62));
   border:1px solid rgba(246,227,176,.4); box-shadow:0 30px 80px rgba(20,0,40,.5), inset 0 1px 0 rgba(255,255,255,.35);
   backdrop-filter:blur(16px) saturate(1.5); -webkit-backdrop-filter:blur(16px) saturate(1.5); transform:translateY(30px) scale(.96); transition:transform .7s var(--spring); }
 body.inside #room .card{ transform:none; }
@@ -73,17 +73,21 @@ body.greeting .hud{ opacity:0; }
   box-shadow:0 0 0 3px #D4AA50, 0 0 0 7px rgba(246,227,176,.35), 0 24px 80px rgba(140,80,200,.45); transform:scale(.92) translateY(14px); transition:transform 1s var(--spring); }
 #greet.on .frame{ transform:none; }
 #greet .frame img{ width:100%; height:100%; object-fit:cover; display:block; }
+/* the sisters' picture waits for the Keser uniform (picture order 4); the Three Crowns greet her instead */
+#greet .frame.three{ display:flex; gap:3%; justify-content:center; background:radial-gradient(ellipse,#5D2B88,#2A0F45); padding:3%; box-sizing:border-box; }
+#greet .frame.three img{ width:auto; height:100%; object-fit:contain; border-radius:6px; box-shadow:0 0 0 1.5px #D4AA50, 0 8px 20px rgba(0,0,0,.4); }
 #greet .frame::after{ content:""; position:absolute; inset:0; background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%); background-size:300% 100%; animation:k-shine 2.6s ease-in-out infinite; }
 #greet .k-foil{ margin:0; font-size:clamp(30px,4.6vw,52px); text-align:center; }
 /* the host girl inside each place */
-#room .host{ width:118px; height:144px; object-fit:cover; object-position:50% 12%; border-radius:50%; display:block; margin:-80px auto 10px; background:#fff1f7;
-  box-shadow:0 0 0 4px #D4AA50, 0 0 0 8px rgba(246,227,176,.35), 0 12px 40px rgba(140,80,200,.5); }
+#room .host{ width:118px; height:118px; object-fit:contain; padding:16px 12px 20px; box-sizing:border-box; border-radius:50%; display:block; margin:-78px auto 10px;
+  background:radial-gradient(circle at 50% 40%, color-mix(in srgb,var(--c,#7A44AA) 70%,#fff), color-mix(in srgb,var(--c,#5D2B88) 85%,#000));
+  box-shadow:0 0 0 4px #D4AA50, 0 0 0 8px rgba(246,227,176,.35), 0 12px 40px color-mix(in srgb,var(--c,#5D2B88) 70%,transparent); }   /* the Keser crown in the place's house color */
 .flat .place{ position:relative; overflow:hidden; }
 @media (prefers-reduced-motion: reduce){ .brand{ animation:none } .crowns img,#greet .glogo{ transition:none } #loading img,#greet .frame::after{ animation:none } #greet .frame{ transition:none } }
 /* no 3D on this computer: still cards instead (the same places, dots and button) */
 .flat{ display:none; position:fixed; left:0; right:0; top:16%; height:46%; z-index:2; pointer-events:none; }
 .nogl #scene{ display:none; }
-.nogl body{ background:radial-gradient(ellipse at 50% 30%, #7A44AA 0, #5D2B88 35%, #2A0F45 80%), var(--night); }
+.nogl body{ background:radial-gradient(ellipse at 12% 18%, rgba(163,38,63,.55), transparent 42%), radial-gradient(ellipse at 88% 16%, rgba(47,95,208,.5), transparent 44%), radial-gradient(ellipse at 50% 108%, rgba(31,143,92,.45), transparent 48%), radial-gradient(ellipse at 50% 38%, #8A55BC 0, #5D2B88 32%, #3A1660 62%, #1C0A30 100%), var(--night); }
 .nogl .flat{ display:block; }
 .flat .track{ position:absolute; left:50%; top:0; height:100%; display:flex; gap:28px; transition:transform .6s var(--spring); }
 .flat .place{ pointer-events:auto; cursor:pointer; width:min(48vw,240px); height:100%; flex:none; border-radius:32px; display:grid; place-items:center;
@@ -103,7 +107,7 @@ body.greeting .hud{ opacity:0; }
 <canvas id="scene" aria-hidden="true"></canvas>
 <div id="stage" aria-hidden="true"></div>
 <div id="loading" aria-hidden="true"><img src="/pics/keser-logo.webp" alt=""></div>
-<div id="greet" aria-hidden="true"><img class="glogo" src="/pics/keser-logo.webp" alt="Keser Academy for Girls"><div class="frame"><img src="/pics/keser-cast-group.webp" alt=""></div><p class="k-foil">Welcome to your world</p></div>
+<div id="greet" aria-hidden="true"><img class="glogo" src="/pics/keser-logo.webp" alt="Keser Academy for Girls"><div class="frame three"><img src="/pics/keser-keter-torah.webp" alt=""><img src="/pics/keser-keter-kehuna.webp" alt=""><img src="/pics/keser-keter-malchut.webp" alt=""></div><p class="k-foil">Welcome to your world</p></div>
 
 <div class="flat" aria-hidden="true">
   <img class="crown" src="/pics/keser-logo-mark.webp" alt="">
@@ -126,7 +130,7 @@ body.greeting .hud{ opacity:0; }
 <div id="room" aria-hidden="true">
   <div class="crowns" id="crowns" aria-hidden="true"><img src="/pics/keser-keter-torah.webp" alt=""><img src="/pics/keser-keter-kehuna.webp" alt=""><img src="/pics/keser-keter-malchut.webp" alt=""></div>
   <button class="k-icon back" id="back" aria-label="Back to my world"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-  <div class="card"><img class="host" id="roomHost" alt=""><p class="k-foil" id="roomName"></p><p class="soon" id="roomSoon">✦ Lessons coming soon ✦</p><button class="k-btn lab" id="openLab" hidden><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span id="labName">Chumash Lab</span></button></div>
+  <div class="card"><img class="host" id="roomHost" src="/pics/keser-logo-mark.webp" alt="Keser"><p class="k-foil" id="roomName"></p><p class="soon" id="roomSoon">✦ Lessons coming soon ✦</p><button class="k-btn lab" id="openLab" hidden><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span id="labName">Chumash Lab</span></button></div>
 </div>
 <canvas id="fx" aria-hidden="true"></canvas>
 <script type="module" src="world.js"></script>

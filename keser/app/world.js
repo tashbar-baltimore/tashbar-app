@@ -68,7 +68,7 @@ function go(i, quiet) {
 }
 function enter() {
   if (S.entered) return; S.entered = true; const p = PLACES[S.focus];
-  chime(p.note); chime(p.note + 7, true); const lab = !!p.lab; body.classList.toggle('kodesh', p.id === 'kodesh'); $('openLab').hidden = !lab; $('roomSoon').hidden = lab; if (lab) $('labName').textContent = p.labName; setName($('roomName'), p); $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
+  chime(p.note); chime(p.note + 7, true); const lab = !!p.lab; body.classList.toggle('kodesh', p.id === 'kodesh'); $('openLab').hidden = !lab; $('roomSoon').hidden = lab; if (lab) $('labName').textContent = p.labName; setName($('roomName'), p); $('room').style.setProperty('--c', p.color);   /* the card and its crown wear the place's Keser house color */ body.classList.add('in');
   world && world.enter(S.focus); setTimeout(() => { if (S.entered) { body.classList.add('inside'); $('room').setAttribute('aria-hidden', 'false'); $('back').focus({ preventScroll: true }); } }, calm ? 50 : 750);
 }
 function back() {

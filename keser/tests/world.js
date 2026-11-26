@@ -39,8 +39,8 @@ module.exports = async (browser) => {
       if (!(s.prog.kodesh > 0 && s.prog.general > 0 && s.prog.timeline === 0)) fails.push('Keser world (' + tag + '): the made-up girl\'s progress did not load');
       if (!(await nameIs(pg, KODESH))) fails.push('Keser world (' + tag + '): she does not start at קודש');
       if (!(await pg.evaluate(() => { const e = document.getElementById('placeName'); return e.getAttribute('lang') === 'he' && e.getAttribute('dir') === 'rtl'; }))) fails.push('Keser world (' + tag + '): קודש is not marked as Hebrew, right to left');
-      const gr = await pg.evaluate(() => { const g = document.getElementById('greet'), i = g.querySelector('img'); return { on: g.classList.contains('on'), pic: i.complete && i.naturalWidth > 0 }; });
-      if (!gr.pic) fails.push('Keser world (' + tag + '): the four sisters\' welcome picture did not load');
+      const gr = await pg.evaluate(() => { const g = document.getElementById('greet'), im = [...g.querySelectorAll('img')]; return { on: g.classList.contains('on'), pic: im.length === 4 && im.every(i => i.complete && i.naturalWidth > 0) }; });
+      if (!gr.pic) fails.push('Keser world (' + tag + '): the welcome (the Keser logo and the Three Crowns) did not load');
       await pg.waitForTimeout(1000); await check(pg, tag);
       await pg.screenshot({ path: path.join(shots, 'keser-world-' + tag + '.png') });
       await pg.click('#enter', { trial: true }).catch(() => fails.push('Keser world (' + tag + '): the Enter button cannot be tapped'));
@@ -51,12 +51,12 @@ module.exports = async (browser) => {
         await pg.keyboard.press('ArrowRight'); if (!(await nameIs(pg, KODESH))) fails.push('Keser world (' + tag + '): the right key does not go round to קודש'); }
       else { await pg.mouse.move(300, 380); await pg.mouse.down(); await pg.mouse.move(200, 382, { steps: 4 }); await pg.mouse.move(90, 384, { steps: 4 }); await pg.mouse.up();
         if (!(await nameIs(pg, GENERAL))) fails.push('Keser world (phone): a swipe to the left does not glide to the next place'); }
-      /* each place: its name, its host, and (קודש and Timeline) the button into the lab */
-      for (const [n, name, host, lab] of [[1, KODESH, 'ima', 'Chumash Lab'], [2, GENERAL, 'ayelet', null], [3, TIMELINE, 'malka', 'Which came first?']]) {
+      /* each place: its name, its card in its Keser house color with the Keser crown, and (קודש and Timeline) the button into the lab */
+      for (const [n, name, host, lab] of [[1, KODESH, '#A3263F', 'Chumash Lab'], [2, GENERAL, '#2F5FD0', null], [3, TIMELINE, '#1F8F5C', 'Which came first?']]) {
         await pg.click('#dots button:nth-child(' + n + ')'); if (!(await nameIs(pg, name))) fails.push('Keser world (' + tag + '): tapping a dot does not glide to ' + name);
         await pg.click('#enter');
-        const ok = await pg.waitForFunction(([nm, h]) => { const i = document.getElementById('roomHost'); return document.body.classList.contains('inside') && document.getElementById('roomName').textContent === nm && i.complete && i.naturalWidth > 0 && new RegExp('keser-cast-' + h).test(i.src); }, [name, host], { timeout: 8000 }).then(() => true, () => false);
-        if (!ok) fails.push('Keser world (' + tag + '): ' + name + ' does not open with its host');
+        const ok = await pg.waitForFunction(([nm, h]) => { const i = document.getElementById('roomHost'); return document.body.classList.contains('inside') && document.getElementById('roomName').textContent === nm && i.complete && i.naturalWidth > 0 && /keser-logo-mark/.test(i.src) && document.getElementById('room').style.getPropertyValue('--c').toUpperCase() === h; }, [name, host], { timeout: 8000 }).then(() => true, () => false);
+        if (!ok) fails.push('Keser world (' + tag + '): ' + name + ' does not open with its Keser crown card in its house color (' + host + ')');
         const b = await pg.evaluate(() => { const l = document.getElementById('openLab'); return l.hidden ? null : l.textContent.trim(); });
         if (b !== lab) fails.push('Keser world (' + tag + '): inside ' + name + ' the lab button should be ' + JSON.stringify(lab) + ', got ' + JSON.stringify(b));
         if (n === 1 && (await pg.getAttribute('#roomName', 'lang')) !== 'he') fails.push('Keser world (' + tag + '): inside קודש the name is not marked Hebrew');
@@ -64,10 +64,11 @@ module.exports = async (browser) => {
         await pg.click('#back'); if (!(await pg.waitForFunction(() => !document.body.classList.contains('inside') && !KWORLD.state.entered, null, { timeout: 8000 }).then(() => true, () => false))) fails.push('Keser world (' + tag + '): Back does not leave ' + name); }
       errs.forEach(e => fails.push('Keser world (' + tag + '): ' + e)); await ctx.close();
     }
-    /* the girls' cast (Keser Girls only pictures) is in the site, and every place has its host */
-    { const want = ['keser-cast-group', 'keser-cast-ayelet', 'keser-cast-malka', 'keser-cast-ima', 'keser-cast-bubby', 'keser-logo-mark', 'keser-place-torah', 'keser-place-timeline'];
-      const miss = want.filter(n => !fs.existsSync(path.join(out, 'pics', n + '.webp'))); if (miss.length) fails.push('Keser world: these cast pictures are not in the built site: ' + miss.join(', '));
-      const places = fs.readFileSync(path.join(__dirname, '..', 'app', 'places.js'), 'utf8'); if ((places.match(/host: '/g) || []).length !== 3) fails.push('Keser world: every place needs a host girl from the cast'); }
+    /* the Keser pictures are in the site; no girl picture until the girls come in the Keser uniform (M. Heinemann 2026-11-26); each place has its house color */
+    { const want = ['keser-logo', 'keser-logo-mark', 'keser-keter-torah', 'keser-keter-kehuna', 'keser-keter-malchut', 'keser-place-torah', 'keser-place-timeline'];
+      const miss = want.filter(n => !fs.existsSync(path.join(out, 'pics', n + '.webp'))); if (miss.length) fails.push('Keser world: these Keser pictures are not in the built site: ' + miss.join(', '));
+      const cast = fs.readdirSync(path.join(out, 'pics')).filter(f => /^keser-cast-/.test(f) && !/-uniform\./.test(f)); if (cast.length) fails.push('Keser world: girl pictures without the Keser uniform are still in the app: ' + cast.join(', '));
+      const places = fs.readFileSync(path.join(__dirname, '..', 'app', 'places.js'), 'utf8'); if (!['Keser Torah', 'Keser Malchus', 'Keser Kehuna'].every(h => places.includes("house: '" + h + "'"))) fails.push('Keser world: each place needs its Keser house color (Keser Torah, Keser Malchus, Keser Kehuna)'); }
     /* the full look (mirror, glow, crystal) also starts with no errors */
     { const { ctx, pg, errs } = await open(1366, 768, '?demo=1&full=1'); const st = await pg.evaluate(() => ({ gl: KWORLD.state.gl, lite: KWORLD.state.lite }));
       if (!st.gl || st.lite) fails.push('Keser world (full look): the full 3D look did not start'); errs.forEach(e => fails.push('Keser world (full look): ' + e)); await ctx.close(); }
@@ -92,6 +93,6 @@ module.exports = async (browser) => {
       await ctx.close(); }
   } catch (e) { fails.push('Keser world test stopped: ' + String(e).slice(0, process.env.KESER_LONG ? 3000 : 200)); }
   finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
-  if (!fails.length) oks.push('Keser Girls 3.0 her world: 3D world in Keser purple and gold at Chromebook and phone size, 3 places (קודש in Hebrew with a Torah, General Studies, Timeline), arrows/dots/keys/swipe glide, Enter and Back, the sisters\' welcome and each place\'s host girl, jewels not money, still cards without 3D, reduce motion');
+  if (!fails.length) oks.push('Keser Girls 3.0 her world: 3D world in Keser purple and gold at Chromebook and phone size, 3 places (קודש in Hebrew with a Torah, General Studies, Timeline), arrows/dots/keys/swipe glide, Enter and Back, the Three Crowns welcome and each place in its Keser house color, jewels not money, still cards without 3D, reduce motion');
   return { fails, oks };
 };

@@ -47,6 +47,11 @@ export function start(o) {
   /* the sky: a wide painting far behind, a little larger than the view so it can drift as she moves */
   const skyTex = (() => { const c = document.createElement('canvas'); c.width = 512; c.height = 256; const x = c.getContext('2d'), g = x.createRadialGradient(256, 110, 10, 256, 128, 300);
     g.addColorStop(0, '#8A55BC'); g.addColorStop(0.35, '#5D2B88'); g.addColorStop(0.7, '#3A1660'); g.addColorStop(1, '#1C0A30'); x.fillStyle = g; x.fillRect(0, 0, 512, 256);
+    /* soft veils of the Keser house colors drifting through the purple: Keser Torah maroon, Keser Malchus royal blue, Keser Kehuna green */
+    x.globalCompositeOperation = 'screen';
+    for (const [cx, cy, r, col] of [[70, 70, 190, 'rgba(163,38,63,.55)'], [450, 60, 200, 'rgba(47,95,208,.5)'], [256, 250, 230, 'rgba(31,143,92,.38)'], [120, 230, 150, 'rgba(27,42,94,.6)']]) {
+      const v = x.createRadialGradient(cx, cy, 0, cx, cy, r); v.addColorStop(0, col); v.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = v; x.fillRect(0, 0, 512, 256); }
+    x.globalCompositeOperation = 'source-over';
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();   /* royal purple, deepening at the edges */
   const sky = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: skyTex, depthWrite: false, fog: false }));
   sky.renderOrder = -10; scene.add(sky);
@@ -55,17 +60,17 @@ export function start(o) {
   const stageGlow = glowSprite(SOFT, 0xd4aa50, 1, 0.35); scene.add(stageGlow);
   const stage = painting(ART.stage, 1, 1600 / 756); stage.material.color.set(0x9070d0); stage.renderOrder = -5; scene.add(stage);
 
-  /* the five places: painted glass domes on a ring that turns; each has a halo and a host girl from the cast */
+  /* the places on a ring that turns; each glows in its Keser house color (no cast pictures until the girls come in the Keser uniform) */
   const ring = new THREE.Group(); scene.add(ring);
   const ASPECT = { kodesh: 690 / 860, general: 703 / 900, timeline: 900 / 760 };
   const pav = places.map((pl, i) => {
     const th = i / places.length * TAU, g = new THREE.Group(); g.position.set(Math.sin(th) * R, 0, Math.cos(th) * R); ring.add(g);
     const halo = glowSprite(SOFT, pl.hex, 4.4, 0.35); halo.position.y = 1.9; g.add(halo);
     const dome = painting(pl.art, pl.id === 'timeline' ? 2.9 : 3.6, ASPECT[pl.id]); dome.center.set(0.5, 0); g.add(dome);
-    const host = cameo(pl.pic, pl.color); host.position.set(1.75, 2.7, 0.3); g.add(host);
+    if (pl.id === 'general') dome.material.color.set(0xb4c6ff);   /* the rose glass dome tinted toward the Keser Malchus royal blue */
     const motes = [...Array(lite ? 3 : 6)].map((_, k) => { const s = glowSprite(STAR, [0xffffff, 0xfff1b8, pl.hex][k % 3], 0.2); s.userData.k = k; g.add(s); return s; });
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 4, 10), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 2; hit.userData.idx = i; g.add(hit);
-    return { g, th, halo, dome, host, motes, hit, sc: 1 };
+    return { g, th, halo, dome, motes, hit, sc: 1 };
   });
 
   /* her crown: the painted tiara high in the middle, with a jewel per subject that lights up as she learns */
@@ -79,43 +84,24 @@ export function start(o) {
     const glow = glowSprite(SOFT, pl.hex, (0.35 + p * 0.55) * big, p > 0 ? 0.35 + p * 0.5 : 0); glow.position.copy(pos); crownRig.add(glow);
     const glint = glowSprite(STAR, 0xffffff, 0.01); glint.position.copy(pos).add(new THREE.Vector3(0, 0, 0.04)); crownRig.add(glint);
     return { glint, glow, p, i }; });
-  const bubby = cameo('/pics/keser-cast-bubby.webp', '#B98CFF'); bubby.position.set(2.9, -0.3, 0.1); bubby.scale.set(1.1, 1.34, 1); crownRig.add(bubby);   /* Bubby waits by her crown */
   const crownHit = new THREE.Mesh(new THREE.SphereGeometry(1.5, 10, 8), new THREE.MeshBasicMaterial({ visible: false })); crownRig.add(crownHit);
   const crownSparks = [...Array(12)].map((_, i) => { const s = glowSprite(STAR, [0xffffff, 0xf6e3b0, 0xd4aa50][i % 3], 0.01); s.userData.off = i * 0.83; crownRig.add(s); return s; });
 
-  /* a girl from the cast in a gold oval frame that always faces her */
-  function cameo(src, color) {
-    const W = 360, H = 440, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'), t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
-    const draw = img => { x.clearRect(0, 0, W, H); const cx = W / 2, cy = H / 2, rx = W / 2 - 22, ry = H / 2 - 22;
-      const gl = x.createRadialGradient(cx, cy, rx * 0.6, cx, cy, W / 2); gl.addColorStop(0, color); gl.addColorStop(1, 'rgba(255,255,255,0)'); x.globalAlpha = 0.5; x.fillStyle = gl; x.fillRect(0, 0, W, H); x.globalAlpha = 1;
-      x.save(); x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, TAU); x.clip();
-      if (img) { const s = Math.max(rx * 2 / img.width, ry * 2 / img.height) * 1.05; x.drawImage(img, cx - img.width * s / 2, cy - ry - 6, img.width * s, img.height * s); }
-      else { const f = x.createLinearGradient(0, 0, 0, H); f.addColorStop(0, '#fff1f7'); f.addColorStop(1, color); x.fillStyle = f; x.fillRect(0, 0, W, H); }
-      x.restore();
-      const gg = x.createLinearGradient(0, 0, W, H); gg.addColorStop(0, '#fff1b8'); gg.addColorStop(0.5, '#c98a1e'); gg.addColorStop(1, '#fff1b8');
-      x.lineWidth = 12; x.strokeStyle = gg; x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, TAU); x.stroke();
-      x.lineWidth = 3; x.strokeStyle = 'rgba(255,255,255,.85)'; x.beginPath(); x.ellipse(cx, cy, rx - 9, ry - 9, 0, 0, TAU); x.stroke();
-      x.fillStyle = '#fff7fb'; for (let k = 0; k < 18; k++) { const a = k / 18 * TAU; x.beginPath(); x.arc(cx + Math.cos(a) * (rx + 2), cy + Math.sin(a) * (ry + 2), 5, 0, TAU); x.fill(); }
-      t.needsUpdate = true; };
-    draw(null); const img = new Image(); img.onload = () => draw(img); img.src = src;
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false })); sp.scale.set(1.3, 1.59, 1); return sp;
-  }
-
   /* ---------- glitter, bokeh and drifting rose petals ---------- */
-  const palette = [0xffffff, 0xf6e3b0, 0xd4aa50, 0xd9c2ff, 0xfff1d0].map(c => new THREE.Color(c)), glitter = [];   /* gold glitter */
+  const palette = [0xffffff, 0xf6e3b0, 0xd4aa50, 0xff8fa6, 0x8fb0ff, 0x7fe0b0].map(c => new THREE.Color(c)), glitter = [];   /* gold glitter with sparks of maroon-rose, royal blue and green */
   for (const [count, size, spread] of [[phoneish ? 700 : 1400, 0.07, 20], [phoneish ? 160 : 320, 0.16, 16]]) {
     const pos = new Float32Array(count * 3), col = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) { pos[i * 3] = (Math.random() - 0.5) * spread * 2; pos[i * 3 + 1] = Math.random() * spread * 0.6 - 0.5; pos[i * 3 + 2] = (Math.random() - 0.5) * spread * 1.6; const c = palette[i % 5]; col.set([c.r, c.g, c.b], i * 3); }
+    for (let i = 0; i < count; i++) { pos[i * 3] = (Math.random() - 0.5) * spread * 2; pos[i * 3 + 1] = Math.random() * spread * 0.6 - 0.5; pos[i * 3 + 2] = (Math.random() - 0.5) * spread * 1.6; const c = palette[i % 6]; col.set([c.r, c.g, c.b], i * 3); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     const p = new THREE.Points(g, new THREE.PointsMaterial({ size, map: STAR, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); scene.add(p); glitter.push(p); }
-  const bokeh = [...Array(14)].map((_, i) => { const s = glowSprite(SOFT, [0x8a55bc, 0xd4aa50, 0xb08ad8, 0xf6e3b0][i % 4], 1.2 + Math.random() * 2.4, 0.14); const a = Math.random() * TAU;
+  const bokeh = [...Array(14)].map((_, i) => { const s = glowSprite(SOFT, [0x8a55bc, 0xa3263f, 0x2f5fd0, 0x1f8f5c, 0xd4aa50][i % 5], 1.2 + Math.random() * 2.4, 0.14); const a = Math.random() * TAU;
     s.position.set(Math.cos(a) * (10 + Math.random() * 6), 1 + Math.random() * 8, -4 - Math.random() * 8); scene.add(s); return s; });
   const petalShape = new THREE.Shape(); petalShape.moveTo(0, -0.12); petalShape.bezierCurveTo(0.12, -0.08, 0.13, 0.08, 0, 0.13); petalShape.bezierCurveTo(-0.13, 0.08, -0.12, -0.08, 0, -0.12);
   const petalGeo = new THREE.ShapeGeometry(petalShape, 10); { const p = petalGeo.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setZ(i, x * x * 3 + y * 0.2); } petalGeo.computeVertexNormals(); }
   const PN = phoneish ? 70 : 120, petals = new THREE.InstancedMesh(petalGeo, new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, emissive: 0x3a1660, emissiveIntensity: 0.6 }), PN);
   scene.add(new THREE.AmbientLight(0xffe4f0, 1.4)); const sun = new THREE.DirectionalLight(0xfff1d0, 1.2); sun.position.set(3, 8, 6); scene.add(sun);
   const pdat = [...Array(PN)].map(() => ({ x: (Math.random() - 0.5) * 20, z: (Math.random() - 0.5) * 14 + 1, y: Math.random() * 11, sp: 0.25 + Math.random() * 0.35, ph: Math.random() * TAU, rs: new THREE.Vector3(Math.random(), Math.random(), Math.random()) }));
-  const pcols = [0xd4aa50, 0xf6e3b0, 0xb08ad8, 0x8a55bc, 0xfff1d0].map(c => new THREE.Color(c));   /* gold and purple petals */ pdat.forEach((_, i) => petals.setColorAt(i, pcols[i % 5])); scene.add(petals);
+  const pcols = [0xd4aa50, 0xa3263f, 0x2f5fd0, 0x1f8f5c, 0x8a55bc].map(c => new THREE.Color(c));   /* petals in gold, purple and the three house colors */ pdat.forEach((_, i) => petals.setColorAt(i, pcols[i % 5])); scene.add(petals);
 
   /* ---------- glow ---------- */
   const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
@@ -168,7 +154,6 @@ export function start(o) {
       const s = p.sc + (front ? Math.sin(nudge * 18) * nudge * 0.06 : 0); p.g.scale.setScalar(s); p.g.rotation.y = -ring.rotation.y;   /* keep each host girl on her dome's right side */
       p.dome.position.y = Math.sin(t * 1.1 + i) * 0.06 * sp;
       p.halo.material.opacity += ((front ? 0.5 : 0.22) - p.halo.material.opacity) * Math.min(1, dt * 5);
-      p.host.position.y = 2.7 + Math.sin(t * 1.1 + i * 1.3) * 0.08 * sp; p.host.material.opacity += ((entered && !front ? 0.2 : 1) - p.host.material.opacity) * Math.min(1, dt * 4);
       p.dome.material.opacity += ((entered && !front ? 0.35 : 1) - p.dome.material.opacity) * Math.min(1, dt * 4);
       p.motes.forEach(m => { const k = m.userData.k, y = ((t * 0.22 + k / p.motes.length) % 1); m.position.set(Math.sin(k * 2.3 + t * 0.7 * sp) * 0.7, 0.8 + y * 2.6, 0.3); m.material.opacity = Math.sin(y * Math.PI) * (calm ? 0.5 : 0.9); m.scale.setScalar(0.12 + 0.12 * Math.sin(y * Math.PI)); }); });
     nudge = Math.max(0, nudge - dt * 1.6);
