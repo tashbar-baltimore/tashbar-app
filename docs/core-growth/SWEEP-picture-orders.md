@@ -33,7 +33,7 @@ Part A (16 K–1 listen-along pictures, the old LA-1) was cancelled the same day
 | 34 | `core-gm-world-gemara.webp` | The boy's Game Map: the “Gemara” world badge (today an emoji) | 512 × 512 | Children's picture-book illustration, bright round friendly shapes, thick soft outlines, flat warm colors, simple background, soft cream background, for a Jewish boys' school; a round game badge showing a tall stack of large sefarim with brown leather spines, no letters, centered on a soft circle, plain cream background. No people. Boys and men only, modest frum dress (kippah, tzitzis), no women or girls, no text or letters in the image, no logos, no religious symbols of other faiths. |
 | 35 | `core-certificate-frame.webp` | The rebbe's printed certificate and the “Level finished” certificate (today plain text) | 1100 × 825 | Painterly realistic editorial illustration, calm muted palette, natural light, respectful mature tone, for a Jewish boys' middle school; an elegant certificate border: a frame of olive branches and wheat stalks in muted gold and deep green around a large empty cream center (the app writes the words in the middle). Calm and dignified. No people. Boys and men only, modest frum dress (kippah, tzitzis), no women or girls, no text or letters in the image, no logos, no religious symbols of other faiths. |
 
-## Order MATH-1 (emailed 2026-11-26) · status: 11 of 12 LIVE; #8 `core-math-pv0501-today` held back (faint logo/watermark in the sky, top right), redo asked
+## Order MATH-1 (emailed 2026-11-26) · status: ALL 12 IN; #8 `core-math-pv0501-today` was redone without its faint watermark (arrived 20:37 UTC) and is on `MATH.PV.L05.01|@today`
 Math One Bite openers (`src/OneBiteDataMath*.html`), place value and fractions first. Each goes on `SKILL|@today`. Size 1100 × 620 (16:9), keep the middle third calm. Prompts end with the same line as above.
 
 | # | File | Screen | Prompt |
@@ -71,4 +71,3 @@ Checked by eye, zoomed where needed (domes, sails, palace, harbor town: no other
 
 ## Also still waiting
 - Order W13H4-1 (`W13H4-picture-orders.md`, 7 pictures): the image account sent them to the W13 helper's inbox, not this one; that lane adds them.
-- MATH-1 #8 `core-math-pv0501-today`: redo asked 2026-11-26 (watermark).
