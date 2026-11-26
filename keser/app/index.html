@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A0B2E">
+<title>Keser Girls 3.0</title>
+<link rel="stylesheet" href="kit.css">
+<link rel="prefetch" href="world.html">
+<style>
+:root{ --night:#1A0B2E; --pink:#FF5FA2; --lilac:#C49BFF; --gold1:#FFF1B8; --gold2:#F5C451; --gold3:#C98A1E; }
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; overflow:hidden; color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--night); }
+body{ background:
+  radial-gradient(ellipse at 50% 38%, rgba(255,95,162,.35) 0, transparent 45%),
+  radial-gradient(ellipse at 15% 0%, rgba(196,155,255,.35) 0, transparent 50%),
+  radial-gradient(ellipse at 90% 100%, rgba(255,120,200,.28) 0, transparent 55%),
+  linear-gradient(170deg, #2E0D4A 0%, var(--night) 55%, #10051C 100%); }
+#scene{ position:fixed; inset:0; width:100%; height:100%; display:block; }
+
+/* words float in front of the 3D scene */
+.title{ position:fixed; left:0; right:0; bottom:max(7vh,28px); text-align:center; pointer-events:none; padding:0 16px;
+  opacity:0; transform:translateY(18px); animation:rise 1.2s cubic-bezier(.2,.8,.2,1) 1.1s forwards; }
+@keyframes rise{ to{ opacity:1; transform:none } }
+.he{ margin:0; font-size:22px; font-weight:700; letter-spacing:.14em; color:var(--lilac); text-shadow:0 0 16px rgba(196,155,255,.7); }
+h1{ margin:0; font-family:"Didot","Bodoni 72","Bodoni MT","Playfair Display",Georgia,serif; font-size:clamp(46px,7.5vw,84px); line-height:1.02; font-weight:700;
+  background:linear-gradient(100deg,var(--gold3) 0%,var(--gold2) 20%,var(--gold1) 40%,#fff 50%,var(--gold1) 60%,var(--gold2) 80%,var(--gold3) 100%);
+  background-size:250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:foil 4s linear infinite;
+  filter:drop-shadow(0 4px 18px rgba(245,196,81,.35)); }
+@keyframes foil{ 0%{ background-position:100% 0 } 100%{ background-position:-150% 0 } }
+.title .k-btn{ margin-top:20px; pointer-events:auto; }
+body.leaving{ transition:opacity .7s ease, transform .7s ease; opacity:0; transform:scale(1.06); }
+.soon{ display:inline-block; margin-top:16px; padding:10px 24px; border-radius:999px; font-weight:800; font-size:13px; letter-spacing:.3em; text-transform:uppercase;
+  color:#fff; background:linear-gradient(90deg,rgba(255,95,162,.85),rgba(181,92,255,.85)); border:1px solid rgba(255,255,255,.45);
+  box-shadow:0 0 24px rgba(255,95,162,.55), inset 0 1px 0 rgba(255,255,255,.5); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+
+/* if a computer cannot draw 3D: a still gold crown instead */
+.flat{ display:none; position:fixed; left:50%; top:34%; transform:translate(-50%,-50%); width:min(46vw,220px); filter:drop-shadow(0 0 28px rgba(245,196,81,.6)); }
+.nogl .flat{ display:block; }
+@media (prefers-reduced-motion: reduce){ h1,.title{ animation:none; opacity:1; transform:none } }
+</style>
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+</head>
+<body>
+<canvas id="scene" aria-hidden="true"></canvas>
+<svg class="flat" viewBox="0 0 150 118" aria-hidden="true">
+  <defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1B8"/><stop offset=".45" stop-color="#F5C451"/><stop offset="1" stop-color="#C98A1E"/></linearGradient></defs>
+  <path d="M18 92 L24 34 L50 64 L75 16 L100 64 L126 34 L132 92 Z" fill="url(#fg)" stroke="#FFF6D6" stroke-width="2.5" stroke-linejoin="round"/>
+  <rect x="15" y="88" width="120" height="18" rx="9" fill="url(#fg)" stroke="#FFF6D6" stroke-width="2.5"/>
+  <circle cx="24" cy="31" r="7" fill="#FF5FA2"/><circle cx="126" cy="31" r="7" fill="#FF5FA2"/><path d="M75 4 l9 10 -9 10 -9 -10z" fill="#C49BFF"/>
+</svg>
+<div class="title">
+  <p class="he" lang="he" dir="rtl">כתר</p>
+  <h1>Keser Girls</h1>
+  <a class="k-btn" id="enter" href="world.html"><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>Enter</a>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from './vendor/RoomEnvironment.js';
+
+const canvas = document.getElementById('scene');
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+catch (e) { document.documentElement.classList.add('nogl'); throw new Error('no 3D: still crown shown'); }
+const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x1a0b2e, 0.035);
+const pm = new THREE.PMREMGenerator(renderer);
+scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+const look = new THREE.Vector3(0, 0.55, 0);
+
+/* lights: soft pink, lilac and gold that circle the crown so the gold and jewels keep catching the light */
+scene.add(new THREE.AmbientLight(0xffd6ec, 0.35));
+const key = new THREE.DirectionalLight(0xfff1d0, 2.2); key.position.set(3, 5, 6); scene.add(key);
+const orbit = [[0xff5fa2, 40], [0xb98cff, 40], [0xffd27a, 30]].map(([c, i]) => { const l = new THREE.PointLight(c, i, 14, 1.6); scene.add(l); return l; });
+
+/* ---------- the crown ---------- */
+const crown = new THREE.Group(); scene.add(crown);
+const gold = new THREE.MeshPhysicalMaterial({ color: 0xf2bf52, metalness: 1, roughness: 0.16, clearcoat: 1, clearcoatRoughness: 0.08, side: THREE.DoubleSide });
+const R = 1.25, H = 0.62, PEAK = 0.95, N = 5;
+{ // band with five rounded points, made by lifting the top edge of a tube
+  const g = new THREE.CylinderGeometry(R, R * 0.92, 1, 200, 24, true), p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), z = p.getZ(i), t = p.getY(i) + 0.5, a = Math.atan2(z, x);
+    const peak = Math.pow(Math.abs(Math.cos(a * N / 2)), 3.2);
+    p.setY(i, t * (H + PEAK * peak));
+    const flare = 1 + t * 0.06; p.setX(i, x * flare); p.setZ(i, z * flare);
+  }
+  g.computeVertexNormals(); crown.add(new THREE.Mesh(g, gold));
+}
+const rim = (y, r, tube) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, tube, 24, 160), gold); m.rotation.x = Math.PI / 2; m.position.y = y; crown.add(m); };
+rim(0.02, R + 0.01, 0.075); rim(H * 0.78, R * 0.985 + 0.06, 0.04);
+
+const gem = (color, sheen) => new THREE.MeshPhysicalMaterial({ color, metalness: 0, roughness: 0.02, clearcoat: 1, iridescence: 1, iridescenceIOR: 1.6,
+  iridescenceThicknessRange: [200, 800], emissive: color, emissiveIntensity: 0.18, sheen: sheen ? 1 : 0, sheenColor: 0xffffff, flatShading: true });
+const pinkGem = gem(0xff3d8e), lilacGem = gem(0x9b5cff), mintGem = gem(0x7fe8d8), pearl = new THREE.MeshPhysicalMaterial({ color: 0xfff7fb, roughness: 0.25, iridescence: 1, iridescenceIOR: 1.3, clearcoat: 1 });
+const sparkles = [];
+for (let k = 0; k < N; k++) {           // a pearl on every point, a jewel under every point
+  const a = (k / N) * Math.PI * 2;
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.11, 32, 16), pearl);
+  tip.position.set(Math.cos(a) * R * 1.06, H + PEAK + 0.08, Math.sin(a) * R * 1.06); crown.add(tip); sparkles.push(tip.position);
+  const j = new THREE.Mesh(new THREE.OctahedronGeometry(0.17, 0), k % 2 ? lilacGem : pinkGem);
+  j.scale.set(1, 1.35, 0.55); j.position.set(Math.cos(a) * (R + 0.04), H * 0.42, Math.sin(a) * (R + 0.04)); j.lookAt(0, H * 0.42, 0); crown.add(j);
+  const b = (k + 0.5) / N * Math.PI * 2, s = new THREE.Mesh(new THREE.IcosahedronGeometry(0.075, 0), mintGem);
+  s.position.set(Math.cos(b) * (R + 0.05), H * 0.42, Math.sin(b) * (R + 0.05)); crown.add(s);
+}
+crown.position.y = -0.2;
+
+/* ---------- floating hearts and jewels all around ---------- */
+const heartShape = new THREE.Shape(); heartShape.moveTo(0, 0.25);
+heartShape.bezierCurveTo(0, 0.4, -0.25, 0.5, -0.4, 0.3); heartShape.bezierCurveTo(-0.55, 0.05, -0.3, -0.15, 0, -0.4);
+heartShape.bezierCurveTo(0.3, -0.15, 0.55, 0.05, 0.4, 0.3); heartShape.bezierCurveTo(0.25, 0.5, 0, 0.4, 0, 0.25);
+const heartGeo = new THREE.ExtrudeGeometry(heartShape, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.05, bevelSegments: 6, curveSegments: 24 }); heartGeo.center();
+const shapes = [heartGeo, new THREE.OctahedronGeometry(0.22, 0), new THREE.IcosahedronGeometry(0.18, 0), new THREE.TorusGeometry(0.17, 0.05, 16, 48), new THREE.SphereGeometry(0.12, 24, 12)];
+const mats = [pinkGem, lilacGem, mintGem, gold, pearl, new THREE.MeshPhysicalMaterial({ color: 0xffb3d1, metalness: 0.6, roughness: 0.2, iridescence: 1, clearcoat: 1 })];
+const floaters = [], FN = innerWidth < 600 ? 26 : 44;
+for (let i = 0; i < FN; i++) {
+  const m = new THREE.Mesh(shapes[i % shapes.length], mats[(i * 7) % mats.length]);
+  const ang = Math.random() * Math.PI * 2, rad = 3.4 + Math.random() * 5;
+  m.userData = { ang, rad, y: (Math.random() - 0.35) * 6, sp: (0.04 + Math.random() * 0.08) * (Math.random() < 0.5 ? -1 : 1), spin: new THREE.Vector3(Math.random(), Math.random(), Math.random()).multiplyScalar(0.9), bob: Math.random() * 6 };
+  m.scale.setScalar(0.6 + Math.random() * 0.9); scene.add(m); floaters.push(m);
+}
+
+/* ---------- glitter: thousands of twinkling specks at every depth ---------- */
+function starTex() {
+  const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.2, 'rgba(255,255,255,.85)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+  x.globalCompositeOperation = 'lighter'; x.fillStyle = 'rgba(255,255,255,.9)';
+  x.beginPath(); x.moveTo(32, 0); x.lineTo(35, 29); x.lineTo(64, 32); x.lineTo(35, 35); x.lineTo(32, 64); x.lineTo(29, 35); x.lineTo(0, 32); x.lineTo(29, 29); x.closePath(); x.fill();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const STAR = starTex(), palette = [0xffffff, 0xfff1b8, 0xffc2dd, 0xd9c2ff, 0xbff5ee].map(c => new THREE.Color(c));
+const glitter = [];
+for (const [count, size, spread] of [[innerWidth < 600 ? 700 : 1400, 0.07, 14], [innerWidth < 600 ? 160 : 320, 0.16, 10]]) {
+  const pos = new Float32Array(count * 3), col = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    pos[i * 3] = (Math.random() - 0.5) * spread * 2; pos[i * 3 + 1] = (Math.random() - 0.5) * spread; pos[i * 3 + 2] = (Math.random() - 0.5) * spread * 1.6 - 2;
+    const c = palette[i % palette.length]; col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const pts = new THREE.Points(g, new THREE.PointsMaterial({ size, map: STAR, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.9 }));
+  scene.add(pts); glitter.push(pts);
+}
+
+/* star glints that flash on the crown's pearls */
+const glints = sparkles.map((p, i) => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: STAR, color: 0xffffff, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  s.position.copy(p).add(new THREE.Vector3(0, -0.2, 0)); s.userData.off = i * 1.3; crown.add(s); return s; });
+/* a soft glow behind the crown */
+{ const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); const g = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, 'rgba(255,190,120,.55)'); g.addColorStop(0.4, 'rgba(255,95,162,.25)'); g.addColorStop(1, 'rgba(255,95,162,0)'); x.fillStyle = g; x.fillRect(0, 0, 128, 128);
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  halo.scale.set(7, 7, 1); halo.position.set(0, 0.7, -1.2); scene.add(halo); }
+
+/* ---------- she moves, the world moves: mouse, finger or tilting the phone ---------- */
+const aim = { x: 0, y: 0 }, cur = { x: 0, y: 0 };
+addEventListener('pointermove', e => { aim.x = e.clientX / innerWidth * 2 - 1; aim.y = e.clientY / innerHeight * 2 - 1; });
+addEventListener('deviceorientation', e => { if (e.gamma == null) return; aim.x = Math.max(-1, Math.min(1, e.gamma / 30)); aim.y = Math.max(-1, Math.min(1, (e.beta - 45) / 30)); });
+let spinBoost = 0; addEventListener('pointerdown', () => { spinBoost = 6; });
+document.getElementById('enter').addEventListener('click', e => { if (calm) return; e.preventDefault(); spinBoost = 14; document.body.classList.add('leaving'); setTimeout(() => { location.href = 'world.html'; }, 650); });   // a tap gives the crown a happy twirl
+
+function fit() {
+  const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h;
+  camera.fov = w / h < 0.8 ? 52 : 38; camera.updateProjectionMatrix();
+  look.y = w / h < 0.8 ? -0.35 : -0.15;
+}
+addEventListener('resize', fit); fit();
+
+const clock = new THREE.Clock(); let intro = 0;
+function frame() {
+  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime, sp = calm ? 0.15 : 1;
+  intro = Math.min(1, intro + dt * 0.45); const e = 1 - Math.pow(1 - intro, 3);
+  cur.x += (aim.x - cur.x) * 0.05; cur.y += (aim.y - cur.y) * 0.05;
+  const dist = (camera.aspect < 0.8 ? 9.2 : 7.4) + (1 - e) * 6;
+  camera.position.set(cur.x * 1.6, 1.6 - cur.y * 0.9 + (1 - e) * 1.5, dist); camera.lookAt(look);
+  spinBoost *= 0.95;
+  crown.rotation.y += dt * (0.45 + spinBoost) * sp; crown.position.y = -0.2 + Math.sin(t * 1.2) * 0.08 * sp - (1 - e) * 1.2;
+  crown.rotation.z = Math.sin(t * 0.7) * 0.04 * sp;
+  orbit.forEach((l, i) => { const a = t * 0.6 * sp + i * 2.1; l.position.set(Math.cos(a) * 3.2, 1.2 + Math.sin(a * 1.3) * 1.2, Math.sin(a) * 3.2); });
+  floaters.forEach(m => { const u = m.userData; u.ang += u.sp * dt * sp;
+    m.position.set(Math.cos(u.ang) * u.rad * (camera.aspect < 0.8 ? 0.75 : 1.25), u.y + Math.sin(t * 0.8 + u.bob) * 0.35, Math.sin(u.ang) * u.rad * 0.45 - 3);   // a wide flat ring behind and beside the crown, never in front of it
+    m.rotation.x += u.spin.x * dt * sp; m.rotation.y += u.spin.y * dt * sp; m.rotation.z += u.spin.z * dt * 0.3 * sp; });
+  glitter[0].rotation.y = t * 0.02 * sp; glitter[1].rotation.y = -t * 0.035 * sp;
+  glitter[0].material.opacity = 0.75 + Math.sin(t * 3.1) * 0.2; glitter[1].material.opacity = 0.7 + Math.sin(t * 2.3 + 1) * 0.3;
+  glints.forEach(s => { const k = Math.max(0, Math.sin(t * 1.6 + s.userData.off)); const z = Math.pow(k, 8) * 0.9; s.scale.set(z, z, 1); s.material.rotation = t; });
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

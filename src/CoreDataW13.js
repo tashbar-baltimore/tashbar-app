@@ -25,5 +25,17 @@ CORE_SKILLS.W13 = [
   ["WRIT.SENT.L01.03", "Point and Read", "Read his sentence back pointing to each word, and fix a missing word", { after: "WRIT.SENT.L01.02", std: "W.K.5", file: "CoreDataW135", min: 4 }],
   ["WRIT.PARA.L02.04", "Zoom In", "Write about one small moment, not the whole day", { after: "WRIT.SENT.L02.01", std: "W.1.3", file: "CoreDataW136", min: 5 }],
   ["WRIT.PARA.L02.05", "Time Words", "Use time words: first, then, after that, at the end", { after: "WRIT.PARA.L02.04", std: "W.1.3", file: "CoreDataW136", min: 5 }],
-  ["WRIT.PARA.L02.06", "Feeling Ending", "End a story with how it felt or what he learned", { after: "WRIT.PARA.L02.05", std: "W.1.3", file: "CoreDataW136", min: 5 }]
+  ["WRIT.PARA.L02.06", "Feeling Ending", "End a story with how it felt or what he learned", { after: "WRIT.PARA.L02.05", std: "W.1.3", file: "CoreDataW136", min: 5 }],
+  ["WRIT.ESSAY.L04.03", "TIDE Plan", "Plan an information piece with TIDE: Topic, Important details, Ending", { after: "WRIT.PARA.L04.04", std: "W.3.2", file: "CoreDataW13H1", min: 8 }],
+  ["WRIT.ESSAY.L04.04", "Group the Facts", "Group facts that go together, and add a picture with a caption", { std: "W.3.2a", file: "CoreDataW13H1", min: 7 }],
+  ["WRIT.PARA.L04.14", "Facts, Definitions, Details", "Build the topic with facts, definitions and details", { std: "W.3.2b", file: "CoreDataW13H1", min: 7 }],
+  ["WRIT.PARA.L04.15", "Fact Linking Words", "Link facts with also, another, and, more and but", { std: "W.3.2c", file: "CoreDataW13H1", min: 7 }],
+  ["WRIT.PARA.L04.16", "Concluding Section", "End an information piece with a strong concluding section", { std: "W.3.2d", file: "CoreDataW13H1", min: 7 }],
+  ["WRIT.RES.L04.01", "Good Question", "Ask a research question he can answer by reading", { after: "WRIT.PARA.L04.16", std: "W.3.7", file: "CoreDataW13H2", min: 7 }],
+  ["WRIT.RES.L04.02", "Notes, Not Copies", "Take notes in his own words: a few key words that answer the question", { std: "W.3.8", file: "CoreDataW13H2", min: 7 }],
+  ["WRIT.RES.L04.03", "Sort My Notes", "Sort notes into groups with headings, one paragraph for each group", { std: "W.3.8", file: "CoreDataW13H2", min: 7 }],
+  ["WRIT.RES.L04.04", "Where I Found It", "Name the source of his facts: the title and the author", { std: "W.3.8", file: "CoreDataW13H2", min: 6 }],
+  ["WRIT.ESSAY.L04.05", "ARMS Revise", "Revise with ARMS: Add, Remove, Move, Substitute", { after: "WRIT.RES.L04.04", std: "W.3.5", file: "CoreDataW13H3", min: 8 }],
+  ["WRIT.ESSAY.L04.06", "COPS Edit", "Edit with COPS: Capitals, Order of the words, Punctuation, Spelling", { std: "W.3.5", file: "CoreDataW13H3", min: 7 }],
+  ["WRIT.PARA.L04.17", "Letter to a Reader", "Write a letter with all its parts, in words that fit who will read it", { std: "W.3.4", file: "CoreDataW13H3", min: 7 }]
 ];
