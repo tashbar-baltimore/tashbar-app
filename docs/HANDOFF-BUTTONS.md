@@ -73,3 +73,6 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 
 ## Next
 - Classic lesson frame: the "‹ Map" back top left (should be the kit ✕ that asks first), "Say it again", 🚩, "Check", "Take a picture", "Teach me how" and the result screen's underlined links are not on the kit yet. Mistake Detective's answer buttons, Arena avatars and subject/topic cards are answer/picker cards, left as they are.
+
+## Done: round speaker buttons (26 Nov 2026)
+- HoS: small buttons are round. The lesson speaker (`.qrow .say`, and every `button.say`) is a perfect 52 px circle, icon only (`src/Shine.html`). Picture: `docs/screens/round-speaker-after.jpg`.
