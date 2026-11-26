@@ -73,3 +73,6 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 
 ## Next
 - Classic lesson frame: the "‹ Map" back top left (should be the kit ✕ that asks first), "Say it again", 🚩, "Check", "Take a picture", "Teach me how" and the result screen's underlined links are not on the kit yet. Mistake Detective's answer buttons, Arena avatars and subject/topic cards are answer/picker cards, left as they are.
+
+## Done: the button tour (26 Nov 2026)
+- Plan and HoS answers: `docs/BUTTON-TUTORIAL-PLAN.md` (#551). Round 💡 right of Sign out on the home (`data-gm="pftour"`, the home test allows exactly it), "Show me" in My profile settings; hint pop-up for the first 10 sign-ins; K–3 short spoken tour, 4+ 12 cards. Code at the end of `src/GameMap.html` (`TLTOUR`). Do not add a second `<script>` block to GameMap.html (Photos.js strips only the outer tags), and the `tt-` names belong to Torah Tracks (the tour uses `tlt-`).
