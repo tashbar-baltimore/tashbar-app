@@ -500,13 +500,36 @@ audio.boing = (f = 300) => { const c = audio.ctx(); if (!c || FAST) return; cons
 audio.pop = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(900, t); o.frequency.exponentialRampToValueAtTime(260, t + 0.08);
   g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.15); };
 audio.party = () => audio.chime([523, 659, 784, 1047, 1319, 1568]);
+/* Unit 1+ sounds, all made by the device (no files):
+   the pure "mmm" (a closed-mouth hum, never "muh"), a hand clap, a soft drum, a train "choo", a little bell, a soft "whoosh", a gentle "hmm" for a wrong move */
+audio.mN = 0;
+audio.hum = (ms = 800) => { audio.mN++; const c = audio.ctx(); if (c && !FAST) { const t0 = c.currentTime, d = ms / 1000, o = c.createOscillator(), lp = c.createBiquadFilter(), g = c.createGain();
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(150, t0); o.frequency.linearRampToValueAtTime(140, t0 + d); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 6;
+    const nb = c.createBiquadFilter(); nb.type = 'peaking'; nb.frequency.value = 250; nb.gain.value = 10; nb.Q.value = 2;
+    o.connect(lp); lp.connect(nb); nb.connect(g); g.connect(c.destination); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.45, t0 + 0.06); g.gain.setValueAtTime(0.45, t0 + d - 0.1); g.gain.linearRampToValueAtTime(0, t0 + d); o.start(t0); o.stop(t0 + d + 0.05); }
+  return new Promise(r => setTimeout(r, FAST ? 0 : ms + 60)); };
+audio.clapN = 0;
+audio.clap = () => { audio.clapN++; const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, s = c.createBufferSource(); s.buffer = noiseBuf(c, 0.25); const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1500; bp.Q.value = 0.8;
+  const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); [0, 0.012, 0.024].forEach(k => { g.gain.setValueAtTime(0.5, t + k); g.gain.exponentialRampToValueAtTime(0.05, t + k + 0.01); }); g.gain.setValueAtTime(0.4, t + 0.036); g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+  s.connect(bp); bp.connect(g); g.connect(c.destination); s.start(t); s.stop(t + 0.25); };
+audio.drumN = 0;
+audio.drum = (f = 110) => { audio.drumN++; const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(f * 1.6, t); o.frequency.exponentialRampToValueAtTime(f, t + 0.12);
+  g.gain.setValueAtTime(0.6, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.45); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.5); audio.clap(); audio.clapN--; };
+audio.choo = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime; [[523, 659], [587, 740]].forEach(([a, b], k) => { [a, b].forEach(f => { const o = c.createOscillator(), g = c.createGain(); o.type = 'triangle'; o.frequency.value = f;
+  g.gain.setValueAtTime(0, t + k * 0.45); g.gain.linearRampToValueAtTime(0.09, t + k * 0.45 + 0.05); g.gain.setValueAtTime(0.09, t + k * 0.45 + 0.3); g.gain.linearRampToValueAtTime(0, t + k * 0.45 + 0.4); o.connect(g); g.connect(c.destination); o.start(t + k * 0.45); o.stop(t + k * 0.45 + 0.45); }); }); };
+audio.bell = () => audio.chime([1319, 1760, 2093]);
+audio.whoosh = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, s = c.createBufferSource(); s.buffer = noiseBuf(c, 0.5); const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.5; bp.frequency.setValueAtTime(400, t); bp.frequency.exponentialRampToValueAtTime(2400, t + 0.35);
+  const g = c.createGain(); g.gain.setValueAtTime(0.001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.12); g.gain.exponentialRampToValueAtTime(0.001, t + 0.45); s.connect(bp); bp.connect(g); g.connect(c.destination); s.start(t); s.stop(t + 0.5); };
+audio.hmm = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(330, t); o.frequency.linearRampToValueAtTime(262, t + 0.35);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.12, t + 0.05); g.gain.linearRampToValueAtTime(0, t + 0.4); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.45); };
 
 /* the voice: the school's teacher voice, else the device voice */
 const TTS = 'https:' + '/' + '/' + 'tts-q26c275eaa-uk.a.run.app', vcache = {}; let vtok = 0, va = null;
-audio.hush = () => { vtok++; try { if (va) va.pause(); } catch (e) {} va = null; try { speechSynthesis.cancel(); } catch (e) {} audio.hissStop(); };
+audio.hush = () => { vtok++; audio.talking = false; try { if (va) va.pause(); } catch (e) {} va = null; try { speechSynthesis.cancel(); } catch (e) {} audio.hissStop(); };
 function fetchVoice(t) { return fetch(TTS, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: t, voice: 'teacher' }) }).then(r => r.json()).then(j => { if (j && j.ok && j.url) { vcache[t] = j.url; return j.url; } throw new Error('tts'); }); }
-audio.say = t => { audio.said.push(t); if (FAST) return Promise.resolve(); const my = vtok;
-  return new Promise(done => { let fin = false; const end = () => { if (!fin) { fin = true; done(); } }; setTimeout(end, t.length * 85 + 2500);
+audio.talking = false;   /* true while the voice is speaking (the painted friend shows his talking picture) */
+audio.say = t => { audio.said.push(t); if (FAST) return Promise.resolve(); const my = vtok; audio.talking = true;
+  return new Promise(done => { let fin = false; const end = () => { if (!fin) { fin = true; audio.talking = false; done(); } }; setTimeout(end, t.length * 85 + 2500);
     const dev = () => { if (my !== vtok) return end(); try { const u = new SpeechSynthesisUtterance(t); u.rate = 0.92; u.pitch = 1.1; u.onend = end; u.onerror = end; speechSynthesis.speak(u); } catch (e) { end(); } };
     const play = url => { if (my !== vtok) return end(); const a = new Audio(url); va = a; a.onended = end; a.onerror = dev; const p = a.play(); if (p && p.catch) p.catch(dev); };
     if (vcache[t]) return play(vcache[t]);
