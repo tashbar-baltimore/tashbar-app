@@ -6,10 +6,12 @@
 export const PLACES = [
   { id: 'kodesh',  name: 'קודש', lang: 'he', label: 'Kodesh', color: '#F5C451', hex: 0xf5c451, note: 0, host: 'Ima', pic: '/pics/keser-cast-ima.webp' },
   { id: 'general', name: 'General Studies', color: '#FF5FA2', hex: 0xff5fa2, note: 4, host: 'Ayelet', pic: '/pics/keser-cast-ayelet.webp' },
+  /* M. Heinemann 2026-11-26: "add one that says timeline ... the girls have to do events in order ... separate from Kodesh. It should be its own thing." */
+  { id: 'timeline', name: 'Timeline', color: '#B98CFF', hex: 0xb98cff, note: 7, host: 'Malka', pic: '/pics/keser-cast-malka.webp' },
 ];
 /* the girls' cast (keser/PICTURE-ORDERS.md): each place has a host; the sisters greet her when she arrives; Bubby waits by her crown */
 export const CAST = { sisters: '/pics/keser-cast-group.webp', bubby: '/pics/keser-cast-bubby.webp', style: '/pics/keser-style-sheet.webp' };
-export const DEMO = { kodesh: 0.85, general: 0.4 };
+export const DEMO = { kodesh: 0.85, general: 0.4, timeline: 0.2 };
 export function readProgress(search, store) {
   let raw = {};
   if (/[?&]demo=1\b/.test(search || '')) raw = DEMO;

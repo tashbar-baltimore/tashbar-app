@@ -1,12 +1,12 @@
 /* Keser Girls 3.0, HER WORLD (home): builds, is served like the real site, and works for a made-up girl at Chromebook (1366x768) and phone size.
    - the 3D jewel box starts (light mode for speed here; one full-look check), with no errors and nothing that fails to load;
-   - two places (M. Heinemann 2026-11-26): קודש (in Hebrew, right to left, with a Torah) and General Studies; the arrows, dots, keys and a swipe glide between them; Enter opens the place, Back returns;
+   - three places (M. Heinemann 2026-11-26): קודש (in Hebrew, right to left, with a navy Torah), General Studies, and Timeline (its own place); the arrows, dots, keys and a swipe glide between them; Enter opens the place, Back returns;
    - it fits the screen (no sideways scroll), the buttons are big enough to tap and nothing important is off screen;
    - progress shows only as crown jewels: no money, coins, points or prices anywhere on the screen; bad saved progress cannot break it;
    - computers without 3D get the still cards (same places, dots and button); "reduce motion" is respected; the welcome page's Enter leads here. */
 const path = require('path'), os = require('os'), fs = require('fs'), cp = require('child_process'), http = require('http');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.txt': 'text/plain', '.webp': 'image/webp', '.png': 'image/png', '.mp3': 'audio/mpeg' };
-const KODESH = 'קודש', GENERAL = 'General Studies';
+const KODESH = 'קודש', GENERAL = 'General Studies', TIMELINE = 'Timeline';
 module.exports = async (browser) => {
   const fails = [], oks = [], out = fs.mkdtempSync(path.join(os.tmpdir(), 'keser-world-'));
   cp.execFileSync(process.execPath, [path.join(__dirname, '..', 'build.js')], { env: Object.assign({}, process.env, { KESER_OUT: out }), stdio: 'pipe' });
@@ -35,7 +35,7 @@ module.exports = async (browser) => {
       const { ctx, pg, errs } = await open(w, h, '?demo=1&lite=1');
       const s = await pg.evaluate(() => ({ gl: KWORLD.state.gl, places: KWORLD.places, dots: document.querySelectorAll('#dots button').length, prog: KWORLD.progress }));
       if (!s.gl) fails.push('Keser world (' + tag + '): the 3D jewel box did not start');
-      if (s.places.join() !== 'kodesh,general' || s.dots !== 2) fails.push('Keser world (' + tag + '): expected 2 places (Kodesh, General Studies) with 2 dots, got ' + s.places + ' / ' + s.dots);
+      if (s.places.join() !== 'kodesh,general,timeline' || s.dots !== 3) fails.push('Keser world (' + tag + '): expected 3 places (Kodesh, General Studies, Timeline) with 3 dots, got ' + s.places + ' / ' + s.dots);
       if (!(s.prog.kodesh > 0 && s.prog.general > 0)) fails.push('Keser world (' + tag + '): the made-up girl\'s progress did not load');
       if (!(await nameIs(pg, KODESH))) fails.push('Keser world (' + tag + '): she does not start at קודש');
       const hb = await pg.evaluate(() => { const e = document.getElementById('placeName'); return e.getAttribute('lang') === 'he' && e.getAttribute('dir') === 'rtl'; });
@@ -48,8 +48,14 @@ module.exports = async (browser) => {
       if (w > 600) { await pg.click('#next'); if (!(await nameIs(pg, GENERAL))) fails.push('Keser world (' + tag + '): the next arrow does not glide to General Studies');
         if (await pg.evaluate(() => document.getElementById('placeName').hasAttribute('lang'))) fails.push('Keser world (' + tag + '): General Studies is still marked as Hebrew');
         await pg.click('#prev'); if (!(await nameIs(pg, KODESH))) fails.push('Keser world (' + tag + '): the back arrow does not glide to קודש');
-        await pg.keyboard.press('ArrowLeft'); if (!(await nameIs(pg, GENERAL))) fails.push('Keser world (' + tag + '): the left key does not go round to General Studies');
-        await pg.keyboard.press('ArrowRight'); if (!(await nameIs(pg, KODESH))) fails.push('Keser world (' + tag + '): the right key does not go round to קודש'); }
+        await pg.keyboard.press('ArrowLeft'); if (!(await nameIs(pg, TIMELINE))) fails.push('Keser world (' + tag + '): the left key does not go round to Timeline');
+        await pg.keyboard.press('ArrowRight'); if (!(await nameIs(pg, KODESH))) fails.push('Keser world (' + tag + '): the right key does not go round to קודש');
+        await pg.click('#dots button:nth-child(3)'); if (!(await nameIs(pg, TIMELINE))) fails.push('Keser world (' + tag + '): tapping the third dot does not glide to Timeline');
+        await pg.click('#enter');
+        const tl = await pg.waitForFunction(() => { const i = document.getElementById('roomHost'); return document.body.classList.contains('inside') && document.getElementById('roomName').textContent === 'Timeline' && i.complete && i.naturalWidth > 0 && /keser-cast-malka/.test(i.src); }, null, { timeout: 8000 }).then(() => true, () => false);
+        if (!tl) fails.push('Keser world (' + tag + '): Timeline does not open with Malka, its host');
+        await pg.click('#back'); await pg.waitForFunction(() => !KWORLD.state.entered, null, { timeout: 8000 }).catch(() => fails.push('Keser world (' + tag + '): Back does not leave Timeline'));
+        await pg.click('#dots button:nth-child(1)'); await nameIs(pg, KODESH); }
       else { await pg.mouse.move(300, 380); await pg.mouse.down(); await pg.mouse.move(200, 382, { steps: 4 }); await pg.mouse.move(90, 384, { steps: 4 }); await pg.mouse.up();
         if (!(await nameIs(pg, GENERAL))) fails.push('Keser world (phone): a swipe to the left does not glide to the next place');
         await pg.click('#dots button:nth-child(1)'); if (!(await nameIs(pg, KODESH))) fails.push('Keser world (phone): tapping the first dot does not glide to קודש'); }
@@ -72,19 +78,21 @@ module.exports = async (browser) => {
       errs.forEach(e => fails.push('Keser world (' + tag + '): ' + e)); await ctx.close();
     }
     /* the girls' cast (Keser Girls only pictures) is in the site, and every place has its host */
-    { const want = ['keser-cast-group', 'keser-cast-ayelet', 'keser-cast-ima', 'keser-cast-bubby', 'keser-style-sheet'];
+    { const want = ['keser-cast-group', 'keser-cast-ayelet', 'keser-cast-malka', 'keser-cast-ima', 'keser-cast-bubby', 'keser-style-sheet'];
       const miss = want.filter(n => !fs.existsSync(path.join(out, 'pics', n + '.webp'))); if (miss.length) fails.push('Keser world: these cast pictures are not in the built site: ' + miss.join(', '));
-      const places = fs.readFileSync(path.join(__dirname, '..', 'app', 'places.js'), 'utf8'); if ((places.match(/host: '/g) || []).length !== 2) fails.push('Keser world: every place needs a host from the cast');
+      const places = fs.readFileSync(path.join(__dirname, '..', 'app', 'places.js'), 'utf8'); if ((places.match(/host: '/g) || []).length !== 3) fails.push('Keser world: every place needs a host from the cast');
       /* קודש shows a Sefer Torah (no candlesticks): its 3D model is drawn in code */
       const w3 = fs.readFileSync(path.join(__dirname, '..', 'app', 'world3d.js'), 'utf8'), k = w3.slice(w3.indexOf("if (id === 'kodesh')"), w3.indexOf("if (id === 'general')"));
       if (!/Sefer Torah/.test(k) || !/rimon/.test(k) || /candle/i.test(k)) fails.push('Keser world: קודש does not show a Torah');
-      if (!/if \(id === 'general'\)/.test(w3)) fails.push('Keser world: General Studies has no centrepiece'); }
+      if (!/if \(id === 'general'\)/.test(w3)) fails.push('Keser world: General Studies has no centrepiece');
+      if (!/if \(id === 'timeline'\)/.test(w3)) fails.push('Keser world: Timeline has no centrepiece');
+      if (!/0x1b2a5e/.test(k)) fails.push('Keser world: the Torah is not navy'); }
     /* the full look (mirror, glow, crystal) also starts with no errors */
     { const { ctx, pg, errs } = await open(1366, 768, '?demo=1&full=1'); const st = await pg.evaluate(() => ({ gl: KWORLD.state.gl, lite: KWORLD.state.lite }));
       if (!st.gl || st.lite) fails.push('Keser world (full look): the full 3D look did not start'); errs.forEach(e => fails.push('Keser world (full look): ' + e)); await ctx.close(); }
     /* no 3D on this computer: still cards */
     { const { ctx, pg, errs } = await open(390, 800, '?nogl=1&demo=1'); const n = await pg.evaluate(() => ({ cards: document.querySelectorAll('.flat .place').length, shown: getComputedStyle(document.querySelector('.flat')).display !== 'none' }));
-      if (n.cards !== 2 || !n.shown) fails.push('Keser world (no 3D): the still cards do not show (' + n.cards + ')');
+      if (n.cards !== 3 || !n.shown) fails.push('Keser world (no 3D): the still cards do not show (' + n.cards + ')');
       await pg.click('.flat .place:nth-child(2)'); if (!(await nameIs(pg, GENERAL))) fails.push('Keser world (no 3D): tapping a card does not move to it');
       await pg.click('#enter'); if (!(await pg.waitForFunction(() => document.body.classList.contains('inside'), null, { timeout: 5000 }).then(() => true, () => false))) fails.push('Keser world (no 3D): Enter does not open the place');
       await check(pg, 'no 3D'); await pg.screenshot({ path: path.join(shots, 'keser-world-no3d-phone.png') }); errs.forEach(e => fails.push('Keser world (no 3D): ' + e)); await ctx.close(); }
@@ -94,7 +102,7 @@ module.exports = async (browser) => {
     /* saved progress that is broken or out of range cannot break her world */
     { const { ctx, pg } = await open(390, 800, '?nogl=1'); await pg.evaluate(() => localStorage.setItem('keser.progress', '{"kodesh":7,"general":-2,"reading":0.5}'));
       await pg.reload(); await pg.waitForFunction(() => window.KWORLD); const p = await pg.evaluate(() => KWORLD.progress);
-      if (p.kodesh !== 1 || p.general !== 0 || Object.keys(p).join() !== 'kodesh,general') fails.push('Keser world: bad saved progress is not cleaned (' + JSON.stringify(p) + ')');
+      if (p.kodesh !== 1 || p.general !== 0 || Object.keys(p).join() !== 'kodesh,general,timeline') fails.push('Keser world: bad saved progress is not cleaned (' + JSON.stringify(p) + ')');
       await pg.evaluate(() => localStorage.setItem('keser.progress', 'not json')); await pg.reload(); await pg.waitForFunction(() => window.KWORLD);
       if (await pg.evaluate(() => Object.values(KWORLD.progress).some(v => v !== 0))) fails.push('Keser world: unreadable saved progress is not treated as a fresh start'); await ctx.close(); }
     /* the welcome page leads into her world */
@@ -103,6 +111,6 @@ module.exports = async (browser) => {
       await ctx.close(); }
   } catch (e) { fails.push('Keser world test stopped: ' + String(e).slice(0, process.env.KESER_LONG ? 3000 : 200)); }
   finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
-  if (!fails.length) oks.push('Keser Girls 3.0 her world: 3D jewel box at Chromebook and phone size, 2 places (קודש in Hebrew with a Torah, General Studies), arrows/dots/keys/swipe glide, Enter and Back, the sisters\' welcome and each place\'s host girl, jewels not money, still cards without 3D, reduce motion');
+  if (!fails.length) oks.push('Keser Girls 3.0 her world: 3D jewel box at Chromebook and phone size, 3 places (קודש in Hebrew with a navy Torah, General Studies, Timeline), arrows/dots/keys/swipe glide, Enter and Back, the sisters\' welcome and each place\'s host girl, jewels not money, still cards without 3D, reduce motion');
   return { fails, oks };
 };

@@ -108,8 +108,11 @@ stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel',
 /* ---------- still cards, for computers that cannot draw 3D ---------- */
 const ICONS = {
   kodesh: '<rect x="24" y="8" width="4" height="8" rx="1" fill="#C98A1E"/><rect x="52" y="8" width="4" height="8" rx="1" fill="#C98A1E"/><circle cx="26" cy="6" r="4" fill="#E8E4F0"/><circle cx="54" cy="6" r="4" fill="#E8E4F0"/>'
-    + '<rect x="18" y="15" width="44" height="44" rx="9" fill="#B0306F" stroke="#FFF1B8" stroke-width="2"/><path d="M18 50h44" stroke="#F5C451" stroke-width="2.5"/><path d="M30 40l2-12 6 7 2-9 2 9 6-7 2 12z" fill="#F5C451" stroke="#FFF6D6" stroke-width="1"/>'
+    + '<rect x="18" y="15" width="44" height="44" rx="9" fill="#1B2A5E" stroke="#FFF1B8" stroke-width="2"/><path d="M18 50h44" stroke="#F5C451" stroke-width="2.5"/><path d="M30 40l2-12 6 7 2-9 2 9 6-7 2 12z" fill="#F5C451" stroke="#FFF6D6" stroke-width="1"/>'
     + '<rect x="24" y="59" width="4" height="7" rx="1" fill="#C98A1E"/><rect x="52" y="59" width="4" height="7" rx="1" fill="#C98A1E"/>',
+  timeline: '<path d="M8 50c14-8 22 4 32-4s20-10 32-6" fill="none" stroke="#F5C451" stroke-width="2.5" stroke-linecap="round"/>'
+    + '<path d="M14 44l4 4-4 4-4-4z" fill="#FF5FA2"/><path d="M28 45l4 4-4 4-4-4z" fill="#F5C451"/><path d="M40 42l4 4-4 4-4-4z" fill="#5FE3CF"/><path d="M54 37l4 4-4 4-4-4z" fill="#8FB8FF"/><path d="M68 36l4 4-4 4-4-4z" fill="#B98CFF"/>'
+    + '<rect x="8" y="16" width="14" height="10" rx="2" fill="rgba(255,255,255,.35)" stroke="#fff" stroke-width="1.2"/><rect x="33" y="12" width="14" height="10" rx="2" fill="rgba(255,255,255,.35)" stroke="#fff" stroke-width="1.2"/><rect x="58" y="10" width="14" height="10" rx="2" fill="rgba(255,255,255,.35)" stroke="#fff" stroke-width="1.2"/>',
   general: '<path d="M40 34C30 27 18 28 10 31v30c8-3 20-4 30 3z" fill="#fff"/><path d="M40 34c10-7 22-6 30-3v30c-8-3-20-4-30 3z" fill="#FFE3F0"/><path d="M40 34v30" stroke="#FF5FA2" stroke-width="2"/>'
     + '<rect x="18" y="8" width="13" height="13" rx="2" fill="#D9C2FF" stroke="#fff" stroke-width="1.3"/><path d="M47 22l7-15 7 15z" fill="#FF8FBF" stroke="#fff" stroke-width="1.3"/><circle cx="39" cy="14" r="6" fill="#BFF5EE" stroke="#fff" stroke-width="1.3"/>',
 };
