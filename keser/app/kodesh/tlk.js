@@ -7,7 +7,7 @@
   var X_SVG = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var HOME_SVG = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>';
   var BACK_SVG = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';
-  var WORDS = { start: 'Start', next: 'Next', back: '‹ Back', check: 'Check', close: 'Close', home: 'Back to Kodesh', leaveLesson: 'Leave this lesson', notNow: 'Not now' };
+  var WORDS = { start: 'Start', next: 'Next', back: '‹ Back', check: 'Check', close: 'Close', home: 'Back to Kodesh', leaveLesson: 'Leave this lesson?', keepLearning: 'Keep learning', leave: 'Leave', tryAgain: 'Try again', notNow: 'Not now' };
   var KINDS = { prog: 1, now: 1, subj: 1, lock: 1, rank: 1 };
   window.TLK = { WORDS: WORDS, KINDS: KINDS, X_SVG: X_SVG, HOME_SVG: HOME_SVG, BACK_SVG: BACK_SVG,
     main: function (t, a, x) { return '<button type="button" class="tlk tlk-main' + (x ? ' ' + x : '') + '"' + A(a) + '>' + esc(t) + '</button>'; },

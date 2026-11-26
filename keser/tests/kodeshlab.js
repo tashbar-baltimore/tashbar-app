@@ -15,7 +15,10 @@ module.exports = async (browser) => {
   cp.execFileSync(process.execPath, [path.join(K, 'build.js')], { env: Object.assign({}, process.env, { KESER_OUT: out }), stdio: 'pipe' });
   /* 6. a girl's words */
   { const lab = fs.readFileSync(path.join(K, 'app', 'kodesh', 'lab.js'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-    const masc = ['לְחַץ', 'בְּחַר', 'שֶׁלְּךָ', 'בְּיָדְךָ', 'אַתָּה', 'הֲיָדַעְתָּ', 'בָּנִיתָ', 'אַשְׁרֶיךָ', 'הִסְתַּכֵּל', 'נַסֵּה', 'הַרְאֵה', 'צָרִיךְ עֶזְרָה'].filter(w => lab.includes(w));
+    const masc = ['לְחַץ', 'בְּחַר', 'בְחַר ', 'לְמַד ', 'שֶׁלְּךָ', 'בְּיָדְךָ', 'אַתָּה', 'הֲיָדַעְתָּ', 'בָּנִיתָ', 'אַשְׁרֶיךָ', 'הִסְתַּכֵּל', 'נַסֵּה', 'הַרְאֵה', 'הַסְתֵּר', 'הַנַּח', 'הַשְׁוֵה', 'סַדֵּר', 'חַסֵּר', 'חַפֵּשׂ', 'זְכֹר', 'מְצָא', 'כַּסֵּה', 'הַתְחֵל', 'תָּקוּעַ', 'צָרִיךְ עֶזְרָה'].filter(w => lab.includes(w));
+    /* every button word the lab asks the kit for exists (the reviewer found a blank "Try again" and a backwards "Leave this lesson?" box) */
+    const kit = fs.readFileSync(path.join(K, 'app', 'kodesh', 'tlk.js'), 'utf8'), noWord = [...new Set((lab.match(/WORDS\.(\w+)/g) || []).map(w => w.slice(6)))].filter(w => !new RegExp('\\b' + w + '\\s*:').test(kit));
+    if (noWord.length) fails.push('Keser Kodesh lab: the Keser kit has no button word for ' + noWord.join(', '));
     if (masc.length) fails.push('Keser Kodesh lab: Hebrew still speaks to a boy: ' + masc.join(', '));
     if (/\bhis own\b|a talmid uses/.test(lab)) fails.push('Keser Kodesh lab: English still speaks to a boy ("his own" / "a talmid uses")'); }
   /* 1. pictures */

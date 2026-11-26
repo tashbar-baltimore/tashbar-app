@@ -8,7 +8,7 @@
 (function(){
  if(window.CLAB&&window.CLAB.ready) return;
  const X=window.CLAB={ready:true,open:false,view:'hub'};
- window.CLAB_LIVE=window.CLAB_LIVE||'on';   /* 'on' = grade 3 and up + TEST- boys, 'test' = TEST- boys only, 'off' */
+ window.CLAB_LIVE=window.CLAB_LIVE||'on';   /* 'on' = grade 3 and up + TEST- girls, 'test' = TEST- boys only, 'off' */
  const D=()=>window.CLAB_DATA;
  const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const rnd=n=>Math.floor(Math.random()*n), pick=a=>a[rnd(a.length)], uniq=a=>[...new Set(a)];
@@ -27,7 +27,7 @@
  const young=()=>{const g=grade();return T()?T().young(g):false;};
  function eligible(){ const live=window.CLAB_LIVE; if(live==='off') return false; const id=me().id; if(!id) return false; if(/^TEST/.test(id)) return true; if(live==='test') return false; const g=grade(); return g!=null&&!isNaN(g)&&g>=3; }
 
- /* ---------------- progress (on this Chromebook, for this boy) ---------------- */
+ /* ---------------- progress (on this computer, for this girl) ---------------- */
  let P=null;
  const blank=()=>({done:{sh:[],ml:[],ps:[],tr:[],pw:[]},steps:{},tl:{lang:'en',done:{},best:{}}});
  function load(){ const k='clab:'+(me().id||'guest'); let p=null; try{ p=JSON.parse(localStorage.getItem(k)||'null'); }catch(e){} P=Object.assign(blank(),p||{}); P.done=Object.assign(blank().done,P.done||{}); P.tl=Object.assign(blank().tl,P.tl||{}); P._k=k; }
@@ -232,7 +232,7 @@
    return tile('clab-unit','data-u="'+i+'" aria-label="'+E(String(label(i)).replace(/<[^>]+>/g,''))+(d?', done':open?'':', locked')+'"',`<b>${label(i)}</b>${peek?`<span class="pk clab-he">${peek(i)}</span>`:''}${d?pill('prog','Done'):i===reach?pill('now','Up next'):open?'':pill('lock','Locked')}`,!open);}).join('')}</div>`; }
  const wireUnits=f=>bodyEl().querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{ snd('tap'); f(+b.dataset.u); });
 
- /* ================= ASK: one question of any kind; done(ok) when he taps Next ================= */
+ /* ================= ASK: one question of any kind; done(ok) when she taps Next ================= */
  function ask(box,Q,done,opt){ opt=opt||{};
   const fin=(ok,rightText)=>{ snd(ok?'right':'wrong'); if(opt.fast){ later(()=>done(ok),ok?350:900); return; }
    const extra=Q.parts?partsHTML(Q.parts):Q.x&&Q.x.ex&&!ok&&Q.kind!=='hunt'?exHTML(Q.x.ex):'';
@@ -430,7 +430,7 @@
    <p><span class="clab-he">הָאָרֶץ</span> = <span class="clab-he">הָ</span> “the” + <span class="clab-he">אֶרֶץ</span> “land”. Peel off the front and the end, and the middle is a word you know.</p><p>Each unit: the lesson, practice, a game, then the quiz. Every quiz reviews the units before it.</p></div>
    ${pathHTML('ps',U.length,i=>'Unit '+(i+1)+': '+heWrap(U[i].title))}</div>`);
   wireUnits(psUnit); }
- /* Staff request (2026-11-26): a boy works only with the prefixes and suffixes, never translating the base word or the whole word.
+ /* Staff request (2026-11-26): a girl works only with the prefixes and suffixes, never translating the base word or the whole word.
     Kinds: spot (tap the prefix or suffix letters), affix (tap the Hebrew prefix/suffix for each meaning, the base word is given),
     pos (prefix or suffix?), part (what does this prefix/suffix mean?). The lesson still shows each word's meaning as help. */
  const PSHOW={part:'Find the letters stuck to the front or the end (the colored ones). Think back to the lesson: what does that prefix or suffix mean?',
@@ -648,7 +648,7 @@
   year:Qx("Important Dates: what year?","תַּאֲרִיכִים חֲשׁוּבִים: בְּאֵיזוֹ שָׁנָה?"),mem:Qx("Which came first? (from memory)","מָה הָיָה קֹדֶם? (בְּעַל פֶּה)"),use:Qx("Use the Important Dates","חֶשְׁבּוֹן עִם הַתַּאֲרִיכִים"),chal:Qx("Challenge","אֶתְגָּר")};
  const TLHOW={first:Qx("Look at each card's year (tap Show the dates if you need them). The smaller year happened first.","הִסְתַּכְּלִי בַּשָּׁנָה שֶׁל כׇּל כַּרְטִיס. הַשָּׁנָה הַקְּטַנָּה יוֹתֵר הָיְתָה קֹדֶם."),
   last:Qx("Look at each card's year. The biggest year happened last.","הִסְתַּכְּלִי בַּשָּׁנִים. הַשָּׁנָה הַגְּדוֹלָה בְּיוֹתֵר הָיְתָה אַחֲרוֹנָה."),
-  fl:Qx("Put the four cards in order in your head. Then pick the first one or the last one.","סַדְּרִי אֶת אַרְבַּעַת הַכְּרָטִיסִים בָּרֹאשׁ, וּבְחַר אֶת הָרִאשׁוֹן אוֹ אֶת הָאַחֲרוֹן."),
+  fl:Qx("Put the four cards in order in your head. Then pick the first one or the last one.","סַדְּרִי אֶת אַרְבַּעַת הַכְּרָטִיסִים בָּרֹאשׁ, וּבַחֲרִי אֶת הָרִאשׁוֹן אוֹ אֶת הָאַחֲרוֹן."),
   ba:Qx("Compare the two years. If the first one is smaller, it was BEFORE.","הַשְׁוִי אֶת שְׁתֵּי הַשָּׁנִים. אִם הָרִאשׁוֹנָה קְטַנָּה יוֹתֵר, הִיא הָיְתָה לִפְנֵי."),
   order:Qx("Tap the earliest card first, then the next one, all the way to the latest. Made a mistake? Tap Start over.","לַחֲצִי קֹדֶם עַל הַכַּרְטִיס הַמֻּקְדָּם בְּיוֹתֵר, וְכָךְ הָלְאָה עַד הָאַחֲרוֹן."),
   match:Qx("Think of the Important Dates. Which year goes with this event?","חִשְׁבִי עַל הַתַּאֲרִיכִים הַחֲשׁוּבִים. אֵיזוֹ שָׁנָה מַתְאִימָה?"),
@@ -787,7 +787,7 @@
    Ty('use',Qx("How many years after Chanuka was the Second Bais Hamikdash destroyed?","כַּמָּה שָׁנִים אַחֲרֵי חֲנֻכָּה נֶחֱרַב בַּיִת שֵׁנִי?"),206,{hint:["Chanuka","The Second Bais Hamikdash is destroyed"]}),
    Ty('chal',Qx("This year is 5787. How many years ago was Matan Torah?","הַשָּׁנָה הִיא 5787. לִפְנֵי כַּמָּה שָׁנִים הָיָה מַתַּן תּוֹרָה?"),3339,{hint:[Qx("This year: 5787","הַשָּׁנָה: 5787"),"The Ten Makos, the Exodus and Matan Torah"],f:"Matan Torah was 3,339 years ago, and we still learn the same Torah today!"})],
    plan:[['alive',3,null,0],['order',0,gOrder(poolTo(40),8),1],['what',6,null,0],['year',6,null,0],['mem',2,gMem,3],['use',4,gDiff,2],['chal',1,null,0]]},
-  dates:{shape:'★',name:Qx('Important Dates','תַּאֲרִיכִים חֲשׁוּבִים'),what:Qx('Learn the Important Dates by heart. Tap the year for each event.','לְמַד בְּעַל פֶּה אֶת הַתַּאֲרִיכִים הַחֲשׁוּבִים. בַּחֲרִי אֶת הַשָּׁנָה שֶׁל כׇּל מְאֹרָע.'),range:44,cur:()=>[
+  dates:{shape:'★',name:Qx('Important Dates','תַּאֲרִיכִים חֲשׁוּבִים'),what:Qx('Learn the Important Dates by heart. Tap the year for each event.','לִמְדִי בְּעַל פֶּה אֶת הַתַּאֲרִיכִים הַחֲשׁוּבִים. בַּחֲרִי אֶת הַשָּׁנָה שֶׁל כׇּל מְאֹרָע.'),range:44,cur:()=>[
    ...shuffle(DATES12.map(([y,k],i)=>Ty('year','when',+y,{ev:k,hint:around(i),f:DFACT[k]}))),
    Ty('year',Qx('What year is it now?','אֵיזוֹ שָׁנָה עַכְשָׁו?'),5787,{hint:[Qx('Last year was 5786.','שָׁנָה שֶׁעָבְרָה הָיְתָה 5786.')],f:'5787 is the year ה׳תשפ״ז.'})],plan:[['year',12,null,0]]}};
  const UI_={title:Qx('Timeline: Which Came First?','צִיר הַזְּמַן: מָה הָיָה קֹדֶם?'),
