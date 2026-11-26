@@ -26,7 +26,11 @@ const KEY = 'tl2:k-kriyah';
 export function loadSave() { try { const s = JSON.parse(localStorage.getItem(KEY) || '{}'); s.games = s.games || {}; return s; } catch (e) { return { games: {} }; } }
 function writeSave(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
 export function best(id) { const g = loadSave().games[id]; return g ? g.stars || 0 : 0; }
+/* look mode: on a pull request's preview site (its address has "--pr-"), a link with ?look=1 opens every game, so an approver can see any unit.
+   It is never on for the live 2.0 site the boys use. */
+const LOOK = (() => { try { if (!location.hostname.includes('--pr-')) return false; if (new URLSearchParams(location.search).get('look') === '1') sessionStorage.setItem('tl2:look', '1'); return sessionStorage.getItem('tl2:look') === '1'; } catch (e) { return false; } })();
 export function unlocked(id) {
+  if (LOOK) return GAMES.some(x => x.id === id);
   const g = GAMES.find(x => x.id === id), u = unitOf(id); if (!g || !u) return false;
   const i = u.games.findIndex(x => x.id === id), check = v => v.games.find(x => x.mastery).id;
   if (g.bonus) return best(check(u)) >= 3;      /* the bonus round opens for a boy who got 3 stars on his unit's check */
