@@ -13,7 +13,7 @@ Lane: `k-abc` (Esti, 2026-11-26). The map is `MAP.md` ("the map looks fine"). On
 1. **No locks on the menu for now.** The map says the next game opens at 2 stars. 2.0 has no shared progress yet, so every game stays open (so you can see everything from one look link). His stars show on each button, saved in his browser. When 2.0 gets saved progress, the lock is one line.
 2. **Mendy is the painted Mendy from 2.0 Shapes** (same pictures, copied into `v2/app/k-abc/art/`), so the boys meet one Mendy everywhere. He stands inside the 3D world and always turns to face the boy.
 3. **No faces on objects.** The pictures (hat, sun, cake, clock...) have no faces. Animals (cat, goat, bee, fish, snake) have small kind eyes. The look sample's apple friend has a face; I will not use it in the units (the art bible says no faces on objects).
-4. **Who makes the mistake in "Fix it".** The map says a boy's name always comes with his picture. Until the friends' painted pictures arrive (order A1), Mendy makes the mistakes himself: "Sun and map rhyme! Am I right?" The boy checks Mendy. When the pictures arrive, Eli and Ari take over as in the map.
+4. **Who makes the mistake in "Fix it".** The map says a boy's name always comes with his picture. The friends' painted pictures arrived (order A1), so Eli (Unit 1) and Ari (Unit 2) stand beside Mendy, thinking (finger on chin) while the boy checks them, and hop for joy when it is fixed.
 5. **Added from 1.0 K (Pencil Power): "Bee Paths"** in Unit 1, finger tracing of lines, a curve, a circle and a zigzag, so his hand is ready to trace letters in Unit 2.
 6. **Pictures live in the lane folder** (`v2/app/k-abc/art/`), not in the shared `art/` library. CLAUDE.md asks for `art/`, but your lane rules say I may change only lane folders. **Shared change to ask about:** may I copy them into `art/` later (needs a catalog row each)?
 7. **The menu tiles are pictures of the games themselves** (made from the game screens), saved small in `art/thumb-*.webp`.
@@ -71,7 +71,7 @@ The letter kit (map) for each letter, each letter with its own world and twist. 
 | p-hunt | tap moving targets: pop the bubbles with p pictures | bubbles over the hill |
 | slide, slide2 | blending: push each letter tile down the slide into the next, left to right; "tap" goes to its picture | playground slide |
 | story | listening + finding words he can read (sat, pat, tap) | three picture frames |
-| fixit | judge Mendy's word (thumbs), then drag the right letter tile into the glowing spot | the meadow shelf |
+| fixit | judge Ari's word (thumbs), then drag the right letter tile into the glowing spot | the meadow shelf, Ari beside Mendy |
 | check | mastery, tap kinds: hear a sound → tap its letter; see a letter → tap its picture; hear a word → tap it | sunset stage |
 | review | Units 1–2 mixed: rhyme tap, picture → letter drag, drum parts, hear sounds → tap the word | the pond |
 

@@ -7,7 +7,7 @@
      p  pinwheel hill  · meet: a pinwheel grows on its stick    · hunt: pictures float up in bubbles; tap to pop the p ones
    slide / slide2: Slide it (blending): push the letter tiles down the slide into each other: s, a, t ... sat! then the word goes to its picture
    story: a 3-picture story read aloud; he finds the words he can read
-   fixit: Mendy built a word; thumbs up or down, then drag in the right tile
+   fixit: Ari (his painted picture beside Mendy) built a word; thumbs up or down, then drag in the right tile
    check: the mastery check, tap kinds only (hear a sound, tap its letter; see a letter, tap its picture; hear a word, tap it)
    review: Unit 1 and Unit 2 mixed */
 import { THREE, V, shuffle, rnd, audio, echo, WORDS, FAST, ease, clamp } from '../game.js';
@@ -302,26 +302,26 @@ const story = {
   }
 };
 
-/* =========================================================== fix it: Ari's words =========================================================== */
+/* =========================================================== fix it: Ari's words (MAP.md: "Ari read this ...") =========================================================== */
 const FIXES = [{ want: 'sat', made: 'sap', fix: 2 }, { want: 'tap', made: 'tap' }, { want: 'pat', made: 'sat', fix: 0 }, { want: 'at', made: 'at' }, { want: 'sap', made: 'tap', fix: 0 }];
 const fixit = {
   world(G) { const W = base(G.S, 'meadow', { clearW: 7 }); tree(G.S, -9, -7, { s: 1.6 }); tree(G.S, 8.5, -7.5, { s: 1.4 }); G.board = shelf(G.S, -2.8, 2.8, -1.2, 1.4, 0xC98A4B, 1.2);
     G.view({ wide: [-0.3, 2.0, 11.2, 5.6, 0.17], narrow: [0, 2.1, 5.2, 7.8, 0.2] }); return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow(); G.rounds(FIXES.length);
-    await G.say('I am building words.', 'Sometimes I get mixed up. Check me!');
+    const ari = await G.friend('ari'); await G.say('This is my friend Ari. He builds words.', 'Sometimes he gets mixed up. Let\'s check!');
     for (const f of FIXES) {
       G.newRound(); const chs = f.made.split(''), slot = i => V((i - (chs.length - 1) / 2) * (n() ? 1.2 : 1.45), 2.15, -1.2);
       const tiles = chs.map((ch, i) => { const t = letterTile(ch); t.position.copy(slot(i)); t.scale.setScalar(0.0001); S.scene.add(t); S.tween(400, e => t.scale.setScalar(Math.max(0.0001, e)), ease.back); return t; });
-      G.mendy.set('point', 2); await G.say('I want to make ' + f.want + '.', 'I made this. Am I right?', echo(async () => { for (const c of chs) await audio.letter(c); }));
+      ari.set('think', 30); await G.say('Ari wanted to make ' + f.want + '.', 'He made this. Is he right?', echo(async () => { for (const c of chs) await audio.letter(c); }));
       G.button('yes', true); G.button('no', true); const ok = f.want === f.made;
       for (;;) { G.expect({ kind: 'button', sel: ok ? '#yes' : '#no' }); G.A.wrongMove = { kind: 'button', sel: ok ? '#no' : '#yes' };
         const p = await G.pressed('yes', 'no'); if ((p === 'yes') === ok) break;
         await G.wrong(['Listen to each sound.', echo(async () => { for (const c of chs) await audio.letter(c); }), 'Does it say ' + f.want + '?']); }
       G.button('yes', false); G.button('no', false);
-      if (ok) { await G.right(V(0, 3.2, 0), 'Yes! I made ' + f.want + '!'); }
+      if (ok) { ari.set('happy', 1.5); ari.hopNow(); await G.right(V(0, 3.2, 0), 'Yes! Ari made ' + f.want + '!'); }
       else {
-        await G.say('Oops, I got mixed up!', 'Drag the right letter into the glowing spot.');
+        await G.say('Ari got mixed up. Let\'s fix it!', 'Drag the right letter into the glowing spot.');
         const bad = tiles[f.fix]; await S.tween(300, e => bad.position.y = slot(f.fix).y + e * 1.4); S.scene.remove(bad);
         const ring = new THREE.Mesh(new THREE.RingGeometry(0.66, 0.82, 40), new THREE.MeshBasicMaterial({ color: C(0xFFF3A0).multiplyScalar(1.6), transparent: true, opacity: 0.85, side: THREE.DoubleSide })); ring.position.copy(slot(f.fix)).add(V(0, 0, 0.2)); S.scene.add(ring);
         const need = f.want[f.fix], choices = shuffle([need, f.made[f.fix] === need ? 'a' : f.made[f.fix]]);
@@ -331,12 +331,12 @@ const fixit = {
         G.hint(async () => { await G.trail(ch[choices.indexOf(need)].position, slot(f.fix)); });
         await new Promise(res => tileDrag(G, ch, async (t, at) => { const a1 = S.toScreen(t.position), b1 = S.toScreen(slot(f.fix)); if (Math.hypot(a1.x - b1.x, a1.y - b1.y) > 120 * Math.max(0.6, Math.min(innerWidth, innerHeight) / 768)) return false;
           if (t.userData.ch === need) { t.position.copy(slot(f.fix)); S.scene.remove(ring); tiles[f.fix] = t; ch.filter(x => x !== t).forEach(x => S.scene.remove(x));
-            for (const c of f.want) await audio.letter(c); await G.right(t.position, f.want + '! Fixed!'); res(); return true; }
+            ari.set('happy', 1.5); ari.hopNow(); for (const c of f.want) await audio.letter(c); await G.right(t.position, f.want + '! Fixed!'); res(); return true; }
           await G.wrong(['Listen.', snd(t.userData.ch), 'We need ' + f.want + '.']); return false; }));
       }
       tiles.forEach(t => S.scene.remove(t));
     }
-    await G.done('Thank you for checking me!');
+    ari.set('happy', 3); await G.done('Ari says thank you!');
   }
 };
 /* drag loose letter tiles (not pictures); drop(tile, point) -> true keeps it */
