@@ -72,7 +72,7 @@ _From `node tools/core/ledger.js`, 2026-11-26 14:30 UTC (coordinator). Grade 1 s
 | C2a | P2 | C68 Comprehension Grade 6 Units 6.1–6.4 (none live) | TAKEN | https://claude.ai/code/session_01Cri5bNCM4L3QyPCuDWDj2R | 2026-11-26 14:25 | Claimed: W1 first, then Units 6.1–6.4 one PR each, in `src/CoreDataC68H7.html`; LANES helper row added |
 | C2b | P2 | C68 Grade 7 Units 7.1–7.4 | OPEN | | | |
 | C2c | P2 | C68 Grade 8 Units 8.1–8.4 | OPEN | | | |
-| C3 | P2 | W13 Writing K–3 Units 2–6 (start with the OPEN W13 helper rows in CORE-GROWTH-LANES.md) | TAKEN | https://claude.ai/code/session_01NmKrTikPvniRoToxpkoi32 | 2026-11-26 20:50 | Grade 3 Unit 2 "Real Stories" live (#584). Grade 3 Unit 3 "Opinion with Reasons" (5 lessons, unit check W13.U33, Speak Up! piece) reviewed 4–5, in its PR (claim #572). Grades K–2 Units 2–4 are not part of this claim |
+| C3 | P2 | W13 Writing K–3 Units 2–6 (start with the OPEN W13 helper rows in CORE-GROWTH-LANES.md) | TAKEN | https://claude.ai/code/session_01NmKrTikPvniRoToxpkoi32 | 2026-11-26 20:50 | Grade 3 Unit 2 "Real Stories" live (#584). Grade 3 Unit 3 "Opinion with Reasons" (5 lessons, unit check W13.U33, Speak Up! piece) reviewed 4–5, in PR #596 (claim #572). Grades K–2 Units 2–4 are not part of this claim |
 | C4 | P2 | G Units 7–8 (Gr 2–8), then K–1 grammar; Word Work sets for C45/C68 texts | OPEN | | | |
 | C5 | P2 | K–1 reading: Grade 1 little readers; the next listen-along story sets | OPEN | | | |
 | C6 | P2 | C45: unit checks for Units 4.1–4.7 and 5.1–5.5; bring back from closed #456 only what #450 lacks | OPEN | | | |
