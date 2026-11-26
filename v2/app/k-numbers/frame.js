@@ -149,31 +149,31 @@
   };
 
   /* ---------- the finger hand ----------
-     F.fingers(n, interactive) -> { el, set(n), count(), onChange }. Fingers go up in counting order: pointer, middle, ring, pinky, thumb. */
-  var FING = [ /* x, y, w, h, rotate (index order: pointer, middle, ring, pinky, thumb) */
-    [78, 18, 22, 86, -4], [104, 8, 22, 96, 0], [130, 16, 22, 88, 5], [154, 36, 20, 70, 11], [46, 92, 22, 58, -40]];
+     F.fingers(n, interactive) -> { el, set(n), count(), onChange }. Fingers go up in counting order: pointer, middle, ring, pinky, thumb.
+     Tap the hand: one more finger goes up. The yellow arrow: one goes down.
+     The hand is six matching pictures (img/hand-0 … hand-5, original art made for us); the one shown follows how many fingers are up.
+     Five hidden .fg marks keep the state, so games can still raise or fold finger i. */
   F.fingers = function (n, interactive) {
     var el = document.createElement('div'); el.className = 'fhand' + (interactive ? '' : ' locked');
-    var g = '';
-    FING.forEach(function (f, i) {
-      g += '<g class="fg down" data-f="' + i + '" style="transform-origin:' + (f[0] + f[2] / 2) + 'px ' + (f[1] + f[3]) + 'px"><g transform="rotate(' + f[4] + ' ' + (f[0] + f[2] / 2) + ' ' + (f[1] + f[3]) + ')">' +
-        '<rect class="skin" x="' + f[0] + '" y="' + f[1] + '" width="' + f[2] + '" height="' + (f[3] + 14) + '" rx="' + f[2] / 2 + '" fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="4"/>' +
-        '<rect x="' + (f[0] + 5) + '" y="' + (f[1] + 4) + '" width="' + (f[2] - 10) + '" height="12" rx="5" fill="#FFF6EC" stroke="#E8B48A" stroke-width="1.5"/>' +
-        '<rect x="' + (f[0] + 4) + '" y="' + (f[1] + 16) + '" width="4" height="' + Math.max(10, f[3] * .4) + '" rx="2" fill="#fff" opacity=".55"/></g></g>';
-    });
-    el.innerHTML = '<svg viewBox="20 0 170 230">' + g + '<path d="M62 98 C 60 84, 176 80, 176 104 L 178 170 C 178 206, 150 226, 118 226 C 84 226, 62 204, 62 172 Z" fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="4.5"/>' +
-      '<g fill="none" stroke="#E8B48A" stroke-width="3" stroke-linecap="round" opacity=".8"><path d="M80 100 q 9 -6 18 0"/><path d="M104 96 q 9 -6 18 0"/><path d="M128 99 q 9 -6 18 0"/><path d="M151 104 q 8 -5 16 0"/></g>' +
-      '<path d="M72 112 C 70 104, 166 100, 166 112" stroke="#E8B48A" stroke-width="3" fill="none" opacity=".7"/><ellipse cx="96" cy="170" rx="10" ry="22" fill="#fff" opacity=".35"/></svg>';
+    var g = '<span class="fgs" aria-hidden="true">'; for (var i = 0; i < 5; i++) g += '<i class="fg down" data-f="' + i + '"></i>'; g += '</span><div class="hpics">';
+    for (var j = 0; j <= 5; j++) g += '<img class="hpic" data-n="' + j + '" src="img/hand-' + j + '.webp" alt="" draggable="false">';
+    el.innerHTML = g + '</div>';
     var fs = el.querySelectorAll('.fg'), api = { el: el, onChange: null };
-    function mark() { el.classList.toggle('empty', api.count() === 0); }
+    var pics = el.querySelectorAll('.hpic'), shown = -1;
+    function draw() { var c = api.count(), first = shown < 0; if (c === shown) return; shown = c;
+      pics.forEach(function (p) { p.classList.toggle('on', +p.dataset.n === c); }); el.setAttribute('aria-label', c + (c === 1 ? ' finger' : ' fingers'));
+      if (!first) { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } }
+    function mark() { el.classList.toggle('empty', api.count() === 0); draw(); }
+    new MutationObserver(mark).observe(el.querySelector('.fgs'), { attributes: true, subtree: true, attributeFilter: ['class'] });   /* a game that raises finger i itself still changes the picture */
     api.set = function (k) { fs.forEach(function (f, i) { f.classList.toggle('down', i >= k); }); mark(); };
     api.count = function () { var c = 0; fs.forEach(function (f) { if (!f.classList.contains('down')) c++; }); return c; };
     api.lock = function (on) { el.classList.toggle('locked', on); };
     api.finger = function (i) { return fs[i]; };
     if (interactive) el.addEventListener('pointerdown', function (e) {
-      if (el.classList.contains('locked')) return; var f = e.target.closest('.fg'); e.preventDefault();
-      if (!f || f.classList.contains('down')) { f = null; for (var i = 0; i < 5; i++) if (fs[i].classList.contains('down')) { f = fs[i]; break; } if (!f) return; }   /* tap the hand: the next finger goes up */
-      f.classList.toggle('down'); NK.sound[f.classList.contains('down') ? 'back' : 'pop'](); mark(); if (api.onChange) api.onChange(api.count());
+      if (el.classList.contains('locked') || e.target.closest('.fdown')) return; e.preventDefault();
+      var f = null; for (var i = 0; i < 5; i++) if (fs[i].classList.contains('down')) { f = fs[i]; break; }   /* tap the hand: the next finger goes up */
+      if (!f) { NK.sound.back(); return; }
+      f.classList.remove('down'); NK.sound.pop(); mark(); if (api.onChange) api.onChange(api.count());
     });
     if (interactive) {
       var dn = document.createElement('button'); dn.className = 'fdown btn3d b-sun'; dn.setAttribute('aria-label', 'Put one finger down');

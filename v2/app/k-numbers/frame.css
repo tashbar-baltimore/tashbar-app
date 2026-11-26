@@ -114,13 +114,12 @@ svg{ display:block; }
 
 /* the big finger hand: tap a finger to raise or fold it */
 .fhand{ position:relative; touch-action:none; }
-.fhand svg{ width:100%; height:100%; overflow:visible; }
-.fhand .fg{ transition:transform .22s cubic-bezier(.3,1.5,.5,1); cursor:pointer; }
-.fhand .fg.down{ transform:scaleY(.2); opacity:0; }
-.fhand .fg[data-f="4"].down{ transform:scale(.01); opacity:0; }
-.fhand:not(.locked){ cursor:pointer; }
-.fhand.locked .fg{ cursor:default; }
-.fhand .fg:hover .skin{ filter:brightness(1.04); }
+.fhand .fgs{ display:none; }
+.fhand .hpics{ position:relative; width:100%; height:100%; }
+.fhand .hpic{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:50% 100%; opacity:0; user-select:none; -webkit-user-drag:none; pointer-events:none; filter:drop-shadow(0 8px 10px rgba(30,40,90,.22)); }
+.fhand .hpic.on{ opacity:1; }
+.fhand.bump .hpics{ animation:hbump .24s cubic-bezier(.3,1.6,.5,1); }
+@keyframes hbump{ 0%{ transform:scale(.94); } 100%{ transform:scale(1); } }
 
 /* thumbs */
 .thumbs{ display:flex; gap:clamp(16px,4vw,40px); justify-content:center; }
@@ -150,7 +149,7 @@ svg{ display:block; }
 .fhand .fdown{ position:absolute; right:-10px; bottom:-8px; width:84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:2; }
 .fhand .fdown svg{ width:60% !important; height:60% !important; position:relative; }
 .fhand.locked .fdown{ opacity:.45; }
-.fhand.empty:not(.locked) svg{ animation:tapme 1.1s ease-in-out infinite; transform-origin:50% 80%; }
+.fhand.empty:not(.locked) .hpics{ animation:tapme 1.1s ease-in-out infinite; transform-origin:50% 80%; }
 @keyframes tapme{ 50%{ transform:scale(1.06); filter:drop-shadow(0 0 12px #FFD23D); } }
 .fhand.empty .fdown{ opacity:.45; }
 
