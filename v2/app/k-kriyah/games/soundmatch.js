@@ -7,7 +7,7 @@ export default function setup(E, { struggled, unit }) {
   const { THREE, S } = E;
   const PIC = makePictures(E), keys = (unit.n > 1 ? ['beis', ...unit.letters] : unit.letters).filter(k => Object.keys(WORDS).some(w => WORDS[w].letter === k && hasPic(w)));   /* in Alef-Beis order, right to left */   /* one earlier letter comes back (Beis, with the bayis) */
   const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter) && hasPic(w)).filter((w, i, a) => a.slice(0, i).filter(x => WORDS[x].letter === WORDS[w].letter).length < 2);   /* two pictures per letter */
-  const kid = E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }); E.scene.add(kid);   /* Shloimy */
+  const kid = E.pictureCard('shloimy', () => E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c })); E.scene.add(kid);   /* Shloimy */
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4; p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
