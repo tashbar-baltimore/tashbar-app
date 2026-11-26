@@ -25,10 +25,11 @@ function why(sel){ const t=String(sel==null?'':sel).replace(/[\u0591-\u05C7]/g,'
 function css(){ if(document.getElementById('lf-css')) return; const s=document.createElement('style'); s.id='lf-css'; s.textContent=`
 body.lf-on .qcard .how{display:none!important}
 body:has(#tqh) .lf-card{display:none!important}
-.lf-help{display:inline-flex;width:auto!important;align-self:flex-start;align-items:center;gap:10px;margin:6px 0 12px;border:0;border-radius:999px;padding:12px 24px;background:linear-gradient(180deg,#FEF08A,#FACC15);color:#1E1B4B;font:900 20px var(--display,'Barlow'),sans-serif;cursor:pointer;box-shadow:0 5px 0 #CA8A04,0 10px 18px rgba(202,138,4,.25)}
-.lf-help:active{transform:translateY(4px);box-shadow:0 1px 0 #CA8A04}
+.lf-help:not(.tlk){display:inline-flex;width:auto!important;align-self:flex-start;align-items:center;gap:10px;margin:6px 0 12px;border:0;border-radius:999px;padding:12px 24px;background:linear-gradient(180deg,#FEF08A,#FACC15);color:#1E1B4B;font:900 20px var(--display,'Barlow'),sans-serif;cursor:pointer;box-shadow:0 5px 0 #CA8A04,0 10px 18px rgba(202,138,4,.25)}
+.lf-help:not(.tlk):active{transform:translateY(4px);box-shadow:0 1px 0 #CA8A04}
 .lf-why{margin:4px 0 12px;padding:12px 16px;border-radius:16px;background:#FFF7ED;border:2px solid #FDBA74;color:#7C2D12;font:700 20px/1.4 'Andika',var(--body,'Nunito'),sans-serif;animation:lfpop .4s cubic-bezier(.2,1.4,.4,1) both}
 .lf-why .lf-he{font:700 34px 'Frank Ruhl Libre','SBL Hebrew',serif;vertical-align:middle;margin:0 4px}
+.lf-help.tlk.lf-nudge{box-shadow:var(--tlk-lift),0 0 0 6px rgba(250,204,21,.5)!important}
 .lf-help.lf-nudge{animation:lfwig .9s ease-in-out 3;box-shadow:0 5px 0 #CA8A04,0 0 0 8px rgba(250,204,21,.35),0 10px 18px rgba(202,138,4,.25)}
 @keyframes lfwig{0%,100%{transform:rotate(0)}20%{transform:rotate(-5deg) scale(1.06)}40%{transform:rotate(5deg) scale(1.06)}60%{transform:rotate(-3deg)}80%{transform:rotate(3deg)}}
 .lf-card{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:20px;background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%);animation:lfin .35s ease-out both}
@@ -38,6 +39,8 @@ body:has(#tqh) .lf-card{display:none!important}
 .lf-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .lf-top .ic{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:38px;background:radial-gradient(circle at 35% 30%,#FFFBEB,#FDE047 60%,#F59E0B)}
 .lf-top h2{margin:0;font:900 clamp(30px,3.4vw,42px)/1.05 var(--display,'Barlow'),sans-serif;color:#1E1B4B}
+.lf-top .tlk-pill{margin-bottom:4px}
+.play .trail .seg .sl{align-self:flex-start;width:max-content;padding:2px 8px;border-radius:8px;background:var(--tlk-prog-bg,#E0F2FE);color:var(--tlk-prog-fg,#075985)}.play .trail .seg.cur .sl{background:var(--tlk-now-bg,#FEF3C7);color:var(--tlk-now-fg,#92400E)}   /* lesson step names are kit labels: blue progress, the step he is on yellow */.lf-sayw{margin-left:auto}.lf-help.tlk{align-self:flex-start;margin:6px 0 12px}.lf-quiet .tlk{margin:4px}.lf-row .tlk-main{min-width:220px;font-size:20px}
 .lf-top small{display:block;font:800 14px var(--body,'Nunito'),sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#7C3AED}
 .lf-say{margin-left:auto;border:0;border-radius:999px;padding:12px 18px;background:#EEF2FF;color:#3730A3;font:800 18px var(--body,'Nunito'),sans-serif;cursor:pointer}
 .lf-body{font:600 clamp(22px,2.3vw,28px)/1.55 'Andika',var(--body,'Nunito'),sans-serif;color:#1E293B}
@@ -45,11 +48,11 @@ body:has(#tqh) .lf-card{display:none!important}
 .lf-body p{margin:0 0 12px}.lf-body li{margin:0 0 10px}
 .lf-body .tbbtn{display:none}
 .lf-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:20px}
-.lf-go{border:0;border-radius:999px;padding:16px 46px;background:linear-gradient(180deg,#4ADE80,#16A34A);color:#fff;font:900 26px var(--display,'Barlow'),sans-serif;cursor:pointer;box-shadow:0 6px 0 #15803D,0 12px 24px rgba(22,163,74,.3)}
-.lf-go:active{transform:translateY(5px);box-shadow:0 1px 0 #15803D}
+.lf-go:not(.tlk){border:0;border-radius:999px;padding:16px 46px;background:linear-gradient(180deg,#4ADE80,#16A34A);color:#fff;font:900 26px var(--display,'Barlow'),sans-serif;cursor:pointer;box-shadow:0 6px 0 #15803D,0 12px 24px rgba(22,163,74,.3)}
+.lf-go:not(.tlk):active{transform:translateY(5px);box-shadow:0 1px 0 #15803D}
 .lf-steps{border:0;border-radius:999px;padding:16px 28px;background:linear-gradient(180deg,#60A5FA,#3B82F6);color:#fff;font:900 22px var(--display,'Barlow'),sans-serif;cursor:pointer;box-shadow:0 6px 0 #1D4ED8}
 .lf-quiet{display:flex;flex-wrap:wrap;gap:4px 18px;justify-content:center;margin-top:14px}
-.lf-q{border:0;background:none;padding:10px 6px;min-height:44px;color:#4338CA;font:800 18px var(--body,'Nunito'),sans-serif;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.lf-q:not(.tlk){border:0;background:none;padding:10px 6px;min-height:44px;color:#4338CA;font:800 18px var(--body,'Nunito'),sans-serif;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
 body.lf-on #tlcash,body.lf-on .qcard .tbask{display:none!important}
 .res-btns:has(.btn.go){display:flex;flex-direction:column;align-items:center}
 .res-btns .btn.go{order:-1}
@@ -62,7 +65,7 @@ function sayText(t){ try{ const u=new SpeechSynthesisUtterance(String(t).replace
 function close(){ const c=document.querySelector('.lf-card'); if(c) c.remove(); try{ speechSynthesis.cancel(); }catch(e){} }
 function open(html,txt){ close(); css(); const hasSteps=!!document.querySelector('.qcard .how .tbbtn[data-tt]'); const art=document.querySelector('.qcard .how .tbbtn[data-tbart]'); let kid=''; try{ const p=A.play, it=p&&p.items&&p.items[p.i], sk=String((it&&it.skill)||(p&&p.id)||''); if(window.KL&&KL.on&&KL.on()&&KL.has(sk)) kid=sk.replace(/[^A-Za-z0-9.]/g,''); else if(window.KR&&KR.on&&KR.on()&&KR.has(sk)) kid=sk.replace(/[^A-Za-z0-9.]/g,''); else if(window.KK&&KK.on&&KK.on()&&KK.has(sk)) kid=sk.replace(/[^A-Za-z0-9.]/g,''); }catch(e){}
  const d=document.createElement('div'); d.className='lf-card'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Learn it');
- d.innerHTML=`<div class="lf-box"><div class="lf-top"><span class="ic" aria-hidden="true">💡</span><div><small>Learn it</small><h2>Here’s how it works</h2></div><button type="button" class="lf-say" data-lf="say">🔊 Read it to me</button></div><div class="lf-body">${html}</div><div class="lf-row"><button type="button" class="lf-go" data-lf="go">I’m ready! ✓</button></div><div class="lf-quiet">${hasSteps?'<button type="button" class="lf-q" data-lf="steps">👣 Show me step by step</button>':''}${kid?`<button type="button" class="lf-q" data-lf="kl" data-id="${kid}">🍎 Play the fun lesson</button>`:''}${art?`<button type="button" class="lf-q" data-lf="art" data-n="${art.dataset.tbart}">🎨 Picture lesson</button>`:''}</div></div>`;
+ d.innerHTML=`<div class="lf-box"><div class="lf-top"><span class="ic" aria-hidden="true">💡</span><div>${window.TLK?TLK.pill('now','Learn it'):'<small>Learn it</small>'}<h2>Here’s how it works</h2></div>${window.TLK?'<span class="lf-sayw">'+TLK.tool('🔊','Read it to me','data-lf="say"')+'</span>':'<button type="button" class="lf-say" data-lf="say">🔊 Read it to me</button>'}</div><div class="lf-body">${html}</div><div class="lf-row">${window.TLK?TLK.main('I’m ready','data-lf="go"','lf-go'):'<button type="button" class="lf-go" data-lf="go">I’m ready!</button>'}</div><div class="lf-quiet">${hasSteps?(window.TLK?TLK.quiet('Show me step by step','data-lf="steps"','lf-q'):'<button type="button" class="lf-q" data-lf="steps">Show me step by step</button>'):''}${kid?(window.TLK?TLK.quiet('Play the fun lesson','data-lf="kl" data-id="'+kid+'"','lf-q'):`<button type="button" class="lf-q" data-lf="kl" data-id="${kid}">Play the fun lesson</button>`):''}${art?(window.TLK?TLK.quiet('Picture lesson','data-lf="art" data-n="'+art.dataset.tbart+'"','lf-q'):`<button type="button" class="lf-q" data-lf="art" data-n="${art.dataset.tbart}">Picture lesson</button>`):''}</div></div>`;
  document.body.appendChild(d); LF.txt=txt; setTimeout(()=>{ const g=d.querySelector('.lf-go'); if(g) g.focus(); },60); }
 function decorate(){
  const card=document.querySelector('.play .qcard, .qcard'); const on=A.view==='play'&&!!card;
@@ -72,7 +75,7 @@ function decorate(){
  if(how){ const txt=(how.textContent||'').trim(); const html=how.innerHTML; LF.how={html,txt};
   let ph=''; try{ const p=A.play; ph=p&&p.items&&p.items[p.i]&&p.items[p.i].phase; }catch(e){}
   if(ph==='teach'&&!LF.seen[key+'|'+txt.slice(0,80)]&&!document.getElementById('tqh')&&!A.overlay){ LF.seen[key+'|'+txt.slice(0,80)]=1; open(html,txt); } }
- if(LF.how&&!card.querySelector('.lf-help')){ const b=document.createElement('button'); b.type='button'; b.className='lf-help'; b.dataset.lf='help'; b.innerHTML='<span aria-hidden="true">💡</span> Help me';
+ if(LF.how&&!card.querySelector('.lf-help')){ const b=document.createElement('button'); b.type='button'; b.className=window.TLK?'tlk tlk-quiet lf-help':'lf-help'; b.dataset.lf='help'; b.textContent='Help me';   /* button system: a quiet kit button, words only */
   const opts=card.querySelector('.opts'); if(opts) opts.insertAdjacentElement('beforebegin',b); else card.appendChild(b); }
  try{ card.querySelectorAll('div,p,span').forEach(x=>{ if(x.children.length<=2&&/^\W*Stuck\? Tap Teach me how/.test((x.textContent||'').trim())&&!x.dataset.lfd){ x.dataset.lfd=1; x.innerHTML='💡 Stuck? Tap <b>Help me</b> to see how it works again.'; } }); }catch(e){}
  let wrong=false, sel=null; try{ const p=A.play; wrong=!!(p&&p.fb&&p.fb.ok===false); sel=p?p.sel:null; }catch(e){}
