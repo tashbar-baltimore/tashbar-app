@@ -29,8 +29,8 @@ export default function setup(E, { struggled, unit }) {
   const helpGlow = E.glowSprite('#fff7b0', 1.6, 0); E.scene.add(helpGlow);
   let P = false, H = 2.6, letterAt = new THREE.Vector3(), dishAt = new THREE.Vector3(), shape = null, L = null, want = null, at = 'dish', busy = true, enabled = false, dragging = false, mistakes = 0, wrongInRow = 0, missed = false, help = struggled, resolveTask = null, done = 0, total = 12;
   E.onLayout(p => { P = p; H = p ? 2.1 : 2.6;
-    if (p) { E.camBase.set(0, 2.6, 10.5); E.camTarget.set(0, 2.0, 0); letterAt.set(0, 2.75, .4); stand.position.set(0, 0, .2); stand.scale.setScalar(.8); dish.position.set(1.15, 0, 2.2); dish.scale.setScalar(.9); kid.visible = false; }
-    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); letterAt.set(.3, 2.05, .4); stand.position.set(.3, 0, .2); stand.scale.setScalar(1); dish.position.set(3.7, 0, 1.4); dish.scale.setScalar(1.1); kid.visible = true; kid.position.set(-4.4, 0, 1.2); }
+    if (p) { E.camBase.set(0, 2.4, 10.5); E.camTarget.set(0, 1.9, 0); letterAt.set(0, 1.55, .4); stand.position.set(0, 0, .2); stand.scale.setScalar(.8); dish.position.set(1.15, 0, 2.2); dish.scale.setScalar(.9); kid.visible = false; }
+    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); letterAt.set(.3, 1.62, .4); stand.position.set(.3, 0, .2); stand.scale.setScalar(1); dish.position.set(3.7, 0, 1.4); dish.scale.setScalar(1.1); kid.visible = true; kid.position.set(-4.4, 0, 1.2); }
     dishAt.copy(dish.position).add(new THREE.Vector3(0, .9 * dish.scale.x, 0));
     if (shape) { const k = shape; shape = null; setShape(k, true); }
     if (!dragging) dot.position.copy(spotPos(at));
