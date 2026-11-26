@@ -247,7 +247,7 @@ export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5:
 export const KIND_BACKDROP = { mastery: 'classroom', bonus: 'beach', story: 'street', detective: 'street', hunt: null };   /* the sukkah hunt keeps its 3D world */
 export const backdropFor = (game, unitN) => game && 'bg' in game ? game.bg : game && game.kind in KIND_BACKDROP ? KIND_BACKDROP[game.kind] : UNIT_BACKDROP[unitN || (game && game.unit) || 1] || null;
 export let backdrop = null;
-export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `#8fd8ff url(art/bg/${name}.jpg) center 64% / cover no-repeat` : ''; }
+export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `radial-gradient(ellipse 70% 60% at 50% 58%, #ffffff40, #ffffff1a 70%, #ffffff10), url(art/bg/${name}.jpg) center 64% / cover no-repeat, #8fd8ff` : '';   /* a soft light veil: the painting stays, the letter stands out (RESEARCH.md: few distractions) */ }
 export function buildWorld({ trees = true, flowers = true, backdrop: bd = null } = {}) {
   if (bd) {   /* a painted scene behind; only a see-through ground that catches shadows, so the children and letters stand in it */
     setBackdrop(bd); const w = new THREE.Group(); scene.add(w); world.group = w;
@@ -465,13 +465,13 @@ let sparkTex; const sparks = [], confs = []; let confGeo; const confCols = [0xff
 export function sparkle(pos, n = 18, spread = 1) { sparkTex = sparkTex || starTex(); for (let i = 0; i < n; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sparkTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
   s.position.copy(pos); const v = new THREE.Vector3((Math.random() - .5), (Math.random() - .2), (Math.random() - .5)).normalize().multiplyScalar(.03 + Math.random() * .06 * spread); s.userData = { v, life: 50 + Math.random() * 30 }; s.scale.setScalar(.12 + Math.random() * .16); scene.add(s); sparks.push(s); } }
 export function confetti(pos, n = 60) { confGeo = confGeo || new THREE.PlaneGeometry(.12, .07); for (let i = 0; i < n; i++) { const m = new THREE.Mesh(confGeo, new THREE.MeshStandardMaterial({ color: confCols[i % 6], side: THREE.DoubleSide, roughness: .4, metalness: .3 }));
-  m.position.copy(pos); m.userData = { v: new THREE.Vector3((Math.random() - .5) * .16, .08 + Math.random() * .14, (Math.random() - .5) * .1), r: new THREE.Vector3(Math.random() * .3, Math.random() * .3, Math.random() * .3), life: 110 }; scene.add(m); confs.push(m); } }
+  m.position.copy(pos); m.userData = { v: new THREE.Vector3((Math.random() - .5) * .16, .08 + Math.random() * .14, (Math.random() - .5) * .1), r: new THREE.Vector3(Math.random() * .3, Math.random() * .3, Math.random() * .3), life: 80 }; scene.add(m); confs.push(m); } }
 function stepParticles() {
   for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.position.add(s.userData.v); s.userData.v.multiplyScalar(.96); s.material.opacity = Math.min(1, s.userData.life / 25); s.material.rotation += .05; if (--s.userData.life <= 0) { scene.remove(s); s.material.dispose(); sparks.splice(i, 1); } }
   for (let i = confs.length - 1; i >= 0; i--) { const c = confs[i]; c.position.add(c.userData.v); c.userData.v.y -= .004; c.userData.v.x *= .99; c.rotation.x += c.userData.r.x; c.rotation.y += c.userData.r.y; if (--c.userData.life <= 0) { scene.remove(c); c.material.dispose(); confs.splice(i, 1); } }
 }
 /* joy: chime, sparkles, confetti (well under 2 seconds) */
-export function joy(pos, big = false) { sfx.chime(); sparkle(pos, big ? 30 : 20, 1.2); confetti(pos, big ? 80 : 50); }
+export function joy(pos, big = false) { sfx.chime(); sparkle(pos, big ? 22 : 12, 1.2); confetti(pos, big ? 45 : 22); }   /* short and light, so his eyes come back to the letter */
 
 /* ---------------- tweens ---------------- */
 const tweens = []; export const ease = { lin: t => t, out: t => 1 - Math.pow(1 - t, 3), inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, back: t => { const c = 1.7; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); } };
