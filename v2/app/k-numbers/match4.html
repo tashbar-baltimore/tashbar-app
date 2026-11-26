@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Match the Number — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 4, game 2: MATCH THE NUMBER. Skill: a written number 0-5 goes with its amount.
+     He drags (or taps) each big written number onto the card with that many (dots, fruit, Shabbos candles, fingers, or an
+     empty card for zero). First mistake: "This is two. Find two."; second: the shape of the card he chose is shown and said. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit4.css">
+<style>
+.stage{ grid-template-rows:1fr auto 1fr; align-items:center; justify-items:center; }
+.row3{ display:flex; gap:clamp(14px,4vw,56px); justify-content:center; width:100%; }
+#src .numcard{ width:min(19vw,26vh,180px); cursor:grab; transition:opacity .3s; }
+#src .numcard.done{ opacity:0; }
+#tgt .qcard{ width:min(26vw,30vh,230px); }
+.qcard.done{ border-color:#7BE0A4; background:radial-gradient(circle at 50% 35%,#FFFFFF,#E3FBEB); }
+.qcard .tag{ position:absolute; right:-14px; top:-18px; width:58px; height:80px; filter:drop-shadow(0 4px 4px rgba(0,0,0,.2)); }
+.mid svg{ width:64px; height:64px; }
+.qcard .mini{ position:absolute; left:-12px; bottom:-14px; width:38%; aspect-ratio:170/230; background:#fff; border-radius:16px; box-shadow:0 4px 10px rgba(40,70,140,.25); padding:2px; animation:ctrin .3s cubic-bezier(.3,1.6,.5,1); }
+.hero{ display:flex; align-items:center; justify-content:center; gap:6%; }
+.hero .numcard{ width:34%; } .hero .qcard{ width:42%; }
+.row3.four .numcard{ width:min(15vw,24vh,160px) !important; } .row3.four .qcard{ width:min(19vw,26vh,200px) !important; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .row3.four{ gap:6px; } .row3.four .numcard{ width:21vw !important; } .row3.four .qcard{ width:22vw !important; } #src .numcard{ width:min(24vw,17vh); } #tgt .qcard{ width:min(28vw,22vh); border-radius:20px; } .mid svg{ width:40px; height:40px; } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="row3" id="src"></div>
+  <div class="mid"><svg viewBox="0 0 48 48"><path d="M24 6v32M12 26l12 12 12-12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 6v32M12 26l12 12 12-12" stroke="#2FB5E8" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="row3" id="tgt"></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit4.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var KINDS = ['dots', 'apple', 'orange', 'candle', 'pear'], NAME = { dots: 'dots', apple: 'apples', orange: 'oranges', candle: 'candles', pear: 'pears' }, R, done, A = U4.adapt();
+  function deal(nums, kind) {
+    $('src').innerHTML = ''; $('tgt').innerHTML = ''; $('src').classList.toggle('four', nums.length > 3); $('tgt').classList.toggle('four', nums.length > 3);
+    nums.forEach(function (n, i) { var c = U4.numCard(n); c.id = 's' + i; $('src').appendChild(c); });
+    FR.shuffle(nums.map(function (x, k) { return k; })).forEach(function (k, i) { var kd = Array.isArray(kind) ? kind[k] : kind, c = FR.card(nums[k], kd); c.id = 't' + i; c.dataset.kd = kd; $('tgt').appendChild(c); });
+  }
+  function hooks() {
+    var open = [].slice.call(document.querySelectorAll('#src .numcard:not(.done)')); if (!open.length) { GAME.right = GAME.wrong = null; return; }
+    var s = open[0], ts = [].slice.call(document.querySelectorAll('#tgt .qcard:not(.done)'));
+    var good = ts.filter(function (t) { return t.dataset.n === s.dataset.n; })[0], bad = ts.filter(function (t) { return t.dataset.n !== s.dataset.n; })[0];
+    GAME.right = function () { return [{ drag: ['#' + s.id, '#' + good.id] }]; };
+    GAME.wrong = bad ? function () { return [{ drag: ['#' + s.id, '#' + bad.id] }]; } : null;
+  }
+  async function drop(s, t) {
+    if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
+    var n = +s.dataset.n;
+    if (s.dataset.n === t.dataset.n) {
+      s.classList.add('done'); t.classList.add('done'); var tag = document.createElement('div'); tag.innerHTML = U4.num(n); tag.firstChild.setAttribute('class', 'tag'); t.appendChild(tag.firstChild);
+      /* all three together: the things, the fingers, the written number */
+      var mini = FR.fingers(n, false); mini.el.classList.add('mini'); t.appendChild(mini.el);
+      await FR.yes(t, n === 0 ? 'No things, no fingers. Zero!' : FR.Word(n) + ' ' + (n === 1 ? NAME[t.dataset.kd].replace(/s$/, '') : NAME[t.dataset.kd]) + ', ' + FR.word(n) + (n === 1 ? ' finger. ' : ' fingers. ') + FR.Word(n) + '!');
+      R.left--;
+    } else {
+      FR.oops(t); R.misses++;
+      if (R.misses % 2 === 1) await FR.say("Let's look again. This says " + FR.word(n) + '.');
+      else { if (t.L && t.L.p.length) await FR.showShape(t, true); else await FR.say('That has ' + FR.word(+t.dataset.n) + '.'); await FR.say('Find ' + FR.word(n) + '.'); }
+    }
+    FR.lock(false); GAME.phase = 'answer'; hooks();
+    if (R.left === 0 && done) { if (R.misses >= 2) A.miss(); else if (!R.misses) A.hit(); var d = done; done = null; d(R.misses === 0); }
+  }
+  FR.game({
+    id: 'u4-match', title: 'Match the Number', rounds: 5,
+    hero: U4.num(3).replace('<svg', '<div class="numcard"><svg') + '</div><div class="qcard dice"><i class="dot" style="left:50%;top:28%"></i><i class="dot" style="left:28%;top:70%"></i><i class="dot" style="left:72%;top:70%"></i></div>',
+    init: function (F) { F.dragTap({ sources: '#src .numcard', targets: '#tgt .qcard', drop: drop }); },
+    demo: async function (F) {
+      deal([2, 1, 3], 'apple');
+      await F.say('Each number goes with its amount.');
+      await F.say('This says two. Watch me.');
+      var t = [].filter.call(document.querySelectorAll('#tgt .qcard'), function (c) { return c.dataset.n === '2'; })[0];
+      await F.handDrag($('s0'), t); $('s0').classList.add('done'); t.classList.add('done');
+      await F.yes(t, 'Two apples. Two!');
+    },
+    reset: function () { A.reset(); },
+    round: function (F, i) {
+      return new Promise(function (res) {
+        var nums;
+        if (A.easy()) nums = F.shuffle([1, 2, 3]).slice(0, 2);   /* easier after two misses: two cards, small numbers */
+        else if (i === 0) nums = F.shuffle([1, 2, 3]);
+        else {   /* 4 or 5 every time; zero once */
+          var big = F.pick([4, 5]), others = F.shuffle([1, 2, 3, 4, 5].filter(function (x) { return x !== big; }));
+          nums = F.shuffle(i === 3 ? [big, 0, others[0]] : [big, others[0], others[1]]);
+        }
+        R = { misses: 0, left: nums.length }; deal(nums, KINDS[i % KINDS.length]);
+        done = res; GAME.phase = 'answer'; F.lock(false); hooks();
+        F.say(i === 0 ? 'Drag each number to its amount.' : 'Match the numbers.', { repeat: 'Drag each number to its amount.' });
+      });
+    },
+    /* bonus for a quick boy: four cards, four different kinds */
+    bonus: function (F) {
+      return new Promise(function (res) {
+        var nums = F.shuffle([2, 3, 4, 5]); R = { misses: 0, left: 4 }; deal(nums, ['dots', 'apple', 'candle', 'orange']);
+        done = res; GAME.phase = 'answer'; F.lock(false); hooks();
+        F.say('Four cards! Match them all.', { repeat: 'Drag each number to its amount.' });
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
