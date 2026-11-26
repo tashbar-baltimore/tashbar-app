@@ -4,11 +4,31 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  pull-requests: read
 jobs:
+  # KESER-ONLY LANE (HoS 2026-11-26): a pull request that changes ONLY keser/ and art/ (with at least one keser/ file) runs the
+  # Keser lane (LANE=keser in tests/run.js: static checks, art library, 2.0 and Keser checks, every Keser test) instead of the
+  # whole boys' kit (a file renamed from outside keser/ or art/ counts as outside). Anything else, or any doubt (the file list cannot be read, a manual run), runs the whole kit as before.
+  scope:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      lane: ${{ steps.pick.outputs.lane }}
+    steps:
+      - id: pick
+        env: { GH_TOKEN: '${{ github.token }}', REPO: '${{ github.repository }}', PR: '${{ github.event.pull_request.number }}' }
+        run: |
+          lane=full
+          if [ -n "$PR" ] && files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[] | .filename, (.previous_filename // empty)') && [ -n "$files" ]; then
+            if grep -q '^keser/' <<<"$files" && ! grep -Eqv '^(keser|art)/' <<<"$files"; then lane=keser; fi
+          fi
+          echo "lane: $lane"; echo "lane=$lane" >> "$GITHUB_OUTPUT"
   # The kit runs in 2 parts, each on its own machine at the same time. Every part runs every check; the lessons that are
   # played start to finish (the sampled lessons and every One Bite bite) are shared out between the parts (PART in tests/run.js).
   kit:
     name: test kit part ${{ matrix.part }} of 2
+    needs: scope
+    if: needs.scope.outputs.lane != 'keser'
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     strategy:
@@ -28,15 +48,35 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: 'test-report-part-${{ matrix.part }}', path: tests/out/ }
+  keser:
+    name: Keser-only lane
+    needs: scope
+    if: needs.scope.outputs.lane == 'keser'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install --no-save playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - name: Run the Keser lane (static checks, art library, 2.0 and Keser checks, Keser tests)
+        run: node tests/run.js
+        env:
+          LANE: keser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: 'test-report-keser', path: tests/out/ }
   # The one check named `test`: auto-publish (workflow_run on this workflow) and v2-gate (check run "test") wait for it.
-  # It passes only when every part passed.
+  # It passes only when every part passed (or, for a keser/ + art/ change, when the Keser lane passed).
   test:
-    needs: kit
+    needs: [scope, kit, keser]
     if: always()
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Every part of the test kit passed
+      - name: Every part of the test kit passed (or the Keser lane, for a keser/ + art/ change)
         run: |
-          echo "test kit parts: ${{ needs.kit.result }}"
-          [ "${{ needs.kit.result }}" = success ]
+          echo "lane: ${{ needs.scope.outputs.lane }} · test kit parts: ${{ needs.kit.result }} · Keser lane: ${{ needs.keser.result }}"
+          [ "${{ needs.scope.result }}" = success ] || exit 1
+          if [ "${{ needs.scope.outputs.lane }}" = keser ]; then [ "${{ needs.keser.result }}" = success ]; else [ "${{ needs.kit.result }}" = success ]; fi
