@@ -9,7 +9,7 @@ export function makeStory(E, unit, script) {
   const PIC = makePictures(E);
   const boy = script.boy ? script.boy(E) : E.unitBoy(unit.n); E.scene.add(boy);
   const grown = script.grown ? script.grown(E) : null; if (grown) E.scene.add(grown);
-  const props = new THREE.Group(); E.scene.add(props); if (script.scene && !E.backdrop) script.scene(E, props);   /* a painted backdrop already has the zoo, garden, park or picnic */
+  const props = new THREE.Group(); E.scene.add(props); if (script.scene && !E.backdrop) script.scene(E, props); if (script.extra) script.extra(E, props);   /* extra things that belong even on a painted backdrop (Unit 9: the Shabbos table) */   /* a painted backdrop already has the zoo, garden, park or picnic */
   const L = {}; unit.letters.forEach(k => { L[k] = E.letter(k, 2.5); L[k].visible = false; E.scene.add(L[k]); });
   const row = [], glow = E.glowSprite('#ffffff', 6, 0); E.scene.add(glow);
   const arrow = E.arrow3d ? E.arrow3d(.45) : new THREE.Object3D(), ring = E.noticeRing(.32);
@@ -65,7 +65,7 @@ export function makeStory(E, unit, script) {
       if (st.dress) {   /* Unit 9: a letter puts on its "Shabbos clothes" (its final form, for the end of a word) */
         const src = E.letter(st.dress, 2.5); const c = new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6); src.position.copy(c); E.scene.add(src); await E.popIn(src); float(src);
         for (const line of st.before) await E.say(line);
-        float(src, false); E.sfx.sparkle(); E.sfx.whoosh(); const ring = E.glowSprite('#fff2a8', 5, 0); ring.position.copy(c).setZ(.2); E.scene.add(ring);
+        float(src, false); E.sfx.sparkle(); E.sfx.whoosh(); E.confetti(c.clone().add(new THREE.Vector3(0, 1.2, .5)), 26);   /* dressing up: a little shower of confetti */ const ring = E.glowSprite('#fff2a8', 5, 0); ring.position.copy(c).setZ(.2); E.scene.add(ring);
         await E.tween(650, q => { src.scale.set(1, 1 - q * .99, 1); ring.material.opacity = q * .9; });
         E.scene.remove(src); const l = L[st.letter]; l.position.copy(c); l.visible = true; l.scale.set(1, .01, 1); E.sparkle(c.clone().add(new THREE.Vector3(0, .3, .5)), 30, 1.4);
         await E.tween(650, q => { l.scale.set(1, .01 + q * .99, 1); ring.material.opacity = .9 * (1 - q); }, E.ease.back); E.scene.remove(ring); float(l);
@@ -109,7 +109,7 @@ export function makeStory(E, unit, script) {
     E.setProgress(steps, steps - 1);
     /* every letter so far, right to left (two lines on a phone when there are many), and the chant */
     const all = script.row || [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .68 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
-    const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 3 : all.length > 12 ? 2 : 1, per = Math.ceil(all.length / nl), lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
+    const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 3 : all.length > 12 ? 2 : 1, per = script.row ? Math.ceil(Math.ceil(all.length / nl) / 2) * 2 : Math.ceil(all.length / nl),   /* partners in pairs never split across two lines */ lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
     lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (ks.length - 1);
       let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 2 ? 3.15 - li * 1.3 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
@@ -123,6 +123,8 @@ export function makeStory(E, unit, script) {
       const target = left[0]; const [hx, hy] = E.toScreen(E.worldPos(target).add(new THREE.Vector3(.15, -.35, .5))); E.hand.at(hx, hy, true);
       document.body.dataset.tapReady = left.map(l => 'row-' + l.userData.key).join(',');
       const l = await E.waitTap(row); E.hand.hide();
+      const finOf = left.find(x => E.LETTERS[x.userData.key].partner === l.userData.key);   /* he tapped the plain partner of a letter in Shabbos clothes */
+      if (!left.includes(l) && finOf) { E.sfx.boop(); E.shake(l, .08); await E.say(E.LETTERS[l.userData.key].name + ' is plain. Find ' + E.LETTERS[finOf.userData.key].name + ', in Shabbos clothes!'); continue; }
       if (!left.includes(l)) { E.sfx.boop(); E.shake(l, .08); const tk = target.userData.key, lk = l.userData.key, same = E.LETTERS[lk].snd && E.LETTERS[lk].snd === E.LETTERS[tk].snd;   /* Kaf for Kuf: both say k, so the sound is no help */
         await E.say(same ? 'That is ' + E.LETTERS[lk].name + '.' : E.nameLine(lk)); await E.say((same || lk === 'hei') && tk === 'kuf' ? 'Kuf has a long leg. Tap Kuf!' : lk === 'daled' && tk === 'reish' ? 'Reish is round on top. Tap Reish!' : E.sameShape(lk, tk) && E.LETTERS[tk].top ? E.LETTERS[tk].name + '’s dot is on the ' + E.LETTERS[tk].top + ' head. Tap ' + E.LETTERS[tk].name + '!' : E.sameShape(lk, tk) ? (E.LETTERS[tk].dagesh ? E.LETTERS[tk].name + ' has a dot. Tap ' : E.LETTERS[tk].name + ' has no dot. Tap ') + E.LETTERS[tk].name + '!' : 'Now tap ' + E.LETTERS[tk].name + '!'); continue; }   /* Hei for Kuf: the look-alike cue */
       left.splice(left.indexOf(l), 1);

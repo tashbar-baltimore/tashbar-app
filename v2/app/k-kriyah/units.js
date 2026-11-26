@@ -97,7 +97,7 @@ export const UNITS = [
       { id: 'u9g3', name: 'Spot the Difference', kind: 'spotdiff', icon: 'glass' },   /* new twist on the Look-Alike Detective: he finds the difference himself */
       { id: 'u9g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },   /* new: Yaakov writes a whole word */
       { id: 'u9g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
-      { id: 'u9g6', name: 'Review: Dot Builder', kind: 'dotbuild', icon: 'dot', review: true, world: { indoor: 'shul' } },   /* Unit 8 comes back, in the shul */
+      { id: 'u9g6', name: 'Review: Dot Builder', kind: 'dotbuild', icon: 'dot', review: true, bg: null, world: { indoor: 'shul' } },   /* Unit 8 comes back, in the shul */
       { id: 'u9g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
 ];

@@ -4,7 +4,7 @@
    its Shabbos-clothes partner (Mem and Mem Sofis). He drags the right one into the empty place. A small gold star marks the
    end of every word. He does not need to read the word: the place tells him. Show-then-try; a wrong card is answered kindly
    ("Mem Sofis goes only at the end."), and if he struggles, the right card glows. Every line is 12 words or fewer.
-   The words (no nekudos, real everyday words; none spells a Name): שלום, מים, ארץ, נר, מלך, צב, גן, כף. */
+   The words (no nekudos, real everyday words; none spells a Name): שלום, מים, ארץ, נר, מלך, צב, גן, תף. */
 const WORDS = [
   { say: 'Shalom', keys: ['shin', 'lamed', 'vov', 'memsofis'], gap: 3 },
   { say: 'Mayim, water', keys: ['mem', 'yud', 'memsofis'], gap: 0 },
@@ -13,7 +13,7 @@ const WORDS = [
   { say: 'Melech, a king', keys: ['mem', 'lamed', 'chafsofis'], gap: 2 },
   { say: 'Tzav, a turtle', keys: ['tzadik', 'veis'], gap: 0 },
   { say: 'Gan, a garden', keys: ['gimmel', 'nunsofis'], gap: 1 },
-  { say: 'Kaf, a spoon', keys: ['kaf', 'feisofis'], gap: 1 },
+  { say: 'Tof, a drum', keys: ['tav', 'feisofis'], gap: 1 },
 ];
 export default function setup(E, { struggled, unit }) {
   const { THREE } = E, NM = k => E.LETTERS[k].name;
@@ -21,7 +21,7 @@ export default function setup(E, { struggled, unit }) {
   const plainOf = k => E.LETTERS[k].partner || k, finalOf = k => E.LETTERS[k].partner ? k : FIN[k];
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   const board = new THREE.Group(); E.scene.add(board);
-  const plank = E.mesh(E.rbox(6.4, 1.9, .3, .1), E.M(0xc68a52, { roughness: .55 }), 0, 0, -.2); board.add(plank);
+  const plank = E.mesh(E.rbox(6.4, 1.9, .3, .1), E.M(0x3f7fe0, { roughness: .4, clearcoat: .6 }), 0, 0, -.2); board.add(plank);
   const face = E.mesh(E.rbox(6.1, 1.6, .1, .08), E.M(0xfff6e4, { roughness: .5 }), 0, 0, -.02); board.add(face);
   const endStar = E.star3d(.2); board.add(endStar);   /* the end of the word (the left end) */
   const slotM = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffd36a, emissiveIntensity: .7, transparent: true, opacity: .6 });
