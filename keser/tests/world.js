@@ -38,6 +38,8 @@ module.exports = async (browser) => {
       if (s.places.join() !== 'kodesh,reading,math,science,writing' || s.dots !== 5) fails.push('Keser world (' + tag + '): expected 5 places with 5 dots, got ' + s.places + ' / ' + s.dots);
       if (!(s.prog.kodesh > 0 && s.prog.writing === 0)) fails.push('Keser world (' + tag + '): the made-up girl\'s progress did not load');
       if (!(await nameIs(pg, 'Reading'))) fails.push('Keser world (' + tag + '): she does not start at Reading');
+      const gr = await pg.evaluate(() => { const g = document.getElementById('greet'), i = g.querySelector('img'); return { on: g.classList.contains('on'), pic: i.complete && i.naturalWidth > 0 }; });
+      if (!gr.pic) fails.push('Keser world (' + tag + '): the four sisters\' welcome picture did not load');
       await pg.waitForTimeout(1000); await check(pg, tag);
       await pg.screenshot({ path: path.join(shots, 'keser-world-' + tag + '.png') });
       await pg.click('#enter', { trial: true }).catch(() => fails.push('Keser world (' + tag + '): the Enter button cannot be tapped'));
@@ -51,11 +53,17 @@ module.exports = async (browser) => {
       await pg.click('#enter');
       const inside = await pg.waitForFunction(() => document.body.classList.contains('inside') && document.getElementById('roomName').textContent === 'Science', null, { timeout: 8000 }).then(() => true, () => false);
       if (!inside) fails.push('Keser world (' + tag + '): Enter does not open the place');
-      else { await pg.waitForTimeout(1500); await check(pg, tag + ', inside'); await pg.screenshot({ path: path.join(shots, 'keser-world-' + tag + '-inside.png') });
+      else { const host = await pg.waitForFunction(() => { const i = document.getElementById('roomHost'); return i.complete && i.naturalWidth > 0 && /keser-cast-shira/.test(i.src); }, null, { timeout: 8000 }).then(() => true, () => false);
+        if (!host) fails.push('Keser world (' + tag + '): Shira, the Science host, does not show inside Science');
+        await pg.waitForTimeout(1500); await check(pg, tag + ', inside'); await pg.screenshot({ path: path.join(shots, 'keser-world-' + tag + '-inside.png') });
         await pg.click('#back'); const back = await pg.waitForFunction(() => !document.body.classList.contains('inside') && !KWORLD.state.entered, null, { timeout: 8000 }).then(() => true, () => false);
         if (!back) fails.push('Keser world (' + tag + '): Back does not return to her world'); }
       errs.forEach(e => fails.push('Keser world (' + tag + '): ' + e)); await ctx.close();
     }
+    /* the girls' cast (Keser Girls only pictures) is in the site, and every place has its host */
+    { const want = ['keser-cast-group', 'keser-cast-shira', 'keser-cast-rivky', 'keser-cast-ayelet', 'keser-cast-malka', 'keser-cast-ima', 'keser-cast-bubby', 'keser-style-sheet'];
+      const miss = want.filter(n => !fs.existsSync(path.join(out, 'pics', n + '.webp'))); if (miss.length) fails.push('Keser world: these cast pictures are not in the built site: ' + miss.join(', '));
+      const places = fs.readFileSync(path.join(__dirname, '..', 'app', 'places.js'), 'utf8'); if ((places.match(/host: '/g) || []).length !== 5) fails.push('Keser world: every place needs a host girl from the cast'); }
     /* the full look (mirror, glow, crystal) also starts with no errors */
     { const { ctx, pg, errs } = await open(1366, 768, '?demo=1&full=1'); const st = await pg.evaluate(() => ({ gl: KWORLD.state.gl, lite: KWORLD.state.lite }));
       if (!st.gl || st.lite) fails.push('Keser world (full look): the full 3D look did not start'); errs.forEach(e => fails.push('Keser world (full look): ' + e)); await ctx.close(); }
@@ -80,6 +88,6 @@ module.exports = async (browser) => {
       await ctx.close(); }
   } catch (e) { fails.push('Keser world test stopped: ' + String(e).slice(0, process.env.KESER_LONG ? 3000 : 200)); }
   finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
-  if (!fails.length) oks.push('Keser Girls 3.0 her world: 3D jewel box at Chromebook and phone size, 5 places, arrows/dots/keys/swipe glide, Enter and Back, jewels not money, still cards without 3D, reduce motion');
+  if (!fails.length) oks.push('Keser Girls 3.0 her world: 3D jewel box at Chromebook and phone size, 5 places, arrows/dots/keys/swipe glide, Enter and Back, the sisters\' welcome and each place\'s host girl, jewels not money, still cards without 3D, reduce motion');
   return { fails, oks };
 };
