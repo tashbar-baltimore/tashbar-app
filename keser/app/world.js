@@ -65,7 +65,7 @@ function go(i, quiet) {
 }
 function enter() {
   if (S.entered) return; S.entered = true; const p = PLACES[S.focus];
-  chime(p.note); chime(p.note + 7, true); $('roomName').textContent = p.name; $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
+  chime(p.note); chime(p.note + 7, true); const lab = p.id === 'kodesh'; $('openLab').hidden = !lab; $('roomSoon').hidden = lab; $('roomName').textContent = p.name; $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
   world && world.enter(S.focus); setTimeout(() => { if (S.entered) { body.classList.add('inside'); $('room').setAttribute('aria-hidden', 'false'); $('back').focus({ preventScroll: true }); } }, calm ? 50 : 750);
 }
 function back() {
@@ -78,6 +78,18 @@ $('prev').onclick = e => { tapAt(e); go(S.focus - 1); };
 $('next').onclick = e => { tapAt(e); go(S.focus + 1); };
 $('enter').onclick = e => { tapAt(e); enter(); };
 $('back').onclick = e => { tapAt(e); back(); };
+/* ---------- Kodesh: the Chumash & Timeline Lab (from 1.0, made right for girls; loaded only when she opens it) ---------- */
+let labLoading = null;
+function loadLab() {
+  if (window.CLAB && window.CLAB.openLab) return Promise.resolve();
+  if (labLoading) return labLoading;
+  const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'kodesh/lab.css'; document.head.appendChild(css);
+  const one = src => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => bad(new Error('could not load ' + src)); document.body.appendChild(s); });
+  labLoading = ['kodesh/tlk.js', 'kodesh/data.js', 'kodesh/pics.js', 'kodesh/lab.js'].reduce((p, src) => p.then(() => one(src)), Promise.resolve());
+  return labLoading;
+}
+$('openLab').onclick = e => { tapAt(e, '#F5C451'); chime(7); $('openLab').disabled = true;
+  loadLab().then(() => { window.CLAB.openLab(); }).catch(err => console.warn('Kodesh lab: ' + err.message)).finally(() => { $('openLab').disabled = false; }); };
 $('sound').onclick = e => { S.sound = !S.sound; save('keser.sound', S.sound); $('sound').setAttribute('aria-pressed', String(S.sound)); tapAt(e); chime(4, true); };
 $('lite').onclick = e => { setLite(!S.lite, true); tapAt(e); chime(9, true); };
 function setLite(on, byHer) { S.lite = on; if (byHer) save('keser.lite', on); $('lite').setAttribute('aria-pressed', String(on)); html.classList.toggle('lite', on); world && world.setLite(on); }
