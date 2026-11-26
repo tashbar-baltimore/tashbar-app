@@ -69,7 +69,7 @@ function play(F, i) {
     if (R.kind === 'spread') {
       const few = R.n[0] < R.n[1] ? 0 : 1; R.how = 'row'; O.setApples(0, R.n[0], 'row'); O.setApples(1, R.n[1], 'row');
       O.spread(few, true); O.spread(1 - few, false); O.sideSpot(0); O.sideSpot(1); O.glowSide(few, true);
-      await F.say('Ari says: ' + NAME[few] + ' has more! His apples go far.'); O.glowSide(few, false);
+      await F.say('Ari says: ' + NAME[few] + ' has more! His are spread out.'); O.glowSide(few, false);
       open(); await F.say('Is Ari right? Tap who really has more.', { repeat: 'Tap who really has more.' });
     } else if (R.kind === 'fix') {
       O.setApples(0, R.base, 'row'); O.setApples(1, R.put, 'row'); O.treeSpot();
@@ -94,7 +94,7 @@ FR.game({
   },
   demo: async F => {
     R = { kind: 'demo', misses: 0 }; O.setApples(0, 2, 'row'); O.setApples(1, 3, 'row'); O.spread(0, true); O.spread(1, false);
-    await F.say('Ari says Dovid has more. His apples go far. Watch me.'); await lineUp(); await F.say('Spread out is not more!');
+    await F.say('Ari says Dovid has more. His are spread out. Watch me.'); await lineUp(); await F.say('Spread out is not more!');
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'Ari says thank you! You found every mistake.' : 'Good looking! Let\'s play once more.'

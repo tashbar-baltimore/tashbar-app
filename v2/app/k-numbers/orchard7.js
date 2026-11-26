@@ -79,8 +79,11 @@ export function mount(host, opt) {
   /* apple places on a blanket: 'row' = neat rows of five (left to right), 'scatter' = anywhere */
   function slots(n, how) {
     const out = [];
-    if (how === 'scatter') { let t = 0; while (out.length < n && t++ < 2000) { const x = (Math.random() - .5) * (W - 0.7), z = (Math.random() - .5) * (D - 0.6); if (out.every(p => Math.hypot(p.x - x, p.z - z) > 0.95)) out.push(new THREE.Vector3(x, 0.05, z)); } }
-    else for (let j = 0; j < n; j++) { const r = j < 5 ? 0 : 1, c = j % 5; out.push(new THREE.Vector3((c - 2) * 0.92, 0.05, n > 5 ? (r ? 0.5 : -0.5) : 0)); }   /* 0.92 apart: their tap spots never overlap, even on a phone */
+    if (how === 'scatter') {   /* try a few fresh scatters; if the apples will not fit, fall back to neat rows (never hang) */
+      for (let tries = 0; tries < 6 && out.length < n; tries++) { out.length = 0; let t = 0;
+        while (out.length < n && t++ < 2000) { const x = (Math.random() - .5) * (W - 0.7), z = (Math.random() - .5) * (D - 0.6); if (out.every(p => Math.hypot(p.x - x, p.z - z) > 0.88)) out.push(new THREE.Vector3(x, 0.05, z)); } }
+      if (out.length >= n) return out; out.length = 0; }
+    if (true) for (let j = 0; j < n; j++) { const r = j < 5 ? 0 : 1, c = j % 5; out.push(new THREE.Vector3((c - 2) * 0.92, 0.05, n > 5 ? (r ? 0.5 : -0.5) : 0)); }   /* 0.92 apart: their tap spots never overlap, even on a phone */
     return out;
   }
 
@@ -121,6 +124,7 @@ export function mount(host, opt) {
   const v = new THREE.Vector3(), v2 = new THREE.Vector3();
   function place() {
     spots.forEach(d => { if (!d.obj.parent || !d.obj.visible) { d.el.style.display = 'none'; return; }
+      d.el.style.pointerEvents = d.obj.userData.paired ? 'none' : '';   /* a paired apple is done: taps go to the apples still free */
       d.obj.getWorldPosition(v); v.y += d.y; v2.copy(v); v.project(camera); const cx = (v.x + 1) / 2 * Wd, cy = (1 - v.y) / 2 * Hh;
       v2.x += d.r; v2.project(camera); const size = Math.max(d.min, ((v2.x + 1) / 2 * Wd - cx) * 2);
       const out = cx < 0 || cx > Wd || cy < 0 || cy > Hh; d.el.style.display = out ? 'none' : ''; d.el.style.width = d.el.style.height = size + 'px'; d.el.style.left = (cx - size / 2) + 'px'; d.el.style.top = (cy - size / 2) + 'px'; });
@@ -166,7 +170,7 @@ export function mount(host, opt) {
     },
     count(i) { return sides[i].apples.length; },
     /* the "spread out" trick: a few apples spread wide across the blanket, or many squeezed close together */
-    spread(i, wide) { const s = sides[i], n = s.apples.length, gap = wide ? Math.min(1.2, (W - 0.6) / Math.max(1, n - 1)) : 0.62;
+    spread(i, wide) { const s = sides[i], n = s.apples.length, gap = wide ? Math.min(1.25, (W - 0.5) / Math.max(1, n - 1)) : 0.45;
       s.slots = s.apples.map((a, j) => new THREE.Vector3(-((n - 1) * gap) / 2 + j * gap, 0.05, 0)); s.apples.forEach((a, j) => a.position.copy(s.slots[j])); },
     /* an apple drops from the tree onto a side (one more) */
     async drop(i) {

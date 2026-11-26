@@ -35,10 +35,13 @@ async function pick(k) {
   const m = R.n[0] > R.n[1] ? 0 : 1, el = $('c' + k);
   if (k === m) { el.classList.add('good'); await FR.say(FR.Word(R.n[m]) + ' is more. Let\'s check!'); await show(); O.glowSide(m, true); O.sparkle(O.sides[m].g.position);
     await FR.yes(el, NAME[m] + "'s line is longer. " + FR.Word(R.n[m]) + ' is more!'); O.glowSide(m, false); el.classList.remove('good'); const d = done; done = null; d(R.misses === 0); return; }
-  FR.oops(el); R.misses++; await show(); O.glowSide(m, true);
-  const lo = Math.min(...R.n); await FR.say("Let's look. Count to " + FR.word(lo) + '. Then come more!'); O.glowSide(m, false);
-  O.setApples(0, 0); O.setApples(1, 0);
-  open(); await FR.say('Which number is more?');
+  FR.oops(el); R.misses++; await show();
+  /* count the short line together, then the extra apples on the long line are "more" */
+  const lo = Math.min(...R.n), short = 1 - m; await FR.say("Let's look. Count with me.");
+  for (let k = 0; k < lo; k++) { await O.bump(O.sides[short].apples[k]); await FR.say(FR.Word(k + 1) + (k === lo - 1 ? '.' : ','), { noRepeat: true }); }
+  O.glowSide(m, true); for (let k = lo; k < R.n[m]; k++) await O.bump(O.sides[m].apples[k]);
+  await FR.say(NAME[m] + ' has more. ' + FR.Word(R.n[m]) + ' is more!'); O.glowSide(m, false);
+  O.setApples(0, 0); O.setApples(1, 0); open(); await FR.say('Tap the number that is more.');
 }
 const PLAN = [[3, 5], [8, 6], [2, 7], [9, 4], [5, 6], [10, 8]];
 function play(F, i) {

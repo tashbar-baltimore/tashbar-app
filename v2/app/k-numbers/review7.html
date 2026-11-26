@@ -4,63 +4,70 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Review time — Kindergarten Numbers</title>
-<!-- Kindergarten Numbers, Unit 7 REVIEW (Units 4-6 come back in the orchard): Dovid holds up a written number (0 to 10).
-     He picks that many apples from the tree for Dovid's blanket, counting each one as it lands, then taps the check.
-     The apples sit in rows of five, so six to ten show "five and some more". Zero: no apples at all. -->
+<!-- Kindergarten Numbers, Unit 7 REVIEW (Units 4-6 come back): back on the garden number path, but only 0, 5 and 10 still show.
+     A written number card shows where Mendy wants to go (Units 4-5: reading 0-10). He drags Mendy to that stone, finding it from the
+     numbers that show (Unit 6: numbers live in order; Unit 5: five and some more). Mendy hops there and the stone's number appears.
+     A slip: we count along from five (or zero) together, and the right stone shines. On a phone the arrows move along the path. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>.mchip{ width:clamp(80px,12vh,104px); height:clamp(80px,12vh,104px); } .mchip img{ height:100%; width:auto; pointer-events:none; }</style>
 </head>
 <body>
 <div id="world"></div>
 <div id="game" class="locked"><div class="stage s6" id="stage">
   <div class="ui" id="panel">
+    <button id="left" class="bigbtn btn3d b-white" aria-label="Look left" hidden><svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="goal" id="goal"></div>
-    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="numcard mchip" id="mchip"><img src="art/mendy-idle.png" alt="Mendy"></div>
+    <button id="right" class="bigbtn btn3d b-white" aria-label="Look right" hidden><svg viewBox="0 0 48 48"><path d="M18 10l14 14-14 14" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
 </div></div>
 <script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
 <script type="module">
-import { mount } from './orchard7.js';
+import { mount } from './path6.js';
 const $ = id => document.getElementById(id);
-let O, R, done, busy = Promise.resolve();
+let P, M, R, done;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
-function moves(to) { const out = [], c = O.count(0); for (let k = c; k < to; k++) out.push({ tap: '.tspot[data-id="tree"]' }); for (let k = c; k > to; k--) out.push({ tap: '.tspot[data-id="a0-' + (k - 1) + '"]' }); return out; }
-function hooks() { GAME.right = () => moves(R.n).concat([{ tap: '#check' }]); GAME.wrong = () => moves(R.n === 10 ? 9 : R.n + 1).concat([{ tap: '#check' }]); }
+const ANCHORS = [0, 5, 10];
+function hooks() { const k = R.n, bad = k === 9 ? 8 : k + 1;
+  GAME.right = () => { P.focus(k, true); return [{ drag: ['#mchip', '.stone[data-n="' + k + '"]'] }]; };
+  GAME.wrong = () => { P.focus(bad, true); return [{ drag: ['#mchip', '.stone[data-n="' + bad + '"]'] }]; }; }
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
-async function check() {
-  NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); await busy; const have = O.count(0);
-  if (have === R.n) { O.sparkle(O.sides[0].g.position); await FR.yes($('check'), R.n === 0 ? 'Yes! Zero. No apples at all.' : R.n > 5 ? 'Yes! Five and ' + FR.word(R.n - 5) + ' more. ' + FR.Word(R.n) + '!' : 'Yes! ' + FR.Word(R.n) + '!');
-    const d = done; done = null; d(R.misses === 0); return; }
-  FR.oops($('check')); R.misses++; await FR.say("Let's look. Count with me.");
-  for (let k = 0; k < have; k++) { const a = O.sides[0].apples[k]; await O.bump(a); await FR.say(FR.Word(k + 1) + (k === have - 1 ? '.' : ','), { noRepeat: true }); }
-  await FR.say(have < R.n ? 'We need ' + FR.word(R.n) + '. Tap the tree.' : 'We need ' + FR.word(R.n) + '. Put some back.'); open();
+function nearest(n) { return ANCHORS.slice().sort((a, b) => Math.abs(a - n) - Math.abs(b - n))[0]; }
+async function drop(chip, stone) {
+  if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n;
+  if (n === R.n) { M.show(true); M.pose('happy'); await M.hop(n); P.shown(n, true); P.lift(n); P.petals(n); await FR.yes(stone, FR.pick(['Yes! ' + FR.Word(n) + ' lives there!', 'Right! That is ' + FR.word(n) + '.']));
+    M.pose('idle'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops(stone); R.misses++; const a = nearest(R.n), dir = R.n > a ? 1 : -1;
+  await FR.say("Let's look. Start at " + FR.word(a) + ' and count.');
+  for (let k = a; k !== R.n + dir; k += dir) { P.focus(k); P.glow(k, true); await FR.say(FR.Word(k) + (k === R.n ? '!' : ','), { noRepeat: true }); P.glow(k, false); }
+  if (R.misses > 1) P.el(R.n).classList.add('hint'); await FR.say('Bring Mendy to ' + FR.word(R.n) + '.'); open();
 }
-const PLAN = [3, 7, 0, 5, 9, 6];
+const PLAN = [3, 7, 9, 2, 6, 4];
 function play(F, i) {
   return new Promise(async res => {
-    R = { n: PLAN[i], misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); O.setApples(0, 0); $('goal').innerHTML = U5.num(R.n);
-    await F.say(i === 0 ? 'Dovid shows a number.' : F.pick(['A new number!', 'Look at this number.', 'What number is this?']));
-    open(); await F.say(R.n === 0 ? 'This is zero. Show me zero apples. Then check.' : 'Pick that many apples. Then tap the check.', { repeat: 'Tap the tree for each apple. Then tap the check.' });
+    R = { n: PLAN[i], misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); for (let k = 0; k <= 10; k++) P.el(k).classList.remove('hint');
+    P.showAll(false); ANCHORS.forEach(n => P.shown(n, true)); M.show(false); M.place(nearest(R.n)); $('goal').innerHTML = U5.num(R.n);
+    P.focus(P.narrow() ? (R.n + nearest(R.n)) / 2 : 5);
+    await F.say(i === 0 ? 'Back on the number path! Only some numbers show.' : F.pick(['A new number!', 'Where does Mendy go now?', 'Look at this number.']));
+    open(); await F.say('Bring Mendy to this number.', { repeat: 'Drag Mendy to ' + F.word(R.n) + '. Count from the numbers that show.' });
   });
 }
 FR.game({
   id: 'u7-review', title: 'Review Time', rounds: 6,
-  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  hero: '<div class="hero6"><img src="art/mendy-point.png" alt=""></div>',
   init() {
-    O = mount($('world'), { kids: ['dovid'], band, stack: true }); O.treeSpot();
-    O.onTap = id => { if (GAME.phase !== 'answer') return;
-      if (id === 'tree') busy = busy.then(async () => { if (O.count(0) >= 10) return; await O.drop(0); NK.say(FR.Word(O.count(0)) + '!', { noRepeat: true }); });
-      else if (id.startsWith('a0-')) busy = busy.then(() => O.take(0)); };
-    $('check').addEventListener('click', check);
+    P = mount($('world'), { kids: ['mendy'], band }); M = P.kids.mendy;
+    FR.dragTap({ sources: '#mchip', targets: '.p6layer .stone', drop });
+    if (P.narrow()) { $('left').hidden = $('right').hidden = false; $('left').onclick = () => { NK.sound.pop(); P.pan(-2); }; $('right').onclick = () => { NK.sound.pop(); P.pan(2); }; }
   },
   demo: async F => {
-    R = { n: 2, misses: 0 }; $('goal').innerHTML = U5.num(2); O.setApples(0, 0);
-    await F.say('This is two. Watch me pick two.');
-    for (let k = 1; k <= 2; k++) { await F.handTo(document.querySelector('.tspot[data-id="tree"]')); await F.handTap(); await O.drop(0); await F.say(F.Word(k) + '!', { noRepeat: true }); }
-    await F.handTo($('check')); await F.handTap(); await F.say('Two apples. Two!'); O.setApples(0, 0);
+    R = { n: 6, misses: 0 }; P.showAll(false); ANCHORS.forEach(n => P.shown(n, true)); M.show(false); $('goal').innerHTML = U5.num(6); P.focus(5.5);
+    await F.say('This is six. Watch me find it.'); P.glow(5, true); await F.say('Here is five. Six comes next!'); P.glow(5, false);
+    await F.handDrag($('mchip'), P.el(6)); M.place(5); M.show(true); await M.hop(6); P.shown(6, true); P.petals(6); await F.say('Six lives right after five!');
   },
   round: (F, i) => play(F, i),
-  endSay: s => s >= 2 ? 'You remember your numbers!' : 'Good work! Let\'s play once more.'
+  endSay: s => s >= 2 ? 'You remember where numbers live!' : 'Good work! Let\'s play once more.'
 });
 </script>
 </body>

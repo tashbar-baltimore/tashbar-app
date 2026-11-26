@@ -47,12 +47,13 @@ async function group(k, el) {
 async function card(k) {
   NK.unlock(); if (GAME.phase !== 'answer' || R.kind !== 'nums') return; GAME.phase = 'busy'; FR.lock(true); const m = R.n[0] > R.n[1] ? 0 : 1;
   if (k === m) return finish($('c' + k), 'Yes! ' + FR.Word(R.n[m]) + ' is more.');
-  FR.oops($('c' + k)); R.misses++; O.setApples(0, R.n[0]); O.setApples(1, R.n[1]); await lineUp(); O.setApples(0, 0); O.setApples(1, 0); open();
+  FR.oops($('c' + k)); R.misses++; O.setApples(0, R.n[0]); O.setApples(1, R.n[1]); await lineUp(); await FR.say(FR.Word(R.n[m]) + ' is more.'); O.setApples(0, 0); O.setApples(1, 0); open();
 }
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer' || R.kind !== 'build') return; GAME.phase = 'busy'; FR.lock(true); await busy; const w = R.base + R.d, have = O.count(1);
   if (have === w) return finish($('check'), 'Yes! ' + FR.Word(w) + ' is one ' + (R.d > 0 ? 'more' : 'less') + ' than ' + FR.word(R.base) + '.');
-  FR.oops($('check')); R.misses++; await FR.say("Let's look. Dovid has " + FR.word(R.base) + '. One ' + (R.d > 0 ? 'more' : 'less') + ' is ' + FR.word(w) + '.'); open();
+  FR.oops($('check')); R.misses++; await FR.say("Let's look. Dovid has " + FR.word(R.base) + '. One ' + (R.d > 0 ? 'more' : 'less') + ' is ' + FR.word(w) + '.');
+  await FR.say(have < w ? 'Tap the tree for more.' : 'Tap an apple to put it back.'); open();
 }
 const PLAN = [{ kind: 'groups', n: [7, 5] }, { kind: 'nums', n: [6, 9] }, { kind: 'build', base: 5, d: 1 }, { kind: 'groups', n: [6, 6] }, { kind: 'nums', n: [8, 3] }, { kind: 'build', base: 8, d: -1 }];
 function play(F, i) {
@@ -77,6 +78,12 @@ FR.game({
       else if (R.kind === 'build' && id === 'tree') busy = busy.then(() => O.count(1) < 10 ? O.drop(1) : null);
       else if (R.kind === 'build' && id.startsWith('a1-')) busy = busy.then(() => O.take(1)); };
     $('same').addEventListener('click', () => { NK.unlock(); group(-1, $('same')); }); $('c0').addEventListener('click', () => card(0)); $('c1').addEventListener('click', () => card(1)); $('check').addEventListener('click', check);
+  },
+  demo: async F => {   /* one quick look before the check */
+    R = { kind: 'demo', misses: 0 }; O.setApples(0, 3, 'scatter'); O.setApples(1, 4, 'scatter');
+    await F.say('Show me what you know! Watch me first.'); await lineUp(); await F.say('Shmuel has more. I tap his blanket.');
+    O.sideSpot(1); await F.handTo(document.querySelector('.tspot[data-id="side1"]')); await F.handTap(); O.unspot('side1');
+    O.setApples(0, 0); O.setApples(1, 0); await F.say('Then numbers, and one more or one less.');
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'More, less, the same. Unit seven done!' : 'Good try! Let\'s practise and come back.',
