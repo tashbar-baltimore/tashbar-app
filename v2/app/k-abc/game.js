@@ -130,7 +130,8 @@ export function makeGame(host, o) {
 
   /* ---------- the test hooks ---------- */
   G.expect = spec => { A.next = spec; A.step = (A.step || 0) + 1; };
-  A.nextScreen = () => { const s = A.next; if (!s) return null;
+  A.nextScreen = () => { try { return nextScreen0(); } catch (e) { return null; } };   /* a target that just went away: nothing to do this moment */
+  const nextScreen0 = () => { const s = A.next; if (!s) return null;
     const pt = v => v ? (v.screen ? v.screen() : v.isVector3 ? S.toScreen(v) : v.isObject3D ? S.toScreen(v.getWorldPosition(new THREE.Vector3())) : v.obj ? S.toScreen(v.obj.getWorldPosition(new THREE.Vector3())) : null) : null;
     if (s.kind === 'button') { const r = document.querySelector(s.sel).getBoundingClientRect(); return { kind: 'tap', x: r.left + r.width / 2, y: r.top + r.height / 2 }; }
     if (s.kind === 'tap') return Object.assign({ kind: 'tap' }, pt(typeof s.at === 'function' ? s.at() : s.at));
