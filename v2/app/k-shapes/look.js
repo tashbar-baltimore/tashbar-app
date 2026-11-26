@@ -164,11 +164,15 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     return { near, far };
   }
   /* the stage: the round mat in the middle where the shapes sit (its top is at 0.1, like the rug) */
+  /* painted round mats that have arrived and been checked by eye (art/mat-<world>.png; k-shapes-art-requests.md) */
+  const MATS = new Set([]);
   function stage(draw, o = {}) {
     const t = paint(1024, 1024, (x, w) => draw(x, w / 2, w));
     const top = new PM({ color: '#FFFFFF', map: t, roughness: o.rough || 0.9, sheen: o.sheen == null ? 0.8 : o.sheen, sheenColor: new THREE.Color(o.sheenColor || '#FFF6E8'), sheenRoughness: 0.7, clearcoat: o.coat || 0, clearcoatRoughness: 0.3 });
     const s = new THREE.Mesh(new THREE.CylinderGeometry(o.r || 6.6, (o.r || 6.6) + 0.1, o.h || 0.1, 128), [std(o.edge || '#F4E6D2', { roughness: 0.8 }), top, top]);
-    s.position.y = (o.h || 0.1) / 2; s.receiveShadow = true; s.castShadow = false; scene.add(s); return s;
+    s.position.y = (o.h || 0.1) / 2; s.receiveShadow = true; s.castShadow = false; scene.add(s);
+    if (MATS.has(world)) new THREE.TextureLoader().load('art/mat-' + world + '.png', t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO; top.map = t; top.needsUpdate = true; });   /* a painted round mat from the picture account */
+    return s;
   }
   /* soft round puffs (clouds, bushes, tree tops) */
   function puff(x, y, z, r, m, n, seed, par) {
@@ -1146,7 +1150,17 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
      a happy hop. If a picture is missing the 3D child is used instead (see kit.js). */
   const texLoader = new THREE.TextureLoader(), paintedTex = {};
   function poseTex(who, pose) { const k = who + '-' + pose; if (!paintedTex[k]) { paintedTex[k] = new Promise(res => texLoader.load('art/' + k + '.png', t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO; res(t); }, undefined, () => res(null))); } return paintedTex[k]; }
-  L.friendArt = (F) => 'shmuel';   /* every friend uses the one painted friend we have so far (more are ordered once Esti chooses painted) */
+  /* which painted boy plays each game's friend: glasses -> Dovid, ginger hair -> Shloimy, Shmuel -> Shmuel, the others shared out by name.
+     Only boys whose pictures have arrived and been checked are used. */
+  const FRIENDS = ['shmuel'];
+  L.friendArt = (F) => {
+    const has = n => FRIENDS.includes(n);
+    if (F.glasses && has('dovid')) return 'dovid';
+    if (String(F.hair).toUpperCase() === '#B8642A' && has('shloimy')) return 'shloimy';
+    if (F.name === 'Shmuel') return 'shmuel';
+    const pool = ['ari', 'avi', 'yossi', 'shmuel'].filter(has), h = [...String(F.name)].reduce((a, c) => a + c.charCodeAt(0), 0);
+    return pool[h % pool.length];
+  };
   L.paintedReady = (who) => poseTex(who, 'idle').then(t => !!t);
   L.makePaintedKid = (who, height = 2.75) => {
     const k = new THREE.Group(), body = new THREE.Group(); k.add(body);
