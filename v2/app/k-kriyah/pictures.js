@@ -135,6 +135,6 @@ export const WORDS = {
   shoe: { letter: 'shin', say: 'A shoe!' }, sheep: { letter: 'shin', say: 'A sheep!' },
   teapot: { letter: 'tav', say: 'A teapot!' },
 };
-export const HAVE = new Set(["ant", "balloon", "beachball", "bear", "camel", "carrot", "cat", "cucumber", "dog", "donkey", "dove", "fish", "fly", "hand", "house", "lamb", "lemon", "mountain", "olives", "peacock", "pear", "rabbit", "rose", "water"]);   /* painted objects on disk (made by a script); a word whose painting hasn't come yet has no picture */
+export const HAVE = new Set(["ant", "balloon", "beachball", "bear", "camel", "carrot", "cat", "challah", "cucumber", "dog", "donkey", "dove", "fish", "fly", "gift", "goat", "goose", "hand", "house", "key", "kite", "lamb", "lemon", "mountain", "nest", "nut", "olives", "peacock", "pear", "rabbit", "rose", "sheep", "shoe", "sock", "teapot", "tzitzis", "van", "vase", "violin", "water", "yarn", "yoyo", "zebra", "zipper"]);   /* painted objects on disk (made by a script); a word whose painting hasn't come yet has no picture */
 export const hasPic = w => !!WORDS[w] && (HAVE.has(WORDS[w].file || w) || !!WORDS[w].model);   /* a painting, or until it comes, a simple 3D model */
 export const WORD_NAME = Object.fromEntries(Object.keys(WORDS).map(w => [w, { yoyo: 'Yo-yo', ball: 'Ball' }[w] || w[0].toUpperCase() + w.slice(1)]));
