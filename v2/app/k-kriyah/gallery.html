@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kriyah Game Gallery</title>
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js"}}</script>
+<style>
+/* The game gallery: every unit and every game on one page, for the people who look at and approve 2.0.
+   Each "Open" button opens that game straight away in look mode (look mode works on a pull request's preview link only). */
+:root { --bg:#f6f8fc; --card:#fff; --ink:#1d2b3a; --soft:#5b6b7d; --line:#e3e9f1; --accent:#1f5fff; --accent-ink:#fff; --chip:#eef3ff; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12161d; --card:#1b212b; --ink:#eef2f7; --soft:#a7b3c2; --line:#2b3442; --accent:#5b8cff; --accent-ink:#0b1020; --chip:#243050; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+header { padding:24px 16px 8px; max-width:1100px; margin:0 auto; }
+h1 { margin:0 0 4px; font-size:28px; }
+header p { margin:0; color:var(--soft); }
+#note { margin:12px 0 0; padding:10px 14px; border-radius:10px; background:#fff4d6; color:#5a4300; display:none; }
+main { max-width:1100px; margin:0 auto; padding:8px 16px 48px; }
+section { margin-top:28px; }
+h2 { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin:0 0 12px; font-size:21px; }
+h2 .heb { font:700 26px/1 "Noto Serif Hebrew","Times New Roman",serif; direction:rtl; color:var(--accent); }
+h2 a { font-size:14px; font-weight:600; color:var(--accent); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
+.pic { aspect-ratio:16/9; background:var(--chip); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.pic img { width:100%; height:100%; object-fit:cover; display:block; }
+.pic .heb { font:700 56px/1 "Noto Serif Hebrew","Times New Roman",serif; color:var(--accent); direction:rtl; }
+.body { padding:10px 12px 12px; display:flex; flex-direction:column; gap:6px; flex:1; }
+.num { font-size:12px; font-weight:700; color:var(--soft); text-transform:uppercase; letter-spacing:.04em; }
+.name { font-weight:700; font-size:17px; }
+.what { color:var(--soft); font-size:14px; flex:1; }
+.tag { display:inline-block; font-size:12px; font-weight:700; padding:2px 8px; border-radius:99px; background:var(--chip); color:var(--accent); margin-left:6px; vertical-align:2px; }
+.open { margin-top:6px; display:block; text-align:center; text-decoration:none; background:var(--accent); color:var(--accent-ink); font-weight:700; padding:10px; border-radius:10px; }
+.open:focus-visible { outline:3px solid var(--ink); outline-offset:2px; }
+</style>
+</head><body>
+<header>
+  <h1>Kindergarten Kriyah: every game</h1>
+  <p>Every unit and every game, in Alef-Beis order. Tap <b>Open</b> to play any game straight away.</p>
+  <p id="note">Look mode only works on a pull request's preview link. Here, only the games a boy has opened will play.</p>
+</header>
+<main id="units"></main>
+<script type="module">
+/* The list comes from the games' own list (units.js; Unit 1's branch keeps it in engine.js), so a new unit shows up here by itself. */
+let UNITS;
+try { UNITS = (await import('./units.js')).UNITS; }
+catch (e) { const E = await import('./engine.js'); UNITS = [{ n: 1, letters: ['alef', 'beis', 'veis'], games: E.GAMES }]; }
+const HEB = { alef:'א', beis:'בּ', veis:'ב', gimmel:'ג', daled:'ד', hei:'ה', vov:'ו', zayin:'ז', ches:'ח', tes:'ט', yud:'י', kaf:'כּ', chaf:'כ',
+  lamed:'ל', mem:'מ', nun:'נ', samech:'ס', ayin:'ע', pei:'פּ', fei:'פ', tzadik:'צ', kuf:'ק', reish:'ר', shin:'שׁ', sin:'שׂ', tav:'תּ', sav:'ת',
+  chaf_sofit:'ך', mem_sofit:'ם', nun_sofit:'ן', fei_sofit:'ף', tzadik_sofit:'ץ' };
+const NAME = k => k ? k.split('_').map(w => w[0].toUpperCase() + w.slice(1)).join(' ') : '';
+const list = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+/* one line on what the boy does, from the kind of game */
+function what(g, u) {
+  const L = list(u.letters.map(NAME));
+  if (g.kind.startsWith('story')) return 'Hears a short story. Pictures turn into ' + L + ', then he taps each letter.';
+  return ({
+    feel: 'Runs his finger along each letter’s shape while he hears its name and sound.',
+    detective: 'Drags each Beis and Veis to the right house: the dot means someone is home.',
+    sorter: 'Sorts look-alike letters into two crates' + (g.pairs ? ' (' + g.pairs.map(p => p.map(NAME).join('/')).join(', ') + ')' : '') + '.',
+    hunt: 'Finds every hidden letter he is asked for, in a big picture.',
+    soundmatch: 'Drags each picture to the letter its word starts with.',
+    train: 'Puts the letter cars on the train in Alef-Beis order.',
+    mistake: 'Decides if Yaakov named the letter right, then fixes it.',
+    mastery: 'The unit’s check: hears a letter or a sound and taps it.',
+    bonus: 'Catches the falling letters he hears, faster each round.',
+  })[g.kind] || '';
+}
+const preview = location.hostname.includes('--pr-');
+if (!preview) document.getElementById('note').style.display = 'block';
+const main = document.getElementById('units');
+for (const u of UNITS) {
+  const s = document.createElement('section');
+  const heb = u.letters.map(k => HEB[k] || '').join(' ');
+  s.innerHTML = `<h2>Unit ${u.n}: ${list(u.letters.map(NAME))} <span class="heb" dir="rtl">${heb}</span> <a href="index.html?u=${u.n}${preview ? '&look=1' : ''}">Unit ${u.n}'s path</a></h2><div class="grid"></div>`;
+  const grid = s.querySelector('.grid');
+  u.games.forEach((g, i) => {
+    const c = document.createElement('article'); c.className = 'card';
+    const tag = g.mastery ? '<span class="tag">Check</span>' : g.bonus ? '<span class="tag">Bonus</span>' : g.review ? '<span class="tag">Review</span>' : '';
+    c.innerHTML = `<div class="pic"><img alt="" loading="lazy" src="gallery/${g.id}.jpg"></div>
+      <div class="body"><div class="num">Game ${i + 1}</div><div class="name">${g.name}${tag}</div><div class="what">${what(g, u)}</div>
+      <a class="open" href="play.html?g=${g.id}${preview ? '&look=1' : ''}">Open</a></div>`;
+    const img = c.querySelector('img');
+    img.onerror = () => { img.parentNode.innerHTML = `<span class="heb" dir="rtl">${heb}</span>`; };
+    grid.appendChild(c);
+  });
+  main.appendChild(s);
+}
+document.body.dataset.ready = 1;
+</script>
+</body></html>
