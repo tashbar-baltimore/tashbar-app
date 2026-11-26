@@ -24,7 +24,7 @@ function pickVoice() { const vs = (window.speechSynthesis && speechSynthesis.get
 if (window.speechSynthesis) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 let lastLine = '', lastCap, sayToken = 0;
 export function say(text, o = {}) {
-  const words = text.replace(/[^\w\s'-]/g, ' ').trim().split(/\s+/).filter(Boolean);
+  const words = spoken(text).replace(/[^\w\s'-]/g, ' ').trim().split(/\s+/).filter(Boolean);   /* counted as said: 116 is 3 words */
   if (words.length > 12) G.long.push(text);
   G.said.push(text); lastLine = text; lastCap = o.cap; showCaption(o.cap || text);
   const my = ++sayToken;
@@ -100,7 +100,7 @@ body.padon #cap{ bottom:auto; top:calc(104px + env(safe-area-inset-top,0px)); }
 #replay{ background:radial-gradient(circle at 35% 30%,#FFFFFF,#E3F1FF 60%,#B9DAFF); } #onward{ background:radial-gradient(circle at 35% 30%,#FFE1F1,#FF7EB9 55%,#E0408A); animation:bob 1.6s ease-in-out infinite; }
 #nogl{ position:fixed; inset:0; display:none; place-items:center; background:#9AD3FF; color:#fff; font-size:24px; text-align:center; padding:24px; z-index:20; }
 @keyframes bob{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-8px) } }
-@media (max-width:600px){ #again,#help{ width:68px; height:68px; } #help{ left:90px; } #home{ width:64px; height:64px; } #cap{ font-size:20px; } #dots{ top:calc(96px + env(safe-area-inset-top,0px)); } }
+@media (max-width:600px){ body.padon #cap{ top:calc(126px + env(safe-area-inset-top,0px)); } #again,#help{ width:68px; height:68px; } #help{ left:90px; } #home{ width:64px; height:64px; } #cap{ font-size:20px; } #dots{ top:calc(96px + env(safe-area-inset-top,0px)); } }
 `;
 const ICON = {
   again: '<svg viewBox="0 0 24 24"><path fill="#1F6FD6" d="M3 9v6h4l5 4V5L7 9H3z"/><path fill="none" stroke="#1F6FD6" stroke-width="2.2" stroke-linecap="round" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
@@ -318,7 +318,8 @@ export function stone(n, o = {}) {
   const g = new THREE.Group(), b = new THREE.Mesh(stoneGeo, o.mat || stoneM[Math.abs(n) % 3]); b.castShadow = !FAST; b.receiveShadow = true; g.add(b);
   const face = new THREE.Mesh(new THREE.CircleGeometry(0.86, 40), new THREE.MeshStandardMaterial({ map: numTex(n == null ? '' : n), transparent: true, roughness: 0.8 }));
   face.rotation.x = -Math.PI / 2; face.position.y = 0.265; g.add(face); g.userData = { n, face, base: b };
-  g.setNum = v => { g.userData.n = v; face.material.map = numTex(v == null ? '' : v); face.material.needsUpdate = true; };
+  face.visible = n != null;
+  g.setNum = v => { g.userData.n = v; face.visible = v != null; if (v != null) { face.material.map = numTex(v); face.material.needsUpdate = true; } };
   return g;
 }
 /* a glowing ring under something to show "here" */

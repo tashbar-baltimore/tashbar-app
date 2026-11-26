@@ -16,7 +16,7 @@ const host = ui({ home: GAME === 'hill' ? './' : 'unit1.html' });
 let S;
 try { S = stage(host); } catch (e) { throw e; }
 orchard(S);
-G.isReady = () => S.frames > 2;
+G.isReady = () => S.frames > 2; G.kids = () => S.scene.children.filter(o => o.userData && o.userData.name).map(o => o.userData.name + '@' + o.position.x.toFixed(1) + ',' + o.position.z.toFixed(1));
 const PORTRAIT = innerHeight > innerWidth;
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const sc = (o, dy) => S.screenOf(o, dy || 0);
@@ -148,12 +148,12 @@ async function wallRound(firstRow, rows, gapNums, o = {}) {
   function brick(n, m) { const g = new THREE.Group(), b = new THREE.Mesh(new THREE.BoxGeometry(bw - 0.12, bh - 0.12, 0.7), m); b.position.z = -0.3; b.castShadow = !FAST; b.receiveShadow = true; g.add(b);
     const f = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 0.92), new THREE.MeshStandardMaterial({ map: wideNum(n), transparent: true, roughness: 0.8 })); f.position.z = 0.06; g.add(f); g.userData.n = n; return g; }
   /* the loose stones lie in front, mixed up */
-  const half = gapNums.every(n => (n - firstRow) % 10 < 5) ? -1 : 1, hx = PORTRAIT ? half * 2.5 * bw : 0;
+  const lo = gapNums.every(n => (n - firstRow) % 10 < 5), hi = gapNums.every(n => (n - firstRow) % 10 >= 5), half = lo ? -1 : 1, hx = PORTRAIT && (lo || hi) ? half * 2.5 * bw : 0;
   const LS = PORTRAIT ? 1.25 : 1.25, loose = shuffle(gapNums.slice()).map((n, i) => { const b = brick(n, MATS.phys('#FFE6B8', { roughness: 0.6, clearcoat: 0.3 })); b.scale.setScalar(LS);
     b.position.set(hx + (i - (gapNums.length - 1) / 2) * (PORTRAIT ? 2.45 : 2.9), PORTRAIT ? 1.0 : 0.75, 1.6); b.userData.home = b.position.clone(); keep(b); return b; });
   G.looseLeft = () => loose.filter(b => !b.userData.done).map(b => b.userData.n);
   const m = keep(addKid(S, 'mendy', PORTRAIT ? V(hx - half * 4.2, -0.2, 3.4) : V(bw * 5 + 1.6, 0, 1.4))); m.rotation.y = PORTRAIT ? half * 0.4 : -0.5; m.scale.setScalar(PORTRAIT ? 0.6 : 0.8);
-  S.frame(V(hx, (top + 0.2) / 2 + (PORTRAIT ? -0.4 : 0.5), 0), PORTRAIT ? bw * 5 + 0.2 : bw * 10 + 1.5, top + (PORTRAIT ? 2.6 : 2.4), V(0, 0.22, 1));
+  S.frame(V(hx, (top + 0.2) / 2 + (PORTRAIT ? -0.4 : 0.5), 0), PORTRAIT && hx ? bw * 5 + 0.2 : bw * 10 + 1.5, top + (PORTRAIT ? 2.6 : 2.4), V(0, 0.22, 1));
   G.hit = { loose: n => sc(loose.find(b => b.userData.n === n)), gap: n => { const v = posOf(n); const d = new THREE.Object3D(); d.position.copy(v).add(V(0, 0, 0.3)); S.scene.add(d); const r = sc(d); S.scene.remove(d); return r; } };
   if (o.demo) {
     await say('Watch me. Look at the stone before the gap.');
@@ -176,9 +176,9 @@ async function wallRound(firstRow, rows, gapNums, o = {}) {
         if (best == null || bd >= 1.6) { await tween(300, u => b.position.lerp(b.userData.home, u)); b.scale.setScalar(LS); return; }
         miss++; G.fixes++; await tween(300, u => b.position.lerp(b.userData.home, u)); b.scale.setScalar(LS);
         if (o.check) { await say('Not that gap.'); return; }
-        const n = b.userData.n, hint = bricks[n - 1] ? 'It comes right after ' + (n - 1) + '.' : bricks[n - 10] ? 'Ten more than ' + (n - 10) + '. Look up!' : 'Count along the row.';
+        const n = b.userData.n, hint = bricks[n - 1] ? 'It comes right after ' + (n - 1) + '.' : bricks[n - 10] ? 'It is ten more than ' + (n - 10) + '. Look up!' : 'Count along the row.';
         const hb = bricks[n - 1] || bricks[n - 10]; if (hb) { const gg = lightUp(hb, '#7FD6FF'); gg.rotation.x = 0; gg.position.z = 0.1; setTimeout(() => hb.remove(gg), QUICK ? 200 : 2500); }
-        await say('This stone is ' + n + '. ' + hint);
+        await say(hint, { cap: 'This stone is ' + n + '. ' + hint });
       } });
   });
   G.state = 'busy'; await wait(400); return miss;
@@ -194,11 +194,11 @@ async function crateRound(n, o = {}) {
   for (let i = 0; i < ones; i++) { const a = keep(apple()); a.scale.setScalar(1.6); a.position.set((i - (ones - 1) / 2) * (PORTRAIT ? 0.9 : 1.05), 0.35, 1.3); apples.push(a);
     const hit = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 6), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); a.add(hit); }
   const w = Math.max(Math.min(tens, per) * 2.95, ones * 1.05, 6) + (PORTRAIT ? 1 : 5);
-  const m = keep(addKid(S, o.who || 'mendy', V(PORTRAIT ? -3.4 : -w / 2 + 0.6, 0, 1.4))); m.rotation.y = 0.5; m.scale.setScalar(0.85);
+  const m = keep(addKid(S, o.who || 'mendy', PORTRAIT ? V(4.4, 0, -1.4 - rows * RZ) : V(-w / 2 + 0.6, 0, 1.4))); m.rotation.y = PORTRAIT ? -0.4 : 0.5; m.scale.setScalar(PORTRAIT ? 0.7 : 0.85);
   S.frame(V(PORTRAIT ? 0 : -1.5, 0.6, -(rows - 1) * RZ / 2 + 0.2), w, rows * RZ + 4.2, V(0, 0.85, 1));
   G.hit = { crate: i => sc(crates[i], 0.5), apple: i => sc(apples[i], 0.2) };
   let said = 0;
-  const countTo = async (obj, k, saying) => { const isC = crates.includes(obj), lab = floatNum(k, obj.position.clone().add(V(0, isC ? 1.5 : 0.95, isC ? -0.3 : 0))); lab.scale.setScalar(isC ? (PORTRAIT ? 1.0 : 1.2) : 0.78); chime('tap'); if (saying) await say(String(k)); return lab; };
+  const countTo = async (obj, k, saying) => { if (o.check) { chime('tap'); const gg = glow('#FFE27A', 2.2); gg.position.y = 0.05; obj.add(gg); return null; } const isC = crates.includes(obj), lab = floatNum(k, obj.position.clone().add(V(0, isC ? 1.5 : 0.95, isC ? -0.3 : 0))); lab.scale.setScalar(isC ? (PORTRAIT ? 1.25 : 1.2) : (PORTRAIT ? 0.95 : 0.78)); chime('tap'); if (saying) await say(String(k)); return lab; };
   if (o.demo) {
     await say('Watch me. Crates first: each crate has 10.');
     for (let i = 0; i < tens; i++) await countTo(crates[i], (i + 1) * 10, true);
@@ -216,7 +216,7 @@ async function crateRound(n, o = {}) {
     S.onTap(apples, async a => { if (doneC.size < tens) { say('Tens first! Tap the crates.'); return; } if (doneA.has(a)) return; doneA.add(a); await countTo(a, tens * 10 + doneA.size, !QUICK); if (doneA.size === ones) res(); });
   });
   S.clearInput(); G.state = 'write';
-  if (o.check) clearLabels();
+  clearLabels();
   await say('Write how many apples.', { cap: 'Write how many apples.' });
   let first = true;
   for (;;) {
@@ -236,9 +236,13 @@ async function hearRound(n, o = {}) {
   S.frame(V(-1, 0.8, 0), 9, 6, V(0, 0.9, 1));
   await say('Write ' + n + '.', { cap: 'Write the number you hear. Tap the speaker to hear it again.' });
   G.state = 'write';
-  const v = await pad(3); s.setNum(v);
-  if (v === n) { chime('good'); m.act('cheer'); await say('Yes! ' + n + '.'); await wait(300); return true; }
-  G.fixes++; await wait(200); s.setNum(n); shake(s); await say(o.check ? 'It is ' + n + '.' : 'Not yet. ' + n + ' looks like this.'); await wait(600); return false;
+  let first = true;
+  for (;;) { const v = await pad(3); s.setNum(v);
+    if (v === n) { chime('good'); m.act('cheer'); await say(first ? 'Yes! ' + n + '.' : 'You got it!'); await wait(300); return first; }
+    first = false; G.fixes++; await wait(200); shake(s);
+    if (o.check) { s.setNum(n); await say('It is ' + n + '.'); await wait(600); return false; }
+    s.setNum(null); await say(n > 100 ? 'Not yet. A 1 for the hundred, then the rest.' : 'Not yet. Listen again.');
+    await say('Write ' + n + '.', { cap: 'Write the number you hear.' }); }
 }
 
 /* ============================================================ the games ============================================================ */
@@ -250,6 +254,7 @@ async function opener() {
   await say('Hi! I am Mendy. I am in first grade now!'); m.act('wave', 1.8);
   await say('Today we pick apples for Bubby\'s Shabbos cake!');
   await say('In kindergarten we counted to 100.');
+  await say('My friends Shmuel and Yaakov pick apples too!');
   await say('Today we count all the way to 120!');
   await say('Big numbers help us count lots of apples!');
   /* 1: tens up the hill */
@@ -289,14 +294,16 @@ async function opener() {
   await say('A hundred in front, then the same numbers.');
   /* 4: 111 to 120, then he finishes the climb himself */
   clearTemp(); const top = [];
-  for (let i = 0; i < 10; i++) { const n = 111 + i, s = keep(stone(i < 7 ? null : null)); const rr = Math.floor(i / cols3), c = i % cols3; s.position.set((c - (cols3 - 1) / 2) * 2.25, 0, rr * 2.5 - 2); s.userData.n = n; top.push(s); }
+  for (let i = 0; i < 10; i++) { const n = 111 + i, s = keep(stone(null)); const rr = Math.floor(i / cols3), c = i % cols3; s.position.set((c - (cols3 - 1) / 2) * 2.25, 0, rr * 2.5 - 2); s.userData.n = n; top.push(s); }
   S.frame(V(0, 0.6, PORTRAIT ? 0.6 : -2), PORTRAIT ? 12 : 23.5, PORTRAIT ? 9 : 6, V(0, 0.8, 1));
   await say('Up to the top of the hill!');
   for (let i = 0; i < 7; i++) { top[i].setNum(top[i].userData.n); lightUp(top[i]); chime('tap'); await say(String(top[i].userData.n)); }
-  await say('Now you! Finish the climb.'); G.state = 'tapnext';
-  for (let i = 7; i < 10; i++) { const s = top[i], g = lightUp(s, '#7FFFB0'); G.next = s.userData.n; G.hit = { next: () => sc(s, 0.3), prev: () => sc(top[i - 1], 0.3) };
-    await new Promise(res => { const t = S.onTap(top, o => { if (o !== s) { say('Tap the glowing stone.'); return; } t.enabled = false; res(); }); });
-    s.remove(g); s.setNum(s.userData.n); lightUp(s); chime('tap'); await say(String(s.userData.n)); }
+  await say('Now you! Finish the climb.');
+  G.state = 'writenext';
+  for (let i = 7; i < 10; i++) { const s = top[i], g = lightUp(s, '#7FFFB0'); G.next = s.userData.n;
+    await say('What comes next? Write it.', { cap: 'What comes after ' + (s.userData.n - 1) + '? Write it.' });
+    while ((await pad(3)) !== s.userData.n) { G.fixes++; await say('Count on from ' + (s.userData.n - 1) + '. Try again.'); }
+    s.remove(g); s.setNum(s.userData.n); lightUp(s); chime('good'); await say(String(s.userData.n)); }
   S.clearInput(); G.state = 'busy';
   await say('120! The top of the hill!');
   /* 5: how a big number is written */
@@ -329,7 +336,7 @@ async function wall() {
   G.how = { title: 'Fix the wall', pic: PIC.wall, steps: ['Look at the stone before the gap: one more comes next.', 'Or look up: the stone below is ten more.', 'Drag the stone into its gap.'], say: 'One more is next. Ten more is right below.' };
   const sets = [[21, 3, [23, 34, 45]], [61, 3, [76, 77, 89]], [91, 3, [99, 108, 116, 120]]];
   let miss = 0;
-  for (let r = 0; r < sets.length; r++) { G.round = r; const [a, rows, gaps] = sets[r]; miss += await wallRound(a, rows, gaps, { demo: r === 0 }); dots(3, r + 1); }
+  for (let r = 0; r < sets.length; r++) { G.round = r; let [a, rows, gaps] = sets[r]; if (r === 2 && miss >= 2) { gaps = gaps.slice(0, 2); G.easy = true; await say('Just two stones this time.'); } miss += await wallRound(a, rows, gaps, { demo: r === 0 }); dots(3, r + 1); }
   const st = starsFor(miss, 6); const e = await endScreen(st); if (e === 'replay') location.reload();
 }
 async function crates() {
@@ -337,26 +344,28 @@ async function crates() {
   G.how = { title: 'Crate count', pic: PIC.crates, steps: ['Each crate has 10 apples.', 'Tap the crates: 10, 20, 30 ...', 'Then tap the apples: 31, 32 ...', 'Write the number.'], say: 'Count the crates by tens, then the apples by ones.' };
   await crateRound(23, { demo: true }); dots(R, 1);
   let miss = 0; const ns = [rnd(3, 4) * 10 + rnd(1, 9), rnd(6, 8) * 10 + rnd(1, 9), 110 + rnd(1, 6)];
-  for (let r = 0; r < ns.length; r++) { G.round = r; if (!(await crateRound(ns[r]))) miss++; dots(R, r + 2); }
-  G.round = 3; await say('Now listen, and write the number.'); if (!(await hearRound(110 + rnd(1, 9)))) miss++; dots(R, 5);
+  for (let r = 0; r < ns.length; r++) { G.round = r; if (r === 2 && miss >= 2) { ns[2] = rnd(5, 9) * 10 + rnd(1, 9); G.easy = true; await say('Let us try a smaller one.'); } if (!(await crateRound(ns[r]))) miss++; dots(R, r + 2); }
+  G.round = 3; await say('Now listen, and write the number.'); if (!(await hearRound(100 + rnd(1, 19)))) miss++; dots(R, 5);
   const st = starsFor(miss, 4); await say(st === 3 ? 'You count like a farmer!' : 'Great counting!'); const e = await endScreen(st); if (e === 'replay') location.reload();
 }
 async function mistake() {
   G.name = 'mistake'; const R = 3; dots(R, 0);
   G.how = { title: 'Find the mistake', pic: PIC.mistake, steps: ['Count along the stones.', 'Tap the stone that is wrong.', 'Write the right number.'], say: 'Count along. Tap the wrong stone, then fix it.' };
+  const b0 = rnd(2, 4), t1 = rnd(1, 4), b1 = rnd(1, 3), t2 = rnd(5, 9), b2 = rnd(1, 4);
+  const rowOf = (start, bad, wrong) => Array.from({ length: 6 }, (_, i) => i === bad ? wrong : start + i);
   const rounds = [
-    { row: [106, 107, 108, 109, 200, 111], bad: 4, right: 110, line: 'Shmuel counted. Is every stone right?' },
-    { row: [98, 99, 100, 1001, 102, 103], bad: 3, right: 101, line: 'Shmuel wrote these. Find the wrong one.' },
-    { row: [100, 101, 102, 1003, 104, 105], bad: 3, right: 103, line: 'Shmuel wrote one hundred three. Find the wrong stone.' }];
+    { row: rowOf(110 - b0, b0, 200), bad: b0, right: 110, line: 'Shmuel counted. Is every stone right?' },
+    { row: rowOf(100 + t1 - b1, b1, 1000 + t1), bad: b1, right: 100 + t1, line: 'Shmuel wrote these. Find the wrong one.' },
+    { row: rowOf(100 + t2 - b2, b2, 1000 + t2), bad: b2, right: 100 + t2, line: 'Shmuel wrote ' + (100 + t2) + '. Find the wrong stone.', cap: 'Shmuel wrote a number past 100. Find the wrong stone.' }];
   let miss = 0;
   for (let r = 0; r < rounds.length; r++) {
     clearTemp(); G.round = r; const q = rounds[r]; G.q = (G.q || 0) + 1; G.ask = { kind: 'mistake', bad: q.bad, answer: q.right };
     const cols = PORTRAIT ? 3 : 6, stones = q.row.map((n, i) => { const s = keep(stone(n)); s.scale.setScalar(1.2); const rr = Math.floor(i / cols), c = i % cols; s.position.set((c - (cols - 1) / 2) * 2.7, 0, rr * 2.8 - 1); return s; });
-    const sh = keep(addKid(S, 'shmuel', V(PORTRAIT ? 3.4 : -8.8, 0, PORTRAIT ? 4.2 : 0.4))); sh.scale.setScalar(0.85); sh.rotation.y = PORTRAIT ? -0.4 : 0.5;
+    const sh = keep(addKid(S, 'shmuel', V(PORTRAIT ? 0 : -8.8, 0, PORTRAIT ? 4.6 : 0.4))); sh.scale.setScalar(PORTRAIT ? 0.7 : 0.85); sh.rotation.y = PORTRAIT ? 0 : 0.5;
     S.frame(V(PORTRAIT ? 0 : -1.4, 0.8, PORTRAIT ? 1.2 : -0.6), PORTRAIT ? 9 : 20, PORTRAIT ? 9 : 6, V(0, 0.75, 1));
     keep(pathRibbon(PORTRAIT ? 9 : 17, PORTRAIT ? 7 : 3.4)).position.set(0, 0.015, PORTRAIT ? 0.4 : -1);
     G.hit = { stone: i => sc(stones[i], 0.3) };
-    sh.act('think', 2); await say(q.line);
+    sh.act('think', 2); await say(q.line, q.cap ? { cap: q.cap } : {});
     let first = true; G.state = 'find';
     for (;;) { const i = await new Promise(res => { const t = S.onTap(stones, s => { t.enabled = false; G.state = 'busy'; res(stones.indexOf(s)); }); });
       if (i === q.bad) { chime('good'); lightUp(stones[i], '#FFB0D8'); await say('You found it!'); break; }
@@ -364,19 +373,21 @@ async function mistake() {
       for (let k = 0; k < q.bad; k++) { chime('tap'); await say(String(q.row[k])); } await say('What comes next?'); G.state = 'find'; }
     G.state = 'write'; await say('Write the right number.', { cap: 'Write the right number for the pink stone.' });
     for (;;) { const v = await pad(4); if (v === q.right) { stones[q.bad].setNum(v); sh.act('cheer'); confetti(S, stones[q.bad].position.clone().add(V(0, 1, 0)), 40); await say('Yes! ' + v + '. Thank you!'); break; }
-      first = false; G.fixes++; await say(q.right >= 100 && q.right < 110 ? 'One hundred, then just the small number: ' + q.right + '.' : 'After 109 comes 110.'); }
+      first = false; G.fixes++; await say(q.right === 110 ? 'What comes after 109? Try again.' : 'A 1 for the hundred, then the small number.'); }
     if (!first) miss++; dots(R, r + 1); await wait(300);
   }
   const st = starsFor(miss, 3); const e = await endScreen(st); if (e === 'replay') location.reload();
 }
+/* three gaps in one half of a 3-row wall: one in each row, the last one a step to the side (next, ten more, ten more and one) */
+function gapsIn(first) { const c = rnd(0, 3) + (Math.random() < 0.5 ? 0 : 5); return [first + c, first + 10 + c, first + 21 + c]; }
 async function check() {
   G.name = 'check'; document.getElementById('help').classList.add('off'); const R = 8; dots(R, 0);
   await say('The big check! Do your best. No help this time.');
   const items = shuffle([
     () => hopRound(rnd(64, 85), rnd(3, 5), { check: true }),
     () => { const s = rnd(96, 99); return hopRound(s, rnd(Math.max(3, 101 - s), 6), { check: true }); },
-    async () => (await wallRound(41, 3, [48, 57, 66], { check: true })) === 0,
-    async () => (await wallRound(91, 3, [104, 113, 118], { check: true })) === 0,
+    async () => (await wallRound(41, 3, gapsIn(41), { check: true })) === 0,
+    async () => (await wallRound(91, 3, gapsIn(91), { check: true })) === 0,
     () => crateRound(rnd(4, 9) * 10 + rnd(1, 9), { check: true }),
     () => crateRound(100 + rnd(11, 19), { check: true }),
     () => hearRound(100 + rnd(1, 9), { check: true }),

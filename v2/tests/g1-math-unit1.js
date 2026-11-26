@@ -1,11 +1,11 @@
 /* 2.0 TEST (v2/tests/, run by tests/run.js): Grade 1 Math, Unit 1 "Counting to 120" on Orchard Hill (v2/app/g1-math/unit1.html).
    Builds v2/, opens every game with ?fast=1 (no voice, quick motion, simple graphics) at Chromebook size and phone size, and plays it as a made-up boy:
    - the hill: 7 stones in order, only the first open; a locked stone says why; tapping the open one starts the lesson;
-   - the opener lesson: Mendy counts by tens, then past 100 ("Watch me"), then the boy taps 103 ... 110 and 118 ... 120 himself; a wrong tap is explained; it shows how 113 is written;
+   - the opener lesson: Mendy counts by tens, then past 100 ("Watch me"), then the boy taps 103 ... 110 and writes 118, 119, 120 himself; wrong moves are explained; it shows how 113 is written;
    - Hop ahead: a wrong guess is fixed (Mendy hops and counts with him), then he tries again; 1 miss in 4 = 2 stars;
    - Fix the wall: he drags stones into the 120-chart wall; a stone dropped in the wrong gap goes back with a hint; 1 miss = 2 stars;
    - Crate count: an apple before the crates gets "tens first"; a wrong written number is explained, then he writes it right; then he writes a number he hears; 2 stars;
-   - Find the mistake: tapping a right stone is explained; he finds 200 and 1001 and 1003 and writes 110, 101, 103;
+   - Find the mistake: tapping a right stone is explained; he finds 200 and the 1000-something stones (they change each time) and writes the right numbers;
    - Mastery check: no help button; 8 of 8 right = mastered, 3 stars;
    - Review (Kindergarten skills): all right = 3 stars;
    - every game has a "How to do it" box with steps; buttons are 64 px or more; every spoken line is 12 words or fewer;
@@ -59,7 +59,9 @@ module.exports = async function (browser) {
     await W(pg, q => (__g1.q || 0) > q, q);
     const [a, cur] = await pg.evaluate(() => [__g1.ask, __g1.q]);   /* this round's number, read with its question (the next one may open at once) */
     if (a.kind === 'hop') { await W(pg, () => __g1.state === 'ask'); await tap(pg, 'hit.stone', a.answer); }
-    else if (a.kind === 'wall') { await W(pg, () => __g1.state === 'ask'); for (const n of await pg.evaluate(() => __g1.looseLeft())) await drag(pg, n, n); }
+    else if (a.kind === 'wall') { await W(pg, () => __g1.state === 'ask'); const vp = pg.viewportSize();
+      for (const n of a.gaps) { const g = await pg.evaluate(n => __g1.hit.gap(n), n); if (g.x < 20 || g.x > vp.width - 20 || g.y < 20 || g.y > vp.height - 20) out.fails.push('2.0 G1 Math unit 1: ' + vp.width + 'px: the gap for ' + n + ' is off the screen'); }
+      for (const n of await pg.evaluate(() => __g1.looseLeft())) await drag(pg, n, n); }
     else if (a.kind === 'crates') { await W(pg, () => __g1.state === 'tapcount'); const t = Math.floor(a.answer / 10), o = a.answer % 10;
       for (let i = 0; i < t; i++) await tap(pg, 'hit.crate', i); for (let i = 0; i < o; i++) await tap(pg, 'hit.apple', i); await typePad(pg, a.answer); }
     else if (a.kind === 'hear') await typePad(pg, a.answer);
@@ -93,7 +95,9 @@ module.exports = async function (browser) {
         if (n === 103) { const k = await P.pg.evaluate(() => __g1.said.length), p = await P.pg.evaluate(() => __g1.hit.prev()); await P.pg.mouse.click(p.x, p.y); await P.pg.waitForTimeout(150);
           if (!(await saidSince(P.pg, k, 'glowing'))) bad(P.label + ': a wrong tap in the lesson is not explained'); }
         await tap(P.pg, 'hit.next'); }
-      for (let n = 118; n <= 120; n++) { await W(P.pg, n => __g1.next === n && __g1.state === 'tapnext', n, 60000); await tap(P.pg, 'hit.next'); }
+      for (let n = 118; n <= 120; n++) { await W(P.pg, n => __g1.next === n && __g1.state === 'writenext' && __g1.padOn, n, 60000);
+        if (n === 118) { const k = await P.pg.evaluate(() => __g1.said.length); await typePad(P.pg, 119); await P.pg.waitForTimeout(150); if (!(await saidSince(P.pg, k, 'Count on from 117'))) bad(P.label + ': a wrong next number in the lesson is not explained'); }
+        await typePad(P.pg, n); await W(P.pg, n => __g1.next !== n || !__g1.padOn || __g1.done, n).catch(() => {}); }
       const sd = await P.pg.evaluate(() => __g1.said.join(' | ')); if (!/\b113\b/.test(sd)) bad(P.label + ': the lesson does not show how 113 is written');
       if (!/\b110\b/.test(sd) || !/\b120\b/.test(sd)) bad(P.label + ': the lesson does not reach 110 and 120');
       await finish(P, 3); });
@@ -134,8 +138,9 @@ module.exports = async function (browser) {
       let q = 0;
       for (let r = 0; r < 3; r++) { await W(P.pg, q => (__g1.q || 0) > q && __g1.state === 'find', q, 60000); q = await P.pg.evaluate(() => __g1.q); const a = await P.pg.evaluate(() => __g1.ask);
         if (r === 0) { const k = await P.pg.evaluate(() => __g1.said.length); await tap(P.pg, 'hit.stone', 0); await P.pg.waitForTimeout(150); await W(P.pg, () => __g1.state === 'find', null, 60000); if (!(await saidSince(P.pg, k, 'That one is right'))) bad(P.label + ': tapping a right stone is not explained'); }
-        await tap(P.pg, 'hit.stone', a.bad); await typePad(P.pg, a.answer); }
-      const said = await P.pg.evaluate(() => __g1.said.join(' | ')); if (!/\b110\b/.test(said) || !/\b103\b/.test(said)) bad(P.label + ': the mistakes past 100 were not fixed');
+        await tap(P.pg, 'hit.stone', a.bad); await typePad(P.pg, a.answer);
+        await W(P.pg, n => __g1.said.some(t => t === 'Yes! ' + n + '. Thank you!'), a.answer).catch(() => bad(P.label + ': the mistake ' + a.answer + ' was not fixed')); }
+
       await finish(P, 2); });
     /* Mastery check */
     await step('check', async () => { P = await open(w, h, 'check', label);
