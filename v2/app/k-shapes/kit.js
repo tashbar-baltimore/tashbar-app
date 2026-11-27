@@ -659,7 +659,10 @@ export function startGame(cfg) {
     const gap = sideOf(corners, miss, sc), fill = new THREE.Mesh(new THREE.ShapeGeometry(shp, 32), new THREE.MeshStandardMaterial({ color, roughness: 0.5, transparent: true, opacity: 0.55, side: THREE.DoubleSide }));
     fill.scale.setScalar(sc); fill.position.z = -0.02; fill.visible = false; g.add(fill);
     const close = new THREE.Mesh(stickGeo(gap.len), m); close.position.copy(gap.mid); close.rotation.z = gap.ang; close.visible = false; g.add(close);
-    const mark = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 32), new THREE.MeshBasicMaterial({ color: '#F5B400', transparent: true, opacity: 0.9 })); mark.position.copy(gap.mid); mark.position.z = 0.05; g.add(mark);
+    /* the gap (K clarity, Esti 2026-11-27): a dashed ghost of the missing side, in the shape's colour, shows exactly where the stick goes */
+    const mark = new THREE.Group(), nd = Math.max(3, Math.round(gap.len / 0.34)), dm = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5, depthWrite: false });
+    for (let i = 0; i < nd; i++) { const d = new THREE.Mesh(new THREE.CapsuleGeometry(SR * 0.6, gap.len / nd * 0.45, 4, 8), dm); d.rotation.z = Math.PI / 2; d.position.x = -gap.len / 2 + (i + 0.5) * gap.len / nd; mark.add(d); }
+    mark.position.copy(gap.mid); mark.rotation.z = gap.ang; mark.position.z = 0.05; g.add(mark);
     scene.add(g);
     return { g, k, corners, sc, gap, fill, close, mark, marks: [], color };
   }
@@ -674,20 +677,20 @@ export function startGame(cfg) {
     const t = new THREE.Mesh(o.mesh.geometry, o.mat); t.position.copy(OL.gap.mid); t.rotation.z = OL.gap.ang; t.position.z = 0.04; OL.g.add(t);
     return wait(1400).then(() => { OL.g.remove(t); });
   }
-  function makeStick(id, kind, len, color, slot) {   /* kind: 'right' | 'short' | 'long' | 'curvy' */
+  function makeStick(id, kind, len, color, slot, ang) {   /* kind: 'right' | 'short' | 'long' | 'curvy' */
     const L = kind === 'short' ? len * 0.55 : kind === 'long' ? len * 1.5 : len;
     const mat = stickMat(color), mesh = new THREE.Mesh(stickGeo(L, kind === 'curvy'), mat); mesh.castShadow = true;
-    const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = 0.12 * ((slot % 2) ? 1 : -1);
+    /* K clarity: every stick lies the same way as the gap, so he compares only the length (no colour clue, no perspective trick) */
+    const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = ang || 0;
     const g = new THREE.Group(); g.add(turn); scene.add(g);
     const o = { id, k: 'stick-' + kind, kind, box: kind === 'right' ? 0 : -1, g, turn, mesh, mat, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false, slot };
-    o.home.copy(fixSlot(slot)); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
+    o.home.copy(fixSlot(slot)); o.home.y = Math.max(o.home.y, 0.35 + L * Math.abs(Math.sin(ang || 0)) / 2); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
   }
   function fixSlot(i) { const S = tall ? [[-1.0, 2.7], [1.0, 3.6], [0, 4.4]] : [[-2.3, 3.0], [2.3, 3.0], [0, 3.9]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
-  const STICK_C = ['#C98B4E', '#2F7FD8', '#E0574F'];
   function setRound(R) {
     if (OL) scene.remove(OL.g); shapes.splice(0).forEach(o => scene.remove(o.g));
     OL = makeOutline(R.k, R.miss, R.color, R.sc || (tall ? 1.6 : 2.1)); OL.g.position.copy(OL_AT()); OL.g.rotation.x = -Math.atan2(viewFor('wide').pos.y - OL.g.position.y, viewFor('wide').pos.z - OL.g.position.z);   /* faces the camera: a square looks square */
-    roundN++; R.options.forEach((kind, i) => makeStick('r' + roundN + 's' + i, kind, OL.gap.len, STICK_C[(i + (R.k.length % 3)) % 3], i));
+    roundN++; R.options.forEach((kind, i) => makeStick('r' + roundN + 's' + i, kind, OL.gap.len, R.color, i, OL.gap.ang));
   }
   async function fixLesson() {
     const L = cfg.fixLesson;
