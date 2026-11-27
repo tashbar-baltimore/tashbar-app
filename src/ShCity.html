@@ -1,5 +1,474 @@
 <script>
 /* ShCity.html — THE NEW SHELL (docs/SHELL-OVERHAUL.md; rules: docs/SHELL-CONTRACT.md).
-   Workstream D: the Golden City games: the Chavrusa Arena, the Game Pavilion (Mistake Detective, Kodesh Quest), the Workshop (Block Builders, Chumash Lab).
-   Only this workstream edits this file. Places register with SHK.place({...}) (src/ShellKit.html). */
+   Workstream D: the Golden City games: the Chavrusa Arena, the Game Pavilion (Mistake Detective, Daily Mix, Kodesh Quest), the Workshop (Block Builders, Chumash Lab).
+   Only this workstream edits this file. Places register with SHK.place({...}) (src/ShellKit.html).
+   - ARENA (place 'arena', door 'arena'): rebuilt fresh on the same 18 server calls as src/ArenaPage.html (arMyStats, arCfList, arOpen, arJoin, arPoll,
+     arAnswer, arPower, arCheer, arTeach, arShake, arCfMake, arCfGet, arCfAns, arCfDone, chJoin, chPoll, chQs, chAnswer). Live duel, Lightning, power-ups,
+     cheers, Makshan mode, Parsha duels and the Siyum chart, the handshake, "He taught me", rematch, challenges (ghost race), Class Chidon, the one-Chromebook
+     Shtender duel. Arena POINTS only: this page never shows or works out money. Every answer is saved as evidence (phase 'arena') exactly as before.
+   - PAVILION (place 'games', door 'games'): Mistake Detective (cases from TL_MD.build, best score on this Chromebook only; pays and saves nothing),
+     the Daily Mix (TLREVIEW), Kodesh Quest (the sealed game frame of src/KinderKriyah.html; right answers become evidence there and the server pays).
+   - WORKSHOP (place 'workshop', no door of its own): Block Builders (door 'blockbuilders', Math level 2-4 or TEST- boys) and the Chumash & Timeline Lab
+     (door 'chumashlab', grade 3 and up or TEST- boys). Both workbooks keep their own engines (BBX, CLAB).
+   - The Arena and the Pavilion open only when his work is done ("Opens when your work is done"), as the Arcade does today. The Daily Mix stays open.
+   Buttons only from the kit (window.TLK). Grade 2 and up only (SHK.on()). Timers run only while a game is being played; nothing is drawn by script at rest. */
+(function(){
+if(!window.SHK||window.SHC) return;
+const K=window.SHK, E=K.esc;
+const L=()=>window.TLK;
+const M=(t,a,x)=>L().main(t,a,x), Q=(t,a,x)=>L().quiet(t,a,x), P=(k,t)=>L().pill(k,t), BX=(k,l,v)=>L().box(k,l,v);
+const icon=(n,f)=>K.has(n)?n:f;
+const tile=(ic,t,sub,attrs,extra)=>`<button type="button" class="tlk tlk-tile shk-tile cy-tile" ${attrs}><span class="cy-band" aria-hidden="true"></span><span class="cy-tin">${K.ic(ic)}<b>${E(t)}</b>${sub?`<small>${E(sub)}</small>`:''}${extra?`<span class="cy-pills">${extra}</span>`:''}</span></button>`;
+const card=(h,cls)=>`<div class="shk-card cy-card${cls?' '+cls:''}">${h}</div>`;
+const shuf=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const msg=e=>String(e&&e.message||e||'Something went wrong.').replace(/^Error:\s*/,'');
+const RM=()=>K.reduce;
+const me=()=>(typeof A!=='undefined'&&A&&A.st)||{};
+const first=()=>String(me().name||'').split(' ')[0]||'You';
+const save=()=>{ try{ if(typeof saveStudent==='function'&&A.st) saveStudent(A.st); }catch(e){} };
+
+/* ================= when the games open: his work for today is done (the same rule as the Arcade) ================= */
+function day(at){ const d=new Date(Number(at)||Date.now()); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function workDone(){
+ try{ if(typeof K.workDone==='function') return !!K.workDone(); }catch(e){}
+ try{ if(typeof window.tlDailyPlan==='function'){ const dp=window.tlDailyPlan([]); if(dp) return !!dp.open; } }catch(e){}
+ if(!window.TL_MAP) return true;
+ const t=day(), sk=me().skills||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&day(sk[id].at)===t).length>=3; }
+function left(){ try{ if(typeof window.tlDailyPlan==='function'){ const dp=window.tlDailyPlan([]); if(dp) return {n:dp.left,list:true}; } }catch(e){}
+ const t=day(), sk=me().skills||{}; return {n:Math.max(1,3-Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&day(sk[id].at)===t).length),list:false}; }
+function lockedH(extra){ const l=left();
+ return card(`<div class="cy-lock">${K.has('ycb-ic-lock')?K.img('ycb-ic-lock','cy-lockic'):'<span class="cy-lockic" aria-hidden="true">🔒</span>'}<div><h2>Opens when your work is done</h2><p>${l.list?`Finish ${l.n} more thing${l.n===1?'':'s'} on today's list, then come back to play.`:`Clear ${l.n} more round${l.n===1?'':'s'} of your work, then come back to play.`}</p>${P('lock','Locked')}</div></div><div class="cy-row">${M('Go to my work','data-cy="towork"')}</div>`,'cy-glow')+(extra||''); }
+function toWork(id){ if(K.places().some(d=>d.id==='work')) K.go('work'); else K.close(id,'home'); }
+
+/* ================= one page per place; its inner screens redraw it (the round Back appears only on an inner screen) ================= */
+const PG={};
+function view(id,def,back,html,keep){ let el=document.getElementById('shk-'+id); const st=PG[id]||(PG[id]={});
+ if(!el||st.back!==back){ const top=el?el.scrollTop:0; if(el) K.close(id,'swap');
+  K.page(Object.assign({},def,{id,world:'c',back,onBack:def.onBack,onClose:how=>{ if(how==='swap') return; delete PG[id]; try{ def.onClose&&def.onClose(how); }catch(e){} }}));
+  st.back=back; el=document.getElementById('shk-'+id); if(el&&keep) el.scrollTop=top; }
+ const y=el?el.scrollTop:0; K.body(id,html); if(el) el.scrollTop=keep?y:0; return el; }
+function banner(id,txt,kind){ try{ const el=document.getElementById('shk-'+id); if(!el) return; const b=document.createElement('div'); b.className='cy-banner cy-b-'+(kind||'info'); b.setAttribute('role','status'); b.textContent=txt; el.appendChild(b); setTimeout(()=>b.remove(),1500); }catch(e){} }
+function confetti(id,n){ try{ if(RM()) return; const el=document.getElementById('shk-'+id); if(!el) return; const C=['#F2B84B','#FF7AA8','#4FB6FF','#7BD88F','#FFFFFF','#FF9F4A'];
+ for(let i=0;i<(n||60);i++){ const c=document.createElement('i'); c.className='cy-conf'; c.style.left=(Math.random()*100)+'%'; c.style.background=C[i%C.length]; c.style.animationDuration=(1.8+Math.random()*1.6)+'s'; c.style.animationDelay=(Math.random()*.5)+'s'; el.appendChild(c); setTimeout(()=>c.remove(),4000); } }catch(e){} }
+let AX=null; const sndOn=()=>{ try{ return typeof SND==='undefined'||SND.on!==false; }catch(e){ return true; } };
+function tone(f,w,d,v,ty){ try{ if(!sndOn()) return; AX=AX||new (window.AudioContext||window.webkitAudioContext)(); const t=AX.currentTime, o=AX.createOscillator(), g=AX.createGain(); o.type=ty||'triangle'; o.frequency.setValueAtTime(f,t+w); g.gain.setValueAtTime(0,t+w); g.gain.linearRampToValueAtTime(v,t+w+.01); g.gain.exponentialRampToValueAtTime(.0008,t+w+d); o.connect(g); g.connect(AX.destination); o.start(t+w); o.stop(t+w+d+.05); }catch(e){} }
+const FX={ ding(){ tone(880,0,.15,.08); tone(1320,.08,.25,.07); }, buzz(){ tone(170,0,.3,.08,'sawtooth'); }, tick(){ tone(660,0,.08,.05,'square'); }, go(){ tone(523,0,.12,.09); tone(784,.1,.3,.09); },
+ them(){ tone(392,0,.1,.04); tone(523,.07,.12,.04); }, fan(){ [523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*.11,.3,.08)); }, drum(){ for(let i=0;i<14;i++) tone(110+(i%2)*20,i*.07,.09,.1,'square'); }, stamp(){ tone(90,0,.25,.12,'square'); } };
+/* an answer list: buttons while he can answer; after it, the same list as information (right one marked), never a button */
+function opts(q,attr,picked,hide){ const LT='ABCDEF';
+ if(picked&&!picked.pending) return `<div class="cy-ops cy-done">${q.o.map((o,k)=>{ const r=k===picked.right, w=k===picked.c&&!picked.ok; return `<div class="cy-opi${r?' cy-r':''}${w?' cy-w':''}"><span class="cy-lt">${LT[k]}</span><span>${E(o)}</span>${r?P('prog','✓ Right answer'):w?P('lock','Your answer'):''}</div>`; }).join('')}</div>`;
+ return `<div class="cy-ops">${q.o.map((o,k)=>{ const gone=hide&&hide.indexOf(k)>=0; if(gone) return `<div class="cy-opi cy-gone"><span class="cy-lt">${LT[k]}</span><span>${E(o)}</span>${P('lock','Not this one')}</div>`;
+  return Q(LT[k]+'   '+o,`data-cy="${attr}" data-k="${k}"${picked?' disabled':''}`,'tlk-wide cy-op'); }).join('')}</div>`; }
+function splitQ(t){ t=String(t||''); const k=t.indexOf('  🗣️ '); if(k<0) return E(t); return E(t.slice(0,k))+`<div class="cy-claim">${E(t.slice(k+2))}</div>`; }
+function qCard(q,i,n,label,body){ return card(`<div class="cy-qh">${P('prog','Question '+(i+1)+' of '+n)}${label?P('subj',label):''}</div><div class="cy-qt">${splitQ(q.q)}</div>${q.pic?`<div class="cy-pic">${E(q.pic)}</div>`:''}${body}`,'cy-q'); }
+
+/* ================= THE CHAVRUSA ARENA ================= */
+const SUBJ=[['LK','Kodesh','📜'],['HEB','Lashon Hakodesh','א'],['MATH','Math','➗'],['READ','Reading','📖'],['WRIT','Writing','✏️'],['LANG','Language','🔤'],['SCI','Science','🔬'],['SOC','Social Studies','🌎'],['SS','Social Studies','🌎'],['COMP','Computing','💻'],['ELEC','Electives','⚛️'],['LIFE','Life Skills','🧭'],['ART','Arts','🎨'],['FF','Fact Finders','🔎']];
+const TITLES=[[0,'Talmid','תַּלְמִיד'],[10,'Chaver','חָבֵר'],[30,'Bar Plugta','בַּר פְּלוּגְתָּא'],[60,'Lamdan','לַמְדָן'],[120,'Charif','חָרִיף'],[200,'Talmid Chacham','תַּלְמִיד חָכָם'],[350,'Gaon','גָּאוֹן']];
+const AVS=['🦁','🦅','🐻','🦌','🐬','🐢','🦉','🐝','🐎','🐑','🦒','🐘','🚀','⭐','🎺','🏰'];
+const CHEERS={yasher:['👏','Yasher koach!'],wow:['🤩','Wow!'],fire:['🔥','You are on fire!'],clap:['🙌','Great answer!'],try:['💪','Great try!'],smile:['😊','Hatzlacha!']};
+const PW={split:['✂️','Split','Hides wrong answers'],sh:['🛡️','2nd Chance','A miss gets one more try'],x2:['⚡','Double','A right answer scores 2']};
+const OK_W=['Correct!','Yes!','Nailed it!','Sharp!','Kol hakavod!'], NO_W=['Oops!','So close!','Next one!'];
+const KS='קִנְאַת סוֹפְרִים תַּרְבֶּה חָכְמָה';
+let AV0=''; try{ AV0=localStorage.getItem('arAv')||''; }catch(e){}
+const R={av:AV0||'🦁',v:'home',gen:0};
+function reset(){ stopAll(); R.gen++; Object.assign(R,{started:false,v:'home',err:'',busy:false,m:null,g:null,cf:null,cfr:null,pp:null,code:'',i:0,picked:{},tried:{},seenCh:{},cev:{},filt:'',subj:null,mode:'live',lt:false,mk:false,syOpen:false,reveal:0,stk:0,lead:0,prevThem:0,shookFx:0,qsSent:false}); }
+function stopAll(){ ['poll','cpoll','cfTick','ltTick'].forEach(k=>{ if(R[k]){ clearInterval(R[k]); R[k]=null; } }); if(R.cntT){ clearTimeout(R.cntT); R.cntT=null; } }
+function title(p){ let t=TITLES[0], nx=null; TITLES.forEach((x,k)=>{ if(p>=x[0]){ t=x; nx=TITLES[k+1]||null; } }); return {t,nx}; }
+function trophies(s){ const T=[]; if(!s) return T; [[1,'🥉','First win'],[5,'🥈','5 wins'],[10,'🥇','10 wins'],[25,'🏆','25 wins'],[50,'👑','50 wins']].forEach(x=>{ if(s.wins>=x[0]) T.push(x[1]+' '+x[2]); });
+ [[1,'🕯️','Taught a chavrusa'],[5,'📚','Taught 5 times'],[15,'🌟','Rebbe of the Arena']].forEach(x=>{ if(s.taught>=x[0]) T.push(x[1]+' '+x[2]); });
+ [[1,'🤝','Good sport'],[10,'💛','Mentsch of the Arena']].forEach(x=>{ if((s.shakes||0)>=x[0]) T.push(x[1]+' '+x[2]); }); [[1,'⚡','Lightning winner'],[5,'🌩️','Storm master']].forEach(x=>{ if((s.lwins||0)>=x[0]) T.push(x[1]+' '+x[2]); });
+ Object.keys(s.subj||{}).forEach(k=>{ if(s.subj[k]>=3){ const S=SUBJ.find(x=>x[0]===k); if(S) T.push(S[2]+' '+S[1]+' champion'); } }); return T; }
+/* questions from the lessons' tap questions (the same rules as before: 2-6 short choices, no HTML) */
+const okItem=it=>it&&typeof it==='object'&&(!it.t||it.t==='mc')&&typeof it.q==='string'&&it.q.length<300&&Array.isArray(it.o)&&it.o.length>=2&&it.o.length<=6&&it.o.every(x=>typeof x==='string'&&x&&x.length<160&&x.indexOf('<')<0)&&new Set(it.o).size===it.o.length&&!(it.pic&&(typeof it.pic!=='string'||it.pic.indexOf('<')>=0||it.pic.length>120));
+function genMc(it){ if(!it||typeof it.q!=='string') return null; if(okItem(it)) return it;
+ const a=typeof it.a==='number'?it.a:(/^-?\d+(\.\d+)?$/.test(String(it.a||''))?Number(it.a):null); if(a===null) return null;
+ const step=Math.abs(a)>=100?10:(Math.abs(a)>=20?2:1), d=[...new Set(shuf([a+step,a-step,a+1,a-1,a+10,a*2,a+step*2]).filter(x=>x!==a&&x>=0).map(x=>Math.round(x*100)/100))].slice(0,3); if(d.length<2) return null;
+ const u=it.unit?String(it.unit):'', f=x=>u==='¢'?x+'¢':(u==='$'?'$'+x:String(x)); return {q:it.q.replace(/\s*\(type[^)]*\)/i,''),o:[f(a)].concat(d.map(f))}; }
+const GENS=()=>typeof GEN!=='undefined'?GEN:{}, BANK=()=>typeof BANK_ALL!=='undefined'?BANK_ALL:{};
+function itemsOf(id){ const G=GENS(), B=BANK(); if(G[id]&&!B[id]&&typeof G[id].gen==='function'){ const out=[], seen=new Set(); for(let t=0;t<56&&out.length<14;t++){ let it=null; try{ it=genMc(G[id].gen()); }catch(e){} if(it&&!seen.has(it.q)){ seen.add(it.q); out.push({id,it}); } } return out; }
+ const sk=B[id]; if(!sk) return []; const out=[]; ['teach','practice','check'].forEach(ph=>(sk[ph]||[]).forEach(it=>{ if(okItem(it)) out.push({id,it}); })); return out; }
+const subjOf=id=>String(id).split('.')[0];
+function skillName(id){ const s=BANK()[id]||GENS()[id]; return (s&&s.name)||id; }
+function mastered(id){ const s=me().skills&&me().skills[id]; return !!(s&&s.m); }
+let SKC=null;
+function skillsBy(){ if(SKC) return SKC; SKC={}; const B=BANK(), G=GENS(); Object.keys(B).concat(Object.keys(G).filter(k=>!B[k])).forEach(id=>{ const k=subjOf(id); if(!SUBJ.some(x=>x[0]===k)) return; if(new Set(itemsOf(id).map(x=>x.it.q)).size>=5) (SKC[k]=SKC[k]||[]).push(id); }); return SKC; }
+function build(ids,n){ let pool=[]; ids.forEach(id=>{ pool=pool.concat(itemsOf(id)); }); const seen=new Set(); pool=shuf(pool).filter(x=>{ if(seen.has(x.it.q)) return false; seen.add(x.it.q); return true; }).slice(0,n||10);
+ return pool.map(x=>{ const o=shuf(x.it.o); return {q:x.it.q,o,pic:x.it.pic||'',a:o.indexOf(x.it.o[0]),id:x.id}; }); }
+/* Makshan mode (grades 6-8): the chavrusa gives an answer; agree, or ask the kasha and give the right one */
+const MK_WHO=['Your chavrusa','Reuven','Shimon','Levi','Yehuda','Dan','Naftali','Gad','Asher','Yissachar','Zevulun','Binyamin'];
+function mkQ1(q,k){ const o=(q.o||[]).map(String), R0=o[q.a]; if(R0==null||o.some(x=>/[֐-׿]/.test(x))||o.length<2) return q;
+ const W=shuf(o.filter((x,j)=>j!==q.a)), wrong=Math.random()<.5, claim=wrong?W[0]:R0, who=MK_WHO[k%MK_WHO.length];
+ const ks=shuf(wrong?[R0].concat(W.slice(1,2)):W.slice(0,2)), op=['Agree: that is right'].concat(ks.map(x=>'Kasha! It is: '+x));
+ return Object.assign({},q,{q:String(q.q).replace(/\s+$/,'')+'  🗣️ '+who+' says: “'+claim+'”. Agree, or kasha?',o:op,a:wrong?op.indexOf('Kasha! It is: '+R0):0}); }
+/* every Arena answer is saved like any answer (evidence, phase 'arena'): it lights the Olam Haba cloud; the server decides what it is worth */
+function ev(id,ok,qt){ try{ if(typeof SRV!=='undefined'&&SRV&&Array.isArray(SRV.pendingEv)&&A.st){ SRV.pendingEv.push({at:Date.now(),student:A.st.id,skill:String(id),phase:'arena',item:'Arena: '+String(qt||'').replace(/\s+/g,' ').slice(0,100),first:!!ok,tries:1,hints:0,ms:0,ok:!!ok}); if(SRV.pendingEv.length>50) SRV.pendingEv.splice(0,SRV.pendingEv.length-50); } }catch(e){} }
+/* an answer that comes back after he left (or reopened) the Arena is dropped */
+const C=(fn,...a)=>{ const g=R.gen; return K.call(fn,...a).then(v=>g===R.gen?v:new Promise(()=>{}),e=>g===R.gen?Promise.reject(e):new Promise(()=>{})); };
+function loadStats(){ C('arMyStats').then(s=>{ R.stats=s; if(R.v==='home') aDraw(); }).catch(()=>{}); }
+function cfLoad(){ C('arCfList').then(x=>{ R.cfl=x; if(R.v==='home') aDraw(); }).catch(()=>{}); }
+const ADEF={scene:'ycw-c-arena',title:'Chavrusa Arena',onBack:()=>aAct('home'),onClose:()=>{ stopAll(); R.gen++; R.m=null; R.g=null; }};
+function aOpen(){ if(!K.on()) return; ADEF.icon=icon('ycw-ic-arena','ycb-ic-duels'); if(!workDone()){ R.v='locked'; view('arena',ADEF,false,lockedH()); return; } reset(); aDraw(); loadStats(); cfLoad(); try{ SND.tap&&SND.tap(); }catch(e){} }
+function aDraw(){ if(R.v==='locked') return; const v=R.v, inner=['home','play','count'].indexOf(v)<0;
+ const H={home:homeH,subj:subjH,topic:topicH,wait:waitH,join:joinH,count:countH,play:playH,waitEnd:waitEndH,done:doneH,pp:ppH,class:classH,cf:cfH,cfdone:cfDoneH}[v]||homeH;
+ const keep=(v==='topic'||v==='done'||v==='play')&&R.lastV===v; R.lastV=v;
+ if(!document.getElementById('shk-arena')&&R.started) return; R.started=true;
+ view('arena',ADEF,inner,`<div class="cy-wrap cy-arena cy-v-${v}">${R.err?`<div class="cy-err" role="alert">${E(R.err)}</div>`:''}${H()}</div>`,keep); }
+function homeH(){ const s=R.stats, p=s?s.pts:0, T=title(p), tr=trophies(s), pct=T.nx?Math.round(100*(p-T.t[0])/Math.max(1,T.nx[0]-T.t[0])):100;
+ let h=card(`<div class="cy-hero"><div class="cy-medal" aria-hidden="true">${R.av}</div><div class="cy-grow"><div class="cy-ks">${KS}</div><h2 class="cy-tt">${E(T.t[1])} <span class="cy-he">${T.t[2]}</span></h2>
+  <div class="cy-pills">${s?P('rank',p+' Arena points')+P('rank','🏆 '+s.wins+' win'+(s.wins===1?'':'s'))+P('prog','⚔️ '+s.played+' showdown'+(s.played===1?'':'s'))+P('prog','🕯️ Taught '+s.taught):P('prog','Loading your record…')}</div>
+  ${T.nx?`<div class="cy-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>${P('prog',(T.nx[0]-p)+' more points to become '+T.nx[1])}`:P('rank','The highest title! Mazel tov!')}</div></div>${tr.length?`<div class="cy-pills cy-tro">${tr.map(x=>P('rank',x)).join('')}</div>`:''}`,'cy-glow');
+ if(s&&s.on===false) h+=`<div class="cy-err">The Arena is closed right now. Your rebbe can open it.</div>`;
+ h+=`<div class="shk-tiles cy-menu">${tile('⚔️','Start a showdown','Pick a topic, get a code, your chavrusa joins','data-cy="new"')}${tile('🔢','Join with a code','Type the 4 numbers your chavrusa shows you','data-cy="join"')}${tile('📨','Challenge friends','Play now; friends race your ghost for 3 days','data-cy="cfnew"')}${tile('🏛️','Class Chidon','Your rebbe shows a code; your shevet builds the Beis Hamikdash','data-cy="cjoin"')}${tile('🪑','Shtender duel','Two boys take turns on this Chromebook (practice, no points)','data-cy="ppnew"')}</div>`;
+ h+=card(`<h3>Your Arena avatar ${P('rank','You: '+R.av)}</h3><p class="cy-sm">Your chavrusa sees it on your podium.</p><div class="cy-avs">${AVS.filter(a=>a!==R.av).map(a=>Q(a,`data-cy="av" data-k="${a}" aria-label="Pick ${a}"`,'tlk-small')).join('')}</div>`);
+ const q=s&&s.quests; if(q){ const d=q.filter(x=>x[2]>=x[3]).length; h+=card(`<h3>This week's Arena Quests ${P('prog',d+' of '+q.length)}</h3>${q.map(x=>`<div class="cy-quest"><span aria-hidden="true">${x[0]}</span><span class="cy-grow">${E(x[1])}<span class="cy-bar"><i style="width:${Math.round(100*Math.min(1,x[2]/x[3]))}%"></i></span></span>${x[2]>=x[3]?P('prog','✓ Done'):P('prog',x[2]+' of '+x[3])}</div>`).join('')}${d===q.length?P('rank','🏅 Quest Master this week!'):''}`); }
+ h+=siyumH()+cfListH();
+ h+=card(`<h3>How you earn Arena points</h3><p class="cy-sm">Every showdown +1 · Win +3 · Tie +1 each · Teach your chavrusa what he missed +2 · Shake hands after (both tap Yasher koach) +1 · Class Chidon +1, winning shevet +2.</p><p class="cy-sm cy-soft">Chazal: rivalry between learners increases wisdom. Win with a smile, lose with a smile, and teach each other!</p>`);
+ return h; }
+function siyumH(){ const T=window.tlChm; if(!T||!T.parshiyos||!R.stats) return ''; const done=new Set(R.stats.pars||[]), Pp=T.parshiyos, n=Pp.filter(x=>done.has(x)).length;
+ const SF=[['Bereishis',0,12],['Shemos',12,23],['Vayikra',23,33],['Bamidbar',33,43],['Devarim',43,54]], med=SF.filter(f=>Pp.slice(f[1],f[2]).every(x=>done.has(x)));
+ let h=`<h3>📜 Parsha Siyum ${P('prog',n+' of 54 parshiyos')}${med.length?P('rank','🏅 '+med.map(f=>f[0]).join(', ')):''}${n===54?P('rank','👑 Siyum HaTorah!'):''}</h3><div class="cy-bar" aria-hidden="true"><i style="width:${Math.round(100*n/54)}%"></i></div>`;
+ if(R.syOpen) h+=`<p class="cy-sm">Get 7 or more right in a Parsha duel or challenge to stamp a Parsha. Finish a sefer for a medal; all 54 is a Siyum HaTorah!</p>`+SF.map(f=>{ const Lp=Pp.slice(f[1],f[2]); return `<div class="cy-sefer"><b>${Lp.every(x=>done.has(x))?'🏅 ':''}Sefer ${f[0]}</b><div class="cy-pills">${Lp.map(x=>done.has(x)?P('rank','✓ '+x):P('lock',x)).join('')}</div></div>`; }).join('');
+ return card(h+`<div class="cy-row">${Q(R.syOpen?'Hide the chart':'Show the chart','data-cy="syopen"','tlk-small')}</div>`); }
+function cfListH(){ const Lc=R.cfl; let h='';
+ if(Lc&&Lc.open&&Lc.open.length) h+=card(`<h3>📨 Open challenges</h3><div class="cy-list">${Lc.open.map(c=>Q('Race '+c.byName+': '+c.label,`data-cy="cftake" data-code="${E(c.code)}"`,'tlk-wide cy-left')).join('')}</div>`);
+ if(Lc&&Lc.mine&&Lc.mine.length) h+=card(`<h3>🏁 My challenges</h3>${Lc.mine.map(c=>`<div class="cy-mine"><b>${E(c.label)}</b> ${P('prog','Code '+c.code)}${P('prog','You got '+c.score+' of '+c.n)}<div class="cy-pills">${c.by.length?c.by.map(x=>P(x.beat?'rank':'prog',x.name+' '+x.sc+(x.beat?' 🏆':''))).join(''):'<span class="cy-sm">Nobody yet. Tell your friends the code!</span>'}</div></div>`).join('')}`);
+ return h+`<div class="cy-row">${Q('Take a challenge by code','data-cy="cfjoin"')}</div>`; }
+const SUBCOL=['#FF8A8A','#6DB8F2','#F6C35B','#6CCB8E','#B48CF0','#F28BB0','#4CC9C0','#FFA36B','#8D9BEA','#E38C7E','#5BC0A8','#C08DE0'];
+function subjH(){ const S=skillsBy(); let k=0, h='';
+ if(window.tlChm&&window.tlChm.quiz) h+=tile('📜','Parsha','All 54 parshiyos',`data-cy="subj" data-k="PAR" style="--cy-c:#F6C35B"`);
+ SUBJ.filter(x=>S[x[0]]&&S[x[0]].length).filter((x,i,a)=>a.findIndex(y=>y[1]===x[1])===i).forEach(x=>{ h+=tile(x[2],x[1],S[x[0]].length+' topics',`data-cy="subj" data-k="${x[0]}" style="--cy-c:${SUBCOL[(k++)%SUBCOL.length]}"`); });
+ return card(`<h2>${R.mode==='pp'?'Shtender duel: pick':R.mode==='cf'?'Your challenge: pick':'Pick'} a subject</h2>`,'cy-head')+`<div class="shk-tiles cy-subj">${h}</div>`; }
+function topicIds(){ const S=skillsBy(); let Lt=(S[R.subj]||[]).slice(); if(R.subj==='SOC') Lt=Lt.concat(S.SS||[]); return Lt; }
+function toggles(){ return `<div class="cy-tog">${Q('Makshan mode','data-cy="mk"','tlk-small')}${P(R.mk?'now':'lock',R.mk?'On':'Off')}<span class="cy-sm">Grades 6-8: your chavrusa answers; agree or ask the kasha.</span></div>`
+ +(R.mode==='live'?`<div class="cy-tog">${Q('Lightning Round','data-cy="lt"','tlk-small')}${P(R.lt?'now':'lock',R.lt?'On':'Off')}<span class="cy-sm">20 questions, 75 seconds. Answer as many right as you can!</span></div>`:''); }
+function topicList(){ const f=String(R.filt||'').toLowerCase(), Lt=topicIds().filter(id=>!f||skillName(id).toLowerCase().indexOf(f)>=0).sort((a,b)=>(mastered(b)-mastered(a))||a.localeCompare(b)).slice(0,120);
+ return Lt.map(id=>Q((mastered(id)?'✓ ':'')+skillName(id),`data-cy="topic" data-id="${E(id)}"`,'tlk-wide cy-left')).join('')||'<p class="cy-sm">No topics match.</p>'; }
+function topicH(){ if(R.subj==='PAR') return parH(); const S=SUBJ.find(x=>x[0]===R.subj)||['','',''], mine=topicIds().filter(mastered);
+ return card(`<h2>${S[2]} ${E(S[1])}: pick a topic</h2>${mine.length>=2?`<div class="cy-row">${M('Mix of everything I mastered','data-cy="mix"')}${P('prog',mine.length+' topics')}</div>`:''}${toggles()}`,'cy-head')
+  +card(`<label class="cy-find"><span aria-hidden="true">🔎</span><input class="cy-srch" type="search" autocomplete="off" placeholder="Find a topic…" aria-label="Find a topic" value="${E(R.filt)}"></label><div class="cy-list cy-tlist">${topicList()}</div>`); }
+function parH(){ const T=window.tlChm, wk=T.week&&T.week(), lv=R.plv||((me().chm&&me().chm.lv)||3);
+ return card(`<h2>📜 Parsha Chidon</h2>${toggles()}<div class="cy-tog"><b>Level</b>${[1,2,3,4,5,6,7,8].map(n=>n===lv?P('now',String(n)):Q(String(n),`data-cy="plv" data-n="${n}" aria-label="Level ${n}"`,'tlk-small')).join('')}</div><p class="cy-sm">Levels 1-3: prefixes, words, endings, shorashim, which pasuk. Level 4 and up: Rashi too.</p>${wk?`<div class="cy-row">${M('This week: Parshas '+wk,`data-cy="ptopic" data-p="${E(wk)}"`)}</div>`:''}`,'cy-head')
+  +card(`<div class="cy-list">${T.parshiyos.map(n=>Q('Parshas '+n,`data-cy="ptopic" data-p="${E(n)}"`,'tlk-wide cy-left')).join('')}</div>`); }
+function codeH(c){ return `<div class="cy-code" aria-label="Code ${E(c)}">${String(c||'').split('').map(d=>`<b>${E(d)}</b>`).join('')}</div>`; }
+function pod(who,name,sc,o){ o=o||{}; return `<div class="cy-pod cy-${who}${o.lead?' cy-lead':''}"${o.id?` id="${o.id}"`:''}>${o.lead?'<span class="cy-crown" aria-hidden="true">👑</span>':''}${o.av?`<div class="cy-av" aria-hidden="true">${E(o.av)}</div>`:''}<div class="cy-nm">${E(name)}</div><div class="cy-sc">${E(sc)}</div>${o.under||''}</div>`; }
+function waitH(){ return card(`<h2 class="cy-c">Show your chavrusa this code!</h2>${codeH(R.m.code)}<div class="cy-board">${pod('me',(R.m.me&&R.m.me.name)||'You','✋',{av:R.av,under:P('prog','Ready!')})}<div class="cy-vs">VS</div>${pod('them','???','⏳',{under:P('prog','Waiting to join…')})}</div><div class="cy-pills cy-c">${P('subj',R.m.label)}${P('prog',(R.m.n||10)+' questions')}</div><div class="cy-row cy-c">${Q('Cancel','data-cy="home"')}</div>`,'cy-glow'); }
+function joinH(){ const n=R.mode==='cfjoin'?5:4, c=(R.code+'·····').slice(0,n);
+ return card(`<h2 class="cy-c">${R.mode==='class'?'Type the code on the board':R.mode==='cfjoin'?'Type the challenge code':"Type your chavrusa's code"}</h2>${codeH(c)}<div class="cy-keys">${[1,2,3,4,5,6,7,8,9].map(k=>Q(String(k),`data-cy="key" data-k="${k}"`,'cy-key')).join('')}${Q('Delete','data-cy="key" data-k="del"','cy-key')}${Q('0','data-cy="key" data-k="0"','cy-key')}${M('Join','data-cy="key" data-k="ok"','cy-key')}</div><p class="cy-sm cy-c">You can also type the numbers on the keyboard.</p>`); }
+function countH(){ const s=Math.max(0,Math.ceil(((R.m.start||0)-(R.m.now||Date.now()))/1000));
+ if(R.cntT) clearTimeout(R.cntT);
+ if(s<=0) R.cntT=setTimeout(()=>{ R.cntT=null; if(R.v!=='count') return; Object.assign(R,{v:'play',i:0,picked:{},tried:{},ltWarn:0,stk:0,lead:0,prevThem:0}); FX.go(); aDraw(); banner('arena',R.m.mode==='lightning'?'⚡ Lightning! Go go go!':'Go!'); if(R.m.mode==='lightning') ltStart(); },60);
+ else { FX.tick(); R.cntT=setTimeout(()=>{ R.cntT=null; if(R.v==='count'){ R.m.now=(R.m.now||Date.now())+1000; aDraw(); } },1000); }
+ return card(`<div class="cy-board">${pod('me',R.m.me.name,'🔵',{av:R.av})}<div class="cy-vs cy-vsbig">VS</div>${pod('them',R.m.them?R.m.them.name:'','🔴',{av:R.m.them&&R.m.them.av})}</div><div class="cy-count" aria-live="assertive"><b class="cy-pop">${s>0?s:'Go!'}</b></div><div class="cy-ks cy-c">${KS}</div>`,'cy-glow'); }
+function lights(n,done,mine){ let h=''; for(let i=0;i<n;i++){ let c=''; if(mine){ const p=R.picked[i]; if(p&&!p.pending) c=p.ok?'on':'no'; } else if(i<done) c='did'; h+=`<i class="${c}"></i>`; } return `<div class="cy-lights" aria-hidden="true">${h}</div>`; }
+function ltLeft(){ const m=R.m; if(!m||m.mode!=='lightning') return null; return Math.max(0,(m.start||0)+(m.limit||75000)-(Date.now()+(R.off||0))); }
+function fuseH(){ const t=ltLeft(); if(t==null) return ''; return `<div class="cy-fuse${t<15000?' hot':''}"><i id="cy-fuse" style="width:${Math.round(100*t/(R.m.limit||75000))}%"></i><b id="cy-fuset">⚡ ${Math.ceil(t/1000)}s</b></div>`; }
+function ltStart(){ if(R.ltTick) clearInterval(R.ltTick); R.ltTick=setInterval(()=>{ const t=ltLeft(); if(t==null||!document.getElementById('shk-arena')){ clearInterval(R.ltTick); R.ltTick=null; return; }
+  const f=document.getElementById('cy-fuse'), x=document.getElementById('cy-fuset'); if(f) f.style.width=Math.round(100*t/(R.m.limit||75000))+'%'; if(x) x.textContent='⚡ '+Math.ceil(t/1000)+'s';
+  if(t<=10000&&!R.ltWarn){ R.ltWarn=1; banner('arena','⏰ 10 seconds!','pink'); FX.tick(); }
+  if(t<=0&&R.v==='play'){ R.v='waitEnd'; banner('arena','⏱️ Time!'); FX.buzz(); clearInterval(R.ltTick); R.ltTick=null; aDraw(); } },250); }
+function vsH(){ const m=R.m, mm=m.me, th=m.them||{name:'',done:0,score:0};
+ return `<div class="cy-board cy-live">${pod('me',mm.name+' (you)',mm.score,{av:mm.av||R.av,lead:mm.score>th.score,id:'cy-me',under:lights(m.n,mm.done,true)+(R.stk>=3?P('rank','🔥 '+R.stk+' in a row!'):'')})}<div class="cy-vs">VS</div>${pod('them',th.name,th.score,{av:th.av,lead:th.score>mm.score,id:'cy-them',under:lights(m.n,th.done,false)+P('prog',th.done+' of '+m.n+' answered')})}</div>${fuseH()}`; }
+function pwH(){ const u=(R.m.me&&R.m.me.pu)||{}, i=R.i, done=!!R.picked[i];
+ return card(`<h3>Power-ups <span class="cy-sm">(each once a showdown)</span></h3><div class="cy-pw">${Object.keys(PW).map(k=>{ const used=!!u[k], on=(k==='sh'&&u.shAt===i)||(k==='x2'&&u.x2At===i)||(k==='split'&&u.hide&&u.hide[i]);
+  return `<div class="cy-pwi"><span class="cy-pwe" aria-hidden="true">${PW[k][0]}</span>${on?P('now',PW[k][1]+': on now'):used?P('lock',PW[k][1]+': used'):Q(PW[k][1],`data-cy="pw" data-k="${k}"${done?' disabled':''}`,'tlk-small')}<small>${PW[k][2]}</small></div>`; }).join('')}</div>`,'cy-tight'); }
+function cheerH(){ return `<div class="cy-cheer"><span class="cy-sm">Cheer your chavrusa:</span>${Object.keys(CHEERS).map(k=>L().tool(CHEERS[k][0],CHEERS[k][1],`data-cy="cheer" data-k="${k}"`)).join('')}</div>`; }
+function playH(){ const m=R.m, q=m.qs&&m.qs[R.i]; if(!q) return ''; const pk=R.picked[R.i], hide=((m.me&&m.me.pu&&m.me.pu.hide&&m.me.pu.hide[R.i])||[]).concat(R.tried[R.i]!=null?[R.tried[R.i]]:[]);
+ return vsH()+qCard(q,R.i,m.n,m.label,opts(q,'ans',pk,hide)+(pk?'':`<p class="cy-sm cy-c">Tap an answer, or press 1-${q.o.length}.</p>`))+pwH()+cheerH(); }
+function waitEndH(){ return vsH()+card(`<h2 class="cy-c">${R.m.mode==='lightning'&&ltLeft()===0?'⏱️ Time!':'You finished! 🎤'}</h2><p class="cy-c">Waiting for ${E(R.m.them?R.m.them.name:'your chavrusa')}…</p>`)+cheerH(); }
+function rvH(x){ return `<div class="cy-rv"><div>${E(x.q)}</div>${x.pic?`<div class="cy-pic">${E(x.pic)}</div>`:''}${P('prog','✓ '+x.o[x.a])}</div>`; }
+function doneH(){ const m=R.m, r=m.res||{}, won=!r.tie&&r.winner===me().id;
+ if(!R.reveal){ R.reveal=1; FX.drum(); setTimeout(()=>{ R.reveal=2; if(R.v==='done'){ aDraw(); if(won||r.tie){ FX.fan(); confetti('arena',won?120:60); } } },1700); }
+ if(R.reveal===1) return card(`<div class="cy-drum"><h2>And the winner is…</h2><div class="cy-pop" aria-hidden="true">🥁</div></div>`,'cy-glow');
+ const myS=m.host?r.hs:r.gs, thS=m.host?r.gs:r.hs, other=m.them?m.them.name:'your chavrusa', pts=1+(r.tie?1:(won?3:0)), sk=m.shake||{};
+ let h=card(`<div class="cy-win"><div class="cy-trophy cy-pop" aria-hidden="true">${r.tie?'🤝':won?'🏆':'🎖️'}</div><h2>${r.tie?'A tie! Two chachamim!':won?'You win! Yasher koach!':E(other)+' wins this round!'}</h2>
+  <div class="cy-board">${pod('me',m.me.name,myS,{lead:myS>thS})}<div class="cy-vs">VS</div>${pod('them',other,thS,{lead:thS>myS})}</div>${P('rank','+'+pts+' Arena point'+(pts===1?'':'s'))}
+  ${!won&&!r.tie?`<p>You made ${E(other)} sharper, and now he teaches you. That is how a chavrusa grows!</p>`:''}<div class="cy-ks">${KS}</div></div>`,'cy-glow');
+ h+=card(sk.done?`<div class="cy-shake"><span aria-hidden="true">🤝</span><div><h3>Yasher koach, both of you!</h3><p>Win with a smile, lose with a smile. ${P('rank','+1 each')}</p></div></div>`
+  :`<div class="cy-shake"><span aria-hidden="true">🤝</span><div><h3>Shake hands: say Yasher koach!</h3><p>When you both tap it, you each get +1 Arena point.</p>${sk.me?P('prog','✓ You said it! Waiting for '+other+'…'):M('Yasher koach!','data-cy="shake"')}</div></div>`);
+ const rv=m.review||[], miss=w=>rv.filter(x=>x[w]!==x.a);
+ if(won){ const L2=miss('them'); h+=card(`<h3>📚 Your job now: teach ${E(other)}</h3><p>Go over the ones he missed. When he says you taught him, you earn +2.</p>${L2.length?L2.map(rvH).join(''):`<p>${E(other)} got everything right. Two chachamim!</p>`}`); }
+ else { const L2=miss('me'); h+=card(`<h3>📚 Learn from ${E(other)}</h3><p>Here is what you missed. Ask him to explain each one.</p>${L2.length?L2.map(rvH).join(''):'<p>You got everything right!</p>'}${m.taught?P('prog','✓ Thank you! '+other+' got his teaching bonus.'):`<div class="cy-row">${Q(other+' taught me','data-cy="taught"')}</div>`}`); }
+ const mid=missedSkill(rv.map((x,i)=>x.me!==x.a&&m.qs&&m.qs[i]?m.qs[i].id:'').concat((m.qs||[]).filter((q,i)=>R.picked[i]&&R.picked[i].ok===false).map(q=>q.id)));
+ h+=`<div class="cy-row cy-c">${m.host&&R.last?Q('Rematch','data-cy="rematch"'):''}${Q('Another showdown','data-cy="home"')}${mid?Q('Practice what I missed',`data-cy="lesson" data-id="${E(mid)}"`):''}</div>`; return h; }
+function missedSkill(ids){ return (ids||[]).filter(id=>id&&BANK()[id])[0]||''; }
+/* Class Chidon (the rebbe's screen runs it: chOpen/chStep on the staff side) */
+function chNeed(v){ if(!v||!v.need||R.qsSent) return; const t=String(v.need.topic||''); let ids=[];
+ if(t.indexOf('par:')===0){ if(!(window.tlChm&&window.tlChm.quiz)) return; const pp=t.split(':'); R.qsSent=true; window.tlChm.quiz(pp[1],+pp[2]||3,10,qs=>{ if(qs.length<5){ R.qsSent=false; return; } C('chQs',v.code,qs).then(x=>{ R.g=x; aDraw(); }).catch(()=>{ R.qsSent=false; }); }); return; }
+ if(t.indexOf('mix:')===0){ const S=skillsBy(), k=t.slice(4); ids=(S[k]||[]).concat(k==='SS'?(S.SOC||[]):[]); } else ids=[t];
+ const qs=build(ids,10); if(qs.length<5) return; R.qsSent=true; C('chQs',v.code,qs).then(x=>{ R.g=x; aDraw(); }).catch(()=>{ R.qsSent=false; }); }
+function chPoll(){ if(R.cpoll) clearInterval(R.cpoll); R.qsSent=false; R.cpoll=setInterval(()=>{ if(!R.g||R.v!=='class'||!document.getElementById('shk-arena')) return; C('chPoll',R.g.code).then(v=>{ const was=R.g&&R.g.state; R.g=v; chNeed(v);
+  if((v.state==='reveal'||v.state==='done')&&v.me&&v.me.mine&&!R.cev[v.i]&&typeof v.me.mine.ok==='boolean'){ R.cev[v.i]=1; ev((v.q&&v.q.id)||'ARENA.CLASS',v.me.mine.ok,v.q&&v.q.q); if(v.me.mine.ok) FX.ding(); else FX.buzz(); }
+  if(v.state==='done'&&was!=='done'){ loadStats(); save(); } aDraw(); }).catch(()=>{}); },1500); }
+function classH(){ const g=R.g; if(!g) return ''; const mm=g.me||{};
+ let h=card(`<div class="cy-hero"><div class="cy-medal" aria-hidden="true">🏛️</div><div class="cy-grow"><h2>Shevet ${E(mm.teamName||'')}</h2><div class="cy-pills">${P('subj',g.label||'Class Chidon')}${P('prog',(g.count||0)+' students')}${P('rank',(mm.right||0)+' right')}</div></div></div>`,'cy-team" style="--cy-team:'+E(mm.color||'#F2B84B'));
+ if(g.state==='lobby') return h+card(`<h2 class="cy-c">You are in Shevet ${E(mm.teamName||'')}!</h2><p class="cy-c">Look at the board. Your rebbe will start soon. 🕯️</p>`);
+ if(g.state==='q'||g.state==='reveal'){ const q=g.q||{q:'',o:[]}, mine=mm.mine, lf=Math.max(0,Math.ceil((g.qStart+g.qSec*1000-g.now)/1000));
+  const pk=g.state==='reveal'?{c:mine?mine.c:-1,ok:!!(mine&&mine.ok),right:g.right}:(mine?{c:mine.c,pending:true}:null);
+  h+=qCard(q,g.i,g.n,g.state==='q'?'⏳ '+lf+' s':'',(g.state==='q'&&mine)?`<div class="cy-ops cy-done"><div class="cy-opi cy-r"><span class="cy-lt">${'ABCDEF'[mine.c]}</span><span>${E(q.o[mine.c])}</span>${P('now','Locked in!')}</div></div><p class="cy-c">Look at the board…</p>`:opts(q,'cans',g.state==='reveal'?pk:null));
+  if(g.state==='reveal') h+=card(`<p class="cy-c cy-big">${mine?(mine.ok?'✓ Right! A stone for Shevet '+E(mm.teamName||'')+'!':'Good try! The answer was '+'ABCDEF'[g.right]+'.'):'Time ran out on this one.'}</p>`);
+  return h; }
+ if(g.state==='done'){ const r=g.res||{}, won=r.winner>=0&&mm.team===r.winner;
+  return h+card(`<div class="cy-win"><div class="cy-trophy cy-pop" aria-hidden="true">${won?'🏆':'🏛️'}</div><h2>${r.winnerName?'Shevet '+E(r.winnerName)+' wins!':'Every shevet shines!'}</h2><p>Together your class built ${r.stones||0} stones of the Beis Hamikdash.</p>${P('rank','+'+(1+(won?2:0))+' Arena point'+(won?'s':''))}<div class="cy-ks">${KS}</div></div>`,'cy-glow')+`<div class="cy-row cy-c">${Q('Back to the Arena','data-cy="home"')}</div>`; }
+ return h; }
+/* Challenge friends (play now; friends race your ghost later) */
+function cfTake(code){ if(R.busy) return; R.busy=true; C('arCfGet',code).then(x=>{ R.busy=false; R.cf={code:x.code,qs:x.qs,label:x.label,byName:x.byName,ghost:x.ghost,i:0,picked:{},maker:false,start:Date.now()}; R.v='cf'; aDraw(); cfTickStart(); }).catch(err=>{ R.busy=false; R.err=msg(err); R.v='home'; aDraw(); }); }
+function cfTickStart(){ if(R.cfTick) clearInterval(R.cfTick); R.cfTick=setInterval(()=>{ if(R.v!=='cf'||!R.cf||R.cf.maker) return; const el=document.getElementById('cy-ghost'); if(el) el.innerHTML=ghostH(); },400); }
+function ghostH(){ const c=R.cf; if(!c||c.maker||!c.ghost) return ''; const t=Date.now()-c.start, n=c.ghost.filter(x=>x!=null&&x<=t).length; let h=''; for(let i=0;i<c.qs.length;i++) h+=`<i class="${i<n?'did':''}"></i>`;
+ return `<div class="cy-nm">👻 ${E(c.byName)}'s ghost</div><div class="cy-lights">${h}</div>${P('prog',n+' of '+c.qs.length+' answered')}`; }
+function cfH(){ const c=R.cf; if(!c) return ''; const q=c.qs[c.i]; let mine=''; for(let i=0;i<c.qs.length;i++){ const p=c.picked[i]; mine+=`<i class="${p&&!p.pending?(p.ok?'on':'no'):''}"></i>`; }
+ return `<div class="cy-board cy-live"><div class="cy-pod cy-me"><div class="cy-nm">${E(first())} (you)</div><div class="cy-lights">${mine}</div></div><div class="cy-vs">${c.maker?'📨':'⚔️'}</div><div class="cy-pod cy-them" id="cy-ghost">${c.maker?`<div class="cy-nm">Your challenge</div>${P('prog','Friends will race this run')}`:ghostH()}</div></div>`+qCard(q,c.i,c.qs.length,c.label,opts(q,'cfans',c.picked[c.i])); }
+function cfDoneH(){ const r=R.cfr||{};
+ if(r.maker) return card(`<div class="cy-win"><div class="cy-trophy cy-pop" aria-hidden="true">📨</div><h2>Your challenge is ready!</h2>${P('prog','You got '+r.score+' of '+r.n)}<p>Your friends will see it under Open challenges, or give them this code:</p>${codeH(r.code)}<p class="cy-sm">It stays open for 3 days.</p></div>`,'cy-glow')+`<div class="cy-row cy-c">${Q('Back to the Arena','data-cy="home"')}</div>`;
+ const w=r.winner, miss=(r.review||[]).filter(x=>x.me!==x.a);
+ return card(`<div class="cy-win"><div class="cy-trophy cy-pop" aria-hidden="true">${w==='me'?'🏆':w==='tie'?'🤝':'🕯️'}</div><h2>${w==='me'?"You beat "+E(r.byName)+"'s ghost!":w==='tie'?'A tie with '+E(r.byName)+'!':E(r.byName)+"'s ghost wins this time!"}</h2><div class="cy-pills cy-c">${P('prog','You '+r.score)}${P('prog',r.byName+' '+r.theirs)}${P('rank','+'+(1+(w==='me'?3:w==='tie'?1:0))+' Arena points')}</div><div class="cy-ks">${KS}</div></div>`,'cy-glow')
+  +card(miss.length?`<h3>📚 Learn these</h3><p>Ask ${E(r.byName)} to explain them!</p>${miss.map(rvH).join('')}`:'<p>You got everything right!</p>')+`<div class="cy-row cy-c">${Q('Back to the Arena','data-cy="home"')}</div>`; }
+/* the Shtender duel: two boys, one Chromebook (practice, no points; the first boy's answers are saved as evidence) */
+function ppH(){ const p=R.pp; if(!p) return '';
+ if(p.step==='names') return card(`<h2>🪑 Shtender duel</h2><p>Player 1: <b>${E(p.n[0])}</b></p><label class="cy-find"><span>Player 2:</span><input id="cy-p2" type="text" autocomplete="off" placeholder="Name" aria-label="Player 2's name" value="${E(p.n[1])}"></label><div class="cy-row">${M('Pick the subject','data-cy="ppgo"')}</div>`);
+ if(p.step==='pass') return card(`<h2 class="cy-c">Pass the Chromebook to ${E(p.n[1])}! 🪑</h2><p class="cy-c">${E(p.n[0])} got ${p.s[0]} of ${p.qs.length}. No peeking!</p><div class="cy-row cy-c">${M(p.n[1]+' is ready','data-cy="ppnext"')}</div>`,'cy-glow');
+ if(p.step==='play'){ const q=p.qs[p.i]; return card(`<div class="cy-pills">${P('now',p.n[p.p]+"'s turn")}${P('prog',p.n[0]+' '+p.s[0]+(p.p?' · '+p.n[1]+' '+p.s[1]:''))}</div>`,'cy-tight')+qCard(q,p.i,p.qs.length,p.label,opts(q,'ppans',p.pick)); }
+ if(p.step==='done'){ const w=p.s[0]===p.s[1]?-1:(p.s[0]>p.s[1]?0:1), miss=k=>p.qs.filter((q,i)=>p.c[k][i]!==q.a);
+  return card(`<div class="cy-win"><div class="cy-trophy cy-pop" aria-hidden="true">${w<0?'🤝':'🏆'}</div><h2>${w<0?'A tie!':E(p.n[w])+' wins!'}</h2><div class="cy-pills cy-c">${P('prog',p.n[0]+' '+p.s[0])}${P('prog',p.n[1]+' '+p.s[1])}</div><div class="cy-ks">${KS}</div></div>`,'cy-glow')
+   +[0,1].map(k=>{ const Lm=miss(k); return Lm.length?card(`<h3>${E(p.n[k])} should learn:</h3>${Lm.map(rvH).join('')}`):''; }).join('')+card('<p class="cy-sm">Live duels on two Chromebooks earn Arena points.</p>')+`<div class="cy-row cy-c">${Q('Back to the Arena','data-cy="home"')}</div>`; }
+ return ''; }
+function goWith(qs,label,again){ if(!again) R.last={subj:R.subj,label,ids:R.lastIds||null,par:R.lastPar||null,mk:!!R.mk,lt:!!R.lt}; R.tried={}; R.seenCh={};
+ const LT=R.mode==='live'&&R.lt; if(LT&&R.lastIds&&R.lastIds.length&&!R.lastPar){ const more=build(R.lastIds,20); if(more.length>qs.length) qs=more; }
+ Object.assign(R,{reveal:0,stk:0,lead:0,prevThem:0,shookFx:0}); if(R.mk){ qs=qs.map(mkQ1); label=label+' · Makshan'; }
+ if(qs.length<5){ R.err='This topic does not have enough questions for a duel yet. Pick another one!'; return aDraw(); }
+ if(R.mode==='pp'){ R.pp=Object.assign(R.pp,{step:'play',qs,label,p:0,i:0,s:[0,0],c:[[],[]],pick:null}); R.v='pp'; return aDraw(); }
+ if(R.busy) return; R.busy=true;
+ if(R.mode==='cf'){ C('arCfMake',{subject:R.subj,label,qs}).then(x=>{ R.busy=false; R.cf={code:x.code,qs:x.qs,label:x.label,i:0,picked:{},maker:true,start:Date.now()}; R.v='cf'; aDraw(); }).catch(err=>{ R.busy=false; R.err=msg(err); aDraw(); }); return; }
+ C('arOpen',{subject:R.subj,topic:label,label:(LT?'⚡ ':'')+label,qs,mode:LT?'lightning':'classic',av:R.av}).then(v=>{ R.busy=false; R.m=v; R.v='wait'; aDraw(); startPoll(); }).catch(err=>{ R.busy=false; R.err=msg(err); aDraw(); }); }
+function startPoll(){ if(R.poll) clearInterval(R.poll); R.poll=setInterval(()=>{ if(!R.m||!document.getElementById('shk-arena')){ clearInterval(R.poll); R.poll=null; return; } C('arPoll',R.m.code).then(v=>{ if(!R.m) return; if(v.now) R.off=v.now-Date.now(); R.m=Object.assign(R.m,v); themEv(); cheersIn(v.cheers);
+  if(R.v==='wait'&&v.state==='go') R.v='count';
+  if((R.v==='play'||R.v==='waitEnd')&&v.state==='done'){ R.v='done'; R.reveal=0; R.donePolls=0; loadStats(); save(); }
+  if(R.v==='done'){ R.donePolls=(R.donePolls||0)+1; if((v.shake&&v.shake.done)||R.donePolls>80){ clearInterval(R.poll); R.poll=null; if(v.shake&&v.shake.done&&!R.shookFx){ R.shookFx=1; confetti('arena',50); FX.fan(); loadStats(); } } }
+  if(R.v!=='count'||!R.cntT) aDraw(); }).catch(e=>{ R.err=msg(e); }); },1500); }
+function themEv(){ try{ const m=R.m; if(!m||!m.them||(R.v!=='play'&&R.v!=='waitEnd')) return; const ts=m.them.score||0, ms=m.me.score||0;
+ if(ts>(R.prevThem||0)) FX.them(); R.prevThem=ts; const lead=ms>ts?1:(ts>ms?-1:0);
+ if(lead!==(R.lead||0)){ if(lead===-1) banner('arena','😮 '+m.them.name+' takes the lead!','pink'); else if(lead===1&&R.lead===-1) banner('arena','💪 You are back on top!'); else if(lead===0&&ms>0) banner('arena','⚖️ Tied!'); }
+ R.lead=lead; }catch(e){} }
+function cheersIn(Lc){ (Lc||[]).forEach(c=>{ if(R.seenCh[c.id]) return; R.seenCh[c.id]=1; if(Date.now()+(R.off||0)-c.t>15000) return; const X=CHEERS[c.k]; if(!X) return; banner('arena',X[0]+' '+c.from+': '+X[1],'ok'); FX.them(); }); }
+function aAct(a,b){ R.err='';
+ if(a==='towork') return toWork('arena');
+ if(a==='home'){ stopAll(); R.cf=null; R.g=null; R.m=null; R.pp=null; R.v='home'; aDraw(); loadStats(); cfLoad(); return; }
+ if(a==='new'){ R.mode='live'; R.v='subj'; return aDraw(); }
+ if(a==='ppnew'){ R.mode='pp'; R.pp={step:'names',n:[first()==='You'?'Player 1':first(),'']}; R.v='pp'; return aDraw(); }
+ if(a==='ppgo'){ const n=(document.getElementById('cy-p2')||{}).value||''; R.pp.n[1]=n.trim().slice(0,24)||'Player 2'; R.v='subj'; return aDraw(); }
+ if(a==='join'){ R.mode='live'; R.code=''; R.v='join'; return aDraw(); }
+ if(a==='cjoin'){ R.mode='class'; R.code=''; R.v='join'; return aDraw(); }
+ if(a==='cfnew'){ R.mode='cf'; R.v='subj'; return aDraw(); }
+ if(a==='cfjoin'){ R.mode='cfjoin'; R.code=''; R.v='join'; return aDraw(); }
+ if(a==='cftake') return cfTake(b.dataset.code);
+ if(a==='mk'){ R.mk=!R.mk; return aDraw(); }
+ if(a==='lt'){ R.lt=!R.lt; return aDraw(); }
+ if(a==='syopen'){ R.syOpen=!R.syOpen; return aDraw(); }
+ if(a==='av'){ R.av=b.dataset.k; try{ localStorage.setItem('arAv',R.av); }catch(x){} return aDraw(); }
+ if(a==='subj'){ R.subj=b.dataset.k; R.filt=''; R.v='topic'; return aDraw(); }
+ if(a==='plv'){ R.plv=+b.dataset.n; return aDraw(); }
+ if(a==='ptopic'){ if(R.busy) return; R.busy=true; const nm=b.dataset.p, lv=R.plv||((me().chm&&me().chm.lv)||3); R.lastPar=[nm,lv]; R.lastIds=null; b.disabled=true;
+  let done=false; const to=setTimeout(()=>{ if(done) return; done=true; R.busy=false; R.err='The Parsha could not open just now. Try again.'; aDraw(); },20000);
+  window.tlChm.quiz(nm,lv,10,qs=>{ if(done) return; done=true; clearTimeout(to); R.busy=false; R.subj='PAR'; goWith(qs,'Parshas '+nm+' (Level '+lv+')'); }); return; }
+ if(a==='topic'||a==='mix'){ const ids=a==='mix'?topicIds().filter(mastered):[b.dataset.id]; R.lastIds=ids; R.lastPar=null; const S=SUBJ.find(x=>x[0]===R.subj)||['','',''];
+  return goWith(build(ids,10),a==='mix'?S[1]+': mix of what I mastered':skillName(ids[0])); }
+ if(a==='key'){ const k=b.dataset.k, n=R.mode==='cfjoin'?5:4;
+  if(k==='del'){ R.code=R.code.slice(0,-1); return aDraw(); }
+  if(k==='ok'){ if(R.code.length!==n){ R.err=R.mode==='cfjoin'?'A challenge code has 5 numbers.':'The code has 4 numbers.'; return aDraw(); }
+   if(R.mode==='cfjoin') return cfTake(R.code); if(R.busy) return; R.busy=true;
+   if(R.mode==='class'){ C('chJoin',R.code).then(v=>{ R.busy=false; R.g=v; R.v='class'; R.cev={}; chNeed(v); aDraw(); chPoll(); }).catch(err=>{ R.busy=false; R.err=msg(err); aDraw(); }); return; }
+   C('arJoin',R.code,R.av).then(v=>{ R.busy=false; R.m=v; R.v='count'; aDraw(); startPoll(); }).catch(err=>{ R.busy=false; R.err=msg(err); aDraw(); }); return; }
+  if(R.code.length<n){ R.code+=k; FX.tick(); aDraw(); if(R.code.length===n) setTimeout(()=>{ if(R.v==='join'&&R.code.length===n) aAct('key',{dataset:{k:'ok'}}); },250); } return; }
+ if(a==='ans'){ const i=R.i; if(R.picked[i]||R.busy||!R.m) return; const c=+b.dataset.k; R.busy=true; R.picked[i]={c,pending:true}; b.disabled=true;
+  C('arAnswer',R.m.code,i,c).then(r=>{ R.busy=false;
+   if(r.retry){ delete R.picked[i]; R.tried[i]=c; R.m=Object.assign(R.m,r.view); FX.buzz(); banner('arena','🛡️ Second chance! Try again'); aDraw(); return; }
+   const dbl=r.ok&&R.m.me&&R.m.me.pu&&R.m.me.pu.x2At===i; R.picked[i]={c,ok:!!r.ok,right:r.right}; R.m=Object.assign(R.m,r.view); ev(R.m.qs[i].id,r.ok,R.m.qs[i].q); R.stk=r.ok?(R.stk||0)+1:0;
+   if(r.ok){ FX.ding(); banner('arena',dbl?'⚡ Double! +2':R.stk>=5?'🌟 Unstoppable! '+R.stk+' in a row!':R.stk>=3?'🔥 '+R.stk+' in a row!':pick(OK_W),'ok'); if(R.stk===5) confetti('arena',40); } else { FX.buzz(); banner('arena',pick(NO_W),'no'); }
+   aDraw(); themEv();
+   setTimeout(()=>{ if(R.v!=='play') return; if(R.i<R.m.n-1){ R.i++; if(R.i===R.m.n-1&&R.m.mode!=='lightning') setTimeout(()=>banner('arena','🎯 Final question!','pink'),200); aDraw(); } else { R.v=R.m.state==='done'?'done':'waitEnd'; R.reveal=0; if(R.v==='done'){ loadStats(); save(); } aDraw(); } },R.m.mode==='lightning'?650:1300);
+  }).catch(err=>{ R.busy=false; delete R.picked[i]; R.err=msg(err); aDraw(); }); return; }
+ if(a==='pw'){ const k=b.dataset.k, i=R.i; if(R.busy||!R.m||R.picked[i]) return; R.busy=true; C('arPower',R.m.code,k,i).then(r=>{ R.busy=false; if(r&&r.view) R.m=Object.assign(R.m,r.view);
+   if(r&&r.ok){ FX.go(); banner('arena',k==='split'?'✂️ Split! Wrong answers gone':k==='sh'?'🛡️ Second chance is on':'⚡ Double is on: get it right for +2!'); } aDraw(); }).catch(err=>{ R.busy=false; R.err=msg(err); aDraw(); }); return; }
+ if(a==='cheer'){ if(!R.m) return; const k=b.dataset.k; C('arCheer',R.m.code,k).then(r=>{ if(r&&r.ok) banner('arena','Sent: '+CHEERS[k][0]+' '+CHEERS[k][1],'ok'); }).catch(()=>{}); return; }
+ if(a==='shake'){ if(R.busy||!R.m) return; R.busy=true; C('arShake',R.m.code).then(r=>{ R.busy=false; if(r&&r.view) R.m=Object.assign(R.m,r.view); else { R.m.shake=Object.assign({},R.m.shake,{me:true}); } FX.ding(); if(r&&r.done&&!R.shookFx){ R.shookFx=1; confetti('arena',50); FX.fan(); loadStats(); } else if(!R.poll) startPoll(); aDraw(); }).catch(err=>{ R.busy=false; R.err=msg(err); aDraw(); }); return; }
+ if(a==='taught'){ if(R.busy||!R.m) return; R.busy=true; C('arTeach',R.m.code).then(()=>{ R.busy=false; R.m.taught=true; aDraw(); }).catch(err=>{ R.busy=false; R.err=msg(err); aDraw(); }); return; }
+ if(a==='rematch'){ const Ls=R.last; if(!Ls||R.busy) return; stopAll(); R.m=null; R.mode='live'; R.subj=Ls.subj; R.mk=Ls.mk; R.lt=!!Ls.lt;
+  if(Ls.par&&window.tlChm&&window.tlChm.quiz){ R.busy=true; window.tlChm.quiz(Ls.par[0],Ls.par[1],10,qs=>{ R.busy=false; goWith(qs,Ls.label.replace(/ · Makshan$/,''),true); }); return; }
+  if(Ls.ids&&Ls.ids.length) goWith(build(Ls.ids,10),Ls.label.replace(/ · Makshan$/,''),true); return; }
+ if(a==='cfans'){ const c=R.cf; if(!c) return; const i=c.i; if(c.picked[i]||R.busy) return; const k=+b.dataset.k; R.busy=true; c.picked[i]={c:k,pending:true}; b.disabled=true;
+  C('arCfAns',c.code,i,k).then(r=>{ R.busy=false; c.picked[i]={c:k,ok:!!r.ok,right:r.right}; ev(c.qs[i].id,r.ok,c.qs[i].q); if(r.ok){ FX.ding(); banner('arena',pick(OK_W),'ok'); } else { FX.buzz(); banner('arena',pick(NO_W),'no'); } aDraw();
+   setTimeout(()=>{ if(R.v!=='cf') return; if(c.i<c.qs.length-1){ c.i++; aDraw(); } else C('arCfDone',c.code).then(x=>{ R.cfr=x; R.v='cfdone'; if(R.cfTick){ clearInterval(R.cfTick); R.cfTick=null; } loadStats(); save(); aDraw(); }).catch(err=>{ R.err=msg(err); aDraw(); }); },900);
+  }).catch(err=>{ R.busy=false; delete c.picked[i]; R.err=msg(err); aDraw(); }); return; }
+ if(a==='cans'){ const g=R.g; if(!g||!g.q||(g.me&&g.me.mine)||R.busy) return; R.busy=true; const c=+b.dataset.k; g.me=g.me||{}; g.me.mine={c}; aDraw(); C('chAnswer',g.code,g.i,c).then(v=>{ R.busy=false; R.g=v; aDraw(); }).catch(err=>{ R.busy=false; R.err=msg(err); aDraw(); }); return; }
+ if(a==='ppans'){ const p=R.pp; if(!p||p.pick) return; const c=+b.dataset.k, q=p.qs[p.i], ok=c===q.a; p.pick={c,ok,right:q.a}; p.c[p.p][p.i]=c; if(ok) p.s[p.p]++; if(p.p===0) ev(q.id,ok,q.q); if(ok){ FX.ding(); banner('arena',pick(OK_W),'ok'); } else { FX.buzz(); banner('arena',pick(NO_W),'no'); } aDraw();
+  setTimeout(()=>{ p.pick=null; if(p.i<p.qs.length-1) p.i++; else if(p.p===0){ p.p=1; p.i=0; p.step='pass'; } else { p.step='done'; FX.fan(); confetti('arena',80); save(); } if(R.v==='pp') aDraw(); },1100); return; }
+ if(a==='ppnext'){ R.pp.step='play'; return aDraw(); }
+ if(a==='lesson') return K.openLesson(b.dataset.id);
+}
+
+/* ================= THE GAME PAVILION: Mistake Detective, the Daily Mix, Kodesh Quest ================= */
+const G={v:'menu'};
+const GDEF={scene:'ycw-c-pavilion',title:'The Game Pavilion',onBack:()=>gAct('menu'),onClose:()=>{ G.v='menu'; try{ speechSynthesis.cancel(); }catch(e){} }};
+function mixDue(){ try{ return (window.TLREVIEW&&A.st)?(TLREVIEW.due(A.st)||[]):[]; }catch(e){ return []; } }
+function mdOk(){ return !window.TL_MD_OFF&&!!window.TL_MD; }
+function kqOk(){ return typeof window.tlKinderKriyah==='function'; }
+function gOpen(){ if(!K.on()) return; GDEF.icon=icon('ycw-ic-games','ycw-ic-detective'); G.v='menu'; gDraw(); }
+function gDraw(){ const back=G.v!=='menu'; view('games',GDEF,back,`<div class="cy-wrap cy-pav">${G.v==='menu'?menuH():mdH()}</div>`,G.v==='md'&&G.keep); G.keep=false; }
+function mixTile(){ const d=mixDue(); if(!d.length) return ''; return tile('🔀','Daily Mix',d.length+' skill'+(d.length===1?'':'s')+' you already know: keep them strong','data-cy="mix"',P('now','Today'));}
+function menuH(){ if(!workDone()){ const mx=mixTile(); return lockedH(mx?`<div class="shk-tiles cy-menu">${mx}</div>`:''); }
+ const best=mdBest();
+ return card(`<div class="cy-hero"><div class="cy-medal" aria-hidden="true">🎪</div><div class="cy-grow"><h2>Play and learn</h2><p>Every right answer still counts.</p></div></div>`,'cy-glow')
+  +`<div class="shk-tiles cy-menu">${mdOk()?tile(icon('ycw-ic-detective','🕵️'),'Mistake Detective','Spot it. Fix it. Prove it. 6 cases from your lessons.','data-cy="md"',best?P('rank','Your best: ⭐ '+best):''):''}${kqOk()?tile(icon('ycw-ic-kodesh','📜'),'Kodesh Quest','Games at every Kodesh level: letters, brachos, pesukim, the parsha and more','data-cy="kq"',P('subj','Kodesh')):''}${mixTile()}</div>`
+  +(kqOk()?`<div class="cy-row">${Q('Kodesh Quest: only the Kodesh lands','data-cy="kqk"')}</div>`:''); }
+/* Mistake Detective (cases from TL_MD.build: the Teacher Time "oops" cases of lessons he worked on). Pays nothing, saves nothing on the server. */
+const RANKS=[[16,'Chief Inspector','🏆'],[12,'Inspector','🥇'],[8,'Detective','🕵️'],[0,'Rookie Detective','🔎']];
+const norm=s=>String(s||'').trim().toLowerCase().replace(/[.!?]+$/,'');
+function bestKey(){ return 'tl_md_best_'+(me().id||'x'); }
+function mdBest(){ try{ return +localStorage.getItem(bestKey())||0; }catch(e){ return 0; } }
+function mdStart(){ let list=null; try{ list=window.TL_MD&&TL_MD.build(); }catch(e){ list=null; } G.v='md'; G.md={list,i:0,pts:0,solved:0,step:0,ans:{},miss:[]}; gDraw(); }
+function mdH(){ const D=G.md; if(!D.list) return card(`<div class="cy-lock"><span class="cy-lockic" aria-hidden="true">🔍</span><div><h2>No cases yet</h2><p>Learn a few lessons first. Then come back and catch the mistakes!</p></div></div><div class="cy-row">${Q('Back to the Pavilion','data-cy="menu"')}</div>`);
+ const n=D.list.length, top=`<div class="cy-pills cy-mdtop">${P('rank','⭐ '+D.pts+' point'+(D.pts===1?'':'s'))}${D.i<n&&D.step?P('prog','Case '+(D.i+1)+' of '+n):''}</div>`;
+ if(D.step===0) return card(`<div class="cy-mdhero"><div class="cy-glass cy-pop" aria-hidden="true">🔍</div><h2>Can you catch the mistake?</h2><p class="cy-big">${n} cases from lessons <b>you</b> learned.</p>
+  <div class="cy-steps"><div>${BX('now','Step 1','Spot it')}<small>Is he right?</small></div><div>${BX('now','Step 2','Fix it')}<small>What is right?</small></div><div>${BX('now','Step 3','Prove it')}<small>Why?</small></div></div>
+  <p>Careful, detective: some answers are <b>right</b>. Don't get tricked!</p>${mdBest()?P('rank','Your best: ⭐ '+mdBest()):''}<div class="cy-row cy-c">${M('Open case #1','data-cy="mdgo"')}</div></div>`,'cy-glow');
+ if(D.step==='end'){ const max=n*3, s=Math.round(D.pts*18/Math.max(1,max)), r=RANKS.find(x=>s>=x[0])||RANKS[3], miss=missedSkill(D.miss);
+  return card(`<div class="cy-win"><div class="cy-trophy cy-pop" aria-hidden="true">${r[2]}</div><h2>${E(r[1])}!</h2><div class="cy-pills cy-c">${P('rank','⭐ '+D.pts+' of '+max+' points')}${P('prog',D.solved+' case'+(D.solved===1?'':'s')+' closed')}${D.newBest?P('rank','🎉 New best!'):''}</div><p>Detectives learn the most from mistakes. Every clue you read today makes the right answer stick.</p></div>`,'cy-glow')
+   +`<div class="cy-row cy-c">${M('New cases','data-cy="mdgo"')}${Q('Done','data-cy="menu"')}${miss?Q('Practice: '+skillName(miss),`data-cy="lesson" data-id="${E(miss)}"`):''}</div>`; }
+ const c=D.list[D.i], A1=D.ans;
+ let h=`<div class="cy-pills">${P('prog','Case #'+(D.i+1))}${P('subj',skillName(c.id))}</div><div class="cy-mdq"><small>The question</small><div class="cy-qt">${E(c.q)}</div>${L().tool('🔊','Read it to me','data-cy="say"')}</div>
+  <div class="cy-said"><span aria-hidden="true">🧒</span><div><small>${E(c.who)} answered:</small><div class="cy-shown">“${E(c.shown)}”</div></div></div>`;
+ h+=`<div class="cy-step">${P('now','Step 1 · Spot it')} Is ${E(c.who)} right?</div>`;
+ if(A1.s1==null) h+=`<div class="cy-ops">${Q('1   He is right','data-cy="s1" data-v="1"','tlk-wide cy-op')}${Q('2   He made a mistake','data-cy="s1" data-v="0"','tlk-wide cy-op')}</div>`;
+ else h+=fbH(A1.s1===c.trap,A1.s1===c.trap?(c.trap?'Sharp! That answer <b>is</b> right. Not every case has a mistake.':'Good eye! There <b>is</b> a mistake.'):(c.trap?'Tricky one! That answer was actually <b>right</b>.':'Look again: that answer has a <b>mistake</b>.'));
+ if(A1.s1!=null&&!c.trap){ h+=`<div class="cy-step">${P('now','Step 2 · Fix it')} What is the right answer?</div>`;
+  h+=A1.s2==null?`<div class="cy-ops">${c.fix.map((t,i)=>Q((i+1)+'   '+t,`data-cy="s2" data-i="${i}"`,'tlk-wide cy-op')).join('')}</div>`:opts({o:c.fix},'',{c:A1.s2,ok:norm(c.fix[A1.s2])===norm(c.right),right:c.fix.findIndex(x=>norm(x)===norm(c.right))}).replace(/<span class="cy-lt">[A-F]<\/span>/g,'')+fbH(norm(c.fix[A1.s2])===norm(c.right),norm(c.fix[A1.s2])===norm(c.right)?'Fixed! ✓':'The right answer is: <b>'+E(c.right)+'</b>'); }
+ if(A1.s1!=null&&(c.trap||A1.s2!=null)){ h+=`<div class="cy-step">${P('now','Step 3 · Prove it')} Which clue cracks the case?</div>`;
+  h+=A1.s3==null?`<div class="cy-ops">${c.whys.map((t,i)=>Q((i+1)+'   '+t,`data-cy="s3" data-i="${i}"`,'tlk-wide cy-op')).join('')}</div>`:opts({o:c.whys},'',{c:A1.s3,ok:c.whys[A1.s3]===c.why,right:c.whys.indexOf(c.why)}).replace(/<span class="cy-lt">[A-F]<\/span>/g,'')+fbH(c.whys[A1.s3]===c.why,c.whys[A1.s3]===c.why?'Proved it! 🔍':'This is the clue that proves it.'); }
+ if(A1.s3!=null) h+=`<div class="cy-solved"><div class="cy-stamp${RM()?'':' cy-stampgo'}" aria-hidden="true">SOLVED</div><div class="cy-truth"><div><small>Right answer</small><b>${E(c.right)}</b></div>${c.trap?'':`<div><small>The mistake</small><s>${E(c.wrong)}</s></div>`}<div class="cy-why">💡 ${E(c.why)}</div></div><div class="cy-row">${M(D.i+1<n?'Next case':'See my rank','data-cy="mdnext"')}</div></div>`;
+ return card(top+h,'cy-case'); }
+function fbH(ok,html){ return `<div class="cy-fb ${ok?'cy-good':'cy-bad'}" role="status">${html}</div>`; }
+function say(t){ try{ if(typeof window.speak==='function') return window.speak(t); speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(String(t).replace(/[^\w\s.,!?'$%:;\-()]/g,' ')); u.rate=.95; speechSynthesis.speak(u); }catch(e){} }
+function mdAns(k,b){ const D=G.md, c=D.list[D.i], A1=D.ans; if(A1[k]!=null) return;
+ if(k==='s1'){ A1.s1=b.dataset.v==='1'; const ok=A1.s1===c.trap; if(ok) D.pts+=c.trap?2:1; else D.miss.push(c.id); }
+ if(k==='s2'){ A1.s2=+b.dataset.i; if(norm(c.fix[A1.s2])===norm(c.right)) D.pts++; else D.miss.push(c.id); }
+ if(k==='s3'){ A1.s3=+b.dataset.i; if(c.whys[A1.s3]===c.why) D.pts++; else D.miss.push(c.id); D.solved++; FX.stamp(); }
+ const last=(k==='s3'); if(!last){ if((k==='s1'&&A1.s1===c.trap)||(k==='s2'&&norm(c.fix[A1.s2])===norm(c.right))) FX.ding(); else FX.buzz(); }
+ G.keep=true; gDraw(); try{ const el=document.getElementById('shk-games'); el.scrollTo({top:el.scrollHeight,behavior:RM()?'auto':'smooth'}); }catch(e){} }
+function gAct(a,b){
+ if(a==='towork') return toWork('games');
+ if(a==='menu'){ G.v='menu'; return gDraw(); }
+ if(a==='md'||a==='mdgo'){ if(a==='md'||!G.md||G.md.step==='end') return mdStart(); G.md.step=1; return gDraw(); }
+ if(a==='mdnext'){ const D=G.md; D.i++; D.ans={}; if(D.i>=D.list.length){ D.step='end'; const b0=mdBest(); D.newBest=D.pts>b0&&b0>0; if(D.pts>b0){ try{ localStorage.setItem(bestKey(),String(D.pts)); }catch(e){} } FX.fan(); confetti('games',50); } return gDraw(); }
+ if(a==='s1'||a==='s2'||a==='s3') return mdAns(a,b);
+ if(a==='say'){ const c=G.md&&G.md.list&&G.md.list[G.md.i]; if(c) say(c.q+'. '+c.who+' answered: '+c.shown); return; }
+ if(a==='mix'){ K.closeAll(); try{ TLREVIEW.startMix(); }catch(e){ console.error('Daily Mix',e); } return; }
+ if(a==='kq'||a==='kqk'){ K.closeAll(); try{ window.tlKinderKriyah(a==='kqk'?{kodesh:true}:undefined); }catch(e){ console.error('Kodesh Quest',e); } return; }
+ if(a==='lesson') return K.openLesson(b.dataset.id);
+}
+
+/* ================= THE WORKSHOP: Block Builders and the Chumash & Timeline Lab (each workbook keeps its own engine) ================= */
+function mathLevel(){ try{ const Mp=window.TL_MAP, m=Mp&&String(Mp.sid||'')===String(me().id)&&Mp.subjects&&Mp.subjects.MATH; return m?Number(m.level):NaN; }catch(e){ return NaN; } }
+function bbOk(){ if(!window.BBX||typeof BBX.openBook!=='function') return false; const live=window.BB_LIVE, id=String(me().id||''); if(live==='off'||!id) return false; if(live==='all'||/^TEST/.test(id)) return true; if(live==='test') return false; const lv=mathLevel(); return lv>=2&&lv<=4; }
+function clOk(){ if(!window.CLAB||typeof CLAB.openLab!=='function') return false; const live=window.CLAB_LIVE, id=String(me().id||''); if(live==='off'||!id) return false; if(/^TEST/.test(id)) return true; if(live==='test') return false; const g=Number(K.grade()); return !isNaN(g)&&g>=3; }
+function wOpen(){ if(!K.on()) return;
+ const t=(bbOk()?tile(icon('ycw-ic-blocks','🧱'),'Block Builders','Your math workbook: watch me, write it, check it','data-cy="bb" data-shdoor="blockbuilders"',P('subj','Math')):'')+(clOk()?tile(icon('ycw-ic-lab','📜'),'Chumash & Timeline Lab','Shorashim, prefixes, trop, pesukim and the Timeline','data-cy="clab" data-shdoor="chumashlab"',P('subj','Chumash')):'');
+ view('workshop',{scene:'ycw-c-workshop',title:'The Workshop',icon:icon('ycw-ic-blocks','🛠️')},false,`<div class="cy-wrap">${card(`<div class="cy-hero"><div class="cy-medal" aria-hidden="true">🛠️</div><div class="cy-grow"><h2>Build it with your own hands</h2><p>Workbooks you can write in, and labs where you take a pasuk apart.</p></div></div>`,'cy-glow')}<div class="shk-tiles cy-menu">${t||card('<p>Nothing here for you yet.</p>')}</div></div>`); }
+function wAct(a){ if(a==='bb'){ K.closeAll(); try{ BBX.openBook(); }catch(e){ console.error('Block Builders',e); } } if(a==='clab'){ K.closeAll(); try{ CLAB.openLab(); }catch(e){ console.error('Chumash Lab',e); } } }
+
+/* ================= the places (docs/SHELL-CONTRACT.md) ================= */
+K.place({id:'arena',name:'Chavrusa Arena',world:'c',icon:icon('ycw-ic-arena','ycb-ic-duels'),scene:'ycw-c-arena',door:'arena',order:60,
+ sub:()=>workDone()?'Duel a chavrusa in any subject':'Opens when your work is done', pill:()=>workDone()?(R.stats?P('rank',title(R.stats.pts).t[1]+' · '+R.stats.pts+' points'):''):P('lock','Locked'), show:()=>K.on(), open:aOpen});
+K.place({id:'games',name:'Game Pavilion',world:'c',icon:icon('ycw-ic-games','ycw-ic-detective'),scene:'ycw-c-pavilion',door:'games',order:61,
+ sub:()=>workDone()?'Mistake Detective and Kodesh Quest':'Opens when your work is done', pill:()=>workDone()?'':P('lock','Locked'), show:()=>K.on()&&(mdOk()||kqOk()), open:gOpen});
+K.place({id:'workshop',name:'The Workshop',world:'c',icon:icon('ycw-ic-blocks','🛠️'),scene:'ycw-c-workshop',order:62,
+ sub:()=>[bbOk()?'Block Builders':'',clOk()?'Chumash Lab':''].filter(Boolean).join(' and '), show:()=>K.on()&&(bbOk()||clOk()), open:wOpen});
+
+/* taps and keys (only inside these pages) */
+document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-cy]'); if(!b||b.disabled) return; const pg=b.closest('.shk-page'); if(!pg) return; const a=b.getAttribute('data-cy');
+ if(pg.id==='shk-arena'){ e.preventDefault(); aAct(a,b); } else if(pg.id==='shk-games'){ e.preventDefault(); gAct(a,b); } else if(pg.id==='shk-workshop'){ e.preventDefault(); wAct(a,b); } });
+document.addEventListener('input',e=>{ const t=e.target; if(!t||!t.classList||!t.classList.contains('cy-srch')) return; R.filt=t.value; const l=document.querySelector('#shk-arena .cy-tlist'); if(l) l.innerHTML=topicList(); });
+document.addEventListener('keydown',e=>{ const open=K.open, top=open[open.length-1]; if(top!=='arena'&&top!=='games') return; const pg=document.getElementById('shk-'+top); if(!pg) return;
+ if(e.target&&/input|textarea/i.test(e.target.tagName)) return;
+ if(e.key==='Escape'){ if(top==='games'||(R.v!=='play'&&R.v!=='count')){ e.preventDefault(); K.close(top,'home'); } return; }
+ if(top==='arena'&&R.v==='join'){ const k=/^[0-9]$/.test(e.key)?e.key:e.key==='Backspace'?'del':e.key==='Enter'?'ok':null; if(k){ const b=pg.querySelector(`[data-cy="key"][data-k="${k}"]`); if(b){ e.preventDefault(); b.click(); } } return; }
+ let n=-1; if(/^[1-6]$/.test(e.key)) n=+e.key-1; else if(top==='arena'&&/^[a-f]$/i.test(e.key)) n='abcdef'.indexOf(e.key.toLowerCase());
+ if(n>=0){ const bs=pg.querySelectorAll('.cy-ops .cy-op:not([disabled])'); if(bs[n]){ e.preventDefault(); bs[n].click(); } return; }
+ if(e.key==='Enter'&&top==='games'){ const g=pg.querySelector('.shk-body .tlk-main'); if(g&&document.activeElement!==g){ e.preventDefault(); g.click(); } } });
+
+/* the look: bright Golden City cards; gentle CSS movement only */
+(function(){ if(document.getElementById('cy-css')) return; const s=document.createElement('style'); s.id='cy-css'; s.textContent=`
+.cy-wrap{display:grid;gap:14px;max-width:920px;margin:0 auto}
+.cy-card h2{margin:0 0 6px;font-size:clamp(20px,2.4vw,26px);font-weight:900}.cy-card h3{margin:0 0 8px;font-size:18px;font-weight:800;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cy-card p{margin:6px 0;font-size:17px;line-height:1.4}.cy-sm{font-size:14px!important;opacity:.85}.cy-soft{color:#8A5A12}.cy-big{font-size:20px!important}.cy-c{text-align:center;justify-content:center}
+.cy-glow{border:2px solid rgba(233,196,106,.85);background:linear-gradient(160deg,rgba(255,253,244,.94),rgba(255,244,214,.9))}
+.cy-tight{padding:12px 14px}.cy-head h2{margin-bottom:10px}
+.cy-hero{display:flex;gap:16px;align-items:center}.cy-grow{flex:1;min-width:0}
+.cy-medal{width:78px;height:78px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:44px;background:radial-gradient(circle at 35% 30%,#FFF6D8,#F6C35B 70%,#D99A22);box-shadow:0 6px 18px rgba(170,110,10,.35),inset 0 -4px 8px rgba(150,90,0,.25);animation:cy-bob 5s ease-in-out infinite}
+@keyframes cy-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.cy-ks{font-size:15px;color:#8A5A12;font-weight:700;direction:rtl}
+.cy-tt{font-size:clamp(24px,3vw,32px)!important}.cy-he{font-size:.7em;color:#8A5A12}
+.cy-pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}.cy-tro{margin-top:10px}
+.cy-bar{display:block;height:10px;border-radius:9px;background:rgba(30,27,75,.10);overflow:hidden;margin:8px 0 6px}.cy-bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#F2B84B,#FFE08A);transition:width .6s ease}
+.cy-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+.cy-band{display:block;height:6px;background:var(--cy-c,#F2B84B)}.cy-tin{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px 16px 16px;min-height:118px;box-sizing:border-box}
+.cy-tin .shk-ic{width:56px;height:56px;object-fit:contain;font-size:40px;line-height:56px}.cy-tin b{font-size:19px}.cy-tin small{font-size:14px;opacity:.85}.cy-tin .cy-pills{margin:2px 0 0}
+.cy-menu{grid-template-columns:repeat(3,1fr)}.cy-menu>.cy-tile:first-child:nth-last-child(5){grid-column:span 2}
+.cy-avs{display:flex;flex-wrap:wrap;gap:6px}
+.cy-quest{display:flex;gap:10px;align-items:center;margin:6px 0;font-size:16px}.cy-quest>span:first-child{font-size:24px}
+.cy-sefer{margin-top:8px}
+.cy-list{display:grid;gap:8px}.cy-tlist{max-height:none}
+.tlk.tlk-quiet.cy-left{justify-content:flex-start;text-align:left;min-height:48px}
+.cy-find{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #E5E0D0;border-radius:14px;padding:6px 12px;margin-bottom:10px;font-size:17px}
+.cy-find input{flex:1;border:0;outline:0;font:inherit;font-size:18px;padding:8px 2px;background:transparent;min-width:0}
+.cy-tog{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.cy-code{display:flex;justify-content:center;gap:10px;margin:14px 0}.cy-code b{width:64px;height:80px;display:grid;place-items:center;font-size:46px;font-weight:900;border-radius:16px;background:#fff;border:3px solid #F2B84B;box-shadow:0 6px 0 #E3A43A,0 10px 20px rgba(170,110,10,.18);color:#1E1B4B}
+.cy-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:0 auto}.tlk.cy-key{min-height:62px}
+.cy-board{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin:8px 0}
+.cy-pod{position:relative;text-align:center;border-radius:20px;padding:14px 10px;background:linear-gradient(180deg,#EAF6FF,#CDE8FF);border:2px solid #9CCFF5;box-shadow:0 8px 22px rgba(30,60,120,.15)}
+.cy-pod.cy-them{background:linear-gradient(180deg,#FFF0F4,#FFD6E2);border-color:#F5A8BF}
+.cy-pod.cy-lead{box-shadow:0 0 0 4px rgba(242,184,75,.55),0 10px 26px rgba(170,110,10,.25)}
+.cy-crown{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:30px;animation:cy-bob 2.4s ease-in-out infinite}
+.cy-av{font-size:38px;line-height:1}.cy-nm{font-weight:800;font-size:17px;overflow-wrap:anywhere}.cy-sc{font-size:46px;font-weight:900;line-height:1.1;color:#1E1B4B}
+.cy-vs{font-size:28px;font-weight:900;color:#C7881B}.cy-vsbig{font-size:46px}
+.cy-lights{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:6px 0}.cy-lights i{width:12px;height:12px;border-radius:50%;background:rgba(30,27,75,.15)}
+.cy-lights i.on{background:#22C55E}.cy-lights i.no{background:#F87171}.cy-lights i.did{background:#F2B84B}
+.cy-count{display:grid;place-items:center;min-height:140px}.cy-count b{font-size:110px;font-weight:900;color:#E3A43A;text-shadow:0 6px 0 #fff,0 10px 30px rgba(170,110,10,.35)}
+.cy-pop{animation:cy-pop .5s cubic-bezier(.2,1.6,.4,1) both}@keyframes cy-pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.cy-fuse{position:relative;height:28px;border-radius:14px;background:rgba(30,27,75,.12);overflow:hidden}.cy-fuse i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#F59E0B,#FCD34D);transition:width .25s linear}.cy-fuse.hot i{background:linear-gradient(90deg,#EF4444,#F59E0B)}.cy-fuse b{position:relative;display:block;text-align:center;line-height:28px;font-weight:900}
+.cy-qh{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.cy-qt{font-size:clamp(20px,2.4vw,26px);font-weight:800;line-height:1.35;margin:4px 0 12px}
+.cy-pic{font-size:34px;text-align:center;margin:6px 0}
+.cy-claim{margin-top:10px;padding:12px 14px;border-radius:16px;background:#FFF3D6;border:2px dashed #F2A10F;font-size:.85em}
+.cy-ops{display:grid;gap:10px}.tlk.tlk-quiet.cy-op{justify-content:flex-start;text-align:left;min-height:60px;white-space:pre-wrap}
+.cy-opi{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.7);font-size:18px}
+.cy-opi.cy-r{background:#DCFCE7}.cy-opi.cy-w{background:#FEE2E2}.cy-opi.cy-gone{opacity:.5}
+.cy-lt{width:32px;height:32px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:900;background:#F6E7C1;color:#7A4A06}
+.cy-pw{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.cy-pwi{display:grid;justify-items:center;gap:4px;text-align:center}.cy-pwe{font-size:28px}.cy-pwi small{font-size:13px;opacity:.85}
+.cy-cheer{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.cy-drum{text-align:center;padding:30px 0}.cy-drum .cy-pop{font-size:80px}
+.cy-win{text-align:center}.cy-trophy{font-size:84px;line-height:1.1}
+.cy-shake{display:flex;gap:14px;align-items:center}.cy-shake>span{font-size:54px}
+.cy-rv{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.75);margin:8px 0;font-size:17px;display:grid;gap:6px;justify-items:start}
+.cy-team{border:3px solid var(--cy-team,#F2B84B)}
+.cy-err{background:#FEE2E2;color:#991B1B;border-radius:14px;padding:12px 16px;font-weight:700}
+.cy-lock{display:flex;gap:16px;align-items:center}.cy-lockic{width:72px;height:72px;font-size:52px;flex:none;object-fit:contain;line-height:72px;text-align:center}
+.cy-mdtop{justify-content:flex-end}
+.cy-mdhero{text-align:center}.cy-glass{font-size:80px}.cy-steps{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:12px 0}.cy-steps>div{display:grid;justify-items:center;gap:4px}
+.cy-mdq{position:relative;padding:14px 64px 14px 16px;border-radius:16px;background:#F3F0FF;margin:10px 0}.cy-mdq small,.cy-said small{font-size:13px;opacity:.8}.cy-mdq .tlk-tool{position:absolute;top:10px;right:10px}
+.cy-said{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:16px;background:#FFF7E6;margin-bottom:6px}.cy-said>span{font-size:40px}.cy-shown{font-size:22px;font-weight:800}
+.cy-step{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 8px;font-size:18px;font-weight:700}
+.cy-fb{margin-top:8px;padding:10px 14px;border-radius:12px;font-size:17px}.cy-good{background:#DCFCE7;color:#14532D}.cy-bad{background:#FEF3C7;color:#78350F}
+.cy-solved{position:relative;margin-top:14px;padding-top:6px}
+.cy-stamp{display:inline-block;transform:rotate(-8deg);font-size:40px;font-weight:900;letter-spacing:.1em;color:#16A34A;border:5px solid #16A34A;border-radius:12px;padding:2px 16px;margin:6px 0 10px}
+.cy-stampgo{animation:cy-stamp .45s cubic-bezier(.2,1.6,.4,1) both}@keyframes cy-stamp{from{transform:rotate(-8deg) scale(2.2);opacity:0}to{transform:rotate(-8deg) scale(1);opacity:1}}
+.cy-truth{display:grid;gap:8px;font-size:17px}.cy-truth small{display:block;font-size:13px;opacity:.75}.cy-truth b{font-size:20px}.cy-why{padding:10px 12px;border-radius:12px;background:#FFFBEB}
+.cy-banner{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:5;padding:12px 26px;border-radius:999px;font-size:22px;font-weight:900;background:#fff;color:#1E1B4B;box-shadow:0 10px 30px rgba(30,27,75,.25);animation:cy-ban 1.5s ease both;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+.cy-b-ok{background:#DCFCE7;color:#14532D}.cy-b-no{background:#FEF3C7;color:#78350F}.cy-b-pink{background:#FFE4EC;color:#9D174D}
+@keyframes cy-ban{0%{opacity:0;transform:translate(-50%,-16px) scale(.9)}15%,80%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-8px)}}
+.cy-conf{position:fixed;top:-12px;width:10px;height:14px;border-radius:2px;z-index:4;pointer-events:none;animation:cy-fall 2.6s linear both}
+@keyframes cy-fall{to{transform:translate3d(0,105vh,0) rotate(540deg)}}
+@media (max-width:600px){.cy-menu{grid-template-columns:1fr 1fr}.cy-hero{gap:12px}.cy-medal{width:60px;height:60px;font-size:34px}.cy-code b{width:52px;height:66px;font-size:36px}.cy-sc{font-size:36px}.cy-board{gap:6px}.cy-pod{padding:12px 6px}.cy-vs{font-size:20px}.cy-count b{font-size:84px}.cy-pw{grid-template-columns:1fr}.cy-pwi{grid-template-columns:auto auto 1fr;justify-items:start;align-items:center;text-align:left}.cy-banner{font-size:18px;top:74px}}
+@media (prefers-reduced-motion:reduce){.cy-medal,.cy-crown,.cy-pop,.cy-stampgo,.cy-banner{animation:none!important}.cy-bar i,.cy-fuse i{transition:none}}`; document.head.appendChild(s); })();
+window.SHC={workDone,arena:R,md:G,bbOk,clOk,build,skillsBy};
+})();
 </script>
