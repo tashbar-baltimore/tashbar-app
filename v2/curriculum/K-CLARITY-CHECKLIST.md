@@ -123,3 +123,21 @@ The first numbers-b session (claim `numbers-b`) played every Unit 3 and 4 game t
 | Empty plate (zero4) | Five cookies (bonus) were piled on top of each other. | Cookies spread across the plate and are a bit smaller at 4 or 5, so none overlap. |
 | Match the number (match4) | After a match, the small finger picture covered one of the things to count; on a phone the big numeral tag covered half the fruit. | The finger picture sits under the card (room made for it); the tag is smaller on a phone and sits on the corner. |
 | Review time (review4) | The challah rolls in the tray were small. | Bigger rolls (up to 104 px), wider tray. |
+
+**Round 3 (review-numbers-takeover-2, 2026-11-27 evening; the first takeover stopped at 17:52 when its helpers hit a usage limit).** Helper fixes wA (skip) and wC (Unit 8) were finished and merged (wA greyed the thumbs-up and never brightened it again: fixed). Three fresh reviewers in turn looked at full-look pictures of every round (Chromebook and phone, one wrong move) and read each game's lines and wrong-move help.
+
+| Game | Round 3 first score | Fixed | Final score |
+|---|---|---|---|
+| Unit 2 Find the mistake (skip) | 3 | No stone stays bright after the count; on a phone the thumbs-up is no bigger than a stone; a stone he counted right gets a green tick; the demo starts "Watch me" | **4** |
+| Unit 6 Where will Mendy land? (steps6) | 4 | — | **4** |
+| Unit 6 Find the mistake (mistake6) | 3, 3, 3 | Spinner keeps its dots and Avi's start stone stays marked; on a phone start and landing are both on screen; the help counts hops ("One hop, two hops. Avi goes on three."); on mixed-up stones "Two goes here. This says three!"; the demo is the same job he then does | **4** |
+| Unit 7 Line them up (pairs7) | 4 | Left-over apples wait in their own row in the line-up | **4** |
+| Unit 7 One more, one less (build7) | 3 | The help SHOWS how (Dovid's apples on Shmuel's blanket, one drops in or lifts away); the first line says what to tap; the check is grey until the apples change | **4** |
+| Unit 7 Find the mistake (mistake7) | 3, 3 | The pointing hand hides after each "Watch me" (it stayed on screen); squeezed apples stand apart; a wrong fix shows how; the voice says how before a fix | **4** |
+| Unit 7 Review time (review7) | 4 | — | **4** |
+| Unit 8 How many hiding (hide8) | 4 | "Watch the towel!" (no "close your eyes"); plain cloth and kugel | **4** |
+| Unit 8 Show me (check8) | 4 | Bigger number bond and cards | **4** |
+| Unit 8 Review time (review8) | 2 (4 of 6 rounds not seen before) | Ten-frame and hands rounds fill the screen (the play area had shrunk to 122 px and the frame sat off screen); finger-down button under the fist; kugel = kugel on the "same" button; plates apart, slices inside the rim; "Watch me" before frame and one-more rounds; a right one more drops into the marked spot | **4** |
+
+**Every Numbers game, Units 1–8, now scores 4 or 5** (Units 1–5 and 8 from round 2, the rest from round 3). Tests: every changed game's test and the Numbers clarity checks pass.
+**Team choices (written down for Esti):** 6–10 stay drawn as a full row of five and the rest (ten-frame structure) rather than dice patterns; mistake6 keeps both kinds of slip (hops and swapped numbers), each with its own "Watch me".

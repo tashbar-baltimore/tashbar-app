@@ -65,7 +65,7 @@ async function tap(n, el) {
   }
   FR.oops(el); R.misses++;
   await FR.say('That one is right. Count with me.'); stretch(false);
-  for (let n = Math.max(0, R.a - 1); n <= Math.min(5, R.b + 1); n++) { const says = n === R.a ? R.b : n === R.b ? R.a : n; P.focus(n); P.glow(n, true);   /* the voice never says a number the stone does not show */
+  for (let n = Math.max(0, R.a - 1); n <= Math.min(5, R.b + 1); n++) { const says = n === R.a ? R.b : n === R.b ? R.a : n; P.focus(n); P.glow(n, true);   /* on the mixed-up stones the voice says what the stone shows, and where it belongs */
     await FR.say(says === n ? FR.Word(n) + ',' : FR.Word(n) + ' goes here. This says ' + FR.word(says) + '!', { noRepeat: true }); P.glow(n, false); }
   P.glow(null); P.glow(R.a, true); P.glow(R.b, true); P.focus((R.a + R.b) / 2);   /* the two mixed-up stones shine while we say why */
   await FR.say(FR.Word(R.b) + " can't come before " + FR.word(R.a) + '.'); stretch(true);
@@ -87,13 +87,13 @@ function play(F, i) {
       await F.say('Avi was on ' + F.word(at) + '. Two dots, two hops.');
       await F.say(far ? 'Oops! He hopped too far.' : 'Oops! He did not hop far enough.');
       open();
-      await F.say('Where should Avi be? Tap that stone.', { repeat: 'Avi was on ' + F.word(at) + '. Two hops. Tap that stone.' });
+      await F.say('Where should Avi be? Tap that stone.', { repeat: 'Avi was on ' + F.word(at) + '. Two hops. Tap where Avi should be.' });
     } else {
       const a = FR.pick(i === 1 ? [1, 2] : i === 3 ? [3, 4] : [0, 2, 4]), b = a + 1;   /* two neighbours, inside zero to five */
       R = { kind: 'swap', a, b, picked: null, misses: 0 }; A.place(0); A.show(false); $('spin').hidden = true;
       P.label(a, b); P.label(b, a); P.focus(P.narrow() ? (a + b) / 2 : 5); stretch(true);
       await F.say('Avi mixed up two numbers here.'); open();
-      await F.say('Look at the shining stones. Tap the two mixed-up numbers.', { repeat: 'Two numbers swapped places. Tap them both.' });
+      await F.say('Look at the stones. Two numbers are mixed up. Tap them.', { repeat: 'Two numbers swapped places. Tap them both.' });
     }
   });
 }
@@ -105,10 +105,12 @@ FR.game({
     P.onStone = (n, el) => tap(n, el);
   },
   demo: async F => {
-    R = { kind: 'demo' }; A.place(2); P.focus(3.5); $('spin').hidden = false;
-    await F.say('Avi is on two. He spins. Watch me check.'); await SP.spin(1); $('spin').hidden = true; await A.hop(4); A.pose('talk');
-    await F.say('One dot is one hop. Not two hops!');
-    await F.handTo(P.el(3)); await F.handTap(); A.place(2); A.pose('happy'); await A.hop(3); P.petals(3); await F.say('From two, one hop is three!'); A.pose('idle');
+    /* the demo shows what he will do (round 3 review): a marked start, two dots, Avi lands short, count the hops, tap */
+    R = { kind: 'demo' }; A.place(2); P.focus(3); $('spin').hidden = false;
+    await F.say('Avi is on two. He spins. Watch me check.'); await SP.spin(2); P.el(2).classList.add('startmark'); await A.hop(3); A.pose('talk');
+    await F.say('Avi was on two. Two dots, two hops.');
+    for (let h = 1; h <= 2; h++) { P.glow(2 + h, true); await F.say(h === 1 ? 'One hop,' : 'two hops.', { noRepeat: true }); P.glow(2 + h, false); }
+    await F.handTo(P.el(4)); await F.handTap(); P.el(2).classList.remove('startmark'); $('spin').hidden = true; A.place(2); A.pose('happy'); await A.hop(4); P.petals(4); await F.say('From two, two hops is four!'); A.pose('idle');
     /* the other kind of mistake: two numbers mixed up */
     A.show(false); P.focus(P.narrow() ? 1.5 : 5); P.label(1, 2); P.label(2, 1); stretch(true);
     await F.say('Look! Two and one are mixed up.'); await F.handTo(P.el(1)); await F.handTap(); P.el(1).classList.add('hint');
