@@ -22,7 +22,7 @@ export const KINDS = {
   rectLong: { pts: [[-1.0, -0.28], [1.0, -0.28], [1.0, 0.28], [-1.0, 0.28]], name: 'rectangle' },
   rectFat:  { pts: [[-0.8, -0.55], [0.8, -0.55], [0.8, 0.55], [-0.8, 0.55]], name: 'rectangle' },
   lean:     { pts: [[-1.0, -0.42], [0.45, -0.42], [1.0, 0.42], [-0.45, 0.42]], name: 'leaning shape' },   /* long and short sides that are clearly different (1.45 and 1.0): never "four sides the same" */
-  kite:     { pts: [[0, -0.85], [0.55, 0.15], [0, 0.6], [-0.55, 0.15]], name: 'kite' },
+  kite:     { pts: [[0, -1.05], [0.55, 0.2], [0, 0.6], [-0.55, 0.2]], name: 'kite' },   /* clearly longer at the bottom: never mistaken for a square on its corner */
   pent:     { pts: [[0.0, 0.72], [-0.685, 0.222], [-0.423, -0.582], [0.423, -0.582], [0.685, 0.222]], name: 'pentagon' },
   oct:      { pts: [[0.665, 0.276], [0.276, 0.665], [-0.276, 0.665], [-0.665, 0.276], [-0.665, -0.276], [-0.276, -0.665], [0.276, -0.665], [0.665, -0.276]], name: 'octagon' },
   star:     { pts: [[0.0, 0.7], [-0.176, 0.243], [-0.666, 0.216], [-0.285, -0.093], [-0.411, -0.566], [-0.0, -0.3], [0.411, -0.566], [0.285, -0.093], [0.666, 0.216], [0.176, 0.243]], name: 'star' },
@@ -907,8 +907,10 @@ export function startGame(cfg) {
         }
         if (!bonus) W.misses++; chime(false); goHome(o);
         /* the first miss already SHOWS how (K-CLARITY-RULES 16): the part that repeats glows while the pattern is sung; fixing: the ring sits on the wrong one */
+        const rightOne = shapes.find(x => x.box === 0 && !x.inBox && x.g.visible);   /* the first miss also points at the one that fits (review round 2) */
         const steps = ['Not that one.', () => coreGlow(true), () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, R.copy ? 'Look at the pattern above.' : null), () => wait(900), () => { if (SHOT) glowHeld = true; else coreGlow(false); }];   /* the glow stays a moment after the song, so he sees the part that repeats */
         if (R.fixAt != null && !PS.showRing) steps.push(() => { PS.showRing = true; markNext(); }, 'The wrong one is in the ring.');
+        if (R.fixAt == null && rightOne) steps.push('This one fits.', () => pointAt(rightOne));
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember, () => coreGlow(true), () => say(wordsOf(R.seq, R.core || 2) + ' repeats.'), () => wait(600), () => coreGlow(false)); }
         steps.push(...ask);
         play(steps);

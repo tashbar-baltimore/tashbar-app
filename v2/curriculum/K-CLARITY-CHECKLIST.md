@@ -124,5 +124,40 @@ Find the triangles 4, Find the hexagons 4, What comes next? 4, Heavy and light 4
 | Sort by color: every colour box had a white circle on it, which reads as "circles go here" (11) | Plain red, blue and yellow boxes; nothing on them |
 | Build with shapes: a wrong piece only made the hole flash for under a second (16) | The hole flashes slowly; then "Watch. This one goes here." and the hand moves from the piece to its own hole while that hole flashes |
 | Pattern games: the glow on the part that repeats went off the moment the song ended (16) | It stays a moment after the song |
+
+**Round 2, independent scores (3 fresh reviewers, 2026-11-27 evening; new full-look pictures of all 25 games: Chromebook play-through, phone lesson and first round, wrong-move help).** The two sessions on this piece split the fixes: Units 1-6 by the first session, Units 7-12 by the takeover session.
+
+| Game | Score | Game | Score | Game | Score |
+|---|---|---|---|---|---|
+| Find the circles | 4 | Mystery shape | 4 | Big and small | 4 |
+| Find the triangles | 4 | What comes next? | 4 | Line them up | 3 |
+| Find the squares | 3 | Copy and sing | 3 | Heavy and light | 4 |
+| Find the rectangles | 4 | The solid shapes | 3 | Shape party 1 | 4 |
+| The shape sorter | 4 | Flat or solid? | 4 | Shape party 2 | 4 |
+| Count the corners | 4 | Build with shapes | 4 | Shape party 3 | 3 |
+| Fix the shape | 4 | Where is it? | 4 | Graduation day | 4 |
+| Find the hexagons | 4 | Fix the pattern | 4 | Pattern train | 4 |
+| | | | | Sort by color | 4 |
+
+Fixed after round 2 (Units 1-6, and shared):
+| Problem (rule) | Fix |
+|---|---|
+| After a wrong piece the help was only words in Find the... games (16) | The hand shows a right piece going into the box. A wrong rectangle, kite or leaning shape lights its sides one by one (long sides blue, short sides yellow) |
+| Mendy's demo piece shrank to a speck in the box (it was still popping in when he picked it up) (9) | It keeps its real size in the box, so he sees it went in |
+| Bits of pieces poked up behind the yes / no buttons in the friend's mistake (9) | Pieces in a hidden box hide with it |
+| Copy and sing never showed copying: the "Watch me" round was a "what comes next" round (2, 15) | Mendy copies a whole row, one cupcake at a time, naming each ("Red. Green. Red. Green."). Every empty spot shows under his row |
+| What comes next / Copy and sing: the friend stood behind the cupcakes; "Put it on the tray" with no tray (9, 11); a wrong cupcake got only a song (16) | The friend stands clear of the row; "Put it in the empty spot."; the hand also shows the one that fits |
+| The solid shapes: "Upside down, still a cone!" for an upright cone; "its sides are squares" (a cube's faces); pale labels; the small sphere tiny; on a phone the cylinder and cone labels looked like circles from above (6, 11, 12) | "Yes! A cone!"; "Every face is a square."; strong navy labels; bigger small pieces; on a phone the cylinder label lies on its side and the cone tips its point up |
+| Box labels the same colour as some pieces (circle, hexagon, rectangle) (9) | Navy labels, a colour no piece has |
+| Find the squares: the kite looked like a square on its corner (3) | The kite is clearly longer at the bottom |
+| "Round, like a plate" with no plate (3, 11); "a triangle has three corners" also fits the curvy shape (3) | "Round all the way. No corners."; "Remember: three straight sides, three corners." |
+| Shape party 1 / Find the triangles: the curvy look-alike had a straight bottom (3) | It bulges on every side |
+| Where is it? painting ended in a hard edge; Line them up flag read as a slanted stick from above (10) | Wider sea painting; flag hidden |
+
+**(decided: in The solid shapes the word "face" is used for a cube's flat sides: it is the Common Core K.G word, and "side" stays the word for a flat shape's edge, so the two never clash.)**
+
+More fixes (review-shapes takeover session, Units 7-12):
+| Problem (rule) | Fix |
+|---|---|
 | Graduation: the skinny triangle's clue said "I am very thin", but Shape party 2 teaches "flat is thin", so every flat shape is thin (11) | The clue is "I am flat. I have three corners." (only one triangle is there) |
 | Shape party 2: the cube's "sides are squares" (sides are the lines of flat shapes) | "Every face is a square", the same words as The solid shapes |
