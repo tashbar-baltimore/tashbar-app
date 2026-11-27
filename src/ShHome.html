@@ -18,9 +18,9 @@ function locked(){ const b=document.body.classList; return b.contains('tm-on')||
 function state(){ try{ return window.GM_STATE?GM_STATE():null; }catch(e){ return null; } }
 /* today's work, from the map (the same plan the map's home uses) */
 function today(){ const S=state(); if(!S) return {line:'',next:'',open:false}; const P=S.P||{}, rounds=P.rounds||[];
- const lv=rounds.find(r=>!r.won&&r.w), w=lv?lv.w:S.pick, nm=id=>{ try{ return (typeof BANK_ALL!=='undefined'&&BANK_ALL[id]&&BANK_ALL[id].name)||''; }catch(e){ return ''; } };
+ const lv=rounds.find(r=>!r.won&&r.w), w=lv?lv.w:S.pick, nm=id=>{ try{ return (S.name&&S.name(id))||''; }catch(e){ return ''; } };
  const line=!S.ws.length?'Your map is almost ready.':rounds.length?(P.open?'All your work is done today!':`${P.done||0} of ${P.total||rounds.length} done today`):'Every world is cleared!';
- return {line, next:w&&w.now?`${w.name} · ${nm(w.now)}`:'', open:!!P.open}; }
+ return {line, next:w&&w.now?[w.name,nm(w.now)].filter(Boolean).join(' · '):'', open:!!P.open}; }
 /* STAND-INS: each opens today's screen for that place (a workstream's own place replaces it). The door is the class-lock door (TL_DOORS). */
 function nav(t){ const b=document.createElement('button'); b.type='button'; b.setAttribute('data-gmnav',t); b.style.display='none'; document.body.appendChild(b); b.click(); b.remove(); }
 function door(k){ try{ const d=window.TL_DOORS&&TL_DOORS[k]; if(d&&d.go){ d.go(); return true; } }catch(e){ console.error('SH door',k,e); } return false; }
@@ -28,25 +28,25 @@ function tap(sel){ const el=document.querySelector(sel); if(el){ el.click(); ret
 function workshop(){ const bb=!!(window.BBX&&BBX.openBook)&&!!document.querySelector('#bbx-door'), cl=!!(window.CLAB&&CLAB.openLab)&&!!document.querySelector('#clab-door');
  SHK.pop({id:'workshop',world:'c',title:'The Workshop',icon:'ycw-ic-blocks',body:`<div class="shk-tiles">${bb?`<button type="button" class="tlk tlk-tile shk-tile" data-shx="bb" data-shdoor="blockbuilders">${SHK.ic('ycw-ic-blocks')}<b>Block Builders</b><small>Your math workbook</small></button>`:''}${cl?`<button type="button" class="tlk tlk-tile shk-tile" data-shx="lab" data-shdoor="chumashlab">${SHK.ic('ycw-ic-lab')}<b>Chumash Lab</b><small>Explore the pesukim</small></button>`:''}</div>`}); }
 const STAND=[
- {id:'work',name:'My work',world:'k',icon:'ycw-ic-work',scene:'ycw-k-study',order:1,open:()=>nav('missions')},
- {id:'map',name:'My map',world:'k',icon:'ycw-ic-trail',scene:'ycw-k-trail',order:2,sub:()=>{ const S=state(), p=S&&S.pick; return p?`${p.name} · Level ${p.level}`:'Your levels'; },open:()=>nav('map')},
- {id:'bank',name:'My money',world:'k',icon:'ycw-ic-bank',scene:'ycw-k-vault',door:'store',order:10,pill:()=>K()?K().pill('money',SHK.money()):'',open:()=>nav('money')},
- {id:'trophies',name:'My trophies',world:'k',icon:'ycw-ic-trophy',scene:'ycw-k-trophies',door:'profile',order:12,sub:'Ranks, badges and streaks',open:()=>nav('me')},
- {id:'profile',name:'My profile',world:'k',icon:'ycw-ic-profile',scene:'ycw-k-room',door:'profile',order:13,sub:'My picture, my lessons, my week',open:()=>nav('more')},
- {id:'passport',name:'Torah Tracks',world:'k',icon:'ycw-ic-tracks',scene:'ycw-k-library',door:'torah',order:14,sub:'My passport',show:()=>!!document.querySelector('[data-tj]'),open:()=>tap('[data-tj="pass"]')||tap('[data-tj]')},
- {id:'library',name:'My Library',world:'k',icon:'ycw-ic-library',scene:'ycw-k-library',door:'library',order:15,sub:'Books to read',open:()=>door('library')},
- {id:'talk',name:'Talk to my Rebbe',world:'k',icon:'ycw-ic-talk',scene:'ycw-k-post',door:'talk',order:16,sub:'Send a note',show:()=>!!document.querySelector('[data-tr="open"]'),open:()=>tap('[data-tr="open"]')},
- {id:'store',name:'Store',world:'c',icon:'ycb-ic-store',scene:'ycw-c-market',door:'store',order:30,pill:()=>K()?K().pill('money',SHK.money()):'',open:()=>door('store')},
- {id:'canteen',name:'Canteen',world:'c',icon:'ycb-ic-canteen',scene:'ycw-c-canteen',door:'canteen',order:31,sub:'Buy food with your money',open:()=>door('canteen')},
- {id:'games',name:'Game Pavilion',world:'c',icon:'ycw-ic-games',scene:'ycw-c-pavilion',door:'games',order:32,pill:()=>K()?(today().open?K().pill('now','Open! Go play.'):K().pill('lock','After your work')):'',open:()=>nav('games')},
- {id:'arena',name:'Chavrusa Arena',world:'c',icon:'ycb-ic-duels',scene:'ycw-c-arena',door:'arena',order:33,sub:'Learning duels',open:()=>door('arena')},
- {id:'workshop',name:'The Workshop',world:'c',icon:'ycw-ic-blocks',scene:'ycw-c-workshop',order:34,sub:'Block Builders and Chumash Lab',show:()=>!!(document.querySelector('#bbx-door')||document.querySelector('#clab-door')),open:workshop},
- {id:'music',name:'Music',world:'c',icon:'ycw-ic-music',scene:'ycw-c-music',door:'music',order:35,sub:'Songs to learn with',show:()=>!!document.querySelector('[data-act="mubtn"]'),open:()=>tap('[data-act="mubtn"]')},
- {id:'olamhaba',name:'Olam Haba',world:'c',icon:'ycw-ic-calm',scene:'ycw-c-calm',door:'olamhaba',order:36,sub:'Your light keeps growing',show:()=>!!document.querySelector('#ohsky,#ohb'),open:()=>tap('#ohb')||tap('#ohsky')}
+ {id:'work',emoji:'✏️',name:'My work',world:'k',icon:'ycw-ic-work',scene:'ycw-k-study',order:1,open:()=>nav('missions')},
+ {id:'map',emoji:'🗺️',name:'My map',world:'k',icon:'ycw-ic-trail',scene:'ycw-k-trail',order:2,sub:()=>{ const S=state(), p=S&&S.pick; return p?`${p.name} · Level ${p.level}`:'Your levels'; },open:()=>nav('map')},
+ {id:'bank',emoji:'🏦',name:'My money',world:'k',icon:'ycw-ic-bank',scene:'ycw-k-vault',door:'store',order:10,pill:()=>K()?K().pill('money',SHK.money()):'',open:()=>nav('money')},
+ {id:'trophies',emoji:'🏆',name:'My trophies',world:'k',icon:'ycw-ic-trophy',scene:'ycw-k-trophies',door:'profile',order:12,sub:'Ranks, badges and streaks',open:()=>nav('me')},
+ {id:'profile',emoji:'🎒',name:'My profile',world:'k',icon:'ycw-ic-profile',scene:'ycw-k-room',door:'profile',order:13,sub:'My picture, my lessons, my week',open:()=>nav('more')},
+ {id:'passport',emoji:'📜',name:'Torah Tracks',world:'k',icon:'ycw-ic-tracks',scene:'ycw-k-library',door:'torah',order:14,sub:'My passport',show:()=>!!document.querySelector('[data-tj]'),open:()=>tap('[data-tj="pass"]')||tap('[data-tj]')},
+ {id:'library',emoji:'📚',name:'My Library',world:'k',icon:'ycw-ic-library',scene:'ycw-k-library',door:'library',order:15,sub:'Books to read',open:()=>door('library')},
+ {id:'talk',emoji:'✉️',name:'Talk to my Rebbe',world:'k',icon:'ycw-ic-talk',scene:'ycw-k-post',door:'talk',order:16,sub:'Send a note',show:()=>!!document.querySelector('[data-tr="open"]'),open:()=>tap('[data-tr="open"]')},
+ {id:'store',emoji:'🛍️',name:'Store',world:'c',icon:'ycb-ic-store',scene:'ycw-c-market',door:'store',order:30,pill:()=>K()?K().pill('money',SHK.money()):'',open:()=>door('store')},
+ {id:'canteen',emoji:'🥪',name:'Canteen',world:'c',icon:'ycb-ic-canteen',scene:'ycw-c-canteen',door:'canteen',order:31,sub:'Buy food with your money',open:()=>door('canteen')},
+ {id:'games',emoji:'🎮',name:'Game Pavilion',world:'c',icon:'ycw-ic-games',scene:'ycw-c-pavilion',door:'games',order:32,pill:()=>K()?(today().open?K().pill('now','Open! Go play.'):K().pill('lock','After your work')):'',open:()=>nav('games')},
+ {id:'arena',emoji:'⚔️',name:'Chavrusa Arena',world:'c',icon:'ycb-ic-duels',scene:'ycw-c-arena',door:'arena',order:33,sub:'Learning duels',open:()=>door('arena')},
+ {id:'workshop',emoji:'🧱',name:'The Workshop',world:'c',icon:'ycw-ic-blocks',scene:'ycw-c-workshop',order:34,sub:'Block Builders and Chumash Lab',show:()=>!!(document.querySelector('#bbx-door')||document.querySelector('#clab-door')),open:workshop},
+ {id:'music',emoji:'🎵',name:'Music',world:'c',icon:'ycw-ic-music',scene:'ycw-c-music',door:'music',order:35,sub:'Songs to learn with',show:()=>!!document.querySelector('[data-act="mubtn"]'),open:()=>tap('[data-act="mubtn"]')},
+ {id:'olamhaba',emoji:'☁️',name:'Olam Haba',world:'c',icon:'ycw-ic-calm',scene:'ycw-c-calm',door:'olamhaba',order:36,sub:'Your light keeps growing',show:()=>!!document.querySelector('#ohsky,#ohb'),open:()=>tap('#ohb')||tap('#ohsky')}
 ];
 STAND.forEach(d=>{ d.stand=true; SHK.place(d); });
 /* THE GOLDEN CITY: the City Square, the free-time home */
-SHK.place({id:'city',name:'The Golden City',world:'c',icon:'ycw-ic-calm',scene:'ycw-c-square',order:90,home:true,open:()=>{
+SHK.place({id:'city',emoji:'🏰',name:'The Golden City',world:'c',icon:'ycw-ic-calm',scene:'ycw-c-square',order:90,home:true,open:()=>{
  const T=today(), Q=K(), tiles=SHK.places('c').filter(d=>!d.home).map(d=>SHK.tile(d.id)).join('');
  SHK.page({id:'city',world:'c',scene:'ycw-c-square',title:'The Golden City',icon:'ycw-ic-calm',right:Q?`<span class="sh-money">${Q.pill('money',SHK.money())}</span>`:'',
   body:`<p class="sh-line">${Q?(T.open?Q.pill('now','Your work is done. Enjoy!'):Q.pill('prog','Games open after your work. The Store and Canteen are open.')):''}</p><div class="shk-tiles">${tiles}</div>`}); }});
@@ -64,22 +64,22 @@ function css(){ if(document.getElementById('sh-home-css')) return; const s=docum
 #sh-home h2.sh-h{margin:20px 0 10px;font-size:20px;font-weight:900;color:#1E1B4B;text-shadow:0 1px 0 rgba(255,255,255,.8)}
 #sh-home .sh-city{width:100%;min-height:120px;flex-direction:row;align-items:center;gap:16px;margin-top:18px}
 #sh-home .sh-city .shk-ic{width:80px;height:80px;flex:0 0 80px}
-.sh-line{margin:0 0 14px}.sh-money{margin-left:auto}
+.sh-line{margin:0 0 14px}
 @media (max-width:600px){#sh-home .sh-now{min-height:120px}#sh-home .sh-now .shk-ic{width:64px;height:64px;flex-basis:64px}#sh-home .sh-now b{font-size:21px}#sh-home .sh-top{padding-right:52px}}`;
  document.head.appendChild(s); }
 function hello(){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\s+/)[0]||'', h=new Date().getHours(); return (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(nm0?', '+nm0:'')+'!'; }
 function homeHTML(){ const Q=K(), T=today(), kp=SHK.places('k').filter(d=>d.id!=='work'), work=SHK.places('k').find(d=>d.id==='work');
- const now=work?`<button type="button" class="tlk tlk-tile shk-tile sh-now" data-shgo="work">${SHK.ic(work.icon)}<span class="sh-txt"><b>${esc(work.name)}</b>${T.next?`<small>${esc(T.next)}</small>`:''}${T.open?Q.pill('prog','Done for today'):Q.pill('now','Do this now')}</span></button>`:'';
- const city=`<button type="button" class="tlk tlk-tile shk-tile sh-city" data-shgo="city">${SHK.ic('ycw-ic-calm')}<span class="sh-txt"><b>Fly up to the Golden City</b><small>Store, Canteen, games and more</small>${T.open?Q.pill('now','Your games are open!'):Q.pill('lock','Games after your work')}</span></button>`;
+ const now=work?`<button type="button" class="tlk tlk-tile shk-tile sh-now" data-shgo="work">${SHK.ic(work.icon,work.emoji)}<span class="sh-txt"><b>${esc(work.name)}</b>${T.next?`<small>${esc(T.next)}</small>`:''}${T.open?Q.pill('prog','Done for today'):Q.pill('now','Do this now')}</span></button>`:'';
+ const city=`<button type="button" class="tlk tlk-tile shk-tile sh-city" data-shgo="city">${SHK.ic('ycw-ic-calm','🏰')}<span class="sh-txt"><b>Fly up to the Golden City</b><small>Store, Canteen, games and more</small>${T.open?Q.pill('now','Your games are open!'):Q.pill('lock','Games after your work')}</span></button>`;
  return `<div class="sh-top"><div class="shk-plaque"><div><h1>${esc(hello())}</h1><p>${T.line?Q.pill('prog',T.line):''}</p></div></div><div class="sh-me">${Q.pill('money',SHK.money())}${Q.quiet('Sign out','data-gm="pfout"','tlk-small')}${Q.tool('💡','How the buttons work','data-gm="pftour"')}</div></div>
  ${now}<h2 class="sh-h">The Mountain Kingdom</h2><div class="shk-tiles">${kp.map(d=>SHK.tile(d.id)).join('')}</div>${city}`; }
 let sig='';
 function want(){ return live()&&!locked()&&A.view==='hub'&&!A.overlay&&window.GM&&GM.tab==='home'&&document.body.classList.contains('gm-on')&&!!K(); }
 window.SH_SYNC=function(){ let el=document.getElementById('sh-home');
- if(!want()){ if(el){ el.remove(); sig=''; } return; }
+ if(!want()){ if(el){ el.remove(); sig=''; SHK.mark&&SHK.mark(); } return; }
  css(); const html=homeHTML();
  if(!el){ el=document.createElement('div'); el.id='sh-home'; el.className='shk-w-k'; el.setAttribute('role','main'); el.setAttribute('aria-label','My home');
-  el.innerHTML=SHK.scene('ycw-k-terrace','k')+'<div class="sh-ui"></div>'; document.body.appendChild(el); sig=''; }
+  el.innerHTML=SHK.scene('ycw-k-terrace','k')+'<div class="sh-ui"></div>'; document.body.appendChild(el); sig=''; SHK.mark&&SHK.mark(); }
  if(html!==sig){ sig=html; el.querySelector('.sh-ui').innerHTML=html; } };
 /* the Workshop stand-in's two tiles open today's Block Builders and Chumash Lab */
 document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-shx]'); if(!b) return; const k=b.getAttribute('data-shx'); SHK.closeAll();
