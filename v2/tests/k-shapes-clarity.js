@@ -7,7 +7,7 @@
 const path = require('path'), fs = require('fs'), os = require('os'), cp = require('child_process');
 const R = path.join(__dirname, '..', '..');
 /* the first game for each flat shape (Unit 1, and corner counting in Unit 2): plain shapes only */
-const FIRST = ['find-circles', 'find-triangles', 'find-squares', 'find-rectangles', 'shape-sorter', 'count-corners'];
+const FIRST = ['find-circles', 'find-triangles', 'find-squares', 'find-rectangles', 'shape-sorter', 'count-corners', 'find-hexagons'];
 module.exports = async function (browser) {
   const out = { fails: [], oks: [] }, bad = m => out.fails.push('2.0 K shapes clarity: ' + m);
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'v2kclar-'));
