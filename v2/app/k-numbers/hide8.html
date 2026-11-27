@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>How Many Are Hiding? — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 8 "Parts of 5" (v2/curriculum/k-numbers/MAP.md): HOW MANY ARE HIDING? In Bubby's 3D kitchen,
-     a plate of kugel slices (3, 4 or 5). We count them together. Then a yellow towel drops over some of them.
+     a plate of kugel slices (3, 4 or 5). We count them together. Then, while he watches, a yellow towel drops over some of them
+     and really hides them (no "close your eyes").
      "There were five. How many are hiding?" He shows the hidden number on his big hand and taps the (smaller) check;
      the towel lifts to show him. A slip: the towel lifts, we count the hidden ones together, and it goes back for another try.
      K clarity (review 2026-11-27): no number card for the total in the panel (he copied it); the total is the slices he counted. -->
@@ -45,7 +46,7 @@ function play(F, i) {
     K.setKugel(n);
     await F.say(i === 0 ? 'Bubby made kugel! Count the slices.' : F.pick(['Count the slices.', 'More kugel! Count with me.']));
     await countAll(K.slices());
-    await F.say('Close your eyes!'); await K.hide(k); await F.say('Open!');
+    await F.say('Watch the towel!'); await K.hide(k); await F.say('The towel hides some.');
     open(); await F.say('There were ' + F.word(n) + '. How many are hiding?', { repeat: 'There were ' + F.word(n) + '. I see ' + F.word(n - k) + '. How many hide?' });
   });
 }

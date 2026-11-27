@@ -31,8 +31,7 @@ export function mount(host, opt) {
   /* a soft, plain floor (calm: nothing to look at but the table) */
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), new THREE.MeshStandardMaterial({ color: '#F1E4CC', roughness: 1 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -2.6; floor.receiveShadow = true; scene.add(floor);
   const TW = 9.5, TD = 5.2;
-  const clothMat = new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.95 });
-  tex('tablecloth.jpg', t => { clothMat.map = rep(t, 3, 1.6); clothMat.needsUpdate = true; });
+  const clothMat = new THREE.MeshStandardMaterial({ color: '#FBF5E8', roughness: 0.95 });   /* a plain soft cloth, no pattern (rule 10) */
   const woodMat = new THREE.MeshStandardMaterial({ color: '#B9844F', roughness: 0.6 }); tex('table-wood.jpg', t => { woodMat.map = rep(t, 2, 1); woodMat.color.set('#FFFFFF'); woodMat.needsUpdate = true; });
   const top = new THREE.Mesh(new THREE.BoxGeometry(TW, 0.25, TD), woodMat); top.position.y = -0.13; top.receiveShadow = true; scene.add(top);
   const cloth = new THREE.Mesh(new THREE.BoxGeometry(TW - 1.2, 0.02, TD - 1.0), clothMat); cloth.position.y = 0.01; cloth.receiveShadow = true; scene.add(cloth);
@@ -54,8 +53,8 @@ export function mount(host, opt) {
     const rim = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.06, 10, 40), new THREE.MeshStandardMaterial({ color: '#FFFFFF' })); rim.rotation.x = Math.PI / 2; rim.position.y = 1.4; cup.add(rim); }
   let counters = []; cup.visible = false;
   /* ---------------- kugel slices on a plate, and the towel ---------------- */
-  const kugelTop = new THREE.MeshStandardMaterial({ color: '#E7A93E', roughness: 0.8 }), kugelSide = new THREE.MeshStandardMaterial({ color: '#F4D28A', roughness: 0.9 });
-  tex('kugel-top.jpg', t => { kugelTop.map = t; kugelTop.color.set('#FFFFFF'); kugelTop.needsUpdate = true; });
+  /* kugel in two flat colours: a golden-brown top and a pale yellow inside (no speckled picture, rule 10) */
+  const kugelTop = new THREE.MeshStandardMaterial({ color: '#D9892E', roughness: 0.8 }), kugelSide = new THREE.MeshStandardMaterial({ color: '#F6D585', roughness: 0.9 });
   const plateM = new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.3 });
   const platter = new THREE.Mesh(new THREE.BoxGeometry(5.4, 0.08, 1.6), plateM); platter.position.set(0, 0.05, 0); platter.castShadow = true; scene.add(platter);
   let slices = [];
