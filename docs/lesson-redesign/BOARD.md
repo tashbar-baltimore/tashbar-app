@@ -19,13 +19,13 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | Row | Job | Lessons (levels) | Files | Status | Owner (session link) | Last update (UTC) | Where I am / pull requests |
 |---|---|---|---|---|---|---|---|
 | P0 | Engine + 3 sample lessons | MATH.OPS.L03.01, READ.COMP.L05.05, SS.GEO.L07.01 | src/OneBite.html, src/UiKit.html, tests | DONE when live | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 | This pull request |
-| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | OPEN | | | |
+| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | TAKEN | https://claude.ai/code/session_01Cri5bRC4HsP9vYnMCURp1S | 2026-11-27 17:04 | Claimed; reading the lessons, batch 1 next |
 | M2 | Math Grades 4–8 | MATH.* L05–L09 (about 22) | src/OneBiteDataMath*.html, src/OneBiteDataUpper.html | OPEN | | | |
-| R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | OPEN | | | |
+| R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | TAKEN | https://claude.ai/code/session_01JPKZXGrA39PYd4bzsQc36i | 2026-11-27 17:10 | Claimed; starting batch 1 (first 6-10 lessons) |
 | R2 | C45 Grade 4 reading, part 2 | READ.* L05 in C45 (other 30) | src/CoreDataC45*.html | OPEN | | | |
 | R3 | C45 Grade 5 reading, part 1 | READ.* L06 in C45 (first 31) | src/CoreDataC45*.html | OPEN | | | |
-| R4 | C45 Grade 5 reading, part 2 | READ.* L06 in C45 (other 31) | src/CoreDataC45*.html | OPEN | | | |
-| R5 | C68 Grades 6–8 reading | 37 lessons (L07–L09) | src/CoreDataC68*.html | TAKEN | https://claude.ai/code/session_01NmKrTiVHqa1LEMS62zP9mn | 2026-11-27 17:25 | Claimed; starting batch 1 (first 6–10 lessons) |
+| R4 | C45 Grade 5 reading, part 2 | READ.* L06 in C45 (other 31) | src/CoreDataC45*.html | TAKEN | https://claude.ai/code/session_01HB2X6azif4KsNBt5xr8e8K | 2026-11-27 17:18 | Claimed. My 31 = rows 32–62 of the C45 teaching order (src/CoreDataC45.js): READ.LIT.L06.31–41 (Lighthouse 2–12) and READ.FLU.L06.11–30 (Read It 3 Times). Batch 1 (Lighthouse) next |
+| R5 | C68 Grades 6–8 reading | 37 lessons (L07–L09) | src/CoreDataC68*.html | TAKEN | https://claude.ai/code/session_01NmKrTiVHqa1LEMS62zP9mn | 2026-11-27 18:30 | Batch 1 (7 lessons, Units 7.5–7.6) reviewed and tested; pull request next. Batch 2 (Units 7.7–7.8) drafted. |
 | R6 | F Grade 2 fluency + C23 | 39 + 3 lessons (L03) | src/CoreDataF*.html, src/CoreDataFH*.html, src/CoreDataC23*.html | OPEN | | | |
 | R7 | Other reading, language, writing (not in a job) | READ.*, LANG.*, WRIT.* in OneBiteData*.html, L03+ (about 40) | src/OneBiteDataRead*.html, src/OneBiteDataWrit.html, src/OneBiteDataUpper.html | OPEN | | | |
 | G1 | Grammar Grades 2–4 | G lessons L03–L05 (49) | src/CoreDataG*.html | OPEN | | | |
