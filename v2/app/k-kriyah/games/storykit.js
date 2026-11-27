@@ -38,9 +38,23 @@ export function makeStory(E, unit, script) {
   }
   async function letterDone(k) {   /* the new letters wait in a row along the top, right to left */
     const l = L[k]; float(l, false); const n = unit.letters.length, i = unit.letters.indexOf(k), gap = P ? (n > 3 ? 1.05 : 1.45) : (n > 3 ? 2.3 : 2.7);
-    const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? 4.4 + l.userData.below * .28 : 3.6), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
+    const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? 4.4 + l.userData.below * .28 : 3.3), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
     await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? .28 : .42))); glow.material.opacity = .8 * (1 - q); }); float(l);
   }
+  /* a picture that stays (the Torah is never spun or shrunk away): it steps back beside the grown-up, and its letter rises out of a soft light */
+  const kept = [];
+  async function rise(picObj, k) {
+    const from = E.worldPos(picObj), l = L[k], to = new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6); E.sfx.sparkle(); E.sparkle(from.clone().add(new THREE.Vector3(0, .4, .5)), 30, 1.2);
+    const held = () => { const w = grown || boy; return w.position.clone().add(new THREE.Vector3(.45 * w.scale.x, 1.05 * w.scale.x, .35)); };   /* in the grown-up's arms */
+    const p0 = picObj.position.clone(), home = held(); kept.push(picObj); const s0 = picObj.scale.x;
+    l.position.copy(from); l.visible = true; l.scale.setScalar(.01); glow.position.set(to.x, 1.6, -.3);
+    await E.tween(1300, q => { picObj.position.lerpVectors(p0, home, q); l.position.lerpVectors(from, to, q); l.scale.setScalar(.01 + q * .99); glow.material.opacity = q * .8; });
+    float(l); const w = grown || boy; w.mood('wave');
+    E.onFrame(t => { if (!picObj.visible || picObj.userData.fading) return; picObj.position.copy(held()).add(new THREE.Vector3(Math.sin(t * 2.2) * .08, Math.abs(Math.sin(t * 2.2)) * .1, 0)); picObj.rotation.z = Math.sin(t * 2.2) * .12; });   /* a gentle dance */
+  }
+  /* a kept picture (the Torah) is never shrunk away: it fades softly */
+  async function fade(o) { o.userData.fading = true; const mats = []; o.traverse(m => { if (m.material) { m.material = m.material.clone(); m.material.transparent = true; mats.push(m.material); } });
+    await E.tween(450, q => mats.forEach(m => m.opacity = 1 - q)); o.visible = false; }
   const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6), q)); };
   const say = async (who, line) => { if (who) { who.mood('wave'); setTimeout(() => who.mood('calm'), 1100 * E.F); } await E.say(line); };
   return async () => {
@@ -63,7 +77,7 @@ export function makeStory(E, unit, script) {
         pic.position.set(who.position.x + .9, 2.0, who.position.z + .4); pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
         if (st.act) st.act(E, pic, boy, grown);
         for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);   /* the story is told even before its painting comes */
-        await toCentre(pic); await morph(pic, st.letter);
+        if (st.keep) await rise(pic, st.letter); else { await toCentre(pic); await morph(pic, st.letter); }
         for (const line of st.after) await E.say(line);
         await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
         await E.say(['Tap ' + E.LETTERS[st.letter].name + '!']); await tapIt(L[st.letter], E.nameLine(st.letter));
@@ -73,7 +87,7 @@ export function makeStory(E, unit, script) {
     }
     /* the look-alikes, side by side, right to left; for each line the arrow (or the ring at the dot place) shows where to look */
     unit.letters.forEach(k => { L[k].visible = false; floaters.delete(L[k]); });
-    await Promise.all([E.popOut(boy), grown && E.popOut(grown), E.popOut(props)].filter(Boolean));
+    await Promise.all([E.popOut(boy), grown && E.popOut(grown), E.popOut(props), ...kept.map(fade)].filter(Boolean));
     for (const [a, b, la, lb] of script.lookalikes || []) {
       const A = E.letter(a, 1.8), B = E.letter(b, 1.8); A.position.set(P ? .85 : 1.2, 1.6, .5); B.position.set(P ? -.85 : -1.2, 1.6, .5); E.scene.add(A, B); await Promise.all([E.popIn(A), E.popIn(B)]);
       for (const [k, line] of [[a, la], [b, lb]]) { const l = k === a ? A : B;
@@ -89,7 +103,7 @@ export function makeStory(E, unit, script) {
       let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 3 ? 3.45 - li * 1.05 : lines.length > 2 ? 3.15 - li * 1.3 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
     E.setProgress(steps, steps);
-    await E.say('Let’s sing the Alef-Beis so far!');
+    await E.say(script.chantLine || 'Let’s sing the Alef-Beis so far!');
     for (const l of row) { E.sfx.drum(); E.hop(l, .3, 300); await E.say(E.LETTERS[l.userData.key].name + ',', false); await E.wait(50); }
     const names = unit.letters.map(k => E.LETTERS[k].name), list = names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
     await E.say('Now you! Tap ' + list + '.');
@@ -99,7 +113,7 @@ export function makeStory(E, unit, script) {
       document.body.dataset.tapReady = left.map(l => 'row-' + l.userData.key).join(',');
       const l = await E.waitTap(row); E.hand.hide();
       if (!left.includes(l)) { E.sfx.boop(); E.shake(l, .08); const tk = target.userData.key, lk = l.userData.key, same = E.LETTERS[lk].snd && E.LETTERS[lk].snd === E.LETTERS[tk].snd;   /* Kaf for Kuf: both say k, so the sound is no help */
-        await E.say(same ? 'That is ' + E.LETTERS[lk].name + '.' : E.nameLine(lk)); await E.say((same || lk === 'hei') && tk === 'kuf' ? 'Kuf has a long leg. Tap Kuf!' : lk === 'daled' && tk === 'reish' ? 'Reish is round on top. Tap Reish!' : 'Now tap ' + E.LETTERS[tk].name + '!'); continue; }   /* Hei for Kuf: the look-alike cue */
+        await E.say(same ? 'That is ' + E.LETTERS[lk].name + '.' : E.nameLine(lk)); await E.say((same || lk === 'hei') && tk === 'kuf' ? 'Kuf has a long leg. Tap Kuf!' : lk === 'daled' && tk === 'reish' ? 'Reish is round on top. Tap Reish!' : E.sameShape(lk, tk) && E.LETTERS[tk].top ? E.LETTERS[tk].name + '’s dot is on the ' + E.LETTERS[tk].top + ' head. Tap ' + E.LETTERS[tk].name + '!' : E.sameShape(lk, tk) ? (E.LETTERS[tk].dagesh ? E.LETTERS[tk].name + ' has a dot. Tap ' : E.LETTERS[tk].name + ' has no dot. Tap ') + E.LETTERS[tk].name + '!' : 'Now tap ' + E.LETTERS[tk].name + '!'); continue; }   /* Hei for Kuf: the look-alike cue */
       left.splice(left.indexOf(l), 1);
       E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .3, .5)), 20, 1); E.hop(l, .45);
       if (lines.length > 1) { const s0 = l.scale.x; E.tween(300, q => l.scale.setScalar(s0 * (1 + .18 * q))); }   /* more than one line: no star, which could sit under a letter above and look like a nekudah; the letter grows instead */

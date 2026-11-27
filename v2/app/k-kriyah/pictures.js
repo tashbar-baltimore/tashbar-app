@@ -156,6 +156,27 @@ export function makePictures(E) {
       [-1, 1].forEach(s => { g.add(mesh(new THREE.SphereGeometry(.04, 8, 6), M(0xffffff), .38, .06, s * .08, false)); g.add(mesh(new THREE.SphereGeometry(.02, 8, 6), M(0x111111), .41, .06, s * .09, false));
         const an = mesh(new THREE.CylinderGeometry(.012, .012, .25, 4), bm, .36, .22, s * .06, false); an.rotation.z = -.5; g.add(an);
         [-.12, 0, .12].forEach(x => { const lg = mesh(new THREE.CylinderGeometry(.015, .015, .3, 4), bm, x, -.12, s * .14, false); lg.rotation.x = s * .7; g.add(lg); }); }); return g; },
+    shofar() { const g = new THREE.Group(), horn = M(0xe9c993, { roughness: .35, clearcoat: .7 }), tip = M(0x9a6a3a, { roughness: .4, clearcoat: .6 });   /* a curved shofar: wide at the mouth, thin at the tip */
+      const curve = new THREE.CubicBezierCurve3(new THREE.Vector3(.62, .32, 0), new THREE.Vector3(.2, -.45, 0), new THREE.Vector3(-.45, -.25, 0), new THREE.Vector3(-.62, .42, 0)), n = 18;
+      for (let i = 0; i < n; i++) { const a = curve.getPoint(i / n), b = curve.getPoint((i + 1) / n), r0 = .2 - i * .0095, r1 = .2 - (i + 1) * .0095, len = a.distanceTo(b);
+        const seg = mesh(new THREE.CylinderGeometry(r1, r0, len * 1.08, 20), i > n - 4 ? tip : horn); seg.position.copy(a).add(b).multiplyScalar(.5); seg.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize()); g.add(seg); }
+      const mouth = mesh(new THREE.TorusGeometry(.2, .035, 10, 24), horn, .62, .32, 0); mouth.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), curve.getTangent(0).negate()); g.add(mouth);
+      return g; },
+    flag() { const g = new THREE.Group();   /* a Simchas Torah flag on a stick, a red apple on top (plain colours, no writing) */
+      g.add(mesh(new THREE.CylinderGeometry(.035, .035, 1.5, 10), M(0xc68a52, { roughness: .5 }), 0, -.1, 0));
+      g.add(mesh(new THREE.SphereGeometry(.17, 20, 16), M(0xe8322b, { roughness: .25, clearcoat: 1 }), 0, .74, 0)); g.add(mesh(new THREE.CylinderGeometry(.012, .012, .1, 6), M(0x6b4423), 0, .92, 0)); const lf = mesh(new THREE.SphereGeometry(.06, 10, 8), M(0x3fae4a), .06, .93, 0); lf.scale.set(1.4, .5, .8); g.add(lf);
+      const cloth = new THREE.Group(); cloth.position.set(.04, .42, 0); g.add(cloth);
+      [[0x2f7de1, 0], [0xffffff, 1], [0x2f7de1, 2], [0xffcf3a, 3]].forEach(([c, i]) => cloth.add(mesh(new THREE.BoxGeometry(.78, .14, .02), M(c, { roughness: .6 }), .4, -i * .14, 0)));
+      g.userData.wave = cloth; return g; },
+    torah() { const g = new THREE.Group(), wood = M(0x8a5a2b, { roughness: .4, clearcoat: .6 }), silver = M(0xdfe4ea, { metalness: .8, roughness: .2 });   /* a Torah in its blue velvet cover, two wooden handles (no writing) */
+      const vel = M(0x2b47a8, { roughness: .7, sheen: 1, sheenColor: new THREE.Color(0x9ab4ff) }), goldM = M(0xf2c14e, { metalness: .5, roughness: .3 });
+      [-.17, .17].forEach(x => { g.add(mesh(new THREE.CylinderGeometry(.2, .2, 1.15, 28), vel, x, -.05, 0)); });   /* the cover, over the two rolls */
+      g.add(mesh(new THREE.BoxGeometry(.36, 1.15, .3), vel, 0, -.05, 0));
+      [.45, -.52].forEach(y => g.add(mesh(new THREE.BoxGeometry(.76, .07, .44), goldM, 0, y, 0)));   /* gold bands at the top and bottom */
+      g.add(mesh(new THREE.BoxGeometry(.04, 1.0, .02), goldM, 0, -.05, .16));   /* a gold seam down the middle */
+      [-.17, .17].forEach(x => { g.add(mesh(new THREE.CylinderGeometry(.045, .045, .3, 12), wood, x, .67, 0)); g.add(mesh(new THREE.ConeGeometry(.11, .2, 14), silver, x, .9, 0)); g.add(mesh(new THREE.SphereGeometry(.06, 12, 10), silver, x, 1.02, 0));
+        g.add(mesh(new THREE.CylinderGeometry(.045, .045, .22, 12), wood, x, -.72, 0)); });   /* wooden handles, silver tops */
+      return g; },
   };
   /* the painted pictures (art/obj), each a flat card that always faces the boy. Its width follows the picture's own shape. */
   const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp', () => fit.filter(x => x.f === f).forEach(x => x.go())); t.colorSpace = THREE.SRGBColorSpace; return t; })());
@@ -191,6 +212,7 @@ export const WORDS = {
   rabbit: { letter: 'reish', say: 'A rabbit!' }, rose: { letter: 'reish', say: 'A rose!' },
   shoe: { letter: 'shin', say: 'A shoe!' }, sheep: { letter: 'shin', say: 'A sheep!' },
   teapot: { letter: 'tav', say: 'A teapot!' },
+  shofar: { letter: 'shin', model: 'shofar', say: 'A shofar!' }, flag: { letter: 'sin', model: 'flag', say: 'A Simchas Torah flag!' }, torah: { letter: 'tav', model: 'torah', say: 'The Torah!' },   /* Unit 8's story: words whose Hebrew and English start the same way */
 };
 export const HAVE = new Set(["ant", "apple", "backpack", "balloon", "basket", "beachball", "bear", "bird", "blocks", "butterfly", "cake", "camel", "carrot", "cat", "challah", "clock", "cloud", "cucumber", "dog", "donkey", "dove", "drum", "elephant", "fish", "flower", "fly", "gift", "goat", "goose", "hand", "horse", "house", "key", "kite", "ladder", "lamb", "lemon", "mountain", "nest", "nut", "olives", "peacock", "pear", "pomegranate", "rabbit", "rose", "sheep", "shoe", "sock", "sun", "table", "teapot", "toymonkey", "toytrain", "tree", "turtle", "tzitzis", "van", "vase", "violin", "water", "yarn", "yoyo", "zebra", "zipper"]);   /* painted objects on disk (made by a script); a word whose painting hasn't come yet has no picture */
 export const hasPic = w => !!WORDS[w] && (HAVE.has(WORDS[w].file || w) || !!WORDS[w].model);   /* a painting, or until it comes, a simple 3D model */

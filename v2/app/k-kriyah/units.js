@@ -78,6 +78,17 @@ export const UNITS = [
       { id: 'u7g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['kaf', 'pei'], ['pei', 'fei']] },   /* Unit 6's look-alikes come back */
       { id: 'u7g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
+  { n: 8, letters: ['shin', 'sin', 'tav', 'sav'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches', 'tes', 'yud', 'kaf', 'chaf', 'lamed', 'mem', 'nun', 'samech', 'ayin', 'pei', 'fei', 'tzadik', 'kuf', 'reish'],
+    games: [   /* the world of Unit 8: a festive shul on Simchas Torah (engine.js buildShul) */
+      { id: 'u8g0', name: 'Simchas Torah in shul', kind: 'story8', icon: 'flag', world: { indoor: 'shul' } },
+      { id: 'u8g1', name: 'Dot Builder', kind: 'dotbuild', icon: 'dot', world: { indoor: 'shul' } },   /* new: he puts the dot in its place */
+      { id: 'u8g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['ches', 'tav'], ['hei', 'ches', 'tav']], alsoIn: { tav: 'sav' }, world: { indoor: 'shul' } },   /* new: three boxes */
+      { id: 'u8g3', name: 'Alef-Beis Train', kind: 'train', icon: 'train', order: ['tzadik', 'kuf', 'reish', 'shin', 'sin', 'tav', 'sav'], swap: true, world: { indoor: 'shul' } },   /* new: fix Yaakov's mixed-up cars */
+      { id: 'u8g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think', world: { indoor: 'shul' } },   /* new: Yaakov says the sound, not the name */
+      { id: 'u8g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
+      { id: 'u8g6', name: 'Review: Letter Hunt', kind: 'hunt', icon: 'glass', review: true, reviewOf: 7 },   /* Unit 7's Kuf and Reish, hidden in the sukkah */
+      { id: 'u8g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
+    ] },
 ];
 /* every game in order, each knowing its unit */
 export const GAMES = UNITS.flatMap(u => u.games.map(g => ({ ...g, unit: u.n })));

@@ -51,7 +51,7 @@ export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); retu
    Every letter sound plays the rebbe's recording when audio/sounds.json lists it; until then the computer voice says it
    (marked on screen as temporary). A line is an array of words and sounds: ['Beis says', S('b')]. */
 export const S = k => ({ snd: k });
-const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', t: 'tuh', y: 'yuh', k: 'kuh', l: 'luh', m: 'muh', n: 'nuh', s: 'suh', p: 'puh', f: 'fuh', tz: 'tsuh', r: 'ruh', ch: 'the sound at the start of challah' };   /* a computer can't say Ches: it names it until the rebbe's recording */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
+const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', t: 'tuh', y: 'yuh', k: 'kuh', l: 'luh', m: 'muh', n: 'nuh', s: 'suh', p: 'puh', f: 'fuh', tz: 'tsuh', r: 'ruh', sh: 'shh', ch: 'the sound at the start of challah' };   /* a computer can't say Ches: it names it until the rebbe's recording */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
 let SOUNDS = {}; const audioCache = {};
 export const soundsReady = fetch('audio/sounds.json').then(r => r.ok ? r.json() : {}).then(j => { SOUNDS = j || {}; }).catch(() => {});
 export let lastLine = null; let sayToken = 0;
@@ -252,7 +252,9 @@ export const KIND_BACKDROP = { mastery: 'classroom', bonus: 'beach', story: 'str
 export const backdropFor = (game, unitN) => game && 'bg' in game ? game.bg : game && game.kind in KIND_BACKDROP ? KIND_BACKDROP[game.kind] : UNIT_BACKDROP[unitN || (game && game.unit) || 1] || null;
 export let backdrop = null;
 export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `radial-gradient(ellipse 70% 60% at 50% 58%, #ffffff40, #ffffff1a 70%, #ffffff10), url(art/bg/${name}.jpg) center 64% / cover no-repeat, #8fd8ff` : '';   /* a soft light veil: the painting stays, the letter stands out (RESEARCH.md: few distractions) */ }
-export function buildWorld({ trees = true, flowers = true, backdrop: bd = null } = {}) {
+export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, indoor = null } = {}) {
+  const indoorWorld = indoor === 'shul';
+  if (!bd && indoorWorld) return buildShul();   /* Unit 8: inside a festive shul on Simchas Torah */
   if (bd) {   /* a painted scene behind; only a see-through ground that catches shadows, so the children and letters stand in it */
     setBackdrop(bd); const w = new THREE.Group(); scene.add(w); world.group = w;
     const g = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: .28 })); g.rotation.x = -Math.PI / 2; g.receiveShadow = true; w.add(g); return w; }
@@ -303,6 +305,69 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null }
   for (let k = 0; k < 5; k++) { const c = new THREE.Group(); [[0, 0, 0, 1], [.9, -.1, .1, .75], [-.9, -.15, 0, .7], [.4, .5, 0, .7], [-.35, .4, .1, .6]].forEach(([a, b, d, r]) => c.add(mesh(new THREE.SphereGeometry(r, 18, 12), cm, a, b, d, false)));
     c.position.set(-16 + k * 8, 6 + (k * 37 % 10) / 4, -14 - (k * 53 % 6)); c.scale.setScalar(.8 + (k % 3) * .25); w.add(c); world.clouds.push(c); }
   onFrame(() => world.clouds.forEach((c, i) => { c.position.x += .004 + i * .001; if (c.position.x > 22) c.position.x = -22; }));
+  return w;
+}
+/* Unit 8's world: a bright, warm shul on Simchas Torah (made in code, original art).
+   A cream back wall with tall arched windows full of daylight, the aron kodesh with a blue velvet curtain (no writing or symbols),
+   shelves of seforim (plain coloured spines), wooden benches, two warm hanging lamps and strings of little Simchas Torah flags.
+   Everything stays at the sides and high at the back, so the middle, where the letters are, stays clear and light. */
+export function buildShul() {
+  const w = new THREE.Group(); scene.add(w); world.group = w;
+  document.body.style.background = 'linear-gradient(#fff4dc,#ffe9c2)';
+  const wood = M(0xb9784a, { roughness: .55 }), woodL = M(0xd9a066, { roughness: .55 }), cream = M(0xfff3dc, { roughness: .8, clearcoat: 0 }), gold = M(0xf2c14e, { metalness: .55, roughness: .3, clearcoat: .8 });
+  const floor = mesh(new THREE.PlaneGeometry(60, 40), M(0xd6a46b, { roughness: .6, clearcoat: .3 }), 0, 0, 0, false); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; w.add(floor);
+  if (!LITE) for (let i = -14; i <= 14; i++) w.add(mesh(new THREE.BoxGeometry(.03, .005, 40), M(0xbf8c55, { roughness: .7 }), i * .9, .003, 0, false));   /* floor boards */
+  const runner = mesh(new THREE.PlaneGeometry(3.2, 30), M(0xc94b4b, { roughness: .85, clearcoat: 0 }), 0, .01, -1, false); runner.rotation.x = -Math.PI / 2; runner.receiveShadow = true; w.add(runner);   /* a red carpet up the middle */
+  [-1.5, 1.5].forEach(x => { const t = mesh(new THREE.PlaneGeometry(.12, 30), gold, x, .012, -1, false); t.rotation.x = -Math.PI / 2; w.add(t); });
+  w.add(mesh(new THREE.BoxGeometry(40, 14, .4), cream, 0, 7, -7.2, false));   /* the back wall */
+  w.add(mesh(new THREE.BoxGeometry(40, 1.3, .3), wood, 0, .65, -6.9, false)); w.add(mesh(new THREE.BoxGeometry(40, .12, .4), woodL, 0, 1.35, -6.85, false));
+  [-1, 1].forEach(sd => { const sw = mesh(new THREE.BoxGeometry(.4, 14, 30), cream, sd * 15, 7, 6, false); w.add(sw); });
+  /* tall arched windows, full of soft daylight */
+  const sky = new THREE.MeshBasicMaterial({ color: 0xd8f0ff }), frameM = M(0xffffff, { roughness: .4 });
+  const win = (x, y, wd, h) => { const g = new THREE.Group(); const sh = new THREE.Shape(); sh.moveTo(-wd / 2, 0); sh.lineTo(wd / 2, 0); sh.lineTo(wd / 2, h - wd / 2); sh.absarc(0, h - wd / 2, wd / 2, 0, Math.PI); sh.lineTo(-wd / 2, 0);
+    const fr = mesh(new THREE.ShapeGeometry(sh), frameM, 0, 0, 0, false); fr.scale.set(1.12, 1.06, 1); fr.position.set(0, -.12, -.01); g.add(fr); g.add(mesh(new THREE.ShapeGeometry(sh), sky, 0, 0, 0, false));
+    g.add(mesh(new THREE.BoxGeometry(.08, h, .04), frameM, 0, h / 2, .02, false)); g.add(mesh(new THREE.BoxGeometry(wd, .08, .04), frameM, 0, h * .45, .02, false));
+    const gl = glowSprite('#ffffff', wd * 2.6, .35); gl.position.set(0, h * .55, .3); g.add(gl); g.position.set(x, y, -6.98); w.add(g); };
+  win(-8.5, 3.2, 1.6, 3.6); win(8.5, 3.2, 1.6, 3.6); win(-3.2, 5.6, 1.3, 2.6); win(3.2, 5.6, 1.3, 2.6);
+  /* a round window high in the middle, like the morning sun coming in */
+  { const r = mesh(new THREE.CircleGeometry(.9, 40), sky, 0, 7.3, -6.97, false); w.add(r); const rf = mesh(new THREE.TorusGeometry(.92, .1, 10, 40), frameM, 0, 7.3, -6.95, false); w.add(rf); const gl = glowSprite('#fff6d0', 4, .4); gl.position.set(0, 7.3, -6.6); w.add(gl); }
+  /* the aron kodesh: a wooden ark on two steps, a blue velvet curtain with a gold border, and the ner tamid above it */
+  const aron = new THREE.Group(); w.add(aron); aron.position.set(-5.6, 0, -6.2);
+  aron.add(mesh(rbox(3.4, .25, 1.4, .04), woodL, 0, .12, .3)); aron.add(mesh(rbox(3.0, .25, 1.1, .04), woodL, 0, .37, .2));
+  aron.add(mesh(rbox(2.6, 3.4, .7, .08), wood, 0, 2.2, 0)); const cap = mesh(rbox(2.9, .35, .85, .06), wood, 0, 4.05, 0); aron.add(cap);
+  const arch = new THREE.Shape(); arch.moveTo(-1.45, 0); arch.lineTo(1.45, 0); arch.quadraticCurveTo(0, .9, -1.45, 0); aron.add(mesh(new THREE.ExtrudeGeometry(arch, { depth: .7, bevelEnabled: false }), wood, 0, 4.2, -.35));
+  aron.add(mesh(rbox(2.15, 3.0, .12, .05), gold, 0, 2.15, .36)); const curtain = mesh(rbox(2.0, 2.85, .14, .05), M(0x2b47a8, { roughness: .75, clearcoat: .1, sheen: 1, sheenColor: new THREE.Color(0x8fb0ff) }), 0, 2.15, .4); aron.add(curtain);
+  for (let i = 0; i < 6; i++) aron.add(mesh(new THREE.BoxGeometry(.012, 2.8, .02), M(0x1f3888, { roughness: .9 }), -.85 + i * .34, 2.15, .48, false));   /* soft folds */
+  aron.add(mesh(new THREE.BoxGeometry(2.0, .12, .05), gold, 0, .78, .49, false)); aron.add(mesh(new THREE.BoxGeometry(2.0, .08, .05), gold, 0, 3.5, .49, false));
+  const ner = new THREE.Group(); ner.add(mesh(new THREE.CylinderGeometry(.16, .1, .26, 16), gold)); ner.add(mesh(new THREE.SphereGeometry(.09, 12, 10), new THREE.MeshStandardMaterial({ color: 0xff7a3a, emissive: 0xff4a1a, emissiveIntensity: 1.4 }), 0, -.05, .1, false));
+  ner.add(mesh(new THREE.CylinderGeometry(.01, .01, .8, 6), gold, 0, .5, 0, false)); const ng = glowSprite('#ffb070', 1.3, .7); ner.add(ng); ner.position.set(0, 5.4, .4); aron.add(ner);
+  /* shelves of seforim (plain coloured spines, no writing) */
+  const shelf = new THREE.Group(); w.add(shelf); shelf.position.set(5.8, 0, -6.6);
+  shelf.add(mesh(rbox(3.0, 3.6, .6, .06), wood, 0, 1.8, 0)); const bookCols = [0x7a1f2b, 0x1f3c88, 0x2d6a3e, 0x5a2d82, 0x8a5a2b, 0x20335a];
+  for (let r = 0; r < 3; r++) { shelf.add(mesh(new THREE.BoxGeometry(2.7, .06, .5), woodL, 0, .55 + r * 1.05, .1, false)); let x = -1.25; let k = r * 3;
+    while (x < 1.2) { const bw = .12 + ((k * 37) % 5) * .02, bh = .6 + ((k * 53) % 4) * .07; shelf.add(mesh(new THREE.BoxGeometry(bw, bh, .38), M(bookCols[k % 6], { roughness: .5 }), x + bw / 2, .58 + r * 1.05 + bh / 2, .12, false));
+      if (!LITE) shelf.add(mesh(new THREE.BoxGeometry(bw + .005, .03, .385), gold, x + bw / 2, .58 + r * 1.05 + bh * .8, .12, false)); x += bw + .02; k++; } }
+  /* wooden benches at the sides */
+  const bench = (x, z, ry) => { const b = new THREE.Group(); b.add(mesh(rbox(2.6, .12, .55, .04), woodL, 0, .5, 0)); b.add(mesh(rbox(2.6, .6, .1, .04), wood, 0, .85, -.25)); [-1.1, 1.1].forEach(lx => b.add(mesh(new THREE.BoxGeometry(.1, .5, .5), wood, lx, .25, 0)));
+    b.position.set(x, 0, z); b.rotation.y = ry; w.add(b); };
+  bench(-7.6, -2.4, .25); bench(7.6, -2.4, -.25); bench(-8.4, .6, .35); bench(8.4, .6, -.35);
+  /* two warm hanging lamps */
+  [[-3.4, 5.4, -3.5], [3.4, 5.4, -3.5]].forEach(([x, y, z]) => { const l = new THREE.Group(); l.add(mesh(new THREE.CylinderGeometry(.015, .015, 3, 6), gold, 0, 1.6, 0, false));
+    l.add(mesh(new THREE.SphereGeometry(.32, 20, 14), new THREE.MeshStandardMaterial({ color: 0xfff1c8, emissive: 0xffd98a, emissiveIntensity: 1 }), 0, 0, 0, false)); l.add(mesh(new THREE.CylinderGeometry(.18, .26, .14, 16), gold, 0, .3, 0, false));
+    const g = glowSprite('#ffe3a0', 2.2, .55); l.add(g); l.position.set(x, y, z); w.add(l); });
+  /* strings of little Simchas Torah flags (plain colours, no writing), gently swaying */
+  const flagCols = [0xe8322b, 0xffcf3a, 0x2f7de1, 0x2dbb6a, 0xff7aa8, 0xff9f1a, 0x9b5de5];
+  const strings = [];
+  [[-9, 6.2, 0, 5.0, -5.6], [0, 5.0, 9, 6.2, -5.6], [-9, 7.4, 9, 7.4, -6.6]].forEach(([x0, y0, x1, y1, z], si) => { const st = new THREE.Group(); w.add(st); const n = 14;
+    const pts = []; for (let i = 0; i <= n; i++) { const t = i / n; pts.push(new THREE.Vector3(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t - Math.sin(t * Math.PI) * .7, z)); }
+    st.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .012, 5), M(0xffffff), 0, 0, 0, false));
+    for (let i = 1; i < n; i++) { const tri = new THREE.Shape(); tri.moveTo(-.17, 0); tri.lineTo(.17, 0); tri.lineTo(0, -.38); tri.closePath();
+      const f = mesh(new THREE.ShapeGeometry(tri), new THREE.MeshStandardMaterial({ color: flagCols[(i + si * 3) % 7], side: THREE.DoubleSide, roughness: .6 }), pts[i].x, pts[i].y, z + .02, false); st.add(f); strings.push({ f, ph: i * .7 + si }); } });
+  onFrame(t => strings.forEach(({ f, ph }) => { f.rotation.x = Math.sin(t * 1.4 + ph) * .25; }));
+  /* soft dust of light drifting in the window light (something always moves gently) */
+  if (!LITE) { const motes = []; const mm = new THREE.SpriteMaterial({ map: glowTex('#fff6d0'), transparent: true, depthWrite: false, opacity: .5 });
+    for (let i = 0; i < 14; i++) { const sp = new THREE.Sprite(mm); sp.scale.setScalar(.12); sp.position.set((i % 2 ? 1 : -1) * (5 + (i * 7) % 4), 1 + (i * 13) % 5, -4 + (i * 5) % 4); w.add(sp); motes.push(sp); }
+    onFrame(t => motes.forEach((m, i) => { m.position.y = 1 + ((t * .15 + i * .37) % 1) * 5; m.position.x += Math.sin(t + i) * .002; })); }
   return w;
 }
 /* a pine tree and a round bush with berries, for a fuller world */
@@ -487,15 +552,19 @@ export const LETTERS = { alef: { ch: 'א', name: 'Alef', quiet: true }, beis: { 
   tes: { ch: 'ט', name: 'Tes', snd: 't' }, yud: { ch: 'י', name: 'Yud', snd: 'y' }, kaf: { ch: 'כ', name: 'Kaf', dagesh: true, snd: 'k' }, chaf: { ch: 'כ', name: 'Chaf', snd: 'ch' },
   lamed: { ch: 'ל', name: 'Lamed', snd: 'l' }, mem: { ch: 'מ', name: 'Mem', snd: 'm' }, nun: { ch: 'נ', name: 'Nun', snd: 'n' },
   samech: { ch: 'ס', name: 'Samech', snd: 's' }, ayin: { ch: 'ע', name: 'Ayin', quiet: true }, pei: { ch: 'פ', name: 'Pei', dagesh: true, snd: 'p' }, fei: { ch: 'פ', name: 'Fei', snd: 'f' },
-  tzadik: { ch: 'צ', name: 'Tzadik', snd: 'tz' }, kuf: { ch: 'ק', name: 'Kuf', snd: 'k' }, reish: { ch: 'ר', name: 'Reish', snd: 'r' } };
+  tzadik: { ch: 'צ', name: 'Tzadik', snd: 'tz' }, kuf: { ch: 'ק', name: 'Kuf', snd: 'k' }, reish: { ch: 'ר', name: 'Reish', snd: 'r' },
+  shin: { ch: 'ש', name: 'Shin', snd: 'sh', top: 'right' }, sin: { ch: 'ש', name: 'Sin', snd: 's', top: 'left' }, tav: { ch: 'ת', name: 'Tuf', dagesh: true, snd: 't' }, sav: { ch: 'ת', name: 'Suf', snd: 's' } };   /* Shin and Sin: the dot on top, right or left; Tuf has the dagesh, Suf has none (ת without a dot says s) */
 /* a quiet letter (Alef, Ayin) has no sound of its own; 'an' or 'a' before a letter's name */
 export const quiet = k => !!LETTERS[k].quiet;
 export const an = k => (/^[AEIOU]/.test(LETTERS[k].name) ? 'an ' : 'a ') + LETTERS[k].name;
-export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB', lamed: '\u05DC', mem: '\u05DE', nun: '\u05E0', samech: '\u05E1', ayin: '\u05E2', pei: '\u05E4\u05BC', fei: '\u05E4', tzadik: '\u05E6', kuf: '\u05E7', reish: '\u05E8' };
+export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB', lamed: '\u05DC', mem: '\u05DE', nun: '\u05E0', samech: '\u05E1', ayin: '\u05E2', pei: '\u05E4\u05BC', fei: '\u05E4', tzadik: '\u05E6', kuf: '\u05E7', reish: '\u05E8', shin: '\u05E9\u05C1', sin: '\u05E9\u05C2', tav: '\u05EA\u05BC', sav: '\u05EA' };
 /* letters that can hold a dagesh: where the dot sits (Beis/Veis, Kaf/Chaf share one shape each) */
 /* the full letter height in font units (baseline to the top of the roof's little tag), and its middle */
 const REF_H = 64.7, REF_CY = 32.35;
-const DOT_AT = { 'ב': [24, 29.6], 'כ': [22, 29.6], 'פ': [38, 30] };
+const DOT_AT = { 'ב': [24, 29.6], 'כ': [22, 29.6], 'פ': [38, 30], 'ת': [34, 24] };
+/* Shin's dot sits on top of its right head, Sin's on top of its left head (font units) */
+export const TOP_DOT = { right: [66, 71.5], left: [11.5, 71.5] };
+const dotAt = key => LETTERS[key].top ? TOP_DOT[LETTERS[key].top] : DOT_AT[LETTERS[key].ch];
 export const sameShape = (a, b) => LETTERS[a].ch === LETTERS[b].ch;
 /* a letter's place in the Alef-Beis (for putting things in order, right to left) */
 export const AB = k => Object.keys(LETTERS).indexOf(k);
@@ -504,12 +573,12 @@ export function letter(key, height = 2.6, color = 'blue') {
   const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = true; m.receiveShadow = true; m.scale.setScalar(s); m.position.y = oy; grp.add(m);
   const Hs = (bb.max.y - bb.min.y) * s, hit = new THREE.Mesh(new THREE.BoxGeometry(Math.max(W * s, height * .45) * 1.15, Math.max(Hs, height * .45) * 1.15, height * .5), hitMat); hit.position.y = oy; hit.castShadow = false; grp.add(hit);
   let dot = null;
-  const dp = DOT_AT[L.ch];
+  const dp = dotAt(key);
   if (dp) {   /* the dagesh sits in the middle of the letter's open space (font units /10: Beis x 24, y 29.6 of 56.1 x 64.7) */
-    dot = mesh(new THREE.SphereGeometry(Math.max(.2 * height / 2.6, .075), 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - REF_CY) * s, .42 * height / 2.6); grp.add(dot); dot.visible = !!L.dagesh; }
+    dot = mesh(new THREE.SphereGeometry(Math.max(.2 * height / 2.6, .075), 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - REF_CY) * s, .42 * height / 2.6); grp.add(dot); dot.visible = !!(L.dagesh || L.top); }
   const below = Math.max(0, -(bb.min.y + c.y) - 4) * s;   /* how far a long leg (Kuf) reaches below the line: stands and cars lift it by this much */
   grp.userData = { key, body: m, dot, hit, height, width: W * s, color, below, dotHome: dot ? dot.position.clone() : null };
-  grp.setKey = k => { grp.userData.key = k; if (dot) { dot.visible = !!LETTERS[k].dagesh; dot.scale.setScalar(1); dot.position.copy(grp.userData.dotHome); } };
+  grp.setKey = k => { grp.userData.key = k; if (dot) { const d = dotAt(k); if (LETTERS[k].top) { grp.userData.dotHome.set((d[0] - c.x) * s, (d[1] - REF_CY) * s, dot.position.z); } dot.visible = !!(LETTERS[k].dagesh || LETTERS[k].top); dot.scale.setScalar(1); dot.position.copy(grp.userData.dotHome); } };   /* Shin to Sin: the dot moves to the other head */
   grp.setColor = col => { m.material = letterMats(col); grp.userData.color = col; };
   return grp;
 }
@@ -535,13 +604,13 @@ export function arrow3d(size = .35, dir = 'down') {
 export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [135, 375, 'left'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [205, 440, 'left'],
   beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'],
   lamed: [90, 820, 'down'], mem: [130, 55, 'right'], nun: [310, 50, 'left'],
-  reish: [445, 540, 'left'], kuf: [70, -60, 'right'], tzadik: [470, 560, 'left'] };   /* Tzadik: its little arm up on the right */   /* Reish: round on top; Kuf: its long leg */   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
+  reish: [445, 540, 'left'], kuf: [70, -60, 'right'], tzadik: [470, 560, 'left'], tav: [45, 90, 'right'], sav: [45, 90, 'right'], shin: [660, 745, 'down'], sin: [115, 745, 'down'] };   /* Tuf and Suf: the little foot at the bottom left; Shin and Sin: the dot on top */   /* Tzadik: its little arm up on the right */   /* Reish: round on top; Kuf: its long leg */   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
 /* a place to look that depends on the look-alike beside it: Tes's closed round bottom (beside Mem) */
-const PAIR_FEAT = { 'tes|mem': [60, 70, 'right'], 'kaf|pei': false, 'pei|kaf': [190, 300, 'right'], 'daled|reish': [420, 500, 'left'], 'hei|kuf': [60, 150, 'right'], 'ayin|tzadik': [60, 30, 'right'] };   /* Ayin's tail at the bottom left; Tzadik is flat there */   /* Daled's corner beside Reish's round top; Hei's short leg beside Kuf's long one */   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+const PAIR_FEAT = { 'tes|mem': [60, 70, 'right'], 'kaf|pei': false, 'pei|kaf': [190, 300, 'right'], 'daled|reish': [420, 500, 'left'], 'hei|kuf': [60, 150, 'right'], 'ayin|tzadik': [60, 30, 'right'], 'ches|tav': [105, 60, 'right'], 'ches|sav': [105, 60, 'right'], 'tav|ches': [45, 90, 'right'], 'tav|hei': [45, 90, 'right'], 'sav|ches': [45, 90, 'right'], 'sav|hei': [45, 90, 'right'] };   /* Ches beside Tuf: the bottom of its leg, where Tuf has a foot */   /* Ayin's tail at the bottom left; Tzadik is flat there */   /* Daled's corner beside Reish's round top; Hei's short leg beside Kuf's long one */   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
 /* the place to look on k when it might be taken for other: the dot place for a dot pair or any lone dotted letter, the shape for Beis/Kaf */
 export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : (k + '|' + other) in PAIR_FEAT ? PAIR_FEAT[k + '|' + other] : (((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]));
-export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'], pei: [385, 300, 'left'], fei: [385, 300, 'left'] };
+export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'], pei: [385, 300, 'left'], fei: [385, 300, 'left'], tav: [340, 240, 'right'], sav: [340, 240, 'right'], shin: [660, 745, 'down'], sin: [115, 745, 'down'] };
 /* put an arrow at a letter's feature (the letter object, its height); returns false if the letter has none */
 export function pointAt(arrow, l, key, height, feat) { const f = feat === false ? null : feat || FEATURES[key]; if (!f) { arrow.visible = false; return false; }   /* false: nothing to point at (Kaf beside Pei: its tongue's place holds its dot, so the words say it) */ const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;
   const d = { down: [0, off], up: [0, -off], right: [-off, 0], left: [off, 0] }[f[2]]; if (arrow.setDir) arrow.setDir(f[2]); arrow.position.set(p.x + d[0], p.y + d[1], .5); if (arrow.parent !== l) l.add(arrow); arrow.visible = true; return true; }
@@ -622,18 +691,20 @@ export function flatFallback(keys = ['alef', 'beis', 'veis']) {
    Every answer here and in the mastery check is remembered on his device, per letter (save.letters). */
 export function noteLetter(k, right) { const s = loadSave(); s.letters = s.letters || {}; const m = s.letters[k] || { r: 0, w: 0, at: 0 };
   if (right) m.r++; else { m.w++; m.lastWrong = Date.now(); } m.at = Date.now(); m.ok = right; s.letters[k] = m; writeSave(s); }
-const REV_LOOK = { beis: ['veis', 'kaf'], veis: ['beis'], gimmel: ['nun'], daled: ['reish'], hei: ['ches', 'kuf'], vov: ['zayin'], zayin: ['vov'], ches: ['hei'], tes: ['mem'], kaf: ['chaf', 'beis', 'pei'], chaf: ['kaf'], mem: ['tes'], nun: ['gimmel'], pei: ['fei', 'kaf'], fei: ['pei'], reish: ['daled'], kuf: ['hei'] };
-const REV_SAME = { vov: 'veis', veis: 'vov', chaf: 'ches', ches: 'chaf', alef: 'ayin', ayin: 'alef', samech: 'sin', sin: 'samech', kaf: 'kuf', kuf: 'kaf', tes: 'tav', tav: 'tes', sav: 'samech' };
+const REV_LOOK = { shin: ['sin'], sin: ['shin'], tav: ['sav', 'ches'], sav: ['tav'], beis: ['veis', 'kaf'], veis: ['beis'], gimmel: ['nun'], daled: ['reish'], hei: ['ches', 'kuf'], vov: ['zayin'], zayin: ['vov'], ches: ['hei', 'tav'], tes: ['mem'], kaf: ['chaf', 'beis', 'pei'], chaf: ['kaf'], mem: ['tes'], nun: ['gimmel'], pei: ['fei', 'kaf'], fei: ['pei'], reish: ['daled'], kuf: ['hei'] };
+/* two letters with the same sound (Kuf and Kaf; Samech, Sin and Suf), or both quiet: never asked side by side */
+export const sameSound = (a, b) => a !== b && ((LETTERS[a].quiet && LETTERS[b].quiet) || (!!LETTERS[a].snd && LETTERS[a].snd === LETTERS[b].snd));
 /* what to look for when he mixes up a look-alike pair: "want/tapped" */
 const REV_CLUE = { 'beis/veis': 'Beis has a dot.', 'veis/beis': 'Veis has no dot.', 'beis/kaf': 'Beis has a tail at the bottom.', 'kaf/beis': 'Kaf is round at the bottom.',
   'kaf/chaf': 'Kaf has a dot.', 'chaf/kaf': 'Chaf has no dot.', 'vov/zayin': 'Vov has no crown.', 'zayin/vov': 'Zayin has a crown.', 'hei/ches': 'Hei\u2019s leg doesn\u2019t touch the roof.', 'ches/hei': 'Ches\u2019s leg touches the roof.',
   'gimmel/nun': 'Gimmel has a foot.', 'nun/gimmel': 'Nun is flat at the bottom.', 'tes/mem': 'Tes is closed at the bottom.', 'mem/tes': 'Mem has an opening at the bottom.',
-  'pei/kaf': 'Pei has a little tongue inside.', 'kaf/pei': 'Kaf has no little tongue.', 'pei/fei': 'Pei has a dot.', 'fei/pei': 'Fei has no dot.', 'daled/reish': 'Daled has a corner.', 'reish/daled': 'Reish is round on top.', 'hei/kuf': 'Hei has a short leg.', 'kuf/hei': 'Kuf has a long leg.' };
+  'pei/kaf': 'Pei has a little tongue inside.', 'kaf/pei': 'Kaf has no little tongue.', 'pei/fei': 'Pei has a dot.', 'fei/pei': 'Fei has no dot.', 'daled/reish': 'Daled has a corner.', 'reish/daled': 'Reish is round on top.', 'hei/kuf': 'Hei has a short leg.', 'kuf/hei': 'Kuf has a long leg.',
+  'shin/sin': 'Shin\u2019s dot is on the right.', 'sin/shin': 'Sin\u2019s dot is on the left.', 'tav/sav': 'Tuf has a dot.', 'sav/tav': 'Suf has no dot.', 'tav/ches': 'Tuf has a little foot.', 'ches/tav': 'Ches has no foot.' };
 export function reviewPicks(known, n = 3, skip = []) {
   const L = loadSave().letters || {}, now = Date.now(); known = known.filter(k => !skip.includes(k));   /* not the letters this game just practised: that would not be spaced */
   const score = k => { const m = L[k]; if (!m) return 1e12; return (m.ok === false ? 2e12 : 0) + (m.w > m.r ? 1e11 : 0) + (now - (m.at || 0)); };   /* missed last time first, then weaker, then not seen for longest */
   const order = known.slice().sort(() => Math.random() - .5).sort((a, b) => score(b) - score(a));
-  const out = []; for (const k of order) { if (out.length >= n) break; if (out.some(o => REV_SAME[o] === k)) continue; out.push(k); }
+  const out = []; for (const k of order) { if (out.length >= n) break; if (out.some(o => sameSound(o, k))) continue; out.push(k); }
   return out;
 }
 export async function quickReview(unit, game) {
@@ -650,7 +721,7 @@ export async function quickReview(unit, game) {
   for (let qi = 0; qi < picks.length; qi++) {
     const k = picks[qi], others = [];
     (REV_LOOK[k] || []).filter(o => pool.includes(o)).slice(0, 1).forEach(o => others.push(o));   /* its look-alike, if he knows it */
-    for (const c of pool.slice().sort(() => Math.random() - .5)) if (others.length < 2 && c !== k && !others.includes(c) && REV_SAME[k] !== c && !others.some(o => REV_SAME[o] === c)) others.push(c);
+    for (const c of pool.slice().sort(() => Math.random() - .5)) if (others.length < 2 && c !== k && !others.includes(c) && !sameSound(k, c) && !others.some(o => sameSound(o, c))) others.push(c);
     const set = [k, ...others].sort((a, b) => AB(a) - AB(b));   /* right to left in Alef-Beis order */
     row.innerHTML = set.map(c => `<button data-k="${c}" aria-label="${LETTERS[c].name}">${FLAT[c]}</button>`).join('');
     let firstTry = true;
