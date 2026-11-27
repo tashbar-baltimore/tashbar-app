@@ -75,8 +75,11 @@ function unitTest(UNIT, GAMES, o = {}) { const NOWRONG = o.noWrong || [], NAME =
   let dist; try { dist = build(); } catch (e) { bad('build failed: ' + String(e.stderr || e).slice(0, 200)); return out; }
   for (const f of ['play.html', 'game.js', 'cast.js', 'props.js', 'scenes.js', 'units/u' + UNIT + '.js', 'art/mendy-idle.webp', 'art/mendy-talk.webp'])
     if (!fs.existsSync(path.join(dist, 'k-abc', f))) bad(f + ' is not in the built site');
+  /* the test kit runs in parts on machines at the same time (PART=1/2 in tests/run.js): the games are shared out between the parts
+     the same way as the lessons (every 2nd game, starting with the 1st), so together the parts still play every game */
+  const pm = /^(\d+)\/(\d+)$/.exec(process.env.PART || '1/1'), pk = pm ? +pm[1] : 1, pn = pm ? +pm[2] : 1, MINE = GAMES.filter((g, i) => i % pn === pk - 1);
   /* phone size: the first rounds of every game, with a wrong move; every picture and Mendy must be on the screen */
-  for (const g of GAMES) { const w = 390, h = 844, label = g + ' ' + w + 'x' + h, { ctx, pg, errs, outside } = await open(browser, dist, w, h, '/k-abc/play.html?u=' + UNIT + '&g=' + g + '&fast=1');
+  for (const g of MINE) { const w = 390, h = 844, label = g + ' ' + w + 'x' + h, { ctx, pg, errs, outside } = await open(browser, dist, w, h, '/k-abc/play.html?u=' + UNIT + '&g=' + g + '&fast=1');
     try { const r = await play(pg, { wrong: !NOWRONG.includes(g), stopAt: 2 });
       if (r.partial) { r.items.forEach(it => { if (it.roam) return; /* pictures that float in and out by design (a parade, bubbles, butterflies) */ if (it.x < 0 || it.x > w || it.y < 0 || it.y > h) bad(label + ': the picture "' + it.name + '" is off the screen'); });
         if (r.mendy.x < 0 || r.mendy.x > w || r.mendy.y < 0 || r.mendy.y > h) bad(label + ': Mendy is off the screen'); }
@@ -84,7 +87,7 @@ function unitTest(UNIT, GAMES, o = {}) { const NOWRONG = o.noWrong || [], NAME =
     } catch (e) { bad(label + ': ' + String(e).slice(0, 220)); }
     errs.forEach(e => bad(label + ': page error: ' + e)); outside.forEach(x => bad(label + ': reached an outside website: ' + x)); await ctx.close(); }
   /* Chromebook size: every game to the end */
-  for (const [w, h] of [[1366, 768]]) for (const g of GAMES) {
+  for (const [w, h] of [[1366, 768]]) for (const g of MINE) {
     const label = g + ' ' + w + 'x' + h, { ctx, pg, errs, outside } = await open(browser, dist, w, h, '/k-abc/play.html?u=' + UNIT + '&g=' + g + '&fast=1');
     try {
       const wrong = !NOWRONG.includes(g) && g !== 'check';   /* the check is played perfectly: 3 stars */
@@ -113,7 +116,7 @@ function unitTest(UNIT, GAMES, o = {}) { const NOWRONG = o.noWrong || [], NAME =
       errs.forEach(e => bad('menu: page error: ' + e));
     } catch (e) { bad('menu: ' + String(e).slice(0, 200)); } finally { await ctx.close(); } }
   fs.rmSync(dist, { recursive: true, force: true });
-  if (!out.fails.length) out.oks.push('2.0 K ABC ' + NAME + ': all ' + GAMES.length + ' games play to the end at Chromebook and phone size with a real mouse; wrong moves get a gentle fix; perfect play earns 3 stars; short spoken lines; big buttons; menu in order');
+  if (!out.fails.length) out.oks.push('2.0 K ABC ' + NAME + ': ' + (pn > 1 ? MINE.length + ' of the ' + GAMES.length + ' games (part ' + pk + ' of ' + pn + '; the other part plays the rest)' : 'all ' + GAMES.length + ' games') + ' play to the end at Chromebook and phone size with a real mouse; wrong moves get a gentle fix; perfect play earns 3 stars; short spoken lines; big buttons; menu in order');
   return out;
  }
 }
