@@ -223,7 +223,7 @@ export function stage(host, opts = {}) {
   let dragging = null;
   renderer.domElement.addEventListener('pointerdown', e => {
     if (G.howOpen) return; toNdc(e); G.taps++;
-    for (const d of S.drags) { if (!d.enabled) continue; const hit = ray.intersectObjects(d.objects, true)[0]; if (hit) { let o = hit.object; while (o && !d.objects.includes(o)) o = o.parent; dragging = { d, o }; d.start && d.start(o); renderer.domElement.setPointerCapture(e.pointerId); return; } }
+    for (const d of S.drags) { if (!d.enabled) continue; const hit = ray.intersectObjects(d.objects, true)[0]; if (hit) { let o = hit.object; while (o && !d.objects.includes(o)) o = o.parent; dragging = { d, o }; const p0 = new THREE.Vector3(); d.start && d.start(o, ray.ray.intersectPlane(d.plane, p0) ? p0 : hit.point.clone()); renderer.domElement.setPointerCapture(e.pointerId); return; } }
     const objs = S.taps.filter(t => t.enabled !== false).flatMap(t => t.objects);
     const hit = ray.intersectObjects(objs, true)[0]; if (!hit) return;
     let o = hit.object; let t = null; while (o) { t = S.taps.find(tt => tt.enabled !== false && tt.objects.includes(o)); if (t) break; o = o.parent; }

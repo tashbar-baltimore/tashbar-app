@@ -61,7 +61,7 @@ async function sailRound(start, k, dir, o = {}) {
   const sg = keep(signBoard(eq(start, dir > 0 ? '+' : '−', k))); sg.position.copy(PORTRAIT ? V(-2.6, 0, 7.4) : V(0, 1.4, -6.5)); sg.scale.setScalar(PORTRAIT ? 0.62 : 1.25);
   const bt = keep(bob(boat())); bt.position.copy(boatSpot(L.posOf(start))); bt.setHatch(start); if (PORTRAIT) bt.rotation.y = Math.PI / 2;
   lightUp(L.at(start), '#7FD6FF');
-  let at = start, moving = Promise.resolve();
+  let at = start, moving = Promise.resolve(); G.at = at;
   const hops = () => (at - start) * dir;
   const step = async (to, voice) => { at = to; G.at = at; chime('tap'); moving = tween(220, u => bt.position.lerp(boatSpot(L.posOf(to)), u)); sg.set(eq(start, dir > 0 ? '+' : '−', k), hops() > 0 ? '●'.repeat(Math.min(hops(), 12)) : ''); if (voice) await say(String(to)); };
   G.hit = { boat: () => sc(bt, 0.6), buoy: n => sc(L.at(n), 0.3) };
@@ -239,8 +239,8 @@ async function turn() {
     await say('Now spin the plank! Drag the red wheel.'); G.state = 'spin';
     const plane = new THREE.Plane(V(0, 1, 0), -1.5); let x0 = null;
     await new Promise(done => { S.onDrag([hitW, wheel], plane, {
-      start: () => { x0 = null; chime('tap'); },
-      move: (o, p) => { if (x0 === null) x0 = p.x; plank.rotation.y = Math.max(-Math.PI, Math.min(Math.PI, -(p.x - x0) * 0.8)); },
+      start: (o, p) => { x0 = p.x; chime('tap'); },
+      move: (o, p) => { plank.rotation.y = Math.max(-Math.PI, Math.min(Math.PI, -(p.x - x0) * 0.8)); },
       drop: async () => { if (Math.abs(plank.rotation.y) > 2.3) { const to = Math.sign(plank.rotation.y) * Math.PI, from = plank.rotation.y; await tween(250, u => { plank.rotation.y = from + (to - from) * u; }); S.clearInput(); done(); }
         else { const from = plank.rotation.y; await tween(250, u => { plank.rotation.y = from * (1 - u); }); say('Spin it all the way around!'); } } }); });
     chime('good'); sg.set(eq(b, '+', a)); G.state = 'write2';
@@ -270,7 +270,7 @@ async function pullRound(start, k, o = {}) {
   const aHit = new THREE.Mesh(new THREE.SphereGeometry(0.95, 10, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); aHit.position.y = 0.8; anchor.add(aHit);
   anchor.position.copy(PORTRAIT ? V(2.2, 0.2, 6 - 7 * 1.85 + 0.2) : V((W * 2.05) / 2 + 0.4, 0.2, 5.2));
   const sg = keep(signBoard(eq(start, '−', k))); sg.position.copy(PORTRAIT ? V(-2.6, 0, 7.6) : V(0, 1.4, -6.5)); sg.scale.setScalar(PORTRAIT ? 0.6 : 1.25);
-  let at = start; const pulls = () => start - at;
+  let at = start; G.at = at; const pulls = () => start - at;
   const back = async voice => { if (at <= L.lo) return; at--; G.at = at; chime('tap'); S.scene.remove(rp); temp.splice(temp.indexOf(rp), 1);
     await tween(240, u => bt.position.lerp(boatSpot(L.posOf(at)), u)); rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos)); sg.set(eq(start, '−', k), pulls() > 0 ? '●'.repeat(Math.min(12, pulls())) : ''); if (voice) await say(String(at)); };
   G.hit = { ring: () => sc(ringHit), pullTo: () => { const d = new THREE.Object3D(); d.position.copy(ringPos).add(PORTRAIT ? V(0, 0, 1.6) : V(-1.6, 0, 0.8)); S.scene.add(d); const s = sc(d); S.scene.remove(d); return s; }, anchor: () => sc(anchor, 0.8), buoy: n => sc(L.at(n), 0.3) };
@@ -285,7 +285,7 @@ async function pullRound(start, k, o = {}) {
   let first = true;
   for (;;) {
     await new Promise(done => { let p0 = null;
-      S.onDrag([ringHit, ring], plane, { start: () => { p0 = null; }, move: (r, p) => { if (!p0) p0 = p.clone(); ring.position.copy(ringPos).add(p.clone().sub(p0).multiplyScalar(0.5)); },
+      S.onDrag([ringHit, ring], plane, { start: (r, p) => { p0 = p.clone(); }, move: (r, p) => { ring.position.copy(ringPos).add(p.clone().sub(p0).multiplyScalar(0.5)); },
         drop: async () => { const moved = ring.position.distanceTo(ringPos); ring.position.copy(ringPos); if (moved > 0.45) await back(!QUICK); } });
       S.onTap([aHit], () => { S.clearInput(); done(); }); });
     if (pulls() === k) break;
