@@ -330,7 +330,7 @@
     nile: { lat: [22.8, 32.6], lon: [28.0, 36.4], draw: ['egypt', 'jordan', 'syria', 'eretz', 'strip', 'med', 'redsea', 'kinneret', 'deadsea', 'river', 'nile'], home: [31.35, 34.85, 32.0, 34.6],
       at: { egypt: [27.0, 29.4, 24.3, 29.8], jordan: [30.6, 35.9], arabia: [28.4, 35.8], nile: [27.18, 31.18, 25.0, 31.3], med: [31.95, 31.9], redsea: [25.8, 35.3, 25.0, 35.4], strip: [28.6, 30.8, 28.7, 32.3], wdesert: [27.6, 29.0], edesert: [26.7, 33.05] }, inset: ['nile', 'nilelength'] },
     kingdoms: { lat: [23.0, 47.0], lon: [5.5, 60.0], compass: 'bl', draw: ['egypt', 'italy', 'greece', 'persia', 'bavel', 'eretz', 'med2', 'black', 'caspian', 'gulf', 'redsea', 'sicily', 'sardinia', 'corsica', 'crete', 'cyprus', 'rivers2', 'nile', 'crossroads'], home: [31.6, 35.0, 34.1, 26.0], small: 1.3,
-      at: { europe: [44.3, 22.5], africa: [27.2, 25.5], asia: [26.2, 46.0], crossroads: [31.6, 35.0, 37.6, 37.0], italy: [42.4, 13.4, 41.6, 12.6], greece: [39.5, 22.1, 38.0, 23.6], persia: [32.6, 54.0, 34.0, 51.0], bavel: [32.4, 45.0, 28.5, 42.5], rivers2: [35.0, 40.3, 36.2, 41.2], nile: [27.2, 31.2], egypt: [27.0, 29.5], arabia: [26.0, 41.0], med2: [34.4, 19.5] } },
+      at: { europe: [44.3, 22.5], africa: [27.2, 25.5], asia: [31.0, 47.5], crossroads: [31.6, 35.0, 37.6, 37.0], italy: [42.4, 13.4, 43.2, 15.5], greece: [39.5, 22.1, 38.0, 23.6], persia: [32.6, 54.0, 34.0, 51.0], bavel: [32.4, 45.0, 28.5, 42.5], rivers2: [35.0, 40.3, 38.6, 38.5], nile: [27.2, 31.2], egypt: [27.0, 29.5], arabia: [26.0, 41.0], med2: [34.4, 19.5] } },
     harbayis: { lat: [31.7748, 31.7818], lon: [35.2312, 35.2398], draw: ['harbayis', 'westwall', 'northwall', 'eastwall', 'southwall', 'kosel'], home: null, title: 'Yerushalayim, the Old City',
       at: { harbayis: [31.7788, 35.2356, 31.7790, 35.2356], oldcity: [31.7770, 35.2324], kosel: [31.7771, 35.23405, 31.7771, 35.2327], eastwall: [31.7783, 35.2369], southwall: [31.7762, 35.2357] } }
   };
@@ -463,10 +463,11 @@
         h += '<button type="button" class="cka-tlc' + (off ? ' off' : '') + (c.hint && s.sel >= 0 && d.events[s.sel][1] === i ? ' obk-pulse' : '') + '" data-obk="card" data-k="' + i + '"' + (off ? ' disabled' : ' data-obk-drop="card"') +
           ' aria-label="card ' + (i + 1) + ': ' + E(cd) + (off ? ', coming next' : '') + '"><b>' + (i + 1) + '. ' + E(cd) + '</b>' + (off ? '<i>coming next</i>' : '<ul>' + list.join('') + '</ul>') + '</button>'; });
       h += '</div><div class="cka-tla end">' + E(d.end) + ' ■</div></div>';
-      if (left) { h += '<p class="obk-note">' + (s.sel >= 0 ? 'Now tap the card it belongs on.' : 'Tap an event:') + '</p><div class="cka-tlpool">';
-        s.ord.forEach(function (j) { if (s.at[j] != null) return; h += '<button type="button" class="cka-tle' + (s.sel === j ? ' sel' : '') + (s.bad === j ? ' obk-shake' : '') + '" data-obk="ev" data-k="' + j + '" data-obk-drag="ev">' + E(d.events[j][0]) + '</button>'; });
-        h += '</div>'; }
-      return h; },
+      var pool = '';   /* the events sit ABOVE the timeline, so he never scrolls between an event and its card */
+      if (left) { pool = '<p class="obk-note">' + (s.sel >= 0 ? 'Now tap the card it belongs on.' : 'Tap an event:') + '</p><div class="cka-tlpool">';
+        s.ord.forEach(function (j) { if (s.at[j] != null) return; pool += '<button type="button" class="cka-tle' + (s.sel === j ? ' sel' : '') + (s.bad === j ? ' obk-shake' : '') + '" data-obk="ev" data-k="' + j + '" data-obk-drag="ev">' + E(d.events[j][0]) + '</button>'; });
+        pool += '</div>'; }
+      return pool + h; },
     tap: function (d, s, a, k, drop) { var o = tlOpen(d);
       var place = function (j, i) { if (i >= o || s.at[j] != null) return; s.sel = -1;
         if (d.events[j][1] === i) { s.at[j] = i; s.bad = -1; return Object.keys(s.at).length >= d.events.length ? 'ok' : undefined; }
