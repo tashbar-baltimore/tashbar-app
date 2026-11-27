@@ -37,7 +37,7 @@ Lane: `k-abc` (Esti, 2026-11-26). The map is `MAP.md` ("the map looks fine"). On
 | Naming words and action words | Unit 11 (Read and match) |
 | Book parts: front, back, where to start | Unit 13 (how a book works) |
 | Listening: who, what, first / next / last | Unit 13 (after each story), and story moments from Unit 2 |
-| Adding or taking away a beat | Review A (bonus) |
+| Adding or taking away a beat | Review B (bonus) |
 
 **Heart words (about 40, Esti):** the map's 13 + family words, plus 1.0's snap words and a few more: I, the, a, is, to, he, we, my, said, was, of, you, are, and, see, like, go, me, look, no, yes, play, she, be, do, for, have, here, they, what, where, come, put, one, two, little, down, Tatty, Mommy, Bubby, Zeidy (42). Taught a few at a time in Unit 10, used in Units 11–13.
 
@@ -113,7 +113,8 @@ Every game is a new kind of play, all mixing Units 1–3:
 | chalk | mixed tracing on a chalkboard: a different letter each round, a chalk line follows his finger | garden chalkboard |
 | catch | rhyme catch: pictures drift down from a tree; he taps the one that rhymes | the big tree |
 | bridge | the word bridge: he reads the word on each stone and taps its picture to help the duck cross | stream |
-| speed | bonus word slide for quick boys (sad, mad, dip, tip, pad, sip), then "hear a word, tap it" | playground slide |
+| speed | bonus word slide for quick readers (sad, dip, pad, sip), then "hear a word, tap it" | playground slide |
 | check | mixed mastery check: sound → letter, read a word → its picture, rhyme | sunset stage |
 "A boy who missed a sound gets that letter again, quietly": the checks of Units 2–3 and Review A save the sounds he missed in his browser (`kabc-weak`); sound bingo calls those first. (When 2.0 has saved progress, this moves there.)
 Review A — first independent review about 3.6. Fixed: the map's help path (after the check, each missed sound gets a big button that opens that letter's meet game again; missed sounds are kept until he gets them right first time); bingo replays the sound in the fix and has a real "three in a row"; the opener plays a sound and he finds its letter among all eight; the check's rhyme is goat/boat (not this week's cat/hat); the chalkboard includes s and the last letter has dots only; the bonus slide is four words for quick readers.
+Review A — second review about 4.2 (every point 4 or 5). Also done: the check adds a first-sound round and reads new words (mat, pan), and after two misses it replays the sounds before showing the answer; rhyme catch's fix says "Not the same end". The bonus slide stays open to every boy for now (2.0 has no saved stars yet); when it does, it opens at 3 stars.

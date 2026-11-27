@@ -7,7 +7,7 @@
    chalk   mixed tracing on a chalkboard: a different letter each round, a chalk line follows his finger
    catch   rhyme catch: pictures fall gently from a tree; he taps the one that rhymes before it lands
    bridge  the word bridge: he reads the word on each stepping stone and taps its picture to cross the stream
-   speed   bonus word slide (the map's "speed slide" for quick boys): sad, mad, dip, tip, pad, sip, then hear a word and tap it
+   speed   bonus word slide (the map's "speed slide" for quick boys): sad, dip, pad, sip, then hear a word and tap it
    check   mixed mastery check (tap kinds)
    Weak letters: the checks of Units 2–3 save the letters he missed (kabc-weak in this browser); bingo asks those first. */
 import { THREE, V, shuffle, rnd, audio, echo, WORDS, FAST, ease, clamp } from '../game.js';
@@ -44,7 +44,7 @@ const opener = {
       G.newRound(); const t = tiles[k]; await G.say('Listen.', snd(t.userData.c));
       await new Promise(res => { G.expect({ kind: 'tap', at: t }); G.A.wrongMove = { kind: 'tap', at: tiles[(k + 1) % LET.length] }; G.taps = [];
         G.hint(async () => { t.scale.multiplyScalar(1.15); await G.say('Listen again.', snd(t.userData.c)); });
-        tiles.forEach(x => G.tap(tapHit(x, 0.7), async () => { audio.letter(x.userData.c); if (x === t) { G.taps = []; res(); } else await G.wrong(['That one says this.', snd(x.userData.c), 'Listen again.', snd(t.userData.c)]); })); });
+        tiles.forEach(x => G.tap(tapHit(x, 0.7), async () => { if (x === t) { audio.letter(x.userData.c); G.taps = []; res(); } else await G.wrong(['That one says this.', snd(x.userData.c), 'Listen again.', snd(t.userData.c)]); })); });
       await G.right(t.position, ['Yes!', 'Good!', 'Super!', 'Great!'][k % 4]);
     }
     G.A.name = 'song'; await G.say('All eight together! Say them with me.'); for (const t of tiles) { t.rotation.z = 0.25; await audio.letter(t.userData.c); t.rotation.z = 0; await G.wait(120); }
@@ -126,7 +126,7 @@ const catchG = {
       G.expect({ kind: 'tap', at: good }); G.A.wrongMove = { kind: 'tap', at: its.find(i => i !== good) };
       G.hint(async () => { good.glow(true); await G.say(say(key) + '... ' + say(good.name) + '.'); });
       await new Promise(res => its.forEach(it => it.onTap = async () => { it.poke(); await it.say(); if (it === good) { done = true; its.forEach(x => x.onTap = () => {}); await it.moveTo(k.obj.position.clone().add(V(1.2, 0, 0)), 400); await G.right(it.obj.position, say(key) + ', ' + say(it.name) + '!'); res(); }
-        else await G.wrong([say(key) + ', ' + say(it.name) + '. Listen to the end.'], it); }));
+        else await G.wrong([say(key) + ', ' + say(it.name) + '. Not the same end.', 'Listen to the end of ' + say(key) + '.'], it); }));
       await clearItems(G);
     }
     await G.done('You caught every rhyme!');
@@ -164,7 +164,7 @@ const check = {
     G.view({ wide: [-0.3, 2.0, 11.2, 5.6, 0.17], narrow: [0, 2.0, 5.2, 7.8, 0.2] }); return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow(); const missed = new Set();
-    const Q = [...shuffle(LET).slice(0, 4).map(ch => ({ k: 'sound', ch })), { k: 'pic', w: 'map' }, { k: 'pic', w: 'pin' }, { k: 'pic', w: 'tin' }, { k: 'rhyme', w: 'goat', goal: 'boat', opts: ['boat', 'dog', 'pin'] }];
+    const Q = [...shuffle(LET).slice(0, 4).map(ch => ({ k: 'sound', ch })), { k: 'pic', w: 'mat' }, { k: 'pic', w: 'pan' }, { k: 'first', ch: 'd', goal: 'duck', opts: ['duck', 'sun', 'pin'] }, { k: 'rhyme', w: 'goat', goal: 'boat', opts: ['boat', 'dog', 'pin'] }];
     G.rounds(Q.length); await G.say('Show me what you know!', 'Tap the right one each time.');
     const pos = (i, m) => n() ? (m > 3 ? V(-0.75 + (i % 2) * 1.5, 2.3 - Math.floor(i / 2) * 1.5, 1.0) : V((i - (m - 1) / 2) * 1.6, 0.85, 1.4)) : V((i - (m - 1) / 2) * (m > 3 ? 2.2 : 2.9), 0.85, 1.0);
     for (const q of Q) {
@@ -173,12 +173,13 @@ const check = {
         goal = objs[L.indexOf(q.ch)]; ask = ['Which letter says this sound?', snd(q.ch)]; }
       if (q.k === 'pic') { const g = wordTiles(S, q.w, 0.55); g.position.set(0, 2.35, -1.6); extra.push(g); const ps = shuffle([q.w, ...shuffle(['map', 'mat', 'pin', 'tin', 'pan'].filter(x => x !== q.w)).slice(0, 2)]);
         objs = ps.map((w, i) => { const p = prop(w); p.position.copy(pos(i, 3)); S.scene.add(p); p.userData.w = w; return p; }); goal = objs[ps.indexOf(q.w)]; ask = ['Read the word. Tap its picture.']; }
+      if (q.k === 'first') { objs = shuffle(q.opts).map((w, i) => { const p = prop(w); p.position.copy(pos(i, 3)); S.scene.add(p); p.userData.w = w; return p; }); goal = objs.find(o => o.userData.w === q.goal); ask = ['Tap the picture that starts with this sound.', snd(q.ch)]; }
       if (q.k === 'rhyme') { const key = prop(q.w); key.position.set(0, 2.3, -1.6); S.scene.add(key); extra.push(key); objs = shuffle(q.opts).map((w, i) => { const p = prop(w); p.position.copy(pos(i, 3)); S.scene.add(p); p.userData.w = w; return p; });
         goal = objs.find(o => o.userData.w === q.goal); ask = ['Tap the picture that rhymes with goat.']; }
       await G.say(ask);
       G.expect({ kind: 'tap', at: goal }); G.A.wrongMove = { kind: 'tap', at: objs.find(o => o !== goal) };
       await new Promise(res => { let tries = 0; objs.forEach(o => G.tap(tapHit(o, 0.8), async () => { if (q.k === 'sound') audio.letter(o.userData.c); else audio.say(say(o.userData.w));
-        if (o === goal) { G.taps = []; await G.right(o.position); res(); } else { tries++; if (q.ch) missed.add(q.ch); await G.wrong(tries < 2 ? ['Look again.', ...ask] : ['This one!']); if (tries >= 2) goal.scale.multiplyScalar(1.2); } })); });
+        if (o === goal) { G.taps = []; await G.right(o.position); res(); } else { tries++; if (q.ch && q.k === 'sound') missed.add(q.ch); await G.wrong(tries < 2 ? ['Look again.', ...ask] : [...(q.w ? ['Read it slowly.', sounds(q.w)] : q.ch ? ['Listen.', snd(q.ch)] : []), 'This one!']); if (tries >= 2) goal.scale.multiplyScalar(1.2); } })); });
       objs.concat(extra).forEach(o => S.scene.remove(o)); G.taps = [];
     }
     const right1 = new Set(Q.filter(q => q.ch && !missed.has(q.ch)).map(q => q.ch)), all = [...new Set([...weak(), ...missed])].filter(c => !right1.has(c));
