@@ -42,7 +42,9 @@ module.exports = async (browser) => {
       const wrong = await pg.evaluate(() => ({ code: KSIGN.state.code, tries: KSIGN.state.tries, url: location.pathname }));
       if (wrong.code !== '' || wrong.tries !== 1 || !/signin/.test(wrong.url)) fails.push('Keser sign-in (' + tag + '): a wrong code must clear and stay on the code screen (' + JSON.stringify(wrong) + ')');
       for (const d of '1234') await pg.click('.key[data-k="' + d + '"]');
-      if (!(await pg.waitForURL(/home\.html/, { timeout: 8000 }).then(() => true, () => false))) { fails.push('Keser sign-in (' + tag + '): the practice code does not go straight to home'); await ctx.close(); continue; }
+      if (!(await pg.waitForURL(/world\.html/, { timeout: 8000 }).then(() => true, () => false))) { fails.push('Keser sign-in (' + tag + '): the practice code does not go straight into her world'); await ctx.close(); continue; }
+      /* the clean cards (home.html) are what a computer without 3D gets: check them too */
+      await pg.goto(url + 'home.html');
       /* home: three choices */
       await pg.waitForFunction(() => window.KHOME, null, { timeout: 15000 });
       const hm = await pg.evaluate(() => [...document.querySelectorAll('.choice')].map(c => ({ go: c.dataset.go, name: c.querySelector('b').textContent, he: c.querySelector('b').getAttribute('lang'), bg: getComputedStyle(c).backgroundColor })));
@@ -73,6 +75,6 @@ module.exports = async (browser) => {
     }
   } catch (e) { fails.push('Keser sign-in and home test stopped: ' + String(e).slice(0, 200)); }
   finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
-  if (!fails.length) oks.push('Keser Girls 3.0 way in: welcome, code (wrong code clears, practice code goes straight home), home with קודש, Timeline and General Studies in burgundy, green and royal blue, each straight in, at Chromebook and phone size, reduce motion, a few twinkles, no pink');
+  if (!fails.length) oks.push('Keser Girls 3.0 way in: welcome, code (wrong code clears, practice code goes straight into her world), the clean cards for computers without 3D, home with קודש, Timeline and General Studies in burgundy, green and royal blue, each straight in, at Chromebook and phone size, reduce motion, a few twinkles, no pink');
   return { fails, oks };
 };

@@ -16,5 +16,6 @@ function go(where) {
   return loadLab().then(() => window.CLAB.openLab(where === 'timeline' ? 'tl' : undefined)).catch(e => console.warn('Keser lab: ' + e.message));
 }
 document.querySelectorAll('.choice').forEach(b => { b.onclick = () => { b.disabled = true; go(b.dataset.go).finally(() => { b.disabled = false; }); }; });
-$('gsBack').onclick = () => body.classList.remove('gs');
+$('gsBack').onclick = () => { if (/[?&]go=general\b/.test(location.search)) location.href = 'world.html'; else body.classList.remove('gs'); };
 window.KHOME = { go };
+if (/[?&]go=general\b/.test(location.search)) go('general');   /* from her 3D world: straight into General Studies */

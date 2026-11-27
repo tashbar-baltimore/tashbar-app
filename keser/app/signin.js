@@ -1,4 +1,4 @@
-/* HER SIGN-IN: four digits; the right code goes straight to home.html (choose קודש, Timeline or General Studies).
+/* HER SIGN-IN: four digits; the right code goes straight into her 3D world, where she chooses קודש, Timeline or General Studies.
    Until the girls' records are built (keser/STAFF-PROMPT.md: a separate girls' database, M. Heinemann 2026-11-26), the only code is the
    practice code 1234 and nothing is sent anywhere. The tests read the KSIGN object. */
 const $ = id => document.getElementById(id);
@@ -14,7 +14,7 @@ function press(k) {
   if (k === 'clear') S.code = ''; else if (k === 'back') S.code = S.code.slice(0, -1); else if (S.code.length < 4) S.code += k;
   show();
   if (S.code.length === 4) {
-    if (S.code === PRACTICE) { S.open = true; $('msg').textContent = 'Welcome!'; setTimeout(() => { location.href = 'home.html'; }, 250); }
+    if (S.code === PRACTICE) { S.open = true; $('msg').textContent = 'Welcome!'; setTimeout(() => { location.href = 'world.html'; }, 250); }
     else { S.tries++; const p = $('pad'); p.classList.remove('shake'); void p.offsetWidth; p.classList.add('shake'); $('msg').textContent = 'That code is not right. Try again.';
       setTimeout(() => { S.code = ''; show(); }, 400); }
   }
