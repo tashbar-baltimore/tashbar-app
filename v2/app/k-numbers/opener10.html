@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Friends of Ten — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 10 "Making 10" (friends of ten): the UNIT OPENER, a short lesson at the bakery counter.
+     The muffin tin has ten cups, two rows of five; we count them. Seven pink cupcakes: three cups are empty; three blue fill it. "Seven and three make ten!"
+     The call-and-answer song "Friends of ten" (stand up). Six needs four. Then his turn: eight in the tin, he shows how many more make ten on his fingers.
+     He taps the big arrow to go on. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css"><link rel="stylesheet" href="hands-side.css">
+<style>#go{ visibility:hidden; animation:pulse 1.2s infinite; } #go.on{ visibility:visible; } #hp[hidden], #check[hidden], .sum[hidden]{ display:none; } </style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="sum" id="sum" hidden></div>
+    <div id="hp" hidden></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button id="go" class="bigbtn btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './bakery10.js';
+const $ = id => document.getElementById(id);
+let K, H, done, asking = false;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function sum(a, b) { $('sum').hidden = false; $('sum').innerHTML = '<span class="p pink">' + U5.num(a, '#FF5C9A') + '</span><span class="op">+</span><span class="p blue">' + (b == null ? '<b>?</b>' : U5.num(b, '#2F8FEF')) + '</span><span class="op">=</span><span class="p ten">' + U5.num(10) + '</span>'; }
+async function fill(a) { for (let i = a; i < 10; i++) await K.add(i); }
+const count = j => FR.say(FR.Word(j + 1) + (j === 9 ? '!' : ','), { noRepeat: true });
+const SLIDES = [
+  async F => { K.setTin(0); await F.say('Welcome to the bakery! Look at this tin.'); await F.say('Two rows of five cups. Count with me.'); await K.countEmpty(count); K.unglow(); await F.say('Ten cups. A full tin is ten!'); },
+  async F => { K.setTin(7); sum(7, null); await F.say('Seven pink cupcakes. Are there empty cups?'); const e = await K.countEmpty(j => F.say(F.Word(j + 1) + ',', { noRepeat: true })); K.unglow();
+    await F.say(F.Word(e) + ' cups are empty.'); await fill(7); K.celebrate(); sum(7, 3); await F.say('Seven and three make ten!'); await F.say('Seven and three are friends of ten.'); },
+  async F => { $('sum').hidden = true; await F.say('A song! I sing seven. You sing three!'); await F.chant('Seven and...', true, 'three make ten!'); },
+  async F => { K.setTin(6); sum(6, null); await F.say('Six cupcakes. Six needs four.'); await fill(6); K.celebrate(); sum(6, 4); await F.say('Six and four make ten! Friends again.'); },
+  async F => { K.setTin(8); sum(8, null); await F.say('Your turn! Eight in the tin.'); asking = true; $('hp').hidden = $('check').hidden = false; $('go').hidden = true;
+    await F.say('How many more make ten? Show me.', { repeat: 'Count the empty cups. Show me on your fingers.' }); }
+];
+FR.game({
+  id: 'u10-opener', title: 'Friends of Ten', rounds: SLIDES.length, stars: () => 3,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""><img src="art/dovid-happy.png" alt="" style="height:86%"></div>',
+  endSay: () => "Great! Now let's fill the tin!",
+  init() {
+    K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = FR.fingers(0, true); $('hp').appendChild(H.el);
+    $('go').addEventListener('click', () => { if (GAME.phase !== 'answer' || asking) return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; const d = done; done = null; d(true); });
+    $('check').addEventListener('click', async () => { NK.unlock(); if (GAME.phase !== 'answer' || !asking) return; GAME.phase = 'busy';
+      if (H.count() !== 2) { FR.oops($('check')); await FR.say("Let's look. Count the empty cups."); await K.countEmpty(j => FR.say(FR.Word(j + 1) + (j === 1 ? '.' : ','), { noRepeat: true })); K.unglow();
+        H.set(0); await FR.say('Show me on your fingers.'); GAME.phase = 'answer'; return; }
+      asking = false; await fill(8); K.celebrate(); sum(8, 2); await FR.yes($('check'), 'Yes! Eight and two make ten!'); const d = done; done = null; d(true); });
+  },
+  round: (F, i) => new Promise(async res => {
+    GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on'); await SLIDES[i](F); done = res; GAME.phase = 'answer'; F.lock(false);
+    if (asking) { GAME.right = () => FR.fingerTaps(H, 2, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, 1, '#hp').concat([{ tap: '#check' }]); }
+    else { GAME.right = () => [{ tap: '#go' }]; GAME.wrong = null; $('go').classList.add('on'); }
+  })
+});
+</script>
+</body>
+</html>

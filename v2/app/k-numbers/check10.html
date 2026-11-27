@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me: Friends of ten — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 10 MASTERY CHECK ("Show me"), from the map: for any number 1-9, he knows how many more make ten.
+     The tin has some pink cupcakes; he shows on two hands how many more make ten and taps the check; then the blue ones drop in to prove it.
+     A slip: the empty cups light up one by one as we count them, and he tries again. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css"><link rel="stylesheet" href="hands-side.css">
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="sum" id="sum"></div>
+    <div id="hh"></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './bakery10.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function sum(a, b) { $('sum').innerHTML = '<span class="p pink">' + U5.num(a, '#FF5C9A') + '</span><span class="op">+</span><span class="p blue">' + (b == null ? '<b>?</b>' : U5.num(b, '#2F8FEF')) + '</span><span class="op">=</span><span class="p ten">' + U5.num(10) + '</span>'; }
+function hooks() { const k = 10 - R.n; GAME.right = () => H.moves(k, '#hh').concat([{ tap: '#check' }]); GAME.wrong = () => H.moves(k === 1 ? 2 : k - 1, '#hh').concat([{ tap: '#check' }]); }
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const k = 10 - R.n, have = H.count();
+  if (have === k) { await K.cover(false); for (let i = R.n; i < 10; i++) await K.add(i); K.celebrate(); sum(R.n, k); await FR.yes($('check'), FR.Word(R.n) + ' and ' + FR.word(k) + ' make ten!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++; if (R.hide) { await FR.say("Let's look under the cloth."); await K.cover(false); } await FR.say("Count the empty cups.");
+  await K.countEmpty(j => FR.say(FR.Word(j + 1) + (j === k - 1 ? '.' : ','), { noRepeat: true })); K.unglow();
+  await FR.say(have < k ? 'Put up ' + FR.word(k - have) + ' more.' : 'Put ' + FR.word(have - k) + ' down.'); open();   /* the cloth stays off: he has seen it now */
+}
+const PLAN = [6, 3, 9, 5, 2, 8, 4, 7];   /* the last four: the tin is under a cloth (MAP: ten-frame hidden) */
+function play(F, i) {
+  return new Promise(async res => {
+    R = { n: PLAN[i], hide: i >= 4, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true); await K.cover(false); K.setTin(R.n); sum(R.n, null);
+    if (i === 4) await F.say('Now harder! Can you do it without looking?');
+    await F.say(F.Word(R.n) + ' in the tin.'); if (R.hide) await K.cover(true); open();
+    await F.say('How many more make ten? Show me.', { repeat: F.Word(R.n) + ' and how many make ten? Show me.' });
+  });
+}
+FR.game({
+  id: 'u10-check', title: 'Show Me!', rounds: 8,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() { K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = U5.hands(0, true); $('hh').appendChild(H.el); $('check').addEventListener('click', check); },
+  demo: async F => {
+    R = { n: 7 }; K.setTin(7); sum(7, null);
+    await F.say('Show me what you know! Watch me first.'); await F.say('Seven in the tin. Seven needs three.');
+    await F.handTo(H.el, .3, .6); for (let k = 1; k <= 3; k++) { await F.handTap(); H.set(k); NK.sound.pop(); } await F.handTo($('check')); await F.handTap(); F.handHide();
+    for (let i = 7; i < 10; i++) await K.add(i); K.celebrate(); sum(7, 3); await F.say('Seven and three make ten!'); H.set(0);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You know the friends of ten! Unit ten done!' : 'Good try! Let\'s practise and come back.',
+  practice: 'fill10.html'
+});
+</script>
+</body>
+</html>
