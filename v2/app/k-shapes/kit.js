@@ -1549,7 +1549,7 @@ export function startGame(cfg) {
     }
     else if (M.pattern) {   /* a friend's bead string with one wrong bead */
       setPattern({ seq: M.pattern.seq, blanks: 0, tray: [] }); ghost.visible = false;
-      PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
+      if (!M.wide) PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);   /* M.wide: the long train stays where it was, seen whole */
     }
     else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; if (p[4]) d.turn.rotation.x = p[4]; }   /* p[4]: tipped toward him, so an upside-down cone shows its round base (it never looks like a flat triangle) */
     let side = null;   /* M.beside: a second piece next to it, to compare with (big and small: a ball is only big next to a small one) */
@@ -1557,8 +1557,9 @@ export function startGame(cfg) {
     if (M.beside) { side = makeShape('mk2', M.beside[0], M.beside[3] || '#FF7A1A', M.beside[1], 1); side.slot = null; side.busy = true; side.g.position.set(SX, 2.05, 0.9); side.g.scale.setScalar(0.01); }
     const joinSide = (on) => side ? tween(700, k => { const e = ease(k); const sx = SX; side.g.position.x = on ? sx + (d.g.position.x - sx) * e : d.g.position.x + (sx - d.g.position.x) * e; }).then(() => { pop(); return wait(on ? 600 : 0); }) : null;   /* M.join: the second piece slides onto the first (two triangles make a square), and back */
     const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
-    if (!M.where && !M.measure && !M.balance) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
-    if (M.where || M.measure || M.balance) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
+    if (!M.where && !M.measure && !M.balance && !M.wide) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
+    if (M.wide) { friend.position.copy(mendyAt()); if (PAINTED && PATTERNED) friend.position.add(new THREE.Vector3(0.75, 0, 1.9)); if (tall) friend.position.set(-1.6, 0, 2.6); friend.rotation.set(tall ? -0.6 : 0, tall ? -0.35 : 0.5, 0); friend.visible = true; mendy.visible = false; }   /* M.wide: the friend stands where Mendy stood, in front of the whole train, never hidden behind it */
+    else if (M.where || M.measure || M.balance) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
       if (side) d.g.position.x = M.join ? -0.1 : (tall ? 0.35 : 0.6);   /* big and small: clear of the friend */
       camTo('close', 1000).then(() => tween(500, k => { d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))); if (side) side.g.scale.setScalar(Math.max(0.01, ease(k) * (M.beside[2] || 0.5))); })); }
