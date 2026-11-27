@@ -76,7 +76,7 @@ const hunt = {
     world(G) { const W = base(G.S, 'pond', { clearW: 7 }); tree(G.S, -9, -6, { s: 1.5 }); tree(G.S, 9, -6, { s: 1.6, c1: 0x13924A, c2: 0x9BE94F }); pond(G.S, 0, -1.6, 2.4, 2.4);
       G.view({ wide: [0, 2.2, 11.4, 6.0, 0.2], narrow: [0, 2.4, 5.4, 8.4, 0.24] }); G.mendyAt = { wide: [-5.0, 0.5, 0.85], narrow: [-1.55, 4.6, 0.4] }; return W; },
     async play(G) {
-      const S = G.S, n = () => G.narrow(), set = huntSet('o', 6);
+      const S = G.S, n = () => G.narrow(), set = shuffle([...START.o.filter(w => w !== 'octopus').map(w => [w, true]), ...shuffle(others('o')).slice(0, 3).map(w => [w, false])]); /* the octopus himself is not one of the pictures */
       const oc = prop('octopus'); S.scene.add(oc); const ocAt = () => n() ? V(0, 0.9, 1.9) : V(0, 0.9, 0.6); oc.position.copy(ocAt()); oc.scale.setScalar(n() ? 1.2 : 1.5);
       S.tick(t => { oc.userData.inner.rotation.z = Math.sin(t * 1.4) * 0.06; oc.userData.inner.position.y = Math.sin(t * 2) * 0.06; });
       const ring = (i, m) => { const a = Math.PI * (0.12 + 0.76 * i / (m - 1)); return n() ? V(Math.cos(a) * -1.5, 2.6 + Math.sin(a) * 1.9, 0.2) : V(Math.cos(a) * -4.0, 1.1 + Math.sin(a) * 2.6, -0.4); };
@@ -119,7 +119,7 @@ const hunt = {
       const S = G.S, n = () => G.narrow(), bAt = i => n() ? V(-1.3 + i * 1.3, 0, 0.9 + (i % 2) * 0.6) : V(-3.0 + i * 3.0, 0, 0.4);
       const bm = toon(0x3DAE4A, { rough: .6, sheen: .5 }), bushes = [0, 1, 2].map(i => { const g = new THREE.Group(); [[0, 0.5, 0, 0.62], [-0.5, 0.4, 0.1, 0.45], [0.5, 0.4, 0.1, 0.45], [0, 0.85, 0.05, 0.42]].forEach(([x, y, z, r]) => { const b = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 12), bm); b.position.set(x, y, z); b.castShadow = true; g.add(b); });
         [[-0.3, 0.7], [0.35, 0.55], [0.05, 1.05]].forEach(([x, y]) => { const f = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 8), toon(0xFFF0F6)); f.position.set(x, y, 0.5); g.add(f); }); g.position.copy(bAt(i)); g.scale.setScalar(n() ? 0.62 : 1); S.scene.add(g); return g; });
-      const cat = prop('cat'); S.scene.add(cat); const cAt = () => n() ? V(1.45, 0.6, 2.6) : V(4.6, 0.6, 1.4); cat.position.copy(cAt()); cat.scale.setScalar(0.9);
+      const cat = prop('cat'); S.scene.add(cat); const cAt = () => n() ? V(1.45, 0.6, 2.6) : V(3.9, 0.6, 1.6); cat.position.copy(cAt()); cat.scale.setScalar(0.9);
       G.W.layout = () => { bushes.forEach((b, i) => { b.position.copy(bAt(i)); b.scale.setScalar(n() ? 0.62 : 1); }); cat.position.copy(cAt()); };
       const yes = shuffle(START.c.filter(w => w !== 'cat')), no = shuffle(others('c'));
       G.rounds(3); await G.say('Pictures are playing peek-a-boo!', 'Tap the ones that start with this sound.', snd('c'));
@@ -128,7 +128,7 @@ const hunt = {
       /* the peek loop: one picture at a time; every other one starts with c */
       const peek = async () => { const isYes = k % 2 === 1, w = isYes ? yes[(k >> 1) % yes.length] : no[(k >> 1) % no.length], bi = Math.floor(rnd(0, 3)) % 3, b = bushes[bi]; k++;
         const it = G.item(w, () => b.position.clone().add(V(0, n() ? 1.0 : 1.4, n() ? 0.1 : 0.2)), { size: n() ? 0.7 : 0.95, data: { yes: isYes } }); cur = it; it.say();
-        const T0 = S.t, stay = FAST ? 3.0 : 3.2; it.data.until = T0 + stay; await new Promise(res => { const id = setInterval(() => { if (it.data.hit || S.t - T0 > stay || got >= 3) { clearInterval(id); res(); } }, 50); });
+        const T0 = S.t, stay = 3.6; it.data.until = T0 + stay; await new Promise(res => { const id = setInterval(() => { if (it.data.hit || S.t - T0 > stay || got >= 3) { clearInterval(id); res(); } }, 50); });
         if (!it.data.hit) { cur = null; await it.remove(200); } };
       const setExp = () => { const c2 = cur && cur.live && !cur.data.hit && (cur.data.until || 1e9) - S.t > 1.2 ? cur : null;   /* not while it is about to hide */ G.expect(c2 && c2.data.yes ? { kind: 'tap', at: c2 } : { kind: 'wait' }); G.A.wrongMove = c2 && !c2.data.yes ? { kind: 'tap', at: c2 } : null; };
       const timer = setInterval(setExp, 120);

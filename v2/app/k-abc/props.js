@@ -303,6 +303,10 @@ Object.assign(B, {
     const r2 = mesh(new THREE.IcosahedronGeometry(0.22, 1), mat(0xB8C0C8, { rough: .8 }), 0.55, -0.2, 0.15); G.add(r2); return G; },
   lock() { const G = new THREE.Group(); G.add(mesh(box(0.7, 0.55, 0.25), mat(0xFFC93C, { clear: 1, rough: .2, metal: .5 }), 0, -0.2, 0));   /* a padlock */
     G.add(mesh(tor(0.24, 0.07, Math.PI), mat(0xB8C0C8, { metal: .7, rough: .2 }), 0, 0.08, 0)); const kh = mesh(cyl(0.06, 0.06, 0.04, 14), mat(0x5A4010), 0, -0.2, 0.14); kh.rotation.x = Math.PI / 2; G.add(kh); return G; },
+  olive() { const G = new THREE.Group(), m = mat(0x6E8A2A, { clear: 1, rough: .2 });   /* two green olives on a little sprig */
+    [[-0.22, -0.1, 0.1], [0.2, -0.2, 0]].forEach(([x, y, z]) => { const o = mesh(sph(0.3, 24), m, x, y, z); o.scale.set(0.85, 1.1, 0.85); G.add(o); });
+    G.add(tube([[0, 0.55, 0], [-0.05, 0.3, 0], [-0.2, 0.2, 0.05]], 0.03, mat(0x7A5230))); G.add(tube([[0, 0.45, 0], [0.18, 0.12, 0]], 0.03, mat(0x7A5230)));
+    [-1, 1].forEach(s2 => { const l = mesh(sph(0.16, 14), mat(0x8FB85A), s2 * 0.2, 0.5, 0); l.scale.set(1.6, 0.4, 0.6); l.rotation.z = s2 * 0.5; G.add(l); }); return G; },
   card() { const G = new THREE.Group(), sh = new THREE.Shape(), w = 1.0, h = 0.42, r = 0.16;   /* a blank cream word card (the word tiles sit on it) */
     sh.moveTo(-w + r, -h); sh.lineTo(w - r, -h); sh.quadraticCurveTo(w, -h, w, -h + r); sh.lineTo(w, h - r); sh.quadraticCurveTo(w, h, w - r, h); sh.lineTo(-w + r, h); sh.quadraticCurveTo(-w, h, -w, h - r); sh.lineTo(-w, -h + r); sh.quadraticCurveTo(-w, -h, -w + r, -h);
     G.add(mesh(ext(sh, 0.08, 0.04), mat(0xFFE9A8, { rough: .5, clear: .6 }))); return G; },
@@ -333,7 +337,7 @@ export const WORDS = {
   dog: { say: 'dog', beats: ['dog'] }, duck: { say: 'duck', beats: ['duck'] }, door: { say: 'door', beats: ['door'] }, donut: { say: 'donut', beats: ['do', 'nut'] },
   pin: { say: 'pin', beats: ['pin'] }, tin: { say: 'tin', beats: ['tin'] }, mat: { say: 'mat', beats: ['mat'] }, mailbox: { say: 'mailbox', beats: ['mail', 'box'] },
   grapes: { say: 'grapes', beats: ['grapes'] }, gate: { say: 'gate', beats: ['gate'] }, gift: { say: 'gift', beats: ['gift'] },
-  octopus: { say: 'octopus', beats: ['oc', 'to', 'pus'] }, otter: { say: 'otter', beats: ['ot', 'ter'] }, ox: { say: 'ox', beats: ['ox'] },
+  octopus: { say: 'octopus', beats: ['oc', 'to', 'pus'] }, olive: { say: 'olive', beats: ['ol', 'ive'] }, otter: { say: 'otter', beats: ['ot', 'ter'] }, ox: { say: 'ox', beats: ['ox'] },
   kite: { say: 'kite', beats: ['kite'] }, key: { say: 'key', beats: ['key'] }, kettle: { say: 'kettle', beats: ['ket', 'tle'] }, kitten: { say: 'kitten', beats: ['kit', 'ten'] },
   egg: { say: 'egg', beats: ['egg'] }, elephant: { say: 'elephant', beats: ['el', 'e', 'phant'] }, envelope: { say: 'envelope', beats: ['en', 've', 'lope'] },
   cup: { say: 'cup', beats: ['cup'] }, carrot: { say: 'carrot', beats: ['car', 'rot'] }, cap: { say: 'cap', beats: ['cap'] },

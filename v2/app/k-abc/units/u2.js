@@ -26,7 +26,7 @@ const snd = ch => echo(() => audio.letter(ch));
 export const KEYWORD = { s: 'snake', a: 'apple', t: 'tree', p: 'pinwheel', i: 'inchworm', n: 'net', m: 'mountain', d: 'drum', g: 'grapes', o: 'octopus', c: 'cat', k: 'kite', e: 'egg' };
 export const START = { s: ['sun', 'sock', 'soup', 'snake'], a: ['apple', 'ant', 'alligator', 'anchor'], t: ['top', 'tent', 'turtle', 'teapot'], p: ['pot', 'pear', 'pan', 'pumpkin', 'penguin'],
   i: ['igloo', 'inchworm', 'iguana'], n: ['nest', 'net', 'noodles'], m: ['moon', 'mop', 'mug', 'mouse', 'milk', 'mitten', 'mailbox'], d: ['dog', 'duck', 'door', 'donut', 'dish'],
-  g: ['goat', 'grapes', 'gate', 'gift'], o: ['octopus', 'otter', 'ox'], c: ['cat', 'cup', 'carrot', 'cap', 'cake', 'car'], k: ['kite', 'key', 'kettle', 'kitten', 'kippah'], e: ['egg', 'elephant', 'envelope'] };
+  g: ['goat', 'grapes', 'gate', 'gift'], o: ['octopus', 'otter', 'ox', 'olive'], c: ['cat', 'cup', 'carrot', 'cap', 'cake', 'car'], k: ['kite', 'key', 'kettle', 'kitten', 'kippah'], e: ['egg', 'elephant', 'envelope'] };
 export const OTHER = ['cat', 'bee', 'fish', 'hat', 'goat', 'bell', 'car', 'sun', 'sock', 'pear', 'top'];
 export const others = ch => OTHER.filter(w => !START[ch].includes(w) && WORDS[w] && WORDS[w].say[0] !== ch && !('ck'.includes(ch) && /^[ck]/.test(WORDS[w].say)));   /* c and k say the same sound: a cat is never a "no" for k */
 function clearItems(G) { return Promise.all(G.items.slice().map(i => i.remove())); }
