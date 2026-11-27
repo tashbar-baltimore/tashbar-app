@@ -48,7 +48,7 @@ export function meet(ch) {
       await G.say('This shape is a letter.', 'It shows a sound.');
       await G.say(cap(say(KEYWORD[ch])) + (KEYWORD[ch] === 'grapes' ? ' start' : ' starts') + ' with this sound.', snd(ch), 'Say it with me!', snd(ch), echo(() => G.wait(250)), snd(ch));
       /* the mouth picture */
-      const mouth = mouthCard(S, L.mouth), mAt = () => G.narrow() ? V(1.25, 0.95, 1.6) : V(3.8, 3.6, 0.4); mouth.position.copy(mAt()); G.W.layout = () => mouth.position.copy(mAt());
+      const mouth = mouthCard(S, L.mouth), mAt = () => G.narrow() ? V(1.3, 0.55, 2.4) : V(3.8, 3.6, 0.4);   /* on a phone: low and to the side, clear of letters with tails (g, p) */ mouth.position.copy(mAt()); G.W.layout = () => mouth.position.copy(mAt());
       await S.tween(400, e => mouth.scale.setScalar(Math.max(0.0001, e)), ease.back);
       await G.say({ s: 'Teeth together. Let the air hiss out.', a: 'Open your mouth wide, like this.', t: 'Tongue up behind your teeth. Tap!', p: 'Lips together, then pop!',
         i: 'A little smile. Short and quick!', n: 'Tongue up. Hum through your nose.', m: 'Lips together. Hum!', d: 'Tongue up, then drop it. Quick!',

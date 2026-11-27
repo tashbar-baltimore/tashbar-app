@@ -264,9 +264,9 @@ export function worldK(S) {
 }
 /* e: an egg: the line across, then around the egg's shell; a little chick peeks out at the end */
 export function worldE(S) {
-  const shell = C(0xFFF2DA), spot = C(0xF6C9A8); let wob = 0, hatch = 0;
+  const shell = C(0xF2C98E), spot = C(0xB8743E);   /* a warm brown egg, so it stands out on the bright grass */ let wob = 0, hatch = 0;
   const W = simpleWorld(S, { ch: 'e', pal: 'golden', trees: [[-9, -5, { s: 1.6, c1: 0x5A9E2A, c2: 0xD8E04A }], [9.5, -6, { s: 1.4, c1: 0x6AAE2A, c2: 0xF2C84A }]], every: 0.8,
-    style: [{ r: 0.26, col: (t, n, c) => c.copy(shell).lerp(spot, Math.sin(t * 37) > 0.85 ? 0.7 : 0).lerp(C(0xFFFFFF), Math.max(0, n.z) * 0.3), em: 0x221A10 }],
+    style: [{ r: 0.26, col: (t, n, c) => c.copy(shell).lerp(spot, Math.sin(t * 37) > 0.85 ? 0.7 : 0).lerp(C(0xFFF0D8), Math.max(0, n.z) * 0.25) }],
     hero: (S2, st) => { const c0 = new THREE.Vector3(); st[0].forEach(p => c0.add(p)); c0.divideScalar(st[0].length);
       const nest = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.22, 10, 30), toon(0xB07A3A, { rough: .9 })); nest.rotation.x = Math.PI / 2.3; nest.position.set(c0.x + 2.4, 0.5, 0.6); S2.scene.add(nest);
       const egg = new THREE.Mesh(new THREE.SphereGeometry(0.42, 24, 16), toon(0xFFF6E6, { clear: .8 })); egg.scale.set(0.85, 1.1, 0.85); egg.position.set(c0.x + 2.4, 1.0, 0.6); S2.scene.add(egg);
