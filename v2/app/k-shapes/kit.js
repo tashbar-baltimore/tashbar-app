@@ -550,7 +550,7 @@ export function startGame(cfg) {
   function goHome(o) { return moveTo(o, o.home, 420, 0.4).then(() => { if (LK) LK.squash(o.g, o.scale, 0.22); }); }
 
   canvas.addEventListener('pointerdown', e => {
-    ac(); if (SHOT && !handOn) hand.style.display = 'none'; if (glowHeld) { glowHeld = false; if (PS) coreGlow(false); }
+    ac(); if (SHOT && !handOn) hand.style.display = 'none'; if (glowHeld) { glowHeld = false; if (PS) coreGlow(false); } if (helpRings.length) ringsOff();
     if (cornerTap) { cornerTap(e.clientX, e.clientY); return; }
     if (shapeTap) { shapeTap(e.clientX, e.clientY); return; }
     if (chantOn) { boyClap(); return; }
@@ -850,7 +850,7 @@ export function startGame(cfg) {
   const ghost = (LK && LK.treasures.marker && LK.treasures.marker()) || new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.05, 12, 40), new THREE.MeshBasicMaterial({ color: '#F5B400' })); ghost.visible = false; scene.add(ghost);
 
   function setPattern(R) {
-    if (PS) { PS.parts.forEach(p => scene.remove(p)); } shapes.splice(0).forEach(o => scene.remove(o.g));
+    ringsOff(); if (PS) { PS.parts.forEach(p => scene.remove(p)); } shapes.splice(0).forEach(o => scene.remove(o.g));
     const n = R.seq.length, parts = [], beads = [];
     patN = R.copy ? 0 : n;
     const z = R.copy ? STR().copyZ : null;
@@ -891,6 +891,10 @@ export function startGame(cfg) {
   }
   const wordsOf = (seq, k) => seq.slice(0, k).map(t => BEADS[t].word).join(', ');
   let glowHeld = false;   /* pictures (shot=1): the help glow stays until his next touch, like the hand */
+  let helpRings = [];   /* copy: after a miss a thick gold ring sits on the cupcake to copy AND on the same one in the tray, so he sees WHICH one (review round 2) */
+  function ringsOff() { helpRings.forEach(r => { if (r.parent) r.parent.remove(r); }); helpRings = []; }
+  function ringOn(target) { if (!target) return; const r = new THREE.Mesh(new THREE.TorusGeometry(tall ? 0.42 : 0.55, tall ? 0.06 : 0.075, 12, 48), new THREE.MeshBasicMaterial({ color: '#FFB000', depthTest: false, transparent: true, opacity: 1 })); r.renderOrder = 999;   /* drawn after the soft glow, so the whole ring shows */
+    if (target.g) { r.position.set(0, 0.05, 0.1); target.g.add(r); } else { r.position.copy(target.position); r.position.z += 0.1; scene.add(r); } helpRings.push(r); }
   function coreGlow(on) { const c = PS.R.core || 2; (PS.R.copy && PS.model && PS.model.length ? PS.model.slice(Math.min(PS.next, PS.model.length - 1), Math.min(PS.next, PS.model.length - 1) + 1) : PS.beads.slice(0, c)).forEach(m => { if (m.userData.glow) { m.userData.glow(on); return; } m.material.emissive = new THREE.Color(on ? '#FFC400' : '#000000'); m.material.emissiveIntensity = on ? 0.5 : 0; }); }   /* world items glow with a soft halo behind them, so their own colour never changes (a red car stays red) */
   function patternRound(R, bonus, help) {
     return new Promise(resolve => {
@@ -916,9 +920,9 @@ export function startGame(cfg) {
         if (!bonus) W.misses++; chime(false); goHome(o);
         /* the first miss already SHOWS how (K-CLARITY-RULES 16): the part that repeats glows while the pattern is sung; fixing: the ring sits on the wrong one */
         const rightOne = shapes.find(x => x.box === 0 && !x.inBox && x.g.visible);   /* the first miss also points at the one that fits (review round 2) */
-        const steps = ['Not that one.', () => coreGlow(true), ...(R.copy ? ['Look at the pattern above.'] : []), () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, null), () => wait(900), () => { if (SHOT) glowHeld = true; else coreGlow(false); }];   /* the glow stays a moment after the song, so he sees the part that repeats */
+        const steps = ['Not that one.', () => { coreGlow(true); if (R.copy && PS.model) { ringsOff(); ringOn(PS.model[Math.min(PS.next, PS.model.length - 1)]); ringOn(rightOne); } }, ...(R.copy ? ['Look at the pattern above.'] : []), () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, null), () => wait(900), () => { if (SHOT) glowHeld = true; else coreGlow(false); }];   /* the glow stays a moment after the song, so he sees the part that repeats */
         if (R.fixAt != null && !PS.showRing) steps.push(() => { PS.showRing = true; markNext(); }, 'The wrong one is in the ring.');
-        if (R.fixAt == null && rightOne) steps.push('This one fits.', () => pointAt(rightOne, true, slotAt(PS.next, PS.n, PS.z)));
+        if (R.fixAt == null && rightOne) steps.push('This one fits.', () => pointAt(rightOne, true, slotAt(PS.next, PS.n, PS.z)), () => { if (!SHOT) ringsOff(); });
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember, () => coreGlow(true), () => say(wordsOf(R.seq, R.core || 2) + ' repeats.'), () => wait(600), () => coreGlow(false)); }
         steps.push(...ask);
         play(steps);
