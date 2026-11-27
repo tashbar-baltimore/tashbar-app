@@ -375,5 +375,6 @@ Buttons: only the button system (src/UiKit.html, window.TLK, docs/BUTTON-SYSTEM.
 - Old PRs #1, #2, #44, #167, #180, #256, #297 and #456 stay closed.
 - 2.0 stays waiting; the try-out inside 1.0 is gap D3.
 - Quiet mode (#469) is on hold.
+- A unit holds ONE Writing Workshop piece. When the map plans 2 or more real tasks for a unit, make that one piece a choice between them (HoS, 27 Nov). A second piece per unit would need an engine change; not now.
 Anything NEW only the HoS can decide: one question with your recommended answer, in your final message.
 ```

@@ -57,3 +57,7 @@ CORE_SKILLS.W13 = [
   ["WRIT.PARA.L04.12", "Linking Words", "Link opinion and reasons with because, therefore, since and for example", { after: "WRIT.PARA.L04.11", std: "W.3.1c", file: "CoreDataW13H6", min: 7 }],
   ["WRIT.PARA.L04.13", "Concluding Statement", "End an opinion piece with a strong concluding statement", { after: "WRIT.PARA.L04.12", std: "W.3.1d", file: "CoreDataW13H6", min: 7 }]
 ];
+
+/* W13 helper data files with no skill rows of their own (they load with the boy's page): Grade 2-3 quick writes. */
+var CORE_DATA_FILES = (typeof CORE_DATA_FILES !== 'undefined' && CORE_DATA_FILES) || {};
+CORE_DATA_FILES.W13 = ['CoreDataW13H7'];
