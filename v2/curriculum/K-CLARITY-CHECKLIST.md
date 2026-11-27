@@ -86,3 +86,24 @@ Pictures: `v2/screens/k-clarity/numbers-d-<game>-before-chromebook.jpg` and `-af
 New tests: `v2/tests/k-clarity-numbers.js` now checks the orchard (apples never touch, even squeezed; the spread-out row is longer; no apples on the trees; see-saw apples apart) at both sizes. `KNUM_ONLY=a.html,b.html` lets a builder run only some games in `k-numbers-games.js` (unset = every game, as before).
 
 Choices made without asking (as a kindergarten teacher would): the apple tree keeps its leaves but no apples (an apple falling out of a tree is still natural); the see-saw on a phone uses rows of three instead of five, because a five-wide row would make every apple tiny; Unit 8 did not need a bigger change.
+
+## review-numbers: independent review of every Numbers game (Units 1–8)
+
+A fresh reviewer (who built none of it) looked at every game's pictures (a round, right after a wrong move, the end, a phone round) and read every game's spoken lines and wrong-move help, and scored each 1–5: "Would a 5-year-old know exactly what to do, and what is being taught, without an adult?"
+(numbers-a and numbers-d had not marked themselves done; their sections above are complete and they had been idle for hours, so the review went ahead.)
+
+**Round 1 scores**
+
+| Unit | Scores |
+|---|---|
+| 1 | Learn it 4 · Meet 1,2,3 4 · Meet 4 and 5 4 · Match it 4 · Finger flash 4 · Peek 4 · Find the mistake 4 · Show me 4 |
+| 2 | Learn it 4 · Count and jump 4 · What comes next 3 · Countdown 3 · Find the mistake 3 · Count with me 3 |
+| 3 | Learn it 4 · Touch and count 4 · Give me 4 · Mix it up 4 · Find the mistake 3 · Show me 4 · Review 4 |
+| 4 | Learn it 5 · Trace it 4 · Empty plate 3 · Fill the frame 4 · Match the number 4 · Fix the frame 3 · Show me 3 · Review time 4 |
+| 5 | Learn it 4 · Fill the frame 4 · Bead push 4 · Two hands 4 · Trace it 4 · Find the mistake 4 · Review time 3 · Show me 4 |
+| 6 | Learn it 4 · Path race 4 · Where does it go 3 · Big steps 4 · Find the mistake 3 · Review time **2** · Show me 4 |
+| 7 | Learn it 4 · Line them up 3 · Which is more 3 · One more, one less 3 · The see-saw 4 · Find the mistake 3 · Review time 4 · Show me 3 |
+| 8 | Learn it 4 · How many hiding 3 · Shake and spill 3 · Bond builder 3 · Find the mistake 3 · Review time 3 · Show me 3 |
+
+Everything scored 3 or lower is being fixed (rows below), then scored again.
+
