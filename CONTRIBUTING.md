@@ -18,6 +18,7 @@
 - Kodesh content is reviewed by a rebbe after it is live. Say so in the pull request.
 - Every question needs a kid-friendly "How to do it" box.
 - Art (HoS 2026-11-24): every picture, sound and model lives once in the shared library `art/`. Search `art/CATALOG.md` first, add what you make in the same pull request. Rule: CLAUDE.md, "Shared art library".
+- Visual support (HoS 2026-11-27): a question that needs a picture the text only describes (a map, a sequence, a comparison) needs a visual the boy builds as he reads. Every unit gets a Visual Support Plan. Rules: `docs/VISUAL-SUPPORT.md`.
 - Quality guardrails (HoS 2026-11-22): the tests run a quality gate on every lesson and a K–1 games-only check; new lessons must pass every rule, and the to-fix list may only shrink. Look at what a boy sees (pictures in the PR) and get an independent review before you call anything done. Details: CLAUDE.md, "Quality guardrails".
 
 ## Step by step
