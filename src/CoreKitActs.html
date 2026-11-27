@@ -23,7 +23,9 @@
              opens the Reader on the page with the proof; he taps the sentence (3 tries, then the book shows it).
    map       {type:'map', map:'eretz', text:'S.ANCI6.01', steps:[{tap:'lebanon', line:'To the north is Lebanon.', say:'Tap Lebanon.', hint:'...'}], extra:['arabia'], show:[]}
              a map he builds as he reads (docs/VISUAL-SUPPORT.md): each step quotes the book, he taps the place, it locks in with its name.
-             Compass rose and "You are here" always on. Base maps: eretz (the land and its neighbors), waters (its lakes and river), nile (Mitzrayim).
+             Compass rose and "You are here" always on. Base maps: eretz, waters, nile, kingdoms (the four kingdoms and three continents), harbayis.
+   timeline  {type:'timeline', start:'...', end:'...', cards:['Bavel','Persia','Greece','Rome'], open:2, show:[[event, card]], events:[[event, card, hint]]}
+             a timeline he builds as he reads: each event onto its card; cards in order with Start, End and "then" arrows; no dates (HoS).
    No double slash in this file (HtmlService rule). */
 (function () {
   var W = window;
@@ -292,6 +294,28 @@
     nile: { k: 'river', n: 'Nile River', l: [[[24.09, 32.9], [24.45, 32.93], [24.98, 32.87], [25.69, 32.64], [26.16, 32.72], [26.05, 32.24], [26.56, 31.69], [27.18, 31.18], [28.1, 30.75], [29.07, 31.1], [30.05, 31.24], [30.6, 31.3], [31.0, 31.6], [31.42, 31.81]], [[30.05, 31.24], [30.5, 30.9], [31.0, 30.6], [31.4, 30.42]]] },
     strip: { k: 'farm', n: 'Farms and towns', fill: '#8FCB7E', pat: 'dots' },
     yerushalayim: { k: 'city', n: 'Yerushalayim' },
+    med2: { k: 'water', n: 'Mediterranean Sea', pat: 'wave', p: [[43.8, 7.5], [44.4, 8.9], [44.1, 9.8], [44.0, 10.0], [43.55, 10.3], [42.93, 10.5], [42.1, 11.8], [41.73, 12.28], [41.2, 13.57], [40.83, 14.25], [40.65, 14.75], [40.0, 15.5], [39.3, 16.05], [38.6, 15.85], [38.1, 15.65], [37.93, 16.06], [38.4, 16.55], [39.08, 17.13], [39.9, 16.6], [40.47, 17.2], [40.1, 17.9], [39.8, 18.36], [40.65, 17.94], [41.13, 16.87], [41.9, 16.18], [42.0, 15.0], [42.46, 14.21], [43.62, 13.51], [44.1, 12.6], [44.5, 12.3], [45.1, 12.4], [45.45, 12.3], [45.65, 13.8], [44.87, 13.85], [45.3, 14.4], [44.1, 15.2], [43.5, 16.4], [42.65, 18.1], [42.1, 19.1], [41.3, 19.45], [40.45, 19.5], [39.9, 20.0], [39.5, 20.27], [38.95, 20.75], [38.25, 21.5], [37.65, 21.35], [36.9, 21.7], [36.38, 22.48], [36.9, 22.75], [36.44, 23.2], [37.0, 23.4], [37.65, 24.02], [38.2, 24.1], [38.9, 23.6], [39.4, 22.95], [40.0, 22.6], [40.63, 22.94], [40.3, 23.9], [40.7, 24.4], [40.85, 25.87], [40.6, 26.3], [40.4, 26.6], [39.5, 26.1], [39.3, 26.7], [38.4, 26.9], [37.85, 27.25], [37.03, 27.4], [36.8, 28.2], [36.2, 29.64], [36.6, 30.5], [36.88, 30.7], [36.55, 32.0], [36.02, 32.8], [36.3, 33.9], [36.8, 34.6], [36.75, 35.4], [36.6, 36.17], [36.2, 35.95], [35.52, 35.78], [34.9, 35.88], [34.45, 35.82], [33.9, 35.48], [33.27, 35.2], [32.83, 34.96], [32.08, 34.77], [31.5, 34.45], [31.28, 34.24], [31.13, 33.8], [31.15, 32.9], [31.26, 32.3], [31.53, 31.5], [31.46, 30.37], [31.2, 29.9], [30.83, 29.0], [31.35, 27.24], [31.57, 25.15], [32.08, 23.96], [32.77, 22.64], [32.9, 21.7], [32.12, 20.07], [31.2, 20.0], [30.75, 20.1], [31.2, 16.6], [32.37, 15.1], [32.9, 13.18], [32.93, 12.08], [33.8, 10.9], [33.88, 10.1], [34.74, 10.76], [35.5, 11.07], [35.83, 10.64], [36.4, 10.6], [37.08, 11.04], [37.27, 9.87], [36.9, 7.77], [36.9, 5.0], [43.2, 5.0], [43.1, 6.0], [43.7, 7.3]] },
+    black: { k: 'water', n: 'Black Sea', p: [[41.2, 29.1], [41.9, 27.98], [42.5, 27.5], [43.2, 27.95], [44.2, 28.65], [45.2, 29.7], [46.5, 30.8], [46.0, 32.0], [45.4, 32.5], [44.5, 33.5], [44.4, 34.2], [45.0, 35.4], [45.4, 36.5], [45.0, 37.3], [44.7, 37.8], [43.6, 39.7], [42.15, 41.67], [41.6, 41.6], [41.02, 40.52], [41.0, 39.7], [40.9, 38.4], [41.3, 36.3], [42.03, 35.15], [41.6, 33.0], [41.45, 31.8], [41.15, 30.0]] },
+    caspian: { k: 'water', n: 'Caspian Sea', p: [[47.5, 48.5], [46.3, 48.0], [45.0, 47.2], [43.8, 47.5], [43.0, 47.5], [42.05, 48.3], [41.2, 49.2], [40.4, 49.9], [40.35, 50.35], [39.8, 49.5], [39.0, 49.2], [38.43, 48.87], [37.47, 49.46], [36.9, 50.65], [36.7, 52.65], [36.85, 53.9], [37.4, 53.9], [38.6, 53.1], [39.4, 53.2], [40.0, 53.0], [40.6, 52.8], [41.7, 52.5], [42.5, 52.6], [43.65, 51.17], [44.5, 50.3], [45.5, 52.8], [46.6, 53.1], [47.5, 51.5]] },
+    gulf: { k: 'water', n: 'the Persian Gulf', p: [[29.95, 48.55], [29.4, 48.0], [28.5, 48.5], [27.0, 49.65], [26.25, 50.2], [25.0, 50.8], [26.15, 51.25], [25.3, 51.6], [24.6, 51.4], [24.2, 52.5], [24.4, 54.4], [25.25, 55.3], [25.8, 56.0], [26.4, 56.4], [25.1, 56.35], [24.35, 56.75], [23.6, 58.6], [22.5, 59.8], [21.0, 59.8], [21.0, 63.0], [25.2, 63.0], [25.3, 60.6], [25.65, 57.77], [27.1, 56.4], [27.18, 56.27], [26.55, 54.88], [27.47, 52.6], [28.97, 50.84], [29.58, 50.52], [30.0, 49.1]] },
+    sicily: { k: 'isle', p: [[38.25, 15.65], [37.5, 15.1], [36.7, 15.1], [37.07, 14.25], [37.5, 13.08], [37.8, 12.45], [38.02, 12.5], [38.12, 13.36], [38.04, 14.02], [38.25, 15.2]] },
+    sardinia: { k: 'isle', p: [[41.25, 9.2], [40.9, 9.7], [40.0, 9.7], [39.15, 9.55], [38.9, 8.6], [39.9, 8.4], [40.6, 8.2], [41.0, 8.6]] },
+    corsica: { k: 'isle', p: [[43.0, 9.4], [42.55, 9.53], [41.4, 9.2], [41.6, 8.8], [42.4, 8.6], [42.95, 9.3]] },
+    crete: { k: 'isle', p: [[35.3, 23.55], [35.55, 24.1], [35.35, 25.1], [35.25, 26.3], [35.0, 26.1], [34.95, 24.75], [35.25, 23.55]] },
+    cyprus: { k: 'isle', p: [[35.15, 32.3], [35.4, 33.0], [35.7, 34.6], [35.0, 34.1], [34.6, 33.0], [34.7, 32.4]] },
+    italy: { k: 'land', n: 'Rome (Italy)', fill: '#F2B8B8', pat: 'stripes', p: [[46.4, 9.0], [46.0, 7.9], [45.8, 7.0], [45.0, 6.7], [44.2, 7.0], [43.8, 7.5], [44.4, 8.9], [44.1, 9.8], [44.0, 10.0], [43.55, 10.3], [42.93, 10.5], [42.1, 11.8], [41.73, 12.28], [41.2, 13.57], [40.83, 14.25], [40.65, 14.75], [40.0, 15.5], [39.3, 16.05], [38.6, 15.85], [38.1, 15.65], [37.93, 16.06], [38.4, 16.55], [39.08, 17.13], [39.9, 16.6], [40.47, 17.2], [40.1, 17.9], [39.8, 18.36], [40.65, 17.94], [41.13, 16.87], [41.9, 16.18], [42.0, 15.0], [42.46, 14.21], [43.62, 13.51], [44.1, 12.6], [44.5, 12.3], [45.1, 12.4], [45.45, 12.3], [45.65, 13.8], [46.5, 13.7], [46.9, 12.2], [46.5, 10.5]] },
+    greece: { k: 'land', n: 'Greece', fill: '#B9D4F2', pat: 'cross', p: [[39.65, 20.15], [39.5, 20.27], [38.95, 20.75], [38.25, 21.5], [37.65, 21.35], [36.9, 21.7], [36.38, 22.48], [36.9, 22.75], [36.44, 23.2], [37.0, 23.4], [37.65, 24.02], [38.2, 24.1], [38.9, 23.6], [39.4, 22.95], [40.0, 22.6], [40.63, 22.94], [40.3, 23.9], [40.7, 24.4], [40.85, 25.87], [41.7, 26.3], [41.55, 24.5], [41.3, 23.5], [41.15, 22.6], [40.95, 21.0]] },
+    persia: { k: 'land', n: 'Persia (Iran today)', fill: '#C9B6E4', pat: 'dots', p: [[39.75, 44.8], [38.3, 44.3], [37.15, 44.8], [36.5, 45.0], [35.9, 45.4], [35.0, 45.9], [34.5, 45.5], [33.6, 45.9], [33.0, 46.3], [32.5, 47.3], [31.7, 47.7], [31.0, 47.7], [30.4, 48.0], [29.95, 48.55], [30.0, 49.1], [29.58, 50.52], [28.97, 50.84], [27.47, 52.6], [26.55, 54.88], [27.18, 56.27], [25.65, 57.77], [25.3, 60.6], [25.2, 63.0], [37.3, 63.0], [37.3, 60.5], [38.1, 57.2], [37.4, 54.6], [36.85, 53.9], [36.7, 52.65], [36.9, 50.65], [37.47, 49.46], [38.43, 48.87], [39.7, 47.9], [38.9, 46.4]] },
+    bavel: { k: 'land', n: 'Bavel (Iraq today)', fill: '#F6D58A', pat: 'stripes', p: [[33.6, 43.6], [33.5, 44.6], [32.5, 46.0], [31.85, 47.3], [30.9, 47.6], [30.95, 46.2], [31.2, 45.2], [31.9, 44.4], [32.6, 44.0], [33.2, 43.5]] },
+    rivers2: { k: 'river', n: 'Tigris and Euphrates', l: [[[38.8, 38.75], [37.03, 37.98], [36.0, 38.4], [35.95, 39.0], [35.33, 40.14], [34.45, 40.92], [34.37, 41.98], [33.42, 43.3], [33.35, 43.78], [32.54, 44.42], [32.03, 44.4], [31.3, 45.28], [31.05, 46.26], [31.0, 47.43], [30.5, 47.8], [29.95, 48.55]], [[37.9, 40.23], [37.33, 42.2], [36.34, 43.13], [34.6, 43.68], [33.35, 44.4], [32.5, 45.83], [31.84, 47.15], [31.0, 47.43]]] },
+    crossroads: { k: 'road', n: 'Roads meet here', l: [[[41.0, 29.0], [39.0, 33.0], [36.8, 36.2], [34.0, 36.0], [32.3, 35.1]], [[30.05, 31.24], [31.0, 33.0], [31.6, 34.8]], [[32.54, 44.42], [34.45, 40.92], [33.5, 36.3], [32.3, 35.4]]] },
+    europe: { k: 'spot', n: 'EUROPE' }, africa: { k: 'spot', n: 'AFRICA' }, asia: { k: 'spot', n: 'ASIA' },
+    harbayis: { k: 'mount', n: 'Har Habayis', fill: '#E3D3A6', pat: 'dots', p: [[31.7806, 35.2338], [31.7802, 35.2366], [31.7763, 35.2372], [31.7761, 35.2342]] },
+    westwall: { k: 'wall', p0: 1, l: [[[31.7806, 35.2338], [31.7761, 35.2342]]] }, northwall: { k: 'wall', p0: 1, l: [[[31.7806, 35.2338], [31.7802, 35.2366]]] },
+    kosel: { k: 'wall', n: 'the Kosel', l: [[[31.7764, 35.23417], [31.7777, 35.23406]]] },
+    eastwall: { k: 'wall', n: 'the east wall', l: [[[31.7802, 35.2366], [31.7763, 35.2372]]] },
+    southwall: { k: 'wall', n: 'the south wall', l: [[[31.7763, 35.2372], [31.7761, 35.2342]]] },
+    oldcity: { k: 'spot', n: 'the Old City' },
     amman: { k: 'spot', n: 'a city east of the Dead Sea' }, arabia: { k: 'spot', n: 'Arabia' }, wdesert: { k: 'spot', n: 'the desert' }, edesert: { k: 'spot', n: 'the desert' }
   };
   (function () { var L = G.nile.l[0].slice(0, 11), w = [], e = [];   /* the green strip: a band along the Nile from the south to Cairo, and the delta */
@@ -301,15 +325,34 @@
   var MAPS = {
     eretz: { lat: [29.0, 35.0], lon: [32.0, 38.6], draw: ['egypt', 'jordan', 'syria', 'lebanon', 'eretz', 'med', 'redsea', 'kinneret', 'deadsea', 'river'], home: [31.55, 34.85, 31.0, 34.75],
       at: { med: [32.7, 33.3], lebanon: [34.0, 35.95, 34.25, 36.05], syria: [33.9, 37.5], jordan: [30.9, 36.6], egypt: [29.9, 33.4], arabia: [29.5, 37.8] } },
-    waters: { lat: [30.6, 33.5], lon: [33.9, 36.7], draw: ['egypt', 'jordan', 'syria', 'lebanon', 'eretz', 'med', 'redsea', 'kinneret', 'deadsea', 'river'], home: [31.25, 34.85, 30.95, 35.0],
+    waters: { lat: [30.6, 33.5], lon: [33.9, 36.7], draw: ['egypt', 'jordan', 'syria', 'lebanon', 'eretz', 'med', 'redsea', 'kinneret', 'deadsea', 'river'], home: [31.25, 34.85, 30.95, 35.0], inset: ['deadsea', 'jordanfall'],
       at: { med: [32.45, 34.35], lebanon: [33.4, 35.4], syria: [33.2, 36.35], jordan: [30.85, 36.25], egypt: [30.75, 34.32], kinneret: [32.8, 35.59, 32.95, 35.25], river: [32.25, 35.56, 32.25, 35.1], deadsea: [31.42, 35.49, 31.4, 35.0], yerushalayim: [31.78, 35.22, 31.78, 34.75], amman: [31.95, 35.93] } },
     nile: { lat: [22.8, 32.6], lon: [28.0, 36.4], draw: ['egypt', 'jordan', 'syria', 'eretz', 'strip', 'med', 'redsea', 'kinneret', 'deadsea', 'river', 'nile'], home: [31.35, 34.85, 32.0, 34.6],
-      at: { egypt: [27.0, 29.4, 24.3, 29.8], jordan: [30.6, 35.9], arabia: [28.4, 35.8], nile: [27.18, 31.18, 25.0, 31.3], med: [31.95, 31.9], redsea: [25.8, 35.3, 25.0, 35.4], strip: [28.6, 30.8, 28.7, 32.3], wdesert: [27.6, 29.0], edesert: [26.7, 33.05] } }
+      at: { egypt: [27.0, 29.4, 24.3, 29.8], jordan: [30.6, 35.9], arabia: [28.4, 35.8], nile: [27.18, 31.18, 25.0, 31.3], med: [31.95, 31.9], redsea: [25.8, 35.3, 25.0, 35.4], strip: [28.6, 30.8, 28.7, 32.3], wdesert: [27.6, 29.0], edesert: [26.7, 33.05] }, inset: ['nile', 'nilelength'] },
+    kingdoms: { lat: [23.0, 47.0], lon: [5.5, 60.0], compass: 'bl', draw: ['egypt', 'italy', 'greece', 'persia', 'bavel', 'eretz', 'med2', 'black', 'caspian', 'gulf', 'redsea', 'sicily', 'sardinia', 'corsica', 'crete', 'cyprus', 'rivers2', 'nile', 'crossroads'], home: [31.6, 35.0, 34.1, 26.0], small: 1.3,
+      at: { europe: [44.3, 22.5], africa: [27.2, 25.5], asia: [31.0, 47.5], crossroads: [31.6, 35.0, 37.6, 37.0], italy: [42.4, 13.4, 43.2, 15.5], greece: [39.5, 22.1, 38.0, 23.6], persia: [32.6, 54.0, 34.0, 51.0], bavel: [32.4, 45.0, 28.5, 42.5], rivers2: [35.0, 40.3, 38.6, 38.5], nile: [27.2, 31.2], egypt: [27.0, 29.5], arabia: [26.0, 41.0], med2: [34.4, 19.5] } },
+    harbayis: { lat: [31.7748, 31.7818], lon: [35.2312, 35.2398], draw: ['harbayis', 'westwall', 'northwall', 'eastwall', 'southwall', 'kosel'], home: null, title: 'Yerushalayim, the Old City',
+      at: { harbayis: [31.7788, 35.2356, 31.7790, 35.2356], oldcity: [31.7770, 35.2324], kosel: [31.7771, 35.23405, 31.7771, 35.2327], eastwall: [31.7783, 35.2369], southwall: [31.7762, 35.2357] } }
+  };
+  var INSET = {   /* small pictures that appear under a map once a place is found (Rule 1: sizes and heights he cannot picture) */
+    jordanfall: function () { var t = function (x, y, s, sz, a, c) { return '<text x="' + x + '" y="' + y + '" font-size="' + sz + '" font-weight="800" text-anchor="' + (a || 'start') + '" fill="' + (c || '#1F2A44') + '" stroke="#FFF8E6" stroke-width="8" paint-order="stroke">' + s + '</text>'; };
+      return '<svg viewBox="0 0 1000 430" role="img" aria-label="A side view: the Kinneret is about 700 feet below sea level and the Dead Sea about 1,400 feet below, so the Jordan River flows downhill from one to the other">' +
+        '<rect width="1000" height="430" fill="#FFF8E6"/>' + t(500, 44, 'Side view: the river flows DOWNHILL', 38, 'middle') +
+        '<line x1="20" y1="100" x2="980" y2="100" stroke="#4F8FC6" stroke-width="5" stroke-dasharray="18 12"/>' + t(30, 88, 'sea level (the Mediterranean)', 28, 'start', '#2F5F8F') +
+        '<path d="M20 120 L120 120 L170 205 L330 205 L760 350 L930 350 L980 300 L980 430 L20 430 Z" fill="#E6D3A8" stroke="#A8977A" stroke-width="4"/>' +
+        '<path d="M170 205 L330 205 L310 225 L190 225 Z" fill="#8EC5EE"/><path d="M760 350 L930 350 L905 375 L785 375 Z" fill="#F7F9FB" stroke="#8796A8" stroke-width="3"/>' +
+        '<path d="M330 207 L760 352" stroke="#1E63B5" stroke-width="9" fill="none"/><path d="M-16 -14L16 0L-16 14Z" fill="#0E3F7A" transform="translate(545 280) rotate(18.6)"/>' +
+        t(24, 168, 'Kinneret: about 700 feet below sea level', 28) + t(560, 255, 'Jordan River', 30, 'end', '#0E3F7A') + t(976, 412, 'Dead Sea: about 1,400 feet below sea level', 28, 'end') + t(976, 322, 'the lowest land on earth', 28, 'end') + '</svg>'; },
+    nilelength: function () { var w = Math.round(880 * 160 / 4100);
+      return '<svg viewBox="0 0 1000 250" role="img" aria-label="How long: the Nile is about 4,100 miles long; the Jordan River is about 160 miles">' + '<rect width="1000" height="250" fill="#FFF8E6"/>' +
+        '<text x="500" y="44" font-size="38" font-weight="800" text-anchor="middle" fill="#1F2A44">How long is each river?</text>' +
+        '<rect x="60" y="76" width="880" height="44" rx="10" fill="#1E63B5"/><text x="70" y="160" font-size="30" font-weight="800" fill="#1F2A44">Nile: about 4,100 miles</text>' +
+        '<rect x="60" y="180" width="' + w + '" height="44" rx="8" fill="#4F8FC6"/><text x="' + (80 + w) + '" y="212" font-size="30" font-weight="800" fill="#1F2A44">Jordan River: about 160 miles</text></svg>'; }
   };
   function proj(m) { var c = Math.cos((m.lat[0] + m.lat[1]) / 2 * Math.PI / 180), k = 1000 / ((m.lon[1] - m.lon[0]) * c);
     return { W: 1000, H: Math.round((m.lat[1] - m.lat[0]) * k), f: function (q) { return [Math.round((q[1] - m.lon[0]) * c * k), Math.round((m.lat[1] - q[0]) * k)]; } }; }
   function mapSteps(d) { return isArr(d.steps) ? d.steps : []; }
-  function mapOpts(d, s, i) { var st = mapSteps(d)[i]; if (!st) return []; if (isArr(st.o)) return st.o.filter(function (x) { return !s.got[x]; });
+  function mapOpts(d, s, i) { var st = mapSteps(d)[i]; if (!st) return []; if (isArr(st.o)) return st.o.filter(function (x) { return !s.got[x] && (d.show || []).indexOf(x) < 0; });
     var o = []; mapSteps(d).forEach(function (x) { if (!s.got[x.tap] && o.indexOf(x.tap) < 0) o.push(x.tap); }); (d.extra || []).forEach(function (x) { if (o.indexOf(x) < 0) o.push(x); }); return o; }
   function gmName(id) { return (G[id] && G[id].n) || id; }
   T.map = {
@@ -339,8 +382,12 @@
         '<rect width="' + P.W + '" height="' + P.H + '" fill="#F2EAD6"/>';
       var tapAttr = function (id) { return opts.indexOf(id) >= 0 ? ' data-gm="' + id + '" style="cursor:pointer"' : ''; };   /* the land or water itself can be tapped too (mount); the pins are the real 46 px buttons */
       m.draw.forEach(function (id) { var f = G[id], lit = on(id);
-        if (f.k === 'farm' && !lit) return;
-        if (f.p) { var fill = f.k === 'water' ? (lit && f.fill ? f.fill : '#8EC5EE') : f.k === 'home' ? f.fill : lit ? f.fill : '#F2EAD6';
+        if ((f.k === 'farm' || f.k === 'road') && !lit) return;
+        if (f.k === 'isle') { g += '<polygon points="' + pts(f.p) + '" fill="#F2EAD6" stroke="#A8977A" stroke-width="2"/>'; return; }
+        if (f.k === 'road') { f.l.forEach(function (L) { g += '<polyline points="' + pts(L) + '" fill="none" stroke="#8A5A2B" stroke-width="7" stroke-dasharray="16 10" stroke-linecap="round" pointer-events="none"/>'; }); return; }
+        if (f.k === 'wall') { f.l.forEach(function (L) { var a = pts(L); if (opts.indexOf(id) >= 0) g += '<polyline points="' + a + '" fill="none" stroke="transparent" stroke-width="70"' + tapAttr(id) + '/>';
+          g += '<polyline points="' + a + '" fill="none" stroke="' + (lit ? '#5B4A30' : '#9C8B6E') + '" stroke-width="' + (lit ? 26 : 16) + '" stroke-linecap="square" pointer-events="none"/>'; }); return; }
+        if (f.p) { var fill = f.k === 'water' ? (lit && f.fill ? f.fill : '#8EC5EE') : f.k === 'home' ? f.fill : lit ? f.fill : f.k === 'mount' ? '#EFE5CC' : '#F2EAD6';
           g += '<polygon points="' + pts(f.p) + '" fill="' + fill + '" stroke="' + (f.k === 'water' ? '#4F8FC6' : '#A8977A') + '" stroke-width="' + (f.k === 'water' ? 2 : 3) + '" stroke-linejoin="round"' + tapAttr(id) + '/>';
           if (lit && f.pat) g += '<polygon points="' + pts(f.p) + '" fill="url(#gm-' + f.pat + ')" pointer-events="none"/>'; }
         if (f.l) f.l.forEach(function (L) { var a = pts(L);
@@ -349,19 +396,22 @@
           if (lit) [0.3, 0.6, 0.85].forEach(function (t) { var i = Math.max(1, Math.round(t * (L.length - 1))), A = P.f(L[i - 1]), B = P.f(L[i]), x = (A[0] + B[0]) / 2, y = (A[1] + B[1]) / 2, r = Math.atan2(B[1] - A[1], B[0] - A[0]) * 180 / Math.PI;
             g += '<path d="M-14 -13L14 0L-14 13Z" fill="#0E3F7A" transform="translate(' + x + ' ' + y + ') rotate(' + r.toFixed(1) + ')"/>'; }); }); });
       Object.keys(m.at).forEach(function (id) { if (G[id].k === 'city' && on(id)) { var q = P.f(m.at[id]); g += '<circle cx="' + q[0] + '" cy="' + q[1] + '" r="13" fill="#C0392B" stroke="#fff" stroke-width="4"/>'; } });
-      var lab = function (q, t, big) { t = S(t); var cut = t.length > 13 ? (t.indexOf(' (') > 0 ? t.indexOf(' (') : t.lastIndexOf(' ')) : -1, L = cut > 0 ? [t.slice(0, cut), t.slice(cut + 1)] : [t], fs = big ? 44 : 38;   /* a long name takes two lines, so it never runs off the map */
+      var lab = function (q, t, big) { t = S(t); var cut = t.length > 13 ? (t.indexOf(' (') > 0 ? t.indexOf(' (') : t.lastIndexOf(' ')) : -1, L = cut > 0 ? [t.slice(0, cut), t.slice(cut + 1)] : [t], fs = (big ? 44 : 38) * (m.small || 1);   /* a long name takes two lines, so it never runs off the map */
         return '<text text-anchor="middle" font-size="' + fs + '" font-weight="800" fill="#1F2A44" stroke="#fff" stroke-width="10" stroke-linejoin="round" paint-order="stroke">' +
           L.map(function (x, i) { return '<tspan x="' + q[0] + '" y="' + Math.round(q[1] + fs * 0.35 + (i - (L.length - 1) / 2) * fs * 1.05) + '">' + E(x) + '</tspan>'; }).join('') + '</text>'; };
-      var h = m.home, hp = P.f(h), hl = P.f([h[2], h[3]]);
-      g += '<path d="' + star(hp[0], hp[1], 26, 11) + '" fill="#E0AE4F" stroke="#1F2A44" stroke-width="3"/>' + lab(hl, 'Eretz Yisroel', true) + lab([hl[0], hl[1] + 46], 'You are here');
+      var h = m.home;
+      if (h) { var hp = P.f(h), hl = P.f([h[2], h[3]]); if (Math.abs(hl[0] - hp[0]) + Math.abs(hl[1] - hp[1]) > 160) g += '<line x1="' + hl[0] + '" y1="' + (hl[1] + 60) + '" x2="' + hp[0] + '" y2="' + hp[1] + '" stroke="#1F2A44" stroke-width="4" stroke-dasharray="10 8"/>';
+        g += '<path d="' + star(hp[0], hp[1], 26, 11) + '" fill="#E0AE4F" stroke="#1F2A44" stroke-width="3"/>' + lab(hl, 'Eretz Yisroel', true) + lab([hl[0], hl[1] + 46], 'You are here'); }
+      if (m.title) g += '<text x="' + (P.W - 24) + '" y="56" text-anchor="end" font-size="40" font-weight="800" fill="#1F2A44" stroke="#fff" stroke-width="10" paint-order="stroke">' + E(m.title) + '</text>';
       Object.keys(m.at).forEach(function (id) { if (!on(id)) return; var a = m.at[id]; g += lab(P.f(a.length > 2 ? [a[2], a[3]] : a), gmName(id)); });
-      g += compass();
+      g += compass(m.compass === 'bl' ? [132, P.H - 142] : null);
       var pins = opts.map(function (id) { var q = P.f(m.at[id]);
         return '<button type="button" class="cka-pin' + (s.bad === id ? ' obk-shake' : '') + (c.hint && cur && id === cur.tap ? ' obk-pulse' : '') + '" data-obk="place" data-k="' + id + '" style="left:' + (q[0] / P.W * 100).toFixed(2) + '%;top:' + (q[1] / P.H * 100).toFixed(2) + '%" aria-label="a place on the map">?</button>'; }).join('');
       var top = done || s.over ? '<div class="cka-gq done"><div class="cka-gt">✓ You built the map!</div></div>' :
         '<div class="cka-gq"><div class="cka-gl">📖 “' + E(cur.line) + '”</div><div class="cka-gt"><span class="cka-gn">' + (s.k + 1) + ' of ' + st.length + '</span> ' + E(cur.say) + '</div></div>';
       var w = Math.min(100, 64 * P.W / P.H);
-      return top + '<div class="cka-gm" style="width:min(100%,640px,' + w.toFixed(1) + 'vh)"><svg viewBox="0 0 ' + P.W + ' ' + P.H + '" role="img" aria-label="A map of ' + E(gmName('eretz')) + ' and the lands around it, north at the top">' + g + '</svg>' + pins + '</div>' +
+      var ins = m.inset && on(m.inset[0]) ? '<div class="cka-gin">' + INSET[m.inset[1]]() + '</div>' : '';
+      return top + '<div class="cka-gm" style="width:min(100%,640px,' + w.toFixed(1) + 'vh)"><svg viewBox="0 0 ' + P.W + ' ' + P.H + '" role="img" aria-label="' + (m.title ? E(m.title) + ', seen from above' : 'A map of Eretz Yisroel and the lands around it') + ', north at the top">' + g + '</svg>' + pins + '</div>' + ins +
         '<p class="obk-count sm" aria-live="polite">Found ' + Math.min(s.k, st.length) + ' of ' + st.length + '</p>'; },
     tap: function (d, s, a, k) { if (a !== 'place') return; var st = mapSteps(d), cur = st[s.k]; if (!cur || s.got[k]) return; s.bad = '';
       if (mapOpts(d, s, s.k).indexOf(k) < 0) return;
@@ -372,7 +422,7 @@
     solve: function (d, s) { mapSteps(d).forEach(function (x) { s.got[x.tap] = 1; }); s.k = mapSteps(d).length; }
   };
   function star(x, y, R, r) { var p = []; for (var i = 0; i < 10; i++) { var t = (i * 36 - 90) * Math.PI / 180, q = i % 2 ? r : R; p.push((x + q * Math.cos(t)).toFixed(1) + ' ' + (y + q * Math.sin(t)).toFixed(1)); } return 'M' + p.join('L') + 'Z'; }
-  function compass() { var x = 132, y = 142, g = '<g aria-label="compass: north is up">' + '<circle cx="' + x + '" cy="' + y + '" r="116" fill="#fff" fill-opacity=".94" stroke="#1F2A44" stroke-width="4"/>';
+  function compass(at) { var x = at ? at[0] : 132, y = at ? at[1] : 142, g = '<g aria-label="compass: north is up">' + '<circle cx="' + x + '" cy="' + y + '" r="116" fill="#fff" fill-opacity=".94" stroke="#1F2A44" stroke-width="4"/>';
     g += '<path d="M' + x + ' ' + (y - 62) + 'L' + (x + 13) + ' ' + y + 'L' + x + ' ' + (y + 62) + 'L' + (x - 13) + ' ' + y + 'Z" fill="#1F2A44"/><path d="M' + (x - 62) + ' ' + y + 'L' + x + ' ' + (y - 13) + 'L' + (x + 62) + ' ' + y + 'L' + x + ' ' + (y + 13) + 'Z" fill="#7A879C"/><path d="M' + x + ' ' + (y - 62) + 'L' + (x + 13) + ' ' + y + 'L' + (x - 13) + ' ' + y + 'Z" fill="#C0392B"/>';
     var t = function (dx, dy, s, sz) { return '<text x="' + (x + dx) + '" y="' + (y + dy) + '" text-anchor="middle" dominant-baseline="middle" font-size="' + sz + '" font-weight="900" fill="#1F2A44">' + s + '</text>'; };
     g += t(0, -92, 'N', 42) + t(0, 94, 'S', 36) + t(92, 2, 'E', 36) + t(-92, 2, 'W', 36) + t(62, -62, 'NE', 25) + t(-62, -62, 'NW', 25) + t(62, 64, 'SE', 25) + t(-62, 64, 'SW', 25);
@@ -382,8 +432,58 @@
     '.cka-gn{display:inline-block;font-size:14px;font-weight:800;color:#fff;background:#3B6FD8;border-radius:999px;padding:2px 10px;margin-right:6px;vertical-align:2px}' +
     '.cka-gm{position:relative;margin:4px auto 0;max-width:100%;border-radius:14px;overflow:hidden;border:3px solid #1F2A44;box-sizing:border-box;touch-action:manipulation}.cka-gm svg{display:block;width:100%;height:auto}' +
     '.cka-pin{all:unset;box-sizing:border-box;position:absolute;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:#fff;border:4px solid #3B6FD8;color:#3B6FD8;font-weight:900;font-size:24px;line-height:38px;text-align:center;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.3)}' +
+    '.cka-gin{width:min(100%,640px);margin:8px auto 0;border-radius:14px;overflow:hidden;border:3px solid #EAD9AE}.cka-gin svg{display:block;width:100%;height:auto}' +
     '.cka-pin:hover{background:#EAF1FF}.cka-pin:focus-visible{outline:4px solid #E0AE4F;outline-offset:2px}' +
     '@media (max-width:480px){.cka-gl{font-size:16px}.cka-gt{font-size:18px}}';
+
+  /* ---------- timeline: he puts each event on its card, in order (Visual support rules, HoS 2026-11-27: before/after, no dates) ---------- */
+  /* {type:'timeline', start:'The first Beis Hamikdash stands', end:'Today: we wait for this galus to end', cards:['Bavel','Persia','Greece','Rome'], open:2,
+      show:[['Nevuchadnetzar destroys the first Beis Hamikdash',0]], events:[['Koresh lets the Jews go home',1,'Reread: Koresh was a king of Persia.']]}
+     The cards stand in time order with "then" arrows, a clear Start and End. Cards past open are greyed "coming next" (the timeline grows lesson by
+     lesson). show = events already on it. He taps an event, then its card (or drags it there). Right: it joins the card. Wrong: the event's hint. */
+  function tlOpen(d) { return Math.min(d.cards.length, num(d.open) ? d.open : d.cards.length); }
+  T.timeline = {
+    err: function (d) { if (!isArr(d.cards) || d.cards.length < 2 || d.cards.length > 6) return 'cards must be a list of 2 to 6 cards, in time order';
+      if (!d.start || !d.end) return 'needs start and end (the anchors at both ends of the timeline)';
+      var o = tlOpen(d); if (o < 1) return 'open must be 1 or more';
+      if (!isArr(d.events) || d.events.length < 2 || d.events.length > 8) return 'events must be a list of 2 to 8 [event, card number]';
+      var e = ''; d.events.concat(d.show || []).forEach(function (x, i) { if (!e && (!isArr(x) || !x[0] || !(x[1] >= 0 && x[1] < o))) e = 'each event is [text, card number from 0], on an open card'; });
+      return e; },
+    opts: function (d) { return d.cards.slice(0, tlOpen(d)); },
+    init: function (d) { return { sel: -1, at: {}, bad: -1, ord: shufNot(idx(d.events.length)) }; },
+    say: function () { return 'Build the timeline. Put each event on its kingdom.'; },
+    how: function () { return 'Tap an event. Then tap the card it belongs on. The cards go in order: first, then next.'; },
+    label: function (d) { return 'Timeline: ' + d.cards.slice(0, tlOpen(d)).join(', '); },
+    view: function (d, s, c) { var o = tlOpen(d), left = d.events.filter(function (x, j) { return s.at[j] == null; }).length;
+      var h = '<div class="cka-tl"><div class="cka-tla">▶ Start: ' + E(d.start) + '</div><div class="cka-tlrow">';
+      d.cards.forEach(function (cd, i) { var off = i >= o, list = [];
+        (d.show || []).forEach(function (x) { if (x[1] === i) list.push('<li class="pre">' + E(x[0]) + '</li>'); });
+        d.events.forEach(function (x, j) { if (s.at[j] === i) list.push('<li class="new">✓ ' + E(x[0]) + '</li>'); });
+        if (i) h += '<span class="cka-tlthen" aria-hidden="true">then</span>';
+        h += '<button type="button" class="cka-tlc' + (off ? ' off' : '') + (c.hint && s.sel >= 0 && d.events[s.sel][1] === i ? ' obk-pulse' : '') + '" data-obk="card" data-k="' + i + '"' + (off ? ' disabled' : ' data-obk-drop="card"') +
+          ' aria-label="card ' + (i + 1) + ': ' + E(cd) + (off ? ', coming next' : '') + '"><b>' + (i + 1) + '. ' + E(cd) + '</b>' + (off ? '<i>coming next</i>' : '<ul>' + list.join('') + '</ul>') + '</button>'; });
+      h += '</div><div class="cka-tla end">' + E(d.end) + ' ■</div></div>';
+      var pool = '';   /* the events sit ABOVE the timeline, so he never scrolls between an event and its card */
+      if (left) { pool = '<p class="obk-note">' + (s.sel >= 0 ? 'Now tap the card it belongs on.' : 'Tap an event:') + '</p><div class="cka-tlpool">';
+        s.ord.forEach(function (j) { if (s.at[j] != null) return; pool += '<button type="button" class="cka-tle' + (s.sel === j ? ' sel' : '') + (s.bad === j ? ' obk-shake' : '') + '" data-obk="ev" data-k="' + j + '" data-obk-drag="ev">' + E(d.events[j][0]) + '</button>'; });
+        pool += '</div>'; }
+      return pool + h; },
+    tap: function (d, s, a, k, drop) { var o = tlOpen(d);
+      var place = function (j, i) { if (i >= o || s.at[j] != null) return; s.sel = -1;
+        if (d.events[j][1] === i) { s.at[j] = i; s.bad = -1; return Object.keys(s.at).length >= d.events.length ? 'ok' : undefined; }
+        s.bad = j; s.msg = d.events[j][2] || 'Reread the book: which kingdom was it? The cards go in order, first to last.'; return 'bump'; };
+      if (a === 'ev') { var j = +k; if (s.at[j] != null) return; if (drop && drop.a === 'card') return place(j, +drop.k); s.bad = -1; s.sel = s.sel === j ? -1 : j; return; }
+      if (a === 'card') { if (s.sel < 0) { s.msg = 'First tap an event. Then tap its card.'; return; } return place(s.sel, +k); } },
+    solve: function (d, s) { d.events.forEach(function (x, j) { s.at[j] = x[1]; }); s.sel = -1; }
+  };
+  CSS += '.cka-tl{width:100%;max-width:640px;margin:0 auto;display:grid;gap:8px}.cka-tla{font-weight:800;font-size:17px;color:#1F2A44;background:#EAF1FF;border:2px solid #9DB7E8;border-radius:12px;padding:8px 12px}.cka-tla.end{text-align:right}' +
+    '.cka-tlrow{display:flex;flex-direction:column;gap:4px}.cka-tlthen{align-self:center;font-weight:900;font-size:14px;color:#3B6FD8;white-space:nowrap}.cka-tlthen:after{content:" ▼"}' +
+    '.cka-tlc{all:unset;box-sizing:border-box;flex:none;min-height:60px;display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:14px;background:#fff;border:3px solid #D9E1EE;cursor:pointer;text-align:left}' +
+    '.cka-tlc b{font-size:18px;color:#1F2A44}.cka-tlc ul{margin:0;padding:0 0 0 16px;font-size:15px;line-height:1.35;color:#33415C}.cka-tlc li.new{color:#1E7A46;font-weight:700}.cka-tlc li.pre{color:#55607A}' +
+    '.cka-tlc.off{background:#F1F1F1;border-style:dashed;cursor:default;opacity:.7}.cka-tlc.off i{font-size:14px;color:#777}.cka-tlc:focus-visible{outline:3px solid #E0AE4F}.cka-tlc.obk-hot{border-color:#3B6FD8}' +
+    '.cka-tlpool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:900px;margin:0 auto}.cka-tle{all:unset;box-sizing:border-box;min-height:48px;padding:10px 14px;border-radius:12px;background:#FFF8E6;border:2px solid #EAD9AE;font-weight:700;font-size:17px;line-height:1.3;color:#1F2A44;cursor:pointer;max-width:100%}' +
+    '.cka-tle.sel{background:#3B6FD8;color:#fff;border-color:#3B6FD8}.cka-tle:focus-visible{outline:3px solid #E0AE4F}' +
+    '';
 
   W.TLCORE = W.TLCORE || {}; W.TLCORE.acts = T;
   /* join the kit as soon as it exists (OneBiteKit.html loads right after the core files).
