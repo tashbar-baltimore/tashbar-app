@@ -40,8 +40,16 @@ CORE_SKILLS.C68 = [
   ["READ.COMP.L07.07", "The Best Quote", "Pick the quote that proves the whole answer best", { std: "RI.6.1", file: "CoreDataC68H7", min: 9 }],
   ["READ.LIT.L07.33", "Archive 4: A Stakeout with Gemaras", "Read Chapter 4 and prove the answer to the mystery", { std: "RL.6.1", file: "CoreDataC68H7", min: 12 }],
   ["READ.COMP.L07.08", "Read It Again, Closer", "Reread one paragraph to catch what a quick read missed", { std: "RL.6.4", file: "CoreDataC68H7", min: 9 }],
-  ["READ.FLU.L07.02", "Voices in the Scene", "Read dialogue so each speaker sounds like himself", { std: "RL.6.10", file: "CoreDataC68H7", min: 9 }]
+  ["READ.FLU.L07.02", "Voices in the Scene", "Read dialogue so each speaker sounds like himself", { std: "RL.6.10", file: "CoreDataC68H7", min: 9 }],
+  ["READ.LIT.L07.34", "Archive 5: Reb Feivel's Table", "Read Chapter 5 and map the characters and the conflict", { after: "READ.LIT.L07.01", std: "RL.6.3", file: "CoreDataC68H8", min: 12 }],
+  ["READ.LIT.L07.02", "Theme, Topic or Moral?", "Tell a theme from a topic or a moral", { std: "RL.6.2", file: "CoreDataC68H8", min: 9 }],
+  ["READ.LIT.L07.35", "Archive 6: Eighteen Dollars a Week", "Read Chapter 6 and find what the story says about life", { std: "RL.6.2", file: "CoreDataC68H8", min: 12 }],
+  ["READ.LIT.L07.03", "Plot in Episodes", "See how a plot unfolds, episode by episode", { std: "RL.6.3", file: "CoreDataC68H8", min: 9 }],
+  ["READ.LIT.L07.36", "Archive 7: The Tailor's Receipt", "Read Chapter 7 and trace the climax and how a character changes", { std: "RL.6.3", file: "CoreDataC68H8", min: 12 }],
+  ["READ.LIT.L07.04", "How a Character Changes", "How a character responds to trouble, and how he changes", { std: "RL.6.3", file: "CoreDataC68H8", min: 9 }],
+  ["READ.LIT.L07.37", "Archive 8: The Anniversary Issue", "Read Chapter 8 and say how the book ends and what it means", { std: "RL.6.2", file: "CoreDataC68H8", min: 12 }],
+  ["READ.LIT.L07.05", "Just the Story", "Summarize a story fairly, without your opinion", { std: "RL.6.2", file: "CoreDataC68H8", min: 9 }]
 ];
 /* Data files that upgrade EXISTING skills to One Bite lessons (TLCORE.upgrade; docs/core-growth/HOW-TO-ADD-A-SKILL.md). */
 var CORE_DATA_FILES = (typeof CORE_DATA_FILES !== 'undefined' && CORE_DATA_FILES) || {};
-CORE_DATA_FILES.C68 = ['CoreDataC68H1', 'CoreDataC68H2', 'CoreDataC68H3', 'CoreDataC68H7'];
+CORE_DATA_FILES.C68 = ['CoreDataC68H1', 'CoreDataC68H2', 'CoreDataC68H3', 'CoreDataC68H7', 'CoreDataC68H8'];
