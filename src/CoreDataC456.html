@@ -253,6 +253,70 @@
           why:{q:'How do you know it is the turn?', o:['He changes what he does, and the map gets better','It is the funniest part','It is the first sentence'], a:'He changes what he does, and the map gets better'}}] }
   };
 
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     Board row R3. Each lesson teaches on its own passage; Show me stays on its cold passage. Old activities are reused where they fit. */
+  function NL(id, x) { var b = BITE[id]; if (!b) return; Object.keys(x).forEach(function (k) { b[k] = x[k]; }); delete b.do; delete b.your; delete b.ready; }
+  function A(id, part, i, over) { var b = BITE[id], src = b && b[part] && b[part][i]; if (!src) return null; var o = JSON.parse(JSON.stringify(src)); Object.keys(over || {}).forEach(function (k) { o[k] = over[k]; }); return o; }
+
+  (function () { var id = 'READ.LIT.L06.07';
+    NL(id, {
+      hook: { kind: 'predict', pic: '🔥', t: '1904: a windy fire races across Baltimore toward a *stream*.', q: 'What happens at the water?',
+        o: ['It jumps right over', 'It stops at the water', 'It turns into rain'], pay: 'It *stopped* at the stream! The *setting* shaped the story.' },
+      learn: [
+        { t: 'The *setting* is where and when. Some details *make things happen*.', act: A(id, 'do', 0, { q: 'The Fire Stops at the Water',
+          say: 'Does each detail *shape* what happens?', how: 'Use the *what-if test*: take it away. Does the story change?' }) },
+        { t: 'Follow the *chain*: the setting, then what it *caused*.', act: A(id, 'your', 2, { q: 'The Fire Stops at the Water',
+          say: 'Build the fire\'s *chain*, in order.', how: 'Start with the *wind*. Ask: *because* of this, what happened?' }) },
+        { who: { q: 'How does the setting shape this story?', o: [['Shaya', 'The setting is Baltimore.'], ['Dani', 'The wind spread the fire, and the stream stopped it.']], a: 1,
+          why: 'Naming the place is not enough. Say what it *made happen*.' } }],
+      play: [
+        A(id, 'your', 0, { why: { q: 'Why is "The seagulls made the fire stop" a mistake?', o: ['Seagulls are only background', 'There were no seagulls', 'It is too short'], a: 'Seagulls are only background' } }),
+        A(id, 'do', 1, { q: 'What did each setting detail cause?', pairs: [['The strong wind', 'The fire spread fast.'], ['A Sunday, offices closed', 'Few people were downtown.'], ['The Jones Falls', 'The fire stopped there.']], how: 'Ask: *because* of this detail, what happened?' }),
+        { type: 'sort', q: 'New story: Shabbos in a snowstorm. The guests cannot come.', bins: ['Shapes what happens', 'Only background'],
+          cards: [['A blizzard closed the roads.', 0], ['The house had blue shutters.', 1], ['The power went out.', 0], ['A clock ticked on the wall.', 1]],
+          say: 'New story! Does each detail *shape* what happens?', how: 'Take it away in your head. Would the story *change*?',
+          why: { q: 'What test did you use?', o: ['Take it away: does the story change?', 'Count the words', 'Look at the title'], a: 'Take it away: does the story change?' } },
+        A(id, 'your', 1, {})],
+      done: 'It *stopped* at the stream. The *wind* spread it, and the *water* stopped it.' }); })();
+
+  (function () { var id = 'READ.LIT.L06.08';
+    NL(id, {
+      hook: { kind: 'compare', pic: '🤝', t: 'Tzvi Hirsch does everything *fast*. Binyamin does everything *slowly*.', q: 'They learn together a month. Then what?',
+        o: ['Tzvi Hirsch changes Binyamin', 'Binyamin changes Tzvi Hirsch', 'They change each other'], pay: 'They change *each other*! Each gives what he is *good at*.' },
+      learn: [
+        { t: 'Map it: each boy *before* and *after*.', act: A(id, 'your', 3, { q: 'Fast and Slow',
+          say: 'Fill in the *before and after* map.', how: 'Which boy? The *start* of the story, or the *end*?' }) },
+        { t: 'What *one* boy does changes the *other*.', act: A(id, 'do', 0, { q: 'Fast and Slow',
+          say: 'What one boy *did*, or how the other *changed*?', how: 'A cause is what one boy *does*. The *change* shows in the *other* boy.' }) },
+        { who: { q: 'How do the boys change each other?', o: [['Avi', 'Tzvi Hirsch is fast, and Binyamin is slow.'], ['Dovi', 'Binyamin slows him down. He helps Binyamin take a chance.']], a: 1,
+          why: 'Avi only *describes* them. Dovi shows *before and after*.' } }],
+      play: [
+        A(id, 'your', 0, { why: { q: 'Why is "Only Binyamin changes" a mistake?', o: ['Tzvi Hirsch changes too', 'Binyamin never changes', 'It is too short'], a: 'Tzvi Hirsch changes too' } }),
+        A(id, 'your', 2, {}),
+        A(id, 'your', 1, { q: 'What did each thing change?', pairs: [['"Let\'s read it twice."', 'Tzvi Hirsch slows down.'], ['The banana story', 'Binyamin dares to answer.'], ['A month of learning together', 'Both boys grow.']] }),
+        { type: 'sort', q: 'New story: Moishy and Zeidy teach each other.', bins: ['Before the change', 'After the change'],
+          cards: [['Zeidy cannot use the tablet.', 0], ['Moishy has never played chess.', 0], ['Zeidy video-calls the family every week.', 1], ['Moishy wins at chess club.', 1]],
+          say: '*Before* the change, or *after*?', how: 'Before: how he was at the *start*. After: what he does *now*.' }],
+      done: 'Fast and slow became *chavrusas*. Each boy *changed* the other.' }); })();
+
+  (function () { var id = 'READ.LIT.L06.09';
+    NL(id, {
+      hook: { kind: 'puzzle', pic: '⛰️', t: 'Plot puzzle: a wall falls. Dovid asks for help. The sukkah stands.', q: 'Which piece is the turning point?',
+        o: ['The wall falls', 'Dovid asks for help', 'The sukkah stands'], pay: '*Asking for help*! After that, things start to *get better*.' },
+      learn: [
+        { t: 'A plot is a *mountain*: climb up, *turn*, come down.', act: A(id, 'do', 0, { q: 'The Sukkah in the Wind',
+          say: 'Build the *plot mountain*. Each event in its place.', how: 'Climb up as the *problem grows*. The *turn* is at the top.' }) },
+        { who: { q: 'What is the turning point of the sukkah story?', o: [['Mendy', 'A wall panel fell flat on the grass.'], ['Shimon', 'Dovid asks Abba, "Show me how."']], a: 1,
+          why: 'The wall is exciting, but the problem still *grows*. Asking *turns* it.' } },
+        { t: 'At the turn, things start to *get better*.', act: A(id, 'do', 1, {
+          say: 'Tap the sentence where the story *turns*.', how: 'After the *turn*, the problem starts to get *fixed*.' }) }],
+      play: [
+        A(id, 'your', 0, { why: { q: 'Why is "A wall falls" not the turn?', o: ['The problem is still growing', 'It is too loud', 'It is the ending'], a: 'The problem is still growing' } }),
+        A(id, 'your', 3, { q: 'Climbing up, the top, then coming down.' }),
+        A(id, 'your', 2, { why: { q: 'Which step is the turn?', o: ['He plays the game again', 'He loses his first game', 'He wins'], a: 'He plays the game again' } }),
+        A(id, 'your', 4, {})],
+      done: 'The turn was *asking for help*. After it, the story *got better*.' }); })();
+
   if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>

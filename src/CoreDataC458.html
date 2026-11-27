@@ -334,6 +334,84 @@
           why:{q:'Why that word?', o:['It is a new science word','It is the shortest word','It comes first'], a:'It is a new science word'}}] }
   };
 
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     Board row R3. Each lesson teaches on its own passage; Show me stays on its cold passage. Old activities are reused where they fit. */
+  function NL(id, x) { var b = BITE[id]; if (!b) return; Object.keys(x).forEach(function (k) { b[k] = x[k]; }); delete b.do; delete b.your; delete b.ready; }
+  function A(id, part, i, over) { var b = BITE[id], src = b && b[part] && b[part][i]; if (!src) return null; var o = JSON.parse(JSON.stringify(src)); Object.keys(over || {}).forEach(function (k) { o[k] = over[k]; }); return o; }
+
+  (function () { var id = 'READ.COMP.L06.10';
+    NL(id, {
+      hook: { kind: 'fact', pic: '🌊', t: 'Did you know? In one bay, the tide rises *forty feet*!', q: 'Does that belong in a summary of tides?',
+        o: ['Yes, it is amazing', 'No, it is a cool extra'], pay: 'A cool *extra*! A summary keeps only the *big ideas*.' },
+      learn: [
+        { t: 'Each *paragraph* has one *big idea*. The rest are *examples*.', act: A(id, 'your', 2, {
+          say: 'Tap the *big idea* of the last paragraph.', how: 'The big idea *covers* the other sentences. They are its *examples*.' }) },
+        { t: '*Key details* explain the idea. *Extras* are just fun.', act: A(id, 'do', 0, { q: 'Why the Tide Comes In',
+          say: '*Keep* it in the summary, or *leave it out*?', how: 'Keep what *explains* the big idea. Leave out *extras*.' }) },
+        { who: { q: 'Which is a summary of the tides article?', o: [['Yaakov', 'Crabs live in tide pools. Fundy rises forty feet.'], ['Noach', 'Tides rise and fall, mostly from the moon\'s pull.']], a: 1,
+          why: 'Yaakov lists *extras*. Noach keeps the *big idea*.' } }],
+      play: [
+        A(id, 'your', 0, { why: { q: 'What is wrong with "Tides are the coolest thing"?', o: ['It is an opinion', 'It is too long', 'It is about crabs'], a: 'It is an opinion' } }),
+        A(id, 'your', 1, {}),
+        A(id, 'your', 3, { q: 'Why the Tide Comes In' })],
+      done: 'Forty feet was an *extra*. A summary keeps the *big ideas*.' }); })();
+
+  (function () { var id = 'READ.COMP.L06.11';
+    NL(id, {
+      hook: { kind: 'guess', pic: '🚢', t: 'Dovid makes a clay boat. He adds *marbles*, one at a time.', q: 'How many marbles until it sinks?',
+        o: ['3', '12', '50'], pay: '*Twelve*! Each marble *caused* the boat to sit lower.' },
+      learn: [
+        { t: 'Three links: *cause and effect*, *sequence*, *comparison*.', act: A(id, 'do', 0, { q: 'Why a Steel Ship Floats',
+          say: 'What *kind of link* is each one?', how: '*Makes* it happen? *Time order*? *Alike or different*?' }) },
+        { t: 'Build the *chain*: each link *causes* the next.', act: A(id, 'do', 1, { q: 'Why a Steel Ship Floats',
+          say: 'Build the *link map*: each link causes the next.', how: 'Start with the *shape*. Ask: *because* of this, what happens?' }) },
+        { who: { q: 'Clay ball first, then a clay boat. The link?', o: [['Ezzy', 'Cause and effect'], ['Hillel', 'Sequence']], a: 1,
+          why: 'Coming *first* is not the same as *causing*.' } }],
+      play: [
+        A(id, 'your', 0, { why: { q: 'Why is "Clay ball first, then clay boat" not cause and effect?', o: ['The ball did not make the boat float', 'There is no clay', 'It is a comparison'], a: 'The ball did not make the boat float' } }),
+        A(id, 'your', 1, {}),
+        A(id, 'your', 2, {}),
+        { type: 'sort', q: 'New text: the moon and the tides.', bins: ['Cause and effect', 'Sequence', 'Comparison'],
+          cards: [['The moon pulls, so the water bulges.', 0], ['First low tide, then high tide.', 1], ['The sun pulls less than the moon.', 2]],
+          say: 'New text! Name each *link*.', how: '*Makes* it happen? *Time order*? *Alike or different*?' }],
+      done: 'Twelve marbles *caused* the sinking. Name the link: *cause*, *sequence* or *comparison*.' }); })();
+
+  (function () { var id = 'READ.COMP.L06.12';
+    NL(id, {
+      hook: { kind: 'oddone', pic: '🐟', t: 'Shark, catfish, salmon. Only *one* is kosher.', q: 'Which one is the odd one out?',
+        o: ['Shark', 'Catfish', 'Salmon'], pay: '*Salmon*! The text says a kosher fish has *fins and scales*.' },
+      learn: [
+        { t: 'Explain with the *text*, not a *guess*.', act: A(id, 'do', 0, {
+          say: 'Tap the sentence that *explains* why.', how: 'Find the catfish sentence with a *reason*, not just its name.' }) },
+        { who: { q: 'Why is a catfish not kosher?', o: [['Moishe', 'Because it has whiskers.'], ['Yosef', 'The text says: fins but no scales.']], a: 1,
+          why: 'Whiskers are *not in the text*. Use the text\'s *own detail*.' } },
+        { t: 'Build it: *answer*, the text\'s *detail*, what it *shows*.', act: A(id, 'your', 2, { q: 'Why is a shark not kosher?',
+          say: 'Build the *explanation* in order.', how: '*Answer*, then the text\'s *detail*, then what it *shows*.' }) }],
+      play: [
+        A(id, 'your', 0, { why: { q: 'How do you spot an outside guess?', o: ['You cannot point to it in the text', 'It is long', 'It is about sharks'], a: 'You cannot point to it in the text' } }),
+        A(id, 'do', 1, { q: 'Find each one in the text.', pairs: [['Catfish: not kosher', 'Fins, but no scales at all.'], ['Shark: not kosher', 'Its points cannot come off.'], ['Pieces: be careful', 'No skin, so no scales show.']] }),
+        A(id, 'your', 4, {})],
+      done: '*Salmon* has fins and scales. Explain with the *text\'s own words*.' }); })();
+
+  (function () { var id = 'READ.FLU.L06.03';
+    NL(id, {
+      hook: { kind: 'challenge', pic: '🐢', t: 'One try: "the *Challenger Deep*, almost *36,000* feet down."', q: 'Fast or slow: which wins here?',
+        o: ['Fast, to finish first', 'Slow on the hard parts'], pay: '*Slow* for names and numbers. *Smooth* for the easy words.' },
+      learn: [
+        { t: '*Slow down* for new names, numbers and long words.', act: A(id, 'do', 0, { q: 'The Deepest Place on Earth',
+          say: '*Slow down*, or read *smoothly*?', how: 'New *names* and big *numbers* are hard. Short, easy words are not.' }) },
+        { t: 'Each hard part has its own *fix*.', act: A(id, 'do', 1, { pairs: [['A long, new word', 'Read it in beats, then whole'], ['A big number', 'Say every part clearly'], ['A short, easy sentence', 'Read it at talking speed']],
+          say: 'Match each part to what your *voice* does.', how: '*Hard* parts go slow. *Easy* parts go at *talking speed*.' }) },
+        { who: { q: 'Ari races through "36,000 feet" and says it wrong. Now what?', o: [['Ari', 'Skip it and keep going.'], ['Eli', 'Slow down. Say every part clearly.']], a: 1,
+          why: 'Hard parts need a *slower speed*, not a skip.' } }],
+      play: [
+        A(id, 'your', 0, { why: { q: 'Why is reading every easy sentence word by word a mistake?', o: ['Easy parts should sound like talking', 'It is too fast', 'It skips words'], a: 'Easy parts should sound like talking' } }),
+        A(id, 'your', 1, {}),
+        A(id, 'your', 3, {}),
+        { type: 'parts', parts: ['ex', 'plor', 'a', 'tion'], roles: ['part', 'part', 'part', 'part'], extra: ['exp', 'lo'], mean: 'a trip to discover new places',
+          say: 'Long word? Build *exploration* in *beats*.', how: 'Say each *beat* slowly. Then say the word *whole*.' }],
+      done: '*Slow* on the hard parts, *smooth* on the easy ones. That is *pace*.' }); })();
+
   if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
