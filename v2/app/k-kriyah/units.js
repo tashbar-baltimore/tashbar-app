@@ -19,6 +19,7 @@ export const UNITS = [
       { id: 'u2g2', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },
       { id: 'u2g3', name: 'Alef-Beis Train', kind: 'train', icon: 'train' },
       { id: 'u2g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u2g8', name: 'Memory Match', kind: 'memory', icon: 'cards' },
       { id: 'u2g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u2g6', name: 'Review: Beis and Veis', kind: 'detective', icon: 'house', review: true },
       { id: 'u2g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
@@ -30,6 +31,7 @@ export const UNITS = [
       { id: 'u3g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair' },
       { id: 'u3g3', name: 'Letter Hunt', kind: 'hunt', icon: 'glass' },
       { id: 'u3g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u3g8', name: 'Sound Hopscotch', kind: 'hop', icon: 'stone' },
       { id: 'u3g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u3g6', name: 'Review: Sound Match', kind: 'soundmatch', icon: 'fish', review: true, reviewOf: 2 },
       { id: 'u3g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
@@ -41,6 +43,7 @@ export const UNITS = [
       { id: 'u4g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['beis', 'kaf'], ['kaf', 'chaf']] },
       { id: 'u4g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish', stands: ['ches', 'tes', 'yud', 'kaf'] },   /* Ches (challah) comes back: Chaf sounds just like it */
       { id: 'u4g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u4g8', name: 'Memory Match', kind: 'memory', icon: 'cards' },
       { id: 'u4g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u4g6', name: 'Review: Letter Hunt', kind: 'hunt', icon: 'glass', review: true, reviewOf: 3 },
       { id: 'u4g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
@@ -52,6 +55,7 @@ export const UNITS = [
       { id: 'u5g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['gimmel', 'nun'], ['tes', 'mem']] },
       { id: 'u5g3', name: 'Alef-Beis Train', kind: 'train', icon: 'train', order: ['yud', 'kaf', 'chaf', 'lamed', 'mem', 'nun'] },
       { id: 'u5g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u5g8', name: 'Sound Hopscotch', kind: 'hop', icon: 'stone' },
       { id: 'u5g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u5g6', name: 'Review: Sound Match', kind: 'soundmatch', icon: 'fish', review: true, reviewOf: 4 },
       { id: 'u5g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
@@ -63,6 +67,7 @@ export const UNITS = [
       { id: 'u6g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['kaf', 'pei'], ['pei', 'fei']] },
       { id: 'u6g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },
       { id: 'u6g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u6g8', name: 'Memory Match', kind: 'memory', icon: 'cards' },
       { id: 'u6g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u6g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['gimmel', 'nun'], ['tes', 'mem']] },
       { id: 'u6g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
@@ -74,6 +79,7 @@ export const UNITS = [
       { id: 'u7g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['daled', 'reish'], ['hei', 'kuf']] },
       { id: 'u7g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },   /* Beis comes back; Kaf is never a stand beside Kuf (both say k): it joins Kuf at the end */
       { id: 'u7g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u7g8', name: 'Sound Hopscotch', kind: 'hop', icon: 'stone' },
       { id: 'u7g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u7g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['kaf', 'pei'], ['pei', 'fei']] },   /* Unit 6's look-alikes come back */
       { id: 'u7g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },

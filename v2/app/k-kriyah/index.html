@@ -21,7 +21,7 @@ try { E.initRenderer(); } catch (e) { ok = false; E.flatFallback([...U.known, ..
 if (ok) {
   E.buildWorld(Object.assign({ backdrop: 'park' }, { flowers: true })); E.initPointer(); E.setSway(.6);
   const save = E.loadSave();
-  const stops = [], colors = [0xff7aa8, 0x46c3ff, 0xffcf3a, 0x7bd94a, 0xb388ff, 0xff9f1a, 0x00c2d1, 0xff6b6b];
+  const stops = [], colors = [0xff7aa8, 0x46c3ff, 0xffcf3a, 0x7bd94a, 0xb388ff, 0xff9f1a, 0x00c2d1, 0xff6b6b, 0x5b8cff];
   const greyM = E.M(0xc9d2dc, { roughness: .4 }), greyIcon = E.M(0xaab4c0, { roughness: .5, clearcoat: .2 }), edgeM = E.M(0xffffff, { roughness: .3, clearcoat: .8 });
   const pebM = E.M(0xf1dcb0, { roughness: .7, clearcoat: 0 });
   /* little 3D pictures that say what each game is */
@@ -40,6 +40,8 @@ if (ok) {
     else if (kind === 'feel') { const l = E.letter(U.letters[0], .85, 'orange'); g.add(l); }
     else if (kind === 'hunt') { const lens = E.mesh(new THREE.TorusGeometry(.3, .07, 14, 32), E.M(0x2f7de1, { roughness: .2, clearcoat: 1 })); g.add(lens); g.add(E.mesh(new THREE.CircleGeometry(.3, 32), new THREE.MeshPhysicalMaterial({ color: 0xcfefff, transparent: true, opacity: .45, roughness: 0, clearcoat: 1 }), 0, 0, 0, false)); const hd = E.mesh(new THREE.CylinderGeometry(.06, .07, .45, 12), E.M(0x8a5a3c), .33, -.33, 0); hd.rotation.z = Math.PI / 4; g.add(hd); }
     else if (kind === 'mistake') { g.add(E.mesh(E.rbox(.8, .85, .08, .06), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); const l = E.letter('veis', .55); l.position.z = .12; g.add(l); }
+    else if (kind === 'memory') { const bk = E.M(0x6f74ff, { roughness: .3, clearcoat: 1 }), fr = E.M(0xfff7e6, { roughness: .35, clearcoat: .9 }); const a = E.mesh(E.rbox(.42, .56, .06, .05), bk, -.2, 0, 0); a.rotation.z = .18; g.add(a); const b = E.mesh(E.rbox(.42, .56, .06, .05), fr, .2, .02, .05); b.rotation.z = -.15; g.add(b); const l = E.letter(U.letters[0], .3); l.position.set(.2, .02, .1); l.rotation.z = -.15; g.add(l); }   /* two cards, one turned over */
+    else if (kind === 'hop') { [[.28, -.15, 0xffb4a2], [-.28, .05, 0xa5d8ff]].forEach(([x, y, c]) => g.add(E.mesh(new THREE.CylinderGeometry(.24, .28, .14, 24), E.M(c, { roughness: .3, clearcoat: 1 }), x, y, 0))); const b = E.mesh(new THREE.SphereGeometry(.1, 14, 10), E.M(0xffd43b, { roughness: .3, clearcoat: 1 }), 0, .3, 0); g.add(b); }   /* stepping stones */
     else if (kind === 'mastery') { const gold = E.goldDot(); g.add(E.mesh(new THREE.CylinderGeometry(.3, .12, .42, 24), gold, 0, .1, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.08, .08, .2, 12), gold, 0, -.2, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.22, .22, .08, 24), gold, 0, -.32, 0)); [-1, 1].forEach(s => { const h = E.mesh(new THREE.TorusGeometry(.12, .035, 8, 16, Math.PI), gold, s * .3, .14, 0); h.rotation.z = s * -Math.PI / 2; g.add(h); }); }
     else if (kind === 'bonus') { const cm = E.M(0xffffff, { roughness: .9, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .15 }); [[0, .15, .3], [.28, .1, .22], [-.28, .1, .22]].forEach(([x, y, r]) => g.add(E.mesh(new THREE.SphereGeometry(r, 16, 12), cm, x, y, 0))); const l = E.letter(U.letters[0], .4); l.position.set(0, -.35, .1); g.add(l); }
     return g; }
@@ -60,7 +62,7 @@ if (ok) {
   let pebbles = [];
   E.onLayout(p => {
     const N = stops.length, P = stops.map((_, i) => p ? [i % 2 ? -.9 : .95, 3.4 - i * (7.8 / (N - 1))] : [4.6 - i * 9.2 / (N - 1), i % 2 ? 1.2 : 2.5]);   /* right to left, zig-zag */
-    stops.forEach((s, i) => { s.position.set(P[i][0], 0, P[i][1]); s.scale.setScalar(p ? .85 : N > 7 ? .9 : 1); });
+    stops.forEach((s, i) => { s.position.set(P[i][0], 0, P[i][1]); s.scale.setScalar(p ? (N > 8 ? .78 : .85) : N > 8 ? .82 : N > 7 ? .9 : 1); });
     pebbles.forEach(m => E.scene.remove(m)); pebbles = [];
     for (let i = 0; i < P.length - 1; i++) for (let k = 1; k < 4; k++) { const a = P[i], b = P[i + 1], q = k / 4; const m = E.mesh(new THREE.CylinderGeometry(.16, .18, .06, 16), pebM, a[0] + (b[0] - a[0]) * q, .03, a[1] + (b[1] - a[1]) * q + Math.sin(q * Math.PI) * .25, false); E.scene.add(m); pebbles.push(m); }
     if (p) { E.camBase.set(0, 7.2, 10.8); E.camTarget.set(0, .4, -1.2); banner.position.set(0, 3.0, -5.6); banner.scale.setScalar(.8); }

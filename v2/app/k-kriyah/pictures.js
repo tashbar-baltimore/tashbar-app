@@ -171,7 +171,7 @@ const texCache = {};   /* each picture loads once */
    Alef and Ayin are quiet: they have no picture. A letter with two sounds' worth of look-alikes is never asked by a word that could fit both. */
 export const WORDS = {
   bear: { letter: 'beis', say: 'A bear!' }, balloon: { letter: 'beis', say: 'A balloon!' }, ball: { letter: 'beis', file: 'beachball', say: 'A ball!' }, basket: { letter: 'beis', say: 'A basket!' },
-  goat: { letter: 'gimmel', say: 'A goat!' }, grapes: { letter: 'gimmel', model: 'gefen', say: 'Grapes!' }, gift: { letter: 'gimmel', say: 'A present! A gift!' }, goose: { letter: 'gimmel', say: 'A goose!' },
+  goat: { letter: 'gimmel', say: 'A goat!' }, grapes: { letter: 'gimmel', model: 'gefen', say: 'Grapes!' }, gift: { letter: 'gimmel', say: 'A gift!' }, goose: { letter: 'gimmel', say: 'A goose!' },
   dog: { letter: 'daled', say: 'A dog!' }, donkey: { letter: 'daled', say: 'A donkey!' }, drum: { letter: 'daled', say: 'A drum!' },
   house: { letter: 'hei', say: 'A house!' }, horse: { letter: 'hei', say: 'A horse!' }, hand: { letter: 'hei', say: 'A hand!' },
   van: { letter: 'vov', say: 'A van!' }, vase: { letter: 'vov', say: 'A vase!' }, violin: { letter: 'vov', say: 'A violin!' },

@@ -90,6 +90,27 @@ P.train = async (pg, shot, log) => {
       log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('goes here'), 15000)); return true; } }
     const c = i.cars.find(x => x.k === i.need); if (!c) return false; await K.drag(pg, c.xy, to); if (++n === 3) { await pg.waitForTimeout(300); await shot('2-middle'); } await pg.waitForTimeout(300); return true; });
 };
+P.memory = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-memory-guide]', { timeout: 180000 }); await shot('1-start'); let n = 0;
+  while (!(await pg.evaluate(() => !!document.body.dataset.memoryReady))) { const g = await K.info(pg).catch(() => null); if (g && g.guide) { await pg.mouse.click(...g.guide); await pg.waitForTimeout(500); } else await pg.waitForTimeout(200); }   /* the pair done together */
+  const ready = () => K.until(pg, () => window.__info && window.__info().ready, 30000);
+  let i = await K.info(pg); const a = i.cards.find(c => !c.done && c.kind === 'letter'), b = i.cards.find(c => !c.done && c.kind === 'pic' && c.key !== a.key);
+  await pg.mouse.click(...a.xy); await ready(); await pg.mouse.click(...b.xy); await pg.waitForTimeout(500); await shot('3-wrong');
+  log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Not a pair'), 15000));
+  await loop(pg, async () => { i = await K.info(pg); if (!i || !i.ready) return false; const l = i.cards.find(c => !c.done && !c.up && c.kind === 'letter'); if (!l) return false;
+    const p = i.cards.find(c => c.key === l.key && c.kind === 'pic'); await pg.mouse.click(...l.xy); await ready(); await pg.mouse.click(...p.xy);
+    if (++n === 1) { await pg.waitForTimeout(700); await shot('2-middle'); } await pg.waitForTimeout(300); return true; });
+};
+P.hop = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-hop-guide]', { timeout: 180000 }); let g = await K.until(pg, () => window.__info && window.__info().ready && window.__info());
+  await pg.mouse.click(...g.stones.find(x => x.key === g.want).xy);   /* the hop done together */
+  await pg.waitForSelector('body[data-hop-ready]', { timeout: 180000 }); await K.until(pg, () => window.__info && window.__info().ready, 30000); await shot('1-start'); let n = 0;
+  let i = await K.info(pg); const w = i.stones.find(s => s.key !== i.want);
+  await pg.mouse.click(...w.xy); await pg.waitForTimeout(500); await shot('3-wrong');
+  log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Try again'), 15000));
+  await loop(pg, async () => { i = await K.info(pg); if (!i || !i.ready || !i.want) return false; const s = i.stones.find(x => x.key === i.want); await pg.mouse.click(...s.xy);
+    if (++n === 3) { await pg.waitForTimeout(500); await shot('2-middle'); } await pg.waitForTimeout(300); return true; });
+};
 P.story2 = P.story;
 P.sorter = async (pg, shot, log) => {
   await pg.waitForSelector('body[data-drag-ready]', { timeout: 180000 }); await shot('1-start'); let n = 0;
