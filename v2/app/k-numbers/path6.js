@@ -17,7 +17,10 @@ const numTex = {};
 function numeralTexture(n) {
   if (numTex[n]) return numTex[n];
   const c = document.createElement('canvas'); c.width = c.height = 256; const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
-  const img = new Image(); img.onload = () => { const x = c.getContext('2d'), h = 200, w = h * img.width / img.height; x.drawImage(img, 128 - w / 2, 128 - h / 2 + 4, w, h); t.needsUpdate = true; };
+  const img = new Image(); img.onload = () => { const x = c.getContext('2d'), h = 170;
+    /* a round white sign with a soft gold edge, so the number reads clearly from any angle */
+    x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(128, 128, 118, 0, Math.PI * 2); x.fill(); x.lineWidth = 10; x.strokeStyle = '#F2C14E'; x.stroke();
+    const hh = h, w = hh * img.width / img.height; x.drawImage(img, 128 - w / 2, 128 - hh / 2 + 2, w, hh); t.needsUpdate = true; };
   img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(U5.num(n).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="' + (n === 10 ? 190 : n > 5 ? 150 : 100) + '" height="' + (n > 5 ? 220 : 140) + '" '));
   return (numTex[n] = t);
 }
@@ -25,6 +28,7 @@ let emptyTex = null;
 function emptyTexture() {   /* an empty spot: a soft dashed ring, waiting for its number */
   if (emptyTex) return emptyTex;
   const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+  x.fillStyle = 'rgba(255,255,255,.75)'; x.beginPath(); x.arc(128, 128, 118, 0, Math.PI * 2); x.fill();
   x.setLineDash([26, 18]); x.lineWidth = 16; x.lineCap = 'round'; x.strokeStyle = 'rgba(122,92,60,.55)'; x.beginPath(); x.arc(128, 128, 84, 0, Math.PI * 2); x.stroke();
   emptyTex = new THREE.CanvasTexture(c); emptyTex.colorSpace = THREE.SRGBColorSpace; return emptyTex;
 }
@@ -72,7 +76,8 @@ export function mount(host, opt) {
     s.position.y = TOP / 2; s.castShadow = s.receiveShadow = true; s.rotation.y = n * 1.3; g.add(s);
     const lip = new THREE.Mesh(new THREE.TorusGeometry(0.69, 0.05, 10, 48), new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.6 })); lip.rotation.x = Math.PI / 2; lip.position.y = TOP; g.add(lip);
     const top = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 1.15), new THREE.MeshBasicMaterial({ map: numeralTexture(n), transparent: true, depthWrite: false, toneMapped: false }));
-    top.rotation.x = -Math.PI / 2; top.position.y = TOP + 0.012; top.renderOrder = 2; g.add(top);
+    /* the number stands up on its stone like a little round sign and always faces the boy, so it reads clearly at any camera angle (Esti, 2026-11-27) */
+    top.position.y = TOP + 0.62; top.renderOrder = 2; top.onBeforeRender = () => top.quaternion.copy(camera.quaternion); g.add(top);
     const ring = new THREE.Mesh(new THREE.TorusGeometry(0.86, 0.09, 12, 56), new THREE.MeshBasicMaterial({ color: '#FFD23D', transparent: true, opacity: 0.95, toneMapped: false }));
     ring.rotation.x = Math.PI / 2; ring.position.y = 0.08; ring.visible = false; g.add(ring);
     stones.push(g); tops.push(top); rings.push(ring);
@@ -176,8 +181,8 @@ export function mount(host, opt) {
   function place() {
     const r = host.getBoundingClientRect();
     for (let i = 0; i < N; i++) {
-      v.set(X(opt.from + i, opt.from), TOP, 0).project(camera); const cx = (v.x + 1) / 2 * W, cy = (1 - v.y) / 2 * Hh;
-      v.set(X(opt.from + i, opt.from) + 0.7, TOP, 0).project(camera); const rx = (v.x + 1) / 2 * W, size = Math.max(66, (rx - cx) * 2.1);
+      v.set(X(opt.from + i, opt.from), TOP + 0.42, 0).project(camera); const cx = (v.x + 1) / 2 * W, cy = (1 - v.y) / 2 * Hh;   /* the tap spot covers the stone and its number sign */
+      v.set(X(opt.from + i, opt.from) + 0.7, TOP + 0.42, 0).project(camera); const rx = (v.x + 1) / 2 * W, size = Math.max(66, (rx - cx) * 2.1);
       const d = spots[i], out = cx - size / 2 < 2 || cx + size / 2 > W - 2 || cy - size / 2 < 2 || cy + size / 2 > Hh - 2 || r.top + cy + size / 2 > innerHeight - 2;
       d.style.display = out ? 'none' : ''; d.style.width = d.style.height = size + 'px'; d.style.left = (cx - size / 2) + 'px'; d.style.top = (cy - size / 2) + 'px';
     }
