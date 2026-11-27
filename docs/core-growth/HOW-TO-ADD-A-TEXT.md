@@ -4,6 +4,8 @@ Job T wrote this note (2026-11-24). It is for every job that writes stories, cha
 
 **Why a store?** Every Chromebook already downloads about 40 MB when it starts. Long texts would make that worse. So a text lives in its own file and is loaded **only when a boy opens it**.
 
+**Visual support (HoS 2026-11-27):** before building, read the text and every question on it, and write the unit's Visual Support Plan in `docs/visual-plans/<unit id>.md`. Rules: `docs/VISUAL-SUPPORT.md`.
+
 ## 1. Write the text
 Make `texts/<JOB>/<ID>.txt`. The file name is the id, and the id starts with your job letters, for example `texts/C45/C45.ANTS.01.txt`.
 

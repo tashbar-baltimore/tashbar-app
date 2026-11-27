@@ -43,14 +43,14 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | G | Word Work sets for C45 and C68 texts (Grades 4–8), once their Shared texts are listed | OPEN | | |
 | C68 | Grade 7, Units 7.5–7.8 (lessons and topic-set texts; see `docs/core-growth/C68-map.md`) | TAKEN | https://claude.ai/code/session_015qpxBAKYSixyWQ3b8Jh8wP | 2026-11-25 20:11 UTC: Units 7.5 (#485) and 7.6 (#495) live. Unit 7.7 (Chesapeake Bay) live (#501). Unit 7.8 (story `C68.CLK.01` *The Clock on Lombard Street*, speech `C68.SP.02`, L08.19, LIT.L08.10-12, unit check 7.8) reviewed 4–5 (3 rounds), in its PR. File `src/CoreDataC68H1.html` (133 KB). When 7.8 is live this piece is DONE |
 | C68 | Grade 8, Units 8.5–8.8 (lessons and topic-set texts) | DONE | https://claude.ai/code/session_01884AzCfwh1MCak9Ybr1uZi | 2026-11-25 17:10 UTC: DONE. Units 8.5 (#474), 8.6 (#481), 8.7 (#483) and 8.8 (#486): 16 new lessons, 6 lessons rebuilt, 15 texts (Money and trust, Disasters, a play, an editorial, a story, a speech), 4 unit checks with 8–10 fresh items each (last ones in the final PR). About 6.9 h for Grade 8 (ledger: `docs/core-growth/C68-ledger.md`). Files `src/CoreDataC68H2.html`, `src/CoreDataC68H3.html`. Not built here: the W8/W9 chapters (helper piece "Adapted public-domain works") |
-| C68 | Grade 6, Units 6.1–6.4 (lessons, W1, topic set, unit checks; see C68-map.md) | TAKEN | https://claude.ai/code/session_01Cri5bNCM4L3QyPCuDWDj2R | 2026-11-26 14:25 UTC: claimed; files src/CoreDataC68H7.html, texts/C68/C68.W1.*, C68.VOL.* |
+| C68 | Grade 6, Units 6.1–6.4 (lessons, W1, topic set, unit checks; see C68-map.md) | TAKEN | https://claude.ai/code/session_01Cri5bNCM4L3QyPCuDWDj2R | 2026-11-27 UTC: Unit 6.1 "Prove It" in its PR (branch `claude/c68-grade6-unit61`): 6 skill lessons, 4 W1 chapter lessons, unit check C68.U61, 8 texts; fresh reviews R1–R10, all 4–5; about 3.3 h. W1 is written in full (ch. 5–8 ship with 6.2); 6.2 lessons and the Volcanoes set are drafted. Next: Unit 6.2. W2 *Snowbound* (for 6.4) is not on main yet. Files src/CoreDataC68H7.html (6.1), H8–H10 for 6.2–6.4 |
 | C68 | Longer works W2 *Snowbound* and W6 *The Flood* (after W1 sets the pattern) | TAKEN | https://claude.ai/code/session_015qpxBAKYSixyWQ3b8Jh8wP | 2026-11-25 21:01 UTC: claimed (same session as Grade 7 Units 7.5–7.8). W6 *The Flood* first (Grade 7, units 7.7–7.8), then W2 *Snowbound*: 8 chapters each in `texts/C68/`, with chapter lessons in a new file `src/CoreDataC68H6.html` (H4 and H5 left for the W5/W8/W9 helper). W1 is not written yet, so I follow the pattern of the adapted works (W5/W8/W9) |
 | C68 | Adapted public-domain works W5 (Verne), W8 (Conan Doyle), W9 (Stevenson) | TAKEN | https://claude.ai/code/session_01HB2X6bSQzNgF7tdfvDKRX2 | 2026-11-25 15:30 UTC: all 24 chapters written (W5 ch. 1–8, W8 ch. 1–8 with "The Norwood Builder" in place of "The Speckled Band", W9 ch. 1–8), 24 chapter lessons written (W5 READ.LIT.L08.13–.20, W8 READ.LIT.L09.14–.21, W9 READ.LIT.L09.22–.29; files `src/CoreDataC68H3.html`–`H5`). In independent review round 2. Next: PR per book, W5 first |
 | W13 | Grade 3, Units 4–6 (lessons, pieces and unit checks; see `docs/core-growth/W13-map.md`) | DONE | https://claude.ai/code/session_013qbMrdsiEQhQo95b1BXLKx, continued by https://claude.ai/code/session_01Cri5bRNWq3iaU3DM4mmDKK | 2026-11-26: DONE, all live. Unit 4 "Explain It" (5 lessons, unit check W13.U34, "How It Works" piece; #531, unit-check fix #554). Unit 5 "Little Researcher" (4 lessons, article W13.LEAF.01, unit check W13.U35, research report; #556). Unit 6 "Revise, Edit, Publish" (ARMS, COPS, Letter to a Reader, unit check W13.U36, letter piece; this PR). Picture orders W13H3-1 (6, #553) and W13H3-2 (7) live. Each lesson reviewed 4–5 on the 9 points. Cursive waits for job T. |
 | W13 | Grade 2, Units 5–6 | DONE | https://claude.ai/code/session_01NmKrTgJF1XAzG4XXvdhWaL, continued by https://claude.ai/code/session_01Cri5bRNWq3iaU3DM4mmDKK | 2026-11-26: DONE. Unit 5 "Make It Better" (Add and Cut, CUPS Check, Read It Like a Reader, unit check W13.U25, revise piece 9) live (#565). Unit 6 "Letters and Research" (Friendly Letter, Find It in a Book, Fact Notes, Book Response, article W13.BIRD.01, unit check W13.U26, letter piece 11) in this PR. Each lesson reviewed 4–5 on the 9 points. Picture order W13H4-1 (7) sent; the pictures go in with their own PR. |
 | W13 | Grade 3, Units 2–3 ("Real Stories" W.3.3, pieces 3–5, unit check W13.U32; "Opinion with Reasons" W.3.1, pieces 6–7, unit check W13.U33; see `docs/core-growth/W13-map.md`) | DONE | https://claude.ai/code/session_01NmKrTikPvniRoToxpkoi32 | 2026-11-26 21:20 UTC: DONE, all live. Unit 2 "Real Stories" (6 lessons, unit check W13.U32, story piece W13.STORY3.01, #584); Unit 3 "Opinion with Reasons" (5 lessons, unit check W13.U33, piece W13.OPIN3.01, #596) |
 | W13 | K–1 picture-piece prompts (60), ready for job T's K–1 writing step | OPEN | | |
-| W13 | Grade 2–3 quick-write prompts (80, two per C23 text) | OPEN | | |
+| W13 | Grade 2–3 quick-write prompts (80, two per C23 text) | DONE (for the live texts) | https://claude.ai/code/session_01NmKrTiuE1AhdvDj8mqdN1x | 2026-11-27 08:00 UTC: LIVE (#624, claim #621). A lesson that opens a C23 text ends at Level clear with "Quick write": the boy picks one of the text's 2 prompts, writes 3–5 sentences and it reaches the teacher's Writing inbox. 8 prompts for the 4 live C23 texts (`src/CoreDataW13H7.html`); 8 rounds of fresh review, last all 4–5. The other 72 wait for new C23 texts (2 per text, same file; how: `docs/core-growth/HOW-TO-ADD-A-WRITING-TASK.md`, "Quick writes"). |
 
 ## Casts (recurring characters, one per band)
 | Band | Cast note | Written by |
@@ -65,17 +65,21 @@ The F and C jobs list texts that the G and W jobs may use for "his own sentence"
 
 | Text id | Title | Grade | Words | Job |
 |---|---|---|---|---|
+| `C68.W1.01`–`.04` | *The Beacon and the Locked Archive*, ch. 1–4 (mystery, Beacon cast) | 6 | 835–936 each | C68 |
+| `C68.ST6.01` | After Twenty Years (O. Henry, adapted) | 6 | 1,228 | C68 |
+| `C68.ST6.02` | The Long Way Home | 6 | 819 | C68 |
+| `C68.FL6.01` | Proved and Guessed (a scene, for reading aloud) | 6 | 209 | C68 |
 
 ## Ledger (core hours built / target, per grade)
-_Written by `node tools/core/ledger.js --write` on 2026-11-26 20:15 UTC: hours of new Core Growth learning that is built (lessons, texts, unit checks)._
+_Written by `node tools/core/ledger.js --write` on 2026-11-26 22:33 UTC: hours of new Core Growth learning that is built (lessons, texts, unit checks)._
 | Grade | Foundations | Comprehension | Grammar and words | Writing | Total built | Target |
 |---|---|---|---|---|---|---|
 | K | 4.1 |  |  |  | 4.1 | 68 |
 | 1 |  |  |  |  | 0 | 68 |
 | 2 | 7.3 | 1.4 | 1.6 | 2.4 | 12.7 | 90 |
 | 3 |  |  | 1.9 | 4.8 | 6.8 | 90 |
-| 4 |  | 17.7 | 2.4 | 3.4 | 23.5 | 90 |
-| 5 |  | 17.4 | 1.9 | 3.2 | 22.6 | 90 |
-| 6 |  |  | 1.7 | 3.0 | 4.7 | 90 |
+| 4 |  | 18.7 | 2.4 | 3.4 | 24.5 | 90 |
+| 5 |  | 18.4 | 1.9 | 3.2 | 23.6 | 90 |
+| 6 |  | 3.3 | 1.7 | 3.0 | 8.0 | 90 |
 | 7 |  | 6.3 | 1.5 | 2.8 | 10.5 | 90 |
 | 8 |  | 6.3 | 1.9 | 2.3 | 10.5 | 90 |
