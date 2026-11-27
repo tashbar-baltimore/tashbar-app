@@ -23,7 +23,7 @@ Each workstream edits **only its own files**. Nothing else.
 
 ## How a place is built
 1. **Register it** in your file: `SHK.place({ id, name, world, icon, scene, door, order, sub, pill, show, open })`.
-   - `world`: `'k'` (Mountain Kingdom: work) or `'c'` (Golden City: free time). `scene`: its picture (below). `icon`: a picture name or an emoji.
+   - `world`: `'k'` (Mountain Kingdom: work) or `'c'` (Golden City: free time). `scene`: its picture (below). `icon`: a picture name or an emoji; `emoji`: shown instead while the icon picture is still on order.
    - `door`: its class-lock door from `TL_DOORS` in `src/ClassMode.html` (`store`, `profile`, `torah`, `canteen`, `arena`, `games`, `blockbuilders`, `chumashlab`, `library`, `olamhaba`, `music`, `talk`). A tile with a door is shut during class unless a teacher opened that door; a place with no door is shut during class.
    - `sub()`, `pill()`: the tile's small line and its information pill (`TLK.pill`), from the same data today's tile uses. `show()`: false hides the tile (the same grade and "switched on" rules as today).
    - `open(def)`: draws the place with `SHK.page({...})` (a full page: the house top left) or `SHK.pop({...})` (a pop-up: one round x top right). Inner pages of a full page pass `back:true, onBack` (the round Back before the house).

@@ -63,8 +63,9 @@ function css(){ if(document.getElementById('shk-css')) return; const s=document.
 .shk-pop .shk-plaque{margin:0 52px 12px 0}
 .shk-scrim{position:absolute;inset:0;background:rgba(30,27,75,.28)}
 .shk-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-.shk-tile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;min-height:120px}
-.shk-tile .shk-ic{width:56px;height:56px;object-fit:contain;font-size:40px;line-height:56px}
+.shk-tile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;min-height:140px;padding:14px 16px;box-sizing:border-box}
+.shk-tile .shk-ic{width:64px;height:64px;object-fit:contain;font-size:46px;line-height:64px;filter:drop-shadow(0 4px 6px rgba(30,27,75,.18))}
+body.shk-on #tl-tourhint,body.shk-on #bbx-door,body.shk-on #clab-door,body.shk-on #pr-av,body.shk-on #ohsky{display:none!important}
 .shk-tile b{font-size:19px}.shk-tile small{font-size:14px;opacity:.85}
 .shk-fly .shk-l{transform-origin:50% 55%}
 .shk-fly.go .shk-f1{animation:shk-f1 var(--d) cubic-bezier(.45,0,.25,1) both}
@@ -91,7 +92,9 @@ function money(){ try{ return '$'+(Number(A.st&&A.st.balance)||0).toFixed(2); }c
 function call(fn,...a){ if(typeof run!=='function'||typeof SRV==='undefined'||!SRV||!SRV.token) return Promise.reject(new Error('not signed in')); return run(fn,SRV.token,...a); }
 /* PAGES AND POP-UPS */
 const stack=[];
-function mount(el,o){ const old=document.getElementById(el.id); if(old) old.remove(); document.body.appendChild(el); stack.push({id:el.id,o:o}); return el; }
+/* body.shk-on while a shell page or the new home is showing: the old floating doors and hints step aside (set only when a page opens or closes, never on a timer) */
+function mark(){ const v=stack.length>0||!!document.getElementById('sh-home'), b=document.body.classList; if(b.contains('shk-on')!==v) b.toggle('shk-on',v); }
+function mount(el,o){ const old=document.getElementById(el.id); if(old) old.remove(); document.body.appendChild(el); stack.push({id:el.id,o:o}); mark(); return el; }
 function page(o){ o=o||{}; const K=window.TLK, w=W(o.world), el=document.createElement('div'); el.id='shk-'+o.id; el.className='shk-page shk-w-'+w+(o.cls?' '+o.cls:'');
  el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label',o.title||'');
  const top=`<div class="shk-top">${o.back&&K?K.back('data-shk="back"','',young()):''}${K?K.home('data-shk="home"','',young()):''}<div class="shk-plaque">${o.icon?ic(o.icon):''}<h1>${esc(o.title||'')}</h1></div>${o.right||''}</div>`;
@@ -101,10 +104,11 @@ function pop(o){ o=o||{}; const K=window.TLK, w=W(o.world), el=document.createEl
  return mount(el,o); }
 function body(id,html){ const el=document.getElementById('shk-'+id); const b=el&&el.querySelector('.shk-body'); if(b) b.innerHTML=html; return b; }
 function close(id,how){ const i=id?stack.map(s=>s.id).lastIndexOf('shk-'+id):stack.length-1; if(i<0) return; const s=stack.splice(i,1)[0], el=document.getElementById(s.id);
- const fin=()=>{ if(el) el.remove(); try{ s.o.onClose&&s.o.onClose(how||''); }catch(e){ console.error('SHK close',e); } };
+ const fin=()=>{ if(el) el.remove(); mark(); try{ s.o.onClose&&s.o.onClose(how||''); }catch(e){ console.error('SHK close',e); } };
  if(how==='home'&&el&&el.classList.contains('shk-page')) fly('k',fin); else fin(); }
-function closeAll(){ while(stack.length){ const s=stack.pop(), el=document.getElementById(s.id); if(el) el.remove(); try{ s.o.onClose&&s.o.onClose('all'); }catch(e){} } }
-const ic=n=>has(n)?img(n,'shk-ic'):`<span class="shk-ic" aria-hidden="true">${esc(n)}</span>`;
+function closeAll(){ while(stack.length){ const s=stack.pop(), el=document.getElementById(s.id); if(el) el.remove(); try{ s.o.onClose&&s.o.onClose('all'); }catch(e){} } mark(); }
+/* an icon: the picture when it is in the library; a picture still on order shows the place's emoji (fb) instead of its name */
+const ic=(n,fb)=>has(n)?img(n,'shk-ic'):`<span class="shk-ic" aria-hidden="true">${esc(/^yc[bw]-/.test(String(n))?(fb||'⭐'):n)}</span>`;
 /* THE FLIGHT: open the place at once (under the flight), then about 2 s of camera push through the world's layers and a cloud; tap skips.
    Up into the Golden City takes a little longer and goes through a thicker cloud. Reduce motion: a soft white fade. Removed when done. */
 let flying=null;
@@ -127,7 +131,7 @@ const val=(f,d)=>{ try{ return typeof f==='function'?f():f; }catch(e){ return d;
 function unplace(id){ const i=PL.findIndex(x=>x.id===id); if(i>=0) PL.splice(i,1); }
 function places(world){ return PL.filter(d=>(!world||W(d.world)===world)&&val(d.show,true)!==false); }
 function tile(id,extra){ const d=PL.find(x=>x.id===id); if(!d) return ''; const sub=val(d.sub,''), pl=val(d.pill,'');
- return `<button type="button" class="tlk tlk-tile shk-tile${extra?' '+extra:''}" data-shgo="${esc(d.id)}"${d.door?` data-shdoor="${esc(d.door)}"`:''}>${ic(d.icon||'⭐')}<b>${esc(d.name)}</b>${sub?`<small>${esc(sub)}</small>`:''}${pl||''}</button>`; }
+ return `<button type="button" class="tlk tlk-tile shk-tile${extra?' '+extra:''}" data-shgo="${esc(d.id)}"${d.door?` data-shdoor="${esc(d.door)}"`:''}>${ic(d.icon||'⭐',d.emoji)}<b>${esc(d.name)}</b>${sub?`<small>${esc(sub)}</small>`:''}${pl||''}</button>`; }
 function go(id){ const d=PL.find(x=>x.id===id); if(!d) return false; const from=stack.length?(document.getElementById(stack[stack.length-1].id)||{}).className||'':'';
  fly(d.world,()=>d.open(d),{from:/shk-w-c/.test(from)?'c':'k'}); return true; }
 /* THE SEAM: lessons open only through startMission (via the map's own Play). The shell's pages close first; the lesson draws its own frame. */
@@ -138,6 +142,6 @@ document.addEventListener('click',e=>{ const t=e.target; if(!t||!t.closest) retu
  const s=stack.find(x=>x.id===box.id); if(k==='back'&&s&&s.o.onBack){ s.o.onBack(); return; }
  if(k==='home'||k==='x'||k==='back') close(id,k); });
 document.addEventListener('keydown',e=>{ if(e.key!=='Escape'||!stack.length) return; const top=document.getElementById(stack[stack.length-1].id); if(top&&top.classList.contains('shk-pop')) close(stack[stack.length-1].id.replace(/^shk-/,''),'x'); });
-window.SHK={ART,has,img,pic,scene,esc,page,pop,body,close,closeAll,fly,place,unplace,places,tile,go,openLesson,on,grade,young,money,call,ic,get reduce(){ return REDUCE; },get open(){ return stack.map(s=>s.id.replace(/^shk-/,'')); }};
+window.SHK={ART,has,img,pic,scene,esc,page,pop,body,close,closeAll,fly,place,unplace,places,tile,go,mark,openLesson,on,grade,young,money,call,ic,get reduce(){ return REDUCE; },get open(){ return stack.map(s=>s.id.replace(/^shk-/,'')); }};
 })();
 </script>
