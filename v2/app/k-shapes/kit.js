@@ -189,7 +189,7 @@ export function startGame(cfg) {
       if (!bc.dots && !LK) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }   /* the new look: the "no corners" card is simply empty (a ring looked like one dot) */
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
-      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0)); b3.userData.wideAt = b3.position.clone(); solidLabels.push(b3);   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(...(bc.solid === 'cube' ? [0.38, 0.62, 0] : bc.solid === 'cyl' ? [0.3, 0, 0] : [0, 0, 0]));
+      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0)); b3.userData.wideAt = b3.position.clone(); b3.userData.solid = bc.solid; solidLabels.push(b3);   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(...(bc.solid === 'cube' ? [0.38, 0.62, 0] : bc.solid === 'cyl' ? [0.3, 0, 0] : [0, 0, 0]));
       if (bc.solidScale && bc.solid === 'cube') b3.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.0, 1.0, 1.0)), new THREE.LineBasicMaterial({ color: '#13224A' })));   /* dark edges: three faces plainly seen, never a flat diamond */   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (bc.paint === 'none') {   /* a plain box with nothing on its front (the clue games: he finds the shape the clue tells) */
     } else if (LK) {
@@ -308,7 +308,8 @@ export function startGame(cfg) {
     const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; if (LK) LK.resize();
     const was = tall; tall = w / h < 0.95; camera.fov = tall ? 46 : 40; camera.updateProjectionMatrix();
     boxes.forEach((b, i) => b.g.position.copy(boxAt(i)));
-    solidLabels.forEach(l => { if (tall && NB > 2) l.position.set(0, BX.h + 0.45, 0); else l.position.copy(l.userData.wideAt); });
+    solidLabels.forEach(l => { if (tall && NB > 2) l.position.set(0, BX.h + 0.45, 0); else l.position.copy(l.userData.wideAt);
+      if (l.userData.solid === 'cyl' || l.userData.solid === 'cone') { if (l.userData.rot0 == null) l.userData.rot0 = l.rotation.clone(); if (tall && NB > 2) l.rotation.set(l.userData.solid === 'cyl' ? 0.25 : -1.1, 0, l.userData.solid === 'cyl' ? Math.PI / 2 : 0); else l.rotation.copy(l.userData.rot0); } });   /* phone, seen from above: the cylinder lies on its side and the cone tips toward him, so neither looks like a plain circle (review round 2) */
     if (was !== tall) shapes.forEach(o => { if (o.inBox && o.boxN != null && !o.busy) o.g.position.copy(inBoxSpot(o.inBoxAt, o.boxN)); else if (o.slot != null) { o.home.copy(homeFor(o.slot)); if (!o.busy && !o.inBox) o.g.position.copy(o.home); } });
     placeMendy(camMode);
     const v = viewFor(camMode); camPos.copy(v.pos); camLook.copy(v.look);
@@ -326,6 +327,7 @@ export function startGame(cfg) {
   function camTo(mode, ms) {
     camMode = mode; const v = viewFor(mode), p0 = camPos.clone(), l0 = camLook.clone(); placeMendy(mode);
     if (typeof boxes !== 'undefined') boxes.forEach(b => { b.g.visible = !(mode === 'close' && !(cfg.sortBy && (W.name === 'mistake' || !tall))); });   /* close-ups show only the piece and the boy (sorting games keep the boxes they talk about); before: the boxes would only show cut off at the bottom */
+    if (typeof boxes !== 'undefined' && typeof shapes !== 'undefined') shapes.forEach(o => { if (o.inBox && o.inBoxAt != null && boxes[o.inBoxAt]) o.g.visible = boxes[o.inBoxAt].g.visible; });   /* pieces in a hidden box hide with it (no stray edges under the yes/no buttons) */
     return tween(ms, k => { const e = ease(k); camPos.lerpVectors(p0, v.pos, e); camLook.lerpVectors(l0, v.look, e); });
   }
   const sparks = [], sparkGeo = new THREE.OctahedronGeometry(0.09);
@@ -535,7 +537,7 @@ export function startGame(cfg) {
   function dropInBox(o, bi) {
     bi = bi == null ? Math.max(0, o.box) : bi;
     clearCorners(o); o.inBox = true; o.inBoxAt = bi; o.boxN = boxes[bi].n++; W.found++;
-    const to = inBoxSpot(bi, o.boxN), s0 = o.g.scale.x, s1 = Math.min(s0, 1) * (NB === 1 ? 0.55 : 0.42);
+    const to = inBoxSpot(bi, o.boxN), s0 = o.g.scale.x, s1 = Math.min(o.scale || s0, 1) * (NB === 1 ? 0.55 : 0.42);   /* from its own size, not its size this moment (a piece still popping in stayed a speck) */
     tween(520, k => o.g.scale.setScalar(s0 + (s1 - s0) * ease(k)));
     return moveTo(o, to, 520, 1.2).then(() => { o.g.rotation.set(-1.45, (o.boxN % 3 - 1) * 0.6, 0); burst(to.clone().setY(1.2)); pop(); cheer(mendy);
       if (LK) { LK.squash(o.g, s1, 0.4); LK.wiggle(boxes[bi].g); LK.sparkle(to.clone().setY(1.0)); } });
@@ -946,6 +948,19 @@ export function startGame(cfg) {
     await camTo('wide', 1200);
     const R0 = cfg.rounds[0]; setPattern(R0);
     const right = shapes.find(o => o.box === 0);
+    if (R0.copy) {   /* a copy round: Mendy copies his whole row, one by one, naming each (review round 2: the lesson never showed copying) */
+      const one = () => { const o = shapes.find(x => x.box === 0 && !x.inBox && x.g.visible); if (!o) return Promise.resolve(); const t = o.type;
+        handOn = o; hand.style.display = 'block';
+        return wait(400).then(() => moveTo(o, slotAt(PS.next, PS.n, PS.z), 900)).then(() => { hand.style.display = 'none'; handOn = null; return placeBead(o); }).then(() => say(cap(BEADS[t].word) + '.')); };
+      const ok0 = await play([R0.watchLine || cfg.watchLine, () => sing(0, R0.say || null), ...R0.seq.map(() => one), R0.watchDone || cfg.watchDone, cfg.yourTurn]);
+      if (!ok0) return;
+      const help0 = { done: false };
+      for (let r = 1; r < cfg.rounds.length; r++) { const ok1 = await patternRound(cfg.rounds[r], false, help0); if (!ok1) return; }
+      if (W.misses <= 1 && cfg.bonusRounds) { W.bonus = true; if (!(await play(['Bonus round! You are so good at this.', 'This one is tricky.']))) return;
+        for (const R of cfg.bonusRounds) { if (!(await patternRound(R, true, help0))) return; } }
+      ghost.visible = false; if (PS) { PS.parts.forEach(p => scene.remove(p)); PS = null; } shapes.splice(0).forEach(o => scene.remove(o.g));
+      mistake(); return;
+    }
     let ok = await play([cfg.watchLine, () => sing(), cfg.watchAsk || 'What comes next?', () => { handOn = right; hand.style.display = 'block'; return wait(500); },
       () => moveTo(right, slotAt(PS.next, PS.n, PS.z), 1300), () => { hand.style.display = 'none'; handOn = null; return placeBead(right); },
       ...(PS.next < PS.n ? [] : []), R0.watchDone || cfg.watchDone, cfg.yourTurn]);
@@ -1524,8 +1539,10 @@ export function startGame(cfg) {
         const steps = [lines[0]];
         const clueNoCorners = cfg.mode === 'clues' && !/corner/i.test(cfg.clues[clueN].say.join(' '));   /* a clue about sides or round: counting corners would not show why */
         if (clueNoCorners && o.marks.length && /side/i.test(cfg.clues[clueN].say.join(' '))) steps.push('Look at its sides.', ...sideSteps(o));   /* the clue was about sides: show its sides */
+        const showSides = lines.count === false && cfg.mode !== 'clues' && o.corners && o.corners.length === 4;   /* a four-sided look-alike (rectangle, kite, leaning shape): its sides light one by one, so he SEES why (review round 2) */
+        if (showSides) steps.push(...sideSteps(o));
         if (o.marks.length && lines.count !== false && !clueNoCorners) { steps.push('Count the corners.'); o.marks.forEach((m, i) => steps.push(() => lightCorner(o, i), NUMS[i])); }
-        steps.push(...lines.slice(1), () => { clearCorners(o); });
+        steps.push(...lines.slice(1).filter(l => !(showSides && /long|pointy|corners are not/i.test(l))), () => { clearCorners(o); });
         if (o.box < 0 && !bonus) { const t = shapes.find(s => s.box >= 0 && !s.inBox && s.g.visible && !s.busy && s !== o);   /* a piece that does not belong: the hand shows one that does, going into the box */
           if (t) steps.push(() => pointAt(t, true)); }
         if (o.box >= 0 && NB > 1) steps.push(() => pointAt(o, true));   /* the first miss already shows how: the hand goes from the piece to its right box (K-CLARITY-RULES 16) */
