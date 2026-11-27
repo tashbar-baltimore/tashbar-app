@@ -98,10 +98,11 @@ export default function setup(E, { struggled, unit, game = {} }) {
     const c0 = cars.find(c => c.userData.key === ORDER[0]);   /* the demo: Alef goes first */ let [x, y] = E.toScreen(c0.position); E.hand.at(x, y); await E.wait(350);
     const p0 = c0.position.clone(), p1 = slotPos(0).add(new THREE.Vector3(0, .6, .3)); await E.tween(1100, q => { c0.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(c0.position); E.hand.at(a, b); });
     E.hand.hide(); await place(c0, 0);
-    await E.say('Now you! Which car comes next?'); wrong = 0; if (game.clock) startClock();
+    if (game.clock) { if (E.world.sun) E.world.sun.visible = false; startClock(); await E.wait(200); const [sx, sy] = E.toScreen(sunObj.position); E.hand.at(sx - 20, sy + 30, true); await E.say('Can you finish before the sun goes down?'); E.hand.hide(); }   /* the race, said and shown */
+    await E.say('Now you! Which car comes next?'); wrong = 0;
     const done = new Promise(r => resolveRound = r); enabled = true; busy = false; document.body.dataset.trainReady = 1;
     await done; enabled = false;
-    E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant(); await chug();
+    E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant(); if (!game.clock) await chug();   /* with the sun-clock, his finished train stays on screen */
     E.setProgress(2, 1);
   }
   async function roundTwo() {
@@ -123,7 +124,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   let sunObj = null, sunT0 = 0, beatSun = true, sunTick = null;
   const SUN_MS = 70000;
   function startClock() { sunObj = new THREE.Group(); sunObj.add(E.mesh(new THREE.SphereGeometry(.45, 24, 16), new THREE.MeshBasicMaterial({ color: 0xffd84a }), 0, 0, 0, false)); const g = E.glowSprite('#ffe680', 2.2, .7); sunObj.add(g); E.scene.add(sunObj); sunT0 = performance.now();
-    const f = () => { if (!sunObj) return; const q = Math.min(1, (performance.now() - sunT0) / (SUN_MS * (E.FAST ? .3 : 1))); sunObj.position.set((P ? 2.2 : 6) - q * (P ? 4.4 : 12), (P ? 5.6 : 5.0) - Math.sin(q * Math.PI) * -1.0 - q * q * 1.5, -3); if (q >= 1 && beatSun) { beatSun = false; } };
+    const f = () => { if (!sunObj) return; const q = Math.min(1, (performance.now() - sunT0) / (SUN_MS * (E.FAST ? .3 : 1))); sunObj.position.set((P ? 2.2 : 6) - q * (P ? 4.4 : 12), (P ? 4.4 : 5.0) + Math.sin(q * Math.PI) * (P ? .6 : 1.0) - q * q * 1.5, -3);   /* under the top bar on a phone */ if (q >= 1 && beatSun) { beatSun = false; } };
     E.onFrame(f); sunTick = f; }
   function stopClock() { if (sunTick) E.offFrame(sunTick); }
   /* Unit 8's twist (game.swap): the full train comes back, but Yaakov mixed up some cars. He listens to the order and taps a car

@@ -52,7 +52,7 @@ export default function setup(E, { struggled, unit, id }) {
       const from = l.position.clone(); l.userData.base = null; ps.push(E.tween(600, q => { l.position.lerpVectors(from, to, q); l.position.y += Math.sin(q * Math.PI) * 1.0; }).then(() => { l.userData.base = to.clone(); })); });
     return Promise.all(ps);
   }
-  E.onFrame(t => { keys.forEach((k, i) => { const l = L[k]; if (l.userData.base) { l.position.y = l.userData.base.y + Math.sin(t * 2 + i * 2) * .06; l.rotation.y = Math.sin(t * 1.1 + i) * .25; } });
+  E.onFrame(t => { keys.forEach((k, i) => { const l = L[k]; if (l.userData.base && !l.userData.hopping) { l.position.y = l.userData.base.y + Math.sin(t * 2 + i * 2) * .06; l.rotation.y = Math.sin(t * 1.1 + i) * .25; } });
     if (glowOn) { glow.position.copy(glowOn.position).add(new THREE.Vector3(0, 0, -.4)); glow.material.opacity = .6 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0; });
   window.__info = () => ({ active, want: cur && cur.k, letters: Object.fromEntries(keys.filter(k => L[k].visible).map(k => [k, E.toScreen(E.worldPos(L[k]))])) });
   let cur = null;
@@ -85,7 +85,7 @@ export default function setup(E, { struggled, unit, id }) {
   if (!unit.gate && E.reviewPicks && unit.known.length) { const weak = E.reviewPicks(unit.known, 1)[0], at = Qs.map(q => unit.known.includes(q.k) && q.by === 'name').lastIndexOf(true);
     if (weak && at >= 0 && !Qs.some(q => q.k === weak)) Qs[at] = { k: weak, by: 'name' }; }
   /* two more older letters, from across all the earlier units, so the check covers everything so far (reviewer: too few older letters) */
-  if (E.reviewPicks && unit.known.length > 3) E.reviewPicks(unit.known, 2, Qs.map(q => q.k)).forEach((k, i) => Qs.splice(3 + i * 4, 0, { k, by: 'name' }));
+  if (!unit.gate && E.reviewPicks && unit.known.length > 3) E.reviewPicks(unit.known, 2, Qs.map(q => q.k)).forEach((k, i) => Qs.splice(3 + i * 4, 0, { k, by: 'name' }));
   async function ask(q) {
     cur = q; await E.say(line(q)); active = true; document.body.dataset.askReady = 1;
     const got = await new Promise(r => resolveQ = r); active = false; delete document.body.dataset.askReady; return got;

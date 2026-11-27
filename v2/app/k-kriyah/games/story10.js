@@ -24,7 +24,7 @@ export default function setup(E, { unit }) {
     if (p) { E.camBase.set(0, 2.6, 12.5); E.camTarget.set(0, 2.6, 0); stage.scale.setScalar(.6); stage.position.set(0, 0, -.5); boys.forEach((b, i) => { b.scale.setScalar(.62); b.position.set(-1.9 + i * .63, .25, 2.2); }); gate.position.set(0, .4, -.6); }
     else { E.camBase.set(0, 2.7, 10.5); E.camTarget.set(0, 2.0, 0); stage.scale.setScalar(1); stage.position.set(0, 0, 0); boys.forEach((b, i) => { b.scale.setScalar(.8); b.position.set(i < 4 ? -5.8 + i * .75 : 3.6 + (i - 4) * .75, 0, 1.6); }); gate.position.set(0, .4, -1.0); }
   });
-  E.onFrame(t => { all.forEach((l, i) => { if (l.userData.base) l.position.y = l.userData.base + Math.sin(t * 2 + i * .5) * .03; }); });
+  E.onFrame(t => { all.forEach((l, i) => { if (l.userData.base && !l.userData.hopping) l.position.y = l.userData.base + Math.sin(t * 2 + i * .5) * .03; }); });
   function wall() {   /* the whole Alef-Beis, right to left, in rows (top row first) */
     const per = P ? 7 : 9, sz = P ? .48 : .72, gap = P ? .58 : .95, top = P ? 4.6 : 4.1, dy = P ? .78 : 1.05;
     const lines = []; for (let i = 0; i < BASE.length; i += per) lines.push(BASE.slice(i, i + per)); lines.push(FINALS);
@@ -56,7 +56,7 @@ export default function setup(E, { unit }) {
     let trio = [];
     for (const [qi, set] of ASK.entries()) {
       const k = set[0]; trio.forEach(l => E.scene.remove(l)); all.length = 0;
-      trio = set.slice().sort(() => Math.random() - .5).map((c, i) => { const l = E.letter(c, P ? 1.3 : 1.7); l.position.set((1 - i) * (P ? 1.45 : 2.4), P ? 3.4 : 2.6, .6); E.scene.add(l); all.push(l); E.popIn(l); return l; });
+      trio = set.slice().sort(() => Math.random() - .5).map((c, i) => { const l = E.letter(c, P ? 1.15 : 1.7); l.position.set((1 - i) * (P ? 1.5 : 2.4), P ? 4.6 : 2.6, .6);   /* on a phone, above the arch's top and clear of each other */ E.scene.add(l); all.push(l); E.popIn(l); return l; });
       const l = trio.find(x => x.userData.key === k); await E.wait(300); if (qi < 3) await E.sayWithMe(k);
       await E.say(['Tap ' + NM(k) + '!']); document.body.dataset.tapReady = k; if (qi === 0) showHand(l);
       let tries = 0;
@@ -70,7 +70,8 @@ export default function setup(E, { unit }) {
     await E.wait(300); gate.visible = true; await E.popIn(gate, 1, 500);
     await E.say('This golden gate leads to the nekudos!');
     await E.say('Get three stars on the champion check.'); await E.say('Do it on two different days.');
-    await E.say('Then the gate opens!'); E.hop(gate, .2);
+    await E.say('Then the gate opens!'); E.sfx.sparkle(); E.sparkle(gate.position.clone().add(new THREE.Vector3(0, 1.4, .3)), 30, 1.4);
+    await E.tween(900, q => doors.forEach((d, i) => d.rotation.y = (i ? -1 : 1) * Math.sin(q * Math.PI) * .5));   /* the doors swing a little: a peek at what is coming */
     E.setProgress(4, 4);
     return { stars: 3, line: 'Let’s practice and become Alef-Beis champions!' };
   };

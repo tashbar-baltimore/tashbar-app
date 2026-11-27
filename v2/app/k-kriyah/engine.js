@@ -308,7 +308,7 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, 
       const pm = M(cols[k % 4], { roughness: .35 }); for (let j = 0; j < 5; j++) { const a = j * Math.PI * 2 / 5, p = mesh(new THREE.SphereGeometry(.055, 10, 8), pm, Math.cos(a) * .065, .29 + Math.sin(a) * .065, 0, false); p.scale.set(1, 1, .5); f.add(p); }
       f.add(mesh(new THREE.SphereGeometry(.04, 10, 8), M(0xff9f1a, { roughness: .4 }), 0, .29, .02, false)); f.position.set(x, 0, z); f.rotation.y = (rnd() - .5) * .6; w.add(f); } }   /* five petals and a middle */
   const sunBall = mesh(new THREE.SphereGeometry(1.6, 32, 20), new THREE.MeshBasicMaterial({ color: 0xffe066 }), 9, 9, -25, false); w.add(sunBall);
-  const halo = glowSprite('#fff3a0', 9, .9); halo.position.copy(sunBall.position); w.add(halo);
+  const halo = glowSprite('#fff3a0', 9, .9); halo.position.copy(sunBall.position); w.add(halo); world.sun = new THREE.Group(); w.add(world.sun); world.sun.add(sunBall, halo);   /* a game can hide the sky's sun (Unit 10's sun-clock) */
   const cm = M(0xffffff, { roughness: .9, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .15 });
   for (let k = 0; k < 5; k++) { const c = new THREE.Group(); [[0, 0, 0, 1], [.9, -.1, .1, .75], [-.9, -.15, 0, .7], [.4, .5, 0, .7], [-.35, .4, .1, .6]].forEach(([a, b, d, r]) => c.add(mesh(new THREE.SphereGeometry(r, 18, 12), cm, a, b, d, false)));
     c.position.set(-16 + k * 8, 6 + (k * 37 % 10) / 4, -14 - (k * 53 % 6)); c.scale.setScalar(.8 + (k % 3) * .25); w.add(c); world.clouds.push(c); }
@@ -531,7 +531,7 @@ export const unitBoy = n => ({ 2: shloimy, 3: ari, 4: dovid, 5: eli, 6: avi, 7: 
 export const yaakov = () => pictureCard('yaakov', () => person({ kippah: 0xc0392b, hair: 0xb5532a, shirt: 0xfff7e0, skin: 0xffdcc2 }));
 
 /* a little jump, used for joy */
-export function hop(o, h = .5, ms = 450) { const y0 = o.position.y; return tween(ms, k => { o.position.y = y0 + Math.sin(k * Math.PI) * h; }, ease.out).then(() => { o.position.y = y0; }); }
+export function hop(o, h = .5, ms = 450) { const y0 = o.position.y; o.userData.hopping = (o.userData.hopping || 0) + 1; return tween(ms, k => { o.position.y = y0 + Math.sin(k * Math.PI) * h; }, ease.out).then(() => { o.position.y = y0; o.userData.hopping--; }); }   /* a game's own bobbing leaves a hopping thing alone */
 export function shake(o, amt = .2, ms = 450) { const x0 = o.position.x; return tween(ms, k => { o.position.x = x0 + Math.sin(k * Math.PI * 5) * amt * (1 - k); }).then(() => { o.position.x = x0; }); }
 
 /* ---------------- 3D letters, from the real font outline ---------------- */
@@ -671,12 +671,12 @@ export async function finish(id, stars, line) {
   const y = $('#yay'); y.querySelector('.stars').innerHTML = [0, 1, 2].map(k => starSvg(k, k < stars)).join('');
   y.classList.add('show'); sfx.fanfare(); for (let k = 0; k < 4; k++) setTimeout(() => confetti(new THREE.Vector3((Math.random() - .5) * 6, 4, 1), 50), k * 200 * F);
   const passed = stars >= PASS;
-  await say(line || (passed ? (stars === 3 ? 'Three stars! Great job!' : 'Two stars! You did it!') : 'Good trying! Let’s play it again together.'));
+  const gi = GAMES.findIndex(g => g.id === id);
+  const practice = GAMES[gi].mastery && unitOf(id).gate && stars < 3 ? GAMES.find(g => g.afterTry && g.unit === GAMES[gi].unit) : null;   /* the champion check: not 3 stars yet, so practise his hard letters next */
+  await say(line || (practice ? 'Let’s practise your hard letters!' : passed ? (stars === 3 ? 'Three stars! Great job!' : 'Two stars! You did it!') : 'Good trying! Let’s play it again together.'));
   await wait(400); y.classList.remove('show');
   const nx = nextGame(id), bar = $('#endbar');
-  const gi = GAMES.findIndex(g => g.id === id);
   const bonusOpen = GAMES[gi + 1] && GAMES[gi + 1].bonus && unlocked(GAMES[gi + 1].id);
-  const practice = GAMES[gi].mastery && unitOf(id).gate && stars < 3 ? GAMES.find(g => g.afterTry && g.unit === GAMES[gi].unit) : null;   /* the champion check: not 3 stars yet, so practise his hard letters next */
   bar.innerHTML = `<button class="btn ${passed ? '' : 'orange big'}" id="again2" aria-label="Play again">${passed ? ICON.replay.replace(/#fff/g, '#2f6fe1') : ICON.replay}</button>` +
     ((passed && (nx || bonusOpen)) || practice ? `<button class="btn green big" id="nextg" aria-label="Next game">${ICON.next}</button>` : passed ? `<button class="btn green big" id="home2" aria-label="Back to the path">${ICON.home.replace(/#2f6fe1/g, '#fff')}</button>` : '');
   bar.classList.add('show'); document.body.dataset.done = 1; const note = document.querySelector('.note'); if (note) note.style.display = 'none';

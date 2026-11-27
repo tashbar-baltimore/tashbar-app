@@ -63,6 +63,9 @@ if (ok) {
   });
   const gateCheck = U.gate && stops.find(s => s.userData.G.mastery), gateG = gateCheck && (E.loadSave().games[gateCheck.userData.G.id] || {}), gatePractice = gateCheck && stops.find(s => s.userData.G.afterTry);
   const gateCur = !gateCheck || !gateG.plays ? null : E.gateOpen(gateCheck.userData.G.id) ? null : (gateG.days3 || []).includes(E.today()) ? null : (gateG.last || 0) < 3 && gatePractice && gatePractice.userData.open && !(((E.loadSave().games[gatePractice.userData.G.id] || {}).at || 0) > (gateG.at || 0)) ? gatePractice : gateCheck;   /* the champion gate: practise after a check under 3 stars, then the check again (another day) */
+  if (gateCheck) {   /* the champion gate's signpost: one gold star for each champion day, out of two */
+    const days = Math.min(E.GATE_DAYS, E.gateDays(gateCheck.userData.G.id));
+    for (let k = 0; k < E.GATE_DAYS; k++) { const st = E.star3d(.2); if (k >= days) st.material = new THREE.MeshStandardMaterial({ color: 0xc9d3dd, roughness: .6 }); st.position.set((k - .5) * .5, 1.95, .2); gateCheck.add(st); E.onFrame(t => st.rotation.y = Math.sin(t + k) * .4); } }
   const cur = gateCur || stops.find(s => s.userData.open && s.userData.stars < E.PASS && !s.userData.G.bonus) || stops.slice().reverse().find(s => s.userData.open && !s.userData.G.bonus);
   const boy = E.mendy(); E.scene.add(boy);
   const ring = E.glowSprite('#fff7b0', 3.2, 0); E.scene.add(ring);
@@ -97,7 +100,8 @@ if (ok) {
   if (before) unitBtn(before, 'right'); if (after && E.unlocked(after.games[0].id)) unitBtn(after, 'left');
   document.body.dataset.ready = 1;
   const firstTime = !Object.keys(save.games).length;
-  E.say(firstTime ? 'Hi! Tap the glowing stone to start.' : cur && E.best(cur.userData.G.id) ? 'Play it again, or tap the next stone!' : 'Tap the glowing stone!');
+  const champToday = gateCheck && !E.gateOpen(gateCheck.userData.G.id) && (gateG.days3 || []).includes(E.today());
+  E.say(champToday ? 'Champion today! Come back tomorrow for day two.' : firstTime ? 'Hi! Tap the glowing stone to start.' : cur && E.best(cur.userData.G.id) ? 'Play it again, or tap the next stone!' : 'Tap the glowing stone!');
 }
 </script>
 </body></html>

@@ -18,5 +18,8 @@ module.exports = async browser0 => {
   (r2.open ? oks : fails).push(tag + ': two different champion days open the gate');
   const r3 = await run(base, async () => { const E = await import('./engine.js'); E.record('u10g6', 3); E.record('u10g6', 3); return { days: E.gateDays('u10g6') }; });
   (r3.days === 1 ? oks : fails).push(tag + ': two 3-star checks on the same day count as one day');
+  { const { ctx, pg } = await K.open(b, { save: K.passedBefore('u10g6'), url: 'play.html?g=u10g6&fast=1' }); await K.startGame(pg);   /* the champion check: exactly 15 questions */
+    await pg.waitForSelector('body[data-ask-ready]', { timeout: 90000 }); const n = await pg.evaluate(() => document.querySelectorAll('#prog i').length); await ctx.close();
+    (n === 15 ? oks : fails).push(tag + ': the champion check has ' + n + ' questions (15 wanted)'); }
   return { fails, oks };
 };

@@ -6,7 +6,7 @@
 /* each unit: two rounds (the letter to find, how many, and the others mixed in), the boy's name, and short "what to look for" words */
 const PLAN = {
   1: { boy: 'Mendy', rounds: [['beis', 4, ['alef', 'alef', 'veis', 'veis'], ['alef', 'veis']], ['veis', 3, ['alef', 'alef', 'beis', 'beis'], ['alef', 'beis']]] },
-  10: { boy: 'Mendy', bySound: true, rounds: [['shin', 4, ['sin', 'sin', 'samech', 'tav'], ['sin', 'tav']], ['gimmel', 3, ['nun', 'nun', 'zayin', 'daled'], ['nun', 'daled']]] },   /* Unit 10's twist: he hears only the SOUND */
+  10: { boy: 'Mendy', bySound: true, rounds: [['shin', 3, ['sin', 'sin', 'samech', 'tav'], ['sin', 'tav']], ['gimmel', 3, ['nun', 'nun', 'zayin', 'daled'], ['nun', 'daled']]] },   /* Unit 10's twist: he hears only the SOUND */
   7: { boy: 'Mendy', rounds: [['kuf', 4, ['hei', 'hei', 'reish', 'daled'], ['hei', 'reish']], ['reish', 3, ['daled', 'daled', 'kuf', 'hei'], ['daled', 'kuf']]] },   /* Unit 8's review: Unit 7's Kuf and Reish among their look-alikes */
   3: { boy: 'Ari', rounds: [['zayin', 4, ['vov', 'vov', 'ches', 'gimmel'], ['vov', 'ches']], ['ches', 3, ['hei', 'hei', 'zayin', 'daled'], ['hei', 'zayin']]] },
 };

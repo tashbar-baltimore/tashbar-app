@@ -51,7 +51,7 @@ export default function setup(E, { unit, game }) {
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); holder.position.set(0, 1.95, .8); boy.position.set(-3.6, 0, 1.4); boy.scale.setScalar(1); }
     done.forEach(l => layoutDone(l, ROW.indexOf(l.userData.key)));
   });
-  function layoutDone(l, i) { if (E.portrait) l.position.set(1.4 - i * .62, .42, 2.0); else l.position.set(5.0 - i * 1.05, .45, 1.6);   /* low and to the right, clear of the big letter */ l.scale.setScalar(E.portrait ? .24 : .34); }
+  function layoutDone(l, i) { if (E.portrait) l.position.set(1.4 - i * .62, .42, 2.0); else l.position.set(Math.min(5.0, 2.6 + (ORDER.length - 1) * .55) - i * 1.05, .45, 1.6);   /* the finished row always fits on screen */   /* low and to the right, clear of the big letter */ l.scale.setScalar(E.portrait ? .24 : .34); }
   E.onFrame(t => {
     if (cur && !cur.userData.spin) cur.rotation.y = Math.sin(t * .7) * .12;
     if (target.parent) { const b = beads.find(x => !x.userData.lit); target.visible = !!b && active; if (b) { target.position.copy(b.position); target.scale.setScalar(.16 * H / 3.2 * (1 + Math.sin(t * 7) * .15)); } }
