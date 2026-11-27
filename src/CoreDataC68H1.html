@@ -71,8 +71,8 @@
 
   NL('READ.LIT.L08.09', function (b, D, Y) {
     b.hook = { kind: 'compare', pic: '📻', t: 'Two texts tell about the same polio spring. One is a story. One is a history.',
-      q: 'Which one tells you how Dovi felt?', o: ['The story', 'The history', 'Both the same'],
-      pay: 'The *story* gives feelings. The *history* gives facts, numbers and dates.' };
+      q: 'Which one could prove the vaccine worked?', o: ['The story', 'The history', 'Both the same'],
+      pay: 'The *history* has the proof: *80 to 90 percent*. The *story* has the *feelings*.' };
     b.learn = [
       { t: 'You know Dovi\'s *story*. It is *fiction*. Now read the *history*.', act: { type: 'read', text: 'C68.POL.04',
         say: 'Read the history of the Polio Pioneers.', how: 'Look for *numbers*, *dates* and names.' } },
@@ -82,27 +82,28 @@
       { who: { q: 'Another story says each child got *one* shot. The history says three.', o: [['Mendy', 'The author kept the fact'], ['Ari', 'The author changed the fact']], a: 1,
         why: 'The numbers *differ*. So the author *changed* it.' } },
       { t: '*Teach it back*: order the steps. Tell your chavrusa.', act: { type: 'order',
-        steps: ['Read both texts.', 'Find the facts both texts share.', 'Check each shared fact: kept or changed?', 'Ask what the story adds: feelings.'],
-        say: 'Put the 4 steps in order. Then teach them.', how: 'Read first. *Share*, then *check*, then *what it adds*.' } }];
-    Y[0].say = 'Detective! Which detail did the author make up?';
+        steps: ['Read both texts.', 'Find the facts both texts share.', 'Check each shared fact: kept or changed?', 'Use what changed: ask what the story added.'],
+        say: 'Put the 4 steps in order. Then teach them.', how: 'What must you do before you can *check* a fact?' } }];
+    Y[0].q = 'Gedalya thinks "half got a shot of nothing" was made up. Which detail really *was* made up?'; Y[0].say = 'Gedalya picked wrong. Find the made-up detail.';
+    Y[3].pairs = [['why the test used a placebo', 'read the history'], ['how a 7-year-old felt in line', 'read the story'], ['if the story got the date right', 'check it against the history']]; Y[3].how = 'Which text answers each question *best*?';
     b.play = [Y[0], Y[1], Y[2], Y[3]];
     b.done = 'A history gives the *facts*. A story lets you *feel* them. You can check one against the other.'; });
 
   NL('READ.COMP.L08.11', function (b, D, Y) {
-    b.hook = { kind: 'wouldyou', pic: '🎧', t: 'You need the exact year a law passed.',
-      q: 'Would you rather read it or hear it?', o: ['Read it in print', 'Hear it on the radio'],
-      pay: '*Print* lets you look back and *check* a number. Hearing helps in other ways.' };
+    b.hook = { kind: 'wouldyou', pic: '🎧', t: 'Your rebbe wrote a new poem for the siyum.',
+      q: 'Would you rather read it or hear him say it?', o: ['Read it on paper', 'Hear him say it'],
+      pay: 'Both help! *Hearing* gives the *feeling*. *Print* lets you check every *word*.' };
     b.learn = [
       { t: 'Read a page. Then tap 🔊 and *listen*.', act: { type: 'read', text: 'C68.POL.02',
         say: 'Read it, then tap 🔊 to hear a page.', how: 'Read first. Then listen with your *eyes closed*.' } },
       { t: 'Print and hearing each do *different jobs* best.', act: { type: 'sort', bins: ['Print does it best', 'Hearing does it best'],
         cards: [['looking back at a line', 0], ['saying a hard word for you', 1], ['checking a number', 0], ['hearing how a line should feel', 1], ['seeing a chart', 0], ['a speaker\'s stress and pauses', 1]],
         say: 'Which way does each job best?', how: 'Can your eyes *go back*? Or does it need a *voice*?' } },
-      { who: { q: '"I didn\'t say *HE* took it." What does the stress tell you?', o: [['Eli', 'He did not take it'], ['Dovi', 'Someone else took it']], a: 1,
-        why: '*Stress* points at the word that *matters*.' } },
+      { who: { q: '"I didn\'t say *HE* took it." What does the stress tell you?', o: [['Eli', 'Someone else said it'], ['Dovi', 'Someone else took it']], a: 1,
+        why: 'Stress on *HE* points at the *person*. Someone else took it.' } },
       { t: '*Teach it back*: build the rule. Tell your chavrusa.', act: { type: 'tiles',
-        w: ['Print lets you check numbers;', 'hearing says hard words;', 'a live voice adds stress.'], extra: ['both are the same.'],
-        say: 'Build the rule. Then teach it to your chavrusa.', how: 'In this order: *print*, then *hearing*, then a live *voice*.' } }];
+        w: ['Print lets you check numbers;', 'hearing shows how hard words sound;', 'a live voice adds stress.'], extra: ['both are the same.'],
+        say: 'Build the rule. Then teach it to your chavrusa.', how: 'Which way checks *numbers*? Which way adds *stress*?' } }];
     Y[0].t = '"I didn\'t say he TOOK it." The stress on TOOK means ___.'; Y[0].o = ['he did something else with it', 'someone else took it', 'I never spoke']; Y[0].a = 'he did something else with it';
     Y[0].how = 'Stress shows which word *matters*. Here it is the *action*.';
     b.play = [Y[2], Y[0], Y[1], Y[3]];
@@ -138,16 +139,17 @@
         say: 'Find the leap from one to every.', how: 'Read Mordechai\'s *second paragraph*. Find the word *every*.' } },
       { t: 'Test 2: is it *true*? Test 3: is it an *attack*?', act: { type: 'match',
         pairs: [['Enigma was hidden, so all hide.', 'too few examples'], ['"Nobody uses codes anymore."', 'a false reason'], ['"Anyone who disagrees just does not care."', 'attacking the person']],
-        say: 'Match each of Mordechai\'s lines to its problem.', how: 'Which *test* does each one fail? Computers use codes *all the time*.' } },
+        say: 'Match each of Mordechai\'s lines to its problem.', how: 'Which *test* does each one fail? Is each line *true*?' } },
       { who: { q: 'Mordechai sounds very *sure*. So is his reasoning strong?', o: [['Shaya', 'Yes, he sounds strong'], ['Boruch', 'No, test the reasons']], a: 1,
         why: 'Sounding *sure* is not *sound*. Test the reasons.' } },
       { t: '*Teach it back*: order the steps. Tell your chavrusa.', act: { type: 'order', steps: ['Find the claim.', 'Find a reason for it.', 'Run the three tests on the reason.', 'Decide: sound or unsound.'],
-        say: 'Put the steps for judging a reason in order.', how: '*Claim*, then reason, then the *tests*, then decide.' } }];
+        say: 'Put the steps for judging a reason in order.', how: 'What must you find before you can *test* it?' } }];
     Y[2].q = 'Claim: "Our shul needs a ramp." Which reason is sound?'; Y[2].p = ['Mr. Katz uses a wheelchair and cannot get in.', 'Every shul in the world has a ramp.', 'Anyone who says no is selfish.']; Y[2].a = 0;
     Y[2].look = 'a true reason about this shul'; Y[2].say = 'New claim! Tap the one sound reason.'; Y[2].how = 'Run the *three tests*. Is it *true*? Is it about the *idea*?';
+    D[1].cards[0] = ['The Navajo code might be needed again, so it stayed secret a while.', 0]; D[1].cards[2] = ['Some code breakers liked puzzles, so all spies love puzzles.', 1];
     b.play = [D[1], Y[2],
-      { type: 'match', pairs: [['"One bike broke. All bikes are junk!"', 'too few examples'], ['"It never rains, so skip umbrellas."', 'a false reason'], ['"Late-bedtime fans are babies."', 'attacking the person']],
-        say: 'New lines! Match each one to its problem.', how: 'Ask: how many *examples*? Is it *true*? Is it about the *idea* or the *person*?' },
+      { type: 'cloze', t: 'Fix Mordechai\'s reason. "Nobody uses codes anymore" becomes "A code that has been ___ cannot help an enemy."', o: ['replaced', 'famous', 'written down'], a: 'replaced',
+        say: 'Fix the broken reason. Make it sound.', how: 'Eli\'s version is *true*. What happened to the *old code*?' },
       Y[4]];
     b.done = 'You test every reason: *enough examples*, *true*, and *not an attack*.'; });
 
@@ -157,18 +159,20 @@
       pay: 'Bright shirts are *true* but *not relevant*. Good evidence must be *about* the reason.' };
     b.learn = [
       { t: 'Test 1: is it *about* the reason? That is *relevant*.', act: { type: 'sort', q: 'Eli\'s question: when should secrets be told?', bins: ['Relevant', 'Not relevant'],
-        cards: [['Some waited 50 years for a medal.', 0], ['Code offices cost millions.', 1], ['History books had to be rewritten.', 0], ['Bletchley Park was a country estate.', 1]],
+        cards: [['Some waited 50 years for a medal.', 0], ['The Beacon prints a debate page.', 1], ['History books had to be rewritten.', 0], ['Code breakers worked in huts.', 1]],
         say: 'Is each fact about when to tell secrets?', how: '*True* is not enough. Is it about *when to tell*?' } },
       { t: 'Test 2: is there *enough* for the claim?', act: Y[3] },
-      { who: { q: '"Code offices cost *millions*." It is true. Is it good evidence?', o: [['Pinny', 'Yes, true facts count'], ['Tzvi', 'No, it is off topic']], a: 1,
-        why: '*True* but *not relevant*. Cost is not *when*.' } },
+      { who: { q: '"Bletchley Park was a country estate." True! Good evidence for *when* to tell?', o: [['Pinny', 'Yes, true facts count'], ['Tzvi', 'No, it is off topic']], a: 1,
+        why: '*True* but *not relevant*. A place is not *when*.' } },
       { t: '*Teach it back*: build the rule. Tell your chavrusa.', act: Y[0] }];
     Y[3].how = 'A *big* claim needs *several* examples. How many did he give?';
     Y[0].say = 'Build the rule. Then teach it to your chavrusa.'; Y[0].how = 'Two tests: *about the reason*, and *enough*.';
-    D[1].mis = true; D[1].q = 'Which sentence is Mordechai\'s only evidence that *every* government hides everything?'; D[1].proof = 'The British hid it for thirty years'; D[1].look = 'one case, used for every';
+    D[1].mis = true; D[1].q = 'Which sentence gives the one *fact* Mordechai uses to prove *every* government hides everything?'; D[1].proof = 'The British hid it for thirty years'; D[1].look = 'the one fact, not the claim';
     D[1].say = 'Trap! Find his one case for every government.'; D[1].how = 'Read his *second paragraph*. One case cannot prove *every*.';
     Y[3].t = 'Mordechai uses *one* case, Enigma, to prove *every* government hides all. His evidence is ___.';
-    Y[1].q = 'Claim: "The code talkers helped win at Iwo Jima." Which evidence is strongest?';
+    Y[1].q = 'Claim: "The code talkers helped win at Iwo Jima." Which evidence is strongest?'; Y[1].look = 'a fact about what they did in the battle';
+    Y[3].say = 'One case for every government?';
+    Y[2].pairs = [['"Our class needs a fan. The lunchroom is blue."', 'not relevant'], ['"All teachers love math. Mr. Gross does."', 'not enough'], ['"Ten rooms hit 90 degrees in June."', 'relevant and enough']]; Y[2].how = 'Is it *about* the claim? Is there *enough*?';
     b.play = [D[1], Y[2], Y[1],
       { type: 'sort', q: 'Claim: "Our street needs a crossing guard."', bins: ['Relevant', 'Not relevant'],
         cards: [['Three children were nearly hit last month.', 0], ['The corner has a blue mailbox.', 1], ['Cars speed there at school time.', 0], ['The guard would wear a vest.', 1]],
@@ -188,7 +192,7 @@
     D[0].how = 'Read Mordechai\'s *third paragraph*. Which word calls the idea *silly*?';
     Y[2].how = 'Which one hides the *reason* for the wait?';
     Y[1].pairs = [['covering up', 'keeping quiet about'], ['ridiculous', 'unlikely'], ['shameful secrets', 'wartime secrets']];
-    Y[3].o = ['wartime', 'evil', 'disgusting']; Y[3].a = 'wartime'; Y[3].how = 'Drop the *judgment*. Just name what they *are*.';
+    Y[3].t = 'Swap the loaded word: "The scheming officials hid the files" becomes "The ___ officials hid the files."'; Y[3].o = ['government', 'crooked', 'sly']; Y[3].a = 'government'; Y[3].how = 'Drop the *judgment*. Just name who they *are*.';
     Y[0].say = 'Build the rule. Then teach it to your chavrusa.'; Y[0].how = 'What do *loaded* words do? What do *plain* words do?';
     b.play = [D[1], Y[1], Y[3],
       { type: 'sort', bins: ['Loaded words', 'One-sided facts'],
