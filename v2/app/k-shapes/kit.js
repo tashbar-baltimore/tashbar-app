@@ -933,8 +933,9 @@ export function startGame(cfg) {
     const back = new THREE.Mesh(new RoundedBoxGeometry(R.w || 3.4, R.h || 3.4, 0.12, 4, 0.1), backM); back.position.z = -0.12; back.receiveShadow = true; g.add(back);
     if (LK && cfg.world === 'beach') { const rim = new THREE.Mesh(new RoundedBoxGeometry((R.w || 3.4) + 0.24, (R.h || 3.4) + 0.24, 0.1, 4, 0.12), new THREE.MeshStandardMaterial({ color: '#2FB7C9', roughness: 0.4 })); rim.position.z = -0.17; g.add(rim); }   /* a turquoise rim */
     const slots = R.slots.map((sl, i) => {
-      const at = slotCenter(sl), hole = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(sl.k).s, 32), new THREE.MeshStandardMaterial({ color: '#CDBF9F', roughness: 0.9 }));
+      const at = slotCenter(sl), hole = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(sl.k).s, 32), new THREE.MeshStandardMaterial({ color: '#B89F72', roughness: 0.9 }));
       hole.scale.setScalar(sl.s || 1); hole.rotation.z = sl.rot || 0; hole.position.set(at[0], at[1], -0.04 + (sl.z || 0)); g.add(hole);
+      const rimH = new THREE.Mesh(hole.geometry, new THREE.MeshStandardMaterial({ color: '#5A4528', roughness: 0.9 })); rimH.scale.setScalar((sl.s || 1) * 1.07); rimH.rotation.z = sl.rot || 0; rimH.position.set(at[0], at[1], -0.05 + (sl.z || 0)); g.add(rimH); hole.userData.rim = rimH;   /* a dark edge round each hole: the hole he fills is easy to see (K-CLARITY-RULES 9) */
       const edge = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(shapeOf(sl.k).corners.length ? shapeOf(sl.k).corners.map(c => new THREE.Vector3(c[0], c[1], 0)) : Array.from({ length: 48 }, (_, j) => new THREE.Vector3(Math.cos(j / 48 * 6.283) * 0.66, Math.sin(j / 48 * 6.283) * 0.66, 0))),
         new THREE.LineDashedMaterial({ color: '#6E5B3E', dashSize: 0.1, gapSize: 0.06 }));
       edge.computeLineDistances(); edge.scale.setScalar(sl.s || 1); edge.rotation.z = sl.rot || 0; edge.position.set(at[0], at[1], -0.02 + (sl.z || 0)); g.add(edge);
@@ -957,9 +958,9 @@ export function startGame(cfg) {
   function fillSlot(o, sl) {   /* the piece slides into its hole and stays there */
     sl.filled = true; o.inBox = true; o.box = -1;
     return moveTo(o, slotWorld(sl), 380, 0.4).then(() => { PZ.g.add(o.g); o.g.position.set(sl.at[0], sl.at[1], 0.06 + (sl.z || 0)); o.g.rotation.set(0, 0, 0); o.g.scale.setScalar(sl.s || 1); o.turn.rotation.z = sl.rot || 0;
-      sl.hole.visible = false; sl.edge.visible = false; pop(); markSlots(); });
+      sl.hole.visible = false; sl.edge.visible = false; if (sl.hole.userData.rim) sl.hole.userData.rim.visible = false; pop(); markSlots(); });
   }
-  function flashSlot(sl) { if (!sl) return Promise.resolve(); return tween(900, k => { sl.edge.material.color.set(Math.sin(k * Math.PI * 4) > 0 ? '#F5B400' : '#6E5B3E'); }); }
+  function flashSlot(sl) { if (!sl) return Promise.resolve(); const rm = sl.hole.userData.rim && sl.hole.userData.rim.material; return tween(900, k => { const on = Math.sin(k * Math.PI * 4) > 0; sl.edge.material.color.set(on ? '#F5B400' : '#6E5B3E'); if (rm) rm.color.set(on || k >= 1 ? (k >= 1 ? '#5A4528' : '#F5B400') : '#5A4528'); }); }   /* the hint flashes the whole dark edge gold */
   function puzzleRound(R, bonus, help) {
     return new Promise(resolve => {
       setName(bonus ? 'bonus' : 'find'); dots(2); setPuzzle(R); allow = true;
