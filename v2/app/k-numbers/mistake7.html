@@ -67,7 +67,11 @@ async function check() {
   NK.unlock(); if (GAME.phase !== 'answer' || R.kind !== 'fix') return; GAME.phase = 'busy'; FR.lock(true); await busy;
   const w = R.base + 1, have = O.count(1);
   if (have === w) { O.sparkle(O.sides[1].g.position); await FR.yes($('check'), 'Fixed! ' + FR.Word(w) + ' is one more than ' + FR.word(R.base) + '.'); return finish(); }
-  FR.oops($('check')); R.misses++; O.glowSide(0, true); await FR.say("Look. Dovid has " + FR.word(R.base) + '. One more is ' + FR.word(w) + '.'); O.glowSide(0, false);
+  FR.oops($('check')); R.misses++;
+  /* round 3 review: the help SHOWS how (as in One more, one less): Dovid's apples on Shmuel's blanket, one drops in, then his own apples come back */
+  O.glowSide(0, true); await FR.say("Look. Dovid has " + FR.word(R.base) + '.'); O.glowSide(0, false);
+  O.setApples(1, R.base, 'row'); O.glowSide(1, true); await FR.say('The same is ' + FR.word(R.base) + '.');
+  await O.drop(1); await FR.say('One more is ' + FR.word(w) + '.'); await FR.wait(500); O.glowSide(1, false); O.setApples(1, have, 'row');
   await FR.say(have < w ? 'Tap the apple button for more.' : 'Tap an apple to take it back.'); open();
 }
 async function card(k) {

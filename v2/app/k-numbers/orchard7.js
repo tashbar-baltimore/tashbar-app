@@ -210,8 +210,9 @@ export function mount(host, opt) {
       if (narrow) { const k = api.npairs = (api.npairs || 0) + 1, maxp = Math.min(api.count(0), api.count(1)), gap = Math.min(0.78, (W - 0.7) / Math.max(1, maxp)), x = -((maxp - 1) * gap) / 2 + (k - 1) * gap;
         const ta = new THREE.Vector3(x, 0.05, -D / 2 + 0.4), tb = new THREE.Vector3(x, 0.05, D / 2 - 0.4), fa = a.position.clone(), fb = b.position.clone();
         /* the apples not paired yet wait in their own row, away from the line of partners, so a left-over apple never sits on a paired one (round 3 review) */
-        [0, 1].forEach(i => { const left = sides[i].apples.filter(o => !o.userData.paired), lg = Math.min(0.78, (W - 0.7) / Math.max(1, left.length - 1));
-          left.forEach((o, q) => { o.position.set(-((left.length - 1) * lg) / 2 + q * lg, 0.05, i ? -0.35 : 0.35); }); });
+        [0, 1].forEach(i => { const left = sides[i].apples.filter(o => !o.userData.paired), per = Math.max(1, Math.floor((W - 0.7) / 0.72) + 1);   /* one apple wide apart; a second row if they do not fit */
+          left.forEach((o, q) => { const r = Math.floor(q / per), c = q % per, inRow = Math.min(per, left.length - r * per);
+            o.position.set(-((inRow - 1) * 0.72) / 2 + c * 0.72, 0.05, (i ? -1 : 1) * (0.2 + r * 0.6)); }); });
         await tween(300, e => { a.position.lerpVectors(fa, ta, e); b.position.lerpVectors(fb, tb, e); }); }
       const pa = new THREE.Vector3(), pb = new THREE.Vector3(); a.getWorldPosition(pa); b.getWorldPosition(pb);
       const rib = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1, 8), new THREE.MeshBasicMaterial({ color: '#FFC93D', toneMapped: false }));

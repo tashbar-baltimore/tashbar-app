@@ -13,8 +13,13 @@
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="kitchen8.css">
 <style>#show{ display:flex; align-items:center; } #show .tf{ width:min(28vw,220px); } #hh .hands2{ width:min(30vw,40vh,230px); } #hh .fhand{ margin-right:0; }
-#hh .fhand .fdown{ width:64px; height:64px; right:-8px; bottom:-10px; } #show[hidden], #hh[hidden], #same[hidden], #check[hidden]{ display:none; }
-@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; } #show{ width:100%; justify-content:center; } #show .tf{ width:150px; } #hh .hands2{ width:180px; } }</style>
+#same svg{ width:94%; height:94%; }   /* "the same": a kugel slice, equals, a kugel slice (like apple = apple in Line them up) */
+/* round 3 review: a ten-frame or two-hands round has no plates, so the kitchen steps away and the frame and hands are big in the middle */
+.stage.s6.big{ justify-content:center; } .big #panel{ gap:clamp(24px,4vw,56px); padding:18px 28px; }
+.big #show .tf{ width:min(42vw,60vh,520px); } .big #hh .hands2{ width:min(34vw,48vh,400px); } .big #check{ width:clamp(110px,15vh,140px); }
+#show[hidden], #hh[hidden], #same[hidden], #check[hidden]{ display:none; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; } #show{ width:100%; justify-content:center; } #show .tf{ width:150px; } #hh .hands2{ width:180px; }
+  .big #panel{ flex-direction:column; } .big #show .tf{ width:min(86vw,330px); } .big #hh .hands2{ width:min(80vw,300px); } }</style>
 </head>
 <body>
 <div id="world"></div>
@@ -22,7 +27,7 @@
   <div class="ui" id="panel">
     <div id="show"></div>
     <div id="hh"></div>
-    <button id="same" class="bigbtn btn3d b-white eq" aria-label="The same"><svg viewBox="0 0 48 48"><path d="M10 18h28M10 30h28" stroke="#2B2350" stroke-width="7" stroke-linecap="round"/></svg></button>
+    <button id="same" class="bigbtn btn3d b-white eq" aria-label="The same"><svg viewBox="0 0 56 40"><rect x="2" y="13" width="17" height="13" rx="2" fill="#F6D585"/><rect x="2" y="11" width="17" height="5" rx="2" fill="#D9892E"/><path d="M23 16h10M23 25h10" stroke="#2B2350" stroke-width="5" stroke-linecap="round"/><rect x="37" y="13" width="17" height="13" rx="2" fill="#F6D585"/><rect x="37" y="11" width="17" height="5" rx="2" fill="#D9892E"/></svg></button>
     <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
 </div></div>
@@ -66,7 +71,7 @@ const PLAN = [{ kind: 'plates', a: 4, b: 2 }, { kind: 'frame', n: 7 }, { kind: '
 function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0, seen: SEEN }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0);
-    const pl = R.kind === 'plates'; $('same').hidden = !pl; $('hh').hidden = $('check').hidden = pl; $('show').hidden = pl; $('show').innerHTML = '';
+    const pl = R.kind === 'plates'; $('stage').classList.toggle('big', !pl); $('world').style.visibility = pl ? '' : 'hidden'; $('same').hidden = !pl; $('hh').hidden = $('check').hidden = pl; $('show').hidden = pl; $('show').innerHTML = '';
     if (pl) { K.setPlates(R.a, R.b); K.spot('plate0', K.plates[0], { cls: 'plate', r: 1.35, y: 0.1 }); K.spot('plate1', K.plates[1], { cls: 'plate', r: 1.35, y: 0.1 }); open(); marks(true);
       await F.say('Which plate has more? Or the same?', { repeat: 'Tap the plate with more, or tap the same.' }); return; }
     marks(false); K.unspot('plate0'); K.unspot('plate1'); K.hidePlates(); K.setKugel(0);

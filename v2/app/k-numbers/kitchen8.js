@@ -64,7 +64,7 @@ export function mount(host, opt) {
   /* two little plates for the two parts */
   /* the same peach and blue as the part circles of the number bond (K clarity: each part circle matches its plate) */
   const PLATE = ['#FFB877', '#7DB8F2'];
-  const plates = [-1, 1].map((s, i) => { const p = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.3, 0.1, 40), new THREE.MeshStandardMaterial({ color: PLATE[i], roughness: 0.45 })); p.position.set(s * 1.75, 0.06, 0); p.castShadow = true; p.visible = false; scene.add(p); return p; });
+  const plates = [-1, 1].map((s, i) => { const p = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.3, 0.1, 40), new THREE.MeshStandardMaterial({ color: PLATE[i], roughness: 0.45 })); p.position.set(s * 1.9, 0.06, 0);   /* apart enough that the two glow rings never touch */ p.castShadow = true; p.visible = false; scene.add(p); return p; });
   /* a sunny ring around a plate when the help talks about it (kept apart from the plate, so it is never counted) */
   const rings = plates.map(() => { const r = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.1, 12, 64), new THREE.MeshBasicMaterial({ color: '#FFC21A', toneMapped: false })); r.rotation.x = Math.PI / 2; r.visible = false; scene.add(r); return r; });
 
@@ -141,8 +141,8 @@ export function mount(host, opt) {
     setPlates(a, b) { platter.visible = false; slices.forEach(s => scene.remove(s)); slices = []; towel.visible = false; look('plates'); plates.forEach(p => { p.visible = true; }); api.platePut(0, a); api.platePut(1, b); },
     /* n kugel slices on plate k, in rows with gaps, so each one can be counted */
     platePut(k, n) { const p = plates[k]; while (p.children.length) p.remove(p.children[0]);
-      for (let j = 0; j < n; j++) { const o = slice(); o.scale.setScalar(0.78); const per = n > 3 ? Math.ceil(n / 2) : n, row = Math.floor(j / per), col = j % per, inRow = row ? n - per : per;
-        o.position.set((col - (inRow - 1) / 2) * 0.96, 0.2, n > 3 ? (row ? 0.52 : -0.52) : 0); p.add(o); } },
+      for (let j = 0; j < n; j++) { const o = slice(); o.scale.setScalar(0.78); const per = n > 2 ? Math.ceil(n / 2) : n, row = Math.floor(j / per), col = j % per, inRow = row ? n - per : per;   /* 3 or more in two rows, so no slice hangs over the rim */
+        o.position.set((col - (inRow - 1) / 2) * 0.96, 0.2, n > 2 ? (row ? 0.52 : -0.52) : 0); p.add(o); } },
     /* a soft glow on a plate (the one the help talks about), or on none */
     glowPlate(k) { rings.forEach((r, i) => { r.position.copy(plates[i].position).setY(0.1); r.visible = i === k && plates[i].visible; }); },
     /* a soft glow on the red (or yellow) counters while he works on that hand; null = none */

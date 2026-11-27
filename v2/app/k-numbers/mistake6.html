@@ -36,19 +36,19 @@ function hooks() {
   GAME.wrong = R.picked == null ? () => { P.focus(fine, true); return [{ tap: '.stone[data-n="' + fine + '"]' }]; } : null;
 }
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
-async function walkAlong(from, to) {   /* we count along the path together: each stone shines as we say it */
-  for (let n = from; n <= to; n++) { P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === to ? '.' : ','), { noRepeat: true }); P.glow(n, false); } stretch(R.kind === 'swap');
+async function walkAlong(from, to, keep) {   /* we count along the path together: each stone shines as we say it (keep: the camera stays there, so start and end are both on screen) */
+  if (keep != null) P.focus(keep);
+  for (let n = from; n <= to; n++) { if (keep == null) P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === to ? '.' : ','), { noRepeat: true }); P.glow(n, false); } stretch(R.kind === 'swap');
 }
 /* the swap rounds: the mix-up is always two numbers side by side, from zero to five, and those six stones shine */
 function stretch(on) { P.glow(null); if (on) for (let n = 0; n <= 5; n++) P.glow(n, true); }
 /* Avi's hop: he taps the stone where Avi should be, and Avi hops back there */
 async function moveAvi(stone) {
   if (GAME.phase !== 'answer' || R.kind !== 'hop') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n, ok = R.at + R.k;
-  if (n === ok) { P.el(R.at).classList.remove('startmark'); P.glow(null); $('spin').hidden = true; A.pose('happy'); A.place(R.at); await A.hop(ok); P.petals(ok); await FR.yes(stone, FR.pick(['Thank you! Avi is on ' + FR.word(ok) + ' now.', 'Yes! You moved him right!'])); A.pose('idle'); return finish(); }
+  if (n === ok) { P.el(R.at).classList.remove('startmark'); P.el(ok).classList.remove('hint'); P.glow(null); $('spin').hidden = true; A.pose('happy'); A.place(R.at); await A.hop(ok); P.petals(ok); await FR.yes(stone, FR.pick(['Thank you! Avi is on ' + FR.word(ok) + ' now.', 'Yes! You moved him right!'])); A.pose('idle'); return finish(); }
   FR.oops(stone); R.misses++;
   await FR.say("Let's look. Avi started on " + FR.word(R.at) + '. ' + (R.k === 1 ? 'One hop.' : 'Two hops.'));
-  await walkAlong(R.at + 1, ok); for (let s = R.at + 1; s <= ok; s++) P.glow(s, true);   /* the hops stay shining until he taps */
-  if (R.misses > 1) P.el(ok).classList.add('hint');
+  await walkAlong(R.at + 1, ok, (R.at + ok) / 2); P.glow(null); P.el(ok).classList.add('hint');   /* round 3 review: the start stone stays in view, and only the right stone shines */
   await FR.say('Tap that stone for Avi.'); open();
 }
 async function tap(n, el) {
@@ -63,7 +63,8 @@ async function tap(n, el) {
   }
   FR.oops(el); R.misses++;
   await FR.say('That one is right. Count with me.'); stretch(false); await walkAlong(Math.max(0, R.a - 1), Math.min(5, R.b + 1));
-  await FR.say(FR.Word(R.b) + " can't come before " + FR.word(R.a) + '.');
+  P.glow(null); P.glow(R.a, true); P.glow(R.b, true); P.focus((R.a + R.b) / 2);   /* the two mixed-up stones shine while we say why */
+  await FR.say(FR.Word(R.b) + " can't come before " + FR.word(R.a) + '.'); stretch(true);
   if (R.misses > 1) { P.el(R.a).classList.add('hint'); P.el(R.b).classList.add('hint'); await FR.say('Find the two mixed-up numbers.'); setTimeout(() => { if (R.picked == null) { P.el(R.a).classList.remove('hint'); P.el(R.b).classList.remove('hint'); } }, 2500); }
   else await FR.say('Find the two mixed-up numbers.');
   open();
@@ -73,6 +74,7 @@ const KINDS = ['hop', 'swap', 'hop', 'swap', 'hop', 'swap'];
 function play(F, i) {
   return new Promise(async res => {
     done = res; GAME.phase = 'busy'; F.lock(true); P.showAll(true); A.show(true);
+    document.querySelector('#panel .who').style.display = KINDS[i] === 'hop' ? 'none' : '';   /* one Avi on screen: in hop rounds he is on the path */
     if (KINDS[i] === 'hop') {
       /* Avi's slips: counting his own stone (lands one short), or one hop too many */
       const at = [1, 3, 5][i / 2], k = 2, far = i === 4, wrongAt = at + k + (far ? 1 : -1);
