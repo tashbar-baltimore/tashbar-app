@@ -3,6 +3,7 @@
    the 3D picture really draws (not blank); in the lesson he taps the corners (or the circle); a boy who does nothing gets a reminder;
    a wrong piece is explained and goes back, and after 2 mistakes the rule is taught again; every right piece goes into its box (by drag,
    and by tap where there is one box); find the mistake (a wrong answer is explained, then the right one, and he shows the corners);
+   fix the shape: on his screen the right stick looks as long as the gap and every stick is on screen (K-CLARITY-RULES 7);
    stars match the mistakes; a boy with no mistakes gets the bonus round and 3 stars; spoken lines are 12 words or fewer; no "bite";
    buttons are big and on screen. Chromebook size plays every game twice (with mistakes, then perfect); phone size plays each once.
    Returns { fails, oks }. */
@@ -80,13 +81,24 @@ module.exports = async function (browser) {
         if (!((await S()).reminders > 0)) bad(L + ': a boy who does nothing gets no reminder');
       }
       /* play every round: with mistakes, the first two tries are wrong (a wrong piece, or a right piece in the wrong box) */
-      let wrongs = 0, sawBonus = false;
+      let wrongs = 0, sawBonus = false; const fxSeen = new Set();
       for (let guard = 0; guard < 80; guard++) {
         const st0 = await S();
         if (st0.name === 'mistake') break;
         if (st0.name === 'bonus') sawBonus = true;
         const list = await pg.evaluate(() => window.__shp.list().filter(x => !x.busy));
         if (!['find', 'bonus'].includes(st0.name) || !list.length) { await pg.waitForTimeout(150); continue; }
+        /* K-CLARITY-RULES 7 (fix the shape): on his screen the right stick is as long as the gap, a wrong one clearly is not, and every stick is fully on screen */
+        const fx = await pg.evaluate(() => window.__shp.fixPx && window.__shp.fixPx());
+        if (fx && fx.gap && !fxSeen.has(fx.sticks.map(x => x.kind).join() + Math.round(fx.gap))) {
+          fxSeen.add(fx.sticks.map(x => x.kind).join() + Math.round(fx.gap));
+          for (const x of fx.sticks) {
+            const r = x.len / fx.gap;
+            if (x.kind === 'right' && Math.abs(r - 1) > 0.06) bad(L + ': the right stick looks ' + Math.round(r * 100) + '% as long as the gap (must look the same)');
+            if ((x.kind === 'short' || x.kind === 'long') && Math.abs(r - 1) < 0.3) bad(L + ': the ' + x.kind + ' stick looks almost as long as the gap (' + Math.round(r * 100) + '%)');
+            if (x.x0 < 0 || x.x1 > fx.w) bad(L + ': a stick is off the screen (' + Math.round(x.x0) + '..' + Math.round(x.x1) + ' of ' + fx.w + ' px)');
+          }
+        }
         if (!perfect && wrongs < 2 && st0.name === 'find') {
           const nb = st0.nb || 1, w = list.find(x => x.box < 0), r = list.find(x => x.box >= 0);
           const [id, box] = w ? [w.id, 0] : nb > 1 && r ? [r.id, (r.box + 1) % nb] : [null, 0];
