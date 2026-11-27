@@ -34,39 +34,160 @@ function css(){ if(document.getElementById('tm-css')) return; const s=document.c
 .tmc .foot{margin:16px 0 22px;color:#6B7280;font:600 15px var(--body,'Barlow'),sans-serif}
 .tmlist{display:grid;gap:10px;margin:16px 18px 4px}.tml{display:flex;align-items:center;gap:14px;width:100%;border:2px solid #E0E7FF;border-radius:18px;background:#F8FAFF;padding:14px 16px;cursor:pointer;text-align:left;font:inherit}.tml:hover{border-color:#818CF8}.tml .ic2{font-size:30px}.tml .tx{flex:1;display:flex;flex-direction:column}.tml b{font:800 19px var(--display,'Barlow'),sans-serif;color:#1E1B4B}.tml small{color:#5B6478;font:600 15px var(--body,'Barlow'),sans-serif}.tml .ar{font-size:22px;color:#6366F1}
 .tmwait{min-height:60vh;display:grid;place-items:center;color:#6B7280;font:700 20px var(--body,'Barlow'),sans-serif}`; document.head.appendChild(s); }
-/* YOUR CLASSES & BUCKET (ClassesBucket.js): a Teacher Time period shows its own screen, built from the button kit (window.TLK) */
+/* ===== THE BOYS' WORLD (docs/WORLD.md) for Your Classes & Bucket (ClassesBucket.js) =====
+   While his afternoon is locked he is IN the Mountain Kingdom: Teacher Time in the Teacher Time Hall (his class work floats as papers),
+   Independent Study at the Bucket Spring (his work papers stand in a clear crystal bucket; finished ones go to his done pile with a check;
+   when the core is done the bucket glows, confetti flies and the add-ons come out). A door a teacher opened flies him up to the Golden City.
+   The world is a stack of picture layers (sky, far, middle, the place, near, effects) behind the page; the camera flies between places
+   (about 2 seconds, tap anywhere skips nothing: the papers work during a flight). Pictures come from the art library (picture orders YCB-1
+   and YCB-2): a name listed in YCW_ART is shown from /pics/ (n = the number of side-by-side slices, each at most 1,100 px wide); a name not
+   listed yet shows a calm painted stand-in. Every button on top is from the button kit. Reduce motion: no flights, no bobbing. */
+const YCW_ART={};   /* 'ycw-k-hall':3 ... filled in as the pictures arrive and pass their check */
+const YCP=(n,cls)=>{ const k=YCW_ART[n]; if(!k) return ''; const one=i=>`<img src="/pics/${n}${k>1?'-'+(i+1):''}.webp" alt="" draggable="false" decoding="async">`; return `<div class="ycw-pic ${cls||''}">${Array.from({length:k},(_,i)=>one(i)).join('')}</div>`; };
+const YCW_SCENES={ gate:{part:'k',x:-1,y:0,place:'ycw-k-gate'}, terrace:{part:'k',x:0,y:0,place:'ycw-k-terrace'}, hall:{part:'k',x:1,y:0,place:'ycw-k-hall'},
+  spring:{part:'k',x:2,y:0,place:'ycw-k-spring'}, trail:{part:'k',x:3,y:0,place:'ycw-k-trail'}, city:{part:'c',x:2,y:1,place:'ycw-c-square'} };
+const YCW={el:null,scene:'',cam:{x:0,y:0},fly:null,raf:0,reduce:false};
+try{ YCW.reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+function ycwBuild(){ if(YCW.el&&document.body.contains(YCW.el)) return YCW.el; const w=document.createElement('div'); w.id='ycworld'; w.setAttribute('aria-hidden','true');
+ w.innerHTML=`<div class="ycw-l ycw-sky" data-d="0.04">${YCP('ycw-k-sky')}<div class="ycw-paint ycw-paint-sky"></div></div>
+  <div class="ycw-l ycw-csky" data-d="0.04">${YCP('ycw-c-sky')}<div class="ycw-paint ycw-paint-csky"></div></div>
+  <div class="ycw-l ycw-far" data-d="0.12">${YCP('ycw-k-far')}<div class="ycw-paint ycw-paint-far"></div></div>
+  <div class="ycw-l ycw-mid" data-d="0.3">${YCP('ycw-k-mid')}<div class="ycw-paint ycw-paint-mid"></div></div>
+  <div class="ycw-l ycw-cmid" data-d="0.3">${YCP('ycw-c-mid')}<div class="ycw-paint ycw-paint-cmid"></div></div>
+  <div class="ycw-place"></div>
+  <div class="ycw-l ycw-near" data-d="0.7">${YCP('ycw-k-near')}</div>
+  <div class="ycw-fx ycw-clouds">${YCP('ycw-fx-cloudwall')}<div class="ycw-paint ycw-paint-clouds"></div></div>
+  <div class="ycw-fx ycw-rays">${YCP('ycw-fx-rays')}</div>`;
+ document.body.appendChild(w); YCW.el=w; if(!YCW.raf) ycwLoop(); return w; }
+const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
+function ycwLoop(){ YCW.raf=requestAnimationFrame(ycwLoop); const w=YCW.el; if(!w||!document.body.classList.contains('yc-world')) return;
+ const now=performance.now(); let cx=YCW.cam.x, cy=YCW.cam.y, cloud=0;
+ if(YCW.fly){ const f=YCW.fly, u=Math.min(1,(now-f.t0)/f.dur), e=ease(u); cx=f.fx+(f.tx-f.fx)*e; cy=f.fy+(f.ty-f.fy)*e; cloud=f.up?Math.sin(u*Math.PI):Math.sin(u*Math.PI)*0.35;
+   if(u>=1){ YCW.fly=null; YCW.cam={x:f.tx,y:f.ty}; w.classList.add('ycw-arrived'); if(f.done) f.done(); } }
+ const vw=innerWidth, vh=innerHeight, t=now/1000, sway=YCW.reduce?0:Math.sin(t*0.25)*6, bob=YCW.reduce?0:Math.sin(t*0.33)*4;
+ /* at rest every layer sits centred; during a flight it slides by how far is left to go (at most one screen), deeper layers slide more */
+ const S=YCW_SCENES[YCW.scene]||{x:0,y:0}, ox=Math.max(-1,Math.min(1,cx-S.x)), oy=Math.max(-1,Math.min(1,cy-S.y));
+ w.querySelectorAll('.ycw-l').forEach(l=>{ const d=+l.dataset.d; l.style.transform=`translate3d(${(-ox*vw*d*0.62+sway*d*4).toFixed(1)}px,${(oy*vh*d*0.9+bob*d*3).toFixed(1)}px,0)`; });
+ const c=w.querySelector('.ycw-clouds'); if(c) c.style.opacity=cloud.toFixed(3);
+ const kp=Math.max(0,1-cy), cp=Math.min(1,cy); w.style.setProperty('--k',kp.toFixed(3)); w.style.setProperty('--c',cp.toFixed(3)); }
+/* go to a place: fly if he was somewhere else in the world, otherwise just arrive */
+function ycwGo(name,done){ const w=ycwBuild(), S=YCW_SCENES[name]||YCW_SCENES.hall; if(YCW.scene===name){ if(done) done(); return; }
+ const from=YCW_SCENES[YCW.scene]; YCW.scene=name; const place=w.querySelector('.ycw-place');
+ const showPlace=()=>{ place.innerHTML=YCP(S.place,'ycw-placepic')||`<div class="ycw-paint ycw-paint-${name}"></div>`; place.classList.remove('ycw-in'); void place.offsetWidth; place.classList.add('ycw-in'); };
+ w.classList.remove('ycw-arrived');
+ if(!from||YCW.reduce){ YCW.cam={x:S.x,y:S.y}; YCW.fly=null; showPlace(); w.classList.add('ycw-arrived'); if(done) done(); return; }
+ place.classList.remove('ycw-in'); place.classList.add('ycw-out');
+ YCW.fly={fx:from.x,fy:from.y,tx:S.x,ty:S.y,t0:performance.now(),dur:S.y!==from.y?2600:1900,up:S.y>from.y,done:()=>{ place.classList.remove('ycw-out'); showPlace(); if(done) done(); }};
+ try{ SND.whoosh&&SND.whoosh(); }catch(e){} }
 function ycCss(){ if(document.getElementById('yc-css')) return; const s=document.createElement('style'); s.id='yc-css'; s.textContent=`
-.ycw{min-height:calc(100vh - 40px);display:flex;justify-content:center;align-items:flex-start;padding:28px 16px;box-sizing:border-box;background:#FFFBEB}
-.ycc{width:min(760px,100%)}.ych{text-align:center;margin-bottom:18px}.ych h2{font:800 clamp(28px,4vw,40px)/1.15 var(--display,'Barlow'),sans-serif;color:#1E1B4B;margin:10px 0 6px}
-.ych p{margin:0;color:#4B5563;font:600 18px var(--body,'Barlow'),sans-serif}.ych .pl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
-.ycg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,250px));justify-content:center;gap:16px}.ycg .tlk-tile{min-height:190px;cursor:pointer;font:inherit}
-.ycg .yi{display:grid;place-items:center;height:96px;font-size:54px;background:linear-gradient(135deg,#E0E7FF,#FCE7F3)}.ycg .yt{display:flex;flex-direction:column;gap:6px;padding:12px 14px}
-.ycg .yt b{font:800 20px/1.2 var(--display,'Barlow'),sans-serif;color:#1E1B4B}.ycg .yt small{color:#4B5563;font:600 15px var(--body,'Barlow'),sans-serif}
-.ycgo{display:flex;justify-content:center;margin-top:20px}.ycf{text-align:center;margin-top:18px;color:#6B7280;font:600 15px var(--body,'Barlow'),sans-serif}
-.ycsh{font:800 20px var(--display,'Barlow'),sans-serif;color:#1E1B4B;margin:22px 0 10px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
-.yclk{display:flex;flex-direction:column;min-height:190px;border-radius:18px;border:1.5px dashed #CBD5E1;background:#F8FAFC;overflow:hidden;opacity:.8}.yclk .yi{filter:grayscale(1)}
-.ycg .ycdone{opacity:.85}
-@media (max-width:520px){.yclk{min-height:150px}.ycg{grid-template-columns:1fr}.ycg .tlk-tile{min-height:150px}.ycg .yi{height:76px;font-size:44px}}`; document.head.appendChild(s); }
-/* INDEPENDENT STUDY: his bucket list. Core first (any order, a check when done), then the add-ons, locked until the core is done */
+#ycworld{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none;display:none;background:#CFEAFF;--k:1;--c:0}
+body.yc-world #ycworld{display:block}
+body.yc-world #app{position:relative;z-index:2;background:transparent!important}
+body.yc-world .ycw{background:transparent}
+.ycw-l{position:absolute;top:-8%;bottom:-8%;left:-50%;right:-50%;will-change:transform}.ycw-place,.ycw-fx{position:absolute;inset:-4%;will-change:transform}
+.ycw-pic{position:absolute;inset:0;display:flex}.ycw-pic img{flex:1 1 0;min-width:0;height:100%;object-fit:cover;display:block;user-select:none}
+.ycw-sky,.ycw-far,.ycw-mid,.ycw-near{opacity:var(--k)}.ycw-csky,.ycw-cmid{opacity:var(--c)}
+.ycw-paint{position:absolute;inset:0}.ycw-pic+.ycw-paint{display:none}
+.ycw-paint-sky{background:radial-gradient(60% 50% at 78% 18%,#FFF6D8 0%,rgba(255,246,216,0) 60%),linear-gradient(180deg,#8FCBFF 0%,#BFE3FF 45%,#FFE9C7 100%)}
+.ycw-paint-csky{background:radial-gradient(70% 60% at 50% 30%,#FFF4CF 0%,rgba(255,244,207,0) 65%),linear-gradient(180deg,#9FD2FF 0%,#FFE7B0 70%,#FFF7E6 100%)}
+.ycw-paint-far{background:linear-gradient(180deg,#C3D2F3,#E2EAF8);clip-path:polygon(0 62%,4% 50%,8% 57%,12% 40%,17% 55%,21% 45%,25% 58%,30% 37%,35% 52%,40% 42%,44% 56%,50% 46%,54% 60%,58% 39%,63% 54%,67% 44%,71% 57%,76% 38%,81% 53%,85% 43%,90% 58%,95% 47%,100% 55%,100% 100%,0 100%);opacity:.85}
+.ycw-paint-mid{background:linear-gradient(180deg,#A7E08F,#79C784);clip-path:polygon(0 80%,6% 72%,13% 77%,20% 68%,27% 75%,34% 70%,41% 78%,48% 69%,55% 76%,62% 67%,69% 74%,76% 70%,83% 78%,90% 69%,100% 75%,100% 100%,0 100%);opacity:.9}
+.ycw-paint-cmid{background:radial-gradient(40% 30% at 30% 80%,#FFFFFF,rgba(255,255,255,0) 70%),radial-gradient(45% 30% at 75% 85%,#FFFFFF,rgba(255,255,255,0) 70%)}
+.ycw-paint-clouds{background:radial-gradient(40% 35% at 30% 50%,#fff,rgba(255,255,255,0) 72%),radial-gradient(45% 40% at 70% 45%,#fff,rgba(255,255,255,0) 72%),radial-gradient(60% 50% at 50% 60%,rgba(255,255,255,.95),rgba(255,255,255,0) 75%)}
+.ycw-clouds{opacity:0}.ycw-rays{opacity:.55;mix-blend-mode:screen}
+.ycw-place{inset:0;opacity:0;transition:opacity .9s ease}.ycw-place.ycw-in{opacity:1;animation:ycwKen 24s ease-out both}.ycw-place.ycw-out{opacity:0;transition:opacity .35s}
+@keyframes ycwKen{from{transform:scale(1.09)}to{transform:scale(1)}}
+.ycw-paint-hall{background:linear-gradient(180deg,rgba(255,250,240,0) 0%,rgba(255,244,220,.55) 70%,rgba(244,226,196,.8) 100%)}
+.ycw-paint-spring{background:radial-gradient(55% 35% at 50% 92%,rgba(190,240,255,.75),rgba(190,240,255,0) 70%)}
+.ycw-paint-city{background:radial-gradient(60% 40% at 50% 90%,rgba(255,236,170,.7),rgba(255,236,170,0) 70%)}
+/* the page on top of the world */
+.ycw{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px 16px 92px;box-sizing:border-box}
+.ycw-plaque{position:relative;text-align:center;padding:12px 28px 14px;border-radius:22px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 40px rgba(40,90,150,.22);max-width:min(640px,100%)}
+.ycw-plaque h2{font:800 clamp(24px,3.4vw,36px)/1.12 var(--display,'Barlow'),sans-serif;color:#13305A;margin:6px 0 2px}
+.ycw-plaque p{margin:0;color:#3B5578;font:600 16px var(--body,'Barlow'),sans-serif}
+.ycw-ring{position:fixed;top:64px;right:14px;width:78px;height:78px;border-radius:50%;background:rgba(255,255,255,.88);box-shadow:0 8px 22px rgba(40,90,150,.2);z-index:3}
+.ycw-ring svg{width:100%;height:100%;transform:rotate(-90deg)}.ycw-ring span{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:800 20px/1 var(--display,'Barlow'),sans-serif;color:#13305A}.ycw-ring small{display:block;font:700 9px var(--body,'Barlow'),sans-serif;letter-spacing:.08em;color:#3B5578}
+.ycw-bar{position:fixed;left:160px;right:96px;bottom:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;z-index:3;pointer-events:none}
+.ycw-bar .tlk-pill{box-shadow:0 6px 18px rgba(40,90,150,.18)}
+/* papers: each piece of work is a kit tile dressed as a sheet of paper */
+.ycpapers{display:flex;flex-wrap:wrap;justify-content:center;gap:22px;margin-top:clamp(18px,6vh,64px);perspective:900px}
+.tlk.tlk-tile.ycpaper{width:clamp(150px,17vw,200px);min-height:clamp(200px,24vw,262px);padding:0;border-radius:6px;background:#fff;border:0;box-shadow:0 18px 34px rgba(30,60,110,.25),0 2px 0 rgba(0,0,0,.04);transform:rotate(var(--r,0deg));animation:ycBob 4.5s ease-in-out infinite;animation-delay:var(--dl,0s);font:inherit;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.tlk.tlk-tile.ycpaper:hover{transform:rotate(0deg) translateY(-8px) scale(1.04);box-shadow:0 26px 44px rgba(30,60,110,.32)}
+.tlk.tlk-tile.ycpaper.ycfly{animation:ycFly .3s ease-in forwards}
+@keyframes ycBob{0%,100%{translate:0 0}50%{translate:0 -7px}}@keyframes ycFly{to{transform:translateY(-40px) scale(1.25) rotate(0);opacity:.2}}
+.ycpaper .ycband{display:block;height:34px;background:var(--band,#3B82F6);color:#fff;font:800 12px/34px var(--body,'Barlow'),sans-serif;letter-spacing:.12em;text-transform:uppercase;padding:0 12px;text-align:left}
+.ycpaper .ycic{display:grid;place-items:center;height:clamp(78px,9vw,104px);font-size:clamp(46px,5vw,60px)}.ycpaper .ycic img{width:72%;height:auto}
+.ycpaper .yct{display:block;padding:4px 14px 10px;font:800 clamp(16px,1.5vw,19px)/1.2 var(--display,'Barlow'),sans-serif;color:#13305A;text-align:center}
+.ycpaper .yclines{display:block;margin:0 16px;height:30px;background:repeating-linear-gradient(180deg,transparent 0 9px,#E3EAF3 9px 11px)}
+.ycpaper .ycseal{position:absolute;right:10px;bottom:10px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4ADE80,#15803D);color:#fff;display:grid;place-items:center;font:900 28px/1 sans-serif;box-shadow:0 4px 10px rgba(21,128,61,.4);transform:rotate(-12deg)}
+.ycpaper.yclocked{filter:grayscale(.9);opacity:.75;cursor:default;animation:none}
+.ycpaper.yclocked .yclock{position:absolute;inset:auto 0 12px 0;text-align:center;font-size:28px}
+.ycgo{display:flex;justify-content:center;margin-top:22px}
+/* the crystal bucket */
+.ycbucket{position:relative;width:min(440px,86vw);aspect-ratio:1/0.92;margin-top:clamp(6px,3vh,28px)}
+.ycb-back,.ycb-front{position:absolute;inset:0;pointer-events:none}.ycb-back .ycw-pic,.ycb-front .ycw-pic{position:absolute;inset:0}.ycb-back img,.ycb-front img{object-fit:contain}
+.ycb-glass-back{position:absolute;left:12%;right:12%;top:22%;bottom:4%;border-radius:0 0 46% 46%/0 0 18% 18%;background:linear-gradient(180deg,rgba(210,245,255,.35),rgba(170,225,255,.55));clip-path:polygon(0 0,100% 0,88% 100%,12% 100%)}
+.ycb-glass-front{position:absolute;left:12%;right:12%;top:22%;bottom:4%;clip-path:polygon(0 0,100% 0,88% 100%,12% 100%);background:linear-gradient(100deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.08) 22%,rgba(255,255,255,0) 60%,rgba(255,255,255,.35) 92%),linear-gradient(180deg,rgba(200,240,255,.18),rgba(150,215,255,.35));box-shadow:inset 0 0 0 3px rgba(255,255,255,.5)}
+.ycb-rim{position:absolute;left:9%;right:9%;top:17%;height:11%;border-radius:50%;border:7px solid #4FC3F7;box-shadow:0 0 0 3px rgba(255,255,255,.55) inset,0 4px 14px rgba(79,195,247,.45)}
+.ycb-papers{position:absolute;left:18%;right:18%;top:-6%;height:58%;display:flex;justify-content:center;align-items:flex-end;gap:0}
+.ycb-papers .tlk.tlk-tile.ycpaper{width:clamp(96px,11vw,128px);min-height:clamp(128px,15vw,170px);margin:0 -14px;animation-duration:5.5s}
+.ycb-papers .ycpaper .ycband{height:24px;line-height:24px;font-size:10px}.ycb-papers .ycpaper .ycic{height:56px;font-size:38px}.ycb-papers .ycpaper .yct{font-size:14px}.ycb-papers .ycpaper .yclines{display:none}
+.ycbucket.ycglow .ycb-glass-back{background:linear-gradient(180deg,rgba(255,240,170,.6),rgba(255,214,102,.75))}
+.ycbucket.ycglow::after{content:"";position:absolute;left:10%;right:10%;top:-30%;height:70%;background:radial-gradient(50% 60% at 50% 100%,rgba(255,220,120,.85),rgba(255,220,120,0) 70%);pointer-events:none;animation:ycRise 2.6s ease-in-out infinite}
+@keyframes ycRise{0%,100%{opacity:.6}50%{opacity:1}}
+.ycdone{position:absolute;left:-30%;bottom:2%;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ycdone .ycdstack{position:relative;width:96px;height:70px}.ycdone .ycdstack i{position:absolute;inset:auto 0 0 0;height:60px;border-radius:5px;background:#fff;box-shadow:0 6px 14px rgba(30,60,110,.22)}
+.ycdone .ycdstack b{position:absolute;right:-6px;top:-6px;width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4ADE80,#15803D);color:#fff;display:grid;place-items:center;font:900 18px/1 sans-serif}
+.ycadds{position:absolute;right:-34%;top:6%;display:flex;flex-direction:column;gap:12px}
+.ycadds .tlk.tlk-tile.ycpaper{width:clamp(96px,10vw,120px);min-height:clamp(124px,13vw,156px)}
+.ycadds .ycpaper .ycband{height:22px;line-height:22px;font-size:9px}.ycadds .ycpaper .ycic{height:52px;font-size:34px}.ycadds .ycpaper .yct{font-size:13px}.ycadds .ycpaper .yclines{display:none}
+.ycdoorrow{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:22px}
+.tlk.tlk-tile.ycdoor{width:clamp(140px,15vw,178px);padding:12px;align-items:center;text-align:center;border-radius:20px;background:linear-gradient(160deg,#FFF8DA,#FFD970);box-shadow:0 0 0 2px rgba(255,200,60,.7),0 14px 30px rgba(255,180,40,.35);animation:ycBob 4s ease-in-out infinite}
+.ycdoor .ycic{display:grid;place-items:center;font-size:44px;height:60px}.ycdoor b{font:800 17px var(--display,'Barlow'),sans-serif;color:#5A3A00}.ycdoor small{color:#7A5A10;font:600 13px var(--body,'Barlow'),sans-serif}
+.ycconf{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}.ycconf i{position:absolute;top:-4vh;width:10px;height:16px;border-radius:2px;animation:ycFall 2.8s ease-in forwards}
+@keyframes ycFall{to{transform:translate3d(var(--dx),110vh,0) rotate(720deg)}}
+@media (max-width:700px){.ycw{padding-top:52px}.ycw-bar{left:12px;right:48px;bottom:auto;top:10px;justify-content:flex-start}.ycw-ring{display:none}
+ .ycbucket{width:min(330px,88vw);margin-top:34px;margin-bottom:210px}.ycb-papers .tlk.tlk-tile.ycpaper{width:84px;min-height:116px;margin:0 -10px}.ycb-papers .ycpaper .ycic{height:42px;font-size:30px}.ycb-papers .ycpaper .yct{font-size:12px;padding:2px 6px 8px}
+ .ycdone{left:2%;right:auto;bottom:-52%}.ycadds{right:2%;top:auto;bottom:-68%;flex-direction:row;gap:8px}.ycadds .tlk.tlk-tile.ycpaper{width:86px;min-height:114px}.ycadds .ycpaper .ycic{height:38px;font-size:28px}.ycadds .ycpaper .yct{font-size:11px;padding:2px 6px 6px}.ycpaper.yclocked .yclock{font-size:20px;bottom:6px}
+ .tlk.tlk-tile.ycpaper{width:150px;min-height:196px}}
+@media (prefers-reduced-motion:reduce){.tlk.tlk-tile.ycpaper,.tlk.tlk-tile.ycdoor{animation:none}.ycw-place.ycw-in{animation:none}.ycbucket.ycglow::after{animation:none}.ycconf{display:none}}`; document.head.appendChild(s); }
+const BAND={MATH:'#3B82F6',READ:'#10B981',WRIT:'#8B5CF6',LANG:'#8B5CF6',LK:'#F59E0B',HEB:'#F59E0B',SCI:'#06B6D4',SS:'#14B8A6',ELEC:'#0EA5E9',VOC:'#A855F7',COMP:'#6366F1',LIFE:'#22C55E',SIM:'#EC4899',SHEET:'#EC4899',TCH:'#4338CA'};
+const ICONART={MATH:'ycb-ic-math',READ:'ycb-ic-reading',WRIT:'ycb-ic-writing',LANG:'ycb-ic-writing',LK:'ycb-ic-chumash',HEB:'ycb-ic-chumash',SCI:'ycb-ic-science',VOC:'ycb-ic-trades',ELEC:'ycb-ic-electives',SHEET:'ycb-ic-worksheet'};
+function ycIcon(k,emoji){ const n=ICONART[k]; return n&&YCW_ART[n]?`<img src="/pics/${n}.webp" alt="" draggable="false">`:emoji; }
+function ycPaper(o){ const k=subjOf(o.skill||''), sj=SUBJ[k]||['📘',''], i=o.i||0;
+ const inner=`<span class="ycband" style="--band:${BAND[k]||'#3B82F6'}">${E(o.sub||sj[1]||'')}</span><span class="ycic" aria-hidden="true">${ycIcon(k,sj[0])}</span><span class="yct">${E(o.title)}</span><span class="yclines"></span>${o.done?'<span class="ycseal" aria-label="Done">✓</span>':''}${o.locked?'<span class="yclock" aria-hidden="true">🔒</span>':''}`;
+ const st=`--r:${((i%2?1:-1)*(1.5+i%3)).toFixed(1)}deg;--dl:${(i*0.4).toFixed(1)}s`;
+ return o.locked?`<div class="tlk tlk-tile ycpaper yclocked" style="${st}" aria-label="${E(o.title)}: locked">${inner}</div>`:`<button type="button" class="tlk tlk-tile ycpaper${o.done?' ycpdone':''}" style="${st}" data-tm="go" data-id="${E(o.skill)}" aria-label="${E(o.title)}${o.done?' (done)':''}">${inner}</button>`; }
+function ycRing(s){ if(!s.until) return ''; const left=Math.max(0,Math.round((s.until-Date.now())/60000)), R=31, C=2*Math.PI*R, tot=s.yc&&s.yc.len||35, frac=Math.max(0,Math.min(1,left/tot));
+ return `<div class="ycw-ring" aria-label="${left} minutes left"><svg viewBox="0 0 78 78"><circle cx="39" cy="39" r="${R}" fill="none" stroke="#E3EEF9" stroke-width="7"/><circle cx="39" cy="39" r="${R}" fill="none" stroke="#FFB938" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C*(1-frac)).toFixed(1)}"/></svg><span><span>${left}<small>MIN</small></span></span></div>`; }
+function ycBar(s){ const K=window.TLK, pill=(k,t)=>K?K.pill(k,t):`<span>${E(t)}</span>`, y=s.yc;
+ return `<div class="ycw-bar">${y.next?pill('lock','Next: '+y.next.name+' at '+y.next.show):pill('lock','Only your work is open now')}${s.until?pill('prog','Until '+tm(s.until).replace(/\s?[AP]M$/i,'')):''}</div>`; }
+let ycCelebrated='';
+function ycConfetti(){ if(YCW.reduce) return; const c=document.createElement('div'); c.className='ycconf'; const col=['#FF6B8A','#FFD24D','#5BC0FF','#9B7BFF','#4ADE80','#FFB938'];
+ c.innerHTML=Array.from({length:90},(_,i)=>`<i style="left:${(Math.random()*100).toFixed(1)}%;background:${col[i%6]};--dx:${((Math.random()-.5)*30).toFixed(1)}vw;animation-delay:${(Math.random()*0.6).toFixed(2)}s"></i>`).join(''); document.body.appendChild(c); setTimeout(()=>c.remove(),3800); try{ SND.win&&SND.win(); }catch(e){} }
+/* INDEPENDENT STUDY at the Bucket Spring: his work papers stand in the crystal bucket; finished ones go to his done pile */
 function ycISHTML(){ const s=TMC.s, y=s.yc, B=s.bucket, K=window.TLK, pill=(k,t)=>K?K.pill(k,t):`<span>${E(t)}</span>`;
  const isDone=x=>x.done||(typeof mastered==='function'&&A.st&&x.skill&&mastered(A.st,x.skill));
  const done=B.core.filter(isDone).length, complete=done>=B.core.length&&B.complete;
- const tile=(x,open)=>{ const sj=SUBJ[subjOf(x.skill)]||['📘',''], d=isDone(x), nm=x.t==='subj'||x.t==='sheet'?x.name:nameOf(x.skill), sub=x.t==='subj'?(x.lesson||'Your next lesson at your level'):sj[1];
-   const inner=`<span class="yi" aria-hidden="true">${sj[0]}</span><span class="yt"><b>${E(nm)}</b><small>${E(sub)}</small>${d?pill('prog','Done ✓'):open?'':pill('lock','Locked')}</span>`;
-   return open?`<button type="button" class="tlk tlk-tile${d?' ycdone':''}" data-tm="go" data-id="${E(x.skill)}">${inner}</button>`:`<div class="yclk">${inner}</div>`; };
- const why=y.why==='empty'?'Your teacher did not give class work for now, so this is Independent Study time.':y.why==='now'?'Your teacher sent you to Independent Study.':'Do your core in any order you like.';
- return `<section class="ycw"><div class="ycc"><div class="ych">${pill('now','Independent Study')}<h2>Your bucket list</h2><p>${E(why)}</p>
- <div class="pl">${pill('prog','Core: '+done+' of '+B.core.length+' done')}${s.until?pill('prog','Until '+tm(s.until).replace(/\s?[AP]M$/i,'')):''}${y.next?pill('lock','Next: '+y.next.name+' at '+y.next.show):''}</div></div>
- <h3 class="ycsh">Core</h3><div class="ycg">${B.core.map(x=>tile(x,true)).join('')}</div>
- ${B.addons.length?`<h3 class="ycsh">Add-ons ${complete?'':pill('lock','Finish your core to open these')}</h3><div class="ycg">${B.addons.map(x=>tile(x,complete)).join('')}</div>`:''}${doorTiles()}
- <p class="ycf">Only your bucket list is open now.</p></div></section>`; }
+ const title=x=>x.t==='subj'||x.t==='sheet'?x.name:nameOf(x.skill), sub=x=>x.t==='subj'?(SUBJ[subjOf(x.skill)]||['',''])[1]:x.t==='sheet'?'Worksheet':(SUBJ[subjOf(x.skill)]||['',''])[1];
+ const inBucket=B.core.filter(x=>!isDone(x)), finished=B.core.filter(isDone);
+ if(complete&&ycCelebrated!==s.id){ ycCelebrated=s.id; setTimeout(ycConfetti,500); }
+ const why=y.why==='empty'?'No class work right now, so it is bucket time.':y.why==='now'?'Your teacher sent you to your bucket.':complete?'Your core is done. Your add-ons are out!':'Pull a paper out of your bucket. Any order you like.';
+ return `<section class="ycw">${ycRing(s)}<div class="ycw-plaque">${pill('now','Independent Study')}<h2>${complete?'Your bucket is done!':'My bucket'}</h2><p>${E(why)}</p></div>
+ <div class="ycbucket${complete?' ycglow':''}">
+  <div class="ycb-back">${YCP(complete?'ycb-bucket-glow':'ycb-bucket-back')||'<div class="ycb-glass-back"></div>'}</div>
+  <div class="ycb-papers">${inBucket.map((x,i)=>ycPaper({skill:x.skill,title:title(x),sub:sub(x),i})).join('')}</div>
+  <div class="ycb-front">${YCP('ycb-bucket-front')||'<div class="ycb-glass-front"></div><div class="ycb-rim"></div>'}</div>
+  ${finished.length?`<div class="ycdone" aria-label="Done: ${finished.length}"><div class="ycdstack">${finished.slice(0,4).map((x,i)=>`<i style="bottom:${i*5}px;transform:rotate(${(i%2?3:-3)}deg)"></i>`).join('')}<b>✓</b></div>${pill('prog','Done '+finished.length+' of '+B.core.length)}</div>`:''}
+  ${B.addons.length?`<div class="ycadds">${B.addons.map((x,i)=>ycPaper({skill:x.skill,title:title(x),sub:'Add-on',i:i+1,locked:!complete})).join('')}</div>`:''}
+ </div>
+ ${doorTiles()}${ycBar(s)}</section>`; }
+/* TEACHER TIME in the Teacher Time Hall: his class work floats in front of him as papers */
 function ycHTML(){ if(TMC.s.bucket) return ycISHTML(); const s=TMC.s, y=s.yc, sk=SKILLS(), K=window.TLK, pill=(k,t)=>K?K.pill(k,t):`<span>${E(t)}</span>`;
- const tiles=sk.map(id=>{ const sj=SUBJ[subjOf(id)]||['📘',''], did=(s.handed&&s.handed[id])||(typeof mastered==='function'&&A.st&&mastered(A.st,id));
-   return `<button type="button" class="tlk tlk-tile" data-tm="go" data-id="${E(id)}"><span class="yi" aria-hidden="true">${sj[0]}</span><span class="yt"><b>${E(nameOf(id))}</b><small>${E(sj[1])}</small>${did?pill('prog','Done ⭐'):''}</span></button>`; }).join('');
+ const papers=sk.map((id,i)=>ycPaper({skill:id,title:nameOf(id),sub:(SUBJ[subjOf(id)]||['',''])[1],i,done:(s.handed&&s.handed[id])||(typeof mastered==='function'&&A.st&&mastered(A.st,id))})).join('');
  const go=sk.length===1&&K?`<div class="ycgo">${K.main(K.WORDS&&K.WORDS.start||'Start','data-tm="go" data-id="'+E(sk[0])+'"')}</div>`:'';
- return `<section class="ycw"><div class="ycc"><div class="ych">${pill('now',y.label)}<h2>${E(y.cls||s.clsName||s.name)}</h2><p>with ${E(s.by)} · ${sk.length===1?'Your teacher picked this for now.':'Your teacher picked these for now. Tap one to start.'}</p>
- <div class="pl">${s.until?pill('prog','Until '+tm(s.until).replace(/\s?[AP]M$/i,'')):''}${y.next?pill('lock','Next: '+y.next.name+' at '+y.next.show):''}</div></div>
- <div class="ycg">${tiles}</div>${go}${doorTiles()}<p class="ycf">Only your class work is open now. The rest of the app opens after class.</p></div></section>`; }
+ return `<section class="ycw">${ycRing(s)}<div class="ycw-plaque">${pill('now',y.label)}<h2>${E(y.cls||s.clsName||s.name)}</h2><p>with ${E(s.by)} · ${sk.length===1?'Your teacher picked this for now.':'Your teacher picked these for now. Tap one to start.'}</p></div>
+ <div class="ycpapers">${papers}</div>${go}${doorTiles()}${ycBar(s)}</section>`; }
 function lockHTML(){ const s=TMC.s, sk=SKILLS(); if(s.yc) return ycHTML(); if(sk.length>1) return lockManyHTML(); const sj=SUBJ[subjOf(s.skill)]||['📘',s.subj], did=TMC.done>0||(typeof mastered==='function'&&A.st&&mastered(A.st,s.skill));
  return `<section class="tmw"><div class="tmc"><div class="top"><small>🧑‍🏫 Class lesson</small><h2>${E(s.name)}</h2><p>${E(sj[1])} · with ${E(s.by)}</p></div>
  <div class="ic" aria-hidden="true">${sj[0]}</div><p class="sub">Your class is learning this lesson together. Look at the board and follow your teacher.</p>
@@ -98,10 +219,10 @@ render=function(){
  if(A.view==='result'&&s&&A.play&&SKILLS().indexOf(A.play.id)>=0&&A.res&&!A.res.tmCounted){ A.res.tmCounted=1; TMC.done++; if(s.bucket) setTimeout(check,4000); }
  if(s&&A.view==='play'&&A.play&&SKILLS().indexOf(A.play.id)<0){ A.view='hub'; A.play=null; }
  if(A.view==='hub'&&sid&&s){   /* v162: no "Getting your day ready…" wait any more: until the class answer comes the home shows as usual; a running class takes over the moment it is known */
-   css(); if(s.yc) ycCss(); A.overlay=null; const el=document.getElementById('app'); if(!el) return _render.apply(this,arguments);
+   css(); if(s.yc){ ycCss(); document.body.classList.add('yc-world'); ycwGo(s.yc.k==='IS'?'spring':'hall'); } else document.body.classList.remove('yc-world'); A.overlay=null; const el=document.getElementById('app'); if(!el) return _render.apply(this,arguments);
    el.innerHTML=lockHTML(); document.body.classList.add('tm-on'); document.body.classList.remove('hp-on'); return; }
- document.body.classList.remove('tm-on'); return _render.apply(this,arguments); };
-document.addEventListener('click',e=>{ const b=e.target.closest('[data-tm]'); if(!b) return; if(b.dataset.tm==='go'){ try{ SND.tap(); }catch(x){} startClass(b.dataset.id); } },true);
+ document.body.classList.remove('tm-on'); document.body.classList.remove('yc-world'); return _render.apply(this,arguments); };
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-tm]'); if(!b) return; if(b.dataset.tm==='go'){ try{ SND.tap(); }catch(x){} if(b.classList.contains('ycpaper')&&!YCW.reduce){ b.classList.add('ycfly'); setTimeout(()=>startClass(b.dataset.id),260); } else startClass(b.dataset.id); } },true);   /* a paper lifts out first */
 /* ===== DOORS (Your Classes & Bucket, "who gets what, when"; ClassesBucket.js YC.DOORS has the same ids) =====
    While his screen is locked (a Teacher Time, Independent Study, or a teacher's live class) ONLY his class work or bucket opens:
    every other tap on the page is stopped before any part of the app sees it (a capture listener on window), the floating doors
@@ -147,10 +268,10 @@ function doorCss(){ let el=document.getElementById('yc-doors'); if(!el){ el=docu
  if(L) FLOAT.split(',').forEach(x=>{ const k=Object.keys(DOORS).find(k=>DOORS[k].hide===x); if(!k||!doorOpen(k)) out.push(x); });
  const css=out.length?out.join(',')+'{display:none!important}':''; if(el.textContent!==css) el.textContent=css; document.body.classList.toggle('yc-lock',L); }
 setInterval(doorCss,700);
-document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-ycdoor]'); if(!b) return; const D=DOORS[b.dataset.ycdoor]; if(D&&D.go&&doorOpen(b.dataset.ycdoor)){ try{ SND.tap(); }catch(x){} doorCss(); D.go(); } },true);
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-ycdoor]'); if(!b) return; const D=DOORS[b.dataset.ycdoor]; if(D&&D.go&&doorOpen(b.dataset.ycdoor)){ try{ SND.tap(); }catch(x){} doorCss(); if(typeof ycwGo==='function'&&document.body.classList.contains('yc-world')&&!YCW.reduce){ ycwGo('city',()=>D.go()); } else D.go(); } },true);   /* the flight up to the Golden City, then the door */
 /* the doors a teacher opened, as tiles on his class screen */
 function doorTiles(){ const s=TMC.s, ds=(s&&s.doors||[]).filter(k=>DOORS[k]&&DOORS[k].go&&doorOpen(k)); if(!ds.length) return '';
- return `<h3 class="ycsh">Open for you now</h3><div class="ycg">${ds.map(k=>`<button type="button" class="tlk tlk-tile" data-ycdoor="${k}"><span class="yi" aria-hidden="true">${DOORS[k].i}</span><span class="yt"><b>${E(DOORS[k].n)}</b><small>Your teacher opened this</small></span></button>`).join('')}</div>`; }
+ const K=window.TLK; return `<div class="ycdoorrow" aria-label="Open for you now">${K?K.pill('now','Open for you now'):''}</div><div class="ycdoorrow">${ds.map(k=>`<button type="button" class="tlk tlk-tile ycdoor" data-ycdoor="${k}"><span class="ycic" aria-hidden="true">${DOORS[k].i}</span><b>${E(DOORS[k].n)}</b><small>Your teacher opened this</small></button>`).join('')}</div>`; }
 function strip(r){ TMC.closed=r&&r.closed||[]; const s=r&&r.open?null:r; setTimeout(doorCss,0); return s; }
 /* v162: the class answer arrives WITH sign-in (msSignInFast, HomePage.html sets window.TL_PRE_TM), so no extra trip and no wait */
 function use(r){ r=strip(r); if(r&&r.until&&r.now) r.until=Date.now()+(r.until-r.now); if(r) addTeacherLessons(r); TMC.s=r||null; TMC.done=0; }
