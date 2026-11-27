@@ -8,6 +8,8 @@ const path = require('path'), fs = require('fs'), os = require('os'), cp = requi
 const R = path.join(__dirname, '..', '..');
 /* the first game for each flat shape (Unit 1, and corner counting in Unit 2): plain shapes only */
 const FIRST = ['find-circles', 'find-triangles', 'find-squares', 'find-rectangles', 'shape-sorter', 'count-corners', 'find-hexagons'];
+/* games where the lesson is not the look of the shape (flat vs solid, building, position, colour): plain one-colour pieces too, so nothing pulls the eye (shapes-c) */
+const ALSO_PLAIN = ['flat-or-solid', 'build-shapes', 'where-is-it', 'sort-colors'];
 module.exports = async function (browser) {
   const out = { fails: [], oks: [] }, bad = m => out.fails.push('2.0 K shapes clarity: ' + m);
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'v2kclar-'));
@@ -38,8 +40,8 @@ module.exports = async function (browser) {
         const r = await pg.evaluate(async () => { const { KINDS } = await import('./kit.js');
           return { plain: window.__shp.plain, pieces: window.__shp.pieces().map(o => Object.assign(o, { want: KINDS[o.k] ? (KINDS[o.k].pts ? KINDS[o.k].pts.length : KINDS[o.k].semi ? 2 : 0) : null })) }; });
         for (const o of r.pieces) if (o.want != null && o.marks !== o.want) bad(L + ': piece ' + o.id + ' (' + o.k + ') has ' + o.want + ' corners but ' + o.marks + ' corner markers');
-        if (FIRST.includes(g)) {
-          if (!r.plain) bad(L + ': a first-meeting game must use plain shapes (plain: true)');
+        if (FIRST.includes(g) || ALSO_PLAIN.includes(g)) {
+          if (!r.plain) bad(L + ': this game must use plain shapes (plain: true)');
           const painted = r.pieces.filter(o => o.painted).map(o => o.id);
           if (painted.length) bad(L + ': pieces with a picture painted on them in a first-meeting game: ' + painted.join(', '));
         }

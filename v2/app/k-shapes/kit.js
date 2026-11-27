@@ -186,7 +186,7 @@ export function startGame(cfg) {
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
-      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
+      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(0.5, 0.75, 0);   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (LK) {
       const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5 + (NB > 1 ? 0.5 : 0), BX.d / 2 + 0.3);   /* several boxes (phone: two rows): high enough that the box in front never hides it */ lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
     } else {
@@ -660,8 +660,8 @@ export function startGame(cfg) {
     fill.scale.setScalar(sc); fill.position.z = -0.02; fill.visible = false; g.add(fill);
     const close = new THREE.Mesh(stickGeo(gap.len), m); close.position.copy(gap.mid); close.rotation.z = gap.ang; close.visible = false; g.add(close);
     /* the gap (K clarity, Esti 2026-11-27): a dashed ghost of the missing side, in the shape's colour, shows exactly where the stick goes */
-    const mark = new THREE.Group(), nd = Math.max(3, Math.round(gap.len / 0.34)), dm = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5, depthWrite: false });
-    for (let i = 0; i < nd; i++) { const d = new THREE.Mesh(new THREE.CapsuleGeometry(SR * 0.6, gap.len / nd * 0.45, 4, 8), dm); d.rotation.z = Math.PI / 2; d.position.x = -gap.len / 2 + (i + 0.5) * gap.len / nd; mark.add(d); }
+    const mark = new THREE.Group(), nd = Math.max(3, Math.round(gap.len / 0.34)), dm = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.85, depthWrite: false });
+    for (let i = 0; i < nd; i++) { const d = new THREE.Mesh(new THREE.CapsuleGeometry(SR * 0.75, gap.len / nd * 0.45, 4, 8), dm); d.rotation.z = Math.PI / 2; d.position.x = -gap.len / 2 + (i + 0.5) * gap.len / nd; mark.add(d); }
     mark.position.copy(gap.mid); mark.rotation.z = gap.ang; mark.position.z = 0.05; g.add(mark);
     scene.add(g);
     return { g, k, corners, sc, gap, fill, close, mark, marks: [], color };
@@ -674,7 +674,7 @@ export function startGame(cfg) {
     return tween(350, k => OL.close.scale.set(Math.max(0.01, k), 1, 1)).then(() => { OL.fill.visible = true; chime(true); burst(OL.g.position.clone(), 26); return cheer(mendy); });
   }
   function tryInGap(o) {   /* a wrong stick is laid in the gap for a moment, so he SEES why it does not fit */
-    const t = new THREE.Mesh(o.mesh.geometry, o.mat); t.position.copy(OL.gap.mid); t.rotation.z = OL.gap.ang; t.position.z = 0.04; OL.g.add(t);
+    const t = new THREE.Mesh(o.L != null ? stickGeo(o.L, o.kind === 'curvy') : o.mesh.geometry, o.mat); t.position.copy(OL.gap.mid); t.rotation.z = OL.gap.ang; t.position.z = 0.04; OL.g.add(t);
     return wait(1400).then(() => { OL.g.remove(t); });
   }
   function makeStick(id, kind, len, color, slot, ang) {   /* kind: 'right' | 'short' | 'long' | 'curvy' */
@@ -684,7 +684,11 @@ export function startGame(cfg) {
     const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = ang || 0;
     const g = new THREE.Group(); g.add(turn); scene.add(g);
     const o = { id, k: 'stick-' + kind, kind, box: kind === 'right' ? 0 : -1, g, turn, mesh, mat, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false, slot };
-    o.home.copy(fixSlot(slot)); o.home.y = Math.max(o.home.y, 0.35 + L * Math.abs(Math.sin(ang || 0)) / 2); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
+    /* the sticks are nearer to him than the shape, so perspective would make them look longer: each is drawn at the size it would look beside the gap,
+       so the right stick LOOKS exactly as long as the gap (K-CLARITY-RULES 7: no trick he could argue about) */
+    o.home.copy(fixSlot(slot)); o.L = L;
+    const cam = viewFor('wide').pos, f = OL ? Math.min(1, o.home.distanceTo(cam) / OL.g.position.distanceTo(cam)) : 1; mesh.scale.setScalar(f);
+    o.home.y = Math.max(o.home.y, 0.35 + L * f * Math.abs(Math.sin(ang || 0)) / 2); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
   }
   function fixSlot(i) { const S = tall ? [[-1.0, 2.7], [1.0, 3.6], [0, 4.4]] : [[-2.3, 3.0], [2.3, 3.0], [0, 3.9]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
   function setRound(R) {
@@ -805,7 +809,8 @@ export function startGame(cfg) {
     if (PS) { PS.parts.forEach(p => scene.remove(p)); } shapes.splice(0).forEach(o => scene.remove(o.g));
     const n = R.seq.length, parts = [], beads = [];
     const z = R.copy ? STR().copyZ : null;
-    if (R.copy) { parts.push(stringAt(n, STR().z)); R.seq.forEach((t, i) => { const m = beadMesh(t); m.position.copy(slotAt(i, n)); scene.add(m); parts.push(m); }); }
+    /* copy: Mendy's row stands well behind the row he fills, so the two rows never overlap (K-CLARITY-RULES 9: one thing to look at) */
+    if (R.copy) { const MZ = tall ? -2.0 : -1.8; parts.push(stringAt(n, MZ)); R.seq.forEach((t, i) => { const m = beadMesh(t); m.position.copy(slotAt(i, n, MZ)); scene.add(m); parts.push(m); }); }
     parts.push(stringAt(n, z));
     const fixing = R.fixAt != null, blanks = fixing ? 0 : R.copy ? n : R.blanks;
     let bad = null;
@@ -1050,7 +1055,7 @@ export function startGame(cfg) {
   function setPosRound(R) {
     if (posPiece) { scene.remove(posPiece.g); shapes.splice(shapes.indexOf(posPiece), 1); posPiece = null; }
     if (!BR) BR = makeBridge();
-    posPiece = makeShape('q' + (++pzN), R.k, R.color || '#F2A900', 0, R.s || 0.6); posPiece.slot = 0; posPiece.home.copy(tall ? new THREE.Vector3(0, 0.92, 3.3) : new THREE.Vector3(-3.4, 0.92, 2.9)); posPiece.g.position.copy(posPiece.home);
+    posPiece = makeShape('q' + (++pzN), R.k, R.color || '#F2A900', 0, R.s || 0.6); posPiece.slot = 0; posPiece.home.copy(tall ? new THREE.Vector3(0, 0.92, 3.3) : new THREE.Vector3(-2.9, 0.92, 2.3));   /* in from the corner, so it is round and easy to see (not stretched at the screen edge) */ posPiece.g.position.copy(posPiece.home);
     posWant = R.where; posPiece.box = 0;
   }
   function placeAt(o, z) { const p = zoneWorld(z); return moveTo(o, new THREE.Vector3(p.x, p.y + 0.05, p.z), 420, 0.5).then(() => { o.busy = true; o.g.rotation.set(0, 0, 0); pop(); }); }
