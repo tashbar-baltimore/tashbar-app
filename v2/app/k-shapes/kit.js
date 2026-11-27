@@ -45,7 +45,7 @@ function shapeOf(k) {
   if (K.semi) { const r = K.semi; s.moveTo(-r, -r / 2.4); s.absarc(0, -r / 2.4, r, Math.PI, 0, true); s.lineTo(-r, -r / 2.4); return { s, corners: [[-r, -r / 2.4], [r, -r / 2.4]] }; }
   if (K.curvy) {   /* looks like a triangle, but its sides bulge out */
     const a = [-0.78, -0.62], b = [0.78, -0.62], c = [0, 0.74];
-    s.moveTo(a[0], a[1]); s.quadraticCurveTo(0, -1.0, b[0], b[1]); s.quadraticCurveTo(0.78, 0.25, c[0], c[1]); s.quadraticCurveTo(-0.78, 0.25, a[0], a[1]);
+    s.moveTo(a[0], a[1]); s.quadraticCurveTo(0, -1.3, b[0], b[1]); s.quadraticCurveTo(1.0, 0.36, c[0], c[1]); s.quadraticCurveTo(-1.0, 0.36, a[0], a[1]);   /* every side bulges clearly, the bottom too (review round 2: it read as a straight bottom) */
     return { s, corners: [] };
   }
   /* centred on the average of its corners, so a finger on its middle always grabs it */
@@ -848,7 +848,9 @@ export function startGame(cfg) {
     const fixing = R.fixAt != null, blanks = fixing ? 0 : R.copy ? n : R.blanks;
     let bad = null;
     R.seq.forEach((t, i) => { if (i < n - blanks) { const m = beadMesh(fixing && i === R.fixAt ? R.wrong : t); m.position.copy(slotAt(i, n, z)); scene.add(m); parts.push(m); beads.push(m); if (fixing && i === R.fixAt) bad = m; } });
-    PS = { parts, beads, model, next: fixing ? R.fixAt : n - blanks, n, z, R, bad, showRing: !fixing };
+    const holes = [];   /* copy: every spot he will fill shows its empty place, so he sees the row is as long as Mendy's (review round 2) */
+    if (R.copy) for (let i = 0; i < n; i++) { const h = ghost.clone(); h.position.copy(slotAt(i, n, z)); if (h.isGroup) h.scale.setScalar(tall ? 0.72 : 1); h.visible = false; scene.add(h); parts.push(h); holes.push(h); }
+    PS = { parts, beads, model, next: fixing ? R.fixAt : n - blanks, n, z, R, bad, showRing: !fixing, holes };
     const types = R.tray; types.forEach((t, i) => makeBead('b' + (++beadN), t, trayAt(i, types.length), i));
     markNext();
   }
@@ -856,6 +858,7 @@ export function startGame(cfg) {
   function markNext() {
     if (!PS) return; const want = PS.R.seq[PS.next];
     shapes.forEach(o => { if (!o.inBox) o.box = o.type === want ? 0 : -1; });
+    (PS.holes || []).forEach((h, i) => { h.visible = i > PS.next; });
     if (PS.next < PS.n && PS.showRing) { ghost.visible = true; ghost.position.copy(slotAt(PS.next, PS.n, PS.z)); if (ghost.isGroup) ghost.scale.setScalar(tall ? 0.72 : 1); } else ghost.visible = false;
   }
   function placeBead(o) {   /* the right bead slides onto the string; a fresh one appears in the tray */
