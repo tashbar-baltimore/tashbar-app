@@ -327,6 +327,19 @@ function doorCss(){ let el=document.getElementById('yc-doors'); if(!el){ el=docu
  if(L) FLOAT.split(',').forEach(x=>{ const k=Object.keys(DOORS).find(k=>DOORS[k].hide===x); if(!k||!doorOpen(k)) out.push(x); });
  const css=out.length?out.join(',')+'{display:none!important}':''; if(el.textContent!==css) el.textContent=css; document.body.classList.toggle('yc-lock',L); }
 setInterval(doorCss,700);
+/* THE GOLDEN CITY on the free-time places (docs/WORLD.md): each place a boy opens (Canteen, Store, Chavrusa duels, Mistake Detective,
+   Kodesh Quest, Block Builders, Chumash Lab, My Library, the Olam Haba page) shows its own scene behind it, with a soft veil so the page's
+   own words stay easy to read. Grade 2 and up (a boy whose map we have). Pictures cover the screen without stretching (3 slices side by side). */
+function ycBg(n,veil){ const k=YCW_ART[n]||0; if(!k) return ''; const W='max(100vw,177.78vh)', H='max(100vh,56.25vw)';
+ const urls=Array.from({length:k},(_,i)=>`url(/pics/${n}${k>1?'-'+(i+1):''}.webp)`), pos=Array.from({length:k},(_,i)=>`calc((100vw - ${W})/2 + ${W}*${i}/${k}) 50%`);
+ return `background:${veil?veil+',':''}${urls.join(',')}!important;background-size:${veil?'100% 100%,':''}${Array(k).fill(`calc(${W}/${k} + 1px) ${H}`).join(',')}!important;background-position:${veil?'0 0,':''}${pos.join(',')}!important;background-repeat:no-repeat!important;`; }
+function ycCityCss(){ if(document.getElementById('yc-city')) return; const st=document.createElement('style'); st.id='yc-city';
+ const L='linear-gradient(rgba(255,255,255,.42),rgba(255,255,255,.58))', D='linear-gradient(rgba(20,10,58,.5),rgba(20,10,58,.72))', T='linear-gradient(rgba(255,250,235,.18),rgba(255,250,235,.3))';
+ const R=[['#cn-shop','ycw-c-canteen',T],['#tlstore.stov','ycw-c-market',T],['#ar-ov','ycw-c-arena',D],['#mdx.on','ycw-c-pavilion','linear-gradient(rgba(255,255,255,.66),rgba(255,255,255,.78))'],['.kkov','ycw-c-pavilion',T],
+   ['#bbx','ycw-c-workshop',L],['#clab','ycw-c-workshop',L],['.bl-ov','ycw-k-library',L],['.ohsheet','ycw-c-calm',T]];
+ st.textContent=R.map(r=>{ const b=ycBg(r[1],r[2]); return b?`body.yc-city ${r[0]}{${b}}`:''; }).join('\n'); document.head.appendChild(st); }
+setInterval(()=>{ try{ const b=document.body, g=window.TL_MAP&&TL_MAP.grade, mine=window.TL_MAP&&A.st&&String(TL_MAP.sid||'')===String(A.st.id);
+  const on=!!(mine&&g!=null&&g>=2&&!b.classList.contains('k1-home')); if(on){ ycCityCss(); if(!b.classList.contains('yc-city')) b.classList.add('yc-city'); } else if(b.classList.contains('yc-city')) b.classList.remove('yc-city'); }catch(e){} },700);
 /* THE GATE (docs/WORLD.md): right after he signs in (grade 2 and up), the Gate of the Mountain Kingdom: its doors open in golden light
    and the camera flies through to his home (about 3 seconds). Taps go straight through to the page; reduce motion skips it. */
 function ycGate(){ if(YCW.reduce||!YCW_ART['ycw-k-gate']||document.getElementById('ycgate')) return; ycCss();
