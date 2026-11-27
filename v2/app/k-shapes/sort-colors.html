@@ -14,7 +14,8 @@
 import { startGame } from './kit.js';
 const nc = a => { a.count = false; return a; };
 const RED = '#E03A33', BLUE = '#1F6FEB', YELLOW = '#FFC814';   /* a clear lemon yellow, never orange (K-CLARITY-RULES 11) */
-const BOXES = [{ paint: 'circle', color: RED, acceptColor: RED, word: 'red' }, { paint: 'circle', color: BLUE, acceptColor: BLUE, word: 'blue' }, { paint: 'circle', color: YELLOW, acceptColor: YELLOW, word: 'yellow' }];
+/* the boxes are red, blue and yellow with nothing on them: a circle label on a colour box read as "circles go here" (review 2) */
+const BOXES = [{ paint: 'none', color: RED, acceptColor: RED, word: 'red' }, { paint: 'none', color: BLUE, acceptColor: BLUE, word: 'blue' }, { paint: 'none', color: YELLOW, acceptColor: YELLOW, word: 'yellow' }];
 const word = o => (o.box >= 0 ? BOXES[o.box].word : 'a new color');
 startGame({
   id: 'sortcolor', world: 'jungle', sortBy: 'color', plain: true, boxes: BOXES, countAfter: true, countTags: true,

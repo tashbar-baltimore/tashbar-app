@@ -40,8 +40,10 @@ export const FAMILY = k => KINDS[k].name;   /* 'triangle', 'square', ... */
 const COLORS = ['#E03A33', '#1F6FEB', '#F2A900', '#12A766', '#7C4DFF', '#FF7A1A', '#00A3B8', '#F0458E'];
 function shapeOf(k) {
   const K = KINDS[k], s = new THREE.Shape();
-  if (K.circle) { s.absarc(0, 0, K.circle, 0, Math.PI * 2, false); return { s, corners: [] }; }
-  if (K.oval) { s.absellipse(0, 0, K.oval[0], K.oval[1], 0, Math.PI * 2, false, 0); return { s, corners: [] }; }
+  /* round shapes are drawn from points with no repeated start point: a full arc repeats it, and the bevel made a little notch there (a "corner" on a circle; review 2) */
+  const round = (rx, ry) => { const N = 120; s.moveTo(rx, 0); for (let i = 1; i < N; i++) s.lineTo(Math.cos(i / N * Math.PI * 2) * rx, Math.sin(i / N * Math.PI * 2) * ry); s.closePath(); return { s, corners: [] }; };
+  if (K.circle) return round(K.circle, K.circle);
+  if (K.oval) return round(K.oval[0], K.oval[1]);
   if (K.semi) { const r = K.semi; s.moveTo(-r, -r / 2.4); s.absarc(0, -r / 2.4, r, Math.PI, 0, true); s.lineTo(-r, -r / 2.4); return { s, corners: [[-r, -r / 2.4], [r, -r / 2.4]] }; }
   if (K.curvy) {   /* looks like a triangle, but its sides bulge out */
     const a = [-0.78, -0.62], b = [0.78, -0.62], c = [0, 0.74];
@@ -260,6 +262,7 @@ export function startGame(cfg) {
     const TP = LK && !solid && !cfg.plain && LK.treasures.piece ? LK.treasures.piece(k, color, s, FAMILY(k)) : null;   /* the world's own thing in this exact outline (treasures.js); cfg.plain (first meeting with a shape, K-CLARITY-RULES 1): a plain flat shape in one solid colour, nothing painted on it */
     const TS = LK && solid && !cfg.plain && LK.treasures.solid ? LK.treasures.solid(solid, color) : null;   /* the world's own thing in this exact solid (planet, gift box ...); cfg.plain: a plain one-colour solid (K-CLARITY-RULES 6) */
     const mat = TS ? TS.mat : TP ? TP.mats : LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
+    if (cfg.sortBy === 'color' && !TS && !TP && mat && mat.isMeshPhysicalMaterial) { mat.sheen = 0; mat.clearcoat = 0.15; mat.envMapIntensity = 0.08; mat.roughness = 0.62; }   /* colour games: matte, so a flat yellow or red piece keeps its full colour and never looks pale or salmon in the light (review 1) */
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
     if (TS && TS.extras) TS.extras.forEach(x => mesh.add(x));
     if (TP && !cfg.thinFlat) TP.extras.forEach(x => { const front = x.clone(); front.position.z = dep / 2 + bev * 1.25 + 0.004; mesh.add(front); const back = x.clone(); back.rotation.y = Math.PI; back.position.z = -(dep / 2 + bev * 1.25 + 0.004); mesh.add(back); });
