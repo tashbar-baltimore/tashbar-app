@@ -284,7 +284,7 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, 
   w.add(mesh(new THREE.SphereGeometry(30, 48, 24), grass2, 16, -28.2, -24, false));
   w.add(mesh(new THREE.SphereGeometry(40, 48, 24), grass3, 0, -37.5, -42, false));   /* the far hill */
   let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  if (!LITE) {
+  if (!LITE && !CALM) {   /* calm (K-CLARITY 10): plain hills, a few round trees and the sky; no village, fence, rocks or tufts */
     /* a little village on the far hills */
     const walls = [0xffd7a8, 0xbfe3ff, 0xffe6f0, 0xfff3b0, 0xd9f2d0], roofs = [0xe8322b, 0x2f7de1, 0xff8a1e, 0x9b5de5, 0x2dbb6a];
     [[-13, 1.1, -19], [-9.5, 1.2, -21], [10.5, 1.0, -21], [13.5, 1.2, -19.5], [16.5, .9, -22]].forEach(([x, y, z], i) => { const h = new THREE.Group();
@@ -309,8 +309,8 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, 
       onFrame(t => { const x = ((t * .6 + k * 9) % 44) - 22; bd.position.set(x, 7.5 + k * .8 + Math.sin(t * 2 + k) * .2, -16 - k * 2); bd.children.forEach((c, i) => c.rotation.z = (i ? 1 : -1) * (.2 + Math.sin(t * 8 + k) * .35)); }); }
   }
   if (trees) { tree(-6.5, -3, 1.3); tree(6.8, -3.5, 1.5); tree(-9, -7, 1.6); tree(9.5, -8, 1.8);
-    if (!LITE) { pine(-11.5, -5, 1.6); pine(12, -5.5, 1.8); pine(-4.5, -9, 1.4); pine(5.2, -10, 1.5); bush(-5.2, -1.2, 1); bush(5.6, -1.6, 1.1); bush(-8.2, .5, 1.2); bush(8.4, .3, 1); } }
-  if (flowers) { const cols = [0xff6fa5, 0xffffff, 0xb388ff, 0xff8a3d];
+    if (!LITE && !CALM) { pine(-11.5, -5, 1.6); pine(12, -5.5, 1.8); pine(-4.5, -9, 1.4); pine(5.2, -10, 1.5); bush(-5.2, -1.2, 1); bush(5.6, -1.6, 1.1); bush(-8.2, .5, 1.2); bush(8.4, .3, 1); } }
+  if (flowers && !CALM) { const cols = [0xff6fa5, 0xffffff, 0xb388ff, 0xff8a3d];
     for (let k = 0; k < 26; k++) { const x = (rnd() - .5) * 16, z = 3.3 + rnd() * 1.2; if (Math.abs(x) < 1.2) continue; const f = new THREE.Group();
       f.add(mesh(new THREE.CylinderGeometry(.02, .02, .25, 5), M(0x2f8f3a), 0, .12, 0, false));
       const lf = mesh(new THREE.SphereGeometry(.06, 8, 6), M(0x3fae4a), .05, .08, 0, false); lf.scale.set(1.4, .5, .8); f.add(lf);
@@ -392,7 +392,7 @@ export function pine(x, z, s = 1, parent) { const t = new THREE.Group(); t.add(m
   const nm = M(0x237a3b, { roughness: .6 }); [[.75, .9, .55], [.6, .8, 1.05], [.45, .7, 1.5]].forEach(([r, h, y]) => t.add(mesh(new THREE.ConeGeometry(r, h, 12), nm, 0, y, 0)));
   t.position.set(x, 0, z); t.scale.setScalar(s); (parent || world.group || scene).add(t); return t; }
 export function bush(x, z, s = 1, parent) { const t = new THREE.Group(), lm = M(0x2f9b3e, { roughness: .6 }); [[0, .3, 0, .42], [.35, .25, .05, .32], [-.35, .25, 0, .33], [0, .55, -.05, .3]].forEach(([a, b, c, r]) => t.add(mesh(new THREE.SphereGeometry(r, 16, 12), lm, a, b, c)));
-  const bm = M(0xe8322b, { roughness: .3, clearcoat: .8 }); [[.2, .55, .28], [-.18, .4, .35], [.4, .3, .25], [-.42, .35, .2], [.05, .72, .2]].forEach(([a, b, c]) => t.add(mesh(new THREE.SphereGeometry(.045, 8, 6), bm, a, b, c, false)));
+  const bm = M(0xe8322b, { roughness: .3, clearcoat: .8 }); if (!CALM) [[.2, .55, .28], [-.18, .4, .35], [.4, .3, .25], [-.42, .35, .2], [.05, .72, .2]].forEach(([a, b, c]) => t.add(mesh(new THREE.SphereGeometry(.045, 8, 6), bm, a, b, c, false)));
   t.position.set(x, 0, z); t.scale.setScalar(s); (parent || world.group || scene).add(t); return t; }
 export function tree(x, z, s = 1, parent) { const t = new THREE.Group(); t.add(mesh(new THREE.CylinderGeometry(.12, .18, 1, 10), M(0x8a5a3c), 0, .5, 0));
   const leaf = M(0x3fae4a, { roughness: .6 }); [[0, 1.35, 0, .62], [.32, 1.1, .1, .45], [-.32, 1.12, 0, .46], [0, 1.75, 0, .42]].forEach(([a, b, c, r]) => t.add(mesh(new THREE.SphereGeometry(r, 20, 14), leaf, a, b, c)));
