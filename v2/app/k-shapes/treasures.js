@@ -398,7 +398,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
       const deck = new THREE.Mesh(new THREE.BoxGeometry(0.74, 0.06, 0.44), glowM); deck.position.y = -0.27; g.add(deck);
       wheels(g, [-0.2, 0.2], -0.33, 0.2);
       /* a bright gold outline where the next car goes, so the empty spot is the clearest thing on the track (K-CLARITY-RULES 9) */
-      const lineM = new THREE.MeshBasicMaterial({ color: '#13224A', toneMapped: false }), W2 = 0.37, H2 = 0.27, cy = -0.02, r = 0.055;   /* thick dark navy: a gold line looked like the yellow cars (review 2) */
+      const lineM = new THREE.MeshBasicMaterial({ color: '#E0118F', toneMapped: false }), W2 = 0.37, H2 = 0.27, cy = -0.02, r = 0.055;   /* thick bright magenta, a colour no car has: gold looked like the yellow cars, navy vanished on a blue car (review 2) */
       [[0, cy + H2, 2 * W2, true], [0, cy - H2, 2 * W2, true], [-W2, cy, 2 * H2, false], [W2, cy, 2 * H2, false]].forEach(([x, y, L, hor]) => {
         const b = new THREE.Mesh(new THREE.CapsuleGeometry(r, L, 4, 8), lineM); if (hor) b.rotation.z = Math.PI / 2; b.position.set(x, y, 0.24); g.add(b); });
       return g;
