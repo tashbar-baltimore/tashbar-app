@@ -65,7 +65,9 @@ export function mount(host, opt) {
   const box = new THREE.Group(); scene.add(box);
   { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.85, 0.08, 40), new THREE.MeshStandardMaterial({ color: '#FFD3B0', roughness: 0.3 })); p.position.y = 0.04; p.castShadow = true; box.add(p); }   /* a small peach plate: the eaten ones */
   let cookies = [], gone = [];
-  const cloche = new THREE.Mesh(new THREE.SphereGeometry(1.15, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#E8D8C0', roughness: 0.5 })); cloche.scale.set(1, 0.6, 1); cloche.castShadow = true; cloche.visible = false; box.add(cloche);   /* a cover for the peach plate (hidden part) */
+  const cloche = new THREE.Group(); cloche.visible = false; box.add(cloche);   /* a shiny silver serving cover with a round knob: clearly a cover */
+  { const cm = new THREE.MeshStandardMaterial({ color: '#C9D3E0', roughness: 0.22, metalness: 0.75 }); const d = new THREE.Mesh(new THREE.SphereGeometry(1.15, 40, 18, 0, Math.PI * 2, 0, Math.PI / 2), cm); d.scale.set(1, 0.62, 1); d.castShadow = true; cloche.add(d);
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 12), cm); knob.position.y = 0.78; cloche.add(knob); const rim = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.05, 10, 48), cm); rim.rotation.x = Math.PI / 2; cloche.add(rim); }   /* a cover for the peach plate (hidden part) */
   const cookiePos = (j, n) => new THREE.Vector3(((j % 3) - (Math.min(3, n - Math.floor(j / 3) * 3) - 1) / 2) * 0.8, 0.14, n > 3 ? (j < 3 ? -0.38 : 0.38) : 0);
 
   /* ---------------- tap spots ---------------- */
@@ -93,11 +95,11 @@ export function mount(host, opt) {
   function layout() {
     chairs.forEach((c, i) => { c.position.x = seatX(i, gapX()); c.scale.setScalar(narrow ? 0.8 : 1); });
     boys.forEach((b, i) => { if (i < inRoom) { const s = seat(i); b.m.position.x = s.x; b.m.position.z = s.z; } }); door.position.set(doorX(), 1.2, -1.2);
-    plate.position.set(narrow ? 0.8 : 0.9, 0, 0.5); box.position.set(narrow ? -1.15 : -1.9, 0, 0.6); box.scale.setScalar(narrow ? 0.75 : 1);
+    plate.position.set(narrow ? 0.75 : 0.9, 0, 0.5); box.position.set(narrow ? -0.95 : -1.9, 0, 0.6); box.scale.setScalar(narrow ? 0.75 : 1);
   }
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false); narrow = Wd < Hh * 0.95 || Wd < 700; layout();
-    const boysView = mode === 'boys', span = narrow ? (boysView ? 5.6 : 4.6) : boysView ? 8.2 : 7.0, needH = narrow ? (boysView ? 4.4 : 3.6) : boysView ? 3.9 : 3.2; center.z = boysView ? -2.0 : 0.4; center.y = boysView ? 0.7 : 0.2;   /* the boy games look at the boys */
+    const boysView = mode === 'boys', span = narrow ? (boysView ? 5.6 : 4.3) : boysView ? 8.2 : 7.0, needH = narrow ? (boysView ? 4.4 : 3.6) : boysView ? 3.9 : 3.2; center.z = boysView ? -2.0 : 0.4; center.y = boysView ? 0.7 : 0.2;   /* the boy games look at the boys */
     const [b0, b1] = band(), bc = (b0 + b1) / 2, bh = Math.max(120, b1 - b0), fullH = Hh + 2 * Math.abs(Hh / 2 - bc), tn = Math.tan(THREE.MathUtils.degToRad(V / 2));
     dist = Math.max(span * fullH / (2 * Wd * tn), needH * fullH / (2 * tn * bh));
     camera.aspect = Wd / fullH; camera.fov = V; camera.setViewOffset(Wd, fullH, 0, fullH / 2 - bc, Wd, Hh); camera.updateProjectionMatrix();
@@ -116,9 +118,9 @@ export function mount(host, opt) {
     inRoom: () => inRoom,
     /* k boys wait outside on the right; he taps one and he comes in */
     showWaiting(k) { waiting = Math.min(k, SEATS - inRoom); for (let j = 0; j < SEATS; j++) unspot('w' + j);
-      for (let j = 0; j < waiting; j++) { const b = boys[inRoom + j]; b.m.visible = true; b.pose('idle'); b.m.position.copy(waitPos(j)); spot('w' + (inRoom + j), b.m, { cls: 'side hint', r: 0.45, y: 0, min: 70 }); } },
+      for (let j = 0; j < waiting; j++) { const b = boys[inRoom + j]; b.m.visible = true; b.pose('idle'); b.m.position.copy(waitPos(j)); } if (waiting) spot('w' + inRoom, boys[inRoom].m, { cls: 'side hint', r: 0.45, y: 0, min: 70 }); },   /* only the next boy glows: tap him */
     waiting: () => waiting,
-    async comeOne() { if (!waiting) return false; const b = boys[inRoom], to = seat(inRoom); unspot('w' + inRoom); inRoom++; waiting--; b.pose('happy'); NK.sound.pop(); await walk(b, b.m.position.clone(), to); b.pose('idle'); return true; },
+    async comeOne() { if (!waiting) return false; const b = boys[inRoom], to = seat(inRoom); unspot('w' + inRoom); inRoom++; waiting--; if (waiting) spot('w' + inRoom, boys[inRoom].m, { cls: 'side hint', r: 0.45, y: 0, min: 70 }); b.pose('happy'); NK.sound.pop(); await walk(b, b.m.position.clone(), to); b.pose('idle'); return true; },
     /* k more boys come in through the opening on the right, one at a time */
     async comeIn(k, each) { for (let j = 0; j < k && inRoom < SEATS; j++) { const b = boys[inRoom], to = seat(inRoom); inRoom++; b.pose('happy'); NK.sound.pop(); await walk(b, new THREE.Vector3(doorX(), 0.55, -1.2), to); b.pose('idle'); if (each) await each(inRoom); } },
     /* k boys go out (the last ones in), one at a time */
@@ -135,7 +137,7 @@ export function mount(host, opt) {
       c.getWorldPosition(wp); const from = wp.clone(); plate.remove(c); scene.add(c); const g = gone.length, to = box.position.clone().add(new THREE.Vector3(g < 4 ? ((g % 2) - 0.5) * 0.8 * box.scale.x : 0, 0.14, g < 4 ? (g < 2 ? -0.36 : 0.36) * box.scale.x : 0));   /* flat, side by side: each one can be counted */ gone.push(c);
       await tween(450, e => { c.position.lerpVectors(from, to, e); c.position.y += Math.sin(Math.PI * e) * 0.8; }); c.position.copy(to); if (cloche.visible) c.visible = false; return true; },   /* under the cover: really hidden */
     async putBack() { while (gone.length) { const c = gone.pop(); scene.remove(c); plate.add(c); cookies.push(c); } cookies.forEach((c, j) => c.position.copy(cookiePos(j, cookies.length))); },
-    async coverPeach(on) { if (on) { cloche.visible = true; await tween(400, e => { cloche.position.y = 1.8 - e * 1.8; }); cloche.position.y = 0; }
+    async coverPeach(on) { if (on) { cloche.visible = true; gone.forEach(c => { c.visible = false; }); await tween(400, e => { cloche.position.y = 1.8 - e * 1.8; }); cloche.position.y = 0; }
       else if (cloche.visible) { gone.forEach(c => { c.visible = true; }); await tween(400, e => { cloche.position.y = e * 1.8; }); cloche.visible = false; } },
     showPlate(on) { plate.visible = on; box.visible = on; gone.forEach(c => { c.visible = on; }); if (!on) api.cookieSpots(false); mode = on ? 'cookies' : 'boys'; fit(); },
     async bumpAll(list, say) { for (let i = 0; i < list.length; i++) { const o = list[i], y0 = o.position.y; await tween(240, (e, t) => { o.position.y = y0 + Math.sin(Math.PI * t) * 0.35; }); o.position.y = y0; if (say) await say(i); } },

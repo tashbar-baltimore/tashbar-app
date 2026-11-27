@@ -45,8 +45,8 @@ const PLAN = [{ kind: 'part', n: 5, a: 3 }, { kind: 'ten', n: 7 }, { kind: 'part
 function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
-    if (R.kind === 'part') { $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(R.n); K.showPlate(true); K.setCookies(R.n); await F.say(F.Word(R.n) + ' cookies in all.'); await K.coverPeach(true); for (let j = 0; j < R.n - R.a; j++) await K.takeCookie();
-      await F.say('Some went under the cover. ' + F.Word(R.a) + ' are on the blue plate.'); open(); await F.say('How many hide? Show me.', { repeat: F.Word(R.n) + ' in all. ' + F.Word(R.a) + ' I see. How many hide?' }); }
+    if (R.kind === 'part') { $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(R.n); K.showPlate(true); K.setCookies(R.n); await F.say(F.Word(R.n) + ' cookies in all. Watch!'); for (let j = 0; j < R.n - R.a; j++) await K.takeCookie();
+      await K.coverPeach(true); await F.say('Some are under the cover. ' + F.Word(R.a) + (R.a === 1 ? ' is' : ' are') + ' on the blue plate.'); open(); await F.say('How many hide? Show me.', { repeat: F.Word(R.n) + ' in all. ' + F.Word(R.a) + ' I see. How many hide?' }); }
     else { $('goal').hidden = true; $('tf').hidden = false; K.showPlate(false); TF.set(R.n); await F.say(F.Word(R.n) + ' in the ten-frame.'); open(); await F.say('How many more make ten? Show me.', { repeat: 'Count the empty boxes. Show me.' }); }
   });
 }
@@ -57,7 +57,7 @@ FR.game({
   demo: async F => {
     R = { kind: 'demo' }; $('goal').hidden = true; $('tf').hidden = false; K.showPlate(false); TF.set(8); await F.say('Review time! Watch me. Eight in the ten-frame.');
     await F.say('Two boxes are empty. Two more make ten!'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); await F.handTap(); H.set(2); await F.handTo($('check')); await F.handTap(); F.handHide(); H.set(0);
-    $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(3); K.showPlate(true); K.setCookies(3); await K.coverPeach(true); await K.takeCookie();
+    $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(3); K.showPlate(true); K.setCookies(3); await K.takeCookie(); await K.coverPeach(true);
     await F.say('Three cookies. One went under the cover.'); await F.say('I see two. One is hiding!'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); await F.handTo($('check')); await F.handTap(); F.handHide(); await K.coverPeach(false); await F.say('Yes! Two and one make three.'); H.set(0);
   },
   round: (F, i) => play(F, i),

@@ -67,7 +67,8 @@ async function pick(id) {
     $(b).classList.add('look'); await FR.say('This one is wrong. Tap it.'); setTimeout(() => $(b).classList.remove('look'), 2500); open(); return; }
   if (id === b) { $(id).classList.add('bad'); NK.sound.yes(); R.step = 'fix'; R.fix = id; await FR.say(id === 'ss' ? 'Yes! The sign is wrong.' : 'Yes! The answer is wrong.');
     tiles(id === 'ss' ? ['+', '-'] : ['1', '2', '3', '4', '5']); open(); await FR.say('Drag the right one in.', { repeat: id === 'ss' ? 'Came in is plus. Went away is minus.' : 'Count. Drag the right number.' }); return; }
-  FR.oops($(id)); R.misses++; await FR.say("That one is right. Let's look again."); await countUp();
+  FR.oops($(id)); R.misses++; await FR.say("That one is right. Let's look again.");
+  if (b === 'ss') await FR.say(R.kind === 'join' ? 'They came in. Came in is plus.' : 'They were eaten. Eaten is minus.'); else await countUp();
   const t = b ? $(b) : $('ok'); t.classList.add('look'); await FR.say(b ? 'This one is wrong. Tap it.' : 'All right! Thumbs up.'); setTimeout(() => t.classList.remove('look'), 2500); open();
 }
 async function drop(tile, slot) {
