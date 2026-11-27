@@ -10,7 +10,7 @@ export default function setup(E, { unit }) {
   /* the stage, a balloon arch and the golden gate */
   const stage = new THREE.Group(); E.scene.add(stage);
   stage.add(E.mesh(E.rbox(12, .4, 3.2, .1), E.M(0xc68a52, { roughness: .55 }), 0, .2, -1.2));
-  stage.add(E.mesh(E.rbox(12.2, .08, 3.3, .04), E.M(0xe8322b, { roughness: .6 }), 0, .42, -1.2));
+  stage.add(E.mesh(E.rbox(12.2, .08, 3.3, .04), E.M(0xe8322b, { roughness: .6 }), 0, .45, -1.2));   /* the red top sits just above the wood (no flickering stripes) */
   const balCols = [0xff7aa8, 0xffcf3a, 0x46c3ff, 0x7bd94a, 0xb388ff, 0xff9f1a];
   for (let i = 0; i <= 22; i++) { const a = Math.PI * i / 22, b = E.mesh(new THREE.SphereGeometry(.34, 18, 14), E.M(balCols[i % 6], { roughness: .2, clearcoat: 1 }), Math.cos(a) * 6.4, .5 + Math.sin(a) * 5.4, -2.6); b.scale.y = 1.15; stage.add(b); }
   const gate = new THREE.Group(); stage.add(gate); const gold = E.goldDot();

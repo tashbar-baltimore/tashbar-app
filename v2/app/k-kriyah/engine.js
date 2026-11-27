@@ -17,6 +17,9 @@ export const PASS = 2;                     /* the next game opens at 2 of 3 star
 const Q = new URLSearchParams(location.search);
 export const FAST = Q.has('fast');
 export const LITE = Q.has('lite');
+/* calm (Esti 2026-11-27, K-CLARITY-RULES 10: "the backgrounds are so busy that it's hard to focus ... butterflies flying around"): no butterflies, birds,
+   drifting clouds, swaying flags or floating light; a paler, softer painted picture; small, short joy. ?busy=1 shows the old look, only for comparing. */
+export const CALM = !Q.has('busy');
 export const F = FAST ? (LITE ? 0.05 : 0.12) : 1;   /* the quick automatic run waits even less */   /* ?lite=1: a fifth of the pixels across, plainer letters, no shadows and no smoothing, so the automatic tests fit the 45-minute check (the pictures use the full look) */
 export const wait = ms => new Promise(r => setTimeout(r, ms * F));
 export const $ = s => document.querySelector(s);
@@ -116,6 +119,10 @@ const CSS = `
 html,body{margin:0;height:100%;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;font-family:"Nunito","Varela Round",system-ui,sans-serif}
 body{background:linear-gradient(#3fb4ff 0%,#8fd8ff 45%,#dff6ff 75%,#fff6d8 100%)}
 #c{position:fixed;inset:0;width:100%;height:100%;display:block}
+#gtitle{left:50%;top:14px;transform:translateX(-50%);max-width:calc(100% - 200px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800;font-size:22px;color:#17324d;padding:6px 16px;border-radius:40px;background:#ffffffe0;box-shadow:0 4px 14px #0b3a6626;pointer-events:none}
+#gtitle:empty{display:none}
+body.titled #prog{top:64px}
+body.calmbg::before{content:'';position:fixed;inset:0;pointer-events:none;backdrop-filter:saturate(.6) blur(2.5px);-webkit-backdrop-filter:saturate(.6) blur(2.5px)}
 .ui{position:fixed;z-index:5}
 .btn{width:76px;height:76px;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;padding:0;
  background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#e8f3ff 40%,#b9d8f5 100%);
@@ -172,7 +179,7 @@ body[data-review] #again{z-index:10}
 @keyframes revstar{0%{transform:scale(.4) rotate(-40deg)}60%{transform:scale(1.5) rotate(10deg)}100%{transform:scale(1) rotate(0)}}   /* a star fills for each right answer (reviewer: more fun) */
 @keyframes revshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}75%{transform:translateX(12px)}}
 @media (max-width:700px){#rev button{width:100px;height:120px;font-size:76px;border-radius:26px}#rev .row{gap:12px}}
-@media (max-width:700px){#start{width:150px;height:150px}#start svg{width:70px;height:70px}.endbar .btn.big{width:100px;height:100px}.stars svg{width:80px;height:80px}.stars{gap:10px;padding:14px 18px}#prog{top:96px}#prog i{width:18px;height:18px}}
+@media (max-width:700px){#start{width:150px;height:150px}#start svg{width:70px;height:70px}.endbar .btn.big{width:100px;height:100px}.stars svg{width:80px;height:80px}.stars{gap:10px;padding:14px 18px}#prog{top:96px}#gtitle{font-size:16px;top:24px;padding:5px 12px}body.titled #prog{top:96px}#prog i{width:18px;height:18px}}
 `;
 const HAND = '<svg class="hand" id="hand" viewBox="0 0 64 64"><path d="M26 6c3 0 5 2 5 5v19l2-1c2-6 10-5 10 1l1-1c2-4 9-3 9 2v2c2-3 8-2 8 3v12c0 9-7 16-16 16h-6c-6 0-10-3-13-8L10 40c-2-4 2-8 6-5l5 5V11c0-3 2-5 5-5z" fill="#fff" stroke="#1d2b3a" stroke-width="3"/></svg>';
 export function buildPage({ home = true } = {}) {
@@ -180,13 +187,14 @@ export function buildPage({ home = true } = {}) {
   document.body.insertAdjacentHTML('beforeend', `<canvas id="c"></canvas>
 <button class="ui btn" id="again" aria-label="Hear it again">${ICON.again}</button>
 ${home ? `<button class="ui btn" id="home" aria-label="Back to the path">${ICON.home}</button>` : ''}
-<div class="ui" id="prog"></div>
+<div class="ui" id="gtitle"></div><div class="ui" id="prog"></div>
 <button class="ui btn green" id="start" aria-label="Start" style="display:none">${ICON.play}</button>
 <div class="ui endbar" id="endbar"></div>
 ${HAND}<div class="yay" id="yay"><div class="stars"></div></div>
 <div id="flat"></div>
 <div id="rev" aria-live="polite"><div class="dots"></div><div class="row"></div></div>
 <div class="note">The letter sounds are the computer voice for now; the rebbe's own recording will replace them.</div>`);
+  { const gm = GAMES.find(x => x.id === Q.get('g')); if (gm) { $('#gtitle').textContent = gm.name; document.body.classList.add('titled'); } }   /* the game's name is always on screen (K-CLARITY-RULES 13) */
   $('#again').onclick = () => { sfx.pop(); again(); };
   if (home) $('#home').onclick = () => goPath();
 }
@@ -260,7 +268,7 @@ export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5:
 export const KIND_BACKDROP = { mastery: 'classroom', bonus: 'beach', story: 'street', detective: 'street', hunt: null };   /* the sukkah hunt keeps its 3D world */
 export const backdropFor = (game, unitN) => game && 'bg' in game ? game.bg : game && game.kind in KIND_BACKDROP ? KIND_BACKDROP[game.kind] : UNIT_BACKDROP[unitN || (game && game.unit) || 1] || null;
 export let backdrop = null;
-export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `radial-gradient(ellipse 70% 60% at 50% 58%, #ffffff40, #ffffff1a 70%, #ffffff10), url(art/bg/${name}.jpg) center 64% / cover no-repeat, #8fd8ff` : '';   /* a soft light veil: the painting stays, the letter stands out (RESEARCH.md: few distractions) */ }
+export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `radial-gradient(ellipse 70% 60% at 50% 58%, #ffffff40, #ffffff1a 70%, #ffffff10), ${CALM ? 'linear-gradient(#ffffff5c, #ffffff5c), ' : ''}url(art/bg/${name}.jpg) center 64% / cover no-repeat, #8fd8ff` : ''; document.body.classList.toggle('calmbg', !!name && CALM);   /* a soft light veil: the painting stays, the letter stands out (RESEARCH.md: few distractions) */ }
 export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, indoor = null } = {}) {
   const indoorWorld = indoor === 'shul';
   if (!bd && indoorWorld) return buildShul();   /* Unit 8: inside a festive shul on Simchas Torah */
@@ -293,11 +301,11 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, 
     for (let k = 0; k < 30; k++) { const sd = k % 2 ? 1 : -1, x = sd * (3.5 + rnd() * 6), z = -1 + rnd() * 5.5; const t = new THREE.Group(); for (let j = 0; j < 4; j++) { const c = mesh(new THREE.ConeGeometry(.035, .22 + rnd() * .1, 4), tuftM, (j - 1.5) * .04, .1, 0, false); c.rotation.z = (j - 1.5) * .25; t.add(c); } t.position.set(x, 0, z); w.add(t); }
     /* butterflies flutter at the sides; birds fly across the sky */
     const wingCols = [0xff7aa8, 0x46c3ff, 0xff9f1a, 0xb388ff];
-    for (let k = 0; k < 4; k++) { const bf = new THREE.Group(), wm = new THREE.MeshStandardMaterial({ color: wingCols[k], side: THREE.DoubleSide, roughness: .4 }); const wg = [-1, 1].map(s => { const g = new THREE.Group(); const p = mesh(new THREE.CircleGeometry(.12, 12), wm, s * .1, 0, 0, false); p.scale.set(1, 1.3, 1); g.add(p); bf.add(g); return g; });
+    if (!CALM) for (let k = 0; k < 4; k++) { const bf = new THREE.Group(), wm = new THREE.MeshStandardMaterial({ color: wingCols[k], side: THREE.DoubleSide, roughness: .4 }); const wg = [-1, 1].map(s => { const g = new THREE.Group(); const p = mesh(new THREE.CircleGeometry(.12, 12), wm, s * .1, 0, 0, false); p.scale.set(1, 1.3, 1); g.add(p); bf.add(g); return g; });
       bf.add(mesh(new THREE.CapsuleGeometry(.02, .12, 4, 8), M(0x3a2a1a), 0, 0, 0, false)); const sd = k % 2 ? 1 : -1, cx = sd * (5.5 + k * .6), cz = -1 + k, ph = k * 1.7; w.add(bf);
       onFrame(t => { const a = t * .5 + ph; bf.position.set(cx + Math.sin(a) * 1.2, 1.2 + Math.sin(a * 2.3) * .4, cz + Math.cos(a) * .8); bf.rotation.y = -a; wg[0].rotation.y = Math.sin(t * 18 + ph) * 1.1; wg[1].rotation.y = -Math.sin(t * 18 + ph) * 1.1; }); }
     const birdM = M(0x34405a, { roughness: .5 });
-    for (let k = 0; k < 3; k++) { const bd = new THREE.Group(); [-1, 1].forEach(s => { const wgt = mesh(new THREE.BoxGeometry(.4, .04, .08), birdM, s * .18, 0, 0, false); wgt.rotation.z = s * .4; bd.add(wgt); }); w.add(bd);
+    if (!CALM) for (let k = 0; k < 3; k++) { const bd = new THREE.Group(); [-1, 1].forEach(s => { const wgt = mesh(new THREE.BoxGeometry(.4, .04, .08), birdM, s * .18, 0, 0, false); wgt.rotation.z = s * .4; bd.add(wgt); }); w.add(bd);
       onFrame(t => { const x = ((t * .6 + k * 9) % 44) - 22; bd.position.set(x, 7.5 + k * .8 + Math.sin(t * 2 + k) * .2, -16 - k * 2); bd.children.forEach((c, i) => c.rotation.z = (i ? 1 : -1) * (.2 + Math.sin(t * 8 + k) * .35)); }); }
   }
   if (trees) { tree(-6.5, -3, 1.3); tree(6.8, -3.5, 1.5); tree(-9, -7, 1.6); tree(9.5, -8, 1.8);
@@ -313,7 +321,7 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, 
   const cm = M(0xffffff, { roughness: .9, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .15 });
   for (let k = 0; k < 5; k++) { const c = new THREE.Group(); [[0, 0, 0, 1], [.9, -.1, .1, .75], [-.9, -.15, 0, .7], [.4, .5, 0, .7], [-.35, .4, .1, .6]].forEach(([a, b, d, r]) => c.add(mesh(new THREE.SphereGeometry(r, 18, 12), cm, a, b, d, false)));
     c.position.set(-16 + k * 8, 6 + (k * 37 % 10) / 4, -14 - (k * 53 % 6)); c.scale.setScalar(.8 + (k % 3) * .25); w.add(c); world.clouds.push(c); }
-  onFrame(() => world.clouds.forEach((c, i) => { c.position.x += .004 + i * .001; if (c.position.x > 22) c.position.x = -22; }));
+  if (!CALM) onFrame(() => world.clouds.forEach((c, i) => { c.position.x += .004 + i * .001; if (c.position.x > 22) c.position.x = -22; }));
   return w;
 }
 /* Unit 8's world: a bright, warm shul on Simchas Torah (made in code, original art).
@@ -372,9 +380,9 @@ export function buildShul() {
     st.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .012, 5), M(0xffffff), 0, 0, 0, false));
     for (let i = 1; i < n; i++) { const tri = new THREE.Shape(); tri.moveTo(-.17, 0); tri.lineTo(.17, 0); tri.lineTo(0, -.38); tri.closePath();
       const f = mesh(new THREE.ShapeGeometry(tri), new THREE.MeshStandardMaterial({ color: flagCols[(i + si * 3) % 7], side: THREE.DoubleSide, roughness: .6 }), pts[i].x, pts[i].y, z + .02, false); st.add(f); strings.push({ f, ph: i * .7 + si }); } });
-  onFrame(t => strings.forEach(({ f, ph }) => { f.rotation.x = Math.sin(t * 1.4 + ph) * .25; }));
+  if (!CALM) onFrame(t => strings.forEach(({ f, ph }) => { f.rotation.x = Math.sin(t * 1.4 + ph) * .25; }));
   /* soft dust of light drifting in the window light (something always moves gently) */
-  if (!LITE) { const motes = []; const mm = new THREE.SpriteMaterial({ map: glowTex('#fff6d0'), transparent: true, depthWrite: false, opacity: .5 });
+  if (!LITE && !CALM) { const motes = []; const mm = new THREE.SpriteMaterial({ map: glowTex('#fff6d0'), transparent: true, depthWrite: false, opacity: .5 });
     for (let i = 0; i < 14; i++) { const sp = new THREE.Sprite(mm); sp.scale.setScalar(.12); sp.position.set((i % 2 ? 1 : -1) * (5 + (i * 7) % 4), 1 + (i * 13) % 5, -4 + (i * 5) % 4); w.add(sp); motes.push(sp); }
     onFrame(t => motes.forEach((m, i) => { m.position.y = 1 + ((t * .15 + i * .37) % 1) * 5; m.position.x += Math.sin(t + i) * .002; })); }
   return w;
@@ -639,7 +647,7 @@ function stepParticles() {
   for (let i = confs.length - 1; i >= 0; i--) { const c = confs[i]; c.position.add(c.userData.v); c.userData.v.y -= .004; c.userData.v.x *= .99; c.rotation.x += c.userData.r.x; c.rotation.y += c.userData.r.y; if (--c.userData.life <= 0) { scene.remove(c); c.material.dispose(); confs.splice(i, 1); } }
 }
 /* joy: chime, sparkles, confetti (well under 2 seconds) */
-export function joy(pos, big = false) { sfx.chime(); sparkle(pos, big ? 22 : 12, 1.2); confetti(pos, big ? 45 : 22); }   /* short and light, so his eyes come back to the letter */
+export function joy(pos, big = false) { sfx.chime(); sparkle(pos, big ? 14 : 8, CALM ? .8 : 1.2); confetti(pos, CALM ? (big ? 16 : 8) : (big ? 45 : 22)); }   /* short and light, so his eyes come back to the letter */
 
 /* ---------------- tweens ---------------- */
 const tweens = []; export const ease = { lin: t => t, out: t => 1 - Math.pow(1 - t, 3), inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, back: t => { const c = 1.7; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); } };
