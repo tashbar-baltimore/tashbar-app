@@ -322,7 +322,7 @@ export function startGame(cfg) {
   }
   function camTo(mode, ms) {
     camMode = mode; const v = viewFor(mode), p0 = camPos.clone(), l0 = camLook.clone(); placeMendy(mode);
-    if (typeof boxes !== 'undefined') boxes.forEach(b => { b.g.visible = !(mode === 'close' && tall && W.name !== 'mistake'); });   /* phone close-up lesson: the boxes would only show cut off at the bottom */
+    if (typeof boxes !== 'undefined') boxes.forEach(b => { b.g.visible = !(mode === 'close' && !(cfg.sortBy && (W.name === 'mistake' || !tall))); });   /* close-ups show only the piece and the boy (sorting games keep the boxes they talk about); before: the boxes would only show cut off at the bottom */
     return tween(ms, k => { const e = ease(k); camPos.lerpVectors(p0, v.pos, e); camLook.lerpVectors(l0, v.look, e); });
   }
   const sparks = [], sparkGeo = new THREE.OctahedronGeometry(0.09);
@@ -600,7 +600,7 @@ export function startGame(cfg) {
   /* the pure shape, glowing (Esti 2026-11-26): when the voice names the shape, a soft gold outline of the exact shape lights up on the object,
      so a cupcake, a tire or a hay bale is never in doubt: it is that shape. New look only. */
   function glowOutline(o, on) {
-    if (!LK || !o || o.solid || !KINDS[o.k] || KINDS[o.k].solid || !o.mesh || cfg.sortBy === 'color') return Promise.resolve();   /* sorting by colour: no gold ring round a red circle (is it red or yellow?) */
+    if (!LK || !o || o.solid || !KINDS[o.k] || KINDS[o.k].solid || !o.mesh || cfg.sortBy === 'color' || cfg.plain) return Promise.resolve();   /* plain games: the piece IS the plain shape; a gold ring would make a circle look two-coloured */   /* sorting by colour: no gold ring round a red circle (is it red or yellow?) */
     if (!o.glow) {
       const pts = shapeOf(o.k).s.getPoints(96).map(p => new THREE.Vector3(p.x, p.y, 0)); if (pts[0].distanceTo(pts[pts.length - 1]) < 1e-3) pts.pop();
       const z = (cfg.thinFlat ? 0.03 : DEPTH / 2) + (cfg.thinFlat ? 0.03 : BEV) * 1.25 + 0.012;
