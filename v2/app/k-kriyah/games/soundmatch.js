@@ -1,13 +1,13 @@
-/* Sound Match: each picture goes to the letter its English name starts with (goat to Gimmel, dog to Daled, house to Hei).
+/* Sound Match: each picture goes to the letter it starts with (its English name: grapes to Gimmel, dog to Daled, hand to Hei).
    Skill: links each new letter with its sound. He hears the word, then drags the picture to a letter (or taps the letter).
    Show-then-try demo; a wrong answer is explained (he hears the word's first sound and the right letter glows); if he
    struggles, the right letter glows from the start of each picture. */
 import { makePictures, WORDS, WORD_NAME, hasPic } from '../pictures.js';
-export default function setup(E, { struggled, unit }) {
+export default function setup(E, { struggled, unit, game = {} }) {
   const { THREE, S } = E;
-  const PIC = makePictures(E), keys = (unit.n > 1 ? ['beis', ...unit.letters] : unit.letters).filter(k => Object.keys(WORDS).some(w => WORDS[w].letter === k && hasPic(w)));   /* in Alef-Beis order, right to left */   /* one earlier letter comes back (Beis, with the bayis) */
+  const PIC = makePictures(E), keys = (game.reviewOf ? E.UNITS[game.reviewOf - 1].letters : unit.n > 1 ? ['beis', ...unit.letters] : unit.letters).filter(k => Object.keys(WORDS).some(w => WORDS[w].letter === k && hasPic(w)));   /* in Alef-Beis order, right to left; as a review round, an earlier unit's letters */   /* one earlier letter comes back (Beis, with the bayis) */
   const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter) && hasPic(w)).filter((w, i, a) => a.slice(0, i).filter(x => WORDS[x].letter === WORDS[w].letter).length < 2);   /* two pictures per letter */
-  const kid = E.pictureCard('shloimy', () => E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c })); E.scene.add(kid);   /* Shloimy */
+  const kid = unit.n === 3 ? E.ari() : E.pictureCard('shloimy', () => E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c })); E.scene.add(kid);   /* the unit's boy: Shloimy, then Ari */
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4; p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
@@ -68,6 +68,7 @@ export default function setup(E, { struggled, unit }) {
   const first = words[0], rest = words.slice(1).sort(() => Math.random() - .5), deck = [first, ...rest];
   return async () => {
     E.setProgress(deck.length, 0);
+    if (game.review) { const nm = keys.map(k => E.LETTERS[k].name); await E.say('Remember ' + nm.slice(0, -1).join(', ') + ' and ' + nm[nm.length - 1] + '? Let\u2019s match again!'); }   /* names the letters on the stands */
     await E.say('Each picture goes to the letter it starts with.');
     await showCard(first);
     const k0 = WORDS[first].letter, pd0 = peds.find(pd => pd.userData.key === k0);

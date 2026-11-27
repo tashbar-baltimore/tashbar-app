@@ -6,6 +6,7 @@
 const N = k => ({ k, by: 'name' }), SND = k => ({ k, by: 'sound' });
 const QS = {
   1: [N('beis'), N('alef'), N('veis'), SND('beis'), SND('veis'), { k: 'alef', by: 'quiet' }, N('veis'), N('beis'), SND('veis')],
+  3: [N('zayin'), N('vov'), SND('zayin'), N('ches'), N('hei'), N('daled'), { k: 'alef', by: 'quiet' }, N('beis'), SND('gimmel')],   /* no 'Which says ch?' until the rebbe's recording */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {
@@ -15,13 +16,22 @@ export default function setup(E, { struggled, unit }) {
   const pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), pedTop = [E.M(0xff7aa8, { roughness: .25, clearcoat: 1 }), E.M(0x46c3ff, { roughness: .25, clearcoat: 1 }), E.M(0xffcf3a, { roughness: .25, clearcoat: 1 })];
   for (let i = 0; i < 3; i++) { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), pedTop[i], 0, .55, 0)); E.scene.add(p); peds.push(p); }
   keys.forEach(k => { L[k] = E.letter(k, 1.6); E.scene.add(L[k]); L[k].visible = false; });
+  const arrows = [E.arrow3d(.3), E.arrow3d(.3)];   /* on a look-alike mix-up: point at the place to look on both letters */
+  const feat = (k, other) => E.sameShape(k, other) ? E.DOT_FEATURE[k] : E.FEATURES[k];
   const LS = () => E.portrait ? .62 : .86;   /* letter size: small enough that wide letters (Mem, Nun) never touch */
   const glow = E.glowSprite('#fff7b0', 3, 0); E.scene.add(glow);
+  /* a basket that fills up: every letter he gets right jumps in and stays, so he can watch his letters pile up */
+  const basket = new THREE.Group(), wick = E.M(0xc68a52, { roughness: .7 }); basket.add(E.mesh(new THREE.CylinderGeometry(.75, .55, .7, 28, 1, true), wick, 0, .35, 0)); basket.children[0].material.side = THREE.DoubleSide;
+  for (let i = 0; i < 3; i++) basket.add(E.mesh(new THREE.TorusGeometry(.6 + i * .07, .035, 8, 32), E.M(0xa86f3c, { roughness: .6 }), 0, .12 + i * .23, 0)).children.at(-1).rotation.x = Math.PI / 2;
+  basket.add(E.mesh(new THREE.CylinderGeometry(.56, .56, .04, 28), E.M(0x8a5a3c), 0, .05, 0)); E.scene.add(basket); let inBasket = 0;
+  async function toBasket(k) { const c = E.letter(k, .55), p0 = E.worldPos(L[k]); c.position.copy(p0); E.scene.add(c); const n = inBasket++, to = basket.position.clone().add(new THREE.Vector3(((n % 3) - 1) * .32 * basket.scale.x, (.5 + Math.floor(n / 3) * .12) * basket.scale.x, ((n % 2) - .5) * .2));
+    E.sfx.whoosh(); await E.tween(520, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * 1.2; c.rotation.y = q * Math.PI * 2; c.scale.setScalar(basket.scale.x * (1 - q * .2) + .2 * (1 - q)); }); E.sfx.pop(); E.hop(basket, .12, 250); }
   let set = keys.slice(0, 3), slot = {}, gap = 2.3, active = false, glowOn = null, resolveQ = null, hidden = null;
   set.forEach((k, i) => slot[k] = i);
   const slotPos = i => new THREE.Vector3((1 - i) * gap, 0, .6);   /* right to left */
   E.onLayout(p => {
     gap = p ? 1.55 : 2.55; keys.forEach(k => L[k].scale.setScalar(LS()));
+    basket.position.set(p ? .9 : 4.3, 0, p ? 3.3 : .4); basket.scale.setScalar(p ? .5 : 1);   /* on a phone it sits on the grass in front */
     if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, 1.9, 0); rebbe.visible = false;   /* a phone has no room for him beside the letters */ peds.forEach(x => x.scale.setScalar(.62)); }
     else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.visible = true; rebbe.position.set(-4.3, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
     place(false);
@@ -41,14 +51,17 @@ export default function setup(E, { struggled, unit }) {
   let cur = null;
   E.onPointer('down', e => { if (!active) return; const l = E.pickFrom(e, keys.map(k => L[k]).filter(l => l.visible)); if (l && resolveQ) { const r = resolveQ; resolveQ = null; r(l.userData.key); } });
   /* the three letters for a question: the answer, its look-alike if it has one, then a new letter and an older one */
-  const PAIR = { beis: 'veis', veis: 'beis' };
+  const PAIR = { beis: 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', hei: 'ches', ches: 'hei' };
+  const SAME = { vov: 'veis', veis: 'vov' };
+  const CLUE = { beis: 'Beis has a dot.', veis: 'Veis has no dot.', zayin: 'Zayin has a crown.', vov: 'Vov has no crown.', ches: 'Ches\u2019s leg touches the roof.', hei: 'Hei\u2019s leg doesn\u2019t touch the roof.' };   /* Vov and Veis both say v: never ask one with the other on screen */
   const mix = a => a.slice().sort(() => Math.random() - .5);
   function pick(k) {
     if (keys.length <= 3) return mix(keys);
     const out = [k]; if (PAIR[k]) out.push(PAIR[k]);
-    const newer = mix(unit.letters).find(c => !out.includes(c)); if (out.length < 3 && newer) out.push(newer);   /* one new letter and one older one, so old and new stay mixed */
-    const older = mix(unit.known).find(c => !out.includes(c)); if (out.length < 3 && older) out.push(older);
-    for (const c of mix(keys)) if (out.length < 3 && !out.includes(c)) out.push(c);
+    const ok = c => !out.includes(c) && c !== SAME[k];
+    const newer = mix(unit.letters).find(ok); if (out.length < 3 && newer) out.push(newer);   /* one new letter and one older one, so old and new stay mixed */
+    const older = mix(unit.known).find(ok); if (out.length < 3 && older) out.push(older);
+    for (const c of mix(keys)) if (out.length < 3 && ok(c)) out.push(c);
     return mix(out);
   }
   async function showSet(k) { set = pick(k); if (keys.length > 3) { set.sort((a, b) => E.AB(a) - E.AB(b)); set.forEach((c, i) => slot[c] = i); } else mix([0, 1, 2]).forEach((s, i) => slot[set[i]] = s);   /* right to left in Alef-Beis order; with only three letters (Unit 1) they mix, so the place doesn't give the answer */ E.sfx.whoosh(); await place(true); }
@@ -80,15 +93,18 @@ export default function setup(E, { struggled, unit }) {
       let easy = false; if (inRow >= 2 || (struggled && q.first && done < 3 && !q.again)) { const drop = set.find(k => k !== q.k && k !== PAIR[q.k]); hidden = L[drop]; hidden.visible = false; easy = true; }
       const got = await ask(q);
       if (q.first && !easy && E.noteLetter) E.noteLetter(q.k, got === q.k);   /* remembered per letter, for the spaced review */
-      if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
+      if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); if (q.first && !easy) toBasket(got); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
         await E.say(q.k === 'alef' ? 'Yes! Alef. Alef is quiet.' : ['Yes!', ...E.nameLine(q.k)]); rebbe.mood('calm'); }
       else { E.sfx.boop(); inRow++; rebbe.mood('think'); await E.shake(L[got], .15); await E.say(explain(got));
+        if (PAIR[got] === q.k && CLUE[q.k]) {   /* a look-alike mix-up: show and say what to look for */
+          [got, q.k].forEach((k, i) => E.pointAt(arrows[i], L[k], k, 1.6, feat(k, i ? got : q.k))); await E.say(CLUE[q.k]); arrows.forEach(a => a.visible = false); }
         glowOn = L[q.k]; E.hop(L[q.k]); await E.say(q.k === 'alef' ? 'Here is Alef, the quiet one.' : ['Here is ' + E.LETTERS[q.k].name + '.', ...E.nameLine(q.k)]); glowOn = null; rebbe.mood('calm');
         if (q.first) queue.push({ ...q, first: false }); }
       if (hidden) { hidden.visible = true; hidden = null; }
       if (q.first && easy && !q.again) queue.push({ ...q, again: true });   /* with only two letters it was practice: it comes back with all three */
       else if (q.first) { done++; E.setProgress(Qs.length, done); }
     }
+    E.hop(basket, .35, 450); E.confetti(basket.position.clone().add(new THREE.Vector3(0, 1, .5)), 50);
     const stars = right >= Qs.length - 1 ? 3 : right >= Math.ceil(Qs.length * 2 / 3) ? 2 : 1;   /* 8 of 9 / 6 of 9, the same share with more questions */ window.__right = right;
     const names = unit.letters.map(k => E.LETTERS[k].name);
     return { stars, line: stars === 3 ? 'Three stars! You know ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + '!' : stars === 2 ? 'Two stars! You passed Unit ' + unit.n + '!' : null };

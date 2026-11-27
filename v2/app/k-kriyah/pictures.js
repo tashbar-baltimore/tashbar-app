@@ -26,6 +26,37 @@ export function makePictures(E) {
       const gl = E.glowSprite('#ffcf70', 1.1, .8); gl.position.set(0, .66, 0); g.add(gl); g.userData.flame = fl; return g; },
     har() { const g = new THREE.Group(); g.add(mesh(new THREE.ConeGeometry(.62, .95, 7), M(0x5b8c3a, { roughness: .7 }), 0, -.1, 0));
       g.add(mesh(new THREE.ConeGeometry(.25, .32, 7), M(0xffffff, { roughness: .5 }), 0, .26, 0)); g.add(mesh(new THREE.ConeGeometry(.4, .6, 7), M(0x7aa64e, { roughness: .7 }), .5, -.3, -.2)); return g; },
+    vov() { const g = new THREE.Group(), metal = M(0xb8c2cc, { metalness: .85, roughness: .2 });   /* a hook on a peg board: "vov" means a hook */
+      g.add(mesh(E.rbox(.9, .5, .12, .05), M(0x8a5a3c, { roughness: .6 }), 0, .45, -.1));
+      g.add(mesh(new THREE.CylinderGeometry(.05, .05, .55, 12), metal, 0, .05, 0)); const c = mesh(new THREE.TorusGeometry(.17, .05, 10, 20, Math.PI), metal, .17, -.22, 0); c.rotation.z = Math.PI; g.add(c); return g; },
+    challah() { const g = new THREE.Group(), crust = M(0xc9802f, { roughness: .45, clearcoat: .5 });   /* a braided challah */
+      for (let s = 0; s < 3; s++) { const pts = []; for (let k = 0; k <= 30; k++) { const t = k / 30, x = -.6 + t * 1.2; pts.push(new THREE.Vector3(x, Math.sin(t * Math.PI * 4 + s * 2.1) * .08 + .02, Math.cos(t * Math.PI * 4 + s * 2.1) * .12)); }
+        g.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 60, .14 - Math.abs(s - 1) * .01, 12), crust)); }
+      g.scale.set(1, 1.1, 1.2); return g; },
+    zemiros() { const g = new THREE.Group(), ink = M(0x2b2f6b, { roughness: .3, clearcoat: .8 });   /* singing: two music notes */
+      [[-.25, -.1], [.25, .1]].forEach(([x, y]) => { const h = mesh(new THREE.SphereGeometry(.14, 16, 12), ink, x, y - .3, 0); h.scale.set(1.25, .9, .8); g.add(h); g.add(mesh(new THREE.CylinderGeometry(.03, .03, .62, 8), ink, x + .15, y, 0)); });
+      const beam = mesh(new THREE.BoxGeometry(.56, .08, .06), ink, .15, .32, 0); beam.rotation.z = .35; g.add(beam); return g; },
+    tallis() { const g = new THREE.Group(), wool = M(0xfbfaf4, { roughness: .8 }), stripe = M(0x1f2d4a, { roughness: .6 });   /* a folded tallis: white with dark stripes and tzitzis */
+      g.add(mesh(E.rbox(1.1, .7, .14, .05), wool, 0, 0, 0)); [-.22, .22].forEach(y => g.add(mesh(new THREE.BoxGeometry(1.12, .07, .15), stripe, 0, y, 0)));
+      g.add(mesh(new THREE.BoxGeometry(.4, .1, .16), M(0xd9dde3, { metalness: .6, roughness: .3 }), 0, .4, 0));
+      [-.48, .48].forEach(x => { for (let i = 0; i < 4; i++) g.add(mesh(new THREE.CylinderGeometry(.012, .012, .42, 6), wool, x + (i - 1.5) * .025, -.55, .03)); }); return g; },
+    tapuach() { const g = new THREE.Group(); const a = mesh(new THREE.SphereGeometry(.45, 28, 20), M(0xe0312b, { roughness: .25, clearcoat: 1 }), 0, -.08, 0); a.scale.set(1.05, .95, 1); g.add(a);   /* an apple */
+      g.add(mesh(new THREE.CylinderGeometry(.03, .04, .22, 8), M(0x6b4423), 0, .43, 0)); const lf = mesh(new THREE.SphereGeometry(.14, 14, 8), M(0x3fae4a, { roughness: .5 }), .15, .45, 0); lf.scale.set(1.3, .45, .7); lf.rotation.z = -.4; g.add(lf); return g; },
+    yad() { const g = new THREE.Group(), skin = M(0xf2c9a0, { roughness: .55 });   /* a hand, waving */
+      const palm = mesh(E.rbox(.62, .6, .2, .12), skin, 0, -.2, 0); g.add(palm);
+      [[-.22, .26, .44], [-.075, .3, .5], [.075, .29, .48], [.22, .24, .4]].forEach(([x, y, h]) => { const f = mesh(new THREE.CapsuleGeometry(.07, h - .14, 6, 12), skin, x, y, 0); g.add(f); });
+      const th = mesh(new THREE.CapsuleGeometry(.075, .22, 6, 12), skin, .4, -.15, 0); th.rotation.z = -.9; g.add(th); g.rotation.z = .12; return g; },
+    yeled() { const k = E.person({ shirt: 0x5aa0e6, pants: 0x2a3550 }); const g = new THREE.Group(); k.scale.setScalar(.42); k.position.y = -.6; g.add(k); return g; },   /* a boy */
+    kos() { const g = new THREE.Group(), silver = M(0xd8dde6, { metalness: .9, roughness: .15 });   /* a silver Kiddush cup with wine */
+      const cup = mesh(new THREE.CylinderGeometry(.34, .22, .5, 28, 1, true), silver, 0, .25, 0); cup.material.side = THREE.DoubleSide; g.add(cup);
+      g.add(mesh(new THREE.CylinderGeometry(.31, .31, .03, 28), M(0x7a1030, { roughness: .1, clearcoat: 1 }), 0, .44, 0));
+      g.add(mesh(new THREE.CylinderGeometry(.06, .08, .35, 14), silver, 0, -.17, 0)); g.add(mesh(new THREE.CylinderGeometry(.3, .32, .07, 28), silver, 0, -.37, 0)); return g; },
+    kippah() { const g = new THREE.Group(); const k = mesh(new THREE.SphereGeometry(.5, 28, 14, 0, Math.PI * 2, 0, Math.PI / 2.6), M(0x1d2340, { roughness: .9, sheen: 1 }), 0, -.2, 0); k.scale.set(1, .7, 1); g.add(k);   /* a velvet kippah */
+      g.rotation.x = .5; return g; },
+    neiros() { const g = new THREE.Group(), silver = M(0xd8dde6, { metalness: .9, roughness: .15 });   /* Shabbos candles */
+      [-.25, .25].forEach(x => { g.add(mesh(new THREE.CylinderGeometry(.12, .16, .08, 20), silver, x, -.5, 0)); g.add(mesh(new THREE.CylinderGeometry(.04, .05, .45, 12), silver, x, -.25, 0)); g.add(mesh(new THREE.CylinderGeometry(.08, .06, .08, 16), silver, x, 0, 0));
+        g.add(mesh(new THREE.CylinderGeometry(.05, .05, .45, 12), M(0xffffff), x, .26, 0)); g.add(mesh(new THREE.ConeGeometry(.05, .16, 12), new THREE.MeshStandardMaterial({ color: 0xffb020, emissive: 0xff8a00, emissiveIntensity: 1.6 }), x, .57, 0, false));
+        const gl = E.glowSprite('#ffcf70', .5, .8); gl.position.set(x, .57, 0); g.add(gl); }); return g; },
     bayis() { const h = E.house({ bushes: false }); h.scale.setScalar(.38); h.position.y = -.55; const g = new THREE.Group(); g.add(h); return g; },
     /* ---- everyday pictures (zoo, garden, park, picnic) ---- */
     gamal() { const g = new THREE.Group(), fur = M(0xd9a35b, { roughness: .7 }), dk = M(0x3a2a1a);   /* a camel */

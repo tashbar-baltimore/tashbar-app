@@ -13,12 +13,16 @@ export default function setup(E, { unit }) {
     beis: BEIS, veis: BEIS,
     gimmel: [[[115, 615], [118, 510], [210, 500], [289, 455], [289, 340], [289, 230], [250, 110], [140, 91], [45, 91]], [[300, 235], [340, 130], [378, 40]]],
     daled: [[[40, 615], [45, 510], [160, 500], [290, 500], [415, 495], [395, 380], [388, 250], [383, 120], [380, 25]]],
+    vov: [[[48, 610], [95, 510], [175, 500], [212, 450], [212, 340], [212, 200], [215, 30]]],
+    zayin: [[[60, 610], [70, 505], [160, 495], [250, 470]], [[150, 390], [145, 260], [158, 130], [180, 25]]],
+    ches: [[[90, 615], [95, 510], [230, 500], [400, 500], [545, 495], [545, 380], [540, 250], [535, 120], [530, 25]], [[150, 440], [148, 300], [148, 170], [150, 40]]],
     hei: [[[75, 615], [80, 510], [200, 500], [340, 500], [505, 495], [507, 380], [500, 250], [494, 120], [490, 25]], [[102, 300], [100, 190], [100, 80], [100, 20]]],
   };
-  const ORDER = unit.n > 1 ? [...unit.letters, 'beis'] : unit.letters;
-  const ROW = unit.n > 1 ? ['beis', ...unit.letters] : ORDER;   /* the finished row is in Alef-Beis order */   /* a later unit ends with one earlier letter (Beis, and its dot) */
+  const REVIEW = { 2: 'beis', 3: 'hei', 5: 'gimmel' }[unit.n];   /* one earlier letter comes back: Beis in Unit 2, Hei (Ches's look-alike) in Unit 3 */
+  const ORDER = REVIEW ? [...unit.letters, REVIEW] : unit.letters;
+  const ROW = [...unit.known, ...unit.letters].filter(k => ORDER.includes(k));   /* the finished row is in Alef-Beis order */   /* a later unit ends with one earlier letter (Beis, and its dot) */
   let H = 3.2; const holder = new THREE.Group(); E.scene.add(holder);
-  const boy = unit.n === 2 ? E.pictureCard('shloimy', () => E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c })) : E.mendy(); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
+  const boy = unit.n === 3 ? E.ari() : unit.n === 2 ? E.pictureCard('shloimy', () => E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c })) : E.mendy(); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
   const done = []; let cur = null, beads = [], next = 0, demo = false, active = false, lastHelp = 0, wander = 0, offTries = 0;
   /* the path is a soft glowing road along the letter (never dots: a dot on Beis means the dagesh); the part he has felt
      turns gold, and a pulsing ring shows where to go next */
@@ -72,10 +76,13 @@ export default function setup(E, { unit }) {
   E.onPointer('up', () => { down = false; lastUp = performance.now(); });
   window.__info = () => ({ dot: dotTarget ? E.toScreen(E.worldPos(dotTarget)) : null, key: cur && cur.userData.key, active: active && !demo, next, total: beads.length, beads: beads.map((b, i) => beadScreen(i)), off: offTries });
 
+  const arrow = E.arrow3d(.4);
   async function oneLetter(key, first) {
     cur = E.letter(key, H); cur.position.set(0, 0, 0); holder.add(cur); makeBeads(key); glow.material.opacity = .12;
     E.sfx.whoosh(); await E.popIn(cur, 1, 500);
-    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
+    const showsPlace = ['vov', 'zayin', 'hei', 'ches'].includes(key) && E.pointAt(arrow, cur, key, H);   /* the place the line talks about */
+    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
+    if (showsPlace) { await E.wait(500); arrow.visible = false; }
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');
       const st = PATHS[key][0].length; let [x, y] = beadScreen(0); E.hand.at(x, y); await E.wait(300);

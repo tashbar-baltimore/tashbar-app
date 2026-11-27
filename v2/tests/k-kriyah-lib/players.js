@@ -91,3 +91,11 @@ P.train = async (pg, shot, log) => {
     const c = i.cars.find(x => x.k === i.need); if (!c) return false; await K.drag(pg, c.xy, to); if (++n === 3) { await pg.waitForTimeout(300); await shot('2-middle'); } await pg.waitForTimeout(300); return true; });
 };
 P.story2 = P.story;
+P.sorter = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-drag-ready]', { timeout: 180000 }); await shot('1-start'); let n = 0;
+  let i = await K.info(pg); const wrongK = Object.keys(i.crates).find(k => k !== i.k);
+  await K.drag(pg, i.card, i.crates[wrongK]); await pg.waitForTimeout(500); await shot('3-wrong');
+  log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Look!'), 8000));
+  await loop(pg, async () => { i = await K.info(pg); if (!i || !i.ready || !i.crates[i.k]) return false; await K.drag(pg, i.card, i.crates[i.k]); if (++n === 9) { await pg.waitForTimeout(300); await shot('2-middle'); } await pg.waitForTimeout(250); return true; });
+};
+P.story3 = P.story;

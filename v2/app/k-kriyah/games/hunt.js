@@ -1,16 +1,26 @@
 /* Game 3: Letter Hunt in the sukkah.
-   Skill: picks out Beis among other letters (Alef and Veis mixed in), then Veis.
-   Round 1: find every Beis. Round 2: find every Veis. A kind correction names the letter he tapped and what to look for;
+   Skill: picks out a letter among its look-alikes (Unit 1: Beis, then Veis; Unit 3: Zayin, then Ches).
+   A wrong tap: an orange arrow points at the place to look on that letter.
+   Two rounds, each with its own letter to find. A kind correction names the letter he tapped and what to look for;
    if he struggles, one Beis glows and the hand points to it. */
-export default function setup(E, { struggled }) {
+/* each unit: two rounds (the letter to find, how many, and the others mixed in), the boy's name, and short "what to look for" words */
+const PLAN = {
+  1: { boy: 'Mendy', rounds: [['beis', 4, ['alef', 'alef', 'veis', 'veis'], ['alef', 'veis']], ['veis', 3, ['alef', 'alef', 'beis', 'beis'], ['alef', 'beis']]] },
+  3: { boy: 'Ari', rounds: [['zayin', 4, ['vov', 'vov', 'ches', 'gimmel'], ['vov', 'ches']], ['ches', 3, ['hei', 'hei', 'zayin', 'daled'], ['hei', 'zayin']]] },
+};
+const CUE = { beis: 'with the dot', veis: 'with no dot', zayin: 'with the crown', vov: 'with no crown', ches: 'with its leg on the roof', hei: 'with its leg off the roof' };
+const NOTE = { alef: '', beis: 'It has a dot.', veis: 'No dot.', vov: 'No crown.', zayin: 'It has a crown.', hei: 'Its leg doesn\u2019t touch the roof.', ches: 'Its leg touches the roof.', gimmel: '', daled: '' };
+export default function setup(E, { struggled, unit }) {
+  const plan = PLAN[unit.n] || PLAN[1], NM = k => E.LETTERS[k].name;
   const { THREE } = E;
   const wood = E.M(0xd9a066, { roughness: .6 }), wood2 = E.M(0xc68a52, { roughness: .6 }), cloth = E.M(0xffffff, { roughness: .5 }), leaf = E.M(0x2f9b3e, { roughness: .7, clearcoat: 0 }), leaf2 = E.M(0x46b54d, { roughness: .7, clearcoat: 0 });
   let suk = null, W = 7.4, spots = [];
   const plaque = E.M(0xfffaf0, { roughness: .4, clearcoat: .5 });   /* a plain backing tile, so nothing behind a letter can look like its dot */
-  const boy = E.mendy(); E.scene.add(boy);
+  const boy = unit.n === 3 ? E.ari() : E.mendy(); E.scene.add(boy);
   const letters = []; const glow = E.glowSprite('#fff7b0', 1.8, 0); E.scene.add(glow);
-  const ring = E.noticeRing(.5); E.scene.add(ring);
-  let round = 0, want = 'beis', found = 0, need = 0, wrong = 0, wrongInRound = 0, active = false, help = struggled, helpOn = null, lastAct = 0, resolveRound = null;
+  const arrow = E.arrow3d(.3);   /* points at the place to look on the letter he tapped (never a ring over it) */
+  const feat = k => E.DOT_FEATURE[k] || E.FEATURES[k];
+  let round = 0, want = plan.rounds[0][0], found = 0, need = 0, wrong = 0, wrongInRound = 0, active = false, help = struggled, helpOn = null, lastAct = 0, resolveRound = null;
 
   function buildSukkah(w) {
     if (suk) E.scene.remove(suk); suk = new THREE.Group(); E.scene.add(suk); W = w; const hw = w / 2;
@@ -70,17 +80,17 @@ export default function setup(E, { struggled }) {
   async function got(l) {
     l.userData.got = true; l.userData.busy = true; helpOn = null; E.hand.hide(); found++; E.joy(E.worldPos(l)); boy.mood('cheer'); setTimeout(() => boy.mood('think'), 900 * E.F);
     const p0 = l.position.clone(), top = new THREE.Vector3(0, E.portrait ? 4.6 : 4.0, 1);
-    E.say(want === 'beis' ? ['A Beis!', E.S('b')] : ['A Veis!', E.S('v')], false);
+    E.say(['A ' + NM(want) + '!', E.S(E.LETTERS[want].snd)], false);
     await E.tween(650, k => { l.position.lerpVectors(p0, top, k); l.scale.setScalar(1 - k * .7); l.rotation.y = Math.sin(k * Math.PI * 2) * .3; });   /* a wobble, never backwards */
     l.visible = false; E.sparkle(top, 14); E.setProgress(need, found);
     if (found >= need && resolveRound) { const r = resolveRound; resolveRound = null; r(); }
   }
   async function miss(l) {
     E.sfx.boop(); wrong++; wrongInRound++; l.userData.busy = true; boy.mood('think'); await E.shake(l, .12); l.userData.busy = false;
-    ring.position.copy(E.worldPos(l)).add(new THREE.Vector3(0, 0, .3)); ring.visible = true;
-    const k = l.userData.key, look = want === 'beis' ? 'Find Beis, with the dot!' : 'Find Veis, with no dot!';
-    await E.say(k === 'alef' ? 'That is Alef. ' + look : k === 'beis' ? 'That is Beis. It has a dot. ' + look : 'That is Veis. No dot. ' + look);
-    ring.visible = false;
+    E.pointAt(arrow, l, l.userData.key, l.userData.height, feat(l.userData.key));
+    const k = l.userData.key, look = 'Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!';
+    await E.say('That is ' + NM(k) + '. ' + look);   /* 12 words or fewer */
+    arrow.visible = false;
     if (wrongInRound >= 2) showHelp();
   }
   function showHelp() { const t = letters.find(l => l.visible && !l.userData.got && l.userData.key === want); if (!t) return; helpOn = t; const [x, y] = E.toScreen(E.worldPos(t)); E.hand.at(x + 10, y + 10, true); }
@@ -88,28 +98,29 @@ export default function setup(E, { struggled }) {
     if (!active) return; const l = E.pickFrom(e, letters.filter(x => !x.userData.got)); if (!l || l.userData.busy) return; lastAct = performance.now();
     if (l.userData.key === want) got(l); else { active = false; await miss(l); active = true; }
   });
-  setInterval(() => { if (active && !helpOn && performance.now() - lastAct > (help ? 7000 : 14000) * E.F) { lastAct = performance.now(); showHelp(); E.say(want === 'beis' ? 'Look for the dot! Find Beis.' : 'No dot! Find Veis.'); } }, 500);
+  setInterval(() => { if (active && !helpOn && performance.now() - lastAct > (help ? 7000 : 14000) * E.F) { lastAct = performance.now(); showHelp(); E.say('Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!'); } }, 500);
 
   return async () => {
-    /* round 1: Beis */
-    setRound('beis', 4, help ? ['alef', 'veis'] : ['alef', 'alef', 'veis', 'veis']);
-    boy.mood('think'); await E.say('Mendy is in the sukkah. Letters are hiding!');
+    /* round 1 */
+    const [r1, r2] = plan.rounds;
+    setRound(r1[0], r1[1], help ? r1[3] : r1[2]);
+    boy.mood('think'); await E.say(plan.boy + ' is in the sukkah. Letters are hiding!');
     await showAll();
-    await E.say('Watch me. I find a Beis. It has a dot!');
-    const first = letters.find(l => l.userData.key === 'beis'); let [x, y] = E.toScreen(E.worldPos(first)); E.hand.at(x + 10, y + 10); await E.wait(700);
+    await E.say('Watch me. I find ' + (r1[0] === 'alef' ? 'an Alef' : 'a ' + NM(r1[0])) + '. ' + (NOTE[r1[0]] || ''));
+    const first = letters.find(l => l.userData.key === r1[0]); let [x, y] = E.toScreen(E.worldPos(first)); E.hand.at(x + 10, y + 10); await E.wait(700);
     const fin1 = new Promise(r => resolveRound = r);
     await got(first); await E.wait(300);
-    await E.say('Now you! Find every Beis.'); active = true; lastAct = performance.now(); document.body.dataset.huntReady = 'beis';
+    await E.say('Now you! Find every ' + NM(r1[0]) + '.'); active = true; lastAct = performance.now(); document.body.dataset.huntReady = r1[0];
     await fin1; active = false; await E.wait(500);
-    await E.say('You found every Beis!');
-    /* round 2: Veis */
+    await E.say('You found every ' + NM(r1[0]) + '!');
+    /* round 2 */
     round = 1; letters.forEach(l => E.popOut(l)); await E.wait(450);
-    setRound('veis', 3, help ? ['alef', 'beis'] : ['alef', 'alef', 'beis', 'beis']);
+    setRound(r2[0], r2[1], help ? r2[3] : r2[2]);
     await showAll();
-    await E.say('Now find every Veis. Veis has no dot!');
-    const fin2 = new Promise(r => resolveRound = r); active = true; lastAct = performance.now(); document.body.dataset.huntReady = 'veis';
+    await E.say('Now find every ' + NM(r2[0]) + '. ' + (NOTE[r2[0]] || ''));
+    const fin2 = new Promise(r => resolveRound = r); active = true; lastAct = performance.now(); document.body.dataset.huntReady = r2[0];
     await fin2; active = false;
     const stars = wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1;
-    return { stars, line: stars >= 2 ? 'Great hunting! You found every Beis and Veis.' : null };
+    return { stars, line: stars >= 2 ? 'Great hunting! You found every ' + NM(r1[0]) + ' and ' + NM(r2[0]) + '.' : null };
   };
 }
