@@ -1599,8 +1599,8 @@ export function wrongFor(T) {
     if (o.k === 'oval') return noCount(['That is an oval. It is long and squished.', T === 'circle' ? 'A circle is perfectly round.' : 'A ' + T + ' has straight sides.']);
     if (o.k === 'semi') return noCount(['That is half a circle.', T === 'circle' ? 'It has a straight side. A circle is all round.' : 'It has a round side. A ' + T + ' has straight sides.']);
     if (f === 'circle') return ['That is a circle.', 'A circle has no corners at all. A ' + T + ' has ' + has(CORNERS[T]) + '.'];
-    if (o.k === 'lean') return noCount(['This shape leans over.', 'A ' + T + ' has corners like a box.']);
-    if (o.k === 'kite') return noCount(['That is a kite shape.', 'Its corners are pointy, not like a box. It is not a ' + T + '.']);
+    if (o.k === 'lean' && (T === 'square' || T === 'rectangle')) return noCount(['Look at its corners.', 'Two corners are pointy. Two are wide.', 'A ' + T + ' has four corners all the same.']);
+    if (o.k === 'kite' && (T === 'square' || T === 'rectangle')) return noCount(['That is a kite shape.', 'Its corners are not all the same.', 'It is not a ' + T + '.']);
     if (T === 'square' && f === 'rectangle') return noCount(['That is a rectangle.', 'Two sides are long. Two are short.', 'A square has four sides the same.']);
     const name = (f === T || ['triangle', 'square', 'rectangle', 'circle'].includes(f) || T === 'hexagon') && !['pentagon', 'octagon'].includes(f) ? 'That is a ' + f + '.' : 'That shape is not a ' + T + '.';
     if (T === 'circle') return [name, 'It has ' + has(n) + '. A circle has none.'];
