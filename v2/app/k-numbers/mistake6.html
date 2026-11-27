@@ -71,14 +71,14 @@ function play(F, i) {
     if (KINDS[i] === 'hop') {
       /* Avi's slips: counting his own stone (lands one short), or one hop too many */
       const at = [1, 3, 5][i / 2], k = 2, far = i === 4, wrongAt = at + k + (far ? 1 : -1);
-      R = { kind: 'hop', at, k, wrongAt, misses: 0 }; A.place(at); P.focus(at + 1.5); $('spin').style.visibility = '';
+      R = { kind: 'hop', at, k, wrongAt, misses: 0 }; A.place(at); P.focus(at + 1.5); $('spin').hidden = false;
       await F.say("Avi's turn. Watch Avi!"); await SP.spin(k); A.pose('happy'); await A.hop(wrongAt); A.pose('talk');
       await F.say(far ? 'Two dots. Oops, Avi hopped too far!' : "Two dots. Oops, Avi counted his own stone!");
       $('avichip').hidden = false; open();
       await F.say('Move Avi where he should be.', { repeat: 'Avi was on ' + F.word(at) + '. Two hops. Move him there.' });
     } else {
       const s = FR.pick(i < 3 ? [1, 2, 3, 4, 5] : [5, 6, 7, 8]), gap = i === 5 ? 2 : 1, a = s, b = s + gap;
-      R = { kind: 'swap', a, b, picked: null, misses: 0 }; A.place(0); A.show(false); $('spin').style.visibility = 'hidden';
+      R = { kind: 'swap', a, b, picked: null, misses: 0 }; A.place(0); A.show(false); $('spin').hidden = true;
       P.label(a, b); P.label(b, a); P.focus((a + b) / 2);
       await F.say('Avi put the numbers on the path.'); open();
       await F.say('Two are in the wrong places. Find them!', { repeat: 'Tap the two numbers in the wrong places.' });
