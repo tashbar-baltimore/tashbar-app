@@ -942,7 +942,7 @@ export function startGame(cfg) {
   async function patternLesson() {
     const L = cfg.patternLesson; setPattern({ seq: L.seq, blanks: 0, tray: [] });
     camTo('close', 10);
-    PS.parts.forEach(p => { if (p.isGroup || p.isMesh) { p.position.z += 1.0; p.position.y += 0.3; } });
+    PS.parts.forEach(p => { if (p.isGroup || p.isMesh) { p.position.z += 1.0; p.position.y += 0.3; } });   /* phone: the row already fills the width (six cupcakes edge to edge); bigger cut off both ends, so it stays this size */
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, () => sing(null, L.say), 'The same part repeats!',
       () => coreGlow(true), L.coreLine, () => wait(500), () => coreGlow(false),
       'Your turn! Tap each one to sing.', () => { setName('tap'); task = ['Tap each one.']; return tapBeads(); }, () => { setName('learn'); task = null; },
