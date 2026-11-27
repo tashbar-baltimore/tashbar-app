@@ -113,3 +113,13 @@ Everything scored 3 or lower is being fixed (rows below), then scored again.
 
 **Round 2 scores (a new reviewer):** Units 1–5 and 8 all 4 or 5 (Fill the frame 5, Ten-frame 5). Still 3: skip (Unit 2), steps6, mistake6 (Unit 6), pairs7, build7, mistake7, review7 (Unit 7). Being fixed, then scored again.
 
+
+### numbers-b, extra fixes found by the first numbers-b session (added after the takeover)
+The first numbers-b session (claim `numbers-b`) played every Unit 3 and 4 game too. These five fixes were not in the takeover's changes, so they are added here:
+| Game | What was wrong | What changed |
+|---|---|---|
+| Give me (giveme) | The plate and rolls used only the left 60% of the screen; the right 40% was empty sky with just the check button. | The kitchen scene takes most of the screen (no hands in this game), so plate and rolls are bigger. |
+| Review (review3) | "What comes next" stones were small flat blank ovals (about 30 px tall). | Big stones (up to 130 px), still lighting one by one. |
+| Empty plate (zero4) | Five cookies (bonus) were piled on top of each other. | Cookies spread across the plate and are a bit smaller at 4 or 5, so none overlap. |
+| Match the number (match4) | After a match, the small finger picture covered one of the things to count; on a phone the big numeral tag covered half the fruit. | The finger picture sits under the card (room made for it); the tag is smaller on a phone and sits on the corner. |
+| Review time (review4) | The challah rolls in the tray were small. | Bigger rolls (up to 104 px), wider tray. |

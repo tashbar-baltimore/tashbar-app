@@ -39,7 +39,8 @@
   var $ = function (id) { return document.getElementById(id); };
   var H, R, done, A = U4.adapt();
   var PLAN = [[2, 2], [3, 2], [3, 3], [4, 2], [4, 4]];   /* [cookies, taken] */
-  function put(k) { var L = FR.LAYOUTS[k][0], h = ''; L.p.forEach(function (p, i) { h += '<svg class="ck" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + (15 + p[0] * .7) + '%;top:' + (15 + p[1] * .7) + '%"><use href="#u4Cookie"/></svg>'; }); $('plate').innerHTML = h; }
+  function put(k) {   /* K clarity: cookies spread out and never overlap, so each one can be seen and counted */
+    var L = FR.LAYOUTS[k][0], h = ''; L.p.forEach(function (p, i) { h += '<svg class="ck" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + (5 + p[0] * .9) + '%;top:' + (5 + p[1] * .9) + '%' + (k >= 4 ? ';width:22%;height:26%' : '') + '"><use href="#u4Cookie"/></svg>'; }); $('plate').innerHTML = h; }
   async function take(names) {
     var cks = [].slice.call($('plate').querySelectorAll('.ck:not(.gone)'));
     for (var i = 0; i < names.length; i++) { var c = cks[cks.length - 1 - i]; await FR.say('Bubby gives one to ' + names[i] + '.'); c.style.left = (i % 2 ? 120 : -20) + '%'; c.style.top = '-20%'; c.classList.add('gone'); NK.sound.pop(); await FR.wait(500); }
