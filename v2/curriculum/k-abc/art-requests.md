@@ -3,7 +3,7 @@ Every order to the picture account (khaver.meir@gmail.com) and every answer. Rul
 
 | # | Sent | Subject | What | Status |
 |---|---|---|---|---|
-| A1 | 2026-11-26 | [2.0 k-abc art] Order A1: four friends of Mendy (Eli, Ari, Dovid, Tzvi), 3 poses each | 12 pictures: Eli, Ari, Dovid, Tzvi; idle, think (finger on chin), happy hop. 1024 px tall, transparent PNG, same painted style as Mendy (order K1 of Shapes), kippah and tzitzis, no writing, no props | **Received 2026-11-26 20:40 UTC, all 12.** Checked by eye: gentle, modest, kippah and tzitzis, long sleeves, no writing, transparent, each boy clearly different. Eli and Ari trimmed and saved as 640 px WebP (30–45 KB) in `v2/app/k-abc/art/`; Dovid and Tzvi kept aside until a game uses them. |
+| A1 | 2026-11-26 | [2.0 k-abc art] Order A1: four friends of Mendy (Eli, Ari, Dovid, Tzvi), 3 poses each | 12 pictures: Eli, Ari, Dovid, Tzvi; idle, think (finger on chin), happy hop. 1024 px tall, transparent PNG, same painted style as Mendy (order K1 of Shapes), kippah and tzitzis, no writing, no props | **Received 2026-11-26 20:40 UTC, all 12.** Checked by eye: gentle, modest, kippah and tzitzis, long sleeves, no writing, transparent, each boy clearly different. Eli and Ari trimmed and saved as 640 px WebP (30–45 KB) in `v2/app/k-abc/art/`; Dovid added the same way for Unit 3; Tzvi kept aside until a game uses him. |
 
 ## Pictures used that were not ordered here
 - **Mendy** (idle, talk, point, happy, clap): the painted Mendy from 2.0 Shapes order K1 (`v2/app/k-shapes/art/mendy-*.png` on branch claude/v2-k-shapes-graphics), copied into `v2/app/k-abc/art/` as 640 px tall WebP (42–48 KB each) so all of 2.0 has one Mendy.

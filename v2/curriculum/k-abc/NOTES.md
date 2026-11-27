@@ -80,3 +80,21 @@ Small choices: the p picture is a **pinwheel** (p's stick and round top), the t 
 ### Unit 2 — reviewer fixes (independent review, 2026-11-26)
 First review about 3.8 (thinking steps 3, variety/age 3, taught→asked 3, correct/clear 3). Fixed: no written "sss" in spoken lines (the device makes the sound; a voice might say a letter name); "A crate full of pictures!"; the story now shows three word cards (sat, pat, tap) under each page, so he must read to find the word; each meet's last round shows the letter only (no sound), as the check asks; t-meet says "Tap the woodpecker"; the opener uses the same pictures as the meets (snake, apple, tree, pinwheel); Fix It starts with a "watch me" round and gives a hint after two wrong thumbs; slide2 ends with "hear a word, tap it" (practice for the check); the check's four letter tiles sit in a 2 x 2 grid on a phone; the apple crate and the hanging pictures are fully in view.
 Not changed: tree stays the t picture (the world is a tree that a woodpecker taps); "tree" is heard with its first sound t, and the meet plays the pure t sound.
+
+### Unit 3 — i n m d
+The letter kit again, each letter with its own world; every hunt is a new kind of play that no earlier unit used.
+| Game | Kind | World / twist |
+|---|---|---|
+| opener | lesson: four new sounds with inchworm, nest, moon, duck; tap each letter; the chant "Mmm, the Shabbos soup is yum!" | garden table with a bowl of soup |
+| i-meet, n-meet, m-meet, d-meet | meet (as Unit 2), new pictures and mouth pictures | inchworm stretches up and pops up his head (the dot) · butterfly net (handle + hoop) · two mountains, a moon rises · a drum and its drumstick |
+| i-trace ... d-trace | trace 3 rounds (path, dots, alone) | same worlds |
+| i-hunt | **fork path**: the inchworm crawls along stepping stones; at each fork he taps the i picture to show the way | garden path |
+| n-hunt | **net catch**: butterflies carry pictures; he drags the net (a tool) over the n ones | meadow |
+| m-hunt | **memory cards**: flip cards to find every m picture; others flip back | sunset |
+| d-hunt | **go / no-go**: pictures pop up on a stump; tap the drum only for d, wait for the others | golden hill |
+| slide, slide2 | the word slide with it, in, sit, tin, pin / nap, man, mat, map, dip, dad, did, mad; pictures for pin, tin, mat, map; slide2 ends with "hear a word, tap it" | playground slide |
+| boxes | **sound boxes (light, Elkonin)**: he hears a word and pushes one button into a box per sound (it = 2, pin = 3), then the check button | garden shelf |
+| fixit | Dovid (painted) **reads a word aloud**; thumbs up or down; then he **taps the letter Dovid read wrong** (new: judging reading, not building) | meadow shelf |
+| review | Units 1–3: rhyme, first sound d, read a word → its picture, how many sounds (dot stones) | pond |
+| check | tap kinds: sound → letter (i, n, m, d), tap the word (4), how many sounds (2) | sunset stage |
+Small choices: Dovid is the friend for Unit 3 (the map names no one). "Mountain" and "net" are the m and n pictures that grow into the letters (m's two humps, n's hoop).
