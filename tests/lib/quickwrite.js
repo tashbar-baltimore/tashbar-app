@@ -60,7 +60,7 @@ module.exports = async function (pg) {
       await sleep(400); await next(); out.st2 = TLCORE.write.state().st; await look('3-check');
       await next(); out.stillCheck = TLCORE.write.state().st === 2 && TLCORE.write.state().view === 'fix'; out.checkWhy = (Q('#cwr .cw-why') || {}).textContent;
       type('[data-cw-text]', 'First, Dovid heard a scratch in the sukkah. Next, he clicked on his flashlight. Then he saw a little gray squirrel with challah. Last, the boys put the challah in a box with a tight lid.');
-      await sleep(400); [...document.querySelectorAll('#cwr [data-cw=self]')].forEach(b => b.click()); await sleep(80); out.checks = TLCORE.write.state().checks; out.sendWord = (Q('#cwr [data-cw=next]') || {}).textContent; await look('4-check-met');
+      await sleep(400); for (let i = 0; i < 8 && Q('#cwr [data-cw=self]'); i++) { Q('#cwr [data-cw=self]').click(); await sleep(40); } out.checks = TLCORE.write.state().checks; out.sendWord = (Q('#cwr [data-cw=next]') || {}).textContent; await look('4-check-met');
       await next(); await sleep(150); out.view = TLCORE.write.state() && TLCORE.write.state().view; await look('5-sent');
       Q('#cwr [data-cw=close]').click(); out.res = await done;
       done = W.pick('C23.ST.01', { exit: 'x' }); await sleep(200); out.sentTile = (Q('#cwr [data-cw=qpick][data-k="' + task.id + '"]') || {}).getAttribute && Q('#cwr [data-cw=qpick][data-k="' + task.id + '"]').getAttribute('aria-disabled');
