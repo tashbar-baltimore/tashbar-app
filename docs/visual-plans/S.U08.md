@@ -100,8 +100,10 @@ A bar comparing the length of the Jordan River and the Nile, and Eretz Yisroel's
 
 ## 4. Build order
 1. **V1 + V2 + V3: BUILT 2026-11-27.** New activity kind `map` (`src/CoreKitActs.html`; base maps `eretz`, `waters`, `nile`, drawn in code from real latitude and longitude). SS.GEO.L07.01: "Do it with me" 2 = the neighbors map (sea, Lebanon, Syria, Jordan, Egypt); "Your turn" = the waters map (Kinneret, Jordan River, Dead Sea, Yerushalayim), then the neighbor-direction match. SS.HIST.L07.01: "Your turn" 1 = the Nile map (Mitzrayim, the Nile, the sea it flows into, the green strip). Still to do from V1–V3: the three-continents inset, the side view of the river going downhill, the Nile year as a cycle diagram.
-2. **V4** (same activity kind, wider map) and **V5** (timeline).
-3. V6–V9, then V10–V11.
+2. **V4 + V5: BUILT 2026-11-27.** Base map `kingdoms` (Italy to Persia, the two rivers, three continents) and a new activity kind `timeline` (cards in order, Start and End, "then" arrows, no dates by HoS decision; cards not yet read are greyed "coming next"). They grow lesson by lesson: SS.HIST.L07.02 builds the rivers, Bavel and Persia and the first two cards; SS.HIST.L07.03 adds Greece (and Alexander's reach to Egypt) and the Greece card; SS.HIST.L07.04 puts all four kingdoms on the map in order and finishes the timeline.
+3. **V1–V3 extras: BUILT.** Three continents and the crossroads (roads from Europe, Africa and Asia meet at Eretz Yisroel) in SS.GEO.L07.01 (V9 too); the side view of the Jordan going downhill under the waters map; the Nile year is the numbered `order` activity; the Nile-vs-Jordan length bar under the Nile map (V11).
+4. **V6: BUILT** as a `timeline` chain in SS.JHIST.L07.01 (Har Sinai → by mouth → Yavneh → Rebbi's Mishnah → the Amoraim's Gemara → today). **V7** is the Mishnah / Gemara two-column sort already in that lesson. **V8: BUILT** as base map `harbayis` in SS.HIST.L07.04 (the Har Habayis and its walls; he finds the part of the western wall that still stands). No spot of the Beis Hamikdash itself is marked.
+5. **V10:** library photos now on the lessons (pyramids, the Nile from space, the Dead Sea shore, a Chanukah menorah, the Kosel stones, a Roman aqueduct). Papyrus, cedars of Lebanon and a Roman stone road are ordered: `docs/visual-plans/S.U08-picture-orders.md`.
 
 ## The test
 After V1–V5, every question listed above can be answered from what the boy built. Not yet true for 3a and 3b until the coordinator answers.
