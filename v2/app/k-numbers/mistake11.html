@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Find the Mistake — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 11 (MAP.md "Find the mistake": "Dovid says 2 + 2 = 5"), in the sukkah. Dovid is learning too.
+     A story happens (boys come in, or cookies are eaten) and Dovid writes the number sentence. Sometimes the answer is wrong, sometimes the sign,
+     and sometimes Dovid is right. He taps the wrong box and drags in the right card, or gives a thumbs up.
+     A slip: we count, or ask "did they come or go?", and he tries again. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>
+.ui{ flex-direction:column; gap:10px; }
+.sent{ display:flex; align-items:center; gap:8px; }
+.slot{ width:clamp(64px,9.5vh,84px); height:clamp(64px,9.5vh,84px); border-radius:18px; background:#fff; border:4px dashed #C9B8A0; display:flex; align-items:center; justify-content:center; padding:7px; }
+.slot.full{ border-style:solid; border-color:#8AC97A; } .slot svg{ height:100%; width:auto; } .slot.sign{ width:clamp(56px,8vh,70px); }
+.eq{ font:900 clamp(32px,5vh,46px)/1 system-ui, sans-serif; color:#5A4A3A; }
+.tiles{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+.tile{ width:clamp(64px,9.5vh,80px); height:clamp(64px,9.5vh,80px); border-radius:18px; background:linear-gradient(180deg,#fff,#F3F7FF); display:flex; align-items:center; justify-content:center; padding:8px;
+  box-shadow:0 6px 0 #B9C7E6, 0 10px 16px rgba(30,40,90,.2); cursor:grab; touch-action:none; } .tile svg{ height:100%; width:auto; pointer-events:none; }
+.tile.picked{ outline:5px solid #FFC93D; transform:translateY(-6px); } .tile.hint{ box-shadow:0 0 0 6px rgba(255,210,61,.9), 0 0 24px 8px rgba(255,210,61,.7); }
+.sg{ font:900 54px/1 system-ui, sans-serif; } .sg.plus{ color:#22B45E; } .sg.minus{ color:#FF6A3D; }
+.tiles[hidden]{ display:none; }
+.slot{ cursor:pointer; } .slot.bad{ border:4px solid #FF6A3D; background:#FFF1EC; } .slot.look{ box-shadow:0 0 0 6px #FFC93D; }
+#ok svg{ width:58%; height:58%; } .row2{ display:flex; gap:12px; align-items:center; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .row2{ flex-wrap:wrap; justify-content:center; } .slot{ width:64px; height:64px; } .slot.sign{ width:56px; } .sent{ gap:5px; } .ui{ width:min(100%,370px); } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="row2"><div class="sent"><div class="slot" id="sa"></div><div class="slot sign" id="ss"></div><div class="slot" id="sb"></div><span class="eq">=</span><div class="slot" id="sc"></div></div>
+      <button id="ok" class="bigbtn btn3d b-green" aria-label="Dovid is right"><svg viewBox="0 0 48 48"><path d="M14 22h-5v17h5zM14 38c6 2 14 2 20 1 3-.5 5-3 5-6l1-8c.4-3-2-5-5-5h-8l1-6c.4-3-1-6-4-6l-6 12z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg></button></div>
+    <div class="tiles" id="tiles" hidden></div>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './sukkah11.js';
+const $ = id => document.getElementById(id);
+let K, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const SG = { '+': '<span class="sg plus">+</span>', '-': '<span class="sg minus">−</span>' };
+const truth = () => R.kind === 'join' ? R.a + R.b : R.a - R.b, rightSign = () => R.kind === 'join' ? '+' : '-';
+function bad() { return R.sign !== rightSign() ? 'ss' : R.said !== truth() ? 'sc' : null; }
+function fill(id, html) { $(id).innerHTML = html; }
+function sentence() { fill('sa', U5.num(R.a)); fill('ss', SG[R.sign]); fill('sb', U5.num(R.b)); fill('sc', U5.num(R.said)); }
+function tiles(list) { $('tiles').hidden = false; $('tiles').innerHTML = list.map(t => '<div class="tile" data-v="' + t + '">' + (t === '+' || t === '-' ? SG[t] : U5.num(+t)) + '</div>').join(''); }
+function hooks() {
+  const b = bad();
+  if (R.step === 'find') { if (!b) { GAME.right = () => [{ tap: '#ok' }]; GAME.wrong = () => [{ tap: '#sc' }]; return; } GAME.right = () => [{ tap: '#' + b }]; GAME.wrong = () => [{ tap: '#ok' }]; return; }
+  const v = R.fix === 'ss' ? rightSign() : String(truth()), w = R.fix === 'ss' ? (v === '+' ? '-' : '+') : String(truth() === 5 ? 4 : truth() + 1);
+  GAME.right = () => [{ drag: ['.tile[data-v="' + v + '"]', '#' + R.fix] }]; GAME.wrong = () => [{ drag: ['.tile[data-v="' + w + '"]', '#' + R.fix] }];
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+const things = () => R.kind === 'join' ? K.boyMeshes() : K.cookies();
+async function countUp() { const list = things(); await K.bumpAll(list, i => FR.say(FR.Word(i + 1) + (i === list.length - 1 ? '.' : ','), { noRepeat: true })); }
+function finish() { const d = done; done = null; d(R.misses === 0); }
+async function pick(id) {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.step !== 'find') return; GAME.phase = 'busy'; FR.lock(true); const b = bad();
+  if (id === 'ok') { if (!b) { K.celebrate(); await FR.yes($('ok'), 'Yes! Dovid is right this time.'); return finish(); }
+    FR.oops($('ok')); R.misses++; await FR.say("Let's look. Count with me."); await countUp(); await FR.say('Something is wrong. Tap it.'); open(); return; }
+  if (id === b) { $(id).classList.add('bad'); NK.sound.yes(); R.step = 'fix'; R.fix = id; await FR.say(id === 'ss' ? 'Yes! The sign is wrong.' : 'Yes! The answer is wrong.');
+    tiles(id === 'ss' ? ['+', '-'] : ['1', '2', '3', '4', '5']); open(); await FR.say('Drag the right one in.', { repeat: id === 'ss' ? 'Came in is plus. Went away is minus.' : 'Count. Drag the right number.' }); return; }
+  FR.oops($(id)); R.misses++; $(id).classList.add('look'); await FR.say('That one is right. Look again.'); $(id).classList.remove('look'); open();
+}
+async function drop(tile, slot) {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.step !== 'fix' || slot.id !== R.fix) return; GAME.phase = 'busy'; FR.lock(true); const v = tile.dataset.v;
+  const ok = R.fix === 'ss' ? v === rightSign() : +v === truth();
+  if (ok) { if (R.fix === 'ss') R.sign = v; else R.said = +v; sentence(); slot.classList.remove('bad'); $('tiles').hidden = true; K.celebrate();
+    await FR.yes(slot, 'Fixed! ' + FR.Word(R.a) + (R.kind === 'join' ? ' plus ' : ' minus ') + FR.word(R.b) + ' is ' + FR.word(truth()) + '.'); return finish(); }
+  FR.oops(slot); R.misses++;
+  if (R.fix === 'ss') await FR.say(R.kind === 'join' ? "Let's look. They came in. That is plus." : "Let's look. They were eaten. That is minus.");
+  else { await FR.say("Let's look. Count with me."); await countUp(); }
+  open();
+}
+const PLAN = [{ kind: 'join', a: 2, b: 2, sign: '+', said: 5 }, { kind: 'take', a: 4, b: 1, sign: '+', said: 3 }, { kind: 'join', a: 3, b: 1, sign: '+', said: 4 },
+  { kind: 'take', a: 5, b: 2, sign: '-', said: 2 }, { kind: 'join', a: 1, b: 2, sign: '-', said: 3 }, { kind: 'take', a: 3, b: 1, sign: '-', said: 2 }];   /* wrong answer, wrong sign, right, wrong answer, wrong sign, right */
+function play(F, i) {
+  return new Promise(async res => {
+    R = Object.assign({ step: 'find', misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); ['sa', 'ss', 'sb', 'sc'].forEach(id => { fill(id, ''); $(id).classList.remove('bad', 'look'); }); $('tiles').hidden = true;
+    if (R.kind === 'join') { K.showPlate(false); K.setBoys(R.a); await F.say(F.Word(R.a) + (R.a === 1 ? ' boy.' : ' boys.') + ' Watch!'); K.showWaiting(R.b); for (let j = 0; j < R.b; j++) await K.comeOne(); await F.say(F.Word(R.b) + ' more came in.'); }
+    else { K.setBoys(0); K.showPlate(true); K.setCookies(R.a); await F.say(F.Word(R.a) + ' cookies. Watch!'); for (let j = 0; j < R.b; j++) await K.takeCookie(); await F.say(F.Word(R.b) + (R.b === 1 ? ' was eaten.' : ' were eaten.')); }
+    sentence(); await F.say('Dovid wrote this. Is he right?'); open();
+    await F.say('Tap what is wrong, or thumbs up.', { repeat: 'Look at the story. Tap the wrong box, or thumbs up.' });
+  });
+}
+FR.game({
+  id: 'u11-mistake', title: 'Find the Mistake', rounds: 6,
+  hero: '<div class="hero6"><img src="art/dovid-talk.png" alt=""></div>',
+  init() { K = mount($('world'), { band }); FR.dragTap({ sources: '.tile', targets: '.slot', drop }); ['sa', 'ss', 'sb', 'sc'].forEach(id => $(id).addEventListener('click', () => pick(id))); $('ok').addEventListener('click', () => pick('ok')); },
+  demo: async F => {
+    R = { kind: 'join', a: 1, b: 1, sign: '+', said: 3, step: 'demo' }; K.showPlate(false); K.setBoys(1); ['sa', 'ss', 'sb', 'sc'].forEach(id => fill(id, ''));
+    await F.say('One boy. One more comes. Watch me.'); K.showWaiting(1); await K.comeOne(); sentence(); await F.say('Dovid wrote one plus one is three.');
+    await F.say('Count: one, two. The answer is wrong!'); await F.handTo($('sc')); await F.handTap(); $('sc').classList.add('bad'); tiles(['1', '2', '3', '4', '5']);
+    await F.handDrag(document.querySelector('.tile[data-v="2"]'), $('sc')); R.said = 2; sentence(); $('sc').classList.remove('bad'); $('tiles').hidden = true; F.handHide(); await F.say('One plus one is two!');
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'Dovid says thank you! Great checking!' : 'Good checking! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
