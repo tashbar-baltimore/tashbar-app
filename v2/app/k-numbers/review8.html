@@ -60,7 +60,8 @@ async function plate(k, el) {
 }
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer' || R.kind === 'plates') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const have = H.count();
-  if (have === R.n) return fin($('check'), R.kind === 'frame' ? 'Yes! Five and ' + FR.word(R.n - 5) + ' more. ' + FR.Word(R.n) + '!' : 'Yes! One more than ' + FR.word(R.n - 1) + ' is ' + FR.word(R.n) + '.');
+  if (have === R.n) { if (R.kind === 'next' && R.view) { R.view.set(R.n); spotOff(R.view); NK.sound.pop(); }   /* the one more drops into the marked spot as we say it */
+    return fin($('check'), R.kind === 'frame' ? 'Yes! Five and ' + FR.word(R.n - 5) + ' more. ' + FR.Word(R.n) + '!' : 'Yes! One more than ' + FR.word(R.n - 1) + ' is ' + FR.word(R.n) + '.'); }
   FR.oops($('check')); R.misses++;
   if (R.kind === 'frame') { R.view.glow(true); await FR.say("Let's look. A full row is five, and " + FR.word(R.n - 5) + ' more.'); R.view.glow(false); }
   else { R.view.set(R.n); spotOff(R.view); NK.sound.pop(); await FR.say("Let's look. " + FR.Word(R.n - 1) + ', then one more: ' + FR.word(R.n) + '.'); }

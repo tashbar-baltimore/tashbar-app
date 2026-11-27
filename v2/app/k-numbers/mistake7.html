@@ -97,6 +97,7 @@ function play(F, i) {
         await F.say('Shmuel had four. I take one away. Three!'); await F.handTo($('check')); await F.handTap(); F.handHide(); await F.say('Now you!'); }
       O.setApples(0, R.base, 'row'); O.setApples(1, R.put, 'row');
       await ari(CHIP(1), 'Ari tried to give Shmuel one more than Dovid.'); O.glowSide(0, true); await F.say('Dovid has ' + F.word(R.base) + '. Oops! Shmuel has ' + F.word(R.put) + '.'); O.glowSide(0, false); open();
+      await F.say(R.put < R.base + 1 ? 'Tap the apple button to add one.' : 'Tap an apple to take one away.');   /* say how, before he tries (round 3 review) */
       await F.say('Fix Shmuel\'s apples. Then tap the check.', { repeat: 'One more than ' + F.word(R.base) + '. Fix it, then check.' });
     } else {
       if (i === 2) {   /* the first time: watch me check a number */
