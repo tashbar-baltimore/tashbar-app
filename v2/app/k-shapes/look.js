@@ -169,7 +169,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* calm (K-CLARITY-RULES 10, Esti 2026-11-27 "the backgrounds are so busy"): the painted mat under the shapes is paler and less colourful,
      so the shapes on it are the strongest thing he sees */
   function calmMat(t) { if (!CALM) return t; try { const im = t.image, cv = document.createElement('canvas'); cv.width = im.width; cv.height = im.height; const cx = cv.getContext('2d');
-    cx.filter = 'saturate(0.45)'; cx.drawImage(im, 0, 0); cx.filter = 'none'; cx.fillStyle = 'rgba(255,255,255,0.5)'; cx.fillRect(0, 0, cv.width, cv.height); return new THREE.CanvasTexture(cv); } catch (e) { return t; } }
+    cx.filter = 'saturate(0.45) blur(' + Math.max(4, Math.round(im.width / 80)) + 'px)'; cx.drawImage(im, 0, 0);   /* soft, like the painting behind: petals, lanterns and leaves on the mat melt into colour, so only the pieces are sharp (review 2) */ cx.filter = 'none'; cx.fillStyle = 'rgba(255,255,255,0.5)'; cx.fillRect(0, 0, cv.width, cv.height); return new THREE.CanvasTexture(cv); } catch (e) { return t; } }
   function stage(draw, o = {}) {
     const t = paint(1024, 1024, (x, w) => draw(x, w / 2, w));
     const top = new PM({ color: '#FFFFFF', map: t, roughness: o.rough || 0.9, sheen: o.sheen == null ? 0.8 : o.sheen, sheenColor: new THREE.Color(o.sheenColor || '#FFF6E8'), sheenRoughness: 0.7, clearcoat: o.coat || 0, clearcoatRoughness: 0.3 });

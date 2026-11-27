@@ -167,3 +167,4 @@ More fixes (review-shapes takeover session, Units 7-12):
 | Pattern games: the glow on the part that repeats was a pale yellow disc on a light floor; it hardly showed (16) | A clear gold glow, a little bigger |
 | Pattern train, Fix the pattern (phone): the engine was off the left edge and the gold "next" spot touched the right edge (9) | Phone camera centred on the whole train and a little further back; it steps back more for an 8-car train |
 | Pattern train, Fix the pattern (Chromebook): Mendy stood in front of the engine, covering it; steam puffs drifted across the sky (9, 10) | Mendy stands to the right of the train's end; no steam in the calm look |
+| Shape party 1-3, Graduation (and every world): the painted mat under the pieces had sharp petals and round striped lanterns (like extra balls) (8, 10) | In the calm look every mat is softly blurred like the painting behind: soft colour, only the pieces are sharp |
