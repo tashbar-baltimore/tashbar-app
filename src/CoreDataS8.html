@@ -242,13 +242,15 @@
       { t: 'Each year the Nile *flooded*. It left rich *mud*.', act: Y[1] },
       { t: '*Teach it back*: how did one river feed a desert?', m: { type: 'scene', e: '🗣️', t: 'Tell your chavrusa three steps. The Nile flooded. It left rich mud. Farms grew along the river. Then add the Pharaohs, their pyramids and hieroglyphics.' } }];
     Y[2].pairs = [['Pharaoh','a king of Mitzrayim'],['pyramid','a giant stone tomb for a Pharaoh'],['hieroglyphics','writing made of picture-signs']];
-    b.play = [D[1], Y[2], Y[4]];
+    var strip = { type: 'sort', bins: ['Green strip by the Nile', 'Far desert'], cards: [['wheat and barley grow', 0], ['most towns and cities', 0], ['dry sand, no farms', 1], ['papyrus plants grow', 0], ['almost nobody lives here', 1]],
+      q: 'Where does each one belong: by the Nile, or far away?', say: 'By the Nile, or far out in the desert?', how: 'Water and mud make things grow. Far from the river, nothing grows.' };
+    b.play = [D[1], strip, Y[2], Y[4]];
     b.done = 'You know how the *Nile* kept Mitzrayim alive, and the land of the *Pharaohs*!';
     delete b.do; delete b.your; delete b.ready; })(BITE['SS.HIST.L07.01']);
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
     b.hook = { kind: 'predict', pic: '🏛️', t: 'A king destroys the Beis Hamikdash. The Jews are taken far away.', q: 'What happens next?',
       o: ['They stay there forever', 'A new king lets them go home', 'They forget the Torah'],
-      pay: 'Persia beat Bavel. King *Koresh* let the Jews go *home*.' };
+      pay: 'As the navi promised, after *70 years* Koresh let them go *home*.' };
     b.learn = [
       { t: 'Read Yoni’s two cards. Meet *Bavel* and *Persia*.', act: D[0] },
       { t: 'Find *Bavel*, between two great *rivers*.', act: D[1] },
@@ -282,18 +284,22 @@
       pay: 'Rome *destroyed* the second Beis Hamikdash and took its *Menorah*.' };
     b.learn = [
       { t: 'Read Gavriel’s card about *Rome*.', act: D[0] },
-      { t: 'Four kingdoms, in order. *Rome* came *last*.', act: Y[0] },
+      { t: '*Titus* of Rome destroyed the *second* one: the *Churban*.', act: D[1] },
       { who: { q: 'What is the *Kosel*?', o: [['Eli', 'A wall of the Beis Hamikdash itself'], ['Yoni', 'Part of the wall around Har Habayis']], a: 1,
         why: 'The *Beis Hamikdash* was destroyed. Part of the outer *wall* stands.' } },
       { t: 'Find the *Har Habayis*, then the *Kosel*.', act: Y[4] },
       { t: '*Teach it back*: all four kingdoms, ending with Rome.', m: { type: 'scene', e: '🗣️', t: 'Tell your chavrusa: Bavel, Persia, Greece, Rome. Titus of Rome destroyed the second Beis Hamikdash. That is the Churban. We mourn it on Tisha B’Av.' } }];
-    b.play = [D[1], Y[2], Y[1], Y[3]];
+    var mix = { type: 'sort', mis: true, q: 'Mistake Detective: Shimon wrote these. True, or a mix-up?', bins: ['True', 'Mix-up'],
+      cards: [['Titus was a Roman general', 0], ['Bavel destroyed the second Beis Hamikdash', 1], ['Rome was the last of the four kingdoms', 0], ['Rome was the first of the four kingdoms', 1], ['We mourn the Churban on Purim', 1]],
+      say: 'Shimon mixed some up! True, or a mix-up?', how: 'Bavel, Persia, Greece, Rome. Rome came last and destroyed the second one.' };
+    Y[0].say = 'Four kingdoms, in order. Tap each one on the map.';
+    b.play = [mix, Y[0], Y[2], Y[3]];
     b.done = 'You know how *Rome* destroyed the second Beis Hamikdash, and why we still *mourn*!';
     delete b.do; delete b.your; delete b.ready; })(BITE['SS.HIST.L07.04']);
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
-    b.hook = { kind: 'wouldyou', pic: '📜', t: 'Your rebbi teaches only by mouth. Nothing is written down.', q: 'How would you keep it safe?',
+    b.hook = { kind: 'wouldyou', pic: '📜', t: 'Picture Torah taught only by mouth. Nothing is written down.', q: 'How would you keep it safe?',
       o: ['Write it down', 'Say it louder', 'Hope nobody forgets'],
-      pay: 'It stayed by mouth until hard times. Then *Rebbi* wrote the *Mishnah*.' };
+      pay: 'Writing it was not done, until hard times came. Then *Rebbi* wrote the *Mishnah*.' };
     b.learn = [
       { t: 'Read Benny’s notebook about the *Oral Torah*.', act: D[0] },
       { t: 'Build the *chain*, from Har Sinai to today.', act: D[1] },
@@ -303,7 +309,10 @@
       { t: '*Teach it back*: who did what, link by link?', m: { type: 'scene', e: '🗣️', t: 'Tell your chavrusa. It went by mouth from Har Sinai. After the Churban, learning went on at Yavneh. Rebbi wrote the Mishnah. In Bavel, in Sura and Pumbedisa, the Amoraim made the Gemara.' } }];
     Y[0].cards = Y[0].cards.map(function (c) { return c[0] === 'written in Eretz Yisroel' ? ['written down by Rebbi', 0] : c; });
     Y[1].pairs = [['Rebbi','Rabbi Yehuda HaNasi'],['Sura and Pumbedisa','yeshiva cities in Bavel'],['Torah She’baal Peh','the Oral Torah'],['Tannaim','the sages of the Mishnah']];
-    b.play = [Y[2], Y[0], Y[3], Y[4]];
+    var sages = { type: 'sort', mis: true, q: 'Mistake Detective: Shimon mixed up the sages. Put each one back.', bins: ['Tannaim', 'Amoraim'],
+      cards: [['taught the Mishnah', 0], ['Rabbi Yehuda HaNasi was one of them', 0], ['explained the Mishnah in the Gemara', 1], ['learned in Sura and Pumbedisa', 1]],
+      say: 'Shimon mixed them up! Tannaim or Amoraim?', how: 'The Tannaim taught the Mishnah. The Amoraim came after and explained it.' };
+    b.play = [sages, Y[3], Y[0], Y[4]];
     b.done = 'You know how the sages guarded the *Oral Torah*, from the *Mishnah* to the *Gemara*!';
     delete b.do; delete b.your; delete b.ready; })(BITE['SS.JHIST.L07.01']);
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
