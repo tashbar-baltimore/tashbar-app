@@ -124,3 +124,27 @@ Esti: "i think the pictures should be painted and not 3d theyre very hard to see
 My choice: every word picture (cat, sock, kite ... 87 in Units 1–4) becomes a painted picture standing in the 3D world, facing the boy.
 The worlds, Mendy and his friends stay as they are. Ordered as B1 (art-requests.md). Until the pictures arrive, the 3D ones stay, so nothing breaks.
 When they arrive: the change goes in from Unit 1 up, so every unit's look link shows painted pictures.
+
+## Unit 4 — g o c k ck e
+Letter worlds (each its own twist): g grapes pop out around the round part and a vine curls down, a little bird visits; o an octopus body goes around, then its arms wave out; c a cat curled up asleep (head at the start, tail at the end, sleepy bubbles); k a tall kite pole with two ribbons and a kite flying from the top; e an egg, with a chick that hatches next to it.
+Sounds (made by the device, no "uh"): g soft voiced back sound, k/c/ck breathy back sound, short o, short e.
+
+Game kinds (none repeats Units 1–3 or Review A without a new twist):
+| Game | Kind |
+|---|---|
+| opener | five gifts: tap a gift, the picture comes out, tap its letter; the chant "Kick, kick, ck at the end" |
+| g-hunt | dig and decide: tap a mound to dig, then basket (g) or back in the hole |
+| o-hunt | draw a line from the octopus; its arm reaches out and hugs the o pictures |
+| c-hunt | peek-a-boo bushes: tap the c pictures while they peek up (timing) |
+| k-hunt | swipe the k kites up into the sky |
+| ksort | three houses c / k / ck: look at the word, take it to its house |
+| e-hunt | mystery eggs: ears only; put the e eggs in the nest and they hatch |
+| slide, slide2 | word slide; ck is one tile (one sound) |
+| fixit | Eli builds words with blocks: high five, or tap the wrong block and drag in the right one |
+| review | rhyme, first sound, read a word, count sounds (sock = 3: ck is one sound) |
+| check | sound → letter (g o e k), read 5 words among look-alikes, one k-sound house |
+
+Choices I made (small, Esti can change):
+- k in the meet says "This one says the same sound as the cat letter!"; in the opener, tapping c for kite is praised, not marked wrong.
+- In the sort, c and k words are sorted by looking at the first letter (the rule for which one comes later in Grade 1).
+- Eli again for "fix it" (Tzvi's pictures were not kept; he can come in a later unit).
