@@ -1068,7 +1068,7 @@ export function startGame(cfg) {
   function setPosRound(R) {
     if (posPiece) { scene.remove(posPiece.g); shapes.splice(shapes.indexOf(posPiece), 1); posPiece = null; }
     if (!BR) BR = makeBridge();
-    posPiece = makeShape('q' + (++pzN), R.k, R.color || '#F2A900', 0, R.s || 0.6); posPiece.slot = 0; posPiece.home.copy(tall ? new THREE.Vector3(0, 0.92, 3.3) : new THREE.Vector3(-2.9, 0.92, 2.3));   /* in from the corner, so it is round and easy to see (not stretched at the screen edge) */ posPiece.g.position.copy(posPiece.home);
+    posPiece = makeShape('q' + (++pzN), R.k, R.color || '#F2A900', 0, R.s || 0.6); posPiece.slot = 0; posPiece.home.copy(cfg.posHome ? new THREE.Vector3(...cfg.posHome[tall ? 'tall' : 'wide']) : tall ? new THREE.Vector3(0, 0.92, 3.3) : new THREE.Vector3(-2.9, 0.92, 2.3));   /* cfg.posHome: where the piece waits, chosen for the game's camera */   /* in from the corner, so it is round and easy to see (not stretched at the screen edge) */ posPiece.g.position.copy(posPiece.home);
     posWant = R.where; posPiece.box = 0;
   }
   function placeAt(o, z) { const p = zoneWorld(z); return moveTo(o, new THREE.Vector3(p.x, p.y + 0.05, p.z), 420, 0.5).then(() => { o.busy = true; o.g.rotation.set(0, 0, 0); pop(); }); }
@@ -1553,7 +1553,7 @@ export function startGame(cfg) {
     }
     else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; if (p[4]) d.turn.rotation.x = p[4]; }   /* p[4]: tipped toward him, so an upside-down cone shows its round base (it never looks like a flat triangle) */
     let side = null;   /* M.beside: a second piece next to it, to compare with (big and small: a ball is only big next to a small one) */
-    const SX = M.join ? (tall ? 1.75 : 2.15) : (tall ? 1.95 : 2.65);   /* where the second piece stands (join: the spot Build shapes was tuned for) */
+    const SX = M.join ? (tall ? 1.35 : 2.15) : (tall ? 1.95 : 2.65);   /* where the second piece stands (join: the spot Build shapes was tuned for) */
     if (M.beside) { side = makeShape('mk2', M.beside[0], M.beside[3] || '#FF7A1A', M.beside[1], 1); side.slot = null; side.busy = true; side.g.position.set(SX, 2.05, 0.9); side.g.scale.setScalar(0.01); }
     const joinSide = (on) => side ? tween(700, k => { const e = ease(k); const sx = SX; side.g.position.x = on ? sx + (d.g.position.x - sx) * e : d.g.position.x + (sx - d.g.position.x) * e; }).then(() => { pop(); return wait(on ? 600 : 0); }) : null;   /* M.join: the second piece slides onto the first (two triangles make a square), and back */
     const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
