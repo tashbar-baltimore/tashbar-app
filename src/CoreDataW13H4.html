@@ -80,9 +80,9 @@
     {t:'write', q:'Your turn. Fix this: “Dovid has a a red kite. He flew it the park.” Read it out loud first.', min:0, checks:['I cut the extra word.','I added the missing word.','I read it out loud again.'], h:'Point to each word as you read. Which word is there twice? Which word is missing?'}
   ],
   check:[
-    {q:'“Naftali fixed the clock with Zeidy’s tiny.” What is wrong?', o:['a missing word','an extra word','nothing'], h:'Read it out loud. Tiny what?'},
+    {q:'“Naftali went shul with Zeidy.” What is wrong?', o:['a missing word','an extra word','nothing'], h:'Read it out loud. Went where? Went ___ shul?'},
     {q:'“The club club meets on Sunday.” What is wrong?', o:['an extra word','a missing word','nothing'], h:'Point to each word as you read it out loud.'},
-    {q:'“Mr. Benhamou gave us fresh pita.” What is wrong?', o:['nothing: it is just right','a missing word','an extra word'], h:'Read it out loud, word by word. Does it sound just right?'}
+    {q:'“Mr. Benhamou gave us fresh pita.” What is wrong?', o:['nothing','a missing word','an extra word'], h:'Read it out loud, word by word. Does it sound just right?'}
   ],
   re:[
     {how:'A new way: be a reader who has never seen your writing. Read only what is on the page, not what you meant.', q:'The page says: “We ate the.” What does a reader hear?', o:['We ate the.','We ate the cholent.','We ate.']},
@@ -259,14 +259,14 @@
       pay: 'The word *to* is missing! Reading *out loud* catches it.' },
     learn: [
       { t: '*Point* to each word. Read it *out loud*.', act: X(D[1], { say: 'Pick the *missing word*.', how: 'Read it *out loud*. Which word makes it sound right?' }) },
-      { t: 'A word there *two times*? That is an *extra word*.', act: X(Y[0], { say: 'Tap the sentence with an *extra word*.', how: 'Read each one out loud. Listen for a word said *twice*.' }) },
+      { t: 'A word there *two times*? That is an *extra word*.', act: X(Y[0], { p: ['The birds ate the seeds.', 'Naftali filled the feeder.', 'Dovid saw the the birds.', 'Avi counted six birds.'], say: 'Tap the sentence with an *extra word*.', how: 'Read each one out loud. Listen for a word said *twice*.' }) },
       { t: 'Point and read with me, *slow* and *out loud*.', m: { type: 'move', t: 'Point to each word, one at a time, and read out loud.' },
         act: X(Y[3], { extra: ['the'], say: 'Fix “We fed the the ducks by the river.” Build it right.', how: 'Read it out loud. Is a word there *twice*?' }) },
       { who: { q: 'Dovid wrote: “We went the park.” Who read it *like a reader*?', o: [['Dovid', 'I read it fast. Looks fine!'], ['Naftali', 'I read it out loud. “to” is missing!']], a: 1,
         why: 'Fast reading *skips* missing words. Read *out loud*.' } }],
     play: [
       X(D[0], { say: '*Missing* word, *extra* word, or just right?', how: 'Read it out loud, *pointing* to each word. Some are just right.' }),
-      X(Y[1], { say: 'Match each sentence to its *fixed* sentence.', how: 'Read both out loud. Which one sounds *just right*?' }),
+      X(Y[1], { pairs: [['Dovid sat the bench.', 'add: on'], ['We went the park.', 'add: to'], ['Chaim has a a book.', 'take out: a']], say: 'Match each sentence to its *fix*.', how: 'Read it out loud. Is a word *missing*, or there *twice*?' }),
       { type: 'evidence', q: 'Which sentence is missing a word?', p: ['Chaim read a new book.', 'Avi drew the map.', 'Dovid sat the bench.', 'We ate fresh pita.'], a: 2,
         look: 'a sentence that sounds wrong out loud', say: 'Fix it! Tap the sentence with a *missing word*.', how: 'Point and read each one *out loud*.' },
       { type: 'tiles', w: ['We hung', 'the sign', 'on the door.'], extra: ['the door.'],
