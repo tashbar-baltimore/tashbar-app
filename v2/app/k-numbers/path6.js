@@ -125,7 +125,7 @@ export function mount(host, opt) {
     const k = new THREE.Group(); scene.add(k); const card = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.05, visible: false, toneMapped: false }));
     k.add(card); const sh = new THREE.Mesh(new THREE.CircleGeometry(0.45, 24), new THREE.MeshBasicMaterial({ color: '#4A6A30', transparent: true, opacity: 0.25, depthWrite: false }));
     sh.rotation.x = -Math.PI / 2; sh.scale.set(1, 0.55, 1); sh.renderOrder = 1; scene.add(sh);
-    const H = 2.0, cache = {}; let cur = '';
+    const H = 2.5, cache = {}; let cur = '';   /* the boys are big enough to find at once (K clarity 9) */
     const api = { n: opt.from, z: z, obj: k, shadow: sh, y: TOP,
       pose(p) { cur = p; (cache[p] = cache[p] || new Promise(res => loader.load('art/' + who + '-' + p + '.png', t => { t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, () => res(null)))).then(t => {
         if (cur !== p) return; if (!t) { if (p !== 'idle') api.pose('idle'); return; } card.material.map = t; card.material.visible = true; card.material.needsUpdate = true; card.scale.set(H * t.image.width / t.image.height, H, 1); card.position.y = H / 2; }); },
@@ -169,7 +169,7 @@ export function mount(host, opt) {
     const [b0, b1] = band(), bc = (b0 + b1) / 2, bh = Math.max(120, b1 - b0), fullH = Hh + 2 * Math.abs(Hh / 2 - bc);
     let dist = span * fullH / (2 * W * Math.tan(THREE.MathUtils.degToRad(V / 2)));
     /* the stones and the boys (2 units tall) must fit the band's height too */
-    const needH = 3.6, perPx = 2 * Math.tan(THREE.MathUtils.degToRad(V / 2)) / fullH; dist = Math.max(dist, needH / (perPx * bh));
+    const needH = 4.1, perPx = 2 * Math.tan(THREE.MathUtils.degToRad(V / 2)) / fullH; dist = Math.max(dist, needH / (perPx * bh));
     camera.aspect = W / fullH; camera.fov = V; camera.setViewOffset(W, fullH, 0, fullH / 2 - bc, W, Hh); camera.updateProjectionMatrix(); camera.userData.dist = dist; scene.fog.near = dist + 8; scene.fog.far = dist + 60;
     follow(api ? api.focusN : mid, true);
   }
@@ -239,8 +239,8 @@ export function mount(host, opt) {
 export function spinner(el) {
   el.classList.add('spin6');
   el.innerHTML = '<img src="art/spinner.png" alt="" class="wheelpic">' +   /* the painted wooden wheel (order N6): yellow right, blue left */
-    '<svg viewBox="0 0 200 200" class="wheel"><circle cx="146" cy="100" r="15" fill="#3B2A7A"/>' +
-    '<circle cx="54" cy="78" r="15" fill="#3B2A7A"/><circle cx="54" cy="122" r="15" fill="#3B2A7A"/></svg>' +
+    '<svg viewBox="0 0 200 200" class="wheel"><circle cx="146" cy="62" r="17" fill="#3B2A7A"/>' +   /* the dots sit off the arrow's line, so the arrow never covers them (K clarity 8) */
+    '<circle cx="56" cy="62" r="17" fill="#3B2A7A"/><circle cx="56" cy="138" r="17" fill="#3B2A7A"/></svg>' +
     '<img src="art/spinner-arrow.png" alt="" class="arrow">';   /* the painted wooden arrow (order N6-r1), its gold pin in the centre */
   let turn = 0; const arrow = el.querySelector('.arrow');
   return {
