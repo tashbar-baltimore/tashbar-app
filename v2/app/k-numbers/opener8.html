@@ -9,7 +9,7 @@
      The chant "Four is three and one!" (stand up). Kugel slices: the towel hides one, "there were four, I see three, one is hiding".
      He taps the big arrow to go on; on the last slide he shows how many are hiding on his fingers. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
-<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="kitchen8.css">
 <style>.bond{ position:relative; width:clamp(200px,30vh,250px); height:clamp(130px,19vh,160px); } .bond[hidden]{ display:none; } .bond svg.lines{ position:absolute; inset:0; width:100%; height:100%; }
 .bc{ position:absolute; width:clamp(64px,9.5vh,80px); height:clamp(64px,9.5vh,80px); border-radius:50%; background:#fff; border:5px solid #FF8A3D; display:flex; align-items:center; justify-content:center; padding:8px; } .bc svg{ height:100%; width:auto; }
 #bw{ left:50%; top:0; transform:translateX(-50%); border-color:#2FB5E8; } #b0{ left:0; bottom:0; } #b1{ right:0; bottom:0; }
@@ -47,7 +47,7 @@ FR.game({
   hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""><img src="art/dovid-happy.png" alt="" style="height:86%"></div>',
   endSay: () => "Great! Now let's find the hiding slices!",
   init() {
-    K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = FR.fingers(0, true); $('hp').appendChild(H.el);
+    K = mount($('world'), { band }); H = FR.fingers(0, true); $('hp').appendChild(H.el);
     $('bw').innerHTML = U5.num(5); $('b0').innerHTML = U5.num(4); $('b1').innerHTML = U5.num(1);
     $('go').addEventListener('click', () => { if (GAME.phase !== 'answer' || asking) return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; const d = done; done = null; d(true); });
     $('check').addEventListener('click', async () => { NK.unlock(); if (GAME.phase !== 'answer' || !asking) return; GAME.phase = 'busy';

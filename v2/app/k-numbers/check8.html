@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Show Me: Parts of five — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 8 MASTERY CHECK ("Show me"), from the map: "how many are hiding" for 3, 4 and 5, then fill two number bonds.
-     No counting help until a slip. Two stars or more passes the unit stop. -->
+     No counting help until a slip. Two stars or more passes the unit stop.
+     K clarity (review 2026-11-27): a slip gets help that shows how with what is on screen: lift the towel and count the hidden slices;
+     for a bond, count the full plate and count on onto the glowing plate of the empty circle. Part circles have their plate's colour. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
-<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="kitchen8.css">
 <style>
 .bond{ position:relative; width:clamp(200px,30vh,250px); height:clamp(130px,19vh,160px); } .bond svg.lines{ position:absolute; inset:0; width:100%; height:100%; }
 .bc{ position:absolute; width:clamp(64px,9.5vh,80px); height:clamp(64px,9.5vh,80px); border-radius:50%; background:#fff; border:5px solid #FF8A3D; display:flex; align-items:center; justify-content:center; padding:8px; }
@@ -44,16 +46,29 @@ function fin(el, line) { return FR.yes(el, line).then(() => { const d = done; do
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer' || R.kind !== 'hide') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true);
   if (H.count() === R.k) { await K.lift(); return fin($('check'), 'Yes! ' + FR.Word(R.k) + ' were hiding.'); }
-  FR.oops($('check')); R.misses++; await FR.say("Let's look. " + FR.Word(R.n) + ' in all. I see ' + FR.word(R.n - R.k) + '.'); await FR.say('Show ' + FR.word(R.n) + ' fingers. Fold down the ones you see.'); H.set(0); open();
+  FR.oops($('check')); R.misses++; await FR.say("Let's look under the towel."); await K.lift(); const hid = K.slices().slice(R.n - R.k);
+  await K.bumpAll(hid, i => FR.say(FR.Word(i + 1) + (i === hid.length - 1 ? '.' : ','), { noRepeat: true })); await FR.say(FR.Word(R.k) + ' were hiding.'); await K.hide(R.k);
+  H.set(0); await FR.say('Show me on your fingers.'); open();
 }
+/* kind help that shows how (K clarity rule 16, review 2026-11-27): count the full plate, then count on to the whole,
+   putting the slices on the plate of the empty circle one by one (it glows, and so does its circle). Then he tries again. */
+async function countOn() {
+  const n = R.a + R.b, empty = R.miss, full = 1 - empty, have = full ? R.b : R.a, col = empty ? 'blue' : 'peach', el = $(ID[empty]);
+  await FR.say("Let's look. " + FR.Word(n) + ' in all.'); K.glowPlate(full);
+  const pl = K.plates[full].children; await K.bumpAll(pl, i => FR.say(FR.Word(i + 1) + (i === pl.length - 1 ? '.' : ','), { noRepeat: true }));
+  K.glowPlate(empty); el.classList.add('hint'); await FR.say('Count on to ' + FR.word(n) + '.');
+  for (let j = 1; have + j <= n; j++) { K.platePut(empty, j); NK.sound.pop(); await FR.say(FR.Word(have + j) + (have + j === n ? '!' : ','), { noRepeat: true }); }
+  await FR.say('How many on the ' + col + ' plate?');
+}
+function calm() { ['bw', 'b0', 'b1'].forEach(id => $(id).classList.remove('hint')); K.glowPlate(-1); }
 function fill(id, n) { const c = $(id); c.classList.toggle('empty', n == null); c.innerHTML = n == null ? '' : U5.num(n); }
 async function drop(card, slot) {
-  if (GAME.phase !== 'answer' || R.kind !== 'bond' || slot.id !== ID[R.miss]) return; GAME.phase = 'busy'; FR.lock(true); const k = +card.dataset.n;
+  if (GAME.phase !== 'answer' || R.kind !== 'bond' || slot.id !== ID[R.miss]) return; GAME.phase = 'busy'; FR.lock(true); calm(); const k = +card.dataset.n;
   if (k === want()) { fill(slot.id, k); K.setPlates(R.a, R.b); return fin(slot, FR.Word(R.a) + ' and ' + FR.word(R.b) + ' make ' + FR.word(R.a + R.b) + '!'); }
   FR.oops(slot); R.misses++;
-  if (R.miss === 'w') { await FR.say("Let's look. Count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true })); }
-  else { const have = R.miss === 0 ? R.b : R.a; await FR.say("Let's look. Show " + FR.word(R.a + R.b) + ' fingers. Fold down ' + FR.word(have) + '.'); }
-  await FR.say('Try again.'); open();
+  if (R.miss === 'w') { $('bw').classList.add('hint'); await FR.say("Let's look. Count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true })); }
+  else await countOn();
+  open();
 }
 const PLAN = [{ kind: 'hide', n: 3, k: 2 }, { kind: 'hide', n: 4, k: 3 }, { kind: 'hide', n: 5, k: 2 }, { kind: 'bond', a: 3, b: 2, miss: 'w' }, { kind: 'bond', a: 1, b: 3, miss: 1 }];
 function play(F, i) {
@@ -70,7 +85,7 @@ FR.game({
   id: 'u8-check', title: 'Show Me!', rounds: 5,
   hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
   init() {
-    K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = FR.fingers(0, true); $('hp').appendChild(H.el); $('check').addEventListener('click', check);
+    K = mount($('world'), { band }); H = FR.fingers(0, true); $('hp').appendChild(H.el); $('check').addEventListener('click', check);
     $('src').innerHTML = [0, 1, 2, 3, 4, 5].map(n => '<div class="numcard" data-n="' + n + '">' + U5.num(n) + '</div>').join('');
     FR.dragTap({ sources: '#src .numcard', targets: '.bc.empty', drop });
   },
