@@ -5,7 +5,7 @@ const K = require('./kit.js');
 const isDone = pg => pg.evaluate(() => !!document.body.dataset.done);
 /* "Remember these?" (the spaced review before the stars): the made-up boy taps the letter he hears */
 async function review(pg) { const r = await pg.evaluate(() => window.__review && window.__review.ready ? window.__review : null).catch(() => null); if (!r) return false; await pg.mouse.click(...r.at[r.want]); await pg.waitForTimeout(400); return true; }
-async function loop(pg, step, ms = 420000) { const t = Date.now(); while (!(await isDone(pg))) { if (Date.now() - t > ms) throw new Error('did not finish in ' + Math.round(ms / 1000) + 's'); if (await review(pg)) continue; if (await pg.evaluate(() => !!document.body.dataset.review)) { await pg.waitForTimeout(150); continue; } const did = await step(); if (!did) await pg.waitForTimeout(200); } }
+async function loop(pg, step, ms = process.env.KK_SHOTS ? 900000 : 420000) {   /* picture runs draw the full look and play slower */ const t = Date.now(); while (!(await isDone(pg))) { if (Date.now() - t > ms) throw new Error('did not finish in ' + Math.round(ms / 1000) + 's'); if (await review(pg)) continue; if (await pg.evaluate(() => !!document.body.dataset.review)) { await pg.waitForTimeout(150); continue; } const did = await step(); if (!did) await pg.waitForTimeout(200); } }
 const P = {};
 P.story = async (pg, shot, log) => {
   await pg.waitForTimeout(1200); await shot('1-start'); let n = 0, wrong = false;
@@ -25,12 +25,12 @@ P.detective = async (pg, shot, log) => {
 P.feel = async (pg, shot, log) => {
   let wrong = false, n = 0;
   await loop(pg, async () => { const i = await K.info(pg); if (i && i.dot) { await pg.mouse.click(...i.dot); await pg.waitForTimeout(500); log.dotTapped = true; return true; }
-    if (i && (i.key === 'beis' || i.key === 'kaf')) log.sawBeis = true;
+    if (i && ['beis', 'kaf', 'tav', 'shin', 'sin'].includes(i.key)) log.sawBeis = true;
     if (!i || !i.active || i.next >= i.total) return false;
     if (!wrong) { wrong = true; await shot('1-start'); const vs = await pg.viewportSize(); await pg.mouse.click(30, vs.height - 90); await pg.waitForTimeout(800); log.wrongHandled = (await K.info(pg)).off > 0; await shot('3-wrong'); await pg.waitForTimeout(1200); return true; }
     const bs = i.beads; await pg.mouse.move(...bs[i.next]); await pg.mouse.down(); for (let j = i.next + 1; j < bs.length; j++) await pg.mouse.move(...bs[j], { steps: 3 }); await pg.mouse.up();
     if (++n === 2) await shot('2-middle'); await pg.waitForTimeout(400); return true; });
-  if (log.sawBeis) (log.dotTapped ? log.oks : log.fails).push('on Beis (or Kaf) he taps the dot');
+  if (log.sawBeis) (log.dotTapped ? log.oks : log.fails).push('on a letter with a dot (Beis, Kaf, Tav, Shin, Sin) he taps the dot');
 };
 P.hunt = async (pg, shot, log) => {
   await pg.waitForSelector('body[data-hunt-ready]', { timeout: 180000 }); await shot('1-start');
@@ -103,3 +103,4 @@ P.story4 = P.story;
 P.story5 = P.story;
 P.story6 = P.story;
 P.story7 = P.story;
+P.story8 = P.story;

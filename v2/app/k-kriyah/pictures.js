@@ -156,6 +156,24 @@ export function makePictures(E) {
       [-1, 1].forEach(s => { g.add(mesh(new THREE.SphereGeometry(.04, 8, 6), M(0xffffff), .38, .06, s * .08, false)); g.add(mesh(new THREE.SphereGeometry(.02, 8, 6), M(0x111111), .41, .06, s * .09, false));
         const an = mesh(new THREE.CylinderGeometry(.012, .012, .25, 4), bm, .36, .22, s * .06, false); an.rotation.z = -.5; g.add(an);
         [-.12, 0, .12].forEach(x => { const lg = mesh(new THREE.CylinderGeometry(.015, .015, .3, 4), bm, x, -.12, s * .14, false); lg.rotation.x = s * .7; g.add(lg); }); }); return g; },
+    /* ---- Unit 8 stand-ins until the painted pictures arrive (shoe, sock, teapot) ---- */
+    shoe() { const g = new THREE.Group(), red = M(0x2f6fe1, { roughness: .35, clearcoat: .8 }), wh = M(0xffffff, { roughness: .5 });   /* a blue sneaker */
+      const sole = mesh(E.rbox(1.15, .14, .48, .06), wh, 0, -.3, 0); g.add(sole);
+      const toe = mesh(new THREE.SphereGeometry(.3, 20, 14), red, .3, -.12, 0); toe.scale.set(1.25, .7, .78); g.add(toe);
+      const heel = mesh(new THREE.CapsuleGeometry(.22, .25, 8, 14), red, -.25, -.02, 0); heel.scale.set(1.15, 1, 1); g.add(heel);
+      g.add(mesh(new THREE.TorusGeometry(.17, .045, 8, 20), wh, -.22, .3, 0)).children.at(-1).rotation.x = Math.PI / 2;
+      const ank = mesh(new THREE.CylinderGeometry(.2, .24, .3, 18), red, -.25, .2, 0); g.add(ank);   /* the ankle, so it reads as a shoe */
+      for (let k = 0; k < 3; k++) { const l = mesh(new THREE.BoxGeometry(.04, .03, .34), wh, .02 + k * .12, .06 - k * .03, .03, false); l.rotation.z = -.4; g.add(l); } g.rotation.set(.25, -.6, 0); g.scale.setScalar(1.35); return g; },
+    sock() { const g = new THREE.Group(), c = M(0xe8322b, { roughness: .7 }), st = M(0xffffff, { roughness: .7 });   /* a striped sock */
+      g.add(mesh(new THREE.CapsuleGeometry(.17, .55, 8, 16), c, -.12, .12, 0)); const ft = mesh(new THREE.CapsuleGeometry(.17, .35, 8, 16), c, .12, -.33, 0); ft.rotation.z = Math.PI / 2; g.add(ft);
+      [.2, .38].forEach(y => g.add(mesh(new THREE.CylinderGeometry(.176, .176, .07, 20), st, -.12, y, 0))); g.add(mesh(new THREE.CylinderGeometry(.18, .18, .1, 20), st, -.12, .52, 0));
+      g.add(mesh(new THREE.SphereGeometry(.18, 16, 12), st, .42, -.33, 0)); g.add(mesh(new THREE.SphereGeometry(.17, 16, 12), st, -.14, -.34, 0));   /* a white toe and heel, so it reads as a sock (and not as a letter) */
+      g.rotation.set(.2, -.5, -.35); g.scale.setScalar(1.4); return g; },
+    teapot() { const g = new THREE.Group(), c = M(0x46c3ff, { roughness: .25, clearcoat: 1 }), wh = M(0xffffff, { roughness: .3 });   /* a round blue teapot */
+      const b = mesh(new THREE.SphereGeometry(.42, 24, 18), c, 0, -.08, 0); b.scale.set(1.15, .88, 1); g.add(b);
+      g.add(mesh(new THREE.CylinderGeometry(.2, .26, .1, 20), c, 0, .3, 0)); g.add(mesh(new THREE.SphereGeometry(.07, 12, 10), wh, 0, .4, 0));
+      const sp = mesh(new THREE.ConeGeometry(.08, .5, 14), c, .55, .05, 0); sp.rotation.z = -1.0; g.add(sp);
+      const h = mesh(new THREE.TorusGeometry(.2, .05, 10, 20, Math.PI * 1.2), c, -.48, -.05, 0); h.rotation.z = Math.PI * .4; g.add(h); g.scale.setScalar(1.35); return g; },
   };
   /* the painted pictures (art/obj), each a flat card that always faces the boy. Its width follows the picture's own shape. */
   const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp', () => fit.filter(x => x.f === f).forEach(x => x.go())); t.colorSpace = THREE.SRGBColorSpace; return t; })());
@@ -164,8 +182,11 @@ export function makePictures(E) {
     const go = () => { const im = t.image; if (im && im.width) sp.scale.set(h * Math.min(1.6, im.width / im.height), h, 1); }; sp.scale.set(h, h, 1); go(); fit.push({ f, go }); g.add(sp); g.userData.card = sp; return g; }; }
   return P;
 }
+const ordCache = {};
+const ordered = (THREE, f) => ordCache[f] || (ordCache[f] = new Promise(res => { try { new THREE.TextureLoader().load('art/obj/' + f + '.webp', t => { t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, () => res(null)); } catch (e) { res(null); } }));
 const texCache = {};   /* each picture loads once */
-/* the words (HoS 2026-11-26: the boys' first language is English, so a picture goes with the letter its ENGLISH name starts with:
+/* also: other letters with the same sound (Sin and Sav say s like Samech; Tav says t like Tes). A game never has two of them as stands.
+   the words (HoS 2026-11-26: the boys' first language is English, so a picture goes with the letter its ENGLISH name starts with:
    a dog goes to Daled). Each word: the letter of its first sound, the painted picture (file, if not the word itself) and what he hears.
    No English word starts with Ches's or Tzadik's sound, so they use words every boy knows: challah and tzitzis.
    Alef and Ayin are quiet: they have no picture. A letter with two sounds' worth of look-alikes is never asked by a word that could fit both. */
@@ -177,13 +198,13 @@ export const WORDS = {
   van: { letter: 'vov', say: 'A van!' }, vase: { letter: 'vov', say: 'A vase!' }, violin: { letter: 'vov', say: 'A violin!' },
   zebra: { letter: 'zayin', say: 'A zebra!' }, zipper: { letter: 'zayin', say: 'A zipper!' },
   challah: { letter: 'ches', model: 'challah', say: 'Challah!' },
-  turtle: { letter: 'tes', say: 'A turtle!' }, table: { letter: 'tes', say: 'A table!' }, tree: { letter: 'tes', say: 'A tree!' },
+  turtle: { letter: 'tes', also: ['tav'], say: 'A turtle!' }, table: { letter: 'tes', also: ['tav'], say: 'A table!' }, tree: { letter: 'tes', also: ['tav'], say: 'A tree!' },
   yoyo: { letter: 'yud', say: 'A yo-yo!' }, yarn: { letter: 'yud', say: 'Yarn!' },
   cat: { letter: 'kaf', say: 'A cat!' }, cake: { letter: 'kaf', say: 'A cake!' }, carrot: { letter: 'kaf', say: 'A carrot!' }, camel: { letter: 'kaf', say: 'A camel!' },
   lemon: { letter: 'lamed', say: 'A lemon!' }, lamb: { letter: 'lamed', say: 'A lamb!' }, ladder: { letter: 'lamed', say: 'A ladder!' },
   mountain: { letter: 'mem', say: 'A mountain!' }, monkey: { letter: 'mem', file: 'toymonkey', say: 'A monkey!' },
   nest: { letter: 'nun', say: 'A nest!' }, nut: { letter: 'nun', say: 'A nut!' },
-  sun: { letter: 'samech', say: 'The sun!' }, sock: { letter: 'samech', say: 'A sock!' },
+  sun: { letter: 'samech', also: ['sin', 'sav'], say: 'The sun!' }, sock: { letter: 'samech', also: ['sin', 'sav'], say: 'A sock!' },
   pear: { letter: 'pei', say: 'A pear!' }, peacock: { letter: 'pei', say: 'A peacock!' }, pomegranate: { letter: 'pei', say: 'A pomegranate!' },
   fish: { letter: 'fei', say: 'A fish!' }, flower: { letter: 'fei', say: 'A flower!' }, fly: { letter: 'fei', say: 'A fly!' },
   tzitzis: { letter: 'tzadik', say: 'Tzitzis!' },

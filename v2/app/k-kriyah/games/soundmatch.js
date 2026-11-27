@@ -2,25 +2,29 @@
    Skill: links each new letter with its sound. He hears the word, then drags the picture to a letter (or taps the letter).
    Show-then-try demo; a wrong answer is explained (he hears the word's first sound and the right letter glows); if he
    struggles, the right letter glows from the start of each picture. */
-import { makePictures, WORDS, WORD_NAME, hasPic } from '../pictures.js';
+import { makePictures, WORDS as ALLWORDS, WORD_NAME, hasPic } from '../pictures.js';
 export default function setup(E, { struggled, unit, game = {} }) {
   const { THREE, S } = E;
+  const want0 = game.stands || (game.reviewOf ? E.UNITS[game.reviewOf - 1].letters : unit.n > 1 ? ['beis', ...unit.letters] : unit.letters);
+  /* a word goes to whichever stand says its first sound (sun to Sin when Samech isn't a stand) */
+  const WORDS = Object.fromEntries(Object.entries(ALLWORDS).map(([w, v]) => [w, Object.assign({}, v, { letter: want0.includes(v.letter) ? v.letter : (v.also || []).find(k => want0.includes(k)) || v.letter })]));
   const PIC = makePictures(E), keys = (game.stands || (game.reviewOf ? E.UNITS[game.reviewOf - 1].letters : unit.n > 1 ? ['beis', ...unit.letters] : unit.letters)).filter(k => Object.keys(WORDS).some(w => WORDS[w].letter === k && hasPic(w)));   /* only letters with pictures (Chaf has none: few words start with it) */   /* in Alef-Beis order, right to left; as a review round, an earlier unit's letters */   /* one earlier letter comes back (Beis, with the bayis) */
+  const tallDot = keys.some(k => E.topDot(k));   /* Shin's dot reaches up: the picture card waits higher */
   const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter) && hasPic(w)).filter((w, i, a) => a.slice(0, i).filter(x => WORDS[x].letter === WORDS[w].letter).length < 2);   /* two pictures per letter */
   words.forEach(w => PIC[w]());   /* every picture starts loading now, so no card is ever blank */
   const kid = E.unitBoy(unit.n); E.scene.add(kid);   /* the unit's boy: Shloimy, then Ari */
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4 + l.userData.below;   /* Kuf's long leg stands above the stand */ p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
-  const PS = () => P ? (peds.length > 3 ? .74 : .62) : (peds.length > 3 ? .88 : 1);
+  const PS = () => P ? (peds.length > 3 ? .74 : tallDot ? .7 : .62) : (peds.length > 3 ? .88 : 1);   /* Shin's and Tav's dots: bigger on a phone, where there is room for three */
   const card = new THREE.Group(); E.scene.add(card); card.visible = false;
   const cardGlow = E.glowSprite('#ffffff', 2.6, .7); cardGlow.position.z = -.4; card.add(cardGlow);
   const cardBack = E.mesh(E.rbox(2.05, 2.05, .08, .2), E.M(0xffe9b8, { roughness: .4, clearcoat: .6, depthWrite: false }), 0, 0, -.35, false); cardBack.renderOrder = -1; card.add(cardBack);   /* a white card behind the picture, so it never melts into the painting */
   const hint = E.glowSprite('#fff7b0', 2.8, 0); E.scene.add(hint);
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
-  E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? 1.12 : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
-    if (p) { if (peds.length > 3) { E.camBase.set(0, 5.6, 11.5); E.camTarget.set(0, 1.3, .8); cardHome.set(0, 3.6, -3.4); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
-    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.15, 2.2);   /* higher when a raised Kuf stands below */   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
+  E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? 1.12 : tallDot ? 1.5 : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
+    if (p) { if (peds.length > 3) { E.camBase.set(0, 5.6, 11.5); E.camTarget.set(0, 1.3, .8); cardHome.set(0, 3.6, -3.4); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, tallDot ? 4.15 : 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
+    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, tallDot ? 3.4 : 3.15, 2.2);   /* higher when a raised Kuf stands below */   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
     const m = peds.length, two = P && m > 3; peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -3.0 : 2.6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
@@ -45,7 +49,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
 
   async function showCard(w) {
     word = w; if (pic) card.remove(pic); pic = PIC[w](); card.add(pic); const wide = pic.userData.card && pic.userData.card.scale.x > 2.2; pic.scale.setScalar(wide ? .78 : 1); cardBack.scale.x = pic.userData.card ? Math.max(1, (pic.userData.card.scale.x * (wide ? .78 : 1) + .35) / 2.05) : 1;   /* a wide picture (the cloud) is a little smaller, on a wider card */   /* a wide picture (the cloud) gets a wider card */ card.position.copy(cardHome); card.rotation.set(0, 0, 0); missed = false;
-    await E.popIn(card, (P ? .9 : .85) * (keys.includes('kuf') && !P ? .7 : keys.includes('kuf') ? .78 : 1)); busy = false;   /* a little smaller above a raised Kuf */
+    await E.popIn(card, (P ? .9 : .85) * (keys.includes('kuf') && !P ? .7 : keys.includes('kuf') ? .78 : tallDot ? .76 : 1));   /* smaller above Shin's dot too */ busy = false;   /* a little smaller above a raised Kuf */
     await E.say(WORDS[w].say);
   }
   async function back() { const p0 = card.position.clone(); busy = true; await E.tween(400, k => card.position.lerpVectors(p0, cardHome, k), E.ease.out); busy = false; }
@@ -73,6 +77,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
     E.setProgress(deck.length, 0);
     if (game.review) { const nm = keys.map(k => E.LETTERS[k].name); await E.say('Remember ' + nm.slice(0, -1).join(', ') + ' and ' + nm[nm.length - 1] + '? Let\u2019s match again!'); }   /* names the letters on the stands */
     await E.say('Each picture goes to the letter it starts with.');
+    for (const k of keys) { const from = [...new Set(Object.keys(ALLWORDS).filter(w => (ALLWORDS[w].also || []).includes(k) && WORDS[w].letter === k).map(w => ALLWORDS[w].letter))];   /* a word he matched before to another letter */
+      for (const o of from) await E.say([E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd), ', just like ' + E.LETTERS[o].name + '!']); }
     await showCard(first);
     const k0 = WORDS[first].letter, pd0 = peds.find(pd => pd.userData.key === k0);
     await E.say(E.quiet(k0) ? 'Watch me. ' + WORD_NAME[first] + ' starts with ' + E.LETTERS[k0].name + '.' : ['Watch me. ' + WORD_NAME[first] + ' starts with', S(E.LETTERS[k0].snd), '.']);
@@ -92,6 +98,14 @@ export default function setup(E, { struggled, unit, game = {} }) {
     if (keys.includes('kuf') && !keys.includes('kaf') && unit.letters.includes('kuf')) {   /* Kaf is never a stand beside Kuf (both say k): it joins Kuf at the end */
       const pd = peds.find(x => x.userData.key === 'kuf'), c = E.letter('kaf', 1.2); if (P && peds.length > 3) c.position.set(pd.position.x * .05, .35, pd.position.z + 1.3); else c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 3.0 : 2.6) * pd.scale.x, .6));   /* two rows on a phone: Kaf low in the middle, in front of the stands */ c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);
       await E.say('This is Kaf.'); E.hop(c, .3); E.hop(L.kuf, .3); await E.say('Kuf sounds just like Kaf!'); }
+    if (keys.includes('shin') && unit.letters.includes('sin') && !keys.includes('sin')) {   /* Sin has no picture: right on its stand, Shin's dot hops to the left (nothing new stands above it, so no dot can look like a nekudah) */
+      const l = L.shin, d = l.userData.dot, from = d.position.clone(), to = l.userData.dotAt('sin'); await E.say('Watch Shin\u2019s dot!'); E.sfx.whoosh();
+      await E.tween(900, q => { d.position.lerpVectors(from, to, q); d.position.y += Math.sin(q * Math.PI) * .5; }); d.position.copy(to); l.userData.key = 'sin'; l.userData.dotHome = to.clone(); E.sparkle(E.worldPos(d), 14, .8); E.hop(l, .3);
+      await E.say('The dot hopped to the left. Now it is Sin!'); await E.say(['Sin says', S(E.LETTERS.sin.snd), ', just like Samech.']); }
+    if (keys.includes('tav') && unit.letters.includes('sav')) {   /* Sav has no picture: Tav's dot floats away on its stand */
+      const l = L.tav, d = l.userData.dot, d0 = d.position.clone(); await E.say('Now watch Tav\u2019s dot!'); E.sfx.whoosh();
+      await E.tween(800, q => { d.position.set(d0.x + q * .8, d0.y + q * 1.6, d0.z + q * .4); d.scale.setScalar(Math.max(.01, 1 - q)); }); d.visible = false; d.position.copy(d0); d.scale.setScalar(1); l.userData.key = 'sav'; E.hop(l, .3);
+      await E.say('No dot. Now it is Sav!'); await E.say(['Sav says', S(E.LETTERS.sav.snd), keys.includes('sin') ? ', just like Sin.' : '.']); E.hop(L.sin || l, .3); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Great matching! Every picture found its letter.' : null };
   };

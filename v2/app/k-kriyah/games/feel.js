@@ -8,6 +8,8 @@ export default function setup(E, { unit }) {
   const BEIS = [[[78, 612], [84, 515], [200, 500], [320, 500], [425, 478], [446, 380], [446, 275], [446, 170], [430, 91], [320, 91], [205, 91], [90, 91]]];
   const KAF = [[[75, 610], [70, 505], [200, 500], [330, 495], [440, 470], [475, 380], [475, 280], [470, 180], [430, 95], [320, 88], [200, 88], [70, 88]]];
   const PEI = [[[75, 610], [70, 505], [200, 500], [330, 495], [440, 470], [500, 380], [500, 280], [490, 180], [430, 95], [320, 88], [200, 88], [70, 88]], [[150, 390], [110, 330], [200, 310], [235, 280]]];
+  const SHIN = [[[130, 510], [120, 400], [112, 300], [118, 200], [150, 95], [260, 90], [380, 90], [480, 95], [560, 130], [620, 210], [665, 310], [690, 410], [640, 510]], [[380, 510], [400, 390], [375, 290], [350, 200], [335, 110]]];
+  const TAV = [[[90, 610], [95, 505], [230, 500], [380, 500], [500, 490], [525, 380], [525, 250], [525, 120], [525, 20]], [[170, 390], [165, 300], [170, 220], [140, 120], [60, 80]]];
   const PATHS = {
     alef: [[[78, 600], [112, 500], [160, 440], [240, 370], [330, 290], [436, 197], [515, 85]],
       [[424, 612], [458, 520], [520, 468], [505, 360], [470, 280]],
@@ -30,6 +32,7 @@ export default function setup(E, { unit }) {
     reish: [[[60, 620], [50, 540], [150, 505], [300, 505], [390, 480], [410, 380], [410, 250], [410, 120], [410, 20]]],
     kuf: [[[60, 620], [50, 540], [150, 505], [300, 505], [440, 495], [500, 420], [500, 330], [470, 260], [380, 200], [300, 150], [290, 60]], [[110, 320], [100, 200], [100, 50], [100, -100], [100, -180]]],
     tzadik: [[[80, 620], [60, 540], [130, 460], [160, 380], [290, 290], [420, 220], [460, 150], [440, 60], [300, 90], [150, 90], [30, 90]], [[480, 620], [470, 540], [520, 470], [480, 390], [420, 330]]],
+    shin: SHIN, sin: SHIN, tav: TAV, sav: TAV,
     hei: [[[75, 615], [80, 510], [200, 500], [340, 500], [505, 495], [507, 380], [500, 250], [494, 120], [490, 25]], [[102, 300], [100, 190], [100, 80], [100, 20]]],
   };
   const REVIEW = { 2: 'beis', 3: 'hei', 5: 'gimmel', 7: 'daled' }[unit.n];   /* Unit 6 already has four letters; Daled comes back beside Reish */   /* one earlier letter comes back: Beis in Unit 2, Hei (Ches's look-alike) in Unit 3, Gimmel in Unit 5, Daled in Unit 7 */
@@ -51,7 +54,8 @@ export default function setup(E, { unit }) {
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); holder.position.set(0, 1.95, .8); boy.position.set(-3.6, 0, 1.4); boy.scale.setScalar(1); }
     done.forEach(l => layoutDone(l, ROW.indexOf(l.userData.key)));
   });
-  function layoutDone(l, i) { if (E.portrait) l.position.set(1.4 - i * .62, .42, 2.0); else l.position.set(4.2 - i * .95, .4, 1.2);   /* low and to the right of the big letter, all on screen (reviewer) */ l.scale.setScalar(E.portrait ? .24 : .27); }
+  const wideRow = ROW.some(k => E.topDot(k));   /* Shin and Sin are wide and carry a dot on top: a little smaller, a little further apart */
+  function layoutDone(l, i) { if (E.portrait) l.position.set((wideRow ? 1.25 : 1.4) - i * (wideRow ? .66 : .62), .42, 2.0); else l.position.set(4.2 - i * .95, .4, 1.2);   /* low and to the right of the big letter, all on screen (reviewer) */ l.scale.setScalar(E.portrait ? (wideRow ? .21 : .27) : (wideRow ? .3 : .34)); }
   E.onFrame(t => {
     if (cur && !cur.userData.spin) cur.rotation.y = Math.sin(t * .7) * .12;
     if (target.parent) { const b = beads.find(x => !x.userData.lit); target.visible = !!b && active; if (b) { target.position.copy(b.position); target.scale.setScalar(.16 * H / 3.2 * (1 + Math.sin(t * 7) * .15)); } }
@@ -94,8 +98,8 @@ export default function setup(E, { unit }) {
   async function oneLetter(key, first) {
     cur = E.letter(key, H); cur.position.set(0, 0, 0); holder.add(cur); makeBeads(key); glow.material.opacity = .12;
     E.sfx.whoosh(); await E.popIn(cur, 1, 500);
-    const showsPlace = ['vov', 'zayin', 'hei', 'ches', 'lamed', 'mem', 'nun', 'reish', 'kuf', 'tzadik', ...(unit.n >= 7 ? ['daled'] : [])].includes(key) && E.pointAt(arrow, cur, key, H, key === 'daled' && unit.n >= 7 ? E.featFor('daled', 'reish') : undefined);   /* from Unit 7, Daled's corner */   /* the place the line talks about */
-    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : key === 'kaf' ? 'This is Kaf. It has a dot. Feel it!' : key === 'chaf' ? 'This is Chaf. No dot. Feel it!' : key === 'yud' ? 'This is Yud, the little one. Feel it!' : key === 'lamed' ? 'This is Lamed, the tall one. Feel it!' : key === 'reish' ? 'This is Reish. It is round on top. Feel it!' : key === 'kuf' ? 'This is Kuf. Feel its long leg!' : key === 'tzadik' ? 'This is Tzadik. Feel its little arm up on top!' : key === 'daled' && unit.n >= 7 ? 'This is Daled. It has a corner. Feel it!' : key === 'samech' ? 'This is Samech. It is round. Feel it!' : key === 'ayin' ? 'This is Ayin. Feel its two arms!' : key === 'pei' ? 'This is Pei. Feel its little tongue and its dot!' : key === 'fei' ? 'This is Fei. No dot. Feel it!' : key === 'mem' ? 'This is Mem. Feel the opening at the bottom!' : key === 'nun' ? 'This is Nun. Feel its flat bottom!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
+    const showsPlace = ['vov', 'zayin', 'hei', 'ches', 'lamed', 'mem', 'nun', 'reish', 'kuf', 'tzadik', 'tav', ...(unit.n >= 7 ? ['daled'] : [])].includes(key) && E.pointAt(arrow, cur, key, H, key === 'daled' && unit.n >= 7 ? E.featFor('daled', 'reish') : undefined);   /* from Unit 7, Daled's corner */   /* the place the line talks about */
+    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : key === 'kaf' ? 'This is Kaf. It has a dot. Feel it!' : key === 'chaf' ? 'This is Chaf. No dot. Feel it!' : key === 'yud' ? 'This is Yud, the little one. Feel it!' : key === 'lamed' ? 'This is Lamed, the tall one. Feel it!' : key === 'reish' ? 'This is Reish. It is round on top. Feel it!' : key === 'kuf' ? 'This is Kuf. Feel its long leg!' : key === 'tzadik' ? 'This is Tzadik. Feel its little arm up on top!' : key === 'daled' && unit.n >= 7 ? 'This is Daled. It has a corner. Feel it!' : key === 'samech' ? 'This is Samech. It is round. Feel it!' : key === 'ayin' ? 'This is Ayin. Feel its two arms!' : key === 'shin' ? 'This is Shin. Its dot is on the right. Feel it!' : key === 'sin' ? 'This is Sin. Its dot is on the left. Feel it!' : key === 'tav' ? 'This is Tav. It has a foot and a dot. Feel it!' : key === 'sav' ? 'This is Sav. No dot. Feel it!' : key === 'pei' ? 'This is Pei. Feel its little tongue and its dot!' : key === 'fei' ? 'This is Fei. No dot. Feel it!' : key === 'mem' ? 'This is Mem. Feel the opening at the bottom!' : key === 'nun' ? 'This is Nun. Feel its flat bottom!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
     if (showsPlace) { await E.wait(500); arrow.visible = false; }
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');
@@ -110,12 +114,12 @@ export default function setup(E, { unit }) {
     /* when part of the road is done but some is left, the ring shows him where (once per stretch) */
     const iv = setInterval(() => { if (!active || down || performance.now() - lastUp < 2500 * E.F) return; const n = beads.filter(x => x.userData.lit).length; if (n > said && n < beads.length) { said = n; E.say('More road to feel! Find the orange ring.'); const [x, y] = beadScreen(next); E.hand.at(x, y, true); setTimeout(() => E.hand.hide(), 1400 * E.F); } }, 400);
     await fin; clearInterval(iv); active = false; delete document.body.dataset.feelReady;
-    if (E.LETTERS[key].dagesh) {   /* Beis (and Kaf): he touches the dot too, so the dagesh is something he feels */
+    if (E.hasDot ? E.hasDot(key) : E.LETTERS[key].dagesh) {   /* Beis (and Kaf, Tav, and Shin's and Sin's top dot): he touches the dot too, so the dot is something he feels */
       const dot = cur.userData.dot; const pad = new THREE.Mesh(new THREE.SphereGeometry(.55, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); dot.add(pad);   /* a tap area much bigger than the dot */
       const ring = E.noticeRing(.35); ring.position.copy(dot.position); ring.visible = true; cur.add(ring);
       await E.say(unit.n > 1 ? 'Now tap the dot!' : 'Now tap Mendy\u2019s dot!'); dotTarget = dot; document.body.dataset.dotReady = 1;
       await E.waitTap([dot]); delete document.body.dataset.dotReady; dotTarget = null; ring.visible = false; cur.remove(ring); E.sfx.chime(); E.sparkle(E.worldPos(dot), 22, 1); E.hop(dot, .25, 400);
-      await E.say(unit.n > 1 ? E.LETTERS[key].name + ' has a dot!' : 'Someone is home!');
+      await E.say(E.LETTERS[key].top ? E.LETTERS[key].name + '\u2019s dot is on the ' + E.LETTERS[key].top + '!' : unit.n > 1 ? E.LETTERS[key].name + ' has a dot!' : 'Someone is home!');
     }
     /* the whole letter glows, spins, and says its name and sound */
     cur.userData.spin = true; E.joy(E.worldPos(cur).add(new THREE.Vector3(0, 0, .8)), true); boy.mood('cheer');
