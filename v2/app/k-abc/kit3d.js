@@ -534,7 +534,7 @@ audio.vowel = (f1, f2, f3, ms = 420, pitch = 225) => { const c = audio.ctx(); if
 audio.iN = 0; audio.nN = 0; audio.dN = 0;
 audio.vowelI = (ms = 380) => { audio.iN++; return audio.vowel(400, 2000, 2600, ms); };   /* short i, as in "it" */
 audio.nasalN = (ms = 750) => { audio.nN++; const c = audio.ctx(); if (c && !FAST) { const t0 = c.currentTime, d = ms / 1000, o = c.createOscillator(), lp = c.createBiquadFilter(), pk = c.createBiquadFilter(), g = c.createGain();
-    o.type = 'sawtooth'; o.frequency.value = 165; lp.type = 'lowpass'; lp.frequency.value = 650; lp.Q.value = 4; pk.type = 'peaking'; pk.frequency.value = 1300; pk.gain.value = 8; pk.Q.value = 3;
+    o.type = 'sawtooth'; o.frequency.value = 210; lp.type = 'lowpass'; lp.frequency.value = 1100; lp.Q.value = 2; pk.type = 'peaking'; pk.frequency.value = 1900; pk.gain.value = 14; pk.Q.value = 4;   /* brighter and higher than the closed-lip mmm, so the two are easy to tell apart */
     o.connect(lp); lp.connect(pk); pk.connect(g); g.connect(c.destination); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.42, t0 + 0.06); g.gain.setValueAtTime(0.42, t0 + d - 0.1); g.gain.linearRampToValueAtTime(0, t0 + d); o.start(t0); o.stop(t0 + d + 0.05); }
   return new Promise(r => setTimeout(r, FAST ? 0 : ms + 60)); };   /* the pure "nnn" (tongue up, a hum through the nose) */
 audio.dee = () => { audio.dN++; const c = audio.ctx(); if (c && !FAST) { const t0 = c.currentTime, o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter(); o.type = 'sawtooth'; o.frequency.value = 130; lp.type = 'lowpass'; lp.frequency.value = 400;

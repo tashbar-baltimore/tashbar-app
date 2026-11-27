@@ -25,7 +25,7 @@ const cap = w => w[0].toUpperCase() + w.slice(1);
 const snd = ch => echo(() => audio.letter(ch));
 export const KEYWORD = { s: 'snake', a: 'apple', t: 'tree', p: 'pinwheel', i: 'inchworm', n: 'net', m: 'mountain', d: 'drum' };
 export const START = { s: ['sun', 'sock', 'soup', 'snake'], a: ['apple', 'ant', 'alligator', 'anchor'], t: ['top', 'tent', 'turtle', 'teapot'], p: ['pot', 'pear', 'pan', 'pumpkin', 'penguin'],
-  i: ['igloo', 'inchworm', 'ink'], n: ['nest', 'nut', 'noodles'], m: ['moon', 'mop', 'mug', 'mouse', 'milk', 'mitten', 'mailbox'], d: ['dog', 'duck', 'door', 'donut', 'dish'] };
+  i: ['igloo', 'inchworm', 'iguana'], n: ['nest', 'net', 'noodles'], m: ['moon', 'mop', 'mug', 'mouse', 'milk', 'mitten', 'mailbox'], d: ['dog', 'duck', 'door', 'donut', 'dish'] };
 export const OTHER = ['cat', 'bee', 'fish', 'hat', 'goat', 'bell', 'car', 'sun', 'sock', 'pear', 'top'];
 export const others = ch => OTHER.filter(w => !START[ch].includes(w) && WORDS[w] && WORDS[w].say[0] !== ch);
 function clearItems(G) { return Promise.all(G.items.slice().map(i => i.remove())); }
@@ -54,7 +54,7 @@ export function meet(ch) {
       await G.say(L.action); G.mendy.wiggle(); W.cheer(); await audio.letter(ch); await G.wait(400);
       /* round 1: tap the picture-letter to hear it */
       G.newRound(); const target = W.hero || tapHit(G, (() => { const o = new THREE.Object3D(); o.position.set(0, 2.75, 0.2); S.scene.add(o); return o; })(), 1.6);
-      await G.say('Tap the ' + ({ t: 'woodpecker', a: 'apple vine' }[ch] || KEYWORD[ch]) + ' to hear its sound.');
+      await G.say('Tap the ' + ({ t: 'woodpecker', a: 'apple vine', n: 'butterfly', m: 'moon' }[ch] || KEYWORD[ch]) + ' to hear its sound.');
       await new Promise(res => { G.expect({ kind: 'tap', at: () => target.getWorldPosition(new THREE.Vector3()) }); G.A.wrongMove = null; G.tap(target, () => { W.poke(); audio.letter(ch); G.taps = []; res(); }); });
       await G.right(V(0, 3.2, 0.6), 'You heard it!');
       /* rounds 2-3: which picture starts with it? (two pictures stand on the grass) */
@@ -393,7 +393,7 @@ const check = {
       const targets = q.k === 'pic' ? G.items.filter(i => i.live) : objs;
       G.expect({ kind: 'tap', at: goal.obj || goal }); const wr = targets.find(t => t !== goal && !(t.userData && t.userData.keep)); G.A.wrongMove = { kind: 'tap', at: wr.obj || wr };
       await new Promise(res => { let tries = 0; const hit = async t => { if (t === goal) { G.taps = []; G.items.forEach(i => i.onTap = () => {}); await G.right((goal.obj || goal).position); res(); }
-          else { tries++; await G.wrong(tries < 2 ? ['Look again.', ...ask] : ['This one!']); if (tries >= 2) { if (goal.glow) goal.glow(true); else goal.scale.multiplyScalar(1.2); } } };
+          else { tries++; if (q.ch) { try { const k = 'kabc-weak', w = JSON.parse(localStorage.getItem(k) || '[]'); if (!w.includes(q.ch)) w.push(q.ch); localStorage.setItem(k, JSON.stringify(w)); } catch (e) {} }   /* a missed sound comes back first in the review */ await G.wrong(tries < 2 ? ['Look again.', ...ask] : ['This one!']); if (tries >= 2) { if (goal.glow) goal.glow(true); else goal.scale.multiplyScalar(1.2); } } };
         if (q.k === 'pic') targets.forEach(it => it.onTap = () => { it.say(); hit(it); });
         else objs.forEach(o => { const h = tapHit(G, o, 0.85); if (q.k === 'word') h.scale.set(1.6, 0.8, 1); G.tap(h, () => { if (q.k === 'sound') audio.letter(o.userData.c); hit(o); }); }); });
       await clearItems(G); objs.forEach(o => S.scene.remove(o)); G.taps = [];

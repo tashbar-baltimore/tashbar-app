@@ -190,6 +190,14 @@ const B = {
       const b = new THREE.Mesh(new THREE.ShapeGeometry(sh, 8), toon(c, { side: THREE.DoubleSide, clear: 1, rough: .3 })); b.rotation.z = i / 6 * Math.PI * 2; wh.add(b); });
     wh.add(mesh(sph(0.06, 10), mat(0xFFD23F), 0, 0, 0.02)); G.userData.wheel = wh; return G; },
   /* ---- Unit 3 (i n m d) ---- */
+  iguana() { const G = new THREE.Group(), g = mat(0x3FC08A, { clear: .8, rough: .3 }); const b = mesh(sph(0.36), g, -0.05, -0.2, 0); b.scale.set(1.6, 0.6, 0.7); G.add(b); const h = mesh(sph(0.22), g, 0.55, -0.05, 0); h.scale.set(1.3, 0.8, 0.8); G.add(h);
+    for (let i = 0; i < 6; i++) { const sp = mesh(new THREE.ConeGeometry(0.05, 0.16, 6), mat(0x2E9A6A), -0.45 + i * 0.18, 0.05, 0); G.add(sp); }
+    const tail = mesh(new THREE.ConeGeometry(0.12, 1.0, 12), g, -0.95, -0.3, 0); tail.rotation.z = Math.PI / 2 + 0.2; G.add(tail); const e = eye(0.06, {}); e.position.set(0.65, 0.02, 0.15); G.add(e);
+    [[-0.3, 1], [-0.3, -1], [0.3, 1], [0.3, -1]].forEach(([x, s2]) => G.add(mesh(sph(0.08, 10), g, x, -0.42, s2 * 0.22))); G.rotation.y = -0.3; return G; },
+  net() { const G = new THREE.Group(); G.add(mesh(cyl(0.04, 0.04, 1.0, 10), mat(0xC98A4B), 0.35, -0.5, 0)); G.children[0].rotation.z = 0.6; const hoop = mesh(tor(0.38, 0.05), mat(0xFF7A45, { clear: 1 }), -0.1, 0.18, 0); G.add(hoop);
+    const bag = mesh(new THREE.ConeGeometry(0.36, 0.6, 20, 1, true), new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.45, side: THREE.DoubleSide }), -0.1, -0.15, -0.05); bag.rotation.x = Math.PI; G.add(bag); return G; },   /* a butterfly net */
+  mountain() { const G = new THREE.Group(); [[-0.3, 0.75, 0x8A7BD8], [0.35, 0.55, 0x7A9BE8]].forEach(([x, h, c]) => { const m = mesh(new THREE.ConeGeometry(0.5, h * 1.4, 24), mat(c, { rough: .6 }), x, -0.5 + h * 0.7, 0); G.add(m);
+      const cap = mesh(new THREE.ConeGeometry(0.18, h * 0.5, 24), mat(0xFFFFFF, { rough: .5 }), x, -0.5 + h * 1.4 - h * 0.25 + 0.02, 0); G.add(cap); }); return G; },
   igloo() { const G = new THREE.Group(), w = mat(0xF4FAFF, { rough: .35, clear: .6, sheen: .6, sheenC: 0xBFE6FF }); const d = mesh(new THREE.SphereGeometry(0.6, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), w, 0, -0.45, 0); G.add(d);
     for (let i = 1; i < 4; i++) { const r = mesh(tor(0.6 * Math.cos(i * 0.36), 0.012, Math.PI * 2), mat(0xBFD8F0), 0, -0.45 + 0.6 * Math.sin(i * 0.36), 0); r.rotation.x = Math.PI / 2; G.add(r); }
     const door = mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.5, 24, 1, false, 0, Math.PI), w, 0, -0.45, 0.5); door.rotation.set(Math.PI / 2, Math.PI / 2, 0); G.add(door);
@@ -244,6 +252,7 @@ export const WORDS = {
   faucet: { say: 'tap', beats: ['tap'] }, pinwheel: { say: 'pinwheel', beats: ['pin', 'wheel'] },
   igloo: { say: 'igloo', beats: ['ig', 'loo'] }, inchworm: { say: 'inchworm', beats: ['inch', 'worm'] }, ink: { say: 'ink', beats: ['ink'] },
   nest: { say: 'nest', beats: ['nest'] }, nut: { say: 'nut', beats: ['nut'] }, noodles: { say: 'noodles', beats: ['noo', 'dles'] },
+  iguana: { say: 'iguana', beats: ['i', 'gua', 'na'] }, net: { say: 'net', beats: ['net'] }, mountain: { say: 'mountain', beats: ['moun', 'tain'] },
   dog: { say: 'dog', beats: ['dog'] }, duck: { say: 'duck', beats: ['duck'] }, door: { say: 'door', beats: ['door'] }, donut: { say: 'donut', beats: ['do', 'nut'] },
   pin: { say: 'pin', beats: ['pin'] }, tin: { say: 'tin', beats: ['tin'] }, mat: { say: 'mat', beats: ['mat'] }, mailbox: { say: 'mailbox', beats: ['mail', 'box'] }
 };
