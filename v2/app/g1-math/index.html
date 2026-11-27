@@ -4,8 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Grade 1 Math</title>
-<!-- Grade 1 Math 2.0: for now the year starts at Unit 1, Orchard Hill. Later units are added here as they are built. -->
-<script>location.replace('unit1.html' + location.search);</script>
+<!-- Grade 1 Math 2.0: opens the unit the boy is up to. Unit 1 (Orchard Hill) until its review has 2 stars, then Unit 2 (the Harbor).
+     ?u=1 or ?u=2 opens that unit directly (for approvers looking at a look link). -->
+<script>
+(function () {
+  var q = location.search, u = (q.match(/[?&]u=(\d+)/) || [])[1], done1 = 0;
+  try { done1 = +localStorage.getItem('g1math:unit1.html:review') || 0; } catch (e) {}
+  var to = u ? 'unit' + u + '.html' : (done1 >= 2 ? 'unit2.html' : 'unit1.html');
+  location.replace(to + q.replace(/[?&]u=\d+/, '').replace(/^&/, '?'));
+})();
+</script>
 </head>
 <body></body>
 </html>
