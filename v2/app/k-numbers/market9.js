@@ -96,7 +96,7 @@ export function mount(host, opt) {
   let Wd = 1, Hh = 1, narrow = false; const DIR = new THREE.Vector3(0, 0.44, 0.9).normalize(), V = 34; let dist = 14;   /* low enough to see Bubby's kitchen behind */ const center = new THREE.Vector3(0, 0.3, 0.2);
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function layout() {
-    cup.position.set(narrow ? 1.6 : 2.9, 0, narrow ? -1.2 : -0.7);
+    cup.position.set(narrow ? 0.3 : 0.6, 0, -1.5);   /* Chromebook: back middle, between the boys, hiding no one */
     kids.forEach((k, i) => k.m.position.set(narrow ? (i ? 2.5 : -1.9) : (i ? 3.9 : -3.4), 0.35, -3.1));   /* Dovid stands clear of the basket */   /* standing behind the table, seen from the waist up */
   }
   function fit() {
