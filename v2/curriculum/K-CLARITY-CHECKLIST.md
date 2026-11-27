@@ -112,3 +112,15 @@ Find the triangles 4, Find the hexagons 4, What comes next? 4, Heavy and light 4
 | Phone: pattern cars 25 px and the engine cut off; the empty next spot faint; tray pieces cut off (9) | Pattern trains twice as big with a gold outline on the next spot; trays and Mendy fit |
 | Busy painted backdrops (butterflies, lollipops, planets) behind lessons; celebration bits floating among pieces (10) | Backdrops blurred into soft colour; celebration gone in under a second |
 | Count the corners: "same dots"; the "no corners" card looked like one dot | "Put it in the box with that many dots"; an empty card |
+
+**Round 2 (review-shapes takeover, 2026-11-27 evening).** First I looked at new full-look pictures myself and fixed what I saw (pictures in `v2/screens/k-clarity/<game>/`):
+| Problem I saw (rule) | Fix |
+|---|---|
+| Garden painting: four butterflies still showed through the blur; jungle painting: two flying parrots (10) | They are painted over with the sky right beside them before the blur (look.js FLYERS). The art file is unchanged. Test: every painting must be listed as checked, with its flyers painted out |
+| Boxes were decorated: a woven checked basket (sky), wheels, rivets, leaves, shells, bows (9, 10; Esti: "no basket") | Calm boxes are plain: one colour and a coloured rim, nothing on them |
+| Count the corners: the empty "no corners" card was a round disc, so it read as a circle label (11) | Every dot card is a rounded dice card; the empty one is clearly an empty card. Test checks it is not a disc |
+| Every circle (and oval) had a tiny notch on its right edge where its outline started: a "corner" on a circle (1) | Round shapes are drawn with no repeated start point; no notch |
+| Sort by color: flat yellow and red pieces looked pale yellow and salmon in the light (11) | Colour games use matte pieces: full red, blue, yellow |
+| Sort by color: every colour box had a white circle on it, which reads as "circles go here" (11) | Plain red, blue and yellow boxes; nothing on them |
+| Build with shapes: a wrong piece only made the hole flash for under a second (16) | The hole flashes slowly; then "Watch. This one goes here." and the hand moves from the piece to its own hole while that hole flashes |
+| Pattern games: the glow on the part that repeats went off the moment the song ended (16) | It stays a moment after the song |
