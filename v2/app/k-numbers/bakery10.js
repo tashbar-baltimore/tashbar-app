@@ -66,7 +66,7 @@ export function mount(host, opt) {
     const anchor = new THREE.Object3D(); anchor.position.copy(cupPos(i)); tin.add(anchor); cups.push({ anchor, cake: null }); }
 
   /* a soft cream cloth that covers the whole tin ("can you do it without looking?") */
-  const coverM = new THREE.MeshStandardMaterial({ color: '#F3E3C8', roughness: 0.95 }); tex('tablecloth.jpg', t => { coverM.map = rep(t, 2, 1); coverM.needsUpdate = true; });
+  const coverM = new THREE.MeshStandardMaterial({ color: '#F3E3C8', roughness: 0.95 }); tex(['cover-cloth.jpg', 'tablecloth.jpg'], t => { coverM.map = rep(t, 2, 1); coverM.needsUpdate = true; });
   const cover = new THREE.Mesh(new THREE.BoxGeometry(5 * GAP + 0.6, 0.9, 2 * ROW + 0.56), coverM); cover.position.y = 0.45; cover.castShadow = true; cover.visible = false; tin.add(cover);
   /* the plate of extra cupcakes (for "finish the ten") */
   const plate = new THREE.Group(); scene.add(plate); plate.visible = false;
