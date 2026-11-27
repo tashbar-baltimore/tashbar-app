@@ -22,6 +22,13 @@ if(GM.on) return; GM.on=true;
 GM.tab='home'; GM.view='path'; GM.world=''; GM.sig=''; GM.sid=''; GM.fetching=false;
 const WORLDS={MATH:['🧮','Math'],READ:['📖','Reading'],LANG:['✍️','Writing'],SCI:['🔬','Science'],SOC:['🌍','Social Studies'],COMP:['💻','Computing'],HEB:['🔤','Lashon Hakodesh'],ELEC:['🛠️','Electives'],VOC:['🧰','Trades'],LIFE:['💰','Life & Money'],
  'K:KRI':['🔤','Kriyah'],'K:CHU':['📜','Chumash'],'K:RAS':['✒️','Rashi'],'K:MSH':['📚','Mishnayos'],'K:GEM':['🏛️','Gemara']};
+/* Game Map art (HoS yes 2026-11-26, picture order SWEEP-1): painted world badges and the boss castle from the shared art library.
+   A subject with no badge keeps its emoji. Pictures are decoration (alt=""): every place they show already says the subject in words. */
+const GM_ART={MATH:'core-gm-world-math.webp',READ:'core-gm-world-reading.webp',LANG:'core-gm-world-writing.webp',SCI:'core-gm-world-science.webp',SOC:'core-gm-world-social-studies.webp',COMP:'core-gm-world-computing.webp','K:CHU':'core-gm-world-chumash.webp','K:GEM':'core-gm-world-gemara.webp'};
+/* the same address rule as the theme tune: the site serves the library at /pics/; anywhere else, the live site */
+function gmPic(f){ const b=/\.web\.app$|\.firebaseapp\.com$|^localhost$|^127\./.test(location.hostname)?'/pics/':'https:'+'/'+'/tashbar-learning-live.web.app/pics/'; return '<img class="gm-art" src="'+b+f+'" alt="" draggable="false">'; }
+function gmIco(k,emo){ return GM_ART[k]?gmPic(GM_ART[k]):emo; }
+const GM_CASTLE=()=>gmPic('core-gm-castle.webp');
 const ORDER=['MATH','K:CHU','READ','K:GEM','K:MSH','K:RAS','K:KRI','LANG','HEB','SCI','SOC','LIFE','COMP','ELEC','VOC'];
 const RANKS=[[0,'🥉','Bronze'],[10,'🥈','Silver'],[30,'🥇','Gold'],[60,'💎','Platinum'],[100,'💠','Diamond'],[160,'👑','Legend']];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -486,7 +493,7 @@ body.gm-lite #gm .gm-chest{background:#FFFBEB!important;border-color:#FCD34D!imp
 body.gm-lite #gm .gm-pg,body.gm-lite #gm .gm-pg h1{color:#1E1B4B!important;text-shadow:none!important;font-style:normal!important}
 body.gm-lite #gm .gm-why{color:#3F3A7A!important;font-size:18px!important}
 body.gm-lite #gm .gm-shelf{border-color:#E6E2F7!important;box-shadow:0 6px 0 #E6E2F7!important;min-height:92px!important;font-size:23px!important}
-body.gm-lite #gm .gm-shelf i{font-size:44px!important}
+body.gm-lite #gm .gm-shelf i{font-size:44px!important}#gm .gm-art{display:inline-block;width:1.15em;height:1.15em;object-fit:contain;vertical-align:middle;pointer-events:none;-webkit-user-drag:none;border-radius:50%}#gm .gm-art[src*="core-gm-castle"]{border-radius:22%}#gm .gm-n .gm-art{width:74%;height:74%}#gm .gm-shelf i .gm-art{width:1em;height:1em}#gm .gm-unit b .gm-art{width:1.4em;height:1.4em;margin:-.2em .1em 0 0}.ic .gm-art{display:inline-block;width:1em;height:1em;object-fit:contain;vertical-align:middle;border-radius:22%}
 body.gm-lite #gm .gm-quiet{color:#3F3A7A!important}
 @media (max-width:760px){body:has(#bbx-door).gm-home #gm .gm-hi{padding-top:46px}}
 body.gm-home #tlmenu,body.gm-lite #tlmenu{--cm-dot:#1E1B4B!important}
@@ -583,7 +590,7 @@ function hudOld(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
 function subjectsHTML(ws){ const cur=GM.world;
- return `<div class="gm-pg"><h1>Change subject</h1><p class="gm-why">Pick the subject you want on your map.</p></div><div class="gm-shelves">${ws.map(w=>`<button type="button" class="gm-shelf${w.k===cur?' on':''}" data-gm="world" data-k="${esc(w.k)}"><i>${w.icon}</i><span>${esc(w.name)}<small>${w.cleared||!w.now?'✓ All cleared':lcOf(w)?'🎫 Level check first':'Level '+w.level+(w.k===cur?' · on your map now':'')}</small></span><em>›</em></button>`).join('')}</div>
+ return `<div class="gm-pg"><h1>Change subject</h1><p class="gm-why">Pick the subject you want on your map.</p></div><div class="gm-shelves">${ws.map(w=>`<button type="button" class="gm-shelf${w.k===cur?' on':''}" data-gm="world" data-k="${esc(w.k)}"><i>${gmIco(w.k,w.icon)}</i><span>${esc(w.name)}<small>${w.cleared||!w.now?'✓ All cleared':lcOf(w)?'🎫 Level check first':'Level '+w.level+(w.k===cur?' · on your map now':'')}</small></span><em>›</em></button>`).join('')}</div>
 `; }
 /* ===== HOME (HoS 2026-11-23: "how the student sees his day and his things ... much simpler ... what he needs to be doing should be clear
    ... the canteen should be clear ... his work should be clear in front of him ... not so many vague options ... big ... equal size ...
@@ -745,7 +752,7 @@ function pathHTML(w){
  const lc=lcOf(w);
  ids.forEach((id,i)=>{ const p=pts[i], isBoss=(hidden+i)===w.ids.length-1, isNow=id===w.now, isDone=mast(id), isKnown=known(id), n=nm(id);
   const cls=(isBoss?'boss ':'')+(isNow?'now':isDone||isKnown?'d':'u')+(isKnown?' kn':'')+(isNow&&lc?' lc':'');
-  const ico=isNow?(lc?'🎫':isBoss?'🏰':w.icon):isDone?'✓':isKnown?'⏭':(isBoss?'🏰':'🔒');
+  const ico=isNow?(lc?'🎫':isBoss?GM_CASTLE():gmIco(w.k,w.icon)):isDone?'✓':isKnown?'⏭':(isBoss?GM_CASTLE():'🔒');
   const lab=isNow?(lc?'🎫 LEVEL CHECK FIRST · '+lc.min+' MIN':isBoss?'BOSS LEVEL · YOU ARE HERE':'▶ YOU ARE HERE'):isKnown?'⏭ YOU KNOW IT · SKIPPED':isBoss?'BOSS · UNIT FINISH 🏁':isDone?'CLEARED':'LOCKED';
   const big=isNow||isBoss, num=hidden+i+1;
   h+=`<span class="gm-num ${isNow?'now':isDone||isKnown?'d':'u'}" style="left:${p[0]}%;top:${p[1]-(big?(isNow?54:46):33)}px" aria-hidden="true"><b style="animation-delay:-${(i*0.7).toFixed(1)}s">${num}</b></span>`;
@@ -863,7 +870,7 @@ function winMoment(newIds,ws,rankBefore){ const id=newIds[newIds.length-1], w=ws
  else if(w.now){ const left=w.ids.length-w.ids.indexOf(w.now)-1; loot.push(['🔓 Unlocked',nm(w.now)[0]]); loot.push(['🏰 Boss',left?left+' level'+(left===1?'':'s')+' away!':'NEXT! Get ready!']); }
  const nx=w.now||(pick(ws)||{}).now;
  const paid=earnedFor(id); if(paid>0) loot.splice(1,0,['💵 You earned','+'+usd(paid)]); else watchPay(id);
- celebrate({kicker:n[0],title:isBoss?'Boss<br>beaten!':up?'Rank<br>up!':'Level<br>clear!',icon:isBoss?'🏰':up?R.r[1]:'🏆',stars:true,loot,
+ celebrate({kicker:n[0],title:isBoss?'Boss<br>beaten!':up?'Rank<br>up!':'Level<br>clear!',icon:isBoss?GM_CASTLE():up?R.r[1]:'🏆',stars:true,loot,
   go:nx?['▶ Next level',()=>play(nx)]:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }],alt:nx?['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); }]:null});
  return true; }
 /* ===== MY MONEY (HoS 2026-11-20: "the money is very important ... buy things in the store ... in the canteen. That should be a big deal";
@@ -1019,7 +1026,7 @@ function sync(){
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
  const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>
- <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${pill('subj',cur.name+' · Level '+cur.level)}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?pill('prog',l+' to the boss'):pill('now','Boss now!'); })():pill('prog','Cleared')}</div>${GM.view==='tree'?(window.TLK?TLK.quiet('Back to my path','data-gm="tree"','tlk-small'):'<button type="button" class="gm-chg" data-gm="tree">Back to my path</button>'):ws.length>1?(window.TLK?TLK.quiet('Change subject','data-gmnav="subjects"','tlk-small'):'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>'):''}</div>
+ <div class="gm-unit"><div><b>${gmIco(cur.k,cur.icon)} ${esc(cur.unitName)}</b><small>${pill('subj',cur.name+' · Level '+cur.level)}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?pill('prog',l+' to the boss'):pill('now','Boss now!'); })():pill('prog','Cleared')}</div>${GM.view==='tree'?(window.TLK?TLK.quiet('Back to my path','data-gm="tree"','tlk-small'):'<button type="button" class="gm-chg" data-gm="tree">Back to my path</button>'):ws.length>1?(window.TLK?TLK.quiet('Change subject','data-gmnav="subjects"','tlk-small'):'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>'):''}</div>
  ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play gm-play2" data-gm="play" data-id="${esc(cur.now)}">▶ Play<small>${esc(nm(cur.now)[0])}</small></button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
