@@ -57,12 +57,13 @@ export function mount(host, opt) {
 
   /* ---------------- cookies: round golden butter cookies on a plate; eaten ones go into a little box ---------------- */
   const cookieM = new THREE.MeshStandardMaterial({ color: '#E2A85A', roughness: 0.75 }); tex('cookie-top.jpg', t => { cookieM.map = t; cookieM.color.set('#FFFFFF'); cookieM.needsUpdate = true; });
-  const cookieG = new THREE.CylinderGeometry(0.34, 0.34, 0.12, 32);
+  const cookieG = new THREE.CylinderGeometry(0.34, 0.36, 0.12, 32), domeG = new THREE.SphereGeometry(0.34, 28, 10, 0, Math.PI * 2, 0, Math.PI / 2), chipG = new THREE.SphereGeometry(0.05, 10, 6), chipM = new THREE.MeshStandardMaterial({ color: '#5A3418', roughness: 0.6 });
+  function cookie() { const c = new THREE.Mesh(cookieG, cookieM); c.castShadow = true; const d = new THREE.Mesh(domeG, cookieM); d.scale.y = 0.22; d.position.y = 0.06; c.add(d);
+    [[0.12, 0.08], [-0.14, 0.1], [0.02, -0.15], [-0.05, 0.0], [0.18, -0.1]].forEach(([x, z]) => { const h = new THREE.Mesh(chipG, chipM); h.position.set(x, 0.12, z); h.scale.y = 0.6; c.add(h); }); return c; }   /* a round butter cookie with chocolate chips */
   const plate = new THREE.Group(); scene.add(plate);
   { const p = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.1, 0.08, 40), new THREE.MeshStandardMaterial({ color: '#BFDDFF', roughness: 0.3 })); p.position.y = 0.04; p.castShadow = true; plate.add(p); }
   const box = new THREE.Group(); scene.add(box);
-  { const bm = new THREE.MeshStandardMaterial({ color: '#F4D8A8', roughness: 0.8 }); const b = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.5, 1.0), bm); b.position.y = 0.25; b.castShadow = true; box.add(b);
-    const inside = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.02, 0.85), new THREE.MeshStandardMaterial({ color: '#C9A673' })); inside.position.y = 0.48; box.add(inside); }
+  { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.85, 0.08, 40), new THREE.MeshStandardMaterial({ color: '#FFD3B0', roughness: 0.3 })); p.position.y = 0.04; p.castShadow = true; box.add(p); }   /* a small peach plate: the eaten ones */
   let cookies = [], gone = [];
   const cookiePos = (j, n) => new THREE.Vector3(((j % 3) - (Math.min(3, n - Math.floor(j / 3) * 3) - 1) / 2) * 0.8, 0.14, n > 3 ? (j < 3 ? -0.38 : 0.38) : 0);
 
@@ -91,11 +92,11 @@ export function mount(host, opt) {
   function layout() {
     chairs.forEach((c, i) => { c.position.x = seatX(i, gapX()); c.scale.setScalar(narrow ? 0.8 : 1); });
     boys.forEach((b, i) => { if (i < inRoom) { const s = seat(i); b.m.position.x = s.x; b.m.position.z = s.z; } }); door.position.set(doorX(), 1.2, -1.2);
-    plate.position.set(narrow ? 0.4 : 0.6, 0, 0.5); box.position.set(narrow ? -1.7 : -2.6, 0, 0.6); box.scale.setScalar(narrow ? 0.8 : 1);
+    plate.position.set(narrow ? 0.6 : 0.9, 0, 0.5); box.position.set(narrow ? -1.45 : -1.9, 0, 0.6); box.scale.setScalar(narrow ? 0.75 : 1);
   }
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false); narrow = Wd < Hh * 0.95 || Wd < 700; layout();
-    const boysView = mode === 'boys', span = narrow ? 5.6 : boysView ? 8.2 : 9.4, needH = narrow ? (boysView ? 4.4 : 5.6) : boysView ? 3.9 : 5.0; center.z = boysView ? -2.0 : -0.4; center.y = boysView ? 0.7 : 0.4;   /* the boy games look at the boys */
+    const boysView = mode === 'boys', span = narrow ? (boysView ? 5.6 : 4.6) : boysView ? 8.2 : 7.0, needH = narrow ? (boysView ? 4.4 : 3.6) : boysView ? 3.9 : 3.2; center.z = boysView ? -2.0 : 0.4; center.y = boysView ? 0.7 : 0.2;   /* the boy games look at the boys */
     const [b0, b1] = band(), bc = (b0 + b1) / 2, bh = Math.max(120, b1 - b0), fullH = Hh + 2 * Math.abs(Hh / 2 - bc), tn = Math.tan(THREE.MathUtils.degToRad(V / 2));
     dist = Math.max(span * fullH / (2 * Wd * tn), needH * fullH / (2 * tn * bh));
     camera.aspect = Wd / fullH; camera.fov = V; camera.setViewOffset(Wd, fullH, 0, fullH / 2 - bc, Wd, Hh); camera.updateProjectionMatrix();
@@ -126,11 +127,11 @@ export function mount(host, opt) {
     boyMeshes: () => boys.slice(0, inRoom).map(b => b.m),
     /* cookies on the plate; tapping one takes it away into the box */
     setCookies(n) { cookies.concat(gone).forEach(c => c.parent && c.parent.remove(c)); cookies = []; gone = []; plate.visible = true;
-      for (let j = 0; j < n; j++) { const c = new THREE.Mesh(cookieG, cookieM); c.castShadow = true; c.position.copy(cookiePos(j, n)); plate.add(c); cookies.push(c); } api.cookieSpots(false); },
+      for (let j = 0; j < n; j++) { const c = cookie(); c.position.copy(cookiePos(j, n)); plate.add(c); cookies.push(c); } api.cookieSpots(false); },
     cookieSpots(on) { for (let j = 0; j < 6; j++) unspot('ck' + j); if (on) cookies.forEach((c, j) => { c.userData.id = 'ck' + j; spot('ck' + j, c, { r: 0.36, y: 0.05, min: 64 }); }); },
     cookies: () => cookies.slice(), eaten: () => gone.length, boxCookies: () => gone.slice(),
     async takeCookie(id) { const c = cookies.find(x => x.userData.id === id) || cookies[cookies.length - 1]; if (!c) return false; unspot(c.userData.id); cookies.splice(cookies.indexOf(c), 1); NK.sound.pop();
-      c.getWorldPosition(wp); const from = wp.clone(); plate.remove(c); scene.add(c); const to = box.position.clone().add(new THREE.Vector3(((gone.length % 3) - 1) * 0.38, 0.55, gone.length > 2 ? 0.2 : -0.2)); gone.push(c);
+      c.getWorldPosition(wp); const from = wp.clone(); plate.remove(c); scene.add(c); const to = box.position.clone().add(new THREE.Vector3(((gone.length % 2) - 0.5) * 0.7, 0.14 + Math.floor(gone.length / 2) * 0.13, 0)); gone.push(c);
       await tween(450, e => { c.position.lerpVectors(from, to, e); c.position.y += Math.sin(Math.PI * e) * 0.8; }); c.position.copy(to); return true; },
     async putBack() { while (gone.length) { const c = gone.pop(); scene.remove(c); plate.add(c); cookies.push(c); } cookies.forEach((c, j) => c.position.copy(cookiePos(j, cookies.length))); },
     showPlate(on) { plate.visible = on; box.visible = on; if (!on) api.cookieSpots(false); mode = on ? 'cookies' : 'boys'; fit(); },
