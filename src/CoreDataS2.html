@@ -136,7 +136,8 @@
   /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
      The book, proof and best activities are kept; the learn cards build the picture as he reads. Words in *stars* are key words.
      Hooks in this set: predict, guess, mystery, wouldyou (never the same kind twice). */
-  function nf(b, f) { if (!b || !b.do || !b.your) return; f(b, b.do, b.your); delete b.do; delete b.your; delete b.ready; }
+  function nf(b, f) { if (!b || !b.do || !b.your) return; f(b, b.do, b.your); delete b.do; delete b.your; delete b.ready;
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; }); }
   nf(BITE['SCI.LAND.L06.01'], function (b, D, Y) {
     b.hook = { kind: 'predict', pic: '🏔️', t: 'Drop Mount Everest into the deepest part of the ocean.', q: 'What will happen?',
       o: ['It sinks out of sight', 'Its top sticks out', 'It fills the whole hole'],
