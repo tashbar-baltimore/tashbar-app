@@ -44,6 +44,8 @@ Soft-tint pills and boxes, no shadow, no outline, no hand pointer, never a butto
 
 Stat boxes: `TLK.box(kind, label, value)`, in the color of what they count.
 
+**Key words** (HoS 2026-11-27: "the words that matter should be highlighted and pop"): inside lesson text, a word written `*like this*` shows with a warm marker behind it (`TLK.keys(text)`, `TLK.key(word)`, class `tlk-key`). It is part of the text, never a pill or a button. 1–3 per line.
+
 ## Words (`TLK.WORDS`)
 Start · Next · ‹ Back · Check · Buy it / Not now · Send / Not now · Keep learning / Leave · Try again.
 Money is **"My money"**. The canteen's balance is always **"canteen money"** (never just "money"). **"Tashbar Bank"** stays wherever it names the bank itself (paychecks, deposit slips, the no-interest note, the $1,000 Club, money lessons).
