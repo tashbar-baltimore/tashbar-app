@@ -19,8 +19,10 @@ export function mount(host, opt) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.08;
   renderer.shadowMap.enabled = !FAST; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   host.appendChild(renderer.domElement); renderer.domElement.className = 'p6canvas';
-  const scene = new THREE.Scene(); scene.background = new THREE.Color('#BDE6FF'); scene.fog = new THREE.Fog('#D7EEDB', 30, 80);
-  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color('#BDE6FF'); scene.fog = null;
+  /* K clarity 7 (comparisons obvious): a flat (orthographic) camera, so the near blanket and the far blanket, and every apple,
+     are drawn the same size on the screen; "the same" always looks the same */
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 300);
   scene.add(new THREE.HemisphereLight('#E8F6FF', '#9CC27A', 1.25));
   const sun = new THREE.DirectionalLight('#FFF1D6', 2.1); sun.position.set(-8, 14, 9); sun.castShadow = !FAST;
   sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, { left: -12, right: 12, top: 10, bottom: -10, near: 1, far: 40 }); sun.shadow.radius = 6; sun.shadow.bias = -0.0006; scene.add(sun);
@@ -138,39 +140,30 @@ export function mount(host, opt) {
   function sparkle(p) { const sd = sides.find(x => x.g.position.distanceTo(p) < 0.01 && x.g.visible); if (!sd) return; sd.glowRing.visible = true; setTimeout(() => { sd.glowRing.visible = false; }, T(900)); }
 
   /* ---------------- camera ---------------- */
-  let Wd = 1, Hh = 1; const DIR = new THREE.Vector3(0, 0.52, 0.85).normalize(), V = 34;   /* looking down a little, so the apples stand apart */ let dist = 20, center = new THREE.Vector3(0, 0.6, 0);
+  let Wd = 1, Hh = 1; const DIR = new THREE.Vector3(0, 0.66, 0.75).normalize();   /* looking down enough that the back row of apples never hides behind the front row */
+  let dist = 60; const center = new THREE.Vector3(0, 0.6, 0);
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false);
     const wasNarrow = narrow; narrow = opt.stack || Wd < Hh * 0.95 || Wd < 700; layout(wasNarrow !== narrow || !fit.done); fit.done = true;
-    const [b0, b1] = band(), bc = (b0 + b1) / 2, bh = Math.max(120, b1 - b0), fullH = Hh + 2 * Math.abs(Hh / 2 - bc);
-    const tn = Math.tan(THREE.MathUtils.degToRad(V / 2));
-    camera.aspect = Wd / fullH; camera.fov = V; camera.setViewOffset(Wd, fullH, 0, fullH / 2 - bc, Wd, Hh); camera.updateProjectionMatrix();
-    if (saw) { const span = isPhone() ? 4.9 : 9.4, needH = 4.2; dist = Math.max(span * fullH / (2 * Wd * tn), needH * fullH / (2 * tn * bh)); center.set(0, 1.0, 0.3); saw.g.position.set(0, 0, 0.3); }
-    else frame2(b0, b1);   /* the camera comes in until the blankets and the boys just fit: the picnic fills the screen */
-    scene.fog.near = dist + 8; scene.fog.far = dist + 60;
+    if (saw) saw.g.position.set(0, 0, 0.3);
+    const [b0, b1] = band(), P = saw ? sawPoints() : keyPoints(); if (!P.length) return;
+    /* the picnic (or the see-saw) just fits the free band, as big as it can be, in the middle of it */
+    cam(); const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0), up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; P.forEach(p => { const d = p.clone().sub(camera.position), x = d.dot(right), y = d.dot(up); x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); });
+    const m = Math.max(10, Wd * 0.015) + (saw ? 16 : 0), bh = Math.max(120, b1 - b0 - 2 * m), u = Math.max((x1 - x0) / (Wd - 2 * m), (y1 - y0) / bh);
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, bc = (b0 + b1) / 2;
+    camera.left = cx - Wd / 2 * u; camera.right = cx + Wd / 2 * u; camera.top = cy + bc * u; camera.bottom = camera.top - Hh * u; camera.updateProjectionMatrix();
   }
-  /* the smallest distance at which every corner of both blankets and both boys (head to mat) shows inside the free band */
+  /* every corner of both blankets and both boys (head to mat) */
   function keyPoints() { const P = [], q = new THREE.Vector3();
     sides.forEach(s => { if (!s.g.visible) return; s.g.updateMatrixWorld(true);
       [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => P.push(s.g.localToWorld(new THREE.Vector3(a * (W / 2 + 0.55), 0, b * (D / 2 + 0.55)))));
       s.kh.getWorldPosition(q); const k = s.kh.scale.y; P.push(q.clone().add(new THREE.Vector3(0, (KH + 0.1) * k, 0)), q.clone().add(new THREE.Vector3(-0.65 * k, 0, 0.6 * k)), q.clone().add(new THREE.Vector3(0.65 * k, 0, 0.6 * k))); });
     return P; }
-  function fits(P, x0, x1, y0, y1) { cam(); return P.every(p => { v.copy(p).project(camera); const x = (v.x + 1) / 2 * Wd, y = (1 - v.y) / 2 * Hh; return v.z < 1 && x >= x0 && x <= x1 && y >= y0 && y <= y1; }); }
-  function midY(P) { cam(); let a = 1e9, b = -1e9; P.forEach(p => { v.copy(p).project(camera); const y = (1 - v.y) / 2 * Hh; a = Math.min(a, y); b = Math.max(b, y); }); return (a + b) / 2; }
-  function frame2(b0, b1) {
-    const P = keyPoints(); if (!P.length) return; const m = Math.max(10, Wd * 0.015);
-    const cx = (Math.min(...P.map(p => p.x)) + Math.max(...P.map(p => p.x))) / 2, cz = (Math.min(...P.map(p => p.z)) + Math.max(...P.map(p => p.z))) / 2;
-    let best = null; const all = [];
-    for (let dz = -8; dz <= 8.001; dz += 0.25) { center.set(cx, 0.6, cz + dz); let lo = 2, hi = 120;
-      if (!fits(P, m, Wd - m, b0 + m, b1 - m)) { dist = hi; if (!fits(P, m, Wd - m, b0 + m, b1 - m)) continue; }
-      for (let it = 0; it < 26; it++) { dist = (lo + hi) / 2; if (fits(P, m, Wd - m, b0 + m, b1 - m)) hi = dist; else lo = dist; }
-      all.push([dz, hi]); }
-    /* the closest camera; then the picture slides up or down so the picnic sits in the middle of the free space */
-    if (all.length) best = all.sort((x, y) => x[1] - y[1])[0];
-    if (best) { center.set(cx, 0.6, cz + best[0]); dist = best[1]; } else { center.set(cx, 0.6, cz); dist = 30; }
-    const sh = (b0 + b1) / 2 - midY(P), fullH = camera.view.fullHeight; camera.setViewOffset(Wd, fullH, 0, camera.view.offsetY - sh, Wd, Hh); camera.updateProjectionMatrix();
-  }
+  /* the see-saw at either tilt, with apples piled on its trays */
+  function sawPoints() { saw.g.updateMatrixWorld(true); const b = new THREE.Box3().setFromObject(saw.g), P = [];
+    for (const x of [b.min.x, b.max.x]) for (const y of [0, b.max.y + 0.9]) for (const z of [b.min.z, b.max.z]) P.push(new THREE.Vector3(x, y, z)); return P; }
   function cam() { camera.position.copy(center).addScaledVector(DIR, dist); camera.lookAt(center); camera.updateMatrixWorld(); }
   let last = performance.now(), alive = true;
   function frame() {
