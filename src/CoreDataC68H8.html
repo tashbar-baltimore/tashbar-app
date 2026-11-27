@@ -37,10 +37,10 @@
         why: 'They *share* facts but argue about the *fix*.' } },
       { t: '*Teach it back*: build the rule. Tell your chavrusa.', act: Y[4] }];
     D[0].how = 'Same answer? Different answers? Or one *fact* with two *meanings*?';
-    Y[4].w = ['Opponents share facts', 'but disagree', 'on the cause', 'and the fix.']; Y[4].extra = ['on nothing.'];
+    Y[4].w = ['They share facts', 'but disagree', 'on the cause', 'and the fix.']; Y[4].extra = ['on nothing.'];
     Y[4].say = 'Tap the pieces in order to build it.'; Y[4].how = 'Shared *facts* first. Then the real *disagreement*.';
     D[1].cards = SWAP(D[1].cards, 'They agree that oysters filter the water.', ['Both say the bay is less clean than in 1900.', 0]); Y[1].p[0] = 'Pollution is a serious problem for the bay.'; Y[1].look = 'View A: "Pollution is serious." View B: "The bigger danger is pollution."';
-    D[0].pairs = D[0].pairs.map(function (x) { return /^More men came/.test(x[0]) ? ['More men came. One says: the new rav. One says: the new shiur.', x[1]] : x; });
+    D[0].pairs = [['Both: we need room.', 'they agree'], ['Build up, or out?', 'they disagree'], ['More men came: rav or shiur?', 'the same fact read two ways']];
     b.play = [D[1], Y[0], Y[2], Y[1]];
     b.done = 'You find where writers *agree*, where they *disagree*, and the fact they *read two ways*.'; });
 
@@ -115,7 +115,7 @@
     Y[4].w = ['The street changes,', 'the lease ends,', 'Shuey chooses well,', 'and he grows.']; Y[4].extra = ['the bakery opens,'];
     Y[4].say = 'Build the chain of gears.'; Y[4].how = 'What starts the *trouble*? What does Shuey *do*? What does it do to *him*?';
     D[1].q = 'In Mr. Tavares\'s visit, which words show the new street has no room for the old clock?';
-    Y[0].pairs = Y[0].pairs.map(function (x) { return x[0] === 'Tavares lets the clock stay' ? ['Shuey hurries while Zeidy davens Mincha', x[1]] : x[0] === 'watches set by a wrong clock' ? ['the new building needs a modern front', x[1]] : x; });
+    Y[0].pairs = Y[0].pairs.map(function (x) { return x[0] === 'Tavares lets the clock stay' ? ['Shuey rushes at Mincha', x[1]] : x[0] === 'watches set by a wrong clock' ? ['New building, modern front', x[1]] : /^"I don/.test(x[0]) ? ['"I don\'t know" to "Someone will"', x[1]] : x; });
     Y[2].t = 'Mendy stayed late to help his rebbe, so he missed the bus and walked home in the snow. His ___ changed the plot.';
     D[0].cards = SWAP(D[0].cards, 'The story could happen anywhere.', ['The story could happen on any street.', 1]);
     Y[0].say = 'Match each moment to its gear. Then teach it.'; Y[0].how = '*Place*, *choice*, or a change in *Shuey*?';
