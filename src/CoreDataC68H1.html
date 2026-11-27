@@ -153,7 +153,7 @@
     D[1].cards = D[1].cards.map(function (c) { return /^Enigma was hidden/.test(c[0]) ? ['One boy in my shiur was late twice, so the whole shiur is lazy.', 1] : /sounds very sure/.test(c[0]) ? ['Mordechai is only a reader, so his reasons do not count.', 1] : c; });
     Y[4].how = 'Which of the *three tests* does it fail?';
     b.play = [D[1], Y[2],
-      { type: 'cloze', t: 'Claim: "Our tests should be shorter." Fix the reason "Everyone hates long tests." Change it to ___.', o: ['"In our class poll, 21 of 25 boys wanted shorter tests."', '"Everyone I know hates long tests."', '"Only lazy boys like long tests."'], a: '"In our class poll, 21 of 25 boys wanted shorter tests."',
+      { type: 'cloze', t: 'Claim: "Our tests should be shorter." Fix the reason "Everyone hates long tests." Change it to ___.', o: ['In our class poll, 21 of 25 boys wanted shorter tests.', 'Everyone I know hates long tests.', 'Only lazy boys like long tests.'], a: 'In our class poll, 21 of 25 boys wanted shorter tests.',
         say: 'Fix the broken reason. Make it sound.', how: 'A sound reason is *true*, and you can *check* it.' },
       Y[4]];
     b.done = 'You test every reason: *enough examples*, *true*, and *not an attack*.'; });
@@ -167,17 +167,17 @@
         cards: [['Some waited over 50 years for a medal.', 0], ['The Beacon prints a debate page.', 1], ['History books had to be rewritten.', 0], ['Code breakers worked in huts.', 1]],
         say: 'Is each fact about when to tell secrets?', how: '*True* is not enough. Is it about *when to tell*?' } },
       { t: 'Test 2: is there *enough* for the claim?', act: Y[3] },
-      { who: { q: 'Mordechai gives *one* case, Enigma. Is that enough for *every* government?', o: [['Pinny', 'Yes, it is true'], ['Tzvi', 'No, one is too few']], a: 1,
+      { who: { q: '"*Every* shul needs a new roof. Ours leaks." Is that enough?', o: [['Pinny', 'Yes, the leak is real'], ['Tzvi', 'No, one shul is too few']], a: 1,
         why: '*True* is not *enough*. Big claims need *several* cases.' } },
       { t: '*Teach it back*: build the rule. Tell your chavrusa.', act: Y[0] }];
     Y[3].how = 'A *big* claim needs *several* examples. How many did he give?';
-    Y[0].say = 'Build the rule. Then teach it to your chavrusa.'; Y[0].how = 'Two tests: *about the claim*, and *enough*.'; Y[0].w = ['Good evidence', 'is about the claim,', 'and there is', 'enough of it.'];
+    Y[0].say = 'Build the rule. Then teach it to your chavrusa.'; Y[0].how = 'What must good evidence be *about*? And *how much* is needed?'; Y[0].extra = ['sounds loud', 'is exciting,']; Y[0].w = ['Good evidence', 'is about the claim,', 'and there is', 'enough of it.'];
     var TRAP = { type: 'evidence', mis: true, q: 'Claim: "Our shul needs a bigger parking lot." Avi says: "The lot is paved in black. That is relevant and enough." What is Avi\'s mistake?',
-      p: ['The fact is true, but it is not about needing more space.', 'The lot is not paved.', 'One fact is always enough.'], a: 0, look: 'is it about the claim?',
-      say: 'Avi fell in the trap. Find his mistake.', how: 'Ask two things: is it *true*? Is there *enough*?' };
+      p: ['The fact is true, but it is not about needing more space.', 'The fact is relevant, but he needs one more fact.', 'He should find more facts about the paint.'], a: 0, look: 'is it about the claim?',
+      say: 'Avi fell in the trap. Find his mistake.', how: 'Ask two things: is it *about* the claim? Is there *enough*?' };
     Y[3].t = 'Claim: "Our town has the best bakery in the world." Evidence: "My uncle liked one roll there." This evidence is ___.'; Y[3].say = 'Is the evidence enough for the claim?';
     Y[1].q = 'Claim: "The code talkers helped win at Iwo Jima." Which evidence is strongest?'; Y[1].look = 'a fact about what they did in the battle'; Y[1].p = Y[1].p.map(function (x) { return /^Navajo has many tones/.test(x) ? 'Navajo has many tones, so few outsiders could learn it.' : /^The code talkers were young/.test(x) ? 'The code talkers were young men, many just out of school.' : x; });
-    Y[2].pairs = [['"Our class needs a fan. Our teacher\'s car is red."', 'not relevant'], ['"Our team always wins. We won once in May."', 'not enough'], ['"Our school needs fans. Ten rooms hit 90 degrees in June."', 'relevant and enough']]; Y[2].say = 'Match each claim and proof to its verdict.'; Y[2].how = 'Is it *about* the claim? Is there *enough*?';
+    Y[2].pairs = [['Need a fan? The car is red.', 'not relevant'], ['Always win? Won once.', 'not enough'], ['Need fans? Ten rooms hit 90°.', 'relevant and enough']]; Y[2].say = 'Match each claim and proof to its verdict.'; Y[2].how = 'Is it *about* the claim? Is there *enough*?';
     b.play = [TRAP, Y[2], Y[1],
       { type: 'sort', q: 'Claim: "Our street needs a crossing guard."', bins: ['Relevant and enough', 'Not relevant', 'Relevant but not enough'],
         cards: [['Three children were nearly hit last month.', 0], ['The corner has a blue mailbox.', 1], ['Cars speed there every school morning.', 0], ['The guard would wear a vest.', 1], ['One car sped there once.', 2]],
