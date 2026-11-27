@@ -8,16 +8,16 @@
   css.textContent = [
     '.u2path{ position:relative; display:grid; grid-template-columns:repeat(var(--cols,10),1fr); gap:clamp(6px,1vw,14px); width:100%; max-width:1240px; align-items:center; padding:28px 4px 6px; }',
     '.u2stone{ position:relative; aspect-ratio:1; border-radius:42% 46% 44% 48%; background:radial-gradient(circle at 40% 30%,#FFFFFF,#E3ECF8 55%,#B9C9E0); border:4px solid #fff; box-shadow:0 7px 0 #8FA3C2, 0 12px 16px rgba(40,70,140,.25); display:flex; align-items:center; justify-content:center; transition:transform .2s, box-shadow .2s; touch-action:none; }',
-    '.u2stone .dd{ position:absolute; inset:26% 9%; display:grid; grid-template-rows:1fr 1fr; gap:8%; }',
-    '.u2stone .dd b{ display:flex; justify-content:flex-start; align-items:center; gap:1.5%; }',
-    '.u2stone .dd i{ width:18.5%; aspect-ratio:1; border-radius:50%; flex:none; }',
+    '.u2stone .dd{ position:absolute; inset:0 10%; display:flex; flex-direction:column; justify-content:center; gap:5%; }',
+    '.u2stone .dd b{ display:flex; justify-content:flex-start; align-items:center; gap:4%; }',
+    '.u2stone .dd i{ width:16.8%; aspect-ratio:1; border-radius:50%; flex:none; }',
     '.u2stone.glowme{ box-shadow:0 7px 0 #C98A00, 0 0 0 8px rgba(255,201,61,.85), 0 0 22px 8px rgba(255,201,61,.7); animation:u2gap 1s infinite; }',
     '.u2stone.redmark{ box-shadow:0 7px 0 #C0392B, 0 0 0 6px rgba(255,90,78,.55) !important; }',
     '.u2stone svg.hear{ width:52% !important; height:52% !important; }',
     '.u2stone .dd i, .u2stone .dice i{ background:radial-gradient(circle at 35% 30%,#FF9B8A,#E5322D 55%,#8E0E17); box-shadow:0 2px 0 rgba(90,0,10,.35); }',
     '.u2stone .dice{ position:absolute; inset:8%; } .u2stone .dice i{ position:absolute; width:25%; aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%); }',
     '.u2stone.gap .dice{ display:none; }',
-    '.u2stone.star .dd{ display:flex; align-items:center; justify-content:center; inset:14%; } .u2stone.star svg{ width:100%; height:100%; }',
+    '.u2stone .dd.r3{ gap:4%; }',
     '.u2stone.lit{ background:radial-gradient(circle at 40% 30%,#FFFBE0,#FFE27A 60%,#F4B400); box-shadow:0 7px 0 #C98A00, 0 0 0 6px rgba(255,201,61,.5); }',
     '.u2stone.been{ background:radial-gradient(circle at 40% 30%,#F1FFF5,#BDEFCF 60%,#7DD3A0); box-shadow:0 7px 0 #4FA674, 0 12px 16px rgba(40,70,140,.2); }',
     '.u2stone.gap{ background:rgba(255,255,255,.35); border:5px dashed #2FB5E8; box-shadow:none; animation:u2gap 1s infinite; }',
@@ -47,11 +47,13 @@
   /* dots: 1-5 as big dice faces (seen at a glance, Unit 1's shapes); 6-10 as "five and some more": 5 on top, the rest below */
   var DICE = { 1: [[50, 50]], 2: [[30, 30], [70, 70]], 3: [[26, 26], [50, 50], [74, 74]], 4: [[30, 30], [70, 30], [30, 70], [70, 70]], 5: [[26, 26], [74, 26], [50, 50], [26, 74], [74, 74]] };
   U2.dots = function (n) {
-    if (n === 0) return ''; if (n > 5 || n < 1) return '<span class="dd"><svg viewBox="0 0 100 100"><use href="#nkStar"/></svg></span>';
+    if (n < 1) return '';
     if (n <= 5) return '<span class="dice">' + DICE[n].map(function (p) { return '<i style="left:' + p[0] + '%;top:' + p[1] + '%"></i>'; }).join('') + '</span>';
-    var h = '<span class="dd"><b>'; for (var i = 0; i < 5; i++) h += '<i></i>'; h += '</b><b>'; for (i = 0; i < n - 5; i++) h += '<i></i>'; return h + '</b></span>';
+    /* K clarity (2026-11-27): every stone shows its own amount, so 6, 7, 8, 9 and 10 never look alike (they were all the same gold star).
+       Rows of five, like a ten-frame: 7 = a row of 5 and 2 more. Past ten (bonus only) a third row starts. */
+    var h = '<span class="dd' + (n > 10 ? ' r3' : '') + '">'; for (var r = 0; r * 5 < n; r++) { h += '<b>'; for (var i = r * 5; i < Math.min(n, r * 5 + 5); i++) h += '<i></i>'; h += '</b>'; } return h + '</span>';
   };
-  U2.stone = function (n) { var s = document.createElement('div'); s.className = 'u2stone' + (n > 5 ? ' star' : ''); s.dataset.n = n; s.innerHTML = U2.dots(n); return s; };
+  U2.stone = function (n) { var s = document.createElement('div'); s.className = 'u2stone'; s.dataset.n = n; s.innerHTML = U2.dots(n); return s; };
 
   /* the path: numbers from..to (or to..from when reverse) */
   U2.path = function (el, o) {
@@ -67,7 +69,7 @@
       if (hop) { ball.classList.remove('hop'); void ball.offsetWidth; ball.classList.add('hop'); NK.sound.pop(); }
       stones.forEach(function (x, k) { x.classList.toggle('lit', k === i); if (k < i && k >= (api.lo || 0) && !x.classList.contains('gap')) x.classList.add('been'); });
     };
-    api.reset = function () { stones.forEach(function (x) { x.className = 'u2stone' + (+x.dataset.n > 5 ? ' star' : ''); x.innerHTML = U2.dots(+x.dataset.n); }); api.lo = null; api.place(-1); };
+    api.reset = function () { stones.forEach(function (x) { x.className = 'u2stone'; x.innerHTML = U2.dots(+x.dataset.n); }); api.lo = null; api.place(-1); };
     api.gap = function (i) { stones[i].classList.add('gap'); stones[i].classList.remove('lit', 'been'); };
     api.fill = function (i) { stones[i].classList.remove('gap'); };
     addEventListener('resize', function () { if (api.at >= 0) api.place(api.at); });
