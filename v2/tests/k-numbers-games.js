@@ -46,6 +46,11 @@ module.exports = async function (browser) {
       await pg.waitForSelector('#play', { timeout: 15000 });
       const look = await pg.evaluate(() => ({ hero: (document.getElementById('hero').innerHTML || '').length, bg: getComputedStyle(document.body).backgroundImage }));
       if (look.hero < 40) bad(file + ': the start screen has no picture'); if (!/gradient/.test(look.bg)) bad(file + ': the background is plain');
+      /* the boy must SEE the Play button and the title on the start screen (a too-big start picture once pushed them off; Esti, 2026-11-27) */
+      for (const [vw, vh] of [[1366, 768], [390, 844]]) { await pg.setViewportSize({ width: vw, height: vh }); await pg.waitForTimeout(100);
+        const r = await pg.evaluate(() => { const p = document.getElementById('play').getBoundingClientRect(), t = document.querySelector('.title').getBoundingClientRect(); return [p.top, p.bottom, p.left, p.right, t.top, t.bottom]; });
+        if (r[0] < 0 || r[1] > vh || r[2] < 0 || r[3] > vw || r[4] < 0 || r[5] > vh) bad(file + ': on the start screen (' + vw + ' wide) the Play button or title is off the screen'); }
+      await pg.setViewportSize({ width: 1366, height: 768 });
       await pg.click('#play', { force: true });
       await until(pg, () => GAME.phase === 'answer' && GAME.right, 40000);
       const said0 = await pg.evaluate(() => NK.said.slice());
