@@ -112,7 +112,7 @@ const hunt = {
       const S = G.S, n = () => G.narrow(), yes = shuffle(START.m).slice(0, 3), no = shuffle(others('m')).slice(0, 3), all = shuffle([...yes, ...no]);
       const pos = i => n() ? V(-1.3 + (i % 2) * 2.6, 4.6 - Math.floor(i / 2) * 1.6, 0) : V(-3 + (i % 3) * 3, 3.4 - Math.floor(i / 3) * 2.0, 0);
       const cards = all.map((w, i) => { const c = new THREE.Group(), back = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 0.12), toon(0x8A7BD8, { clear: 1, rough: .3 })); c.add(back);
-        const star = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.07, 10, 36), toon(0xFFD23F, { emissive: 0xAA7700, ei: .3 })); star.position.z = -0.08; c.add(star); const dotB = new THREE.Mesh(new THREE.CircleGeometry(0.12, 24), toon(0xFFFFFF)); dotB.position.z = -0.07; dotB.rotation.y = Math.PI; c.add(dotB);   /* a plain, friendly card back */
+        const star = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.07, 10, 36), toon(0xFFD23F, { emissive: 0xAA7700, ei: .3 })); star.position.z = -0.08; star.visible = false;   /* K clarity: a plain card back (a ring on it looked like one more picture) */ const dotB = new THREE.Mesh(new THREE.CircleGeometry(0.12, 24), toon(0xFFFFFF)); dotB.position.z = -0.07; dotB.rotation.y = Math.PI; dotB.visible = false;
         const pic = prop(w); pic.scale.setScalar(0.58); pic.position.z = 0.42; c.add(pic);   /* well in front of the card, so nothing shows through its back */ c.position.copy(pos(i)); c.rotation.y = Math.PI; c.userData = { w, yes: yes.includes(w), up: false, i }; S.scene.add(c); tapHit(c, 0.8); return c; });
       G.W.layout = () => cards.forEach(c => c.position.copy(pos(c.userData.i)));
       const flip = (c, up) => S.tween(350, e => c.rotation.y = up ? Math.PI * (1 - e) : Math.PI * e);
