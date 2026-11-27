@@ -2,7 +2,8 @@
 /* CoreUnits.html: UNIT CHECKS (the "boss level") AND TEST-OUT (the pre-check), Core Growth job T, T-5, 2026-11-24. Server: src/CoreChecks.js.
    A job lists its units in its data file:  TLCORE.units.add({ id:'C45.U01', title:'Main Idea Detectives', c:'READ', grade:5,
      skills:['READ.COMP.L06.13', ...] (the unit's small skills, in order), review:['READ.COMP.L05.01', ...] (2-3 from earlier units; only the first 3 are asked), n:10,
-     pre:'lessons' (optional: the pre-check asks the lessons' own check questions, so the unit's own items stay new for the boss level) });
+     pre:'lessons' (optional: the pre-check asks the lessons' own check questions, so the unit's own items stay new for the boss level)
+     or pre:'items' (optional: the pre-check asks only the own items marked pre:true; the boss level never asks those) });
    PRE-CHECK (before the unit): one question per skill. A skill he answers right is "shown": the server takes it out of his path, so he never
      sits through what he already knows. One pre-check per unit.
    UNIT CHECK (after the unit): 8-12 questions mixing every skill of the unit plus 2-3 review skills, one try each, a dramatic entrance and a
@@ -55,14 +56,19 @@
     var ok = items.filter(function (x) { return (x.t === 'mc' && Array.isArray(x.shown) && x.shown.length >= 2 && x.shown.indexOf(x.correct) >= 0) || (x.t === 'order' && Array.isArray(x.tiles) && x.tiles.length >= 2 && x.tiles.length <= 8); })
       .filter(function (x) { return !used[x.q]; });
     var it = ok[Math.floor(Math.random() * ok.length)]; if (!it) return null; used[it.q] = 1;   /* a different question each time when the lesson has more than one */
-    var p = it.p || (it.pic && /[A-Za-z0-9\u0590-\u05FF]/.test(String(it.pic)) ? String(it.pic) : '');   /* the lesson keeps its passage in pic: show it, or the boy gets "Which fact is in BOTH texts?" with no texts (a picture-only pic stays out) */
-    return it.t === 'mc' ? { skill: id, kind: 'mc', q: it.q, p: p, o: it.shown.slice(), a: it.correct } : { skill: id, kind: 'order', q: it.q, p: p, tiles: it.tiles.slice() };
+    var p = it.p || (it.pic && /[A-Za-z0-9\u0590-\u05FF]/.test(String(it.pic)) ? String(it.pic) : '');   /* the lesson keeps its passage in pic: show it, or the boy gets "Which fact is in BOTH texts?" with no texts */
+    /* a picture-only pic is the question's picture: show it the way the lesson does (.tlpic). Without it "Build the word for the picture"
+       had no picture, and s-n-oo-p or c-a-f-e (real words) were marked wrong (Review Round 2, 26 Nov: F.U22, F.U24) */
+    var pic = !p && it.pic && !/[A-Za-z0-9\u0590-\u05FF]/.test(String(it.pic)) ? String(it.pic) : '';
+    return it.t === 'mc' ? { skill: id, kind: 'mc', q: it.q, p: p, pic: pic, o: it.shown.slice(), a: it.correct } : { skill: id, kind: 'order', q: it.q, p: p, pic: pic, tiles: it.tiles.slice() };
   }
   function build(u, mode) {
     var used = {}, out = [], extra = (u.items || []).filter(function (x) { var ty = x && W.OBK && OBK.types[x.type]; return x && x.skill && !(ty && ty.reader); });   /* again here: a unit added before the kit loaded was not checked for Reader kinds */
     /* own items are picked at random (a retake is not the same check). A unit with pre:'lessons' (its lessons' check questions all have
-       3+ choices) gets a pre-check from those lesson questions, so its own items stay new for the boss level (reviews 26 Nov) */
-    var ownOf = function (id) { var c = extra.filter(function (x) { return x.skill === id && !x.__used; }); var o = c[Math.floor(Math.random() * c.length)]; if (!o) return null; o.__used = 1; return { skill: id, kind: 'kit', act: o }; };
+       3+ choices) gets a pre-check from those lesson questions, so its own items stay new for the boss level (reviews 26 Nov). A unit with
+       pre:'items' asks only its own items marked pre:true in the pre-check, and only the others in the boss level: a pre-check miss shows the
+       right answer, so its question must not come back later as a lesson's Show me or a boss question (gap C2a review, 26 Nov) */
+    var ownOf = function (id) { var c = extra.filter(function (x) { return x.skill === id && !x.__used && (u.pre !== 'items' || !!x.pre === (mode === 'pre')); }); var o = c[Math.floor(Math.random() * c.length)]; if (!o) return null; o.__used = 1; return { skill: id, kind: 'kit', act: o }; };
     var per = function (id) { if (mode === 'pre' && u.pre === 'lessons') return fromSkill(id, used) || ownOf(id); return ownOf(id) || fromSkill(id, used); };
     u.skills.forEach(function (id) { var q = per(id); if (q) out.push(q); });
     if (mode === 'check') {
@@ -86,7 +92,7 @@
   }
   function question() {
     var q = S.qs[S.i], a = S.ans[S.i], hp = S.qs.map(function (_, k) { var r = S.ans[k]; return '<i class="' + (r ? (r.ok ? 'hit' : 'miss') : '') + '"></i>'; }).join('');
-    var h = '<div class="cu-body"><div class="cu-hp" aria-hidden="true">' + hp + '</div>' + (q.review ? pill('subj', 'From before') : '') + '<h2 class="cu-q' + (String(q.q || (q.act && q.act.q) || '').length > 140 ? ' cu-long' : '') + '">' + esc(q.q || (q.act && (q.act.q || (W.OBK ? OBK.say(q.act) : ''))) || '') + '</h2>' + (q.p ? '<div class="cu-p">' + esc(q.p) + '</div>' : '');
+    var h = '<div class="cu-body"><div class="cu-hp" aria-hidden="true">' + hp + '</div>' + (q.review ? pill('subj', 'From before') : '') + '<h2 class="cu-q' + (String(q.q || (q.act && q.act.q) || '').length > 140 ? ' cu-long' : '') + '">' + esc(q.q || (q.act && (q.act.q || (W.OBK ? OBK.say(q.act) : ''))) || '') + '</h2>' + (q.p ? '<div class="cu-p">' + esc(q.p) + '</div>' : '') + (q.pic ? '<div class="tlpic cu-pic" aria-hidden="true">' + esc(q.pic) + '</div>' : '');
     if (q.kind === 'mc') h += '<div class="cu-opts">' + q.o.map(function (o, k) { var cls = a ? (o === q.a ? ' yes' : (a.pick === k ? ' no' : '')) : ''; return qb(o, 'data-cu="pick" data-k="' + k + '"' + (a ? ' disabled' : ''), 'cu-opt' + cls); }).join('') + '</div>';
     else if (q.kind === 'order') { var st = S.ord; h += '<div class="cu-slots">' + q.tiles.map(function (_, i) { var j = st.slots[i]; return qb(j >= 0 ? st.pool[j] : String(i + 1), 'data-cu="slot" data-k="' + i + '"' + (a ? ' disabled' : ''), 'cu-slot' + (j >= 0 ? ' full' : '') + (a ? (a.ok ? ' yes' : (st.pool[j] !== q.tiles[i] ? ' no' : '')) : '')); }).join('') + '</div>' +
       '<div class="cu-pool">' + st.pool.map(function (t, j) { return st.used[j] ? '' : qb(t, 'data-cu="tile" data-k="' + j + '"' + (a ? ' disabled' : ''), 'cu-tile'); }).join('') + '</div>'; }
@@ -191,7 +197,7 @@
   U.__won = WON;
   U.questions = function (u, mode) { return build(u, mode || 'check'); };   /* the questions one check would ask (tests and reviewers; nothing is saved) */
   U.reset = function () { MINE = null; for (var k in OFFERED) delete OFFERED[k]; };
-  U.state = function () { return S ? { mode: S.mode, unit: S.u.id, view: S.view, i: S.i, n: S.qs.length, kinds: S.qs.map(function (q) { return q.kind; }), skills: S.qs.map(function (q) { return q.skill; }), passed: !!S.passed, shown: S.shown || null, missed: S.missed || null } : null; };
+  U.state = function () { return S ? { mode: S.mode, unit: S.u.id, view: S.view, i: S.i, n: S.qs.length, kinds: S.qs.map(function (q) { return q.kind; }), skills: S.qs.map(function (q) { return q.skill; }), pics: S.qs.map(function (q) { return q.pic || ''; }), qs: S.qs.map(function (q) { return q.q || ''; }), passed: !!S.passed, shown: S.shown || null, missed: S.missed || null } : null; };
   /* the answer to question i, for the tests (never shown to a boy) */
   U.__solve = function () { if (!S || S.view !== 'q') return null; var q = S.qs[S.i]; return q.kind === 'mc' ? { pick: q.o.indexOf(q.a) } : q.kind === 'order' ? { order: q.tiles.map(function (x) { return S.ord.pool.indexOf(x); }) } : q.kind === 'kit' ? { act: q.act } : null; };
 
@@ -235,7 +241,7 @@
     '#cun .cu-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}#cun .cu-art span{font-size:84px;animation:cuIn .6s cubic-bezier(.2,1.6,.4,1)}' +
     '#cun .cu-sub{font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#FFD45C;font-size:14px}#cun h1{margin:6px 0;font-size:clamp(28px,5vw,42px);line-height:1.1}#cun .cu-meta .tlk-pill{margin:4px}#cun .cu-lead{opacity:.9;margin:10px 0 18px}' +
     '#cun .cu-body{max-width:760px;margin:0 auto;padding:16px}#cun .cu-hp{display:flex;gap:5px;margin:4px 0 14px}#cun .cu-hp i{flex:1;height:12px;border-radius:6px;background:#E2DACA}#cun .cu-hp i.hit{background:#3FA36B}#cun .cu-hp i.miss{background:#E9A23B}' +
-    '#cun .cu-q{font-size:22px;margin:8px 0 12px}#cun .cu-q.cu-long{font-size:19px;font-weight:500;line-height:1.5}#cun .cu-p{background:#fff;border-radius:14px;padding:12px 16px;border:1px solid #E6DCC5;font-family:Georgia,serif;font-size:19px;line-height:1.6;margin-bottom:12px;white-space:pre-line}' +
+    '#cun .cu-q{font-size:22px;margin:8px 0 12px}#cun .cu-q.cu-long{font-size:19px;font-weight:500;line-height:1.5}#cun .cu-pic{font-size:72px;line-height:1.1;text-align:center;margin:2px 0 12px}#cun .cu-p{background:#fff;border-radius:14px;padding:12px 16px;border:1px solid #E6DCC5;font-family:Georgia,serif;font-size:19px;line-height:1.6;margin-bottom:12px;white-space:pre-line}' +
     '#cun .cu-opts{display:grid;gap:10px}#cun .cu-opt{text-align:left;padding:14px 16px;min-height:56px;font-size:18px}#cun .cu-opt.yes,#cun .cu-slot.yes{outline:3px solid #3FA36B;background:#E6F6EC}#cun .cu-opt.no,#cun .cu-slot.no{outline:3px solid #E9A23B;background:#FFF1DC}' +
     '#cun .cu-slots,#cun .cu-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}#cun .cu-slot{min-width:90px;min-height:52px;color:#9AA6BA}#cun .cu-slot.full{color:#1F2633}#cun .cu-tile{min-height:52px;padding:8px 14px}' +
     '#cun .cu-body .tlk[disabled]{opacity:1;color:#1F2633;cursor:default}#cun .cu-body .tlk[disabled]:not(.yes):not(.no){opacity:.6}#cun .cu-fb{font-weight:700;margin-top:12px}#cun .cu-fb.ok{color:#0E7A4F}#cun .cu-fb.miss{color:#8A4B00}' +
