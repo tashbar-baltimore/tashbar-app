@@ -18,6 +18,8 @@ import { letterTile, letterPoints } from '../letters.js';
 import { slide } from './u2.js';
 
 export const ORDER = ['opener', 'bingo', 'chalk', 'catch', 'bridge', 'speed', 'check'];
+/* the name on top of the screen (K-CLARITY-RULES 13) */
+export const TITLES = { opener: 'Sound Parade', bingo: 'Sound Bingo', chalk: 'Chalkboard', catch: 'Rhyme Catch', bridge: 'Word Bridge', speed: 'Speed Slide', check: 'Show Me' };
 const LET = ['s', 'a', 't', 'p', 'i', 'n', 'm', 'd'];
 const say = w => (WORDS[w] ? WORDS[w].say : w);
 const snd = ch => echo(() => audio.letter(ch));
