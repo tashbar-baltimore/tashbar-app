@@ -884,7 +884,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     track(path, near); train(path, ['#FF5A5A', '#3AA8FF', '#FFC93C', '#4CD964', '#B98CFF'], near);
     /* a puff of steam now and then */
     const puffs = []; for (let i = 0; i < 6; i++) { const p = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: '#FFFFFF', transparent: true, opacity: 0, depthWrite: false })); scene.add(p); puffs.push(p); }
-    anim.push((t, q) => { const u = ((t * 0.018) % 1 + 1) % 1, p0 = path.getPointAt(u); puffs.forEach((p, i) => { const k = ((t * 0.5 + i / puffs.length) % 1); p.position.set(p0.x, 1.6 + k * 2.4, p0.z); p.scale.setScalar(0.4 + k * 1.2); p.material.opacity = q >= 1 ? (1 - k) * 0.7 : 0; }); });
+    anim.push((t, q) => { const u = ((t * 0.018) % 1 + 1) % 1, p0 = path.getPointAt(u); puffs.forEach((p, i) => { const k = ((t * 0.5 + i / puffs.length) % 1); p.position.set(p0.x, 1.6 + k * 2.4, p0.z); p.scale.setScalar(0.4 + k * 1.2); p.material.opacity = q >= 1 && !CALM ? (1 - k) * 0.7 : 0; }); });   /* calm: no steam drifting across the sky (K-CLARITY-RULES 10) */
     const roofs = ['#FF5A5A', '#3AA8FF', '#FFC93C', '#B98CFF', '#4CD964', '#FF8A3D'], walls = ['#FFF4E2', '#FFE3EC', '#E3F4FF', '#FFF7C8', '#E8FFE3'];
     [[-15, -6, 2.2, 2.2, 0.4], [-16.5, 0, 2.0, 2.0, 0.6], [-13, -13, 2.4, 2.8, 0.2], [-7, -16, 2.2, 2.4, 0], [7.5, -16, 2.4, 2.6, 0], [13.5, -13, 2.2, 2.4, -0.2], [15.5, -6, 2.2, 2.2, -0.4], [16.5, 0.5, 2.0, 2.2, -0.6], [-3, -17.5, 2, 2.2, 0], [3, -18, 2.2, 2.6, 0]].forEach(([x, z, w, h, r], i) => house(x, z, w, h, walls[i % 5], roofs[i % 6], far, r));
     /* the clock tower (no numbers) */
