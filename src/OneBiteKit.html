@@ -96,10 +96,10 @@ T.hop={ check:true,
     g+='<circle cx="'+sx(d.start)+'" cy="86" r="5" fill="#3B6FD8"/>';
     for(let k=0;k+1<s.path.length;k++){ const x1=sx(s.path[k]), x2=sx(s.path[k+1]), mx=(x1+x2)/2; g+='<path d="M'+x1+' 80 Q'+mx+' 46 '+x2+' 80" fill="none" stroke="#FF7A3D" stroke-width="3" stroke-dasharray="5 4"/>'; }
     g+='<text x="'+sx(s.pos)+'" y="74" font-size="30" text-anchor="middle">🐸</text>';
-    if(d.land){ const cw=(W-2*pad)/Math.max(1,n); for(let v=t0;v<=r[1]+1e-9;v+=u) if(v!==d.start) g+='<rect data-obk="land" data-k="'+v+'" x="'+(sx(v)-cw/2)+'" y="40" width="'+cw+'" height="72" fill="'+(v===s.pos?'rgba(255,122,61,.18)':'transparent')+'" style="cursor:pointer" role="button" aria-label="land on '+v+'"/>'; }
     g+='</svg>';
     const hops=Math.round(Math.abs(s.pos-d.start)/u);
-    if(d.land) return g+'<p class="obk-count sm" aria-live="polite">'+(s.pos===d.start?'Tap the number where the frog lands.':'Hops: '+hops)+'</p>';
+    if(d.land){ let bt=''; for(let v=t0;v<=r[1]+1e-9;v+=u) if(v!==d.start) bt+='<button class="obk-btn'+(v===s.pos?' obk-pri':'')+'" data-obk="land" data-k="'+v+'" aria-label="the frog lands on '+v+'">'+v+'</button>';   /* big number buttons: every target 44 px or more */
+      return g+'<p class="obk-count sm" aria-live="polite">'+(s.pos===d.start?'Tap the number where the frog lands.':'Hops: '+hops)+'</p><div class="obk-row obk-land">'+bt+'</div>'; }
     return g+'<p class="obk-count sm" aria-live="polite">Hops: '+hops+(c.guided?' of '+Math.round(Math.abs(d.add)/u):'')+'</p>'+
       '<div class="obk-row"><button class="obk-btn" data-obk="back" aria-label="Hop back"'+(s.pos-u<r[0]-1e-9?' disabled':'')+'>◀ Hop</button><button class="obk-btn obk-pri'+(c.guided&&hops<Math.abs(d.add)/u&&d.add>0?' obk-pulse':'')+'" data-obk="fwd" aria-label="Hop forward"'+(s.pos+u>r[1]+1e-9?' disabled':'')+'>Hop ▶</button></div>'; },
   tap(d,s,a,k){ const r=T.hop.rng(d), u=T.hop.u(d); let np=s.pos;
@@ -343,6 +343,7 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-count{ font-size:calc(var(--fs) * 1.6); font-weight:900; color:#3B6FD8; margin:0; min-width:56px; text-align:center; } .obk-count.sm{ font-size:var(--fs); }
 .obk-btn{ min-height:var(--tap); min-width:var(--tap); padding:8px 20px; border-radius:20px; border:3px solid #E4DED2; background:#fff; font-size:var(--fs); font-weight:900; display:inline-flex; align-items:center; gap:8px; justify-content:center; box-shadow:0 4px 0 #E4DED2; }
 .obk-btn:active{ transform:translateY(3px); box-shadow:0 1px 0 #E4DED2; } .obk-btn:disabled{ opacity:.4; }
+.obk-land{ gap:8px; } .obk-land .obk-btn{ padding:6px 10px; min-width:52px; }
 .obk-btn.obk-pri{ border-color:#3B6FD8; color:#2A55B0; box-shadow:0 4px 0 #C9D7F5; }
 .obk-hear.big{ font-size:44px; width:96px; height:96px; border-radius:50%; padding:0; }
 .obk-opts{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; width:100%; }
