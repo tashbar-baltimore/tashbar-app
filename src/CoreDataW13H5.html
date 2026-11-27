@@ -83,7 +83,7 @@
   check:[
     {q:'The book says: “The ground is often covered with snow.” Avi’s note says: “The ground is often covered with snow.” What is wrong with his note?', o:['Copied','It is too short','Nothing'], h:'Is it a few key words, or the whole sentence?'},
     {q:'Avi copied a whole sentence from the book onto his note card. What should he do?', o:['write only the key words','copy two more sentences','leave the card empty'], h:'What is a note made of?'},
-    {q:'Note: “cardinal: short, thick beak”. Dovid writes: “A cardinal’s beak is short and thick, like a nutcracker.” What did he write?', o:['My own sentence','A note','A copied sentence'], h:'Is it a few words, or a whole sentence? Is it the book’s words, or his?'}
+    {q:'Note: “cardinal: short, thick beak”. Dovid writes: “Our cardinal cracked a seed with its strong beak.” What did he write?', o:['My own sentence','A note','A copied sentence'], h:'Is it a few words, or a whole sentence? Is it the book’s words, or his?'}
   ],
   re:[
     {how:'A new way: a note is like a quick message to yourself. Keep it short!', q:'Which one is a short note?', o:['seeds in winter','Birds eat seeds in the winter time when it is cold.','Hello there!']},
@@ -273,6 +273,87 @@
       {type:'evidence', q:'Which is the best ending for a book response?', p:['The end.','Boys who like surprises will love this story.','Dovid has a brother.','It has a squirrel.'], a:1, look:'the sentence that tells who would like the book',
         say:'Tap the best ending.', how:'A good ending tells who would like the book.'}] }
   };
+
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     NL(id, f): f gets the old do and your lists (good activities are kept) and returns hook, learn, play and done. X(a, o) copies a with changes. */
+  function X(a, o) { if (!a) throw new Error('W13 new lesson: missing activity'); return Object.assign({}, a, o || {}); }
+  function NL(id, f) { var b = BITE[id]; if (!b || !b.do || !b.your) return; var n = f(b.do, b.your);
+    b.hook = n.hook; b.learn = n.learn; b.play = n.play; b.done = n.done; if (n.one && b.board) b.board.one = n.one; delete b.do; delete b.your; delete b.ready; }
+
+  NL('WRIT.PARA.L03.15', function (D, Y) { return {
+    hook: { kind: 'notice', pic: '✉️', t: 'Zeidy found a note on his table. It said only: “Thanks for the gears.”',
+      q: 'What do you notice?', o: ['No one signed it', 'It is too long', 'It has a date'],
+      pay: 'No *greeting* and no *name*! A letter needs all *five parts*.' },
+    learn: [
+      { t: 'A letter has *five parts*, top to bottom.', m: { type: 'chant', lines: ['Date on top!', 'Dear: hello!', 'Body in the middle,', 'Closing: goodbye!', 'Then my name!'] },
+        act: X(D[0], { say: 'Put the *five parts* of a letter in order.', how: 'Top to bottom: *date*, greeting, body, closing, *name*.' }) },
+      { t: '*Hello* is the greeting. *Goodbye* is the closing.', act: X(Y[0], { say: 'Match each line to its *part* of the letter.', how: '*Hello* is the greeting. *Goodbye* is the closing.' }) },
+      { t: 'Greeting and closing get a *capital* and a *comma*.', act: X(D[1], { say: 'Written right, or a *mistake*?', how: 'A greeting and a closing need a *capital* and a *comma*.' }) },
+      { who: { q: 'Yossi and Dovid end their letters to Rabbi Feld. Whose *closing* is right?', o: [['Yossi', 'your student.'], ['Dovid', 'Your student,']], a: 1,
+        why: 'Yossi forgot the *capital* and the *comma*.' } }],
+    play: [
+      { type: 'evidence', q: 'Avi’s letter to Rabbi Feld.', p: ['November 26', 'Dear Rabbi Feld,', 'Thank you for the trip.', 'your student.', 'Avi'], a: 3, mis: true,
+        look: 'the line written wrong', say: 'Tap the line with a *mistake*.', how: 'Check the greeting and the closing: a *capital* and a *comma*.' },
+      X(Y[4], { say: '*Greeting*, *body*, or *closing*?', how: 'Hello is the greeting. Goodbye is the closing. The *middle* is the body.' }),
+      X(Y[2], { say: 'Build the *end* of Avi’s letter.', how: 'Body first, then the *closing*, then the *name*.' }),
+      X(Y[3], { say: 'Challenge! Pick the *closing*.', how: 'The closing says goodbye, just *before your name*.' })],
+    done: 'Now Zeidy knows who wrote it! *Date*, greeting, body, closing, *name*.' }; });
+
+  NL('WRIT.RES.L03.01', function (D, Y) { return {
+    hook: { kind: 'mystery', pic: '🐦', t: 'Dovid wonders what cardinals love to eat. The book knows!',
+      q: 'How can Dovid find out for sure?', o: ['Look in the book', 'Guess again', 'Ask a cardinal'],
+      pay: 'The book says: “Cardinals love *sunflower seeds*.” Now he *knows*, not guesses.' },
+    learn: [
+      { t: 'Here is the *book*. Read it first.', act: X(D[0], { say: 'Read the *article* about birds at the feeder.', how: 'Read every page. Tap a word to see what it means.' }) },
+      { t: 'Find the *key word* in your question.', act: { type: 'cloze', t: 'Question: Where do chickadees eat? Key word: ___', o: ['chickadees', 'where', 'do'], a: 'chickadees',
+        say: 'Pick the *key word* to look for.', how: 'The *key word* names what the question is *about*.' } },
+      { t: '*Key word*, *look*, *check*! Hunt with me.', m: { type: 'chant', lines: ['Key word!', 'Look for it!', 'Check: does it answer?'] },
+        act: X(D[1], { say: 'Find what cardinals *eat* in the article.', how: 'Look for the *key word*: cardinals. Read page 2.' }) },
+      { who: { q: 'Question: What do cardinals eat? Who found the *answer*?', o: [['Avi', 'A cardinal has a short, thick beak.'], ['Chaim', 'Cardinals love sunflower seeds.']], a: 1,
+        why: 'Avi’s line has the *key word*. But it does *not answer*.' } }],
+    play: [
+      X(Y[0], { say: 'Does it *answer* the question, or not?', how: 'It must tell *how* a chickadee eats. A key word alone is not enough.' }),
+      X(Y[1], { say: 'Find *where* to hang the feeder.', how: 'Look for the *key word*: feeder. Read page 3.' }),
+      X(Y[4], { say: 'Pick the *answer* from the article.', how: 'Look for the key word *cardinal* on page 2.' }),
+      X(Y[3], { say: 'Challenge! Put the *finding steps* in order.', how: 'Question first. Then *key word*, look, and *check*.' })],
+    done: 'Cardinals love *sunflower seeds*! Key word, look, *check*: find it in the book.' }; });
+
+  NL('WRIT.RES.L03.02', function (D, Y) { return {
+    hook: { kind: 'compare', pic: '🗒️', t: 'Two note cards. One says “cardinals: sunflower seeds.” One copies a whole sentence.',
+      q: 'Which note is better?', o: ['The short one', 'The long copied one'],
+      pay: 'The *short one*! A note is a few *key words*. Then you write it *your own way*.' },
+    learn: [
+      { t: 'A *note* is a few *key words*. Not a whole sentence.', act: X(D[1], { say: 'Match each sentence to its *short note*.', how: 'Find the few *key words* from each sentence.' }) },
+      { t: 'Keep the *key words*. Leave out the little words.', act: X(Y[1], { say: 'Tap the *best note*.', how: 'Keep the *key words*. Leave out the little words.' }) },
+      { t: 'Squeeze it *small*. Later, write it *your own way*.', m: { type: 'move', t: 'Squeeze your hands close together: make the note short!' },
+        act: X(Y[0], { say: 'Build a *short note* about chickadees.', how: 'Only the *key words*. Later you make a sentence in *your own words*.' }) },
+      { who: { q: 'The book says: “Cardinals love sunflower seeds.” Who wrote a good *note*?', o: [['Avi', 'Cardinals love sunflower seeds.'], ['Yossi', 'cardinals: sunflower seeds']], a: 1,
+        why: 'Avi *copied* the sentence. Yossi kept the *key words*.' } }],
+    play: [
+      X(D[0], { say: 'Good note, or a *mistake*: copied?', how: 'A good note is a few *key words*. A whole sentence is *copied*.' }),
+      X(Y[2], { say: 'Find the sentence this *note* came from.', how: 'Look for the *key word* bugs, on page 1.' }),
+      X(Y[3], { say: 'A *note*, or a sentence in *my own words*?', how: 'A note is a few words. *My own sentence* is a whole thought.' }),
+      X(Y[4], { say: 'Challenge! Finish the note with a *key word*.', how: 'Which word tells about *chickadees*?' })],
+    done: 'The *short* card wins! Notes are *key words*. Write sentences *your own way*.' }; });
+
+  NL('WRIT.PARA.L03.16', function (D, Y) { return {
+    hook: { kind: 'wouldyou', pic: '📚', t: 'Eli says: “The book was good.” Avi says: “Dovid laughed so loud Ari woke up!”',
+      q: 'Who makes you want to read it?', o: ['Eli', 'Avi'],
+      pay: '*Avi*! A *detail from the story* proves what you think.' },
+    learn: [
+      { t: 'Read the story first. Did you *like* it?', act: X(D[0], { say: 'Read the story “The Noise in the Sukkah”.', how: 'Read every page. Think: did I *like* it? Why?' }) },
+      { t: 'Prove your *opinion* with a *detail* from the story.', act: X(Y[0], { say: 'Find the *proof* that Dovid was brave.', how: 'Look on page 1. He was scared. What did he *do* next?' }) },
+      { t: '*Opinion*, reason, *detail*, who will like it!', m: { type: 'chant', lines: ['I think…', 'because…', 'The story shows…', 'Who will like it?'] },
+        act: X(Y[2], { say: 'Put the *book response* in order.', how: '*Opinion*, reason, *detail*, then who would like it.' }) },
+      { who: { q: 'Opinion: The story was funny. Who *proved* it?', o: [['Moshe', 'Because it was good.'], ['Avi', 'Dovid laughed so loud that Ari woke up.']], a: 1,
+        why: '“It was good” *proves nothing*. A *story detail* does.' } }],
+    play: [
+      X(D[1], { say: 'Is it *really in the story*, or a mistake?', how: 'A detail must *really happen* in the story. Think back, or look again.' }),
+      X(Y[1], { say: 'Match each *opinion* to its *detail* from the story.', how: 'Which detail *shows* that opinion is true?' }),
+      X(Y[3], { say: 'Pick the word that gives the *reason*.', how: 'Which word means “*here is why*”?' }),
+      { type: 'tiles', w: ['Dovid was brave', 'because he clicked', 'on his flashlight.'], extra: ['because it was good.'],
+        say: 'Challenge! Build an *opinion* with *proof*.', how: '*Opinion* first. Then *because* and a *detail* from the story.' }],
+    done: 'Avi won you over with a *detail*. Tell what you think, and *prove it*!' }; });
 
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 

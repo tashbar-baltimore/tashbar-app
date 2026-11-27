@@ -210,6 +210,68 @@
         say:'Sounds right, or fix it?', how:'Read each one out loud, pointing to each word.'}] }
   };
 
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     NL(id, f): f gets the old do and your lists (good activities are kept) and returns hook, learn, play and done. X(a, o) copies a with changes. */
+  function X(a, o) { if (!a) throw new Error('W13 new lesson: missing activity'); return Object.assign({}, a, o || {}); }
+  function NL(id, f) { var b = BITE[id]; if (!b || !b.do || !b.your) return; var n = f(b.do, b.your);
+    b.hook = n.hook; b.learn = n.learn; b.play = n.play; b.done = n.done; if (n.one && b.board) b.board.one = n.one; delete b.do; delete b.your; delete b.ready; }
+
+  NL('WRIT.ESSAY.L03.05', function (D, Y) { return {
+    hook: { kind: 'whatswrong', pic: '🐦', t: 'Naftali’s draft: “The club made a bird feeder. Dovid has a red bike. The birds came.”',
+      q: 'What is wrong with it?', o: ['One sentence does not fit', 'It has too many birds', 'Nothing is wrong'],
+      pay: 'The *red bike* does not fit. And the reader wants *more*! *Add and cut* fixes it.' },
+    learn: [
+      { t: '*Add* a detail that helps the reader *see* it.', act: X(Y[1], { say: 'Does this detail *help you see* it?', how: 'A good add lets you *see* something. “It was good” shows nothing.' }) },
+      { t: 'Put the add *right after* the sentence it tells about.', act: X(Y[4], { say: 'Pick the detail to *add* in the gap.', how: 'Seeds go *right after* making the feeder. Then *read it again*.' }) },
+      { t: 'Hands wide to *add*. Fingers snip to *cut*!', m: { type: 'move', t: 'Open your hands wide: ADD! Snip with two fingers: CUT!' },
+        act: X(D[1], { say: 'Tap the sentence to *cut*.', how: 'Each one is about Chaim. Which one is *not about the shelf*?' }) },
+      { who: { q: 'Naftali wants to *add* to his bird feeder draft. Who has a good add?', o: [['Avi', 'It was good.'], ['Chaim', 'We filled it with seeds.']], a: 1,
+        why: '“It was good” *shows nothing*. Seeds help you *see* it.' } }],
+    play: [
+      X(D[0], { mis: true, say: '*Add it* or *cut it*? Watch for the mistakes.', how: 'Fits and helps you see it? Add it. Does *not fit* the topic? Cut it.' }),
+      X(Y[0], { say: 'Match each sentence to the add that tells *more about it*.', how: 'Which detail tells more about *that same* sentence?' }),
+      X(Y[3], { say: 'Build the detail to *add* about the bird feeder.', how: 'Who hung it? *Where* did it go? Leave out what does not fit.' }),
+      X(Y[2], { say: 'Challenge! Put the *revising steps* in order.', how: '*Read* first. Find, then change. Then *read it again*.' })],
+    done: 'The red bike is *cut*, and the seeds are *added*. You can *add and cut*!' }; });
+
+  NL('WRIT.ESSAY.L03.06', function (D, Y) { return {
+    hook: { kind: 'secret', pic: '🔐', t: 'Crack the code! *C-U-P-S* hides four editing checks.',
+      q: 'What could the P stand for?', o: ['Punctuation', 'Pizza', 'Pencil'],
+      pay: '*P* is *Punctuation*! *CUPS*: Capitals, Usage, Punctuation, Spelling.' },
+    learn: [
+      { t: '*C*: Capitals start a sentence. Names get *capitals* too.', act: X(Y[3], { say: 'Build it with every *capital* right.', how: 'A *capital* at the start, and on *Purim*.' }) },
+      { t: '*U*: Usage. Say it out loud. Does it *sound right*?', act: X(Y[2], { say: '*Usage* check: pick the word that sounds right.', how: 'Say it out loud. Which one sounds right for *yesterday*?' }) },
+      { t: '*P*: end marks. *S*: Spelling. Check *all four*!', m: { type: 'chant', lines: ['C! Capitals!', 'U! Usage!', 'P! Punctuation!', 'S! Spelling!'] },
+        act: X(Y[1], { pairs: [['dovid ran home.', 'Dovid ran home.'], ['We was late.', 'We were late.'], ['We fixd a clock.', 'We fixed a clock.']], say: 'Match each mistake to its *fixed* sentence.', how: 'Find the same sentence with the *mistake fixed*.' }) },
+      { who: { q: 'Draft: “the boys was hapy.” Who *edited* it right?', o: [['Dovid', 'the boys was happy'], ['Yehuda', 'The boys were happy.']], a: 1,
+        why: 'Dovid checked *only spelling*. Use *all four* CUPS checks.' } }],
+    play: [
+      X(D[1], { say: 'Which *CUPS* check catches each mistake?', how: 'A small first letter? Words that sound wrong? A missing *end mark*?' }),
+      X(Y[0], { say: 'Tap the sentence with *no mistakes*.', how: 'Check the *capital*, the words, the *end mark* and the spelling.' }),
+      { type: 'cloze', t: 'Zeidy ___ the old clock.', o: ['fixed', 'fixd', 'fixt'], a: 'fixed',
+        say: '*S* check: pick the word spelled right.', how: 'Say it slowly: fix-ed. Fixed ends with *e-d*.' },
+      X(Y[4], { say: 'Challenge! Ready for the notebook, or needs *CUPS*?', how: 'Check the *capital*, the words, the end mark and the *spelling*.' })],
+    done: 'You cracked the code! *CUPS*: Capitals, Usage, Punctuation, Spelling.' }; });
+
+  NL('WRIT.ESSAY.L03.07', function (D, Y) { return {
+    hook: { kind: 'puzzle', pic: '👀', t: 'Read this fast: “We went the park.”',
+      q: 'Is something missing?', o: ['Yes, a word is missing', 'No, it looks fine'],
+      pay: 'The word *to* is missing! Reading *out loud* catches it.' },
+    learn: [
+      { t: '*Point* to each word. Read it *out loud*.', act: X(D[1], { say: 'Pick the *missing word*.', how: 'Read it *out loud*. Which word makes it sound right?' }) },
+      { t: 'A word there *two times*? That is an *extra word*.', act: X(Y[0], { say: 'Tap the sentence with an *extra word*.', how: 'Read each one out loud. Listen for a word said *twice*.' }) },
+      { t: 'Point and read with me, *slow* and *out loud*.', m: { type: 'move', t: 'Point to each word, one at a time, and read out loud.' },
+        act: X(Y[3], { extra: ['the'], say: 'Build the sentence with *no extra* words.', how: 'Read it out loud. Is a word there *twice*?' }) },
+      { who: { q: 'Dovid wrote: “We went the park.” Who read it *like a reader*?', o: [['Dovid', 'I read it fast. Looks fine!'], ['Naftali', 'I read it out loud. “to” is missing!']], a: 1,
+        why: 'Fast reading *skips* missing words. Read *out loud*.' } }],
+    play: [
+      X(D[0], { say: '*Missing* word, *extra* word, or just right?', how: 'Read it out loud, *pointing* to each word. Some are just right.' }),
+      X(Y[1], { say: 'Match each sentence to its *fixed* sentence.', how: 'Read both out loud. Which one sounds *just right*?' }),
+      { type: 'cloze', t: 'Dovid wrote: Zeidy fixed ___ old clock.', o: ['the', 'clock', 'fixed'], a: 'the',
+        say: 'Fix it! Pick the *missing word*.', how: 'Point and read it *out loud*. Which word is missing?' },
+      X(Y[4], { say: 'Challenge! Sounds right, or *fix it*?', how: 'Read each one *out loud*, pointing to each word.' })],
+    done: 'You found the missing *to*! Read *out loud*, pointing, to catch *missing* and *extra* words.' }; });
+
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 
   /* Unit W13.U25 = Grade 2, Unit 5 "Make It Better". The real task (map: Gr 2 pieces 9-10, revise and publish): the Writing Workshop
