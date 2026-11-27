@@ -1,27 +1,25 @@
 /* KESER KIT: the one look for every button and label a girl sees in Keser Girls 3.0.
    Use these classes; do not draw your own buttons. Colors (M. Heinemann 2026-11-26): the Keser Academy royal purple and gold, from the school's logo and banners.
    Accents: the house jewels, ruby, sapphire and emerald.
-   .k-btn    the one big action on a screen (rose glass pill, gold rim, soft glow)
+   .k-btn    the one big action on a screen (a solid Keser-color pill with a thin gold line)
    .k-icon   a small round glass button (arrows, back, sound, light mode); always has an aria-label
    .k-foil   gold-foil words (titles, place names)
    .k-dots   the jewel dots that show where she is */
 :root{
   --night:#1C0A30; --plum:#3A1660; --royal:#5D2B88; --royal2:#7A44AA;
   /* the Keser house colors (M. Heinemann 2026-11-26: "the maroon, blue, royal blue, purple. And green"): Keser Torah maroon, Keser Malchus royal blue and navy, Keser Kehuna emerald */
-  --maroon:#8E1F35; --maroon2:#B5354F; --blue:#2450C2; --blue2:#4F7FE0; --navy:#1B2A5E; --emerald:#1C7F52; --emerald2:#38B07A; --rose:#5D2B88; --rose2:#7A44AA; --lilac:#B08AD8; --mint:#4FB38A; --sky:#4F7FD8;
+  /* M. Heinemann 2026-11-26: "the dark burgundy, green, royal blue, and the Kesser purple ... clean and neat and fresh, not ... pinky" */
+  --keser:#2A1650; --keser2:#4B2A85;
+  --maroon:#6E1428; --maroon2:#8E1F35; --blue:#1F3F9E; --blue2:#2F5FD0; --navy:#1B2A5E; --emerald:#155E3C; --emerald2:#38B07A; --rose:#4B2A85; --rose2:#5D2B88; --lilac:#B08AD8; --mint:#4FB38A; --sky:#4F7FD8;
   --gold1:#F6E3B0; --gold2:#D4AA50; --gold3:#A87C2E;
   --spring:cubic-bezier(.34,1.56,.64,1); --glide:cubic-bezier(.2,.8,.2,1);
   --serif:"Didot","Bodoni 72","Bodoni MT","Playfair Display",Georgia,serif;
 }
 .k-btn{ appearance:none; border:0; text-decoration:none; cursor:pointer; position:relative; isolation:isolate; display:inline-flex; align-items:center; gap:10px;
   padding:15px 38px; border-radius:999px; font:800 15px/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; letter-spacing:.32em; text-transform:uppercase; color:#fff;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--c,#7A44AA) 88%,#fff),color-mix(in srgb,var(--c,#4C2076) 78%,#000)); box-shadow:0 10px 34px color-mix(in srgb,var(--c,#5D2B88) 60%,transparent), 0 0 0 1px rgba(255,241,184,.55), inset 0 1px 0 rgba(255,255,255,.6);
-  transition:transform .35s var(--spring), box-shadow .3s; -webkit-tap-highlight-color:transparent; }
-.k-btn::before{ content:""; position:absolute; inset:-2px; border-radius:inherit; z-index:-1; padding:2px;
-  background:linear-gradient(100deg,var(--gold3),var(--gold2),var(--gold1),#fff,var(--gold1),var(--gold2),var(--gold3)); background-size:250% 100%; animation:k-foil 4s linear infinite;
-  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
-.k-btn::after{ content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 48%,transparent 62%); background-size:300% 100%; animation:k-shine 3.2s ease-in-out infinite; pointer-events:none; }
-.k-btn:hover{ transform:translateY(-2px) scale(1.03); box-shadow:0 14px 40px rgba(212,170,80,.45), 0 0 0 1px rgba(255,241,184,.8), inset 0 1px 0 rgba(255,255,255,.7); }
+  background:var(--c,var(--keser2)); box-shadow:0 6px 18px rgba(10,0,25,.35), 0 0 0 1px rgba(246,227,176,.7);
+  transition:transform .2s ease, box-shadow .2s; -webkit-tap-highlight-color:transparent; }
+.k-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(10,0,25,.45), 0 0 0 1.5px var(--gold2); }
 .k-btn:active{ transform:scale(.95); }
 .k-btn:focus-visible,.k-icon:focus-visible,.k-dots button:focus-visible{ outline:2px solid var(--gold1); outline-offset:4px; }
 .k-btn .k-star{ width:14px; height:14px; flex:none; }

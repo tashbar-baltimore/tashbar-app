@@ -1,5 +1,5 @@
 /* KESER GIRLS 3.0 · KODESH: the Chumash & Timeline Lab, played as a made-up girl. The same play-through as 1.0's tests/lib/chumashlab.js,
-   run on Keser's own copy in keser/app/kodesh/. It builds and serves the Keser site, opens her world without 3D, goes into Kodesh and taps
+   run on Keser's own copy in keser/app/kodesh/. It builds and serves the Keser site, opens home, taps קודש straight into the lab and taps
    "Chumash & Timeline Lab". Then:
    1. every timeline picture the lab names is listed for the build (kodesh/pics.js) and is in the built site;
    2. the data loaded (200 shorashim, the milim, 12 prefix/suffix units, 6 stop-sign units, 7 Workshop pesukim); no pasuk writes a Divine Name;
@@ -31,9 +31,8 @@ module.exports = async (browser) => {
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } }), pg = await ctx.newPage(), errs = [];
   pg.on('pageerror', e => errs.push(String(e))); pg.on('console', m => { if (m.type() === 'error' && !/fonts\.g/.test(m.text())) errs.push(m.text()); });
   try {
-    await pg.goto('http://127.0.0.1:' + srv.address().port + '/world.html?nogl=1&nogreet=1'); await pg.waitForFunction(() => window.KWORLD);
-    await pg.evaluate(() => { KWORLD.go(0); KWORLD.enter(); }); await pg.waitForSelector('#openLab:not([hidden])', { timeout: 8000 });
-    await pg.click('#openLab'); await pg.waitForSelector('#clab', { timeout: 20000 });
+    await pg.goto('http://127.0.0.1:' + srv.address().port + '/home.html'); await pg.waitForFunction(() => window.KHOME);
+    await pg.click('.choice[data-go="kodesh"]'); await pg.waitForSelector('#clab', { timeout: 20000 });   /* home: קודש goes straight into the lab */
     fs.mkdirSync(path.join(__dirname, '..', '..', 'tests', 'out'), { recursive: true });
     await pg.screenshot({ path: path.join(__dirname, '..', '..', 'tests', 'out', 'keser-kodesh-lab.png') });
     const vp = pg.viewportSize();

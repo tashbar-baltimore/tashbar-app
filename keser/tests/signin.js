@@ -1,10 +1,14 @@
-/* Keser Girls 3.0, HER SIGN-IN (the jewel vault): builds, is served like the real site, and works for a made-up girl at Chromebook (1366x768)
-   and phone size: the vault and 12 gem keys show, the paintings load, a wrong code shakes the vault and clears, the practice code opens the
-   vault and flies her into her treasure house, a globe for each of her three places shows (a subject she has not started waits, dimmed), a globe takes her to that
-   place in her world, it fits the screen with no sideways scroll, no money or points, and "reduce motion" still lets her in quickly.
-   The welcome page's Enter leads here (keser/tests/welcome.js). Until the girls' records are built, only the practice code opens it. */
+/* Keser Girls 3.0: the way in (M. Heinemann 2026-11-26: "too many openings ... Once they put the code in, it should go straight to either choose
+   Kodesh, Timeline lab, or the general studies. And then it should go straight in ... clean and neat and fresh, not ... pinky").
+   Played as a made-up girl at Chromebook (1366x768) and phone size, and with "reduce motion":
+   - the welcome's Enter leads to her code; the code screen shows the Keser logo and 12 keys that fit and are big enough to tap;
+   - a wrong code shakes and clears; the practice code goes straight to home;
+   - home has three choices, קודש (Hebrew), Timeline and General Studies, in the Keser colors, each with its picture;
+   - קודש goes straight into the Chumash Lab, Timeline straight into the Timeline, General Studies straight to its page (and back);
+   - no money or points, no sideways scroll, no errors; no pink anywhere in the app's own styles. */
 const path = require('path'), os = require('os'), fs = require('fs'), cp = require('child_process'), http = require('http');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.webp': 'image/webp', '.png': 'image/png' };
+const PINK = /#ff(5f|8f|c2|b3|3d|7a|e3|f0|f5)[0-9a-f]{2}\b|rgba\(255,\s*(95|143|194|179),/i;
 module.exports = async (browser) => {
   const fails = [], oks = [], out = fs.mkdtempSync(path.join(os.tmpdir(), 'keser-sign-'));
   cp.execFileSync(process.execPath, [path.join(__dirname, '..', 'build.js')], { env: Object.assign({}, process.env, { KESER_OUT: out }), stdio: 'pipe' });
@@ -12,43 +16,61 @@ module.exports = async (browser) => {
     if (!f.startsWith(out) || !fs.existsSync(f)) { r.writeHead(404); return r.end(); } r.writeHead(200, { 'Content-Type': TYPES[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(r); });
   await new Promise(ok => srv.listen(0, '127.0.0.1', ok)); const url = 'http://127.0.0.1:' + srv.address().port + '/';
   const shots = path.join(__dirname, '..', '..', 'tests', 'out'); fs.mkdirSync(shots, { recursive: true });
+  const fits = (pg) => pg.evaluate(() => { const vw = innerWidth, bad = [];
+    document.querySelectorAll('button,a.k-btn').forEach(b => { const r = b.getBoundingClientRect(); if (!r.width || getComputedStyle(b).display === 'none' || b.closest('#general') && !document.body.classList.contains('gs')) return;
+      if (r.left < -1 || r.right > vw + 1) bad.push((b.id || b.dataset.k || b.dataset.go || b.textContent.trim()) + ' is off the screen');
+      if (r.width < 40 || r.height < 40) bad.push((b.id || b.dataset.k || b.dataset.go) + ' is too small to tap'); });
+    return { bad, wide: document.documentElement.scrollWidth > vw + 1, text: document.body.innerText }; });
   try {
+    /* no pink in the app's own styles */
+    for (const f of ['kit.css', 'index.html', 'signin.html', 'home.html', 'kodesh/lab.css']) { const t = fs.readFileSync(path.join(__dirname, '..', 'app', f), 'utf8');
+      if (PINK.test(t)) fails.push('Keser look: ' + f + ' still uses a pink color (' + t.match(PINK)[0] + ')'); }
     for (const [tag, w, h, opts] of [['chromebook', 1366, 768], ['phone', 390, 800], ['reduce motion', 390, 800, { reducedMotion: 'reduce' }]]) {
       const ctx = await browser.newContext(Object.assign({ viewport: { width: w, height: h } }, opts || {})), pg = await ctx.newPage(), errs = [];
       pg.on('pageerror', e => errs.push(String(e))); pg.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); pg.on('requestfailed', r => errs.push('could not load ' + r.url()));
-      await pg.goto(url + 'signin.html'); await pg.waitForFunction(() => window.KSIGN, null, { timeout: 15000 }); await pg.waitForTimeout(800);
-      const v = await pg.evaluate(() => { const vw = innerWidth, vh = innerHeight, off = [];
-        const pics = [...document.querySelectorAll('#vault img')].every(i => i.complete && i.naturalWidth > 0);
-        document.querySelectorAll('#vault button').forEach(b => { const r = b.getBoundingClientRect(); if (r.left < -1 || r.top < -1 || r.right > vw + 1 || r.bottom > vh + 1 || r.width < 44) off.push(b.dataset.k); });
-        return { keys: document.querySelectorAll('.key').length, pics, off, wide: document.documentElement.scrollWidth > vw + 1 }; });
-      if (v.keys !== 12) fails.push('Keser sign-in (' + tag + '): expected 12 gem keys, got ' + v.keys);
-      if (!v.pics) fails.push('Keser sign-in (' + tag + '): the vault paintings or the Keser logo did not load');
-      if (v.off.length) fails.push('Keser sign-in (' + tag + '): keys off the screen or too small to tap: ' + v.off.join(', '));
-      if (v.wide) fails.push('Keser sign-in (' + tag + '): the page is wider than the screen');
-      if (tag === 'chromebook') await pg.screenshot({ path: path.join(shots, 'keser-signin-vault.png') });
+      /* welcome -> code */
+      await pg.goto(url); await pg.click('#enter');
+      if (!(await pg.waitForURL(/signin\.html/, { timeout: 8000 }).then(() => true, () => false))) fails.push('Keser (' + tag + '): Enter does not lead to her code');
+      await pg.waitForFunction(() => window.KSIGN, null, { timeout: 15000 });
+      const v = await pg.evaluate(() => ({ keys: document.querySelectorAll('.key').length, logo: [...document.querySelectorAll('.pad img')].every(i => i.complete && i.naturalWidth > 0) }));
+      if (v.keys !== 12) fails.push('Keser sign-in (' + tag + '): expected 12 keys, got ' + v.keys);
+      if (!v.logo) fails.push('Keser sign-in (' + tag + '): the Keser logo did not load');
+      { const f = await fits(pg); f.bad.forEach(b => fails.push('Keser sign-in (' + tag + '): ' + b)); if (f.wide) fails.push('Keser sign-in (' + tag + '): the page is wider than the screen'); }
+      if (tag !== 'reduce motion') await pg.screenshot({ path: path.join(shots, 'keser-signin-' + tag + '.png') });
       for (const d of '9876') await pg.click('.key[data-k="' + d + '"]');
-      await pg.waitForTimeout(1100);
-      const wrong = await pg.evaluate(() => ({ stage: KSIGN.state.stage, code: KSIGN.state.code, tries: KSIGN.state.tries }));
-      if (wrong.stage !== 'vault' || wrong.code !== '' || wrong.tries !== 1) fails.push('Keser sign-in (' + tag + '): a wrong code must not open the vault and must clear (' + JSON.stringify(wrong) + ')');
+      await pg.waitForTimeout(700);
+      const wrong = await pg.evaluate(() => ({ code: KSIGN.state.code, tries: KSIGN.state.tries, url: location.pathname }));
+      if (wrong.code !== '' || wrong.tries !== 1 || !/signin/.test(wrong.url)) fails.push('Keser sign-in (' + tag + '): a wrong code must clear and stay on the code screen (' + JSON.stringify(wrong) + ')');
       for (const d of '1234') await pg.click('.key[data-k="' + d + '"]');
-      const home = await pg.waitForFunction(() => KSIGN.state.stage === 'home' && document.body.classList.contains('home'), null, { timeout: 12000 }).then(() => true, () => false);
-      if (!home) { fails.push('Keser sign-in (' + tag + '): the practice code did not open the vault into her treasure house'); errs.forEach(e => fails.push('Keser sign-in (' + tag + '): ' + e)); await ctx.close(); continue; }
-      await pg.waitForTimeout(1200);
-      const t = await pg.evaluate(() => ({ globes: [...document.querySelectorAll('.globe')].map(g => ({ id: g.dataset.place, waiting: g.classList.contains('waiting'), ok: g.querySelector('.orb').complete && g.querySelector('.orb').naturalWidth > 0 && g.querySelector('.mark').naturalWidth > 0 })),
-        text: document.body.innerText, house: document.querySelector('#house .bg').naturalWidth > 0 }));
-      if (t.globes.map(g => g.id).join() !== 'kodesh,general,timeline' || t.globes.some(g => !g.ok) || !t.house) fails.push('Keser sign-in (' + tag + '): her treasure house must show three globes (קודש, General Studies, Timeline) and its painting (' + JSON.stringify(t.globes) + ')');
-      if (!t.globes.every(g => g.waiting)) fails.push('Keser sign-in (' + tag + '): with no progress yet, every globe should be waiting');
-      if (/\$|\bcoins?\b|\bpoints?\b|\bprices?\b|\bmoney\b/i.test(t.text)) fails.push('Keser sign-in (' + tag + '): money or points on the screen');
-      if (tag === 'chromebook') await pg.screenshot({ path: path.join(shots, 'keser-signin-treasure-house.png') });
-      await pg.$eval('.globe[data-place="timeline"]', b => b.click());   /* the ring keeps turning, so tap it where it is */
-      const went = await pg.waitForURL(/world\.html\?place=timeline/, { timeout: 6000 }).then(() => true, () => false);
-      if (!went) fails.push('Keser sign-in (' + tag + '): a globe does not take her to that place in her world');
-      else { const at = await pg.waitForFunction(() => document.getElementById('placeName') && document.getElementById('placeName').textContent === 'Timeline', null, { timeout: 15000 }).then(() => true, () => false);
-        if (!at) fails.push('Keser sign-in (' + tag + '): her world did not open at Timeline after she tapped the Timeline globe'); }
-      errs.filter(e => !/world3d|WebGL/.test(e)).forEach(e => fails.push('Keser sign-in (' + tag + '): ' + e)); await ctx.close();
+      if (!(await pg.waitForURL(/home\.html/, { timeout: 8000 }).then(() => true, () => false))) { fails.push('Keser sign-in (' + tag + '): the practice code does not go straight to home'); await ctx.close(); continue; }
+      /* home: three choices */
+      await pg.waitForFunction(() => window.KHOME, null, { timeout: 15000 });
+      const hm = await pg.evaluate(() => [...document.querySelectorAll('.choice')].map(c => ({ go: c.dataset.go, name: c.querySelector('b').textContent, he: c.querySelector('b').getAttribute('lang'), bg: getComputedStyle(c).backgroundColor })));
+      if (hm.map(c => c.go).join() !== 'kodesh,timeline,general') fails.push('Keser home (' + tag + '): expected קודש, Timeline, General Studies, got ' + hm.map(c => c.go));
+      if (!hm[0] || hm[0].name !== 'קודש' || hm[0].he !== 'he') fails.push('Keser home (' + tag + '): קודש is not written in Hebrew');
+      const want = ['rgb(110, 20, 40)', 'rgb(21, 94, 60)', 'rgb(31, 63, 158)'];   /* burgundy, green, royal blue */
+      hm.forEach((c, i) => { if (c.bg !== want[i]) fails.push('Keser home (' + tag + '): ' + c.go + ' is not in its Keser color (' + c.bg + ')'); });
+      await pg.waitForTimeout(500);
+      const pics = await pg.evaluate(() => Promise.all([...document.querySelectorAll('.choice .pic')].map(p => new Promise(ok => { const i = new Image(); i.onload = () => ok(true); i.onerror = () => ok(false); i.src = getComputedStyle(p).backgroundImage.slice(5, -2); }))));
+      if (pics.some(p => !p)) fails.push('Keser home (' + tag + '): a choice picture did not load');
+      { const f = await fits(pg); f.bad.forEach(b => fails.push('Keser home (' + tag + '): ' + b)); if (f.wide) fails.push('Keser home (' + tag + '): the page is wider than the screen');
+        if (/\$|\bcoins?\b|\bpoints?\b|\bprices?\b|\bmoney\b/i.test(f.text)) fails.push('Keser home (' + tag + '): money or points on the screen'); }
+      if (tag !== 'reduce motion') await pg.screenshot({ path: path.join(shots, 'keser-home-' + tag + '.png') });
+      /* General Studies: straight to its page, and back */
+      await pg.click('.choice[data-go="general"]');
+      const gs = await pg.waitForFunction(() => document.body.classList.contains('gs') && [...document.querySelectorAll('#general img')].every(i => i.complete && i.naturalWidth > 0), null, { timeout: 8000 }).then(() => true, () => false);
+      if (!gs) fails.push('Keser home (' + tag + '): General Studies does not open straight to its page');
+      await pg.click('#gsBack'); if (await pg.evaluate(() => document.body.classList.contains('gs'))) fails.push('Keser home (' + tag + '): Back does not leave General Studies');
+      /* קודש: straight into the lab; Timeline: straight into the Timeline */
+      await pg.click('.choice[data-go="kodesh"]');
+      if (!(await pg.waitForFunction(() => window.CLAB && CLAB.open && CLAB.view === 'hub', null, { timeout: 20000 }).then(() => true, () => false))) fails.push('Keser home (' + tag + '): קודש does not go straight into the Chumash Lab');
+      await pg.evaluate(() => CLAB.close());
+      await pg.click('.choice[data-go="timeline"]');
+      if (!(await pg.waitForFunction(() => window.CLAB && CLAB.open && CLAB.view === 'tl', null, { timeout: 20000 }).then(() => true, () => false))) fails.push('Keser home (' + tag + '): Timeline does not go straight into the Timeline');
+      errs.forEach(e => fails.push('Keser (' + tag + '): ' + e)); await ctx.close();
     }
-  } catch (e) { fails.push('Keser sign-in test stopped: ' + String(e).slice(0, 200)); }
+  } catch (e) { fails.push('Keser sign-in and home test stopped: ' + String(e).slice(0, 200)); }
   finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
-  if (!fails.length) oks.push('Keser Girls 3.0 sign-in: the jewel vault at Chromebook and phone size, a wrong code shakes and clears, the practice code opens it into her treasure house with three globes, a globe takes her to that place, reduce motion');
+  if (!fails.length) oks.push('Keser Girls 3.0 way in: welcome, code (wrong code clears, practice code goes straight home), home with קודש, Timeline and General Studies in burgundy, green and royal blue, each straight in, at Chromebook and phone size, reduce motion, no pink');
   return { fails, oks };
 };
