@@ -240,10 +240,11 @@
       { who: { q: 'Which way does the *Nile* flow?', o: [['Benny', 'South, because south is down'], ['Yoni', 'North, into the Mediterranean']], a: 1,
         why: 'Rivers flow *downhill*. The Nile ends at the *sea*, up north.' } },
       { t: 'Each year the Nile *flooded*. It left rich *mud*.', act: Y[1] },
-      { t: '*Teach it back*: how did one river feed a desert?', m: { type: 'scene', e: '🗣️', t: 'Tell your chavrusa three steps. The Nile flooded. It left rich mud. Farms grew along the river. Then add the Pharaohs, their pyramids and hieroglyphics.' } }];
+      { t: '*Teach it back*: how did one river feed a desert?', m: { type: 'scene', e: '🗣️', t: 'Tell your chavrusa three steps. The Nile flooded. It left rich mud. Farms grew along the river.' } }];
     Y[2].pairs = [['Pharaoh','a king of Mitzrayim'],['pyramid','a giant stone tomb for a Pharaoh'],['hieroglyphics','writing made of picture-signs']];
-    var strip = { type: 'sort', bins: ['Green strip by the Nile', 'Far desert'], cards: [['wheat and barley grow', 0], ['most towns and cities', 0], ['dry sand, no farms', 1], ['papyrus plants grow', 0], ['almost nobody lives here', 1]],
-      q: 'Where does each one belong: by the Nile, or far away?', say: 'By the Nile, or far out in the desert?', how: 'Water and mud make things grow. Far from the river, nothing grows.' };
+    var strip = { type: 'sort', mis: true, bins: ['Green strip by the Nile', 'Far desert'], cards: [['wheat and barley grow', 0], ['most towns and cities', 0], ['dry sand, no farms', 1], ['papyrus plants grow', 0], ['almost nobody lives here', 1]],
+      q: 'Mistake Detective: Shimon thinks people lived all over Mitzrayim. Sort it right.', say: 'Shimon mixed it up! By the Nile, or far desert?', how: 'Water and mud make things grow. Far from the river, nothing grows.' };
+    Y[4].q = 'What were the pyramids for?'; Y[4].proof = 'built as their tombs'; Y[4].look = 'what the pyramids were for'; Y[4].how = 'Find the part about the pyramids.';
     b.play = [D[1], strip, Y[2], Y[4]];
     b.done = 'You know how the *Nile* kept Mitzrayim alive, and the land of the *Pharaohs*!';
     delete b.do; delete b.your; delete b.ready; })(BITE['SS.HIST.L07.01']);
@@ -288,18 +289,18 @@
       { who: { q: 'What is the *Kosel*?', o: [['Eli', 'A wall of the Beis Hamikdash itself'], ['Yoni', 'Part of the wall around Har Habayis']], a: 1,
         why: 'The *Beis Hamikdash* was destroyed. Part of the outer *wall* stands.' } },
       { t: 'Find the *Har Habayis*, then the *Kosel*.', act: Y[4] },
-      { t: '*Teach it back*: all four kingdoms, ending with Rome.', m: { type: 'scene', e: '🗣️', t: 'Tell your chavrusa: Bavel, Persia, Greece, Rome. Titus of Rome destroyed the second Beis Hamikdash. That is the Churban. We mourn it on Tisha B’Av.' } }];
+      { t: '*Teach it back*: all four kingdoms, ending with Rome.', m: { type: 'scene', e: '🗣️', t: 'Tell your chavrusa: Bavel, Persia, Greece, Rome. Titus of Rome destroyed the second Beis Hamikdash. That is the Churban. We mourn it on Tisha B’Av. We still daven to Hashem at the Kosel.' } }];
     var mix = { type: 'sort', mis: true, q: 'Mistake Detective: Shimon wrote these. True, or a mix-up?', bins: ['True', 'Mix-up'],
       cards: [['Titus was a Roman general', 0], ['Bavel destroyed the second Beis Hamikdash', 1], ['Rome was the last of the four kingdoms', 0], ['Rome was the first of the four kingdoms', 1], ['We mourn the Churban on Purim', 1]],
       say: 'Shimon mixed some up! True, or a mix-up?', how: 'Bavel, Persia, Greece, Rome. Rome came last and destroyed the second one.' };
     Y[0].say = 'Four kingdoms, in order. Tap each one on the map.';
-    b.play = [mix, Y[0], Y[2], Y[3]];
+    b.play = [mix, Y[0], Y[1], Y[3]];
     b.done = 'You know how *Rome* destroyed the second Beis Hamikdash, and why we still *mourn*!';
     delete b.do; delete b.your; delete b.ready; })(BITE['SS.HIST.L07.04']);
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
     b.hook = { kind: 'wouldyou', pic: '📜', t: 'Picture Torah taught only by mouth. Nothing is written down.', q: 'How would you keep it safe?',
       o: ['Write it down', 'Say it louder', 'Hope nobody forgets'],
-      pay: 'Writing it was not done, until hard times came. Then *Rebbi* wrote the *Mishnah*.' };
+      pay: 'Writing it was not allowed. In hard times, *Rebbi* wrote the *Mishnah*.' };
     b.learn = [
       { t: 'Read Benny’s notebook about the *Oral Torah*.', act: D[0] },
       { t: 'Build the *chain*, from Har Sinai to today.', act: D[1] },
