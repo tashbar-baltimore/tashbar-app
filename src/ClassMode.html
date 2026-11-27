@@ -45,6 +45,7 @@ function css(){ if(document.getElementById('tm-css')) return; const s=document.c
 const YCW_ART={   /* name: slices. Filled in as the pictures arrive and pass their check (art/CATALOG.md) */
  'ycb-paper':1,'ycb-paper-done':1,'ycb-done-tray':1,'ycb-confetti':1,'ycb-ic-lock':1,'ycb-ic-worksheet':1,'ycb-ic-science':1,'ycb-ic-electives':1,
  'ycb-ic-trades':1,'ycb-ic-canteen':1,'ycb-ic-duels':1,'ycb-ic-store':1,'ycw-ic-detective':1,'ycw-ic-blocks':1,'ycw-ic-lab':1,'ycw-ic-library':1,'ycw-ic-calm':1,
+ 'ycb-bucket':1,'ycb-bucket-front':1,'ycb-cloud-1':1,'ycb-cloud-2':1,'ycb-cloud-3':1,'ycb-cloud-4':1,
  'ycw-ic-work':1,'ycw-ic-trail':1,'ycw-ic-profile':1,'ycw-ic-music':1,'ycw-ic-talk':1,'ycw-ic-tracks':1,'ycw-ic-games':1,'ycw-ui-coin':1,'ycw-ui-star':1 };
 const YCI=n=>YCW_ART[n]?`<img src="/pics/${n}.webp" alt="" draggable="false">`:'';
 const YCP=(n,cls)=>{ const k=YCW_ART[n]; if(!k) return ''; const one=i=>`<img src="/pics/${n}${k>1?'-'+(i+1):''}.webp" alt="" draggable="false" decoding="async">`; return `<div class="ycw-pic ${cls||''}">${Array.from({length:k},(_,i)=>one(i)).join('')}</div>`; };
@@ -55,12 +56,13 @@ try{ YCW.reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e
 function ycwBuild(){ if(YCW.el&&document.body.contains(YCW.el)) return YCW.el; const w=document.createElement('div'); w.id='ycworld'; w.setAttribute('aria-hidden','true');
  w.innerHTML=`<div class="ycw-l ycw-sky" data-d="0.04">${YCP('ycw-k-sky')}<div class="ycw-paint ycw-paint-sky"></div></div>
   <div class="ycw-l ycw-csky" data-d="0.04">${YCP('ycw-c-sky')}<div class="ycw-paint ycw-paint-csky"></div></div>
+  <div class="ycw-l ycw-cl" data-d="0.08">${YCW_ART['ycb-cloud-1']?'<img class="ycl ycl1" src="/pics/ycb-cloud-1.webp" alt=""><img class="ycl ycl2" src="/pics/ycb-cloud-3.webp" alt=""><img class="ycl ycl3" src="/pics/ycb-cloud-2.webp" alt=""><img class="ycl ycl4" src="/pics/ycb-cloud-1.webp" alt="">':''}</div>
   <div class="ycw-l ycw-far" data-d="0.12">${YCP('ycw-k-far')}<div class="ycw-paint ycw-paint-far"></div></div>
   <div class="ycw-l ycw-mid" data-d="0.3">${YCP('ycw-k-mid')}<div class="ycw-paint ycw-paint-mid"></div></div>
   <div class="ycw-l ycw-cmid" data-d="0.3">${YCP('ycw-c-mid')}<div class="ycw-paint ycw-paint-cmid"></div></div>
   <div class="ycw-place"></div>
   <div class="ycw-l ycw-near" data-d="0.7">${YCP('ycw-k-near')}</div>
-  <div class="ycw-fx ycw-clouds">${YCP('ycw-fx-cloudwall')}<div class="ycw-paint ycw-paint-clouds"></div></div>
+  <div class="ycw-fx ycw-clouds">${YCP('ycw-fx-cloudwall')||(YCW_ART['ycb-cloud-4']?'<img class="yclwall" src="/pics/ycb-cloud-4.webp" alt=""><img class="yclwall yclw2" src="/pics/ycb-cloud-1.webp" alt="">':'')}<div class="ycw-paint ycw-paint-clouds"></div></div>
   <div class="ycw-fx ycw-rays">${YCP('ycw-fx-rays')}</div>`;
  document.body.appendChild(w); YCW.el=w; if(!YCW.raf) ycwLoop(); return w; }
 const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
@@ -98,7 +100,9 @@ body.yc-world .ycw{background:transparent}
 .ycw-paint-mid{background:linear-gradient(180deg,#A7E08F,#79C784);clip-path:polygon(0 80%,6% 72%,13% 77%,20% 68%,27% 75%,34% 70%,41% 78%,48% 69%,55% 76%,62% 67%,69% 74%,76% 70%,83% 78%,90% 69%,100% 75%,100% 100%,0 100%);opacity:.9}
 .ycw-paint-cmid{background:radial-gradient(40% 30% at 30% 80%,#FFFFFF,rgba(255,255,255,0) 70%),radial-gradient(45% 30% at 75% 85%,#FFFFFF,rgba(255,255,255,0) 70%)}
 .ycw-paint-clouds{background:radial-gradient(40% 35% at 30% 50%,#fff,rgba(255,255,255,0) 72%),radial-gradient(45% 40% at 70% 45%,#fff,rgba(255,255,255,0) 72%),radial-gradient(60% 50% at 50% 60%,rgba(255,255,255,.95),rgba(255,255,255,0) 75%)}
-.ycw-clouds{opacity:0}.ycw-rays{opacity:.55;mix-blend-mode:screen}
+.ycw-clouds{opacity:0}.yclwall{position:absolute;left:-10%;top:10%;width:120%;height:80%;object-fit:cover}.yclw2{left:10%;top:25%;width:80%;height:auto;opacity:.9}
+.ycl{position:absolute;height:auto;opacity:.95;animation:ycDrift 90s linear infinite alternate}.ycl1{width:34%;left:58%;top:14%}.ycl2{width:26%;left:8%;top:22%;animation-duration:120s}.ycl3{width:40%;left:28%;top:48%;opacity:.8;animation-duration:150s}.ycl4{width:22%;left:82%;top:40%;opacity:.7;animation-duration:110s}
+@keyframes ycDrift{from{translate:-3% 0}to{translate:3% 0}}.ycw-rays{opacity:.55;mix-blend-mode:screen}
 .ycw-place{inset:0;opacity:0;transition:opacity .9s ease}.ycw-place.ycw-in{opacity:1;animation:ycwKen 24s ease-out both}.ycw-place.ycw-out{opacity:0;transition:opacity .35s}
 @keyframes ycwKen{from{transform:scale(1.09)}to{transform:scale(1)}}
 .ycw-paint-hall{background:linear-gradient(180deg,rgba(255,250,240,0) 0%,rgba(255,244,220,.55) 70%,rgba(244,226,196,.8) 100%)}
@@ -129,11 +133,13 @@ body.yc-world .ycw{background:transparent}
 .ycpaper.yclocked .yclock{position:absolute;top:-10px;right:-8px;font-size:28px}.ycpaper.yclocked .yclock img{width:38px;height:38px}.ycpaper.yclocked{filter:saturate(.35) drop-shadow(0 10px 16px rgba(30,60,110,.2))}
 .ycgo{display:flex;justify-content:center;margin-top:22px}
 /* the crystal bucket */
+.ycb-fpic{opacity:.55}.ycbucket.ycpicb{aspect-ratio:1/1}
 .ycbucket{position:relative;width:min(440px,86vw);aspect-ratio:1/0.92;margin-top:clamp(6px,3vh,28px)}
 .ycb-back,.ycb-front{position:absolute;inset:0;pointer-events:none}.ycb-back .ycw-pic,.ycb-front .ycw-pic{position:absolute;inset:0}.ycb-back img,.ycb-front img{object-fit:contain}
 .ycb-glass-back{position:absolute;left:12%;right:12%;top:22%;bottom:4%;border-radius:0 0 46% 46%/0 0 18% 18%;background:linear-gradient(180deg,rgba(210,245,255,.35),rgba(170,225,255,.55));clip-path:polygon(0 0,100% 0,88% 100%,12% 100%)}
 .ycb-glass-front{position:absolute;left:12%;right:12%;top:22%;bottom:4%;clip-path:polygon(0 0,100% 0,88% 100%,12% 100%);background:linear-gradient(100deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.08) 22%,rgba(255,255,255,0) 60%,rgba(255,255,255,.35) 92%),linear-gradient(180deg,rgba(200,240,255,.18),rgba(150,215,255,.35));box-shadow:inset 0 0 0 3px rgba(255,255,255,.5)}
 .ycb-rim{position:absolute;left:9%;right:9%;top:17%;height:11%;border-radius:50%;border:7px solid #4FC3F7;box-shadow:0 0 0 3px rgba(255,255,255,.55) inset,0 4px 14px rgba(79,195,247,.45)}
+.ycbucket.ycpicb .ycb-papers{top:-14%;height:58%}
 .ycb-papers{position:absolute;left:12%;right:12%;top:-16%;height:66%;display:flex;justify-content:center;align-items:flex-end;gap:0}
 .ycb-papers .tlk.tlk-tile.ycpaper{width:clamp(118px,13vw,156px);min-height:clamp(158px,17.5vw,208px);margin:0 -16px;animation-duration:5.5s}
 .ycb-papers .ycpaper .ycband{height:24px;line-height:24px;font-size:10px}.ycb-papers .ycpaper .ycic{height:56px;font-size:38px}.ycb-papers .ycpaper .yct{font-size:14px}.ycb-papers .ycpaper .yclines{display:none}
@@ -183,10 +189,10 @@ function ycISHTML(){ const s=TMC.s, y=s.yc, B=s.bucket, K=window.TLK, pill=(k,t)
  if(complete&&ycCelebrated!==s.id){ ycCelebrated=s.id; setTimeout(ycConfetti,500); }
  const why=y.why==='empty'?'No class work right now, so it is bucket time.':y.why==='now'?'Your teacher sent you to your bucket.':complete?'Your core is done. Your add-ons are out!':'Pull a paper out of your bucket. Any order you like.';
  return `<section class="ycw">${ycRing(s)}<div class="ycw-plaque">${pill('now','Independent Study')}<h2>${complete?'Your bucket is done!':'My bucket'}</h2><p>${E(why)}</p></div>
- <div class="ycbucket${complete?' ycglow':''}">
-  <div class="ycb-back">${YCP(complete?'ycb-bucket-glow':'ycb-bucket-back')||'<div class="ycb-glass-back"></div>'}</div>
+ <div class="ycbucket${complete?' ycglow':''}${YCW_ART['ycb-bucket']?' ycpicb':''}">
+  <div class="ycb-back">${YCP(complete?'ycb-bucket-glow':'ycb-bucket-back')||YCP('ycb-bucket')||'<div class="ycb-glass-back"></div>'}</div>
   <div class="ycb-papers">${inBucket.map((x,i)=>ycPaper({skill:x.skill,title:title(x),sub:sub(x),i})).join('')}</div>
-  <div class="ycb-front">${YCP('ycb-bucket-front')||'<div class="ycb-glass-front"></div><div class="ycb-rim"></div>'}</div>
+  <div class="ycb-front${YCW_ART['ycb-bucket-front']?' ycb-fpic':''}">${YCP('ycb-bucket-front')||'<div class="ycb-glass-front"></div><div class="ycb-rim"></div>'}</div>
   ${finished.length?`<div class="ycdone" aria-label="Done: ${finished.length}">${YCW_ART['ycb-done-tray']?`<div class="ycdtray">${YCI('ycb-done-tray')}<b>✓</b></div>`:`<div class="ycdstack">${finished.slice(0,4).map((x,i)=>`<i style="bottom:${i*5}px;transform:rotate(${(i%2?3:-3)}deg)"></i>`).join('')}<b>✓</b></div>`}${pill('prog','Done '+finished.length+' of '+B.core.length)}</div>`:''}
   ${B.addons.length?`<div class="ycadds">${B.addons.map((x,i)=>ycPaper({skill:x.skill,title:title(x),sub:'Add-on',i:i+1,locked:!complete})).join('')}</div>`:''}
  </div>
