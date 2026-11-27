@@ -49,6 +49,8 @@ function obkStep(wrong) {
       if (s.sel < 0) return tap('card', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); return tap('box', i); }
     case 'parts': case 'dictation': case 'order': { if (OBK.ready(d, s)) return check(); const list = d.parts || d.w || d.steps, i = s.slots.indexOf(-1), want = S(list[i]);
       return tap(d.type === 'parts' ? 'part' : d.type === 'order' ? 'strip' : 'tile', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); }
+    case 'timeline': { const j = d.events.findIndex((x, jj) => s.at[jj] == null); if (j < 0) return 'timeline has no event left'; if (s.sel !== j) return tap('ev', j);
+      return tap('card', w ? (d.events[j][1] + 1) % Math.min(d.cards.length, d.open || d.cards.length) : d.events[j][1]); }
     case 'map': { const st = d.steps[s.k]; if (!st) return 'map has no step left'; if (w) { const o = [...document.querySelectorAll('.cka-pin[data-obk=place]')].map(x => x.dataset.k).find(k => k !== st.tap); if (o) return tap('place', o); }
       return tap('place', st.tap); }
     /* the two Reader kinds (src/CoreKitActs.html): the book opens over the lesson; read every page to the end, or tap the proof sentence */
