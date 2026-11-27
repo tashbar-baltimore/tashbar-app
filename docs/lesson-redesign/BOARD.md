@@ -27,7 +27,7 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | R4 | C45 Grade 5 reading, part 2 | READ.* L06 in C45 (other 31) | src/CoreDataC45*.html | TAKEN | https://claude.ai/code/session_01HB2X6azif4KsNBt5xr8e8K | 2026-11-27 17:18 | Claimed. My 31 = rows 32–62 of the C45 teaching order (src/CoreDataC45.js): READ.LIT.L06.31–41 (Lighthouse 2–12) and READ.FLU.L06.11–30 (Read It 3 Times). Batch 1 (Lighthouse) next |
 | R5 | C68 Grades 6–8 reading | 37 lessons (L07–L09) | src/CoreDataC68*.html | OPEN | | | |
 | R6 | F Grade 2 fluency + C23 | 39 + 3 lessons (L03) | src/CoreDataF*.html, src/CoreDataFH*.html, src/CoreDataC23*.html | OPEN | | | |
-| R7 | Other reading, language, writing (not in a job) | READ.*, LANG.*, WRIT.* in OneBiteData*.html, L03+ (about 40) | src/OneBiteDataRead*.html, src/OneBiteDataWrit.html, src/OneBiteDataUpper.html | OPEN | | | |
+| R7 | Other reading, language, writing (not in a job) | READ.*, LANG.*, WRIT.* in OneBiteData*.html, L03+ (about 40) | src/OneBiteDataRead*.html, src/OneBiteDataWrit.html, src/OneBiteDataUpper.html | TAKEN | https://claude.ai/code/session_011PPoh5KFjyQeYYkHhgWn5e | 2026-11-27 19:00 | Claimed; listing the lessons, batch 1 next |
 | G1 | Grammar Grades 2–4 | G lessons L03–L05 (49) | src/CoreDataG*.html | OPEN | | | |
 | G2 | Grammar Grades 5–8 | G lessons L06–L09 (53) | src/CoreDataG*.html | OPEN | | | |
 | W1 | Writing Grades 2–3 (W13) | 37 lessons (L03–L04) | src/CoreDataW13*.html | OPEN | | | |
