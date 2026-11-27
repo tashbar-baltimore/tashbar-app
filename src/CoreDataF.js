@@ -134,5 +134,10 @@ CORE_SKILLS.F = [
   ["READ.PHON.L01.12", "Ox and Drum", "Know the sounds of o (ox) and d (drum)", { after: "READ.PHON.L01.11", std: "RF.K.3a", file: "CoreDataF2", min: 5 }],
   ["READ.PA.L01.10", "Last Sound", "Hear the last sound in a word", { after: "READ.PHON.L01.12", std: "RF.K.2d", file: "CoreDataF2", min: 4 }],
   ["READ.PHON.L01.13", "Word Chain", "Change one letter to make a new word", { after: "READ.PA.L01.10", std: "RF.K.2e", file: "CoreDataF2", min: 5 }],
-  ["READ.FLU.L01.04", "Heart Words: to, see", "Read the heart words to and see by sight", { after: "READ.PHON.L01.13", std: "RF.K.3c", file: "CoreDataF2", min: 4 }]
+  ["READ.FLU.L01.04", "Heart Words: to, see", "Read the heart words to and see by sight", { after: "READ.PHON.L01.13", std: "RF.K.3c", file: "CoreDataF2", min: 4 }],
+  ["READ.PHON.L02.06", "Ship or Chip?", "Read and spell words with sh and ch", { after: "READ.PHON.L02.01", std: "RF.1.3a", file: "CoreDataF2", min: 6 }],
+  ["READ.PHON.L02.07", "Thumb and Whale", "Read and spell words with th and wh", { after: "READ.PHON.L02.06", std: "RF.1.3a", file: "CoreDataF2", min: 6 }],
+  ["READ.PHON.L02.08", "Duck at the Back", "Use ck at the end of a word after a short vowel", { after: "READ.PHON.L02.07", std: "RF.1.3a", file: "CoreDataF2", min: 6 }],
+  ["READ.PHON.L02.09", "Spell It: sh, ch, th", "Hear a word and spell it with the right two-letter sound", { after: "READ.PHON.L02.08", std: "L.1.2d", file: "CoreDataF2", min: 6 }],
+  ["READ.FLU.L02.03", "Heart Words: what, where", "Read the heart words what, where, when and who", { after: "READ.PHON.L02.09", std: "RF.1.3g", file: "CoreDataF2", min: 5 }]
 ];
