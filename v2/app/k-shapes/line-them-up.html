@@ -18,9 +18,9 @@ const it = (word, L, off) => ({ word, color: C[word], L, off });
 const tw = (word, n) => ({ word, color: C[word], n });
 startGame({
   id: 'lineup', world: 'snow', mode: 'measure', boxes: [],
-  view: { wide: [[0, 6.4, 8.8], [0, 0.4, 0.6]], tall: [[0, 9.0, 9.4], [0, 0.3, 0.8]] }, mendyAt: { wide: [4.6, 0, -1.6] },
+  view: { wide: [[-0.9, 4.7, 6.3], [-0.9, 0.5, 0.3]], tall: [[-0.4, 8.4, 9.2], [-0.4, 0.3, 0.6]] }, mendyAt: { wide: [2.7, 0, -0.9] },   /* the camera looks at the scarves and towers, so they fill the screen (K clarity) */
   intro: ['Mendy is measuring in the snow.', 'Which is longer? Which is taller?', "Let's find out the fair way!"],
-  measureLesson: { items: [it('red', 3.2, 1.6), it('blue', 4.0, 0)], first: 'Which scarf is longer?',
+  measureLesson: { items: [it('red', 3.2, 2.4), it('blue', 4.0, 0)], first: 'Which scarf is longer?',
     rule: ['Line them up at the start.', 'Then look at the other end.'], chant: [['Line them up!', 3], ['Same start!', 2], ['Which is longer?', 3]] },
   rounds: [
     { kind: 'long', items: [it('green', 2.6, 1.2), it('yellow', 3.6, 0.3)], ask: 'longer' },
@@ -32,7 +32,7 @@ startGame({
   ],
   bonusRounds: [{ kind: 'long', items: [it('red', 2.4, 1.0), it('blue', 3.4, 0.2), it('yellow', 1.8, 2.4)], ask: 'the longest', say: 'Three scarves!' }],
   watchLine: 'Watch me line them up.', yourTurn: 'Now you. Line them up, then look!', hint2: 'Drag this one to the line.', remember: 'Remember: line them up at the start.',
-  mistake: { friend: { name: 'Yisroel', shirt: '#4F6D7A', hair: '#2A1A12' }, icon: 'rectLong', measure: [it('red', 2.6, 1.8), it('blue', 3.4, 0)],
+  mistake: { friend: { name: 'Yisroel', shirt: '#4F6D7A', hair: '#2A1A12' }, icon: 'rectLong', measure: [it('red', 2.6, 2.4), it('blue', 3.4, 0)],
     claim: ['Yisroel says the red scarf is longer.', 'It sticks out more.'], ask: 'Is the red one longer?', answer: false,
     explain: ['They do not start together.', 'Line them up first!'], right: ['Right! They do not start together.'], after: 'Now we can see. The blue one is longer!' },
   endLine: 'You measured everything!', praise: 'Line them up, then look. Measuring expert!'

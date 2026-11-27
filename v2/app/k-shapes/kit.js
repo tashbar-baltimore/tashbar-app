@@ -1142,9 +1142,13 @@ export function startGame(cfg) {
     if (MS) MS.parts.forEach(q => scene.remove(q)); shapes.splice(0).forEach(o => scene.remove(o.g));
     const parts = [], items = [];
     if (R.kind !== 'tall') {
-      const line = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.03, tall ? 4.4 : 4.6), new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 0.3 }));
-      line.position.set(LINE_X(), 0.08, ROW_Z(1)); scene.add(line); parts.push(line);
-      const flag = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.5, 3), new THREE.MeshStandardMaterial({ color: '#12A766' })); flag.position.set(LINE_X(), 0.35, ROW_Z(0) - 0.9); if (LK) { flag.scale.setScalar(1.7); flag.position.y = 0.5; }   /* the start flag, big enough to see */ scene.add(flag); parts.push(flag);
+      /* the start line: a thick dark line he can always see (a white line was lost on the snow; K clarity, 2026-11-27), with a green flag on a pole at its far end */
+      const line = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.08, tall ? 4.2 : 4.2), new THREE.MeshStandardMaterial({ color: '#22304F', roughness: 0.6 }));
+      line.position.set(LINE_X(), 0.12, ROW_Z(1)); scene.add(line); parts.push(line);
+      const flag = new THREE.Group(), pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.5, 12), new THREE.MeshStandardMaterial({ color: '#22304F' })); pole.position.y = 0.75; flag.add(pole);
+      const cloth = new THREE.Shape(); cloth.moveTo(0, 0); cloth.lineTo(0.75, -0.25); cloth.lineTo(0, -0.5); cloth.lineTo(0, 0);
+      const cl = new THREE.Mesh(new THREE.ShapeGeometry(cloth), new THREE.MeshStandardMaterial({ color: '#12A766', side: THREE.DoubleSide })); cl.position.set(0.05, 1.5, 0); flag.add(cl);
+      flag.position.set(LINE_X(), 0, ROW_Z(0) - (tall ? 1.1 : 1.2)); if (tall) flag.scale.setScalar(0.85); scene.add(flag); parts.push(flag);
       R.items.forEach((it, i) => { const o = makeRod('m' + (++msN), it.L * (tall ? 0.72 : 1), it.color, i); o.word = it.word;
         o.home.set(LINE_X() + o.len / 2 + (it.off || 0) * (tall ? 0.7 : 1), ROD_Y, ROW_Z(i)); o.g.position.copy(o.home); o.inBox = !!R.lined; if (R.lined) o.g.position.x = LINE_X() + o.len / 2; items.push(o); });
     } else {
@@ -1332,10 +1336,10 @@ export function startGame(cfg) {
     const L = cfg.balanceLesson; await camTo('wide', 10);
     setBalance({ items: L.items });
     const [a, b] = BS.items;
-    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, 'Watch. I put the rock on.', () => putOnPan(a, 0), () => wait(900), 'The heavy side goes down!',
-      'Now the big ball.', () => putOnPan(b, 1), () => wait(900), 'The rock side is still down.', 'The rock is heavy. The ball is light.',
+    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, 'Watch. I put the ' + a.word + ' on.', () => putOnPan(a, 0), () => wait(900), 'The heavy side goes down!',
+      'Now the big ' + b.word + '.', () => putOnPan(b, 1), () => wait(900), 'The ' + a.word + ' side is still down.', 'The ' + a.word + ' is heavy. The ' + b.word + ' is light.',   /* the words name what he sees (a balloon is a balloon) */
       'Your turn! Tap the heavy one.', () => { setName('tap'); task = ['Tap the heavy one.']; W.tapPt = () => toScreen(a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)));
-        return tapPoint(() => a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)), 'Tap the heavy one.'); }, () => { setName('learn'); task = null; }, 'Yes! The rock is heavy.',
+        return tapPoint(() => a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)), 'Tap the heavy one.'); }, () => { setName('learn'); task = null; }, 'Yes! The ' + a.word + ' is heavy.',
       ...L.rule, () => { chant(true); }, 'Clap it with me! Tap the hands.'];
     L.chant.forEach(c => steps.push(c[0], () => claps({ marks: [], g: BS.beam }, c[1])));
     steps.push(() => { chant(false); return cheer(mendy); });
@@ -1373,7 +1377,11 @@ export function startGame(cfg) {
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }];
     const shows = [];
     cfg.lessons.forEach((L, li) => {
-      steps.push(() => { shows.forEach(s => { s.g.visible = false; }); shows.push(showcase(L.k, L.color || COLORS[li * 3 % COLORS.length], L.rot, L.scale)); });
+      steps.push(() => {
+        if (!L.keep) { shows.forEach(s => { s.g.visible = false; }); shows.push(showcase(L.k, L.color || COLORS[li * 3 % COLORS.length], L.rot, L.scale)); return; }
+        /* L.keep (big and small): the one before stays, and this one comes beside it, so he compares the two (size is only clear side by side) */
+        shows.push(showcase(L.k, L.color || COLORS[li * 3 % COLORS.length], L.rot, L.scale, new THREE.Vector3(tall ? 1.85 : 2.5, 2.05, 0.9)));
+      });
       steps.push(() => wait(300));
       steps.push(() => play2(lessonFor(L, shows[li])));
     });
@@ -1463,13 +1471,21 @@ export function startGame(cfg) {
     };
     play(ask);
   }
+  /* cfg.countTags: as each thing is counted, a big number stands above it and stays, so he can see every one was counted once (K-CLARITY-RULES 8, 12) */
+  function numTag(n, at) {
+    const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+    x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(64, 64, 60, 0, 7); x.fill(); x.lineWidth = 6; x.strokeStyle = '#1F2A44'; x.stroke();
+    x.fillStyle = '#1F2A44'; x.font = 'bold 84px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(n), 64, 70);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, toneMapped: false })); sp.renderOrder = 9; sp.scale.setScalar(tall ? 0.6 : 0.5); sp.position.copy(at); scene.add(sp); return sp;
+  }
   function countBoxes() {   /* count each box together, then he taps the box with the most */
-    setName('counting'); stopIdle();
+    setName('counting'); stopIdle(); const tags = [];
     const counts = boxes.map((b, i) => shapes.filter(o => o.inBox && o.inBoxAt === i));
     const steps = ["Now let's count each box!"];
     counts.forEach((items, i) => { const word = cfg.boxes[i].word;
       steps.push('The ' + word + ' box.');
-      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
+      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); if (cfg.countTags) tags.push(numTag(j + 1, o.g.position.clone().setY(y0 + 1.0))); return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
       steps.push(cap(WORDS[items.length]) + ' ' + word + '!'); });
     const most = counts.reduce((b, c, i) => (c.length > counts[b].length ? i : b), 0);
     return play(steps).then(ok => { if (!ok) return false; return new Promise(done => {
@@ -1479,7 +1495,7 @@ export function startGame(cfg) {
         let best = -1, bd = 1e9; boxes.forEach((b, i) => { const p = toScreen(boxAt(i).clone().setY(0.6)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
         if (bd > Math.max(120, innerWidth * 0.1)) return;
         if (best === most) { shapeTap = null; task = null; chime(true); burst(boxAt(best).clone().setY(1.2), 30);
-          play([cfg.mostYes, () => cheer(mendy)]).then(() => done(true)); return; }
+          play([cfg.mostYes, () => cheer(mendy)]).then(() => { tags.forEach(t => scene.remove(t)); done(true); }); return; }
         if (!costed) { W.misses++; costed = true; } chime(false);
         play(['That box has ' + WORDS[counts[best].length] + '.', 'Look for the box with the most.', cfg.mostAsk]);
       };
@@ -1514,10 +1530,14 @@ export function startGame(cfg) {
       PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }
     else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; }
+    let side = null;   /* M.beside: a second piece next to it, to compare with (big and small: a ball is only big next to a small one) */
+    if (M.beside) { side = makeShape('mk2', M.beside[0], M.beside[3] || '#FF7A1A', M.beside[1], 1); side.slot = null; side.busy = true; side.g.position.set(tall ? 1.75 : 2.15, 2.05, 0.9); side.g.scale.setScalar(0.01); }
+    const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
     if (!M.where && !M.measure && !M.balance) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
     if (M.where || M.measure || M.balance) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
-      camTo('close', 1000).then(() => tween(500, k => d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))))); }
+      if (side) d.g.position.x = -0.1;
+      camTo('close', 1000).then(() => tween(500, k => { d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))); if (side) side.g.scale.setScalar(Math.max(0.01, ease(k) * (M.beside[2] || 0.5))); })); }
     if (friend.userData.pose) friend.userData.pose('talk');   /* a painted friend explains with an open hand */
     const j = $('#judge'); let answered = false, costed = false;
     const right = M.answer ? j.querySelector('.yesB') : j.querySelector('.noB'), wrong = M.answer ? j.querySelector('.noB') : j.querySelector('.yesB');
@@ -1535,7 +1555,7 @@ export function startGame(cfg) {
       play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), ...(M.outline ? [M.closeLine || 'Let us close it.', () => closeIt()] : []),
         ...(M.measure ? [M.fixLine || 'Let us line them up.', () => Promise.all(MS.items.map(o => alignRod(o))), M.after || 'Now we can see.'] : []),
         ...(M.pattern && M.pattern.bad != null ? [M.fixLine || 'Let us fix it.', fixBad] : M.pattern ? [() => sing()] : []), () => cheer(friend), M.after || (() => {}),
-        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.balance ? (shapes.splice(0), scene.remove(BS.g), BS = null, Promise.resolve()) : M.measure ? (MS.parts.forEach(q => scene.remove(q)), MS.items.forEach(o => scene.remove(o.g)), MS = null, Promise.resolve()) : M.where ? (scene.remove(d.g), scene.remove(BR.g), BR = null, Promise.resolve()) : M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer && NB ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
+        () => { friend.visible = false; sideAway(); return camTo('wide', 1000); }, () => (M.balance ? (shapes.splice(0), scene.remove(BS.g), BS = null, Promise.resolve()) : M.measure ? (MS.parts.forEach(q => scene.remove(q)), MS.items.forEach(o => scene.remove(o.g)), MS = null, Promise.resolve()) : M.where ? (scene.remove(d.g), scene.remove(BR.g), BR = null, Promise.resolve()) : M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer && NB ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
     };
     play(['This is ' + F.name + '.', ...M.claim, M.ask, () => { task = [M.ask + ' Tap your answer.']; j.classList.add('show'); }, 'Green means yes. Crossed means no.']);
     setTimeout(() => { if (!answered) j.classList.add('show'); }, FAST ? 0 : 14000);
