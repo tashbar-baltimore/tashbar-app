@@ -1,5 +1,8 @@
 # How to write a lesson
 
+> **NEW LESSONS (HoS 2026-11-27):** the One Bite part of every lesson is moving to the new shape in `docs/lesson-redesign/DESIGN.md` (work board: `docs/lesson-redesign/BOARD.md`).
+
+
 A lesson (a "skill") has an id such as `LK.CHU.L03.02` and four parts the student goes through:
 
 1. **Teacher Time** (`TL_TEACH`): a short hand-written lesson before the questions.
