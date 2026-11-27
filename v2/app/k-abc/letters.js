@@ -50,10 +50,13 @@ export function letter3D(ch, col = 0xFF5A8A, k = 1, r = 0.17) {
 }
 /* a letter tile: a soft cream tile with a raised letter (for "slide it" and spelling) */
 export function letterTile(ch, col = 0x2E6BE6) {
-  const G = new THREE.Group(), sh = new THREE.Shape(), w = 0.62, h = 0.72, r = 0.18;
+  const G = new THREE.Group(), sh = new THREE.Shape(), w = ch.length > 1 ? 0.98 : 0.62, h = 0.72, r = 0.18;
   sh.moveTo(-w + r, -h); sh.lineTo(w - r, -h); sh.quadraticCurveTo(w, -h, w, -h + r); sh.lineTo(w, h - r); sh.quadraticCurveTo(w, h, w - r, h); sh.lineTo(-w + r, h); sh.quadraticCurveTo(-w, h, -w, h - r); sh.lineTo(-w, -h + r); sh.quadraticCurveTo(-w, -h, -w + r, -h);
   const g = new THREE.ExtrudeGeometry(sh, { depth: 0.22, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 3 }); g.translate(0, 0, -0.11);
   const tile = new THREE.Mesh(g, toon(0xFFFBF0, { rough: .4, clear: .6, emissive: 0x4A4030, ei: 0.5 })); tile.castShadow = true; G.add(tile);
+  if (ch.length > 1) {   /* two letters, one sound (ck): both on one tile, side by side */
+    ch.split('').forEach((c1, i) => { const L1 = letter3D(c1, col, 0.28, 0.2); L1.position.set((i - 0.5) * 0.9, /[bdfhklt]/.test(c1) ? -0.08 : 0.03, 0.2); G.add(L1); });
+    G.userData.ch = ch; return G; }
   const L = letter3D(ch, col, 0.36, 0.2); L.position.set(0, -0.38 * 0.36 * 0 - 0.02, 0.2); L.position.y = (2.75 - 2.75) - 0.05; G.add(L);
   /* the 0..200 box centre is at y 110 -> move so small letters sit in the middle */
   const tall = /[bdfhklt]/.test(ch), tail = /[gjpqy]/.test(ch); L.position.y = (tall ? -0.12 : tail ? 0.18 : 0.04);

@@ -115,12 +115,13 @@ export function mouthCard(S, kind) {
   const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
   x.fillStyle = '#FFF8EC'; x.beginPath(); x.arc(128, 128, 124, 0, 7); x.fill(); x.lineWidth = 8; x.strokeStyle = '#FFC98A'; x.stroke();
   x.fillStyle = '#F6C9A8'; x.beginPath(); x.ellipse(128, 132, 96, 80, 0, 0, 7); x.fill();
-  const lip = '#D9667A', open = { a: 46, s: 16, t: 20, i: 26, n: 18, d: 20 }[kind] || 4;
-  x.fillStyle = '#7A2A3A'; x.beginPath(); x.ellipse(128, 140, 52, Math.max(3, open), 0, 0, 7); x.fill();
-  if (kind === 's' || kind === 't' || kind === 'i' || kind === 'n' || kind === 'd') { x.fillStyle = '#FFFFFF'; x.fillRect(84, 140 - open + 2, 88, open - 4); }
+  const lip = '#D9667A', open = { a: 46, s: 16, t: 20, i: 26, n: 18, d: 20, g: 22, c: 22, k: 22, o: 40, e: 30 }[kind] || 4, rx = kind === 'o' ? 34 : 52;
+  x.fillStyle = '#7A2A3A'; x.beginPath(); x.ellipse(128, 140, rx, Math.max(3, open), 0, 0, 7); x.fill();
+  if ('stinde'.includes(kind)) { x.fillStyle = '#FFFFFF'; x.fillRect(84, 140 - open + 2, 88, open - 4); }
   if (kind === 't' || kind === 'n' || kind === 'd') { x.fillStyle = '#E87A8A'; x.beginPath(); x.ellipse(128, 136, 22, 10, 0, 0, 7); x.fill(); }
+  if ('gck'.includes(kind)) { x.fillStyle = '#E87A8A'; x.beginPath(); x.ellipse(128, 152, 34, 10, 0, 0, 7); x.fill(); x.strokeStyle = '#9FD8FF'; x.lineWidth = 5; x.beginPath(); x.arc(128, 128, 12, Math.PI * 1.1, Math.PI * 1.9); x.stroke(); }   /* tongue low, the sound at the back */
   if (kind === 'a') { x.fillStyle = '#E87A8A'; x.beginPath(); x.ellipse(128, 168, 30, 14, 0, 0, 7); x.fill(); x.fillStyle = '#FFFFFF'; x.fillRect(96, 96, 64, 12); }
-  x.strokeStyle = lip; x.lineWidth = 14; x.lineCap = 'round'; x.beginPath(); x.ellipse(128, 140, 58, Math.max(8, open + 6), 0, 0, 7); x.stroke();
+  x.strokeStyle = lip; x.lineWidth = 14; x.lineCap = 'round'; x.beginPath(); x.ellipse(128, 140, rx + 6, Math.max(8, open + 6), 0, 0, 7); x.stroke();
   if (kind === 'm' || kind === 'n') { x.strokeStyle = '#FFB86A'; x.lineWidth = 6; [0, 1].forEach(i => { x.beginPath(); x.arc(128, 70, 12 + i * 12, Math.PI * 1.15, Math.PI * 1.85); x.stroke(); }); }   /* a hum in the nose */
   if (kind === 'p') { x.strokeStyle = '#9FD8FF'; x.lineWidth = 6; [0, 1, 2].forEach(i => { x.beginPath(); x.arc(190, 140, 14 + i * 14, -0.6, 0.6); x.stroke(); }); }
   if (kind === 's') { x.strokeStyle = '#9FD8FF'; x.lineWidth = 5; x.beginPath(); x.moveTo(190, 120); for (let i = 0; i < 4; i++) x.quadraticCurveTo(200 + i * 10, 112 + (i % 2) * 24, 206 + i * 10, 136); x.stroke(); }
@@ -199,3 +200,84 @@ LW.i = { word: 'inchworm', make: S => worldI(S), mouth: 'i', action: 'Itch your 
 LW.n = { word: 'net', make: S => worldN(S), mouth: 'n', action: 'Shake your head, no, no, no!', rhyme: ['Down the handle, back up, and over the hoop.'] };
 LW.m = { word: 'mountain', make: S => worldM(S), mouth: 'm', action: 'Rub your tummy. Mmm, yummy!', rhyme: ['Down, up and over, up and over.'] };
 LW.d = { word: 'drum', make: S => worldD(S), mouth: 'd', action: 'Drum on your knees!', rhyme: ['Around the drum, then the tall stick down.'] };
+
+/* ============================== Unit 4: g o c k e ============================== */
+/* a pop-out placed along a stroke at t (0..1): it springs up when the finger gets there */
+function popAt(S, pts, t, make) { const G = new THREE.Group(), p = pts[Math.min(pts.length - 1, Math.round(t * (pts.length - 1)))]; G.position.copy(p); G.add(make()); G.scale.setScalar(0.0001); S.scene.add(G); return { t, G, on: false, k: 0 }; }
+/* g: a bunch of grapes: around the round part grapes pop out one by one, then a green vine grows down and curls */
+export function worldG(S) {
+  const vine = C(0x5DAE3A), grapeM = toon(0x8E4FD8, { clear: 1, rough: .2, rimI: .6 }); let shake = 0;
+  return simpleWorld(S, { ch: 'g', pal: 'garden', trees: [[-9, -6, { s: 1.5, c1: 0x5A9E2A, c2: 0xB8E06A }], [9.5, -6.5, { s: 1.5 }]], every: 0.8,
+    style: [{ r: 0.2, col: (t, n, c) => c.copy(C(0x6E3FB8)).lerp(C(0xC9A2FF), Math.max(0, n.z) * 0.5),
+        pops: (pts, S2) => Array.from({ length: 9 }, (_, i) => popAt(S2, pts, 0.05 + i * 0.11, () => new THREE.Mesh(new THREE.SphereGeometry(0.22, 18, 12), grapeM))) },
+      { r: 0.13, col: (t, n, c) => c.copy(vine).lerp(C(0xD8F5A0), Math.max(0, n.z) * 0.4),
+        pops: (pts, S2) => [0.35, 0.7].map(t => popAt(S2, pts, t, () => { const l = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 10), toon(0x6CC84A, { clear: .6 })); l.scale.set(1.4, 0.5, 0.8); l.position.x = 0.25; return l; })) }],
+    hero: (S2, st) => { const c0 = new THREE.Vector3(); st[0].forEach(p => c0.add(p)); c0.divideScalar(st[0].length); const hit = hitBall(S2, c0, 0.9);
+      const bird = new THREE.Group(), bm = toon(0x4FB2FF, { clear: .6 }); bird.add(new THREE.Mesh(new THREE.SphereGeometry(0.22, 18, 12), bm)); const hd = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 10), bm); hd.position.set(0.2, 0.15, 0); bird.add(hd);
+      const bk = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.12, 8), toon(0xFFB020)); bk.rotation.z = -Math.PI / 2; bk.position.set(0.37, 0.14, 0); bird.add(bk); const e1 = eye(0.045, {}); e1.position.set(0.26, 0.2, 0.11); bird.add(e1);   /* a little bird visits the grapes */
+      bird.position.set(1.6, 4.5, 0.3); S2.scene.add(bird); S2.tick((t, dt) => { shake = Math.max(0, shake - dt * 2); bird.position.y = 4.5 + Math.abs(Math.sin(t * 3)) * 0.12 + shake * 0.4; bird.rotation.z = Math.sin(t * 2) * 0.1; });
+      return { hit, at: () => c0.clone(), react: () => shake = 1, cheer: () => shake = 2 }; } });
+}
+/* o: an octopus: the round body goes around, then its arms wave out underneath */
+export function worldO(S) {
+  const body = C(0xFF8A65), light = C(0xFFD0B8); let wave = 0, shown = false; const arms = [];
+  const W = simpleWorld(S, { ch: 'o', pal: 'pond', trees: [[-9, -6, { s: 1.5 }], [9, -6, { s: 1.6, c1: 0x13924A, c2: 0x9BE94F }]], every: 0.9,
+    style: [{ r: 0.3, col: (t, n, c) => c.copy(body).lerp(light, Math.max(0, n.z) * 0.45) }],
+    hero: (S2, st) => { const c0 = new THREE.Vector3(); st[0].forEach(p => c0.add(p)); c0.divideScalar(st[0].length); const bot = st[0].reduce((a, p) => p.y < a.y ? p : a, st[0][0]);
+      const am = toon(0xFF8A65, { clear: .7, rough: .35 });
+      for (let i = 0; i < 6; i++) { const g = new THREE.Group(), x = (i - 2.5) * 0.32; const m = new THREE.Mesh(new THREE.CapsuleGeometry(0.09, 0.6, 4, 10), am); m.position.y = -0.35; g.add(m); g.position.set(bot.x + x, bot.y + 0.1, 0.05); g.scale.setScalar(0.0001); S2.scene.add(g); arms.push(g); }
+      const eyesG = new THREE.Group(); [-1, 1].forEach(s => { const e = eye(0.16, {}); e.position.set(s * 0.32, 0.15, 0.32); eyesG.add(e); }); eyesG.position.copy(c0); eyesG.scale.setScalar(0.0001); S2.scene.add(eyesG);
+      S2.tick((t, dt) => { wave = Math.max(0, wave - dt); arms.forEach((g, i) => { g.scale.setScalar(shown ? 1 : 0.0001); g.rotation.z = Math.sin(t * (2 + wave * 6) + i) * (0.25 + wave * 0.3); }); eyesG.scale.setScalar(shown ? 1 : 0.0001); });
+      return { hit: hitBall(S2, c0, 1.0), at: () => c0.clone(), react: () => wave = 1, cheer: () => wave = 2, show: () => { shown = true; } }; } });
+  const g0 = W.grow, s0 = W.showAll, d0 = W.demo; W.grow = T => { g0(T); if (T.done) W._hero.show(); }; W.showAll = () => { s0(); W._hero.show(); }; W.demo = async () => { await d0(); W._hero.show(); };
+  return W;
+}
+/* c: a cat curled up asleep: the soft orange curl, her head at the start and her tail at the end */
+export function worldC(S) {
+  const fur = C(0xFFA94D), cream = C(0xFFE2B0); let twitch = 0;
+  const W = simpleWorld(S, { ch: 'c', pal: 'morning', trees: [[-9, -6, { s: 1.5 }], [8.5, -7, { s: 1.7, c1: 0xE85A9E, c2: 0xFFC2E2 }]], every: 0.8,
+    style: [{ r: 0.34, taper: 0.5, col: (t, n, c) => c.copy(fur).lerp(cream, Math.max(0, n.z) * 0.35 + (Math.sin(t * 30) > 0.7 ? 0.2 : 0)),
+      pops: (pts, S2) => [popAt(S2, pts, 0.0, () => { const h = new THREE.Group(), m = toon(0xFFA94D, { rough: .55, sheen: .8 }); h.add(new THREE.Mesh(new THREE.SphereGeometry(0.42, 24, 16), m));
+          [-1, 1].forEach(s => { const e = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.28, 14), m); e.position.set(s * 0.24, 0.38, 0); e.rotation.z = -s * 0.35; h.add(e); });
+          [-1, 1].forEach(s => { const lid = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.02, 8, 16, Math.PI), toon(0x5A3A1A)); lid.position.set(s * 0.14, 0.05, 0.4); lid.rotation.z = Math.PI; h.add(lid); });   /* her eyes closed: she is napping */
+          const nose = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 8), toon(0xFF7FA0)); nose.position.set(0, -0.06, 0.42); h.add(nose); h.position.set(0.25, 0.15, 0.1); return h; }),
+        popAt(S2, pts, 1.0, () => { const tl = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 10), toon(0xFFF3E0, { sheen: .8 })); tl.position.set(0.2, -0.05, 0.05); return tl; })] }],
+    hero: (S2, st) => { const at = () => st[0][0].clone(), hit = hitBall(S2, at(), 0.9); const zz = [];
+      for (let i = 0; i < 3; i++) { const b = new THREE.Mesh(new THREE.SphereGeometry(0.06 + i * 0.025, 10, 8), toon(0xFFFFFF, { emissive: 0xBBDDFF, ei: .5 })); S2.scene.add(b); zz.push(b); }   /* little sleepy bubbles rise */
+      S2.tick((t, dt) => { twitch = Math.max(0, twitch - dt * 2); zz.forEach((b, i) => { const k = (t * 0.4 + i / 3) % 1; b.position.set(at().x + 0.5 + k * 0.6, at().y + 0.6 + k * 1.2, 0.3); b.visible = W.showing; b.scale.setScalar(1 - k * 0.5); }); });
+      return { hit, at, react: () => twitch = 1, cheer: () => twitch = 2 }; } });
+  const g0 = W.grow; W.grow = T => { g0(T); W.showing = T.done; }; const s0 = W.showAll; W.showAll = () => { s0(); W.showing = true; };
+  return W;
+}
+/* k: a kite pole: the tall pole goes down, then two bright ribbons; a kite flies from the top in the wind */
+export function worldK(S) {
+  const wood = C(0xC98A4B), red = C(0xFF5A6E), blue = C(0x4DB2FF); let gust = 0;
+  return simpleWorld(S, { ch: 'k', pal: 'meadow', trees: [[-9, -6, { s: 1.6 }], [9.5, -6, { s: 1.4 }]], every: 0.7,
+    style: [{ r: 0.17, col: (t, n, c) => c.copy(wood).lerp(C(0xFFE0B0), Math.max(0, n.z) * 0.4) }, { r: 0.15, col: (t, n, c) => c.copy(red).lerp(C(0xFFFFFF), Math.max(0, n.z) * 0.3) },
+      { r: 0.15, col: (t, n, c) => c.copy(blue).lerp(C(0xFFFFFF), Math.max(0, n.z) * 0.3) }],
+    hero: (S2, st) => { const top = st[0][0].clone(); const kite = new THREE.Group(), sh = new THREE.Shape(); sh.moveTo(0, 0.6); sh.lineTo(0.4, 0.05); sh.lineTo(0, -0.5); sh.lineTo(-0.4, 0.05); sh.closePath();
+      const km = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.05, bevelEnabled: false }), toon(0xFFD23F, { clear: 1 })); kite.add(km); S2.scene.add(kite);
+      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([top, top]), new THREE.LineBasicMaterial({ color: 0xffffff })); S2.scene.add(line);
+      S2.tick((t, dt) => { gust = Math.max(0, gust - dt * 0.8); kite.position.set(top.x + 1.9 + Math.sin(t * 0.9) * 0.3, top.y + 0.9 + Math.sin(t * 1.3) * 0.2 + gust * 0.6, 0); kite.rotation.z = Math.sin(t * 1.7) * 0.2 - 0.3;
+        line.geometry.setFromPoints([top, kite.position.clone().add(new THREE.Vector3(0, -0.45, 0))]); });
+      return { hit: km, at: () => kite.position.clone(), react: () => gust = 1, cheer: () => gust = 2 }; } });
+}
+/* e: an egg: the line across, then around the egg's shell; a little chick peeks out at the end */
+export function worldE(S) {
+  const shell = C(0xFFF2DA), spot = C(0xF6C9A8); let wob = 0, hatch = 0;
+  const W = simpleWorld(S, { ch: 'e', pal: 'golden', trees: [[-9, -5, { s: 1.6, c1: 0x5A9E2A, c2: 0xD8E04A }], [9.5, -6, { s: 1.4, c1: 0x6AAE2A, c2: 0xF2C84A }]], every: 0.8,
+    style: [{ r: 0.26, col: (t, n, c) => c.copy(shell).lerp(spot, Math.sin(t * 37) > 0.85 ? 0.7 : 0).lerp(C(0xFFFFFF), Math.max(0, n.z) * 0.3), em: 0x221A10 }],
+    hero: (S2, st) => { const c0 = new THREE.Vector3(); st[0].forEach(p => c0.add(p)); c0.divideScalar(st[0].length);
+      const nest = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.22, 10, 30), toon(0xB07A3A, { rough: .9 })); nest.rotation.x = Math.PI / 2.3; nest.position.set(c0.x + 2.4, 0.5, 0.6); S2.scene.add(nest);
+      const egg = new THREE.Mesh(new THREE.SphereGeometry(0.42, 24, 16), toon(0xFFF6E6, { clear: .8 })); egg.scale.set(0.85, 1.1, 0.85); egg.position.set(c0.x + 2.4, 1.0, 0.6); S2.scene.add(egg);
+      const chick = new THREE.Group(), cm = toon(0xFFE14D, { sheen: 1, rough: .6 }); chick.add(new THREE.Mesh(new THREE.SphereGeometry(0.25, 18, 12), cm)); [-1, 1].forEach(s => { const e = eye(0.05, {}); e.position.set(s * 0.09, 0.05, 0.21); chick.add(e); });
+      const bk = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.1, 8), toon(0xFF9A2A)); bk.rotation.x = Math.PI / 2; bk.position.set(0, -0.03, 0.27); chick.add(bk); chick.position.copy(egg.position); chick.scale.setScalar(0.0001); S2.scene.add(chick);
+      S2.tick((t, dt) => { wob = Math.max(0, wob - dt * 1.5); egg.rotation.z = Math.sin(t * 18) * 0.25 * wob; hatch = Math.max(0, hatch - dt * 0.25); chick.scale.setScalar(Math.max(0.0001, Math.min(1, hatch * 2))); chick.position.y = egg.position.y + 0.5 * Math.min(1, hatch * 2); });
+      return { hit: hitBall(S2, egg.position, 0.8), at: () => egg.position.clone(), react: () => wob = 1, cheer: () => { wob = 1; hatch = 1.5; } }; } });
+  return W;
+}
+LW.g = { word: 'grapes', make: S => worldG(S), mouth: 'g', action: 'Gulp a drink of water! G, g!', rhyme: ['Around the grapes, then the vine goes down and curls.'] };
+LW.o = { word: 'octopus', make: S => worldO(S), mouth: 'o', action: 'Open wide, like the doctor says!', rhyme: ['Start at the top, and all the way around.'] };
+LW.c = { word: 'cat', make: S => worldC(S), mouth: 'c', action: 'Cough a tiny cough. C, c!', rhyme: ['Start at her head, and curl around.'] };
+LW.k = { word: 'kite', make: S => worldK(S), mouth: 'k', action: 'Kick your foot! K, k!', note: ['This one says the same sound as the cat letter!'], rhyme: ['The tall pole down, then in, and out.'] };
+LW.e = { word: 'egg', make: S => worldE(S), mouth: 'e', action: 'Wobble like an egg!', rhyme: ['Straight across, then up and around the egg.'] };

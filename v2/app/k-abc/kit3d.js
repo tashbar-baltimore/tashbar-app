@@ -540,9 +540,19 @@ audio.nasalN = (ms = 750) => { audio.nN++; const c = audio.ctx(); if (c && !FAST
 audio.dee = () => { audio.dN++; const c = audio.ctx(); if (c && !FAST) { const t0 = c.currentTime, o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter(); o.type = 'sawtooth'; o.frequency.value = 130; lp.type = 'lowpass'; lp.frequency.value = 400;
     o.connect(lp); lp.connect(g); g.connect(c.destination); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.3, t0 + 0.02); g.gain.linearRampToValueAtTime(0, t0 + 0.07); o.start(t0); o.stop(t0 + 0.1); audio.burst(2600, 1, 45, 0.35, 'bandpass'); }
   return new Promise(r => setTimeout(r, FAST ? 0 : 260)); };   /* a soft voiced "d" with no "uh" */
+/* Unit 4: g (a soft voiced back-of-the-tongue sound, no "uh"), k (the same place, a breathy click, no "uh"; c and ck say it too),
+   short o (as in "octopus", mouth round and open), short e (as in "egg", a little smile) */
+audio.gN = 0; audio.kN = 0; audio.oN = 0; audio.eN = 0;
+audio.gee = () => { audio.gN++; const c = audio.ctx(); if (c && !FAST) { const t0 = c.currentTime, o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter(); o.type = 'sawtooth'; o.frequency.value = 115; lp.type = 'lowpass'; lp.frequency.value = 320;
+    o.connect(lp); lp.connect(g); g.connect(c.destination); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(0.34, t0 + 0.025); g.gain.linearRampToValueAtTime(0, t0 + 0.09); o.start(t0); o.stop(t0 + 0.12); audio.burst(1500, 2, 55, 0.4, 'bandpass'); }
+  return new Promise(r => setTimeout(r, FAST ? 0 : 280)); };
+audio.kay = () => { audio.kN++; audio.burst(1900, 1.6, 95, 0.6, 'bandpass'); audio.burst(3000, 0.8, 70, 0.18, 'highpass'); return new Promise(r => setTimeout(r, FAST ? 0 : 280)); };
+audio.vowelO = (ms = 420) => { audio.oN++; return audio.vowel(760, 1150, 2500, ms, 215); };   /* short o, as in "on" */
+audio.vowelE = (ms = 400) => { audio.eN++; return audio.vowel(560, 1880, 2550, ms, 230); };   /* short e, as in "egg" */
 /* every letter's pure sound, made by the device (letters added unit by unit) */
 audio.letter = ch => ({ s: () => audio.hiss(750), a: () => audio.vowelA(450), t: () => audio.tick(), p: () => audio.puff(), m: () => audio.hum(750),
-  i: () => audio.vowelI(), n: () => audio.nasalN(), d: () => audio.dee() }[ch] || (() => Promise.resolve()))();
+  i: () => audio.vowelI(), n: () => audio.nasalN(), d: () => audio.dee(),
+  g: () => audio.gee(), o: () => audio.vowelO(), c: () => audio.kay(), k: () => audio.kay(), ck: () => audio.kay(), e: () => audio.vowelE() }[ch] || (() => Promise.resolve()))();
 audio.whoosh = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, s = c.createBufferSource(); s.buffer = noiseBuf(c, 0.5); const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.5; bp.frequency.setValueAtTime(400, t); bp.frequency.exponentialRampToValueAtTime(2400, t + 0.35);
   const g = c.createGain(); g.gain.setValueAtTime(0.001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.12); g.gain.exponentialRampToValueAtTime(0.001, t + 0.45); s.connect(bp); bp.connect(g); g.connect(c.destination); s.start(t); s.stop(t + 0.5); };
 audio.hmm = () => { const c = audio.ctx(); if (!c || FAST) return; const t = c.currentTime, o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(330, t); o.frequency.linearRampToValueAtTime(262, t + 0.35);

@@ -20,14 +20,15 @@ import { LW, mouthCard } from '../lworlds.js';
 export const ORDER = ['opener', 's-meet', 's-trace', 's-hunt', 'a-meet', 'a-trace', 'a-hunt', 't-meet', 't-trace', 't-hunt', 'slide',
   'p-meet', 'p-trace', 'p-hunt', 'slide2', 'story', 'fixit', 'review', 'check'];
 const say = w => (WORDS[w] ? WORDS[w].say : w);
-const an = w => (/^[aeiou]/.test(w) ? 'An ' : 'A ') + w;
+const an = w => w === 'grapes' ? 'Some grapes' : (/^[aeiou]/.test(w) ? 'An ' : 'A ') + w;
 const cap = w => w[0].toUpperCase() + w.slice(1);
 const snd = ch => echo(() => audio.letter(ch));
-export const KEYWORD = { s: 'snake', a: 'apple', t: 'tree', p: 'pinwheel', i: 'inchworm', n: 'net', m: 'mountain', d: 'drum' };
+export const KEYWORD = { s: 'snake', a: 'apple', t: 'tree', p: 'pinwheel', i: 'inchworm', n: 'net', m: 'mountain', d: 'drum', g: 'grapes', o: 'octopus', c: 'cat', k: 'kite', e: 'egg' };
 export const START = { s: ['sun', 'sock', 'soup', 'snake'], a: ['apple', 'ant', 'alligator', 'anchor'], t: ['top', 'tent', 'turtle', 'teapot'], p: ['pot', 'pear', 'pan', 'pumpkin', 'penguin'],
-  i: ['igloo', 'inchworm', 'iguana'], n: ['nest', 'net', 'noodles'], m: ['moon', 'mop', 'mug', 'mouse', 'milk', 'mitten', 'mailbox'], d: ['dog', 'duck', 'door', 'donut', 'dish'] };
+  i: ['igloo', 'inchworm', 'iguana'], n: ['nest', 'net', 'noodles'], m: ['moon', 'mop', 'mug', 'mouse', 'milk', 'mitten', 'mailbox'], d: ['dog', 'duck', 'door', 'donut', 'dish'],
+  g: ['goat', 'grapes', 'gate', 'gift'], o: ['octopus', 'otter', 'ox'], c: ['cat', 'cup', 'carrot', 'cap', 'cake', 'car'], k: ['kite', 'key', 'kettle', 'kitten', 'kippah'], e: ['egg', 'elephant', 'envelope'] };
 export const OTHER = ['cat', 'bee', 'fish', 'hat', 'goat', 'bell', 'car', 'sun', 'sock', 'pear', 'top'];
-export const others = ch => OTHER.filter(w => !START[ch].includes(w) && WORDS[w] && WORDS[w].say[0] !== ch);
+export const others = ch => OTHER.filter(w => !START[ch].includes(w) && WORDS[w] && WORDS[w].say[0] !== ch && !('ck'.includes(ch) && /^[ck]/.test(WORDS[w].say)));   /* c and k say the same sound: a cat is never a "no" for k */
 function clearItems(G) { return Promise.all(G.items.slice().map(i => i.remove())); }
 function tapWait(G, it, wrong) { return new Promise(res => { G.expect({ kind: 'tap', at: it }); G.A.wrongMove = wrong ? { kind: 'tap', at: wrong } : null; const prev = it.onTap; it.onTap = () => { prev(); it.onTap = prev; res(); }; }); }
 /* the letter as a glossy toy (the one he will meet in every game) */
@@ -45,12 +46,14 @@ export function meet(ch) {
       await G.say('Look! ' + an(KEYWORD[ch]) + '!', 'Watch it make a shape.');
       G.mendy.set('point', 2.5); await W.demo(); W.cheer(); await G.wait(800);
       await G.say('This shape is a letter.', 'It shows a sound.');
-      await G.say(cap(say(KEYWORD[ch])) + ' starts with this sound.', snd(ch), 'Say it with me!', snd(ch), echo(() => G.wait(250)), snd(ch));
+      await G.say(cap(say(KEYWORD[ch])) + (KEYWORD[ch] === 'grapes' ? ' start' : ' starts') + ' with this sound.', snd(ch), 'Say it with me!', snd(ch), echo(() => G.wait(250)), snd(ch));
       /* the mouth picture */
       const mouth = mouthCard(S, L.mouth), mAt = () => G.narrow() ? V(1.25, 0.95, 1.6) : V(3.8, 3.6, 0.4); mouth.position.copy(mAt()); G.W.layout = () => mouth.position.copy(mAt());
       await S.tween(400, e => mouth.scale.setScalar(Math.max(0.0001, e)), ease.back);
       await G.say({ s: 'Teeth together. Let the air hiss out.', a: 'Open your mouth wide, like this.', t: 'Tongue up behind your teeth. Tap!', p: 'Lips together, then pop!',
-        i: 'A little smile. Short and quick!', n: 'Tongue up. Hum through your nose.', m: 'Lips together. Hum!', d: 'Tongue up, then drop it. Quick!' }[ch], snd(ch));
+        i: 'A little smile. Short and quick!', n: 'Tongue up. Hum through your nose.', m: 'Lips together. Hum!', d: 'Tongue up, then drop it. Quick!',
+        g: 'Back of your tongue up. A soft, quick sound!', o: 'Make your mouth round and open.', c: 'Back of your tongue up. A quick puff!', k: 'Back of your tongue up. A quick puff!', e: 'A little smile, mouth a bit open.' }[ch], snd(ch));
+      if (L.note) await G.say(...L.note);
       await G.say(L.action); G.mendy.wiggle(); W.cheer(); await audio.letter(ch); await G.wait(400);
       /* round 1: tap the picture-letter to hear it */
       G.newRound(); const target = W.hero || tapHit(G, (() => { const o = new THREE.Object3D(); o.position.set(0, 2.75, 0.2); S.scene.add(o); return o; })(), 1.6);
@@ -228,7 +231,7 @@ export function slide(words, title, decoy = 'pan', finalRead = false) {
       await G.say(title, 'Push each sound down the slide into the next one.');
       let firstWord = true;
       for (const w of words) {
-        G.newRound(); const chs = w.split(''), x0 = () => n() ? -1.4 : -2.6;
+        G.newRound(); const chs = toks(w), x0 = () => n() ? -1.4 : -2.6;
         const tiles = chs.map((ch, i) => { const t = letterTile(ch); const at = V(x0() + i * sp(), 0, -0.8); at.y = yAt(at.x) + 0.55; t.position.copy(at); t.scale.setScalar(0.0001); S.scene.add(t); S.tween(400, e => t.scale.setScalar(Math.max(0.0001, e * (n() ? 0.8 : 1))), ease.back); t.userData.i = i; return t; });
         const place = () => tiles.forEach((t, i) => { if (t.userData.joined) return; const x = x0() + i * sp(); t.position.set(x, yAt(x) + 0.55, -0.8); }); G.W.layout = place;
         tiles.forEach(t => { const h = tapHit(G, t, 0.8); G.tap(h, () => { audio.letter(t.userData.ch || chs[t.userData.i]); }); });
@@ -258,11 +261,11 @@ export function slide(words, title, decoy = 'pan', finalRead = false) {
         await S.tween(300, e => tiles.forEach(t => t.scale.setScalar(Math.max(0.0001, (1 - e) * (n() ? 0.8 : 1))))); tiles.forEach(t => S.scene.remove(t)); G.taps = [];
       }
       if (finalRead) {   /* hear a word, find it among three (practice for the check) */
-        G.newRound(); const pick = shuffle(words).slice(0, 3), goal = pick[0], cards = shuffle(pick).map((w, j) => { const g = new THREE.Group(); w.split('').forEach((ch, k) => { const t = letterTile(ch); t.scale.setScalar(0.6); t.position.set((k - (w.length - 1) / 2) * 0.78, 0, 0); g.add(t); });
+        G.newRound(); const pick = shuffle(words).slice(0, 3), goal = pick[0], cards = shuffle(pick).map((w, j) => { const g = new THREE.Group(); toks(w).forEach((ch, k, A2) => { const t = letterTile(ch); t.scale.setScalar(0.6); t.position.set((k - (A2.length - 1) / 2) * 0.78 + (ch.length > 1 ? 0.1 : 0), 0, 0); g.add(t); });
           g.position.copy(n() ? V(0, 3.4 - j * 1.25, 0.6) : V(-3 + j * 3, 1.4, 0.8)); g.scale.setScalar(n() ? 0.75 : 1); S.scene.add(g); const h = tapHit(G, g, 0.8); h.scale.set(1.6, 0.8, 1); g.userData = { w, h }; return g; });
         const gc = cards.find(c => c.userData.w === goal); await G.say('Listen.', say(goal) + '.', 'Tap that word.');
         G.expect({ kind: 'tap', at: gc }); G.A.wrongMove = { kind: 'tap', at: cards.find(c => c !== gc) };
-        G.hint(async () => { await G.say('Say it slowly.', echo(async () => { for (const c of goal) await audio.letter(c); })); });
+        G.hint(async () => { await G.say('Say it slowly.', echo(async () => { for (const c of toks(goal)) await audio.letter(c); })); });
         await new Promise(res => cards.forEach(c => G.tap(c.userData.h, async () => { if (c === gc) { G.taps = []; await G.right(c.position, say(goal) + '!'); res(); } else await G.wrong(['That one says ' + c.userData.w + '.', 'Find ' + goal + '.']); })));
         cards.forEach(c => S.scene.remove(c)); }
       await G.done('You can read words!');
@@ -270,6 +273,8 @@ export function slide(words, title, decoy = 'pan', finalRead = false) {
   };
 }
 export const PIC = { tap: 'faucet', pin: 'pin', tin: 'tin', mat: 'mat', map: 'map' };
+/* a word's sounds, in order: ck is one sound (Unit 4) */
+export const toks = w => w.match(/ck|./g);
 /* drag a letter tile (the leading group) into the next tile; resolves when he does it the right way */
 function dragTile(G, tiles, lead, onWrong) {
   const S = G.S, el = S.renderer.domElement; let dragging = null, off = new THREE.Vector3(), start = null;

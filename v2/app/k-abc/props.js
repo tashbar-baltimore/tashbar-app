@@ -234,6 +234,83 @@ const B = {
 };
 
 /* every picture word: how it is said; beats for clapping (each beat is said on its own) */
+
+/* ============================== Unit 4 pictures (g o c k e, and ck at the end) ============================== */
+const tube = (pts, r, m) => mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(q => V3(...q))), 24, r, 10), m);
+Object.assign(B, {
+  grapes() { const G = new THREE.Group(), m = mat(0x8E4FD8, { clear: 1, rough: .2, rimI: .6 });   /* a bunch of purple grapes, a little stem and leaf */
+    [[0, 0.45, 4], [0, 0.18, 3.4], [0, -0.1, 2.4], [0, -0.36, 1.3], [0, -0.58, 0.4]].forEach(([x, y, n], r) => { for (let i = 0; i < Math.max(1, Math.round(n)); i++) { const k = Math.max(1, Math.round(n)), a = (i - (k - 1) / 2) * 0.27; G.add(mesh(sph(0.15, 18), m, a, y, Math.cos(a * 2) * 0.12)); } });
+    G.add(tube([[0, 0.55, 0], [0.04, 0.72, 0], [0.12, 0.8, 0]], 0.035, mat(0x7A5230)));
+    const leaf = mesh(sph(0.2, 16), mat(0x5DBB4A, { clear: .6 }), 0.26, 0.72, 0); leaf.scale.set(1.3, 0.45, 0.8); leaf.rotation.z = 0.4; G.add(leaf); return G; },
+  gate() { const G = new THREE.Group(), w = mat(0xF4F1EA, { rough: .5, clear: .4 });   /* a little white garden gate */
+    [-0.55, 0.55].forEach(x => { G.add(mesh(box(0.14, 1.3, 0.14), mat(0xC98A4B), x, 0, 0)); G.add(mesh(sph(0.1, 12), mat(0xC98A4B), x, 0.7, 0)); });
+    for (let i = 0; i < 5; i++) { const x = -0.36 + i * 0.18; G.add(mesh(box(0.1, 0.9, 0.06), w, x, -0.05, 0.05)); G.add(mesh(new THREE.ConeGeometry(0.07, 0.12, 4), w, x, 0.46, 0.05)); }
+    G.add(mesh(box(0.92, 0.09, 0.07), w, 0, 0.22, 0.1)); G.add(mesh(box(0.92, 0.09, 0.07), w, 0, -0.32, 0.1)); return G; },
+  gift() { const G = new THREE.Group(); G.add(mesh(box(0.9, 0.75, 0.9), mat(0x3FA9F5, { clear: 1, rough: .25 }), 0, -0.12, 0));   /* a wrapped present with a bow */
+    const lid = mesh(box(0.98, 0.18, 0.98), mat(0x3FA9F5, { clear: 1, rough: .25 }), 0, 0.33, 0); G.add(lid); const rb = mat(0xFFD23F, { clear: 1 });
+    G.add(mesh(box(0.16, 0.95, 0.94), rb, 0, -0.04, 0.0)); G.add(mesh(box(0.94, 0.95, 0.16), rb, 0, -0.04, 0));
+    [-1, 1].forEach(s2 => { const l = mesh(tor(0.15, 0.05), rb, s2 * 0.16, 0.5, 0); l.rotation.y = Math.PI / 2; l.rotation.z = s2 * 0.5; G.add(l); }); G.add(mesh(sph(0.07, 12), rb, 0, 0.47, 0)); G.rotation.set(0.3, 0.5, 0); return G; },
+  octopus() { const G = new THREE.Group(), m = mat(0xFF8A65, { clear: .7, rough: .35, sheen: .4 });   /* a friendly octopus (an animal, so it has eyes) */
+    const head = mesh(sph(0.42, 32), m, 0, 0.2, 0); head.scale.set(1, 1.1, 0.95); G.add(head);
+    for (let i = 0; i < 6; i++) { const a = (i / 5 - 0.5) * 2.4, x = Math.sin(a) * 0.38; G.add(tube([[x * 0.7, -0.1, 0.1], [x, -0.4, 0.15], [x * 1.25, -0.62, 0.1], [x * 1.45 + 0.08 * Math.sign(x || 1), -0.55, 0.12]], 0.065, m)); }
+    eyes(G, 0.09, 0.15, 0.25, 0.36, 0x3A2A1E); return G; },
+  otter() { const G = new THREE.Group(), f = mat(0x9A6A42, { rough: .6, sheen: .7, sheenC: 0xE8C8A0 }), lt = mat(0xE8D2B0, { rough: .6 });   /* an otter floating on its back */
+    const body = mesh(new THREE.CapsuleGeometry(0.3, 0.7, 8, 20), f, 0, -0.1, 0); body.rotation.z = Math.PI / 2; G.add(body);
+    const belly = mesh(sph(0.27, 20), lt, 0.05, -0.02, 0.12); belly.scale.set(1.5, 0.8, 0.6); G.add(belly);
+    G.add(mesh(sph(0.27, 24), f, -0.58, 0.12, 0)); const muz = mesh(sph(0.12, 16), lt, -0.64, 0.06, 0.2); muz.scale.set(1.2, 0.8, 0.8); G.add(muz); G.add(mesh(sph(0.04, 10), mat(0x3A2A1E), -0.66, 0.1, 0.3));
+    [-1, 1].forEach(s2 => G.add(mesh(sph(0.06, 10), f, -0.58 + s2 * 0.2, 0.34, 0))); eyes(G, 0.055, 0.09, 0.2, 0.22, 0x2A1A10); G.children[G.children.length - 1].position.x -= 0.58; G.children[G.children.length - 2].position.x -= 0.58;
+    G.add(tube([[0.5, -0.12, 0], [0.75, -0.05, 0], [0.9, 0.08, 0]], 0.08, f)); return G; },
+  ox() { const G = new THREE.Group(), f = mat(0xB0703C, { rough: .6, sheen: .5 }), lt = mat(0xF2D8B8, { rough: .6 }), hn = mat(0xF4EEDC, { clear: .8 });   /* a gentle ox */
+    const body = mesh(sph(0.45, 24), f, 0.12, -0.25, -0.1); body.scale.set(1.3, 0.85, 0.9); G.add(body);
+    const head = mesh(sph(0.3, 24), f, -0.35, 0.12, 0.15); head.scale.set(1, 1.05, 0.95); G.add(head); const muz = mesh(sph(0.18, 18), lt, -0.4, 0.0, 0.38); muz.scale.set(1.25, 0.8, 0.7); G.add(muz);
+    [-1, 1].forEach(s2 => { const h = tube([[-0.35 + s2 * 0.2, 0.35, 0.1], [-0.35 + s2 * 0.38, 0.42, 0.1], [-0.35 + s2 * 0.42, 0.6, 0.1]], 0.05, hn); G.add(h); });
+    [[-0.2, 1], [0.45, 1], [-0.1, -1], [0.38, -1]].forEach(([x, z]) => G.add(mesh(cyl(0.08, 0.08, 0.35, 12), f, x, -0.65, z * 0.18 - 0.1)));
+    eyes(G, 0.06, 0.12, 0.2, 0.36, 0x2A1A10); G.children.slice(-2).forEach(e => e.position.x -= 0.35); return G; },
+  kite() { const G = new THREE.Group(), sh = new THREE.Shape(); sh.moveTo(0, 0.62); sh.lineTo(0.42, 0.08); sh.lineTo(0, -0.5); sh.lineTo(-0.42, 0.08); sh.closePath();   /* a diamond kite with a bow tail */
+    const k = mesh(ext(sh, 0.05, 0.03), mat(0xFF5A6E, { clear: 1, rough: .3 })); G.add(k); const q = new THREE.Shape(); q.moveTo(0, 0.62); q.lineTo(0.42, 0.08); q.lineTo(0, 0.08); q.closePath();
+    const k2 = mesh(ext(q, 0.06, 0.02), mat(0xFFD23F, { clear: 1 })); k2.position.set(0.14, 0.23, 0.02); G.add(k2);
+    G.add(tube([[0, -0.5, 0], [0.1, -0.7, 0], [-0.05, -0.9, 0], [0.08, -1.05, 0]], 0.02, mat(0xFFFFFF)));
+    [[0.1, -0.7], [-0.04, -0.88]].forEach(([x, y], i) => { const b = mesh(sph(0.07, 10), mat(i ? 0x4DB2FF : 0x4DDB6A), x, y, 0); b.scale.set(1.6, 0.7, 0.6); G.add(b); }); G.rotation.z = -0.2; G.position.y = 0.15; return G; },
+  key() { const G = new THREE.Group(), m = mat(0xFFC93C, { clear: 1, rough: .15, metal: .6, emissive: 0x553300, ei: .2 });   /* a shiny gold key */
+    const ring = mesh(tor(0.24, 0.08), m, -0.42, 0, 0); G.add(ring); G.add(mesh(box(0.8, 0.12, 0.1), m, 0.12, 0, 0));
+    G.add(mesh(box(0.1, 0.22, 0.1), m, 0.4, -0.12, 0)); G.add(mesh(box(0.1, 0.16, 0.1), m, 0.22, -0.09, 0)); G.rotation.z = 0.3; return G; },
+  kettle() { const G = new THREE.Group(), m = mat(0xE8434F, { clear: 1, rough: .2 });   /* a round kettle */
+    const b = mesh(sph(0.48, 32), m, 0, -0.1, 0); b.scale.set(1, 0.85, 1); G.add(b); G.add(mesh(cyl(0.4, 0.42, 0.14, 32), m, 0, -0.42, 0));
+    G.add(mesh(cyl(0.16, 0.2, 0.12, 20), mat(0x23232E), 0, 0.32, 0)); G.add(mesh(sph(0.06, 10), mat(0x23232E), 0, 0.4, 0));
+    const h = mesh(tor(0.3, 0.05, Math.PI), mat(0x23232E), 0, 0.3, 0); G.add(h);
+    const sp = mesh(cyl(0.05, 0.1, 0.42, 14), m, 0.5, 0.0, 0); sp.rotation.z = -0.9; G.add(sp); G.rotation.x = 0.15; return G; },
+  kitten() { const G = B.cat(); G.scale.setScalar(0.8); G.children.forEach(c => { if (c.material && c.material.color && c.material.color.getHex() === 0xFFA94D) c.material = mat(0xBDBDC8, { rough: .55, sheen: .8, sheenC: 0xFFFFFF }); });   /* a small grey kitten */
+    const yarn = mesh(sph(0.2, 18), mat(0xFF6B8A, { rough: .8, sheen: 1 }), 0.55, -0.6, 0.3); G.add(yarn); return G; },
+  egg() { const G = new THREE.Group(), e = new THREE.Mesh(lathe(Array.from({ length: 21 }, (_, i) => { const t = i / 20, a = Math.PI * t; return [Math.sin(a) * 0.42 * (1 - 0.18 * Math.cos(a)), -Math.cos(a) * 0.56]; })), mat(0xFFF6E6, { rough: .35, clear: .8, sheen: .3 }));   /* a smooth egg */
+    e.castShadow = true; G.add(e); return G; },
+  elephant() { const G = new THREE.Group(), f = mat(0x9FA8C8, { rough: .55, sheen: .5 }), pk = mat(0xFFB3C6);   /* a gentle elephant */
+    const body = mesh(sph(0.45, 28), f, 0.18, -0.2, -0.1); body.scale.set(1.25, 0.95, 0.9); G.add(body); G.add(mesh(sph(0.32, 24), f, -0.32, 0.18, 0.1));
+    [-1, 1].forEach(s2 => { const ear = mesh(sph(0.26, 20), f, -0.32 + s2 * 0.3, 0.2, -0.02); ear.scale.set(0.9, 1.1, 0.25); G.add(ear); const ei = mesh(sph(0.18, 16), pk, -0.32 + s2 * 0.31, 0.2, 0.03); ei.scale.set(0.9, 1.1, 0.2); G.add(ei); });
+    G.add(tube([[-0.38, 0.05, 0.35], [-0.42, -0.2, 0.42], [-0.36, -0.45, 0.42], [-0.25, -0.5, 0.45]], 0.075, f));
+    [[-0.05, 1], [0.45, 1], [0, -1], [0.4, -1]].forEach(([x, z]) => G.add(mesh(cyl(0.11, 0.11, 0.35, 14), f, x, -0.62, z * 0.18 - 0.1)));
+    eyes(G, 0.055, 0.12, 0.28, 0.36, 0x2A1A10); G.children.slice(-2).forEach(e2 => e2.position.x -= 0.32); return G; },
+  envelope() { const G = new THREE.Group(), m = mat(0xFFF6E2, { rough: .6 }); G.add(mesh(box(1.2, 0.8, 0.06), m));   /* a closed letter envelope with a red seal */
+    const fl = new THREE.Shape(); fl.moveTo(-0.6, 0.4); fl.lineTo(0.6, 0.4); fl.lineTo(0, -0.08); fl.closePath(); const f2 = mesh(ext(fl, 0.02, 0.01), mat(0xF0E2C4, { rough: .6 })); f2.position.set(0, 0.2, 0.05); G.add(f2);
+    const seal = mesh(cyl(0.1, 0.1, 0.04, 20), mat(0xD84050, { clear: .8 }), 0, 0.0, 0.08); seal.rotation.x = Math.PI / 2; G.add(seal); G.rotation.z = -0.08; return G; },
+  cup() { const G = new THREE.Group(), m = mat(0x4DDB6A, { clear: .8, rough: .25 }); G.add(mesh(cyl(0.36, 0.28, 0.68, 36), m));   /* a plain cup */
+    const h = mesh(tor(0.18, 0.05, Math.PI * 1.2), m, 0.38, 0.02, 0); h.rotation.z = -Math.PI * 0.6; G.add(h); G.rotation.x = 0.25; return G; },
+  carrot() { const G = new THREE.Group(), c = mesh(new THREE.ConeGeometry(0.22, 1.0, 24), mat(0xFF8A2A, { rough: .45, clear: .5 }), 0, -0.1, 0); c.rotation.z = Math.PI; G.add(c);
+    for (let i = 0; i < 3; i++) { const l = mesh(new THREE.CapsuleGeometry(0.05, 0.3, 4, 8), mat(0x4DBB3A), (i - 1) * 0.08, 0.55, 0); l.rotation.z = (i - 1) * 0.4; G.add(l); } G.rotation.z = 0.5; return G; },
+  cap() { const G = new THREE.Group(), m = mat(0x3F6FE8, { rough: .7, sheen: .6 });   /* a boy's baseball cap */
+    const top = mesh(new THREE.SphereGeometry(0.45, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), m); top.scale.set(1, 0.8, 1); G.add(top);
+    const brim = mesh(cyl(0.42, 0.42, 0.04, 32, 1), m, 0, 0.0, 0.32); brim.scale.set(0.9, 1, 0.75); G.add(brim); G.add(mesh(sph(0.05, 10), mat(0xFFFFFF), 0, 0.36, 0)); G.rotation.set(0.3, -0.5, 0); return G; },
+  rock() { const G = new THREE.Group(), r = mesh(new THREE.IcosahedronGeometry(0.5, 2), mat(0x9AA3AE, { rough: .8 })); r.scale.set(1.2, 0.75, 0.9); G.add(r);   /* a round grey rock */
+    const r2 = mesh(new THREE.IcosahedronGeometry(0.22, 1), mat(0xB8C0C8, { rough: .8 }), 0.55, -0.2, 0.15); G.add(r2); return G; },
+  lock() { const G = new THREE.Group(); G.add(mesh(box(0.7, 0.55, 0.25), mat(0xFFC93C, { clear: 1, rough: .2, metal: .5 }), 0, -0.2, 0));   /* a padlock */
+    G.add(mesh(tor(0.24, 0.07, Math.PI), mat(0xB8C0C8, { metal: .7, rough: .2 }), 0, 0.08, 0)); const kh = mesh(cyl(0.06, 0.06, 0.04, 14), mat(0x5A4010), 0, -0.2, 0.14); kh.rotation.x = Math.PI / 2; G.add(kh); return G; },
+  card() { const G = new THREE.Group(), sh = new THREE.Shape(), w = 1.0, h = 0.42, r = 0.16;   /* a blank cream word card (the word tiles sit on it) */
+    sh.moveTo(-w + r, -h); sh.lineTo(w - r, -h); sh.quadraticCurveTo(w, -h, w, -h + r); sh.lineTo(w, h - r); sh.quadraticCurveTo(w, h, w - r, h); sh.lineTo(-w + r, h); sh.quadraticCurveTo(-w, h, -w, h - r); sh.lineTo(-w, -h + r); sh.quadraticCurveTo(-w, -h, -w + r, -h);
+    G.add(mesh(ext(sh, 0.08, 0.04), mat(0xFFE9A8, { rough: .5, clear: .6 }))); return G; },
+  truck() { const G = new THREE.Group(); G.add(mesh(box(0.9, 0.5, 0.6), mat(0xFF5A3C, { clear: 1, rough: .25 }), 0.2, 0.0, 0));   /* a toy truck */
+    G.add(mesh(box(0.45, 0.42, 0.58), mat(0x3F8FE8, { clear: 1, rough: .25 }), -0.48, -0.04, 0)); G.add(mesh(box(0.2, 0.2, 0.6), mat(0xBFE6FF, { emissive: 0x335577, ei: .2 }), -0.58, 0.05, 0.01));
+    [[-0.45, 1], [0.35, 1], [-0.45, -1], [0.35, -1]].forEach(([x, z]) => { const w = mesh(cyl(0.16, 0.16, 0.12, 20), mat(0x2A2A35), x, -0.3, z * 0.3); w.rotation.x = Math.PI / 2; G.add(w); }); G.rotation.y = 0.35; return G; }
+});
+
 export const WORDS = {
   cat: { say: 'cat', beats: ['cat'] }, hat: { say: 'hat', beats: ['hat'] }, sun: { say: 'sun', beats: ['sun'] }, bun: { say: 'bun', beats: ['bun'] },
   map: { say: 'map', beats: ['map'] }, moon: { say: 'moon', beats: ['moon'] }, mop: { say: 'mop', beats: ['mop'] }, mug: { say: 'mug', beats: ['mug'] },
@@ -254,7 +331,13 @@ export const WORDS = {
   nest: { say: 'nest', beats: ['nest'] }, nut: { say: 'nut', beats: ['nut'] }, noodles: { say: 'noodles', beats: ['noo', 'dles'] },
   iguana: { say: 'iguana', beats: ['i', 'gua', 'na'] }, net: { say: 'net', beats: ['net'] }, mountain: { say: 'mountain', beats: ['moun', 'tain'] },
   dog: { say: 'dog', beats: ['dog'] }, duck: { say: 'duck', beats: ['duck'] }, door: { say: 'door', beats: ['door'] }, donut: { say: 'donut', beats: ['do', 'nut'] },
-  pin: { say: 'pin', beats: ['pin'] }, tin: { say: 'tin', beats: ['tin'] }, mat: { say: 'mat', beats: ['mat'] }, mailbox: { say: 'mailbox', beats: ['mail', 'box'] }
+  pin: { say: 'pin', beats: ['pin'] }, tin: { say: 'tin', beats: ['tin'] }, mat: { say: 'mat', beats: ['mat'] }, mailbox: { say: 'mailbox', beats: ['mail', 'box'] },
+  grapes: { say: 'grapes', beats: ['grapes'] }, gate: { say: 'gate', beats: ['gate'] }, gift: { say: 'gift', beats: ['gift'] },
+  octopus: { say: 'octopus', beats: ['oc', 'to', 'pus'] }, otter: { say: 'otter', beats: ['ot', 'ter'] }, ox: { say: 'ox', beats: ['ox'] },
+  kite: { say: 'kite', beats: ['kite'] }, key: { say: 'key', beats: ['key'] }, kettle: { say: 'kettle', beats: ['ket', 'tle'] }, kitten: { say: 'kitten', beats: ['kit', 'ten'] },
+  egg: { say: 'egg', beats: ['egg'] }, elephant: { say: 'elephant', beats: ['el', 'e', 'phant'] }, envelope: { say: 'envelope', beats: ['en', 've', 'lope'] },
+  cup: { say: 'cup', beats: ['cup'] }, carrot: { say: 'carrot', beats: ['car', 'rot'] }, cap: { say: 'cap', beats: ['cap'] },
+  rock: { say: 'rock', beats: ['rock'] }, lock: { say: 'lock', beats: ['lock'] }, truck: { say: 'truck', beats: ['truck'] }
 };
 
 export function prop(name) {
