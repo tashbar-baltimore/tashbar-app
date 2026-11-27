@@ -141,14 +141,13 @@
     b.hook = { kind: 'predict', pic: '🏔️', t: 'Drop Mount Everest into the deepest part of the ocean.', q: 'What will happen?',
       o: ['It sinks out of sight', 'Its top sticks out', 'It fills the whole hole'],
       pay: 'It sinks out of sight! The trench is about *11 km* deep. Everest is only *9 km* tall.' };
-    D[1].steps = ['🏖️ the beach', '🐠 a coral reef', '🐋 where whales dive', '🌑 the deepest trench'];
-    D[1].say = 'Dive down! Put the places in order, shallowest first.';
-    D[1].how = 'The deeper you go, the darker and colder it gets.';
     b.learn = [
       { t: 'Fly over the *world ocean*. Read the book.', act: D[0] },
       { t: 'Now dive *down*. Less *sunlight* gets through.', act: D[1] },
       { who: { q: 'Can thirsty sailors drink *cold* sea water?', o: [['Shalom', 'Yes, if it is cold'], ['Nosson', 'No, it is far too salty']], a: 1,
-        why: 'Cold is fine. The *salt* makes it unsafe.' } }];
+        why: 'Cold is fine. The *salt* makes it unsafe.' } },
+      { t: 'The deepest spot is *11 km*. Everest is *9 km* tall.', act: { type: 'cloze', t: 'Drop Everest into the trench. Water over its top: ___ km.', o: ['2', '9', '20'], a: '2',
+        say: 'How much water is over Everest? Tap it in.', how: 'The trench is 11 km deep. Everest is 9 km tall. Take 9 from 11.' } }];
     b.play = [Y[0], Y[1], Y[2], Y[3]];
     b.done = 'The ocean is *huge*, *salty*, and deeper than Everest is tall!'; });
   nf(BITE['SCI.LAND.L06.02'], function (b, D, Y) {
@@ -160,10 +159,13 @@
       { t: 'Rain is *fresh*. The *salt* stays in the sea.', act: D[1] },
       { who: { q: 'Where is most of the earth’s *fresh water*?', o: [['Avrumi', 'In rivers and lakes'], ['Tzvi', 'Frozen in ice near the poles']], a: 1,
         why: 'Giant *ice* sheets hold far more than *rivers*.' } },
-      { t: 'Line up the water, *most* to *least*.', act: { type: 'order', steps: ['🌊 salty oceans', '🧊 ice and glaciers', '💧 lakes, rivers and underground'],
+      { t: 'Line up the water, *most* to *least*.', act: { type: 'order', steps: ['🌊 the seas', '🧊 the ice at the poles', '🏞️ every river and lake'],
         say: 'Put the water in order, the most first.', how: '97 cups are ocean. Most of the last 3 are ice. The little left is what we use.' } }];
-    Y[1].why = { q: 'Why does ice hold more than rivers?', o: ['The ice sheets are giant', 'Rivers are salty', 'Ice is heavier'], a: 'The ice sheets are giant' };
-    b.play = [Y[1], Y[0], Y[2], Y[3]];
+    Y[1].q = 'Mistake Detective: true, or a mix-up?'; Y[1].bins = ['True', 'Mix-up'];
+    Y[1].cards = [['Rain is salty because it comes from the sea', 1], ['Salt cannot evaporate', 0], ['We can easily use about 1 cup in 100', 0], ['Most fresh water is in rivers', 1]];
+    Y[1].say = 'Mistake Detective! True, or a mix-up?'; Y[1].how = 'Think: where does the salt go? Where is most fresh water?';
+    Y[1].why = { q: 'Why is a glacier fresh water?', o: ['It is frozen rain and snow', 'It is frozen sea water', 'It is melted rock'], a: 'It is frozen rain and snow' };
+    b.play = [Y[1], Y[0], Y[3], Y[2]];
     b.done = 'Only a *tiny* part of the earth’s water is *fresh* we can use!'; });
   nf(BITE['SCI.LAND.L06.03'], function (b, D, Y) {
     b.hook = { kind: 'mystery', pic: '🪣', t: 'Two wells stand side by side. One is *dry*.', q: 'Why is one well dry?',
@@ -171,12 +173,13 @@
       pay: 'It stops above the *water table*. Only a *deeper* well fills.' };
     b.learn = [
       { t: 'Read about the water *under* our feet.', act: D[0] },
-      { t: 'Follow the *rain* down to a *well*.', act: { type: 'order', steps: ['🌧️ rain falls', '🟫 it soaks into the soil', '🪨 it fills spaces in sand and rock', '🪣 a well draws it up'],
+      { t: 'Follow the *rain* down to a *well*.', act: { type: 'order', steps: ['🌧️ rain lands on a field', '🟫 it sinks into the dirt', '🪨 it fills the gaps between stones', '🪣 a bucket pulls it up'],
         say: 'Follow the rain! Put its path in order.', how: 'Rain falls, soaks in, fills the spaces. Then a well pulls it up.' } },
-      { t: 'The top of the soaked ground is the *water table*.', m: { type: 'scene', e: '🪣', t: 'A well is 18 m deep. The water table is 11 m down. 18 − 11 = 7 m of the well is below it, so it fills.' } },
+      { t: 'The top of the soaked ground is the *water table*.', act: { type: 'sort', bins: ['Fills with water', 'Comes up dry'], cards: [['a well 15 m deep', 0], ['a well 5 m deep', 1], ['a well 20 m deep', 0], ['a well 8 m deep', 1]],
+        say: 'The water table is 11 m down. Which wells fill?', how: 'A well fills only if it goes deeper than 11 m. A 15 m well has 15 − 11 = 4 m below it.' } },
       { who: { q: 'A hole is *3 m* deep. The water table is *8 m* down.', o: [['Yehuda', 'It gives water'], ['Moshe', 'It comes up dry']], a: 1,
         why: 'Only the part *below* the water table fills.' } }];
-    b.play = [Y[0], Y[2], D[1], Y[3]];
+    b.play = [Y[2], Y[0], D[1], Y[3]];
     b.done = 'A well must reach below the *water table* to fill!'; });
   nf(BITE['SCI.LAND.L06.04'], function (b, D, Y) {
     b.hook = { kind: 'wouldyou', pic: '🚗', t: 'Your toy car loses *one wheel*.', q: 'What would you do first?',
@@ -188,7 +191,7 @@
       { who: { q: 'Is eating an *apple* bal tashchis?', o: [['Refael', 'Yes, the apple is gone'], ['Eli', 'No, it was used properly']], a: 1,
         why: 'Using something *properly* is fine. *Waste* is the problem.' } },
       { t: 'Leftovers? Put the *careful* steps in order.', act: D[1] }];
-    b.play = [Y[0], Y[1], Y[2], Y[3]];
+    b.play = [Y[0], Y[1], Y[3], Y[4]];
     b.done = '*Bal tashchis*: we never waste. We guard Hashem’s world!'; });
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
 
