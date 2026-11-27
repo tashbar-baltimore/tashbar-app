@@ -93,8 +93,8 @@ export function startGame(cfg) {
 <button class="btn" id="start" aria-label="Start"><svg viewBox="0 0 48 48"><path d="M16 10 L38 24 L16 38Z" fill="#fff" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg></button>
 <svg id="hand" viewBox="-50 -60 100 110"><path d="M-10 0 L-10 -46 C-10 -56 6 -56 6 -46 L6 -22 L6 -26 C6 -34 20 -34 20 -26 L20 -20 C20 -28 34 -28 34 -20 L34 -14 C34 -22 46 -22 46 -14 L46 14 C46 36 30 46 12 46 L0 46 C-12 46 -18 38 -24 30 L-40 6 C-46 -2 -36 -10 -28 -4 L-10 10Z" fill="#FFFFFF" stroke="#1F2A44" stroke-width="4" stroke-linejoin="round"/></svg>
 <div class="judge" id="judge">
-  <button class="btn yesB" aria-label="yes, it is" style="background:#E3F6EA;box-shadow:0 6px 0 #9ED9B5">${iconSVG(cfg.mistake.icon, '#1E9E5A')}</button>
-  <button class="btn noB" aria-label="no, it is not" style="background:#FDE8E6;box-shadow:0 6px 0 #F2B8B2">${iconSVG(cfg.mistake.icon, '#F2B8B2', true)}</button>
+  <button class="btn yesB" aria-label="yes, it is" style="background:#E3F6EA;box-shadow:0 6px 0 #9ED9B5">${iconSVG(cfg.mistake.icon, '#1E9E5A')}<span class="badge okb"><svg viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 7" stroke="#fff" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+  <button class="btn noB" aria-label="no, it is not" style="background:#FDE8E6;box-shadow:0 6px 0 #F2B8B2">${iconSVG(cfg.mistake.icon, '#F2B8B2', true)}<span class="badge nob"><svg viewBox="0 0 24 24"><path d="M7 7 L17 17 M17 7 L7 17" stroke="#fff" stroke-width="3.6" fill="none" stroke-linecap="round"/></svg></span></button>
 </div>
 <div class="end" id="end"><div class="stars" id="stars"></div>
   <button class="btn" id="replay" aria-label="Play again"><svg viewBox="0 0 48 48"><path d="M36 16 A14 14 0 1 0 38 28" stroke="#1F2A44" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M30 8 L38 16 L28 20Z" fill="#1F2A44"/></svg></button></div>
@@ -242,7 +242,7 @@ export function startGame(cfg) {
   const DEPTH = 0.34, BEV = 0.09, shapes = [];
   const cornerGeo = new THREE.SphereGeometry(0.11, 24, 16);
   const cornerMat = new THREE.MeshStandardMaterial({ color: '#FFD23F', emissive: '#FFB000', emissiveIntensity: 1.4, roughness: 0.3 });
-  const cornerFaint = new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 0.5, transparent: true, opacity: 0.75 });
+  const cornerFaint = new THREE.MeshStandardMaterial({ color: '#1F6FEB', emissive: '#1F6FEB', emissiveIntensity: 0.45, roughness: 0.35 });   /* 'tap me' dots: solid blue, easy to see on any shape; a tapped one turns gold */
   function solidGeo(kind) {
     if (kind === 'sphere') return new THREE.SphereGeometry(0.62, 48, 32);
     if (kind === 'cube') return new RoundedBoxGeometry(1.0, 1.0, 1.0, 4, 0.08);
@@ -262,7 +262,7 @@ export function startGame(cfg) {
     if (TP && !cfg.thinFlat) TP.extras.forEach(x => { const front = x.clone(); front.position.z = dep / 2 + bev * 1.25 + 0.004; mesh.add(front); const back = x.clone(); back.rotation.y = Math.PI; back.position.z = -(dep / 2 + bev * 1.25 + 0.004); mesh.add(back); });
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
-    const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], dep / 2 + bev + 0.02); m.scale.setScalar(0); if (LK) m.add(LK.cornerHalo()); mesh.add(m); return m; });
+    const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], Math.max(dep / 2 + bev, DEPTH / 2 + BEV) + 0.07);   /* always in front of the lit sides, so no corner marker is hidden */ m.scale.setScalar(0); if (LK) m.add(LK.cornerHalo()); mesh.add(m); return m; });
     const o = { id, k, solid, color, box: cfg.sortBy ? sortBox(color, scale) : boxOf(k), g, turn, mesh, mat, marks, corners, scale, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false };
     mesh.userData.shape = o; shapes.push(o); return o;
   }
@@ -438,12 +438,13 @@ export function startGame(cfg) {
   const NUMS = ['One.', 'Two.', 'Three.', 'Four.', 'Five.', 'Six.', 'Seven.', 'Eight.'], NUMX = ['One!', 'Two!', 'Three!', 'Four!', 'Five!', 'Six!', 'Seven!', 'Eight!'];
   const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
   const cap = s => s[0].toUpperCase() + s.slice(1);
-  function lightCorner(o, i) { plink(); const m = o.marks[i]; m.material = cornerMat; return tween(260, k => m.scale.setScalar(k * 1.15)); }
+  function lightCorner(o, i) { if (i === 0) shapes.forEach(x => { if (x !== o && x.marks.length && x.marks.some(q => q.scale.x > 0 && q.material === cornerMat)) clearCorners(x); });   /* one thing at a time: only the shape being counted has lit corners */
+    plink(); const m = o.marks[i]; m.material = cornerMat; return tween(260, k => m.scale.setScalar(k * 1.45)); }
   function clearCorners(o) { o.marks.forEach(m => { m.scale.setScalar(0); m.material = cornerMat; }); }
   let cornerTap = null, shapeTap = null;
   function tapCorners(o) {   /* HE counts: faint dots on the corners; each tap lights one and the voice counts */
     return new Promise(done => {
-      o.marks.forEach(m => { m.material = cornerFaint; m.scale.setScalar(1.25); });
+      o.marks.forEach(m => { m.material = cornerFaint; m.scale.setScalar(1.5); });
       const got = new Set(); let nag = null;
       const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (cornerTap) { say('Tap each corner.'); remind(); } }, FAST ? 1e9 : 9000); };
       cornerTap = (cx, cy) => {

@@ -1274,14 +1274,14 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   function sprite(tex, color, add) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, color, transparent: true, depthWrite: false, blending: add ? THREE.AdditiveBlending : THREE.NormalBlending })); s.renderOrder = 5; scene.add(s); return s; }
   L.celebrate = (at, n) => {
     if (FAST) return;
-    const k = L.Q >= 2 ? 1 : L.Q === 1 ? 0.6 : 0.3, N = Math.round((n || 26) * 2 * k * (CEL && CEL.n ? CEL.n : 1));   /* party: fewer, smaller balloons, so they never cover the play */
+    const k = L.Q >= 2 ? 1 : L.Q === 1 ? 0.6 : 0.3, N = Math.round((n || 26) * 2 * k * (CEL && CEL.n ? CEL.n : 1) * (CALM ? 0.35 : 1));   /* calm: a small, short burst that never covers the pieces he still has to look at */   /* party: fewer, smaller balloons, so they never cover the play */
     for (let i = 0; i < N; i++) { const c = cs[cNext]; cNext = (cNext + 1) % CN; c.life = 1.8 + Math.random() * 0.6;
       c.p.copy(at); const a = Math.random() * Math.PI * 2, sp = 2 + Math.random() * 4; c.v.set(Math.cos(a) * sp, 5 + Math.random() * 5, Math.sin(a) * sp * 0.6);
       c.ax.set(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize(); c.spin = (6 + Math.random() * 10) * (CEL ? CEL.spin : 1); c.q.setFromAxisAngle(c.ax, Math.random() * 6); }
     conf.count = CN;
-    const ns = Math.round(9 * Math.max(0.5, k) * (CEL ? CEL.star : 1));
+    const ns = Math.round((CALM ? 5 : 9) * Math.max(0.5, k) * (CEL ? CEL.star : 1)), reach = CALM ? 0.45 : 1;
     for (let i = 0; i < ns; i++) { const s = sprite(starTex, '#FFFFFF', false), a = i / ns * Math.PI * 2;
-      L.fx.push({ s, t: 0, life: 1.1, p0: at.clone(), v: new THREE.Vector3(Math.cos(a) * 3.2, 2.5 + Math.sin(a) * 2.6, 0.6), size: 0.55 + Math.random() * 0.25, spin: (Math.random() - .5) * 6 }); }
+      L.fx.push({ s, t: 0, life: 1.1, p0: at.clone(), v: new THREE.Vector3(Math.cos(a) * 3.2 * reach, (2.5 + Math.sin(a) * 2.6) * reach, 0.6), size: 0.55 + Math.random() * 0.25, spin: (Math.random() - .5) * 6 }); }
     const ring = sprite(soft, '#FFF0B0', true); L.fx.push({ s: ring, t: 0, life: 0.9, p0: at.clone(), v: new THREE.Vector3(), size: 3.2, ring: true, soft: 0.45 });   /* a soft warm glow, never a hard flash */
   };
   L.sparkle = (at, n) => {
