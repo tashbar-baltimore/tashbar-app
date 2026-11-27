@@ -1564,12 +1564,12 @@ export function startGame(cfg) {
     play(ask);
   }
   /* cfg.countTags: as each thing is counted, a big number stands above it and stays, so he can see every one was counted once (K-CLARITY-RULES 8, 12) */
-  function numTag(n, at) {
+  function numTag(n, at, big) {
     const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
     x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(64, 64, 60, 0, 7); x.fill(); x.lineWidth = 6; x.strokeStyle = '#1F2A44'; x.stroke();
     x.fillStyle = '#1F2A44'; x.font = 'bold 84px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(n), 64, 70);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, toneMapped: false })); sp.renderOrder = 9; sp.scale.setScalar(tall ? 0.5 : 0.44); sp.position.copy(at); scene.add(sp); return sp;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, toneMapped: false })); sp.renderOrder = 9; sp.scale.setScalar(big ? (tall ? 1.0 : 0.95) : (tall ? 0.5 : 0.44)); sp.position.copy(at); scene.add(sp); return sp;
   }
   function countBoxes() {   /* count each box together, then he taps the box with the most */
     setName('counting'); stopIdle(); const tags = [];
@@ -1578,6 +1578,7 @@ export function startGame(cfg) {
     counts.forEach((items, i) => { const word = cfg.boxes[i].word;
       steps.push('The ' + word + ' box.');
       items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); if (cfg.countTags) { const bx = boxAt(i), st = Math.min(0.5, (BX.w - 0.3) / Math.max(1, items.length - 1)); tags.push(numTag(j + 1, new THREE.Vector3(bx.x - st * (items.length - 1) / 2 + st * j, 1.55, bx.z + 0.3))); }   /* the numbers stand in a neat row above the box, one per thing, never on top of each other */ return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
+      if (cfg.countTags) steps.push(() => { const bx = boxAt(i); tags.push(numTag(items.length, new THREE.Vector3(bx.x, 2.45, bx.z + 0.3), true)); pop(); });   /* the last number says how many: one big number for the whole box (K-CLARITY-RULES 8, 12) */
       steps.push(cap(WORDS[items.length]) + ' ' + word + '!'); });
     const most = counts.reduce((b, c, i) => (c.length > counts[b].length ? i : b), 0);
     return play(steps).then(ok => { if (!ok) return false; return new Promise(done => {
