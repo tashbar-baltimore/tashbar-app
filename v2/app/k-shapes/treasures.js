@@ -365,10 +365,10 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
 
   /* the soft golden halo a pattern item lights when the voice says "that part repeats" (the item's own colour never changes) */
   function addHalo(g, r = 0.55, y = -0.05) {
-    const h = new THREE.Mesh(new THREE.CircleGeometry(r, 40), new THREE.MeshBasicMaterial({ color: '#FFD45A', transparent: true, opacity: 0, depthWrite: false, fog: false, toneMapped: false }));
+    const h = new THREE.Mesh(new THREE.CircleGeometry(r * 1.15, 40), new THREE.MeshBasicMaterial({ color: '#FFB000', transparent: true, opacity: 0, depthWrite: false, fog: false, toneMapped: false }));
     h.position.set(0, y, -0.32); h.renderOrder = -1; g.add(h);
     h.onBeforeRender = () => { const q = new THREE.Quaternion(); g.getWorldQuaternion(q); h.quaternion.copy(q.invert().multiply(T.camera.quaternion)); };
-    g.userData.glow = on => { h.material.opacity = on ? 0.6 : 0; };
+    g.userData.glow = on => { h.material.opacity = on ? 0.9 : 0; };   /* a clear gold glow: the pale one hardly showed on the light floor (review 2) */
     return g;
   }
 
