@@ -27,3 +27,12 @@ The button system (`src/UiKit.html`, `docs/BUTTON-SYSTEM.md`) stays the one sour
 
 ## Picture orders
 `docs/classes-bucket/PICTURE-ORDERS.md`: YCB-1 (the afternoon, sent 2026-11-27) and YCB-2 (the whole world).
+
+## What is built (2026-11-27, all in `src/ClassMode.html`; pictures listed in `YCW_ART`)
+- **The Gate** after sign-in (grade 2+ known): the Gate opens and the camera flies through (about 3 s); waits for the picture; never blocks a tap.
+- **Home on the Great Terrace** (grade 2+, home tab, not in class time).
+- **Teacher Time Hall** and **Bucket Spring** (the afternoon, `docs/CLASSES-BUCKET.md`); flights between them push through the valley with eagles; a door a teacher opened rises through the clouds (gondola) to the Golden City.
+- **Golden City behind the free-time places**: Store (Grand Market), Chavrusa duels (Arena), Mistake Detective and Kodesh Quest (Game Pavilion), Block Builders and Chumash Lab (Workshop), My Library (Library Tower), Olam Haba (calm sky). The Canteen keeps its own 3D room.
+- **The quiet nook** behind every lesson.
+- Still to use: the Trail (his map), the Summit (celebrations), the fortress, stops, bridge, waterfall, gondola as a ride, plaque for the city, ring.
+- Rules kept: at rest nothing is drawn by script (the drift is CSS), so nothing moves behind a K-1 game; K-1 boys see none of this; reduce motion turns flights off.

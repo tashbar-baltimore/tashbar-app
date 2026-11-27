@@ -34,6 +34,9 @@
 - Every part of the app is a door (`YC.DOORS` on the server, `DOORS` in ClassMode.html with how each opens). Any teacher can add opening times for his own boys (which doors, days, times, a class or chosen boys, "only after their core"); "The whole app" lifts the lock. Opened doors show as tiles on the class screen.
 - Any teacher can take doors away from his boys until a time; that holds all day and beats any opening time.
 
+## The look
+The afternoon happens in the boys' world (`docs/WORLD.md`): Teacher Time in the Teacher Time Hall, Independent Study at the Bucket Spring with the crystal bucket. Screens: `docs/screens/classes-bucket/`.
+
 ## Not built yet
 - A different bucket for a single day. Friday and holiday rules. Kindergarten and Grade 1.
 - The server checks what a boy may open for worksheets; for lessons the lock is on the page (as Teacher mode always was).
