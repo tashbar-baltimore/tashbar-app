@@ -17,7 +17,8 @@
        rubric:['My opinion is clear','Reasons with details','Order and linking words','Capitals, end marks and spelling'],   (2-6 rows; the teacher scores 1-4)
        pics:['🐠','🐹','🦜','📚'] }   (his book page picture: 2-6 choices)
    QUICK WRITES (W13 helper, HoS 2026-11-27): a short task, kind:'quick', tied to one text he read. Two steps, Write then Check, then Send
-   to the same teacher inbox. No plan boxes or strategy card: the prompt and a "How to do it" box sit above his writing.
+   to the same teacher inbox. No plan boxes or strategy card: the prompt and a "How to do it" box sit above his writing. An any line
+   the app cannot find (his own spelling or words) has "I did it", so an honest answer never blocks Send; the teacher reads it.
      { id:'W13.QW.ST01A', kind:'quick', text:'C23.ST.01', story:'The Noise in the Sukkah', grade:2, skill:'WRIT.PARA.L02.05', title:'...', prompt:'...',
        how:['First, ...','Next, ...','Last, ...'], starters:['First,','Next,'], min:25, checks:[...no first/plan...], rubric:[...] }
    TLCORE.write.quick.add([q, ...]) registers them (a broken one is refused, with the reason in the console); quick.of(textId) lists a
@@ -73,7 +74,7 @@
     if (c.sentences) return ss.length >= c.sentences;
     if (c.words) return words(t) >= c.words;
     if (c.caps) return ss.length > 0 && ss.every(function (x) { return /^["“‘']?[A-Z0-9]/.test(x) && /[.!?]["”’']?$/.test(x); });
-    if (c.any) return c.any.some(function (w) { return low.indexOf(' ' + String(w).toLowerCase()) >= 0; });
+    if (c.any) return c.any.some(function (w) { return low.indexOf(' ' + String(w).toLowerCase()) >= 0; }) || (S.quick && !!S.self[c.t]);   /* quick write: a key word the app cannot find (his own spelling or words) he may tick himself; the teacher reads it */
     if (c.first) { var v = String(S.piece.plan[c.first] || ''), key = keyWords(v); var f = (ss[0] || '').toLowerCase(); return key.length > 0 && key.filter(function (w) { return f.indexOf(w) >= 0; }).length >= Math.min(2, key.length); }
     if (c.plan) return S.task.plan.every(function (p) { var key = keyWords(S.piece.plan[p.k]); return key.length > 0 && key.some(function (w) { return low.indexOf(w) >= 0; }); });
     return false;
@@ -124,7 +125,7 @@
   }
   function viewFix() {
     var list = S.task.checks.map(function (c, i) { var ok = check(c);
-      return '<li class="' + (ok ? 'ok' : '') + '"><span class="cw-mark" aria-hidden="true">' + (ok ? '✓' : '○') + '</span><span class="cw-ct">' + esc(c.t) + '</span>' + (c.self && !ok ? btn('quiet', 'I did it', 'data-cw="self" data-k="' + i + '"') : '') + '</li>'; }).join('');
+      return '<li class="' + (ok ? 'ok' : '') + '"><span class="cw-mark" aria-hidden="true">' + (ok ? '✓' : '○') + '</span><span class="cw-ct">' + esc(c.t) + '</span>' + ((c.self || (S.quick && c.any)) && !ok ? btn('quiet', 'I did it', 'data-cw="self" data-k="' + i + '"') : '') + '</li>'; }).join('');
     return strip() + (S.returned ? '<div class="cw-note" role="status"><b>Your teacher sent this back to fix.</b><p>' + esc(S.returned) + '</p></div>' : '') +
       '<div class="cw-body cw-two"><div class="cw-main"><textarea class="cw-text" data-cw-text="1" spellcheck="true" aria-label="My writing">' + esc(S.piece.text) + '</textarea></div>' +
       '<aside class="cw-side"><h3>My checklist</h3><ul class="cw-checks">' + list + '</ul><p class="cw-tip">Read it out loud. Fix one thing at a time.</p></aside></div>';
@@ -195,6 +196,7 @@
       if (c.first) { var pb = S.task.plan.filter(function (p) { return p.k === c.first; })[0]; return 'Not yet: ' + c.t + ' Start with words from your plan box "' + (pb ? pb.label : c.first) + '".'; }
       if (c.plan) { var miss = S.task.plan.filter(function (p) { var kw = keyWords(S.piece.plan[p.k]), low = S.piece.text.toLowerCase(); return !kw.some(function (w) { return low.indexOf(w) >= 0; }); })[0]; return 'Not yet: ' + c.t + (miss ? ' Use words from "' + miss.label + '".' : ''); }
       if (c.caps) return 'Not yet: ' + c.t + ' Look at the start and the end of each sentence.';
+      if (S.quick && c.any) return 'Not yet: ' + c.t + ' If you did it in your own words, tap I did it.';
       return 'Not yet: ' + c.t; }
     if (S.st === 3) return 'Give your piece a title.';
     return '';

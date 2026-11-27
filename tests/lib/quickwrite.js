@@ -60,7 +60,7 @@ module.exports = async function (pg) {
       await sleep(400); await next(); out.st2 = TLCORE.write.state().st; await look('3-check');
       await next(); out.stillCheck = TLCORE.write.state().st === 2 && TLCORE.write.state().view === 'fix'; out.checkWhy = (Q('#cwr .cw-why') || {}).textContent;
       type('[data-cw-text]', 'First, Dovid heard a scratch in the sukkah. Next, he clicked on his flashlight. Then he saw a little gray squirrel with challah. Last, the boys put the challah in a box with a tight lid.');
-      await sleep(400); for (let i = 0; i < 8 && Q('#cwr [data-cw=self]'); i++) { Q('#cwr [data-cw=self]').click(); await sleep(40); } out.checks = TLCORE.write.state().checks; out.sendWord = (Q('#cwr [data-cw=next]') || {}).textContent; await look('4-check-met');
+      await sleep(400); out.pre = TLCORE.write.state().checks; out.anyIdx = task.checks.map((c, i) => c.any ? i : -1).filter(i => i >= 0); for (let i = 0; i < 8 && Q('#cwr [data-cw=self]'); i++) { Q('#cwr [data-cw=self]').click(); await sleep(40); } out.checks = TLCORE.write.state().checks; out.sendWord = (Q('#cwr [data-cw=next]') || {}).textContent; await look('4-check-met');
       await next(); await sleep(150); out.view = TLCORE.write.state() && TLCORE.write.state().view; await look('5-sent');
       Q('#cwr [data-cw=close]').click(); out.res = await done;
       done = W.pick('C23.ST.01', { exit: 'x' }); await sleep(200); out.sentTile = (Q('#cwr [data-cw=qpick][data-k="' + task.id + '"]') || {}).getAttribute && Q('#cwr [data-cw=qpick][data-k="' + task.id + '"]').getAttribute('aria-disabled');
@@ -77,6 +77,7 @@ module.exports = async function (pg) {
     if (r.st2 !== 2) fails.push(at + 'Write -> Check did not open');
     if (!r.stillCheck || !/Not yet/.test(r.checkWhy || '')) fails.push(at + 'Check: a missing capital and end mark must keep him on Check and say which line (' + r.checkWhy + ')');
     if (!(r.checks || []).every(Boolean) || !/Send/.test(r.sendWord || '')) fails.push(at + 'Check: after fixing, every line must be met and the button must say Send (' + JSON.stringify(r.checks) + ', ' + r.sendWord + ')');
+    if (!(r.anyIdx || []).length || r.anyIdx.some(i => !r.pre[i])) fails.push(at + 'Check: the app must tick the key-word lines itself for a good answer (' + JSON.stringify(r.pre) + ')');
     if (r.view !== 'sent' || r.sent.filter(s => s === 'sent').length !== 1 || !r.res || !r.res.sent) fails.push(at + 'the quick write must be sent exactly once and reach the sent screen (' + r.sent.join(',') + ', ' + r.view + ')');
     if (!r.payload || r.payload.plan.prompt !== r.want.prompt || r.payload.title !== r.want.title || !(r.payload.rubric || []).length) fails.push(at + 'the teacher must get the prompt, the title and the rubric with his writing');
     if (r.sentTile !== 'true') fails.push(at + 'the picker must show a sent prompt as sent');
