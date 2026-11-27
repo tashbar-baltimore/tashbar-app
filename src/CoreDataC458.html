@@ -342,7 +342,7 @@
 
   (function () { var id = 'READ.COMP.L06.10';
     NL(id, {
-      hook: { kind: 'fact', pic: '🌊', t: 'Did you know? In one bay, the tide rises *forty feet*!', q: 'Does that belong in a summary of tides?',
+      hook: { kind: 'fact', pic: '🌊', t: 'Did you know? In one bay, the tide rises *more than forty feet*!', q: 'Does that belong in a summary of tides?',
         o: ['Yes, it is amazing', 'No, leave it out'], pay: 'A cool *extra*! A summary keeps only the *big ideas*.' },
       learn: [
         { t: 'Each *paragraph* has one *big idea*. The rest are *examples*.', act: A(id, 'your', 2, {
@@ -354,8 +354,10 @@
       play: [
         A(id, 'your', 0, { cards: [['Tides rise and fall each day because of the moon\'s pull, and they matter to people.', 0], ['Crabs, snails and fishermen are at the beach.', 1], ['Tides are the coolest thing in the ocean.', 1], ['The moon pulls on the ocean.', 1]],
           why: { q: 'What is wrong with "The moon pulls on the ocean"?', o: ['It tells only one part of the article', 'It is an opinion', 'It is not true'], a: 'It tells only one part of the article' } }),
-        A(id, 'your', 1, {}),
-        A(id, 'your', 3, { q: 'Why the Tide Comes In' })],
+        { type: 'tiles', q: 'Build a one-sentence summary of the tides article.', w: ['Tides rise', 'and fall each day,', 'mostly from', 'the moon\'s pull.'], extra: ['crabs in pools', 'Fundy is in Canada'],
+          say: 'Build the *summary*. Leave out the *extras*.', how: 'Keep the *big idea*. Crabs and Canada are *extras*.',
+          why: { q: 'Why leave out "crabs in pools"?', o: ['It is an extra, not a big idea', 'It is not true', 'It is too long'], a: 'It is an extra, not a big idea' } },
+        A(id, 'your', 3, { q: 'Why the Tide Comes In', how: 'What tides *are* first, then their *cause*, then why they *matter*.' })],
       done: 'Forty feet was an *extra*. A summary keeps the *big ideas*.' }); })();
 
   (function () { var id = 'READ.COMP.L06.11';
@@ -363,7 +365,7 @@
       hook: { kind: 'guess', pic: '🚢', t: 'Dovid makes a clay boat. He adds *marbles*, one at a time.', q: 'How many marbles until it sinks?',
         o: ['3', '12', '50'], pay: '*Twelve*! Each marble *caused* the boat to sit lower.' },
       learn: [
-        { t: 'Three links: *cause and effect*, *sequence*, *comparison*.', act: A(id, 'do', 0, { q: 'Why a Steel Ship Floats', cards: [['The ship is wide. It pushes aside lots of water.', 0], ['First a clay ball, then a clay boat.', 1], ['The ball sank, but the boat floated.', 2], ['With each marble, the boat sat lower.', 0]],
+        { t: 'Three links: *cause and effect*, *sequence*, *comparison*.', act: A(id, 'do', 0, { q: 'Why a Steel Ship Floats', cards: [['The ship is wide. It pushes aside lots of water.', 0], ['First a clay ball, then a clay boat.', 1], ['The ball sank, but the boat floated.', 2], ['Each marble made the boat sit lower.', 0]],
           say: 'What *kind of link* is each one?', how: '*Makes* it happen? *Time order*? *Alike or different*?' }) },
         { t: 'Build the *chain*: each link *causes* the next.', act: A(id, 'do', 1, { q: 'Why a Steel Ship Floats',
           say: 'Build the *link map*: each link causes the next.', how: 'Start with the *shape*. Ask: *because* of this, what happens?' }) },
@@ -391,27 +393,29 @@
           say: 'Build the *explanation* in order.', how: '*Answer*, then the text\'s *detail*, then what it *shows*.' }) }],
       play: [
         A(id, 'your', 0, { why: { q: 'How do you spot an outside guess?', o: ['You cannot point to it in the text', 'It is long', 'It is about sharks'], a: 'You cannot point to it in the text' } }),
-        A(id, 'do', 1, { q: 'Find each one in the text.', pairs: [['Catfish: not kosher', 'Fins, but no scales at all.'], ['Shark: not kosher', 'Its points cannot come off.'], ['Fish pieces: ask first', 'No skin, so no scales show.']] }),
-        A(id, 'your', 4, { p: ['Twice a day, the ocean creeps up the beach, and twice a day it slides back out.', 'When the sun and moon line up, their pulls add together, and the tides are extra high and extra low.', 'Fishermen leave the harbor when the tide is right.'] })],
+        A(id, 'do', 1, { q: 'Abba: "Without the skin, you cannot see the scales."', pairs: [['Catfish: not kosher', 'Fins, but no scales at all.'], ['Shark: not kosher', 'Its points cannot come off.'], ['Fish pieces: ask first', 'No skin, so no scales show.']] }),
+        A(id, 'your', 4, { p: ['Twice a day, the ocean creeps up the beach, and twice a day it slides back out.', 'When the sun and moon line up, their pulls add together, and the tides are extra high and extra low.', 'Fishermen leave the harbor when the tide is right.'], why: { q: 'What reason does it give?', o: ['The sun\'s and moon\'s pulls add together', 'The water is warmer', 'The fishermen go out'], a: 'The sun\'s and moon\'s pulls add together' } })],
       done: '*Salmon* has fins and scales. Explain with the *text\'s own words*.' }); })();
 
   (function () { var id = 'READ.FLU.L06.03';
     NL(id, {
-      hook: { kind: 'challenge', pic: '🐢', t: 'One try: "the *Challenger Deep*, almost *36,000* feet down."', q: 'Fast or slow: which wins here?',
-        o: ['Fast, to finish first', 'Slow on the hard parts'], pay: '*Slow* for names and numbers. *Smooth* for the easy words.' },
+      hook: { kind: 'challenge', pic: '🐢', t: 'Read it in one breath: "*Jacques Piccard* and Don Walsh, *1960*."', q: 'Did you trip?',
+        o: ['Yes, I tripped', 'No, it was easy', 'I went slow and got it'], pay: 'Going *slow* on names and numbers is the *smart* way. Then go *smooth*.' },
       learn: [
         { t: '*Slow down* for new names, numbers and long words.', act: A(id, 'do', 0, { q: 'The Deepest Place on Earth',
           say: '*Slow down*, or read *smoothly*?', how: 'New *names* and big *numbers* are hard. Short, easy words are not.' }) },
         { t: 'Each hard part has its own *fix*.', act: A(id, 'do', 1, { pairs: [['A long, new word', 'Read it in beats, then whole'], ['A big number', 'Say every part clearly'], ['A short, easy sentence', 'Read it at talking speed']],
           say: 'Match each part to what your *voice* does.', how: '*Hard* parts go slow. *Easy* parts go at *talking speed*.' }) },
-        { who: { q: 'Ari races through "36,000 feet" and says it wrong. Now what?', o: [['Chaim', 'Skip it and keep going.'], ['Eli', 'Slow down. Say every part clearly.']], a: 1,
+        { t: '*Listen*: a good reader *scoops* words into phrases.', act: { type: 'dictation', hear: 'In 1960, two explorers tried anyway.', w: ['In 1960,', 'two explorers', 'tried anyway.'], extra: ['tried'],
+          say: 'Listen. Build the sentence in *phrases*.', how: 'Hear the *pauses*. Each phrase is one *scoop*.' } },
+        { who: { q: 'Ari races through "*36,000 feet*" and says it wrong. Now what?', o: [['Chaim', 'Skip it and keep going.'], ['Eli', 'Slow down. Say every part clearly.']], a: 1,
           why: 'Hard parts need a *slower speed*, not a skip.' } }],
       play: [
         A(id, 'your', 0, { why: { q: 'Why is reading every easy sentence word by word a mistake?', o: ['Easy parts should sound like talking', 'It is too fast', 'It skips words'], a: 'Easy parts should sound like talking' } }),
         A(id, 'your', 1, {}),
         A(id, 'your', 3, {}),
         { type: 'parts', parts: ['ex', 'plo', 'ra', 'tion'], roles: ['part', 'part', 'part', 'part'], extra: ['exp', 'lor'], mean: 'a trip to discover new places',
-          say: 'Long word? Build *exploration* in *beats*.', how: 'Say each *beat* slowly. Then say the word *whole*.' }],
+          say: 'Long word? Build *exploration* in *beats*.', how: 'Say each *beat* slowly. Then say *exploration* whole, out loud.' }],
       done: '*Slow* on the hard parts, *smooth* on the easy ones. That is *pace*.' }); })();
 
   if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
