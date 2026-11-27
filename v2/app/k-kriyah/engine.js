@@ -617,6 +617,8 @@ export async function quickReview(unit, game) {
   const used = [...unit.letters, ...(game.pairs || []).flat(), ...(game.stands || []), ...(game.order || []), ...(game.reviewOf && UNITS[game.reviewOf - 1] ? UNITS[game.reviewOf - 1].letters : [])];
   unit.letters.forEach(k => (REV_LOOK[k] || []).forEach(o => used.push(o)));   /* and the look-alikes this game compared */
   let picks = reviewPicks(unit.known, 3, used); if (picks.length < 3) picks = [...picks, ...reviewPicks(unit.known, 3 - picks.length, [...picks, ...unit.letters])];
+  const trainOrder = game.kind === 'train' ? unit.known.filter(k => !(game.order || []).includes(k)) : null, after = {};   /* after a train: which letter comes next, among the letters this train left out */
+  if (trainOrder && trainOrder.length > 2) { const starts = trainOrder.slice(0, -1).sort(() => Math.random() - .5).slice(0, 3); picks = starts.map(a => { const k = trainOrder[trainOrder.indexOf(a) + 1]; after[k] = a; return k; }); }
   const pool = [...unit.known, ...unit.letters], box = $('#rev'), row = box.querySelector('.row'), dots = box.querySelector('.dots');
   const firstEver = !loadSave().revDemo; if (firstEver) { const sv = loadSave(); sv.revDemo = 1; writeSave(sv); }
   dots.innerHTML = picks.map(() => '<i></i>').join(''); box.classList.add('show'); document.body.dataset.review = 1;
@@ -631,8 +633,8 @@ export async function quickReview(unit, game) {
     await new Promise(res => {
       const btns = [...row.querySelectorAll('button')];
       window.__review = { want: k, at: Object.fromEntries(btns.map(b => { const r = b.getBoundingClientRect(); return [b.dataset.k, [r.x + r.width / 2, r.y + r.height / 2]]; })) };
-      const bySound = qi === 1 && LETTERS[k].snd && !set.some(c => c !== k && LETTERS[c].snd === LETTERS[k].snd);   /* one question by its sound, never with a same-sound letter beside it */
-      const ask = bySound ? ['Which letter says', S(LETTERS[k].snd), '? Tap it.'] : 'Tap ' + LETTERS[k].name + '.';
+      const bySound = !after[k] && qi === 1 && LETTERS[k].snd && !set.some(c => c !== k && LETTERS[c].snd === LETTERS[k].snd);   /* one question by its sound, never with a same-sound letter beside it */
+      const ask = after[k] ? 'What comes after ' + LETTERS[after[k]].name + '? Tap it.' : bySound ? ['Which letter says', S(LETTERS[k].snd), '? Tap it.'] : 'Tap ' + LETTERS[k].name + '.';
       let busy = true;
       (async () => { if (qi === 0 && firstEver) { await say('Watch me. Tap ' + LETTERS[k].name + '.'); const r = btns.find(x => x.dataset.k === k).getBoundingClientRect(); hand.at(r.x + r.width / 2, r.y + r.height / 2 + 20, true); await wait(900); hand.hide(); await say('Now you!'); }
         await say(ask); busy = false; window.__review.ready = 1; })();
@@ -641,7 +643,7 @@ export async function quickReview(unit, game) {
           await say(k === 'alef' || k === 'ayin' ? [LETTERS[k].name + '! ' + LETTERS[k].name + ' is quiet.'] : [LETTERS[k].name + '! ' + LETTERS[k].name + ' says', S(LETTERS[k].snd)]); res(); }
         else { busy = true; sfx.boop(); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); if (firstTry) noteLetter(k, false); firstTry = false;
           const r = btns.find(x => x.dataset.k === k); r.classList.add('right');
-          await say('That is ' + LETTERS[c].name + '. This is ' + LETTERS[k].name + '.'); if (REV_CLUE[k + '/' + c]) await say(REV_CLUE[k + '/' + c]); r.classList.remove('right'); busy = false; } });
+          await say(after[k] ? 'After ' + LETTERS[after[k]].name + ' comes ' + LETTERS[k].name + '.' : 'That is ' + LETTERS[c].name + '. This is ' + LETTERS[k].name + '.'); if (REV_CLUE[k + '/' + c]) await say(REV_CLUE[k + '/' + c]); r.classList.remove('right'); busy = false; } });
     });
     window.__review = null; await wait(250);
   }
