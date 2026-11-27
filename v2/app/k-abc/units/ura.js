@@ -55,7 +55,7 @@ const opener = {
 /* =========================================================== bingo: sound bingo =========================================================== */
 const bingo = {
   world(G) { const W = base(G.S, 'sunset', { clearW: 8 }); tree(G.S, -9.5, -6, { s: 1.4 }); tree(G.S, 9.5, -7, { s: 1.6, c1: 0x3A9E5A, c2: 0xB8E06A });
-    G.view({ wide: [0.4, 2.4, 11, 6.0, 0.17], narrow: [0, 2.6, 5.0, 8.0, 0.2] }); return W; },
+    G.view({ wide: [0.4, 2.4, 11, 6.0, 0.17], narrow: [0, 2.6, 5.0, 8.0, 0.2] }); G.mendyAt = { wide: [-3.9, 1.4, 0.9], narrow: [-1.4, 3.7, 0.55] }; return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow(); const board = shuffle(LET.concat([shuffle(LET)[0]])).slice(0, 9);
     const at = i => n() ? V(-1.4 + (i % 3) * 1.4, 4.4 - Math.floor(i / 3) * 1.4, 0) : V(-1.0 + (i % 3) * 1.6, 3.9 - Math.floor(i / 3) * 1.45, 0);
@@ -138,7 +138,7 @@ const BRIDGE = [['map', ['map', 'mat']], ['pin', ['pin', 'tin']], ['mat', ['mat'
 const bridge = {
   world(G) { const W = base(G.S, 'pond', { clearW: 8 }); pond(G.S, 0, -0.2, 2.6, 2.6); tree(G.S, -9, -6, { s: 1.5 }); tree(G.S, 9, -6, { s: 1.6, c1: 0x13924A, c2: 0x9BE94F });
     G.stones = []; for (let i = 0; i < 5; i++) { const s = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.6, 0.2, 28), toon(0xE3D7C9, { rough: .6 })); s.position.set(-4 + i * 2, 0.1, 0.2 + Math.sin(i) * 0.4); G.S.scene.add(s); G.stones.push(s); }
-    G.view({ wide: [0, 1.9, 11.6, 5.8, 0.22], narrow: [0, 2.0, 5.2, 8.0, 0.26] }); G.mendyAt = { wide: [-4.9, 2.2, 0.8], narrow: [-1.5, 3.9, 0.45] }; return W; },
+    G.view({ wide: [0, 1.9, 11.6, 5.8, 0.22], narrow: [0, 2.0, 5.2, 8.0, 0.26] }); G.mendyAt = { wide: [-4.3, 2.6, 0.8], narrow: [-1.5, 3.9, 0.45] }; return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow(); G.rounds(BRIDGE.length);
     const lay = () => G.stones.forEach((s, i) => { s.position.x = n() ? -2 + i : -4 + i * 2; }); lay(); G.W.layout = lay;
