@@ -50,3 +50,25 @@ New test: `v2/tests/k-clarity-numbers-c.js` plays every Unit 5 and 6 stop at bot
 Pictures for Hands and Trace (no change) are `numbers-c-hands5-*.jpg` and `numbers-c-trace-*.jpg`.
 
 Choices made without asking: the Unit 6 path stays a straight 0–10 line across the whole screen (as big as a straight path can be); the cloth's eyes were already removed by numbers-a.
+
+## numbers-d: Unit 7 (More, less, the same) and Unit 8 (Parts of 5)
+
+Pictures: `v2/screens/k-clarity/numbers-d-<game>-before-chromebook.jpg` and `-after-` (Chromebook 1366×768 and phone 390×844; start, lesson, first round, the help after one wrong move, a later round, the end; full look, not `?fast=1`).
+
+| Game | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| All Unit 7 (the orchard) | Every orchard tree was covered in red apples, and the big apple tree stood beside the blankets in every game: a boy comparing apples saw dozens of extra apples (rules 8, 10). The blankets and apples were small in the middle of a big field; on a phone each apple was about 25 px (rule 9) | No apples hang on any tree: the only apples on screen are the ones to count (an apple still falls out of the leaves for "one more"). The apple tree stands only in the four games that use it (Learn it, One more one less, Find the mistake, Show me). The camera comes in so the blankets fill the screen; on a phone the friends are a little smaller and stand close beside their own blankets (never in front of an apple), so the apples are much bigger. Two rows of apples sit further apart, and scattered apples keep a bigger front-to-back gap, so from the camera no apple hides behind another | every Unit 7 sheet |
+| Learn it (opener7) | As above; also an empty pale tile sat at the bottom when there was nothing to press (it looked like a button) | As above; the tile is see-through when there is nothing to press | opener7 |
+| Line them up (pairs7) | The big apple tree full of apples stood right beside the blankets (rule 8) | No tree here; closer camera | pairs7 |
+| Which is more? (more7) | The two number cards he taps were small at the bottom while empty blankets filled the screen (rule 9) | The number cards are about 1.5 times bigger: the biggest thing on the screen | more7 |
+| One more, one less (build7) | Tree full of apples (rule 8) | The tree has leaves only; an apple still drops from it | build7 |
+| The see-saw (seesaw7) | The apples on each tray were piled on top of each other: 5 or 6 apples could not be counted (rule 8). The see-saw sat small at the top with empty grass below, and a tree full of apples stood behind it | Long trays: the apples sit in rows of five, like a ten-frame (on a phone a shorter see-saw with rows of three, so it can be big). The camera frames the see-saw. No tree | seesaw7 |
+| Find the mistake (mistake7) | Ari, who says the mistake, was a 30 px picture (rule 11: he must see who is talking). "Squeezed together" apples overlapped each other, so the boy could not count them. With 7 squeezed against 5 spread, both rows were the same length, so the "spread out looks like more" trick did not show (rule 7) | Ari is about 4 times bigger; bigger number cards. Squeezed apples are close but never touch. That round is now 6 squeezed against 4 spread out: the spread row is clearly longer, yet 6 is more. New test checks all of this | mistake7 |
+| Review (review7) | Runs on the Unit 6 garden path (`path6.js`); numbers-c calmed that world for Unit 6, which also reaches this game | Nothing more changed here (shared world belongs to Unit 6) | review7 |
+| Show me (check7) | Trees full of apples; scattered apples could tuck behind each other | As above | check7 |
+| All Unit 8 (Bubby's kitchen) | Calm and clear (one table, kugel, towel, counters, a cup), but the camera showed the whole table, its legs and the floor, so the kugel slices on the plates were small (rule 9) | On a Chromebook the camera frames the tablecloth, so slices, plates and counters are bigger (the phone keeps its framing, so no counter is cut off the edge) | every Unit 8 sheet |
+| Every Numbers game | The game's name showed only on the start screen (rule 13) | The title stays at the top, above the round dots, all game (shared `frame.js`) | |
+
+New tests: `v2/tests/k-clarity-numbers.js` now checks the orchard (apples never touch, even squeezed; the spread-out row is longer; no apples on the trees; see-saw apples apart) at both sizes. `KNUM_ONLY=a.html,b.html` lets a builder run only some games in `k-numbers-games.js` (unset = every game, as before).
+
+Choices made without asking (as a kindergarten teacher would): the apple tree keeps its leaves but no apples (an apple falling out of a tree is still natural); the see-saw on a phone uses rows of three instead of five, because a five-wide row would make every apple tiny; Unit 8 did not need a bigger change.
