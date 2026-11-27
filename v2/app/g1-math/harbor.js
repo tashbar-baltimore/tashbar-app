@@ -5,15 +5,16 @@
 import { THREE, FAST, canvasTex, numTex, MATS, SOFT, col } from './kit3d.js';
 
 /* the water: a bright turquoise bay with soft moving ripples */
-export function harborWorld(S) {
+export function harborWorld(S, o = {}) {
   const g = new THREE.Group(); S.scene.add(g);
+  const scenery = new THREE.Group(); g.add(scenery); if (o.painted) scenery.visible = false;   /* with a painted backdrop, the 3D water and shore stay hidden */
   const rip = canvasTex(512, 512, (x, w, h) => { x.fillStyle = '#4FC8D9'; x.fillRect(0, 0, w, h);
     for (let i = 0; i < 900; i++) { const px = Math.random() * w, py = Math.random() * h, l = 10 + Math.random() * 40; x.strokeStyle = 'rgba(255,255,255,' + (0.05 + Math.random() * 0.18) + ')'; x.lineWidth = 1.5 + Math.random() * 2; x.beginPath(); x.moveTo(px, py); x.quadraticCurveTo(px + l / 2, py - 3, px + l, py); x.stroke(); } });
   rip.wrapS = rip.wrapT = THREE.RepeatWrapping; rip.repeat.set(14, 10);
   const water = new THREE.Mesh(new THREE.PlaneGeometry(240, 140), new THREE.MeshPhysicalMaterial({ color: '#7FDDE8', map: rip, roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.2, envMapIntensity: 0.9 }));
-  water.rotation.x = -Math.PI / 2; water.position.set(0, 0.03, 46); water.receiveShadow = true; g.add(water);
+  water.rotation.x = -Math.PI / 2; water.position.set(0, 0.03, 46); water.receiveShadow = true; scenery.add(water);
   /* the far shore: a sandy beach and the green hills behind (the kit's hills) */
-  const sand = new THREE.Mesh(new THREE.PlaneGeometry(240, 14), MATS.matte('#F2DDA8')); sand.rotation.x = -Math.PI / 2; sand.position.set(0, 0.05, -18); g.add(sand);
+  const sand = new THREE.Mesh(new THREE.PlaneGeometry(240, 14), MATS.matte('#F2DDA8')); sand.rotation.x = -Math.PI / 2; sand.position.set(0, 0.05, -18); scenery.add(sand);
   S.tick.push((dt, t) => { rip.offset.x = t * 0.012; rip.offset.y = Math.sin(t * 0.3) * 0.02; });
   /* little houses on the far shore: warm roofs, plain windows (no faces) */
   const roofs = ['#E57A5A', '#5C8FD6', '#F2B632', '#7FB069'];
@@ -21,11 +22,11 @@ export function harborWorld(S) {
     const b = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.4, 2.6), MATS.matte('#FFF4E2')); b.position.y = 1.2; b.castShadow = !FAST; h.add(b);
     const r = new THREE.Mesh(new THREE.ConeGeometry(2.6, 1.6, 4), MATS.matte(roofs[i % 4])); r.position.y = 3.2; r.rotation.y = Math.PI / 4; h.add(r);
     const w = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.8), MATS.matte('#9FD3F0')); w.position.set(0.7, 1.4, 1.31); h.add(w);
-    h.position.set(x, 0, -22 - (i % 3)); g.add(h); }
+    h.position.set(x, 0, -22 - (i % 3)); scenery.add(h); }
   /* a striped lighthouse far away, on the right */
   const lh = new THREE.Group(); [0, 1, 2, 3].forEach(k => { const s = new THREE.Mesh(new THREE.CylinderGeometry(1.1 - k * 0.12, 1.2 - k * 0.12, 1.6, 20), MATS.matte(k % 2 ? '#FFFFFF' : '#E2524A')); s.position.y = 0.8 + k * 1.6; lh.add(s); });
   const top = new THREE.Mesh(new THREE.SphereGeometry(0.8, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2), MATS.matte('#E2524A')); top.position.y = 6.8; lh.add(top);
-  lh.position.set(34, 0, -20); g.add(lh);
+  lh.position.set(34, 0, -20); scenery.add(lh);
   /* gulls: soft white wings gliding in slow circles high up */
   const wing = new THREE.MeshStandardMaterial({ color: '#FFFFFF', side: THREE.DoubleSide, roughness: 0.6 });
   const gulls = []; for (let i = 0; i < (FAST ? 1 : 4); i++) { const b = new THREE.Group(); [-1, 1].forEach(s => { const w = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.22), wing); w.position.x = s * 0.45; w.userData.s = s; b.add(w); });

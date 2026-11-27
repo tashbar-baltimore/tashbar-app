@@ -16,7 +16,8 @@ const GAME = new URLSearchParams(location.search).get('g') || 'dock';
 const ORDER = ['opener', 'sail', 'bigfirst', 'turn', 'pull', 'mistake', 'check', 'review'];
 const host = ui({ home: GAME === 'dock' ? './' : 'unit2.html' });
 const S = stage(host, { sky: { top: '#5AB0F0', mid: '#A6DAFF', low: '#FFF0D2' } });
-harborWorld(S);
+harborWorld(S, { painted: true });
+S.paintedBackdrop('g1-harbor-bg.webp');   /* the painted harbor (from the HoS's image account) is the world behind the buoys */
 G.isReady = () => S.frames > 2;
 const PORTRAIT = innerHeight > innerWidth;
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
