@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Line Them Up — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 7 "More, less, the same" (v2/curriculum/k-numbers/MAP.md): LINE THEM UP, in a 3D apple orchard.
+     Dovid and Shmuel sit on two picnic blankets with apples. He pairs them one to one: tap one of Dovid's, then one of Shmuel's,
+     and a golden ribbon joins them. When one side runs out, the apples left over show who has more, without counting.
+     He taps that friend's blanket, or the "the same" button when every apple has a partner. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <button id="same" class="bigbtn btn3d b-white eq" aria-label="The same"><svg viewBox="0 0 48 48"><path d="M10 18h28M10 30h28" stroke="#2B2350" stroke-width="7" stroke-linecap="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './orchard7.js';
+const $ = id => document.getElementById(id);
+let O, R, done, picked = null;
+const NAME = ['Dovid', 'Shmuel'];
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function free(i) { return O.unpaired(i); }
+function pairing() { return free(0).length && free(1).length; }
+function more() { const a = O.count(0), b = O.count(1); return a === b ? -1 : a > b ? 0 : 1; }
+function hooks() {
+  if (pairing()) { GAME.right = () => [{ tap: '.tspot[data-id="a0-' + free(0)[0] + '"]' }, { tap: '.tspot[data-id="a1-' + free(1)[0] + '"]' }]; GAME.wrong = null; return; }
+  const m = more(), right = m < 0 ? '#same' : '.tspot[data-id="side' + m + '"]', wrong = m < 0 ? '.tspot[data-id="side0"]' : m === 0 ? '.tspot[data-id="side1"]' : '#same';
+  GAME.right = () => [{ tap: right }]; GAME.wrong = () => [{ tap: wrong }];
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+async function afterPairs() {
+  GAME.phase = 'busy'; FR.lock(true); picked = null;
+  O.sideSpot(0); O.sideSpot(1);
+  await FR.say(free(0).length || free(1).length ? 'Look! Some apples have no partner.' : 'Every apple has a partner!');
+  open(); await FR.say('Who has more? Or the same?', { repeat: 'Tap who has more. Or tap the same.' });
+}
+async function tapApple(id, el) {
+  const [i, j] = id.slice(1).split('-').map(Number); if (O.sides[i].apples[j].userData.paired) return;
+  if (!picked || picked.i === i) { if (picked) picked.el.classList.remove('picked'); picked = { i, j, el }; el.classList.add('picked'); NK.sound.pop(); return; }
+  GAME.phase = 'busy'; FR.lock(true); picked.el.classList.remove('picked');
+  const a = i === 0 ? j : picked.j, b = i === 1 ? j : picked.j; picked = null; await O.pair(a, b);
+  if (pairing()) { open(); return; } await afterPairs();
+}
+async function answer(k, el) {   /* k: 0 or 1 (a blanket), -1 (the same) */
+  if (GAME.phase !== 'answer' || pairing()) return; GAME.phase = 'busy'; FR.lock(true);
+  const m = more();
+  if (k === m) { const w = m < 0 ? null : O.sides[m].g.position; if (w) O.sparkle(w); O.sides.forEach(s => s.pose(m < 0 || s.i === m ? 'happy' : 'idle'));
+    await FR.yes(el, m < 0 ? 'The same! Every apple has a partner.' : 'Yes! ' + NAME[m] + ' has more. Those apples are left over.'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops(el); R.misses++;
+  if (m < 0) await FR.say('Look again. Does any apple have no partner?');
+  else { O.glowSide(m, true); await FR.say("Look! " + NAME[m] + "'s apples are left over. That means more."); O.glowSide(m, false); }
+  open();
+}
+const PLAN = [[3, 5, 'row'], [6, 4, 'row'], [4, 4, 'row'], [7, 5, 'scatter'], [2, 6, 'scatter'], [6, 6, 'scatter']];
+function play(F, i) {
+  return new Promise(async res => {
+    const [a, b, how] = PLAN[i]; R = { misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); picked = null;
+    O.clearPairs(); O.unspot('side0'); O.unspot('side1'); O.sides.forEach(s => s.pose('idle'));
+    O.setApples(0, a, how); O.setApples(1, b, how);
+    await F.say(i === 0 ? 'Line them up! One of Dovid\'s, one of Shmuel\'s.' : F.pick(['Line them up!', 'Make partners!', 'Pair them up!']), { repeat: 'Tap one apple of each. They become partners.' });
+    open();
+  });
+}
+FR.game({
+  id: 'u7-pairs', title: 'Line Them Up', rounds: 6,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""><img src="art/shmuel-happy.png" alt="" style="height:86%"></div>',
+  init() {
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true });
+    O.onTap = (id, el) => { if (GAME.phase !== 'answer') return; if (id[0] === 'a') tapApple(id, el); else if (id.startsWith('side')) answer(+id[4], el); };
+    $('same').addEventListener('click', () => { NK.unlock(); answer(-1, $('same')); });
+  },
+  demo: async F => {
+    O.setApples(0, 2, 'row'); O.setApples(1, 3, 'row'); R = { misses: 0 };
+    await F.say('Dovid has apples. Shmuel has apples. Watch me.');
+    for (let k = 0; k < 2; k++) { await F.handTo(document.querySelector('.tspot[data-id="a0-' + k + '"]')); await F.handTap(); await F.handTo(document.querySelector('.tspot[data-id="a1-' + k + '"]')); await F.handTap(); await O.pair(k, k); }
+    await F.say('One apple is left over. Shmuel has more!'); O.glowSide(1, true); await F.wait(800); O.glowSide(1, false); O.clearPairs();
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'Partners show who has more!' : 'Good work! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
