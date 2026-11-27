@@ -116,8 +116,8 @@ const hunt = {
       const S = G.S, n = () => G.narrow(), set = huntSet('s'), rockAt = () => n() ? V(1.4, 0.4, 2.6) : V(3.7, 0.4, 1.8);
       const lay = () => { const r = rockAt(); G.rock.position.set(r.x, S.groundH(r.x, r.z) + 0.15, r.z); G.rock.scale.setScalar(n() ? 0.7 : 1); G.snake.position.set(r.x, r.y + (n() ? 0.7 : 0.9), r.z); }; lay(); G.W.layout = lay;
       G.rounds(3); await G.say('The pond parade is coming!', 'Catch the pictures that start with this sound.', snd('s'), 'Drag them to the snake.');
-      const pads = []; const its = set.map(([w, yes], i) => { const it = G.item(w, () => V((7 + i * 3.2) * (n() ? 0.6 : 1), 0.75, -0.3), { drag: true, size: 1.0, data: { yes, x: 7 + i * 3.2, roam: true } }); const p = lilypad(S, 0.7); pads.push([p, it]); return it; });
-      let pause = false; S.tick((t, dt) => { its.forEach((it, i) => { if (it.placed || !it.live) return; if (!pause && !G.dragItem() && G.A.name !== 'end') it.data.x -= dt * (FAST ? 0.3 : 0.9);   /* the parade waits while his finger is down */ if (it.data.x < -7) it.data.x += set.length * 3.2;
+      const pads = []; const its = set.map(([w, yes], i) => { const x0 = FAST ? -3.2 + i * 1.3 : 7 + i * 3.2, it = G.item(w, () => V(x0 * (n() ? 0.6 : 1), 0.75, -0.3), { drag: true, size: 1.0, data: { yes, x: x0, roam: true } });   /* the automatic test sees the parade standing still, already in view */ const p = lilypad(S, 0.7); pads.push([p, it]); return it; });
+      let pause = false; S.tick((t, dt) => { its.forEach((it, i) => { if (it.placed || !it.live) return; if (!pause && !G.dragItem() && G.A.name !== 'end') it.data.x -= dt * (FAST ? 0 : 0.9);   /* the parade waits while his finger is down */ if (it.data.x < -7) it.data.x += set.length * 3.2;
         const z = n() ? -0.4 : -0.3, w = n() ? 0.6 : 1; it.home.set(it.data.x * w, 0.75, z + Math.sin(it.data.x * 0.5) * 0.6); if (!it.moving && it !== G.dragItem()) it.obj.position.copy(it.home); });
         pads.forEach(([p, it]) => { p.visible = it.live && !it.placed; p.position.set(it.home.x, 0.1, it.home.z); }); });
       let got = 0;
@@ -169,7 +169,7 @@ const hunt = {
       const blocks = []; let h = 0.5;
       const topAt = () => V(bx(), h + 0.75, 0.6);
       G.rounds(3); await G.say('Let\'s build a tall tower!', 'Only pictures that start with this sound.', snd('t'));
-      const its = set.map(([w, yes], i) => G.item(w, () => n() ? V(-1.9 + (i % 3) * 1.2, 0.75, 2.2 - Math.floor(i / 3) * 1.5) : V(-3.8 + (i % 3) * 1.55, 0.75, 2.0 - Math.floor(i / 3) * 1.7), { drag: true, size: 0.95, data: { yes } }));
+      const its = set.map(([w, yes], i) => G.item(w, () => n() ? V(-1.9 + (i % 3) * 1.2 + Math.floor(i / 3) * 0.6, 0.75 + Math.floor(i / 3) * 0.35, 2.2 - Math.floor(i / 3) * 1.5) : V(-3.9 + (i % 3) * 1.6 + Math.floor(i / 3) * 0.8, 0.75 + Math.floor(i / 3) * 0.35, 2.0 - Math.floor(i / 3) * 1.7), { drag: true, size: 0.95, data: { yes } }));   /* the back row sits between the front ones, so none hides another */
       for (let r = 0; r < 3; r++) {
         G.newRound(); const good = its.find(i => i.data.yes && !i.placed), bad = its.find(i => !i.data.yes);
         G.expect({ kind: 'drag', from: good, to: topAt }); G.A.wrongMove = { kind: 'drag', from: bad, to: topAt };
