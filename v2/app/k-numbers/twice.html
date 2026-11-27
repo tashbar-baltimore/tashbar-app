@@ -10,6 +10,15 @@
      A wrong tap: "That apple has one touch. Find two touches." -->
 <link rel="stylesheet" href="frame.css">
 <link rel="stylesheet" href="unit3.css">
+<style>
+/* K clarity review (2026-11-27): touch stickers are BIG and bright (at least 28 px), side by side on the apple, so "two touches" is easy to see */
+/* stars, not round dots: two round dots side by side on an apple look like eyes (no faces on objects) */
+.it .tchs{ position:absolute; left:50%; top:62%; transform:translate(-50%,-50%); display:flex; gap:3px; pointer-events:none; z-index:3; filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 2px 2px rgba(0,0,0,.45)); }
+.it .tchs .tch{ display:block; position:static; height:auto; border:0; border-radius:0; box-shadow:none; width:clamp(30px,3vw,44px); aspect-ratio:1; background:radial-gradient(circle at 40% 35%,#FFF6B0,#FFD23D 50%,#F29A00); transition:transform .2s;
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%); }
+.it .tchs .tch.on{ transform:scale(1.35); background:radial-gradient(circle at 40% 35%,#FFFFFF,#FFE680 45%,#FF8A00); }
+#game.finding .panel{ visibility:hidden; }   /* one job at a time: the hands come back for "How many really?" */
+</style>
 </head>
 <body>
 <div id="game" class="locked"><div class="stage" id="stage">
@@ -24,7 +33,15 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); }, U = U3, H, easy = 0, misses = 0;
   var PLAN = [[3, 'twice'], [4, 'skip'], [4, 'twice'], [5, 'skip'], [6, 'twice']], WHO = ['Ari', 'Mendy', 'Dovid', 'Eli', 'Yaakov'];
-  function sticker(it) { var k = it.querySelectorAll('.tch').length, s = document.createElement('i'); s.className = 'tch'; s.style.left = (8 + k * 30) + '%'; it.appendChild(s); }
+  function sticker(it) { var box = it.querySelector('.tchs'); if (!box) { box = document.createElement('span'); box.className = 'tchs'; it.appendChild(box); }
+    var s = document.createElement('i'); s.className = 'tch'; box.appendChild(s); }
+  /* the help: glow the apple and count its stickers out loud ("One, two touches.") */
+  async function countStickers(F, it) {
+    it.classList.add('lit'); var t = [].slice.call(it.querySelectorAll('.tch'));
+    if (!t.length) { await F.say('This apple has no touch.'); return; }
+    for (var k = 0; k < t.length; k++) { t[k].classList.add('on'); await F.say(F.Word(k + 1) + (k === t.length - 1 ? (t.length === 1 ? ' touch.' : ' touches.') : ','), { noRepeat: true }); }
+    t.forEach(function (x) { x.classList.remove('on'); });
+  }
 
   /* the other boy counts out loud, touching each apple (one twice, or one skipped) */
   async function boyCounts(F, els, kind, bad) {
@@ -41,12 +58,12 @@
         var it = e.target.closest('.it'); if (!it || GAME.phase !== 'answer') return; GAME.phase = 'busy'; F.lock(true);
         if (+it.dataset.i === bad) { $('scene').removeEventListener('pointerdown', tap); it.classList.add('lit'); await F.yes(null, kind === 'twice' ? 'That one! Touch each one only once.' : 'That one! Every one gets a touch.'); it.classList.remove('lit'); res(misses === 0); return; }
         F.oops(it); misses++;
-        var t = it.querySelectorAll('.tch').length;
-        await F.say(kind === 'twice' ? 'That apple has ' + (t === 1 ? 'one touch' : F.word(t) + ' touches') + '. Find two touches.' : 'That apple got a touch. Find no touch.');
-        if (misses >= 2) { els[bad].classList.add('lit'); await F.say('Look at this one.'); }
+        await countStickers(F, it); it.classList.remove('lit');
+        await F.say(kind === 'twice' ? 'Find the apple with two touches.' : 'Find the apple with no touch.');
+        if (misses >= 2) { await F.say('Look at this one.'); await countStickers(F, els[bad]); }
         GAME.phase = 'answer'; F.lock(false); hooks();
       }
-      $('scene').addEventListener('pointerdown', tap); GAME.phase = 'answer'; F.lock(false); hooks();
+      $('game').classList.add('finding'); $('scene').addEventListener('pointerdown', tap); GAME.phase = 'answer'; F.lock(false); hooks();
     });
   }
   async function play(F, n, kind, who, line) {
@@ -61,7 +78,7 @@
     await F.say(who + ' says: ' + F.word(said) + ' apples!');
     await F.say(kind === 'twice' ? who + ' touched one apple two times. Tap it.' : who + ' missed one apple. Tap that apple.', { repeat: kind === 'twice' ? 'Find the apple with two touches. Tap it.' : 'Find the apple with no touch. Tap it.' });
     var a = await findIt(F, els, bad, kind);
-    els.forEach(function (e) { e.querySelectorAll('.tch').forEach(function (t) { t.remove(); }); });
+    els.forEach(function (e) { e.querySelectorAll('.tchs').forEach(function (t) { t.remove(); }); }); $('game').classList.remove('finding');
     var b = await U.answer(F, { n: n, H: H, ask: 'How many apples really?',
       explain: async function (F) { await F.say("Let's count right. Touch each once."); await U.countAlong(els); await F.say(F.Word(n) + ' apples!'); } });
     return a && b;
@@ -72,7 +89,7 @@
     init: function (F) { U.addArt(); H = U.hands($('hands')); H.lock(true); },
     demo: async function (F) {
       /* the demo counts one apple twice, then finds the apple with two stickers */
-      U.clear(); var pts = [[28, 68], [50, 84], [72, 68]], els = pts.map(function (p, i) { return U.put('apple', p, Math.max(15, U.itemW(3)), i); });
+      $('game').classList.add('finding'); U.clear(); var pts = [[28, 68], [50, 84], [72, 68]], els = pts.map(function (p, i) { return U.put('apple', p, Math.max(15, U.itemW(3)), i); });
       await F.say('Each touch gets a sticker. Watch me count.');
       var order = [0, 1, 1, 2];
       for (var i = 0; i < order.length; i++) { await F.handTo(els[order[i]], .5, .45); await F.handTap(); sticker(els[order[i]]); NK.sound.pop(); await F.say(F.Word(i + 1), { noRepeat: true }); }
