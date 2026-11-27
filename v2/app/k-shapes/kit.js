@@ -188,7 +188,7 @@ export function startGame(cfg) {
     } else if (bc.solid) {   /* a little real solid stuck on the front */
       const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(0.5, 0.75, 0);   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (LK) {
-      const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5, BX.d / 2 + 0.3); lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
+      const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5 + (NB > 1 ? 0.5 : 0), BX.d / 2 + 0.3);   /* several boxes (phone: two rows): high enough that the box in front never hides it */ lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
     } else {
       const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
       lab.scale.setScalar((NB === 1 ? 0.48 : 0.5) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
@@ -273,7 +273,7 @@ export function startGame(cfg) {
   const SLOTS_TALL = [[-1.8, -4.7], [0, -5.0], [1.8, -4.7], [-1.8, -2.4], [0, -2.5], [1.8, -2.4], [-1.8, -0.1], [0, -0.2], [1.8, -0.1]];
   function boxAt(i) {
     if (NB === 1) return tall ? new THREE.Vector3(0, 0, 2.6) : new THREE.Vector3(0, 0, 2.3);
-    if (tall) return new THREE.Vector3(NB === 3 && i === 2 ? 0 : i % 2 ? 1.3 : -1.3, 0, i < 2 ? 1.9 : 3.95);
+    if (tall) return new THREE.Vector3(NB === 3 && i === 2 ? 0 : i % 2 ? 1.3 : -1.3, 0, i < 2 ? 1.75 : 4.35);
     return new THREE.Vector3((i - (NB - 1) / 2) * (NB === 3 ? 3.2 : 2.7), 0, 2.6);
   }
   const VIEW1 = { wide: [[0, 8.6, 11.6], [0, 0.2, -0.4]], tall: [[0, 15.6, 7.0], [0, 0, -1.4]] };
@@ -684,13 +684,25 @@ export function startGame(cfg) {
     const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = ang || 0;
     const g = new THREE.Group(); g.add(turn); scene.add(g);
     const o = { id, k: 'stick-' + kind, kind, box: kind === 'right' ? 0 : -1, g, turn, mesh, mat, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false, slot };
-    /* the sticks are nearer to him than the shape, so perspective would make them look longer: each is drawn at the size it would look beside the gap,
-       so the right stick LOOKS exactly as long as the gap (K-CLARITY-RULES 7: no trick he could argue about) */
-    o.home.copy(fixSlot(slot)); o.L = L;
-    const cam = viewFor('wide').pos, f = OL ? Math.min(1, o.home.distanceTo(cam) / OL.g.position.distanceTo(cam)) : 1; mesh.scale.setScalar(f);
-    o.home.y = Math.max(o.home.y, 0.35 + L * f * Math.abs(Math.sin(ang || 0)) / 2); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
+    /* the sticks are nearer to him than the shape, so perspective would make them look longer: each stick is sized so that, on HIS screen,
+       the right one is exactly as long as the gap (K-CLARITY-RULES 7: no trick he could argue about); and no stick is ever off the screen */
+    o.L = L; const a = Math.abs(Math.cos(ang || 0)) > 0.75 && tall;   /* a phone: lying-down sticks go in rows, one under the other */
+    o.home.copy(fixSlot(slot, a));
+    const V = viewFor('wide'), pc = new THREE.PerspectiveCamera(tall ? 46 : 40, innerWidth / innerHeight, 0.1, 100); pc.position.copy(V.pos); pc.lookAt(V.look); pc.updateMatrixWorld();
+    const ends = (obj, p, q) => { obj.updateMatrixWorld(true); const A = obj.localToWorld(p.clone()).project(pc), B = obj.localToWorld(q.clone()).project(pc);
+      const ax = (A.x + 1) / 2 * innerWidth, bx = (B.x + 1) / 2 * innerWidth; return { len: Math.hypot(ax - bx, (A.y - B.y) / 2 * innerHeight), x0: Math.min(ax, bx), x1: Math.max(ax, bx) }; };
+    const gapPx = OL ? ends(OL.g, OL.gap.mid.clone().add(new THREE.Vector3(-Math.cos(OL.gap.ang), -Math.sin(OL.gap.ang), 0).multiplyScalar(OL.gap.len / 2)),
+      OL.gap.mid.clone().add(new THREE.Vector3(Math.cos(OL.gap.ang), Math.sin(OL.gap.ang), 0).multiplyScalar(OL.gap.len / 2))).len : 0;
+    const place = f => { mesh.scale.setScalar(f); o.home.y = Math.max(fixSlot(slot, a).y, 0.35 + L * f * Math.abs(Math.sin(ang || 0)) / 2); g.position.copy(o.home);
+      g.rotation.x = -Math.atan2(pc.position.y - o.home.y, pc.position.z - o.home.z); return ends(mesh, new THREE.Vector3(-L / 2, 0, 0), new THREE.Vector3(L / 2, 0, 0)); };
+    let f = 1;
+    if (gapPx) for (let it = 0; it < 3; it++) { const e = place(f); f *= gapPx / (e.len * len / L); }
+    for (let n = 0; n < 60; n++) { const e = place(f), m = 14; if (e.x0 < m) o.home.x += 0.06; else if (e.x1 > innerWidth - m) o.home.x -= 0.06; else break; }
+    o.px = place(f); if (OL) OL.gapPx = gapPx; mesh.userData.shape = o; shapes.push(o); return o;
   }
-  function fixSlot(i) { const S = tall ? [[-1.0, 2.7], [1.0, 3.6], [0, 4.4]] : [[-2.3, 3.0], [2.3, 3.0], [0, 3.9]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
+  W.fixPx = () => OL && { gap: OL.gapPx, w: innerWidth, sticks: shapes.filter(x => x.L != null && x.g.visible).map(x => ({ kind: x.kind, len: x.px.len, x0: x.px.x0, x1: x.px.x1 })) };   /* the test: on screen, the right stick is as long as the gap */
+  function fixSlot(i, rows) { if (rows) return new THREE.Vector3(0, 0.92, [2.4, 3.4, 4.3][i]);
+    const S = tall ? [[-1.0, 2.7], [1.0, 3.6], [0, 4.4]] : [[-2.3, 3.0], [2.3, 3.0], [0, 3.9]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
   function setRound(R) {
     if (OL) scene.remove(OL.g); shapes.splice(0).forEach(o => scene.remove(o.g));
     OL = makeOutline(R.k, R.miss, R.color, R.sc || (tall ? 1.6 : 2.1)); OL.g.position.copy(OL_AT()); OL.g.rotation.x = -Math.atan2(viewFor('wide').pos.y - OL.g.position.y, viewFor('wide').pos.z - OL.g.position.z);   /* faces the camera: a square looks square */
@@ -775,7 +787,7 @@ export function startGame(cfg) {
   let PS = null;   /* the pattern being built: { g, slots, beads, next, R } */
   function beadMesh(type) {
     const B = BEADS[type];
-    const TM = LK && LK.bead ? LK.bead(type, B, () => shapeOf(B.kind).s) : null;   /* the world's own things (bakery: cupcakes, iced cookies) */
+    const TM = LK && LK.bead && !(cfg.plain && B.kind && KINDS[B.kind]) ? LK.bead(type, B, () => shapeOf(B.kind).s) : null;   /* the world's own things (bakery: cupcakes, iced cookies); cfg.plain: a shape item is a plain flat shape in one colour, never a thick cookie (K-CLARITY-RULES 1, 11) */
     if (TM) { const hull = new THREE.Mesh(new THREE.SphereGeometry(0.46, 12, 8), new THREE.MeshBasicMaterial({ visible: false })); TM.add(hull); TM.userData.hull = hull; TM.userData.upright = true; if (tall) TM.scale.setScalar(0.72); return TM; }
     const mat = new THREE.MeshPhysicalMaterial({ color: B.color, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 0.5 });
     let geo;
@@ -1628,7 +1640,7 @@ export function wrongFor(T) {
     if (o.k === 'oval') return noCount(['That is an oval. It is long and squished.', T === 'circle' ? 'A circle is perfectly round.' : 'A ' + T + ' has straight sides.']);
     if (o.k === 'semi') return noCount(['That is half a circle.', T === 'circle' ? 'It has a straight side. A circle is all round.' : 'It has a round side. A ' + T + ' has straight sides.']);
     if (f === 'circle') return ['That is a circle.', 'A circle has no corners at all. A ' + T + ' has ' + has(CORNERS[T]) + '.'];
-    if (o.k === 'lean' && (T === 'square' || T === 'rectangle')) return noCount(['Look at its corners.', 'Two corners are pointy. Two are wide.', 'A ' + T + ' has four corners all the same.']);
+    if (o.k === 'lean' && (T === 'square' || T === 'rectangle')) return noCount(['This shape leans over.', 'Two corners are pointy. Two are wide.', 'A ' + T + ' has four corners all the same.']);
     if (o.k === 'kite' && (T === 'square' || T === 'rectangle')) return noCount(['That is a kite shape.', 'Its corners are not all the same.', 'It is not a ' + T + '.']);
     if (T === 'square' && f === 'rectangle') return noCount(['That is a rectangle.', 'Two sides are long. Two are short.', 'A square has four sides the same.']);
     const name = (f === T || ['triangle', 'square', 'rectangle', 'circle'].includes(f) || T === 'hexagon') && !['pentagon', 'octagon'].includes(f) ? 'That is a ' + f + '.' : 'That shape is not a ' + T + '.';
