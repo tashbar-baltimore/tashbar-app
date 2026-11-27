@@ -15,8 +15,7 @@ module.exports = async function (pg) {
   const data = await pg.evaluate(() => {
     const W = window.TLCORE && TLCORE.write && TLCORE.write.quick; if (!W) return { none: true };
     const list = (window.W13_QUICK || []).map(q => ({ id: q.id, text: q.text, story: q.story, skill: q.skill, err: TLCORE.write.err(q), kind: q.kind, on: W.of(q.text).some(x => x.id === q.id) }));
-    const skills = {}; try { Object.keys(CORE_SKILLS || {}).forEach(j => (CORE_SKILLS[j] || []).forEach(r => { skills[r[0]] = 1; })); } catch (e) {}
-    try { (LANG_K8 || []).forEach(r => { skills[r[0]] = 1; }); } catch (e) {}
+    const skills = {}; list.forEach(q => { try { if ((typeof BANK_ALL !== 'undefined' && BANK_ALL[q.skill]) || (TLCORE.k1 && TLCORE.k1.games && TLCORE.k1.games[q.skill])) skills[q.skill] = 1; } catch (e) {} });   /* a lesson or K-1 game the boy can have had */
     return { list, skills, offer: W.forBite({ do: [{ type: 'read', text: 'C23.ST.01' }], your: [] }), offerProof: W.forBite({ do: [], your: [{ type: 'proof', text: 'C23.B1.01' }] }), noOffer: W.forBite({ do: [{ type: 'sort' }], your: [] }) };
   });
   if (data.none) return { fails: ['quick writes: TLCORE.write.quick is not on the page'], oks };
