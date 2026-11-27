@@ -155,3 +155,9 @@ Fixed after round 2 (Units 1-6, and shared):
 | Where is it? painting ended in a hard edge; Line them up flag read as a slanted stick from above (10) | Wider sea painting; flag hidden |
 
 **(decided: in The solid shapes the word "face" is used for a cube's flat sides: it is the Common Core K.G word, and "side" stays the word for a flat shape's edge, so the two never clash.)**
+
+More fixes (review-shapes takeover session, Units 7-12):
+| Problem (rule) | Fix |
+|---|---|
+| Graduation: the skinny triangle's clue said "I am very thin", but Shape party 2 teaches "flat is thin", so every flat shape is thin (11) | The clue is "I am flat. I have three corners." (only one triangle is there) |
+| Shape party 2: the cube's "sides are squares" (sides are the lines of flat shapes) | "Every face is a square", the same words as The solid shapes |
