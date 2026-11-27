@@ -19,9 +19,9 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | Row | Job | Lessons (levels) | Files | Status | Owner (session link) | Last update (UTC) | Where I am / pull requests |
 |---|---|---|---|---|---|---|---|
 | P0 | Engine + 3 sample lessons | MATH.OPS.L03.01, READ.COMP.L05.05, SS.GEO.L07.01 | src/OneBite.html, src/UiKit.html, tests | DONE when live | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 | This pull request |
-| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | OPEN | | | |
-| M2 | Math Grades 4–8 | MATH.* L05–L09 (about 22) | src/OneBiteDataMath*.html, src/OneBiteDataUpper.html | TAKEN | https://claude.ai/code/session_018i8rBw5mqHBtaMP8FEXwWS | 2026-11-27 17:10 | Claimed; reading the old lessons and their check questions. |
-| R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | OPEN | | | |
+| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | TAKEN | https://claude.ai/code/session_01Cri5bRC4HsP9vYnMCURp1S | 2026-11-27 17:04 | Claimed; reading the lessons, batch 1 next |
+| M2 | Math Grades 4–8 | MATH.* L05–L09 (28 lessons: 14 Gr 4–5, 14 Gr 7–8) | src/OneBiteDataMath*.html, src/OneBiteDataUpper.html, src/OneBite.html (picture models) | TAKEN | https://claude.ai/code/session_018i8rBw5mqHBtaMP8FEXwWS | 2026-11-27 19:30 | Batch 1 (the 14 Grade 4–5 lessons, L05) in #640, waiting for its final re-score and tests. Batch 2 (the 14 Grade 7–8 lessons, L07/L09) written and in review, not pushed yet. |
+| R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | TAKEN | https://claude.ai/code/session_01JPKZXGrA39PYd4bzsQc36i | 2026-11-27 17:10 | Claimed; starting batch 1 (first 6-10 lessons) |
 | R2 | C45 Grade 4 reading, part 2 | READ.* L05 in C45 (other 30) | src/CoreDataC45*.html | OPEN | | | |
 | R3 | C45 Grade 5 reading, part 1 | READ.* L06 in C45 (first 31) | src/CoreDataC45*.html | OPEN | | | |
 | R4 | C45 Grade 5 reading, part 2 | READ.* L06 in C45 (other 31) | src/CoreDataC45*.html | OPEN | | | |
