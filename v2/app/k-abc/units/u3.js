@@ -32,16 +32,17 @@ const hunt = {
   i: {
     world(G) { const W = base(G.S, 'garden', { clearW: 7 }); tree(G.S, -9, -6, { s: 1.5 }); tree(G.S, 9, -6.5, { s: 1.6, c1: 0xE85A9E, c2: 0xFFC2E2 });
       const stones = new THREE.Group(); for (let i = 0; i < 9; i++) { const s = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 0.12, 24), toon(0xE8DCC8, { rough: .7 })); s.position.set(-4 + i, 0.06, 2.2 - Math.sin(i * 0.7) * 0.3); s.receiveShadow = true; stones.add(s); } G.S.scene.add(stones); G.stones = stones;
-      G.view({ wide: [0, 1.8, 11.6, 5.6, 0.22], narrow: [0, 1.8, 5.2, 7.8, 0.26] }); G.mendyAt = { wide: [-4.9, 0.4, 0.85], narrow: [-1.5, 3.8, 0.5] }; return W; },
+      G.view({ wide: [0, 1.8, 11.6, 5.6, 0.22], narrow: [0, 1.8, 5.2, 7.8, 0.26] }); G.mendyAt = { wide: [-4.9, 0.4, 0.85], narrow: [1.55, 3.9, 0.45] };
+      const lay = () => { G.stones.scale.set(G.narrow() ? 0.52 : 1, 1, 1); }; lay(); G.lay0 = lay; return W; },
     async play(G) {
       const S = G.S, n = () => G.narrow(), worm = prop('inchworm'); worm.scale.setScalar(0.8); S.scene.add(worm);
-      let wx = -3.2; const placeWorm = () => worm.position.set(n() ? wx * 0.55 : wx, 0.45, 2.3); placeWorm(); G.W.layout = placeWorm;
+      let wx = -3.2; const placeWorm = () => { worm.position.set(n() ? wx * 0.52 : wx, 0.45, 2.3); worm.scale.setScalar(n() ? 0.55 : 0.8); }; placeWorm(); G.W.layout = () => { placeWorm(); G.lay0(); };
       S.tick(t => { worm.userData.inner.scale.set(1 + Math.sin(t * 6) * 0.05, 1 - Math.sin(t * 6) * 0.05, 1); });
       const FORKS = shuffle(START.i).map((w, i) => [w, shuffle(others('i'))[i]]);
       G.rounds(FORKS.length); await G.say('The inchworm wants to go home.', 'Show him the way! Tap the picture that starts with this sound.', snd('i'));
       for (let r = 0; r < FORKS.length; r++) {
         G.newRound(); const pair = shuffle(FORKS[r]), x = -1.5 + r * 2.2;
-        const its = pair.map((w, i) => G.item(w, () => n() ? V((x - 0.2) * 0.55, 0.85, i ? -1.0 : 0.6) : V(x, 0.85, i ? -1.4 : 0.6), { size: 1.0 }));
+        const its = pair.map((w, i) => G.item(w, () => n() ? V(i ? 1.0 : -1.0, 2.2, -0.4) : V(x, 0.85, i ? -1.4 : 0.6), { size: 1.0 }));   /* phone: the fork's two pictures side by side above the path */
         const good = its.find(it => START.i.includes(it.name)), bad = its.find(it => it !== good);
         G.expect({ kind: 'tap', at: good }); G.A.wrongMove = { kind: 'tap', at: bad };
         G.hint(async () => { good.glow(true); await G.say(say(good.name) + '.', snd('i')); });
@@ -125,13 +126,14 @@ const hunt = {
         /* he has a few seconds: tap (yes) or wait (no); the hourglass is the glowing ring around the stump */
         const ring = new THREE.Mesh(new THREE.RingGeometry(1.05, 1.18, 48, 1, 0, Math.PI * 2), new THREE.MeshBasicMaterial({ color: C(0xFFF3A0).multiplyScalar(1.4), side: THREE.DoubleSide, transparent: true, opacity: 0.8 })); ring.rotation.x = -Math.PI / 2; ring.position.set(0, 1.02, -1.2); S.scene.add(ring);
         G.expect(yes ? { kind: 'tap', at: drum } : { kind: 'wait' }); G.A.wrongMove = yes ? null : { kind: 'tap', at: drum };
-        const T0 = S.t, limit = FAST ? 1.2 : 4.5; let ok = null;
+        const T0 = S.t, limit = FAST ? 3.5 : 4.5; let ok = null;
         await new Promise(res => { const id = setInterval(() => { const el = S.t - T0; ring.scale.setScalar(Math.max(0.01, 1 - el / limit));
           if (tapped > 0) { clearInterval(id); ok = yes; res(); } else if (el > limit) { clearInterval(id); ok = !yes ? true : null; res(); } }, 50); });
         S.scene.remove(ring);
         if (ok === true) await G.right(it.obj.position, yes ? say(w) + '! Drum, drum!' : 'Good waiting! ' + say(w) + ' is not this sound.');
-        else if (ok === false) { await G.wrong([say(w) + '. Listen to the start.', 'Wait when it is not this sound.']); }
-        else { await G.wrong([say(w) + '!', snd('d'), 'That one was this sound. Tap the drum!']); }
+        else { if (ok === false) await G.wrong([say(w) + '. Listen to the start.', 'Wait when it is not this sound.']);
+          else await G.wrong([say(w) + '!', snd('d'), 'That one was this sound. Tap the drum!']);
+          G.A.rounds++; const pip = document.getElementById('pips').children[G.ri++]; if (pip) pip.className = 'done'; }   /* a missed round still counts (no star) */
         await it.remove();
       }
       await G.done('Drum, drum! Great listening!');
