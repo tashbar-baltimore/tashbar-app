@@ -56,6 +56,8 @@ module.exports = function () {
   chk(r && r.by === 'Made-up Teacher One' && r.clsName === 'Made-up Math class', 'the lock names his teacher and class');
   const si = sign('7511'); chk(si && si.tm && si.tm.yc && si.tm.yc.k === 'T1', 'signing in at 1:20 lands straight on Teacher Time 1');
   chk(mine('TEST-YC02') === null, 'a grade 1 boy in the class is left out (K-1 keep their games)');
+  chk(mine('YCREAL01') && mine('YCREAL01').yc.k === 'T1', "switch 'on' is the default (HoS 2026-11-27): a real boy in the class is locked");
+  call('ycSaveSettings', 'yc-head', { live: 'test' });
   chk(mine('YCREAL01') === null, "switch 'test': a real (non-TEST) boy is not locked");
   chk(mine('TEST-YC03') === null, 'a boy in no class is not touched');
   at(0, 13, 54); chk(mine('TEST-YC01') && mine('TEST-YC01').yc.k === 'T1', '1:54 is still Teacher Time 1');

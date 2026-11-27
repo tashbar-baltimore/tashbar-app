@@ -10,12 +10,12 @@
    HOW THE LOCK WORKS: the boy page already asks tmMine (TeacherMode.js) every 25 seconds and at sign-in; ClassMode.html locks his
    screen to the lessons in the answer. tmMine asks ycMine_ first. The newest of (a teacher's live class, a Free Play / Independent
    Study override) wins; with neither, the schedule decides.
-   SWITCH: settings.live 'off' = nobody, 'test' = TEST- boys only (the default until the HoS says), 'on' = every boy in a class.
+   SWITCH: settings.live 'off' = nobody, 'test' = TEST- boys only, 'on' = every boy in a class (the default: HoS switched it on 2026-11-27).
    STORAGE: settings in Script Properties (YC.KEY); classes' periods, assignments and overrides in the MS_YC tab (one row per kind+key).
    Nothing here pays or changes money, mastery or placement. */
 var YC = { KEY: 'yc_settings_v1', TAB: 'MS_YC', H: ['id', 'kind', 'key', 'json', 'updated', 'by', 'active'], AHEAD: 14, OMIN: 5, OMAX: 180,
   PERIODS: ['T1', 'T2', 'IS'],
-  DEF: { live: 'test', days: [1, 2, 3, 4],
+  DEF: { live: 'on', days: [1, 2, 3, 4],
     periods: { T1: { name: 'Teacher Time 1', from: '13:20', to: '13:55' }, T2: { name: 'Teacher Time 2', from: '13:55', to: '14:30' }, IS: { name: 'Independent Study', from: '14:30', to: '15:30' } } } };
 
 function ycNow_() { return Date.now(); }   /* tests replace this to walk through an afternoon */

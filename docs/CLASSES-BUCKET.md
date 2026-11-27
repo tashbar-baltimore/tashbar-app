@@ -11,7 +11,7 @@
 
 - **Who:** grade 2 and up, only boys put into a class that has a period, or given a bucket. K–1 and every other boy: unchanged. Fridays, Sundays and every other hour: unchanged.
 - **Nothing assigned** for a Teacher Time period: that period is Independent Study. No bucket either: the app is as usual.
-- **Switch** (Head of School only): off / test boys only (the default) / every boy in a class. The school's times are settings too.
+- **Switch** (Head of School only): off / test boys only / every boy in a class (the default; the Head of School switched it on 2026-11-27). The school's times are settings too.
 
 ## Where it lives
 - `src/ClassesBucket.js`: the schedule, assignments, overrides, buckets and active sheets (records in the `MS_YC` tab; settings in Script Properties `yc_settings_v1`).
