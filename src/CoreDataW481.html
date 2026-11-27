@@ -334,6 +334,7 @@
       { type: 'tiles', q: 'Binyamin dries the dishes. He sweeps the floor. He takes out the trash.', w: ['Binyamin', 'helps clean up', 'after supper.'], extra: ['dries the dishes'],
         say: 'Build one umbrella for all three jobs.', how: 'Who first. Then what *all* three jobs share. Skip the one-job tile.',
         why: { q: 'Why skip "dries the dishes"?', o: ['It is only one job', 'It is too long', 'It has no name'], a: 'It is only one job' } }];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
     b.done = 'The odd one out was the *umbrella*. Yours covers *every detail*: not too small, not too big.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L05.06']);
 
@@ -344,13 +345,14 @@
     D[1].say = 'Match each *topic* to the detail that belongs.';
     b.learn = [
       { t: 'Read the *topic sentence* first. It is your test.', act: D[1] },
-      { t: '*Sneaky* details are about the topic, but not what it *says*.', act: D[0] },
+      { t: '*Sneaky* details are on topic, but not what it *says*.', act: D[0] },
       { who: { q: 'Topic: Dovid\'s robot can do three tricks. Detail: "The robot is painted blue."', o: [['Shimon', 'Keep it. It is about the robot.'], ['Akiva', 'Cut it. Blue paint is not a trick.']], a: 1,
         why: 'Same thing is not enough. It must be a *trick*.' } }];
     b.play = [Y[2], Y[1], Y[0],
       { type: 'order', q: 'Fix the paragraph. Leave out the detail that wanders off.', steps: ['Yehuda gets ready for the hike.', 'First, he fills his water bottle.', 'Next, he packs a map.', 'Last, he laces his boots.'], extra: ['His boots are brown.'],
         say: 'Put it in order. Leave out the sneaky one.', how: 'Topic sentence first. Then First, Next, Last. Does it show *getting ready*?',
         why: { q: 'Why leave out "His boots are brown"?', o: ['It is about boots, not getting ready', 'It is too short', 'It names Yehuda'], a: 'It is about boots, not getting ready' } }];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
     b.done = 'The baseball game wandered off. You *test every detail* and cut the one that does not fit.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L05.07']);
 
@@ -372,6 +374,7 @@
         why: { q: 'Why is "He has taught for 30 years" a fact?', o: ['It is a number you could check', 'It tells one time it happened', 'It says it louder'], a: 'It is a number you could check' } },
       { type: 'evidence', q: 'Detail: Snow days on Glen Avenue are fun. Tap the two sentences that say more.', p: ['Snow days on Glen Avenue are fun.', 'We built a snow fort taller than Dovid.', 'Snow days are really, really fun.', 'In fact, it snowed 14 inches.', 'It was so much fun.'], a: [1, 3], look: 'an example or a fact',
         say: 'Tap the two sentences that *say more*.', how: 'Skip the ones that only repeat *fun*. Find an example and a fact.' }];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
     b.done = 'Zeidy carried the boards: that *proves* it. You say more with an *example* or a *fact*.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L05.08']);
 
@@ -389,6 +392,7 @@
         say: 'Ties it up, copies, or a *new detail*?', how: 'Big idea in *new words*: ties it up. Same words: copies. Something new: *new detail*.' } }];
     var M = D[1]; M.cards = [['All in all, the Lerners are lucky to have an inventor.', 0], ['Dovid’s gadgets help his family.', 1], ['Dovid’s cousin lives in Ohio.', 2], ['That is why his family calls him the fix-it man.', 0], ['His gadgets are made of wood.', 2]];
     b.play = [M, Y[3], Y[4], Y[2]];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
     b.done = 'The riddle answer: a *closing sentence*. You tie it up in *new words*, with no new details.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L05.09']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
