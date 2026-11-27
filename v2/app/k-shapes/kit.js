@@ -180,13 +180,13 @@ export function startGame(cfg) {
     }
     const paintM = new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 });
     if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none (new look: bigger, on a card tilted up to face the boy) */
-      const card = new THREE.Group(); card.position.set(0, LK ? BX.h * 0.6 : BX.h * 0.4, BX.d / 2 + (LK ? 0.42 : 0.005)); if (LK) { card.rotation.x = -0.55; card.scale.setScalar(1.4); } g.add(card);   /* big and in front: the dots are what he matches */
+      const card = new THREE.Group(); card.position.set(0, LK ? BX.h * 0.6 + 0.24 : BX.h * 0.4, BX.d / 2 + (LK ? 0.42 : 0.005)); if (LK) { card.rotation.x = -0.55; card.scale.setScalar(1.4); } g.add(card);   /* big and in front: the dots are what he matches */
       const k = LK ? 1.15 : 1;
       if (LK) { const bg = new THREE.Mesh(new THREE.CircleGeometry(0.37, 40), new THREE.MeshStandardMaterial({ color: bc.color && bc.color !== '#FFFFFF' ? '#FFFFFF' : '#2B3A6B', roughness: 0.6 })); bg.position.z = -0.004; card.add(bg); }
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
-      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(0.5, 0.75, 0);   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
+      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(...(bc.solid === 'cube' ? [0.5, 0.75, 0] : bc.solid === 'cyl' ? [0.3, 0, 0] : [0, 0, 0]));   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (LK) {
       const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5 + (NB > 1 ? 0.5 : 0), BX.d / 2 + 0.3);   /* several boxes (phone: two rows): high enough that the box in front never hides it */ lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
     } else {
@@ -1297,9 +1297,10 @@ export function startGame(cfg) {
   function makeThing(id, T, i) {
     const inner = objMesh(T), turn = new THREE.Group(); turn.add(inner); const g = new THREE.Group(); g.add(turn); scene.add(g); inner.traverse(q => { q.castShadow = true; });
     const o = { id, k: T.look, word: T.word, w: T.w, box: -1, g, turn, mesh: inner, mat: inner.material || inner.children[0].material, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), still: true, slot: i, inBox: false, busy: false };
-    const xs = tall ? [-1.1, 1.1] : [-1.5, 1.5];
+    const xs = tall ? [-0.85, 0.85] : [-1.5, 1.5];   /* phone: closer together, so neither is cut off at the edge */
     o.home.set(xs[i], 0, tall ? 1.6 : 0.3); g.position.copy(o.home); g.scale.setScalar(tall ? (LK ? 0.95 : 0.7) : 1);   /* new look: bigger on a phone */
-    const hull = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.4, 1.2), new THREE.MeshBasicMaterial({ visible: false })); hull.position.y = 0.6; g.add(hull); o.mesh = hull; hull.userData.shape = o; shapes.push(o); return o;
+    const bb = new THREE.Box3().setFromObject(turn), sz = bb.getSize(new THREE.Vector3());   /* he can grab it anywhere, even the top of a big balloon */
+    const hull = new THREE.Mesh(new THREE.BoxGeometry(Math.max(1.5, sz.x + 0.3), Math.max(1.4, sz.y + 0.2), Math.max(1.2, sz.z + 0.3)), new THREE.MeshBasicMaterial({ visible: false })); hull.position.y = Math.max(0.6, (bb.min.y + bb.max.y) / 2); g.add(hull); o.mesh = hull; hull.userData.shape = o; shapes.push(o); return o;
   }
   function markPans() { const free = BS.pans.findIndex(P => !P.item); shapes.forEach(o => { if (!o.inBox) o.box = free; }); }
   function putOnPan(o, i) {
@@ -1498,7 +1499,7 @@ export function startGame(cfg) {
     x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(64, 64, 60, 0, 7); x.fill(); x.lineWidth = 6; x.strokeStyle = '#1F2A44'; x.stroke();
     x.fillStyle = '#1F2A44'; x.font = 'bold 84px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(n), 64, 70);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, toneMapped: false })); sp.renderOrder = 9; sp.scale.setScalar(tall ? 0.6 : 0.5); sp.position.copy(at); scene.add(sp); return sp;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, toneMapped: false })); sp.renderOrder = 9; sp.scale.setScalar(tall ? 0.5 : 0.44); sp.position.copy(at); scene.add(sp); return sp;
   }
   function countBoxes() {   /* count each box together, then he taps the box with the most */
     setName('counting'); stopIdle(); const tags = [];
@@ -1506,7 +1507,7 @@ export function startGame(cfg) {
     const steps = ["Now let's count each box!"];
     counts.forEach((items, i) => { const word = cfg.boxes[i].word;
       steps.push('The ' + word + ' box.');
-      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); if (cfg.countTags) tags.push(numTag(j + 1, o.g.position.clone().setY(y0 + 1.0))); return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
+      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); if (cfg.countTags) { const bx = boxAt(i), st = Math.min(0.5, (BX.w - 0.3) / Math.max(1, items.length - 1)); tags.push(numTag(j + 1, new THREE.Vector3(bx.x - st * (items.length - 1) / 2 + st * j, 1.55, bx.z + 0.3))); }   /* the numbers stand in a neat row above the box, one per thing, never on top of each other */ return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
       steps.push(cap(WORDS[items.length]) + ' ' + word + '!'); });
     const most = counts.reduce((b, c, i) => (c.length > counts[b].length ? i : b), 0);
     return play(steps).then(ok => { if (!ok) return false; return new Promise(done => {
@@ -1550,15 +1551,16 @@ export function startGame(cfg) {
       setPattern({ seq: M.pattern.seq, blanks: 0, tray: [] }); ghost.visible = false;
       PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }
-    else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; }
+    else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; if (p[4]) d.turn.rotation.x = p[4]; }   /* p[4]: tipped toward him, so an upside-down cone shows its round base (it never looks like a flat triangle) */
     let side = null;   /* M.beside: a second piece next to it, to compare with (big and small: a ball is only big next to a small one) */
-    if (M.beside) { side = makeShape('mk2', M.beside[0], M.beside[3] || '#FF7A1A', M.beside[1], 1); side.slot = null; side.busy = true; side.g.position.set(tall ? 1.75 : 2.15, 2.05, 0.9); side.g.scale.setScalar(0.01); }
-    const joinSide = (on) => side ? tween(700, k => { const e = ease(k); const sx = tall ? 1.75 : 2.15; side.g.position.x = on ? sx + (d.g.position.x - sx) * e : d.g.position.x + (sx - d.g.position.x) * e; }).then(() => { pop(); return wait(on ? 600 : 0); }) : null;   /* M.join: the second piece slides onto the first (two triangles make a square), and back */
+    const SX = M.join ? (tall ? 1.75 : 2.15) : (tall ? 1.95 : 2.65);   /* where the second piece stands (join: the spot Build shapes was tuned for) */
+    if (M.beside) { side = makeShape('mk2', M.beside[0], M.beside[3] || '#FF7A1A', M.beside[1], 1); side.slot = null; side.busy = true; side.g.position.set(SX, 2.05, 0.9); side.g.scale.setScalar(0.01); }
+    const joinSide = (on) => side ? tween(700, k => { const e = ease(k); const sx = SX; side.g.position.x = on ? sx + (d.g.position.x - sx) * e : d.g.position.x + (sx - d.g.position.x) * e; }).then(() => { pop(); return wait(on ? 600 : 0); }) : null;   /* M.join: the second piece slides onto the first (two triangles make a square), and back */
     const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
     if (!M.where && !M.measure && !M.balance) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
     if (M.where || M.measure || M.balance) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
-      if (side) d.g.position.x = -0.1;
+      if (side) d.g.position.x = M.join ? -0.1 : (tall ? 0.35 : 0.6);   /* big and small: clear of the friend */
       camTo('close', 1000).then(() => tween(500, k => { d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))); if (side) side.g.scale.setScalar(Math.max(0.01, ease(k) * (M.beside[2] || 0.5))); })); }
     if (friend.userData.pose) friend.userData.pose('talk');   /* a painted friend explains with an open hand */
     const j = $('#judge'); let answered = false, costed = false;
