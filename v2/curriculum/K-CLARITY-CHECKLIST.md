@@ -171,3 +171,4 @@ More fixes (review-shapes takeover session, Units 7-12):
 | Line them up: a wrong drop and a wrong "which is longer" tap got words only (16) | Wrong drop: "Watch." the start line flashes gold and the hand moves from the scarf's end to the line. Wrong tap: a gold ball sits on the far end of each scarf (top of each tower) while he hears "Look at the other ends" |
 | Heavy and light: a wrong drop and a wrong "which is heavier" tap got words only (16) | Wrong drop: the hand goes from the thing to the empty pan. Wrong tap: the hand points at the side that went down (or up) while he hears "The heavy side goes down" |
 | Line them up, friend's mistake: the friend stood on the start line, hiding what the question is about (9) | He stands on the right, turned so his hand points at the scarves |
+| Shape party 3: the rectangle for "two long sides, two short sides" was the near-square one, beside a real square (2, 7) | The clearly long rectangle |
