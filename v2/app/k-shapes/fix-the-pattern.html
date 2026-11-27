@@ -22,9 +22,9 @@ const BEADS = {
   rC: { color: '#E03A33', word: 'red', note: 523, kind: 'cube' }, yC: { color: '#F2A900', word: 'yellow', note: 784, kind: 'cube' },
   bC: { color: '#1F6FEB', word: 'blue', note: 659, kind: 'cube' }, gC: { color: '#12A766', word: 'green', note: 587, kind: 'cube' }
 };
-const VIEW = { wide: [[0, 5.2, 8.6], [0, 1.2, 0.9]], tall: [[-0.6, 7.7, 10.6], [-0.6, 1.1, 0.5]] }, MENDY = { wide: [2.95, 0, 0.3] };   /* right of the train's end: never in front of the engine (review 2) */
-const LESSON = { seq: ['red', 'yellow', 'blue', 'red', 'yellow', 'blue'], first: 'Look at these train cars.', say: 'Red, yellow, blue, red, yellow, blue.',
-  coreLine: 'Red, yellow, blue. That part repeats!', chant: [['Red, yellow, blue!', 3], ['Red, yellow, blue!', 3], ['A pattern!', 3]] };
+const VIEW = { wide: [[0, 5.2, 8.6], [0, 1.2, 0.9]], tall: [[-0.8, 8.6, 11.9], [-0.8, 1.1, 0.5]] }, MENDY = { wide: [2.95, 0, 0.3] };   /* right of the train's end: never in front of the engine (review 2) */
+const LESSON = { seq: ['red', 'blue', 'red', 'blue', 'red', 'blue'], first: 'Look at these train cars.', say: 'Red, blue, red, blue, red, blue.',
+  coreLine: 'Red, blue. That part repeats!', chant: [['Red, blue!', 2], ['Red, blue!', 2], ['A pattern!', 3]] };   /* the same red-blue pattern as the first round, where Mendy fixes one wrong car (review 2) */
 startGame({
   id: 'fixpattern', world: 'traintown', mode: 'pattern', boxes: [], beads: BEADS, view: VIEW, mendyAt: MENDY, patternLesson: LESSON,
   intro: ['Oh no! Some patterns got mixed up.', 'One train car is wrong.', "Let's fix the patterns!"],
@@ -37,7 +37,7 @@ startGame({
   ],
   bonusRounds: [{ seq: ['drum', 'drum', 'bell', 'drum', 'drum', 'bell', 'drum', 'drum'], fixAt: 6, wrong: 'bell', tray: ['bell', 'drum'], core: 3, say: 'Listen to the sounds. One is wrong.' }],
   watchLine: 'Watch me. I sing the pattern.', watchAsk: 'One car is wrong!', putLine: 'Put it on the train.', yourTurn: 'Now you. Fix the patterns!',
-  hint2: 'Put this car on the wrong car.', remember: 'Find the part that repeats.',
+  hint2: 'Put this car where the wrong one is.', remember: 'Find the part that repeats.',
   mistake: { wide: true, friend: { name: 'Ari', shirt: '#9C2F2F', hair: '#4A2C17' }, icon: 'train',
     pattern: { seq: ['red', 'yellow', 'blue', 'red', 'yellow', 'blue'], bad: null },
     claim: ['Ari says this pattern is wrong.', 'Red, yellow, blue, red, yellow, blue.'], ask: 'Is it a good pattern?', answer: true,

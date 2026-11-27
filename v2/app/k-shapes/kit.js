@@ -290,7 +290,8 @@ export function startGame(cfg) {
   let patN = 0;   /* cars in the train now (phone camera fits the whole train) */
   function viewFor(m) {
     if (m === 'close' && tall && cfg.mode === 'pattern' && cfg.world === 'bakery') return { pos: new THREE.Vector3(0, 3.6, 9.4), look: new THREE.Vector3(0, 1.7, 0.9) };   /* phone, cupcakes (no engine): closer, so the row fills the width (review round 2) */
-    if (m === 'close' && tall && cfg.mode === 'pattern') return { pos: new THREE.Vector3(-0.35, 4.2, 13.2), look: new THREE.Vector3(-0.35, 2.0, 0.9) };   /* phone: the whole train, engine too, as big as fits (K-CLARITY-RULES 9) */
+    if (m === 'close' && tall && cfg.mode === 'pattern') return { pos: new THREE.Vector3(-0.75, 4.4, 14.4), look: new THREE.Vector3(-0.75, 2.0, 0.9) };   /* review 2: centred on cars AND engine, a little further back, so the engine is never cut off */
+    if (m === 'close' && cfg.mode === 'pattern' && cfg.world === 'traintown') return { pos: new THREE.Vector3(-0.75, 3.0, 7.8), look: new THREE.Vector3(-0.75, 2.0, 0.9) };   /* Chromebook train lesson: the engine fits too */   /* phone: the whole train, engine too, as big as fits (K-CLARITY-RULES 9) */
     if (m === 'close') return tall ? { pos: new THREE.Vector3(...CLOSE[0]).multiplyScalar(1.95), look: new THREE.Vector3(...CLOSE[1]) } : { pos: new THREE.Vector3(...CLOSE[0]), look: new THREE.Vector3(...CLOSE[1]) };
     if (cfg.view) { const v = cfg.view[tall ? 'tall' : 'wide'], look = new THREE.Vector3(...v[1]), pos = new THREE.Vector3(...v[0]);
       if (tall && cfg.mode === 'pattern' && cfg.world === 'traintown' && patN > 6) pos.sub(look).multiplyScalar(1 + 0.09 * (patN - 6)).add(look);   /* phone: a longer train steps the camera back, so the engine and the next spot stay on screen (review 2) */
@@ -1665,10 +1666,13 @@ export function startGame(cfg) {
     const explain = M.sides && d.marks ? ['Let us look at the sides.', ...sideSteps(d)] : d.marks.length ? ['Let us count the corners.', ...d.marks.flatMap((m, i) => [() => lightCorner(d, i), NUMS[i]])] : [];   /* M.sides: the friend's claim is about sides, so the sides light */
     wrong.onclick = () => {
       if (answered) return; if (!costed) { W.misses++; costed = true; } chime(false); wrong.classList.remove('shake'); void wrong.offsetWidth; wrong.classList.add('shake');
-      play([...explain, ...(M.join ? [() => joinSide(true)] : []), ...M.explain, ...(M.join ? [() => joinSide(false)] : []), () => clearCorners(d), M.ask]);
+      const per = q => { for (let k = 1; k <= q.length; k++) if (q.every((t, i) => t === q[i % k])) return k; return q.length; };
+      const patShow = M.pattern && PS ? (M.pattern.bad != null ? [() => { ghost.visible = true; ghost.position.copy(slotAt(M.pattern.bad, PS.n, PS.z)); if (ghost.isGroup) ghost.scale.setScalar(tall ? 0.72 : 1); }]
+        : [() => { PS.R = { ...PS.R, core: per(M.pattern.seq) }; coreGlow(true); return sing(); }, () => wait(600), () => coreGlow(false)]) : [];   /* a friend's pattern: the wrong car gets the ring, or the part that repeats glows while it is sung (K-CLARITY-RULES 16) */
+      play([...explain, ...patShow, ...(M.join ? [() => joinSide(true)] : []), ...M.explain, ...(M.join ? [() => joinSide(false)] : []), () => clearCorners(d), M.ask]);
     };
     right.onclick = () => {
-      if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d);
+      if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d); if (M.pattern) ghost.visible = false;
       const prove = M.prove && d.marks.length ? ['Show ' + F.name + ' the corners.', () => { task = ['Tap each corner.']; return tapCorners(d); }, () => { task = null; clearCorners(d); }] : [];
       const fixBad = () => { const m = PS.beads[M.pattern.bad], want = BEADS[M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t)[M.pattern.bad]];
         if (m.userData.recolor) m.userData.recolor(want.color); else m.material.color.set(want.color); PS.R = { ...PS.R, seq: M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t) }; chime(true); return sing(); };
