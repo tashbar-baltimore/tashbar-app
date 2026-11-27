@@ -287,8 +287,9 @@ async function pullRound(start, k, o = {}) {
   const sg = keep(signBoard(eq(start, '−', k))); sg.position.copy(PORTRAIT ? V(0, 0, 6 - (W - 1) * 1.85 - 2.6) : V(0, 1.4, -6.5)); sg.scale.setScalar(PORTRAIT ? 0.85 : 1.25);
   let at = start; G.at = at; const pulls = () => start - at; let ringGlow = o.demo ? null : target(ring);
   let busy = false;
-  const back = async voice => { if (at <= L.lo || busy) return; busy = true; at--; G.at = at; chime('tap'); S.scene.remove(rp); { const i = temp.indexOf(rp); if (i >= 0) temp.splice(i, 1); }
-    await tween(240, u => bt.position.lerp(boatSpot(L.posOf(at)), u)); rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos)); sg.set(eq(start, '−', k), pulls() > 0 ? '●'.repeat(Math.min(12, pulls())) : ''); busy = false; if (voice) await say(String(at)); };
+  let queued = 0;   /* a quick second pull waits its turn; every pull counts */
+  const back = async voice => { if (busy) { queued++; return; } if (at <= L.lo) return; busy = true; at--; chime('tap'); S.scene.remove(rp); { const i = temp.indexOf(rp); if (i >= 0) temp.splice(i, 1); }
+    await tween(240, u => bt.position.lerp(boatSpot(L.posOf(at)), u)); rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos)); sg.set(eq(start, '−', k), pulls() > 0 ? '●'.repeat(Math.min(12, pulls())) : ''); busy = false; G.at = at; if (voice) await say(String(at)); if (queued > 0) { queued--; await back(voice); } };
   G.hit = { ring: () => sc(ringHit), pullTo: () => { const d = new THREE.Object3D(); d.position.copy(ringPos).add(PORTRAIT ? V(0, 0, 1.6) : V(-1.6, 0, 0.8)); S.scene.add(d); const s = sc(d); S.scene.remove(d); return s; }, anchor: () => sc(anchor, 0.8), buoy: n => sc(L.at(n), 0.3) };
   if (o.demo) {
     await say('Watch me. ' + start + ' is in my head. Take away ' + k + '.');
