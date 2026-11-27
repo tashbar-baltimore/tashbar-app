@@ -21,7 +21,7 @@ export const KINDS = {
   rect:     { pts: [[-0.92, -0.46], [0.92, -0.46], [0.92, 0.46], [-0.92, 0.46]], name: 'rectangle' },
   rectLong: { pts: [[-1.0, -0.28], [1.0, -0.28], [1.0, 0.28], [-1.0, 0.28]], name: 'rectangle' },
   rectFat:  { pts: [[-0.8, -0.55], [0.8, -0.55], [0.8, 0.55], [-0.8, 0.55]], name: 'rectangle' },
-  lean:     { pts: [[-0.85, -0.5], [0.45, -0.5], [0.85, 0.5], [-0.45, 0.5]], name: 'leaning shape' },
+  lean:     { pts: [[-1.0, -0.42], [0.45, -0.42], [1.0, 0.42], [-0.45, 0.42]], name: 'leaning shape' },   /* long and short sides that are clearly different (1.45 and 1.0): never "four sides the same" */
   kite:     { pts: [[0, -0.85], [0.55, 0.15], [0, 0.6], [-0.55, 0.15]], name: 'kite' },
   pent:     { pts: [[0.0, 0.72], [-0.685, 0.222], [-0.423, -0.582], [0.423, -0.582], [0.685, 0.222]], name: 'pentagon' },
   oct:      { pts: [[0.665, 0.276], [0.276, 0.665], [-0.276, 0.665], [-0.665, 0.276], [-0.665, -0.276], [-0.276, -0.665], [0.276, -0.665], [0.665, -0.276]], name: 'octagon' },
@@ -284,6 +284,7 @@ export function startGame(cfg) {
   let camMode = 'wide';
   const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
   function viewFor(m) {
+    if (m === 'close' && tall && cfg.mode === 'pattern') return { pos: new THREE.Vector3(-0.35, 4.2, 13.2), look: new THREE.Vector3(-0.35, 2.0, 0.9) };   /* phone: the whole train, engine too, as big as fits (K-CLARITY-RULES 9) */
     if (m === 'close') return tall ? { pos: new THREE.Vector3(...CLOSE[0]).multiplyScalar(1.95), look: new THREE.Vector3(...CLOSE[1]) } : { pos: new THREE.Vector3(...CLOSE[0]), look: new THREE.Vector3(...CLOSE[1]) };
     if (cfg.view) { const v = cfg.view[tall ? 'tall' : 'wide']; return { pos: new THREE.Vector3(...v[0]), look: new THREE.Vector3(...v[1]) }; }
     const v = (NB === 1 ? VIEW1 : VIEWN)[tall ? 'tall' : 'wide']; return { pos: new THREE.Vector3(...v[0]), look: new THREE.Vector3(...v[1]) };
@@ -819,7 +820,7 @@ export function startGame(cfg) {
   }
   const STR = () => tall ? { y: 1.5, z: -0.7, sp: 0.56, copyZ: 0.5 } : { y: 1.7, z: -0.2, sp: 1.08, copyZ: 1.2 };
   function slotAt(i, n, z) { const S = STR(); return new THREE.Vector3((i - (n - 1) / 2) * S.sp, S.y, z == null ? S.z : z); }
-  function trayAt(i, n) { const z = tall ? 2.0 : 2.9, sp = tall ? 1.1 : 1.6; return new THREE.Vector3((i - (n - 1) / 2) * sp, 0.9, z); }
+  function trayAt(i, n) { const z = tall ? 2.0 : 2.9, sp = tall ? 0.95 : 1.6;   /* phone: close enough that the outer pieces stay on screen */ return new THREE.Vector3((i - (n - 1) / 2) * sp, 0.9, z); }
   function stringAt(n, z) {
     const S = STR(), len = (n - 1) * S.sp + 1.2;
     const BD = LK && LK.board ? LK.board(len) : null;   /* bakery: a cake board instead of a bead string */
@@ -1466,6 +1467,7 @@ export function startGame(cfg) {
     if (cfg.sortBy) return [cfg.remember, 'Look at this one.', () => pointAt(t, true)];
     if (t.solid || cfg.thinFlat) return [cfg.remember, 'Look at this one.', () => solidAction(t, t.solid ? ACT[t.solid] : 'stand')];
     if (cfg.ruleFor) return [cfg.ruleFor(t), 'Look at this one.', ...(t.marks.length ? t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]) : [() => traceRound(t, 1200)]), () => wait(300), () => clearCorners(t)];
+    if (t.marks.length && /side/i.test(cfg.remember || '')) return [cfg.remember, 'Look at this one.', ...sideSteps(t), cap(FAMILY(t.k)) + '!'];   /* the rule is about sides: the sides light (K-CLARITY-RULES 5) */
     if (t.marks.length) return [cfg.remember, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), cap(WORDS[t.marks.length]) + ' corners! A ' + FAMILY(t.k) + '!', () => wait(300), () => clearCorners(t)];
     return [cfg.remember, 'Look at this one.', () => traceRound(t, 1200)];
   }
@@ -1557,7 +1559,7 @@ export function startGame(cfg) {
     shapes.forEach(o => { if (!o.inBox) tween(300, k => o.g.scale.setScalar(Math.max(0.001, o.scale * (1 - k)))).then(() => { o.g.visible = false; }); });
     const M = cfg.mistake, p = M.piece || ['outline', 0, 1];
     let d;
-    if (M.outline) { OL = makeOutline(M.outline.k, M.outline.miss, M.outline.color, 1.5); d = { g: OL.g, marks: [] }; }   /* a shape with a gap */
+    if (M.outline) { OL = makeOutline(M.outline.k, M.outline.miss, M.outline.color, 1.5); OL.mark.visible = false; OL.fill.visible = false; d = { g: OL.g, marks: [] }; }   /* the friend's shape: the gap is a real empty space (no dashed side, no fill), so it plainly is not closed */   /* a shape with a gap */
     else if (M.measure) {   /* two pencils that do not start together */
       setMeasure({ kind: 'long', items: M.measure }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }

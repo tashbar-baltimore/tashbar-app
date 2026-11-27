@@ -1039,7 +1039,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     new THREE.TextureLoader().load(new URL('./worlds/' + name + '.jpg', import.meta.url).href, tex => {
       if (CALM) try {   /* calm (Esti 2026-11-27, "the backgrounds are so busy"): the painting is paler, softer and less colourful, so the game in front is what he sees */
         const im = tex.image, cv = document.createElement('canvas'); cv.width = im.width; cv.height = im.height; const cx = cv.getContext('2d');
-        cx.filter = 'saturate(0.55) blur(' + Math.max(2, Math.round(im.width / 400)) + 'px)'; cx.drawImage(im, 0, 0); cx.filter = 'none';
+        cx.filter = 'saturate(0.5) blur(' + Math.max(4, Math.round(im.width / 170)) + 'px)';   /* blurred enough that small things in the painting (butterflies, lollipops, planets) melt into soft colour (K-CLARITY-RULES 10) */ cx.drawImage(im, 0, 0); cx.filter = 'none';
         cx.fillStyle = 'rgba(255,255,255,0.38)'; cx.fillRect(0, 0, cv.width, cv.height);
         const soft = new THREE.CanvasTexture(cv); tex = soft;
       } catch (e) {}

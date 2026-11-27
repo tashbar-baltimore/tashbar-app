@@ -20,13 +20,13 @@ startGame({
   id: 'corners', world: 'garden', plain: true,
   boxes: [{ dots: 0, accept: ['circle', 'oval'] }, { dots: 3, accept: ['tri', 'triTall', 'triRight', 'triWide', 'triSkinny'] },
           { dots: 4, accept: ['square', 'rect', 'rectLong', 'rectFat', 'kite', 'lean'] }],
-  intro: ['Mendy sorts his garden things.', 'He counts the corners!', "Let's count corners together!"],
+  intro: ['Mendy sorts his shapes.', 'He counts the corners!', "Let's count corners together!"],
   lessons: [{ k: 'kite', first: 'Look at this new shape.', word: 'shape', color: '#7C4DFF', noTurn: true,
     rule: ['Four corners! It goes with four dots.'], chant: [['Count the corners!', 4], ['One, two, three, four!', 4]] }],
   set: [['k1', 'tri', 0, 1], ['ci', 'circle', 0, 1], ['q1', 'kite', 0, 1], ['q2', 'lean', 0.2, 1],
         ['t2', 'triTall', PI, 1], ['ov', 'oval', 0.3, 0.95], ['q3', 'square', PI / 4, 0.85], ['t3', 'triWide', 0.4, 0.9]],
   watchLine: 'Watch me. I count the corners first.', watchDone: 'Three corners go with three dots!', yourTurn: 'Now you. Count the corners, then find the box!',
-  ask: 'Count the corners. Put it with the same dots.', hint: 'Count the corners first.', hint2: 'Count this one.', remember: 'Remember: count each corner.',
+  ask: 'Count the corners. Put it in the box with that many dots.', hint: 'Count the corners first.', hint2: 'Count this one.', remember: 'Remember: count each corner.',
   yesDefault: o => ['Yes! No corners!', 'Yes! Three corners!', 'Yes! Four corners!'][o.box], allDone: 'Every shape is in the right box!',
   wrong: o => { const c = n(o.k);
     if (!c) { const a = ['Look. It has no corners.', 'It goes in the box with no dots.']; a.count = false; return a; }
