@@ -147,7 +147,7 @@
         setPlate(n, fr[0]); setClaim(claim); $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0);
         done = res; GAME.phase = 'busy'; F.lock(true);
         await F.say(who + ' says: ' + F.word(claim) + ' ' + (claim === 1 ? fr[0] : fr[1]) + '!', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
-        if (i >= 3) { await F.wait(1500); $('plate').style.opacity = '0'; }   /* first rounds: the plate stays in view */
+        /* K clarity: the plate stays in view the whole time he checks (no hidden things; the quick look is only in the bonus) */
         GAME.phase = 'answer'; F.lock(false); hooks();
         await F.say('Is ' + who + ' right?', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
       });
