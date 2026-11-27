@@ -10,7 +10,7 @@ export default function setup(E, { unit }) {
     boy: E => E.mendy(), grown: E => E.tatty(),
     intro: ['This is Mendy. He goes to shul with Tatty.', 'Today is Simchas Torah!'],
     steps: [
-      { pic: 'shofar', near: 'grown', lines: ['Tatty shows Mendy the shofar from Rosh Hashanah.'], letter: 'shin', after: [['Shofar starts with', S('sh'), '.'], 'Shin has a dot on its right head.', ['Shin says', S('sh'), ', like shofar!']] },
+      { pic: 'shofar', near: 'grown', at: [1.75, 2.1],   /* beside Tatty, not across his face */ lines: ['Tatty shows Mendy the shofar from Rosh Hashanah.'], letter: 'shin', after: [['Shofar starts with', S('sh'), '.'], 'Shin has a dot on its right head.', ['Shin says', S('sh'), ', like shofar!']] },
       { pic: 'flag', lines: ['Mendy waves his Simchas Torah flag!'], letter: 'sin', after: [['Simchas Torah starts with', S('s'), '.'], 'Sin has a dot on its left head.', ['Sin says', S('s'), '.']] },
       { pic: 'torah', near: 'grown', keep: true, size: .8, lines: ['Tatty dances with the Torah!'], letter: 'tav', after: [['Torah starts with', S('t'), '.'], 'Tuf has a dot inside.', ['Tuf says', S('t'), ', like Torah!']] },
       { fromDot: 'tav', letter: 'sav', lines: ['No dot. This is Suf!', ['Suf says', S('s'), '.']] },

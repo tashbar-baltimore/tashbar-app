@@ -85,7 +85,7 @@ export function makeStory(E, unit, script) {
         src.visible = true; src.position.copy(kp); float(src); await letterDone(st.fromDot); await letterDone(st.letter);
       } else {
         const has = hasPic(st.pic), pic = has ? PIC[st.pic]() : new THREE.Group(); const who = st.near === 'grown' && grown ? grown : boy;   /* a painting not here yet: the letter appears on its own */
-        pic.position.set(who.position.x + .9, 2.0, who.position.z + .4); pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
+        const [dx, py] = st.at || [.9, 2.0]; pic.position.set(who.position.x + dx, py, who.position.z + .4);   /* st.at: a picture that needs more room beside the face */ pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
         if (st.act) st.act(E, pic, boy, grown);
         for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);   /* the story is told even before its painting comes */
         if (st.keep) await rise(pic, st.letter); else { await toCentre(pic); await morph(pic, st.letter); }
