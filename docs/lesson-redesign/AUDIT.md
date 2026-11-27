@@ -16,8 +16,17 @@ A "Next tap" only shows more; a "thinking tap" answers or builds something.
 ## After (new shape: THINK, LEARN, TRY IT, SHOW ME, DONE)
 | Lesson | Screens | Taps | Thinking taps | Next taps | What a boy sees |
 |---|---|---|---|---|---|
-| MATH.OPS.L03.01 (Gr 2 math) | 14 | 41 | 28 | 13 | A sticker guess; reads the blocks; hops tens on a number line; a chant; "Who's right: Moshe or Eli?"; sort, hop, build, put steps in order; Done brings back his guess |
-| READ.COMP.L05.05 (Gr 4 reading) | 11 | 29 | 19 | 10 | "Is Moshe's answer good enough?"; taps the one sentence, then the two sentences, in the sukkah story; Who's right; sort, build an answer, find proof in a new story |
+| MATH.OPS.L03.01 (Gr 2 math) | 14 | 62 | 49 | 13 | A sticker guess; reads the blocks; hops the tens, then the ones past 80, on a number line; a chant; hops back the tens; "Who's right: Moshe or Eli?"; sort, build 73, put steps in order, hop back past 30; Done brings back his guess. More taps than before, but they are number-line hops and block building (he does every step himself); the reviewer still calls it "some" repetitive tapping |
+| READ.COMP.L05.05 (Gr 4 reading) | 12 | 35 | 24 | 11 | "Is Moshe's answer good enough?"; taps the one sentence, then the two sentences, in the sukkah story; Who's right; sort, build an answer, find proof in a new story |
 | SS.GEO.L07.01 (Gr 6 social studies) | 13 | 44 | 32 | 12 | "Why did every empire want this small land?"; reads the book; builds the map as he reads (compass, neighbors, waters); Who's right about the Jordan River; teach it back |
 
-Next taps went from 16–20 to 10–13 (3 of them are the Show me answers, unchanged). Most taps now build something: a map, a number line, an answer.
+Next taps went from 16–20 to 11–13 (3 of them are the Show me answers, unchanged). Most taps now build something: a map, a number line, an answer. Total taps are not always lower (math went up), because a fresh reviewer asked that the boy do every step himself instead of reading it.
+
+## Fresh review (9 points, final round)
+| Lesson | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | Fun | Result |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| MATH.OPS.L03.01 | 5 | 4 | 4 | 4 | 4 | 4 | 4 | 4 | 5 | 3 | ✓ |
+| READ.COMP.L05.05 | 5 | 4 | 4 | 5 | 5 | 4 | 5 | 4 | 5 | 4 | ✓ |
+| SS.GEO.L07.01 | 5 | 4 | 5 | 5 | 5 | 5 | 5 | 4 | 5 | 4 | ✓ |
+
+Five rounds of fresh reviewers (none wrote the lessons). Fixed on the way: math taught two methods and its help boxes gave the answers; reading never practised "that is why", one check question was unclear, one answer added facts not in the text; geography's hook gave away an answer.
