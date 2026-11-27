@@ -70,7 +70,7 @@ module.exports = async function (browser) {
       await W(P.pg, () => __g1.name === 'dock-ready'); await notBlank(P, 'the dock');
       for (const id of ['again', 'help', 'home']) { const b = await P.pg.$eval('#' + id, e => { const r = e.getBoundingClientRect(); return Math.min(r.width, r.height); }); if (b < 64) bad(P.label + ': the ' + id + ' button is ' + b + ' px'); }
       const op = await P.pg.evaluate(() => __g1.open); if (op.length !== 8 || !op[0] || op.slice(1).some(Boolean)) bad(P.label + ': a new boy should see 8 posts with only the first open');
-      const k = await saidN(P.pg); await tap(P.pg, 'stationAt', 4); await P.pg.waitForTimeout(150); if (!(await saidSince(P.pg, k, 'before it first'))) bad(P.label + ': a locked post does not say why');
+      const k = await saidN(P.pg); await tap(P.pg, 'stationAt', 4); await P.pg.waitForTimeout(150); if (!(await saidSince(P.pg, k, 'glowing post first'))) bad(P.label + ': a locked post does not say why');
       await Promise.all([P.pg.waitForURL(/g=opener/, { timeout: 15000 }), tap(P.pg, 'stationAt', 0)]).catch(() => bad(P.label + ': the first post does not start the lesson'));
       await P.ctx.close(); });
     await step('opener', async () => { P = await open(w, h, 'opener', label);

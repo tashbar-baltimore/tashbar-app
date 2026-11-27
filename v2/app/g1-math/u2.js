@@ -150,8 +150,8 @@ async function opener() {
   bt.setHatch(8); chime('good'); dots(4, 1);
   await say('Now 8 is in my head. I don\'t count them again!');
   const more = []; for (let i = 0; i < 3; i++) { const b = keep(barrel('#7FB069')); b.position.set(-0.5 + i * 0.9, 0.55, 2.8); more.push(b); }
-  await say('3 more come. I count on: 9, 10, 11.');
-  for (let i = 0; i < 3; i++) { lightUp(more[i], '#FFE27A', 1.4); chime('tap'); await wait(350); await tween(300, u => more[i].position.lerp(bt.position.clone().add(V(-0.6, 0.6, 0)), u)); more[i].visible = false; bt.setHatch(9 + i); }
+  await say('3 more come. I count on.');
+  for (let i = 0; i < 3; i++) { lightUp(more[i], '#FFE27A', 1.4); chime('tap'); await wait(350); await tween(300, u => more[i].position.lerp(bt.position.clone().add(V(-0.6, 0.6, 0)), u)); more[i].visible = false; bt.setHatch(9 + i); await say(String(9 + i)); }
   os.set('8 + 3 = 11'); await say('8 and 3 more is 11!'); m.act('cheer'); dots(4, 2);
   /* 2. now you: 6 in your head, tap each new barrel */
   bt.setHatch(6); await say('Now you! 6 is in the boat.');
@@ -183,7 +183,7 @@ async function sail() {
   let miss = 0, easy = false;
   const plan = [() => [rnd(5, 8), rnd(2, 3)], () => [rnd(7, 9), rnd(3, 5)], () => [rnd(11, 14), rnd(3, 5)], () => [rnd(8, 12), rnd(4, 6)]];
   for (let r = 0; r < plan.length; r++) { G.round = r; let [s, k] = plan[r](); if (easy) { s = Math.min(s, 6); k = Math.min(k, 3); }
-    if (!(await sailRound(s, k, 1, { hidden: r >= 2 && miss === 0 }))) miss++; if (miss >= 2 && !easy) { easy = true; G.easy = true; await say('Let us use smaller numbers.'); } dots(R, r + 2); }
+    if (!(await sailRound(s, k, 1, { hidden: r >= 2 && miss === 0 }))) miss++; if (miss >= 2 && !easy) { easy = true; G.easy = true; await say('Let's try smaller numbers.'); } dots(R, r + 2); }
   if (miss === 0) { G.bonus = true; await say('Bonus! The buoys are blank.'); await sailRound(rnd(10, 13), rnd(4, 6), 1, { hidden: true }); }
   const st = easy ? Math.min(2, starsFor(miss, 4)) : starsFor(miss, 4); await say(st === 3 ? 'Smooth sailing!' : 'Great counting on!');
   const e = await endScreen(st); if (e === 'replay') location.reload();
@@ -222,7 +222,7 @@ async function bigfirst() {
     /* count on the small pile: tap each barrel */
     piles.forEach(p => p.children.filter(c => c.material && c.material.blending === THREE.AdditiveBlending).forEach(c => p.remove(c)));
     const sp = piles.find(p => p.userData.n === small); let c = big; G.state = 'tapcount'; const stopSmall = target(sp);
-    await new Promise(res => { S.onTap(sp.userData.bs, async o => { if (!o.parent) return; o.parent.remove(o); c++; chime('tap'); if (!QUICK) say(String(c)); if (c === ans) { stopSmall(); res(); } }); });
+    await new Promise(res => { S.onTap(sp.userData.bs, async o => { if (!o.parent) return; o.parent.remove(o); c++; chime('tap'); if (!QUICK && c < ans) say(String(c)); if (c === ans) { stopSmall(); res(); } }); });
     S.clearInput(); G.state = 'write'; await say('How many in the boat? Write it.', { cap: big + ' + ' + small + ' = ?' });
     for (;;) { const v = await pad(2); if (v === ans) { chime('good'); m.act('cheer'); confetti(S, bt.position.clone().add(V(0, 2, 0)), 40); await say('Yes! ' + big + ' and ' + small + ' is ' + ans + '.'); break; }
       first = false; G.fixes++; await say('Big number in your head. Count on again.'); for (let i = 1; i <= small; i++) { bt.setHatch(big + i); chime('tap'); await say(String(big + i)); } bt.setHatch(big); }
@@ -274,7 +274,7 @@ async function pullRound(start, k, o = {}) {
   const { lo, W } = windowFor(start, ans); const L = lineOf(lo, W, { hide: o.hidden ? (n => n !== start) : null });
   const bt = keep(bob(boat())); bt.position.copy(boatSpot(L.posOf(start))); bt.setHatch(start);
   /* the rope runs from the boat to a big ring the boy pulls, near the low end of the line */
-  const ringPos = PORTRAIT ? V(2.4, 0.6, 6 - (W - 1) * 1.85 - 1.2) : V(-6.2, 0.6, 5.8);
+  const ringPos = PORTRAIT ? V(2.4, 0.6, 6 + 1.0) : V(-6.2, 0.6, 5.8);   /* at the low end: each pull brings the boat toward the ring */
   const ring = keep(new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.11, 10, 28), MATS.phys('#FF7A59', { clearcoat: 1 }))); ring.position.copy(ringPos); ring.rotation.x = -Math.PI / 2.4;
   const ringHit = keep(new THREE.Mesh(new THREE.SphereGeometry(0.95, 10, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }))); ringHit.position.copy(ringPos);
   let rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos));
@@ -286,8 +286,9 @@ async function pullRound(start, k, o = {}) {
   anchor.position.copy(PORTRAIT ? V(-2.4, 0.2, 6 - (W - 1) * 1.85 - 1.2) : V(6.2, 0.2, 5.8));
   const sg = keep(signBoard(eq(start, '−', k))); sg.position.copy(PORTRAIT ? V(0, 0, 6 - (W - 1) * 1.85 - 2.6) : V(0, 1.4, -6.5)); sg.scale.setScalar(PORTRAIT ? 0.85 : 1.25);
   let at = start; G.at = at; const pulls = () => start - at; let ringGlow = o.demo ? null : target(ring);
-  const back = async voice => { if (at <= L.lo) return; at--; G.at = at; chime('tap'); S.scene.remove(rp); temp.splice(temp.indexOf(rp), 1);
-    await tween(240, u => bt.position.lerp(boatSpot(L.posOf(at)), u)); rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos)); sg.set(eq(start, '−', k), pulls() > 0 ? '●'.repeat(Math.min(12, pulls())) : ''); if (voice) await say(String(at)); };
+  let busy = false;
+  const back = async voice => { if (at <= L.lo || busy) return; busy = true; at--; G.at = at; chime('tap'); S.scene.remove(rp); { const i = temp.indexOf(rp); if (i >= 0) temp.splice(i, 1); }
+    await tween(240, u => bt.position.lerp(boatSpot(L.posOf(at)), u)); rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos)); sg.set(eq(start, '−', k), pulls() > 0 ? '●'.repeat(Math.min(12, pulls())) : ''); busy = false; if (voice) await say(String(at)); };
   G.hit = { ring: () => sc(ringHit), pullTo: () => { const d = new THREE.Object3D(); d.position.copy(ringPos).add(PORTRAIT ? V(0, 0, 1.6) : V(-1.6, 0, 0.8)); S.scene.add(d); const s = sc(d); S.scene.remove(d); return s; }, anchor: () => sc(anchor, 0.8), buoy: n => sc(L.at(n), 0.3) };
   if (o.demo) {
     await say('Watch me. ' + start + ' is in my head. Take away ' + k + '.');
@@ -307,7 +308,7 @@ async function pullRound(start, k, o = {}) {
     if (pulls() === 0) { await say('Pull the red ring first.'); G.state = 'pull'; continue; }
     G.fixes++; first = false;
     await say(pulls() === 0 ? 'Pull the red ring first.' : 'You pulled ' + pulls() + '. We need ' + k + '. Try again from ' + start + '.');
-    at = start; G.at = at; bt.position.copy(boatSpot(L.posOf(start))); S.scene.remove(rp); temp.splice(temp.indexOf(rp), 1); rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos)); sg.set(eq(start, '−', k));
+    at = start; G.at = at; bt.position.copy(boatSpot(L.posOf(start))); S.scene.remove(rp); { const i = temp.indexOf(rp); if (i >= 0) temp.splice(i, 1); } rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos)); sg.set(eq(start, '−', k));
     G.state = 'pull';
   }
   chime('good'); G.state = 'write'; await say('Anchor down! Write the answer.', { cap: eq(start, '−', k) });
@@ -319,7 +320,7 @@ async function pull() {
   await pullRound(12, 3, { demo: true }); dots(R, 1);
   let miss = 0, easy = false; const plan = [[rnd(8, 10), 2], [rnd(12, 14), 3], [rnd(15, 18), rnd(3, 4)]];
   for (let r = 0; r < plan.length; r++) { G.round = r; let [st, k] = plan[r]; if (easy) { st = Math.min(st, 10); k = Math.min(k, 3); }
-    if (!(await pullRound(st, k))) miss++; if (miss >= 2 && !easy) { easy = true; G.easy = true; await say('Let us use smaller numbers.'); } dots(R, r + 2); }
+    if (!(await pullRound(st, k))) miss++; if (miss >= 2 && !easy) { easy = true; G.easy = true; await say('Let's try smaller numbers.'); } dots(R, r + 2); }
   if (miss === 0) { G.bonus = true; await say('Bonus! The buoys are blank.'); await pullRound(rnd(14, 17), rnd(4, 5), { hidden: true }); }
   const e = await endScreen(starsFor(miss, 3)); if (e === 'replay') location.reload();
 }
@@ -430,7 +431,7 @@ async function dockHub() {
   const ctr = pts[0].clone().lerp(pts[pts.length - 1], 0.5);
   S.frame(V(ctr.x, 0.8, ctr.z + (PORTRAIT ? 3 : 1)), PORTRAIT ? 8 : 33, PORTRAIT ? 29 : 8, PORTRAIT ? V(0, 1.2, 0.8) : V(0, 0.6, 1), true);
   G.stationAt = i => sc(posts[i], 1); G.open = open;
-  S.onTap(posts, o => { if (!o.userData.open) { say('Finish the post before it first.'); return; } chime('tap'); location.href = 'unit2.html?g=' + o.userData.game + (FAST ? '&fast=1' : QUICK ? '&quick=1' : ''); });
+  S.onTap(posts, o => { if (!o.userData.open) { say('Play the glowing post first.'); return; } chime('tap'); location.href = 'unit2.html?g=' + o.userData.game + (FAST ? '&fast=1' : QUICK ? '&quick=1' : ''); });
   G.how = { title: 'The Harbor', steps: ['Tap the glowing post.', 'Play the game.', 'Get 2 stars to open the next post.'], say: 'Tap the glowing post to play.' };
   await say(starsOf('opener') ? 'Welcome back to the harbor! Tap the glowing post.' : 'Welcome to the harbor! Tap the glowing post.');
   G.name = 'dock-ready';
