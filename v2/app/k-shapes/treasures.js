@@ -218,9 +218,9 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   function shapeCar(shape) {
     const g = trainCar('#F6EEDD', true);   /* every shape car is the same cream car: only the shape on it changes */
     const front = new PM({ color: '#E0372E', roughness: 0.25, clearcoat: 1 });
-    const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 3, curveSegments: 40 }); geo.scale(0.34, 0.34, 1);
-    const sign = new THREE.Mesh(geo, [front, once('signEdgeM2', () => new PM({ color: '#FFFFFF', roughness: 0.3 }))]); sign.position.set(0, 0.22 + 0.17, 0.0); g.add(sign);
-    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.18, 8), once('postM2', () => new PM({ color: '#8E99A6', metalness: 0.4, roughness: 0.35 }))); post.position.set(0, 0.25, 0); g.add(post);
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 3, curveSegments: 40 }); geo.scale(0.46, 0.46, 1);   /* big enough that circle, triangle and square are easy to tell apart (K-CLARITY-RULES 9) */
+    const sign = new THREE.Mesh(geo, [front, once('signEdgeM2', () => new PM({ color: '#FFFFFF', roughness: 0.3 }))]); sign.position.set(0, 0.22 + 0.32, 0.0); g.add(sign);
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.3, 8), once('postM2', () => new PM({ color: '#8E99A6', metalness: 0.4, roughness: 0.35 }))); post.position.set(0, 0.32, 0); g.add(post);
     g.userData.recolor = () => {}; g.material = front;
     return shadowy(g);
   }
