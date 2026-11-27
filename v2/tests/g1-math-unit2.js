@@ -118,7 +118,10 @@ module.exports = async function (browser) {
     await step('pull', async () => { P = await open(w, h, 'pull', label);
       let q = 1;
       for (let r = 0; r < 3; r++) { await W(P.pg, q => (__g1.q || 0) > q && __g1.state === 'pull', q, 60000); const a = await P.pg.evaluate(() => __g1.ask); q = await P.pg.evaluate(() => __g1.q);
-        const pullN = async n => { for (let i = 0; i < n; i++) { const before = await P.pg.evaluate(() => __g1.at); if (!(await tryUntil(P.pg, async () => dragTo(P.pg, await pos(P.pg, 'hit.ring'), await pos(P.pg, 'hit.pullTo')), { fn: b => __g1.at === b - 1, arg: before }, 5000))) bad(P.label + ': a pull on the rope does not bring the boat back'); } };
+        const pullN = async n => { for (let i = 0; i < n; i++) { const before = await P.pg.evaluate(() => __g1.at); if (!(await tryUntil(P.pg, async () => dragTo(P.pg, await pos(P.pg, 'hit.ring'), await pos(P.pg, 'hit.pullTo')), { fn: b => __g1.at === b - 1, arg: before }, 5000))) {
+          const info = await P.pg.evaluate(() => ({ ring: __g1.hit.ring(), to: __g1.hit.pullTo(), at: __g1.at, state: __g1.state, w: innerWidth, h: innerHeight, frames: __g1.frames }));
+          try { fs.mkdirSync(path.join(R, 'tests', 'out'), { recursive: true }); await P.pg.screenshot({ path: path.join(R, 'tests', 'out', 'g1-math-unit2-pull-' + w + '.png') }); } catch (e) {}
+          bad(P.label + ': a pull on the rope does not bring the boat back ' + JSON.stringify(info)); } } };
         if (r === 0) { await pullN(a.k + 1); const k = await saidN(P.pg); await tap(P.pg, 'hit.anchor'); await W(P.pg, () => __g1.state === 'pull'); if (!(await saidSince(P.pg, k, 'You pulled'))) bad(P.label + ': too many pulls are not explained'); }
         await pullN(a.k); await tap(P.pg, 'hit.anchor'); await typePad(P.pg, a.answer); }
       await finish(P, 2); });

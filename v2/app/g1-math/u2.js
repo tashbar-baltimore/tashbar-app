@@ -274,7 +274,7 @@ async function pullRound(start, k, o = {}) {
   const { lo, W } = windowFor(start, ans); const L = lineOf(lo, W, { hide: o.hidden ? (n => n !== start) : null });
   const bt = keep(bob(boat())); bt.position.copy(boatSpot(L.posOf(start))); bt.setHatch(start);
   /* the rope runs from the boat to a big ring the boy pulls, near the low end of the line */
-  const ringPos = PORTRAIT ? V(2.4, 0.6, 6 + 1.0) : V(-6.2, 0.6, 5.8);   /* at the low end: each pull brings the boat toward the ring */
+  const ringPos = PORTRAIT ? V(2.6, 0.6, 6 - 1.85) : V(-6.2, 0.6, 5.8);   /* at the low end: each pull brings the boat toward the ring */
   const ring = keep(new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.11, 10, 28), MATS.phys('#FF7A59', { clearcoat: 1 }))); ring.position.copy(ringPos); ring.rotation.x = -Math.PI / 2.4;
   const ringHit = keep(new THREE.Mesh(new THREE.SphereGeometry(0.95, 10, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }))); ringHit.position.copy(ringPos);
   let rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos));
@@ -303,7 +303,7 @@ async function pullRound(start, k, o = {}) {
   for (;;) {
     await new Promise(done => { let p0 = null;
       S.onDrag([ringHit, ring], plane, { start: (r, p) => { p0 = p.clone(); if (ringGlow) { ringGlow(); ringGlow = null; } }, move: (r, p) => { ring.position.copy(ringPos).add(p.clone().sub(p0).multiplyScalar(0.5)); },
-        drop: async () => { const moved = ring.position.distanceTo(ringPos); ring.position.copy(ringPos); if (moved > 0.45) await back(!QUICK); } });
+        drop: async () => { const moved = ring.position.distanceTo(ringPos); ring.position.copy(ringPos); await back(!QUICK); } });   /* a pull or a plain tap on the ring both bring the boat back one buoy */
       S.onTap([aHit], () => { S.clearInput(); done(); }); });
     if (pulls() === k) break;
     if (pulls() === 0) { await say('Pull the red ring first.'); G.state = 'pull'; continue; }
