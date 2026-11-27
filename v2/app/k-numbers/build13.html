@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ten and Some More — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 13 (MAP.md "Ten and some more": a full ten-frame plus extras; he builds 14 as "ten and four"), at the bakery: two muffin tins.
+     The number shows big. First he taps the left tin: all ten pink cupcakes drop in at once ("a full tin is ten!"). Then he taps the right tin once for each one.
+     A button takes one back. Then the check. "Fourteen is ten and four!"
+     A slip: "Let's look. Fourteen is ten and four." We count the ones together, then he fixes it and checks again. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css">
+<style>.goal svg{ height:86%; } #back svg{ width:52%; height:52%; } .say{ font:900 clamp(20px,3.2vh,28px)/1.1 system-ui, sans-serif; color:#5A4A3A; max-width:220px; text-align:center; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ width:min(100%,370px); } }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="goal" id="goal"></div>
+    <button id="back" class="bigbtn btn3d b-white" aria-label="Take one back"><svg viewBox="0 0 48 48"><path d="M12 24h24" stroke="#2B2350" stroke-width="7" stroke-linecap="round"/></svg></button>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './teen13.js';
+const $ = id => document.getElementById(id);
+let K, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function hooks() {
+  const k = R.n - 10;
+  GAME.right = () => { if (!K.tenFull()) return [{ tap: '.tspot[data-id="ten"]' }]; const o = K.ones(); if (o < k) return [{ tap: '.tspot[data-id="one' + o + '"]' }]; if (o > k) return [{ tap: '#back' }]; return [{ tap: '#check' }]; };
+  GAME.wrong = K.tenFull() && K.ones() === k && k < 10 ? () => [{ tap: '.tspot[data-id="one' + k + '"]' }, { tap: '#check' }] : null;
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); K.spots(true); hooks(); }
+async function tap(id) {
+  if (GAME.phase !== 'answer') return;
+  if (id === 'ten') { GAME.phase = 'busy'; await K.fillTen(); await FR.say('A full tin is ten!'); open(); await FR.say('Now the ones. Tap the other tin.', { noRepeat: true }); return; }
+  if (id.startsWith('one')) { GAME.phase = 'busy'; await K.addOne(); open(); }
+}
+async function back() { NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; await K.takeOne(); open(); }
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); const k = R.n - 10, o = K.ones();
+  if (K.tenFull() && o === k) { await FR.yes($('check'), FR.Word(R.n) + ' is ten and ' + FR.word(k) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++;
+  if (!K.tenFull()) await FR.say("Let's look. First a full ten. Tap the big tin.");
+  else { await FR.say("Let's look. " + FR.Word(R.n) + ' is ten and ' + FR.word(k) + '.'); await K.glowTen(); await FR.say('Ten.', { noRepeat: true });
+    const ones = K.oneCakes(); await K.bumpAll(ones, i => FR.say(FR.Word(i + 1) + (i === ones.length - 1 ? '.' : ','), { noRepeat: true }));
+    await FR.say(o < k ? 'Put up ' + FR.word(k - o) + ' more.' : 'Take ' + FR.word(o - k) + ' back.'); }
+  open();
+}
+const PLAN = [14, 12, 17, 15, 19, 13];
+function play(F, i) {
+  return new Promise(async res => {
+    const n = PLAN[i]; R = { n, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); K.show(0, 0);
+    $('goal').innerHTML = numBig(n); await F.say('Build ' + F.word(n) + '.'); open();
+    await F.say(i === 0 ? 'First the ten. Tap the big tin.' : F.Word(n) + ' is ten and how many?', { repeat: 'A full tin, then the ones. Then check.' });
+  });
+}
+function numBig(n) { const t = Math.floor(n / 10), o = n % 10; return '<span style="display:flex;height:100%;gap:2px">' + U5.num(t) + U5.num(o) + '</span>'; }
+FR.game({
+  id: 'u13-build', title: 'Ten and Some More', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""></div>',
+  init() { K = mount($('world'), { kids: ['mendy', 'dovid'], band }); K.onTap = id => tap(id); $('back').addEventListener('click', back); $('check').addEventListener('click', check); },
+  demo: async F => {
+    R = { n: 13, misses: 0 }; K.show(0, 0); $('goal').innerHTML = numBig(13); await F.say('Thirteen. Watch me build it.'); K.spots(true);
+    await F.handTo(document.querySelector('.tspot[data-id="ten"]')); await F.handTap(); await K.fillTen(); K.spots(true); await F.say('A full tin is ten.');
+    for (let j = 0; j < 3; j++) { await F.handTo(document.querySelector('.tspot[data-id="one' + j + '"]')); await F.handTap(); await K.addOne(); }
+    F.handHide(); K.spots(false); await F.say('Ten and three, thirteen!');
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You build teen numbers! Ten and some more!' : 'Good building! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
