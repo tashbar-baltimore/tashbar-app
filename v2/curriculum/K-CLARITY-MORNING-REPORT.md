@@ -40,9 +40,12 @@ A look link refreshes itself after each change once the tests pass (about an hou
 
 Fresh reviewers who built none of the games score each one 1–5: "Would a 5-year-old know exactly what to do, and what is taught, without an adult?" A game is ready only at 4 or 5. Full tables are in each branch's `K-CLARITY-CHECKLIST.md`.
 
-**Shapes (25 games).** Round 1: Find the triangles, Find the hexagons, What comes next? and Heavy and light scored 4; the other 21 scored 3, none lower. Every problem they named was fixed (plain tick and X buttons, every side lights when the voice says "sides", the first wrong move shows how, cones stand up, a real balloon against rocks, no kite that fits the rectangle clue, calmer backdrops, bigger phone pieces). Round 2 is being scored.
+**Shapes (25 games).** Round 1: Find the triangles, Find the hexagons, What comes next? and Heavy and light scored 4; the other 21 scored 3, none lower. Every problem they named was fixed (plain tick and X buttons, every side lights when the voice says "sides", the first wrong move shows how, cones stand up, a real balloon against rocks, no kite that fits the rectangle clue, calmer backdrops, bigger phone pieces). Round 2 fixes are going in now (a wrong piece gets a hand showing the right box; the copy rounds show every empty spot; the curvy "not a triangle" bulges on every side). Round 2 scores follow here when they are in.
 
-**Numbers (Units 1–8).** Round 1: most games 4, some 3, one 2 (Unit 6 review). Round 2, after fixes: Units 1–5 and 8 all 4 or 5. Seven games were still 3 (Unit 2 skip counting; Unit 6 steps and find the mistake; Unit 7 pairs, one more or less, find the mistake, review). All seven were fixed (Mendy's footprints start at his picture, one tap pairs an apple, a "Watch me" before Ari's mistake, apples never overlap) and are being scored again.
+**Numbers (Units 1–8).** Round 1: most games 4, some 3, one 2 (Unit 6 review). Round 2: Units 1–5 and 8 all 4 or 5; seven games 3, all fixed. Round 3 (a new, stricter reviewer): every game 4 except 15 that scored 3. Being fixed now, most important first:
+- Unit 7 (the orchard): the camera now looks straight down at both blankets, so the near blanket no longer looks bigger. "The same" always looks the same, and Show me lines the apples up in rows. (Done, Friday 17:50 UTC.)
+- Still in progress: Unit 6 spinner dots stay until he answers; Unit 7 see-saw and find-the-mistake simpler; a "Watch me" before every new kind of round (count3, check5, review8); review4 and review5 with fewer kinds of task; Unit 8 calmer tablecloth and bigger number tiles.
+Then a fourth fresh reviewer scores all of Units 1–8.
 
 (This section is updated as each round finishes.)
 
@@ -51,3 +54,14 @@ Fresh reviewers who built none of the games score each one 1–5: "Would a 5-yea
 - ABC is also being rebuilt "the calm way" (#620, a sample). The 3D ABC units stay until you decide which way to go.
 - ABC Unit 3, the i hunt: one picture is an iguana, which many children call a "lizard". The other choice (a fish) is clearly wrong, so it can still be solved. Tell us if you want a different i picture.
 - Kriyah and ABC notes "seen, not changed" are listed in each checklist.
+- The very first ABC sample (tashbar-baltimore/tashbar-app#252, "Meet the snake sound", with grass blades and butterflies) is still open. Everything in it is also in #595 and #620, which already had the clarity pass, so it was not changed again. You can close it, or tell your Claude to.
+
+## Choices made for you (a kindergarten teacher's choices; tell us if you want different)
+
+- Shapes: the first games for each shape use plain flat shapes for the whole game, not only the lesson. Real things ("a tire is a circle") come only in the later games.
+- Shapes: cupcakes stay in the pattern games (the voice says cupcakes and every child knows them). "Like a can" and "like a block" stay in the solid-shape lessons.
+- Shapes: the drum and bell stay in the sound pattern (they make the sounds; they are not shapes).
+- Numbers: Unit 2 stones show dots in rows of five, not written numbers (numbers are met in Unit 4).
+- Numbers: the quick "flash" stays in the Unit 1 check and the Peek and Finger flash games: seeing a small amount at a glance is the skill.
+- Numbers: the Unit 6 path is one straight line 0 to 10 across the screen. Apple trees have leaves but no apples. On a phone the see-saw holds rows of three apples (rows of five would make them tiny).
+- Wrong-move help goes from least to most: the first miss shows how, the second says the exact fix.
