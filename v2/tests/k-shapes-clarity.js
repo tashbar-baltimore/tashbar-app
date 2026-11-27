@@ -10,6 +10,7 @@ const R = path.join(__dirname, '..', '..');
 const FIRST = ['find-circles', 'find-triangles', 'find-squares', 'find-rectangles', 'shape-sorter', 'count-corners', 'find-hexagons'];
 /* games where the lesson is not the look of the shape (flat vs solid, building, position, colour): plain one-colour pieces too, so nothing pulls the eye (shapes-c) */
 const ALSO_PLAIN = ['flat-or-solid', 'build-shapes', 'where-is-it', 'sort-colors'];
+ALSO_PLAIN.push('mystery-shape', 'solid-shapes');   /* shapes-b: he counts corners in Mystery shape; The solid shapes is the first meeting with the solids (rules 1, 6) */
 module.exports = async function (browser) {
   const out = { fails: [], oks: [] }, bad = m => out.fails.push('2.0 K shapes clarity: ' + m);
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'v2kclar-'));
