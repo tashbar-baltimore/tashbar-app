@@ -1,12 +1,12 @@
 /* 2.0 TEST (v2/tests/, run by tests/run.js): Grade 1 Math, Unit 2 "Count on, count back" in the Harbor (v2/app/g1-math/unit2.html).
    Builds v2/, opens every game with ?fast=1 at Chromebook size and phone size, and plays it as a made-up boy:
    - the dock: 8 posts in order, only the first open; a locked post says why; the open one starts the lesson;
-   - the lesson: Mendy puts 8 in his head and counts on; the boy taps 3 barrels (7, 8, 9) and writes 9; a wrong answer is explained;
+   - the lesson: Mendy puts 8 in his head and counts on; the boy taps 3 barrels (7, 8, 9) and writes 9 (a wrong answer is explained), then taps 11, 10, 9 to count back;
    - Sail on: he drags the boat buoy by buoy; sailing too far is explained, then he writes the answer; 1 miss in 4 = 2 stars;
    - Big pile first: choosing the small pile first shows the long count and asks again; he counts on the small pile and writes;
    - Spin the plank: he writes 3 + 8, spins the plank with his finger, and writes 8 + 3 (the same);
    - Pull it back: each pull on the rope brings the boat back one buoy; too many pulls are explained and he tries again;
-   - Find the mistake: tapping a right hop is explained; he finds Dovid's extra count and writes the right answer;
+   - Find the mistake: tapping a right hop is explained; he finds Dovid's extra count, sails the right hops himself and writes the answer;
    - Mastery check (no help, blank buoys, the last 3 with no buoys) and the review (Unit 1 and K): all right = 3 stars;
    - "How to do it" boxes, buttons 64 px or more, spoken lines 12 words or fewer, no page errors, nothing from outside websites, never blank.
    Returns { fails, oks }. */
@@ -80,6 +80,8 @@ module.exports = async function (browser) {
       await W(P.pg, () => __g1.state === 'write');
       const k = await saidN(P.pg); await typePad(P.pg, 8); await P.pg.waitForTimeout(150); if (!(await saidSince(P.pg, k, 'then 7, 8, 9'))) bad(P.label + ': a wrong answer in the lesson is not explained');
       await typePad(P.pg, 9);
+      await W(P.pg, () => __g1.state === 'tapback', null, 60000).catch(() => bad(P.label + ': the lesson does not let him count back'));
+      for (let k = 11; k >= 9; k--) { await W(P.pg, k => __g1.next === k, k); await tap(P.pg, 'hit.buoy', k); }
       await W(P.pg, () => __g1.said.some(t => /take away 3 is 9/.test(t)), null, 60000).catch(() => bad(P.label + ': the lesson does not show counting back'));
       await finish(P, 3); });
     await step('sail', async () => { P = await open(w, h, 'sail', label);
@@ -119,7 +121,7 @@ module.exports = async function (browser) {
       let q = 0;
       for (let r = 0; r < 3; r++) { await W(P.pg, q => (__g1.q || 0) > q && __g1.state === 'find', q, 60000); const a = await P.pg.evaluate(() => __g1.ask); q = await P.pg.evaluate(() => __g1.q);
         if (r === 0) { const k = await saidN(P.pg); await tap(P.pg, 'hit.label', 1); await W(P.pg, () => __g1.state === 'find'); if (!(await saidSince(P.pg, k, 'That hop is fine'))) bad(P.label + ': tapping a right hop is not explained'); }
-        await tap(P.pg, 'hit.label', 0); await typePad(P.pg, a.answer);
+        await tap(P.pg, 'hit.label', 0); await W(P.pg, () => __g1.state === 'drag'); await dragTo(P.pg, await pos(P.pg, 'hit.boat'), await pos(P.pg, 'hit.buoy', a.answer)); await typePad(P.pg, a.answer);
         await W(P.pg, n => __g1.said.some(t => t === 'Yes! ' + n + '. Thank you!'), a.answer).catch(() => bad(P.label + ': the mistake was not fixed')); }
       await finish(P, 2); });
     await step('check', async () => { P = await open(w, h, 'check', label);
