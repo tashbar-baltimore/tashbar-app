@@ -96,7 +96,7 @@ export function mount(host, opt) {
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function layout() {
     tin.position.set(narrow ? 0 : -1.0, 0, narrow ? -0.7 : 0.3); tin.scale.setScalar(1);
-    plate.position.set(solo ? (narrow ? 0 : -1.0) : narrow ? 0 : 2.75, 0, solo ? 0.3 : narrow ? 1.4 : 0.3); plate.scale.setScalar(narrow && !solo ? 0.85 : 1); tin.visible = !solo;   /* solo: only the plate, in the middle */   /* phone: in front of the tin, on the table */
+    plate.position.set(solo ? (narrow ? 0 : -1.0) : narrow ? 0 : 2.75, 0, solo ? 0.3 : narrow ? 1.65 : 0.3); plate.scale.setScalar(narrow && !solo ? 0.85 : 1); tin.visible = !solo;   /* solo: only the plate, in the middle */   /* phone: in front of the tin, on the table */
     kids.forEach((k, i) => k.m.position.set(narrow ? (i ? 1.9 : -1.9) : (i ? 3.4 : -3.4), 0.35, -3.1));
   }
   function fit() {

@@ -56,7 +56,10 @@ async function tap(id) {
   if (R.op === '+' && id === 'tray') { GAME.phase = 'busy'; await K.setOne(); R.did++; if (R.did < R.b) { open(); return; } K.traySpot(false); FR.lock(true); await FR.say(FR.Word(R.b) + ' more are set.'); return toSign(); }
   if (R.op === '-' && id.startsWith('it')) { GAME.phase = 'busy'; await K.eatOne(id); R.did++; if (R.did < R.b) { open(); return; } K.candySpots(false); FR.lock(true); await FR.say(FR.Word(R.b) + ' are eaten. Yum!'); return toSign(); }
 }
-async function countUp() { const list = K.items(); await K.bumpAll(list, i => FR.say(FR.Word(i + 1) + (i === list.length - 1 ? '.' : ','), { noRepeat: true })); }
+async function countUp() { const list = K.items();   /* count ON, never from one */
+  if (R.op === '+') { await FR.say('Start at ' + FR.word(R.a) + '.', { noRepeat: true }); const more = list.slice(R.a); await K.bumpAll(more, i => FR.say(FR.Word(R.a + 1 + i) + (i === more.length - 1 ? '.' : ','), { noRepeat: true })); }
+  else if (list.length > 5) { await K.bumpAll(list.slice(0, 5)); await FR.say('Five,', { noRepeat: true }); const more = list.slice(5); await K.bumpAll(more, i => FR.say(FR.Word(6 + i) + (i === more.length - 1 ? '.' : ','), { noRepeat: true })); }
+  else await K.bumpAll(list, i => FR.say(FR.Word(i + 1) + (i === list.length - 1 ? '.' : ','), { noRepeat: true })); }
 async function drop(tile, slot) {
   NK.unlock(); if (GAME.phase !== 'answer') return; const v = tile.dataset.v;
   if (R.step === 'sign' && slot.id === 'ss') {
@@ -84,9 +87,11 @@ FR.game({
   demo: async F => {
     R = { op: '+', a: 4, b: 2 }; K.setCups(4, 2); ['sa', 'ss', 'sb', 'sc'].forEach(id => fill(id, '')); fill('sa', U5.num(4)); await F.say('Four cups. Two more are set. Watch me.'); K.traySpot(true);
     for (let j = 0; j < 2; j++) { await F.handTo(document.querySelector('.tspot[data-id="tray"]')); await F.handTap(); await K.setOne(); }
-    fill('sb', U5.num(2)); tiles(['+', '-']); await F.handDrag(document.querySelector('.tile[data-v="+"]'), $('ss')); fill('ss', SG['+']);
-    tiles(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']); await F.say('Count: four, five, six.'); await F.handDrag(document.querySelector('.tile[data-v="6"]'), $('sc')); fill('sc', U5.num(6)); F.handHide(); $('tiles').hidden = true;
+    fill('sb', U5.num(2)); tiles(['+', '-']); await F.say('More are set. That is plus.'); await F.handDrag(document.querySelector('.tile[data-v="+"]'), $('ss')); fill('ss', SG['+']);
+    tiles(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']); await F.say('Start at four. Five, six.'); await F.handDrag(document.querySelector('.tile[data-v="6"]'), $('sc')); fill('sc', U5.num(6)); F.handHide(); $('tiles').hidden = true;
     await F.say('Four plus two is six!');
+    K.setCandies(7); ['sa', 'ss', 'sb', 'sc'].forEach(id => fill(id, '')); fill('sa', U5.num(7)); await F.say('Seven candies. Two are eaten.'); await K.eatOne(); await K.eatOne();
+    fill('sb', U5.num(2)); fill('ss', SG['-']); await F.say('Eaten is minus. Five are left.'); fill('sc', U5.num(5));
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'You build every story! Great work!' : 'Good work! Let\'s play once more.'

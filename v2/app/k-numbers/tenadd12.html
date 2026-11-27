@@ -49,7 +49,7 @@ async function check() {
     await K.bumpAll(extra, i => FR.say(FR.Word(6 + i) + (i === extra.length - 1 ? '.' : ','), { noRepeat: true })); }
   await FR.say(have < k ? 'Put up ' + FR.word(k - have) + ' more.' : 'Put ' + FR.word(have - k) + ' down.'); open();
 }
-const PLAN = [[6, 3], [5, 4], [7, 2], [5, 2], [8, 1], [4, 4]];
+const PLAN = [[6, 3], [5, 3], [7, 2], [5, 2], [6, 1], [4, 4]];   /* answers 9, 8, 9, 7, 7, 8 */
 function play(F, i) {
   return new Promise(async res => {
     const [a, b] = PLAN[i]; R = { a, b, step: 'fill', misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true); $('hh').hidden = $('check').hidden = true;
@@ -62,9 +62,10 @@ FR.game({
   hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""></div>',
   init() { K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = U5.hands(0, true); $('hh').appendChild(H.el); K.onTap = id => { if (id === 'plate') tapPlate(); }; $('check').addEventListener('click', check); },
   demo: async F => {
-    R = { a: 5, b: 3 }; K.setTin(5); K.setExtra(3); sum(false); await F.say('Five plus three. Watch me.');
+    R = { a: 5, b: 3 }; K.setTin(5); K.setExtra(3); sum(false); $('hh').hidden = $('check').hidden = false; await F.say('Five plus three. Watch me.');
     for (let j = 0; j < 3; j++) { await F.handTo(document.querySelector('.tspot[data-id="plate"]')); await F.handTap(); await K.moveOne(); } F.handHide();
-    await F.say('A full row is five. Then six, seven, eight.'); sum(true); await F.say('Five plus three is eight!');
+    await F.say('A full row is five. Then six, seven, eight.'); await F.handTo(H.el, .3, .6); for (let k = 1; k <= 8; k++) { H.set(k); } NK.sound.pop(); await F.handTap();
+    await F.handTo($('check')); await F.handTap(); F.handHide(); sum(true); await F.say('Five plus three is eight!'); H.set(0);
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'You see the tens! Great adding!' : 'Good adding! Let\'s play once more.'

@@ -52,7 +52,7 @@ const PLAN = [{ kind: 'five', n: 7 }, { kind: 'ten', n: 6 }, { kind: 'fact', a: 
 function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true); $('pic').hidden = true;
-    const fr = R.kind !== 'fact'; $('tf').hidden = !fr; $('fact').hidden = fr; if (fr) TF.set(R.n); requestAnimationFrame(() => K.fit());
+    const fr = R.kind !== 'fact'; $('tf').hidden = !fr; $('fact').hidden = fr; if (fr) { TF.set(R.n); K.rows(R.n); } else K.empty(); requestAnimationFrame(() => K.fit());
     if (R.kind === 'five') { await F.say(F.Word(R.n) + ' in the ten-frame.'); open(); await F.say(F.Word(R.n) + ' is five and how many? Show me.', { repeat: 'A full row is five. How many more?' }); }
     else if (R.kind === 'ten') { await F.say(F.Word(R.n) + ' in the ten-frame.'); open(); await F.say('How many more make ten? Show me.', { repeat: 'Count the empty boxes. Show me.' }); }
     else { $('fact').innerHTML = '<span class="n">' + U5.num(R.a) + '</span><b class="' + (R.op === '+' ? 'plus">+' : 'minus">−') + '</b><span class="n">' + U5.num(R.b) + '</span><b>=</b><b class="q">?</b>';
@@ -62,9 +62,9 @@ function play(F, i) {
 FR.game({
   id: 'u12-review', title: 'Review Time', rounds: 6,
   hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""><img src="art/shmuli-happy.png" alt=""></div>',
-  init() { K = mount($('world'), { band }); K.setCups(0, 0); TF = U5.frame(0, false); $('tf').appendChild(TF.el); H = U5.hands(0, true); $('hh').appendChild(H.el); $('check').addEventListener('click', check); },
+  init() { K = mount($('world'), { band }); K.empty(); TF = U5.frame(0, false); $('tf').appendChild(TF.el); H = U5.hands(0, true); $('hh').appendChild(H.el); $('check').addEventListener('click', check); },
   demo: async F => {
-    R = { kind: 'demo' }; $('tf').hidden = false; $('fact').hidden = true; TF.set(6); await F.say('Review time! Watch me. Six in the ten-frame.');
+    R = { kind: 'demo' }; $('tf').hidden = false; $('fact').hidden = true; TF.set(6); K.rows(6); await F.say('Review time! Watch me. Six in the ten-frame.');
     await F.say('A full row is five, and one more.'); await F.handTo(H.el, .3, .6); await F.handTap(); H.set(1); NK.sound.pop(); await F.handTo($('check')); await F.handTap(); F.handHide();
     await F.say('Six is five and one!'); H.set(0);
   },

@@ -29,11 +29,11 @@ export function mount(host, opt) {
   function tex(files, fn) { const list = [].concat(files); (function next(i) { if (i >= list.length) return; loader.load('art/' + list[i], t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; fn(t); }, undefined, () => next(i + 1)); })(0); }
   const rep = (t, x, y) => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(x, y); return t; };
 
-  /* the sukkah all around (painted, order N11; the garden until it comes), a wooden floor, the table */
+  /* the Shabbos table all around (painted, order N11; the garden until it comes), a wooden floor, the table */
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), new THREE.MeshStandardMaterial({ color: '#D8C3A0', roughness: 0.9 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -2.6; floor.receiveShadow = true; scene.add(floor);
   if (!FAST) tex(['shabbos-panorama.jpg', 'kitchen-panorama.jpg'], t => { t.wrapS = THREE.MirroredRepeatWrapping; t.repeat.x = -2; t.offset.x = 1; const R = 24, span = 2.8, H = R * span / 2 * t.image.height / t.image.width;
     const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, color: '#F2F2F2' }));
-    back.position.set(0, H * 0.4 - 2.6, 16); scene.add(back); });   /* the sukkah walls stand close behind the table */
+    back.position.set(0, H * 0.4 - 2.6, 16); scene.add(back); });   /* the Shabbos table walls stand close behind the table */
   const TW = 9.5, TD = 4.6;
   const woodMat = new THREE.MeshStandardMaterial({ color: '#C79A68', roughness: 0.6 }); tex(['counter-wood.jpg', 'table-wood.jpg'], t => { woodMat.map = rep(t, 2, 1); woodMat.color.set('#FFFFFF'); woodMat.needsUpdate = true; });
   const top = new THREE.Mesh(new THREE.BoxGeometry(TW, 0.25, TD), woodMat); top.position.y = -0.13; top.receiveShadow = true; top.castShadow = true; scene.add(top);
@@ -43,7 +43,7 @@ export function mount(host, opt) {
 
 
   /* the Shabbos table at the back: two silver candlesticks (still, a soft glow) and a challah under a blue cover */
-  const silverM = new THREE.MeshStandardMaterial({ color: '#F2F5FA', roughness: 0.25, metalness: 0.1, emissive: '#8A94A6', emissiveIntensity: 0.35 });
+  const silverM = new THREE.MeshStandardMaterial({ color: '#B9C3D2', roughness: 0.25, metalness: 0.15, emissive: '#4A5466', emissiveIntensity: 0.2 });   /* darker silver: stands out on the white cloth */
   const deco = new THREE.Group(); scene.add(deco);
   [-1, 1].forEach(s => { const g = new THREE.Group(); g.position.set(s * 0.45 - 1.75, 0, -1.9); deco.add(g);
     const base = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.1, 24), silverM); base.position.y = 0.05; g.add(base);
@@ -69,7 +69,7 @@ export function mount(host, opt) {
   const ROWX = 0.72, ROWZ = 0.5, mid = new THREE.Vector3(0, 0.02, 0.3);
   const slotPos = j => new THREE.Vector3(mid.x + ((j % 5) - 2) * ROWX, mid.y, mid.z + (j < 5 ? -ROWZ : ROWZ));
   const tray = new THREE.Group(); scene.add(tray);   /* where new cups wait (right) */
-  { const t = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.06, 1.1), silverM); t.position.y = 0.03; t.castShadow = true; tray.add(t); }
+  { const t = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.06, 1.1), new THREE.MeshStandardMaterial({ color: '#C8A064', roughness: 0.6 }));   /* a wooden tray */ t.position.y = 0.03; t.castShadow = true; tray.add(t); }
   const bowl = new THREE.Group(); scene.add(bowl);   /* where eaten candies go (left) */
   { const b = new THREE.Mesh(new THREE.SphereGeometry(0.75, 32, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#FFD3B0', roughness: 0.4, side: THREE.DoubleSide })); b.scale.set(1, 0.45, 1); b.position.y = 0.34; b.castShadow = true; bowl.add(b); }
   let items = [], waitingCups = [], eaten = [], kind = 'cup';
@@ -89,7 +89,7 @@ export function mount(host, opt) {
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function layout() {
     kids.forEach((m, i) => m.position.set((i ? 1 : -1) * (narrow ? 1.7 : 3.4), 0.55, -3.0));
-    tray.position.set(narrow ? 1.25 : 3.0, 0, narrow ? 1.7 : 0.3); bowl.position.set(narrow ? -1.25 : -3.0, 0, narrow ? 1.7 : 0.3); tray.scale.setScalar(narrow ? 0.8 : 1); bowl.scale.setScalar(narrow ? 0.8 : 1);
+    tray.position.set(narrow ? 1.25 : 3.3, 0, narrow ? 1.7 : 1.45);   /* low on the right, clearly apart from the rows */ bowl.position.set(narrow ? -1.25 : -3.3, 0, narrow ? 1.7 : 1.45); tray.scale.setScalar(narrow ? 0.8 : 1); bowl.scale.setScalar(narrow ? 0.8 : 1);
     deco.visible = !narrow;   /* the phone shows only the story: calm */ waitingCups.forEach((c, j) => c.position.copy(trayPos(j)));
   }
   const trayPos = j => tray.position.clone().add(new THREE.Vector3(((j % 3) - 1) * 0.42 * tray.scale.x, 0.06, (j < 3 ? -0.22 : 0.22) * tray.scale.x));
@@ -119,6 +119,8 @@ export function mount(host, opt) {
       const g = eaten.length, to = bowl.position.clone().add(new THREE.Vector3(((g % 3) - 1) * 0.34 * bowl.scale.x, 0.12 + Math.floor(g / 3) * 0.05, ((Math.floor(g / 3) % 2) ? 0.2 : -0.15) * bowl.scale.x)); eaten.push(c);
       const from = c.position.clone(); await tween(450, e => { c.position.lerpVectors(from, to, e); c.position.y += Math.sin(Math.PI * e) * 0.8; }); c.position.copy(to); return true; },
     items: () => items.slice(), eatenList: () => eaten.slice(), clear,
+    empty() { clear(); tray.visible = bowl.visible = false; },
+    rows(n) { api.empty(); for (let j = 0; j < n; j++) { const c = cupMesh(); c.position.copy(slotPos(j)); scene.add(c); items.push(c); } },   /* n cups in rows of five: a ten-frame on the table */
     async bumpAll(list, say) { for (let i = 0; i < list.length; i++) { const o = list[i], y0 = o.position.y; await tween(240, (e, t) => { o.position.y = y0 + Math.sin(Math.PI * t) * 0.35; }); o.position.y = y0; if (say) await say(i); } },
     fit, destroy() { alive = false; renderer.dispose(); }
   };

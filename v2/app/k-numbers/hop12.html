@@ -58,7 +58,7 @@ async function stone(n, el) {
     sent(true); P.petals(n); await FR.yes(el, FR.Word(R.a) + (R.op === '+' ? ' plus ' : ' minus ') + FR.word(R.b) + ' is ' + FR.word(n) + '!'); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops(el); R.misses++; await FR.say('One hop at a time. Look, the next stone.'); const t = next(); P.el(t).classList.add('hint'); P.focus(t); setTimeout(() => P.el(t).classList.remove('hint'), 2500); open();
 }
-const PLAN = [[6, '+', 3], [4, '+', 5], [8, '-', 2], [7, '+', 2], [9, '-', 3], [5, '+', 4]];
+const PLAN = [[6, '+', 3], [7, '+', 3], [8, '-', 2], [6, '+', 2], [9, '-', 3], [5, '+', 4]];   /* start with the big one; answers 9, 10, 6, 8, 6, 9 */
 function play(F, i) {
   return new Promise(async res => {
     const [a, op, b] = PLAN[i]; R = { a, op, b, done: 0, step: 'start', misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true);
