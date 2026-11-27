@@ -30,6 +30,9 @@ You are a builder on the Tashbar Baltimore learning app for the Head of School (
 - **Independent review for lessons.** Before a lesson PR, a fresh reviewer (one that did not write it) scores each lesson 1–5 on the 9 points of the HoS quality standard, against the lesson data and its full range of check questions. Ship only when every score is 4 or 5, and put the score table in the PR.
 - **Match the request, not a nearby idea.** Before building, write in one line what the HoS asked for in his words, and check the finished thing against that line (for example "K–1: only the real games, his grade, in skill order" is not "One Bite lessons on a shelf").
 
+## Visual support (HoS 2026-11-27, binding on every curriculum builder)
+Rules: `docs/VISUAL-SUPPORT.md`. When a text makes a boy picture something (places and directions, order of events, steps, cause and effect, comparisons, sizes, new objects) and a question depends on that picture, the lesson must have a visual he builds as he reads (tap, drag, label), with its anchors (compass rose and "You are here" on maps; start, end and before/after on timelines). Check every question against the text first. Every unit gets a Visual Support Plan in `docs/visual-plans/<unit id>.md` (example: `S.U08.md`); build HIGH items first. Flag book/question/fact mismatches; never pick one quietly.
+
 ## Tashbar Learning 2.0 (HoS 2026-11-22)
 - 1.0 (this app) keeps going exactly as before. 2.0 is a separate, clean app in `v2/` with its own site, https://tashbar-learning-v2.web.app. Read `v2/README.md` before touching `v2/`.
 - A 2.0 pull request changes only `v2/` and the shared `art/` library. It goes in only when a person working on 2.0 (anyone the HoS sends the 2.0 instructions to, e.g. Mrs. Khaver, Esti) has her Claude post `APPROVED FOR 2.0 — <name>` after looking at its newest look link.

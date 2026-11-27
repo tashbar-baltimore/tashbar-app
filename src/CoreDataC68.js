@@ -31,8 +31,17 @@ CORE_SKILLS.C68 = [
   ["READ.LIT.L09.11", "Old Pattern, New Story", "See how a new story follows an old journey pattern: call, guide, tests, return", { after: "READ.LIT.L09.02", std: "RL.8.9", file: "CoreDataC68H3", min: 9 }],
   ["READ.LIT.L09.12", "Book and Film", "Compare a book and its film: what each one changes, and why", { std: "RL.8.7", file: "CoreDataC68H3", min: 9 }],
   ["READ.LIT.L09.13", "What It Means to Me", "Say what a story means to you, and prove it from the text", { std: "RL.8.2", file: "CoreDataC68H3", min: 9 }],
-  ["READ.FLU.L09.03", "Give the Speech", "Deliver a speech with pace, pauses and the line people remember", { std: "SL.8.4", file: "CoreDataC68H3", min: 9 }]
+  ["READ.FLU.L09.03", "Give the Speech", "Deliver a speech with pace, pauses and the line people remember", { std: "SL.8.4", file: "CoreDataC68H3", min: 9 }],
+  ["READ.LIT.L07.30", "Archive 1: The Key on the Red String", "Read Chapter 1 and prove what the dust and the drawer show", { after: "READ.COMP.L07.01", std: "RL.6.1", file: "CoreDataC68H7", min: 12 }],
+  ["READ.COMP.L07.05", "Said or Hinted?", "Tell what a story says outright from what you must infer", { std: "RL.6.1", file: "CoreDataC68H7", min: 9 }],
+  ["READ.LIT.L07.31", "Archive 2: Proved and Guessed", "Read Chapter 2 and sort what is proved from what is guessed", { std: "RL.6.1", file: "CoreDataC68H7", min: 12 }],
+  ["READ.COMP.L07.06", "Clue + What I Know", "Make an inference and explain the clue and what you know", { std: "RL.6.1", file: "CoreDataC68H7", min: 9 }],
+  ["READ.LIT.L07.32", "Archive 3: The Light After Minchah", "Read Chapter 3 and explain each inference the reporters make", { std: "RL.6.1", file: "CoreDataC68H7", min: 12 }],
+  ["READ.COMP.L07.07", "The Best Quote", "Pick the quote that proves the whole answer best", { std: "RI.6.1", file: "CoreDataC68H7", min: 9 }],
+  ["READ.LIT.L07.33", "Archive 4: A Stakeout with Gemaras", "Read Chapter 4 and prove the answer to the mystery", { std: "RL.6.1", file: "CoreDataC68H7", min: 12 }],
+  ["READ.COMP.L07.08", "Read It Again, Closer", "Reread one paragraph to catch what a quick read missed", { std: "RL.6.4", file: "CoreDataC68H7", min: 9 }],
+  ["READ.FLU.L07.02", "Voices in the Scene", "Read dialogue so each speaker sounds like himself", { std: "RL.6.10", file: "CoreDataC68H7", min: 9 }]
 ];
 /* Data files that upgrade EXISTING skills to One Bite lessons (TLCORE.upgrade; docs/core-growth/HOW-TO-ADD-A-SKILL.md). */
 var CORE_DATA_FILES = (typeof CORE_DATA_FILES !== 'undefined' && CORE_DATA_FILES) || {};
-CORE_DATA_FILES.C68 = ['CoreDataC68H1', 'CoreDataC68H2', 'CoreDataC68H3'];
+CORE_DATA_FILES.C68 = ['CoreDataC68H1', 'CoreDataC68H2', 'CoreDataC68H3', 'CoreDataC68H7'];
