@@ -12,8 +12,8 @@ Rules: `docs/VISUAL-SUPPORT.md`. Reviewed 2026-11-27 with the New Lessons redo (
 |---|---|---|---|---|---|
 | V1 | S.SKY4.01: near things look big; the sun is the closest star | Check: order moon, sun, other stars by distance | Learn card: he lines up moon, sun, a far star, closest first | "closest" and "farthest" ends | **HIGH** (built) |
 | V2 | S.SKY4.02: the planets in order from the sun | Check: order the first four planets | Learn card: he builds M, V, E, M with tiles; then the four giants | the sun at the start | **HIGH** (built) |
-| V3 | S.SKY4.03: the phases, and where the moon sits | Practice and check on phases | Learn cards: he orders the phases, then matches where the moon sits to what we see | new moon first | **HIGH** (built) |
-| V4 | S.SKY4.03: two bulges of water, the Earth spins through both | Check: two high tides; order a beach's tides | Learn cards: he sorts where water piles up (facing side, far side), then orders one beach's day | high/low labels | **HIGH** (built) |
+| V3 | S.SKY4.03: the phases, and where the moon sits | Practice and check on phases | Learn cards: he orders the phases (tap to order). A drawn sun-Earth-moon picture would help more | new moon first | **HIGH** (built as tap-and-order; drawn picture not yet) |
+| V4 | S.SKY4.03: two bulges of water, the Earth spins through both | Check: two high tides; order a beach's tides | Learn cards: he sorts where water piles up (facing side, far side), then orders one beach's day. A drawn Earth with two bulges would help more | high/low labels | **HIGH** (built as tap-and-sort; drawn picture not yet) |
 | V5 | S.SKY4.01: 109 Earths across the sun | Check: number of Earths | Match card (number to fact). A drawn scale picture would help more | — | MEDIUM (not yet: needs a picture) |
 
 ## 3. Accuracy problems

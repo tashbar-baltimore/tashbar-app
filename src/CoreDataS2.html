@@ -163,8 +163,8 @@
       { t: 'Line up the water, *most* to *least*.', act: { type: 'order', steps: ['🌊 the seas', '🧊 the ice at the poles', '🏞️ every river and lake'],
         say: 'Put the water in order, the most first.', how: '97 cups are ocean. Most of the last 3 are ice. The little left is what we use.' } }];
     Y[1].q = 'Mistake Detective: true, or a mix-up?'; Y[1].bins = ['True', 'Mix-up'];
-    Y[1].cards = [['Rain is salty because it comes from the sea', 1], ['Salt cannot evaporate', 0], ['We can easily use about 1 cup in 100', 0], ['Most fresh water is in rivers', 1]];
-    Y[1].say = 'Mistake Detective! True, or a mix-up?'; Y[1].how = 'Think: where does the salt go? Where is most fresh water?';
+    Y[1].cards = [['Rain is salty because it comes from the sea', 1], ['Salt cannot evaporate', 0], ['Glaciers are fresh water', 0], ['Most fresh water is in rivers', 1]];
+    Y[1].say = 'Mistake Detective! True, or a mix-up?'; Y[1].how = 'Think: where does the salt go? Glaciers are snow that froze over many years.';
     Y[1].why = { q: 'Why is a glacier fresh water?', o: ['It is frozen rain and snow', 'It is frozen sea water', 'It is melted rock'], a: 'It is frozen rain and snow' };
     b.play = [Y[1], Y[0], Y[3], Y[2]];
     b.done = 'Only a *tiny* part of the earth’s water is *fresh* we can use!'; });
@@ -183,15 +183,16 @@
     b.play = [Y[2], Y[0], D[1], Y[3]];
     b.done = 'A well must reach below the *water table* to fill!'; });
   nf(BITE['SCI.LAND.L06.04'], function (b, D, Y) {
-    b.hook = { kind: 'wouldyou', pic: '🚗', t: 'Your toy car loses *one wheel*.', q: 'What would you do first?',
-      o: ['Throw it out', 'Try to fix it', 'Ask for a new one'],
-      pay: 'Fix it first! Wasting what still works is against *bal tashchis*.' };
+    b.hook = { kind: 'wouldyou', pic: '🧥', t: 'Your jacket has a small *tear*. It still fits you well.', q: 'What would you do?',
+      o: ['Get a brand-new jacket', 'Sew it up and keep wearing it', 'Put it away in a closet forever'],
+      pay: 'Sew it! Throwing out what can be *fixed* goes against *bal tashchis*.' };
     b.learn = [
       { t: 'The Torah says: do not cut down *fruit trees*.', m: { type: 'scene', e: '🌳', t: 'Devarim 20:19: even in a war, do not cut down fruit trees. Chazal learn: never waste for no reason.' } },
       { t: 'Find the *proof*: what did Hashem tell Adam?', act: D[0] },
       { who: { q: 'Is eating an *apple* bal tashchis?', o: [['Refael', 'Yes, the apple is gone'], ['Eli', 'No, it was used properly']], a: 1,
         why: 'Using something *properly* is fine. *Waste* is the problem.' } },
       { t: 'Leftovers? Put the *careful* steps in order.', act: D[1] }];
+    Y[3].why = { q: 'Why turn off the tap while you brush?', o: ['So fresh water is not wasted', 'So your teeth get cleaner', 'So you finish faster'], a: 'So fresh water is not wasted' };
     b.play = [Y[0], Y[1], Y[3], Y[4]];
     b.done = '*Bal tashchis*: we never waste. We guard Hashem’s world!'; });
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
