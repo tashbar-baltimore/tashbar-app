@@ -68,7 +68,7 @@
 
   /* ---------- the checklist: what the app can check, he must meet ---------- */
   function check(c) {
-    var t = S.piece.text, ss = sentences(t), low = ' ' + t.toLowerCase().replace(/\s+/g, ' ') + ' ';
+    var t = S.piece.text, ss = sentences(t), low = ' ' + t.toLowerCase().replace(/[“"(\[]/g, ' ').replace(/\s+/g, ' ') + ' ';   /* a word right after an opening quote or bracket still counts */
     if (c.self) return !!S.self[c.t];
     if (c.sentences) return ss.length >= c.sentences;
     if (c.words) return words(t) >= c.words;
