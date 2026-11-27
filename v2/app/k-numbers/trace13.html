@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trace It — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 13 "Teen numbers: ten and some more" (MAP.md "Trace it": he traces 11-20).
+     Two ten-frames show the number: a full ten, and the ones. The written number has two parts: the 1 (already written, it is the ten)
+     and the ones digit, a road he traces from the green dot. "Fourteen is ten and four. The one is the ten. Trace the four."
+     Going far off the road: "Stay on the road. Look at the green dot." Two slips: the hand traces it slowly, then a wider road. Twenty is a two and a zero. -->
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css">
+<style>
+.stage{ grid-template-columns:1.2fr .8fr; align-items:center; }
+.left, .right{ display:flex; align-items:center; justify-content:center; height:100%; }
+.left .panel{ width:min(56vw,74vh,560px); display:flex; align-items:center; gap:2%; }
+.left .one{ flex:0 0 38%; aspect-ratio:220/270; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:22px; box-shadow:0 6px 0 #C9D8EE; padding:6%; }
+.left .one svg{ height:100%; width:auto; } .left .road{ flex:1; aspect-ratio:220/270; } .left .tracer{ width:100%; height:100%; }
+.right .panel{ width:min(34vw,320px); display:flex; flex-direction:column; align-items:center; gap:12px; }
+.right .tf{ width:100%; } .tag{ font:900 clamp(20px,3vh,28px)/1 system-ui, sans-serif; color:#5A4A3A; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:auto auto; align-content:center; gap:18px; } .left .panel{ width:92vw; } .right .panel{ width:94vw !important; flex-direction:row; justify-content:center; } .right .tf{ width:48%; } }
+.right .panel{ width:min(38vw,360px); }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="left"><div class="panel"><div class="one" id="one"></div><div class="road" id="tp"></div></div></div>
+  <div class="right"><div class="panel" id="frames"></div></div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var TR, F1, F2, R, done, easyNext = false;
+  function hooks() { GAME.right = function () { return [{ path: TR.points() }]; }; GAME.wrong = R.misses ? null : function () { return [{ path: TR.offPath() }]; }; }
+  function show(n) { var tens = Math.floor(n / 10), ones = n % 10; $('one').innerHTML = U5.num(tens); F1.set(10); F2.set(n === 20 ? 10 : ones); }
+  function some(n) { return n === 20 ? 'Twenty is two tens!' : FR.Word(n) + ' is ten and ' + FR.word(n - 10) + '.'; }
+  async function showMe(d, ms) {
+    var hand = document.getElementById('hand'); newTracer(d, true); TR.lock(true); var pts = TR.points(); hand.style.transition = 'left .08s linear, top .08s linear';
+    await FR.handTo(TR.el.querySelector('.startdot')); var go = TR.auto(ms); var step = Math.max(1, Math.round(pts.length / (ms / 85)));
+    for (var k = 0; k < pts.length; k += step) { hand.style.left = (pts[k][0] - 20) + 'px'; hand.style.top = (pts[k][1] - 8) + 'px'; await FR.wait(85); }
+    await go; hand.style.transition = ''; FR.handHide();
+  }
+  function newTracer(d, quiet) {
+    if (TR) TR.el.remove(); TR = U5.tracer(d); $('tp').appendChild(TR.el); if (quiet) return;
+    TR.easy = R.easy; if (R.easy) TR.widen();
+    TR.onOff = async function () {
+      FR.oops($('tp')); R.misses++; GAME.phase = 'busy'; hooks();
+      if (R.misses >= 2 && !R.redemo) { R.redemo = true; FR.lock(true); await FR.say("Let's look. Watch me, slowly."); await showMe(d, 3200); R.easy = true; newTracer(d); await FR.say('Your turn. Start at the green dot.'); FR.lock(false); }
+      else { await FR.say("Let's look. Stay on the road. The green dot."); TR.rearm(); }
+      GAME.phase = 'answer'; hooks();
+    };
+    TR.onDone = async function () { GAME.phase = 'busy'; FR.lock(true); F2.glow(true); await FR.yes($('tp'), some(R.n)); F2.glow(false); var dd = done; done = null; if (dd) dd(R.misses === 0); };
+  }
+  function play(F, n, opts) {
+    return new Promise(async function (res) {
+      var d = n === 20 ? 0 : n % 10; R = { n: n, misses: 0, easy: !!opts.easy }; show(n); newTracer(d); TR.lock(true); GAME.phase = 'busy'; F.lock(true);
+      if (n === 20) await F.say('Twenty is two tens. A two and a zero.'); else { await F.say(some(n)); await F.say('The one is the ten. Trace the ' + F.word(d) + '.', { repeat: 'Trace the ' + F.word(d) + '. Start at the green dot.' }); }
+      if (n === 20) await F.say('Trace the zero.', { repeat: 'Trace the zero. Start at the green dot.' });
+      done = function (first) { easyNext = R.misses >= 2; res(first); }; GAME.phase = 'answer'; F.lock(false); TR.lock(false); hooks();
+    });
+  }
+  FR.game({
+    id: 'u13-trace', title: 'Trace It', rounds: 6,
+    hero: '<div id="herotr" style="width:50%;margin:4% auto 0;aspect-ratio:220/270"></div>',
+    init: function () {
+      var t = U5.tracer(3); t.el.style.cssText = 'width:100%;height:100%;pointer-events:none'; $('herotr').appendChild(t.el); t.auto(1);
+      F1 = U5.frame(10, false); F2 = U5.frame(0, false); $('frames').appendChild(F1.el); $('frames').appendChild(F2.el);
+    },
+    reset: function () { easyNext = false; },
+    demo: async function (F) {
+      R = { n: 13, misses: 0 }; show(13); await F.say('Thirteen is ten and three. Watch me.'); await F.say('The one is the ten. I trace the three.');
+      await showMe(3, 1800); await F.yes($('tp'), 'Ten and three, thirteen!');
+    },
+    round: function (F, i) { var n = [14, 12, 16, 18, 15, 20][i], e = easyNext; easyNext = false; return play(F, n, { easy: e }); }
+  });
+})();
+</script>
+</body>
+</html>

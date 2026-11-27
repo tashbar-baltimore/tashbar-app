@@ -56,7 +56,12 @@
   };
 
   /* ---------- number words ---------- */
-  NK.word = function (n) { return ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][n] || String(n); };
+  NK.word = function (n) {   /* number words to one hundred (Units 13-14: teen numbers, counting to 100) */
+    var w = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+    if (n >= 0 && n < 20 && n === Math.floor(n)) return w[n];
+    var T = { 2: 'twenty', 3: 'thirty', 4: 'forty', 5: 'fifty', 6: 'sixty', 7: 'seventy', 8: 'eighty', 9: 'ninety' };
+    if (n >= 20 && n < 100 && n === Math.floor(n)) return T[Math.floor(n / 10)] + (n % 10 ? ' ' + w[n % 10] : '');
+    if (n === 100) return 'one hundred'; return String(n); };
   NK.Word = function (n) { var w = NK.word(n); return w.charAt(0).toUpperCase() + w.slice(1); };
 
   /* ---------- art (original drawings, glossy 3D cartoon style) ----------

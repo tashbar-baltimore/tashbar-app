@@ -48,7 +48,10 @@ window.NK_UNITS = [
     ['u12-opener', 'opener12.html', 'book', 'Learn it'], ['u12-story', 'story12.html', 'cards', 'Story builder'], ['u12-hop', 'hop12.html', 'hand', 'Hop on!'],
     ['u12-tenadd', 'tenadd12.html', 'hand', 'Ten-frame add'], ['u12-mistake', 'mistake12.html', 'glass', 'Find the mistake'],
     ['u12-review', 'review12.html', 'towel', 'Review time'], ['u12-check', 'check12.html', 'trophy', 'Show me'] ] },
-  { n: 13, name: 'Teen numbers', say: 'Unit thirteen. Ten and some more.', stops: [] },
+  { n: 13, name: 'Teen numbers', say: 'Unit thirteen. Ten and some more.', stops: [
+    ['u13-opener', 'opener13.html', 'book', 'Learn it'], ['u13-build', 'build13.html', 'hand', 'Ten and some more'], ['u13-bundle', 'bundle13.html', 'hand', 'Bundle it'],
+    ['u13-race', 'race13.html', 'cards', 'Path race to 20'], ['u13-trace', 'trace13.html', 'book', 'Trace it'], ['u13-mistake', 'mistake13.html', 'glass', 'Find the mistake'],
+    ['u13-review', 'review13.html', 'towel', 'Review time'], ['u13-check', 'check13.html', 'trophy', 'Show me'] ] },
   { n: 14, name: 'Counting to 100', say: 'Unit fourteen. Counting to one hundred.', stops: [] },
   { n: 15, name: 'Graduation', say: 'Graduation!', stops: [] }
 ];
