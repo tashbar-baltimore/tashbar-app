@@ -48,6 +48,7 @@ function page(){ const D=Y.d;
   h+=`<div class="ycs"><h4>📝 Worksheets</h4><div class="soft">Upload a worksheet (a PDF or a photo) or write one here. The boys write, draw and type right on it, then hand it in. Assign it like a lesson, or put it in a bucket.</div>
   <div class="row"><button data-yc="upload">⬆️ Upload a worksheet</button><button data-yc="write">✍️ Write a worksheet</button><button data-sx="les">📝 Build a quiz lesson</button></div>
   ${Y.sheets.filter(w=>w.mine).slice(0,30).map(w=>`<div class="fix"><span><b>${esc(w.title)}</b> <small style="color:var(--soft)">· ${w.pages} page${w.pages===1?'':'s'}${w.kind==='text'?' · written here':''}</small></span><span><button class="q" data-yc="work" data-id="${esc(w.id)}">See their work</button> <button class="q" data-yc="delsheet" data-id="${esc(w.id)}">Remove</button></span></div>`).join('')}</div>`;
+  h+=`<div class="ycs"><h4>🔑 Who gets what, when</h4><div class="soft">During the afternoon everything is shut except class work and the bucket. Open parts of the app for your boys at set times (for example: after 3:00, boys who finished their core get the Canteen and Chavrusa duels). You can also take something away from one boy until a day you pick.</div><div class="row"><button data-yc="acc">Open the panel</button></div></div>`;
   h+=`<div class="ycs"><h4>📚 Independent Study buckets</h4><div class="soft">Each boy's daily list for Independent Study: core things he must do (any order), then add-ons (electives, trades, extras) that open once his core is done. It stays the same every day until you change it.</div><div class="row"><button data-yc="bkt">Set up buckets</button></div></div>`;
   if(!D.classes.length) h+=`<div class="ycs"><h4>You have no classes yet</h4><p class="soft">Make a class first (its name, subject and boys), then come back here to say which Teacher Time it is.</p><div class="row"><button data-sx="cls">👥 Make a class</button></div></div>`;
   h+=D.classes.map(c=>{ const todayW=c.assigned.find(a=>a.date===D.today), next=c.assigned.filter(a=>a.date>D.today);
@@ -117,6 +118,32 @@ function editForm(){ const E2=Y.edit, c=Y.d.classes.find(x=>x.id===E2.id)||{sids
     <div class="sec"><h3>Or add one exact lesson</h3><div class="sxf"><label>Find a lesson<input id="yc-lq" value="${esc(E2.lq||'')}" placeholder="Type at least 2 letters"></label></div>
     ${found.length?`<div class="sxpick">${found.map(x=>`<div class="fix"><span>${esc(x[1])}</span><span><button class="q" data-yc="blesson" data-part="core" data-id="${esc(x[0])}">+ Core</button> <button class="q" data-yc="blesson" data-part="addons" data-id="${esc(x[0])}">+ Add-on</button></span></div>`).join('')}</div>`:''}</div>
     <button class="big a" data-yc="savebkt" ${Y.busy||!E2.sids.length?'disabled':''}>${E2.core.length?'Save for '+E2.sids.length+' boy'+(E2.sids.length===1?'':'s'):'Take the bucket away from '+E2.sids.length+' boy'+(E2.sids.length===1?'':'s')}</button> <button class="q" data-yc="cancel">Cancel</button>`; }
+  if(E2.kind==='acc'){ const A2=Y.acc; if(!A2) return '<p>Loading…</p>';
+    const dn=id=>{ const d=A2.doors.find(x=>x.id===id); return d?d.icon+' '+d.name:id; }, DY=['','Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const who=r=>r.classId?(r.cls||'a class'):(r.sids.length+' boy'+(r.sids.length===1?'':'s'));
+    let h2=`<div class="sec"><h3>Opening times</h3>`;
+    h2+=A2.rules.length?A2.rules.map(r=>`<div class="fix"><span><b>${esc(h12(r.from))}–${esc(h12(r.to))}</b> ${esc((r.days||[]).map(d=>DY[d]).join(' '))} · ${esc(who(r))}${r.when==='core'?' · <b>after their core is done</b>':''}<br><small style="color:var(--soft)">${r.doors.map(dn).map(esc).join(' · ')} · by ${esc(r.by)}</small></span>${r.mine||Y.d.me.head?`<span><button class="q" data-yc="editrule" data-id="${esc(r.id)}">Change</button> <button class="q" data-yc="delrule" data-id="${esc(r.id)}">Remove</button></span>`:''}</div>`).join(''):'<p class="soft" style="color:var(--soft)">No opening times yet. In the afternoon, only class work and the bucket are open.</p>';
+    h2+=`<div class="row"><button class="q" data-yc="newrule">+ New opening time</button></div></div>`;
+    h2+=`<div class="sec"><h3>Taken away</h3>`;
+    h2+=A2.takeaways.length?A2.takeaways.map(t=>`<div class="fix"><span><b>${esc(t.names.join(', '))}</b> · ${t.doors.map(dn).map(esc).join(' · ')}<br><small style="color:var(--soft)">until ${esc(new Date(t.until).toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))}${t.why?' · '+esc(t.why):''} · by ${esc(t.by)}</small></span>${t.mine||Y.d.me.head?`<button class="q" data-yc="giveback" data-id="${esc(t.id)}">Give it back now</button>`:''}</div>`).join(''):'<p class="soft" style="color:var(--soft)">Nothing is taken away.</p>';
+    h2+=`<div class="row"><button class="q" data-yc="newnox">− Take something away from a boy</button></div></div>`;
+    return h2+`<button class="q" data-yc="cancel">Done</button>`; }
+  if(E2.kind==='rule'){ const A2=Y.acc, R=E2.r, DY=['','Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    return `<p class="soft" style="color:var(--soft)">Pick what opens, when, and for whom. Outside the afternoon schedule everything is open anyway. (Torah Tracks, music, Talk to my Rebbe and My profile open with "The whole app".)</p>
+    <div class="sec"><h3>What opens</h3><div class="ycdays">${A2.doors.filter(d=>d.rule).map(d=>`<button class="q ${R.doors.includes(d.id)?'on':''}" data-yc="rdoor" data-id="${esc(d.id)}">${R.doors.includes(d.id)?'✓ ':''}${d.icon} ${esc(d.name)}</button>`).join('')}</div></div>
+    <div class="sec"><h3>When</h3><div class="ycdays">${[1,2,3,4,5,7].map(d=>`<button class="q ${R.days.includes(d)?'on':''}" data-yc="rday" data-d="${d}">${DY[d]}</button>`).join('')}</div>
+    <div class="row" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px"><input type="time" id="yc-rf" value="${esc(R.from)}"> to <input type="time" id="yc-rt" value="${esc(R.to)}"></div>
+    <div class="ycdays" style="margin-top:6px"><button class="q ${R.when==='core'?'on':''}" data-yc="rwhen" data-v="core">Only boys who finished their core</button><button class="q ${R.when!=='core'?'on':''}" data-yc="rwhen" data-v="any">Every boy</button></div></div>
+    <div class="sec"><h3>For whom</h3><div class="ycdays">${A2.classes.map(c=>`<button class="q ${R.classId===c.id?'on':''}" data-yc="rcls" data-id="${esc(c.id)}">${R.classId===c.id?'✓ ':''}${esc(c.name)}</button>`).join('')}<button class="q ${!R.classId?'on':''}" data-yc="rcls" data-id="">Chosen boys</button></div>
+    ${R.classId?'':`<div class="tmboys">${A2.boys.map(b=>`<button class="${R.sids.includes(b.id)?'on':''}" data-yc="rboy" data-id="${esc(b.id)}">${R.sids.includes(b.id)?'✓ ':''}${esc(b.name)}</button>`).join('')}</div>`}</div>
+    <button class="big a" data-yc="saverule" ${Y.busy?'disabled':''}>Save</button> <button class="q" data-yc="backacc">Cancel</button>`; }
+  if(E2.kind==='nox'){ const A2=Y.acc, N=E2.n;
+    return `<p class="soft" style="color:var(--soft)">Take away one or more parts of the app from a boy (or a few boys). It comes back by itself at the time you pick. This holds all day, not only in the afternoon.</p>
+    <div class="sec"><h3>Which boys</h3><div class="tmboys">${A2.boys.map(b=>`<button class="${N.sids.includes(b.id)?'on':''}" data-yc="nboy" data-id="${esc(b.id)}">${N.sids.includes(b.id)?'✓ ':''}${esc(b.name)}</button>`).join('')||'<p class="soft">You have no boys in your classes yet.</p>'}</div></div>
+    <div class="sec"><h3>What to take away</h3><div class="ycdays">${A2.doors.filter(d=>d.id!=='all').map(d=>`<button class="q ${N.doors.includes(d.id)?'on':''}" data-yc="ndoor" data-id="${esc(d.id)}">${N.doors.includes(d.id)?'✓ ':''}${d.icon} ${esc(d.name)}</button>`).join('')}</div></div>
+    <div class="sec"><h3>Until</h3><div class="ycdays">${[['Tomorrow morning',1],['In 2 days',2],['In 3 days',3],['In a week',7]].map(o=>`<button class="q ${N.days===o[1]?'on':''}" data-yc="ndays" data-v="${o[1]}">${o[0]}</button>`).join('')}</div></div>
+    <div class="sxf"><label>Why (only staff see this; optional)<input id="yc-nwhy" value="${esc(N.why||'')}" maxlength="120"></label></div>
+    <button class="big a" data-yc="savenox" ${Y.busy||!N.sids.length||!N.doors.length?'disabled':''}>Take it away</button> <button class="q" data-yc="backacc">Cancel</button>`; }
   if(E2.kind==='settings'){ const st=E2.s;
     return `<p class="soft" style="color:var(--soft)">Only the Head of School can change these. They are the school's times, Monday to Thursday.</p>
     <div class="sec"><h3>Who it is on for</h3><div class="ycdays">${[['off','Off: nobody'],['test','Test boys only'],['on','Every boy in a class']].map(o=>`<button class="q ${st.live===o[0]?'on':''}" data-yc="live" data-v="${o[0]}">${o[1]}</button>`).join('')}</div></div>
@@ -208,6 +235,21 @@ document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closes
   if(a==='blesson'&&E2){ E2[b.dataset.part].push({t:'lesson',id,name:Y.catMap[id]||id}); toast('Added.'); return render(); }
   if(a==='bdel'&&E2){ E2[b.dataset.part].splice(+b.dataset.i,1); return render(); }
   if(a==='savebkt'&&E2) return act('ycSaveBucket',[E2.sids,E2.core,E2.addons],r=>{ Y.bk=r; toast(E2.core.length?'Saved for '+E2.sids.length+' boy'+(E2.sids.length===1?'':'s')+'.':'Bucket taken away.'); E2.sids=[]; E2.core=[]; E2.addons=[]; });
+  if(a==='acc'){ Y.edit={kind:'acc',title:'🔑 Who gets what, when'}; render(); return run('ycAccess',S.token).then(r=>{ Y.acc=r; render(); }).catch(e2=>{ Y.err=msg(e2); render(); }); }
+  if(a==='backacc'){ Y.edit={kind:'acc',title:'🔑 Who gets what, when'}; return render(); }
+  if(a==='newrule'){ const c=(Y.acc.classes[0]||{}).id||''; Y.edit={kind:'rule',title:'New opening time',r:{doors:[],days:[1,2,3,4],from:'15:00',to:'15:30',when:'core',classId:c,sids:[]}}; return render(); }
+  if(a==='editrule'){ const r=Y.acc.rules.find(x=>x.id===id); if(r) Y.edit={kind:'rule',title:'Change opening time',r:{id:r.id,doors:r.doors.slice(),days:(r.days||[1,2,3,4]).slice(),from:r.from,to:r.to,when:r.when,classId:r.classId,sids:r.sids.slice()}}; return render(); }
+  const tog=(arr,v)=>{ const i=arr.indexOf(v); if(i<0) arr.push(v); else arr.splice(i,1); };
+  if(E2&&E2.kind==='rule'){ const R=E2.r, keep=()=>{ const f=document.getElementById('yc-rf'), t=document.getElementById('yc-rt'); if(f) R.from=f.value; if(t) R.to=t.value; };
+    if(a==='rdoor'){ keep(); tog(R.doors,id); return render(); } if(a==='rday'){ keep(); tog(R.days,+b.dataset.d); return render(); } if(a==='rwhen'){ keep(); R.when=b.dataset.v; return render(); }
+    if(a==='rcls'){ keep(); R.classId=id; return render(); } if(a==='rboy'){ keep(); tog(R.sids,id); return render(); }
+    if(a==='saverule'){ keep(); return act('ycSaveRule',[R],r=>{ Y.acc=r; Y.edit={kind:'acc',title:'🔑 Who gets what, when'}; toast('Saved.'); }); } }
+  if(a==='delrule'){ if(!confirm('Remove this opening time?')) return; return act('ycDeleteRule',[id],r=>{ Y.acc=r; }); }
+  if(a==='newnox'){ Y.edit={kind:'nox',title:'Take something away',n:{sids:[],doors:[],days:1,why:''}}; return render(); }
+  if(E2&&E2.kind==='nox'){ const N=E2.n, keep=()=>{ const w=document.getElementById('yc-nwhy'); if(w) N.why=w.value; };
+    if(a==='nboy'){ keep(); tog(N.sids,id); return render(); } if(a==='ndoor'){ keep(); tog(N.doors,id); return render(); } if(a==='ndays'){ keep(); N.days=+b.dataset.v; return render(); }
+    if(a==='savenox'){ keep(); const d=new Date(); d.setDate(d.getDate()+N.days); d.setHours(7,0,0,0); return act('ycTakeAway',[{sids:N.sids,doors:N.doors,until:d.getTime(),why:N.why}],r=>{ Y.acc=r; Y.edit={kind:'acc',title:'🔑 Who gets what, when'}; toast('Taken away.'); }); } }
+  if(a==='giveback') return act('ycGiveBack',[id],r=>{ Y.acc=r; toast('Given back.'); });
   if(a==='settings'){ Y.edit={kind:'settings',title:'School afternoon schedule',s:JSON.parse(JSON.stringify(Y.d.settings))}; return render(); }
   if(a==='live'&&E2){ E2.s.live=b.dataset.v; return render(); }
   if(a==='savesettings'&&E2) return act('ycSaveSettings',[{live:E2.s.live,periods:E2.s.periods}],()=>{ Y.edit=null; toast('Saved.'); load(); });

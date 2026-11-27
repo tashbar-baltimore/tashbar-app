@@ -131,6 +131,7 @@ function ycMine_(sid, session) {
     if (session && (!ov || Number(session.start) > Number(ov.j.seq))) return undefined;   /* a teacher's live class is newer: it wins (both stamped with the real clock) */
     if (ov && ov.j.mode === 'free') return null;   /* Free Play: the app is open as usual */
     if (!ov && st.k !== 'IS' && st.skills) {
+      if (ycOpenFor_(sid, now, st.rows, false).indexOf('all') >= 0) return null;   /* a rule opened the whole app */
       var skills = st.skills, lessons = [];
       skills.forEach(function (id) { if (/^TCH\./.test(id) && typeof crLessonBody_ === 'function') { var b = crLessonBody_(id); if (b) lessons.push(b); } });
       var nm = skills.length === 1 ? (st.asg.j.names && st.asg.j.names[skills[0]]) || (lessons[0] && lessons[0].title) || skills[0] : st.cls.name;
@@ -142,6 +143,7 @@ function ycMine_(sid, session) {
     /* Independent Study (the period itself, an empty Teacher Time, or "Independent Study now"): his bucket list.
        A boy with no bucket (or nothing in it he can do): his app is as usual. */
     var B = ycBucketNow_(sid, st, now); if (!B) return null;
+    if (ycOpenFor_(sid, now, st.rows, B.view.complete).indexOf('all') >= 0) return null;   /* a rule opened the whole app (e.g. after his core) */
     return { id: 'yc:' + st.date + ':IS:' + B.sig, skill: B.skills[0], skills: B.skills, lessons: [], clsName: 'Independent Study', name: 'Independent Study',
       subj: '', by: B.by, until: ov ? Math.min(Number(ov.j.until), st.until) : st.until, now: now,
       yc: { k: 'IS', label: 'Independent Study', cls: 'Your bucket list', next: st.next, why: st.k !== 'IS' ? (ov ? 'now' : 'empty') : '' }, bucket: B.view,
@@ -430,9 +432,14 @@ function ycSheetReopen(token, id, sid) {
    Any teacher can also TAKE A DOOR AWAY from a boy until a day and time (it comes back by itself); that holds all day, not only in the afternoon.
    Rules: kind 'acc' in MS_YC. Take-aways: kind 'nox' in MS_YC, with a small list in Script Properties (YC.NOX) so a boy with none costs nothing. */
 YC.NOX = 'yc_nox_v1';
-YC.DOORS = [];   /* filled below: [id, name, icon] */
+/* [id, name, icon, can a rule open it during the afternoon?]. 'all' = the whole app (the lock lifts). The page side (ClassMode.html DOORS)
+   knows how each one is opened. Torah Tracks, music, Talk to my Rebbe and My profile can only be TAKEN AWAY (they open with the whole app). */
+YC.DOORS = [['all', 'The whole app', '🌐', 1], ['canteen', 'Canteen', '🥪', 1], ['store', 'Store', '🛍️', 1], ['arena', 'Chavrusa duels', '⚔️', 1],
+  ['games', 'Mistake Detective & Kodesh Quest', '🕵️', 1], ['blockbuilders', 'Block Builders workbook', '🧱', 1], ['chumashlab', 'Chumash Lab', '🧪', 1],
+  ['library', 'My Library (books)', '📚', 1], ['olamhaba', 'Olam Haba cloud', '☁️', 1],
+  ['torah', 'Torah Tracks, Taryag & Chumash page', '📜', 0], ['music', 'Music', '🎵', 0], ['talk', 'Talk to my Rebbe', '✉️', 0], ['profile', 'My profile', '🎒', 0]];
 function ycDoorIds_() { var o = {}; YC.DOORS.forEach(function (d) { o[d[0]] = 1; }); return o; }
-function ycCleanDoors_(list) { var ok = ycDoorIds_(); return (Array.isArray(list) ? list : []).map(String).filter(function (d, i, a) { return ok[d] && a.indexOf(d) === i; }); }
+function ycCleanDoors_(list, forRule) { var ok = {}; YC.DOORS.forEach(function (d) { if (forRule ? d[3] : d[0] !== 'all') ok[d[0]] = 1; }); return (Array.isArray(list) ? list : []).map(String).filter(function (d, i, a) { return ok[d] && a.indexOf(d) === i; }); }
 function ycNoxList_() { try { return JSON.parse(PropertiesService.getScriptProperties().getProperty(YC.NOX) || '{}') || {}; } catch (e) { return {}; } }
 function ycNoxSync_(rows) {   /* keep the small list in step with the live take-aways */
   var now = ycNow_(), o = {}; rows.forEach(function (x) { if (x.kind === 'nox' && Number(x.j.until) > now) (x.j.sids || []).forEach(function (s) { o[s] = Math.max(o[s] || 0, Number(x.j.until)); }); });
@@ -466,7 +473,7 @@ function ycAccess(token) {
   var names = {}; msRoster_().forEach(function (b) { names[b.id] = b.name; });
   var cname = {}; crRows_(CR.CLS).map(crClassRow_).forEach(function (c) { cname[c.id] = c.name + ' (' + c.staff + ')'; });
   return {
-    doors: YC.DOORS.map(function (d) { return { id: d[0], name: d[1], icon: d[2] }; }),
+    doors: YC.DOORS.map(function (d) { return { id: d[0], name: d[1], icon: d[2], rule: !!d[3] }; }),
     classes: classes.map(function (c) { return { id: c.id, name: c.name, sids: c.sids }; }),
     boys: Object.keys(mySids).map(function (s) { return { id: s, name: names[s] || s }; }).sort(function (a, b) { return a.name.localeCompare(b.name); }),
     rules: rows.filter(function (x) { return x.kind === 'acc' && (x.j.byId === me.id || me.head || (x.j.classId && classes.some(function (c) { return c.id === x.j.classId; }))); })
@@ -477,7 +484,7 @@ function ycAccess(token) {
 }
 function ycSaveRule(token, r) {
   var me = crMe_(token); r = r || {};
-  var doors = ycCleanDoors_(r.doors); if (!doors.length) throw new Error('Tick at least one thing to open.');
+  var doors = ycCleanDoors_(r.doors, true); if (!doors.length) throw new Error('Tick at least one thing to open.');
   var from = String(r.from || ''), to = String(r.to || ''); if (!(ycMin_(from) >= 0 && ycMin_(to) > ycMin_(from))) throw new Error('The end time must be after the start time.');
   var days = (Array.isArray(r.days) && r.days.length ? r.days : [1, 2, 3, 4]).map(Number).filter(function (d, i, a) { return d >= 1 && d <= 7 && a.indexOf(d) === i; });
   var classId = String(r.classId || ''), sids = [];

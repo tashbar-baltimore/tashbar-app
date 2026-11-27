@@ -179,7 +179,31 @@ module.exports = function () {
   r = mine('TEST-YC01'); chk(r && r.bucket && r.bucket.core[0].skill === W1.skill && !r.bucket.core[0].done && r.bucket.core[0].name === 'Made-up review', 'a worksheet can be a bucket item');
   call('ycSheetSave', tk, W1.id, { pages: [] }, true); r = mine('TEST-YC01'); chk(r && r.bucket.core[0].done && r.bucket.complete, 'handing in the bucket worksheet marks it done');
   chk(/not your worksheet/.test(tryErr(() => call('ycSheetDelete', 'yc-t2', W1.id))), "another teacher cannot remove my worksheet");
-  if (!fails.length) oks.push('your classes & bucket (server): active sheets (write or upload, assign or bucket, only his to open, saves, hand in, teacher sees it and can reopen, closes after class); bucket list (core any order, add-ons open after, done = paid mastery, empty Teacher Time and Independent Study now open it); Mon-Thu 1:20/1:55/2:30/3:30, only the assigned work in each Teacher Time, empty = Independent Study, chosen boys only, K-1 and boys in no class untouched, Free Play / Independent Study now / live class (newest wins), class and one-day times, switch and school times Head of School only, teachers only their own classes');
+  /* WHO GETS WHAT, WHEN: rules open doors (after the core), take-aways hold all day */
+  call('ycSaveBucket', 'yc-t2', ['TEST-YC01'], [{ t: 'lesson', id: L[2] }], []);
+  chk(/at least one thing/.test(tryErr(() => call('ycSaveRule', 'yc-t1', { doors: ['torah'], from: '15:00', to: '15:30', classId: A.id }))), 'a rule cannot open a door that only opens with the whole app');
+  chk(/your classes/.test(tryErr(() => call('ycSaveRule', 'yc-t2', { doors: ['canteen'], from: '15:00', to: '15:30', classId: A.id }))), "a teacher cannot make a rule for another teacher's class");
+  const AR = call('ycSaveRule', 'yc-t1', { doors: ['canteen', 'arena', 'nope'], from: '15:00', to: '15:30', when: 'core', classId: A.id });
+  chk(AR.rules.length === 1 && AR.rules[0].doors.join() === 'canteen,arena' && AR.doors.some(d => d.id === 'all'), 'a rule keeps only real doors');
+  vm.runInContext("ycDayOf_=function(iso){ return '2026-11-30'; }", rt.ctx);
+  at(0, 14, 50); r = mine('TEST-YC01'); chk(r && r.yc.k === 'IS' && !(r.doors || []).length, '2:50: Independent Study, no doors open yet');
+  at(0, 15, 5); r = mine('TEST-YC01'); chk(r && !(r.doors || []).length, '3:05 but his core is not done: still no doors');
+  master('TEST-YC01', L[2]);
+  r = mine('TEST-YC01'); chk(r && r.bucket.complete && (r.doors || []).join() === 'canteen,arena', '3:05 with his core done: the Canteen and Chavrusa duels open (got ' + JSON.stringify(r && r.doors) + ')');
+  const tk1 = call('ycTakeAway', 'yc-t1', { sids: ['TEST-YC01'], doors: ['arena', 'music'], until: at(0, 15, 5) + 2 * 864e5, why: 'made-up reason' });
+  chk(tk1.takeaways.length === 1 && tk1.takeaways[0].names[0] === 'Made-up Boy A', 'the teacher sees the take-away');
+  r = mine('TEST-YC01'); chk(r && r.doors.join() === 'canteen' && r.closed.join() === 'arena,music', 'a door taken away from him is shut even when a rule opens it');
+  at(1, 10, 0); r = mine('TEST-YC01'); chk(r && r.open && r.closed.join() === 'arena,music', 'the next morning (no class) the take-away still holds; the rest of the app is open');
+  chk(/who took it away/.test(tryErr(() => call('ycGiveBack', 'yc-t2', tk1.takeaways[0].id))), 'another teacher cannot give it back');
+  call('ycGiveBack', 'yc-t1', tk1.takeaways[0].id); chk(mine('TEST-YC01') === null, 'given back: nothing is shut');
+  call('ycTakeAway', 'yc-t1', { sids: ['TEST-YC01'], doors: ['store'], until: at(1, 10, 0) + 3600000 });
+  at(1, 11, 1); chk(mine('TEST-YC01') === null, 'a take-away comes back by itself when its time is up');
+  /* a rule that opens the whole app lifts the lock */
+  at(0, 15, 5); call('ycSaveRule', 'yc-t1', { doors: ['all'], from: '15:10', to: '15:30', when: 'core', classId: A.id });
+  at(0, 15, 12); r = mine('TEST-YC01'); chk(r === null || (r.open && !r.yc), 'a rule that opens the whole app lifts the lock (after his core)');
+  chk(mine('TEST-YC04') === null || mine('TEST-YC04').yc, 'the rule is only for boys in that class with their core done');
+  call('ycAccess', 'yc-t1').rules.forEach(x => call('ycDeleteRule', 'yc-t1', x.id)); chk(!call('ycAccess', 'yc-t1').rules.length, 'rules can be removed');
+  if (!fails.length) oks.push('your classes & bucket (server): who gets what, when (rules open doors at set times, only after the core if asked, the whole app lifts the lock; take-aways hold all day, beat rules, come back by themselves; teachers only for their own boys); active sheets (write or upload, assign or bucket, only his to open, saves, hand in, teacher sees it and can reopen, closes after class); bucket list (core any order, add-ons open after, done = paid mastery, empty Teacher Time and Independent Study now open it); Mon-Thu 1:20/1:55/2:30/3:30, only the assigned work in each Teacher Time, empty = Independent Study, chosen boys only, K-1 and boys in no class untouched, Free Play / Independent Study now / live class (newest wins), class and one-day times, switch and school times Head of School only, teachers only their own classes');
   return { fails, oks };
 };
 /* the boy page: a Teacher Time answer from tmMine shows the Teacher Time screen (kit tiles + one kit Start), Start opens only his class
@@ -205,6 +229,27 @@ module.exports.page = async function (pg) {
       const other = ids[1]; startMission('READ', other, 'skill'); o.blocked = !(A.view === 'play' && A.play && A.play.id === other);
       A.view = 'hub'; render(); await sleep(300);
       const go = document.querySelector('.ycw .tlk-main'); if (go) go.click(); await sleep(1200); o.opened = A.view === 'play' && A.play && A.play.id === ids[0];
+      /* AIRTIGHT: every door is stopped during class (a recorder after the guard must never hear the click), nothing opens */
+      A.view = 'hub'; render(); await sleep(300);
+      const heard = []; const rec = e => { const t = e.target; if (t && t.dataset && t.dataset.yctest) heard.push(t.dataset.yctest); }; document.addEventListener('click', rec, false);
+      const tryDoor = (k, attrs) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.yctest = k; Object.keys(attrs).forEach(a => b.setAttribute(a, attrs[a])); document.body.appendChild(b); b.click(); b.remove(); };
+      const T = { canteen: { 'data-cno': 'open' }, store: { 'data-st': 'open', 'data-t': 'fun' }, arena: { 'data-aropen': '1' }, games: { 'data-mdopen': '1' }, library: { 'data-bl-open': '1' }, torah: { 'data-tj': 'pass' },
+        music: { 'data-act': 'mubtn' }, talk: { 'data-tr': 'open' }, profile: { 'data-gmnav': 'more' }, map: { 'data-gmnav': 'map' }, work: { 'data-gmnav': 'missions' }, other: { 'data-hp': 'levels' } };
+      Object.keys(T).forEach(k => tryDoor(k, T[k])); await sleep(400);
+      o.leaked = heard.slice(); o.opened = ['#cn-shop', '#tlstore', '#ar-ov', '#mdx', '#bl-ov'].filter(q => { const el = document.querySelector(q); return el && el.offsetParent !== null; });
+      o.cloudHidden = !document.querySelector('#ohsky') || getComputedStyle(document.querySelector('#ohsky')).display === 'none';
+      o.signOutOk = !!document.querySelector('#tlmenu') || !!document.querySelector('.tl-out') || true;
+      /* a teacher's rule opens the Canteen: a tile on his class screen, and only the Canteen opens */
+      window.__ycR = Object.assign({}, window.__ycR, { id: 'yc:t:T1b', doors: ['canteen'] }); A.st = loadStudent({ id: 'TEST-YCPAGE3', name: 'Made-up Boy' }); A.view = 'hub'; render();
+      for (let i = 0; i < 40 && !document.querySelector('.ycw [data-ycdoor="canteen"]'); i++) await sleep(150);
+      o.doorTile = !!document.querySelector('.ycw [data-ycdoor="canteen"]');
+      heard.length = 0; tryDoor('canteen', T.canteen); tryDoor('store', T.store); await sleep(200); o.ruleHeard = heard.slice();
+      document.querySelectorAll('#cn-shop').forEach(x => x.remove()); document.body.classList.remove('cn-open');
+      /* no lock, but the Store was taken away from him: the Store stays shut, everything else opens */
+      window.__ycR = { open: true, id: 'yc-open:store', closed: ['store'], now: Date.now() }; A.st = loadStudent({ id: 'TEST-YCPAGE4', name: 'Made-up Boy' }); A.view = 'hub'; render();
+      await sleep(2500); heard.length = 0; tryDoor('store', T.store); tryDoor('arena', T.arena); tryDoor('map', T.map); await sleep(200); o.takeHeard = heard.slice(); o.takeLocked = !!document.querySelector('.ycw');
+      document.querySelectorAll('#ar-ov').forEach(x => x.remove());
+      document.removeEventListener('click', rec, false);
       window.__ycR = null; A.view = 'hub'; A.play = null; A.st = loadStudent({ id: 'TEST-YCPAGE2', name: 'Made-up Boy' }); render();
       for (let i = 0; i < 30 && document.querySelector('.ycw'); i++) await sleep(150); o.gone = !document.querySelector('.ycw');
     } catch (e) { o.err = String(e && e.stack || e).slice(0, 300); }
@@ -220,6 +265,11 @@ module.exports.page = async function (pg) {
   chk(o.blocked, 'another lesson cannot start during Teacher Time');
   chk(o.opened, 'Start opens his class lesson');
   chk(o.gone, 'when the schedule lets go, his home is back');
-  if (!fails.length) oks.push('your classes & bucket (page): Teacher Time screen from the button kit (period name, teacher, next), only his class lesson starts, home back after');
+  chk(o.leaked && o.leaked.length === 0, 'during class no other part of the app hears a tap (got ' + JSON.stringify(o.leaked) + ')');
+  chk(o.opened && o.opened.length === 0, 'during class nothing else opens (got ' + JSON.stringify(o.opened) + ')');
+  chk(o.cloudHidden, 'the floating Olam Haba cloud is hidden during class');
+  chk(o.doorTile && JSON.stringify(o.ruleHeard) === '["canteen"]', "a teacher's rule opens only that door, with a tile on his class screen (got " + o.doorTile + ' ' + JSON.stringify(o.ruleHeard) + ')');
+  chk(!o.takeLocked && JSON.stringify(o.takeHeard) === '["arena","map"]', 'a door taken away stays shut when he is not in class; the rest opens (got ' + JSON.stringify(o.takeHeard) + ')');
+  if (!fails.length) oks.push('your classes & bucket (page): Teacher Time screen from the button kit (period name, teacher, next), only his class lesson starts, airtight (12 kinds of doors tried, none heard, nothing opens, cloud hidden), a rule opens just its door with a tile, a taken-away door stays shut outside class, home back after');
   return { fails, oks };
 };

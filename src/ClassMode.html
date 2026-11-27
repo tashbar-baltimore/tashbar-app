@@ -6,7 +6,7 @@
 (function(){
 if(typeof render!=='function'||typeof startMission!=='function'||typeof A==='undefined') return;
 const TMC={s:null,checked:null,timer:null,done:0,ending:false};
-window.TM_CLASS=()=>TMC.s;
+window.TM_CLASS=()=>TMC.s&&!doorOpen('canteen')?TMC.s:null;   /* the Canteen asks this; a teacher's rule can open the Canteen during the afternoon */
 const SUBJ={SHEET:['📝','Worksheet'],MATH:['📐','Math'],READ:['📖','Reading'],WRIT:['✍️','Writing'],LANG:['✍️','Writing'],SCI:['🔬','Science'],ELEC:['⚛️','Electives'],LK:['📜','Limudei Kodesh'],HEB:['📜','Limudei Kodesh · Lashon Hakodesh'],SIM:['😊',"B'Simcha"],SS:['🌎','Social Studies'],COMP:['💻','Computing'],LIFE:['💵','Life and Money'],TCH:['🧑‍🏫','Class lesson']};
 /* v128 (DECISION 2230): a class can have several lessons, and teacher-made lessons (TCH.*) arrive with their questions */
 const SKILLS=()=>TMC.s?(TMC.s.skills&&TMC.s.skills.length?TMC.s.skills:[TMC.s.skill]):[];
@@ -58,7 +58,7 @@ function ycISHTML(){ const s=TMC.s, y=s.yc, B=s.bucket, K=window.TLK, pill=(k,t)
  return `<section class="ycw"><div class="ycc"><div class="ych">${pill('now','Independent Study')}<h2>Your bucket list</h2><p>${E(why)}</p>
  <div class="pl">${pill('prog','Core: '+done+' of '+B.core.length+' done')}${s.until?pill('prog','Until '+tm(s.until).replace(/\s?[AP]M$/i,'')):''}${y.next?pill('lock','Next: '+y.next.name+' at '+y.next.show):''}</div></div>
  <h3 class="ycsh">Core</h3><div class="ycg">${B.core.map(x=>tile(x,true)).join('')}</div>
- ${B.addons.length?`<h3 class="ycsh">Add-ons ${complete?'':pill('lock','Finish your core to open these')}</h3><div class="ycg">${B.addons.map(x=>tile(x,complete)).join('')}</div>`:''}
+ ${B.addons.length?`<h3 class="ycsh">Add-ons ${complete?'':pill('lock','Finish your core to open these')}</h3><div class="ycg">${B.addons.map(x=>tile(x,complete)).join('')}</div>`:''}${doorTiles()}
  <p class="ycf">Only your bucket list is open now.</p></div></section>`; }
 function ycHTML(){ if(TMC.s.bucket) return ycISHTML(); const s=TMC.s, y=s.yc, sk=SKILLS(), K=window.TLK, pill=(k,t)=>K?K.pill(k,t):`<span>${E(t)}</span>`;
  const tiles=sk.map(id=>{ const sj=SUBJ[subjOf(id)]||['📘',''], did=(s.handed&&s.handed[id])||(typeof mastered==='function'&&A.st&&mastered(A.st,id));
@@ -66,7 +66,7 @@ function ycHTML(){ if(TMC.s.bucket) return ycISHTML(); const s=TMC.s, y=s.yc, sk
  const go=sk.length===1&&K?`<div class="ycgo">${K.main(K.WORDS&&K.WORDS.start||'Start','data-tm="go" data-id="'+E(sk[0])+'"')}</div>`:'';
  return `<section class="ycw"><div class="ycc"><div class="ych">${pill('now',y.label)}<h2>${E(y.cls||s.clsName||s.name)}</h2><p>with ${E(s.by)} · ${sk.length===1?'Your teacher picked this for now.':'Your teacher picked these for now. Tap one to start.'}</p>
  <div class="pl">${s.until?pill('prog','Until '+tm(s.until).replace(/\s?[AP]M$/i,'')):''}${y.next?pill('lock','Next: '+y.next.name+' at '+y.next.show):''}</div></div>
- <div class="ycg">${tiles}</div>${go}<p class="ycf">Only your class work is open now. The rest of the app opens after class.</p></div></section>`; }
+ <div class="ycg">${tiles}</div>${go}${doorTiles()}<p class="ycf">Only your class work is open now. The rest of the app opens after class.</p></div></section>`; }
 function lockHTML(){ const s=TMC.s, sk=SKILLS(); if(s.yc) return ycHTML(); if(sk.length>1) return lockManyHTML(); const sj=SUBJ[subjOf(s.skill)]||['📘',s.subj], did=TMC.done>0||(typeof mastered==='function'&&A.st&&mastered(A.st,s.skill));
  return `<section class="tmw"><div class="tmc"><div class="top"><small>🧑‍🏫 Class lesson</small><h2>${E(s.name)}</h2><p>${E(sj[1])} · with ${E(s.by)}</p></div>
  <div class="ic" aria-hidden="true">${sj[0]}</div><p class="sub">Your class is learning this lesson together. Look at the board and follow your teacher.</p>
@@ -102,13 +102,63 @@ render=function(){
    el.innerHTML=lockHTML(); document.body.classList.add('tm-on'); document.body.classList.remove('hp-on'); return; }
  document.body.classList.remove('tm-on'); return _render.apply(this,arguments); };
 document.addEventListener('click',e=>{ const b=e.target.closest('[data-tm]'); if(!b) return; if(b.dataset.tm==='go'){ try{ SND.tap(); }catch(x){} startClass(b.dataset.id); } },true);
+/* ===== DOORS (Your Classes & Bucket, "who gets what, when"; ClassesBucket.js YC.DOORS has the same ids) =====
+   While his screen is locked (a Teacher Time, Independent Study, or a teacher's live class) ONLY his class work or bucket opens:
+   every other tap on the page is stopped before any part of the app sees it (a capture listener on window), the floating doors
+   (Olam Haba cloud, Workbook, Chumash Lab, profile dot) are hidden, and a part of the app that was open when class began is hidden too.
+   A teacher's rule can open some doors (TMC.s.doors): they show as tiles on his class screen. A door a teacher TOOK AWAY from him
+   (TMC.closed) stays shut all day, locked or not. During a lesson the lesson's own buttons work as always. Sign out always works. */
+const DOORS={
+ canteen:{n:'Canteen',i:'🥪',sel:'[data-cno]',ov:'#cn-shop',go:()=>hidden({'data-cno':'open'})},
+ store:{n:'Store',i:'🛍️',sel:'[data-st],[data-gmnav="money"],[data-gmnav="store"],[data-gm="pfshop"],[data-gm="mstory"],.mm-c',ov:'#tlstore',go:()=>{ if(typeof window.tlStore==='function') window.tlStore(); else hidden({'data-st':'open','data-t':'fun'}); }},
+ arena:{n:'Chavrusa duels',i:'⚔️',sel:'[data-aropen],[data-ar]',ov:'#ar-ov',go:()=>hidden({'data-aropen':'1'})},
+ games:{n:'Mistake Detective',i:'🕵️',sel:'[data-mdopen],[data-md],[data-kk],[data-hp="jokes"],[data-gmnav="games"]',ov:'#mdx,#kkov',go:()=>hidden({'data-mdopen':'1'})},
+ blockbuilders:{n:'Block Builders',i:'🧱',sel:'#bbx-door',hide:'#bbx-door',ov:'#bbx',go:()=>{ if(window.BBX&&BBX.openBook) BBX.openBook(); }},
+ chumashlab:{n:'Chumash Lab',i:'🧪',sel:'#clab-door',hide:'#clab-door',ov:'#clab',go:()=>{ if(window.CLAB&&CLAB.openLab) CLAB.openLab(); }},
+ library:{n:'My Library',i:'📚',sel:'[data-bl-open]',ov:'#bl-ov',go:()=>hidden({'data-bl-open':'1'})},
+ olamhaba:{n:'Olam Haba',i:'☁️',sel:'#ohsky,#ohb',hide:'#ohsky',ov:'.ohsheet'},
+ torah:{n:'Torah Tracks',i:'📜',sel:'[data-tj],[data-tq],[data-chmopen],[data-csg]',ov:'.tt-ov,.tt-pv,#csg,.tq-ov,.tq-pv,#chm-ov'},
+ music:{n:'Music',i:'🎵',sel:'[data-act="mubtn"],[data-act="munext"],[data-action="musicPanel"],[data-action="playPause"],[data-action="next"]'},
+ talk:{n:'Talk to my Rebbe',i:'✉️',sel:'[data-tr="open"],[data-item="message"],[data-ak="rebbe"]'},
+ profile:{n:'My profile',i:'🎒',sel:'[data-gmnav="more"],[data-gmnav="me"],#pr-av,[data-gm="pfav"],[data-gm="pfavk"],[data-gm="pfavx"],[data-gm="room"],[data-gm="pftour"]',hide:'#pr-av',ov:'#gm-room,#pr-pick,#tl-tour'}
+};
+window.TL_DOORS=DOORS;
+const SAFE='#ysheet,.ycw,.tmw,#tlmenu,[data-act="signout"],[data-gm="pfout"],.tl-out,.tlk-ask,#kpr,#kprb,#toast,[data-th],#tlclock';
+const FLOAT='#ohsky,#bbx-door,#clab-door,#pr-av,#tashbar-sound';   /* floating doors hidden while locked (unless opened) */
+function locked(){ return !!(TMC.s&&A.st&&A.view!=='signin'); }
+function doorOpen(d){ return !!(TMC.s&&(TMC.s.doors||[]).indexOf(d)>=0&&(TMC.closed||[]).indexOf(d)<0); }
+function doorOf(t){ for(const k in DOORS){ try{ if(t.closest(DOORS[k].sel)) return k; }catch(e){} } return ''; }
+function hidden(attrs){ const b=document.createElement('button'); b.type='button'; b.style.display='none'; Object.keys(attrs).forEach(k=>b.setAttribute(k,attrs[k])); document.body.appendChild(b); b.click(); b.remove(); }
+let said=0; function no(e,why){ e.preventDefault(); e.stopImmediatePropagation(); if(Date.now()-said>2500){ said=Date.now(); try{ toast(why); }catch(x){} } }
+function guard(e){ const t=e.target; if(!(t&&t.closest)) return; if(e.type==='keydown'&&e.key!=='Enter'&&e.key!==' ') return;
+ const d=doorOf(t), closed=TMC.closed||[];
+ if(!locked()){ if(d&&closed.indexOf(d)>=0) no(e,'Your teacher closed '+DOORS[d].n+' for now.'); return; }
+ if(t.closest('[data-act="signout"],[data-gm="pfout"],[data-item="signout"],.tl-out')) return;   /* sign out always works */
+ if(d){ if(doorOpen(d)) return; return no(e,closed.indexOf(d)>=0?'Your teacher closed '+DOORS[d].n+' for now.':'That opens after class time.'); }
+ if(A.view==='play'||A.view==='result') return;                  /* the lesson's own buttons */
+ if(t.closest(SAFE)) return;
+ if((TMC.s.doors||[]).some(k=>DOORS[k]&&DOORS[k].ov&&doorOpen(k)&&t.closest(DOORS[k].ov))) return;   /* inside a door a teacher opened */
+ no(e,'Only your class work is open now.'); }
+window.addEventListener('click',guard,true); window.addEventListener('keydown',guard,true);
+/* what is hidden right now: while locked every floating door and every door's open window except the doors a teacher opened; always the taken-away ones */
+function doorCss(){ let el=document.getElementById('yc-doors'); if(!el){ el=document.createElement('style'); el.id='yc-doors'; document.head.appendChild(el); }
+ const L=locked(), out=[];
+ Object.keys(DOORS).forEach(k=>{ const D=DOORS[k], shut=(TMC.closed||[]).indexOf(k)>=0||(L&&!doorOpen(k)); if(!shut) return; [D.hide,D.ov].filter(Boolean).forEach(x=>out.push(x)); });
+ if(L) FLOAT.split(',').forEach(x=>{ const k=Object.keys(DOORS).find(k=>DOORS[k].hide===x); if(!k||!doorOpen(k)) out.push(x); });
+ const css=out.length?out.join(',')+'{display:none!important}':''; if(el.textContent!==css) el.textContent=css; document.body.classList.toggle('yc-lock',L); }
+setInterval(doorCss,700);
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-ycdoor]'); if(!b) return; const D=DOORS[b.dataset.ycdoor]; if(D&&D.go&&doorOpen(b.dataset.ycdoor)){ try{ SND.tap(); }catch(x){} doorCss(); D.go(); } },true);
+/* the doors a teacher opened, as tiles on his class screen */
+function doorTiles(){ const s=TMC.s, ds=(s&&s.doors||[]).filter(k=>DOORS[k]&&DOORS[k].go&&doorOpen(k)); if(!ds.length) return '';
+ return `<h3 class="ycsh">Open for you now</h3><div class="ycg">${ds.map(k=>`<button type="button" class="tlk tlk-tile" data-ycdoor="${k}"><span class="yi" aria-hidden="true">${DOORS[k].i}</span><span class="yt"><b>${E(DOORS[k].n)}</b><small>Your teacher opened this</small></span></button>`).join('')}</div>`; }
+function strip(r){ TMC.closed=r&&r.closed||[]; const s=r&&r.open?null:r; setTimeout(doorCss,0); return s; }
 /* v162: the class answer arrives WITH sign-in (msSignInFast, HomePage.html sets window.TL_PRE_TM), so no extra trip and no wait */
-function use(r){ if(r&&r.until&&r.now) r.until=Date.now()+(r.until-r.now); if(r) addTeacherLessons(r); TMC.s=r||null; TMC.done=0; }
+function use(r){ r=strip(r); if(r&&r.until&&r.now) r.until=Date.now()+(r.until-r.now); if(r) addTeacherLessons(r); TMC.s=r||null; TMC.done=0; }
 function pre(sid){ const p=window.TL_PRE_TM; if(!p||p.sid!==sid||!p.ok||Date.now()-p.at>120000) return false; window.TL_PRE_TM=null; use(p.r); TMC.checked=sid; return true; }
 function check(){
  if(!(SRV&&SRV.token&&A.st&&A.view!=='signin')) return;
  const sid=A.st.id, tok=SRV.token;
- run('tmMine',tok).then(r=>{ if(SRV.token!==tok) return; const was=TMC.s, first=TMC.checked!==sid; TMC.checked=sid;
+ run('tmMine',tok).then(r=>{ if(SRV.token!==tok) return; r=strip(r); const was=TMC.s, first=TMC.checked!==sid; TMC.checked=sid;
    if(r&&r.until&&r.now) r.until=Date.now()+(r.until-r.now);
    if(!was||!r||was.id!==r.id) TMC.done=0;
    if(r) addTeacherLessons(r);
@@ -122,7 +172,7 @@ function check(){
 setInterval(()=>{ if(TMC.s&&TMC.s.until&&Date.now()>TMC.s.until){ const wasYc=!!TMC.s.yc; TMC.s=null; if(A.view==='hub') render(); if(wasYc) check(); } },5000);   /* a Teacher Time period that ends: ask at once what comes next */
 setInterval(check,25000); window.TM_CHECK=check;
 let lastSid=null; setInterval(()=>{ const sid=A.st&&A.view!=='signin'?A.st.id:null; if(sid===lastSid) return; lastSid=sid;
- if(!sid){ TMC.s=null; TMC.done=0; TMC.checked=null; return; }
+ if(!sid){ TMC.s=null; TMC.closed=[]; TMC.done=0; TMC.checked=null; doorCss(); return; }
  if(TMC.checked===sid) return;                                    /* already answered at sign-in */
  TMC.s=null; TMC.done=0; if(pre(sid)){ if(TMC.s&&A.view==='hub') render(); return; } check(); },700);
 })();

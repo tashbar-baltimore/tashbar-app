@@ -29,6 +29,11 @@
 - Worksheets: upload (PDF up to 20 pages, or JPG/PNG photos) or write one (questions, one per line). The boy writes, draws and types on it; it saves by itself; he hands it in; the teacher sees it and can let him fix it.
 - Buckets: pick boys (one, or a level group), core (3–6 things, any order) and add-ons (open after the core). A line is a subject at his level, one exact lesson, or a worksheet. It stays until changed.
 
+## Airtight lock and "Who gets what, when"
+- While a boy's screen is locked, ClassMode.html stops every tap outside his class work, his bucket, the worksheet screen and sign out (a capture listener on window), hides the floating doors, and hides any part of the app left open when class began.
+- Every part of the app is a door (`YC.DOORS` on the server, `DOORS` in ClassMode.html with how each opens). Any teacher can add opening times for his own boys (which doors, days, times, a class or chosen boys, "only after their core"); "The whole app" lifts the lock. Opened doors show as tiles on the class screen.
+- Any teacher can take doors away from his boys until a time; that holds all day and beats any opening time.
+
 ## Not built yet
 - A different bucket for a single day. Friday and holiday rules. Kindergarten and Grade 1.
 - The server checks what a boy may open for worksheets; for lessons the lock is on the page (as Teacher mode always was).
