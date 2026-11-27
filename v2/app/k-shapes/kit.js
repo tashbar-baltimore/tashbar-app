@@ -102,7 +102,7 @@ export function startGame(cfg) {
 <div id="nogl">This computer cannot show the 3D game.</div>`);
   const $ = s => document.querySelector(s);
   $('#gtitle').textContent = cfg.title || document.title;   /* the game's name is always on screen (K-CLARITY-RULES 13) */
-  const facers = [], _fq = new THREE.Quaternion();   /* box labels that always face the camera (a circle label never looks like an oval, K-CLARITY-RULES 9) */
+  const facers = [], _fq = new THREE.Quaternion(), solidLabels = [];   /* solidLabels: on a phone they float over their own box, never between two rows */   /* box labels that always face the camera (a circle label never looks like an oval, K-CLARITY-RULES 9) */
   const W = window.__shp = { hasBonus: !!(cfg.bonus || cfg.bonusRounds), hasChant: !!(cfg.fixLesson || cfg.patternLesson || (cfg.lessons || []).some(l => l.chant)), nb: cfg.boxes.length, game: cfg.id, name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
   const wait = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
   const NB = cfg.boxes.length;
@@ -187,7 +187,7 @@ export function startGame(cfg) {
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
-      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(...(bc.solid === 'cube' ? [0.38, 0.62, 0] : bc.solid === 'cyl' ? [0.3, 0, 0] : [0, 0, 0]));
+      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0)); b3.userData.wideAt = b3.position.clone(); solidLabels.push(b3);   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(...(bc.solid === 'cube' ? [0.38, 0.62, 0] : bc.solid === 'cyl' ? [0.3, 0, 0] : [0, 0, 0]));
       if (bc.solidScale && bc.solid === 'cube') b3.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.0, 1.0, 1.0)), new THREE.LineBasicMaterial({ color: '#13224A' })));   /* dark edges: three faces plainly seen, never a flat diamond */   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (bc.paint === 'none') {   /* a plain box with nothing on its front (the clue games: he finds the shape the clue tells) */
     } else if (LK) {
@@ -305,6 +305,7 @@ export function startGame(cfg) {
     const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; if (LK) LK.resize();
     const was = tall; tall = w / h < 0.95; camera.fov = tall ? 46 : 40; camera.updateProjectionMatrix();
     boxes.forEach((b, i) => b.g.position.copy(boxAt(i)));
+    solidLabels.forEach(l => { if (tall && NB > 2) l.position.set(0, BX.h + 0.45, 0); else l.position.copy(l.userData.wideAt); });
     if (was !== tall) shapes.forEach(o => { if (o.inBox && o.boxN != null && !o.busy) o.g.position.copy(inBoxSpot(o.inBoxAt, o.boxN)); else if (o.slot != null) { o.home.copy(homeFor(o.slot)); if (!o.busy && !o.inBox) o.g.position.copy(o.home); } });
     placeMendy(camMode);
     const v = viewFor(camMode); camPos.copy(v.pos); camLook.copy(v.look);
