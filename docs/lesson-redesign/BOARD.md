@@ -33,7 +33,7 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | W1 | Writing Grades 2–3 (W13) | 37 lessons (L03–L04) | src/CoreDataW13*.html | OPEN | | | |
 | W2 | Writing Grades 4–5 (W48) | 50 lessons (L05–L06) | src/CoreDataW48*.html | OPEN | | | |
 | W3 | Writing Grades 6–8 (W48) | 57 lessons (L07–L09) | src/CoreDataW48*.html | OPEN | | | |
-| S1 | Social Studies | SS.* (about 30) | src/CoreDataS*.html, src/OneBiteData*.html | TAKEN | https://claude.ai/code/session_01Cri5bQ2Gtc5Zv1hpqcqR9b | 2026-11-27 18:58 | Claimed (autopilot); reading the lessons, batch 1 next |
+| S1 | Social Studies | SS.* (about 30) | src/CoreDataS*.html, src/OneBiteData*.html | TAKEN | https://claude.ai/code/session_01Cri5bQ2Gtc5Zv1hpqcqR9b | 2026-11-27 20:05 | Batch 1 (SS.HIST.L07.01–04, SS.JHIST.L07.01; with the sample SS.GEO.L07.01 the whole Grade 6 unit 1 in src/CoreDataS8.html) in tashbar-baltimore/tashbar-app#665. Next: S9 (L08), then S7 (L06), S6 (L05), S10 (L09) |
 | S2 | Science | SCI.* (20) | src/CoreDataS2.html, src/CoreDataS3.html and the other src/CoreDataS*.html | OPEN | | | |
 | K1 | Kodesh (Chumash, Kriah, Halacha, Tefillah, Navi, Mishnah) | LK.* (65) | src/OneBiteDataKodesh.html (and src/KriyahMore.html) | OPEN | | | Kodesh: REBBE review after live |
 | L1 | Young levels (seen as bridges and by older boys filling gaps; K–1 boys play the K–1 games) | MATH.*, READ.* L01–L02 (about 70) | src/OneBiteData*.html | OPEN (last) | | | |
