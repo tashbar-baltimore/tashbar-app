@@ -3,4 +3,4 @@
    a gentle fix must follow), the first rounds at phone size with everything on the screen, a perfect check = 3 stars, short spoken lines,
    no letter names, big buttons, the menu row in order. */
 const { unitTest } = require('./k-abc-unit1.js');
-module.exports = unitTest('ra', ['opener', 'bingo', 'chalk', 'catch', 'bridge', 'speed', 'check'], { noWrong: ['opener', 'chalk'], name: 'review week A' });
+module.exports = unitTest('ra', ['opener', 'bingo', 'chalk', 'catch', 'bridge', 'speed', 'check'], { noWrong: ['chalk'], name: 'review week A' });
