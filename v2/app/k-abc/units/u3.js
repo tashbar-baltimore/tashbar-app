@@ -101,6 +101,7 @@ const hunt = {
           else { await G.wrong([say(it.name) + '. Listen to the start.', snd('n')], it); } }; });
         clearInterval(timer);
       }
+      await clearItems(G); net.visible = false;   /* the leftover pictures and the basket go away before the word, so nothing sits on top of it */
       await todayWord(G, 'tin'); await G.done('What a catch!');
     }
   },
