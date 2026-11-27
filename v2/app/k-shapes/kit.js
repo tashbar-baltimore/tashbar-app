@@ -288,6 +288,7 @@ export function startGame(cfg) {
   let camMode = 'wide';
   const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
   function viewFor(m) {
+    if (m === 'close' && tall && cfg.mode === 'pattern' && cfg.world === 'bakery') return { pos: new THREE.Vector3(0, 3.6, 9.4), look: new THREE.Vector3(0, 1.7, 0.9) };   /* phone, cupcakes (no engine): closer, so the row fills the width (review round 2) */
     if (m === 'close' && tall && cfg.mode === 'pattern') return { pos: new THREE.Vector3(-0.35, 4.2, 13.2), look: new THREE.Vector3(-0.35, 2.0, 0.9) };   /* phone: the whole train, engine too, as big as fits (K-CLARITY-RULES 9) */
     if (m === 'close') return tall ? { pos: new THREE.Vector3(...CLOSE[0]).multiplyScalar(1.95), look: new THREE.Vector3(...CLOSE[1]) } : { pos: new THREE.Vector3(...CLOSE[0]), look: new THREE.Vector3(...CLOSE[1]) };
     if (cfg.view) { const v = cfg.view[tall ? 'tall' : 'wide']; return { pos: new THREE.Vector3(...v[0]), look: new THREE.Vector3(...v[1]) }; }
@@ -580,10 +581,10 @@ export function startGame(cfg) {
   let idleT = null, idleN = 0, idleFn = null;
   function idle() { clearTimeout(idleT); if (!idleFn) return; idleT = setTimeout(() => { if (!busy && allow) idleFn(++idleN); idle(); }, FAST ? 1e9 : 11000); }
   function stopIdle() { clearTimeout(idleT); idleFn = null; idleN = 0; }
-  function pointAt(o, toBox) {   /* the hand points at a piece (and then at the box it goes in) */
+  function pointAt(o, toBox, at) {   /* at: a place to move to instead of the box (the gap in Fix the shape) */   /* the hand points at a piece (and then at the box it goes in) */
     handOn = o; hand.style.display = 'block';
     const hw = ms => (SHOT ? new Promise(r => setTimeout(r, ms)) : wait(ms));   /* pictures (shot=1) keep the hand on screen long enough to be seen */
-    return hw(1500).then(() => { handOn = null; if (toBox && o.box >= 0 && NB) { const p = toScreen(boxAt(o.box).clone().setY(1.1)); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; return hw(1300); } })
+    return hw(1500).then(() => { handOn = null; if (toBox && o.box >= 0 && (NB || at)) { const p = toScreen(at ? at.clone() : boxAt(o.box).clone().setY(1.1)); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; return hw(1300); } })
       .then(() => { if (!SHOT) hand.style.display = 'none'; });   /* pictures: the hand stays until his next touch, so the slow picture machine still catches it */
   }
   W.idleNow = () => { if (idleFn) idleFn(++idleN); }; W.waitingTap = () => !!(shapeTap || cornerTap);   /* the test waits until the lesson really waits for his tap */
@@ -797,6 +798,8 @@ export function startGame(cfg) {
         const lines = cfg.why[o.kind];
         tryInGap(o).then(() => { o.g.visible = true; o.g.position.copy(o.home); });
         const steps = [...lines];
+        const fits = shapes.find(x => x.box === 0 && x !== o && !x.inBox);   /* a wrong stick: the hand then shows the one that fits, going to the gap (review round 2) */
+        if (fits) steps.push('This one fits.', () => pointAt(fits, true, gapWorld().setY(1.1)));
         if (W.misses >= 2 && !getHelped() && !bonus) { setHelped(true); steps.push(cfg.remember); }
         steps.push(...ask);
         play(steps);
@@ -853,8 +856,8 @@ export function startGame(cfg) {
     const fixing = R.fixAt != null, blanks = fixing ? 0 : R.copy ? n : R.blanks;
     let bad = null;
     R.seq.forEach((t, i) => { if (i < n - blanks) { const m = beadMesh(fixing && i === R.fixAt ? R.wrong : t); m.position.copy(slotAt(i, n, z)); scene.add(m); parts.push(m); beads.push(m); if (fixing && i === R.fixAt) bad = m; } });
-    const holes = [];   /* copy: every spot he will fill shows its empty place, so he sees the row is as long as Mendy's (review round 2) */
-    if (R.copy) for (let i = 0; i < n; i++) { const h = ghost.clone(); h.position.copy(slotAt(i, n, z)); if (h.isGroup) h.scale.setScalar(tall ? 0.72 : 1); h.visible = false; scene.add(h); parts.push(h); holes.push(h); }
+    const holes = [], holeMat = new THREE.MeshStandardMaterial({ color: '#EFE3CF', roughness: 0.8 });   /* the later spots are plain; only the next one glows */   /* copy: every spot he will fill shows its empty place, so he sees the row is as long as Mendy's (review round 2) */
+    if (R.copy) for (let i = 0; i < n; i++) { const h = ghost.clone(); h.position.copy(slotAt(i, n, z)); if (h.isGroup) h.scale.setScalar(tall ? 0.72 : 1); h.traverse(c => { if (c.isMesh) c.material = holeMat; }); h.visible = false; scene.add(h); parts.push(h); holes.push(h); }
     PS = { parts, beads, model, next: fixing ? R.fixAt : n - blanks, n, z, R, bad, showRing: !fixing, holes };
     const types = R.tray; types.forEach((t, i) => makeBead('b' + (++beadN), t, trayAt(i, types.length), i));
     markNext();
@@ -908,9 +911,9 @@ export function startGame(cfg) {
         if (!bonus) W.misses++; chime(false); goHome(o);
         /* the first miss already SHOWS how (K-CLARITY-RULES 16): the part that repeats glows while the pattern is sung; fixing: the ring sits on the wrong one */
         const rightOne = shapes.find(x => x.box === 0 && !x.inBox && x.g.visible);   /* the first miss also points at the one that fits (review round 2) */
-        const steps = ['Not that one.', () => coreGlow(true), () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, R.copy ? 'Look at the pattern above.' : null), () => wait(900), () => { if (SHOT) glowHeld = true; else coreGlow(false); }];   /* the glow stays a moment after the song, so he sees the part that repeats */
+        const steps = ['Not that one.', () => coreGlow(true), ...(R.copy ? ['Look at the pattern above.'] : []), () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, null), () => wait(900), () => { if (SHOT) glowHeld = true; else coreGlow(false); }];   /* the glow stays a moment after the song, so he sees the part that repeats */
         if (R.fixAt != null && !PS.showRing) steps.push(() => { PS.showRing = true; markNext(); }, 'The wrong one is in the ring.');
-        if (R.fixAt == null && rightOne) steps.push('This one fits.', () => pointAt(rightOne));
+        if (R.fixAt == null && rightOne) steps.push('This one fits.', () => pointAt(rightOne, true, slotAt(PS.next, PS.n, PS.z)));
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember, () => coreGlow(true), () => say(wordsOf(R.seq, R.core || 2) + ' repeats.'), () => wait(600), () => coreGlow(false)); }
         steps.push(...ask);
         play(steps);
@@ -1711,7 +1714,7 @@ export function wrongFor(T) {
     if (o.k === 'oval') return noCount(['That is an oval. It is long and squished.', T === 'circle' ? 'A circle is perfectly round.' : 'A ' + T + ' has straight sides.']);
     if (o.k === 'semi') return noCount(['That is half a circle.', T === 'circle' ? 'It has a straight side. A circle is all round.' : 'It has a round side. A ' + T + ' has straight sides.']);
     if (f === 'circle') return ['That is a circle.', 'A circle has no corners at all. A ' + T + ' has ' + has(CORNERS[T]) + '.'];
-    if (o.k === 'lean' && (T === 'square' || T === 'rectangle')) return noCount(['This shape leans over.', 'Two corners are pointy. Two are wide.', 'A ' + T + ' has four corners all the same.']);
+    if (o.k === 'lean' && (T === 'square' || T === 'rectangle')) return noCount(['This shape leans over.', 'Two corners are pointy. Two are wide.', (T === 'square' ? 'A square has four sides the same.' : 'A rectangle stands up straight.')]);
     if (o.k === 'kite' && (T === 'square' || T === 'rectangle')) return noCount(['That is a kite shape.', 'Its corners are not all the same.', 'It is not a ' + T + '.']);
     if (T === 'square' && f === 'rectangle') return noCount(['That is a rectangle.', 'Two sides are long. Two are short.', 'A square has four sides the same.']);
     const name = (f === T || ['triangle', 'square', 'rectangle', 'circle'].includes(f) || T === 'hexagon') && !['pentagon', 'octagon'].includes(f) ? 'That is a ' + f + '.' : 'That shape is not a ' + T + '.';
