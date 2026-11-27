@@ -183,7 +183,7 @@ async function sail() {
   let miss = 0, easy = false;
   const plan = [() => [rnd(5, 8), rnd(2, 3)], () => [rnd(7, 9), rnd(3, 5)], () => [rnd(11, 14), rnd(3, 5)], () => [rnd(8, 12), rnd(4, 6)]];
   for (let r = 0; r < plan.length; r++) { G.round = r; let [s, k] = plan[r](); if (easy) { s = Math.min(s, 6); k = Math.min(k, 3); }
-    if (!(await sailRound(s, k, 1, { hidden: r >= 2 && miss === 0 }))) miss++; if (miss >= 2 && !easy) { easy = true; G.easy = true; await say('Let's try smaller numbers.'); } dots(R, r + 2); }
+    if (!(await sailRound(s, k, 1, { hidden: r >= 2 && miss === 0 }))) miss++; if (miss >= 2 && !easy) { easy = true; G.easy = true; await say('Now we try smaller numbers.'); } dots(R, r + 2); }
   if (miss === 0) { G.bonus = true; await say('Bonus! The buoys are blank.'); await sailRound(rnd(10, 13), rnd(4, 6), 1, { hidden: true }); }
   const st = easy ? Math.min(2, starsFor(miss, 4)) : starsFor(miss, 4); await say(st === 3 ? 'Smooth sailing!' : 'Great counting on!');
   const e = await endScreen(st); if (e === 'replay') location.reload();
@@ -320,7 +320,7 @@ async function pull() {
   await pullRound(12, 3, { demo: true }); dots(R, 1);
   let miss = 0, easy = false; const plan = [[rnd(8, 10), 2], [rnd(12, 14), 3], [rnd(15, 18), rnd(3, 4)]];
   for (let r = 0; r < plan.length; r++) { G.round = r; let [st, k] = plan[r]; if (easy) { st = Math.min(st, 10); k = Math.min(k, 3); }
-    if (!(await pullRound(st, k))) miss++; if (miss >= 2 && !easy) { easy = true; G.easy = true; await say('Let's try smaller numbers.'); } dots(R, r + 2); }
+    if (!(await pullRound(st, k))) miss++; if (miss >= 2 && !easy) { easy = true; G.easy = true; await say('Now we try smaller numbers.'); } dots(R, r + 2); }
   if (miss === 0) { G.bonus = true; await say('Bonus! The buoys are blank.'); await pullRound(rnd(14, 17), rnd(4, 5), { hidden: true }); }
   const e = await endScreen(starsFor(miss, 3)); if (e === 'replay') location.reload();
 }

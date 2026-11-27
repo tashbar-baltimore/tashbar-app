@@ -18,6 +18,9 @@ module.exports = async function (browser) {
   try { cp.execFileSync(process.execPath, [path.join(R, 'v2', 'build.js')], { env: Object.assign({}, process.env, { V2_OUT: dist }), stdio: 'pipe' }); }
   catch (e) { bad('build failed: ' + String(e.stderr || e).slice(0, 200)); return out; }
   ['g1-math/unit2.html', 'g1-math/u2.js', 'g1-math/harbor.js', 'g1-math/kit3d.js'].forEach(f => { if (!fs.existsSync(path.join(dist, f))) bad(f + ' is not in the built site'); });
+  /* every game file must parse (a quote typo would break every screen) */
+  for (const f of ['u2.js', 'harbor.js', 'kit3d.js']) { const tmp = path.join(dist, 'g1-math', '.check-' + f.replace('.js', '.mjs')); fs.copyFileSync(path.join(dist, 'g1-math', f), tmp);
+    try { cp.execFileSync(process.execPath, ['--check', tmp], { stdio: 'pipe' }); } catch (e) { bad(f + ' does not parse: ' + String(e.stderr || e).split('\n').slice(0, 4).join(' ')); } fs.rmSync(tmp, { force: true }); }
   if (out.fails.length) return out;
 
   async function open(w, h, g, label, extra) {
