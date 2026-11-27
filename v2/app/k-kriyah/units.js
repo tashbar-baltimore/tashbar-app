@@ -89,6 +89,17 @@ export const UNITS = [
       { id: 'u8g6', name: 'Review: Letter Hunt', kind: 'hunt', icon: 'glass', review: true, reviewOf: 7 },   /* Unit 7's Kuf and Reish, hidden in the sukkah */
       { id: 'u8g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
+  { n: 9, letters: ['chafsofis', 'memsofis', 'nunsofis', 'feisofis', 'tzadiksofis'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches', 'tes', 'yud', 'kaf', 'chaf', 'lamed', 'mem', 'nun', 'samech', 'ayin', 'pei', 'fei', 'tzadik', 'kuf', 'reish', 'shin', 'sin', 'tav', 'sav'],
+    games: [   /* the world of Unit 9: Erev Shabbos in the kitchen (the painted kitchen) */
+      { id: 'u9g0', name: 'Shabbos clothes', kind: 'story9', icon: 'shirt' },
+      { id: 'u9g1', name: 'Partner Match', kind: 'partners', icon: 'link' },   /* new: each final letter finds its partner */
+      { id: 'u9g2', name: 'End of the Word', kind: 'endword', icon: 'star' },   /* new: Shabbos clothes only at the end */
+      { id: 'u9g3', name: 'Spot the Difference', kind: 'spotdiff', icon: 'glass' },   /* new twist on the Look-Alike Detective: he finds the difference himself */
+      { id: 'u9g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },   /* new: Yaakov writes a whole word */
+      { id: 'u9g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
+      { id: 'u9g6', name: 'Review: Dot Builder', kind: 'dotbuild', icon: 'dot', review: true, bg: null, world: { indoor: 'shul' } },   /* Unit 8 comes back, in the shul */
+      { id: 'u9g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
+    ] },
 ];
 /* every game in order, each knowing its unit */
 export const GAMES = UNITS.flatMap(u => u.games.map(g => ({ ...g, unit: u.n })));

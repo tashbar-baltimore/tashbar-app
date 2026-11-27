@@ -5,7 +5,7 @@
    Round 3: all four, mixed. Show-then-try for each new move. A wrong place is never just "wrong": the dot stays there a moment,
    he sees and hears the letter he made ("Look! Dot on the left: that is Sin."), then the rule, and he tries again.
    If he struggles, the right place glows. Every line is 12 words or fewer. */
-export default function setup(E, { struggled, unit }) {
+export default function setup(E, { struggled, unit, game }) {
   const { THREE, S } = E, NM = k => E.LETTERS[k].name;
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   /* a soft velvet cushion on a little gold stand, where the letter rests */
@@ -77,7 +77,7 @@ export default function setup(E, { struggled, unit }) {
   const RULE = { shin: 'Shin’s dot goes on the right head.', sin: 'Sin’s dot goes on the left head.', tav: 'Tuf’s dot goes inside.', sav: 'Suf has no dot. Take the dot out!' };
   const SAYS = k => ['Yes! ' + NM(k) + '!', ...E.nameLine(k).slice(1)];
   async function dropAt(spot) {
-    if (!spot || spot === at) { busy = true; await moveDot(at, 300); busy = false; if (!spot && shape === 'ש') await E.say('Put the dot on top of a head!'); return; }
+    if (!spot || spot === at) { busy = true; await moveDot(at, 300); busy = false; if (!spot && shape === 'ש') await E.say('Put the dot on top of a head!'); else if (shape === 'ת') await E.say('Already right? Tap the green check!'); return; }
     busy = true; enabled = false; await moveDot(spot, 220);
     await judge();
   }
@@ -119,6 +119,15 @@ export default function setup(E, { struggled, unit }) {
   }
   const mix = (a, first) => { let d; do { d = a.slice().sort(() => Math.random() - .5); } while (first && d[0] !== first); return d; };
   return async () => {
+    if (game && game.review) {   /* a later unit's review: a quick reminder, then all four mixed */
+      total = 6; E.setProgress(total, 0); setShape('ש'); at = 'dish'; dot.position.copy(spotPos('dish'));
+      await E.say('Remember the dot? Let’s build letters again!');
+      await demo('sin', 'The dot is on the left head. This is Sin.'); await moveDot('dish', 400);
+      okBtn.style.display = 'grid'; { const r = okBtn.getBoundingClientRect(); E.hand.at(r.x + r.width / 2, r.y + 20, true); } await E.say('For Tuf and Suf: already right? Tap the green check!'); E.hand.hide(); okBtn.style.display = 'none'; mistakes = 0;
+      for (const k of mix(['shin', 'tav', 'sin', 'sav', 'shin', 'tav'])) await task(k);
+      const stars = mistakes <= 1 ? 3 : mistakes <= 2 ? 2 : 1;
+      return { stars, line: stars >= 2 ? 'You still know the dots! Great!' : null };
+    }
     E.setProgress(total, 0);
     setShape('ש'); at = 'dish'; dot.position.copy(spotPos('dish'));
     await E.say('The dot makes the letter! Let’s build letters with a dot.');

@@ -1,0 +1,349 @@
+# Unit 9: every spoken line (from the made-up boy's test runs)
+
+## Shabbos clothes (story)
+- This is Shloimy. It is Erev Shabbos!
+- Shloimy is dressed in his Shabbos clothes.
+- Some letters have Shabbos clothes too!
+- They wear them at the end of a word.
+- This is Chaf.
+- At the end of a word, Chaf gets dressed up!
+- Now it is Chaf Sofis!
+- It still says ch , just like Chaf.
+- Say it with me: Chaf Sofis!
+- Chaf Sofis! ch
+- Tap Chaf Sofis!
+- Chaf Sofis says ch
+- This is Mem.
+- Watch Mem put on Shabbos clothes!
+- Now it is Mem Sofis!
+- It still says m , just like Mem.
+- Say it with me: Mem Sofis!
+- Mem Sofis! m
+- Tap Mem Sofis!
+- Mem Sofis says m
+- Nun gets dressed up!
+- Now it is Nun Sofis!
+- It still says n , just like Nun.
+- Say it with me: Nun Sofis!
+- Nun Sofis! n
+- Tap Nun Sofis!
+- Nun Sofis says n
+- Fei gets dressed up!
+- Now it is Fei Sofis!
+- It still says f , just like Fei.
+- Say it with me: Fei Sofis!
+- Fei Sofis! f
+- Tap Fei Sofis!
+- Fei Sofis says f
+- Tzadik gets dressed up!
+- Now it is Tzadik Sofis!
+- It still says tz , just like Tzadik.
+- Say it with me: Tzadik Sofis!
+- Tzadik Sofis! tz
+- Tap Tzadik Sofis!
+- Tzadik Sofis says tz
+- Samech is round at the bottom.
+- Mem Sofis is square at the bottom.
+- Vov stops at the line.
+- Nun Sofis has a long leg.
+- Let’s sing the partners!
+- Chaf,
+- Chaf Sofis,
+- Mem,
+- Mem Sofis,
+- Nun,
+- Nun Sofis,
+- Fei,
+- Fei Sofis,
+- Tzadik,
+- Tzadik Sofis,
+- Now you! Tap each letter in Shabbos clothes.
+- Wonderful! You know every letter in Shabbos clothes!
+- Tap the green arrow for the next game!
+
+## Partner Match
+- Every letter in Shabbos clothes has a partner.
+- Watch me. Mem Sofis goes with Mem.
+- Mem and Mem Sofis! Both say m !
+- Now you! Put each one under its partner.
+- Chaf Sofis is Chaf with a long leg.
+- Find its partner!
+- Chaf and Chaf Sofis! Both say ch !
+- Nun and Nun Sofis! Both say n !
+- Fei and Fei Sofis! Both say f !
+- Tzadik and Tzadik Sofis! Both say tz !
+- Let’s sing the partners!
+- Chaf, Chaf Sofis!
+- Mem, Mem Sofis!
+- Nun, Nun Sofis!
+- Fei, Fei Sofis!
+- Tzadik, Tzadik Sofis!
+- Say it with me: Mem Sofis!
+- Mem Sofis! m
+- Great! Now the shelf is mixed up.
+- Find each partner again!
+- Remember these?
+- Watch me. Tap Lamed.
+- Now you!
+- Tap Lamed.
+- Lamed! Lamed says l
+- Tap Ayin.
+- Ayin! Ayin is quiet.
+- Tap Fei.
+- Fei! Fei says f
+- Every letter found its partner! Wonderful!
+- Tap the green arrow for the next game!
+- Watch me. Tap Yud.
+- Tap Yud.
+- Yud! Yud says y
+- Which letter says ch ? Tap it.
+- Chaf! Chaf says ch
+- Tap Sin.
+- Sin! Sin says s
+
+## End of the Word
+- The star shows the end of the word.
+- Shalom!
+- The empty place is at the end.
+- Watch me. At the end, Mem Sofis!
+- Yes! At the end, Mem Sofis!
+- Now you! Is it the end, or not?
+- Mayim, water!
+- The empty place is not at the end.
+- Which one goes there?
+- Mem Sofis goes only at the end of a word.
+- Here we need plain Mem.
+- Yes! Not the end, so plain Mem!
+- Melech, a king!
+- Yes! At the end, Chaf Sofis!
+- Tzav, a turtle!
+- Yes! Not the end, so plain Tzadik!
+- Gan, a garden!
+- Yes! At the end, Nun Sofis!
+- Ner, a candle!
+- Yes! Not the end, so plain Nun!
+- Tof, a drum!
+- Yes! At the end, Fei Sofis!
+- Eretz, the land!
+- Yes! At the end, Tzadik Sofis!
+- Remember these?
+- Watch me. Tap Ches.
+- Now you!
+- Tap Ches.
+- Ches! Ches says ch
+- Which letter says n ? Tap it.
+- Nun! Nun says n
+- Tap Fei.
+- Fei! Fei says f
+- You know where Shabbos clothes go: at the end!
+- Tap the green arrow for the next game!
+- Tzadik Sofis goes only at the end of a word.
+- Here we need plain Tzadik.
+- Watch me. Tap Shin.
+- Tap Shin.
+- Shin! Shin says sh
+- Which letter says y ? Tap it.
+- Yud! Yud says y
+- Tap Kuf.
+- Kuf! Kuf says k
+
+## Spot the Difference
+- Look-alike letters! Let’s find what is different.
+- This is Samech. This is Mem Sofis.
+- Watch me. I look carefully at the bottom.
+- Samech is round at the bottom.
+- Mem Sofis is square at the bottom.
+- Watch me. I put Mem Sofis with its twin.
+- Now you! Find the difference.
+- This is Vov. This is Nun Sofis.
+- Find what is different! Tap it.
+- Look at the bottom of the letters!
+- You found it!
+- Vov stops at the line.
+- Nun Sofis has a long leg.
+- Put Nun Sofis with its twin!
+- Yes! Nun Sofis!
+- This is Reish. This is Chaf Sofis.
+- Reish stops at the line.
+- Chaf Sofis has a long leg.
+- Put Chaf Sofis with its twin!
+- Yes! Chaf Sofis!
+- This is Daled. This is Reish.
+- Daled has a corner.
+- Reish is round on top.
+- Put Daled with its twin!
+- Yes! Daled!
+- This is Beis. This is Kaf.
+- Beis has a tail at the bottom.
+- Kaf is round at the bottom.
+- Put Kaf with its twin!
+- Yes! Kaf!
+- Remember these?
+- Watch me. Tap Gimmel.
+- Now you!
+- Tap Gimmel.
+- Gimmel! Gimmel says g
+- Which letter says ch ? Tap it.
+- Chaf! Chaf says ch
+- Tap Sin.
+- Sin! Sin says s
+- Great detective! You found every difference!
+- Tap the green arrow for the next game!
+- Put Reish with its twin!
+- Yes! Reish!
+- Put Beis with its twin!
+- Yes! Beis!
+- Watch me. Tap Tzadik.
+- Tap Tzadik.
+- Tzadik! Tzadik says tz
+- Which letter says m ? Tap it.
+- Mem! Mem says m
+- Tap Kaf.
+- Kaf! Kaf says k
+
+## Find the Mistake
+- This is Yaakov. Sometimes he makes a mistake.
+- Watch me find his mistake.
+- Yaakov wrote Even, a stone.
+- Is the last letter right?
+- Hmm. Watch me. Nun at the end needs Shabbos clothes!
+- Yes! Yaakov made a mistake. That is Nun.
+- Yaakov wanted a Nun Sofis. Drag Nun Sofis onto the sign!
+- Now Yaakov has his Nun Sofis! Nun Sofis says n
+- Now you! Is Yaakov right? Tap yes or no.
+- Yaakov wrote Shalom.
+- Yes! Yaakov is right. Mem Sofis says m
+- Yaakov wrote Lechem, bread.
+- Look again. It is the end. Mem needs Shabbos clothes!
+- Yaakov wanted a Mem Sofis. Drag Mem Sofis onto the sign!
+- That is Mem. Find Mem Sofis, square at the bottom!
+- Now Yaakov has his Mem Sofis! Mem Sofis says m
+- Yaakov wrote Gan, a garden.
+- Look at the end of the word!
+- Yes! Yaakov is right. Nun Sofis says n
+- Yaakov wrote Eretz, the land.
+- Yes! Yaakov made a mistake. That is Tzadik.
+- Yaakov wanted a Tzadik Sofis. Drag Tzadik Sofis onto the sign!
+- Now Yaakov has his Tzadik Sofis! Tzadik Sofis says tz
+- Yaakov wrote Melech, a king.
+- Yes! Yaakov is right. It is Chaf Sofis.
+- Yaakov wrote Tof, a drum.
+- Yes! Yaakov made a mistake. That is Fei.
+- Yaakov wanted a Fei Sofis. Drag Fei Sofis onto the sign!
+- Now Yaakov has his Fei Sofis! Fei Sofis says f
+- Remember these?
+- Watch me. Tap Daled.
+- Now you!
+- Tap Daled.
+- Daled! Daled says d
+- Which letter says l ? Tap it.
+- Lamed! Lamed says l
+- Tap Suf.
+- Suf! Suf says s
+- You found all of Yaakov’s mistakes!
+- Tap the green arrow for the next game!
+- Watch me. Tap Pei.
+- Tap Pei.
+- Pei! Pei says p
+- Tap Gimmel.
+- Gimmel! Gimmel says g
+
+## Show what you know
+- Show the rebbe what you know!
+- Watch me. Tap Chaf Sofis.
+- Chaf Sofis says ch
+- Now you! Listen, then tap.
+- Tap Mem Sofis.
+- Yes! Mem Sofis says m
+- Tap Nun Sofis.
+- That is Vov. Vov says v
+- Nun Sofis has a long leg.
+- Here is Nun Sofis. Nun Sofis says n
+- Tap Chaf Sofis.
+- Yes! Chaf Sofis says ch
+- Tap Fei.
+- Yes! Fei says f
+- Which letter says m ? Tap it.
+- Tap Fei Sofis.
+- Yes! Fei Sofis says f
+- Tap Tzadik Sofis.
+- Yes! Tzadik Sofis says tz
+- Tap Chaf.
+- Yes! Chaf says ch
+- Tap Vov.
+- Yes! Vov says v
+- Which letter says n ? Tap it.
+- Yes! Nun Sofis says n
+- Tap Hei.
+- Yes! Hei says h
+- Three stars! You know every letter of Unit 9!
+- Tap the green arrow for the next game!
+- Tap Beis.
+- Yes! Beis says b
+- Tap Sin.
+- Yes! Sin says s
+- Tap Zayin.
+- Yes! Zayin says z
+
+## Review: Dot Builder
+- Remember the dot? Let’s build letters again!
+- Watch me. Make it Sin!
+- The dot is on the left head. This is Sin.
+- Sin says s
+- For Tuf and Suf: already right? Tap the green check!
+- Make it Sin!
+- Look! Dot on the right: that is Shin.
+- Sin’s dot goes on the left head.
+- Try again! Make it Sin.
+- Yes! Sin! s
+- Make it Tuf!
+- Yes! Tuf! t
+- Make it Shin!
+- Yes! Shin! sh
+- Make it Suf!
+- Yes! Suf! s
+- Remember these?
+- Watch me. Tap Tes.
+- Now you!
+- Tap Tes.
+- Tes! Tes says t
+- Which letter says s ? Tap it.
+- Suf! Suf says s
+- Tap Ayin.
+- Ayin! Ayin is quiet.
+- You still know the dots! Great!
+- A bonus game! Tap the green arrow.
+- Look! Dot on the left: that is Sin.
+- Shin’s dot goes on the right head.
+- Try again! Make it Shin.
+- Watch me. Tap Veis.
+- Tap Veis.
+- Veis! Veis says v
+- Which letter says y ? Tap it.
+- Yud! Yud says y
+- Tap Kaf.
+- Kaf! Kaf says k
+
+## Bonus: letter rain
+- Bonus round! Letters are falling from the clouds.
+- Watch me. I catch a Chaf Sofis.
+- Now you! Be quick!
+- Say it with me: Chaf Sofis!
+- Chaf Sofis! ch
+- Catch every Chaf Sofis, like challah!
+- That is Reish. It stops at the line.
+- Say it with me: Mem Sofis!
+- Mem Sofis! m
+- Catch every Mem Sofis! m
+- Say it with me: Nun Sofis!
+- Nun Sofis! n
+- Catch every Nun Sofis! n
+- Say it with me: Fei Sofis!
+- Fei Sofis! f
+- Catch every Fei Sofis! f
+- Say it with me: Tzadik Sofis!
+- Tzadik Sofis! tz
+- Catch every Tzadik Sofis! tz
+- What a catcher! You caught 19 letters!
+- Tap the green button to go back.
+- That is Mem Sofis. It is square at the bottom.
