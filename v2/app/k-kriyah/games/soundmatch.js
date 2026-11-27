@@ -5,9 +5,9 @@
 import { makePictures, WORDS, WORD_NAME, hasPic } from '../pictures.js';
 export default function setup(E, { struggled, unit, game = {} }) {
   const { THREE, S } = E;
-  const PIC = makePictures(E), keys = (game.reviewOf ? E.UNITS[game.reviewOf - 1].letters : unit.n > 1 ? ['beis', ...unit.letters] : unit.letters).filter(k => Object.keys(WORDS).some(w => WORDS[w].letter === k && hasPic(w)));   /* in Alef-Beis order, right to left; as a review round, an earlier unit's letters */   /* one earlier letter comes back (Beis, with the bayis) */
+  const PIC = makePictures(E), keys = (game.stands || (game.reviewOf ? E.UNITS[game.reviewOf - 1].letters : unit.n > 1 ? ['beis', ...unit.letters] : unit.letters)).filter(k => Object.keys(WORDS).some(w => WORDS[w].letter === k && hasPic(w)));   /* only letters with pictures (Chaf has none: few words start with it) */   /* in Alef-Beis order, right to left; as a review round, an earlier unit's letters */   /* one earlier letter comes back (Beis, with the bayis) */
   const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter) && hasPic(w)).filter((w, i, a) => a.slice(0, i).filter(x => WORDS[x].letter === WORDS[w].letter).length < 2);   /* two pictures per letter */
-  const kid = unit.n === 3 ? E.ari() : E.pictureCard('shloimy', () => E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c })); E.scene.add(kid);   /* the unit's boy: Shloimy, then Ari */
+  const kid = E.unitBoy(unit.n); E.scene.add(kid);   /* the unit's boy: Shloimy, then Ari */
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4; p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
@@ -65,7 +65,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
     }
   }
   /* the pictures: the demo first, then the rest mixed */
-  const first = words[0], rest = words.slice(1).sort(() => Math.random() - .5), deck = [first, ...rest];
+  const first = (!game.reviewOf && words.find(w => unit.letters.includes(WORDS[w].letter) && E.LETTERS[WORDS[w].letter].snd !== 'ch')) || words[0];   /* the demo shows a new letter */
+  const rest = words.filter(w => w !== first).sort(() => Math.random() - .5), deck = [first, ...rest];
   return async () => {
     E.setProgress(deck.length, 0);
     if (game.review) { const nm = keys.map(k => E.LETTERS[k].name); await E.say('Remember ' + nm.slice(0, -1).join(', ') + ' and ' + nm[nm.length - 1] + '? Let\u2019s match again!'); }   /* names the letters on the stands */
@@ -80,6 +81,9 @@ export default function setup(E, { struggled, unit, game = {} }) {
     await drop(pd0); mistakes = 0;
     if (idx < deck.length) { await E.say('Now you! Drag each picture to its letter.'); document.body.dataset.dragReady = 1; }
     await done;
+    if (keys.includes('ches') && unit.letters.includes('chaf')) {   /* Chaf has no picture: it joins Ches, the letter that sounds just like it */
+      const pd = peds.find(x => x.userData.key === 'ches'), c = E.letter('chaf', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, 1.3 * pd.scale.x, .6)); c.scale.setScalar(pd.scale.x); E.scene.add(c); await E.popIn(c, pd.scale.x);
+      await E.say('This is Chaf. Kaf without its dot.'); E.hop(L.ches, .3); await E.say('Chaf sounds just like Ches!'); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Great matching! Every picture found its letter.' : null };
   };

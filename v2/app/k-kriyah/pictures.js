@@ -40,13 +40,17 @@ export function makePictures(E) {
       g.add(mesh(E.rbox(1.1, .7, .14, .05), wool, 0, 0, 0)); [-.22, .22].forEach(y => g.add(mesh(new THREE.BoxGeometry(1.12, .07, .15), stripe, 0, y, 0)));
       g.add(mesh(new THREE.BoxGeometry(.4, .1, .16), M(0xd9dde3, { metalness: .6, roughness: .3 }), 0, .4, 0));
       [-.48, .48].forEach(x => { for (let i = 0; i < 4; i++) g.add(mesh(new THREE.CylinderGeometry(.012, .012, .42, 6), wool, x + (i - 1.5) * .025, -.55, .03)); }); return g; },
-    tapuach() { const g = new THREE.Group(); const a = mesh(new THREE.SphereGeometry(.45, 28, 20), M(0xe0312b, { roughness: .25, clearcoat: 1 }), 0, -.08, 0); a.scale.set(1.05, .95, 1); g.add(a);   /* an apple */
-      g.add(mesh(new THREE.CylinderGeometry(.03, .04, .22, 8), M(0x6b4423), 0, .43, 0)); const lf = mesh(new THREE.SphereGeometry(.14, 14, 8), M(0x3fae4a, { roughness: .5 }), .15, .45, 0); lf.scale.set(1.3, .45, .7); lf.rotation.z = -.4; g.add(lf); return g; },
+    taleh() { const g = new THREE.Group(), wool = M(0xfbf7ee, { roughness: .9 }), face = M(0x3b2f2a, { roughness: .6 });   /* a lamb (taleh): fluffy wool, dark face and legs */
+      [[0, 0], [-.22, .05], [.22, .05], [-.12, .18], [.12, .18], [-.3, -.1], [.3, -.1], [0, .2]].forEach(([x, y]) => g.add(mesh(new THREE.SphereGeometry(.22, 16, 12), wool, x, y, 0)));
+      const head = mesh(new THREE.SphereGeometry(.16, 16, 12), face, .48, .22, .05); head.scale.set(1.1, .95, .9); g.add(head);
+      [[.42, .36], [.56, .34]].forEach(([x, y]) => { const e = mesh(new THREE.SphereGeometry(.06, 10, 8), face, x, y, -.03); e.scale.set(1.4, .6, .8); g.add(e); });
+      g.add(mesh(new THREE.SphereGeometry(.035, 8, 6), M(0xffffff), .58, .26, .17, false));
+      [[-.25, -.1], [-.08, .1], [.1, -.1], [.25, .1]].forEach(([x, z]) => g.add(mesh(new THREE.CylinderGeometry(.05, .05, .35, 8), face, x, -.4, z))); g.position.y = .08; return g; },
     yad() { const g = new THREE.Group(), skin = M(0xf2c9a0, { roughness: .55 });   /* a hand, waving */
       const palm = mesh(E.rbox(.62, .6, .2, .12), skin, 0, -.2, 0); g.add(palm);
       [[-.22, .26, .44], [-.075, .3, .5], [.075, .29, .48], [.22, .24, .4]].forEach(([x, y, h]) => { const f = mesh(new THREE.CapsuleGeometry(.07, h - .14, 6, 12), skin, x, y, 0); g.add(f); });
       const th = mesh(new THREE.CapsuleGeometry(.075, .22, 6, 12), skin, .4, -.15, 0); th.rotation.z = -.9; g.add(th); g.rotation.z = .12; return g; },
-    yeled() { const k = E.person({ shirt: 0x5aa0e6, pants: 0x2a3550 }); const g = new THREE.Group(); k.scale.setScalar(.42); k.position.y = -.6; g.add(k); return g; },   /* a boy */
+    yeled() { const k = E.person({ shirt: 0x5aa0e6, pants: 0x2a3550 }); const g = new THREE.Group(); k.scale.setScalar(.62); k.position.y = -.85; g.add(k); return g; },   /* a boy */
     kos() { const g = new THREE.Group(), silver = M(0xd8dde6, { metalness: .9, roughness: .15 });   /* a silver Kiddush cup with wine */
       const cup = mesh(new THREE.CylinderGeometry(.34, .22, .5, 28, 1, true), silver, 0, .25, 0); cup.material.side = THREE.DoubleSide; g.add(cup);
       g.add(mesh(new THREE.CylinderGeometry(.31, .31, .03, 28), M(0x7a1030, { roughness: .1, clearcoat: 1 }), 0, .44, 0));

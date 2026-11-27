@@ -3,14 +3,20 @@
    on each label an orange arrow points at the difference (Zayin's crown, Hei's gap). He drags each letter card to its crate (or taps the crate).
    Show-then-try demo for each pair; a wrong answer points an arrow at the difference on the card and says what to look for;
    if he struggles, the right crate glows. */
-const PAIRS = { 3: [['vov', 'zayin'], ['hei', 'ches']] };
+const PAIRS = { 3: [['vov', 'zayin'], ['hei', 'ches']] };   /* a game can bring its own pairs (Unit 4: Beis/Kaf, then Kaf/Chaf) */
 /* the place to look on each letter (font units), and what to say about it */
-const LOOK = { vov: 'No crown. That is Vov.', zayin: 'A crown on top! That is Zayin.', hei: 'The leg doesn’t touch the roof. That is Hei.', ches: 'The leg touches the roof. That is Ches.' };
-const CLUE = { vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', hei: 'Hei’s leg doesn’t touch the roof.', ches: 'Ches’s leg touches the roof.' };
-export default function setup(E, { struggled, unit }) {
+const LOOK = { vov: 'No crown. That is Vov.', zayin: 'A crown on top! That is Zayin.', hei: 'The leg doesn’t touch the roof. That is Hei.', ches: 'The leg touches the roof. That is Ches.',
+  beis: 'A tail at the bottom! That is Beis.', kafRound: 'Round at the bottom. That is Kaf.', kaf: 'A dot inside! That is Kaf.', chaf: 'No dot. That is Chaf.' };
+const CLUE = { vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', hei: 'Hei’s leg doesn’t touch the roof.', ches: 'Ches’s leg touches the roof.',
+  beis: 'Beis has a tail at the bottom.', kafRound: 'Kaf is round at the bottom.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.' };
+/* in a Beis/Kaf round the thing to see is the bottom, in a Kaf/Chaf round the dot */
+const say = (T, k, pr) => T[k === 'kaf' && pr.includes('beis') ? 'kafRound' : k];
+const WATCH = { zayin: 'A crown on top!', ches: 'The leg touches the roof!', kaf: 'Round at the bottom!', chaf: 'No dot!' };
+export default function setup(E, { struggled, unit, game }) {
   const { THREE, S } = E;
-  const pairs = PAIRS[unit.n] || PAIRS[3];
-  const kid = E.ari(); E.scene.add(kid);
+  const pairs = (game && game.pairs) || PAIRS[unit.n] || PAIRS[3];
+  const feat = (k, pr) => E.sameShape(pr[0], pr[1]) ? E.DOT_FEATURE[k] : E.FEATURES[k];   /* a dot pair: point at the dot place */
+  const kid = E.unitBoy(unit.n); E.scene.add(kid);
   const wood = E.M(0xc68a52, { roughness: .6 }), wood2 = E.M(0xa86f3c, { roughness: .6 });
   function crate() { const c = new THREE.Group(); c.add(E.mesh(E.rbox(2.0, 1.2, 1.4, .08), wood, 0, .6, 0)); for (let i = 0; i < 3; i++) c.add(E.mesh(new THREE.BoxGeometry(2.05, .1, .05), wood2, 0, .25 + i * .35, .72));
     c.add(E.mesh(E.rbox(1.55, 1.6, .1, .08), E.M(0xfffaf0, { roughness: .4 }), 0, 1.9, .45)); E.scene.add(c); return c; }
@@ -28,7 +34,7 @@ export default function setup(E, { struggled, unit }) {
   });
   function setPair(pr) { crates.forEach(c => { c.children.filter(o => o.userData && o.userData.inPile).forEach(o => c.remove(o)); c.userData.inCrate = 0; });   /* right crate: the first letter of the pair (as Hebrew reads), left crate: the second */
     pair = pr; labels.forEach(l => l.parent && l.parent.remove(l)); labels = pr.map((k, i) => { const l = E.letter(k, 1.3); l.position.set(0, 1.9, .62); crates[i].add(l); crates[i].userData.key = k; return l; });
-    pr.forEach((k, i) => E.pointAt(arrows[i], labels[i], k, 1.3));
+    pr.forEach((k, i) => E.pointAt(arrows[i], labels[i], k, 1.3, feat(k, pr)));
   }
   E.onFrame(t => {
     if (card.visible && !dragging && !busy) { card.position.y = cardHome.y + Math.sin(t * 2.2) * .08; card.rotation.y = Math.sin(t * 1.1) * .25; }
@@ -55,20 +61,20 @@ export default function setup(E, { struggled, unit }) {
       if (idx < deck.length) { busy = true; await setCard(deck[idx]); busy = false; enabled = true; } else onDone();
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; wrongInRow++; kid.mood('think'); await back(); busy = true; await E.shake(card, .15);
-      E.pointAt(cardArrow, card, k, 1.9);
-      await E.say('Look! ' + LOOK[k]); cardArrow.visible = false; busy = false; kid.mood('calm');
+      E.pointAt(cardArrow, card, k, 1.9, feat(k, pair));
+      await E.say('Look! ' + say(LOOK, k, pair)); cardArrow.visible = false; busy = false; kid.mood('calm');
       if (wrongInRow >= 2 || mistakes >= 3) help = true;
       await E.say('Try again!');
     }
   }
   async function playPair(pr, first) {
     setPair(pr); E.sfx.whoosh(); crates.forEach(c => E.hop(c, .2, 300));
-    await E.say(CLUE[pr[1]] + ' ' + CLUE[pr[0]]);
+    await E.say(say(CLUE, pr[1], pr)); await E.say(say(CLUE, pr[0], pr));   /* two lines: each 12 words or fewer */
     let d; do { d = Array.from({ length: 6 }, (_, i) => pr[i % 2]).sort(() => Math.random() - .5); } while (new RegExp(`(${pr[0]},){2}${pr[0]}|(${pr[1]},){2}${pr[1]}`).test(d.join(',')));
     deck = [pr[1], ...d]; idx = 0; E.setProgress(deck.length, 0);
     await setCard(deck[0]); busy = false;
-    await E.say('Watch me. ' + (pr[1] === 'zayin' ? 'A crown on top!' : 'The leg touches the roof!'));
-    E.pointAt(cardArrow, card, pr[1], 1.9); await E.wait(600); cardArrow.visible = false;
+    await E.say('Watch me. ' + WATCH[pr[1]]);
+    E.pointAt(cardArrow, card, pr[1], 1.9, feat(pr[1], pr)); await E.wait(600); cardArrow.visible = false;
     busy = true; let [x, y] = E.toScreen(card.position); E.hand.at(x, y); await E.wait(350);
     const p0 = card.position.clone(), p1 = centre(crates[1]).add(new THREE.Vector3(.3, .6, .6)); await E.tween(1200, q => { card.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(card.position); E.hand.at(a, b); });
     E.hand.hide(); busy = false; enabled = true;
@@ -80,9 +86,9 @@ export default function setup(E, { struggled, unit }) {
   return async () => {
     await E.say('Look-alike letters! Each one goes in its own box.');
     await playPair(pairs[0], true);
-    await E.say('Great! Now Hei and Ches!');
+    await E.say('Great! Now ' + E.LETTERS[pairs[1][0]].name + ' and ' + E.LETTERS[pairs[1][1]].name + '!');
     await playPair(pairs[1], false);
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
-    return { stars, line: stars >= 2 ? 'Great detective work! Crown or no crown, leg or gap!' : null };
+    return { stars, line: stars >= 2 ? (unit.n === 3 ? 'Great detective work! Crown or no crown, leg or gap!' : 'Great detective work! You know Beis, Kaf and Chaf!') : null };
   };
 }

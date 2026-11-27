@@ -7,6 +7,7 @@ const N = k => ({ k, by: 'name' }), SND = k => ({ k, by: 'sound' });
 const QS = {
   1: [N('beis'), N('alef'), N('veis'), SND('beis'), SND('veis'), { k: 'alef', by: 'quiet' }, N('veis'), N('beis'), SND('veis')],
   3: [N('zayin'), N('vov'), SND('zayin'), N('ches'), N('hei'), N('daled'), { k: 'alef', by: 'quiet' }, N('beis'), SND('gimmel')],   /* no 'Which says ch?' until the rebbe's recording */
+  4: [N('kaf'), N('tes'), N('chaf'), SND('kaf'), N('yud'), SND('tes'), N('beis'), SND('yud'), N('ches')],   /* Beis comes with Kaf; no 'Which says ch?' */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {
@@ -51,9 +52,10 @@ export default function setup(E, { struggled, unit }) {
   let cur = null;
   E.onPointer('down', e => { if (!active) return; const l = E.pickFrom(e, keys.map(k => L[k]).filter(l => l.visible)); if (l && resolveQ) { const r = resolveQ; resolveQ = null; r(l.userData.key); } });
   /* the three letters for a question: the answer, its look-alike if it has one, then a new letter and an older one */
-  const PAIR = { beis: 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', hei: 'ches', ches: 'hei' };
-  const SAME = { vov: 'veis', veis: 'vov' };
-  const CLUE = { beis: 'Beis has a dot.', veis: 'Veis has no dot.', zayin: 'Zayin has a crown.', vov: 'Vov has no crown.', ches: 'Ches\u2019s leg touches the roof.', hei: 'Hei\u2019s leg doesn\u2019t touch the roof.' };   /* Vov and Veis both say v: never ask one with the other on screen */
+  const PAIR = { beis: unit.n >= 4 ? 'kaf' : 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', hei: 'ches', ches: 'hei', kaf: 'chaf', chaf: 'kaf' };   /* from Unit 4, Beis is shown with its look-alike Kaf */
+  const SAME = { vov: 'veis', veis: 'vov', chaf: 'ches', ches: 'chaf' };   /* the same sound */
+  const CLUE = { beis: 'Beis has a dot.', veis: 'Veis has no dot.', zayin: 'Zayin has a crown.', vov: 'Vov has no crown.', ches: 'Ches\u2019s leg touches the roof.', hei: 'Hei\u2019s leg doesn\u2019t touch the roof.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.' };
+  const clue = (k, got) => (k === 'beis' && got === 'kaf') ? 'Beis has a tail at the bottom.' : (k === 'kaf' && got === 'beis') ? 'Kaf is round at the bottom.' : CLUE[k];   /* Vov and Veis both say v: never ask one with the other on screen */
   const mix = a => a.slice().sort(() => Math.random() - .5);
   function pick(k) {
     if (keys.length <= 3) return mix(keys);
@@ -67,7 +69,7 @@ export default function setup(E, { struggled, unit }) {
   async function showSet(k) { set = pick(k); if (keys.length > 3) { set.sort((a, b) => E.AB(a) - E.AB(b)); set.forEach((c, i) => slot[c] = i); } else mix([0, 1, 2]).forEach((s, i) => slot[set[i]] = s);   /* right to left in Alef-Beis order; with only three letters (Unit 1) they mix, so the place doesn't give the answer */ E.sfx.whoosh(); await place(true); }
 
   const line = q => q.by === 'quiet' ? 'Which letter is quiet? Tap it.' : q.by === 'sound' ? ['Which letter says', S(E.LETTERS[q.k].snd), '? Tap it.'] : 'Tap ' + E.LETTERS[q.k].name + '.';
-  const explain = k => k === 'alef' ? 'That is Alef. Alef is quiet.' : k === 'beis' ? ['That is Beis. It has a dot. Beis says', S('b')] : k === 'veis' ? ['That is Veis. No dot. Veis says', S('v')]
+  const explain = k => k === 'alef' ? 'That is Alef. Alef is quiet.' : k === 'beis' ? ['That is Beis. It has a dot. Beis says', S('b')] : k === 'veis' ? ['That is Veis. No dot. Veis says', S('v')] : k === 'kaf' ? ['That is Kaf. It has a dot. Kaf says', S('k')] : k === 'chaf' ? ['No dot: Chaf. It says', S('ch')]
     : ['That is ' + E.LETTERS[k].name + '. ' + E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd)];
   const Qs = (QS[unit.n] || QS[1]).slice();
   /* the older letter he finds hardest (or hasn't seen longest) takes the last older-letter question (RESEARCH.md, gain 5) */
@@ -96,8 +98,8 @@ export default function setup(E, { struggled, unit }) {
       if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); if (q.first && !easy) toBasket(got); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
         await E.say(q.k === 'alef' ? 'Yes! Alef. Alef is quiet.' : ['Yes!', ...E.nameLine(q.k)]); rebbe.mood('calm'); }
       else { E.sfx.boop(); inRow++; rebbe.mood('think'); await E.shake(L[got], .15); await E.say(explain(got));
-        if (PAIR[got] === q.k && CLUE[q.k]) {   /* a look-alike mix-up: show and say what to look for */
-          [got, q.k].forEach((k, i) => E.pointAt(arrows[i], L[k], k, 1.6, feat(k, i ? got : q.k))); await E.say(CLUE[q.k]); arrows.forEach(a => a.visible = false); }
+        if ((PAIR[got] === q.k || PAIR[q.k] === got) && clue(q.k, got)) {   /* a look-alike mix-up: show and say what to look for */
+          [got, q.k].forEach((k, i) => E.pointAt(arrows[i], L[k], k, 1.6, feat(k, i ? got : q.k))); await E.say(clue(q.k, got)); arrows.forEach(a => a.visible = false); }
         glowOn = L[q.k]; E.hop(L[q.k]); await E.say(q.k === 'alef' ? 'Here is Alef, the quiet one.' : ['Here is ' + E.LETTERS[q.k].name + '.', ...E.nameLine(q.k)]); glowOn = null; rebbe.mood('calm');
         if (q.first) queue.push({ ...q, first: false }); }
       if (hidden) { hidden.visible = true; hidden = null; }

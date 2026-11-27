@@ -446,6 +446,10 @@ export const tatty = () => { const p = pictureCard('tatty', () => person({ beard
 export const rebbe = () => { const p = pictureCard('rebbe', () => person({ beard: 0x8a8a8a, hat: true, jacket: 0x1d2433, pants: 0x1d2433, hair: 0x8a8a8a, skin: 0xf6c9a2 })); p.scale.setScalar(1.5); return p; };
 export const mommy = () => { const p = pictureCard('mommy', () => person({ woman: true, hair: 0x5a3a22, dress: 0x3f5fa8, shirt: 0x3f5fa8 }));   /* long sleeves in the dress colour */ p.scale.setScalar(1.35); return p; };
 export const ari = () => pictureCard('ari', () => person({ kippah: 0xd97706, hair: 0x3b2a1a }));
+export const shloimy = () => pictureCard('shloimy', () => person({ kippah: 0x2e8b57, hair: 0x8a5a3c }));
+export const dovid = () => pictureCard('dovid', () => person({ kippah: 0x6a3fa0, hair: 0x2b1d12, shirt: 0xeaf4ff }));
+/* each unit's own boy: Mendy, Shloimy, Ari, Dovid */
+export const unitBoy = n => ({ 2: shloimy, 3: ari, 4: dovid }[n] || mendy)();
 export const yaakov = () => pictureCard('yaakov', () => person({ kippah: 0xc0392b, hair: 0xb5532a, shirt: 0xfff7e0, skin: 0xffdcc2 }));
 
 /* a little jump, used for joy */
@@ -478,25 +482,27 @@ export const LETTERS = { alef: { ch: 'א', name: 'Alef' }, beis: { ch: 'ב', nam
   tes: { ch: 'ט', name: 'Tes', snd: 't' }, yud: { ch: 'י', name: 'Yud', snd: 'y' }, kaf: { ch: 'כ', name: 'Kaf', dagesh: true, snd: 'k' }, chaf: { ch: 'כ', name: 'Chaf', snd: 'ch' } };
 export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB' };
 /* letters that can hold a dagesh: where the dot sits (Beis/Veis, Kaf/Chaf share one shape each) */
+/* the full letter height in font units (baseline to the top of the roof's little tag), and its middle */
+const REF_H = 64.7, REF_CY = 32.35;
 const DOT_AT = { 'ב': [24, 29.6], 'כ': [22, 29.6] };
 export const sameShape = (a, b) => LETTERS[a].ch === LETTERS[b].ch;
 /* a letter's place in the Alef-Beis (for putting things in order, right to left) */
 export const AB = k => Object.keys(LETTERS).indexOf(k);
 export function letter(key, height = 2.6, color = 'blue') {
-  const L = LETTERS[key], { g: geo, c } = letterGeo(L.ch); const bb = geo.boundingBox, H = bb.max.y - bb.min.y, W = bb.max.x - bb.min.x, s = height / H;
-  const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = true; m.receiveShadow = true; m.scale.setScalar(s); grp.add(m);
-  const hit = new THREE.Mesh(new THREE.BoxGeometry(W * s * 1.15, height * 1.15, height * .5), hitMat); hit.castShadow = false; grp.add(hit);
+  const L = LETTERS[key], { g: geo, c } = letterGeo(L.ch); const bb = geo.boundingBox, W = bb.max.x - bb.min.x, s = height / REF_H, oy = (c.y - REF_CY) * s;   /* every letter on the same lines: Yud stays small, up at the top */
+  const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = true; m.receiveShadow = true; m.scale.setScalar(s); m.position.y = oy; grp.add(m);
+  const Hs = (bb.max.y - bb.min.y) * s, hit = new THREE.Mesh(new THREE.BoxGeometry(Math.max(W * s, height * .45) * 1.15, Math.max(Hs, height * .45) * 1.15, height * .5), hitMat); hit.position.y = oy; hit.castShadow = false; grp.add(hit);
   let dot = null;
   const dp = DOT_AT[L.ch];
   if (dp) {   /* the dagesh sits in the middle of the letter's open space (font units /10: Beis x 24, y 29.6 of 56.1 x 64.7) */
-    dot = mesh(new THREE.SphereGeometry(.2 * height / 2.6, 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - c.y) * s, .42 * height / 2.6); grp.add(dot); dot.visible = !!L.dagesh; }
+    dot = mesh(new THREE.SphereGeometry(Math.max(.2 * height / 2.6, .075), 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - REF_CY) * s, .42 * height / 2.6); grp.add(dot); dot.visible = !!L.dagesh; }
   grp.userData = { key, body: m, dot, hit, height, width: W * s, color, dotHome: dot ? dot.position.clone() : null };
   grp.setKey = k => { grp.userData.key = k; if (dot) { dot.visible = !!LETTERS[k].dagesh; dot.scale.setScalar(1); dot.position.copy(grp.userData.dotHome); } };
   grp.setColor = col => { m.material = letterMats(col); grp.userData.color = col; };
   return grp;
 }
 /* the outline as 2D points in the letter's own space (for Feel the Shape) */
-export function fontToLocal(key, height, x, y) { const L = LETTERS[key], { g, c } = letterGeo(L.ch); const H = g.boundingBox.max.y - g.boundingBox.min.y, s = height / H; return new THREE.Vector3((x / 10 - c.x) * s, (y / 10 - c.y) * s, 0); }
+export function fontToLocal(key, height, x, y) { const L = LETTERS[key], { g, c } = letterGeo(L.ch); const s = height / REF_H; return new THREE.Vector3((x / 10 - c.x) * s, (y / 10 - REF_CY) * s, 0); }
 export const nameLine = key => key === 'alef' ? ['Alef. Alef is quiet.'] : [LETTERS[key].name + ' says', S(LETTERS[key].snd)];
 
 /* a glossy gold 3D star (used as a "done" mark above a letter, never below it, so it can't look like a nekudah) */
@@ -515,8 +521,10 @@ export function arrow3d(size = .35, dir = 'down') {
 }
 /* where to look on each letter (font units) and which way the arrow points at it */
 export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [135, 375, 'left'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [205, 440, 'left'],
-  beis: [530, 70, 'left'], kaf: [450, 35, 'left'] };   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+  beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'] };   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
+/* the place to look on k when it might be taken for other: the dot place for a dot pair or any lone dotted letter, the shape for Beis/Kaf */
+export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : ((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]);
 export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'] };
 /* put an arrow at a letter's feature (the letter object, its height); returns false if the letter has none */
 export function pointAt(arrow, l, key, height, feat) { const f = feat || FEATURES[key]; if (!f) return false; const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;

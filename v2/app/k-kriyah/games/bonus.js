@@ -4,9 +4,9 @@
    A wrong tap is named kindly ("That is Veis. No dot."), and nothing is lost when a letter lands. */
 export default function setup(E, { unit }) {
   const pool = [...unit.known, ...unit.letters];
-  const R = unit.n === 1 ? ['beis', 'veis', 'alef'] : unit.letters;   /* the letter to catch in each round */
+  const R = unit.n === 1 ? ['beis', 'veis', 'alef'] : unit.letters;   /* Unit 4: four short rounds */   /* the letter to catch in each round */
   const { THREE, S } = E;
-  const boy = unit.n === 3 ? E.ari() : unit.n === 2 ? E.pictureCard('shloimy', () => E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c })) : E.mendy(); E.scene.add(boy);   /* each unit's own boy */
+  const boy = E.unitBoy(unit.n); E.scene.add(boy);   /* each unit's own boy */
   const sign = new THREE.Group(); sign.add(E.mesh(E.rbox(1.25, 1.35, .14, .1), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); sign.add(E.mesh(E.rbox(1.05, 1.15, .08, .06), E.M(0xfffaf0), 0, 0, .06));
   sign.add(E.mesh(new THREE.CylinderGeometry(.05, .05, 1.2, 8), E.M(0x8a5a3c), 0, -1.2, -.05)); E.scene.add(sign);
   const arrow = E.arrow3d(.25), hint = E.glowSprite('#fff7b0', 1.6, 0); E.scene.add(hint); let missRound = 0;   /* a wrong catch: an arrow shows the place to look; after two, the letters to catch glow */
@@ -39,13 +39,13 @@ export default function setup(E, { unit }) {
     if (u.key === want) { u.busy = true; caught++; E.joy(l.position.clone()); boy.mood('cheer'); setTimeout(() => boy.mood('calm'), 700);
       const p0 = l.position.clone(), to = basket.position.clone().add(new THREE.Vector3(0, .5, 0)); await E.tween(420, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * .6); });
       u.gone = true; E.scene.remove(l); E.sfx.pop(); }
-    else { wrong++; missRound++; pauseUntil = performance.now() + 1600 * E.F; u.t0 += 1200; E.pointAt(arrow, l, u.key, 1.0, E.sameShape(u.key, want) ? E.DOT_FEATURE[u.key] : E.FEATURES[u.key]); setTimeout(() => { if (arrow.parent === l) arrow.visible = false; }, 1300 * E.F); E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its leg doesn\u2019t touch the roof.', vov: 'No crown.', zayin: 'It has a crown.', ches: 'Its leg touches the roof.' })[u.key], false); }
+    else { wrong++; missRound++; pauseUntil = performance.now() + 1600 * E.F; u.t0 += 1200; E.pointAt(arrow, l, u.key, 1.0, E.featFor(u.key, want)); setTimeout(() => { if (arrow.parent === l) arrow.visible = false; }, 1300 * E.F); E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: want === 'kaf' ? 'It has a tail at the bottom.' : 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its leg doesn\u2019t touch the roof.', vov: 'No crown.', zayin: 'It has a crown.', ches: 'Its leg touches the roof.', kaf: want === 'beis' ? 'It is round at the bottom.' : 'It has a dot.', chaf: 'No dot.', tes: 'It is round, with a curl.', yud: 'It is the little one.' })[u.key], false); }
   });
   async function round(k, n, every, ms) {
     want = k; missRound = 0; setSign(k); E.hop(boy, .3);
     await E.say(k === 'alef' ? 'Catch every Alef, the quiet one!' : E.LETTERS[k].snd === 'ch' ? 'Catch every ' + E.LETTERS[k].name + ', like challah!' : ['Catch every ' + E.LETTERS[k].name + '!', S(E.LETTERS[k].snd)]);
     active = true; document.body.dataset.rainReady = k; homeBtn(false);   /* no leaving by accident while letters fall */
-    const others = keysBut(k), near = others.filter(x => unit.letters.includes(x) || x === ({ beis: 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', ches: 'hei', hei: 'ches' })[k]), far = others.filter(x => !near.includes(x));
+    const others = keysBut(k), near = others.filter(x => unit.letters.includes(x) || x === ({ beis: 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', ches: 'hei', hei: 'ches', kaf: 'beis', chaf: 'kaf' })[k]), far = others.filter(x => !near.includes(x));
     const mix = Array.from({ length: n }, (_, i) => i % 2 === 0 ? k : (i % 6 === 5 && far.length ? far[(i / 6 | 0) % far.length] : near[(i / 2 | 0) % near.length])).sort(() => Math.random() - .5);   /* mostly this unit's letters, a few older ones */
     for (const m of mix) { drop(m, ms); await new Promise(r => setTimeout(r, every)); }   /* real time, even in test runs */
     while (falling.length) await new Promise(r => setTimeout(r, 200));
@@ -54,7 +54,7 @@ export default function setup(E, { unit }) {
   const homeBtn = on => { const h = E.$('#home'); if (h) h.style.display = on ? '' : 'none'; };
   const keysBut = k => pool.filter(x => x !== k);
   return async () => {
-    E.setProgress(3, 0);
+    E.setProgress(R.length, 0);
     await E.say('Bonus round! Letters are falling from the clouds.');
     setSign(R[0]); await E.say('Watch me. I catch ' + (R[0] === 'alef' ? 'an Alef' : 'a ' + E.LETTERS[R[0]].name) + '.');
     drop(R[0], 2600); targets--; const demo = falling[falling.length - 1]; await E.wait(900);
@@ -62,9 +62,8 @@ export default function setup(E, { unit }) {
     active = true; await new Promise(r => { const iv = setInterval(() => { if (demo.userData.busy || demo.userData.gone) { clearInterval(iv); r(); } }, 50); E.$('#c').dispatchEvent(new PointerEvent('pointerdown', { clientX: E.toScreen(demo.position)[0], clientY: E.toScreen(demo.position)[1], bubbles: true, pointerId: 1 })); });
     active = false; caught = 0; await E.wait(600);
     await E.say('Now you! Be quick!');
-    await round(R[0], 8, 1500, 4600); E.setProgress(3, 1);
-    await round(R[1], 9, 1300, 4000); E.setProgress(3, 2);
-    await round(R[2], 10, 1100, 3500); E.setProgress(3, 3);
+    const SP = R.length > 3 ? [[7, 1500, 4600], [8, 1400, 4300], [9, 1250, 3900], [10, 1100, 3500]] : [[8, 1500, 4600], [9, 1300, 4000], [10, 1100, 3500]];   /* each round a little faster */
+    for (let i = 0; i < R.length; i++) { await round(R[i], ...SP[i]); E.setProgress(R.length, i + 1); }
     const share = targets ? caught / targets : 0, stars = share >= .8 && wrong <= 2 ? 3 : share >= .5 ? 2 : 1;
     window.__bonus = { caught, targets, wrong };
     return { stars, line: stars === 3 ? 'What a catcher! You caught ' + caught + ' letters!' : stars === 2 ? 'Good catching! You caught ' + caught + ' letters!' : null };

@@ -6,11 +6,13 @@
 const PLAN = {
   1: { R: [['beis', 'beis'], ['alef', 'beis'], ['veis', 'veis'], ['beis', 'veis'], ['alef', 'alef'], ['veis', 'beis']], demo: ['veis', 'beis', 'Hmm. Watch me. No dot. That is not a Beis!'] },
   3: { R: [['vov', 'vov'], ['vov', 'zayin'], ['ches', 'ches'], ['hei', 'ches'], ['zayin', 'zayin'], ['ches', 'hei']], demo: ['zayin', 'vov', 'Hmm. Watch me. A crown! That is not a Vov.'] },
+  4: { R: [['tes', 'tes'], ['kaf', 'chaf'], ['yud', 'yud'], ['beis', 'kaf'], ['chaf', 'chaf'], ['chaf', 'kaf']], demo: ['kaf', 'beis', 'Hmm. Watch me. Round at the bottom. That is not a Beis!'] },
   2: { R: [['gimmel', 'gimmel'], ['daled', 'hei'], ['hei', 'hei'], ['gimmel', 'daled'], ['beis', 'beis'], ['veis', 'beis']],   /* the last two bring back Unit 1 */ demo: ['daled', 'gimmel', 'Hmm. Watch me. No foot. That is not a Gimmel!'] },
 };
 /* what to look for, in a few words */
-const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof' };
-const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.' };
+const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof', tes: 'the round one', yud: 'the little one', kaf: 'with the dot', chaf: 'with no dot' };
+const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.', tes: 'Tes is round, with a curl.', yud: 'Yud is the little one.', kaf: 'A dot!', chaf: 'No dot.' };
+const lookOf = (k, c) => k === 'beis' && c === 'kaf' ? 'Beis has a tail at the bottom.' : k === 'kaf' && c === 'beis' ? 'Kaf is round at the bottom.' : LOOK[k];
 export default function setup(E, { struggled, unit }) {
   const plan = PLAN[unit.n] || PLAN[1];
   const { THREE, S, ICON } = E;
@@ -50,8 +52,8 @@ export default function setup(E, { struggled, unit }) {
   const unmark = () => { ring.visible = false; arrow.visible = false; };
   /* why the letter is not what Yaakov said, in a few words */
   const why = (k, c) => k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
-    : k === 'beis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
-    : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : LOOK[k]) + ' This is ' + E.LETTERS[k].name + '.';
+    : k === 'beis' && c === 'veis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
+    : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : lookOf(k, c)) + ' This is ' + E.LETTERS[k].name + '.';
   const an = k => k === 'alef' ? 'an Alef' : 'a ' + E.LETTERS[k].name;
   function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters])].slice(0, 3).sort((a, b) => E.AB(a) - E.AB(b)).forEach((k, i) => { const t = E.letter(k, .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
   const onBoard = () => { const [bx, by] = E.toScreen(E.worldPos(board)), [tx, ty] = E.toScreen(dragT.position); return Math.hypot(bx - tx, by - ty) < Math.min(innerWidth, innerHeight) * .16; };
@@ -68,7 +70,8 @@ export default function setup(E, { struggled, unit }) {
       const r = resolveFix; resolveFix = null; busy = false; r && r();
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; t.userData.busy = true; await E.tween(350, k => t.position.lerpVectors(p0, home, k), E.ease.out); await E.shake(t, .15); t.userData.busy = false;
-      await E.say('That is ' + E.LETTERS[t.userData.key].name + '. Find ' + E.LETTERS[fixKey].name + (CUE[fixKey] ? ', ' + CUE[fixKey] : '') + '!');
+      const cue = fixKey === 'kaf' && tiles.some(x => x.userData.key === 'beis') ? 'round at the bottom' : CUE[fixKey];   /* Beis has a dot too */
+      await E.say('That is ' + E.LETTERS[t.userData.key].name + '. Find ' + E.LETTERS[fixKey].name + (cue ? ', ' + cue : '') + '!');
       help = true;
     }
   }
@@ -98,7 +101,7 @@ export default function setup(E, { struggled, unit }) {
     } else {
       E.sfx.boop(); if (!demo && !missed) mistakes++; missed = true; yak.mood('think'); help = help || mistakes >= 2;
       mark(shownKey);
-      if (right) { await E.say(shownKey === 'alef' ? 'Look again. It is Alef, not a house shape.' : 'Look again. ' + LOOK[shownKey] + ' It is ' + E.LETTERS[shownKey].name + '.'); unmark(); yak.mood('calm');
+      if (right) { await E.say(shownKey === 'alef' ? 'Look again. It is Alef, not a house shape.' : 'Look again. ' + lookOf(shownKey, curClaim) + ' It is ' + E.LETTERS[shownKey].name + '.'); unmark(); yak.mood('calm');
         await E.say('So is Yaakov right? Try again.');               /* he answers again (it doesn't count) */
         if (await ask()) { E.sfx.chime(); yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say('Yes! Yaakov is right.'); }
         else await E.say('Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.');
