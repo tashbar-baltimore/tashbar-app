@@ -11,14 +11,15 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4; p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
-  const PS = () => P ? (peds.length > 3 ? .5 : .62) : (peds.length > 3 ? .88 : 1);
+  const PS = () => P ? (peds.length > 3 ? .6 : .62) : (peds.length > 3 ? .88 : 1);
   const card = new THREE.Group(); E.scene.add(card); card.visible = false;
   const cardGlow = E.glowSprite('#ffffff', 2.6, .7); cardGlow.position.z = -.4; card.add(cardGlow);
+  const cardBack = E.mesh(E.rbox(2.05, 2.05, .08, .2), E.M(0xffe9b8, { roughness: .4, clearcoat: .6, depthWrite: false }), 0, 0, -.35, false); cardBack.renderOrder = -1; card.add(cardBack);   /* a white card behind the picture, so it never melts into the painting */
   const hint = E.glowSprite('#fff7b0', 2.8, 0); E.scene.add(hint);
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
   E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? 1.12 : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
     if (p) { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
-    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.0, 2.2);   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
+    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.15, 2.2);   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
     const m = peds.length; peds.forEach((pd, i) => { pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* right to left: Gimmel, Daled, Hei, then Beis */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
@@ -42,7 +43,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   E.onPointer('up', () => { if (!dragging) return; dragging = false; peds.forEach(pd => pd.scale.setScalar(PS())); drop(nearest()); });
 
   async function showCard(w) {
-    word = w; if (pic) card.remove(pic); pic = PIC[w](); card.add(pic); card.position.copy(cardHome); card.rotation.set(0, 0, 0); missed = false;
+    word = w; if (pic) card.remove(pic); pic = PIC[w](); card.add(pic); const wide = pic.userData.card && pic.userData.card.scale.x > 2.2; pic.scale.setScalar(wide ? .78 : 1); cardBack.scale.x = pic.userData.card ? Math.max(1, (pic.userData.card.scale.x * (wide ? .78 : 1) + .35) / 2.05) : 1;   /* a wide picture (the cloud) is a little smaller, on a wider card */   /* a wide picture (the cloud) gets a wider card */ card.position.copy(cardHome); card.rotation.set(0, 0, 0); missed = false;
     await E.popIn(card, P ? .9 : .85); busy = false;
     await E.say(WORDS[w].say);
   }
@@ -55,17 +56,17 @@ export default function setup(E, { struggled, unit, game = {} }) {
       await E.tween(450, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar((P ? .9 : .85) * (1 - q * .9)); });
       card.visible = false; card.scale.setScalar(1); E.joy(to); E.hop(L[k], .4); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F);
       idx++; E.setProgress(deck.length, idx);
-      await E.say(['Yes! ' + WORD_NAME[w] + ' starts with', S(snd), '. ' + name + '!']);
+      await E.say(E.quiet(k) ? 'Yes! ' + WORD_NAME[w] + ' starts with ' + name + ', the quiet letter!' : ['Yes! ' + WORD_NAME[w] + ' starts with', S(snd), '. ' + name + '!']);   /* a quiet letter (Ayin) has no sound to say */
       if (idx < deck.length) { busy = true; await showCard(deck[idx]); enabled = true; } else onDone();
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; kid.mood('think'); await back(); busy = true; await E.shake(card, .15); busy = false;
-      help = true; await E.say(['Listen. ' + WORD_NAME[w] + '.', WORD_NAME[w] + ' starts with', S(snd), '.']);
-      E.hop(L[k], .35); await E.say([name + ' says', S(snd), '. Try again!']); kid.mood('calm');
+      help = true; await E.say(E.quiet(k) ? ['Listen. ' + WORD_NAME[w] + '.', WORD_NAME[w] + ' starts with ' + name + '.'] : ['Listen. ' + WORD_NAME[w] + '.', WORD_NAME[w] + ' starts with', S(snd), '.']);
+      E.hop(L[k], .35); await E.say(E.quiet(k) ? name + ' is quiet. Try again!' : [name + ' says', S(snd), '. Try again!']); kid.mood('calm');
       if (mistakes < 2 && !struggled) help = false;   /* the glow stays on once he has missed twice */
     }
   }
   /* the pictures: the demo first, then the rest mixed */
-  const first = (!game.reviewOf && words.find(w => unit.letters.includes(WORDS[w].letter) && E.LETTERS[WORDS[w].letter].snd !== 'ch')) || words[0];   /* the demo shows a new letter */
+  const first = (!game.reviewOf && words.find(w => unit.letters.includes(WORDS[w].letter) && E.LETTERS[WORDS[w].letter].snd && E.LETTERS[WORDS[w].letter].snd !== 'ch')) || words[0];   /* the demo shows a new letter */
   const rest = words.filter(w => w !== first).sort(() => Math.random() - .5), deck = [first, ...rest];
   return async () => {
     E.setProgress(deck.length, 0);
@@ -73,7 +74,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
     await E.say('Each picture goes to the letter it starts with.');
     await showCard(first);
     const k0 = WORDS[first].letter, pd0 = peds.find(pd => pd.userData.key === k0);
-    await E.say(['Watch me. ' + WORD_NAME[first] + ' starts with', S(E.LETTERS[k0].snd), '.']);
+    await E.say(E.quiet(k0) ? 'Watch me. ' + WORD_NAME[first] + ' starts with ' + E.LETTERS[k0].name + '.' : ['Watch me. ' + WORD_NAME[first] + ' starts with', S(E.LETTERS[k0].snd), '.']);
     busy = true; let [x, y] = E.toScreen(card.position); E.hand.at(x, y); await E.wait(350);
     const p0 = card.position.clone(), p1 = top(pd0); await E.tween(1200, q => { card.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(card.position); E.hand.at(a, b); });
     E.hand.hide(); busy = false; enabled = true;
@@ -82,8 +83,11 @@ export default function setup(E, { struggled, unit, game = {} }) {
     if (idx < deck.length) { await E.say('Now you! Drag each picture to its letter.'); document.body.dataset.dragReady = 1; }
     await done;
     if (keys.includes('ches') && unit.letters.includes('chaf')) {   /* Chaf has no picture: it joins Ches, the letter that sounds just like it */
-      const pd = peds.find(x => x.userData.key === 'ches'), c = E.letter('chaf', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, 1.3 * pd.scale.x, .6)); c.scale.setScalar(pd.scale.x); E.scene.add(c); await E.popIn(c, pd.scale.x);
+      const pd = peds.find(x => x.userData.key === 'ches'), c = E.letter('chaf', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, 2.75 * pd.scale.x, .6)); c.scale.setScalar(.75 * pd.scale.x); E.scene.add(c); await E.popIn(c, .75 * pd.scale.x);   /* well above its partner, smaller, so the two never look like one tall letter */
       await E.say('This is Chaf. Kaf without its dot.'); E.hop(L.ches, .3); await E.say('Chaf sounds just like Ches!'); }
+    if (keys.includes('pei') && !keys.includes('fei') && unit.letters.includes('fei')) {   /* Fei has no picture: it stands beside Pei and says f */
+      const pd = peds.find(x => x.userData.key === 'pei'), c = E.letter('fei', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 2.6 : 2.1) * pd.scale.x, .6)); c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);   /* just above its partner, a little smaller, so the two never look like one tall letter */
+      await E.say('This is Fei. Pei without its dot.'); E.hop(c, .3); await E.say(['Fei says', S(E.LETTERS.fei.snd), '.']); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Great matching! Every picture found its letter.' : null };
   };

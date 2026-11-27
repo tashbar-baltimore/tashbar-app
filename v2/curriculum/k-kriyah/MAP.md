@@ -93,8 +93,8 @@ Each game starts by showing how to play: the voice says "Watch me… now you!" w
 
 ### Unit 6. Samech, Ayin, Pei, Fei (ס ע פּ פ) — 2 weeks
 - **Skill:** ס "s", ע quiet, פּ "p", פ "f".
-- **Story:** Avi builds the sukkah with Tatty. A tree (eitz) shades it.
-- **Games:** Picture Story, Feel the Shape, Look-Alike Detective (Pei and Fei: the dot glows), Sound Match, Find the Mistake.
+- **Story:** Avi visits Zeidy's farm: a horse (sus), a tree (eitz) and a butterfly (parpar). (Everyday theme, replacing the sukkah story.)
+- **Games:** Picture Story, Feel the Shape, Look-Alike Detective (Kaf and Pei: the little tongue; Pei and Fei: the dot), Sound Match, Find the Mistake.
 - **Mastery:** all letters so far, mixed.
 
 ### Unit 7. Tzadik, Kuf, Reish (צ ק ר) — 2 weeks

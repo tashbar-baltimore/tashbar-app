@@ -51,7 +51,7 @@ export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); retu
    Every letter sound plays the rebbe's recording when audio/sounds.json lists it; until then the computer voice says it
    (marked on screen as temporary). A line is an array of words and sounds: ['Beis says', S('b')]. */
 export const S = k => ({ snd: k });
-const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', t: 'tuh', y: 'yuh', k: 'kuh', l: 'luh', m: 'muh', n: 'nuh', ch: 'the sound at the start of challah' };   /* a computer can't say Ches: it names it until the rebbe's recording */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
+const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', t: 'tuh', y: 'yuh', k: 'kuh', l: 'luh', m: 'muh', n: 'nuh', s: 'suh', p: 'puh', f: 'fuh', ch: 'the sound at the start of challah' };   /* a computer can't say Ches: it names it until the rebbe's recording */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
 let SOUNDS = {}; const audioCache = {};
 export const soundsReady = fetch('audio/sounds.json').then(r => r.ok ? r.json() : {}).then(j => { SOUNDS = j || {}; }).catch(() => {});
 export let lastLine = null; let sayToken = 0;
@@ -247,7 +247,7 @@ function starTex() { const cv = document.createElement('canvas'); cv.width = cv.
 
 export const world = { group: null, clouds: [] };
 /* ---------------- painted backgrounds (made with ChatGPT; art/bg) ---------------- */
-export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5: 'picnic' };
+export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5: 'picnic', 6: 'farm' };
 export const KIND_BACKDROP = { mastery: 'classroom', bonus: 'beach', story: 'street', detective: 'street', hunt: null };   /* the sukkah hunt keeps its 3D world */
 export const backdropFor = (game, unitN) => game && 'bg' in game ? game.bg : game && game.kind in KIND_BACKDROP ? KIND_BACKDROP[game.kind] : UNIT_BACKDROP[unitN || (game && game.unit) || 1] || null;
 export let backdrop = null;
@@ -447,11 +447,13 @@ export const rebbe = () => { const p = pictureCard('rebbe', () => person({ beard
 export const mommy = () => { const p = pictureCard('mommy', () => person({ woman: true, hair: 0x5a3a22, dress: 0x3f5fa8, shirt: 0x3f5fa8 }));   /* long sleeves in the dress colour */ p.scale.setScalar(1.35); return p; };
 export const ari = () => pictureCard('ari', () => person({ kippah: 0xd97706, hair: 0x3b2a1a }));
 export const shloimy = () => pictureCard('shloimy', () => person({ kippah: 0x2e8b57, hair: 0x8a5a3c }));
+export const avi = () => pictureCard('avi', () => person({ kippah: 0x2f7de1, hair: 0x5a3a22, shirt: 0xeaffea }));
+export const zeidy = () => { const p = pictureCard('zeidy', () => person({ beard: 0xf2f2f2, hat: true, jacket: 0x1d2433, pants: 0x1d2433, hair: 0xe0e0e0, skin: 0xf6c9a2 })); p.scale.setScalar(1.45); return p; };
 export const eli = () => pictureCard('eli', () => person({ kippah: 0x1f7a8c, hair: 0x7a4a24, shirt: 0xfff4e0 }));
 export const bubby = () => { const p = pictureCard('bubby', () => person({ woman: true, hair: 0xb8a48c, dress: 0x6b4f8a, shirt: 0x6b4f8a, skin: 0xf6cfae })); p.scale.setScalar(1.3); return p; };   /* a light sheitel and a long dress */
 export const dovid = () => pictureCard('dovid', () => person({ kippah: 0x6a3fa0, hair: 0x2b1d12, shirt: 0xeaf4ff }));
 /* each unit's own boy: Mendy, Shloimy, Ari, Dovid */
-export const unitBoy = n => ({ 2: shloimy, 3: ari, 4: dovid, 5: eli }[n] || mendy)();
+export const unitBoy = n => ({ 2: shloimy, 3: ari, 4: dovid, 5: eli, 6: avi }[n] || mendy)();
 export const yaakov = () => pictureCard('yaakov', () => person({ kippah: 0xc0392b, hair: 0xb5532a, shirt: 0xfff7e0, skin: 0xffdcc2 }));
 
 /* a little jump, used for joy */
@@ -478,16 +480,20 @@ function letterGeo(ch) {
 export const goldDot = () => new THREE.MeshPhysicalMaterial({ color: 0xffc21a, roughness: .15, metalness: .35, clearcoat: 1, emissive: 0x6a4200, emissiveIntensity: .25 });
 const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
 /* key: 'alef' | 'beis' | 'veis'.  Beis and Veis share one shape; Beis has the dagesh (Mendy's dot: "someone home"). */
-export const LETTERS = { alef: { ch: 'א', name: 'Alef' }, beis: { ch: 'ב', name: 'Beis', dagesh: true, snd: 'b' }, veis: { ch: 'ב', name: 'Veis', snd: 'v' },
+export const LETTERS = { alef: { ch: 'א', name: 'Alef', quiet: true }, beis: { ch: 'ב', name: 'Beis', dagesh: true, snd: 'b' }, veis: { ch: 'ב', name: 'Veis', snd: 'v' },
   gimmel: { ch: 'ג', name: 'Gimmel', snd: 'g' }, daled: { ch: 'ד', name: 'Daled', snd: 'd' }, hei: { ch: 'ה', name: 'Hei', snd: 'h' },
   vov: { ch: 'ו', name: 'Vov', snd: 'v' }, zayin: { ch: 'ז', name: 'Zayin', snd: 'z' }, ches: { ch: 'ח', name: 'Ches', snd: 'ch' },
   tes: { ch: 'ט', name: 'Tes', snd: 't' }, yud: { ch: 'י', name: 'Yud', snd: 'y' }, kaf: { ch: 'כ', name: 'Kaf', dagesh: true, snd: 'k' }, chaf: { ch: 'כ', name: 'Chaf', snd: 'ch' },
-  lamed: { ch: 'ל', name: 'Lamed', snd: 'l' }, mem: { ch: 'מ', name: 'Mem', snd: 'm' }, nun: { ch: 'נ', name: 'Nun', snd: 'n' } };
-export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB', lamed: '\u05DC', mem: '\u05DE', nun: '\u05E0' };
+  lamed: { ch: 'ל', name: 'Lamed', snd: 'l' }, mem: { ch: 'מ', name: 'Mem', snd: 'm' }, nun: { ch: 'נ', name: 'Nun', snd: 'n' },
+  samech: { ch: 'ס', name: 'Samech', snd: 's' }, ayin: { ch: 'ע', name: 'Ayin', quiet: true }, pei: { ch: 'פ', name: 'Pei', dagesh: true, snd: 'p' }, fei: { ch: 'פ', name: 'Fei', snd: 'f' } };
+/* a quiet letter (Alef, Ayin) has no sound of its own; 'an' or 'a' before a letter's name */
+export const quiet = k => !!LETTERS[k].quiet;
+export const an = k => (/^[AEIOU]/.test(LETTERS[k].name) ? 'an ' : 'a ') + LETTERS[k].name;
+export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB', lamed: '\u05DC', mem: '\u05DE', nun: '\u05E0', samech: '\u05E1', ayin: '\u05E2', pei: '\u05E4\u05BC', fei: '\u05E4' };
 /* letters that can hold a dagesh: where the dot sits (Beis/Veis, Kaf/Chaf share one shape each) */
 /* the full letter height in font units (baseline to the top of the roof's little tag), and its middle */
 const REF_H = 64.7, REF_CY = 32.35;
-const DOT_AT = { 'ב': [24, 29.6], 'כ': [22, 29.6] };
+const DOT_AT = { 'ב': [24, 29.6], 'כ': [22, 29.6], 'פ': [38, 30] };
 export const sameShape = (a, b) => LETTERS[a].ch === LETTERS[b].ch;
 /* a letter's place in the Alef-Beis (for putting things in order, right to left) */
 export const AB = k => Object.keys(LETTERS).indexOf(k);
@@ -506,7 +512,7 @@ export function letter(key, height = 2.6, color = 'blue') {
 }
 /* the outline as 2D points in the letter's own space (for Feel the Shape) */
 export function fontToLocal(key, height, x, y) { const L = LETTERS[key], { g, c } = letterGeo(L.ch); const s = height / REF_H; return new THREE.Vector3((x / 10 - c.x) * s, (y / 10 - REF_CY) * s, 0); }
-export const nameLine = key => key === 'alef' ? ['Alef. Alef is quiet.'] : [LETTERS[key].name + ' says', S(LETTERS[key].snd)];
+export const nameLine = key => quiet(key) ? [LETTERS[key].name + '. ' + LETTERS[key].name + ' is quiet.'] : [LETTERS[key].name + ' says', S(LETTERS[key].snd)];
 
 /* a glossy gold 3D star (used as a "done" mark above a letter, never below it, so it can't look like a nekudah) */
 export function star3d(r = .22) { const sh = new THREE.Shape(); for (let i = 0; i < 10; i++) { const a = Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; const x = Math.cos(a) * rr, y = Math.sin(a) * rr; i ? sh.lineTo(x, y) : sh.moveTo(x, y); } sh.closePath();
@@ -525,15 +531,15 @@ export function arrow3d(size = .35, dir = 'down') {
 /* where to look on each letter (font units) and which way the arrow points at it */
 export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [135, 375, 'left'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [205, 440, 'left'],
   beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'],
-  lamed: [90, 820, 'down'], mem: [195, 70, 'up'], nun: [310, 50, 'left'] };   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
+  lamed: [90, 820, 'down'], mem: [130, 55, 'right'], nun: [310, 50, 'left'] };   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
 /* a place to look that depends on the look-alike beside it: Tes's closed round bottom (beside Mem) */
-const PAIR_FEAT = { 'tes|mem': [300, 20, 'up'] };   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+const PAIR_FEAT = { 'tes|mem': [60, 70, 'right'], 'kaf|pei': false, 'pei|kaf': [190, 300, 'right'] };   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
 /* the place to look on k when it might be taken for other: the dot place for a dot pair or any lone dotted letter, the shape for Beis/Kaf */
-export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : PAIR_FEAT[k + '|' + other] || (((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]));
-export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'] };
+export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : (k + '|' + other) in PAIR_FEAT ? PAIR_FEAT[k + '|' + other] : (((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]));
+export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'], pei: [385, 300, 'left'], fei: [385, 300, 'left'] };
 /* put an arrow at a letter's feature (the letter object, its height); returns false if the letter has none */
-export function pointAt(arrow, l, key, height, feat) { const f = feat || FEATURES[key]; if (!f) return false; const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;
+export function pointAt(arrow, l, key, height, feat) { const f = feat === false ? null : feat || FEATURES[key]; if (!f) { arrow.visible = false; return false; }   /* false: nothing to point at (Kaf beside Pei: its tongue's place holds its dot, so the words say it) */ const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;
   const d = { down: [0, off], up: [0, -off], right: [-off, 0], left: [off, 0] }[f[2]]; if (arrow.setDir) arrow.setDir(f[2]); arrow.position.set(p.x + d[0], p.y + d[1], .5); if (arrow.parent !== l) l.add(arrow); arrow.visible = true; return true; }
 /* a soft ring that circles the thing to notice */
 export function noticeRing(r = .42) { const ring = mesh(new THREE.TorusGeometry(r, .06, 16, 40), new THREE.MeshStandardMaterial({ color: 0xff8a00, emissive: 0xff8a00, emissiveIntensity: 1.2 }), 0, 0, .7, false); ring.visible = false; onFrame(t => { if (ring.visible) ring.scale.setScalar(1 + Math.sin(t * 10) * .08); }); return ring; }

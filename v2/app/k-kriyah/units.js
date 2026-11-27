@@ -56,6 +56,17 @@ export const UNITS = [
       { id: 'u5g6', name: 'Review: Sound Match', kind: 'soundmatch', icon: 'fish', review: true, reviewOf: 4 },
       { id: 'u5g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
+  { n: 6, letters: ['samech', 'ayin', 'pei', 'fei'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches', 'tes', 'yud', 'kaf', 'chaf', 'lamed', 'mem', 'nun'],
+    games: [
+      { id: 'u6g0', name: 'Avi on the farm', kind: 'story6', icon: 'horse' },
+      { id: 'u6g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
+      { id: 'u6g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['kaf', 'pei'], ['pei', 'fei']] },
+      { id: 'u6g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },
+      { id: 'u6g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u6g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
+      { id: 'u6g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['gimmel', 'nun'], ['tes', 'mem']] },
+      { id: 'u6g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
+    ] },
 ];
 /* every game in order, each knowing its unit */
 export const GAMES = UNITS.flatMap(u => u.games.map(g => ({ ...g, unit: u.n })));
