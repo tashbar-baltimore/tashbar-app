@@ -127,3 +127,27 @@ What was checked: `fixes-diff.patch` changes exactly the 19 flagged items and no
 - These were left from before and are within the limits: W13.U35 #6 and W13.U36 #1 and #5 (right answer longest, in at most 1 of 3 items per unit), and F.U26 #5.
 
 Remaining problems: 0. URGENT: 0
+
+## Re-score 2 (fixes2.json: F.U22 #4, F.U25 #2, #3 and #4)
+
+What was checked: each replacement against units-dump.json and against every F lesson file in `src/`. That covered the lesson checks, the retry questions (`re:`) and the practice activities.
+
+| Item | One right answer | Cold | Taught | How | Fair | Result |
+|---|---|---|---|---|---|---|
+| F.U22 #4 READ.LV.L03.03 "Yosef opened his ___ wide for the dentist." (jau / jall / jaw) | yes | yes. "jaw" is not in any check. It is one card in a practice sort of the engine lesson LV.L03.03 (`CoreDataF1.html` line 220), which is not a check and is fine | yes (aw at the end) | method only | 3/4/3 | ✓ pass |
+| F.U25 #2 READ.PHON.L03.14 "Avi ___ his pencil on the floor." (dropped / droped / droppeed) | yes | yes. "dropped" appears only as a normal word in other questions ("dropped the e"), never as a spelling question | yes (Double It) | method only | 7/6/8 | ✓ pass |
+| F.U25 #3 READ.PHON.L03.14 "Moshe is ___ next to Zeidy in shul." (siting / sittting / sitting) | yes | yes. "sitting" is used in a FLU.L03.16 story question ("What happened to the base word sit?"), which is a different question and is fine | yes | method only | 6/8/7 | ✓ pass |
+| F.U25 #4 READ.PHON.L03.15 "We saw three ___ at Zeidy's farm." (puppys / puppies / puppyies) | yes | **no.** It is a near copy of the READ.PHON.L03.18 lesson check (F.U26): "Pick the right spelling. Two little ___ slept in the box. (more than one puppy)" with puppies / puppys / puppyes. That check is also in the F.U26 test-out, right after this boss level. "puppies" is also in FLU.L03.12 (`CoreDataFH4.html` lines 517 and 523) | yes | method only | 6/7/8 | **✗ fix** |
+
+- **F.U25 #4, fix.** This makes the item an -ed word, which is cold. "copied" does not appear in any F file. It also differs from #5 (families, -es).
+  `{skill: "READ.PHON.L03.15",type: "cloze",t: "Shmuel ___ the words from the board.",o: ["copyed","copied","copeid"],a: "copied",say: "Which spelling is right?",how: "Base word ends in y after a consonant? What happens before -ed?"}`
+- **F.U22 #5, recommended (found while checking, by the same standard used for "fried").** "Hillel is too ___ to reach the top shelf." (small / smawll / smaul) has the answer word of the LV.L03.03 retry question `Read "small". What does the a say?` (`CoreDataF1.html` line 234). "call" does not appear in any F lesson.
+  `{skill: "READ.LV.L03.03",type: "cloze",t: "Please ___ Zeidy to come and eat.",o: ["caul","call","cawl"],a: "call",say: "Pick the right spelling.",how: "Remember the three ways to spell aw. Which one fits this word?"}`
+
+**Units:**
+- **F.U22: ✓ pass** (5 4 5 4 4 4 4 5 4). #4 jaw is sound, and the #5 change is recommended, not blocking.
+- **F.U25: ✗ fix until #4 is replaced** (p7 = 3, because one boss item is a twin of a lesson check). With the "copied" item above in place: **✓ pass** (5 4 5 4 5 4 5 5 5).
+
+Right answer longest: 0 of 12 items in both units. URGENT: 0
+
+**Applied after Re-score 2:** F.U25 #4 is the reviewer's "copied" item and F.U22 #5 is the reviewer's "call" item. With them, F.U22 and F.U25 pass: 11 of 11 units pass, URGENT 0.
