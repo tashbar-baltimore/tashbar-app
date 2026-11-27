@@ -11,7 +11,7 @@ const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 const tween = (ms, fn) => new Promise(res => { const t0 = performance.now(), d = T(ms); (function f() { const t = Math.min(1, (performance.now() - t0) / d); fn(ease(t), t); if (t < 1) requestAnimationFrame(f); else res(); })(); });
 
 export function mount(host, opt) {
-  opt = Object.assign({ band: null, kids: ['dovid', 'shmuel'], stack: false }, opt || {});
+  opt = Object.assign({ band: null, kids: ['dovid', 'shmuel'], stack: false, tree: false }, opt || {});
   host.classList.add('p6world');
   const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, FAST ? 1 : 2)); renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -68,12 +68,15 @@ export function mount(host, opt) {
   opt.kids.forEach((w, i) => sides.push(side(i, w)));
 
   /* where things go: side by side (wide screens) or one behind the other (phones) */
-  let narrow = false;
+  let narrow = false; const isPhone = () => Wd < Hh * 0.95 || Wd < 700;
   function layout() {
     sides.forEach((s, i) => { if (narrow) s.g.position.set(0, 0, i ? -1.2 - D / 2 : 1.6 + 0.15); else s.g.position.set(i ? 2.75 : -2.75, 0, 0.3); });
     /* one behind the other: each friend stands beside his own blanket (left front, right back), never on the apples */
     if (narrow) { sides[0].kid.position.set(-W / 2 - 0.45, 1.05, 0.2); } else { sides[0].kid.position.set(0, 1.05, -D / 2 - 0.35); }
     if (sides[1]) { if (narrow) sides[1].kid.position.set(W / 2 + 0.45, 1.05, 0); else sides[1].kid.position.set(0, 1.05, -D / 2 - 0.35); }
+    /* a phone: each friend is a little smaller and stands close beside his own blanket, so the camera can come near and the apples are big;
+       he never stands in front of an apple (K-CLARITY-RULES 8, 9) */
+    sides.forEach((s, i) => { const ph = isPhone() && narrow; s.kid.scale.setScalar(ph ? 0.75 : 1); if (ph) s.kid.position.set(i ? W / 2 + 0.3 : -W / 2 - 0.3, 0.85, i ? 0 : 0.2); });
     sides.forEach(s => s.apples.forEach((a, j) => a.position.copy(s.slots[j] || a.position)));
   }
   /* apple places on a blanket: 'row' = neat rows of five (left to right), 'scatter' = anywhere */
@@ -81,9 +84,9 @@ export function mount(host, opt) {
     const out = [];
     if (how === 'scatter') {   /* try a few fresh scatters; if the apples will not fit, fall back to neat rows (never hang) */
       for (let tries = 0; tries < 6 && out.length < n; tries++) { out.length = 0; let t = 0;
-        while (out.length < n && t++ < 2000) { const x = (Math.random() - .5) * (W - 0.7), z = (Math.random() - .5) * (D - 0.6); if (out.every(p => Math.hypot(p.x - x, p.z - z) > 0.88)) out.push(new THREE.Vector3(x, 0.05, z)); } }
+        while (out.length < n && t++ < 2000) { const x = (Math.random() - .5) * (W - 0.7), z = (Math.random() - .5) * (D - 0.6); if (out.every(p => Math.hypot(p.x - x, p.z - z) > 0.88 && Math.hypot(p.x - x, (p.z - z) * 0.55) > 0.66)) out.push(new THREE.Vector3(x, 0.05, z)); } }
       if (out.length >= n) return out; out.length = 0; }
-    if (true) for (let j = 0; j < n; j++) { const r = j < 5 ? 0 : 1, c = j % 5; out.push(new THREE.Vector3((c - 2) * 0.92, 0.05, n > 5 ? (r ? 0.5 : -0.5) : 0)); }   /* 0.92 apart: their tap spots never overlap, even on a phone */
+    if (true) for (let j = 0; j < n; j++) { const r = j < 5 ? 0 : 1, c = j % 5; out.push(new THREE.Vector3((c - 2) * 0.92, 0.05, n > 5 ? (r ? 0.72 : -0.72) : 0)); }   /* rows far enough apart that, from the camera, no apple hides behind another */   /* 0.92 apart: their tap spots never overlap, even on a phone */
     return out;
   }
 
@@ -92,10 +95,11 @@ export function mount(host, opt) {
   { const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.32, 2.2, 12), new THREE.MeshStandardMaterial({ color: '#9A6A3E' })); tr.position.y = 1.1; tr.castShadow = true; tree.add(tr);
     const m = new THREE.MeshStandardMaterial({ color: '#5DBB5A', roughness: 0.85 });
     [[0, 3.0, 0, 1.4], [0.9, 2.6, 0.2, 1.0], [-0.9, 2.7, 0.1, 1.05], [0, 3.6, -0.2, 0.9]].forEach(b => { const o = new THREE.Mesh(new THREE.SphereGeometry(b[3], 24, 18), m); o.position.set(b[0], b[1], b[2]); o.castShadow = true; tree.add(o); });
-    [[0.5, 2.6, 1.35], [-0.6, 3.0, 1.3], [0.1, 3.5, 1.15], [1.3, 2.9, 0.85], [-1.4, 2.6, 0.85], [0.9, 3.4, 0.9]].forEach(p => { const a = apple(); a.scale.setScalar(0.8); a.position.set(p[0], p[1] - 0.25, p[2]); tree.add(a); }); }
+    /* K clarity (rule 8): no apples hang on the trees, so the only apples he sees are the ones to count; an apple still falls out of the leaves for "one more" */ }
+  tree.visible = !!opt.tree;   /* the apple tree stands only in the games that use it (one more, one less) */
   /* orchard trees around */
   const rnd = (() => { let s = 11; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
-  for (let i = 0; i < (FAST ? 2 : 8); i++) { const t = tree.clone(); t.scale.setScalar(0.8 + rnd() * 0.4); t.position.set(-16 + rnd() * 32, 0, -8 - rnd() * 6); if (Math.abs(t.position.x) < 3) t.position.x += 6; scene.add(t); }
+  for (let i = 0; i < (FAST ? 2 : 8); i++) { const t = tree.clone(); t.visible = true; t.scale.setScalar(0.8 + rnd() * 0.4); t.position.set(-16 + rnd() * 32, 0, -8 - rnd() * 6); if (Math.abs(t.position.x) < 3) t.position.x += 6; scene.add(t); }
 
   /* ---------------- the see-saw (built when a game asks) ---------------- */
   let saw = null;
@@ -104,13 +108,14 @@ export function mount(host, opt) {
     const pm = new THREE.MeshStandardMaterial({ color: '#E9B872', roughness: 0.7 }); tex('wood-plank.jpg', t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(4, 1); pm.map = t; pm.color.set('#FFFFFF'); pm.needsUpdate = true; });
     const piv = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.6, 0.9, 3), new THREE.MeshStandardMaterial({ color: '#FF8A3D' })); piv.position.y = 0.45; piv.rotation.y = Math.PI / 2; piv.castShadow = true; g.add(piv);
     const beam = new THREE.Group(); beam.position.y = 0.95; g.add(beam);
-    const plank = new THREE.Mesh(new THREE.BoxGeometry(7, 0.16, 0.9), pm); plank.castShadow = true; beam.add(plank);
-    const trays = [-1, 1].map(s => { const tr = new THREE.Group(); tr.position.set(s * 2.55, 0.08, 0); beam.add(tr);
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 0.1, 32), new THREE.MeshStandardMaterial({ color: s < 0 ? '#FF9A5A' : '#5AA8E8' })); base.position.y = 0.05; base.castShadow = true; tr.add(base); return tr; });
-    saw = { g, beam, trays, n: [0, 0], tilt: 0 }; return saw;
+    const PH = isPhone(), PL = PH ? 4.3 : 7, TX = PH ? 1.5 : 2.55;   /* a phone: a shorter see-saw with square trays (rows of three), so it can be big */
+    const plank = new THREE.Mesh(new THREE.BoxGeometry(PL, 0.16, 0.9), pm); plank.castShadow = true; beam.add(plank);
+    const trays = [-1, 1].map(s => { const tr = new THREE.Group(); tr.position.set(s * TX, 0.08, 0); beam.add(tr);
+      const base = new THREE.Mesh(new THREE.BoxGeometry(PH ? 1.5 : 2.7, 0.1, PH ? 2.25 : 1.35),   /* a long tray: the apples sit in rows of five, like a ten-frame */ new THREE.MeshStandardMaterial({ color: s < 0 ? '#FF9A5A' : '#5AA8E8' })); base.position.y = 0.05; base.castShadow = true; tr.add(base); return tr; });
+    saw = { g, beam, trays, n: [0, 0], tilt: 0, cols: PH ? 3 : 5, gap: PH ? 0.44 : 0.5 }; fit(); return saw;   /* the camera comes in on the see-saw */
   }
-  function sawSlots(n) { const out = []; for (let j = 0; j < n; j++) { const ring = j < 4 ? 0 : j < 9 ? 1 : 2, k = ring === 0 ? j : ring === 1 ? j - 4 : j - 9, cnt = ring === 0 ? 4 : ring === 1 ? 5 : 1;
-    const a = k / cnt * Math.PI * 2 + ring * 0.4, r = ring === 0 ? 0.35 : ring === 1 ? 0.75 : 0; out.push(new THREE.Vector3(Math.cos(a) * r, 0.1 + (ring === 2 ? 0.5 : 0), Math.sin(a) * r)); } return out; }
+  /* K clarity (rule 8): the apples on a see-saw tray never touch or hide each other: rows of five, like a ten-frame (five, and some more) */
+  function sawSlots(n) { const C = saw ? saw.cols : 5, rows = Math.ceil(n / C), out = []; for (let j = 0; j < n; j++) { const r = Math.floor(j / C), c = j % C; const G = saw ? saw.gap : 0.5; out.push(new THREE.Vector3((c - (C - 1) / 2) * G, 0.1, (r - (rows - 1) / 2) * (saw && saw.cols === 3 ? 0.62 : G))); } return out; }   /* rows further apart front-to-back, so no apple hides behind another */
 
   /* ---------------- tap spots over 3D things ---------------- */
   const layer = document.createElement('div'); layer.className = 'p6layer'; host.appendChild(layer);
@@ -141,13 +146,13 @@ export function mount(host, opt) {
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false);
     const wasNarrow = narrow; narrow = opt.stack || Wd < Hh * 0.95 || Wd < 700; if (wasNarrow !== narrow || !fit.done) layout(); fit.done = true;
-    const span = narrow ? W + 2.9 : 2 * W + 3.4, needH = narrow ? 7.4 : 5.2;
+    const span = saw ? (isPhone() ? 4.9 : 9.4) : isPhone() && narrow ? W + 2.3 : narrow ? W + 2.9 : 2 * W + 3.4, needH = saw ? 4.2 : isPhone() && narrow ? (opt.tree ? 8.4 : 6.6) : narrow ? (opt.tree ? 7.4 : 5.6) : 5.2;   /* no tree: the camera comes closer, so the blankets and apples fill the screen */
     const [b0, b1] = band(), bc = (b0 + b1) / 2, bh = Math.max(120, b1 - b0), fullH = Hh + 2 * Math.abs(Hh / 2 - bc);
     const tn = Math.tan(THREE.MathUtils.degToRad(V / 2)); dist = Math.max(span * fullH / (2 * Wd * tn), needH * fullH / (2 * tn * bh));
     camera.aspect = Wd / fullH; camera.fov = V; camera.setViewOffset(Wd, fullH, 0, fullH / 2 - bc, Wd, Hh); camera.updateProjectionMatrix();
     scene.fog.near = dist + 8; scene.fog.far = dist + 60;
-    center.set(0, 0.6, narrow ? 0 : 0); const phone = Wd < Hh * 0.95 || Wd < 700;   /* the apple tree: behind on a phone, beside the blankets on a wide screen */
-    if (!narrow) tree.position.set(0, 0, -2.6); else if (phone) tree.position.set(2.6, 0, -4.6); else tree.position.set(W / 2 + 2.3, 0, -0.9);
+    center.set(0, saw ? 1.0 : 0.6, saw ? 0.3 : 0); const phone = Wd < Hh * 0.95 || Wd < 700;   /* the apple tree: behind on a phone, beside the blankets on a wide screen */
+    if (!narrow) tree.position.set(0, 0, -2.6); else if (phone) tree.position.set(0.9, 0, -5.4); else tree.position.set(W / 2 + 2.3, 0, -0.9);
     tree.scale.setScalar(narrow ? 0.8 : 1);
     if (saw) saw.g.position.set(0, 0, narrow ? 0.3 : 0.3);
   }
@@ -170,7 +175,7 @@ export function mount(host, opt) {
     },
     count(i) { return sides[i].apples.length; },
     /* the "spread out" trick: a few apples spread wide across the blanket, or many squeezed close together */
-    spread(i, wide) { const s = sides[i], n = s.apples.length, gap = wide ? Math.min(1.25, (W - 0.5) / Math.max(1, n - 1)) : 0.45;
+    spread(i, wide) { const s = sides[i], n = s.apples.length, gap = wide ? Math.min(1.25, (W - 0.5) / Math.max(1, n - 1)) : 0.62;   /* close together, but every apple stands apart and can be counted (K-CLARITY-RULES 8) */
       s.slots = s.apples.map((a, j) => new THREE.Vector3(-((n - 1) * gap) / 2 + j * gap, 0.05, 0)); s.apples.forEach((a, j) => a.position.copy(s.slots[j])); },
     /* an apple drops from the tree onto a side (one more) */
     async drop(i) {
@@ -208,13 +213,20 @@ export function mount(host, opt) {
     treeSpot() { return spot('tree', tree, { cls: 'tree', r: 1.1, y: 2.3, min: 90 }); },
     /* see-saw apples */
     setSaw(nl, nr) { const S = seesaw(); S.g.scale.setScalar(narrow ? 0.9 : 1); sides.forEach(s => { s.g.visible = false; }); S.n = [nl, nr];
-      S.trays.forEach((tr, k) => { while (tr.children.length > 1) tr.remove(tr.children[1]); const ps = sawSlots(S.n[k]); ps.forEach(p => { const a = apple(); a.scale.setScalar(0.85); a.position.copy(p); tr.add(a); }); }); },
+      S.trays.forEach((tr, k) => { while (tr.children.length > 1) tr.remove(tr.children[1]); const ps = sawSlots(S.n[k]); ps.forEach(p => { const a = apple(); a.scale.setScalar(saw && saw.cols === 3 ? 0.68 : 0.75); a.position.copy(p); tr.add(a); }); }); },
     async sawAdd(k, d) { const S = seesaw(); const n = S.n[k] + d; if (n < 0 || n > 10) return false; S.n[k] = n; const tr = S.trays[k];
-      while (tr.children.length > 1) tr.remove(tr.children[1]); sawSlots(n).forEach(p => { const a = apple(); a.scale.setScalar(0.85); a.position.copy(p); tr.add(a); }); NK.sound[d > 0 ? 'pop' : 'back'](); return true; },
+      while (tr.children.length > 1) tr.remove(tr.children[1]); sawSlots(n).forEach(p => { const a = apple(); a.scale.setScalar(saw && saw.cols === 3 ? 0.68 : 0.75); a.position.copy(p); tr.add(a); }); NK.sound[d > 0 ? 'pop' : 'back'](); return true; },
     sawSpot(k) { const S = seesaw(); return spot('saw' + k, S.trays[k], { cls: 'tray', r: 1.0, y: 0.3, min: 72 }); },
-    hideSaw() { if (saw) { scene.remove(saw.g); saw = null; } unspot('saw0'); unspot('saw1'); sides.forEach(s => { s.g.visible = true; }); },
+    hideSaw() { if (saw) { scene.remove(saw.g); saw = null; fit(); } unspot('saw0'); unspot('saw1'); sides.forEach(s => { s.g.visible = true; }); },
     fit, destroy() { alive = false; renderer.dispose(); }
   };
+  /* for the clarity test (v2/tests/k-clarity-numbers.js): measure what a boy sees */
+  api._minGap = i => { const P = sides[i].apples.map(a => a.position); let m = 1e9; P.forEach((p, j) => P.forEach((q, k) => { if (k > j) m = Math.min(m, Math.hypot(p.x - q.x, p.z - q.z)); })); return m; };
+  api._rowLen = i => { const xs = sides[i].apples.map(a => a.position.x); return xs.length ? Math.max(...xs) - Math.min(...xs) : 0; };
+  api._sawMinGap = () => { if (!saw) return 1e9; let m = 1e9; saw.trays.forEach(tr => { const P = tr.children.slice(1).map(a => a.position); P.forEach((p, j) => P.forEach((q, k) => { if (k > j) m = Math.min(m, Math.hypot(p.x - q.x, p.z - q.z)); })); }); return m; };
+  api._treeApples = () => { let n = 0; scene.traverse(o => { if (o.material === appleMat && !sides.some(sd => sd.apples.some(a => a.children.includes(o))) && !(saw && saw.trays.some(tr => tr.children.some(a => a.children && a.children.includes(o))))) n++; }); return n; };
+  api.APPLE = 0.6 * 0.95;   /* an apple is 0.6 across */
+  window.__orchard = api;
   fit(); addEventListener('resize', fit); requestAnimationFrame(frame);
   return api;
 }

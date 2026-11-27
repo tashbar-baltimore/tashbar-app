@@ -73,7 +73,7 @@ FR.game({
   id: 'u7-check', title: 'Show Me!', rounds: 6,
   hero: '<div class="hero6"><img src="art/shmuel-happy.png" alt=""></div>',
   init() {
-    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true });
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true, tree: true });
     O.onTap = (id, el) => { if (GAME.phase !== 'answer') return; if (id.startsWith('side')) group(+id[4], el);
       else if (R.kind === 'build' && id === 'tree') busy = busy.then(() => O.count(1) < 10 ? O.drop(1) : null);
       else if (R.kind === 'build' && id.startsWith('a1-')) busy = busy.then(() => O.take(1)); };

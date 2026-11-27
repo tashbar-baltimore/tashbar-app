@@ -40,7 +40,7 @@
     GAME.phase = 'busy'; FR.lock(true); T.lock(true);
     if (have === R.n) { clearHint(); T.glow(true); $('pic').classList.remove('hiddenpic'); await FR.yes(T.el, R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + some(R.n)); T.glow(false); var d = done; done = null; d(R.misses === 0); return; }
     FR.oops(T.el); R.misses++;
-    if (R.misses === 1) { await FR.say("Let's look again. A full row is five."); await FR.say('Fix your frame.'); }
+    if (R.misses === 1) { T.glow(true); await FR.say("Let's look again."); await FR.say(some(R.n)); T.glow(false); await FR.say('Fix your frame.'); }   /* the help shows how: the rows light and he hears what the number is made of (K clarity 16) */
     else { T.glow(true); $('pic').classList.remove('hiddenpic'); await FR.say(some(R.n)); hint(); var k = R.n - have; await FR.say(k > 0 ? 'Put ' + FR.word(k) + ' more in.' : 'Take ' + FR.word(-k) + ' out.'); T.glow(false); }
     GAME.phase = 'answer'; FR.lock(false); T.lock(false); ready(); hooks();
   }
