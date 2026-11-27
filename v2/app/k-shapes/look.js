@@ -290,6 +290,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
   /* small sharp things scattered just outside the stage (grass tufts, little flowers, toys) */
   function scatter(n, rMin, rMax, seed, make) {
+    if (CALM && !FAST) return;   /* calm (Esti 2026-11-27): no little blocks, balls, cupcakes or gifts scattered round the stage; they pulled the eye from the game */
     if (FAST) make = (x, z, R, i) => { if (i % 4 === 0) mesh(G.box, pm(TOY[i % TOY.length]), x, 0.22, z, 0.44, 0.44, 0.44); };   /* the test: a few plain toy blocks instead */
     const R = rng(seed || 17);
     for (let i = 0; i < n; i++) { const a = R() * Math.PI * 2, r = rMin + R() * (rMax - rMin), x = Math.cos(a) * r, z = Math.sin(a) * r * 0.9 - 0.6;
@@ -1032,6 +1033,12 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
       groundMats.forEach(m => { const old = m.map; const t = gt.clone(); if (old) { t.repeat.copy(old.repeat); t.offset.copy(old.offset); } t.needsUpdate = true; m.map = t; m.color.set(tint); m.needsUpdate = true; });
     });
     new THREE.TextureLoader().load(new URL('./worlds/' + name + '.jpg', import.meta.url).href, tex => {
+      if (CALM) try {   /* calm (Esti 2026-11-27, "the backgrounds are so busy"): the painting is paler, softer and less colourful, so the game in front is what he sees */
+        const im = tex.image, cv = document.createElement('canvas'); cv.width = im.width; cv.height = im.height; const cx = cv.getContext('2d');
+        cx.filter = 'saturate(0.55) blur(' + Math.max(2, Math.round(im.width / 400)) + 'px)'; cx.drawImage(im, 0, 0); cx.filter = 'none';
+        cx.fillStyle = 'rgba(255,255,255,0.38)'; cx.fillRect(0, 0, cv.width, cv.height);
+        const soft = new THREE.CanvasTexture(cv); tex = soft;
+      } catch (e) {}
       tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = ANISO; tex.repeat.x = -1; tex.offset.x = 1;
       const R = P.R || 46, span = P.span || 1.55, H = R * span * tex.image.height / tex.image.width, g = P.g || 0.97, y0 = P.y == null ? -2 : P.y;
       const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: tex, side: THREE.BackSide, fog: false, color: new THREE.Color(1.1, 1.1, 1.1) }));

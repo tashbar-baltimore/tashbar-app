@@ -87,7 +87,7 @@ export function startGame(cfg) {
 <canvas id="view"></canvas>
 <div class="hud">
   <button class="btn" id="again" aria-label="Hear it again"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#1F2A44"/><path d="M33 16c3 2 5 5 5 8s-2 6-5 8M37 10c5 3 8 8 8 14s-3 11-8 14" stroke="#1F2A44" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></button>
-  <div class="dots" id="dots" aria-hidden="true"></div>
+  <div class="mid"><div class="gtitle" id="gtitle"></div><div class="dots" id="dots" aria-hidden="true"></div></div>
   <div style="width:84px"></div>
 </div>
 <button class="btn" id="start" aria-label="Start"><svg viewBox="0 0 48 48"><path d="M16 10 L38 24 L16 38Z" fill="#fff" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg></button>
@@ -101,6 +101,7 @@ export function startGame(cfg) {
 <button class="btn" id="clapBtn" aria-label="Clap"><svg viewBox="0 0 64 64"><g fill="#F2C9A0" stroke="#B5742A" stroke-width="2.5" stroke-linejoin="round"><path d="M18 52 C10 44 8 34 12 24 L20 12 C22 9 26 10 25 14 L22 22 L30 8 C32 5 36 7 34 11 L28 24 L36 10 C38 7 42 9 40 13 L33 27 L39 18 C41 15 45 17 43 21 L36 36 C34 44 28 52 18 52Z"/></g><path d="M46 8 l4 -4 M52 14 l6 -2 M50 22 l6 2" stroke="#F5B400" stroke-width="3.5" stroke-linecap="round"/></svg></button>
 <div id="nogl">This computer cannot show the 3D game.</div>`);
   const $ = s => document.querySelector(s);
+  $('#gtitle').textContent = cfg.title || document.title;   /* the game's name is always on screen (K-CLARITY-RULES 13) */
   const W = window.__shp = { hasBonus: !!(cfg.bonus || cfg.bonusRounds), hasChant: !!(cfg.fixLesson || cfg.patternLesson || (cfg.lessons || []).some(l => l.chant)), nb: cfg.boxes.length, game: cfg.id, name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
   const wait = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
   const NB = cfg.boxes.length;
@@ -187,7 +188,7 @@ export function startGame(cfg) {
     } else if (bc.solid) {   /* a little real solid stuck on the front */
       const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar(LK ? 0.42 : 0.28); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18)); b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (LK) {
-      const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.42, BX.d / 2 + 0.07); lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed */
+      const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5, BX.d / 2 + 0.3); lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
     } else {
       const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
       lab.scale.setScalar((NB === 1 ? 0.48 : 0.5) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
@@ -253,7 +254,7 @@ export function startGame(cfg) {
     const dep = cfg.thinFlat ? 0.06 : DEPTH, bev = cfg.thinFlat ? 0.03 : BEV;   /* "flat or solid": flat pieces are thin, like card */
     const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: LK ? bev * 1.25 : bev, bevelSize: bev, bevelSegments: LK && (!FAST || SHOT) ? 6 : 3, curveSegments: LK && (!FAST || SHOT) ? 64 : 48 });
     if (!solid) geo.translate(0, 0, -dep / 2);
-    const TP = LK && !solid && LK.treasures.piece ? LK.treasures.piece(k, color, s, FAMILY(k)) : null;   /* the world's own thing in this exact outline (treasures.js) */
+    const TP = LK && !solid && !cfg.plain && LK.treasures.piece ? LK.treasures.piece(k, color, s, FAMILY(k)) : null;   /* the world's own thing in this exact outline (treasures.js); cfg.plain (first meeting with a shape, K-CLARITY-RULES 1): a plain flat shape in one solid colour, nothing painted on it */
     const TS = LK && solid && LK.treasures.solid ? LK.treasures.solid(solid, color) : null;   /* the world's own thing in this exact solid (planet, gift box ...) */
     const mat = TS ? TS.mat : TP ? TP.mats : LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
