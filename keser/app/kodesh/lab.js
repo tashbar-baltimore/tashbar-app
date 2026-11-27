@@ -40,7 +40,7 @@
  function css(){ if(document.getElementById('clab-css')) return;
   try{ if(!document.getElementById('clab-font')){ const l=document.createElement('link'); l.id='clab-font'; l.rel='stylesheet'; l.href='https:'+'/'+'/fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@500;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap'; document.head.appendChild(l); } }catch(e){}   /* Hebrew with nikud and trop (same way as ChumashPage.html) */
   const s=document.createElement('style'); s.id='clab-css'; s.textContent=`
-#clab{position:fixed;inset:0;z-index:900;background:#FFF5FA;color:#3A1240;font-family:'Nunito',system-ui,sans-serif;display:flex;flex-direction:column}
+#clab{position:fixed;inset:0;z-index:900;background:#F8F4FC;color:#3A1240;font-family:'Nunito',system-ui,sans-serif;display:flex;flex-direction:column}
 #clab *{box-sizing:border-box}
 #clab .clab-top{position:relative;display:flex;align-items:center;gap:10px;min-height:68px;padding:12px 16px;background:#fff;border-bottom:1.5px solid #F3D3E3}
 #clab .clab-top .tlk-at-tl{position:static}
@@ -71,14 +71,14 @@
 #clab .clab-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
 #clab .clab-step{padding:14px 16px;gap:4px;min-height:96px}
 #clab .clab-step small{color:#7A4A6E;font-size:14px;line-height:1.35}
-#clab .clab-step .n{font:800 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#B0306F}
+#clab .clab-step .n{font:800 12px 'Nunito',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#5D2B88}
 #clab .clab-step[disabled]{opacity:.55;cursor:default}
 #clab .clab-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center} #clab .clab-center{justify-content:center}
 #clab .clab-wl{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
-#clab .clab-wl>div{background:#FFF5FA;border-radius:12px;padding:8px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+#clab .clab-wl>div{background:#F8F4FC;border-radius:12px;padding:8px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
 #clab .clab-wl .clab-he{font-size:24px}
 #clab .clab-wl.dts{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}#clab .clab-wl.dts>div{justify-content:flex-start;gap:14px}#clab .clab-wl.dts span:last-child{text-align:start}
-#clab .clab-teach{background:#FCE4F0;border-radius:16px;padding:16px 18px;display:grid;gap:8px;font-size:17px;line-height:1.5}
+#clab .clab-teach{background:#F1E9FA;border-radius:16px;padding:16px 18px;display:grid;gap:8px;font-size:17px;line-height:1.5}
 #clab .clab-teach .clab-he{font-size:1.2em}
 #clab .clab-how{background:#FEF3C7;color:#5B3A00;border-radius:12px;padding:10px 14px;font-size:15px;line-height:1.45}
 #clab .clab-how b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px;color:#92400E}
@@ -93,8 +93,8 @@
 #clab .clab-opt.pic img.tall{object-fit:contain}
 #clab .clab-opt.right,#clab .tw.right,#clab .piece.right{border-color:#1f8a5b!important;background:#DCF3E8!important}
 #clab .clab-opt.wrong,#clab .tw.wrong{border-color:#c2410c!important;background:#FDE7DC!important}
-#clab .clab-opt.picked{border-color:#B0306F!important;background:#FCE4F0!important}
-#clab .clab-opt .num{position:absolute;top:10px;left:10px;width:34px;height:34px;border-radius:50%;background:#B0306F;color:#fff;display:grid;place-items:center;font-weight:800}
+#clab .clab-opt.picked{border-color:#5D2B88!important;background:#F1E9FA!important}
+#clab .clab-opt .num{position:absolute;top:10px;left:10px;width:34px;height:34px;border-radius:50%;background:#5D2B88;color:#fff;display:grid;place-items:center;font-weight:800}
 #clab .clab-opt{position:relative}
 #clab .clab-fb{border-radius:14px;padding:12px 16px;text-align:center;font-weight:700;display:grid;gap:8px}
 #clab .clab-fb.good{background:#DCF3E8;color:#14532d} #clab .clab-fb.bad{background:#FDE7DC;color:#7c2d12}
@@ -102,44 +102,44 @@
 #clab .parts{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;direction:rtl}
 #clab .part{border-radius:10px;padding:4px 10px;font-size:14px;font-weight:700;background:#fff;border:2px solid #F3D3E3;direction:ltr;display:flex;gap:6px;align-items:center}
 #clab .part .clab-he{font-size:22px}
-#clab .part.p{border-color:#c2410c} #clab .part.s{border-color:#B0306F} #clab .part.b{border-color:#0f7a6c}
+#clab .part.p{border-color:#c2410c} #clab .part.s{border-color:#5D2B88} #clab .part.b{border-color:#0f7a6c}
 #clab .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:#7A4A6E;justify-content:center}
 #clab .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
-#clab .legend .lp::before{background:#c2410c} #clab .legend .lb::before{background:#0f7a6c} #clab .legend .ls::before{background:#B0306F}
-#clab .wc .p{color:#c2410c} #clab .wc .b{color:#0f7a6c} #clab .wc .s{color:#B0306F}
+#clab .legend .lp::before{background:#c2410c} #clab .legend .lb::before{background:#0f7a6c} #clab .legend .ls::before{background:#5D2B88}
+#clab .wc .p{color:#c2410c} #clab .wc .b{color:#0f7a6c} #clab .wc .s{color:#5D2B88}
 #clab .clab-ex{display:flex;flex-wrap:wrap;direction:rtl;gap:6px 14px;align-items:center;padding:10px 0;border-bottom:1px solid #F3D3E3}
 #clab .clab-ex .w{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-weight:700;font-size:32px;white-space:nowrap}
 #clab .clab-ex .t{direction:ltr;font-weight:800;font-size:16px} #clab .clab-ex .r{font-size:13px;color:#7A4A6E;margin-inline-start:auto}
 #clab .clab-pas{background:#fff;border-radius:14px;padding:10px 12px;display:grid;gap:4px}
 #clab .clab-pas .l{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-size:24px;direction:rtl;line-height:1.6}
 #clab .clab-pas mark{background:#FEF3C7;border-radius:6px;padding:0 4px;box-shadow:0 0 0 2px #d99a00;color:inherit}
-#clab .clab-flash{border-radius:20px;padding:22px 16px;display:grid;gap:12px;justify-items:center;text-align:center;background:#FFF5FA;border:2px solid #F3D3E3}
+#clab .clab-flash{border-radius:20px;padding:22px 16px;display:grid;gap:12px;justify-items:center;text-align:center;background:#F8F4FC;border:2px solid #F3D3E3}
 #clab .clab-flash .big{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-weight:700;font-size:clamp(52px,14vw,90px);line-height:1.1;direction:rtl}
 #clab .clab-flash .mean{font:700 26px 'Fredoka','Nunito',sans-serif}
 #clab .letters{display:flex;gap:8px;direction:rtl;justify-content:center}
 #clab .letters span{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-weight:700;font-size:38px;width:56px;height:64px;border-radius:14px;display:grid;place-items:center;background:#DCF3EF;color:#0f7a6c;border:2px solid #0f7a6c}
 #clab .letters span.blank{background:#fff;border-style:dashed;color:transparent}
-#clab .slots{min-height:76px;border:3px dashed #EFC9DC;border-radius:16px;display:flex;gap:8px;justify-content:center;align-items:center;direction:rtl;flex-wrap:wrap;padding:10px}
+#clab .slots{min-height:76px;border:3px dashed #DCCDEE;border-radius:16px;display:flex;gap:8px;justify-content:center;align-items:center;direction:rtl;flex-wrap:wrap;padding:10px}
 #clab .bank{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;direction:rtl}
 #clab .piece{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-weight:700;font-size:30px;min-height:58px;min-width:58px;padding:6px 14px;flex-direction:column;align-items:center}
 #clab .piece small{font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:#7A4A6E;direction:ltr}
-#clab .piece.p{border-color:#c2410c;background:#FDE7DC} #clab .piece.b{border-color:#0f7a6c;background:#DCF3EF} #clab .piece.s{border-color:#B0306F;background:#FCE4F0}
+#clab .piece.p{border-color:#c2410c;background:#FDE7DC} #clab .piece.b{border-color:#0f7a6c;background:#DCF3EF} #clab .piece.s{border-color:#5D2B88;background:#F1E9FA}
 #clab .piece[disabled]{opacity:.3}
-#clab span.piece{display:inline-flex;border:1.5px solid #EFC9DC;border-radius:14px;background:#fff}
+#clab span.piece{display:inline-flex;border:1.5px solid #DCCDEE;border-radius:14px;background:#fff}
 #clab .hkb{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;direction:rtl;width:100%;max-width:440px}
 #clab .hk{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-size:26px;min-height:48px;padding:0}
 #clab .pasuk{font-family:'Noto Serif Hebrew','Frank Ruhl Libre',serif;font-size:clamp(24px,5.6vw,34px);direction:rtl;line-height:2;display:flex;flex-wrap:wrap;gap:4px 2px;align-items:center}
 #clab .tw{border:2px solid transparent;background:transparent;border-radius:12px;padding:0 6px;font:inherit;line-height:1.7;min-height:44px;color:inherit}
-#clab button.tw{cursor:pointer} #clab button.tw:hover:not([disabled]){border-color:#B0306F;background:#FCE4F0}
+#clab button.tw{cursor:pointer} #clab button.tw:hover:not([disabled]){border-color:#5D2B88;background:#F1E9FA}
 #clab .tw.hi{background:#FEF3C7;border-color:#d99a00}
 #clab .gap{width:22px;min-height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0;cursor:pointer}
-#clab .gap::before{content:"";width:4px;height:26px;border-radius:4px;background:#EFC9DC}
+#clab .gap::before{content:"";width:4px;height:26px;border-radius:4px;background:#DCCDEE}
 #clab .gap.on::before{width:8px;height:44px;background:#c2410c} #clab .gap.ok::before{width:8px;height:44px;background:#1f8a5b}
 #clab .gap.miss::before{width:8px;height:44px;background:repeating-linear-gradient(#1f8a5b 0 6px,transparent 6px 10px)} #clab .gap.bad::before{background:#c2410c}
 #clab .ref{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-size:15px;color:#7A4A6E;direction:rtl;text-align:right}
-#clab .chunkp{display:flex;flex-wrap:wrap;gap:6px;direction:rtl;padding:10px;border-radius:16px;background:#FFF5FA;align-items:flex-start}
+#clab .chunkp{display:flex;flex-wrap:wrap;gap:6px;direction:rtl;padding:10px;border-radius:16px;background:#F8F4FC;align-items:flex-start}
 #clab .chunkp.done{background:#DCF3E8}
-#clab .wsw{display:grid;justify-items:center;gap:2px;border:2px solid #EFC9DC;border-radius:14px;padding:6px 10px;background:#fff;min-height:44px;min-width:60px;font:inherit;color:inherit}
+#clab .wsw{display:grid;justify-items:center;gap:2px;border:2px solid #DCCDEE;border-radius:14px;padding:6px 10px;background:#fff;min-height:44px;min-width:60px;font:inherit;color:inherit}
 #clab .wsw .clab-trop{font-size:clamp(22px,5.4vw,30px);line-height:1.7}
 #clab .wsw small{font-size:12px;font-weight:800;color:#0f7a6c;max-width:120px;text-align:center;direction:ltr}
 #clab .wsw.now{border-color:#c2410c;box-shadow:0 0 0 3px #FDE7DC} #clab .wsw.ok{border-color:#1f8a5b;background:#DCF3E8}
@@ -147,12 +147,12 @@
 #clab .octa{width:110px;height:110px;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);display:grid;place-items:center;color:#fff;font-family:'Noto Serif Hebrew',serif;font-size:60px;line-height:1}
 #clab .octa.red{background:#d62828}#clab .octa.orange{background:#f77f00}#clab .octa.yellow{background:#ffc300;color:#2a1a00}#clab .octa.sm{width:54px;height:54px;font-size:28px}
 #clab .mgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-#clab .mc{aspect-ratio:1/1;font-size:14px;font-weight:800;padding:6px;text-align:center;align-items:center;justify-content:center;background:#B0306F;color:#fff;border-color:#B0306F}
+#clab .mc{aspect-ratio:1/1;font-size:14px;font-weight:800;padding:6px;text-align:center;align-items:center;justify-content:center;background:#5D2B88;color:#fff;border-color:#5D2B88}
 #clab .mc.open{background:#fff;color:#3A1240} #clab .mc.open.he{font-family:'Frank Ruhl Libre','Noto Serif Hebrew',serif;font-size:clamp(20px,5vw,30px)}
 #clab .mc.done{background:#DCF3E8;color:#14532d;border-color:#1f8a5b}
 #clab .numpad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;max-width:420px;margin:0 auto;width:100%}
 #clab .numpad .tlk{min-height:50px;padding:0;font-size:22px}
-#clab .numshow{font:800 34px 'Fredoka','Nunito',sans-serif;text-align:center;min-height:54px;border:2.5px solid #EFC9DC;border-radius:14px;background:#fff;max-width:260px;margin:0 auto;width:100%;display:grid;place-items:center;direction:ltr}
+#clab .numshow{font:800 34px 'Fredoka','Nunito',sans-serif;text-align:center;min-height:54px;border:2.5px solid #DCCDEE;border-radius:14px;background:#fff;max-width:260px;margin:0 auto;width:100%;display:grid;place-items:center;direction:ltr}
 #clab .tl-strip{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;min-height:44px;padding-bottom:4px}
 #clab .tl-slot{flex:0 0 54px;width:54px;height:34px;aspect-ratio:1.58;border-radius:5px;background:#F3D3E3;overflow:hidden}
 #clab .tl-slot img{width:100%;height:100%;object-fit:cover;display:block}
@@ -166,7 +166,7 @@
 #clab .chipx{display:inline-flex;align-items:center;gap:8px;background:#E0F2FE;color:#075985;border-radius:12px;padding:10px 14px;font-weight:800;font-size:18px}
 #clab .fact{background:#FEF3C7;border-radius:12px;padding:12px 16px;border-inline-start:5px solid #d99a00}
 #clab .track{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;min-height:178px;align-items:flex-start;padding:12px;background:#fff;border:1.5px solid #F3D3E3;border-radius:16px}
-#clab .tcard{flex:0 0 124px;width:124px;min-height:150px;background:#FFF5FA;border-radius:10px;padding:6px;text-align:center}
+#clab .tcard{flex:0 0 124px;width:124px;min-height:150px;background:#F8F4FC;border-radius:10px;padding:6px;text-align:center}
 #clab .tcard img,#clab .tcard .nopic{width:100%;aspect-ratio:1.58;object-fit:cover;border-radius:6px;border:2px solid #c8202f;display:block}
 #clab .tcard .tn{font-size:13px;font-weight:800;line-height:1.25;margin-top:4px} #clab .tcard .ty{font-size:13px;color:#1d6fd8;font-weight:800}
 #clab .tcard.slot{border:3px dashed #1d6fd8;display:grid;place-items:center;min-height:110px;font:800 32px 'Fredoka',sans-serif;color:#1d6fd8}
@@ -214,14 +214,13 @@
   {k:'ml',ic:'📖',he:'מִלִּים',t:'Milim',p:'The everyday words of Chumash, 10 at a time.'},
   {k:'ps',ic:'🧩',he:'אוֹתִיּוֹת הַשִּׁמּוּשׁ',t:'Prefixes & Suffixes',p:'The letters stuck to the front and the end of a word, and what they mean.'},
   {k:'tr',ic:'🛑',he:'טְעָמִים',t:'Stop Signs',p:'The trop stop signs, and how they break a pasuk into parts.'},
-  {k:'pw',ic:'🛠️',he:'פָּסוּק',t:'Pasuk Workshop',p:'Put it all together: learn a real pasuk on your own, word by word.'},
-  {k:'tl',ic:'⏳',he:'צִיר הַזְּמַן',t:'Timeline',p:'From Creation to today: which came first? In English or in Hebrew.'}];
+  {k:'pw',ic:'🛠️',he:'פָּסוּק',t:'Pasuk Workshop',p:'Put it all together: learn a real pasuk on your own, word by word.'}];   /* Keser: the Timeline is its own place in her world, not a tile here (M. Heinemann 2026-11-27) */
  function counts(k){ const d=D(); if(k==='sh') return [P.done.sh.length,SHG.length,'groups']; if(k==='ml') return [P.done.ml.length,MLG.length,'groups']; if(k==='ps') return [P.done.ps.length,d.UNITS.length,'units'];
   if(k==='tr') return [P.done.tr.length,d.TUNITS.length,'units']; if(k==='pw') return [P.done.pw.length,d.WORK.length,'pesukim']; return [Object.keys(P.tl.done).length,4,'levels']; }
  function hub(){ clearTimers(); X.view='hub'; BACK=null;
-  frame('Chumash & Timeline Lab','',' hub',`<div class="clab-card"><h2>Welcome to the Lab${me().name?', '+E(String(me().name).split(/\s+/)[0]):''}!</h2>
-   <p>Here you learn the tools a talmidah uses to learn Chumash on her own: shorashim, milim, prefixes and suffixes, and the trop. Then you use them on a real pasuk. And the Timeline shows when everything happened.</p>
-   <p class="clab-mut">Pick a lab. Start at the first group or unit. Each one has a lesson, practice, a game and a quiz.</p><div class="clab-crowns" aria-label="The three crowns: Keter Torah, Keter Kehuna, Keter Malchus"><img src="/pics/keser-keter-torah.webp" alt="Keter Torah"><img src="/pics/keser-keter-kehuna.webp" alt="Keter Kehuna"><img src="/pics/keser-keter-malchut.webp" alt="Keter Malchus"></div></div>
+  frame('Chumash Lab','',' hub',`<div class="clab-card"><h2>Welcome to the Lab${me().name?', '+E(String(me().name).split(/\s+/)[0]):''}!</h2>
+   <p>Here you learn the tools a talmidah uses to learn Chumash on her own: shorashim, milim, prefixes and suffixes, and the trop. Then you use them on a real pasuk.</p>
+   <p class="clab-mut">Pick a lab. Start at the first group or unit. Each one has a lesson, practice, a game and a quiz.</p></div>
    <div class="clab-grid">${LABS.map(l=>{const [d,n,u]=counts(l.k);return tile('clab-lab','data-lab="'+l.k+'"',`<span class="hd c-${l.k}"><span class="ic" aria-hidden="true">${l.ic}</span><span class="clab-he">${l.he}</span></span><span class="b"><b>${E(l.t)}</b><small>${E(l.p)}</small>${pill(d?'prog':'now',d?d+' of '+n+' '+u+' done':'Start here')}</span>`);}).join('')}</div>`);
   NAV='hub';
   bodyEl().querySelectorAll('[data-lab]').forEach(b=>b.onclick=()=>{ snd('tap'); const k=b.dataset.lab; if(k==='sh'||k==='ml') listLab(k); else if(k==='ps') psLab(); else if(k==='tr') trLab(); else if(k==='pw') pwLab(); else tlHome(); }); }
@@ -806,7 +805,7 @@
  const thow=part=>{ const h=TLHOW[part]||TLHOW.first; return `<div class="clab-how ${HEB()?'dir-rtl':''}"><b>${E(u('how'))}</b>${E(L2(h.en,h.he))}</div>`; };
  const nm=k=>{ const h=nameOf(k); return h!==k?`<span class="clab-he">${E(h)}</span>`:E(h); };
  const label=o=>typeof o==='object'?E(L2(o.en,o.he)):nm(o);
- function tlHome(){ clearTimers(); BACK=hub; X.view='tl';
+ function tlHome(){ clearTimers(); BACK=()=>X.close(); X.view='tl';   /* Keser: Back from the Timeline goes back to her world */
   const tog=`<div class="clab-row clab-center" role="group" aria-label="Language">${HEB()?T().quiet('English','data-lang="en"')+T().main('עִבְרִית','data-lang="he" aria-pressed="true"'):T().main('English','data-lang="en" aria-pressed="true"')+T().quiet('עִבְרִית','data-lang="he"')}</div>`;
   frame(L2('Timeline','צִיר הַזְּמַן'),HEB()?'עִבְרִית':'English','page',`<div class="clab-card ${HEB()?'dir-rtl':''}"><h2>${E(u('title'))}</h2>
    <div class="tl-hero">${[3,9,14,17,24,30].map(n=>imgHTML(n,'','')).join('')}</div>

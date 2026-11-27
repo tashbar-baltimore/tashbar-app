@@ -66,10 +66,10 @@ function go(i, quiet) {
   const n = ((i % N) + N) % N; if (n === S.focus && !quiet) { world && world.nudge && world.nudge(); return; }
   S.focus = n; show(); world && world.focus(n); if (!quiet) chime(PLACES[n].note, true);
 }
+/* straight in (M. Heinemann 2026-11-26/27): no card in between. קודש opens the Chumash Lab, Timeline its Timeline, General Studies its page. */
 function enter() {
-  if (S.entered) return; S.entered = true; const p = PLACES[S.focus];
-  chime(p.note); chime(p.note + 7, true); const lab = !!p.lab; body.classList.toggle('kodesh', p.id === 'kodesh'); $('openLab').hidden = !lab; $('roomSoon').hidden = lab; if (lab) $('labName').textContent = p.labName; setName($('roomName'), p); $('roomHost').src = p.pic; $('roomHost').alt = p.host; body.classList.add('in');
-  world && world.enter(S.focus); setTimeout(() => { if (S.entered) { body.classList.add('inside'); $('room').setAttribute('aria-hidden', 'false'); $('back').focus({ preventScroll: true }); } }, calm ? 50 : 750);
+  if (S.entered) return; S.entered = true; const p = PLACES[S.focus]; chime(p.note); chime(p.note + 7, true);
+  loadLab().then(() => { window.CLAB.openLab(p.lab === 'tl' ? 'tl' : undefined); }).catch(err => console.warn('Kodesh lab: ' + err.message)).finally(() => { S.entered = false; });
 }
 function back() {
   if (!S.entered) return; S.entered = false; body.classList.remove('inside', 'in'); $('room').setAttribute('aria-hidden', 'true');
@@ -114,7 +114,7 @@ const up = e => { if (!down || e.pointerId !== down.id) return; const dx = e.cli
   if (Math.abs(dy) > 40) return;
   const hit = world ? world.pick(e.clientX, e.clientY) : null;
   if (hit === 'crown') { tapAt(e, '#F5C451'); world.twirl(); chime(12); chime(16, true); }
-  else if (typeof hit === 'number') { tapAt(e, PLACES[hit].color); if (hit === S.focus) enter(); else go(hit); }
+  else if (typeof hit === 'number') { tapAt(e, PLACES[hit].color); { go(hit, true); enter(); }   /* one tap goes straight in (M. Heinemann 2026-11-26) */ }
   else tapAt(e); };
 stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', () => { down = null; world && world.drag(0, true); });
 
@@ -126,11 +126,12 @@ function buildFlat() {
     c.onclick = e => { tapAt(e, p.color); if (i === S.focus) enter(); else go(i); }; tr.appendChild(c); });
   document.querySelector('.flat .crown').onclick = e => { tapAt(e, '#F5C451'); chime(12); };
 }
-function flat() { html.classList.add('nogl'); S.gl = false; buildFlat(); show(); }
+function flat() { location.replace('home.html'); }   /* no 3D on this computer: the same three choices as clean cards */
 addEventListener('resize', show);
 
 /* ---------- the sisters greet her (once per visit; any tap or key lets her straight in) ---------- */
 function greet() {
+  return;   /* less busy (M. Heinemann 2026-11-27): no greeting; she goes straight into her world */
   let seen = false; try { seen = sessionStorage.getItem('keser.greeted') === '1'; sessionStorage.setItem('keser.greeted', '1'); } catch (e) {}
   if (seen || /[?&]nogreet=1\b/.test(q)) return;
   const g = $('greet'), off = () => { g.classList.remove('on'); body.classList.remove('greeting'); removeEventListener('pointerdown', off, true); removeEventListener('keydown', off, true); };
@@ -145,7 +146,7 @@ function greet() {
 }
 
 /* ---------- start ---------- */
-window.KWORLD = { places: PLACES.map(p => p.id), progress, state: S, layout: () => (world && world.layout ? world.layout() : null), go, enter, back, next: () => go(S.focus + 1), prev: () => go(S.focus - 1), setLite };
+window.KWORLD = { places: PLACES.map(p => p.id), progress, state: S, go, enter, back, next: () => go(S.focus + 1), prev: () => go(S.focus - 1), setLite };
 show();
 if (S.lite) { html.classList.add('lite'); $('lite').setAttribute('aria-pressed', 'true'); }
 setTimeout(() => body.classList.remove('intro'), calm ? 0 : 900);

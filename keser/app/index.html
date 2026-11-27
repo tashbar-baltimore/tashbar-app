@@ -3,87 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1A0B2E">
+<meta name="theme-color" content="#2A1650">
 <title>Keser Girls 3.0</title>
 <link rel="stylesheet" href="kit.css">
 <link rel="prefetch" href="signin.html">
 <style>
-/* WELCOME: the painted twilight sky and her painted crown (picture order 2), floating and tilting as she moves, glinting.
-   HoS 2026-11-26: "the crown looks very cheap ... use the pictures that ChatGPT is giving." Only three words: כתר, Keser Girls, Enter. */
+/* WELCOME (M. Heinemann 2026-11-26: "clean and neat and fresh, not overwhelming"): the Keser logo on Keser purple, and Enter. */
 *{ box-sizing:border-box; }
-html,body{ margin:0; height:100%; overflow:hidden; color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--night); -webkit-tap-highlight-color:transparent; }
-.sky{ position:fixed; inset:-5%; transform:translate(calc(var(--px,0) * -14px), calc(var(--py,0) * -10px)); transition:transform .6s var(--glide);
-  background:radial-gradient(ellipse at 50% 38%, #8A55BC 0, #5D2B88 32%, #3A1660 62%, #1C0A30 100%); }   /* Keser Academy royal purple (M. Heinemann 2026-11-26) */
-.veil{ position:fixed; inset:0; background:radial-gradient(ellipse at 50% 42%, rgba(26,11,46,0) 0, rgba(26,11,46,.35) 70%), linear-gradient(180deg, rgba(26,11,46,0) 45%, rgba(26,11,46,.75)); }
-#fx{ position:fixed; inset:0; width:100%; height:100%; pointer-events:none; }
-.stage{ position:fixed; left:50%; top:41%; width:min(58vw,64vh,560px); transform:translate(-50%,-50%); perspective:900px; }
-.crown{ position:relative; width:100%; aspect-ratio:1248/998; transform-style:preserve-3d; cursor:pointer;
-  transform:rotateX(calc(var(--py,0) * -10deg)) rotateY(calc(var(--px,0) * 14deg)); transition:transform .5s var(--glide); animation:float 5s ease-in-out infinite; }
-.crown.twirl{ animation:twirl 1.3s var(--spring), float 5s ease-in-out infinite; }
-@keyframes float{ 50%{ translate:0 -12px } }
-@keyframes twirl{ from{ rotate:y 0deg } to{ rotate:y 360deg } }
-.crown img{ width:100%; height:100%; display:block; filter:drop-shadow(0 0 2px rgba(255,240,215,.35)) drop-shadow(0 0 30px rgba(255,214,140,.5)); }   /* only a warm glow: dark shadows showed through the gold as specks */
-/* a sweep of light across the gold, only where the crown is */
-.crown::after{ content:""; position:absolute; inset:0; background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.75) 48%,transparent 60%); background-size:300% 100%; animation:k-shine 3.4s ease-in-out infinite; mix-blend-mode:overlay;
-  -webkit-mask:url(/pics/keser-logo.webp) center/contain no-repeat; mask:url(/pics/keser-logo.webp) center/contain no-repeat; pointer-events:none; }
-.halo{ position:absolute; left:50%; top:52%; width:150%; aspect-ratio:1; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(40,10,60,.55), rgba(255,214,140,.25) 42%, rgba(140,80,200,.12) 55%, transparent 70%); pointer-events:none; animation:breathe 4s ease-in-out infinite; }
-@keyframes breathe{ 50%{ opacity:.7; transform:translate(-50%,-50%) scale(1.06) } }
-.title{ position:fixed; left:0; right:0; bottom:max(6vh,24px); text-align:center; padding:0 16px; opacity:0; transform:translateY(18px); animation:rise 1.2s var(--glide) 1.8s forwards; }
-@keyframes rise{ to{ opacity:1; transform:none } }
-.he{ margin:0; font-size:22px; font-weight:700; letter-spacing:.14em; color:var(--gold1); text-shadow:0 0 16px rgba(255,214,140,.8), 0 2px 8px rgba(60,10,60,.6); }
-h1{ margin:0; font-size:clamp(46px,7.5vw,84px); line-height:1.02; }
-.title .k-btn{ margin-top:20px; }
-body.leaving{ transition:opacity .7s ease, transform .7s ease; opacity:0; transform:scale(1.06); }
-@media (max-width:600px){ .stage{ top:37%; width:88vw } }
-/* THE KESER LOGO flies in from deep in the sky, turning, out of a burst of light (HoS 2026-11-26: "the Keser logos should be incorporated throughout, and a lot of pride. And there should be fly-ins") */
-.flyin{ animation:flyin 2.2s cubic-bezier(.16,.9,.3,1.04) both; }
-@keyframes flyin{ 0%{ opacity:0; transform:translateZ(-1400px) rotateY(-70deg) rotateX(20deg) scale(.4); filter:blur(14px) brightness(2.2) } 55%{ opacity:1; filter:blur(0) brightness(1.6) } 100%{ opacity:1; transform:none; filter:none } }
-.flash{ position:absolute; left:50%; top:50%; width:10%; aspect-ratio:1; translate:-50% -50%; border-radius:50%; pointer-events:none; background:radial-gradient(circle,#fff,rgba(255,241,184,.8) 30%,rgba(140,80,200,.3) 55%,transparent 70%); animation:flash 1.6s ease-out .9s both; }
-@keyframes flash{ 0%{ opacity:0; transform:scale(.2) } 25%{ opacity:1 } 100%{ opacity:0; transform:scale(14) } }
+html,body{ margin:0; height:100%; overflow:hidden; color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--keser); }
+.sky{ position:fixed; inset:0; z-index:-1; background:linear-gradient(180deg,#341C62 0%,var(--keser) 55%,#1F1040 100%); }
+main{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px; padding:24px 16px; text-align:center; }
+.crown{ width:min(56vw,52vh,440px); animation:in .9s ease both; }
+.crown img{ width:100%; display:block; filter:drop-shadow(0 10px 24px rgba(10,0,25,.5)); }
+.houses{ display:flex; gap:8px; } .houses i{ width:34px; height:4px; border-radius:2px; }
 .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-@media (prefers-reduced-motion: reduce){ .flyin,.flash{ animation:none !important } .flash{ display:none } .sky,.crown,.halo,.title,.crown::after{ animation:none !important } .title{ opacity:1; transform:none } .crown{ transition:none } }
+@keyframes in{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
+@media (prefers-reduced-motion: reduce){ .crown{ animation:none } }
 </style>
 </head>
 <body>
 <div class="sky" aria-hidden="true"></div>
-<div class="veil" aria-hidden="true"></div>
-<canvas id="fx" aria-hidden="true"></canvas>
-<div class="stage"><div class="halo"></div><div class="flyin"><div class="crown" id="crown"><img src="/pics/keser-logo.webp" alt="Keser Academy for Girls"></div></div><div class="flash"></div></div>
-<div class="title">
-  <p class="he" lang="he" dir="rtl">כתר</p>
+<main>
+  <div class="crown" id="crown"><img src="/pics/keser-logo.webp" alt="Keser Academy for Girls"></div>
+  <div class="houses" aria-hidden="true"><i style="background:var(--maroon2)"></i><i style="background:var(--emerald)"></i><i style="background:var(--blue2)"></i></div>
   <h1 class="sr">Keser Girls</h1>
-  <a class="k-btn" id="enter" href="signin.html"><svg class="k-star" viewBox="0 0 24 24"><path fill="#fff" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>Enter</a>
-</div>
-<script>
-(function () {
-  var calm = matchMedia('(prefers-reduced-motion: reduce)').matches, root = document.documentElement, crown = document.getElementById('crown');
-  /* the world tilts as she moves (mouse, finger or tilting the phone) */
-  if (!calm) {
-    addEventListener('pointermove', function (e) { root.style.setProperty('--px', (e.clientX / innerWidth * 2 - 1).toFixed(3)); root.style.setProperty('--py', (e.clientY / innerHeight * 2 - 1).toFixed(3)); });
-    addEventListener('deviceorientation', function (e) { if (e.gamma == null) return; root.style.setProperty('--px', Math.max(-1, Math.min(1, e.gamma / 30)).toFixed(3)); root.style.setProperty('--py', Math.max(-1, Math.min(1, (e.beta - 45) / 30)).toFixed(3)); });
-  }
-  /* a tap twirls the crown */
-  crown.addEventListener('click', function () { crown.classList.remove('twirl'); void crown.offsetWidth; crown.classList.add('twirl'); });
-  document.getElementById('enter').addEventListener('click', function (e) { if (calm) return; e.preventDefault(); document.body.classList.add('leaving'); setTimeout(function () { location.href = 'signin.html'; }, 650); });
-  /* glitter and glints, drawn on a canvas: twinkling stars over the sky and on the crown's jewels */
-  var c = document.getElementById('fx'), x = c.getContext('2d'), stars = [], glints = [];
-  function fit() { var r = Math.min(devicePixelRatio || 1, 2); c.width = innerWidth * r; c.height = innerHeight * r; x.setTransform(r, 0, 0, r, 0, 0); }
-  fit(); addEventListener('resize', fit);
-  for (var i = 0; i < (innerWidth < 600 ? 70 : 140); i++) stars.push({ x: Math.random(), y: Math.random() * 0.85, s: 0.6 + Math.random() * 2.2, p: Math.random() * 6.3, v: 0.6 + Math.random() * 1.6, c: ['#fff', '#F6E3B0', '#D4AA50', '#D9C2FF'][i % 4] });
-  /* the crown's jewels (where they sit in the painting) */
-  [[0.5, 0.06], [0.18, 0.21], [0.82, 0.21], [0.5, 0.42], [0.36, 0.18], [0.64, 0.18], [0.1, 0.72], [0.9, 0.72], [0.5, 0.82]].forEach(function (g, i) { glints.push({ u: g[0], v: g[1], p: i * 1.37 }); });
-  function star(px, py, s, a) { x.save(); x.translate(px, py); x.rotate(a); x.beginPath(); for (var k = 0; k < 8; k++) { var r = k % 2 ? s * 0.25 : s, t = k * Math.PI / 4; x.lineTo(Math.cos(t) * r, Math.sin(t) * r); } x.closePath(); x.fill(); x.restore(); }
-  function frame(ms) {
-    var t = ms / 1000; x.clearRect(0, 0, innerWidth, innerHeight);
-    stars.forEach(function (s) { var k = calm ? 0.6 : 0.35 + 0.65 * Math.max(0, Math.sin(t * s.v + s.p)); x.globalAlpha = k; x.fillStyle = s.c; x.shadowColor = s.c; x.shadowBlur = 6; star(s.x * innerWidth, s.y * innerHeight, s.s * (0.6 + k), t * 0.3); });
-    var b = crown.getBoundingClientRect();
-    glints.forEach(function (g) { var k = calm ? 0.3 : Math.pow(Math.max(0, Math.sin(t * 1.4 + g.p)), 10); if (k < 0.02) return; x.globalAlpha = k; x.fillStyle = '#fff'; x.shadowColor = '#fff'; x.shadowBlur = 14;
-      star(b.left + g.u * b.width, b.top + g.v * b.height, 4 + k * 14, t); });
-    x.globalAlpha = 1; x.shadowBlur = 0;
-    if (!calm) requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-})();
-</script>
+  <a class="k-btn" id="enter" href="signin.html">Enter</a>
+</main>
+<script src="sparkle.js"></script>
 </body>
 </html>

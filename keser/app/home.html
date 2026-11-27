@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2A1650">
+<title>Keser Girls 3.0</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+/* HOME (M. Heinemann 2026-11-26): "Once they put the code in, it should go straight to either choose Kodesh, Timeline lab, or the general studies.
+   And then it should go straight in ... clean and neat and fresh, not overwhelming and too girly and pinky."
+   One screen, three choices, each in its Keser color; a tap goes straight in. */
+*{ box-sizing:border-box; }
+html,body{ margin:0; min-height:100%; color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--keser); -webkit-tap-highlight-color:transparent; }
+.top,h1,.sub,.rule,.choices{ position:relative; z-index:1; }
+.top{ display:flex; align-items:center; justify-content:center; gap:14px; padding:22px 16px 6px; }
+.top img{ height:46px; }
+.top .k-word{ font-family:var(--serif); letter-spacing:.32em; font-size:20px; color:var(--gold1); }
+h1{ margin:10px 16px 4px; text-align:center; font-family:var(--serif); font-weight:600; font-size:clamp(26px,3.4vw,38px); }
+.sub{ margin:0 16px 22px; text-align:center; color:rgba(255,255,255,.72); font-size:15px; }
+.rule{ width:64px; height:3px; margin:0 auto 22px; border-radius:2px; background:linear-gradient(90deg,var(--maroon),var(--emerald),var(--blue),var(--gold2)); }
+.choices{ display:grid; grid-template-columns:repeat(2,minmax(0,320px)); gap:22px; justify-content:center; padding:0 16px 32px; }
+.choice{ appearance:none; border:0; padding:0; cursor:pointer; text-align:left; color:#fff; border-radius:18px; overflow:hidden; background:var(--c);
+  box-shadow:0 10px 30px rgba(10,0,25,.35), inset 0 0 0 1px rgba(246,227,176,.35); display:flex; flex-direction:column; transition:transform .25s ease, box-shadow .25s ease; }
+.choice:hover{ transform:translateY(-4px); box-shadow:0 16px 36px rgba(10,0,25,.45), inset 0 0 0 1.5px var(--gold2); }
+.choice:active{ transform:scale(.98); }
+.choice:focus-visible{ outline:3px solid var(--gold1); outline-offset:4px; }
+.choice{ position:relative; }
+.choice::after{ content:""; position:absolute; right:12px; bottom:14px; width:34px; height:27px; background:url(/pics/keser-logo-mark.webp) center/contain no-repeat; opacity:.9; filter:drop-shadow(0 0 6px rgba(246,227,176,.55)); }
+.choice .pic{ aspect-ratio:4/3; background:#fff center/cover no-repeat; border-bottom:3px solid var(--gold2); }
+.choice .txt{ padding:14px 18px 18px; display:grid; gap:4px; }
+.choice b{ font-family:var(--serif); font-size:26px; font-weight:600; }
+.choice b[lang="he"]{ font-size:30px; }
+.choice span{ font-size:14px; color:rgba(255,255,255,.82); }
+@media (max-width:760px){ .choices{ grid-template-columns:minmax(0,420px); gap:14px; } .choice{ flex-direction:row; } .choice .pic{ aspect-ratio:auto; width:42%; min-height:120px; border-bottom:0; border-right:3px solid var(--gold2); }
+  .choice b{ font-size:22px; } }
+@media (prefers-reduced-motion: reduce){ .choice{ transition:none } }
+</style>
+</head>
+<body>
+<div class="top"><img src="/pics/keser-logo-mark.webp" alt=""><span class="k-word">KESER</span></div>
+<h1>What are we learning today?</h1>
+<p class="sub">Choose one.</p>
+<div class="rule" aria-hidden="true"></div>
+<div class="choices">
+  <button class="choice" data-go="kodesh" style="--c:var(--maroon)"><div class="pic" style="background-image:url(/pics/keser-place-torah.webp)"></div>
+    <div class="txt"><b lang="he" dir="rtl">קודש</b><span>Chumash Lab</span></div></button>
+  <button class="choice" data-go="timeline" style="--c:var(--emerald)"><div class="pic" style="background-image:url(/pics/keser-place-timeline.webp);background-color:#fff;background-size:contain"></div>
+    <div class="txt"><b>Timeline</b><span>Which came first?</span></div></button>
+</div>
+<script src="sparkle.js"></script>
+<script type="module" src="home.js"></script>
+</body>
+</html>

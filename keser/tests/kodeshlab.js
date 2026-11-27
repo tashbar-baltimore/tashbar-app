@@ -1,5 +1,5 @@
 /* KESER GIRLS 3.0 · KODESH: the Chumash & Timeline Lab, played as a made-up girl. The same play-through as 1.0's tests/lib/chumashlab.js,
-   run on Keser's own copy in keser/app/kodesh/. It builds and serves the Keser site, opens her world without 3D, goes into Kodesh and taps
+   run on Keser's own copy in keser/app/kodesh/. It builds and serves the Keser site, opens home, taps קודש straight into the lab and taps
    "Chumash & Timeline Lab". Then:
    1. every timeline picture the lab names is listed for the build (kodesh/pics.js) and is in the built site;
    2. the data loaded (200 shorashim, the milim, 12 prefix/suffix units, 6 stop-sign units, 7 Workshop pesukim); no pasuk writes a Divine Name;
@@ -31,9 +31,8 @@ module.exports = async (browser) => {
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } }), pg = await ctx.newPage(), errs = [];
   pg.on('pageerror', e => errs.push(String(e))); pg.on('console', m => { if (m.type() === 'error' && !/fonts\.g/.test(m.text())) errs.push(m.text()); });
   try {
-    await pg.goto('http://127.0.0.1:' + srv.address().port + '/world.html?nogl=1&nogreet=1'); await pg.waitForFunction(() => window.KWORLD);
-    await pg.evaluate(() => { KWORLD.go(0); KWORLD.enter(); }); await pg.waitForSelector('#openLab:not([hidden])', { timeout: 8000 });
-    await pg.click('#openLab'); await pg.waitForSelector('#clab', { timeout: 20000 });
+    await pg.goto('http://127.0.0.1:' + srv.address().port + '/home.html'); await pg.waitForFunction(() => window.KHOME);
+    await pg.click('.choice[data-go="kodesh"]'); await pg.waitForSelector('#clab', { timeout: 20000 });   /* home: קודש goes straight into the lab */
     fs.mkdirSync(path.join(__dirname, '..', '..', 'tests', 'out'), { recursive: true });
     await pg.screenshot({ path: path.join(__dirname, '..', '..', 'tests', 'out', 'keser-kodesh-lab.png') });
     const vp = pg.viewportSize();
@@ -55,7 +54,7 @@ module.exports = async (browser) => {
           [...root.querySelectorAll('button')].forEach(x => { if (!x.classList.contains('tlk') && !x.classList.contains('tw') && !x.classList.contains('gap')) out.nonKit.push(x.outerHTML.slice(0, 80)); });
           if (/\bgems?\b|\bpoints\b(?! to)|\$\d|My money|T\$/i.test(root.innerText)) out.money++;
           if (b && b.scrollWidth > b.clientWidth + 2) out.wide.push((root.querySelector('.clab-top h1') || {}).textContent); };
-        scan(); out.hub = { tiles: root.querySelectorAll('[data-lab]').length, house: !!root.querySelector('.clab-top .tlk-home'), x: !!root.querySelector('.clab-top .tlk-x') };
+        scan(); out.hub = { tiles: root.querySelectorAll('[data-lab]').length, crowns: !!root.querySelector('.clab-crowns'), house: !!root.querySelector('.clab-top .tlk-home'), x: !!root.querySelector('.clab-top .tlk-x') };
         /* 3. builders */
         const G = X.groups(); let nq = 0;
         for (let t = 0; t < 300; t++) { try {
@@ -141,7 +140,8 @@ module.exports = async (browser) => {
       const d = r.data || {};
       r.bad.forEach(b => fails.push('Keser Kodesh lab: ' + b));
       if (d.sh !== 200 || d.units !== 12 || d.tunits !== 6 || d.work !== 7 || !(d.ml > 150) || !(d.pes > 300)) fails.push('Keser Kodesh lab: data incomplete ' + JSON.stringify(d));
-      if (!r.hub || r.hub.tiles !== 6 || !r.hub.house || r.hub.x) fails.push('Keser Kodesh lab: the lab home must show 6 labs and the house top left (got ' + JSON.stringify(r.hub) + ')');
+      if (r.hub && r.hub.crowns) fails.push('Keser Kodesh lab: the Keser banners must not be on the lab home (M. Heinemann 2026-11-27)');
+    if (!r.hub || r.hub.tiles !== 5 || !r.hub.house || r.hub.x) fails.push('Keser Kodesh lab: the lab home must show 5 labs (no Timeline tile, M. Heinemann 2026-11-27) and the house top left (got ' + JSON.stringify(r.hub) + ')');
       if (!r.runX) fails.push('Keser Kodesh lab: a question screen must have the lesson X top left');
       const pl = r.played || {}, want = ['shPractice', 'sh', 'ps', 'tr', 'trBreak', 'pw', 'tl_en', 'tl_he', 'game'], miss = want.filter(k => !pl[k]);
       if (miss.length) fails.push('Keser Kodesh lab: did not play to the end by taps: ' + miss.join(', '));
