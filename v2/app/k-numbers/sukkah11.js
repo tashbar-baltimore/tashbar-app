@@ -134,7 +134,7 @@ export function mount(host, opt) {
       c.getWorldPosition(wp); const from = wp.clone(); plate.remove(c); scene.add(c); const to = box.position.clone().add(new THREE.Vector3(((gone.length % 2) - 0.5) * 0.7, 0.14 + Math.floor(gone.length / 2) * 0.13, 0)); gone.push(c);
       await tween(450, e => { c.position.lerpVectors(from, to, e); c.position.y += Math.sin(Math.PI * e) * 0.8; }); c.position.copy(to); return true; },
     async putBack() { while (gone.length) { const c = gone.pop(); scene.remove(c); plate.add(c); cookies.push(c); } cookies.forEach((c, j) => c.position.copy(cookiePos(j, cookies.length))); },
-    showPlate(on) { plate.visible = on; box.visible = on; if (!on) api.cookieSpots(false); mode = on ? 'cookies' : 'boys'; fit(); },
+    showPlate(on) { plate.visible = on; box.visible = on; gone.forEach(c => { c.visible = on; }); if (!on) api.cookieSpots(false); mode = on ? 'cookies' : 'boys'; fit(); },
     async bumpAll(list, say) { for (let i = 0; i < list.length; i++) { const o = list[i], y0 = o.position.y; await tween(240, (e, t) => { o.position.y = y0 + Math.sin(Math.PI * t) * 0.35; }); o.position.y = y0; if (say) await say(i); } },
     celebrate() { sparkle(0, -1); },
     fit, destroy() { alive = false; renderer.dispose(); }

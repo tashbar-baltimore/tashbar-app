@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Story to Signs — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 11 (MAP.md "Story to signs": real things, then numbers), in the sukkah.
+     A story happens in front of him: boys come in (put together) or cookies are eaten (take away). The number sentence is built underneath:
+     the first number fills in by itself, then the second. He drags the sign (+ when they come, − when they go) into its box, then the answer.
+     A slip with the sign: "Did they come, or go away? Come is plus." A slip with the answer: we count what is there, and he tries again. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>
+.ui{ flex-direction:column; gap:10px; }
+.sent{ display:flex; align-items:center; gap:8px; }
+.slot{ width:clamp(64px,9.5vh,84px); height:clamp(64px,9.5vh,84px); border-radius:18px; background:#fff; border:4px dashed #C9B8A0; display:flex; align-items:center; justify-content:center; padding:7px; }
+.slot.full{ border-style:solid; border-color:#8AC97A; } .slot svg{ height:100%; width:auto; } .slot.sign{ width:clamp(56px,8vh,70px); }
+.eq{ font:900 clamp(32px,5vh,46px)/1 system-ui, sans-serif; color:#5A4A3A; }
+.tiles{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+.tile{ width:clamp(64px,9.5vh,80px); height:clamp(64px,9.5vh,80px); border-radius:18px; background:linear-gradient(180deg,#fff,#F3F7FF); display:flex; align-items:center; justify-content:center; padding:8px;
+  box-shadow:0 6px 0 #B9C7E6, 0 10px 16px rgba(30,40,90,.2); cursor:grab; touch-action:none; } .tile svg{ height:100%; width:auto; pointer-events:none; }
+.tile.picked{ outline:5px solid #FFC93D; transform:translateY(-6px); } .tile.hint{ box-shadow:0 0 0 6px rgba(255,210,61,.9), 0 0 24px 8px rgba(255,210,61,.7); }
+.sg{ font:900 54px/1 system-ui, sans-serif; } .sg.plus{ color:#22B45E; } .sg.minus{ color:#FF6A3D; }
+.tiles[hidden]{ display:none; }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="sent"><div class="slot" id="sa"></div><div class="slot sign" id="ss"></div><div class="slot" id="sb"></div><span class="eq">=</span><div class="slot" id="sc"></div></div>
+    <div class="tiles" id="tiles"></div>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './sukkah11.js';
+const $ = id => document.getElementById(id);
+let K, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const SG = { '+': '<span class="sg plus">+</span>', '-': '<span class="sg minus">−</span>' };
+const ans = () => R.kind === 'join' ? R.a + R.b : R.a - R.b;
+function fill(id, html) { $(id).innerHTML = html; $(id).classList.toggle('full', !!html); }
+function tiles(list) { $('tiles').innerHTML = list.map(t => '<div class="tile" data-v="' + t + '">' + (t === '+' || t === '-' ? SG[t] : U5.num(+t)) + '</div>').join(''); }
+function hooks() {
+  if (R.step === 'sign') { const ok = R.kind === 'join' ? '+' : '-'; GAME.right = () => [{ drag: ['.tile[data-v="' + ok + '"]', '#ss'] }]; GAME.wrong = () => [{ drag: ['.tile[data-v="' + (ok === '+' ? '-' : '+') + '"]', '#ss'] }]; return; }
+  const k = ans(), w = k === 5 ? 4 : k + 1; GAME.right = () => [{ drag: ['.tile[data-v="' + k + '"]', '#sc'] }]; GAME.wrong = () => [{ drag: ['.tile[data-v="' + w + '"]', '#sc'] }];
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+async function drop(tile, slot) {
+  NK.unlock(); if (GAME.phase !== 'answer') return; const v = tile.dataset.v;
+  if (R.step === 'sign' && slot.id === 'ss') {
+    GAME.phase = 'busy'; FR.lock(true); const ok = R.kind === 'join' ? '+' : '-';
+    if (v === ok) { fill('ss', SG[v]); NK.sound.yes(); await FR.say(v === '+' ? 'Plus! They came. Put together.' : 'Minus! They went away.'); R.step = 'ans'; tiles(['1', '2', '3', '4', '5']); open();
+      await FR.say('Now the answer. How many?', { repeat: 'Drag the answer to the last box.' }); return; }
+    FR.oops(slot); R.misses++; await FR.say(R.kind === 'join' ? "Let's look. Did boys come, or go away?" : "Let's look. Were cookies added, or eaten?");
+    await FR.say(R.kind === 'join' ? 'They came. Come is plus.' : 'They were eaten. Take away is minus.'); $('tiles').querySelector('[data-v="' + ok + '"]').classList.add('hint'); open(); return; }
+  if (R.step === 'ans' && slot.id === 'sc') {
+    GAME.phase = 'busy'; FR.lock(true); const k = ans();
+    if (+v === k) { fill('sc', U5.num(k)); K.celebrate(); await FR.yes(slot, FR.Word(R.a) + (R.kind === 'join' ? ' plus ' : ' minus ') + FR.word(R.b) + ' is ' + FR.word(k) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+    FR.oops(slot); R.misses++; await FR.say("Let's look. Count with me.");
+    const list = R.kind === 'join' ? K.boyMeshes() : K.cookies(); await K.bumpAll(list, i => FR.say(FR.Word(i + 1) + (i === list.length - 1 ? '.' : ','), { noRepeat: true }));
+    await FR.say('Drag that number.'); open(); }
+}
+const PLAN = [{ kind: 'join', a: 3, b: 1 }, { kind: 'take', a: 4, b: 2 }, { kind: 'join', a: 2, b: 3 }, { kind: 'take', a: 5, b: 1 }, { kind: 'join', a: 1, b: 4 }, { kind: 'take', a: 5, b: 3 }];
+function play(F, i) {
+  return new Promise(async res => {
+    R = Object.assign({ step: 'sign', misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); ['sa', 'ss', 'sb', 'sc'].forEach(id => fill(id, '')); $('tiles').hidden = true;
+    if (R.kind === 'join') { K.showPlate(false); K.setBoys(R.a); fill('sa', U5.num(R.a)); await F.say(F.Word(R.a) + (R.a === 1 ? ' boy.' : ' boys.') + ' Watch!');
+      K.showWaiting(R.b); for (let j = 0; j < R.b; j++) await K.comeOne(); fill('sb', U5.num(R.b)); await F.say(F.Word(R.b) + ' more came in.'); }
+    else { K.setBoys(0); K.showPlate(true); K.setCookies(R.a); fill('sa', U5.num(R.a)); await F.say(F.Word(R.a) + ' cookies. Watch!');
+      for (let j = 0; j < R.b; j++) await K.takeCookie(); fill('sb', U5.num(R.b)); await F.say(F.Word(R.b) + (R.b === 1 ? ' was eaten.' : ' were eaten.')); }
+    $('tiles').hidden = false; tiles(['+', '-']); open(); await F.say('Which sign? Drag it in.', { repeat: 'Came in is plus. Went away is minus.' });
+  });
+}
+FR.game({
+  id: 'u11-signs', title: 'Story to Signs', rounds: 6,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() { K = mount($('world'), { band }); FR.dragTap({ sources: '.tile', targets: '.slot', drop }); },
+  demo: async F => {
+    R = { kind: 'demo' }; K.showPlate(false); K.setBoys(2); ['sa', 'ss', 'sb', 'sc'].forEach(id => fill(id, '')); fill('sa', U5.num(2)); await F.say('Two boys. Watch me.');
+    K.showWaiting(1); await K.comeOne(); fill('sb', U5.num(1)); await F.say('One more came. Came is plus!'); tiles(['+', '-']); $('tiles').hidden = false;
+    await F.handDrag(document.querySelector('.tile[data-v="+"]'), $('ss')); fill('ss', SG['+']); tiles(['1', '2', '3', '4', '5']);
+    await F.handDrag(document.querySelector('.tile[data-v="3"]'), $('sc')); fill('sc', U5.num(3)); await F.say('Two plus one is three!'); $('tiles').hidden = true;
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You can write the story in numbers!' : 'Good work! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
