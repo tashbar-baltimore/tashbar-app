@@ -3,7 +3,9 @@
    shot(name) is called at: the start, the middle, right after the mistake, and the end. */
 const K = require('./kit.js');
 const isDone = pg => pg.evaluate(() => !!document.body.dataset.done);
-async function loop(pg, step, ms = 420000) { const t = Date.now(); while (!(await isDone(pg))) { if (Date.now() - t > ms) throw new Error('did not finish in ' + Math.round(ms / 1000) + 's'); const did = await step(); if (!did) await pg.waitForTimeout(200); } }
+/* "Remember these?" (the spaced review before the stars): the made-up boy taps the letter he hears */
+async function review(pg) { const r = await pg.evaluate(() => window.__review && window.__review.ready ? window.__review : null).catch(() => null); if (!r) return false; await pg.mouse.click(...r.at[r.want]); await pg.waitForTimeout(400); return true; }
+async function loop(pg, step, ms = 420000) { const t = Date.now(); while (!(await isDone(pg))) { if (Date.now() - t > ms) throw new Error('did not finish in ' + Math.round(ms / 1000) + 's'); if (await review(pg)) continue; if (await pg.evaluate(() => !!document.body.dataset.review)) { await pg.waitForTimeout(150); continue; } const did = await step(); if (!did) await pg.waitForTimeout(200); } }
 const P = {};
 P.story = async (pg, shot, log) => {
   await pg.waitForTimeout(1200); await shot('1-start'); let n = 0, wrong = false;
@@ -23,11 +25,12 @@ P.detective = async (pg, shot, log) => {
 P.feel = async (pg, shot, log) => {
   let wrong = false, n = 0;
   await loop(pg, async () => { const i = await K.info(pg); if (i && i.dot) { await pg.mouse.click(...i.dot); await pg.waitForTimeout(500); log.dotTapped = true; return true; }
+    if (i && i.key === 'beis') log.sawBeis = true;
     if (!i || !i.active || i.next >= i.total) return false;
     if (!wrong) { wrong = true; await shot('1-start'); const vs = await pg.viewportSize(); await pg.mouse.click(30, vs.height - 90); await pg.waitForTimeout(800); log.wrongHandled = (await K.info(pg)).off > 0; await shot('3-wrong'); await pg.waitForTimeout(1200); return true; }
     const bs = i.beads; await pg.mouse.move(...bs[i.next]); await pg.mouse.down(); for (let j = i.next + 1; j < bs.length; j++) await pg.mouse.move(...bs[j], { steps: 3 }); await pg.mouse.up();
     if (++n === 2) await shot('2-middle'); await pg.waitForTimeout(400); return true; });
-  (log.dotTapped ? log.oks : log.fails).push('on Beis he taps Mendy\u2019s dot');
+  if (log.sawBeis) (log.dotTapped ? log.oks : log.fails).push('on Beis he taps Mendy\u2019s dot');
 };
 P.hunt = async (pg, shot, log) => {
   await pg.waitForSelector('body[data-hunt-ready]', { timeout: 180000 }); await shot('1-start');
@@ -72,3 +75,19 @@ P.bonus = async (pg, shot, log) => {
     if (i.targets.length) { await pg.mouse.click(...i.targets[0]); if (++n === 5) await shot('2-middle'); await pg.waitForTimeout(80); return true; } return false; });
 };
 module.exports = P;
+P.soundmatch = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-drag-ready]', { timeout: 180000 }); await shot('1-start'); let n = 0;
+  let i = await K.info(pg); const wrongK = Object.keys(i.peds).find(k => k !== i.want);
+  await K.drag(pg, i.card, i.peds[wrongK]); await pg.waitForTimeout(600); await shot('3-wrong');
+  log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Listen.'), 8000));
+  await loop(pg, async () => { i = await K.info(pg); if (!i || !i.ready) return false; await K.drag(pg, i.card, i.peds[i.want]); if (++n === 2) { await pg.waitForTimeout(400); await shot('2-middle'); } await pg.waitForTimeout(300); return true; });
+};
+P.train = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-train-ready]', { timeout: 180000 }); await shot('1-start'); let n = 0, wrong = false;
+  await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready || i.needSlot == null) return false;
+    const to = i.slots[i.needSlot];
+    if (!wrong) { const w = i.cars.find(c => c.k !== i.need); if (w) { wrong = true; await K.drag(pg, w.xy, to); await pg.waitForTimeout(500); await shot('3-wrong');
+      log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('goes here'), 15000)); return true; } }
+    const c = i.cars.find(x => x.k === i.need); if (!c) return false; await K.drag(pg, c.xy, to); if (++n === 3) { await pg.waitForTimeout(300); await shot('2-middle'); } await pg.waitForTimeout(300); return true; });
+};
+P.story2 = P.story;

@@ -69,26 +69,26 @@ Each game starts by showing how to play: the voice says "Watch me… now you!" w
 
 ### Unit 2. Gimmel, Daled, Hei (ג ד ה) — 2 weeks
 - **Skill:** names and sounds ג "g", ד "d", ה "h".
-- **Story:** Shloimy and Zeidy pick grapes (gefen) and go fishing (dag).
+- **Story:** Shloimy goes to the zoo with Tatty: a gamal (camel), a dov (bear) and a har (mountain). *(Changed 2026-11-24, Esti: everyday themes.)*
 - **Games:** Picture Story, Feel the Shape, Sound Match, Alef-Beis Train (א to ה), Find the Mistake.
 - **Mastery:** all 6 letters so far, mixed.
 
 ### Unit 3. Vov, Zayin, Ches (ו ז ח) — 2 weeks, look-alike unit
 - **Skill:** names and sounds ו "v", ז "z", ח "ch". Tells ו from ז and ה from ח.
-- **Story:** Ari helps Mommy bake challah for Shabbos. The family sings zemiros.
+- **Story:** Ari plays in the garden with Mommy: a vered (rose), a zevuv (fly) and a chatul (cat). *(Changed 2026-11-24, Esti: everyday themes.)*
 - **Games:** Picture Story, Look-Alike Detective (ו/ז: Zayin's crown glows; ה/ח: Hei's gap glows), Letter Hunt, Find the Mistake.
 - **Mastery:** sorts ו/ז and ה/ח correctly, plus everything learned so far.
 
 ### Unit 4. Tes, Yud, Kaf, Chaf (ט י כּ כ) — 2 weeks
 - **Skill:** ט "t", י "y", כּ "k", כ "ch". Tells כ from ב: Beis has a tail at the bottom, Kaf is round.
-- **Story:** Dovid sees Tatty's tallis in shul. He makes Kiddush with Tatty's kos.
+- **Story:** Dovid goes to the park with Tatty: a tavas (peacock), a yonah (dove) and a kadur (ball). *(Changed 2026-11-24, Esti: everyday themes.)*
 - **Games:** Picture Story, Feel the Shape, Look-Alike Detective (ב/כ), Sound Match, Find the Mistake.
 - **Mastery:** all letters so far, mixed.
 
 ### Unit 5. Lamed, Mem, Nun (ל מ נ) — 2 weeks
 - **Skill:** ל "l", מ "m", נ "n". Tells ג from נ and ט from מ.
-- **Story:** Eli and Bubby light the Chanukah candles (ner) and eat latkes.
-- **Games:** Picture Story (lulav, matzah, ner), Look-Alike Detective (ג/נ, ט/מ), Alef-Beis Train (א to נ), Find the Mistake.
+- **Story:** Eli has a picnic with Bubby: a limon (lemon), mayim (water) and a nemalah (ant). *(Changed 2026-11-24, Esti: everyday themes.)*
+- **Games:** Picture Story, Look-Alike Detective (ג/נ, ט/מ), Alef-Beis Train (the chant from א, then the cars י to נ), Find the Mistake.
 - **Mastery:** all letters so far, mixed.
 
 ### Unit 6. Samech, Ayin, Pei, Fei (ס ע פּ פ) — 2 weeks

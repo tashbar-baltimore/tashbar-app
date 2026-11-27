@@ -8,23 +8,16 @@ import { RoomEnvironment } from './lib/RoomEnvironment.js';
 import { OUTLINES } from './letters.js';
 export { THREE };
 
-/* ---------------- the unit's games, in skill order ---------------- */
-export const GAMES = [
-  { id: 'u1g0', name: 'Mendy’s first day', kind: 'story', icon: 'book' },
-  { id: 'u1g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },   /* Alef first, then Beis and Veis: Alef-Beis order */
-  { id: 'u1g2', name: 'Look-Alike Detective', kind: 'detective', icon: 'house' },
-  { id: 'u1g3', name: 'Letter Hunt', kind: 'hunt', icon: 'glass' },
-  { id: 'u1g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
-  { id: 'u1g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy' },
-  { id: 'u1g6', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
-];
+/* ---------------- the units and their games, in skill order (units.js) ---------------- */
+import { UNITS, GAMES, unitOf } from './units.js';
+export { UNITS, GAMES, unitOf };
 export const PASS = 2;                     /* the next game opens at 2 of 3 stars */
 
 /* ---------------- time (?fast=1 makes every wait short, for tests) ---------------- */
 const Q = new URLSearchParams(location.search);
 export const FAST = Q.has('fast');
-export const F = FAST ? 0.12 : 1;
-export const LITE = Q.has('lite');   /* ?lite=1: simpler shadows and no smoothing, so automatic tests run quicker (the pictures use the full look) */
+export const LITE = Q.has('lite');
+export const F = FAST ? (LITE ? 0.05 : 0.12) : 1;   /* the quick automatic run waits even less */   /* ?lite=1: a fifth of the pixels across, plainer letters, no shadows and no smoothing, so the automatic tests fit the 45-minute check (the pictures use the full look) */
 export const wait = ms => new Promise(r => setTimeout(r, ms * F));
 export const $ = s => document.querySelector(s);
 
@@ -38,9 +31,12 @@ export function best(id) { const g = loadSave().games[id]; return g ? g.stars ||
 const LOOK = (() => { try { if (!location.hostname.includes('--pr-')) return false; if (new URLSearchParams(location.search).get('look') === '1') sessionStorage.setItem('tl2:look', '1'); return sessionStorage.getItem('tl2:look') === '1'; } catch (e) { return false; } })();
 export function unlocked(id) {
   if (LOOK) return GAMES.some(x => x.id === id);
-  const i = GAMES.findIndex(g => g.id === id); if (i <= 0) return i === 0;
-  if (GAMES[i].bonus) return best(GAMES[i - 1].id) >= 3;      /* the bonus round opens for a boy who got 3 stars on the check */
-  return best(GAMES[i - 1].id) >= PASS;
+  const g = GAMES.find(x => x.id === id), u = unitOf(id); if (!g || !u) return false;
+  const i = u.games.findIndex(x => x.id === id), check = v => v.games.find(x => x.mastery).id;
+  if (g.bonus) return best(check(u)) >= 3;      /* the bonus round opens for a boy who got 3 stars on his unit's check */
+  if (i === 0) { const before = UNITS.find(x => x.n === u.n - 1); return !before || best(check(before)) >= PASS; }   /* a new unit opens when the one before it passed its check */
+  let j = i - 1; while (j > 0 && u.games[j].bonus) j--;
+  return best(u.games[j].id) >= PASS;
 }
 export function struggled(id) { const g = loadSave().games[id]; return !!(g && g.last != null && g.last < PASS); }
 export function record(id, stars) {
@@ -49,13 +45,13 @@ export function record(id, stars) {
   try { if (parent && parent !== window) parent.postMessage({ tl2game: 'k-kriyah/' + id, stars }, '*'); } catch (e) {}
   window.__saved = { id, stars };
 }
-export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); return GAMES[i + 1] && !GAMES[i + 1].bonus ? GAMES[i + 1] : null; }
+export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); return GAMES.slice(i + 1).find(g => !g.bonus) || null; }
 
 /* ---------------- voice ----------------
    Every letter sound plays the rebbe's recording when audio/sounds.json lists it; until then the computer voice says it
    (marked on screen as temporary). A line is an array of words and sounds: ['Beis says', S('b')]. */
 export const S = k => ({ snd: k });
-const FALLBACK = { b: 'buh', v: 'vuh' };          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
+const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh' };          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
 let SOUNDS = {}; const audioCache = {};
 export const soundsReady = fetch('audio/sounds.json').then(r => r.ok ? r.json() : {}).then(j => { SOUNDS = j || {}; }).catch(() => {});
 export let lastLine = null; let sayToken = 0;
@@ -152,6 +148,21 @@ body{background:linear-gradient(#3fb4ff 0%,#8fd8ff 45%,#dff6ff 75%,#fff6d8 100%)
 #flat button{width:130px;height:150px;border-radius:30px;border:none;font-size:96px;line-height:1;font-family:"Noto Serif Hebrew","Times New Roman",serif;font-weight:800;color:#1f5fff;cursor:pointer;
  background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#e8f3ff 40%,#b9d8f5 100%);box-shadow:inset 0 -6px 10px #7aa9d655,0 7px 0 #6f9dc8,0 14px 22px #0b3a6640}
 #flat p{font-size:15px;max-width:460px;margin:0;background:#ffffffc0;padding:8px 14px;border-radius:14px}
+#rev{position:fixed;inset:0;display:none;z-index:8;background:radial-gradient(circle at 50% 45%,#ffffffee 0 38%,#eaf6ffd8 75%);align-items:center;justify-content:center;flex-direction:column;gap:26px;padding:20px}
+#rev.show{display:flex}
+#rev .row{display:flex;gap:22px;direction:rtl;flex-wrap:wrap;justify-content:center}
+#rev button{width:150px;height:170px;border-radius:34px;border:none;font-size:110px;line-height:1;font-family:"Noto Serif Hebrew","Times New Roman",serif;font-weight:800;color:#1f5fff;cursor:pointer;
+ background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#e8f3ff 40%,#b9d8f5 100%);box-shadow:inset 0 -6px 10px #7aa9d655,0 7px 0 #6f9dc8,0 14px 22px #0b3a6640;transition:transform .15s}
+#rev button:active{transform:translateY(4px)}
+#rev button.right{background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#eaffea 40%,#9fe0a6 100%);box-shadow:0 0 0 8px #7bd94a88,0 7px 0 #5fae62}
+#rev button.wrong{animation:revshake .45s}
+body[data-review] #again{z-index:10}
+#rev button.right{animation:revpop .5s}
+@keyframes revpop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+#rev .dots{display:flex;gap:14px}#rev .dots i{width:34px;height:34px;background:#d6e2ee;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}#rev .dots i.on{background:#ffcf3a;animation:revstar .6s}
+@keyframes revstar{0%{transform:scale(.4) rotate(-40deg)}60%{transform:scale(1.5) rotate(10deg)}100%{transform:scale(1) rotate(0)}}   /* a star fills for each right answer (reviewer: more fun) */
+@keyframes revshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}75%{transform:translateX(12px)}}
+@media (max-width:700px){#rev button{width:100px;height:120px;font-size:76px;border-radius:26px}#rev .row{gap:12px}}
 @media (max-width:700px){#start{width:150px;height:150px}#start svg{width:70px;height:70px}.endbar .btn.big{width:100px;height:100px}.stars svg{width:80px;height:80px}.stars{gap:10px;padding:14px 18px}#prog{top:96px}#prog i{width:18px;height:18px}}
 `;
 const HAND = '<svg class="hand" id="hand" viewBox="0 0 64 64"><path d="M26 6c3 0 5 2 5 5v19l2-1c2-6 10-5 10 1l1-1c2-4 9-3 9 2v2c2-3 8-2 8 3v12c0 9-7 16-16 16h-6c-6 0-10-3-13-8L10 40c-2-4 2-8 6-5l5 5V11c0-3 2-5 5-5z" fill="#fff" stroke="#1d2b3a" stroke-width="3"/></svg>';
@@ -165,12 +176,14 @@ ${home ? `<button class="ui btn" id="home" aria-label="Back to the path">${ICON.
 <div class="ui endbar" id="endbar"></div>
 ${HAND}<div class="yay" id="yay"><div class="stars"></div></div>
 <div id="flat"></div>
+<div id="rev" aria-live="polite"><div class="dots"></div><div class="row"></div></div>
 <div class="note">The letter sounds are the computer voice for now; the rebbe's own recording will replace them.</div>`);
   $('#again').onclick = () => { sfx.pop(); again(); };
   if (home) $('#home').onclick = () => goPath();
 }
 const keep = () => (FAST ? '&fast=1' : '') + (LITE ? '&lite=1' : '');
-export function goPath() { location.href = 'index.html?' + keep().slice(1); }
+let curUnit = 1; export const setUnit = n => { curUnit = n; };
+export function goPath(u = curUnit) { location.href = 'index.html?u=' + u + keep(); }
 export function goGame(id) { location.href = 'play.html?g=' + id + keep(); }
 export function setProgress(n, on) { const p = $('#prog'); if (p.children.length !== n) p.innerHTML = '<i></i>'.repeat(n); [...p.children].forEach((x, i) => x.classList.toggle('on', i < on)); }
 export function waitStart() { const b = $('#start'); b.style.display = 'grid'; document.body.dataset.startReady = 1; return new Promise(r => { b.onclick = () => { b.style.display = 'none'; delete document.body.dataset.startReady; tone(1, .01); try { speechSynthesis.speak(new SpeechSynthesisUtterance(' ')); } catch (e) {} r(); }; }); }
@@ -198,8 +211,8 @@ export function initRenderer() {
   canvas = $('#c');
   if (Q.has('noGL') || !hasWebGL()) throw new Error('no-webgl');
   R = new THREE.WebGLRenderer({ canvas, antialias: !LITE, alpha: true, preserveDrawingBuffer: FAST });
-  R.setPixelRatio(LITE ? 1 : Math.min(devicePixelRatio, 1.75)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .82;
-  R.shadowMap.enabled = true; R.shadowMap.type = LITE ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
+  R.setPixelRatio(LITE ? .2 : Math.min(devicePixelRatio, 1.75)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .82;
+  R.shadowMap.enabled = !LITE; R.shadowMap.type = LITE ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
   scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(R); scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
   cam = new THREE.PerspectiveCamera(38, 1, .1, 200);
@@ -450,14 +463,18 @@ function letterMats(color) { if (!faceMats[color]) { const [f, s] = FACE[color] 
 function letterGeo(ch) {
   if (!geoCache[ch]) { const d = new SVGLoader().parse(`<svg xmlns="http://www.w3.org/2000/svg"><path d="${OUTLINES[ch].d}"/></svg>`);
     const shapes = d.paths.flatMap(p => SVGLoader.createShapes(p));
-    const g = new THREE.ExtrudeGeometry(shapes, { depth: 14, bevelEnabled: true, bevelThickness: 3, bevelSize: 2.2, bevelSegments: 5, curveSegments: 10 }); g.computeBoundingBox();
+    const g = new THREE.ExtrudeGeometry(shapes, { depth: 14, bevelEnabled: true, bevelThickness: 3, bevelSize: 2.2, bevelSegments: LITE ? 1 : 5, curveSegments: LITE ? 3 : 10 });   /* the quick test run uses plainer letters */ g.computeBoundingBox();
     const c = new THREE.Vector3(); g.boundingBox.getCenter(c); g.translate(-c.x, -c.y, -c.z); g.computeBoundingBox(); geoCache[ch] = { g, c }; }
   return geoCache[ch];
 }
 export const goldDot = () => new THREE.MeshPhysicalMaterial({ color: 0xffc21a, roughness: .15, metalness: .35, clearcoat: 1, emissive: 0x6a4200, emissiveIntensity: .25 });
 const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
 /* key: 'alef' | 'beis' | 'veis'.  Beis and Veis share one shape; Beis has the dagesh (Mendy's dot: "someone home"). */
-export const LETTERS = { alef: { ch: 'א', name: 'Alef' }, beis: { ch: 'ב', name: 'Beis', dagesh: true, snd: 'b' }, veis: { ch: 'ב', name: 'Veis', snd: 'v' } };
+export const LETTERS = { alef: { ch: 'א', name: 'Alef' }, beis: { ch: 'ב', name: 'Beis', dagesh: true, snd: 'b' }, veis: { ch: 'ב', name: 'Veis', snd: 'v' },
+  gimmel: { ch: 'ג', name: 'Gimmel', snd: 'g' }, daled: { ch: 'ד', name: 'Daled', snd: 'd' }, hei: { ch: 'ה', name: 'Hei', snd: 'h' } };
+export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4' };
+/* a letter's place in the Alef-Beis (for putting things in order, right to left) */
+export const AB = k => Object.keys(LETTERS).indexOf(k);
 export function letter(key, height = 2.6, color = 'blue') {
   const L = LETTERS[key], { g: geo, c } = letterGeo(L.ch); const bb = geo.boundingBox, H = bb.max.y - bb.min.y, W = bb.max.x - bb.min.x, s = height / H;
   const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = true; m.receiveShadow = true; m.scale.setScalar(s); grp.add(m);
@@ -540,14 +557,71 @@ export async function finish(id, stars, line) {
 }
 
 /* ---------------- no 3D on this computer: a clean flat screen, never a blank one ---------------- */
-export function flatFallback() {
+export function flatFallback(keys = ['alef', 'beis', 'veis']) {
   const f = $('#flat'); f.style.display = 'flex'; document.body.dataset.flat = 1;
-  f.innerHTML = `<div class="row"><button data-k="alef" aria-label="Alef">א</button><button data-k="beis" aria-label="Beis">בּ</button><button data-k="veis" aria-label="Veis">ב</button></div>
+  f.innerHTML = `<div class="row">${keys.map(k => `<button data-k="${k}" aria-label="${LETTERS[k].name}">${FLAT[k]}</button>`).join('')}</div>
   <p>This computer can't show the 3D games. Tap a letter to hear it. (For the teacher: please open the games on a newer Chromebook or browser.)</p>`;
-  f.querySelectorAll('button').forEach(b => b.onclick = () => say(b.dataset.k === 'alef' ? 'Alef. Alef is quiet.' : nameLine(b.dataset.k)));
+  f.querySelectorAll('button').forEach(b => b.onclick = () => say(nameLine(b.dataset.k)));
   say('Tap a letter to hear it.');
 }
 
+/* ---------------- "Remember these?": spaced review at the end of a game (RESEARCH.md, gain 1) ----------------
+   Before the stars, three quick "hear it, tap it" questions about letters from EARLIER units, chosen by spacing:
+   a letter he got wrong comes back first, then the ones he hasn't seen for longest. Practice only: it never costs a star.
+   Every answer here and in the mastery check is remembered on his device, per letter (save.letters). */
+export function noteLetter(k, right) { const s = loadSave(); s.letters = s.letters || {}; const m = s.letters[k] || { r: 0, w: 0, at: 0 };
+  if (right) m.r++; else { m.w++; m.lastWrong = Date.now(); } m.at = Date.now(); m.ok = right; s.letters[k] = m; writeSave(s); }
+const REV_LOOK = { beis: ['veis', 'kaf'], veis: ['beis'], gimmel: ['nun'], daled: ['reish'], hei: ['ches', 'kuf'], vov: ['zayin'], zayin: ['vov'], ches: ['hei'], tes: ['mem'], kaf: ['chaf', 'beis', 'pei'], chaf: ['kaf'], mem: ['tes'], nun: ['gimmel'], pei: ['fei', 'kaf'], fei: ['pei'], reish: ['daled'], kuf: ['hei'] };
+const REV_SAME = { vov: 'veis', veis: 'vov', chaf: 'ches', ches: 'chaf', alef: 'ayin', ayin: 'alef', samech: 'sin', sin: 'samech', kaf: 'kuf', kuf: 'kaf', tes: 'tav', tav: 'tes', sav: 'samech' };
+/* what to look for when he mixes up a look-alike pair: "want/tapped" */
+const REV_CLUE = { 'beis/veis': 'Beis has a dot.', 'veis/beis': 'Veis has no dot.', 'beis/kaf': 'Beis has a tail at the bottom.', 'kaf/beis': 'Kaf is round at the bottom.',
+  'kaf/chaf': 'Kaf has a dot.', 'chaf/kaf': 'Chaf has no dot.', 'vov/zayin': 'Vov has no crown.', 'zayin/vov': 'Zayin has a crown.', 'hei/ches': 'Hei\u2019s leg doesn\u2019t touch the roof.', 'ches/hei': 'Ches\u2019s leg touches the roof.',
+  'gimmel/nun': 'Gimmel has a foot.', 'nun/gimmel': 'Nun is flat at the bottom.', 'tes/mem': 'Tes is closed at the bottom.', 'mem/tes': 'Mem has an opening at the bottom.',
+  'pei/kaf': 'Pei has a little tongue inside.', 'kaf/pei': 'Kaf has no little tongue.', 'pei/fei': 'Pei has a dot.', 'fei/pei': 'Fei has no dot.', 'daled/reish': 'Daled has a corner.', 'reish/daled': 'Reish is round on top.', 'hei/kuf': 'Hei has a short leg.', 'kuf/hei': 'Kuf has a long leg.' };
+export function reviewPicks(known, n = 3, skip = []) {
+  const L = loadSave().letters || {}, now = Date.now(); known = known.filter(k => !skip.includes(k));   /* not the letters this game just practised: that would not be spaced */
+  const score = k => { const m = L[k]; if (!m) return 1e12; return (m.ok === false ? 2e12 : 0) + (m.w > m.r ? 1e11 : 0) + (now - (m.at || 0)); };   /* missed last time first, then weaker, then not seen for longest */
+  const order = known.slice().sort(() => Math.random() - .5).sort((a, b) => score(b) - score(a));
+  const out = []; for (const k of order) { if (out.length >= n) break; if (out.some(o => REV_SAME[o] === k)) continue; out.push(k); }
+  return out;
+}
+export async function quickReview(unit, game) {
+  if (!unit || !unit.known || !unit.known.length || !game || game.mastery || game.bonus || /^story/.test(game.kind)) return;
+  const used = [...unit.letters, ...(game.pairs || []).flat(), ...(game.stands || []), ...(game.order || []), ...(game.reviewOf && UNITS[game.reviewOf - 1] ? UNITS[game.reviewOf - 1].letters : [])];
+  unit.letters.forEach(k => (REV_LOOK[k] || []).forEach(o => used.push(o)));   /* and the look-alikes this game compared */
+  let picks = reviewPicks(unit.known, 3, used); if (picks.length < 3) picks = [...picks, ...reviewPicks(unit.known, 3 - picks.length, [...picks, ...unit.letters])];
+  const trainOrder = game.kind === 'train' ? unit.known.filter(k => !(game.order || []).includes(k)) : null, after = {};   /* after a train: which letter comes next, among the letters this train left out */
+  if (trainOrder && trainOrder.length > 2) { const starts = trainOrder.slice(0, -1).sort(() => Math.random() - .5).slice(0, 3); picks = starts.map(a => { const k = trainOrder[trainOrder.indexOf(a) + 1]; after[k] = a; return k; }); }
+  const pool = [...unit.known, ...unit.letters], box = $('#rev'), row = box.querySelector('.row'), dots = box.querySelector('.dots');
+  const firstEver = !loadSave().revDemo; if (firstEver) { const sv = loadSave(); sv.revDemo = 1; writeSave(sv); }
+  dots.innerHTML = picks.map(() => '<i></i>').join(''); box.classList.add('show'); document.body.dataset.review = 1;
+  await say('Remember these?');
+  for (let qi = 0; qi < picks.length; qi++) {
+    const k = picks[qi], others = [];
+    (REV_LOOK[k] || []).filter(o => pool.includes(o)).slice(0, 1).forEach(o => others.push(o));   /* its look-alike, if he knows it */
+    for (const c of pool.slice().sort(() => Math.random() - .5)) if (others.length < 2 && c !== k && !others.includes(c) && REV_SAME[k] !== c && !others.some(o => REV_SAME[o] === c)) others.push(c);
+    const set = [k, ...others].sort((a, b) => AB(a) - AB(b));   /* right to left in Alef-Beis order */
+    row.innerHTML = set.map(c => `<button data-k="${c}" aria-label="${LETTERS[c].name}">${FLAT[c]}</button>`).join('');
+    let firstTry = true;
+    await new Promise(res => {
+      const btns = [...row.querySelectorAll('button')];
+      window.__review = { want: k, at: Object.fromEntries(btns.map(b => { const r = b.getBoundingClientRect(); return [b.dataset.k, [r.x + r.width / 2, r.y + r.height / 2]]; })) };
+      const bySound = !after[k] && qi === 1 && LETTERS[k].snd && !set.some(c => c !== k && LETTERS[c].snd === LETTERS[k].snd);   /* one question by its sound, never with a same-sound letter beside it */
+      const ask = after[k] ? 'What comes after ' + LETTERS[after[k]].name + '? Tap it.' : bySound ? ['Which letter says', S(LETTERS[k].snd), '? Tap it.'] : 'Tap ' + LETTERS[k].name + '.';
+      let busy = true;
+      (async () => { if (qi === 0 && firstEver) { await say('Watch me. Tap ' + LETTERS[k].name + '.'); const r = btns.find(x => x.dataset.k === k).getBoundingClientRect(); hand.at(r.x + r.width / 2, r.y + r.height / 2 + 20, true); await wait(900); hand.hide(); await say('Now you!'); }
+        await say(ask); busy = false; window.__review.ready = 1; })();
+      btns.forEach(b => b.onclick = async () => { if (busy) return; const c = b.dataset.k;
+        if (c === k) { busy = true; b.classList.add('right'); sfx.chime(); if (firstTry) noteLetter(k, true); dots.children[qi].classList.add('on'); if (qi === picks.length - 1) sfx.fanfare && sfx.fanfare();
+          await say(k === 'alef' || k === 'ayin' ? [LETTERS[k].name + '! ' + LETTERS[k].name + ' is quiet.'] : [LETTERS[k].name + '! ' + LETTERS[k].name + ' says', S(LETTERS[k].snd)]); res(); }
+        else { busy = true; sfx.boop(); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); if (firstTry) noteLetter(k, false); firstTry = false;
+          const r = btns.find(x => x.dataset.k === k); r.classList.add('right');
+          await say(after[k] ? 'After ' + LETTERS[after[k]].name + ' comes ' + LETTERS[k].name + '.' : 'That is ' + LETTERS[c].name + '. This is ' + LETTERS[k].name + '.'); if (REV_CLUE[k + '/' + c]) await say(REV_CLUE[k + '/' + c]); r.classList.remove('right'); busy = false; } });
+    });
+    window.__review = null; await wait(250);
+  }
+  box.classList.remove('show'); delete document.body.dataset.review;
+}
 /* "Say it with me" (curriculum/k-kriyah/RESEARCH.md, gain 2): saying a letter out loud helps it stick (the production effect).
    The voice says the name, then waits a moment for him to say it too, then says it again with him. */
 export async function sayWithMe(key) {

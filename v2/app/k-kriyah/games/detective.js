@@ -2,7 +2,7 @@
    Skill: tells Beis (dot: someone home, says "b") from Veis (no dot: nobody home, says "v").
    Two houses: the Beis house has Mendy inside (lit window); the Veis house is empty. He drags each letter to its house
    (or taps the house). Show-then-try demo; a kind correction circles the dot; if he struggles the right house glows. */
-export default function setup(E, { struggled }) {
+export default function setup(E, { struggled, game = {} }) {
   const { THREE, S } = E;
   const HB = E.house({ lit: true }), HV = E.house({ lit: false }); E.scene.add(HB, HV);
   const kid = E.mendy(); kid.scale.setScalar(.55); HB.add(kid); kid.position.set(.45, .36, 1.12); kid.userData.armR.visible = false;
@@ -30,7 +30,7 @@ export default function setup(E, { struggled }) {
   window.__info = () => ({ k: card.userData.key, ready: dragEnabled && !busy && card.visible, card: E.toScreen(card.position), hb: E.toScreen(center(HB)), hv: E.toScreen(center(HV)), help });
 
   /* the deck: 8 letters (6 if he struggled last time), never 3 the same in a row; the demo is the first Beis */
-  const n = help ? 6 : 8; let deck;
+  const n = help || game.review ? 6 : 8; let deck;   /* as a review round in a later unit: a short deck */
   do { deck = Array.from({ length: n }, (_, i) => i % 2 ? 'veis' : 'beis').sort(() => Math.random() - .5); } while (/(beis,beis,beis|veis,veis,veis)/.test(deck.join(',')));
   deck = ['beis', ...deck];
   let idx = 0, mistakes = 0, wrongInRow = 0, missed = false, onDone;
@@ -74,6 +74,7 @@ export default function setup(E, { struggled }) {
   return async () => {
     E.setProgress(deck.length, 0);
     await setCard(deck[0]); busy = false; await E.wait(300);
+    if (game.review) await E.say('Remember Beis and Veis? Let\u2019s sort them again!');
     await E.say('Watch me. Is anyone home?');
     ring.visible = true; ring.position.copy(card.userData.dotHome).setZ(.7); await E.say('A dot! Someone is home. Beis!'); ring.visible = false;
     busy = true; let [sx, sy] = E.toScreen(card.position); E.hand.at(sx, sy); await E.wait(400);
