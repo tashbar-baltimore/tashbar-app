@@ -118,3 +118,9 @@ Every game is a new kind of play, all mixing Units 1–3:
 "A boy who missed a sound gets that letter again, quietly": the checks of Units 2–3 and Review A save the sounds he missed in his browser (`kabc-weak`); sound bingo calls those first. (When 2.0 has saved progress, this moves there.)
 Review A — first independent review about 3.6. Fixed: the map's help path (after the check, each missed sound gets a big button that opens that letter's meet game again; missed sounds are kept until he gets them right first time); bingo replays the sound in the fix and has a real "three in a row"; the opener plays a sound and he finds its letter among all eight; the check's rhyme is goat/boat (not this week's cat/hat); the chalkboard includes s and the last letter has dots only; the bonus slide is four words for quick readers.
 Review A — second review about 4.2 (every point 4 or 5). Also done: the check adds a first-sound round and reads new words (mat, pan), and after two misses it replays the sounds before showing the answer; rhyme catch's fix says "Not the same end". The bonus slide stays open to every boy for now (2.0 has no saved stars yet); when it does, it opens at 3 stars.
+
+## Painted pictures instead of 3D (Esti 2026-11-27)
+Esti: "i think the pictures should be painted and not 3d theyre very hard to see".
+My choice: every word picture (cat, sock, kite ... 87 in Units 1–4) becomes a painted picture standing in the 3D world, facing the boy.
+The worlds, Mendy and his friends stay as they are. Ordered as B1 (art-requests.md). Until the pictures arrive, the 3D ones stay, so nothing breaks.
+When they arrive: the change goes in from Unit 1 up, so every unit's look link shows painted pictures.
