@@ -65,6 +65,7 @@ export function mount(host, opt) {
   const box = new THREE.Group(); scene.add(box);
   { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.85, 0.08, 40), new THREE.MeshStandardMaterial({ color: '#FFD3B0', roughness: 0.3 })); p.position.y = 0.04; p.castShadow = true; box.add(p); }   /* a small peach plate: the eaten ones */
   let cookies = [], gone = [];
+  const cloche = new THREE.Mesh(new THREE.SphereGeometry(1.15, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#E8D8C0', roughness: 0.5 })); cloche.scale.set(1, 0.6, 1); cloche.castShadow = true; cloche.visible = false; box.add(cloche);   /* a cover for the peach plate (hidden part) */
   const cookiePos = (j, n) => new THREE.Vector3(((j % 3) - (Math.min(3, n - Math.floor(j / 3) * 3) - 1) / 2) * 0.8, 0.14, n > 3 ? (j < 3 ? -0.38 : 0.38) : 0);
 
   /* ---------------- tap spots ---------------- */
@@ -92,7 +93,7 @@ export function mount(host, opt) {
   function layout() {
     chairs.forEach((c, i) => { c.position.x = seatX(i, gapX()); c.scale.setScalar(narrow ? 0.8 : 1); });
     boys.forEach((b, i) => { if (i < inRoom) { const s = seat(i); b.m.position.x = s.x; b.m.position.z = s.z; } }); door.position.set(doorX(), 1.2, -1.2);
-    plate.position.set(narrow ? 0.6 : 0.9, 0, 0.5); box.position.set(narrow ? -1.45 : -1.9, 0, 0.6); box.scale.setScalar(narrow ? 0.75 : 1);
+    plate.position.set(narrow ? 0.8 : 0.9, 0, 0.5); box.position.set(narrow ? -1.15 : -1.9, 0, 0.6); box.scale.setScalar(narrow ? 0.75 : 1);
   }
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false); narrow = Wd < Hh * 0.95 || Wd < 700; layout();
@@ -126,14 +127,16 @@ export function mount(host, opt) {
     doorSpot(on) { if (on) spot('door', door, { cls: 'side doorspot', r: 0.8, y: 0, min: 90 }); else unspot('door'); },
     boyMeshes: () => boys.slice(0, inRoom).map(b => b.m),
     /* cookies on the plate; tapping one takes it away into the box */
-    setCookies(n) { cookies.concat(gone).forEach(c => c.parent && c.parent.remove(c)); cookies = []; gone = []; plate.visible = true;
+    setCookies(n) { cookies.concat(gone).forEach(c => c.parent && c.parent.remove(c)); cookies = []; gone = []; plate.visible = true; cloche.visible = false;
       for (let j = 0; j < n; j++) { const c = cookie(); c.position.copy(cookiePos(j, n)); plate.add(c); cookies.push(c); } api.cookieSpots(false); },
     cookieSpots(on) { for (let j = 0; j < 6; j++) unspot('ck' + j); if (on) cookies.forEach((c, j) => { c.userData.id = 'ck' + j; spot('ck' + j, c, { r: 0.36, y: 0.05, min: 64 }); }); },
     cookies: () => cookies.slice(), eaten: () => gone.length, boxCookies: () => gone.slice(),
     async takeCookie(id) { const c = cookies.find(x => x.userData.id === id) || cookies[cookies.length - 1]; if (!c) return false; unspot(c.userData.id); cookies.splice(cookies.indexOf(c), 1); NK.sound.pop();
-      c.getWorldPosition(wp); const from = wp.clone(); plate.remove(c); scene.add(c); const to = box.position.clone().add(new THREE.Vector3(((gone.length % 2) - 0.5) * 0.7, 0.14 + Math.floor(gone.length / 2) * 0.13, 0)); gone.push(c);
-      await tween(450, e => { c.position.lerpVectors(from, to, e); c.position.y += Math.sin(Math.PI * e) * 0.8; }); c.position.copy(to); return true; },
+      c.getWorldPosition(wp); const from = wp.clone(); plate.remove(c); scene.add(c); const g = gone.length, to = box.position.clone().add(new THREE.Vector3(g < 4 ? ((g % 2) - 0.5) * 0.8 * box.scale.x : 0, 0.14, g < 4 ? (g < 2 ? -0.36 : 0.36) * box.scale.x : 0));   /* flat, side by side: each one can be counted */ gone.push(c);
+      await tween(450, e => { c.position.lerpVectors(from, to, e); c.position.y += Math.sin(Math.PI * e) * 0.8; }); c.position.copy(to); if (cloche.visible) c.visible = false; return true; },   /* under the cover: really hidden */
     async putBack() { while (gone.length) { const c = gone.pop(); scene.remove(c); plate.add(c); cookies.push(c); } cookies.forEach((c, j) => c.position.copy(cookiePos(j, cookies.length))); },
+    async coverPeach(on) { if (on) { cloche.visible = true; await tween(400, e => { cloche.position.y = 1.8 - e * 1.8; }); cloche.position.y = 0; }
+      else if (cloche.visible) { gone.forEach(c => { c.visible = true; }); await tween(400, e => { cloche.position.y = e * 1.8; }); cloche.visible = false; } },
     showPlate(on) { plate.visible = on; box.visible = on; gone.forEach(c => { c.visible = on; }); if (!on) api.cookieSpots(false); mode = on ? 'cookies' : 'boys'; fit(); },
     async bumpAll(list, say) { for (let i = 0; i < list.length; i++) { const o = list[i], y0 = o.position.y; await tween(240, (e, t) => { o.position.y = y0 + Math.sin(Math.PI * t) * 0.35; }); o.position.y = y0; if (say) await say(i); } },
     celebrate() { sparkle(0, -1); },

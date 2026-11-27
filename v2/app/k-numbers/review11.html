@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Review Time — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 11 REVIEW (Units 8-10 come back in the sukkah), two kinds in turn, each answered on his fingers:
-     1. Parts (Units 8-9): five cookies in all; some are on the blue plate; how many on the peach plate? A slip: we count the peach plate.
+     1. Parts (Units 8-9): five cookies in all; some are on the blue plate, the rest hide under a cover on the peach plate: how many hide? A slip: the cover lifts and we count.
      2. Friends of ten (Unit 10): a ten-frame shows some; how many more make ten? A slip: the empty boxes light up one by one as we count. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="hands-side.css">
@@ -34,10 +34,10 @@ function hooks() { const k = ans(); GAME.right = () => FR.fingerTaps(H, k, '#hp'
 function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const k = ans();
-  if (H.count() === k) { const line = R.kind === 'part' ? 'Yes! ' + FR.Word(R.a) + ' and ' + FR.word(k) + ' make ' + FR.word(R.n) + '.' : 'Yes! ' + FR.Word(R.n) + ' and ' + FR.word(k) + ' make ten.';
+  if (H.count() === k) { if (R.kind === 'part') await K.coverPeach(false); const line = R.kind === 'part' ? 'Yes! ' + FR.Word(R.a) + ' and ' + FR.word(k) + ' make ' + FR.word(R.n) + '.' : 'Yes! ' + FR.Word(R.n) + ' and ' + FR.word(k) + ' make ten.';
     await FR.yes($('check'), line); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops($('check')); R.misses++;
-  if (R.kind === 'part') { await FR.say("Let's look. Count the peach plate."); const g = K.boxCookies(); await K.bumpAll(g, i => FR.say(FR.Word(i + 1) + (i === g.length - 1 ? '.' : ','), { noRepeat: true })); }
+  if (R.kind === 'part') { await FR.say("Let's look under the cover."); await K.coverPeach(false); const g = K.boxCookies(); await K.bumpAll(g, i => FR.say(FR.Word(i + 1) + (i === g.length - 1 ? '.' : ','), { noRepeat: true })); await K.coverPeach(true); }
   else { await FR.say("Let's look. Count the empty boxes."); for (let i = R.n; i < 10; i++) { TF.cell(i).classList.add('lit'); await FR.say(FR.Word(i - R.n + 1) + (i === 9 ? '.' : ','), { noRepeat: true }); } TF.el.querySelectorAll('.lit').forEach(c => c.classList.remove('lit')); }
   H.set(0); await FR.say('Show me again.'); open();
 }
@@ -45,8 +45,8 @@ const PLAN = [{ kind: 'part', n: 5, a: 3 }, { kind: 'ten', n: 7 }, { kind: 'part
 function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
-    if (R.kind === 'part') { $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(R.n); K.showPlate(true); K.setCookies(R.n); for (let j = 0; j < R.n - R.a; j++) await K.takeCookie();
-      await F.say(F.Word(R.n) + ' cookies in all. ' + F.Word(R.a) + ' on the blue plate.'); open(); await F.say('How many on the peach plate? Show me.', { repeat: 'Count the peach plate. Show me.' }); }
+    if (R.kind === 'part') { $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(R.n); K.showPlate(true); K.setCookies(R.n); await F.say(F.Word(R.n) + ' cookies in all.'); await K.coverPeach(true); for (let j = 0; j < R.n - R.a; j++) await K.takeCookie();
+      await F.say('Some went under the cover. ' + F.Word(R.a) + ' are on the blue plate.'); open(); await F.say('How many hide? Show me.', { repeat: F.Word(R.n) + ' in all. ' + F.Word(R.a) + ' I see. How many hide?' }); }
     else { $('goal').hidden = true; $('tf').hidden = false; K.showPlate(false); TF.set(R.n); await F.say(F.Word(R.n) + ' in the ten-frame.'); open(); await F.say('How many more make ten? Show me.', { repeat: 'Count the empty boxes. Show me.' }); }
   });
 }
@@ -57,8 +57,8 @@ FR.game({
   demo: async F => {
     R = { kind: 'demo' }; $('goal').hidden = true; $('tf').hidden = false; K.showPlate(false); TF.set(8); await F.say('Review time! Watch me. Eight in the ten-frame.');
     await F.say('Two boxes are empty. Two more make ten!'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); await F.handTap(); H.set(2); await F.handTo($('check')); await F.handTap(); F.handHide(); H.set(0);
-    $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(3); K.showPlate(true); K.setCookies(3); await K.takeCookie();
-    await F.say('Three cookies in all. One went on the peach plate.'); await F.say('Two on the blue plate. Two and one make three!');
+    $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(3); K.showPlate(true); K.setCookies(3); await K.coverPeach(true); await K.takeCookie();
+    await F.say('Three cookies. One went under the cover.'); await F.say('I see two. One is hiding!'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); await F.handTo($('check')); await F.handTap(); F.handHide(); await K.coverPeach(false); await F.say('Yes! Two and one make three.'); H.set(0);
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'You remember so much!' : 'Good work! Let\'s play once more.'

@@ -17,7 +17,10 @@
 | Come in! (join11) | A story; he taps each waiting boy to bring him in; then shows how many on his fingers. The panel shows the story as dots (blue inside, green coming) |
 | Take away (takeaway11) | A story; he taps the cookies that are eaten (they go to the peach plate); then shows how many are left |
 | Story to signs (signs11) | The story happens; the number sentence builds itself; he drags in + or − and then the answer |
-| Quick facts (facts11) | Eight short facts within 5 on his fingers; an eye button shows the fact as dots |
+| Quick facts (facts11) | Eight short facts within 5; he drags the answer card into the box; an eye button shows the fact as dots |
 | Find the mistake (mistake11) | Dovid writes the sentence for a story: a wrong answer, a wrong sign, or right. He taps the wrong box and drags in the fix, or thumbs up |
-| Review (review11) | Units 8–10: parts of 4 and 5 on two plates; how many more make ten on a ten-frame |
-| Show me (check11) | Mastery: 4 story problems he acts out, then 6 quick facts |
+| Review (review11) | Units 8–10: parts of 4 and 5 (some cookies hide under a cover on the peach plate); how many more make ten on a ten-frame |
+| Show me (check11) | Mastery (MAP): 4 story problems he acts out, then 10 quick facts |
+
+## Independent review (round 1) and what changed
+Below 4 were: the cookie words ("box"), a boy named who was not there, signs too wide on a phone, boys behind the facts, facts answered the same way as most games, the mistake help not showing the real mistake, eaten cookies piled up, the review parts only counting, and the check short of the map. All fixed: words match (peach plate; "two are eaten"), the phone layout fits, no boys behind facts, facts are answered with number cards, the mistake help points at the real wrong box, eaten cookies lie side by side, the review hides part under a cover, and the check has 4 stories and 10 facts.
