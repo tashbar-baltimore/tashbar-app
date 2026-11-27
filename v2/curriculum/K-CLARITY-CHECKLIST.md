@@ -124,3 +124,5 @@ Find the triangles 4, Find the hexagons 4, What comes next? 4, Heavy and light 4
 | Sort by color: every colour box had a white circle on it, which reads as "circles go here" (11) | Plain red, blue and yellow boxes; nothing on them |
 | Build with shapes: a wrong piece only made the hole flash for under a second (16) | The hole flashes slowly; then "Watch. This one goes here." and the hand moves from the piece to its own hole while that hole flashes |
 | Pattern games: the glow on the part that repeats went off the moment the song ended (16) | It stays a moment after the song |
+| Graduation: the skinny triangle's clue said "I am very thin", but Shape party 2 teaches "flat is thin", so every flat shape is thin (11) | The clue is "I am flat. I have three corners." (only one triangle is there) |
+| Shape party 2: the cube's "sides are squares" (sides are the lines of flat shapes) | "Every face is a square", the same words as The solid shapes |
