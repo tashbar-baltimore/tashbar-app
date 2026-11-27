@@ -356,7 +356,7 @@ export function startGame(cfg) {
       if (o.slot == null && !o.inBox && o !== dragging && o.g.visible && !o.solid && !o.upright && KINDS[o.k] && o.parentLocked !== true && o.g.parent === scene) { o.g.quaternion.copy(camera.quaternion); return; }   /* lesson and friend's pieces face the camera too: a flat circle never looks like a drum */
       if (o.inBox || o.busy || o.still || o === dragging || !o.g.visible || o.slot == null) return;
       o.g.position.set(o.home.x, o.home.y + Math.sin(t * 1.6 + o.phase) * 0.06, o.home.z);
-      if (o.solid) { o.g.rotation.y = t * 0.5 + o.phase; o.g.rotation.x = 0; return; }
+      if (o.solid) { o.g.rotation.y = t * 0.5 + o.phase; if (tall) { const dx = camera.position.x - o.g.position.x, dz = camera.position.z - o.g.position.z; o.g.rotation.x = -Math.atan2(camera.position.y - o.g.position.y, Math.hypot(dx, dz)) * 0.75; } else o.g.rotation.x = 0; return; }   /* phone: the camera looks down steeply, so a solid leans toward it; a cone never looks like a flat disc (review 2) */
       if (o.upright) { o.g.rotation.set(-0.12, o.vis && o.vis.userData.flat ? 0 : Math.sin(t * 0.7 + o.phase) * 0.3, 0); return; }   /* a cupcake stands up and turns a little, like on a shop turntable */
       o.g.quaternion.copy(camera.quaternion);   /* faces the camera straight on (not only tilted up), so a square always looks square and a triangle is never seen edge-on, even at the side of the screen */
     });
@@ -1489,7 +1489,8 @@ export function startGame(cfg) {
     $('#end').classList.remove('show');
     if (LK) LK.family(false);
     buildSet(); resize(); camTo('close', 10);
-    if (FAST && /[?&]jump=mistake/.test(location.search)) { mistake(); return; }   /* pictures only (with fast=1): straight to the friend's mistake */
+    if (FAST && /[?&]jump=mistake/.test(location.search)) { mistake(); return; }
+    if (FAST && /[?&]jump=end/.test(location.search)) { W.misses = 0; end(); return; }   /* pictures only: the end screen */   /* pictures only (with fast=1): straight to the friend's mistake */
     if (BALANCED) { const ok = await balanceLesson(); if (ok) balanceGame(); return; }
     if (MEASURED) { if (FAST && /[?&]jump=round/.test(location.search)) { measureGame(); return; } const ok = await measureLesson(); if (ok) measureGame(); return; }
     if (POSITIONED) { const ok = await posLesson(); if (ok) posGame(); return; }
@@ -1538,12 +1539,20 @@ export function startGame(cfg) {
       () => { handOn = demo; hand.style.display = 'block'; return wait(500); },
       () => { demo.busy = true; return moveTo(demo, new THREE.Vector3(demo.g.position.x, 1.25, demo.g.position.z), 400); },
       () => moveTo(demo, boxAt(demo.box).clone().setY(1.25), 1300),
-      () => { hand.style.display = 'none'; handOn = null; chime(true); return dropInBox(demo); },
+      () => { hand.style.display = 'none'; handOn = null; }, ...clueProof(demo),
+      () => { chime(true); return dropInBox(demo); },
       cfg.watchDone || 'Into the box!', cfg.yourTurn
     ]);
     if (ok) { if (cfg.mode === 'clues') { setClue(1); find(false, nextClue); } else find(false); }
   }
   const ACT = { sphere: 'roll', cube: 'stack', cyl: 'roll', cone: 'spin' };
+  function clueProof(o) {   /* clue games: the right shape for a corner clue has its corners lit and counted; for a side clue its sides light one by one (review 2: "six corners" marked nothing) */
+    if (cfg.mode !== 'clues' || !o || !o.marks || !o.marks.length || !cfg.clues[clueN]) return [];
+    const said = cfg.clues[clueN].say.join(' '), n = o.marks.length;
+    if (/corner/i.test(said)) return [...o.marks.flatMap((m, i) => [() => lightCorner(o, i), i < n - 1 ? NUMS[i] : cap(WORDS[n]) + ' corners!']), () => wait(400), () => clearCorners(o)];
+    if (/side/i.test(said)) return sideSteps(o);
+    return [];
+  }
   function teachAgain(t) {
     if (!t) return [];
     if (cfg.sortBy) return [cfg.remember, 'Look at this one.', () => pointAt(t, true)];
@@ -1569,7 +1578,7 @@ export function startGame(cfg) {
       if (o.box === bi) {
         chime(true); left--;
         if (left === 0) { allow = false; onDrop = null; stopIdle(); }
-        dropInBox(o, bi).then(() => {
+        (cfg.mode === 'clues' && clueProof(o).length ? play(clueProof(o)) : Promise.resolve()).then(() => dropInBox(o, bi)).then(() => {
           const yes = (cfg.yes && cfg.yes[o.id]) || cfg.yesDefault(o);
           if (left === 0) {
             const quick = !bonus && W.misses <= 1 && cfg.bonus;   /* quick boys get a bonus round */
@@ -1712,6 +1721,7 @@ export function startGame(cfg) {
   }
   function showCertificate() {   /* graduation: a certificate with a gold medal of shapes, and fireworks (no name: nothing about a real boy is shown) */
     let c = $('#cert'); if (!c) { c = document.createElement('div'); c.id = 'cert'; c.className = 'cert'; $('#end').prepend(c); }
+    if (tall) mendy.visible = false; else mendy.position.x -= 1.9;   /* never behind the certificate (review 2: it covered his face) */
     c.innerHTML = '<svg viewBox="0 0 520 300" role="img" aria-label="Shape graduate certificate"><rect x="8" y="8" width="504" height="284" rx="22" fill="#FFFBEF" stroke="#C48F00" stroke-width="8"/>'
       + '<rect x="26" y="26" width="468" height="248" rx="14" fill="none" stroke="#F2D27A" stroke-width="3" stroke-dasharray="10 8"/>'
       + '<text x="260" y="78" text-anchor="middle" font-family="Baloo 2, Trebuchet MS, sans-serif" font-weight="800" font-size="40" fill="#1F2A44">Shape Graduate</text>'
