@@ -339,8 +339,7 @@ function ycCityCss(){ if(document.getElementById('yc-city')) return; const st=do
    ['#bbx','ycw-c-workshop',L],['#clab','ycw-c-workshop',L],['.bl-ov','ycw-k-library',L],['.ohsheet','ycw-c-calm',T],
    ['#gm-cel','ycw-k-summit','radial-gradient(circle at 50% 38%,rgba(255,190,40,.45) 0%,rgba(255,80,130,.35) 40%,rgba(60,10,90,.62) 85%)']];   /* the Summit behind his celebrations */
  let css=R.map(r=>{ const b=ycBg(r[1],r[2]); return b?`body.yc-city ${r[0]}{${b}}`:''; }).join('\n');
- const nook=ycBg('ycw-k-nook','linear-gradient(rgba(255,252,244,.12),rgba(255,252,244,.22))');   /* the quiet nook behind every lesson */
- if(nook) css+=`\nbody.yc-city.gm-lesson,body.yc-city.gm-lesson .lf-card{${nook}background-attachment:fixed!important}`;
+ /* lessons draw their own frame and background (lesson side owns it; SEAM rule 2026-11-27) */
  st.textContent=css; document.head.appendChild(st); }
 setInterval(()=>{ try{ const b=document.body, g=window.TL_MAP&&TL_MAP.grade, mine=window.TL_MAP&&A.st&&String(TL_MAP.sid||'')===String(A.st.id);
   const on=!!(mine&&g!=null&&g>=2&&!b.classList.contains('k1-home')); if(on){ ycCityCss(); if(!b.classList.contains('yc-city')) b.classList.add('yc-city'); } else if(b.classList.contains('yc-city')) b.classList.remove('yc-city'); }catch(e){} },700);

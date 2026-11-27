@@ -33,7 +33,7 @@ The button system (`src/UiKit.html`, `docs/BUTTON-SYSTEM.md`) stays the one sour
 - **Home on the Great Terrace** (grade 2+, home tab, not in class time).
 - **Teacher Time Hall** and **Bucket Spring** (the afternoon, `docs/CLASSES-BUCKET.md`); flights between them push through the valley with eagles; a door a teacher opened rises through the clouds (gondola) to the Golden City.
 - **Golden City behind the free-time places**: Store (Grand Market), Chavrusa duels (Arena), Mistake Detective and Kodesh Quest (Game Pavilion), Block Builders and Chumash Lab (Workshop), My Library (Library Tower), Olam Haba (calm sky). The Canteen keeps its own 3D room.
-- **The quiet nook** behind every lesson.
+- Lessons: the lesson side draws its own frame and background (`docs/SHELL-AND-LESSONS.md`), so the world stays out of lessons. The nook picture is in the library for the lesson side if it wants it.
 - **The Summit** behind his celebrations (level up, unit done).
 - Still to use: the Trail (his map; the map page stays the bright page the HoS chose), the fortress, stops, bridge, waterfall, gondola as a ride, plaque for the city, ring.
 - Rules kept: at rest nothing is drawn by script (the drift is CSS), so nothing moves behind a K-1 game; K-1 boys see none of this; reduce motion turns flights off.
