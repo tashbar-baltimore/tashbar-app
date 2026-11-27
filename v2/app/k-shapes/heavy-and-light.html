@@ -20,21 +20,21 @@ const block = (w, s, color) => ({ look: 'block', word: 'hay bale', w, s, color: 
 const feather = () => ({ look: 'feather', word: 'feather', w: 1, color: '#6FB3E6' });
 startGame({
   id: 'balance', world: 'farm', mode: 'balance', boxes: [],
-  view: { wide: [[0, 6.2, 10.8], [0, 0.9, 0.2]], tall: [[0, 9.0, 12.4], [0, 1.0, 0.7]] }, mendyAt: { wide: [4.2, 0, -2.4] },
+  view: { wide: [[0, 4.6, 7.6], [0, 1.2, -0.2]], tall: [[0, 6.0, 9.6], [0, 1.0, 0.8]] }, mendyAt: { wide: [3.7, 0, -1.6] },   /* closer: the scale and the things fill the screen (K clarity) */
   intro: ['Mendy found a scale!', 'Which is heavier? Which is lighter?', "Let's use the scale to find out!"],
-  balanceLesson: { items: [rock(6, 1.1), ball(2, 1.25, '#12A766')], first: 'Which is heavier, the rock or the big balloon?',
+  balanceLesson: { items: [rock(6, 1.5), ball(2, 1.3, '#12A766')], first: 'Which is heavier, the rock or the big balloon?',
     rule: ['The heavy side goes down.', 'The light side goes up.'], chant: [['Heavy goes down!', 3], ['Light goes up!', 3], ['Big is not always heavy!', 2]] },
   rounds: [
-    { items: [block(5, 1, '#E03A33'), feather()], watchDone: 'The hay bale side went down. It is heavier!' },
-    { items: [feather(), block(5, 1, '#F2A900')], ask: 'heavier', say: 'A feather and a hay bale.' },
-    { items: [ball(1, 0.7, '#1F6FEB'), rock(5, 1)], ask: 'lighter', say: 'Now find the lighter one.' },
-    { items: [rock(6, 1.1), ball(2, 1.3, '#F0458E')], ask: 'heavier', say: 'A big balloon and a rock.', big: true },
-    { items: [block(4, 1.1, '#7C4DFF'), feather()], ask: 'lighter', say: 'Which is lighter?' },
-    { items: [ball(2, 1.25, '#FF7A1A'), block(6, 0.9, '#12A766')], ask: 'heavier', say: 'Be careful! Which is heavier?', big: true }
+    { items: [block(5, 1.3, '#E03A33'), feather()], watchDone: 'The hay bale side went down. It is heavier!' },
+    { items: [feather(), block(5, 1.3, '#F2A900')], ask: 'heavier', say: 'A feather and a hay bale.' },
+    { items: [ball(1, 0.8, '#1F6FEB'), rock(5, 1.4)], ask: 'lighter', say: 'Now find the lighter one.' },
+    { items: [rock(6, 1.5), ball(2, 1.35, '#F0458E')], ask: 'heavier', say: 'A big balloon and a rock.', big: true },
+    { items: [block(4, 1.3, '#7C4DFF'), feather()], ask: 'lighter', say: 'Which is lighter?' },
+    { items: [ball(2, 1.3, '#FF7A1A'), block(6, 1.2, '#12A766')], ask: 'heavier', say: 'Be careful! Which is heavier?', big: true }
   ],
-  bonusRounds: [{ items: [rock(5, 0.75), ball(2, 1.4, '#00A3B8')], ask: 'heavier', say: 'A small rock and a giant balloon!', big: true }],
+  bonusRounds: [{ items: [rock(5, 1.1), ball(1, 1.45, '#00A3B8')], ask: 'heavier', say: 'A small rock and a giant balloon!', big: true }],
   watchLine: 'Watch me put them on.', yourTurn: 'Now you. Put them on, then look!', hint2: 'Drag this one to the scale.', remember: 'Remember: the heavy side goes down.',
-  mistake: { friend: { name: 'Avrumi', shirt: '#6B8F3A', hair: '#3B2416' }, icon: 'sphere', balance: [ball(2, 1.3, '#F0458E'), rock(6, 1)],
+  mistake: { friend: { name: 'Avrumi', shirt: '#6B8F3A', hair: '#3B2416' }, icon: 'sphere', balance: [ball(2, 1.35, '#F0458E'), rock(6, 1.5)],
     claim: ['Avrumi says the big balloon is heavier.', 'It is so big!'], ask: 'Is the big balloon heavier?', answer: false,
     explain: ['Look at the scale.', 'The rock side went down.'], right: ['Right! The rock is heavier.'], after: 'Big is not always heavy!' },
   endLine: 'You weighed everything!', praise: 'Heavy goes down. Weighing expert!'

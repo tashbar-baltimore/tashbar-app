@@ -14,7 +14,7 @@
 import { startGame, FAMILY } from './kit.js';
 const PI = Math.PI;
 startGame({
-  id: 'mystery', world: 'sky', mode: 'clues',
+  id: 'mystery', world: 'sky', mode: 'clues', plain: true,   /* he counts corners and sides: plain one-colour shapes, nothing painted on them (K-CLARITY-RULES 1, 9) */
   boxes: [{ paint: 'star', accept: [], color: '#F5B400' }],
   intro: ['Mendy has a mystery game!', 'A shape tells you clues.', 'Listen, then find the shape!'],
   lessons: [{ k: 'circle', word: 'circle', short: true, color: '#1F6FEB', rule: ['Round, no corners.'] },
@@ -28,7 +28,7 @@ startGame({
     { say: ['I am perfectly round.', 'I have no corners.'], accept: ['circle'] },
     { say: ['I have three corners.', 'I have three straight sides.'], accept: ['tri'] },
     { say: ['I have four sides.', 'All my sides are the same.'], accept: ['square'] },
-    { say: ['I have six corners.', 'I look like a honeycomb.'], accept: ['hex'] },
+    { say: ['I have six corners.', 'I have six straight sides.'], accept: ['hex'] },
     { say: ['I have two long sides.', 'And two short sides.'], accept: ['rect'] },
     { say: ['I am round, but squished.', 'I have no corners.'], accept: ['oval'] }
   ],
