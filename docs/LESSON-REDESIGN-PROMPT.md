@@ -1,5 +1,8 @@
 # Lesson Redesign prompt (HoS 2026-11-27)
 
+> **Update (2026-11-27):** the design is done and live with this pull request. Builders now use `docs/lesson-redesign/PROMPTS.md` and `docs/lesson-redesign/BOARD.md`.
+
+
 Paste everything below the line into a fresh Claude session on this repository.
 
 ---

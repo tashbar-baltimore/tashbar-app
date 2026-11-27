@@ -1,5 +1,8 @@
 # The One Bite Playbook (v1, 2026-11-21)
 
+> **NEW LESSONS (HoS 2026-11-27):** lessons are moving to a new shape (THINK, LEARN, TRY IT, SHOW ME, DONE; fewer, deeper activities). New and redone lessons follow `docs/lesson-redesign/DESIGN.md`, not the six steps below. Old-shape lessons keep playing as described here until they are redone.
+
+
 > **Words the boys see (HoS 2026-11-21):** boys never see the word "bite". The screens say **TODAY WE LEARN** (step 1), **LEVEL CLEAR!** and **▶ Next level** (step 6), and "lesson" everywhere else, matching the map. "One Bite" stays only as the builders' name for this project and its files.
 
 > One bite, one path, one button. In five seconds a boy knows what he is learning today. A few minutes later he knows how to do it.
