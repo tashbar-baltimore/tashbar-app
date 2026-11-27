@@ -344,6 +344,92 @@
           why:{q:'Why could Ezra not write this?', o:['He was far away on his porch','He did not like the fireman','He was asleep'], a:'He was far away on his porch'}}] }
   };
 
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     Board row R3. Each lesson teaches on its own passage; Show me stays on its cold passage. Old activities are reused where they fit;
+     the new player shows no whole passage, so every card carries the words it needs. */
+  function NL(id, x) { var b = BITE[id]; if (!b) return; Object.keys(x).forEach(function (k) { b[k] = x[k]; }); delete b.do; delete b.your; delete b.ready;
+    (b.learn || []).forEach(function (c) { if (c && c.act) delete c.act.why; }); }   /* a learn card has no "tap the reason" step (the player shows none there) */
+  function A(id, part, i, over) { var b = BITE[id], src = b && b[part] && b[part][i]; if (!src) return null; var o = JSON.parse(JSON.stringify(src)); Object.keys(over || {}).forEach(function (k) { o[k] = over[k]; }); return o; }
+
+  (function () { var id = 'READ.LIT.L06.12';
+    NL(id, {
+      hook: { kind: 'wouldyou', pic: '🔥', t: 'One orange sky. Shloimy calls the wagons a *monster*. His brother, a *parade*.', q: 'What would you call them?',
+        o: ['A monster', 'A parade', 'Just wagons'], pay: 'Same wagons, two views! A narrator\'s *feelings* color what he tells.' },
+      learn: [
+        { t: 'A *narrator* tells the story. His *feelings* color it.', act: A(id, 'do', 0, {
+          say: 'Tap the sentence that shows his *feeling*.', how: 'Look for a clue about his *body* or *heart*, not a date.' }) },
+        { who: { q: '"It was the most *frightening* sky in the world." A plain fact?', o: [['Ezra', 'Yes. It is a plain fact.'], ['Yoni', 'No. It is colored by his fear.']], a: 1,
+          why: 'His brother saw a *parade* under the same sky.' } },
+        { t: 'Three things color it: his *spot*, his *news*, his *heart*.', act: A(id, 'your', 0, { pairs: [['"I could not see the flames."', 'Where he is'], ['"Nobody had told us yet."', 'What he knows'], ['"My knees shook."', 'How he feels']],
+          say: 'Match each line to what *colors* it.', how: 'Is it about where he *is*, what he *knows*, or how he *feels*?' }) }],
+      play: [
+        A(id, 'do', 1, { why: { q: 'Why is "the most frightening sky" not a plain fact?', o: ['It shows his fear; others saw it differently', 'It gives a date', 'It is too short'], a: 'It shows his fear; others saw it differently' } }),
+        A(id, 'your', 3, {}),
+        A(id, 'your', 2, { q: 'Shloimy is on a roof, far from the flames.' }),
+        A(id, 'your', 1, {})],
+      done: 'Monster or parade? The *narrator\'s* heart colors the story.' }); })();
+
+  (function () { var id = 'READ.LIT.L06.13';
+    NL(id, {
+      hook: { kind: 'guess', pic: '👞', t: 'One shoe store, two *narrators*: a boy and his Tatty. One *counts trips*.', q: 'Who do you guess counts every trip?',
+        o: ['The boy, Yankel', 'His Tatty'], pay: '*Yankel* counts trips. *Tatty* watches the door. Same scene, two views.' },
+      learn: [
+        { t: '*One scene*, two *narrators*: a boy and his Tatty.', act: A(id, 'do', 0, { q: 'The Shoe Store: One Scene, Two Narrators', bins: ['Yankel (the boy)', 'Tatty (the father)', 'Both tell it'],
+          say: 'Who tells it: *Yankel*, *Tatty*, or *both*?', how: 'A boy *counts trips*. A father thinks of his *work*. Events are in *both*.' }) },
+        { who: { q: 'Tatty tells the scene. What *changes*?', o: [['Akiva', 'What happened changes.'], ['Dov', 'What he notices and feels.']], a: 1,
+          why: 'The store, policeman and wagon are in *both* tellings.' } },
+        { t: 'Each narrator *notices* what matters to *him*.', act: A(id, 'do', 1, {
+          pairs: [['Yankel, wagon leaving', '"waved at the orange sky"'], ['Tatty, wagon leaving', '"looked back at the shelves"'], ['Tatty, during the trips', '"watched the door"']],
+          say: 'Match each moment to the narrator\'s *own words*.', how: 'Who would *wave*? Who would *watch* the door?' }) }],
+      play: [
+        A(id, 'your', 0, { why: { q: 'Why is "A new narrator changes what happened" a mistake?', o: ['The same events are in both tellings', 'Tatty was not there', 'It is too short'], a: 'The same events are in both tellings' } }),
+        A(id, 'your', 3, { q: 'Retell it as Tatty. Which line would Tatty say?' }),
+        A(id, 'your', 2, { q: 'Both tellings share these events.' }),
+        A(id, 'your', 1, { t: 'Tatty is a father, so he watches the ___ each time his son runs inside.' })],
+      done: 'Yankel *counted trips*; Tatty *watched the door*. A new narrator, a new *view*.' }); })();
+
+  (function () { var id = 'READ.COMP.L06.14';
+    NL(id, {
+      hook: { kind: 'puzzle', pic: '📰', t: 'Three accounts, one fire: a fireman, a report, a letter.', q: 'Which one tells how many buildings burned?',
+        o: ['The fireman', 'The report', 'The letter'], pay: 'The *report*: 1,500 buildings. Each account has its own *focus*.' },
+      learn: [
+        { t: '*Firsthand*: the writer was *there* himself.', act: A(id, 'your', 0, {
+          say: 'Tap the proof the writer was *there*.', how: 'Look for *I*, *my* or *we*, and something felt *up close*.' }) },
+        { t: 'Each account has its own *focus*.', act: A(id, 'do', 0, {
+          slots: ['Fireman: "my gloves froze to the hose"', 'Report: "1,500 buildings are gone"', 'Mendel: "my little seforim store is gone"'],
+          say: 'Put each account\'s *focus* in its box.', how: 'Ask: what does this writer *care about* most?' }) },
+        { who: { q: 'The accounts focus on *different things*. So?', o: [['Pinchas', 'Only one of them can be true.'], ['Shalom', 'Each tells the same fire its own way.']], a: 1,
+          why: 'Where they *share* a fact, they *agree*.' } }],
+      play: [
+        A(id, 'do', 1, { why: { q: 'Why is the old man\'s memory firsthand?', o: ['He saw the fire himself as a boy', 'He is old', 'He wrote it down'], a: 'He saw the fire himself as a boy' } }),
+        A(id, 'your', 2, {}),
+        { type: 'evidence', q: 'Tap the two lines that tell the same fact.', look: 'one fact two writers share',
+          p: ['Fireman: "We came by train on Sunday."', 'Fireman: "Our hose end would not fit."', 'Report: "Firemen came by train from Washington."', 'Report: "More than 1,500 buildings are gone."', 'Mendel: "My little seforim store is gone."'], a: [0, 2],
+          say: 'Find *one fact* told in *two* accounts.', how: 'Look for the same fact from *two different* writers.',
+          why: { q: 'Why does a shared fact matter?', o: ['Two accounts agree, so we can trust it', 'It is longer', 'It is in a letter'], a: 'Two accounts agree, so we can trust it' } },
+        A(id, 'your', 3, {})],
+      done: 'The *report* counted buildings. Many accounts, one fire, *shared facts*.' }); })();
+
+  (function () { var id = 'READ.COMP.L06.15';
+    NL(id, {
+      hook: { kind: 'story', pic: '💥', t: 'Dynamite night, 1904. A fireman writes a *report*. A boy writes a *letter*.', q: 'Why might they sound so different?',
+        o: ['One of them must be wrong', 'Different writers, different reasons', 'They are about different nights'], pay: '*Who* wrote it, what he *saw*, and *why*: that changes everything.' },
+      learn: [
+        { t: 'Ask three questions: *who* wrote it, what he *saw*, *why*.', act: A(id, 'do', 0, { q: 'Fireman: "I write this so next time we know what works."',
+          say: 'Answer the *three questions* for the fireman.', how: 'He stood at the *fire line*. He wrote for his *chief*.' }) },
+        { t: 'Find *why* he wrote: what should the reader *feel*?', act: A(id, 'do', 1, { mis: false,
+          say: 'Tap the sentence that shows *why* Ezra wrote.', how: 'Not what he *heard*. Find what he wants his cousin to *feel*.' }) },
+        { who: { q: 'Ezra never says which blasts made *new fires*. Is he wrong?', o: [['Yisroel', 'Yes. His account is wrong.'], ['Baruch', 'No. He was far away.']], a: 1,
+          why: 'What he *saw* and *why he wrote* shape it.' } }],
+      play: [
+        A(id, 'your', 1, { why: { q: 'Why is "Every account should tell the same details" a mistake?', o: ['Each writer saw different things, for different reasons', 'Accounts never share facts', 'It is too long'], a: 'Each writer saw different things, for different reasons' } }),
+        A(id, 'your', 0, { pairs: [['"so next time we know what works"', 'To report to his chief'], ['"the most exciting night of my life!"', 'To share an exciting story'], ['Camp note: "We are all fine."', 'To comfort his family'], ['A paper for the whole city', 'To tell the news']] }),
+        { type: 'sort', q: 'How close was each writer to the fire?', bins: ['Saw it up close', 'Saw it from far away', 'Only heard about it'],
+          cards: [['The fireman at the fire line', 0], ['Ezra on his back porch', 1], ['A man in Chicago, reading his newspaper', 2], ['Mendel, carrying out his siddurim', 0]],
+          say: 'Up close, far away, or *only heard* about it?', how: 'Picture *where* each writer was that night.' },
+        A(id, 'your', 4, {})],
+      done: 'Not wrong, just *different*: who wrote it, what he *saw*, and *why*.' }); })();
+
   if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
