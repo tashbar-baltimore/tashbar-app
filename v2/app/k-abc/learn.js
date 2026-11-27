@@ -38,6 +38,7 @@ export function start() {
   const BG = { hear: 'garden', meet: 'classroom', write: 'classroom', find: 'meadow', read: 'playground' }[g];
   const bgi = new Image(); bgi.onload = () => { $('scene').style.backgroundImage = 'url(' + bgi.src + ')'; $('scene').classList.add('bg'); }; bgi.src = 'art/bg/' + BG + '.webp';
   const G = makeShell(A, L, g);
+  { const t = document.getElementById('gtitle'); if (t) t.textContent = ({ hear: 'Hear It', meet: 'Meet It', write: 'Write It', find: 'Find It', read: 'Read It' })[g] + ': ' + L; }   /* the game's name, always on screen */
   const play = { hear, meet, write, find, read }[g];
   A.ready = true; A.name = 'start';
   const go = async () => { $('play').classList.add('gone'); $('again').classList.add('on'); audio.ctx(); A.name = 'play'; await play(G, C, L); };
