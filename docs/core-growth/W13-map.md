@@ -384,6 +384,8 @@ Opener: the newspaper's story corner. Avi tells his Saba's story of the long tri
 | 5 | WRIT.PARA.L04.08 *(new)* | Then, Later, Finally | order events with time words | W.3.3c | B (`order`), E, C | build | 7 |
 | 6 | WRIT.PARA.L04.09 *(new)* | Wrap the Story | end with a sense of closure | W.3.3d | T, W, C | build | 7 |
 
+(HoS, 27 Nov: a unit holds one Workshop piece; when a unit plans several real tasks, the one piece lets the boy choose among them. Live this way in W13.U32 and W13.U33.)
+
 Real task: **Gr 3 piece 3**: a true story. **Gr 3 piece 4**: a made-up club story. **Gr 3 piece 5**: an interview story with a grandparent. Quick writes: 7. Unit check: 1.
 
 **G3 U3 · Opinion with Reasons** (W.3.1)

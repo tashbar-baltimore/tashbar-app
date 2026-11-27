@@ -7,7 +7,7 @@ The process is the same as job F's (`docs/core-growth/F-picture-orders.md`) and 
 
 Until a picture arrives, the TODAY WE LEARN screen keeps its big emoji, never an empty box.
 
-## Order W13H4-1 (2026-11-26) · Grade 2 Units 5 "Make It Better" and 6 "Letters and Research" · status: SENT
+## Order W13H4-1 (2026-11-26) · Grade 2 Units 5 "Make It Better" and 6 "Letters and Research" · status: 7 of 7 LINKED
 
 **Style:** B23 · Builders. Warm storybook watercolor and ink, like a classic chapter book; light texture, clear faces with expression, a detailed cozy setting. Colors: brick red, golden wheat, slate blue, leaf green, paper cream.
 
@@ -41,3 +41,19 @@ Until a picture arrives, the TODAY WE LEARN screen keeps its big emoji, never an
 | 7 | `core-w13-bookresponse-today.webp` | `WRIT.PARA.L03.16|@today` (Book Response) | 1100x620 | Naftali (red hair, freckles) sits on the old blue sofa holding up a chapter book with a plain cover, giving a big thumbs up, as he tells Avi and Dovid about it; they lean in, curious. | A boy gives a thumbs up as he tells his friends about a book he liked |
 
 **Delivery:** reply to the email with the pictures attached under these file names (or numbered 1–7).
+
+| # | Status | Where it goes live |
+|---|---|---|
+| 1 | LIVE (#606) | `core-w13-g2u5-opener.webp` on `WRIT.ESSAY.L03.05|@today` |
+| 2 | LINKED (redrawn: plain spines) | `core-w13-cups-today.webp` on `WRIT.ESSAY.L03.06|@today` |
+| 3 | LINKED (redrawn twice: plain spines, one plain window pane) | `core-w13-readaloud-today.webp` on `WRIT.ESSAY.L03.07|@today` |
+| 4 | LINKED (redrawn: plain arched window) | `core-w13-g2u6-opener.webp` on `WRIT.PARA.L03.15|@today` |
+| 5 | LIVE (#606) | `core-w13-findit-today.webp` on `WRIT.RES.L03.01|@today` |
+| 6 | LIVE (#606) | `core-w13-factnotes-today.webp` on `WRIT.RES.L03.02|@today` |
+| 7 | LIVE (#606) | `core-w13-bookresponse-today.webp` on `WRIT.PARA.L03.16|@today` |
+
+All 7 arrived on 2026-11-26 as 1600 × 900 PNG and were checked by eye, zoomed in on the windows, book spines, globe and tape measure. Pictures 1, 5, 6 and 7 pass: boys and men only, kippah and tzitzis, the cast as ordered (Mr. Benhamou appears only in picture 4), plain spines, no letters or numerals, no brands. They were saved as WebP at 1100 × 619 (at most 200 KB), with the originals as JPEG. Pictures 2, 3 and 4 were sent back in the same thread, and their screens keep the emoji until the redraws pass.
+
+Redraws of 2, 3 and 4 arrived on 2026-11-27 and were checked the same way. Pictures 2 and 4 pass. Picture 3 was sent back a second time for its side window.
+
+The second redraw of picture 3 arrived on 2026-11-27. The far-right window is now one plain pane, the spines are plain, the page shows only wavy lines, and both boys wear kippah and tzitzis. It passes, and all 7 pictures are now linked.

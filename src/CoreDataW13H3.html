@@ -240,24 +240,24 @@
     min: 50,
     checks: [
       { t: 'I wrote at least 4 sentences.', sentences: 4 },
-      { t: 'I started with a greeting.', any: ['dear'] },
+      { t: 'I started with a greeting.', any: ['dear', 'hi ', 'hi,', 'hello'] },
       { t: 'I used every part of my plan.', plan: true },
-      { t: 'I ended with a closing and my name.', any: ['love,', 'student,', 'respectfully,', 'sincerely,', 'thanks,'] },
+      { t: 'I ended with a closing and my name.', any: ['love,', 'student,', 'respectfully,', 'sincerely,', 'thanks,', 'thank you,', 'your friend,'] },
       { t: 'Every sentence in my body starts with a capital and ends with . ! or ?', self: true },
       { t: 'I revised with ARMS: I added a detail or swapped a sharper word.', self: true },
       { t: 'My words fit my reader.', self: true } ],
     rubric: ['All five parts of a letter', 'A clear reason for writing, with details', 'Words that fit the reader', 'Revised with ARMS', 'Edited with COPS: capitals, order, punctuation, spelling'],
     pics: ['✉️', '📮', '🕰️', '📰'] };
 
-  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U36', title: 'Revise, Edit, Publish', c: 'WRIT', grade: 3,
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U36', pre: 'lessons', title: 'Revise, Edit, Publish', c: 'WRIT', grade: 3,
     skills: ['WRIT.ESSAY.L04.05', 'WRIT.ESSAY.L04.06', 'WRIT.PARA.L04.17'],
     review: ['WRIT.RES.L04.02', 'WRIT.PARA.L04.15', 'WRIT.ESSAY.L04.03'], n: 8, task: PIECE12,
     items: [
       { skill: 'WRIT.ESSAY.L04.05', type: 'evidence', q: 'Chaim’s Purim story: which sentence should he Remove?', p: ['We brought mishloach manos to our rebbe.', 'My little brother dressed up as a lion.', 'Our car needs new tires.', 'We listened to the Megillah in shul.'], a: 2, look: 'the sentence that is not about Purim', say: 'Find the sentence to Remove.', how: 'Which one is about something else?' },
       { skill: 'WRIT.ESSAY.L04.05', type: 'cloze', t: 'Substitute the tired word: “The snow was ___.” (it used to say “nice”)', o: ['sparkly', 'nice', 'okay'], a: 'sparkly', say: 'Pick a sharper word for “nice”.', how: 'Which word helps the reader see it?' },
       { skill: 'WRIT.ESSAY.L04.06', type: 'evidence', q: 'Which sentence is edited right?', p: ['did you see dovid?', 'Did you see Dovid.', 'Did you see Dovid?', 'did you see Dovid?'], a: 2, look: 'capitals on the start and the name, and the right end mark', say: 'Find the sentence with no mistakes.', how: 'Check C and P.' },
-      { skill: 'WRIT.ESSAY.L04.06', type: 'cloze', t: 'Naftali wrote: “Cleaned we the clubhouse.” COPS letter ___ finds the mistake.', o: ['O', 'C', 'P'], a: 'O', say: 'Which COPS letter finds it?', how: 'Read it out loud. Do the words make sense in that order?' },
-      { skill: 'WRIT.PARA.L04.17', type: 'evidence', q: 'Dovid writes to thank Mr. Levi, the school cook, for a hot lunch. Which closing fits?', p: ['Later!', 'Thank you,', 'Bye bye!!!', 'Dear Mr. Levi,'], a: 1, look: 'a polite goodbye before his name', say: 'Find the closing that fits.', how: 'Who is reading it? Which is a closing?' },
+      {skill: "WRIT.ESSAY.L04.06",type: "cloze",t: "Ovadia wrote: “We painted the frunt door.” COPS letter ___ finds the mistake.",o: ["O","S","C"],a: "S",say: "Which COPS letter finds it?",how: "Check C, then O, then P, then S. Where does it go wrong?"},
+      {skill: "WRIT.PARA.L04.17",type: "evidence",q: "Yosef writes to thank Mr. Peretz, his neighbor, for a ride to school. Which closing fits?",p: ["Gotta go!!","With thanks,","Dear Mr. Peretz,"],a: 1,look: "a polite goodbye before his name",say: "Find the closing that fits.",how: "Who is reading it? Which part says goodbye?"},
       { skill: 'WRIT.PARA.L04.17', type: 'cloze', t: 'In a letter, “Dear Bubby and Zeidy,” is the ___.', o: ['greeting', 'closing', 'body'], a: 'greeting', say: 'Name the part of the letter.', how: 'Which part says hello?' }
     ] });
 })();
