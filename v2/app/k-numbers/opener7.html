@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn it: More, less, the same — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 7 OPENER: a short, warm lesson in the 3D apple orchard. Dovid and Shmuel have apples.
+     Line them up: partners join, and the apples left over show who has more (and who has less). Every apple with a partner: the same.
+     The unit song "One more, one more, step up one more!" (stand up). An apple drops from the tree: one more. One goes back: one less.
+     He taps the big arrow to go on; on the last slide he taps who has more himself. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>.cardrow{ display:flex; gap:24px; } .cardrow[hidden]{ display:none; } .numcard.good{ box-shadow:0 0 0 6px #22B45E; } #go{ visibility:hidden; animation:pulse 1.2s infinite; } #go.on{ visibility:visible; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="cardrow" id="cards" hidden><div class="numcard" id="c0"></div><div class="numcard" id="c1"></div></div>
+    <button id="go" class="bigbtn btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './orchard7.js';
+const $ = id => document.getElementById(id);
+let O, done, want = null;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+async function lineUp() { const n = Math.min(O.count(0), O.count(1)); for (let k = 0; k < n; k++) await O.pair(k, k); }
+const SLIDES = [
+  async F => { O.setApples(0, 3); O.setApples(1, 5); await F.say('Welcome to the apple orchard!'); await F.say('Dovid has apples. Shmuel has apples.'); },
+  async F => { await F.say("Who has more? Let's line them up."); await lineUp(); O.glowSide(1, true); await F.say('Two apples have no partner.');
+    await F.say('Shmuel has more. Dovid has less.'); O.glowSide(1, false); O.clearPairs(); },
+  async F => { O.setApples(0, 4); O.setApples(1, 4); await F.say('Now four and four.'); await lineUp(); await F.say('Every apple has a partner. The same!'); O.clearPairs(); },
+  async F => { await F.chant('One more, one more, step up one more!', true); },
+  async F => { O.setApples(0, 3); O.setApples(1, 0); O.glowSide(0, true); await F.say('Dovid has three.'); await O.drop(0); await F.say('Three and one more is four!');
+    await O.take(0); await F.say('Four, one less is three.'); O.glowSide(0, false); },
+  async F => { O.setApples(0, 0); O.setApples(1, 0); $('cards').hidden = false; await F.say('Numbers can be more, too. Three or five?');
+    await F.say('When we count, five comes later. Five is more!'); $('c1').classList.add('good'); await F.wait(900); $('c1').classList.remove('good'); $('cards').hidden = true; },
+  async F => { O.setApples(0, 6, 'scatter'); O.setApples(1, 4, 'scatter'); O.sideSpot(0); O.sideSpot(1); await F.say('Your turn! Who has more?');
+    await F.say('Tap the one with more.', { repeat: 'Six apples or four. Tap who has more.' }); want = 0; }
+];
+FR.game({
+  id: 'u7-opener', title: 'More, Less, the Same', rounds: SLIDES.length, stars: () => 3,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""><img src="art/shmuel-happy.png" alt="" style="height:86%"></div>',
+  endSay: () => "Great! Now let's line them up!",
+  init() {
+    document.getElementById('c0').innerHTML = U5.num(3); document.getElementById('c1').innerHTML = U5.num(5);
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true });
+    $('go').addEventListener('click', () => { if (GAME.phase !== 'answer' || want != null) return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; const d = done; done = null; d(true); });
+    O.onTap = async (id, el) => {
+      if (GAME.phase !== 'answer' || want == null || !id.startsWith('side')) return; GAME.phase = 'busy'; const k = +id[4];
+      if (k !== want) { FR.oops(el); await FR.say("Let's look. Line them up in your head."); await lineUp(); await FR.say('Who has apples left over?'); O.clearPairs(); GAME.phase = 'answer'; return; }
+      want = null; O.sparkle(O.sides[0].g.position); await FR.yes(el, 'Yes! Six is more than four!'); const d = done; done = null; d(true);
+    };
+  },
+  round: (F, i) => new Promise(async res => {
+    GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on'); await SLIDES[i](F); done = res;
+    GAME.phase = 'answer'; F.lock(false);
+    if (want != null) { GAME.right = () => [{ tap: '.tspot[data-id="side0"]' }]; GAME.wrong = () => [{ tap: '.tspot[data-id="side1"]' }]; }
+    else { GAME.right = () => [{ tap: '#go' }]; GAME.wrong = null; $('go').classList.add('on'); }
+  })
+});
+</script>
+</body>
+</html>

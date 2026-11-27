@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meet 1, 2, 3 — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 1. MEET 1, 2, 3: one, two and three, taught slowly before any quick looking.
+     Island rule: nothing is quick here; the things stay in view, the voice names the number, he shows it on the hand. -->
+<link rel="stylesheet" href="frame.css">
+<style>
+.stage{ grid-template-columns:1fr 1.1fr; align-items:center; }
+.left, .right{ display:flex; align-items:center; justify-content:center; gap:14px; height:100%; }
+.right{ flex-direction:column; }
+#cardslot .qcard{ width:min(40vw,60vh,440px); }
+#cardslot .qcard svg.q{ width:34%; height:34%; } #cardslot .qcard .dot{ width:22%; height:22%; }
+.bighand{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:36px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); padding:8px; }
+.bighand .fhand{ width:min(30vw,50vh,340px); aspect-ratio:170/230; }
+.hero{ position:relative; }
+.hero .qcard{ position:absolute; inset:6% 18%; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.8fr 1.2fr; } #cardslot .qcard{ width:min(64vw,30vh); } .right{ flex-direction:row; } .bighand .fhand{ width:min(52vw,38vh); } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="left" id="cardslot"></div>
+  <div class="right"><div class="bighand" id="bighand"></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="meet.js"></script>
+<script>
+MeetGame({ howMany: 'How many? Say the number for the group.', id: 'meet123', title: 'Meet 1, 2, 3', meet: [1, 2, 3], ask: [1, 2, 3, 2, 3], bonus: [1, 2, 3], demo: 2, kinds: ['apple', 'orange', 'pear', 'candle', 'dots', 'apple', 'pear', 'orange'], extra: { 1: 'One finger. Just one.' }, hero: '<div class="qcard"><svg class="q" viewBox="0 0 100 100" style="left:24%;top:50%;width:24%;height:24%"><use href="#nkApple"/></svg><svg class="q" viewBox="0 0 100 100" style="left:50%;top:50%;width:24%;height:24%"><use href="#nkApple"/></svg><svg class="q" viewBox="0 0 100 100" style="left:76%;top:50%;width:24%;height:24%"><use href="#nkApple"/></svg></div>' });
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me 6 to 10 — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 5 MASTERY CHECK. 8 items, 6-10, three ways: a ten-frame flashes and he shows it on two hands;
+     he hears and sees a number and fills the ten-frame; he pushes a number on the bead rack. No hints during the check;
+     after a miss we look at the right answer together ("Eight is five and three") and go on. 7 of 8 = Unit 5 is done. -->
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css">
+<style>
+.stage{ grid-template-columns:.8fr 1.4fr; align-items:center; }
+.left, .right{ display:flex; align-items:center; justify-content:center; height:100%; gap:14px; }
+.right{ flex-direction:column; }
+#flash.qcard{ width:min(32vw,54vh,360px); display:flex; align-items:center; justify-content:center; }
+#flash .tf{ width:88%; }
+#ask{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:min(28vw,46vh,300px); aspect-ratio:1; } #ask .numeral{ font-size:clamp(90px,22vh,190px); } #ask .unum svg{ height:min(24vh,190px); } .stage.one #ask .unum svg{ height:clamp(64px,11vh,110px); } #ask[hidden], .ans[hidden], #flash[hidden]{ display:none; }
+.ans{ width:min(58vw,680px); } .stage.one{ grid-template-columns:1fr; grid-template-rows:auto 1fr; } .stage.one .left{ height:auto; } #aB{ width:min(96vw,1100px); } .stage.one #ask{ width:auto; aspect-ratio:auto; padding:6px 24px; } .ans .hands2{ width:min(46vw,64vh,560px); margin:0 auto; }
+.hero svg{ width:56%; height:auto; margin:6% auto 0; display:block; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.7fr 1.3fr; } #flash.qcard{ width:min(64vw,28vh); } #ask{ width:min(52vw,26vh); } .ans{ width:94vw; } .ans .hands2{ width:86vw; } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="left"><div class="qcard flash" id="flash"><div class="cloth"><div class="eyes"><i></i><i></i></div></div></div>
+    <div class="panel" id="ask" hidden><div class="unum" id="num"></div></div></div>
+  <div class="right"><div class="ans panel" id="aH"></div><div class="ans" id="aF" hidden></div><div class="ans" id="aB" hidden></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var H, T, K, F5, R, done, plan, KINDS = ['hands', 'frame', 'beads', 'hands', 'beads', 'frame', 'hands', 'frame'];
+  function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
+  function W() { return R.kind === 'hands' ? H : R.kind === 'frame' ? T : K; }
+  function ready() { var c = $('check'); c.classList.toggle('dim', W().count() === 0); c.classList.toggle('ready', W().count() > 0 && GAME.phase === 'answer'); }
+  function taps(k) {
+    if (R.kind === 'hands') return H.moves(k, '#aH');
+    if (R.kind === 'frame') return T.moves(k).map(function (i) { return { tap: '#aF .cell[data-i="' + i + '"]' }; });
+    return K.moves(k).map(function (m) { return { tap: '#aB .bead[data-r="' + m[0] + '"][data-i="' + m[1] + '"]' }; });
+  }
+  function hooks() { GAME.right = function () { return taps(R.n).concat([{ tap: '#check' }]); }; GAME.wrong = function () { return taps(R.n === 10 ? 9 : R.n + 1).concat([{ tap: '#check' }]); }; }
+  function some(n) { return n === 10 ? 'Ten is five and five.' : FR.Word(n) + ' is five and ' + FR.word(n - 5) + '.'; }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer') return; var have = W().count(); if (!have) { FR.say('Show me first.'); return; }
+    GAME.phase = 'busy'; FR.lock(true); W().lock(true); var d = done; done = null;
+    if (R.kind === 'hands') cloth(true);
+    if (have === R.n) { await FR.yes($(R.kind === 'hands' ? 'aH' : R.kind === 'frame' ? 'aF' : 'aB'), FR.pick(['Yes!', 'Right!', 'Good job!'])); d(true); return; }
+    FR.oops($('check')); await FR.say("Let's look."); W().set(R.n, 0); if (R.kind === 'frame') T.glow(true); await FR.say(some(R.n)); T.glow(false); d(false);
+  }
+  FR.game({
+    id: 'u5-check', title: 'Show Me!', rounds: 8,
+    hero: '<svg viewBox="0 0 100 100"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><path d="M30 20H18c0 12 6 18 14 18M70 20h12c0 12-6 18-14 18" fill="none" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><circle cx="42" cy="26" r="4" fill="#fff" opacity=".9"/></svg>',
+    init: function (F) {
+      H = U5.hands(0, true); $('aH').appendChild(H.el); T = U5.frame(0, true); $('aF').appendChild(T.el); K = U5.rack(true); $('aB').appendChild(K.el);
+      [H, T, K].forEach(function (w) { w.onChange = ready; w.lock(true); });
+      F5 = U5.frame(0, false); $('flash').insertBefore(F5.el, $('flash').firstChild); $('check').addEventListener('click', check);
+    },
+    reset: function (F) { plan = F.shuffle([6, 7, 8, 9, 10, 6, 7, 8]); },
+    demo: async function (F) { await F.say("Let's show what you learned!"); await F.say('Hands, frames and beads. Ready?'); },
+    endSay: function (s) { return s >= 2 ? 'Unit five is done! Five and some more!' : 'Good try! Let\'s practice and try again.'; },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var n = plan[i], kind = KINDS[i]; R = { n: n, kind: kind }; GAME.phase = 'busy'; F.lock(true);
+        $('stage').classList.toggle('one', kind === 'beads'); $('aH').hidden = kind !== 'hands'; $('aF').hidden = kind !== 'frame'; $('aB').hidden = kind !== 'beads';
+        $('flash').hidden = kind !== 'hands'; $('ask').hidden = kind === 'hands'; U5.setNum($('num'), n);
+        H.set(0); T.set(0); K.set(0, 0); [H, T, K].forEach(function (w) { w.lock(true); }); ready();
+        if (kind === 'hands') { cloth(false); await F.wait(380); F5.set(n); await F.say('Peek!', { repeat: 'How many? Show me on two hands.' }); cloth(true); await F.wait(1400); cloth(false); await F.wait(380); }
+        else await F.say((kind === 'frame' ? 'Fill ' : 'Push ') + F.word(n) + '.', { repeat: (kind === 'frame' ? 'Fill the frame with ' : 'Push ') + F.word(n) + '.' });
+        done = res; GAME.phase = 'answer'; F.lock(false); W().lock(false); ready(); hooks();
+        if (kind === 'hands' && i === 0) await F.say('Show me on two hands.');
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

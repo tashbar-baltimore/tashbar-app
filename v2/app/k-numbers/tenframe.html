@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fill the Frame — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 5, game 1: FILL THE FRAME. Skill: 6-10 as "five and some more" on a ten-frame.
+     He hears and sees a number (the numeral and two hands) and fills the ten-frame: a full row of five, then some more.
+     First mistake: look again (a full row is five), fix it. Second: rows light up, "Seven is five and two more. Put one more in." -->
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css">
+<style>
+.stage{ grid-template-columns:.8fr 1.4fr; align-items:center; }
+.left{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; height:100%; }
+.left .panel{ display:flex; flex-direction:column; align-items:center; gap:6px; width:min(30vw,300px); }
+.left .hands2{ width:100%; }
+.right{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; height:100%; }
+.right .tf{ width:min(56vw,640px); }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.9fr 1.1fr; } .left .panel{ width:min(66vw,30vh); } .right .tf{ width:96vw; } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="left"><div class="panel" id="ask"><div class="unum" id="num"></div><div id="pic"></div></div></div>
+  <div class="right"><div id="tfh"></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var T, P, R, done, plan, easy = 0, streak = 0;
+  function ready() { var c = $('check'); c.classList.toggle('dim', T.count() === 0); c.classList.toggle('ready', T.count() > 0 && GAME.phase === 'answer'); }
+  function taps(k) { return T.moves(k).map(function (i) { return { tap: '#tfh .cell[data-i="' + i + '"]' }; }).concat([{ tap: '#check' }]); }
+  function hooks() { GAME.right = function () { return taps(R.n); }; GAME.wrong = function () { return taps(R.n === 10 ? 9 : R.n + 1); }; }
+  function hint() { T.el.querySelectorAll('.cell').forEach(function (x, i) { x.classList.toggle('slot', i >= T.count() && i < R.n); x.classList.toggle('extra', i < T.count() && i >= R.n); }); }
+  function clearHint() { T.el.querySelectorAll('.cell').forEach(function (x) { x.classList.remove('slot', 'extra'); }); }
+  function some(n) { return n === 10 ? 'Ten is two full rows!' : FR.Word(n) + ' is five and ' + FR.word(n - 5) + ' more.'; }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer') return; var have = T.count(); if (!have) { FR.say('Tap the frame to put one in.'); return; }
+    GAME.phase = 'busy'; FR.lock(true); T.lock(true);
+    if (have === R.n) { clearHint(); T.glow(true); $('pic').classList.remove('hiddenpic'); await FR.yes(T.el, R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + some(R.n)); T.glow(false); var d = done; done = null; d(R.misses === 0); return; }
+    FR.oops(T.el); R.misses++;
+    if (R.misses === 1) { await FR.say("Let's look again. A full row is five."); await FR.say('Fix your frame.'); }
+    else { T.glow(true); $('pic').classList.remove('hiddenpic'); await FR.say(some(R.n)); hint(); var k = R.n - have; await FR.say(k > 0 ? 'Put ' + FR.word(k) + ' more in.' : 'Take ' + FR.word(-k) + ' out.'); T.glow(false); }
+    GAME.phase = 'answer'; FR.lock(false); T.lock(false); ready(); hooks();
+  }
+  function ask(n) { U5.setNum($('num'), n); P.set(n); }
+  async function play(F, n, line, noPic) {
+    return new Promise(async function (res) {
+      R = { n: n, misses: 0 }; ask(n); T.set(0); clearHint(); $('pic').classList.toggle('hiddenpic', !!noPic); GAME.phase = 'busy'; F.lock(true); ready();
+      if (easy > 0) hint();   /* the easier path: the boxes to fill are marked */
+      await F.say(line, { repeat: 'Make ' + F.word(n) + '. Fill the frame.' });
+      done = function (first) { if (R.misses >= 2) { easy = 2; streak = 0; } else if (first) streak++; else streak = 0; res(first); };
+      GAME.phase = 'answer'; F.lock(false); T.lock(false); ready(); hooks();
+    });
+  }
+  FR.game({
+    id: 'u5-frame', title: 'Fill the Frame', rounds: 6,
+    hero: '<div id="herotf"></div>',
+    init: function (F) {
+      var h = U5.frame(7, false); h.el.style.width = '100%'; h.el.style.marginTop = '14%'; $('herotf').appendChild(h.el);
+      T = U5.frame(0, true); $('tfh').appendChild(T.el); T.onChange = function () { if (GAME.phase === 'answer' && (R.misses > 1 || easy > 0)) hint(); ready(); }; T.lock(true);
+      P = U5.hands(0, false); $('pic').appendChild(P.el); $('check').addEventListener('click', check);
+    },
+    reset: function (F, again) { plan = F.shuffle([6, 7, 8, 9, 10]).concat([F.pick([6, 7, 8, 9])]); if (!again) { easy = 0; streak = 0; } },
+    demo: async function (F) {
+      R = { n: 7, misses: 0 }; ask(7); T.set(0);
+      await F.say('This is a ten-frame. Watch me make seven.');
+      for (var i = 0; i < 5; i++) { await F.handTo(T.cell(i)); await F.handTap(); T.set(i + 1); NK.sound.pop(); }
+      await F.say('One full row. That is five!');
+      for (i = 5; i < 8; i++) { await F.handTo(T.cell(i)); await F.handTap(); T.set(i + 1); NK.sound.pop(); }
+      await F.say('Oops, too many! Tap a counter to take one out.');
+      await F.handTo(T.cell(7)); await F.handTap(); T.set(7); NK.sound.back();
+      await F.handTo($('check')); await F.handTap(); T.glow(true);
+      await F.yes(T.el, 'Five and two more. Seven!'); T.glow(false);
+    },
+    round: function (F, i) {
+      var n = easy > 0 ? F.pick([6, 7]) : plan[i], noPic = streak >= 3 && easy === 0; if (easy > 0) easy--;
+      return play(F, n, noPic ? 'No picture now. Make ' + F.word(n) + '!' : i === 0 ? 'Make ' + F.word(n) + '. Fill the frame.' : 'Make ' + F.word(n) + '.', noPic);
+    },
+    bonus: async function (F) {
+      var ns = F.shuffle([8, 9, 10]);
+      for (var b = 0; b < 2; b++) await play(F, ns[b], (b === 0 ? 'Just the number! ' : '') + 'Make ' + F.word(ns[b]) + '!', true);
+    }
+  });
+})();
+</script>
+</body>
+</html>

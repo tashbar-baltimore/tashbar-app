@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me: Parts of five — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 8 MASTERY CHECK ("Show me"), from the map: "how many are hiding" for 3, 4 and 5, then fill two number bonds.
+     No counting help until a slip. Two stars or more passes the unit stop. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>
+.bond{ position:relative; width:clamp(200px,30vh,250px); height:clamp(130px,19vh,160px); } .bond svg.lines{ position:absolute; inset:0; width:100%; height:100%; }
+.bc{ position:absolute; width:clamp(64px,9.5vh,80px); height:clamp(64px,9.5vh,80px); border-radius:50%; background:#fff; border:5px solid #FF8A3D; display:flex; align-items:center; justify-content:center; padding:8px; }
+.bc svg{ height:100%; width:auto; } .bc.empty{ border-style:dashed; background:#FFF6E8; } #bw{ left:50%; top:0; transform:translateX(-50%); border-color:#2FB5E8; } #b0{ left:0; bottom:0; } #b1{ right:0; bottom:0; }
+#src .numcard{ width:clamp(64px,8.5vh,76px); height:clamp(64px,8.5vh,76px); } .bond[hidden], #src[hidden], #hp[hidden], #check[hidden]{ display:none; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; } #src{ order:3; width:100%; } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div id="hp"></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="bond" id="bond" hidden><svg class="lines" viewBox="0 0 100 64" preserveAspectRatio="none"><path d="M50 18 L16 48 M50 18 L84 48" stroke="#8A6A4A" stroke-width="2.5"/></svg>
+      <div class="bc" id="bw"></div><div class="bc" id="b0"></div><div class="bc" id="b1"></div></div>
+    <div class="srcs" id="src" hidden></div>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './kitchen8.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const ID = { w: 'bw', 0: 'b0', 1: 'b1' };
+function want() { return R.miss === 'w' ? R.a + R.b : R.miss === 0 ? R.a : R.b; }
+function hooks() {
+  if (R.kind === 'hide') { GAME.right = () => FR.fingerTaps(H, R.k, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, R.k === 1 ? 2 : R.k - 1, '#hp').concat([{ tap: '#check' }]); return; }
+  const k = want(), bad = k === 5 ? 4 : k + 1; GAME.right = () => [{ drag: ['#src .numcard[data-n="' + k + '"]', '#' + ID[R.miss]] }]; GAME.wrong = () => [{ drag: ['#src .numcard[data-n="' + bad + '"]', '#' + ID[R.miss]] }];
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); if (H) H.lock(false); hooks(); }
+function fin(el, line) { return FR.yes(el, line).then(() => { const d = done; done = null; d(R.misses === 0); }); }
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.kind !== 'hide') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true);
+  if (H.count() === R.k) { await K.lift(); return fin($('check'), 'Yes! ' + FR.Word(R.k) + ' were hiding.'); }
+  FR.oops($('check')); R.misses++; await FR.say("Let's look. " + FR.Word(R.n) + ' in all. I see ' + FR.word(R.n - R.k) + '.'); await FR.say('Show ' + FR.word(R.n) + ' fingers. Fold down the ones you see.'); H.set(0); open();
+}
+function fill(id, n) { const c = $(id); c.classList.toggle('empty', n == null); c.innerHTML = n == null ? '' : U5.num(n); }
+async function drop(card, slot) {
+  if (GAME.phase !== 'answer' || R.kind !== 'bond' || slot.id !== ID[R.miss]) return; GAME.phase = 'busy'; FR.lock(true); const k = +card.dataset.n;
+  if (k === want()) { fill(slot.id, k); K.setPlates(R.a, R.b); return fin(slot, FR.Word(R.a) + ' and ' + FR.word(R.b) + ' make ' + FR.word(R.a + R.b) + '!'); }
+  FR.oops(slot); R.misses++;
+  if (R.miss === 'w') { await FR.say("Let's look. Count all the slices."); const all = K.plates.flatMap(p => p.children); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true })); }
+  else { const have = R.miss === 0 ? R.b : R.a; await FR.say("Let's look. Show " + FR.word(R.a + R.b) + ' fingers. Fold down ' + FR.word(have) + '.'); }
+  await FR.say('Try again.'); open();
+}
+const PLAN = [{ kind: 'hide', n: 3, k: 2 }, { kind: 'hide', n: 4, k: 3 }, { kind: 'hide', n: 5, k: 2 }, { kind: 'bond', a: 3, b: 2, miss: 'w' }, { kind: 'bond', a: 1, b: 3, miss: 1 }];
+function play(F, i) {
+  return new Promise(async res => {
+    R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true);
+    const hide = R.kind === 'hide'; $('hp').hidden = $('check').hidden = !hide; $('bond').hidden = $('src').hidden = hide;
+    if (hide) { H.set(0); K.hidePlates(); K.setKugel(R.n); await F.say(F.Word(R.n) + ' slices. Close your eyes!'); await K.hide(R.k); open();
+      await F.say('How many are hiding? Show me.', { repeat: F.Word(R.n) + ' in all. I see ' + F.word(R.n - R.k) + '. How many hide?' }); }
+    else { K.setPlates(R.miss === 0 ? 0 : R.a, R.miss === 1 ? 0 : R.b); fill('bw', R.miss === 'w' ? null : R.a + R.b); fill('b0', R.miss === 0 ? null : R.a); fill('b1', R.miss === 1 ? null : R.b); open();
+      await F.say('Fill the empty circle.', { repeat: 'Drag a number into the empty circle.' }); }
+  });
+}
+FR.game({
+  id: 'u8-check', title: 'Show Me!', rounds: 5,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() {
+    K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = FR.fingers(0, true); $('hp').appendChild(H.el); $('check').addEventListener('click', check);
+    $('src').innerHTML = [0, 1, 2, 3, 4, 5].map(n => '<div class="numcard" data-n="' + n + '">' + U5.num(n) + '</div>').join('');
+    FR.dragTap({ sources: '#src .numcard', targets: '.bc.empty', drop });
+  },
+  demo: async F => {
+    R = { kind: 'demo' }; K.setKugel(2); await F.say('Show me what you know! Watch me first.'); await K.hide(1);
+    await F.say('Two in all. I see one. One is hiding.'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); NK.sound.pop(); await F.handTo($('check')); await F.handTap(); await K.lift(); H.set(0);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You know the parts of five! Unit eight done!' : 'Good try! Let\'s practise and come back.',
+  practice: 'hide8.html'
+});
+</script>
+</body>
+</html>

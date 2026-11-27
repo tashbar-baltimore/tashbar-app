@@ -1,0 +1,30 @@
+/* Kindergarten Numbers, Unit 3 pages: a kitchen scene (wall, shelf, table, Bubby's plate) and an answer panel (two hands + check). */
+.stage{ grid-template-columns:1.45fr 1fr; align-items:stretch; }
+.scene{ position:relative; border-radius:36px; border:6px solid #fff; overflow:hidden; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18);
+  background:radial-gradient(circle at 20px 20px, rgba(255,170,120,.26) 6px, transparent 7px) 0 0/40px 40px, linear-gradient(180deg,#FFF6E4,#FFE9C9); touch-action:none; }
+.scene::before{ content:''; position:absolute; left:0; right:0; top:48%; bottom:0;
+  background:linear-gradient(180deg, rgba(120,60,10,.35), rgba(120,60,10,0) 7%), repeating-linear-gradient(90deg, rgba(150,80,20,0) 0 46px, rgba(150,80,20,.16) 46px 49px), linear-gradient(180deg,var(--wood1),var(--wood2)); }
+.shelf{ position:absolute; left:4%; right:4%; top:33%; height:4.5%; border-radius:8px; background:linear-gradient(180deg,#F2C483,#B8742F); box-shadow:0 8px 10px rgba(90,50,10,.3), inset 0 3px 0 rgba(255,255,255,.5); }
+.plate3{ position:absolute; left:16%; right:16%; top:6%; height:42%; border-radius:50%;
+  background:radial-gradient(ellipse at 50% 42%, #fff 0 50%, #EEF5FC 54%, #DDE9F6 60%, #fff 63%, #F4F8FD 69%, #C7D9EE 86%, #A9C1DE 100%); box-shadow:0 12px 0 rgba(120,70,20,.22), 0 20px 26px rgba(90,50,10,.25); }
+.plate3.good{ box-shadow:0 0 0 8px rgba(34,180,94,.45), 0 12px 0 rgba(120,70,20,.22); }
+.it{ position:absolute; transform:translate(-50%,-50%); transition:left .34s cubic-bezier(.3,1.3,.5,1), top .34s cubic-bezier(.3,1.3,.5,1), transform .2s; cursor:pointer; touch-action:none; z-index:2; }
+.it svg{ width:100%; height:100%; pointer-events:none; }
+.it.lit{ transform:translate(-50%,-50%) scale(1.2); filter:drop-shadow(0 0 7px #FFD23D) drop-shadow(0 0 14px #FFB000); }
+.it.counted::after{ content:''; position:absolute; right:4%; top:2%; width:26%; height:26%; border-radius:50%; background:radial-gradient(circle at 35% 30%,#B8F0C8,#22B45E 70%); box-shadow:0 2px 0 rgba(0,0,0,.2); }
+.it.drag{ transition:none; z-index:20; transform:translate(-50%,-50%) scale(1.12); }
+.it .tch{ position:absolute; top:-6%; width:26%; height:26%; border-radius:50%; background:radial-gradient(circle at 35% 30%,#BDE8FF,#2FB5E8 70%); border:3px solid #fff; box-shadow:0 2px 0 rgba(0,0,0,.2); }
+.locked .it{ cursor:default; }
+.panel{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; min-height:0; }
+#hands{ display:flex; gap:6px; background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:32px; border:6px solid #fff; padding:8px 10px; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); }
+#hands .fhand{ width:min(15.5vw,30vh,200px); aspect-ratio:170/230; }
+#hands[hidden]{ display:none; }
+.hero{ display:flex; align-items:center; justify-content:center; gap:2%; }
+.hero svg{ width:24%; height:auto; }
+@media (max-width:760px), (max-aspect-ratio:4/5){
+  .stage{ grid-template-columns:1fr; grid-template-rows:1.25fr auto; }
+  .panel{ flex-direction:column; gap:8px; }
+  #hands{ padding:4px 6px; }
+  #hands .fhand{ width:min(44vw,22vh); }
+  .panel #check{ width:84px; }
+}
