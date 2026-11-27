@@ -76,7 +76,7 @@ A **quick write** is 3 to 5 sentences (25+ words) about a text the boy just read
 ```js
 TLCORE.write.quick.add([{
   id: 'W13.QW.ST01A', kind: 'quick', text: 'C23.ST.01', story: 'The Noise in the Sukkah',   /* story = the text's title, exactly */
-  grade: 2, skill: 'WRIT.PARA.L03.08', uses: 'Time-Order Words',                           /* a writing skill he has had */
+  grade: 2, skill: 'WRIT.PARA.L02.05', uses: 'Time Words',                                 /* a writing skill he has had */
   title: 'What Happened That Night',
   prompt: 'Tell what happened in the sukkah that night, in order. Use time-order words.',
   how: ['First: what did Dovid hear?', 'Next: what did he do?', 'Then: what did he see?', 'Last: what did the boys do with the challah?'],   /* 2-5 steps */
