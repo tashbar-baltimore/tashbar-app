@@ -101,6 +101,7 @@ export function mount(host, opt) {
   }
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false); narrow = Wd < Hh * 0.95 || Wd < 700; layout();
+    DIR.set(0, narrow ? 0.7 : 0.5, narrow ? 0.72 : 0.86).normalize();   /* phone: look more from above, so no cupcake hides another */
     const span = narrow ? 4.7 : 9.0, needH = narrow ? 4.6 : 4.4; center.z = narrow ? 0.5 : 0.3;
     const [b0, b1] = band(), bc = (b0 + b1) / 2, bh = Math.max(120, b1 - b0), fullH = Hh + 2 * Math.abs(Hh / 2 - bc), tn = Math.tan(THREE.MathUtils.degToRad(V / 2));
     dist = Math.max(span * fullH / (2 * Wd * tn), needH * fullH / (2 * tn * bh));

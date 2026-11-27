@@ -71,7 +71,7 @@ async function drop(tile, slot) {
     if (+v === k) { fill('sc', U5.num(k)); await FR.yes(slot, FR.Word(R.a) + (R.op === '+' ? ' plus ' : ' minus ') + FR.word(R.b) + ' is ' + FR.word(k) + '!'); const d = done; done = null; d(R.misses === 0); return; }
     FR.oops(slot); R.misses++; await FR.say("Let's look. Count the table with me."); await countUp(); await FR.say('Drag that number.'); open(); }
 }
-const PLAN = [{ op: '+', a: 5, b: 3 }, { op: '-', a: 7, b: 3 }, { op: '+', a: 4, b: 6 }, { op: '-', a: 10, b: 2 }, { op: '+', a: 8, b: 2 }, { op: '-', a: 9, b: 5 }];
+const PLAN = [{ op: '+', a: 5, b: 3 }, { op: '-', a: 7, b: 3 }, { op: '+', a: 6, b: 4 }, { op: '-', a: 10, b: 2 }, { op: '+', a: 8, b: 2 }, { op: '-', a: 9, b: 5 }];
 function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ step: 'act', did: 0, misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); ['sa', 'ss', 'sb', 'sc'].forEach(id => fill(id, '')); $('tiles').hidden = true; requestAnimationFrame(() => K.fit()); fill('sa', U5.num(R.a));

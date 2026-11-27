@@ -52,7 +52,7 @@ const PLAN = [{ kind: 'five', n: 7 }, { kind: 'ten', n: 6 }, { kind: 'fact', a: 
 function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true); $('pic').hidden = true;
-    const fr = R.kind !== 'fact'; $('tf').hidden = !fr; $('fact').hidden = fr; if (fr) { TF.set(R.n); K.rows(R.n); } else K.empty(); requestAnimationFrame(() => K.fit());
+    const fr = R.kind !== 'fact'; $('tf').hidden = !fr; $('fact').hidden = fr; if (fr) { TF.set(R.n); K.rows(R.n); } else if (R.op === '+') K.rows(R.a); else K.setCandies(R.a);   /* the table always shows the round */ requestAnimationFrame(() => K.fit());
     if (R.kind === 'five') { await F.say(F.Word(R.n) + ' in the ten-frame.'); open(); await F.say(F.Word(R.n) + ' is five and how many? Show me.', { repeat: 'A full row is five. How many more?' }); }
     else if (R.kind === 'ten') { await F.say(F.Word(R.n) + ' in the ten-frame.'); open(); await F.say('How many more make ten? Show me.', { repeat: 'Count the empty boxes. Show me.' }); }
     else { $('fact').innerHTML = '<span class="n">' + U5.num(R.a) + '</span><b class="' + (R.op === '+' ? 'plus">+' : 'minus">−') + '</b><span class="n">' + U5.num(R.b) + '</span><b>=</b><b class="q">?</b>';

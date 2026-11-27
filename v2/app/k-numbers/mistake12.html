@@ -37,7 +37,7 @@ function hooks() { const ok = ans(), bad = R.said; GAME.right = () => { P.focus(
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
 async function countOn() { const dir = R.op === '+' ? 1 : -1; for (let j = 1; j <= R.b; j++) { const n = R.a + dir * j; P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (j === R.b ? '.' : ','), { noRepeat: true }); P.glow(n, false); } }
 async function move(chip, stone) {
-  if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n, ok = ans();
+  if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); P.glow(null); const n = +stone.dataset.n, ok = ans();
   if (n === ok) { $('chip').hidden = true; A.place(R.a); A.show(true); P.focus(R.a, true); A.pose('happy'); await A.hop(ok, k => FR.say(FR.Word(k) + '!', { noRepeat: true })); A.pose('idle'); sent(ok, false); P.petals(ok);
     await FR.yes(stone, 'Fixed! ' + FR.Word(R.a) + (R.op === '+' ? ' plus ' : ' minus ') + FR.word(R.b) + ' is ' + FR.word(ok) + '.'); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops(stone); R.misses++; await FR.say("Let's look. Start on " + FR.word(R.a) + '. ' + (R.op === '+' ? 'Hop ' : 'Back ') + FR.word(R.b) + ':');
@@ -49,7 +49,7 @@ function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); $('chip').hidden = true; sent('', false);
     A.place(R.a); A.show(true); P.focus(R.a, true); await F.say('Shmuli does ' + F.word(R.a) + (R.op === '+' ? ' plus ' : ' minus ') + F.word(R.b) + '. Watch!');
-    A.pose('happy'); await A.hop(R.said); A.pose('idle'); sent(R.said, true); await F.say(F.Word(R.said) + '? Oops! Shmuli hopped wrong.');
+    A.pose('happy'); await A.hop(R.said); A.pose('idle'); P.glow(R.said, true); sent(R.said, true);   /* his stone lights up: it is clear where he landed */ await F.say(F.Word(R.said) + '? Oops! Shmuli hopped wrong.');
     A.show(false); $('chip').hidden = false; open(); await F.say('Move Shmuli where he should be.', { repeat: 'Start on ' + F.word(R.a) + '. ' + (R.op === '+' ? 'Hop ' : 'Back ') + F.word(R.b) + '. Move him there.' });
   });
 }

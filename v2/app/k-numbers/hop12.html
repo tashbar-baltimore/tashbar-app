@@ -43,7 +43,7 @@ function hooks() {
   GAME.right = () => [{ tap: '.stone[data-n="' + n + '"]' }]; GAME.wrong = skip >= 0 && skip <= 10 ? () => [{ tap: '.stone[data-n="' + skip + '"]' }] : null;
 }
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
-async function walkTo(to) { for (let n = 0; n <= to; n++) { P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === to ? '.' : ','), { noRepeat: true }); P.glow(n, false); } }
+async function walkTo(to) { for (let n = Math.max(0, to - 3); n <= to; n++) {   /* a short count up to the start */ P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === to ? '.' : ','), { noRepeat: true }); P.glow(n, false); } }
 async function place(chip, stone) {
   if (GAME.phase !== 'answer' || R.step !== 'start') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n;
   if (n === R.a) { $('chip').hidden = true; A.show(true); A.place(n); P.focus(n, true); NK.sound.yes(); await FR.say('Shmuli starts on ' + FR.word(n) + '.');
@@ -52,6 +52,7 @@ async function place(chip, stone) {
   setTimeout(() => P.el(R.a).classList.remove('hint'), 2500); await FR.say('Put Shmuli on ' + FR.word(R.a) + '.'); open();
 }
 async function stone(n, el) {
+  if (GAME.phase === 'answer' && R.step === 'start') { GAME.phase = 'busy'; await FR.say('Put Shmuli on ' + FR.word(R.a) + ' first.'); open(); return; }
   if (GAME.phase !== 'answer' || R.step !== 'hop') return; GAME.phase = 'busy'; FR.lock(true);
   if (n === next()) { A.pose('happy'); await A.hop(n); R.done++; hops(); await FR.say(FR.Word(n) + '!', { noRepeat: true }); A.pose('idle');
     if (R.done < R.b) { open(); return; }
