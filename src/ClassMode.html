@@ -75,7 +75,7 @@ function ycwBuild(){ if(YCW.el&&document.body.contains(YCW.el)) return YCW.el; c
   <div class="ycw-fx ycw-rays">${YCP('ycw-fx-rays')}</div>`;
  document.body.appendChild(w); YCW.el=w; if(!YCW.raf) ycwLoop(); return w; }
 const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
-function ycwLoop(){ YCW.raf=requestAnimationFrame(ycwLoop); const w=YCW.el; if(!w||!document.body.classList.contains('yc-world')) return;
+function ycwLoop(){ YCW.raf=requestAnimationFrame(ycwLoop); const w=YCW.el; if(!w||!(document.body.classList.contains('yc-world')||document.body.classList.contains('yc-home'))) return;
  const now=performance.now(); let cx=YCW.cam.x, cy=YCW.cam.y, cloud=0;
  if(YCW.fly){ const f=YCW.fly, u=Math.min(1,(now-f.t0)/f.dur), e=ease(u); cx=f.fx+(f.tx-f.fx)*e; cy=f.fy+(f.ty-f.fy)*e; cloud=f.up?Math.sin(u*Math.PI):Math.sin(u*Math.PI)*0.35;
    if(u>=1){ YCW.fly=null; YCW.cam={x:f.tx,y:f.ty}; w.classList.add('ycw-arrived'); if(f.done) f.done(); } }
@@ -99,6 +99,20 @@ function ycwGo(name,done){ const w=ycwBuild(), S=YCW_SCENES[name]||YCW_SCENES.ha
 function ycCss(){ if(document.getElementById('yc-css')) return; const s=document.createElement('style'); s.id='yc-css'; s.textContent=`
 #ycworld{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none;display:none;background:#CFEAFF;--k:1;--c:0}
 body.yc-world #tl-tourhint{display:none!important}
+body.yc-home #ycworld{display:block;z-index:29}
+#ycgate{position:fixed;inset:0;z-index:2147483600;pointer-events:none;overflow:hidden;background:transparent;opacity:0}#ycgate.ycg-go{opacity:1;background:#FFF6DA;animation:ycgOut 3.4s ease-in forwards}#ycgate:not(.ycg-go) *{animation-play-state:paused!important}
+#ycgate .ycg-scene{position:absolute;inset:0;container-type:size;animation:ycgFly 3.2s cubic-bezier(.55,0,.6,1) forwards;transform-origin:62% 46%}
+#ycgate .ycw-pic{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:max(100cqw,177.78cqh);height:max(100cqh,56.25cqw);display:flex}#ycgate .ycw-pic img{flex:1 1 0;min-width:0;height:100%;object-fit:fill}
+#ycgate .ycg-doors{position:absolute;left:50%;top:50%;width:max(100vw,177.78vh);transform:translate(-50%,-50%);animation:ycgDoors 1.3s .35s ease-in forwards}
+#ycgate .ycg-flash{position:absolute;inset:0;background:radial-gradient(circle at 62% 46%,rgba(255,244,200,1),rgba(255,230,150,.6) 30%,rgba(255,230,150,0) 60%);opacity:0;animation:ycgFlash 3.2s ease-in forwards}
+@keyframes ycgFly{0%{transform:scale(1)}35%{transform:scale(1.08)}100%{transform:scale(3.2)}}
+@keyframes ycgDoors{to{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+@keyframes ycgFlash{0%,45%{opacity:0}85%{opacity:1}100%{opacity:1}}
+@keyframes ycgOut{0%,88%{opacity:1}100%{opacity:0}}
+body.yc-home #gm{background:transparent!important}
+body.yc-home #app{visibility:hidden}
+body.yc-home #gm .gm-hi{display:inline-block;margin:10px 0 4px;padding:10px 22px 12px;border-radius:22px;background:rgba(255,255,255,.86);box-shadow:0 10px 28px rgba(40,70,120,.22)}
+body.yc-home #gm .gm-hi h1{color:#13305A!important;text-shadow:none!important}
 body.yc-world #ycworld{display:block}
 body.yc-world #app{position:relative;z-index:2;background:transparent!important}
 body.yc-world .ycw{background:transparent}
@@ -309,6 +323,22 @@ function doorCss(){ let el=document.getElementById('yc-doors'); if(!el){ el=docu
  if(L) FLOAT.split(',').forEach(x=>{ const k=Object.keys(DOORS).find(k=>DOORS[k].hide===x); if(!k||!doorOpen(k)) out.push(x); });
  const css=out.length?out.join(',')+'{display:none!important}':''; if(el.textContent!==css) el.textContent=css; document.body.classList.toggle('yc-lock',L); }
 setInterval(doorCss,700);
+/* THE GATE (docs/WORLD.md): right after he signs in (grade 2 and up), the Gate of the Mountain Kingdom: its doors open in golden light
+   and the camera flies through to his home (about 3 seconds). Taps go straight through to the page; reduce motion skips it. */
+function ycGate(){ if(YCW.reduce||!YCW_ART['ycw-k-gate']||document.getElementById('ycgate')) return; ycCss();
+ const g=document.createElement('div'); g.id='ycgate'; g.setAttribute('aria-hidden','true');
+ g.innerHTML=`<div class="ycg-scene">${YCP('ycw-k-gate')}</div>${YCW_ART['ycw-k-gate-doors']?'<img class="ycg-doors" src="/pics/ycw-k-gate-doors.webp" alt="">':''}<div class="ycg-flash"></div>`;
+ document.body.appendChild(g); const imgs=[...g.querySelectorAll('.ycg-scene img')]; let started=false;
+ const go=()=>{ if(started) return; started=true; g.classList.add('ycg-go'); try{ SND.whoosh&&SND.whoosh(); }catch(e){} setTimeout(()=>g.remove(),3600); };
+ const check=()=>{ if(imgs.every(i=>i.complete&&i.naturalWidth)) go(); }; imgs.forEach(i=>i.addEventListener('load',check)); check();
+ setTimeout(()=>{ if(!started){ if(imgs.some(i=>i.naturalWidth)) go(); else g.remove(); } },1500); }   /* start when the Gate is ready; give up quietly if it cannot load */
+/* THE BOYS' WORLD on his HOME (docs/WORLD.md): when he is not in class time and is on the home tab, the Great Terrace is behind his tiles.
+   Grade 2 and up only (K-1 keep their games home). Turning away from home (a lesson, a page) hides it again. */
+setInterval(()=>{ try{ const g=window.TL_MAP&&TL_MAP.grade, b=document.body;
+  const home=!locked()&&A.st&&A.view==='hub'&&b.classList.contains('gm-on')&&window.GM&&GM.tab==='home'&&!b.classList.contains('k1-home')&&!(g!=null&&g<2)&&!!YCW_ART['ycw-k-terrace'];
+  if(home&&!b.classList.contains('yc-home')){ ycCss(); b.classList.add('yc-home'); ycwGo('terrace'); }
+  else if(!home&&b.classList.contains('yc-home')) b.classList.remove('yc-home');
+ }catch(e){} },600);
 document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-ycdoor]'); if(!b) return; const D=DOORS[b.dataset.ycdoor]; if(D&&D.go&&doorOpen(b.dataset.ycdoor)){ try{ SND.tap(); }catch(x){} doorCss(); if(typeof ycwGo==='function'&&document.body.classList.contains('yc-world')&&!YCW.reduce){ ycwGo('city',()=>D.go()); } else D.go(); } },true);   /* the flight up to the Golden City, then the door */
 /* the doors a teacher opened, as tiles on his class screen */
 function doorTiles(side){ const s=TMC.s, ds=(s&&s.doors||[]).filter(k=>DOORS[k]&&DOORS[k].go&&doorOpen(k)); if(!ds.length) return '';
@@ -334,7 +364,8 @@ function check(){
 setInterval(()=>{ if(TMC.s&&TMC.s.until&&Date.now()>TMC.s.until){ const wasYc=!!TMC.s.yc; TMC.s=null; if(A.view==='hub') render(); if(wasYc) check(); } },5000);   /* a Teacher Time period that ends: ask at once what comes next */
 setInterval(check,25000); window.TM_CHECK=check;
 let lastSid=null; setInterval(()=>{ const sid=A.st&&A.view!=='signin'?A.st.id:null; if(sid===lastSid) return; lastSid=sid;
- if(!sid){ TMC.s=null; TMC.closed=[]; TMC.done=0; TMC.checked=null; doorCss(); return; }
+ if(!sid){ TMC.s=null; TMC.closed=[]; TMC.done=0; TMC.checked=null; doorCss(); YCW.wasOut=1; return; }
+ if(YCW.wasOut!==0){ YCW.wasOut=0; setTimeout(()=>{ try{ const g=window.TL_MAP&&TL_MAP.grade; if(g!=null&&g>=2&&!document.body.classList.contains('k1-home')) ycGate(); }catch(e){} },120); }   /* only when we know he is grade 2 or up */
  if(TMC.checked===sid) return;                                    /* already answered at sign-in */
  TMC.s=null; TMC.done=0; if(pre(sid)){ if(TMC.s&&A.view==='hub') render(); return; } check(); },700);
 })();
