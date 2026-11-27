@@ -45,6 +45,10 @@ function css(){ if(document.getElementById('tm-css')) return; const s=document.c
 const YCW_ART={   /* name: slices. Filled in as the pictures arrive and pass their check (art/CATALOG.md) */
  'ycb-paper':1,'ycb-paper-done':1,'ycb-done-tray':1,'ycb-confetti':1,'ycb-ic-lock':1,'ycb-ic-worksheet':1,'ycb-ic-science':1,'ycb-ic-electives':1,
  'ycb-ic-trades':1,'ycb-ic-canteen':1,'ycb-ic-duels':1,'ycb-ic-store':1,'ycw-ic-detective':1,'ycw-ic-blocks':1,'ycw-ic-lab':1,'ycw-ic-library':1,'ycw-ic-calm':1,
+ 'ycw-k-sky':3,'ycw-k-far':3,'ycw-k-mid':3,'ycw-k-near':3,'ycw-k-hall':3,'ycw-k-spring':3,'ycw-k-terrace':3,'ycw-k-gate':3,'ycw-k-library':3,'ycw-k-summit':3,'ycw-k-nook':3,'ycw-k-trail':4,
+ 'ycw-c-sky':3,'ycw-c-far':3,'ycw-c-mid':3,'ycw-c-near':3,'ycw-c-square':3,'ycw-c-skygate':3,'ycw-c-canteen':3,'ycw-c-market':3,'ycw-c-arena':3,'ycw-c-pavilion':3,'ycw-c-workshop':3,'ycw-c-calm':3,
+ 'ycw-fx-cloudwall':3,'ycw-fx-rays':3,'ycw-fx-mist':3,'ycw-k-birds':1,'ycw-k-bridge':1,'ycw-c-gondola':1,'ycw-fx-trail':1,'ycw-ui-plaque-kingdom':1,'ycw-ui-plaque-city':1,'ycw-ui-ring':1,
+ 'ycb-bucket-back':1,'ycb-bucket-glow':1,'ycb-sparkles':1,'ycb-ic-math':1,'ycb-ic-reading':1,'ycb-ic-writing':1,'ycb-ic-chumash':1,
  'ycb-bucket':1,'ycb-bucket-front':1,'ycb-cloud-1':1,'ycb-cloud-2':1,'ycb-cloud-3':1,'ycb-cloud-4':1,
  'ycw-ic-work':1,'ycw-ic-trail':1,'ycw-ic-profile':1,'ycw-ic-music':1,'ycw-ic-talk':1,'ycw-ic-tracks':1,'ycw-ic-games':1,'ycw-ui-coin':1,'ycw-ui-star':1 };
 const YCI=n=>YCW_ART[n]?`<img src="/pics/${n}.webp" alt="" draggable="false">`:'';
@@ -56,11 +60,16 @@ try{ YCW.reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e
 function ycwBuild(){ if(YCW.el&&document.body.contains(YCW.el)) return YCW.el; const w=document.createElement('div'); w.id='ycworld'; w.setAttribute('aria-hidden','true');
  w.innerHTML=`<div class="ycw-l ycw-sky" data-d="0.04">${YCP('ycw-k-sky')}<div class="ycw-paint ycw-paint-sky"></div></div>
   <div class="ycw-l ycw-csky" data-d="0.04">${YCP('ycw-c-sky')}<div class="ycw-paint ycw-paint-csky"></div></div>
+  <div class="ycw-l ycw-cfar" data-d="0.14">${YCP('ycw-c-far')}</div>
   <div class="ycw-l ycw-cl" data-d="0.08">${YCW_ART['ycb-cloud-1']?'<img class="ycl ycl1" src="/pics/ycb-cloud-1.webp" alt=""><img class="ycl ycl2" src="/pics/ycb-cloud-3.webp" alt=""><img class="ycl ycl3" src="/pics/ycb-cloud-2.webp" alt=""><img class="ycl ycl4" src="/pics/ycb-cloud-1.webp" alt="">':''}</div>
   <div class="ycw-l ycw-far" data-d="0.12">${YCP('ycw-k-far')}<div class="ycw-paint ycw-paint-far"></div></div>
   <div class="ycw-l ycw-mid" data-d="0.3">${YCP('ycw-k-mid')}<div class="ycw-paint ycw-paint-mid"></div></div>
   <div class="ycw-l ycw-cmid" data-d="0.3">${YCP('ycw-c-mid')}<div class="ycw-paint ycw-paint-cmid"></div></div>
+  <div class="ycw-l ycw-cnear" data-d="0.6">${YCP('ycw-c-near')}</div>
   <div class="ycw-place"></div>
+  <div class="ycw-fx ycw-mist">${YCP('ycw-fx-mist')}</div>
+  ${YCW_ART['ycw-k-birds']?'<img class="ycw-birds" src="/pics/ycw-k-birds.webp" alt="">':''}
+  ${YCW_ART['ycw-c-gondola']?'<img class="ycw-gondola" src="/pics/ycw-c-gondola.webp" alt="">':''}
   <div class="ycw-l ycw-near" data-d="0.7">${YCP('ycw-k-near')}</div>
   <div class="ycw-fx ycw-clouds">${YCP('ycw-fx-cloudwall')||(YCW_ART['ycb-cloud-4']?'<img class="yclwall" src="/pics/ycb-cloud-4.webp" alt=""><img class="yclwall yclw2" src="/pics/ycb-cloud-1.webp" alt="">':'')}<div class="ycw-paint ycw-paint-clouds"></div></div>
   <div class="ycw-fx ycw-rays">${YCP('ycw-fx-rays')}</div>`;
@@ -73,7 +82,8 @@ function ycwLoop(){ YCW.raf=requestAnimationFrame(ycwLoop); const w=YCW.el; if(!
  const vw=innerWidth, vh=innerHeight, t=now/1000, sway=YCW.reduce?0:Math.sin(t*0.25)*6, bob=YCW.reduce?0:Math.sin(t*0.33)*4;
  /* at rest every layer sits centred; during a flight it slides by how far is left to go (at most one screen), deeper layers slide more */
  const S=YCW_SCENES[YCW.scene]||{x:0,y:0}, ox=Math.max(-1,Math.min(1,cx-S.x)), oy=Math.max(-1,Math.min(1,cy-S.y));
- w.querySelectorAll('.ycw-l').forEach(l=>{ const d=+l.dataset.d; l.style.transform=`translate3d(${(-ox*vw*d*0.62+sway*d*4).toFixed(1)}px,${(oy*vh*d*0.9+bob*d*3).toFixed(1)}px,0)`; });
+ const push=YCW.fly?Math.sin(Math.min(1,(now-YCW.fly.t0)/YCW.fly.dur)*Math.PI):0;   /* the camera pushes forward through the scenery */
+ w.querySelectorAll('.ycw-l').forEach(l=>{ const d=+l.dataset.d; l.style.transform=`translate3d(${(-ox*vw*d*0.1+sway*d*4).toFixed(1)}px,${(oy*vh*d*0.5+bob*d*3).toFixed(1)}px,0) scale(${(1+push*d*0.55).toFixed(3)})`; });
  const c=w.querySelector('.ycw-clouds'); if(c) c.style.opacity=cloud.toFixed(3);
  const kp=Math.max(0,1-cy), cp=Math.min(1,cy); w.style.setProperty('--k',kp.toFixed(3)); w.style.setProperty('--c',cp.toFixed(3)); }
 /* go to a place: fly if he was somewhere else in the world, otherwise just arrive */
@@ -81,19 +91,28 @@ function ycwGo(name,done){ const w=ycwBuild(), S=YCW_SCENES[name]||YCW_SCENES.ha
  const from=YCW_SCENES[YCW.scene]; YCW.scene=name; const place=w.querySelector('.ycw-place');
  const showPlace=()=>{ place.innerHTML=YCP(S.place,'ycw-placepic')||`<div class="ycw-paint ycw-paint-${name}"></div>`; place.classList.remove('ycw-in'); void place.offsetWidth; place.classList.add('ycw-in'); };
  w.classList.remove('ycw-arrived');
- if(!from||YCW.reduce){ YCW.cam={x:S.x,y:S.y}; YCW.fly=null; showPlace(); w.classList.add('ycw-arrived'); if(done) done(); return; }
+ if(!from||YCW.reduce){ w.dataset.scene=name; YCW.cam={x:S.x,y:S.y}; YCW.fly=null; showPlace(); w.classList.add('ycw-arrived'); if(done) done(); return; }
  place.classList.remove('ycw-in'); place.classList.add('ycw-out');
- YCW.fly={fx:from.x,fy:from.y,tx:S.x,ty:S.y,t0:performance.now(),dur:S.y!==from.y?2600:1900,up:S.y>from.y,done:()=>{ place.classList.remove('ycw-out'); showPlace(); if(done) done(); }};
+ YCW.fly={fx:from.x,fy:from.y,tx:S.x,ty:S.y,t0:performance.now(),dur:S.y!==from.y?2800:2200,up:S.y>from.y,done:()=>{ place.classList.remove('ycw-out'); showPlace(); if(done) done(); }};
+ w.dataset.scene=name; const fx=w.querySelector(S.y>from.y?'.ycw-gondola':'.ycw-birds'); if(fx){ fx.classList.remove('go'); void fx.offsetWidth; fx.classList.add('go'); }
  try{ SND.whoosh&&SND.whoosh(); }catch(e){} }
 function ycCss(){ if(document.getElementById('yc-css')) return; const s=document.createElement('style'); s.id='yc-css'; s.textContent=`
 #ycworld{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none;display:none;background:#CFEAFF;--k:1;--c:0}
+body.yc-world #tl-tourhint{display:none!important}
 body.yc-world #ycworld{display:block}
 body.yc-world #app{position:relative;z-index:2;background:transparent!important}
 body.yc-world .ycw{background:transparent}
-.ycw-l{position:absolute;top:-8%;bottom:-8%;left:-50%;right:-50%;will-change:transform}.ycw-place,.ycw-fx{position:absolute;inset:-4%;will-change:transform}
-.ycw-pic{position:absolute;inset:0;display:flex}.ycw-pic img{flex:1 1 0;min-width:0;height:100%;object-fit:cover;display:block;user-select:none}
-.ycw-sky,.ycw-far,.ycw-mid,.ycw-near{opacity:var(--k)}.ycw-csky,.ycw-cmid{opacity:var(--c)}
+.ycw-l{position:absolute;inset:-6%;will-change:transform}.ycw-place,.ycw-fx{position:absolute;inset:-4%;will-change:transform}
+.ycw-l,.ycw-place,.ycw-fx{container-type:size}
+.ycw-pic{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:max(100cqw,177.78cqh);height:max(100cqh,56.25cqw);display:flex}.ycw-pic img{flex:1 1 0;min-width:0;height:100%;object-fit:fill;display:block;user-select:none}
+.ycb-back .ycw-pic,.ycb-front .ycw-pic{left:0;top:0;transform:none;width:100%;height:100%}
+.ycw-sky,.ycw-far,.ycw-mid,.ycw-near,.ycw-cl{opacity:var(--k)}.ycw-csky,.ycw-cmid,.ycw-cfar,.ycw-cnear{opacity:var(--c)}
+#ycworld.ycw-arrived .ycw-near,#ycworld.ycw-arrived .ycw-cnear,#ycworld.ycw-arrived .ycw-mid,#ycworld.ycw-arrived .ycw-cmid,#ycworld.ycw-arrived .ycw-far,#ycworld.ycw-arrived .ycw-cfar{opacity:0;transition:opacity .8s}
+.ycw-mist{opacity:0;transition:opacity 1.2s}#ycworld[data-scene=spring] .ycw-mist{opacity:.75}
+.ycw-birds{position:absolute;width:min(34vw,420px);left:110%;top:12%;opacity:0;pointer-events:none}.ycw-birds.go{animation:ycBirds 3.2s ease-in-out forwards}@keyframes ycBirds{0%{left:105%;top:24%;opacity:0}15%{opacity:1}100%{left:-40%;top:6%;opacity:.9}}
+.ycw-gondola{position:absolute;width:min(24vw,300px);left:38%;top:110%;opacity:0;pointer-events:none}.ycw-gondola.go{animation:ycGond 2.6s ease-in-out forwards}@keyframes ycGond{0%{top:105%;opacity:0}20%{opacity:1}100%{top:-40%;opacity:.95}}
 .ycw-paint{position:absolute;inset:0}.ycw-pic+.ycw-paint{display:none}
+.ycw-sky .ycw-pic~.ycw-paint{display:none}
 .ycw-paint-sky{background:radial-gradient(60% 50% at 78% 18%,#FFF6D8 0%,rgba(255,246,216,0) 60%),linear-gradient(180deg,#8FCBFF 0%,#BFE3FF 45%,#FFE9C7 100%)}
 .ycw-paint-csky{background:radial-gradient(70% 60% at 50% 30%,#FFF4CF 0%,rgba(255,244,207,0) 65%),linear-gradient(180deg,#9FD2FF 0%,#FFE7B0 70%,#FFF7E6 100%)}
 .ycw-paint-far{background:linear-gradient(180deg,#C3D2F3,#E2EAF8);clip-path:polygon(0 62%,4% 50%,8% 57%,12% 40%,17% 55%,21% 45%,25% 58%,30% 37%,35% 52%,40% 42%,44% 56%,50% 46%,54% 60%,58% 39%,63% 54%,67% 44%,71% 57%,76% 38%,81% 53%,85% 43%,90% 58%,95% 47%,100% 55%,100% 100%,0 100%);opacity:.85}
@@ -103,16 +122,18 @@ body.yc-world .ycw{background:transparent}
 .ycw-clouds{opacity:0}.yclwall{position:absolute;left:-10%;top:10%;width:120%;height:80%;object-fit:cover}.yclw2{left:10%;top:25%;width:80%;height:auto;opacity:.9}
 .ycl{position:absolute;height:auto;opacity:.95;animation:ycDrift 90s linear infinite alternate}.ycl1{width:34%;left:58%;top:14%}.ycl2{width:26%;left:8%;top:22%;animation-duration:120s}.ycl3{width:40%;left:28%;top:48%;opacity:.8;animation-duration:150s}.ycl4{width:22%;left:82%;top:40%;opacity:.7;animation-duration:110s}
 @keyframes ycDrift{from{translate:-3% 0}to{translate:3% 0}}.ycw-rays{opacity:.55;mix-blend-mode:screen}
-.ycw-place{inset:0;opacity:0;transition:opacity .9s ease}.ycw-place.ycw-in{opacity:1;animation:ycwKen 24s ease-out both}.ycw-place.ycw-out{opacity:0;transition:opacity .35s}
+.ycw-place{inset:0;opacity:0;transition:opacity .9s ease;z-index:1}.ycw-near,.ycw-cnear,.ycw-fx,.ycw-birds,.ycw-gondola{z-index:2}.ycw-place.ycw-in{opacity:1;animation:ycwKen 24s ease-out both}.ycw-place.ycw-out{opacity:0;transition:opacity .35s}
 @keyframes ycwKen{from{transform:scale(1.09)}to{transform:scale(1)}}
 .ycw-paint-hall{background:linear-gradient(180deg,rgba(255,250,240,0) 0%,rgba(255,244,220,.55) 70%,rgba(244,226,196,.8) 100%)}
 .ycw-paint-spring{background:radial-gradient(55% 35% at 50% 92%,rgba(190,240,255,.75),rgba(190,240,255,0) 70%)}
 .ycw-paint-city{background:radial-gradient(60% 40% at 50% 90%,rgba(255,236,170,.7),rgba(255,236,170,0) 70%)}
 /* the page on top of the world */
 .ycw{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px 16px 92px;box-sizing:border-box}
+.ycw-plaque.ycpl{background:url(/pics/ycw-ui-plaque-kingdom.webp) center/100% 100% no-repeat;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:30px 70px 34px;min-width:min(560px,92vw);filter:drop-shadow(0 12px 20px rgba(60,40,10,.3))}.ycw-plaque.ycpl h2{margin:6px 0 0}.ycw-plaque.ycpl h2{color:#3A2410}.ycw-plaque.ycpl p{color:#5A4020}
 .ycw-plaque{position:relative;text-align:center;padding:12px 28px 14px;border-radius:22px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 40px rgba(40,90,150,.22);max-width:min(640px,100%)}
 .ycw-plaque h2{font:800 clamp(24px,3.4vw,36px)/1.12 var(--display,'Barlow'),sans-serif;color:#13305A;margin:6px 0 2px}
 .ycw-plaque p{margin:0;color:#3B5578;font:600 16px var(--body,'Barlow'),sans-serif}
+.ycw-sub{margin:10px 0 0;padding:6px 16px;border-radius:999px;background:rgba(255,255,255,.88);color:#3B3020;font:700 15px var(--body,'Barlow'),sans-serif;box-shadow:0 6px 16px rgba(60,40,10,.18);text-align:center;max-width:min(640px,92vw)}
 .ycw-ring{position:fixed;top:64px;right:14px;width:78px;height:78px;border-radius:50%;background:rgba(255,255,255,.88);box-shadow:0 8px 22px rgba(40,90,150,.2);z-index:3}
 .ycw-ring svg{width:100%;height:100%;transform:rotate(-90deg)}.ycw-ring span{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:800 20px/1 var(--display,'Barlow'),sans-serif;color:#13305A}.ycw-ring small{display:block;font:700 9px var(--body,'Barlow'),sans-serif;letter-spacing:.08em;color:#3B5578}
 .ycw-bar{position:fixed;left:160px;right:96px;bottom:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;z-index:3;pointer-events:none}
@@ -123,9 +144,10 @@ body.yc-world .ycw{background:transparent}
 .tlk.tlk-tile.ycpaper:hover{transform:rotate(0deg) translateY(-8px) scale(1.04);box-shadow:0 26px 44px rgba(30,60,110,.32)}
 .tlk.tlk-tile.ycpaper.ycfly{animation:ycFly .3s ease-in forwards}
 @keyframes ycBob{0%,100%{translate:0 0}50%{translate:0 -7px}}@keyframes ycFly{to{transform:translateY(-40px) scale(1.25) rotate(0);opacity:.2}}
-.tlk.tlk-tile.ycpaper.ycpic{background:url(/pics/ycb-paper.webp) center/100% 100% no-repeat;box-shadow:none;filter:drop-shadow(0 16px 22px rgba(30,60,110,.28))}.tlk.tlk-tile.ycpaper.ycpic.ycpdone{background-image:url(/pics/ycb-paper-done.webp)}.ycpaper.ycpic .ycband{margin:10% 12% 0;border-radius:999px}.ycpaper.ycpic .ycseal{display:none}
+.ycpaper.ycpic .yclines{display:none}.ycpaper.ycpic .yct{padding:2px 16% 6px}
+.tlk.tlk-tile.ycpaper.ycpic{background:url(/pics/ycb-paper.webp) 50% 46%/132% 122% no-repeat;box-shadow:none;filter:drop-shadow(0 16px 22px rgba(30,60,110,.28))}.tlk.tlk-tile.ycpaper.ycpic.ycpdone{background-image:url(/pics/ycb-paper-done.webp)}.ycpaper.ycpic .ycband{margin:10% 12% 0;border-radius:999px}.ycpaper.ycpic .ycseal{display:none}
 .ycpaper .ycband{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;height:34px;background:var(--band,#3B82F6);color:#fff;font:800 12px/34px var(--body,'Barlow'),sans-serif;letter-spacing:.12em;text-transform:uppercase;padding:0 12px;text-align:left}
-.ycpaper .ycic{display:grid;place-items:center;height:clamp(78px,9vw,104px);font-size:clamp(46px,5vw,60px)}.ycpaper .ycic img{height:100%;width:auto}
+.ycpaper .ycic{display:flex;justify-content:center;align-items:center;height:clamp(78px,9vw,104px);font-size:clamp(46px,5vw,60px)}.ycpaper .ycic img{height:100%;width:auto;max-width:86%;object-fit:contain}
 .ycpaper .yct{display:block;padding:4px 14px 10px;font:800 clamp(16px,1.5vw,19px)/1.2 var(--display,'Barlow'),sans-serif;color:#13305A;text-align:center}
 .ycpaper .yclines{display:block;margin:0 16px;height:30px;background:repeating-linear-gradient(180deg,transparent 0 9px,#E3EAF3 9px 11px)}
 .ycpaper .ycseal{position:absolute;right:10px;bottom:10px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4ADE80,#15803D);color:#fff;display:grid;place-items:center;font:900 28px/1 sans-serif;box-shadow:0 4px 10px rgba(21,128,61,.4);transform:rotate(-12deg)}
@@ -142,8 +164,9 @@ body.yc-world .ycw{background:transparent}
 .ycbucket.ycpicb .ycb-papers{top:-4%;height:58%}
 .ycb-papers{position:absolute;left:12%;right:12%;top:-16%;height:66%;display:flex;justify-content:center;align-items:flex-end;gap:0}
 .ycb-papers .tlk.tlk-tile.ycpaper{width:clamp(118px,13vw,156px);min-height:clamp(158px,17.5vw,208px);margin:0 -16px;animation-duration:5.5s}
-.ycb-papers .ycpaper .ycband{height:24px;line-height:24px;font-size:10px}.ycb-papers .ycpaper .ycic{height:56px;font-size:38px}.ycb-papers .ycpaper .yct{font-size:14px}.ycb-papers .ycpaper .yclines{display:none}
+.ycb-papers .ycpaper .ycband{height:24px;line-height:24px;font-size:10px}.ycb-papers .ycpaper .ycic{height:56px;font-size:38px;display:flex}.ycb-papers .ycpaper .yct{font-size:14px}.ycb-papers .ycpaper .yclines{display:none}
 .ycbucket.ycglow .ycb-glass-back{background:linear-gradient(180deg,rgba(255,240,170,.6),rgba(255,214,102,.75))}
+.ycb-spark{position:absolute;left:-20%;right:-20%;top:-50%;width:140%;pointer-events:none;animation:ycRise 3s ease-in-out infinite;-webkit-mask-image:radial-gradient(closest-side,#000 55%,transparent 100%);mask-image:radial-gradient(closest-side,#000 55%,transparent 100%)}.ycbucket.ycpicb.ycglow::after{display:none}
 .ycbucket.ycglow::after{content:"";position:absolute;left:10%;right:10%;top:-30%;height:70%;background:radial-gradient(50% 60% at 50% 100%,rgba(255,220,120,.85),rgba(255,220,120,0) 70%);pointer-events:none;animation:ycRise 2.6s ease-in-out infinite}
 @keyframes ycRise{0%,100%{opacity:.6}50%{opacity:1}}
 .ycdone{position:absolute;left:-30%;bottom:2%;display:flex;flex-direction:column;align-items:center;gap:4px}
@@ -152,19 +175,21 @@ body.yc-world .ycw{background:transparent}
 .ycdtray{position:relative;width:140px}.ycdtray img{width:100%;display:block;filter:drop-shadow(0 10px 16px rgba(120,80,0,.3))}.ycdtray b{position:absolute;right:4px;top:-4px;width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4ADE80,#15803D);color:#fff;display:grid;place-items:center;font:900 18px/1 sans-serif}
 .ycadds{position:absolute;right:-34%;top:6%;display:flex;flex-direction:column;gap:12px}
 .ycadds .tlk.tlk-tile.ycpaper{width:clamp(96px,10vw,120px);min-height:clamp(124px,13vw,156px)}
-.ycadds .ycpaper .ycband{height:22px;line-height:22px;font-size:9px;letter-spacing:.06em;padding:0 6px}.ycadds .ycpaper .ycic{height:52px;font-size:34px}.ycadds .ycpaper .yct{font-size:13px}.ycadds .ycpaper .yclines{display:none}
+.ycadds .ycpaper .ycband{height:22px;line-height:22px;font-size:9px;letter-spacing:.06em;padding:0 6px}.ycadds .ycpaper .ycic{height:52px;font-size:34px;display:flex}.ycadds .ycpaper .yct{font-size:13px}.ycadds .ycpaper .yclines{display:none}
+.ycdoorside{position:absolute;left:-46%;top:-4%;width:42%;display:flex;flex-direction:column;align-items:center}.ycdoorside .ycdoorrow{margin-top:8px;gap:10px}.ycdoorside .tlk.tlk-tile.ycdoor{width:clamp(120px,12vw,150px)}
 .ycdoorrow{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:22px}
 .tlk.tlk-tile.ycdoor{width:clamp(140px,15vw,178px);padding:12px;align-items:center;text-align:center;border-radius:20px;background:linear-gradient(160deg,#FFF8DA,#FFD970);box-shadow:0 0 0 2px rgba(255,200,60,.7),0 14px 30px rgba(255,180,40,.35);animation:ycBob 4s ease-in-out infinite}
-.ycdoor .ycic{display:grid;place-items:center;font-size:44px;height:78px}.ycdoor .ycic img{height:78px;width:auto}.ycdoor b{font:800 17px var(--display,'Barlow'),sans-serif;color:#5A3A00}.ycdoor small{color:#7A5A10;font:600 13px var(--body,'Barlow'),sans-serif}
+.ycdoor .ycic{display:flex;justify-content:center;align-items:center;font-size:44px;height:78px}.ycdoor .ycic img{height:78px;width:auto}.ycdoor b{font:800 17px var(--display,'Barlow'),sans-serif;color:#5A3A00}.ycdoor small{color:#7A5A10;font:600 13px var(--body,'Barlow'),sans-serif}
 .ycconf{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}.ycconf i{position:absolute;top:-4vh;width:10px;height:16px;border-radius:2px;animation:ycFall 2.8s ease-in forwards}
 
 .ycburst{position:absolute;left:50%;top:42%;width:min(80vw,760px);transform:translate(-50%,-50%) scale(.2);opacity:0;animation:ycBurst 2.4s ease-out forwards}@keyframes ycBurst{20%{opacity:1;transform:translate(-50%,-50%) scale(1)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.15)}}
 @keyframes ycFall{to{transform:translate3d(var(--dx),110vh,0) rotate(720deg)}}
-@media (max-width:700px){.ycw{padding-top:52px}.ycw-bar{left:12px;right:48px;bottom:auto;top:10px;justify-content:flex-start}.ycw-ring{display:none}
+@media (max-width:700px){.ycdoorside{position:static;width:auto;margin-top:8px}.ycw{padding-top:52px}.ycw-bar{left:12px;right:48px;bottom:auto;top:10px;justify-content:flex-start}.ycw-ring{display:none}
  .ycbucket{width:min(330px,88vw);margin-top:34px;margin-bottom:210px}.ycb-papers .tlk.tlk-tile.ycpaper{width:84px;min-height:116px;margin:0 -10px}.ycb-papers .ycpaper .ycic{height:42px;font-size:30px}.ycb-papers .ycpaper .yct{font-size:12px;padding:2px 6px 8px}
  .ycdone{left:2%;right:auto;bottom:-52%}.ycadds{right:2%;top:auto;bottom:-68%;flex-direction:row;gap:8px}.ycadds .tlk.tlk-tile.ycpaper{width:86px;min-height:114px}.ycadds .ycpaper .ycic{height:38px;font-size:28px}.ycadds .ycpaper .yct{font-size:11px;padding:2px 6px 6px}.ycpaper.yclocked .yclock{font-size:20px;bottom:6px}
  .tlk.tlk-tile.ycpaper{width:150px;min-height:196px}}
-@media (prefers-reduced-motion:reduce){.tlk.tlk-tile.ycpaper,.tlk.tlk-tile.ycdoor{animation:none}.ycw-place.ycw-in{animation:none}.ycbucket.ycglow::after{animation:none}.ycconf{display:none}}`; document.head.appendChild(s); }
+@media (prefers-reduced-motion:reduce){.tlk.tlk-tile.ycpaper,.tlk.tlk-tile.ycdoor{animation:none}.ycw-place.ycw-in{animation:none}.ycb-spark{position:absolute;left:-20%;right:-20%;top:-50%;width:140%;pointer-events:none;animation:ycRise 3s ease-in-out infinite;-webkit-mask-image:radial-gradient(closest-side,#000 55%,transparent 100%);mask-image:radial-gradient(closest-side,#000 55%,transparent 100%)}.ycbucket.ycpicb.ycglow::after{display:none}
+.ycbucket.ycglow::after{animation:none}.ycconf{display:none}}`; document.head.appendChild(s); }
 const BAND={MATH:'#3B82F6',READ:'#10B981',WRIT:'#8B5CF6',LANG:'#8B5CF6',LK:'#F59E0B',HEB:'#F59E0B',SCI:'#06B6D4',SS:'#14B8A6',ELEC:'#0EA5E9',VOC:'#A855F7',COMP:'#6366F1',LIFE:'#22C55E',SIM:'#EC4899',SHEET:'#EC4899',TCH:'#4338CA'};
 const ICONART={MATH:'ycb-ic-math',READ:'ycb-ic-reading',WRIT:'ycb-ic-writing',LANG:'ycb-ic-writing',LK:'ycb-ic-chumash',HEB:'ycb-ic-chumash',SCI:'ycb-ic-science',VOC:'ycb-ic-trades',ELEC:'ycb-ic-electives',SHEET:'ycb-ic-worksheet'};
 const DOORART={canteen:'ycb-ic-canteen',arena:'ycb-ic-duels',store:'ycb-ic-store',games:'ycw-ic-detective',blockbuilders:'ycw-ic-blocks',chumashlab:'ycw-ic-lab',library:'ycw-ic-library',olamhaba:'ycw-ic-calm'};
@@ -188,20 +213,21 @@ function ycISHTML(){ const s=TMC.s, y=s.yc, B=s.bucket, K=window.TLK, pill=(k,t)
  const inBucket=B.core.filter(x=>!isDone(x)), finished=B.core.filter(isDone);
  if(complete&&ycCelebrated!==s.id){ ycCelebrated=s.id; setTimeout(ycConfetti,500); }
  const why=y.why==='empty'?'No class work right now, so it is bucket time.':y.why==='now'?'Your teacher sent you to your bucket.':complete?'Your core is done. Your add-ons are out!':'Pull a paper out of your bucket. Any order you like.';
- return `<section class="ycw">${ycRing(s)}<div class="ycw-plaque">${pill('now','Independent Study')}<h2>${complete?'Your bucket is done!':'My bucket'}</h2><p>${E(why)}</p></div>
+ return `<section class="ycw">${ycRing(s)}<div class="ycw-plaque${YCW_ART['ycw-ui-plaque-kingdom']?' ycpl':''}">${pill('now','Independent Study')}<h2>${complete?'Your bucket is done!':'My bucket'}</h2></div><p class="ycw-sub">${E(why)}</p>
  <div class="ycbucket${complete?' ycglow':''}${YCW_ART['ycb-bucket']?' ycpicb':''}">
-  <div class="ycb-back">${YCP(complete?'ycb-bucket-glow':'ycb-bucket-back')||YCP('ycb-bucket')||'<div class="ycb-glass-back"></div>'}</div>
+  <div class="ycb-back">${YCP(complete?'ycb-bucket-glow':'ycb-bucket-back')||YCP('ycb-bucket')||'<div class="ycb-glass-back"></div>'}</div>${complete&&YCW_ART['ycb-sparkles']?'<img class="ycb-spark" src="/pics/ycb-sparkles.webp" alt="">':''}
   <div class="ycb-papers">${inBucket.map((x,i)=>ycPaper({skill:x.skill,title:title(x),sub:sub(x),i})).join('')}</div>
   <div class="ycb-front${YCW_ART['ycb-bucket-front']?' ycb-fpic':''}">${YCP('ycb-bucket-front')||'<div class="ycb-glass-front"></div><div class="ycb-rim"></div>'}</div>
   ${finished.length?`<div class="ycdone" aria-label="Done: ${finished.length}">${YCW_ART['ycb-done-tray']?`<div class="ycdtray">${YCI('ycb-done-tray')}<b>✓</b></div>`:`<div class="ycdstack">${finished.slice(0,4).map((x,i)=>`<i style="bottom:${i*5}px;transform:rotate(${(i%2?3:-3)}deg)"></i>`).join('')}<b>✓</b></div>`}${pill('prog','Done '+finished.length+' of '+B.core.length)}</div>`:''}
   ${B.addons.length?`<div class="ycadds">${B.addons.map((x,i)=>ycPaper({skill:x.skill,title:title(x),sub:'Add-on',i:i+1,locked:!complete})).join('')}</div>`:''}
+  ${doorTiles('side')}
  </div>
- ${doorTiles()}${ycBar(s)}</section>`; }
+ ${ycBar(s)}</section>`; }
 /* TEACHER TIME in the Teacher Time Hall: his class work floats in front of him as papers */
 function ycHTML(){ if(TMC.s.bucket) return ycISHTML(); const s=TMC.s, y=s.yc, sk=SKILLS(), K=window.TLK, pill=(k,t)=>K?K.pill(k,t):`<span>${E(t)}</span>`;
  const papers=sk.map((id,i)=>ycPaper({skill:id,title:nameOf(id),sub:(SUBJ[subjOf(id)]||['',''])[1],i,done:(s.handed&&s.handed[id])||(typeof mastered==='function'&&A.st&&mastered(A.st,id))})).join('');
  const go=sk.length===1&&K?`<div class="ycgo">${K.main(K.WORDS&&K.WORDS.start||'Start','data-tm="go" data-id="'+E(sk[0])+'"')}</div>`:'';
- return `<section class="ycw">${ycRing(s)}<div class="ycw-plaque">${pill('now',y.label)}<h2>${E(y.cls||s.clsName||s.name)}</h2><p>with ${E(s.by)} · ${sk.length===1?'Your teacher picked this for now.':'Your teacher picked these for now. Tap one to start.'}</p></div>
+ return `<section class="ycw">${ycRing(s)}<div class="ycw-plaque${YCW_ART['ycw-ui-plaque-kingdom']?' ycpl':''}">${pill('now',y.label)}<h2>${E(y.cls||s.clsName||s.name)}</h2></div><p class="ycw-sub">with ${E(s.by)} · ${sk.length===1?'Your teacher picked this for now.':'Your teacher picked these for now. Tap one to start.'}</p>
  <div class="ycpapers">${papers}</div>${go}${doorTiles()}${ycBar(s)}</section>`; }
 function lockHTML(){ const s=TMC.s, sk=SKILLS(); if(s.yc) return ycHTML(); if(sk.length>1) return lockManyHTML(); const sj=SUBJ[subjOf(s.skill)]||['📘',s.subj], did=TMC.done>0||(typeof mastered==='function'&&A.st&&mastered(A.st,s.skill));
  return `<section class="tmw"><div class="tmc"><div class="top"><small>🧑‍🏫 Class lesson</small><h2>${E(s.name)}</h2><p>${E(sj[1])} · with ${E(s.by)}</p></div>
@@ -285,8 +311,8 @@ function doorCss(){ let el=document.getElementById('yc-doors'); if(!el){ el=docu
 setInterval(doorCss,700);
 document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-ycdoor]'); if(!b) return; const D=DOORS[b.dataset.ycdoor]; if(D&&D.go&&doorOpen(b.dataset.ycdoor)){ try{ SND.tap(); }catch(x){} doorCss(); if(typeof ycwGo==='function'&&document.body.classList.contains('yc-world')&&!YCW.reduce){ ycwGo('city',()=>D.go()); } else D.go(); } },true);   /* the flight up to the Golden City, then the door */
 /* the doors a teacher opened, as tiles on his class screen */
-function doorTiles(){ const s=TMC.s, ds=(s&&s.doors||[]).filter(k=>DOORS[k]&&DOORS[k].go&&doorOpen(k)); if(!ds.length) return '';
- const K=window.TLK; return `<div class="ycdoorrow" aria-label="Open for you now">${K?K.pill('now','Open for you now'):''}</div><div class="ycdoorrow">${ds.map(k=>`<button type="button" class="tlk tlk-tile ycdoor" data-ycdoor="${k}"><span class="ycic" aria-hidden="true">${YCI(DOORART[k])||DOORS[k].i}</span><b>${E(DOORS[k].n)}</b><small>Your teacher opened this</small></button>`).join('')}</div>`; }
+function doorTiles(side){ const s=TMC.s, ds=(s&&s.doors||[]).filter(k=>DOORS[k]&&DOORS[k].go&&doorOpen(k)); if(!ds.length) return '';
+ const K=window.TLK; return `<div class="${side?'ycdoorside':''}"><div class="ycdoorrow" aria-label="Open for you now">${K?K.pill('now','Open for you now'):''}</div><div class="ycdoorrow">${ds.map(k=>`<button type="button" class="tlk tlk-tile ycdoor" data-ycdoor="${k}"><span class="ycic" aria-hidden="true">${YCI(DOORART[k])||DOORS[k].i}</span><b>${E(DOORS[k].n)}</b><small>Your teacher opened this</small></button>`).join('')}</div></div>`; }
 function strip(r){ TMC.closed=r&&r.closed||[]; const s=r&&r.open?null:r; setTimeout(doorCss,0); return s; }
 /* v162: the class answer arrives WITH sign-in (msSignInFast, HomePage.html sets window.TL_PRE_TM), so no extra trip and no wait */
 function use(r){ r=strip(r); if(r&&r.until&&r.now) r.until=Date.now()+(r.until-r.now); if(r) addTeacherLessons(r); TMC.s=r||null; TMC.done=0; }
