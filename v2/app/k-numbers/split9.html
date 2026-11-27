@@ -46,17 +46,21 @@ function moves(to) { const out = []; for (let k = R.k; k < to; k++) out.push({ t
 function hooks() { const f = found[R.n] || []; GAME.right = () => moves(target()).concat([{ tap: '#check' }]); GAME.wrong = () => moves(f.length ? f[0] : 0).concat([{ tap: '#check' }]); }
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
 function step(d) { NK.unlock(); if (GAME.phase !== 'answer') return; const k = R.k + d; if (k < 0 || k > R.n) { NK.sound.oops(); return; } R.k = k; NK.sound.pop(); show(); }
+/* a wrong split: the hand SHOWS one move to a new way (one more orange, or one more lemon), then he checks */
+async function showHow(have) { let d = [1, -1].find(dd => { const k = R.k + dd; return k > 0 && k < R.n && !have.includes(k); }); if (!d) d = R.k < R.n / 2 ? 1 : -1;
+  const btn = $(d > 0 ? 'more' : 'less'); await FR.say(d > 0 ? 'Watch. One more orange.' : 'Watch. One more lemon.'); await FR.handTo(btn); await FR.handTap(); FR.handHide();
+  R.k += d; NK.sound.pop(); show(); await FR.say('A new way! Now tap the check.'); }
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); const f = found[R.n] = found[R.n] || [], k = R.k, y = R.n - k;
-  if (k === 0 || y === 0) { FR.oops($('check')); R.misses++; await FR.say("Let's look. We need oranges and lemons."); await FR.say('Move the arrows to share them.'); open(); return; }
-  if (f.includes(k)) { FR.oops($('check')); R.misses++; await FR.say("Let's look. We have that one already."); await FR.say('Find a new way.'); open(); return; }
+  if (k === 0 || y === 0) { FR.oops($('check')); R.misses++; await FR.say("Let's look. We need oranges and lemons."); await showHow(f); open(); return; }
+  if (f.includes(k)) { FR.oops($('check')); R.misses++; await FR.say("Let's look. We have that one already."); await showHow(f); open(); return; }
   f.push(k); list(); K.sparkle(-1, 0.4); await FR.yes($('check'), FR.Word(k) + ' and ' + FR.word(y) + ' make ' + FR.word(R.n) + '!'); const d = done; done = null; d(R.misses === 0);
 }
 const PLAN = [7, 7, 8, 8, 10, 10];
 function play(F, i) {
   return new Promise(async res => {
     const n = PLAN[i]; R = { n, k: 0, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); show(); list();
-    await F.say((found[n] || []).length ? 'Another way to make ' + F.word(n) + '!' : F.Word(n) + ' lemons. Make ' + F.word(n) + ' two ways!');
+    await F.say((found[n] || []).length ? 'Another way to make ' + F.word(n) + '!' : F.Word(n) + ' lemons. Turn some into oranges!');
     open(); await F.say('Find a new way. Then tap the check.', { repeat: 'Orange arrow: one more orange. Then check.' });
   });
 }
