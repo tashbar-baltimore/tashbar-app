@@ -29,7 +29,7 @@ export default function setup(E, { unit }) {
   let pauseUntil = 0, lastNow = performance.now(); E.onFrame(() => { const now = performance.now(); if (now < pauseUntil) falling.forEach(l => { l.userData.t0 += now - lastNow; }); lastNow = now; });   /* the rain stops while he hears the correction (reviewer) */
   function drop(k, ms) {
     const l = E.letter(k, 1.0); let x; do { x = E.portrait ? (Math.random() * 2 - 1) * .95 + .6 : (Math.random() * 2 - 1) * X * .85 + .6;   /* never over the sign */ } while (falling.some(f => !f.userData.busy && f.position.y > 2.5 && Math.abs(f.userData.x - x) < (E.portrait ? 1.1 : 1.6)) && Math.random() > .02);
-    l.userData = Object.assign(l.userData, { t0: performance.now(), ms: ms * FALL_F, y0: E.portrait ? 5.7 : 4.0, y1: .5, x }); l.position.set(x, l.userData.y0, .8); E.scene.add(l); falling.push(l); E.popIn(l, 1, 250);   /* appears inside the sky, below the top buttons */
+    l.userData = Object.assign(l.userData, { t0: performance.now(), ms: ms * FALL_F * (missRound >= 2 ? 1.5 : 1),   /* gentler after two misses in a round (reviewer) */ y0: E.portrait ? 5.7 : 4.0, y1: .5, x }); l.position.set(x, l.userData.y0, .8); E.scene.add(l); falling.push(l); E.popIn(l, 1, 250);   /* appears inside the sky, below the top buttons */
     if (k === want) targets++;
   }
   E.onPointer('down', async e => {
