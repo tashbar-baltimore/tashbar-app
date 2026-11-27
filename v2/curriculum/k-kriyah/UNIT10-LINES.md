@@ -63,6 +63,59 @@
 - Let’s practice and become Alef-Beis champions!
 - Tap the green arrow for the next game!
 
+## Look-Alike Lightning
+- Look-alike letters! Each one goes in its own box.
+- Beis has a dot.
+- Veis has no dot.
+- Watch me. No dot. That is Veis.
+- Yes! Veis says v
+- Now you! Put each letter in its box.
+- Look! A dot! That is Beis.
+- Try again!
+- Yes! Beis says b
+- Next! Hei and Ches!
+- Hei’s leg doesn’t touch the roof.
+- Ches’s leg touches the roof.
+- Yes! Ches says ch
+- Yes! Hei says h
+- Next! Daled and Reish!
+- Daled has a corner.
+- Reish is round on top.
+- Yes! Daled says d
+- Yes! Reish says r
+- Next! Gimmel and Nun!
+- Gimmel has a foot.
+- Nun is flat at the bottom.
+- Yes! Gimmel says g
+- Yes! Nun says n
+- Next! Samech and Mem Sofis!
+- Samech is round at the bottom.
+- Mem Sofis is square at the bottom.
+- Yes! Mem Sofis says m
+- Yes! Samech says s
+- Next! Shin and Sin!
+- Shin’s dot is on the right.
+- Sin’s dot is on the left.
+- Yes! Shin says sh
+- Yes! Sin says s
+- Remember these?
+- Watch me. Tap Chaf.
+- Now you!
+- Tap Chaf.
+- Chaf! Chaf says ch
+- Which letter says t ? Tap it.
+- Tes! Tes says t
+- Tap Zayin.
+- Zayin! Zayin says z
+- Champion detective! You know every look-alike!
+- Tap the green arrow for the next game!
+- Look! No dot. That is Veis.
+- Watch me. Tap Pei.
+- Tap Pei.
+- Pei! Pei says p
+- Tap Alef.
+- Alef! Alef is quiet.
+
 ## Feel the Shape: mixed
 - This is Tes. Let’s feel its shape.
 - Watch me. I follow the glowing road.
@@ -98,6 +151,46 @@
 - Nun! Nun says n
 - Tap Fei.
 - Fei! Fei says f
+
+## Sound Match: mixed
+- Each picture goes to the letter it starts with.
+- A bear!
+- Watch me. Bear starts with b .
+- Yes! Bear starts with b . Beis!
+- A lemon!
+- Now you! Drag each picture to its letter.
+- Listen. Lemon. Lemon starts with l .
+- Lamed says l . Try again!
+- Yes! Lemon starts with l . Lamed!
+- A rose!
+- Yes! Rose starts with r . Reish!
+- A rabbit!
+- Yes! Rabbit starts with r . Reish!
+- A donkey!
+- Yes! Donkey starts with d . Daled!
+- A dog!
+- Yes! Dog starts with d . Daled!
+- A balloon!
+- Yes! Balloon starts with b . Beis!
+- A lamb!
+- Yes! Lamb starts with l . Lamed!
+- Remember these?
+- Watch me. Tap Pei.
+- Now you!
+- Tap Pei.
+- Pei! Pei says p
+- Which letter says v ? Tap it.
+- Veis! Veis says v
+- Tap Mem Sofis.
+- Mem Sofis! Mem Sofis says m
+- Great matching! Every picture found its letter.
+- Tap the green arrow for the next game!
+- Watch me. Tap Tuf.
+- Tap Tuf.
+- Tuf! Tuf says t
+- Which letter says p ? Tap it.
+- Tap Shin.
+- Shin! Shin says sh
 
 ## Sound Hunt
 - Mendy is in the sukkah. Letters are hiding!
@@ -311,3 +404,4 @@
 - The sun went down, and you finished it! Great!
 - Choo choo! You know the Alef-Beis order!
 - Tap the green button to go back.
+
