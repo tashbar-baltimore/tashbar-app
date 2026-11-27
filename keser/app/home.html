@@ -12,14 +12,14 @@
    One screen, three choices, each in its Keser color; a tap goes straight in. */
 *{ box-sizing:border-box; }
 html,body{ margin:0; min-height:100%; color:#fff; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--keser); -webkit-tap-highlight-color:transparent; }
-.top,h1,.sub,.rule,.choices,#general{ position:relative; z-index:1; }
+.top,h1,.sub,.rule,.choices{ position:relative; z-index:1; }
 .top{ display:flex; align-items:center; justify-content:center; gap:14px; padding:22px 16px 6px; }
 .top img{ height:46px; }
 .top .k-word{ font-family:var(--serif); letter-spacing:.32em; font-size:20px; color:var(--gold1); }
 h1{ margin:10px 16px 4px; text-align:center; font-family:var(--serif); font-weight:600; font-size:clamp(26px,3.4vw,38px); }
 .sub{ margin:0 16px 22px; text-align:center; color:rgba(255,255,255,.72); font-size:15px; }
 .rule{ width:64px; height:3px; margin:0 auto 22px; border-radius:2px; background:linear-gradient(90deg,var(--maroon),var(--emerald),var(--blue),var(--gold2)); }
-.choices{ display:grid; grid-template-columns:repeat(3,minmax(0,300px)); gap:22px; justify-content:center; padding:0 16px 32px; }
+.choices{ display:grid; grid-template-columns:repeat(2,minmax(0,320px)); gap:22px; justify-content:center; padding:0 16px 32px; }
 .choice{ appearance:none; border:0; padding:0; cursor:pointer; text-align:left; color:#fff; border-radius:18px; overflow:hidden; background:var(--c);
   box-shadow:0 10px 30px rgba(10,0,25,.35), inset 0 0 0 1px rgba(246,227,176,.35); display:flex; flex-direction:column; transition:transform .25s ease, box-shadow .25s ease; }
 .choice:hover{ transform:translateY(-4px); box-shadow:0 16px 36px rgba(10,0,25,.45), inset 0 0 0 1.5px var(--gold2); }
@@ -32,19 +32,8 @@ h1{ margin:10px 16px 4px; text-align:center; font-family:var(--serif); font-weig
 .choice b{ font-family:var(--serif); font-size:26px; font-weight:600; }
 .choice b[lang="he"]{ font-size:30px; }
 .choice span{ font-size:14px; color:rgba(255,255,255,.82); }
-/* General Studies: its own page, straight in */
-#general{ display:none; padding:0 16px 40px; max-width:980px; margin:0 auto; }
-body.gs .choices,body.gs h1,body.gs .sub,body.gs .rule{ display:none; }
-body.gs #general{ display:block; }
-.bar{ display:flex; align-items:center; gap:14px; margin:8px 0 18px; padding:12px 16px; border-radius:14px; background:var(--blue); box-shadow:inset 0 0 0 1px rgba(246,227,176,.35); }
-.bar h2{ margin:0; font-family:var(--serif); font-weight:600; font-size:26px; }
-.gs-pics{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-.gs-pics figure{ margin:0; border-radius:16px; overflow:hidden; background:#fff; box-shadow:0 8px 24px rgba(10,0,25,.35); }
-.gs-pics img{ width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
-.gs-pics figcaption{ padding:10px 14px; color:var(--keser); font-weight:700; }
-.soon{ margin:20px 0 0; text-align:center; color:rgba(255,255,255,.8); font-size:15px; }
 @media (max-width:760px){ .choices{ grid-template-columns:minmax(0,420px); gap:14px; } .choice{ flex-direction:row; } .choice .pic{ aspect-ratio:auto; width:42%; min-height:120px; border-bottom:0; border-right:3px solid var(--gold2); }
-  .choice b{ font-size:22px; } .gs-pics{ grid-template-columns:1fr; } }
+  .choice b{ font-size:22px; } }
 @media (prefers-reduced-motion: reduce){ .choice{ transition:none } }
 </style>
 </head>
@@ -58,17 +47,7 @@ body.gs #general{ display:block; }
     <div class="txt"><b lang="he" dir="rtl">קודש</b><span>Chumash Lab</span></div></button>
   <button class="choice" data-go="timeline" style="--c:var(--emerald)"><div class="pic" style="background-image:url(/pics/keser-place-timeline.webp);background-color:#fff;background-size:contain"></div>
     <div class="txt"><b>Timeline</b><span>Which came first?</span></div></button>
-  <button class="choice" data-go="general" style="--c:var(--blue)"><div class="pic" style="background-image:url(/pics/keser-scene-library.webp)"></div>
-    <div class="txt"><b>General Studies</b><span>Reading, Science and more</span></div></button>
 </div>
-<section id="general" aria-label="General Studies">
-  <div class="bar"><button class="k-icon" id="gsBack" aria-label="Back to choose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h2>General Studies</h2></div>
-  <div class="gs-pics">
-    <figure><img src="/pics/keser-scene-library.webp" alt="Four Keser girls reading together in the library"><figcaption>Reading</figcaption></figure>
-    <figure><img src="/pics/keser-scene-science.webp" alt="Four Keser girls doing a science experiment"><figcaption>Science</figcaption></figure>
-  </div>
-  <p class="soon">Lessons are coming soon.</p>
-</section>
 <script src="sparkle.js"></script>
 <script type="module" src="home.js"></script>
 </body>

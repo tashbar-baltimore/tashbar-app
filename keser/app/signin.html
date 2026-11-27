@@ -14,11 +14,22 @@ html,body{ margin:0; height:100%; color:#fff; font-family:system-ui,-apple-syste
 main{ position:relative; z-index:1; min-height:100%; display:grid; grid-template-columns:auto auto; align-items:center; justify-content:center; gap:clamp(24px,6vw,90px); padding:24px 16px; }
 .girls{ height:min(78vh,600px); }
 .pad{ display:grid; justify-items:center; gap:16px; width:min(320px,100%); }
-.pad .logo{ width:190px; }
+.pad .logo{ width:190px; position:relative; }
+/* a little more sparkle on the way in (M. Heinemann 2026-11-27): a soft gold glow behind the logo with a slow sweep of light, glowing gold code dots, a gold aura behind the girls */
+.logo-box{ position:relative; width:190px; }
+.logo-box::before{ content:""; position:absolute; inset:-40% -30%; background:radial-gradient(circle, rgba(246,227,176,.35), rgba(212,170,80,.12) 45%, transparent 70%); animation:k-breathe 4s ease-in-out infinite; pointer-events:none; }
+.logo-box::after{ content:""; position:absolute; inset:0; background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.8) 48%,transparent 60%); background-size:300% 100%; animation:k-sweep 3.6s ease-in-out infinite;
+  -webkit-mask:url(/pics/keser-logo.webp) center/contain no-repeat; mask:url(/pics/keser-logo.webp) center/contain no-repeat; mix-blend-mode:overlay; pointer-events:none; }
+@keyframes k-breathe{ 50%{ opacity:.6; transform:scale(1.06) } }
+@keyframes k-sweep{ 0%,50%{ background-position:120% 0 } 100%{ background-position:-120% 0 } }
+.girls-box{ position:relative; }
+.girls-box::before{ content:""; position:absolute; inset:8% -6% 4%; background:radial-gradient(ellipse, rgba(246,227,176,.22), rgba(75,42,133,.2) 55%, transparent 72%); pointer-events:none; }
+.girls-box img{ position:relative; }
 .pad h1{ margin:0; font-family:var(--serif); font-weight:600; font-size:24px; }
 .dots{ display:flex; gap:14px; height:20px; align-items:center; }
 .dots i{ width:16px; height:16px; border-radius:50%; border:2px solid var(--gold2); transition:background .15s; }
-.dots i.on{ background:var(--gold2); }
+.dots i.on{ background:var(--gold1); box-shadow:0 0 10px var(--gold2), 0 0 20px rgba(246,227,176,.6); transform:scale(1.15); }
+.dots i{ transition:background .15s, box-shadow .2s, transform .2s; }
 .keys{ display:grid; grid-template-columns:repeat(3,72px); gap:12px; }
 .key{ appearance:none; cursor:pointer; height:60px; border-radius:14px; border:0; font:700 24px/1 system-ui,sans-serif; color:#fff;
   background:rgba(255,255,255,.08); box-shadow:inset 0 0 0 1px rgba(246,227,176,.4); transition:background .15s, transform .1s; }
@@ -29,15 +40,15 @@ main{ position:relative; z-index:1; min-height:100%; display:grid; grid-template
 .msg{ min-height:20px; margin:0; font-size:14px; color:rgba(255,255,255,.75); text-align:center; }
 .pad.shake{ animation:shake .4s; }
 @keyframes shake{ 20%,60%{ transform:translateX(-8px) } 40%,80%{ transform:translateX(8px) } }
-@media (max-width:760px){ main{ grid-template-columns:1fr; } .girls{ display:none; } }
-@media (prefers-reduced-motion: reduce){ .pad.shake{ animation:none } }
+@media (max-width:760px){ main{ grid-template-columns:1fr; } .girls-box{ display:none; } }
+@media (prefers-reduced-motion: reduce){ .pad.shake,.logo-box::before,.logo-box::after{ animation:none } }
 </style>
 </head>
-<body>
+<body data-sparkle="more">
 <main>
-  <img class="girls" src="/pics/keser-girls-uniform-four.webp" alt="Four Keser girls in the school uniform">
+  <div class="girls-box"><img class="girls" src="/pics/keser-girls-uniform-four.webp" alt="Four Keser girls in the school uniform"></div>
   <div class="pad" id="pad">
-    <img class="logo" src="/pics/keser-logo.webp" alt="Keser Academy for Girls">
+    <div class="logo-box"><img class="logo" src="/pics/keser-logo.webp" alt="Keser Academy for Girls"></div>
     <h1>Enter your code</h1>
     <div class="dots" id="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="keys" id="keys"></div>

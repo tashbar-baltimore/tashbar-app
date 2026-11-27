@@ -1,5 +1,5 @@
 /* HOME: three choices, each goes straight in (M. Heinemann 2026-11-26).
-   קודש opens the Chumash & Timeline Lab's home; Timeline opens its Timeline; General Studies opens its own page.
+   קודש opens the Chumash Lab; Timeline opens the Timeline (M. Heinemann 2026-11-27: only these two). 
    The lab (kodesh/) is loaded only when she picks קודש or Timeline. window.KHOME is for the tests. */
 const $ = id => document.getElementById(id), body = document.body;
 let labLoading = null;
@@ -12,10 +12,7 @@ function loadLab() {
   return labLoading;
 }
 function go(where) {
-  if (where === 'general') { body.classList.add('gs'); scrollTo(0, 0); $('gsBack').focus({ preventScroll: true }); return Promise.resolve(); }
   return loadLab().then(() => window.CLAB.openLab(where === 'timeline' ? 'tl' : undefined)).catch(e => console.warn('Keser lab: ' + e.message));
 }
 document.querySelectorAll('.choice').forEach(b => { b.onclick = () => { b.disabled = true; go(b.dataset.go).finally(() => { b.disabled = false; }); }; });
-$('gsBack').onclick = () => { if (/[?&]go=general\b/.test(location.search)) location.href = 'world.html'; else body.classList.remove('gs'); };
 window.KHOME = { go };
-if (/[?&]go=general\b/.test(location.search)) go('general');   /* from her 3D world: straight into General Studies */

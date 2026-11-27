@@ -54,7 +54,7 @@ module.exports = async (browser) => {
           [...root.querySelectorAll('button')].forEach(x => { if (!x.classList.contains('tlk') && !x.classList.contains('tw') && !x.classList.contains('gap')) out.nonKit.push(x.outerHTML.slice(0, 80)); });
           if (/\bgems?\b|\bpoints\b(?! to)|\$\d|My money|T\$/i.test(root.innerText)) out.money++;
           if (b && b.scrollWidth > b.clientWidth + 2) out.wide.push((root.querySelector('.clab-top h1') || {}).textContent); };
-        scan(); out.hub = { tiles: root.querySelectorAll('[data-lab]').length, house: !!root.querySelector('.clab-top .tlk-home'), x: !!root.querySelector('.clab-top .tlk-x') };
+        scan(); out.hub = { tiles: root.querySelectorAll('[data-lab]').length, crowns: !!root.querySelector('.clab-crowns'), house: !!root.querySelector('.clab-top .tlk-home'), x: !!root.querySelector('.clab-top .tlk-x') };
         /* 3. builders */
         const G = X.groups(); let nq = 0;
         for (let t = 0; t < 300; t++) { try {
@@ -140,7 +140,8 @@ module.exports = async (browser) => {
       const d = r.data || {};
       r.bad.forEach(b => fails.push('Keser Kodesh lab: ' + b));
       if (d.sh !== 200 || d.units !== 12 || d.tunits !== 6 || d.work !== 7 || !(d.ml > 150) || !(d.pes > 300)) fails.push('Keser Kodesh lab: data incomplete ' + JSON.stringify(d));
-      if (!r.hub || r.hub.tiles !== 6 || !r.hub.house || r.hub.x) fails.push('Keser Kodesh lab: the lab home must show 6 labs and the house top left (got ' + JSON.stringify(r.hub) + ')');
+      if (r.hub && r.hub.crowns) fails.push('Keser Kodesh lab: the Keser banners must not be on the lab home (M. Heinemann 2026-11-27)');
+    if (!r.hub || r.hub.tiles !== 5 || !r.hub.house || r.hub.x) fails.push('Keser Kodesh lab: the lab home must show 5 labs (no Timeline tile, M. Heinemann 2026-11-27) and the house top left (got ' + JSON.stringify(r.hub) + ')');
       if (!r.runX) fails.push('Keser Kodesh lab: a question screen must have the lesson X top left');
       const pl = r.played || {}, want = ['shPractice', 'sh', 'ps', 'tr', 'trBreak', 'pw', 'tl_en', 'tl_he', 'game'], miss = want.filter(k => !pl[k]);
       if (miss.length) fails.push('Keser Kodesh lab: did not play to the end by taps: ' + miss.join(', '));

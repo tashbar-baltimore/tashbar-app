@@ -69,7 +69,6 @@ function go(i, quiet) {
 /* straight in (M. Heinemann 2026-11-26/27): no card in between. קודש opens the Chumash Lab, Timeline its Timeline, General Studies its page. */
 function enter() {
   if (S.entered) return; S.entered = true; const p = PLACES[S.focus]; chime(p.note); chime(p.note + 7, true);
-  if (p.id === 'general') { location.href = 'home.html?go=general'; return; }
   loadLab().then(() => { window.CLAB.openLab(p.lab === 'tl' ? 'tl' : undefined); }).catch(err => console.warn('Kodesh lab: ' + err.message)).finally(() => { S.entered = false; });
 }
 function back() {

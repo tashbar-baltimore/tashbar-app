@@ -214,14 +214,13 @@
   {k:'ml',ic:'📖',he:'מִלִּים',t:'Milim',p:'The everyday words of Chumash, 10 at a time.'},
   {k:'ps',ic:'🧩',he:'אוֹתִיּוֹת הַשִּׁמּוּשׁ',t:'Prefixes & Suffixes',p:'The letters stuck to the front and the end of a word, and what they mean.'},
   {k:'tr',ic:'🛑',he:'טְעָמִים',t:'Stop Signs',p:'The trop stop signs, and how they break a pasuk into parts.'},
-  {k:'pw',ic:'🛠️',he:'פָּסוּק',t:'Pasuk Workshop',p:'Put it all together: learn a real pasuk on your own, word by word.'},
-  {k:'tl',ic:'⏳',he:'צִיר הַזְּמַן',t:'Timeline',p:'From Creation to today: which came first? In English or in Hebrew.'}];
+  {k:'pw',ic:'🛠️',he:'פָּסוּק',t:'Pasuk Workshop',p:'Put it all together: learn a real pasuk on your own, word by word.'}];   /* Keser: the Timeline is its own place in her world, not a tile here (M. Heinemann 2026-11-27) */
  function counts(k){ const d=D(); if(k==='sh') return [P.done.sh.length,SHG.length,'groups']; if(k==='ml') return [P.done.ml.length,MLG.length,'groups']; if(k==='ps') return [P.done.ps.length,d.UNITS.length,'units'];
   if(k==='tr') return [P.done.tr.length,d.TUNITS.length,'units']; if(k==='pw') return [P.done.pw.length,d.WORK.length,'pesukim']; return [Object.keys(P.tl.done).length,4,'levels']; }
  function hub(){ clearTimers(); X.view='hub'; BACK=null;
-  frame('Chumash & Timeline Lab','',' hub',`<div class="clab-card"><h2>Welcome to the Lab${me().name?', '+E(String(me().name).split(/\s+/)[0]):''}!</h2>
-   <p>Here you learn the tools a talmidah uses to learn Chumash on her own: shorashim, milim, prefixes and suffixes, and the trop. Then you use them on a real pasuk. And the Timeline shows when everything happened.</p>
-   <p class="clab-mut">Pick a lab. Start at the first group or unit. Each one has a lesson, practice, a game and a quiz.</p><div class="clab-crowns" aria-label="The three crowns: Keter Torah, Keter Kehuna, Keter Malchus"><img src="/pics/keser-keter-torah.webp" alt="Keter Torah"><img src="/pics/keser-keter-kehuna.webp" alt="Keter Kehuna"><img src="/pics/keser-keter-malchut.webp" alt="Keter Malchus"></div></div>
+  frame('Chumash Lab','',' hub',`<div class="clab-card"><h2>Welcome to the Lab${me().name?', '+E(String(me().name).split(/\s+/)[0]):''}!</h2>
+   <p>Here you learn the tools a talmidah uses to learn Chumash on her own: shorashim, milim, prefixes and suffixes, and the trop. Then you use them on a real pasuk.</p>
+   <p class="clab-mut">Pick a lab. Start at the first group or unit. Each one has a lesson, practice, a game and a quiz.</p></div>
    <div class="clab-grid">${LABS.map(l=>{const [d,n,u]=counts(l.k);return tile('clab-lab','data-lab="'+l.k+'"',`<span class="hd c-${l.k}"><span class="ic" aria-hidden="true">${l.ic}</span><span class="clab-he">${l.he}</span></span><span class="b"><b>${E(l.t)}</b><small>${E(l.p)}</small>${pill(d?'prog':'now',d?d+' of '+n+' '+u+' done':'Start here')}</span>`);}).join('')}</div>`);
   NAV='hub';
   bodyEl().querySelectorAll('[data-lab]').forEach(b=>b.onclick=()=>{ snd('tap'); const k=b.dataset.lab; if(k==='sh'||k==='ml') listLab(k); else if(k==='ps') psLab(); else if(k==='tr') trLab(); else if(k==='pw') pwLab(); else tlHome(); }); }
@@ -806,7 +805,7 @@
  const thow=part=>{ const h=TLHOW[part]||TLHOW.first; return `<div class="clab-how ${HEB()?'dir-rtl':''}"><b>${E(u('how'))}</b>${E(L2(h.en,h.he))}</div>`; };
  const nm=k=>{ const h=nameOf(k); return h!==k?`<span class="clab-he">${E(h)}</span>`:E(h); };
  const label=o=>typeof o==='object'?E(L2(o.en,o.he)):nm(o);
- function tlHome(){ clearTimers(); BACK=hub; X.view='tl';
+ function tlHome(){ clearTimers(); BACK=()=>X.close(); X.view='tl';   /* Keser: Back from the Timeline goes back to her world */
   const tog=`<div class="clab-row clab-center" role="group" aria-label="Language">${HEB()?T().quiet('English','data-lang="en"')+T().main('עִבְרִית','data-lang="he" aria-pressed="true"'):T().main('English','data-lang="en" aria-pressed="true"')+T().quiet('עִבְרִית','data-lang="he"')}</div>`;
   frame(L2('Timeline','צִיר הַזְּמַן'),HEB()?'עִבְרִית':'English','page',`<div class="clab-card ${HEB()?'dir-rtl':''}"><h2>${E(u('title'))}</h2>
    <div class="tl-hero">${[3,9,14,17,24,30].map(n=>imgHTML(n,'','')).join('')}</div>

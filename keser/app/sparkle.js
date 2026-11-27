@@ -6,6 +6,8 @@
   var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var STAR = '<svg viewBox="0 0 24 24"><path d="M12 0l2.2 9.8L24 12l-9.8 2.2L12 24l-2.2-9.8L0 12l9.8-2.2z"/></svg>';
   var spots = [[7, 14], [16, 70], [26, 30], [33, 88], [48, 8], [58, 52], [66, 93], [74, 22], [84, 64], [91, 40], [12, 48], [40, 66]];
+  /* a screen can ask for a little more (data-sparkle="more" on body): the sign-in (M. Heinemann 2026-11-27: "a little bit more sparkly and exciting") */
+  if (document.body.dataset.sparkle === 'more') spots = spots.concat([[4, 40], [20, 10], [30, 58], [44, 30], [52, 80], [62, 12], [70, 44], [78, 84], [88, 18], [95, 70], [36, 4], [56, 36], [83, 92], [10, 88]]);
   var box = document.createElement('div'); box.className = 'k-twinkles'; box.setAttribute('aria-hidden', 'true');
   spots.forEach(function (s, i) { var t = document.createElement('i'); t.innerHTML = STAR;
     t.style.left = s[0] + '%'; t.style.top = s[1] + '%'; t.style.setProperty('--d', (i * 0.73 % 5).toFixed(2) + 's'); t.style.setProperty('--s', (11 + (i * 5) % 11) + 'px'); box.appendChild(t); });
