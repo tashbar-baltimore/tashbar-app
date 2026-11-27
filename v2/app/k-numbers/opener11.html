@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plus and Minus — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 11 "Adding and taking away within 5": the UNIT OPENER, a short lesson in the sukkah.
+     Three boys are in the sukkah; one more comes: put together, three plus one is four. Four cookies; two are eaten: take away, four minus two is two.
+     The call-and-answer chant "Put together... plus! Take away... minus!" (stand up). His turn: two boys, two more come; he shows how many on his fingers.
+     He taps the big arrow to go on. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="hands-side.css">
+<style>#go{ visibility:hidden; animation:pulse 1.2s infinite; } #go.on{ visibility:visible; } #hp[hidden], #check[hidden], .sent[hidden]{ display:none; }
+.sent{ display:flex; align-items:center; gap:6px; background:#fff; border-radius:20px; padding:6px 12px; } .sent .n{ height:clamp(54px,8vh,70px); display:flex; } .sent .n svg{ height:100%; width:auto; }
+.sent b{ font:900 clamp(32px,5vh,46px)/1 system-ui, sans-serif; color:#5A4A3A; } .sent b.plus{ color:#22B45E; } .sent b.minus{ color:#FF6A3D; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="sent" id="sent" hidden></div>
+    <div id="hp" hidden></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button id="go" class="bigbtn btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './sukkah11.js';
+const $ = id => document.getElementById(id);
+let K, H, done, asking = false;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function sent(a, op, b, c) { $('sent').hidden = false; $('sent').innerHTML = '<span class="n">' + U5.num(a) + '</span><b class="' + (op === '+' ? 'plus">+' : 'minus">−') + '</b><span class="n">' + U5.num(b) + '</span><b>=</b>' + (c == null ? '<b>?</b>' : '<span class="n">' + U5.num(c) + '</span>'); }
+const SLIDES = [
+  async F => { K.showPlate(false); K.setBoys(3); await F.say('Welcome to the sukkah! Three boys are here.'); K.showWaiting(1); await F.say('Look! One more comes.'); await K.comeOne();
+    const b = K.boyMeshes(); await K.bumpAll(b, i => F.say(F.Word(i + 1) + (i === 3 ? '!' : ','), { noRepeat: true })); sent(3, '+', 1, 4); await F.say('Put together: three plus one is four.'); },
+  async F => { $('sent').hidden = true; K.setBoys(0); K.showPlate(true); K.setCookies(4); await F.say('Four cookies on the plate.'); await F.say('Two are eaten. Yum!'); await K.takeCookie(); await K.takeCookie();
+    sent(4, '-', 2, 2); await F.say('Take away: four minus two is two.'); },
+  async F => { $('sent').hidden = true; await F.say('A chant! I say it, you finish it.'); await F.chant('Put together...', true, 'plus!'); await F.chant('Take away...', false, 'minus!'); },
+  async F => { K.showPlate(false); K.setBoys(2); await F.say('Your turn! Two boys.'); K.showWaiting(2); await K.comeOne(); await K.comeOne(); sent(2, '+', 2, null);
+    await F.say('Two more came in.'); asking = true; $('hp').hidden = $('check').hidden = false; $('go').hidden = true;
+    await F.say('How many boys now? Show me.', { repeat: 'Count the boys. Show me on your fingers.' }); }
+];
+FR.game({
+  id: 'u11-opener', title: 'Plus and Minus', rounds: SLIDES.length, stars: () => 3,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""><img src="art/dovid-happy.png" alt="" style="height:86%"></div>',
+  endSay: () => "Great! Now let's bring the boys in!",
+  init() {
+    K = mount($('world'), { band }); H = FR.fingers(0, true); $('hp').appendChild(H.el);
+    $('go').addEventListener('click', () => { if (GAME.phase !== 'answer' || asking) return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; const d = done; done = null; d(true); });
+    $('check').addEventListener('click', async () => { NK.unlock(); if (GAME.phase !== 'answer' || !asking) return; GAME.phase = 'busy';
+      if (H.count() !== 4) { FR.oops($('check')); await FR.say("Let's look. Count the boys with me."); const b = K.boyMeshes(); await K.bumpAll(b, i => FR.say(FR.Word(i + 1) + (i === b.length - 1 ? '.' : ','), { noRepeat: true }));
+        H.set(0); await FR.say('Show me on your fingers.'); GAME.phase = 'answer'; return; }
+      asking = false; sent(2, '+', 2, 4); K.celebrate(); await FR.yes($('check'), 'Yes! Two plus two is four!'); const d = done; done = null; d(true); });
+  },
+  round: (F, i) => new Promise(async res => {
+    GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on'); await SLIDES[i](F); done = res; GAME.phase = 'answer'; F.lock(false);
+    if (asking) { GAME.right = () => FR.fingerTaps(H, 4, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, 3, '#hp').concat([{ tap: '#check' }]); }
+    else { GAME.right = () => [{ tap: '#go' }]; GAME.wrong = null; $('go').classList.add('on'); }
+  })
+});
+</script>
+</body>
+</html>

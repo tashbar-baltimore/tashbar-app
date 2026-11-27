@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Take Away — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 11 "Adding and taking away within 5" (MAP.md "Take away"), at the table in the sukkah.
+     A story: "Four cookies on the plate. Two are eaten." He taps two cookies; each one goes onto the small peach plate. Then: "How many are left?"
+     He shows it on his fingers and taps the check. A slip: we count the cookies left on the plate, and he tries again. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="hands-side.css">
+<style>#hp[hidden], #check[hidden]{ display:none; } .story{ display:flex; align-items:center; gap:8px; font:900 clamp(26px,4.6vh,40px)/1 system-ui, sans-serif; color:#5A4A3A; }
+.story span{ display:flex; gap:5px; white-space:nowrap; } .story i{ display:inline-block; width:clamp(20px,3.2vh,28px); height:clamp(20px,3.2vh,28px); border-radius:50%; background:#E2A85A; box-shadow:inset 0 -3px 0 #B9803A; }
+.story i.gone{ background:none; box-shadow:inset 0 0 0 3px #B9803A; opacity:.6; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; width:min(100%,370px); } .story{ width:100%; justify-content:center; } }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="story" id="story"></div>
+    <div id="hp" hidden></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './sukkah11.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+/* the story in cookies: the ones still on the plate, then rings for the eaten ones */
+function story() { $('story').innerHTML = '<span>' + '<i></i>'.repeat(R.n - R.took) + '<i class="gone"></i>'.repeat(R.took) + '</span>'; }
+function hooks() {
+  if (R.step === 'take') { GAME.right = () => { const c = K.cookies()[0]; return [{ tap: '.tspot[data-id="' + c.userData.id + '"]' }]; }; GAME.wrong = null; return; }
+  const k = R.n - R.k; GAME.right = () => FR.fingerTaps(H, k, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, k + 1, '#hp').concat([{ tap: '#check' }]);
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+async function tap(id) {
+  if (GAME.phase !== 'answer' || R.step !== 'take' || !id.startsWith('ck')) return; GAME.phase = 'busy';
+  await K.takeCookie(id); R.took++; story();
+  if (R.took < R.k) { open(); return; }
+  K.cookieSpots(false); FR.lock(true); R.step = 'show'; $('hp').hidden = $('check').hidden = false; H.set(0);
+  open(); await FR.say('How many cookies are left?', { repeat: 'Count the cookies on the plate. Show me.' });
+}
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.step !== 'show') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const k = R.n - R.k;
+  if (H.count() === k) { await FR.yes($('check'), FR.Word(R.n) + ', take away ' + FR.word(R.k) + '. ' + FR.Word(k) + ' left!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++; await FR.say("Let's look. Count the plate with me.");
+  const c = K.cookies(); await K.bumpAll(c, i => FR.say(FR.Word(i + 1) + (i === c.length - 1 ? '.' : ','), { noRepeat: true }));
+  H.set(0); await FR.say('Show me again.'); open();
+}
+const PLAN = [[4, 2], [5, 1], [3, 2], [5, 3], [4, 1], [5, 4]];
+function play(F, i) {
+  return new Promise(async res => {
+    const [n, k] = PLAN[i]; R = { n, k, took: 0, step: 'take', misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
+    $('hp').hidden = $('check').hidden = true; K.setCookies(n); story();
+    await F.say(F.Word(n) + ' cookies on the plate.'); await F.say(F.Word(k) + (k === 1 ? ' is eaten. Yum!' : ' are eaten. Yum!')); K.cookieSpots(true); open();
+    await F.say(k === 1 ? 'Tap one cookie. Take it away.' : 'Tap ' + F.word(k) + ' cookies. Take them away.', { repeat: 'Tap a cookie. It goes on the peach plate.' });
+  });
+}
+FR.game({
+  id: 'u11-take', title: 'Take Away', rounds: 6,
+  hero: '<div class="hero6"><img src="art/ari-happy.png" alt=""></div>',
+  init() {
+    K = mount($('world'), { band }); K.setBoys(0); K.showPlate(true); H = FR.fingers(0, true); $('hp').appendChild(H.el);
+    K.onTap = id => tap(id); $('check').addEventListener('click', check);
+  },
+  demo: async F => {
+    R = { n: 3, k: 1, took: 0 }; K.setCookies(3); story(); await F.say('Three cookies. One is eaten. Watch me.'); K.cookieSpots(true);
+    await F.handTo(document.querySelector('.tspot[data-id="ck2"]')); await F.handTap(); await K.takeCookie('ck2'); R.took = 1; story(); K.cookieSpots(false); F.handHide();
+    await F.say('Three, take away one. Two left!');
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'Yum! You can take away!' : 'Good work! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

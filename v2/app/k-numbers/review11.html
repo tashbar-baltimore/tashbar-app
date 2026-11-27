@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Review Time — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 11 REVIEW (Units 8-10 come back in the sukkah), two kinds in turn, each answered on his fingers:
+     1. Parts (Units 8-9): five cookies in all; some are on the blue plate, the rest hide under a cover on the peach plate: how many hide? A slip: the cover lifts and we count.
+     2. Friends of ten (Unit 10): a ten-frame shows some; how many more make ten? A slip: the empty boxes light up one by one as we count. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="hands-side.css">
+<style>#tf{ display:flex; } #tf .tf{ width:min(40vw,340px); } #tf[hidden]{ display:none; } #tf .cell.lit{ box-shadow:inset 0 0 0 5px #FFC93D; }
+.goal .q{ font:900 clamp(40px,7vh,60px)/1 system-ui, sans-serif; color:#8A7A6A; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; width:min(100%,370px); } #tf{ width:100%; justify-content:center; } #tf .tf{ width:220px; } }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="goal" id="goal"></div>
+    <div id="tf" hidden></div>
+    <div id="hp"></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './sukkah11.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done, TF;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const ans = () => R.kind === 'part' ? R.n - R.a : 10 - R.n;
+function hooks() { const k = ans(); GAME.right = () => FR.fingerTaps(H, k, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, k === 5 ? 4 : k + 1, '#hp').concat([{ tap: '#check' }]); }
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const k = ans();
+  if (H.count() === k) { if (R.kind === 'part') await K.coverPeach(false); const line = R.kind === 'part' ? 'Yes! ' + FR.Word(R.a) + ' and ' + FR.word(k) + ' make ' + FR.word(R.n) + '.' : 'Yes! ' + FR.Word(R.n) + ' and ' + FR.word(k) + ' make ten.';
+    await FR.yes($('check'), line); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++;
+  if (R.kind === 'part') { await FR.say("Let's look under the cover."); await K.coverPeach(false); const g = K.boxCookies(); await K.bumpAll(g, i => FR.say(FR.Word(i + 1) + (i === g.length - 1 ? '.' : ','), { noRepeat: true })); await K.coverPeach(true); }
+  else { await FR.say("Let's look. Count the empty boxes."); for (let i = R.n; i < 10; i++) { TF.cell(i).classList.add('lit'); await FR.say(FR.Word(i - R.n + 1) + (i === 9 ? '.' : ','), { noRepeat: true }); } TF.el.querySelectorAll('.lit').forEach(c => c.classList.remove('lit')); }
+  H.set(0); await FR.say('Show me again.'); open();
+}
+const PLAN = [{ kind: 'part', n: 5, a: 3 }, { kind: 'ten', n: 7 }, { kind: 'part', n: 4, a: 1 }, { kind: 'ten', n: 6 }, { kind: 'part', n: 5, a: 4 }, { kind: 'ten', n: 9 }];
+function play(F, i) {
+  return new Promise(async res => {
+    R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
+    if (R.kind === 'part') { $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(R.n); K.showPlate(true); K.setCookies(R.n); await F.say(F.Word(R.n) + ' cookies in all. Watch!'); for (let j = 0; j < R.n - R.a; j++) await K.takeCookie();
+      await K.coverPeach(true); await F.say('Some are under the cover. ' + F.Word(R.a) + (R.a === 1 ? ' is' : ' are') + ' on the blue plate.'); open(); await F.say('How many hide? Show me.', { repeat: F.Word(R.n) + ' in all. ' + F.Word(R.a) + ' I see. How many hide?' }); }
+    else { $('goal').hidden = true; $('tf').hidden = false; K.showPlate(false); TF.set(R.n); await F.say(F.Word(R.n) + ' in the ten-frame.'); open(); await F.say('How many more make ten? Show me.', { repeat: 'Count the empty boxes. Show me.' }); }
+  });
+}
+FR.game({
+  id: 'u11-review', title: 'Review Time', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""><img src="art/avi-happy.png" alt=""></div>',
+  init() { K = mount($('world'), { band }); K.setBoys(0); TF = U5.frame(0, false); $('tf').appendChild(TF.el); H = FR.fingers(0, true); $('hp').appendChild(H.el); $('check').addEventListener('click', check); },
+  demo: async F => {
+    R = { kind: 'demo' }; $('goal').hidden = true; $('tf').hidden = false; K.showPlate(false); TF.set(8); await F.say('Review time! Watch me. Eight in the ten-frame.');
+    await F.say('Two boxes are empty. Two more make ten!'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); await F.handTap(); H.set(2); await F.handTo($('check')); await F.handTap(); F.handHide(); H.set(0);
+    $('tf').hidden = true; $('goal').hidden = false; $('goal').innerHTML = U5.num(3); K.showPlate(true); K.setCookies(3); await K.takeCookie(); await K.coverPeach(true);
+    await F.say('Three cookies. One went under the cover.'); await F.say('I see two. One is hiding!'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); await F.handTo($('check')); await F.handTap(); F.handHide(); await K.coverPeach(false); await F.say('Yes! Two and one make three.'); H.set(0);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You remember so much!' : 'Good work! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
