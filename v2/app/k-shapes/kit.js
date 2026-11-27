@@ -933,7 +933,8 @@ export function startGame(cfg) {
   async function patternLesson() {
     const L = cfg.patternLesson; setPattern({ seq: L.seq, blanks: 0, tray: [] });
     camTo('close', 10);
-    PS.parts.forEach(p => { if (p.isGroup || p.isMesh) { p.position.z += 1.0; p.position.y += 0.3; } });
+    const LKB = tall ? 1.3 : 1;   /* phone: the lesson row was a thin strip with empty screen below; bigger and a little lower (review round 3) */
+    PS.parts.forEach(p => { if (p.isGroup || p.isMesh) { p.position.z += 1.0; p.position.y += tall ? 0.1 : 0.3; if (LKB !== 1) { p.position.x *= LKB; p.scale.multiplyScalar(LKB); } } });
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, () => sing(null, L.say), 'The same part repeats!',
       () => coreGlow(true), L.coreLine, () => wait(500), () => coreGlow(false),
       'Your turn! Tap each one to sing.', () => { setName('tap'); task = ['Tap each one.']; return tapBeads(); }, () => { setName('learn'); task = null; },
