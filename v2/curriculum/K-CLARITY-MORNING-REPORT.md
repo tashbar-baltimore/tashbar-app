@@ -38,7 +38,13 @@ A look link refreshes itself after each change once the tests pass (about an hou
 
 ## Reviewer scores
 
-(Filled in when the independent reviews finish: every game must score 4 or 5.)
+Fresh reviewers who built none of the games score each one 1–5: "Would a 5-year-old know exactly what to do, and what is taught, without an adult?" A game is ready only at 4 or 5. Full tables are in each branch's `K-CLARITY-CHECKLIST.md`.
+
+**Shapes (25 games).** Round 1: Find the triangles, Find the hexagons, What comes next? and Heavy and light scored 4; the other 21 scored 3, none lower. Every problem they named was fixed (plain tick and X buttons, every side lights when the voice says "sides", the first wrong move shows how, cones stand up, a real balloon against rocks, no kite that fits the rectangle clue, calmer backdrops, bigger phone pieces). Round 2 is being scored.
+
+**Numbers (Units 1–8).** Round 1: most games 4, some 3, one 2 (Unit 6 review). Round 2, after fixes: Units 1–5 and 8 all 4 or 5. Seven games were still 3 (Unit 2 skip counting; Unit 6 steps and find the mistake; Unit 7 pairs, one more or less, find the mistake, review). All seven were fixed (Mendy's footprints start at his picture, one tap pairs an apple, a "Watch me" before Ari's mistake, apples never overlap) and are being scored again.
+
+(This section is updated as each round finishes.)
 
 ## Could not fix, or needs your decision
 
