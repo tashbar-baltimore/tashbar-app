@@ -42,3 +42,9 @@
 
 ## What's next
 Unit 7: Tzadik, Kuf, Reish (צ ק ר), with Daled and Reish as look-alikes.
+
+## English picture words (Head of School, 2026-11-26)
+The boys' first language is English, so every picture now goes with the letter its **English** name starts with (a dog goes to Daled). The Hebrew picture words above (and in "For the rebbe") are no longer used.
+- Story: the sun (Samech), quiet Ayin with no picture, a pear (Pei), then Fei from Pei losing its dot. Sound Match: sun, sock (Samech); pear, peacock (Pei); fish, flower (Fei).
+- Ches and Tzadik have no English word with their sound, so they use words every boy knows: challah and tzitzis. Alef and Ayin are quiet and have no picture.
+- **For the rebbe:** please confirm challah (Ches) and tzitzis (Tzadik) as the picture words, and that teaching "dog starts with d" now is fine (the map had first sounds with the nekudos).

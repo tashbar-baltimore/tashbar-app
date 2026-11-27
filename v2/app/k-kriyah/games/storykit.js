@@ -58,7 +58,7 @@ export function makeStory(E, unit, script) {
   const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6), q)); };
   const say = async (who, line) => { if (who) { who.mood('wave'); setTimeout(() => who.mood('calm'), 1100 * E.F); } await E.say(line); };
   return async () => {
-    boy.position.set(P ? -1.1 : -2.0, 0, 1.4); if (grown) grown.position.set(P ? -1.85 : -3.9, 0, P ? .2 : .6); if (P) { boy.scale.setScalar(.75); if (grown) grown.scale.multiplyScalar(.75); }   /* on a phone both are smaller, clear of the big letter */
+    boy.position.set(P ? -.85 : -2.0, 0, P ? 3.0 : 1.4); if (grown) grown.position.set(P ? -1.5 : -3.9, 0, P ? 2.2 : .6); if (P) { boy.scale.setScalar(.95); if (grown) grown.scale.multiplyScalar(.9); }   /* on a phone they stand in front, big enough to see (reviewer: they were tiny) */
     E.setProgress(steps, 0);
     for (const line of script.intro) await say(boy, line);
     for (const [si, st] of script.steps.entries()) {
@@ -108,10 +108,10 @@ export function makeStory(E, unit, script) {
     }
     E.setProgress(steps, steps - 1);
     /* every letter so far, right to left (two lines on a phone when there are many), and the chant */
-    const all = script.row || [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .68 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (script.row ? .52 : many ? .4 : .46) : (many ? .62 : .82);
-    const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 3 : all.length > 12 ? 2 : 1, per = script.row ? Math.ceil(Math.ceil(all.length / nl) / 2) * 2 : Math.ceil(all.length / nl),   /* partners in pairs never split across two lines */ lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
+    const all = script.row || [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .66 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (script.row ? .52 : many ? .4 : .46) : (all.length > 20 ? 1.0 : many ? .62 : .82);   /* a wide gap when there are many, so no two letters touch (reviewer) */
+    const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 4 : all.length > 12 ? 2 : 1, per = script.row ? Math.ceil(Math.ceil(all.length / nl) / 2) * 2 : Math.ceil(all.length / nl),   /* partners in pairs never split across two lines */ lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
     lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (ks.length - 1);
-      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 2 ? 3.15 - li * 1.3 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
+      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 3 ? 3.45 - li * 1.05 : lines.length > 2 ? 3.15 - li * 1.3 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
     E.setProgress(steps, steps);
     await E.say(script.chantLine || 'Let’s sing the Alef-Beis so far!');
