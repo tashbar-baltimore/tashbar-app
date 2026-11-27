@@ -33,7 +33,7 @@ export function mount(host, opt) {
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), new THREE.MeshStandardMaterial({ color: '#D8C3A0', roughness: 0.9 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -2.6; floor.receiveShadow = true; scene.add(floor);
   if (!FAST) tex(['sukkah-panorama.jpg', 'garden-panorama.jpg'], t => { t.wrapS = THREE.MirroredRepeatWrapping; t.repeat.x = -2; t.offset.x = 1; const R = 24, span = 2.8, H = R * span / 2 * t.image.height / t.image.width;
     const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, color: '#F2F2F2' }));
-    back.position.set(0, H * 0.4 - 2.6, 4); scene.add(back); });
+    back.position.set(0, H * 0.4 - 2.6, 16); scene.add(back); });   /* the sukkah walls stand close behind the table */
   const TW = 9.5, TD = 4.6;
   const woodMat = new THREE.MeshStandardMaterial({ color: '#C79A68', roughness: 0.6 }); tex(['counter-wood.jpg', 'table-wood.jpg'], t => { woodMat.map = rep(t, 2, 1); woodMat.color.set('#FFFFFF'); woodMat.needsUpdate = true; });
   const top = new THREE.Mesh(new THREE.BoxGeometry(TW, 0.25, TD), woodMat); top.position.y = -0.13; top.receiveShadow = true; top.castShadow = true; scene.add(top);
@@ -66,7 +66,7 @@ export function mount(host, opt) {
   { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.85, 0.08, 40), new THREE.MeshStandardMaterial({ color: '#FFD3B0', roughness: 0.3 })); p.position.y = 0.04; p.castShadow = true; box.add(p); }   /* a small peach plate: the eaten ones */
   let cookies = [], gone = [];
   const cloche = new THREE.Group(); cloche.visible = false; box.add(cloche);   /* a shiny silver serving cover with a round knob: clearly a cover */
-  { const cm = new THREE.MeshStandardMaterial({ color: '#C9D3E0', roughness: 0.22, metalness: 0.75 }); const d = new THREE.Mesh(new THREE.SphereGeometry(1.15, 40, 18, 0, Math.PI * 2, 0, Math.PI / 2), cm); d.scale.set(1, 0.62, 1); d.castShadow = true; cloche.add(d);
+  { const cm = new THREE.MeshStandardMaterial({ color: '#DCE3EC', roughness: 0.3, metalness: 0.15 }); const d = new THREE.Mesh(new THREE.SphereGeometry(1.15, 40, 18, 0, Math.PI * 2, 0, Math.PI / 2), cm); d.scale.set(1, 0.62, 1); d.castShadow = true; cloche.add(d);
     const knob = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 12), cm); knob.position.y = 0.78; cloche.add(knob); const rim = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.05, 10, 48), cm); rim.rotation.x = Math.PI / 2; cloche.add(rim); }   /* a cover for the peach plate (hidden part) */
   const cookiePos = (j, n) => new THREE.Vector3(((j % 3) - (Math.min(3, n - Math.floor(j / 3) * 3) - 1) / 2) * 0.8, 0.14, n > 3 ? (j < 3 ? -0.38 : 0.38) : 0);
 
@@ -82,7 +82,8 @@ export function mount(host, opt) {
     const size = Math.max(d.min, ((v2.x + 1) / 2 * Wd - cx) * 2), out = cx < 0 || cx > Wd || cy < 0 || cy > Hh; d.el.style.display = out ? 'none' : ''; d.el.style.width = d.el.style.height = size + 'px'; d.el.style.left = (cx - size / 2) + 'px'; d.el.style.top = (cy - size / 2) + 'px'; }); }
 
   const bits = [], COL = ['#FF7FA8', '#FFD23D', '#FFFFFF', '#B98CFF', '#7FD67A', '#7FC8FF'];
-  function sparkle(x, z) { if (FAST) return; const g = new THREE.SphereGeometry(0.06, 8, 6); for (let i = 0; i < 24; i++) { const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: COL[i % 6] })); m.position.set(x || 0, 1.2, z || 0);
+  function sparkle(x, z) { return;   /* no flying bits (Esti): the frame's star is the reward */
+    if (FAST) return; const g = new THREE.SphereGeometry(0.06, 8, 6); for (let i = 0; i < 24; i++) { const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: COL[i % 6] })); m.position.set(x || 0, 1.2, z || 0);
     m.userData.v = new THREE.Vector3((Math.random() - .5) * .08, .07 + Math.random() * .05, (Math.random() - .5) * .08); m.userData.t = 0; scene.add(m); bits.push(m); } }
 
   /* ---------------- camera ---------------- */
