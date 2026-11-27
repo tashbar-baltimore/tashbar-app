@@ -835,7 +835,7 @@ export function startGame(cfg) {
     mesh.userData.shape = o; shapes.push(o); return o;
   }
   const STR = () => tall ? { y: 1.5, z: -0.7, sp: 0.56, copyZ: 0.5 } : { y: 1.7, z: -0.2, sp: 1.08, copyZ: 1.2 };
-  function slotAt(i, n, z) { const S = STR(); return new THREE.Vector3((i - (n - 1) / 2) * S.sp, S.y, z == null ? S.z : z); }
+  function slotAt(i, n, z) { const S = STR(), sp = tall && n > 1 ? Math.min(S.sp, 3.2 / (n - 1)) : S.sp; return new THREE.Vector3((i - (n - 1) / 2) * sp, S.y, z == null ? S.z : z); }   /* phone: a long row (8) closes up a little so its ends stay on screen (review round 2) */
   function trayAt(i, n) { const z = tall ? 2.0 : 2.9, sp = tall ? 0.95 : 1.6;   /* phone: close enough that the outer pieces stay on screen */ return new THREE.Vector3((i - (n - 1) / 2) * sp, 0.9, z); }
   function stringAt(n, z) {
     const S = STR(), len = (n - 1) * S.sp + 1.2;
@@ -890,13 +890,13 @@ export function startGame(cfg) {
   }
   const wordsOf = (seq, k) => seq.slice(0, k).map(t => BEADS[t].word).join(', ');
   let glowHeld = false;   /* pictures (shot=1): the help glow stays until his next touch, like the hand */
-  function coreGlow(on) { const c = PS.R.core || 2; (PS.R.copy && PS.model && PS.model.length ? PS.model : PS.beads).slice(0, c).forEach(m => { if (m.userData.glow) { m.userData.glow(on); return; } m.material.emissive = new THREE.Color(on ? '#FFC400' : '#000000'); m.material.emissiveIntensity = on ? 0.5 : 0; }); }   /* world items glow with a soft halo behind them, so their own colour never changes (a red car stays red) */
+  function coreGlow(on) { const c = PS.R.core || 2; (PS.R.copy && PS.model && PS.model.length ? PS.model.slice(Math.min(PS.next, PS.model.length - 1), Math.min(PS.next, PS.model.length - 1) + 1) : PS.beads.slice(0, c)).forEach(m => { if (m.userData.glow) { m.userData.glow(on); return; } m.material.emissive = new THREE.Color(on ? '#FFC400' : '#000000'); m.material.emissiveIntensity = on ? 0.5 : 0; }); }   /* world items glow with a soft halo behind them, so their own colour never changes (a red car stays red) */
   function patternRound(R, bonus, help) {
     return new Promise(resolve => {
       setName(bonus ? 'bonus' : 'find'); dots(2); setPattern(R); allow = true;
       const ask = [R.fixAt != null ? 'Find the wrong one. Put the right one on it.' : R.copy ? 'Make the same pattern below.' : 'What comes next?']; task = ask;
       idleFn = n => { const t = shapes.find(o => o.box === 0 && !o.inBox); if (!t) return; W.reminders = (W.reminders || 0) + 1;
-        play(n === 1 ? [() => sing(), ...ask, () => pointAt(t)] : [cfg.hint2, () => pointAt(t)]); };
+        play(n === 1 ? [() => (R.copy ? sing(0, null) : sing()), ...ask, () => pointAt(t)] : [cfg.hint2, () => pointAt(t)]); };   /* copy: sing Mendy's row, not his half-made one */
       idle();
       onDrop = (o, bi) => {
         idle();
