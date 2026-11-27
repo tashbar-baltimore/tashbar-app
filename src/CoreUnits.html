@@ -44,7 +44,10 @@
   };
   U.add = function (u) { var e = U.err(u); if (e) { console.error('Unit ' + (u && u.id) + ': ' + e); return false; } if (BY[u.id]) return false;
     BY[u.id] = u; LIST.push(u); u.skills.forEach(function (id) { if (!OF[id]) OF[id] = u.id; }); return true; };
-  function prevUnit(u) { var same = LIST.filter(function (x) { return x.c === u.c && x.id.split('.')[0] === u.id.split('.')[0]; }), i = same.indexOf(u); return i > 0 ? same[i - 1] : null; }
+  /* the unit before this one: same job and subject, in unit-id order (W13.U31 < W13.U32 < W13.U34), not file-load order. A helper's file
+     can load after a later unit's file (W13.U32 loads after W13.U36), and load order then chained Grade 2 Unit 5 behind Grade 3 Unit 6. */
+  function prevUnit(u) { var same = LIST.filter(function (x) { return x.c === u.c && x.id.split('.')[0] === u.id.split('.')[0]; }).sort(function (a, b) { return a.id < b.id ? -1 : a.id > b.id ? 1 : 0; }), i = same.indexOf(u); return i > 0 ? same[i - 1] : null; }
+  U.prev = function (u) { return prevUnit(typeof u === 'string' ? BY[u] : u); };   /* for the tests */
 
   /* ---------- questions: from the skill's own check questions (choose one, or put in order), or unit.items ---------- */
   function fromSkill(id, used) {

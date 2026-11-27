@@ -44,5 +44,16 @@ CORE_SKILLS.W13 = [
   ["WRIT.PARA.L03.15", "Friendly Letter", "Write a friendly letter with all five parts: date, greeting, body, closing, name", { after: "WRIT.ESSAY.L03.07", std: "L.2.2b", file: "CoreDataW13H5", min: 7 }],
   ["WRIT.RES.L03.01", "Find It in a Book", "Find the answer to a question in a book: key word, look, check", { std: "W.2.8", file: "CoreDataW13H5", min: 7 }],
   ["WRIT.RES.L03.02", "Fact Notes", "Take notes as a few key words, not whole copied sentences", { std: "W.2.8", file: "CoreDataW13H5", min: 7 }],
-  ["WRIT.PARA.L03.16", "Book Response", "Tell his opinion of a book and prove it with a detail from the book", { std: "W.2.1", file: "CoreDataW13H5", min: 7 }]
+  ["WRIT.PARA.L03.16", "Book Response", "Tell his opinion of a book and prove it with a detail from the book", { std: "W.2.1", file: "CoreDataW13H5", min: 7 }],
+  ["WRIT.ESSAY.L04.01", "POW + WWW", "Plan a story with POW and the W-W-W questions", { before: "WRIT.ESSAY.L04.03", std: "W.3.3", file: "CoreDataW13H6", min: 8 }],
+  ["WRIT.PARA.L04.05", "Set the Scene", "Start a story with the character, the place and the problem", { after: "WRIT.ESSAY.L04.01", std: "W.3.3a", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.06", "Talking Characters", "Let characters talk, with quotation marks around their exact words", { after: "WRIT.PARA.L04.05", std: "W.3.3b", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.07", "Show the Feeling", "Show a feeling with what a character does and thinks", { after: "WRIT.PARA.L04.06", std: "W.3.3b", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.08", "Then, Later, Finally", "Tell events in order with time words", { after: "WRIT.PARA.L04.07", std: "W.3.3c", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.09", "Wrap the Story", "End a story so the problem is solved and the reader feels it is finished", { after: "WRIT.PARA.L04.08", std: "W.3.3d", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.ESSAY.L04.02", "TREE Plan", "Plan an opinion piece with TREE: Topic sentence, Reasons, Explain, Ending", { after: "WRIT.PARA.L04.09", std: "W.3.1", file: "CoreDataW13H6", min: 8 }],
+  ["WRIT.PARA.L04.10", "Introduce the Topic", "Open an opinion piece by naming the topic and stating his opinion", { after: "WRIT.ESSAY.L04.02", std: "W.3.1a", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.11", "Reasons That Support", "Give reasons that really support the opinion", { after: "WRIT.PARA.L04.10", std: "W.3.1b", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.12", "Linking Words", "Link opinion and reasons with because, therefore, since and for example", { after: "WRIT.PARA.L04.11", std: "W.3.1c", file: "CoreDataW13H6", min: 7 }],
+  ["WRIT.PARA.L04.13", "Concluding Statement", "End an opinion piece with a strong concluding statement", { after: "WRIT.PARA.L04.12", std: "W.3.1d", file: "CoreDataW13H6", min: 7 }]
 ];

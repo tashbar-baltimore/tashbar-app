@@ -48,7 +48,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | C68 | Adapted public-domain works W5 (Verne), W8 (Conan Doyle), W9 (Stevenson) | TAKEN | https://claude.ai/code/session_01HB2X6bSQzNgF7tdfvDKRX2 | 2026-11-25 15:30 UTC: all 24 chapters written (W5 ch. 1–8, W8 ch. 1–8 with "The Norwood Builder" in place of "The Speckled Band", W9 ch. 1–8), 24 chapter lessons written (W5 READ.LIT.L08.13–.20, W8 READ.LIT.L09.14–.21, W9 READ.LIT.L09.22–.29; files `src/CoreDataC68H3.html`–`H5`). In independent review round 2. Next: PR per book, W5 first |
 | W13 | Grade 3, Units 4–6 (lessons, pieces and unit checks; see `docs/core-growth/W13-map.md`) | DONE | https://claude.ai/code/session_013qbMrdsiEQhQo95b1BXLKx, continued by https://claude.ai/code/session_01Cri5bRNWq3iaU3DM4mmDKK | 2026-11-26: DONE, all live. Unit 4 "Explain It" (5 lessons, unit check W13.U34, "How It Works" piece; #531, unit-check fix #554). Unit 5 "Little Researcher" (4 lessons, article W13.LEAF.01, unit check W13.U35, research report; #556). Unit 6 "Revise, Edit, Publish" (ARMS, COPS, Letter to a Reader, unit check W13.U36, letter piece; this PR). Picture orders W13H3-1 (6, #553) and W13H3-2 (7) live. Each lesson reviewed 4–5 on the 9 points. Cursive waits for job T. |
 | W13 | Grade 2, Units 5–6 | DONE | https://claude.ai/code/session_01NmKrTgJF1XAzG4XXvdhWaL, continued by https://claude.ai/code/session_01Cri5bRNWq3iaU3DM4mmDKK | 2026-11-26: DONE. Unit 5 "Make It Better" (Add and Cut, CUPS Check, Read It Like a Reader, unit check W13.U25, revise piece 9) live (#565). Unit 6 "Letters and Research" (Friendly Letter, Find It in a Book, Fact Notes, Book Response, article W13.BIRD.01, unit check W13.U26, letter piece 11) in this PR. Each lesson reviewed 4–5 on the 9 points. Picture order W13H4-1 (7) sent; the pictures go in with their own PR. |
-| W13 | Grade 3, Units 2–3 ("Real Stories" W.3.3, pieces 3–5, unit check W13.U32; "Opinion with Reasons" W.3.1, pieces 6–7, unit check W13.U33; see `docs/core-growth/W13-map.md`) | TAKEN | https://claude.ai/code/session_01NmKrTikPvniRoToxpkoi32 | 2026-11-26 16:00 UTC: claimed; nothing of it is in src/ (grep for the ids and W13.U32/U33). Building Unit 2 first, then Unit 3, one PR each, in `src/CoreDataW13H6.html` |
+| W13 | Grade 3, Units 2–3 ("Real Stories" W.3.3, pieces 3–5, unit check W13.U32; "Opinion with Reasons" W.3.1, pieces 6–7, unit check W13.U33; see `docs/core-growth/W13-map.md`) | DONE | https://claude.ai/code/session_01NmKrTikPvniRoToxpkoi32 | 2026-11-26 21:20 UTC: DONE, all live. Unit 2 "Real Stories" (6 lessons, unit check W13.U32, story piece W13.STORY3.01, #584); Unit 3 "Opinion with Reasons" (5 lessons, unit check W13.U33, piece W13.OPIN3.01, #596) |
 | W13 | K–1 picture-piece prompts (60), ready for job T's K–1 writing step | OPEN | | |
 | W13 | Grade 2–3 quick-write prompts (80, two per C23 text) | OPEN | | |
 
@@ -67,15 +67,15 @@ The F and C jobs list texts that the G and W jobs may use for "his own sentence"
 |---|---|---|---|---|
 
 ## Ledger (core hours built / target, per grade)
-_Written by `node tools/core/ledger.js --write` on 2026-11-24 06:01 UTC: hours of new Core Growth learning that is built (lessons, texts, unit checks)._
+_Written by `node tools/core/ledger.js --write` on 2026-11-26 20:15 UTC: hours of new Core Growth learning that is built (lessons, texts, unit checks)._
 | Grade | Foundations | Comprehension | Grammar and words | Writing | Total built | Target |
 |---|---|---|---|---|---|---|
-| K |  |  |  |  | 0 | 68 |
+| K | 4.1 |  |  |  | 4.1 | 68 |
 | 1 |  |  |  |  | 0 | 68 |
-| 2 | 0.3 |  |  |  | 0.3 | 90 |
-| 3 |  |  |  |  | 0 | 90 |
-| 4 |  |  |  |  | 0 | 90 |
-| 5 |  |  |  |  | 0 | 90 |
-| 6 |  |  |  |  | 0 | 90 |
-| 7 |  |  |  |  | 0 | 90 |
-| 8 |  |  |  |  | 0 | 90 |
+| 2 | 7.3 | 1.4 | 1.6 | 2.4 | 12.7 | 90 |
+| 3 |  |  | 1.9 | 4.8 | 6.8 | 90 |
+| 4 |  | 17.7 | 2.4 | 3.4 | 23.5 | 90 |
+| 5 |  | 17.4 | 1.9 | 3.2 | 22.6 | 90 |
+| 6 |  |  | 1.7 | 3.0 | 4.7 | 90 |
+| 7 |  | 6.3 | 1.5 | 2.8 | 10.5 | 90 |
+| 8 |  | 6.3 | 1.9 | 2.3 | 10.5 | 90 |

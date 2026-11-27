@@ -6,6 +6,140 @@ Job V builds no lessons and never reviews its own work. It scores every job's le
 
 ---
 
+## Round 2 (part B1c) · 2026-11-26 · G and W48
+
+### For the Head of School (plain words)
+
+Rabbi Khaver: **the new Grammar lessons are uneven, and the new Writing lessons for Grades 4–8 are not yet at your bar.**
+
+- **Grammar (G): 22 of 53 new lessons pass every point (42%).**
+  - The Grade 2–4 lessons are good: 13 of 18 pass.
+  - From Grade 5 up they get weaker. Only 2 of the 17 Grade 7–8 lessons pass.
+  - Why: the end-of-lesson check often repeats an answer the boy has already seen, or gives only two choices.
+  - Ten Grade 7–8 lessons are all built the same way, and that shape is too easy for those grades.
+- **Writing for Grades 4–8 (W48): 0 of 63 new lessons pass.**
+  - The writing is warm and the examples are good.
+  - But every lesson uses only match, sort and tile games, and the boy never writes.
+  - These are the same two problems the first review found on 24 Nov. These lessons were built after it, and they repeat them.
+  - Gap A3b (in progress) adds the real writing pieces. W48 also needs harder activity kinds.
+- **A boy can be marked wrong, or is told to do something he cannot see, in 13 places. I checked each one in the code.**
+  - Grammar (2): a Yosef "coat of many colors" card keyed the wrong way, and "busy as a bee", where "idiom" is also right.
+  - Writing (11):
+    - Four checks tell him to "leave out" a line that never appears (the same bug as the first review).
+    - Two checks have two right orders.
+    - Two checks have a second fair answer.
+    - Four activities ask about an article or a source the lesson never shows him.
+
+### Results by job
+
+| Job | Scored | Pass | % | Detail |
+|---|---|---|---|---|
+| G · Grammar and words | 53 | 22 | 42% | `reviews/R2-G.md` |
+| W48 · Writing Gr 4–8 | 63 | 0 | 0% | `reviews/R2-W48.md` |
+| **All (B1c)** | **116** | **22** | **19%** | |
+
+### URGENT (each one checked again in the code; full rows and copy-ready fixes in the detail files)
+
+| Item | Job | Problem |
+|---|---|---|
+| `READ.VOC.L08.05` do 2 | G | "A coat of many colors means a very colorful coat." is keyed Right (it points to Yosef) |
+| `READ.VOC.L08.01` check | G | "busy as a bee" keyed simile; "idiom" is defensible |
+| `WRIT.PARA.L08.08`, `.L08.10`, `.L08.11` check 3 | W48 | "Leave out the …" line is never shown (`order` ignores `extra`) |
+| `WRIT.ESSAY.L08.07` check 3 | W48 | Two right orders, and an unseen "leave out" line |
+| `WRIT.PARA.L05.18` check 3 | W48 | Two right orders; `L06.12` keys the other one right |
+| `WRIT.PARA.L06.09` check 2 | W48 | "so the reader remembers it" is defensible |
+| `WRIT.ESSAY.L06.06` your 4, `WRIT.PARA.L06.10` do 2 | W48 | Keyed against an article the boy never sees |
+| `WRIT.RES.L05.03` your 3, `WRIT.RES.L06.02` your 3 | W48 | He is never shown which source said what |
+| `WRIT.RES.L07.02` check 1 | W48 | A definition keyed "quote it"; "paraphrase" is also right |
+
+**For job T (tests):** a test that fails any engine `order` check whose hint says "leave out" while the question has an `extra` would stop this bug from coming back a third time.
+
+### How part B1c was done
+- **What was scored:**
+  - Every G and W48 lesson live on `origin/main` at 26 Nov 19:08 UTC that Round 1 did not score.
+  - The 10 G Grade 6–8 lessons rebuilt after Round 1.
+  - Not scored again: the Round 1 ✗ lessons, which are gap B2c (G) and the fresh re-scores in #497 and #518 (W48).
+- **The checks:** `tools/audit/unitpool.js` dumped every distinct check question each lesson can draw (25 builds per skill).
+- **The reviewers:** 7 fresh reviewers each scored one batch. None of them, and not this builder, wrote any of these lessons.
+- **What a boy sees:** one lesson per job was played as a made-up TEST- boy at both sizes, to Level clear. Pictures: `docs/screens/b1c-r2/`.
+
+---
+
+## Round 2 (B1a) · 2026-11-26 · job F, all K–1 games, W13, their unit checks and book texts
+
+### For the Head of School (plain words)
+
+Rabbi Khaver: **the new K–3 work is mostly sound, but 12 places can mark a boy wrong for a right answer (one more blocks a letter from being sent), and the boss levels repeat questions he has just answered.**
+
+- **Lessons:** 30 of 39 new lessons pass every point (F 17 of 24, W13 13 of 15). Almost every failure is the same thing: the check question was already answered in the lesson's own practice.
+- **K–1 games:** 84 of 104 pass. The common problems: a "How" line read aloud that is longer than 12 words, and a few picture choices with two right answers.
+- **Boss levels (unit checks):** 0 of 11 pass. None is wrong at the root, but each repeats the questions the boy just answered in his lessons, and some are half 2-choice guesses. The writing pieces in the W13 units are all sound.
+- **Books:** 31 of 38 pass. Seven Kindergarten books use "see" and "to", which the K path does not teach yet.
+- No Divine Name, nothing immodest, all food kosher.
+
+### Results
+
+| Part | Items | Pass (all points 4–5) | Detail |
+|---|---|---|---|
+| F · Grade 2 lessons (new since Round 1) | 24 | 17 | `reviews/R2-F.md` |
+| W13 · Grade 3 lessons (new since Round 1) | 15 | 13 | `reviews/R2-W13.md` |
+| K–1 games (F, FH helpers, W13) | 104 | 84 | `reviews/R2-K1-games.md` |
+| Unit checks F.U21–U26, W13.U21/31/34/35/36 | 11 | 0 | `reviews/R2-units-texts.md` |
+| Book texts (texts/F, FH1, W13) | 38 | 31 | `reviews/R2-units-texts.md` |
+
+### URGENT: a boy can be marked wrong for a right answer (each checked by V against the data and the code)
+
+| Where | Problem | Fix |
+|---|---|---|
+| **All unit checks** (`src/CoreUnits.html` `fromSkill`, line 55) | A lesson check with a picture-only `pic` loses its picture in the boss level, so "Build the word for the picture" has no picture. In **F.U22** (READ.LV.L03.01) **s-n-oo-p** and in **F.U24** (READ.PHON.L03.03) **c-a-f-e** are real words that are marked wrong. | One engine fix: keep a picture-only `pic` in unit checks (show it), or leave out questions that need their picture. Then re-check both units. |
+| `READ.PHON.L01.07` act 1 (K game) | Shows and says **am**, but the answer is **at**; the tiles include m, so "am" can be built and is marked wrong. Seen on screen. | Remove `q`; say `Shmuli read am. Now tap Hear it, and build that word!` |
+| `READ.PHON.L01.10` act 1 (K game) | Same pattern: shows **pin**, answer **tip**, tiles include n. | Remove `q`; say `Shmuli read pin. Now tap Hear it, and build that word!` |
+| `READ.LV.L01.12` sort (K book game) | "Gad got a rag." is keyed thumbs-down, but Gad does get a rag in the earlier book *The Wet Dog* (FH1.K.22), and the game never says "in this book". | Change the card to "Gad got a fan." |
+| `READ.PA.L02.20` sort (Gr 1) | 🐱 is keyed one beat (cat), but many boys say "kitty" (two beats). | Use 🌙 (moon). |
+| `READ.LIT.L01.01` match (listen-along) | 🧔 Abba is keyed to 🎒, but Abba also walked Eli to school (🏫); each pair is marked as he taps it. The How line helps, but the pair is defensible. | Pair 👨‍🏫 (Rebbe) with 🎵 (he taught the song) instead of 🏫. |
+| `READ.LIT.L01.02` match (listen-along) | 😴 is keyed to 🌙, but Baby Moishy falls asleep in the sukkah (🛖), so that pair is defensible too. | Use 🦉 with 🌙. |
+
+### Cross-check with a second independent pass (more URGENT lines, each checked by V in the code)
+
+A second builder session (claim #560) made its own full pass of B1a before stepping aside. Its notes are on branch `claude/awesome-feynman-kwbk84-b1a` (`docs/core-growth/reviews/R2-F.md`, `R2-W13.md`, pictures in `docs/screens/b1a-r2/`). Both passes found the unit-check pictures, `READ.PA.L02.20` 🐱 and `READ.LIT.L01.02` 😴. It also found these, and V checked each one:
+
+| Where | Problem | Fix |
+|---|---|---|
+| **W13.U36** letter piece `W13.LETT3.01` (`src/CoreDataW13H3.html` around line 241) | The boy cannot send it. Every checklist line must pass before Send (`src/CoreWrite.html` line 122). The greeting line accepts only "dear", and the closing line has no "thank you,", yet the unit's own lessons teach "Thank you," as a closing (line 84) and show "Hi Avi" (line 90). A boy who follows the lesson is stuck on Fix. | Greeting `any: ['dear', 'hi', 'hello', 'to ']`; closing `any: ['love,', 'student,', 'respectfully,', 'sincerely,', 'thanks,', 'thank you,', 'your friend,']`. |
+| `READ.PA.L01.15` sort (K, `src/CoreDataFH1.html` line 196) | 🐱 is keyed 3 sounds (cat), but "kitty" has 4. | Replace 🐱 with 🚌 (bus: 3 sounds, b-u-s). |
+| `READ.FLU.L02.23` match (Gr 1) | "friend" = 👦👦 and "people" = 👥, but two boys are also people; each pair is marked as he taps it. | Use 🤝 for friend. |
+| `READ.PA.L01.14` piece 5 (K) | "Big, change the middle to uh" is keyed 🐛, but 🐝 is also a bug. | Use pin → pan instead. |
+| `READ.PHON.L01.16` piece 4 (K) | 🐸 is keyed fff (frog), but a boy may say "toad". | Use a 🐟 fish for fff. |
+
+Lower, not URGENT (V's view):
+- `WRIT.PARA.L02.06` act 1 (Gr 1): the spoken line is 21 words, and it says the answer ("I felt so happy! How did he feel?"). Fix: hear `Shmuli found his lost kippah. Listen to how he ended it.` and play the ending as its own line.
+- 🦀 is used as a "short a" picture in `READ.PHON.L01.25` and `READ.PA.L01.15` (`src/CoreDataFH1.html` lines 182, 196). It is an animal, not food, so it may be within the rules; V leaves it to the F owner (🎒 and 🧢 already cover short a).
+- For the test owners: `K.err` in `src/CoreK1.html` counts only `say` for the 12-word rule, but `how` and `hear` are spoken too; more than a dozen lines run 13–21 words. And no test checks that a K little reader uses only taught words ("see", "to", and "has"/"his" with s saying zzz appear before they are taught).
+
+### What the boy sees (played as a made-up TEST boy, 1366×768 and 390 px)
+
+I played `READ.FLU.L03.19` (F), `WRIT.PARA.L04.14` (W13) and the K game `READ.PHON.L01.07` at both sizes and looked at every screen.
+- **What works:** clear screens, one main button, the How box on every practice screen, warm Shabbos Street stories.
+- **What is wrong:** the K game shows "am" in big letters over faint "a t" boxes (URGENT above, found only by looking: the reviewer passed it); the "+1" coin lands on a match card for a moment (known, gap B7); the first Watch me step in `READ.FLU.L03.19` ("NAFTALI: Naftali is talking.") teaches very little.
+
+### Problems across jobs
+
+1. **Checks that are not cold (point 7).** Each lesson has exactly 3 check questions and asks all 3 every time, and in 7 lessons they were already answered in practice. The boss levels then ask the same 3 again. Fix per lesson (copy-ready in the detail files); for units, give each unit its own items and set `pre:'lessons'` (see `R2-units-texts.md`).
+2. **2-choice checks** in F.U21, F.U23 and F.U24 (about half): a guesser can pass an 80% bar.
+3. **K–1 How lines over 12 words** (read aloud on every miss) in 6 games.
+4. **The same 7-activity order** in all 12 Grade 2 fluency lessons (point 6 at 4: passes, but flat).
+5. **The right answer is the longest choice** in all 6 of W13.U31's own items (the test rule from #526 lists it as an old unit to fix).
+
+### How round 2 was done
+
+- **What:** every F and W13 lesson on `origin/main` not scored in Round 1 (39), all 104 K–1 games, the 11 F/W13 unit checks and the 38 book texts.
+- **Data:** a script loaded the real boy page as a made-up TEST boy and saved each item's full data, with every distinct check question from 30 builds.
+- **Reviewers:** 6 fresh reviewers in 6 batches, each with the standard, the Round 1 example and the data.
+- **V's checks:** every URGENT claim checked in the data and the code. V added 2 URGENT items the reviewers missed (found by playing a game and then sweeping every tiles activity by script), and downgraded none.
+- **Not done in this round:** re-scores of Round 1's ✗ lessons (they wait for gap B2c), and C45, S, G and W48 (gaps B1b and B1c).
+
+---
+
 ## Round 1 · 2026-11-24 · all 151 live Core Growth lessons
 
 ### For the Head of School (plain words)

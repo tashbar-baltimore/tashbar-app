@@ -78,9 +78,15 @@ async function page(pg) {
       const longest = tap.filter(x => { const o = (x.type === 'cloze' ? x.o : x.p).map(String), k = x.type === 'cloze' ? o.indexOf(String(x.a)) : +x.a; return k >= 0 && o.every((t, i) => i === k || t.length < o[k].length); }).length;
       if (tap.length >= 4 && longest * 2 > tap.length && LONG_OLD.indexOf(u.id) < 0) bad.push(u.id + ': the right answer is the longest choice in ' + longest + ' of ' + tap.length + ' items (a boy who taps the longest answer passes)');
     });
-    if (!picQs) bad.push('no lesson question with a picture was drawn in any unit (the picture rule checked nothing)'); return { bad: bad.filter((x, i, a) => a.indexOf(x) === i), units: U.list.length, lessonQs, picQs }; }, LONG_OLD).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 200)] }));
+    /* the unit-check chain: the "earlier unit" of each unit is the one just before it in id order (same job and subject), never one
+       that only loaded earlier (26 Nov: W13.U32 loads after W13.U36; W13.U25 was chained behind W13.U36) */
+    if (U.prev) U.list.forEach(u => { const want = U.list.filter(x => x.c === u.c && x.id.split('.')[0] === u.id.split('.')[0] && x.id < u.id).sort((a, b) => a.id < b.id ? -1 : 1).pop() || null, got = U.prev(u);
+      if (got !== want) bad.push(u.id + ': its earlier unit should be ' + (want ? want.id : 'none') + ', not ' + (got ? got.id : 'none')); });
+    else bad.push('TLCORE.units.prev is missing');
+    if (!picQs) bad.push('no lesson question with a picture was drawn in any unit (the picture rule checked nothing)');
+    return { bad: bad.filter((x, i, a) => a.indexOf(x) === i), units: U.list.length, lessonQs, picQs }; }, LONG_OLD).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 200)] }));
   live.bad.slice(0, 12).forEach(b => fails.push('live units: ' + b)); if (live.bad.length > 12) fails.push('live units: ... and ' + (live.bad.length - 12) + ' more');
-  if (!live.bad.length) oks.push('unit checks (live units): ' + live.units + ' units, ' + live.lessonQs + ' lesson questions drawn: every passage and every picture (' + live.picQs + ' with a picture) shows; "tap the proof" answers are not all in one place; the longest choice is not the key in most items');
+  if (!live.bad.length) oks.push('unit checks (live units): ' + live.units + ' units, ' + live.lessonQs + ' lesson questions drawn: every passage and every picture (' + live.picQs + ' with a picture) shows; "tap the proof" answers are not all in one place; the longest choice is not the key in most items; each unit’s earlier unit is the one before it in id order');
   for (const vp of [{ width: 1366, height: 768 }, { width: 390, height: 844 }]) {
     await pg.setViewportSize(vp); const at = vp.width + 'px: ';
     const r = await pg.evaluate(async () => {

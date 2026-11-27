@@ -10,7 +10,9 @@ const $ = id => document.getElementById(id), body = document.body, q = location.
 const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let store = null; try { store = localStorage; store.getItem('x'); } catch (e) { store = null; }
 const PRACTICE = '1234', S = { code: '', tries: 0, open: false, stage: 'vault' };
-const GLOBES = { kodesh: '/pics/keser-globe-kodesh.webp', reading: '/pics/keser-globe-reading.webp', math: '/pics/keser-globe-math.webp', science: '/pics/keser-globe-science.webp', writing: '/pics/keser-globe-empty.webp' };
+/* one globe for each place in her world (M. Heinemann 2026-11-26: קודש, General Studies, Timeline); Timeline's clear globe holds its timeline picture */
+const GLOBES = { kodesh: '/pics/keser-globe-kodesh.webp', general: '/pics/keser-globe-reading.webp', timeline: '/pics/keser-globe-empty.webp' };
+const INSIDE = { timeline: '/pics/keser-place-timeline.webp' };
 
 /* ---------- sparkles and soft chimes ---------- */
 const fx = $('fx'), fc = fx.getContext('2d'); let parts = [], run = false;
@@ -74,13 +76,13 @@ function arrive() {
 }
 
 /* ---------- her treasures, turning on a glowing ring (swipe, the arrows, or tap one: it spins to the front and takes her there) ---------- */
-const progress = readProgress(q, store), order = ['kodesh', 'reading', 'math', 'science', 'writing'], N = order.length, globes = [];
+const progress = readProgress(q, store), order = PLACES.map(p => p.id), N = order.length, globes = [];
 let ang = 0, aim = 0, vel = 0, drag = null, moved = false, tilt = 0, tiltAim = 0, idle = 0;
 const STEP = Math.PI * 2 / N, front = () => ((Math.round(-ang / STEP) % N) + N) % N;
 function turnTo(i) { let d = (-i * STEP - aim) % (Math.PI * 2); if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; aim += d; idle = 0; }
 order.forEach((id, i) => { const p = PLACES.find(x => x.id === id), v = progress[id] || 0, b = document.createElement('button');
   b.type = 'button'; b.className = 'globe' + (v > 0 ? '' : ' waiting'); b.style.setProperty('--c', p.color); b.dataset.place = id;
-  b.innerHTML = '<img class="mark" src="/pics/keser-logo-mark.webp" alt=""><img class="orb" src="' + GLOBES[id] + '" alt=""><span>' + p.name + '</span>';   /* the Keser crown mark sits on top of every globe */ b.setAttribute('aria-label', p.name + (v > 0 ? '' : ', waiting for her first treasure'));
+  b.innerHTML = '<img class="mark" src="/pics/keser-logo-mark.webp" alt=""><img class="orb" src="' + GLOBES[id] + '" alt="">' + (INSIDE[id] ? '<img class="inside" src="' + INSIDE[id] + '" alt="">' : '') + '<span' + (p.lang ? ' lang="he" dir="rtl"' : '') + '>' + p.name + '</span>';   /* the Keser crown mark sits on top of every globe */ b.setAttribute('aria-label', (p.label || p.name) + (v > 0 ? '' : ', waiting for her first treasure'));
   b.onclick = () => { if (moved) return; const r = b.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 3, 18, p.color); chime(p.note);
     turnTo(i); setTimeout(() => { location.href = 'world.html?place=' + id; }, calm ? 0 : 750); };
   $('globes').appendChild(b); globes.push(b); });
