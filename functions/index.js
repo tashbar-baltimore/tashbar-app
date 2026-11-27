@@ -14,7 +14,19 @@ const { Firestore } = require('@google-cloud/firestore');
 const vm = require('vm');
 /* Google Drive work is asked of the Apps Script app (apiExport 'drive'). Drive files are kept here for 30 minutes (music, Chumash). */
 const DRIVE_FILES = new Map(); let DRIVE_BYTES = 0;
+/* YOUR CLASSES & BUCKET (src/ClassesBucket.js): worksheet pages and boys' work are files in Cloud Storage (classwork/...).
+   Only the app's own server code asks for them (TL_REMOTE_ 'ycPut' / 'ycGet'), after it has checked who may see them. */
+const CW_KEY = /^(sheets\/[a-f0-9]{12}\/p\d{1,2}|answers\/[a-f0-9]{12}\/[A-Za-z0-9_-]{1,40}\.json)$/;
+async function classwork(name, args) {
+  const key = String(args[0] || ''); if (!CW_KEY.test(key)) throw new Error('Not allowed.');
+  const { Storage } = require('@google-cloud/storage'), obj = new Storage().bucket('tashbar-learning-live-backups').file('classwork/' + key);
+  if (name === 'ycPut') { const buf = Buffer.from(String(args[1] || ''), 'base64'); if (!buf.length || buf.length > 2e6) throw new Error('File too big.');
+    await obj.save(buf, { contentType: /^(image\/(jpeg|png)|application\/json)$/.test(String(args[2])) ? String(args[2]) : 'application/octet-stream', resumable: false }); return { ok: true, size: buf.length }; }
+  try { const [buf] = await obj.download(); const [m] = await obj.getMetadata(); return { type: m.contentType || '', b64: buf.toString('base64') }; }
+  catch (e) { if (e && e.code === 404) return null; throw e; }
+}
 async function driveRemote(name, args) {
+  if (name === 'ycPut' || name === 'ycGet') return classwork(name, args);
   const KEY = process.env.TL_EXPORT_KEY || '';
   if (name !== 'file') return appsScriptResult('apiExport', [KEY, 'drive', name, args]);
   const id = String(args[0]), hit = DRIVE_FILES.get(id); if (hit && Date.now() - hit.at < 1800000) return hit.v;

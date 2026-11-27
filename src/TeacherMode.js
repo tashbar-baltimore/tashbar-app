@@ -78,6 +78,8 @@ function tmExtend(token, id, minutes) {
 function tmMine(token) {
   var sess = msSession_(token); if (!sess || !sess.sid) return null;
   var s = tmRead_().filter(function (x) { return x.sids.indexOf(sess.sid) >= 0; }).pop();
+  /* Your Classes & Bucket (ClassesBucket.js): Mon-Thu 1:20-3:30 the afternoon schedule decides, unless a teacher's live class is newer */
+  var yc = typeof ycMine_ === 'function' ? ycMine_(sess.sid, s || null) : undefined; if (yc !== undefined) return yc;
   if (!s) return null;
   var skills = s.skills || [s.skill], lessons = [];   /* v128 (DECISION 2230): several lessons per class + teacher-made lessons (TCH.*) sent with their questions */
   skills.forEach(function (id) { if (/^TCH\./.test(id) && typeof crLessonBody_ === 'function') { var b = crLessonBody_(id); if (b) lessons.push(b); } });

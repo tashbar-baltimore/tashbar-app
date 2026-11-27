@@ -7,7 +7,7 @@
 if(typeof render!=='function'||typeof startMission!=='function'||typeof A==='undefined') return;
 const TMC={s:null,checked:null,timer:null,done:0,ending:false};
 window.TM_CLASS=()=>TMC.s;
-const SUBJ={MATH:['📐','Math'],READ:['📖','Reading'],WRIT:['✍️','Writing'],LANG:['✍️','Writing'],SCI:['🔬','Science'],ELEC:['⚛️','Electives'],LK:['📜','Limudei Kodesh'],HEB:['📜','Limudei Kodesh · Lashon Hakodesh'],SIM:['😊',"B'Simcha"],SS:['🌎','Social Studies'],COMP:['💻','Computing'],LIFE:['💵','Life and Money'],TCH:['🧑‍🏫','Class lesson']};
+const SUBJ={SHEET:['📝','Worksheet'],MATH:['📐','Math'],READ:['📖','Reading'],WRIT:['✍️','Writing'],LANG:['✍️','Writing'],SCI:['🔬','Science'],ELEC:['⚛️','Electives'],LK:['📜','Limudei Kodesh'],HEB:['📜','Limudei Kodesh · Lashon Hakodesh'],SIM:['😊',"B'Simcha"],SS:['🌎','Social Studies'],COMP:['💻','Computing'],LIFE:['💵','Life and Money'],TCH:['🧑‍🏫','Class lesson']};
 /* v128 (DECISION 2230): a class can have several lessons, and teacher-made lessons (TCH.*) arrive with their questions */
 const SKILLS=()=>TMC.s?(TMC.s.skills&&TMC.s.skills.length?TMC.s.skills:[TMC.s.skill]):[];
 const subjOf=id=>{ const p=String(id).split('.')[0]; return p==='HEB'?'LK':p==='LANG'?'WRIT':p; };
@@ -34,19 +34,53 @@ function css(){ if(document.getElementById('tm-css')) return; const s=document.c
 .tmc .foot{margin:16px 0 22px;color:#6B7280;font:600 15px var(--body,'Barlow'),sans-serif}
 .tmlist{display:grid;gap:10px;margin:16px 18px 4px}.tml{display:flex;align-items:center;gap:14px;width:100%;border:2px solid #E0E7FF;border-radius:18px;background:#F8FAFF;padding:14px 16px;cursor:pointer;text-align:left;font:inherit}.tml:hover{border-color:#818CF8}.tml .ic2{font-size:30px}.tml .tx{flex:1;display:flex;flex-direction:column}.tml b{font:800 19px var(--display,'Barlow'),sans-serif;color:#1E1B4B}.tml small{color:#5B6478;font:600 15px var(--body,'Barlow'),sans-serif}.tml .ar{font-size:22px;color:#6366F1}
 .tmwait{min-height:60vh;display:grid;place-items:center;color:#6B7280;font:700 20px var(--body,'Barlow'),sans-serif}`; document.head.appendChild(s); }
-function lockHTML(){ const s=TMC.s, sk=SKILLS(); if(sk.length>1) return lockManyHTML(); const sj=SUBJ[subjOf(s.skill)]||['📘',s.subj], did=TMC.done>0||(typeof mastered==='function'&&A.st&&mastered(A.st,s.skill));
+/* YOUR CLASSES & BUCKET (ClassesBucket.js): a Teacher Time period shows its own screen, built from the button kit (window.TLK) */
+function ycCss(){ if(document.getElementById('yc-css')) return; const s=document.createElement('style'); s.id='yc-css'; s.textContent=`
+.ycw{min-height:calc(100vh - 40px);display:flex;justify-content:center;align-items:flex-start;padding:28px 16px;box-sizing:border-box;background:#FFFBEB}
+.ycc{width:min(760px,100%)}.ych{text-align:center;margin-bottom:18px}.ych h2{font:800 clamp(28px,4vw,40px)/1.15 var(--display,'Barlow'),sans-serif;color:#1E1B4B;margin:10px 0 6px}
+.ych p{margin:0;color:#4B5563;font:600 18px var(--body,'Barlow'),sans-serif}.ych .pl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.ycg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,250px));justify-content:center;gap:16px}.ycg .tlk-tile{min-height:190px;cursor:pointer;font:inherit}
+.ycg .yi{display:grid;place-items:center;height:96px;font-size:54px;background:linear-gradient(135deg,#E0E7FF,#FCE7F3)}.ycg .yt{display:flex;flex-direction:column;gap:6px;padding:12px 14px}
+.ycg .yt b{font:800 20px/1.2 var(--display,'Barlow'),sans-serif;color:#1E1B4B}.ycg .yt small{color:#4B5563;font:600 15px var(--body,'Barlow'),sans-serif}
+.ycgo{display:flex;justify-content:center;margin-top:20px}.ycf{text-align:center;margin-top:18px;color:#6B7280;font:600 15px var(--body,'Barlow'),sans-serif}
+.ycsh{font:800 20px var(--display,'Barlow'),sans-serif;color:#1E1B4B;margin:22px 0 10px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.yclk{display:flex;flex-direction:column;min-height:190px;border-radius:18px;border:1.5px dashed #CBD5E1;background:#F8FAFC;overflow:hidden;opacity:.8}.yclk .yi{filter:grayscale(1)}
+.ycg .ycdone{opacity:.85}
+@media (max-width:520px){.yclk{min-height:150px}.ycg{grid-template-columns:1fr}.ycg .tlk-tile{min-height:150px}.ycg .yi{height:76px;font-size:44px}}`; document.head.appendChild(s); }
+/* INDEPENDENT STUDY: his bucket list. Core first (any order, a check when done), then the add-ons, locked until the core is done */
+function ycISHTML(){ const s=TMC.s, y=s.yc, B=s.bucket, K=window.TLK, pill=(k,t)=>K?K.pill(k,t):`<span>${E(t)}</span>`;
+ const isDone=x=>x.done||(typeof mastered==='function'&&A.st&&x.skill&&mastered(A.st,x.skill));
+ const done=B.core.filter(isDone).length, complete=done>=B.core.length&&B.complete;
+ const tile=(x,open)=>{ const sj=SUBJ[subjOf(x.skill)]||['📘',''], d=isDone(x), nm=x.t==='subj'||x.t==='sheet'?x.name:nameOf(x.skill), sub=x.t==='subj'?(x.lesson||'Your next lesson at your level'):sj[1];
+   const inner=`<span class="yi" aria-hidden="true">${sj[0]}</span><span class="yt"><b>${E(nm)}</b><small>${E(sub)}</small>${d?pill('prog','Done ✓'):open?'':pill('lock','Locked')}</span>`;
+   return open?`<button type="button" class="tlk tlk-tile${d?' ycdone':''}" data-tm="go" data-id="${E(x.skill)}">${inner}</button>`:`<div class="yclk">${inner}</div>`; };
+ const why=y.why==='empty'?'Your teacher did not give class work for now, so this is Independent Study time.':y.why==='now'?'Your teacher sent you to Independent Study.':'Do your core in any order you like.';
+ return `<section class="ycw"><div class="ycc"><div class="ych">${pill('now','Independent Study')}<h2>Your bucket list</h2><p>${E(why)}</p>
+ <div class="pl">${pill('prog','Core: '+done+' of '+B.core.length+' done')}${s.until?pill('prog','Until '+tm(s.until).replace(/\s?[AP]M$/i,'')):''}${y.next?pill('lock','Next: '+y.next.name+' at '+y.next.show):''}</div></div>
+ <h3 class="ycsh">Core</h3><div class="ycg">${B.core.map(x=>tile(x,true)).join('')}</div>
+ ${B.addons.length?`<h3 class="ycsh">Add-ons ${complete?'':pill('lock','Finish your core to open these')}</h3><div class="ycg">${B.addons.map(x=>tile(x,complete)).join('')}</div>`:''}
+ <p class="ycf">Only your bucket list is open now.</p></div></section>`; }
+function ycHTML(){ if(TMC.s.bucket) return ycISHTML(); const s=TMC.s, y=s.yc, sk=SKILLS(), K=window.TLK, pill=(k,t)=>K?K.pill(k,t):`<span>${E(t)}</span>`;
+ const tiles=sk.map(id=>{ const sj=SUBJ[subjOf(id)]||['📘',''], did=(s.handed&&s.handed[id])||(typeof mastered==='function'&&A.st&&mastered(A.st,id));
+   return `<button type="button" class="tlk tlk-tile" data-tm="go" data-id="${E(id)}"><span class="yi" aria-hidden="true">${sj[0]}</span><span class="yt"><b>${E(nameOf(id))}</b><small>${E(sj[1])}</small>${did?pill('prog','Done ⭐'):''}</span></button>`; }).join('');
+ const go=sk.length===1&&K?`<div class="ycgo">${K.main(K.WORDS&&K.WORDS.start||'Start','data-tm="go" data-id="'+E(sk[0])+'"')}</div>`:'';
+ return `<section class="ycw"><div class="ycc"><div class="ych">${pill('now',y.label)}<h2>${E(y.cls||s.clsName||s.name)}</h2><p>with ${E(s.by)} · ${sk.length===1?'Your teacher picked this for now.':'Your teacher picked these for now. Tap one to start.'}</p>
+ <div class="pl">${s.until?pill('prog','Until '+tm(s.until).replace(/\s?[AP]M$/i,'')):''}${y.next?pill('lock','Next: '+y.next.name+' at '+y.next.show):''}</div></div>
+ <div class="ycg">${tiles}</div>${go}<p class="ycf">Only your class work is open now. The rest of the app opens after class.</p></div></section>`; }
+function lockHTML(){ const s=TMC.s, sk=SKILLS(); if(s.yc) return ycHTML(); if(sk.length>1) return lockManyHTML(); const sj=SUBJ[subjOf(s.skill)]||['📘',s.subj], did=TMC.done>0||(typeof mastered==='function'&&A.st&&mastered(A.st,s.skill));
  return `<section class="tmw"><div class="tmc"><div class="top"><small>🧑‍🏫 Class lesson</small><h2>${E(s.name)}</h2><p>${E(sj[1])} · with ${E(s.by)}</p></div>
  <div class="ic" aria-hidden="true">${sj[0]}</div><p class="sub">Your class is learning this lesson together. Look at the board and follow your teacher.</p>
  ${did?`<div class="done">⭐ Great job! You can do it again for practice, or wait for your teacher.</div>`:''}
  <button class="go" data-tm="go">${did?'Practice again':'Start the lesson'} 🚀</button>
  <p class="foot">The rest of the app opens again when class ends${s.until?` (at ${E(tm(s.until))})`:''}.</p></div></section>`; }
-function nameOf(id){ try{ return (BANK_ALL[id]&&BANK_ALL[id].name)||(typeof skillName==='function'?skillName(id):id); }catch(e){ return id; } }
+function nameOf(id){ try{ if(TMC.s&&TMC.s.names&&TMC.s.names[id]) return TMC.s.names[id]; return (BANK_ALL[id]&&BANK_ALL[id].name)||(typeof skillName==='function'?skillName(id):id); }catch(e){ return id; } }
 function lockManyHTML(){ const s=TMC.s, sk=SKILLS();
  const rows=sk.map(id=>{ const sj=SUBJ[subjOf(id)]||['📘',''], did=typeof mastered==='function'&&A.st&&mastered(A.st,id); return `<button class="tml" data-tm="go" data-id="${E(id)}"><span class="ic2">${sj[0]}</span><span class="tx"><b>${E(nameOf(id))}</b><small>${E(sj[1])}${did?' · ⭐ done':''}</small></span><span class="ar">▶</span></button>`; }).join('');
  return `<section class="tmw"><div class="tmc"><div class="top"><small>🧑‍🏫 Class lessons</small><h2>${E(s.clsName||s.name)}</h2><p>with ${E(s.by)}</p></div>
  <p class="sub" style="margin-top:18px">Your teacher picked these lessons for now. Tap one to start.</p><div class="tmlist">${rows}</div>
  <p class="foot">The rest of the app opens again when class ends${s.until?` (at ${E(tm(s.until))})`:''}.</p></div></section>`; }
 function startClass(pick){ const s=TMC.s; if(!s) return; const sk=SKILLS(); const id=pick&&sk.indexOf(pick)>=0?pick:sk[0]; const subj=subjOf(id);
+ if(/^SHEET\./.test(id)){ const ln=s.bucket&&s.bucket.core.concat(s.bucket.addons).find(x=>x.skill===id); if(window.TL_SHEET) window.TL_SHEET.open(id.slice(6),ln?ln.name:nameOf(id)); return; }   /* an active sheet: the worksheet screen */
  if(subj==='SCI'||subj==='ELEC'){ const b=document.createElement('button'); if(subj==='SCI'){ b.dataset.sci='open'; } else { b.dataset.elec='open'; } b.dataset.id=id; b.style.display='none'; document.body.appendChild(b); b.click(); b.remove();
    if(document.getElementById(subj==='SCI'?'sci-ov':'elec-ov')) return; }
  if(!BANK_ALL[id]&&!(typeof GEN!=='undefined'&&GEN[id])){ try{ toast('That lesson is still loading. Try again in a moment.'); }catch(e){} return; }   /* v182: core Math lessons live in GEN, not BANK_ALL */
@@ -61,10 +95,10 @@ startMission=function(c,id,kind){ const s=TMC.s; if(s&&(SKILLS().indexOf(id)<0||
 const _render=render;
 render=function(){
  const sid=A.st&&A.st.id; if(sid&&TMC.checked!==sid) pre(sid); const s=TMC.s;
- if(A.view==='result'&&s&&A.play&&SKILLS().indexOf(A.play.id)>=0&&A.res&&!A.res.tmCounted){ A.res.tmCounted=1; TMC.done++; }
+ if(A.view==='result'&&s&&A.play&&SKILLS().indexOf(A.play.id)>=0&&A.res&&!A.res.tmCounted){ A.res.tmCounted=1; TMC.done++; if(s.bucket) setTimeout(check,4000); }
  if(s&&A.view==='play'&&A.play&&SKILLS().indexOf(A.play.id)<0){ A.view='hub'; A.play=null; }
  if(A.view==='hub'&&sid&&s){   /* v162: no "Getting your day ready…" wait any more: until the class answer comes the home shows as usual; a running class takes over the moment it is known */
-   css(); A.overlay=null; const el=document.getElementById('app'); if(!el) return _render.apply(this,arguments);
+   css(); if(s.yc) ycCss(); A.overlay=null; const el=document.getElementById('app'); if(!el) return _render.apply(this,arguments);
    el.innerHTML=lockHTML(); document.body.classList.add('tm-on'); document.body.classList.remove('hp-on'); return; }
  document.body.classList.remove('tm-on'); return _render.apply(this,arguments); };
 document.addEventListener('click',e=>{ const b=e.target.closest('[data-tm]'); if(!b) return; if(b.dataset.tm==='go'){ try{ SND.tap(); }catch(x){} startClass(b.dataset.id); } },true);
@@ -78,18 +112,112 @@ function check(){
    if(r&&r.until&&r.now) r.until=Date.now()+(r.until-r.now);
    if(!was||!r||was.id!==r.id) TMC.done=0;
    if(r) addTeacherLessons(r);
-   TMC.s=r||null;
+   TMC.s=r||null; try{ window.TL_SHEET&&window.TL_SHEET.sync(SKILLS()); }catch(e){}
    if(was&&!r){ if(A.view==='hub') render(); try{ toast('Class is over. Great work today! 🎉'); }catch(e){} return; }
    if(r&&(!was||was.id!==r.id)){ const rs=r.skills&&r.skills.length?r.skills:[r.skill]; if(A.view==='play'&&A.play&&rs.indexOf(A.play.id)<0){ A.view='hub'; A.play=null; } if(A.view!=='play'&&A.view!=='result') A.view='hub'; render(); return; }
    if(first) render();
  }).catch(()=>{ if(TMC.checked!==sid){ TMC.checked=sid; render(); } });
 }
 /* a class that runs out while the server cannot be reached still ends on time */
-setInterval(()=>{ if(TMC.s&&TMC.s.until&&Date.now()>TMC.s.until){ TMC.s=null; if(A.view==='hub') render(); } },5000);
-setInterval(check,25000);
+setInterval(()=>{ if(TMC.s&&TMC.s.until&&Date.now()>TMC.s.until){ const wasYc=!!TMC.s.yc; TMC.s=null; if(A.view==='hub') render(); if(wasYc) check(); } },5000);   /* a Teacher Time period that ends: ask at once what comes next */
+setInterval(check,25000); window.TM_CHECK=check;
 let lastSid=null; setInterval(()=>{ const sid=A.st&&A.view!=='signin'?A.st.id:null; if(sid===lastSid) return; lastSid=sid;
  if(!sid){ TMC.s=null; TMC.done=0; TMC.checked=null; return; }
  if(TMC.checked===sid) return;                                    /* already answered at sign-in */
  TMC.s=null; TMC.done=0; if(pre(sid)){ if(TMC.s&&A.view==='hub') render(); return; } check(); },700);
+})();
+/* ACTIVE SHEET (Your Classes & Bucket, ClassesBucket.js): the worksheet screen. The boy writes and draws with finger, mouse or pen,
+   taps a spot to type an answer there, erases and undoes; his work saves by itself; Hand it in sends it to his teacher.
+   Pages: pictures of an uploaded worksheet (ycSheetImg), or a worksheet the teacher wrote in the app (drawn here from its questions).
+   His marks are kept as lines and boxes on each page (0-10000 across the page), so they look the same on his teacher's screen. */
+(function(){
+if(typeof run!=='function') return;
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const K=()=>window.TLK, PW=1000, PH=1294, U=10000;
+const Q={open:false,id:'',title:'',sheet:null,work:null,page:0,tool:'pen',color:'#111827',edit:true,status:'new',dirty:false,saving:false,timer:null,imgs:{},undo:[]};
+/* a worksheet written in the app, drawn as a clean page (8 questions a page) */
+function textPage(sh,i){ const c=document.createElement('canvas'); c.width=PW; c.height=PH; const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,PW,PH);
+  let y=70; if(i===0){ g.fillStyle='#111827'; g.font='bold 40px Barlow,Arial,sans-serif'; g.fillText(String(sh.title).slice(0,60),60,y+10); y+=50; g.strokeStyle='#CBD5E1'; g.lineWidth=2; g.beginPath(); g.moveTo(60,y); g.lineTo(PW-60,y); g.stroke(); y+=40; }
+  const L=(sh.lines||[]).slice(i*8,i*8+8); g.font='26px Barlow,Arial,sans-serif';
+  L.forEach((t,j)=>{ g.fillStyle='#111827'; const words=(i*8+j+1)+'. '+t, out=[]; let line='';
+    words.split(' ').forEach(w=>{ const tr=line?line+' '+w:w; if(g.measureText(tr).width>PW-120){ out.push(line); line=w; } else line=tr; }); out.push(line);
+    out.slice(0,3).forEach(l=>{ g.fillText(l,60,y); y+=34; }); g.strokeStyle='#E2E8F0'; g.lineWidth=2; for(let k=0;k<2;k++){ y+=36; g.beginPath(); g.moveTo(80,y); g.lineTo(PW-60,y); g.stroke(); } y+=44; });
+  return c.toDataURL('image/png'); }
+function pageWork(i){ const w=Q.work||(Q.work={v:1,pages:[]}); while(w.pages.length<=i) w.pages.push({s:[],t:[]}); return w.pages[i]; }
+function css(){ if(document.getElementById('ys-css')) return; const s=document.createElement('style'); s.id='ys-css'; s.textContent=`
+#ysheet{position:fixed;inset:0;z-index:2147483647;background:#F1F5F9;display:flex;flex-direction:column}
+#ysheet .ysbar{position:relative;display:flex;align-items:center;gap:10px;padding:10px 12px 10px 68px;background:#fff;box-shadow:0 2px 10px rgba(15,23,42,.08);flex-wrap:wrap;min-height:64px;box-sizing:border-box}
+#ysheet .ysbar h2{font:800 20px var(--display,'Barlow'),sans-serif;color:#1E1B4B;margin:0;flex:1;min-width:140px}
+#ysheet .ystools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}#ysheet .ystools .tlk-tool.on{outline:3px solid #FDE047;outline-offset:2px}
+#ysheet .ysbody{flex:1;overflow:auto;padding:16px;display:flex;justify-content:center;align-items:flex-start}
+#ysheet .yspage{position:relative;width:min(900px,100%);background:#fff;box-shadow:0 8px 30px rgba(15,23,42,.15);border-radius:6px;touch-action:none}
+#ysheet .yspage img{display:block;width:100%;height:auto;border-radius:6px;user-select:none;-webkit-user-drag:none;pointer-events:none}
+#ysheet .yspage canvas{position:absolute;inset:0;width:100%;height:100%}
+#ysheet .ystx{position:absolute;min-width:120px;min-height:34px;border:2px dashed #6366F1;border-radius:8px;background:rgba(238,242,255,.85);font:600 18px var(--body,'Barlow'),sans-serif;color:#1E3A8A;padding:4px 6px;resize:both;box-sizing:border-box}
+#ysheet .ystx[readonly]{border-color:transparent;background:transparent;resize:none}
+#ysheet .ysfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:#fff;box-shadow:0 -2px 10px rgba(15,23,42,.06);flex-wrap:wrap}
+#ysheet .ysmid{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#ysheet .ysask{position:fixed;inset:0;background:rgba(15,23,42,.45);display:grid;place-items:center;z-index:2147483647}#ysheet .ysask>div{background:#fff;border-radius:20px;padding:22px;width:min(420px,92vw)}
+#ysheet .ysload{padding:40px;color:#64748B;font:700 18px var(--body,'Barlow'),sans-serif}`; document.head.appendChild(s); }
+function host(){ let h=document.getElementById('ysheet'); if(!h){ h=document.createElement('div'); h.id='ysheet'; h.setAttribute('role','dialog'); h.setAttribute('aria-label','Worksheet'); document.body.appendChild(h); } return h; }
+function draw(){ const sh=Q.sheet, k=K(); if(!sh) return; const n=sh.pages||1, i=Q.page, pill=(t,x)=>k?k.pill(t,x):`<span>${E(x)}</span>`;
+  const tool=(id,icon,label)=>{ const b=k?k.tool(icon,label,'data-ys="tool" data-t="'+id+'"'):''; return Q.tool===id?b.replace('tlk tlk-tool','tlk tlk-tool on'):b; };
+  const col=(c,icon,label)=>{ const b=k?k.tool(icon,label,'data-ys="color" data-c="'+c+'"'):''; return Q.tool==='pen'&&Q.color===c?b.replace('tlk tlk-tool','tlk tlk-tool on'):b; };
+  host().innerHTML=`<div class="ysbar">${k?k.x('data-ys="close"','tl','Close'):''}<h2>${E(Q.title||sh.title)}</h2>${pill('prog','Page '+(i+1)+' of '+n)}
+   ${Q.edit?`<div class="ystools">${tool('pen','✏️','Write and draw')}${col('#111827','⚫','Black')}${col('#2563EB','🔵','Blue')}${col('#DC2626','🔴','Red')}${tool('text','🔤','Type an answer')}${tool('erase','🧽','Eraser')}${k?k.tool('↩️','Undo','data-ys="undo"'):''}</div>`:pill('prog',Q.status==='handed'?'Handed in ✓':'Closed')}
+   <span data-ys-st>${Q.edit?pill('lock',Q.saving?'Saving…':Q.dirty?'Not saved yet':'Saved'):''}</span></div>
+   <div class="ysbody"><div class="yspage" data-ys-page><div class="ysload">Loading the page…</div></div></div>
+   <div class="ysfoot"><div class="ysmid">${i>0&&k?k.quiet(k.WORDS.back,'data-ys="prev"'):''}${i<n-1&&k?k.quiet(k.WORDS.next,'data-ys="next"'):''}</div>
+   <div class="ysmid">${Q.edit&&k?k.main('Hand it in','data-ys="hand"'):''}</div></div>`;
+  loadPage(i); }
+function setStatus(){ const el=document.querySelector('#ysheet [data-ys-st]'), k=K(); if(el&&k&&Q.edit) el.innerHTML=k.pill('lock',Q.saving?'Saving…':Q.dirty?'Not saved yet':'Saved'); }
+function loadPage(i){ const sh=Q.sheet, box=document.querySelector('#ysheet [data-ys-page]'); if(!box) return;
+  const show=src=>{ if(Q.page!==i||!document.contains(box)) return; box.innerHTML=`<img alt="Page ${i+1} of the worksheet" src="${src}"><canvas></canvas>`; const img=box.querySelector('img'); const go=()=>setupCanvas(box,img); if(img.complete) go(); else img.onload=go; };
+  if(Q.imgs[i]) return show(Q.imgs[i]);
+  if(sh.kind==='text'){ Q.imgs[i]=textPage(sh,i); return show(Q.imgs[i]); }
+  run('ycSheetImg',SRV.token,sh.id,i).then(src=>{ Q.imgs[i]=src; show(src); }).catch(e=>{ box.innerHTML=`<div class="ysload">That page did not load. ${E(String(e&&e.message||e).replace(/^Error:\s*/,''))}</div>`; }); }
+function setupCanvas(box,img){ const cv=box.querySelector('canvas'), W=box.clientWidth, H=img.clientHeight||box.clientHeight, r=window.devicePixelRatio||1;
+  cv.width=Math.round(W*r); cv.height=Math.round(H*r); Q.cv=cv; Q.W=W; Q.H=H; Q.r=r; paint(); texts(box);
+  let cur=null;
+  const pt=e=>{ const b=cv.getBoundingClientRect(); return [Math.round((e.clientX-b.left)/b.width*U), Math.round((e.clientY-b.top)/b.width*U)]; };
+  cv.onpointerdown=e=>{ if(!Q.edit) return; e.preventDefault(); const p=pt(e), pw=pageWork(Q.page);
+    if(Q.tool==='text'){ pw.t.push({x:p[0],y:p[1],v:''}); Q.undo.push({k:'t',page:Q.page}); texts(box,pw.t.length-1); change(); return; }
+    if(Q.tool==='erase'){ eraseAt(p); cur={erase:true}; cv.setPointerCapture(e.pointerId); return; }
+    cur={c:Q.color,w:Q.color==='#111827'?28:26,p:[p[0],p[1]]}; pw.s.push(cur); Q.undo.push({k:'s',page:Q.page}); cv.setPointerCapture(e.pointerId); };
+  cv.onpointermove=e=>{ if(!cur) return; e.preventDefault(); const p=pt(e); if(cur.erase){ eraseAt(p); return; } const n=cur.p.length; if(Math.abs(cur.p[n-2]-p[0])+Math.abs(cur.p[n-1]-p[1])<12) return; if(cur.p.length<4000) cur.p.push(p[0],p[1]); paint(); };
+  cv.onpointerup=cv.onpointercancel=()=>{ if(cur){ cur=null; paint(); change(); } }; }
+function eraseAt(p){ const pw=pageWork(Q.page), before=pw.s.length; pw.s=pw.s.filter(st=>{ for(let j=0;j<st.p.length;j+=2) if(Math.abs(st.p[j]-p[0])<160&&Math.abs(st.p[j+1]-p[1])<160) return false; return true; }); if(pw.s.length!==before){ paint(); change(); } }
+function paint(){ const cv=Q.cv; if(!cv) return; const g=cv.getContext('2d'), f=cv.width/U; g.clearRect(0,0,cv.width,cv.height); g.lineCap='round'; g.lineJoin='round';
+  (pageWork(Q.page).s||[]).forEach(st=>{ g.strokeStyle=st.c; g.lineWidth=Math.max(1.5,st.w*f); g.beginPath(); g.moveTo(st.p[0]*f,st.p[1]*f); if(st.p.length===2) g.lineTo(st.p[0]*f+0.1,st.p[1]*f); for(let j=2;j<st.p.length;j+=2) g.lineTo(st.p[j]*f,st.p[j+1]*f); g.stroke(); }); }
+function texts(box,focus){ box.querySelectorAll('.ystx').forEach(x=>x.remove()); const pw=pageWork(Q.page), b=box.clientWidth;
+  pw.t.forEach((t,j)=>{ const ta=document.createElement('textarea'); ta.className='ystx'; ta.value=t.v||''; ta.maxLength=400; ta.setAttribute('aria-label','Your answer'); if(!Q.edit) ta.readOnly=true;
+    ta.style.left=(t.x/U*b)+'px'; ta.style.top=(t.y/U*b)+'px'; ta.style.maxWidth=Math.max(140,b-t.x/U*b-8)+'px';
+    ta.oninput=()=>{ t.v=ta.value; change(); }; ta.onblur=()=>{ if(!ta.value.trim()&&Q.edit){ pw.t.splice(pw.t.indexOf(t),1); texts(box); change(); } };
+    box.appendChild(ta); if(focus===j){ ta.focus(); setTimeout(()=>{ if(document.activeElement!==ta) ta.focus(); },30); } }); }
+function change(){ Q.dirty=true; setStatus(); clearTimeout(Q.timer); Q.timer=setTimeout(()=>save(false),2500); }
+function save(hand){ if(!Q.edit||!Q.sheet) return Promise.resolve(); if(!Q.dirty&&!hand) return Promise.resolve(); clearTimeout(Q.timer); Q.saving=true; setStatus();
+  const w=JSON.parse(JSON.stringify(Q.work||{v:1,pages:[]})); w.pages.forEach(p=>{ p.t=(p.t||[]).filter(t=>String(t.v||'').trim()); });
+  Q.dirty=false; return run('ycSheetSave',SRV.token,Q.sheet.id,w,!!hand).then(r=>{ Q.saving=false; Q.status=r.status; setStatus(); return r; })
+   .catch(e=>{ Q.saving=false; Q.dirty=true; setStatus(); try{ toast(String(e&&e.message||e).replace(/^Error:\s*/,'')); }catch(x){} throw e; }); }
+function close(){ const done=()=>{ Q.open=false; const h=document.getElementById('ysheet'); if(h) h.remove(); Q.cv=null; };
+  if(Q.dirty&&Q.edit) save(false).then(done,done); else done(); }
+function open(id,title){ css(); Object.assign(Q,{open:true,id,title:title||'',sheet:null,work:null,page:0,tool:'pen',color:'#111827',edit:true,status:'new',dirty:false,saving:false,imgs:{},undo:[]});
+  host().innerHTML=`<div class="ysbar">${K()?K().x('data-ys="close"','tl','Close'):''}<h2>${E(title||'Worksheet')}</h2></div><div class="ysload">Opening your worksheet…</div>`;
+  run('ycSheetOpen',SRV.token,id).then(r=>{ if(!Q.open||Q.id!==id) return; Q.sheet=r.sheet; Q.work=r.work&&Array.isArray(r.work.pages)?r.work:{v:1,pages:[]}; Q.edit=!!r.canEdit; Q.status=r.status; draw(); })
+   .catch(e=>{ host().innerHTML=`<div class="ysbar">${K()?K().x('data-ys="close"','tl','Close'):''}<h2>${E(title||'Worksheet')}</h2></div><div class="ysload">${E(String(e&&e.message||e).replace(/^Error:\s*/,''))}</div>`; }); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('#ysheet [data-ys]'); if(!b) return; const a=b.dataset.ys; try{ SND.tap(); }catch(x){}
+  if(a==='close') return close();
+  if(a==='tool'){ Q.tool=b.dataset.t; return draw(); }
+  if(a==='color'){ Q.tool='pen'; Q.color=b.dataset.c; return draw(); }
+  if(a==='undo'){ const u=Q.undo.pop(); if(!u) return; const pw=pageWork(u.page); if(u.k==='s') pw.s.pop(); else pw.t.pop(); if(u.page!==Q.page){ Q.page=u.page; return draw(); } paint(); const box=document.querySelector('#ysheet [data-ys-page]'); if(box) texts(box); return change(); }
+  if(a==='prev'||a==='next'){ if(Q.dirty) save(false).catch(()=>{}); Q.page=Math.max(0,Math.min((Q.sheet.pages||1)-1,Q.page+(a==='next'?1:-1))); return draw(); }
+  if(a==='hand'){ const k=K(); const d=document.createElement('div'); d.className='ysask'; d.innerHTML=`<div>${k.ask({icon:'📝',title:'Hand it in?',text:'Your teacher will see your work. After this you cannot change it.',yes:'Hand it in',yesAttrs:'data-ys="handyes"',noAttrs:'data-ys="handno"'})}</div>`; host().appendChild(d); return; }
+  if(a==='handno'){ const d=document.querySelector('#ysheet .ysask'); if(d) d.remove(); return; }
+  if(a==='handyes'){ const d=document.querySelector('#ysheet .ysask'); if(d) d.remove(); Q.dirty=true; return save(true).then(()=>{ Q.edit=false; close(); try{ toast('Handed in! Great work. ⭐'); SND.win&&SND.win(); }catch(x){} try{ window.TM_CHECK&&setTimeout(window.TM_CHECK,800); }catch(x){} },()=>{}); }
+},true);
+window.addEventListener('resize',()=>{ if(Q.open&&Q.sheet){ const box=document.querySelector('#ysheet [data-ys-page]'), img=box&&box.querySelector('img'); if(img) setupCanvas(box,img); } });
+/* the class time moved on: close the sheet (his work was saved as he went) */
+function sync(skills){ if(!Q.open||!Q.sheet) return; if((skills||[]).indexOf('SHEET.'+Q.sheet.id)>=0) return; if(Q.dirty&&Q.edit) save(false).catch(()=>{}); Q.edit=false; close(); try{ toast('Class time is over. Your work is saved.'); }catch(x){} }
+window.TL_SHEET={open,close,sync,state:()=>Q};
 })();
 </script>
