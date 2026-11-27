@@ -68,6 +68,8 @@
 .tlk-rank{background:var(--tlk-rank-bg);color:var(--tlk-rank-fg)}
 .tlk-lock{background:var(--tlk-lock-bg);color:var(--tlk-lock-fg)}
 .tlk-subj{background:var(--tlk-subj-bg);color:var(--tlk-subj-fg)}
+/* KEY WORD (HoS 2026-11-27: "the words that matter should be highlighted and pop"): a warm marker behind the word, inside the text. Not a pill, not a button. */
+.tlk-key{background:linear-gradient(transparent 52%,#FFD8A8 52%,#FFD8A8 92%,transparent 92%);color:#9A3412;font-weight:800;padding:0 .08em;border-radius:2px;box-shadow:none;border:0;cursor:inherit;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 /* ---------- the question pop-up: a main button and a quiet "Not now", no X ---------- */
 .tlk-ask{display:grid;gap:12px;justify-items:center;text-align:center}
 .tlk-ask .tlk-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
@@ -109,6 +111,9 @@ window.TLK={ X_SVG:X_SVG, HOME_SVG:HOME_SVG, BACK_SVG:BACK_SVG, WORDS:WORDS, KIN
   /* INFORMATION: a soft pill or box; kind = money, prog, now, rank, lock or subj (never a button) */
   pill:function(kind,text){ return '<span class="tlk-pill tlk-'+(KINDS[kind]?kind:'prog')+'">'+esc(text)+'</span>'; },
   box:function(kind,label,value){ return '<span class="tlk-box tlk-'+(KINDS[kind]?kind:'prog')+'"><small>'+esc(label)+'</small><b>'+esc(value)+'</b></span>'; },
+  /* KEY WORD: wraps text the lesson marked with *stars* (a word that matters) in the highlight; text is escaped first */
+  key:function(text){ return '<mark class="tlk-key">'+esc(text)+'</mark>'; },
+  keys:function(text){ return esc(text).replace(/\*([^*]+)\*/g,'<mark class="tlk-key">$1</mark>'); },
   /* a question pop-up's inside: title, a line, the main button and a quiet "Not now" (no X) */
   ask:function(o){ o=o||{}; return '<div class="tlk-ask">'+(o.icon?'<div aria-hidden="true" style="font-size:40px;line-height:1">'+o.icon+'</div>':'')+'<h2 style="margin:0">'+esc(o.title||'')+'</h2>'+(o.text?'<p style="margin:0">'+esc(o.text)+'</p>':'')+
     '<div class="tlk-actions">'+window.TLK.main(o.yes||WORDS.start,o.yesAttrs)+window.TLK.quiet(o.no||WORDS.notNow,o.noAttrs)+'</div></div>'; }

@@ -75,6 +75,15 @@ async function oneBiteSetup(worker) {
     if (!worker) ids.forEach(id => { const b = ONE_BITE[id], m = s => o.bad.push(id + ': ' + s);
       if (!has(id)) m('is not a real lesson id');
       if (!/^(K1|B23|E45|M68)$/.test(b.band || '')) m('band must be K1, B23, E45 or M68');
+      if (b.hook || b.learn || b.play) { o.nfBites = (o.nfBites || 0) + 1;   /* NEW LESSONS (HoS 2026-11-27): hook + learn + play; the quality gate (obquality.js) checks the teaching rules */
+        if (!OB.isNF(b)) { m('a new-shape lesson needs hook, learn (cards) and play (activities)'); return; }
+        if (!b.today || String(b.today).split(/\s+/).length > 10) m('needs a short today line (10 words or fewer)');
+        if (b.do || b.your) m('a new-shape lesson has play, not do/your');
+        (b.hook.o || []).forEach((g, k) => { if (!String(g || '').trim()) m('hook guess ' + (k + 1) + ' is empty'); });
+        b.learn.forEach((c, k) => { if (c && c.act) { const e = OBK.err(c.act, b.band); if (e) m('learn ' + (k + 1) + ': ' + e); } if (c && c.m && !OB.model(c.m)) m('learn ' + (k + 1) + ': the picture model does not draw'); });
+        b.play.forEach((d, k) => { const e = OBK.err(d, b.band); if (e) m('play ' + (k + 1) + ': ' + e); });
+        if (b.bridge && !has(b.bridge)) m('bridge ' + b.bridge + ' is not a real lesson');
+        o.kitBites++; return; }
       if (!b.today || String(b.today).split(/\s+/).length > 10) m('needs a short today line (10 words or fewer)');
       if (!b.why) m('needs a why line');
       if (!b.watch || !b.watch.steps || b.watch.steps.length < 2) m('needs a worked example with 2 or more steps');
@@ -94,7 +103,7 @@ async function oneBiteSetup(worker) {
 
     /* ---- the Activity Kit, all 10 types, tap only, at 390 px ---- */
     const kitScreen = (p, tag) => { const app = document.getElementById('app');
-      if (document.querySelectorAll('#app .ob-dots li').length !== 6) return tag + ': no 6-dot strip';
+      if (document.querySelectorAll('#app .ob-dots li').length !== (p.ob.bite.nf ? 5 : 6)) return tag + ': no ' + (p.ob.bite.nf ? 5 : 6) + '-dot strip';
       const foot = app.querySelectorAll('.ob-foot .ob-go').length; if (foot > 1) return tag + ': ' + foot + ' footer buttons (want at most 1)';
       const say = app.querySelector('.ob-say'); if (!say || !say.dataset.text) return tag + ': no read-aloud text';
       if (document.documentElement.scrollWidth > window.innerWidth + 1) return tag + ': the page scrolls sideways at ' + window.innerWidth + ' px (' + document.documentElement.scrollWidth + ')';
@@ -113,7 +122,13 @@ async function oneBiteSetup(worker) {
       while (A.view === 'play' && A.play === p && s.screens < 260) { s.screens++;
         if (A.overlay) { s.err = 'a pop-up opened during the bite'; break; }
         const st = p.ob.stage;
-        if (st === 'do' || st === 'your') { seen[st] = 1; const k = p.ob.kit, key = st + k.i;
+        if (st === 'learn' && !p.ob.kit) { seen.learn = 1;
+          if (document.querySelectorAll('#app .ob-dots li').length !== 5) { s.err = 'learn screen has no 5-dot strip'; break; }
+          const w = p.ob.who, wp = document.querySelector('#app [data-ob=wpick]:not([disabled])');
+          if (w && wp) { if (p.ob.wselTried) { s.err = 'Who\'s right? did not take the tap'; break; } p.ob.wselTried = 1; document.querySelector('#app [data-ob=wpick][data-k="' + (+w.a) + '"]').click(); await sleep(3); continue; }
+          p.ob.wselTried = 0; const g = document.querySelectorAll('#app .ob-foot .ob-go'); if (g.length !== 1) { s.err = 'learn card ' + (p.ob.li + 1) + ' has ' + g.length + ' forward buttons (want exactly 1)'; break; }
+          g[0].click(); await sleep(3); continue; }
+        if (st === 'do' || st === 'your' || st === 'learn') { seen[st] = 1; const k = p.ob.kit, key = st + p.ob.li + ':' + k.i;
           if (key !== lastKey) { lastKey = key; const e = kitScreen(p, id + ' ' + st + ' ' + (k.i + 1) + ' (' + k.acts[k.i].type + ')'); if (e) { s.err = e; break; } o.kitTypes[k.acts[k.i].type] = 1; }
           const wrong = st === 'your' && opt.wrongAt === k.i; const a = window.__obkStep(wrong);
           if (/^no |missing|unknown|nokit/.test(a)) { s.err = st + ' ' + (k.i + 1) + ' (' + k.acts[k.i].type + '): ' + a; break; }
@@ -121,18 +136,26 @@ async function oneBiteSetup(worker) {
           await sleep(2); continue; }
         if (st !== 'q') { seen[st] = 1;
           const dots = document.querySelectorAll('#app .ob-dots li').length, go = document.querySelectorAll('#app .ob-foot .ob-go').length, say = document.querySelector('#app .ob-say');
-          if (dots !== 6) { s.err = st + ' screen has ' + dots + ' dots (want 6)'; break; }
+          if (dots !== (p.ob.bite.nf ? 5 : 6)) { s.err = st + ' screen has ' + dots + ' dots (want ' + (p.ob.bite.nf ? 5 : 6) + ')'; break; }
           if (!say || !say.dataset.text) { s.err = st + ' screen has no read-aloud text'; break; }
+          const hp = document.querySelector('#app [data-ob=hpick]:not([disabled])'); if (hp) { hp.click(); await sleep(3); continue; }
           const opt2 = document.querySelector('#app [data-ob=rpick]:not([disabled])');
           if (opt2) { const q = p.ob.bite.ready[p.ob.ri]; const k = q.o.indexOf(q.a); document.querySelector('#app [data-ob=rpick][data-k="' + k + '"]').click(); await sleep(3); continue; }
           if (go !== 1) { s.err = st + ' screen has ' + go + ' forward buttons (want exactly 1)'; break; }
           document.querySelector('#app .ob-foot .ob-go').click(); await sleep(3); continue; }
         if (!seen.q) { seen.q = 1; s.kit = p.ob.krec ? p.ob.krec.length : 0; s.first = p.results.slice(0, s.kit).filter(r => r && r.ok && r.first).length; s.your = p.ob.krec ? p.ob.krec.filter(x => x.phase === 'practice').length : 0; }
         const it = p.items[p.i]; const el = document.querySelector('.play.ob-play'); if (!el) { s.err = 'question ' + p.i + ' has no calm lesson frame'; break; }
-        if (document.querySelectorAll('.play.ob-play .ob-dots li').length !== 6) { s.err = 'question ' + p.i + ' has no 6-dot strip'; break; }
+        if (document.querySelectorAll('.play.ob-play .ob-dots li').length !== (p.ob.bite.nf ? 5 : 6)) { s.err = 'question ' + p.i + ' has no ' + (p.ob.bite.nf ? 5 : 6) + '-dot strip'; break; }
         p.shownAt = 0; p.cool = 0; if (it.t === 'write') p.text = new Array((it.min || 5) + 2).join('word ');
         answer(it.t === 'num' ? String(it.a) : it.t === 'write' ? p.text : it.correct); if (!(p.fb && p.fb.ok)) { s.err = 'right answer not accepted at question ' + p.i; break; }
         await sleep(2); next(); await sleep(2); }
+      if (!s.err && p.ob.bite.nf) { if (!seen.hook || !seen.learn) s.err = 'skipped Think or Learn';
+        else if (!seen.your) s.err = 'skipped Try it';
+        else if (s.kit > 10) s.err = 'took ' + s.kit + ' activities to reach Show me (want 10 or fewer)';
+        else if (!(A.st.skills[id] && A.st.skills[id].m)) s.err = 'not mastered after ' + s.screens + ' screens';
+        else if (A.view !== 'result' || !document.querySelector('#app .ob-done')) s.err = 'no Done screen';
+        else if (p.ob.bite.hook.pay && !document.querySelector('#app .ob-pay')) s.err = 'the Done screen does not pay off the hook';
+        else s.ok = true; return s; }
       if (!s.err) { if (!seen.today || !seen.watch && p.ob.bite.watch) s.err = 'skipped Today or Watch Me';
         else if (p.ob.kitOn && !seen.your && p.ob.kitYour.length) s.err = 'skipped Your turn';
         else if (p.ob.kitOn && s.kit > 8) s.err = 'took ' + s.kit + ' activities to reach Show me (want 8 or fewer)';

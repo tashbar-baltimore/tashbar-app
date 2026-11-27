@@ -58,7 +58,7 @@
       check:[
         {p:'c45_bees', q:'"What do the bees eat in winter?" Where does the answer live?', o:[RT, TS, NT]},
         {p:'c45_bees', q:'"Why does a beekeeper leave honey?" Where does the answer live?', o:[TS, RT, NT]},
-        {p:'c45_bees', q:'"How do bees make heat, and what gives them the energy?" Which answer has EVERY piece, and both pieces true?', o:['They shiver their wing muscles, and they eat stored honey.', 'They shiver their wing muscles, and the queen stays in the middle.', 'They fly around the hive, and they eat stored honey.']}
+        {p:'c45_bees', q:'"How do bees make heat, and what gives them the energy?" Which answer has EVERY piece, and each piece answers the question?', o:['They shiver their wing muscles, and they eat stored honey.', 'They shiver their wing muscles, and the queen stays in the middle.', 'They fly around the hive, and they eat stored honey.']}
       ],
       re:[
         {p:'c45_sukkah', q:'"What color was the trim?" One sentence holds it. What kind of question is it?', o:['Right there', 'Think and search', 'Not in the text'], how:'Find "trim". The whole answer is in that one sentence.'},
@@ -489,6 +489,34 @@
           say:'Challenge! Which shows laboratory in beats?', how:'Clap it slowly. Count every vowel sound. Five beats.'}] }
   };
 
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words. */
+  (function (b) { if (!b || !b.do || !b.your) return; var Y = b.your;
+    var SUKKAH = ['There were eight boards, white with blue trim.', 'Yehuda held each board straight.', 'Abba screwed the boards together.', 'It took almost two hours.', 'By the end, Yehuda\'s arms ached.', 'The next day, Yehuda tied twelve strings of dates.'];
+    b.hook = { kind: 'whatswrong', pic: '🕵️', t: 'Rebbe asks: "What two jobs did Yehuda do?" Moshe says: "He tied dates."',
+      q: 'Is Moshe\'s answer good enough?', o: ['Yes, it is right', 'It is only half', 'It is all wrong'],
+      pay: 'Only *half*! Some answers hide in *two places*. Now you find every piece.' };
+    b.learn = [
+      { t: '*Right there*: key word and answer in *one sentence*.', act: { type: 'evidence', p: SUKKAH, a: 0, q: 'How many boards were there?', look: 'the number of boards',
+        say: 'Tap the *one sentence* that holds the answer.', how: 'Find *boards*. Which sentence has a *number*?' } },
+      { t: '*Think and search*: the answer hides in *two* places.', act: { type: 'evidence', p: SUKKAH, a: [1, 3], q: 'Why did Yehuda\'s arms ache?', look: 'why his arms ached',
+        say: 'Tap *both* sentences that explain why.', how: 'His *job* is in one sentence. The *time* is in another.' } },
+      { who: { q: '"Dovid\'s bike chain was rusty. That is why he oiled it." Why did he oil it?', o: [['Shmuli', 'Right there'], ['Chaim', 'Think and search']], a: 1,
+        why: '*That is why* points back. The reason, *rusty*, is in the sentence before.' } }];
+    var T = Y[2]; T.q = 'Read: "On Friday the bakery is busy. The oven is hot by 5. Shabbos is coming. Everyone wants fresh challah." Why is the bakery busy?';
+    T.w = ['Shabbos is coming', 'and', 'everyone wants fresh challah.']; T.extra = ['the oven is hot by 5', 'the bakery is on Park Avenue'];
+    T.how = 'Join the *reason* and what *people want*. A true fact that does not say why is a trap.';
+    if (T.why) T.why = { q: T.why.q, o: ['The reason and what people want are in different sentences', 'The answer is in the title', 'You can guess it'], a: 'The reason and what people want are in different sentences' };
+    var M = Y[0]; M.q = '"Why did Chaim bring an umbrella?"'; M.cards = [['Clouds were dark and rain was coming', 0], ['Clouds were dark', 1], ['rain was coming', 1], ['dark clouds, so rain was coming', 0]];
+    M.how = 'Count the reasons in each card. One reason is the trap.';
+    b.play = [M, T, { type: 'evidence', p: ['Erev Pesach, Tatty and Avi checked the house.', 'Avi held the candle.', 'Tatty used a feather and a spoon.', 'They found ten pieces of bread.', 'In the morning they burned them.'], a: [3, 4],
+      q: 'What did they find, and what did they do with it?', look: 'what they found and did', say: 'Challenge! Tap every sentence that answers.', how: 'Find what they *found*. Then what they *did* with it.',
+      why: { q: 'Why did you tap two sentences?', o: ['Each holds one piece of the answer', 'One sentence has it all', 'The first sentence is always right'], a: 'Each holds one piece of the answer' } }];
+    b.play.push({ type: 'sort', q: 'Read: "Avi held the candle. Tatty used a feather and a spoon. They found ten pieces of bread. In the morning they burned them."',
+      bins: ['Right there', 'Think and search'], cards: [['Who held the candle?', 0], ['What did Tatty use?', 0], ['What did Avi and Tatty each do?', 1], ['What did they burn in the morning?', 1]],
+      say: 'New questions! One sentence, or pieces from two places?', how: 'Find the key word. Does one sentence hold the *whole* answer? *Them* points back.' });
+    if (b.board) b.board.one = 'Right there = key word and answer in one sentence. Think and search = pieces from 2+ places.';
+    b.done = 'Moshe gave only *half*. You find *every piece*: right there, or think and search.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['READ.COMP.L05.05']);
   if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
