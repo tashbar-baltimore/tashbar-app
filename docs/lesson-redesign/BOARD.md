@@ -32,7 +32,7 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | G2 | Grammar Grades 5–8 | G lessons L06–L09 (53) | src/CoreDataG*.html | OPEN | | | |
 | W1 | Writing Grades 2–3 (W13) | 37 lessons (L03–L04) | src/CoreDataW13*.html | OPEN | | | |
 | W2 | Writing Grades 4–5 (W48) | 50 lessons (L05–L06) | src/CoreDataW48*.html | OPEN | | | |
-| W3 | Writing Grades 6–8 (W48) | 57 lessons (L07–L09) | src/CoreDataW48*.html | TAKEN | https://claude.ai/code/session_015qpxB94YmCQzBn7jqxa8Qk | 2026-11-27 18:45 | Claimed; reading the lessons, batch 1 next |
+| W3 | Writing Grades 6–8 (W48) | 57 lessons (L07–L09) | src/CoreDataW48*.html | TAKEN | https://claude.ai/code/session_015qpxB94YmCQzBn7jqxa8Qk | 2026-11-27 21:10 | Batch 1 (20 lessons, files W483, W484, W485, W488, W489) in its pull request; next: batch 2 (W4810, W4813, W4814, W4815) |
 | S1 | Social Studies | SS.* (about 30) | src/CoreDataS*.html, src/OneBiteData*.html | OPEN | | | |
 | S2 | Science | SCI.* (20) | src/CoreDataS2.html, src/CoreDataS3.html and the other src/CoreDataS*.html | OPEN | | | |
 | K1 | Kodesh (Chumash, Kriah, Halacha, Tefillah, Navi, Mishnah) | LK.* (65) | src/OneBiteDataKodesh.html (and src/KriyahMore.html) | OPEN | | | Kodesh: REBBE review after live |
