@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ten Friends — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 10 "Making 10" (MAP.md "Ten pairs"): TEN FRIENDS, at the bakery counter.
+     Pink number cards and blue number cards. He drags (or taps, then taps) a pink card onto the blue card that is its friend of ten.
+     The muffin tin proves it: the pink number of pink cupcakes, then the blue number of blue cupcakes. Full tin: friends! Both cards go.
+     A slip: the tin shows what happened ("seven and two make nine; one cup is empty", or "too many: only ten cups"), the empty cups are counted, another try. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css">
+<style>
+.cards{ display:flex; flex-direction:column; gap:10px; } .row{ display:flex; gap:12px; justify-content:center; }
+.pc{ width:clamp(70px,10.5vh,90px); height:clamp(70px,10.5vh,90px); border-radius:20px; background:#fff; border:6px solid #FF7FAE; display:flex; align-items:center; justify-content:center; padding:8px;
+  box-shadow:0 6px 0 #E3D3BE, 0 10px 16px rgba(60,40,20,.18); cursor:grab; touch-action:none; }
+.pc svg{ height:100%; width:auto; pointer-events:none; } .pc.blue{ border-color:#4FA8FF; cursor:pointer; } .pc.picked{ outline:5px solid #FFC93D; transform:translateY(-6px); }
+.pc.done{ visibility:hidden; } .pc.hint{ box-shadow:0 0 0 6px rgba(255,210,61,.9), 0 0 24px 8px rgba(255,210,61,.7); }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .pc{ width:76px; height:76px; } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel"><div class="cards"><div class="row" id="pinks"></div><div class="row" id="blues"></div></div></div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './bakery10.js';
+const $ = id => document.getElementById(id);
+let K, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const card = (n, c) => '<div class="pc ' + c + '" data-n="' + n + '" role="button" aria-label="' + n + '">' + U5.num(n) + '</div>';
+const left = () => R.pairs.filter(p => !R.got.includes(p[0]));
+function hooks() {
+  const [p] = left(); if (!p) return; const wrongB = R.pairs.map(q => q[1]).find(b => b !== p[1] && !R.got.includes(10 - b));
+  GAME.right = () => [{ drag: ['.pc.pink[data-n="' + p[0] + '"]', '.pc.blue[data-n="' + p[1] + '"]'] }];
+  GAME.wrong = wrongB == null ? null : () => [{ drag: ['.pc.pink[data-n="' + p[0] + '"]', '.pc.blue[data-n="' + wrongB + '"]'] }];
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+async function fillTo(a, b) { K.setTin(a); for (let i = a; i < Math.min(10, a + b); i++) await K.add(i); }
+async function drop(pc, bc) {
+  NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); const a = +pc.dataset.n, b = +bc.dataset.n;
+  await fillTo(a, b);
+  if (a + b === 10) { K.celebrate(); pc.classList.add('done'); bc.classList.add('done'); R.got.push(a);
+    await FR.yes(bc, FR.Word(a) + ' and ' + FR.word(b) + ' make ten. Friends!');
+    if (!left().length) { const d = done; done = null; d(R.misses === 0); return; }
+    K.setTin(0); open(); await FR.say('Find another pair of friends.'); return; }
+  FR.oops(bc); R.misses++;
+  if (a + b < 10) { await FR.say("Let's look. " + FR.Word(a) + ' and ' + FR.word(b) + ' make ' + FR.word(a + b) + '.');
+    const e = await K.countEmpty((j) => FR.say(FR.Word(j + 1) + ',', { noRepeat: true })); await FR.say(FR.Word(e) + (e === 1 ? ' cup is' : ' cups are') + ' empty.'); K.unglow(); }
+  else await FR.say("Let's look. Too many! The tin has only ten cups.");
+  await FR.say(FR.Word(a) + ' needs ' + FR.word(10 - a) + '. Find ' + FR.word(10 - a) + '.'); $('blues').querySelector('[data-n="' + (10 - a) + '"]').classList.add('hint');
+  setTimeout(() => document.querySelectorAll('.pc.hint').forEach(x => x.classList.remove('hint')), 2500); K.setTin(0); open();
+}
+const BOARDS = [[[7, 3], [4, 6], [9, 1]], [[8, 2], [5, 5], [6, 4]], [[3, 7], [1, 9], [2, 8]]];
+function play(F, i) {
+  return new Promise(async res => {
+    R = { pairs: BOARDS[i], got: [], misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); K.setTin(0);
+    const b0 = R.pairs.map(p => p[1]), blues = b0.slice(1 + i % 2).concat(b0.slice(0, 1 + i % 2));   /* turned, so no friend sits right under its pink card */
+    $('pinks').innerHTML = R.pairs.map(p => card(p[0], 'pink')).join(''); $('blues').innerHTML = blues.map(b => card(b, 'blue')).join('');
+    await F.say(i === 0 ? 'Every pink number has a blue friend.' : 'New friends! Match them.'); open();
+    await F.say('Together they fill the tin. Drag pink to blue.', { repeat: 'Drag a pink card to its blue friend.' });
+  });
+}
+FR.game({
+  id: 'u10-pairs', title: 'Ten Friends', rounds: 3,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() { K = mount($('world'), { kids: ['mendy', 'dovid'], band }); FR.dragTap({ sources: '.pc.pink', targets: '.pc.blue', drop }); },
+  demo: async F => {
+    $('pinks').innerHTML = card(8, 'pink'); $('blues').innerHTML = card(2, 'blue'); K.setTin(0);
+    await F.say('Friends of ten fill the tin. Watch me.'); await F.handDrag(document.querySelector('.pc.pink'), document.querySelector('.pc.blue'));
+    await fillTo(8, 2); K.celebrate(); await F.say('Eight and two make ten. Friends!'); K.setTin(0);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You know the friends of ten!' : 'Good matching! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

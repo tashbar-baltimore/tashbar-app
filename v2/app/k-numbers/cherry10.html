@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Make a Ten — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 10 "Making 10" (MAP.md "Cherry split", the first seed of adding past ten), at the bakery counter.
+     The tin has eight pink cupcakes; a plate has three blue ones. "Fill the tin first!" He taps the plate: one cupcake jumps into the tin each time,
+     until the tin is full. The cherry bond in the panel splits the three: two went in, and how many are left? He shows the leftover on his fingers.
+     "Three is two and one. Ten and one more!" A slip: we count what is left on the plate, then another try. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css">
+<style>
+#hp .fhand{ width:clamp(96px,14vh,130px); aspect-ratio:170/230; } #hp[hidden]{ display:none; }
+.bond{ position:relative; flex-shrink:0; width:clamp(150px,22vh,190px); height:clamp(100px,15vh,124px); } .bond svg.lines{ position:absolute; inset:0; width:100%; height:100%; }
+.bc{ position:absolute; width:clamp(54px,8vh,64px); height:clamp(54px,8vh,64px); border-radius:50%; background:#fff; border:5px solid #4FA8FF; display:flex; align-items:center; justify-content:center; padding:6px; }
+.bc svg{ height:100%; width:auto; } .bc b{ font:900 30px/1 system-ui, sans-serif; color:#4FA8FF; }
+#bw{ left:50%; top:0; transform:translateX(-50%); } #b0{ left:0; bottom:0; border-color:#FFC93D; background:#FFF8DC; } #b1{ right:0; bottom:0; }
+.tag{ position:absolute; font:800 13px/1 system-ui, sans-serif; color:#6A5A4A; bottom:-16px; width:100%; text-align:center; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; width:min(100%,370px); } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="goal" id="goal"></div>
+    <div class="bond" id="bond"><svg class="lines" viewBox="0 0 100 64" preserveAspectRatio="none"><path d="M50 18 L16 48 M50 18 L84 48" stroke="#8A6A4A" stroke-width="2.5"/></svg>
+      <div class="bc" id="bw"></div><div class="bc" id="b0"></div><div class="bc" id="b1"></div></div>
+    <div id="hp" hidden></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './bakery10.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const q = '<b>?</b>';
+function bond(top, a, b) { $('bw').innerHTML = U5.num(top); $('b0').innerHTML = a == null ? q : U5.num(a); $('b1').innerHTML = b == null ? q : U5.num(b); }
+function hooks() {
+  if (R.step === 'fill') { GAME.right = () => [{ tap: '.tspot[data-id="plate"]' }]; GAME.wrong = null; return; }
+  const k = R.b - (10 - R.a); GAME.right = () => FR.fingerTaps(H, k, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, k + 1, '#hp').concat([{ tap: '#check' }]);
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+async function tapPlate() {
+  if (GAME.phase !== 'answer' || R.step !== 'fill') return; GAME.phase = 'busy';
+  await K.moveOne();
+  if (K.count() < 10) { open(); return; }
+  FR.lock(true); K.celebrate(); const went = 10 - R.a; bond(R.b, went, null); await FR.say('Ten! The tin is full.');
+  await FR.say(FR.Word(went) + ' went in. How many are left?'); R.step = 'left'; $('hp').hidden = $('check').hidden = false; H.set(0);
+  open(); await FR.say('Show me on your fingers.', { repeat: 'Count the cupcakes left on the plate.' });
+}
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.step !== 'left') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const k = R.b - (10 - R.a);
+  if (H.count() === k) { bond(R.b, 10 - R.a, k); await FR.yes($('check'), FR.Word(R.b) + ' is ' + FR.word(10 - R.a) + ' and ' + FR.word(k) + '. Ten and ' + FR.word(k) + ' more!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++; await FR.say("Let's look. Count the plate."); const ex = K.extras();
+  await K.bumpAll(ex, i => FR.say(FR.Word(i + 1) + (i === ex.length - 1 ? '.' : ','), { noRepeat: true })); H.set(0); await FR.say('Show me again.'); open();
+}
+const PLAN = [[8, 3], [9, 2], [7, 4], [9, 4], [8, 5], [6, 5]];
+function play(F, i) {
+  return new Promise(async res => {
+    const [a, b] = PLAN[i]; R = { a, b, step: 'fill', misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
+    $('hp').hidden = $('check').hidden = true; K.setTin(a); K.setExtra(b); $('goal').innerHTML = U5.num(a); bond(b, null, null);
+    await F.say(F.Word(a) + ' in the tin. ' + F.Word(b) + ' on the plate.'); open();
+    await F.say('Fill the tin first! Tap the plate.', { repeat: 'Tap the plate. Fill the tin to ten.' });
+  });
+}
+FR.game({
+  id: 'u10-cherry', title: 'Make a Ten', rounds: 6,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() {
+    K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = FR.fingers(0, true); $('hp').appendChild(H.el);
+    K.onTap = id => { if (id === 'plate') tapPlate(); }; $('check').addEventListener('click', check);
+  },
+  demo: async F => {
+    R = { step: 'demo' }; K.setTin(9); K.setExtra(2); $('goal').innerHTML = U5.num(9); bond(2, null, null);
+    await F.say('Nine in the tin. Two on the plate. Watch me.'); await F.handTo(document.querySelector('.tspot[data-id="plate"]')); await F.handTap(); await K.moveOne();
+    K.celebrate(); bond(2, 1, null); await F.say('One fills the tin. Ten!'); F.handHide(); bond(2, 1, 1); await F.say('One is left. Ten and one more!');
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You make a ten every time!' : 'Good work! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
