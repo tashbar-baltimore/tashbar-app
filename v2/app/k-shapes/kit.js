@@ -606,6 +606,14 @@ export function startGame(cfg) {
     if (a === 'stack') { const top = new THREE.Mesh(o.mesh.geometry, o.mat); top.scale.setScalar(0.75); o.g.add(top); const y1 = 0.88;
       return tween(700, k => { top.position.y = 2.4 - (2.4 - y1) * ease(k); }).then(() => { pop(); return wait(700); }).then(() => tween(300, k => top.scale.setScalar(0.75 * (1 - k)))).then(() => { o.g.remove(top); }); }
     if (a === 'stand') return tween(1200, k => { o.turn.rotation.x = Math.sin(Math.PI * k) * 1.57; });
+    if (a === 'gather' && o.extra) return tween(500, k => { o.g.position.y += Math.sin(Math.PI * k) * 0.01; });   /* the second time (his tap): a little hop only */
+    if (a === 'gather') {   /* colour lesson: a red square and a blue triangle come; the red square slides next to the red circle, the blue one stays apart (review 2: "red goes together" needs more than one red thing) */
+      const p0 = o.g.position, dx = tall ? 1.35 : 2.4, dy = tall ? 0.75 : 0.85;
+      const same = showcase('square', o.color, 0, 0.6, p0.clone().add(new THREE.Vector3(dx, dy, 0))), other = showcase('tri', '#1F6FEB', 0, 0.6, p0.clone().add(new THREE.Vector3(dx, -dy, 0)));
+      o.extra = [same, other];
+      const from = same.g.position.clone(), to = p0.clone().add(new THREE.Vector3(tall ? 1.0 : 1.4, 0, 0.1));
+      return wait(700).then(() => tween(900, k => { same.g.position.lerpVectors(from, to, ease(k)); })).then(() => { pop(); return wait(1600); });
+    }
     return tween(1400, k => { o.turn.rotation.y = ease(k) * Math.PI * 2; });
   }
   /* the pure shape, glowing (Esti 2026-11-26): when the voice names the shape, a soft gold outline of the exact shape lights up on the object,
@@ -1495,7 +1503,7 @@ export function startGame(cfg) {
       steps.push(() => wait(300));
       steps.push(() => play2(lessonFor(L, shows[li])));
     });
-    steps.push(() => { shows.forEach(s => { scene.remove(s.g); shapes.splice(shapes.indexOf(s), 1); }); });
+    steps.push(() => { shows.forEach(s => [s, ...(s.extra || [])].forEach(q => { scene.remove(q.g); const i = shapes.indexOf(q); if (i >= 0) shapes.splice(i, 1); })); });
     const ok = await play(steps);
     if (ok) watch();
   }
