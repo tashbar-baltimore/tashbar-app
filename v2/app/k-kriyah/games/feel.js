@@ -51,7 +51,7 @@ export default function setup(E, { unit, game }) {
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); holder.position.set(0, 1.95, .8); boy.position.set(-3.6, 0, 1.4); boy.scale.setScalar(1); }
     done.forEach(l => layoutDone(l, ROW.indexOf(l.userData.key)));
   });
-  function layoutDone(l, i) { if (E.portrait) l.position.set(1.4 - i * .62, .42, 2.0); else l.position.set(4.1 - i * 1.2, .62, 1.3); l.scale.setScalar(E.portrait ? .24 : .34); }
+  function layoutDone(l, i) { if (E.portrait) l.position.set(1.4 - i * .62, .42, 2.0); else l.position.set(5.0 - i * 1.05, .45, 1.6);   /* low and to the right, clear of the big letter */ l.scale.setScalar(E.portrait ? .24 : .34); }
   E.onFrame(t => {
     if (cur && !cur.userData.spin) cur.rotation.y = Math.sin(t * .7) * .12;
     if (target.parent) { const b = beads.find(x => !x.userData.lit); target.visible = !!b && active; if (b) { target.position.copy(b.position); target.scale.setScalar(.16 * H / 3.2 * (1 + Math.sin(t * 7) * .15)); } }
@@ -119,7 +119,7 @@ export default function setup(E, { unit, game }) {
     }
     /* the whole letter glows, spins, and says its name and sound */
     cur.userData.spin = true; E.joy(E.worldPos(cur).add(new THREE.Vector3(0, 0, .8)), true); boy.mood('cheer');
-    const r0 = cur.rotation.y; await E.tween(900, k => { cur.rotation.y = r0 + k * Math.PI * 2; glow.material.opacity = .8; }, E.ease.out); cur.userData.spin = false; cur.rotation.y = 0;
+    const r0 = cur.rotation.y; await E.tween(900, k => { cur.rotation.y = r0 + Math.sin(k * Math.PI * 2) * .35; cur.scale.setScalar(1 + Math.sin(k * Math.PI) * .12); glow.material.opacity = .8; }, E.ease.out); cur.scale.setScalar(1);   /* a happy wobble, never turned round to show the letter backwards */ cur.userData.spin = false; cur.rotation.y = 0;
     await E.say(E.quiet(key) ? E.LETTERS[key].name + '! ' + E.LETTERS[key].name + ' is quiet.' : [E.LETTERS[key].name + '! ' + E.LETTERS[key].name + ' says', S(E.LETTERS[key].snd)]); boy.mood('calm');
     await E.sayWithMe(key);   /* he says it out loud too */
     /* it moves to the side, so he sees the ones he has done */

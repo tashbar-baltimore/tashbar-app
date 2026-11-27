@@ -84,6 +84,8 @@ export default function setup(E, { struggled, unit, id }) {
   /* the older letter he finds hardest (or hasn't seen longest) takes the last older-letter question (RESEARCH.md, gain 5) */
   if (!unit.gate && E.reviewPicks && unit.known.length) { const weak = E.reviewPicks(unit.known, 1)[0], at = Qs.map(q => unit.known.includes(q.k) && q.by === 'name').lastIndexOf(true);
     if (weak && at >= 0 && !Qs.some(q => q.k === weak)) Qs[at] = { k: weak, by: 'name' }; }
+  /* two more older letters, from across all the earlier units, so the check covers everything so far (reviewer: too few older letters) */
+  if (E.reviewPicks && unit.known.length > 3) E.reviewPicks(unit.known, 2, Qs.map(q => q.k)).forEach((k, i) => Qs.splice(3 + i * 4, 0, { k, by: 'name' }));
   async function ask(q) {
     cur = q; await E.say(line(q)); active = true; document.body.dataset.askReady = 1;
     const got = await new Promise(r => resolveQ = r); active = false; delete document.body.dataset.askReady; return got;
