@@ -51,7 +51,7 @@ export function mount(host, opt) {
   /* the two parts are two fruits every child knows: oranges (round, orange) and lemons (oval, yellow) */
   const orM = new THREE.MeshPhysicalMaterial({ color: '#FF8A1E', roughness: 0.45, clearcoat: 0.5 }), leM = new THREE.MeshPhysicalMaterial({ color: '#FFE03A', roughness: 0.45, clearcoat: 0.5 });
   tex('orange-skin.jpg', t => { orM.map = t; orM.color.set('#FFFFFF'); orM.needsUpdate = true; }); tex('lemon-skin.jpg', t => { leM.map = t; leM.color.set('#FFFFFF'); leM.needsUpdate = true; });
-  const orG = new THREE.SphereGeometry(0.3, 28, 20), leG = new THREE.SphereGeometry(0.27, 28, 20); leG.scale(1.25, 0.9, 0.9);
+  const orG = new THREE.SphereGeometry(0.3, 28, 20), leG = new THREE.SphereGeometry(0.27, 28, 20); leG.scale(1.12, 0.9, 0.9);   /* lemons stay apart, so each can be counted */
   const leafM = new THREE.MeshStandardMaterial({ color: '#4CB050' });
   function fruit(orange) { const g = new THREE.Group(); const b = new THREE.Mesh(orange ? orG : leG, orange ? orM : leM); b.castShadow = true; b.position.y = 0.28; g.add(b);
     if (orange) { const l = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 6), leafM); l.scale.set(1.5, 0.3, 0.8); l.position.set(0.06, 0.58, 0); g.add(l); }
@@ -65,13 +65,13 @@ export function mount(host, opt) {
   let counters = []; cup.visible = false;
   /* ---------------- a tray of oranges, and the big upside-down basket some of them hide under ---------------- */
   const plateM = new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.3 });
-  const platter = new THREE.Mesh(new THREE.BoxGeometry(3.8, 0.08, 1.7), new THREE.MeshStandardMaterial({ color: '#EBD5B0', roughness: 0.8 })); platter.position.set(-1.0, 0.05, 0.4); platter.castShadow = true; scene.add(platter);
+  const platter = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.08, 1.9), new THREE.MeshStandardMaterial({ color: '#EBD5B0', roughness: 0.8 })); platter.position.set(-1.0, 0.05, 0.4); platter.castShadow = true; scene.add(platter);
   let slices = [];
   const towel = new THREE.Group(); towel.visible = false; scene.add(towel);   /* (kept the name 'towel' so the games share one API) a wicker dome */
   { const dm = new THREE.Mesh(new THREE.SphereGeometry(1.15, 32, 18, 0, Math.PI * 2, 0, Math.PI / 2), glazeMat); dm.castShadow = true; dm.scale.set(1, 0.85, 0.8); towel.add(dm);
     const rimB = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.07, 10, 40), new THREE.MeshStandardMaterial({ color: '#B57E3E' })); rimB.rotation.x = Math.PI / 2; rimB.scale.set(1, 0.8, 1); towel.add(rimB); }
   const HIDE_X = 2.2;
-  const slot = (j, n) => { const per = Math.min(5, Math.max(1, n)), row = Math.floor(j / 5), col = j % 5; return new THREE.Vector3(-1.0 + (col - (Math.min(5, n) - 1) / 2) * 0.68, 0.08, 0.4 + (n > 5 ? (row ? 0.38 : -0.38) : 0)); };
+  const slot = (j, n) => { const per = Math.min(5, Math.max(1, n)), row = Math.floor(j / 5), col = j % 5; return new THREE.Vector3(-1.0 + (col - (Math.min(5, n) - 1) / 2) * 0.76, 0.08, 0.4 + (n > 5 ? (row ? 0.42 : -0.42) : 0)); };
   const hideSlot = (j, k) => { const per = Math.min(3, k), row = Math.floor(j / 3), col = j % 3; return new THREE.Vector3(HIDE_X + (col - (per - 1) / 2) * 0.55, 0.08, 0.4 + (k > 3 ? (row % 2 ? 0.3 : -0.3) : 0)); };
   /* two little plates for the two parts */
   const plates = [-1, 1].map(s => { const p = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.3, 0.1, 40), new THREE.MeshStandardMaterial({ color: s < 0 ? '#FFD9B0' : '#CFE6FF', roughness: 0.3 })); p.position.set(s * 1.75, 0.06, 0.4); p.castShadow = true; p.visible = false; scene.add(p); return p; });
@@ -133,6 +133,8 @@ export function mount(host, opt) {
       await tween(500, e => moving.forEach((o, j) => { o.position.lerpVectors(from[j], to[j], e); o.position.y += Math.sin(Math.PI * e) * 0.3; }));
       towel.position.set(HIDE_X, 2.4, 0.4); towel.visible = true; await tween(450, e => { towel.position.y = 2.4 - e * 2.38; }); towel.position.y = 0.02; moving.forEach(o => { o.visible = false; }); },   /* under the basket: really hidden */
     async lift() { if (!towel.visible) return; slices.forEach(o => { o.visible = true; }); await tween(450, e => { towel.position.y = 0.02 + e * 1.9; towel.rotation.z = -e * 0.3; }); towel.visible = false; towel.rotation.z = 0; },
+    /* split it: n fruits in rows of five; the first k are oranges, the rest lemons */
+    setSplit(n, k) { slices.forEach(o => scene.remove(o)); slices = []; platter.visible = true; towel.visible = false; for (let j = 0; j < n; j++) { const o = fruit(j < k); o.position.copy(slot(j, n)); scene.add(o); slices.push(o); } },
     slices: () => slices, towelOn: () => towel.visible,
     async bumpAll(list, say) { for (let i = 0; i < list.length; i++) { const o = list[i], y0 = o.position.y; await tween(240, (e, t) => { o.position.y = y0 + Math.sin(Math.PI * t) * 0.35; }); o.position.y = y0; if (say) await say(i); } },
     /* parts on two plates: show a and b slices (or counters) on the two little plates */
