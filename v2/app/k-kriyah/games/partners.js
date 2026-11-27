@@ -14,12 +14,12 @@ export default function setup(E, { struggled, unit }) {
   const tops = [], places = [], links = [], cards = [];
   const glow = E.glowSprite('#fff7b0', 2.0, 0); E.scene.add(glow); const arrow = E.arrow3d(.35);
   let P = false, H = 1.3, HC = 1, order = REG.slice(), busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), mistakes = 0, wrongInRow = 0, help = struggled, resolveRound = null, placed = 0, missedKey = null;
-  const slotX = i => P ? (2 - i) * 1.0 : (2 - i) * 1.75;   /* right to left */
+  const slotX = i => P ? (2 - i) * .82 : (2 - i) * 1.75;   /* right to left */
   const topPos = i => new THREE.Vector3(slotX(i), P ? 4.6 : 3.25, 0);
   const placePos = i => new THREE.Vector3(slotX(i), P ? 3.3 : 1.75, .3);
-  const homePos = i => P ? new THREE.Vector3([1.3, 0, -1.3, .65, -.65][i], [1.75, 1.75, 1.75, .55, .55][i], 1.2) : new THREE.Vector3(3.6 - i * 1.8, .95, 1.4);   /* the waiting letters a little back, so none crowds another */
+  const homePos = i => P ? new THREE.Vector3([1.3, 0, -1.3, .65, -.65][i], [1.75, 1.75, 1.75, .55, .55][i], 1.2) : new THREE.Vector3(3.6 - i * 1.8, .9, 2.6);   /* the waiting letters a little back, so none crowds another */
   E.onLayout(p => { P = p; H = p ? .78 : 1.3; HC = p ? .62 : .8;
-    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.6, 0); kid.visible = false; shelf.scale.set(.6, 1, 1); shelf.position.set(0, 4.6 - H / 2 - .12, 0); }
+    if (p) { E.camBase.set(0, 2.6, 12.5); E.camTarget.set(0, 2.6, 0); kid.visible = false; shelf.scale.set(.6, 1, 1); shelf.position.set(0, 4.6 - H / 2 - .12, 0); }
     else { E.camBase.set(0, 2.4, 10); E.camTarget.set(0, 1.7, 0); kid.visible = true; kid.position.set(-5.4, 0, .8); shelf.scale.set(1, 1, 1); shelf.position.set(0, 3.25 - H / 2 - .12, 0); }
     lay();
   });
@@ -65,6 +65,7 @@ export default function setup(E, { struggled, unit }) {
       const DESC = { chafsofis: 'Chaf Sofis is Chaf with a long leg.', memsofis: 'Mem Sofis is Mem, closed and square.', nunsofis: 'Nun Sofis is Nun with a long leg.', feisofis: 'Fei Sofis is Fei with a long leg.', tzadiksofis: 'Tzadik Sofis is Tzadik with a long leg.' };
       if (E.pointAt(arrow, c, k, 1.3)) setTimeout(() => arrow.visible = false, 2000 * E.F);
       await E.say(DESC[k]); await E.say('Find its partner!');
+      { const j = order.indexOf(partner); glow.position.copy(topPos(j)).setZ(-.2); glow.material.opacity = .9; await E.wait(900); }   /* its plain partner lights up for a moment */
       if (wrongInRow >= 2) { const j = order.indexOf(partner); E.hop(tops[j], .35); }   /* only after two tries does the partner hop */
       if (wrongInRow >= 2 || mistakes >= 3) help = true; kid.mood('calm'); busy = false;
     }

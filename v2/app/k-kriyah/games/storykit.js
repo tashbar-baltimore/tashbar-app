@@ -108,7 +108,7 @@ export function makeStory(E, unit, script) {
     }
     E.setProgress(steps, steps - 1);
     /* every letter so far, right to left (two lines on a phone when there are many), and the chant */
-    const all = script.row || [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .68 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
+    const all = script.row || [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .68 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (script.row ? .52 : many ? .4 : .46) : (many ? .62 : .82);
     const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 3 : all.length > 12 ? 2 : 1, per = script.row ? Math.ceil(Math.ceil(all.length / nl) / 2) * 2 : Math.ceil(all.length / nl),   /* partners in pairs never split across two lines */ lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
     lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (ks.length - 1);
       let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 2 ? 3.15 - li * 1.3 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });

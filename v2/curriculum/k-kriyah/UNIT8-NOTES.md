@@ -15,9 +15,9 @@ A bright, warm **shul on Simchas Torah**, made in 3D: a cream wall with tall arc
 | Stone | Game | What he does | What is new |
 |---|---|---|---|
 | 1 | Simchas Torah in shul (story) | Tatty shows Mendy the shofar: it turns into Shin. Mendy's Simchas Torah flag turns into Sin. Tatty dances with the Torah: Tuf rises out of a soft light (the Torah steps back; it is never spun or shrunk). Tuf's dot floats away: Suf. Then Shin beside Sin (a ring on each dot), Ches beside Tuf (an arrow at the little foot), the whole Alef-Beis chanted, and he taps each new letter. | The first chant of the whole Alef-Beis |
-| 2 | Dot Builder | "Make it Sin!" He drags the golden dot onto the right head (Shin) or the left head (Sin); onto the inside of ת (Tuf), or takes it out (Suf). Then all four mixed. A wrong place: the dot stays a moment, "Look! Dot on the right: that is Shin.", then the rule. | **A new kind of game** |
-| 3 | Look-Alike Detective | Ches and Tuf (the little foot), then **three boxes**: Hei, Ches and Tuf. | Three boxes at once |
-| 4 | Alef-Beis Train | He puts Tzadik to Suf on the train in order. Then the train comes back and **Yaakov has mixed up cars**: he taps a car in the wrong place and it swaps back. Two mix-ups differ only by the dot (Shin/Sin, Tuf/Suf). | Find and fix the order |
+| 2 | Dot Builder | "Make it Sin!" He drags the golden dot onto the right head (Shin) or the left head (Sin); onto the inside of ת (Tuf), or takes it out (Suf). For Tuf and Suf the dot starts in or out at random: if it is already right, he taps the green check. Then all four mixed. A wrong place: the dot stays a moment, "Look! Dot on the right: that is Shin.", then the rule. | **A new kind of game** |
+| 3 | Look-Alike Detective | Ches and Tuf (the little foot), then **three boxes**: Hei, Ches and Tuf. Some cards are Suf (no dot) and go in Tuf's box, so the foot, not the dot, is the clue. | Three boxes at once |
+| 4 | Alef-Beis Train | He puts Tzadik to Suf on the train in order. Then the train comes back and **Yaakov has mixed up cars**: after the demo (Kuf and Reish), one pair that differs only by the dot (Shin/Sin or Tuf/Suf) is mixed among cars in the right place; he must look at the dots to find it. On a phone the cars park in two short lines so every dot shows. | Find and fix the order |
 | 5 | Find the Mistake | **"Yaakov says this letter says sh. Is he right?"** Yaakov says the sound, not the name. He taps ✓ or ✗ and fixes the sign. | Sounds, not names |
 | 6 | Show what you know | 9 "hear it, tap it" questions; Shin stands beside Sin, Tuf beside Suf, Ches beside Tuf. Tes never stands beside Tuf when he hears "t", and Samech, Sin and Suf never stand together when he hears "s". | The whole Alef-Beis |
 | 7 | Review: Letter Hunt | Unit 7's Kuf (beside Hei) and Reish (beside Daled), hidden in the sukkah. | First hunt of these letters |
@@ -44,6 +44,12 @@ A bright, warm **shul on Simchas Torah**, made in 3D: a cream wall with tall arc
 
 ## Every spoken line that is new in Unit 8
 See the pull request ("Spoken lines").
+
+## Changes to earlier units' games (shared game files)
+- The bonus rain demo now catches the right letter (before, in Units 2–7, the demo's catch counted as a miss).
+- The 7-car train shows all its waiting cars on a phone (Unit 5 had one car hidden behind another).
+- Letter Hunt keeps Kuf's long leg on its tile.
+- The gallery lists Unit 8.
 
 ## What's next
 Unit 9: the final letters (ך ם ן ף ץ).
