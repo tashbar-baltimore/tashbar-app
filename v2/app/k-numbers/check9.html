@@ -66,11 +66,11 @@ function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true);
     const hide = R.kind === 'hide'; $('hp').hidden = $('goal').hidden = !hide; $('more').hidden = $('less').hidden = $('bond').hidden = hide;
-    if (hide) { H.set(0); K.setKugel(R.n); $('goal').innerHTML = U5.num(R.n); await F.say(F.Word(R.n) + ' oranges. Close your eyes!'); await K.hide(R.k); open();
+    if (hide) { H.set(0); K.setKugel(R.n); K.unspot('towel'); $('goal').innerHTML = U5.num(R.n); await F.say(F.Word(R.n) + ' oranges. Close your eyes!'); await K.hide(R.k); open();
       await F.say('How many are under the basket? Show me.', { repeat: F.Word(R.n) + ' in all. I see ' + F.word(R.n - R.k) + '. How many hide?' }); return; }
     R.k = 0; show();
     if (!ways.length) { await F.say('Seven lemons. Watch me.'); await F.handTo($('more')); await F.handTap(); R.k = 1; NK.sound.pop(); show(); await F.say('One orange and six lemons make seven.'); F.handHide(); R.k = 0; show(); }
-    await F.say(ways.length ? 'Now a different way to make seven!' : 'Now you. Show me a way to make seven.'); open();
+    await F.say(ways.length ? 'Now a different way to make seven!' : 'Now you. Make some oranges!'); open();
     await F.say('Use the arrows. Then tap the check.', { repeat: 'Orange arrow: one more orange. Then check.' });
   });
 }
@@ -83,7 +83,7 @@ FR.game({
   },
   reset() { ways = []; },
   demo: async F => {
-    R = { kind: 'demo', n: 6, k: 1 }; K.setKugel(6); $('goal').innerHTML = U5.num(6); await F.say('Show me what you know! Watch me first.'); await K.hide(1);
+    R = { kind: 'demo', n: 6, k: 1 }; K.setKugel(6); K.unspot('towel'); $('goal').innerHTML = U5.num(6); await F.say('Show me what you know! Watch me first.'); await K.hide(1);
     await F.say('Six in all. I see five. One is hiding.'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); NK.sound.pop(); await F.handTo($('check')); await F.handTap(); await K.lift(); H.set(0);
   },
   round: (F, i) => play(F, i),

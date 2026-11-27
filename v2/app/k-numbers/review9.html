@@ -85,7 +85,8 @@ FR.game({
     await F.handTo(document.querySelector('.tspot[data-id="plate1"]')); await F.handTap(); K.unspot('plate1'); F.handHide();
     K.hidePlates(); $('same').hidden = true; $('hh').hidden = $('check').hidden = false; K.setKugel(3); K.unspot('towel');
     await F.say('Three oranges. One more?'); K.setKugel(4); K.unspot('towel'); await F.say('Four! I show four.');
-    await F.handTo(H.el, .3, .6); await F.handTap(); H.set(4); NK.sound.pop(); await F.handTo($('check')); await F.handTap(); F.handHide(); H.set(0);
+    await F.handTo(H.el, .3, .6); for (let k = 1; k <= 4; k++) { await F.handTap(); H.set(k); NK.sound.pop(); } await F.handTo($('check')); await F.handTap(); F.handHide(); H.set(0);
+    K.setKugel(4); K.unspot('towel'); await F.say('Four oranges. One hides.'); await K.hide(1); await F.say('I see three. One is hiding!'); await K.lift();
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'You remember so much!' : 'Good work! Let\'s play once more.'

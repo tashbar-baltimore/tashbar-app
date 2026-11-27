@@ -60,7 +60,7 @@ const PLAN = [7, 7, 8, 8, 10, 10];
 function play(F, i) {
   return new Promise(async res => {
     const n = PLAN[i]; R = { n, k: 0, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); show(); list();
-    await F.say((found[n] || []).length ? 'Another way to make ' + F.word(n) + '!' : F.Word(n) + ' lemons. Make ' + F.word(n) + '! Find a way.');
+    await F.say((found[n] || []).length ? 'Another way to make ' + F.word(n) + '!' : F.Word(n) + ' lemons. Turn some into oranges!');
     open(); await F.say('Find a new way. Then tap the check.', { repeat: 'Orange arrow: one more orange. Then check.' });
   });
 }

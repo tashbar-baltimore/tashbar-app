@@ -38,8 +38,8 @@ const SLIDES = [
   async F => { K.clearCounters(); K.showCup(false); K.setPlates(5, 2); for (const [k, line] of [[0, 'Five on this plate.'], [1, 'Two on that plate.']]) { const el = K.spot('pl' + k, K.plates[k], { cls: 'side', r: 1.2, y: 0.3 }); el.classList.add('hint'); await F.wait(80); await F.handTo(el); await F.say(line); el.classList.remove('hint'); K.unspot('pl' + k); } F.handHide(); await F.say('Five and two make seven, too!'); },
   async F => { $('bond').hidden = false; await F.say('We draw it like this. Seven on top.'); await F.say('Five and two below. Part, part, whole!'); $('bond').hidden = true; },
   async F => { await F.say('I say seven. You say the parts!'); await F.chant('Seven is...', true, 'five and two!'); },
-  async F => { K.hidePlates(); K.setKugel(8); await F.say('Eight oranges.'); await K.hide(3); await F.say('There were eight. I see five.'); await F.say('Three are under the basket!'); await K.lift(); },
-  async F => { K.setKugel(7); await F.say('Your turn! Seven oranges.'); await K.hide(2); asking = true; $('hp').hidden = $('check').hidden = false; $('go').hidden = true;
+  async F => { K.hidePlates(); K.setKugel(8); K.unspot('towel'); await F.say('Eight oranges.'); await K.hide(3); await F.say('There were eight. I see five.'); await F.say('Three are under the basket!'); await K.lift(); },
+  async F => { K.setKugel(7); K.unspot('towel'); await F.say('Your turn! Seven oranges.'); await K.hide(2); asking = true; $('hp').hidden = $('check').hidden = false; $('go').hidden = true;
     await F.say('How many are under the basket? Show me.', { repeat: 'There were seven. I see five. Show how many hide.' }); }
 ];
 FR.game({
