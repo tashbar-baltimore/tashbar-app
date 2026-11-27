@@ -27,7 +27,7 @@ module.exports = async (browser) => {
       if (PINK.test(t)) fails.push('Keser look: ' + f + ' still uses a pink color (' + t.match(PINK)[0] + ')'); }
     for (const [tag, w, h, opts] of [['chromebook', 1366, 768], ['phone', 390, 800], ['reduce motion', 390, 800, { reducedMotion: 'reduce' }]]) {
       const ctx = await browser.newContext(Object.assign({ viewport: { width: w, height: h } }, opts || {})), pg = await ctx.newPage(), errs = [];
-      pg.on('pageerror', e => errs.push(String(e))); pg.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); pg.on('requestfailed', r => errs.push('could not load ' + r.url()));
+      pg.on('pageerror', e => errs.push(String(e))); pg.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); pg.on('requestfailed', r => { const why = (r.failure() || {}).errorText || ''; if (/ABORTED|cancel/i.test(why)) return; errs.push('could not load ' + r.url() + ' (' + why + ')'); });   /* a load cut off because the test moves on to the next screen is not a missing file */
       /* welcome -> code */
       await pg.goto(url); await pg.click('#enter');
       if (!(await pg.waitForURL(/signin\.html/, { timeout: 8000 }).then(() => true, () => false))) fails.push('Keser (' + tag + '): Enter does not lead to her code');
