@@ -31,7 +31,7 @@ export default function setup(E, { unit }) {
     const l = E.letter(k, 1.0); let x; if (E.portrait) { const top = lx => Math.max(-9, ...falling.filter(f => !f.userData.busy && !f.userData.gone && Math.abs(f.userData.x - lx) < .5).map(f => f.position.y)); x = [-.25, 1.45].sort((a, b) => top(a) - top(b))[0]; }   /* a phone has two lanes: the one whose last letter is lowest */
     else { const free = c => !falling.some(f => !f.userData.busy && !f.userData.gone && f.position.y > 1.6 && Math.abs(f.userData.x - c) < 1.5); let best = null, bd = -1;   /* a free lane: never on top of another falling letter */
       for (let t = 0; t < 40; t++) { const c = Math.max(-2.0, (Math.random() * 2 - 1) * X * .85 + .6); if (free(c)) { best = c; break; } const d = Math.min(9, ...falling.filter(f => !f.userData.gone).map(f => Math.abs(f.userData.x - c))); if (d > bd) { bd = d; best = c; } } x = best; }
-    l.userData = Object.assign(l.userData, { t0: performance.now(), ms: ms * FALL_F, y0: E.portrait ? 5.0 : 4.0, y1: .5, x }); l.position.set(x, l.userData.y0, .8); E.scene.add(l); falling.push(l); E.popIn(l, 1, 250);   /* appears inside the sky, below the top buttons */
+    l.userData = Object.assign(l.userData, { t0: performance.now(), ms: ms * FALL_F * (missRound >= 2 ? 1.5 : 1),   /* gentler after two misses in a round (reviewer) */ y0: E.portrait ? 5.0 : 4.0, y1: .5, x }); l.position.set(x, l.userData.y0, .8); E.scene.add(l); falling.push(l); E.popIn(l, 1, 250);   /* appears inside the sky, below the top buttons */
     if (k === want) targets++;
   }
   E.onPointer('down', async e => {
