@@ -166,12 +166,16 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* the stage: the round mat in the middle where the shapes sit (its top is at 0.1, like the rug) */
   /* painted round mats that have arrived and been checked by eye (art/mat-<world>.png; k-shapes-art-requests.md) */
   const MATS = new Set(['toyland', 'garden', 'sky', 'bakery', 'space', 'beach', 'underwater', 'traintown', 'jungle', 'snow', 'farm', 'party']);
+  /* calm (K-CLARITY-RULES 10, Esti 2026-11-27 "the backgrounds are so busy"): the painted mat under the shapes is paler and less colourful,
+     so the shapes on it are the strongest thing he sees */
+  function calmMat(t) { if (!CALM) return t; try { const im = t.image, cv = document.createElement('canvas'); cv.width = im.width; cv.height = im.height; const cx = cv.getContext('2d');
+    cx.filter = 'saturate(0.45)'; cx.drawImage(im, 0, 0); cx.filter = 'none'; cx.fillStyle = 'rgba(255,255,255,0.5)'; cx.fillRect(0, 0, cv.width, cv.height); return new THREE.CanvasTexture(cv); } catch (e) { return t; } }
   function stage(draw, o = {}) {
     const t = paint(1024, 1024, (x, w) => draw(x, w / 2, w));
     const top = new PM({ color: '#FFFFFF', map: t, roughness: o.rough || 0.9, sheen: o.sheen == null ? 0.8 : o.sheen, sheenColor: new THREE.Color(o.sheenColor || '#FFF6E8'), sheenRoughness: 0.7, clearcoat: o.coat || 0, clearcoatRoughness: 0.3 });
     const s = new THREE.Mesh(new THREE.CylinderGeometry(o.r || 6.6, (o.r || 6.6) + 0.1, o.h || 0.1, 128), [std(o.edge || '#F4E6D2', { roughness: 0.8 }), top, top]);
     s.position.y = (o.h || 0.1) / 2; s.receiveShadow = true; s.castShadow = false; scene.add(s);
-    if (MATS.has(world)) new THREE.TextureLoader().load('art/mat-' + world + '.png', t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO; top.map = t; top.needsUpdate = true; });   /* a painted round mat from the picture account */
+    if (MATS.has(world)) new THREE.TextureLoader().load('art/mat-' + world + '.png', t => { t = calmMat(t); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO; top.map = t; top.needsUpdate = true; });   /* a painted round mat from the picture account */
     return s;
   }
   /* soft round puffs (clouds, bushes, tree tops) */
@@ -848,7 +852,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     /* dancing light on the sand (caustics) */
     const caus = paint(512, 512, (x, w) => { x.fillStyle = '#000'; x.fillRect(0, 0, w, w); x.strokeStyle = 'rgba(255,255,255,.9)'; x.lineWidth = 3; const R = rng(4); for (let i = 0; i < 70; i++) { const cx = R() * w, cy = R() * w, r = 18 + R() * 30; x.beginPath(); for (let k = 0; k <= 7; k++) { const a = k / 7 * 6.28; x.lineTo(cx + Math.cos(a) * r * (0.8 + R() * 0.4), cy + Math.sin(a) * r * (0.8 + R() * 0.4)); } x.stroke(); } }, { repeat: [5, 5], srgb: false });
     const cm = new THREE.Mesh(new THREE.CircleGeometry(16, 64), new THREE.MeshBasicMaterial({ map: caus, color: '#9CF6FF', transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false })); cm.rotation.x = -Math.PI / 2; cm.position.y = 0.115; cm.renderOrder = 2; scene.add(cm);
-    anim.push((t, q) => { caus.offset.set(Math.sin(t * 0.13) * 0.3, t * 0.02); cm.visible = q >= 1; });
+    anim.push((t, q) => { caus.offset.set(Math.sin(t * 0.13) * 0.3, t * 0.02); cm.visible = q >= 1 && !CALM; });   /* calm (K-CLARITY-RULES 10): no moving light lines on the sand */
     const far = group(), near = group();
     /* coral, seaweed, rocks, a treasure chest, shells */
     const CC = ['#FF6F91', '#FF9A3C', '#B98CFF', '#FFD23F', '#FF5A7A', '#7FE7C4'];

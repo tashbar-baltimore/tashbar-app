@@ -13,11 +13,11 @@
 <script type="module">
 import { startGame } from './kit.js';
 const nc = a => { a.count = false; return a; };
-const RED = '#E03A33', BLUE = '#1F6FEB', YELLOW = '#F2A900';
+const RED = '#E03A33', BLUE = '#1F6FEB', YELLOW = '#FFC814';   /* a clear lemon yellow, never orange (K-CLARITY-RULES 11) */
 const BOXES = [{ paint: 'circle', color: RED, acceptColor: RED, word: 'red' }, { paint: 'circle', color: BLUE, acceptColor: BLUE, word: 'blue' }, { paint: 'circle', color: YELLOW, acceptColor: YELLOW, word: 'yellow' }];
 const word = o => (o.box >= 0 ? BOXES[o.box].word : 'a new color');
 startGame({
-  id: 'sortcolor', world: 'jungle', sortBy: 'color', boxes: BOXES, countAfter: true,
+  id: 'sortcolor', world: 'jungle', sortBy: 'color', plain: true, boxes: BOXES, countAfter: true,
   intro: ['Mendy is cleaning up.', 'He sorts his toys by color.', "Let's sort together!"],
   lessons: [{ k: 'circle', kind: 'solid', word: 'red circle', color: RED, like: 'All the red toys go together.', action: 'spin', rule: ['Sorting means same with same.'],
     tap: 'Tap the red circle.', tapSay: 'Red!', chant: [['Red with red!', 2], ['Blue with blue!', 2], ['Sort it!', 2]] }],
@@ -28,7 +28,7 @@ startGame({
   yesDefault: o => 'Yes! ' + word(o)[0].toUpperCase() + word(o).slice(1) + ' goes with ' + word(o) + '!', allDone: 'Everything is sorted!',
   wrong: o => nc(['That one is ' + word(o) + '.', 'It goes in the ' + word(o) + ' box.']),
   mostAsk: 'Which box has the most?', mostYes: 'Yes! The red box has the most!',
-  bonus: [['b1', 'kite', 0.3, 0.9, 0], ['b2', 'cyl', 0, 0.8, 2], ['b3', 'oval', 0.4, 0.9, 4]], bonusAsk: 'Sort these too. Some have no box!',
+  bonus: [['b1', 'kite', 0.3, 0.9, 0, BLUE], ['b2', 'cyl', 0, 0.8, 2, RED], ['b3', 'oval', 0.4, 0.9, 4, YELLOW]], bonusAsk: 'New shapes! Look only at the color.',
   mistake: { friend: { name: 'Tzvi', shirt: '#C46A1E', hair: '#3A2A1E' }, icon: 'circle', piece: ['square', 0.2, 1.1, BLUE], box: 1,
     claim: ['Tzvi put a blue square in the red box.'], ask: 'Does it go in the red box?', answer: false,
     explain: ['It is blue.', 'Blue goes in the blue box.'], right: ['Right! It is blue.', 'It goes in the blue box.'] },
