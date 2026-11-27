@@ -1103,7 +1103,7 @@ export function startGame(cfg) {
   const POSITIONED = cfg.mode === 'position';
   let BR = null;
   const PLANK_Y = 1.45;
-  const ZONES = { top: [0, PLANK_Y + 0.55, 0], under: [0, 0.45, 0], left: [-2.3, 0.55, 0], right: [2.3, 0.55, 0], front: [0, 0.55, 2.1], behind: [0.5, 0.55, -3.3] };   /* behind: well back, with ground showing between, so it never looks on top */
+  const ZONES = { top: [0, PLANK_Y + 0.55, 0], under: [0, 0.45, 0], left: [-2.3, 0.55, 0], right: [2.3, 0.55, 0], front: [0, 0.55, 2.1], behind: [0.5, 0.55, -3.3] };   /* behind: placed by zoneWorld (half hidden behind a block) */
   const ZWORD = { top: 'on top of', under: 'under', left: 'next to', right: 'next to', front: 'in front of', behind: 'behind' };
   function makeBridge() {
     const TB = LK && !cfg.plain && LK.treasures.bridge ? LK.treasures.bridge(PLANK_Y) : null;   /* cfg.plain: the plain block bridge (no pearls on it that look like one more ball) */   /* under the sea: a stone bridge on coral rocks (treasures.js) */
@@ -1116,7 +1116,11 @@ export function startGame(cfg) {
     g.position.set(0, 0, POS_Z()); scene.add(g); return { g, ring };
   }
   const POS_Z = () => tall ? -0.6 : -0.4;
-  function zoneWorld(z) { const v = ZONES[z]; return new THREE.Vector3(v[0] * (tall ? 0.8 : 1), v[1], v[2] * (tall ? 0.85 : 1) + POS_Z()); }
+  function zoneWorld(z) { const v = ZONES[z], dz = v[2] * (tall ? 0.85 : 1);
+    if (z === 'behind') {   /* behind (review 2): just behind the left block on the line from his eye, moved over so about half of it peeks out. The block hides part of it, so it is clearly BEHIND: never next to the end, never seen above the bridge like "on top" */
+      const c = viewFor('wide').pos, qx = -1.05, qz = POS_Z(); let dx = qx - c.x, dzz = qz - c.z; const n = Math.hypot(dx, dzz) || 1; dx /= n; dzz /= n;
+      return new THREE.Vector3(qx + dx * 1.15 + dzz * 0.75, v[1], qz + dzz * 1.15 - dx * 0.75); }
+    return new THREE.Vector3(v[0] * (tall ? 0.8 : 1), v[1], dz + POS_Z()); }
   function zoneHit(cx, cy) { let best = null, bd = 1e9; Object.keys(ZONES).forEach(z => { const p = toScreen(zoneWorld(z)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = z; } }); return bd < Math.max(110, innerWidth * 0.1) ? best : null; }
   function showRing(z, on) { if (!BR) return; BR.ring.visible = on; if (on) { const p = zoneWorld(z); BR.ring.position.set(p.x, z === 'top' ? PLANK_Y + 0.16 : 0.1, p.z); } }
   let posPiece = null, posWant = null;

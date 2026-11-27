@@ -161,3 +161,4 @@ More fixes (review-shapes takeover session, Units 7-12):
 |---|---|
 | Graduation: the skinny triangle's clue said "I am very thin", but Shape party 2 teaches "flat is thin", so every flat shape is thin (11) | The clue is "I am flat. I have three corners." (only one triangle is there) |
 | Shape party 2: the cube's "sides are squares" (sides are the lines of flat shapes) | "Every face is a square", the same words as The solid shapes |
+| Where is it?: the "behind" ball sat past the right end of the bridge, fully seen, so it looked "next to" (friend's mistake picture) (9, 11) | "Behind" is now just behind the left block on the boy's line of sight: the block hides half the ball, so it is clearly behind (placed from the camera, so phone and Chromebook both work) |
