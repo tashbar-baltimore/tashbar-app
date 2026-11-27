@@ -99,7 +99,7 @@ function model(m){ if(!m||typeof m!=='object') return '';
 /* MORE PICTURE MODELS for grades 4-8 (row M2, HoS 2026-11-27 "much better informative graphics"): information only, never buttons.
    angle  {type:'angle', a:10, b:55, show:true}          a half protractor with two rays at a and b degrees; show:false hides the size
    lplot  {type:'lplot', d:8, vals:[1,2,3], xs:[2,4,1], unit:'inch'}   a line plot: Xs stacked over each value (vals are tops over d)
-   rect   {type:'rect', w:5, h:3, unit:'ft', edge:false}  a rectangle of unit squares with its sides labeled; edge:true lights the edge
+   rect   {type:'rect', w:5, h:3, unit:'ft', edge:false, hl:'?'}  a rectangle of unit squares with its sides labeled; edge:true lights the edge; hl replaces the side label
    scatter{type:'scatter', pts:[[1,23],[2,25]], line:[2,20], odd:[9,8]}   a scatter plot, an optional trend line y = m x + b, an outlier ring
    table  {type:'table', head:['','Chess','Ball'], rows:[['7th','13','10']], hi:[[0,1]]}   a small two-way table; hi lights cells (row, col)
    grid   {type:'grid', n:6, pts:[[3,2,'A'],[3,-2,"A'"]], mirror:'x', arrow:true}   a coordinate grid with labeled points (mirror lights an axis)
@@ -127,7 +127,7 @@ const MODELS2={
     let s='<svg class="ob-svgm" viewBox="0 0 '+(X+w*c+20)+' '+(Y+h*c+34)+'" role="img" aria-label="'+E(m.label||('a rectangle '+w+' by '+h))+'">';
     for(let i=0;i<w;i++) for(let j=0;j<h;j++) s+='<rect x="'+(X+i*c)+'" y="'+(Y+j*c)+'" width="'+c+'" height="'+c+'" fill="'+(m.edge?'#fff':'#CDEBC0')+'" stroke="#9AA6BD" stroke-width="1"/>';
     s+='<rect x="'+X+'" y="'+Y+'" width="'+(w*c)+'" height="'+(h*c)+'" fill="none" stroke="'+(m.edge?'#FF7A3D':'#1F2A44')+'" stroke-width="'+(m.edge?5:2.5)+'"/>';
-    s+='<text x="'+(X+w*c/2)+'" y="'+(Y+h*c+24)+'" font-size="14" font-weight="800" text-anchor="middle" fill="#1F2A44">'+w+' '+u+'</text><text x="'+(X-8)+'" y="'+(Y+h*c/2+5)+'" font-size="14" font-weight="800" text-anchor="end" fill="#1F2A44">'+h+' '+u+'</text>';
+    s+='<text x="'+(X+w*c/2)+'" y="'+(Y+h*c+24)+'" font-size="14" font-weight="800" text-anchor="middle" fill="#1F2A44">'+w+' '+u+'</text><text x="'+(X-8)+'" y="'+(Y+h*c/2+5)+'" font-size="14" font-weight="800" text-anchor="end" fill="#1F2A44">'+(m.hl!=null?E(m.hl):h+' '+u)+'</text>';
     return s+'</svg>'; },
   scatter(m){ const pts=(m.pts||[]).map(p=>[+p[0],+p[1]]), mx=Math.max(1,+m.maxX||Math.max.apply(null,pts.map(p=>p[0]))+1), my=Math.max(1,+m.maxY||Math.max.apply(null,pts.map(p=>p[1]))+5), W=300, H=170, L=34, B=24, sx=x=>L+x*(W-L-10)/mx, sy=y=>H-B-y*(H-B-10)/my;
     let s='<svg class="ob-svgm" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+E(m.label||'a scatter plot')+'"><line x1="'+L+'" y1="'+(H-B)+'" x2="'+(W-6)+'" y2="'+(H-B)+'" stroke="#1F2A44" stroke-width="2"/><line x1="'+L+'" y1="'+(H-B)+'" x2="'+L+'" y2="6" stroke="#1F2A44" stroke-width="2"/>';
