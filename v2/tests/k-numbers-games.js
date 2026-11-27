@@ -40,7 +40,9 @@ module.exports = async function (browser) {
     }
   }
 
-  for (const [id, file] of GAMES) {
+  /* PART=k/n (the online test kit runs in halves): each half plays its share of the games (every n-th one), so neither half runs past its time limit; the map check runs in part 1 */
+  const pm = /^(\d+)\/(\d+)$/.exec(process.env.PART || '1/1'), pk = pm ? +pm[1] - 1 : 0, pn = pm ? +pm[2] : 1, MINE = GAMES.filter((_, i) => i % pn === pk);
+  for (const [id, file] of MINE) {
     let w;
     try {
       w = await open(file + '?fast=1', 1366, 768); const pg = w.pg, name = file.replace('.html', '');
@@ -96,7 +98,7 @@ module.exports = async function (browser) {
 
   /* the map */
   let m;
-  try {
+  if (pk === 0) try {
     m = await open('index.html', 1366, 768, { games: { 'u1-opener': { best: 3, passed: true }, meet123: { best: 2, passed: true } } });
     await m.pg.waitForSelector('.stop', { timeout: 10000 });
     const st = await m.pg.evaluate(() => [...document.querySelectorAll('.stop')].map(s => ({ lock: s.classList.contains('lock'), now: s.classList.contains('now'), stars: s.querySelectorAll('.st svg').length })));
@@ -111,6 +113,7 @@ module.exports = async function (browser) {
     m.errs.forEach(e => bad('map page error: ' + e)); await m.ctx.close(); m = null;
   } catch (e) { bad('map crashed: ' + String(e).slice(0, 200)); }
   finally { if (m) await m.ctx.close().catch(() => {}); fs.rmSync(dist, { recursive: true, force: true }); }
-  if (!out.fails.length) out.oks.push('2.0 K Numbers: ' + GAMES.length + ' games load, show first, explain a mistake, can be won, save stars, fit a phone; the map opens stops in order');
+  if (pk !== 0) fs.rmSync(dist, { recursive: true, force: true });   /* part 2 has no map check: tidy up here */
+  if (!out.fails.length) out.oks.push('2.0 K Numbers: ' + MINE.length + (pn > 1 ? ' of ' + GAMES.length : '') + ' games load, show first, explain a mistake, can be won, save stars, fit a phone' + (pk === 0 ? '; the map opens stops in order' : '') + (pn > 1 ? ' (part ' + (pk + 1) + ' of ' + pn + ')' : ''));
   return out;
 };
