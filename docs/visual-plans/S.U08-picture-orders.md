@@ -6,7 +6,7 @@ Already in the library and now on the lessons (2026-11-27): `nile-delta-from-spa
 
 Blank and labeled versions: not needed for these three. They are photos of objects, and pictures carry no text (`docs/HANDOFF-PICS.md`); the app writes the name under the picture.
 
-## Order S.U08-1 (sent 2026-11-27)
+## Order S.U08-1 (sent 2026-11-27; all 3 received, checked and added the same day)
 
 Style for all three: the M68 style sheet (`docs/core-growth/STYLE-SHEETS.md`). Landscape 16:9, at least 1,600 × 900 px. No people. No words, letters or numbers anywhere. No other religions' symbols.
 
