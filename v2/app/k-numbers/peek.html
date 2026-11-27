@@ -40,6 +40,9 @@ svg{ display:block; }
 #home{ width:70px; height:70px; }
 #again.talk{ animation:talk 1s infinite; } @keyframes talk{ 50%{ transform:scale(1.09); } }
 .dots{ flex:1; display:flex; justify-content:center; gap:clamp(6px,1.2vw,14px); }
+.mid{ flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:5px; }   /* the title above the round dots: always on screen (K-CLARITY-RULES 13), as in frame.css */
+.mid .dots{ flex:none; }
+.gtitle{ font:800 clamp(15px,2vw,22px)/1.15 system-ui,-apple-system,'Segoe UI',sans-serif; color:#2B2350; background:rgba(255,255,255,.88); padding:4px 14px; border-radius:999px; text-align:center; max-width:100%; box-shadow:0 3px 10px rgba(40,70,140,.12); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .dots i{ width:clamp(18px,2.4vw,28px); height:clamp(18px,2.4vw,28px); border-radius:50%; background:radial-gradient(circle at 40% 35%,#fff,#DDEBFA); border:3px solid #fff; box-shadow:0 3px 0 rgba(30,60,120,.18); transition:all .3s; }
 .dots i.now{ background:radial-gradient(circle at 40% 35%,var(--sun-l),var(--sun) 65%); box-shadow:0 3px 0 var(--sun-d),0 0 0 5px rgba(255,201,61,.35); transform:scale(1.25); }
 .dots i.ok{ background:radial-gradient(circle at 40% 35%,var(--green-l),var(--green) 65%); box-shadow:0 3px 0 var(--green-d); }
@@ -176,7 +179,7 @@ svg{ display:block; }
 <div id="game" class="locked">
   <div class="top">
     <button id="again" class="rb btn3d b-blue" aria-label="Hear it again"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#fff"/><path d="M32 17c3 2 5 4.5 5 7s-2 5-5 7M36 11c5 3.5 8 8 8 13s-3 9.5-8 13" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg></button>
-    <div class="dots" id="dots"></div>
+    <div class="mid"><div class="gtitle" id="gtitle">Peek!</div><div class="dots" id="dots"></div></div>
     <button id="home" class="rb btn3d b-white" aria-label="Back"><svg viewBox="0 0 48 48"><path d="M6 24 24 8l18 16" stroke="#2B2350" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22v18h9V30h6v10h9V22" fill="#FFC940" stroke="#2B2350" stroke-width="4" stroke-linejoin="round"/></svg></button>
   </div>
   <div class="stage">
