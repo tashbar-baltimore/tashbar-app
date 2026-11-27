@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Show Me 0 to 5 — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 4 MASTERY CHECK (MAP.md: "for each of 0-5: build it, show it on fingers, and drag the numeral to its group").
-     12 quick items, each number 0-5 twice: READ IT (the written number is shown and NOT said; he builds it on the five-frame AND shows
-     it on the fingers, then presses check) and MATCH IT (he drags the right written number of three onto a group).
+     12 quick items, each number 0-5 twice: READ IT (the written number is shown and NOT said; one job per round: he builds it on the
+     five-frame OR shows it on the fingers, in turn, then presses check) and MATCH IT (he drags the right written number of three onto a group).
      No hints during the check; after a miss we look at the right answer together and go on. 11 of 12 = Unit 4 is done. -->
 <link rel="stylesheet" href="frame.css">
 <link rel="stylesheet" href="unit4.css">
@@ -22,6 +22,9 @@
 .srcs{ display:flex; gap:clamp(12px,3vw,40px); }
 .srcs .numcard{ width:min(15vw,24vh,170px); cursor:grab; }
 #check[hidden]{ display:none; }
+/* one tool alone on the screen: draw it bigger */
+@media (min-width:761px) and (min-aspect-ratio:4/5){ #work .both > .ff:only-child{ width:min(46vw,76vh,560px); }
+  #work .both > .bighand:only-child .fhand{ width:min(24vw,44vh,280px); } }
 .hero{ display:flex; align-items:center; justify-content:center; }
 .hero svg{ width:60%; height:auto; }
 @media (max-width:760px), (max-aspect-ratio:4/5){
@@ -47,21 +50,26 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var KINDS = ['apple', 'dots', 'orange', 'candle', 'pear', 'dots'], plan, R, done, FF, H;
-  function readLayout(n) {
-    $('prompt').innerHTML = ''; $('work').innerHTML = ''; $('prompt').appendChild(U4.numCard(n, true));
-    var both = document.createElement('div'); both.className = 'both'; FF = U4.frame5(0, true); both.appendChild(FF.el);
-    var b2 = document.createElement('div'); b2.className = 'bighand'; H = FR.fingers(0, true); b2.appendChild(H.el); both.appendChild(b2); $('work').appendChild(both);
+  /* K clarity review (2026-11-27): one job per round. A "read" round shows the number and ONE tool: the five-frame (build it)
+     or the hand (show it on fingers); the other tool is not on the screen. */
+  function readLayout(n, tool) {
+    $('prompt').innerHTML = ''; $('work').innerHTML = ''; $('prompt').appendChild(U4.numCard(n, true)); FF = null; H = null;
+    var both = document.createElement('div'); both.className = 'both';
+    if (tool === 'build') { FF = U4.frame5(0, true); both.appendChild(FF.el); }
+    else { var b2 = document.createElement('div'); b2.className = 'bighand'; H = FR.fingers(0, true); b2.appendChild(H.el); both.appendChild(b2); }
+    $('work').appendChild(both);
   }
+  function have() { return FF ? FF.count() : H.count(); }
   function end(right) { var d = done; done = null; d(right); }
   async function missed() {
     FR.oops($('work')); await FR.say("Let's look.");
-    if (R.task === 'read') { FF.set(R.n); H.set(R.n); await FR.say(R.n === 0 ? 'This is zero. None.' : 'This is ' + FR.word(R.n) + '.'); }
+    if (R.task === 'read') { if (FF) FF.set(R.n); else H.set(R.n); await FR.say(R.n === 0 ? 'This is zero. None.' : 'This is ' + FR.word(R.n) + '.'); }
     else await FR.say('That group has ' + FR.word(R.n) + '.');
     end(false);
   }
   async function check() {
-    NK.unlock(); if (GAME.phase !== 'answer' || R.task !== 'read') return; GAME.phase = 'busy'; FR.lock(true); FF.lock(true); H.lock(true);
-    if (FF.count() === R.n && H.count() === R.n) { await FR.yes($('work'), FR.pick(['Yes!', 'Right!', 'Good reading!'])); end(true); } else await missed();
+    NK.unlock(); if (GAME.phase !== 'answer' || R.task !== 'read') return; GAME.phase = 'busy'; FR.lock(true); if (FF) FF.lock(true); if (H) H.lock(true);
+    if (have() === R.n) { await FR.yes($('work'), FR.pick(['Yes!', 'Right!', 'Good reading!'])); end(true); } else await missed();
   }
   async function drop(s, t) {
     if (GAME.phase !== 'answer' || R.task !== 'match') return; GAME.phase = 'busy'; FR.lock(true);
@@ -72,7 +80,7 @@
       var cs = [].slice.call(document.querySelectorAll('.srcs .numcard')), good = cs.filter(function (c) { return +c.dataset.n === R.n; })[0], bad = cs.filter(function (c) { return +c.dataset.n !== R.n; })[0];
       GAME.right = function () { return [{ drag: ['#' + good.id, '#target'] }]; }; GAME.wrong = function () { return [{ drag: ['#' + bad.id, '#target'] }]; }; return;
     }
-    function moves(m) { return FF.moves(m).map(function (i) { return { tap: '#work .box[data-b="' + i + '"]' }; }).concat(U4.fingerTaps(H, m, '#work')); }
+    function moves(m) { return FF ? FF.moves(m).map(function (i) { return { tap: '#work .box[data-b="' + i + '"]' }; }) : U4.fingerTaps(H, m, '#work'); }
     GAME.right = function () { return moves(R.n).concat([{ tap: '#check' }]); };
     GAME.wrong = function () { return moves(R.n === 5 ? 4 : R.n + 1).concat([{ tap: '#check' }]); };
   }
@@ -80,18 +88,20 @@
     id: 'u4-check', title: 'Show Me 0 to 5', rounds: 12,
     hero: '<svg viewBox="0 0 100 100"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><path d="M30 20H18c0 12 6 18 14 18M70 20h12c0 12-6 18-14 18" fill="none" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><circle cx="42" cy="26" r="4" fill="#fff" opacity=".9"/></svg>',
     init: function (F) { $('check').addEventListener('click', check); F.dragTap({ sources: '.srcs .numcard', targets: '#target', drop: drop }); },
-    reset: function (F) {   /* each number 0-5 once to read-and-build and once to match, mixed */
+    reset: function (F) {   /* each number 0-5 once to read (build it, or show it on fingers, in turn) and once to match, mixed */
       var a = F.shuffle([0, 1, 2, 3, 4, 5]), b = F.shuffle([0, 1, 2, 3, 4, 5]); plan = [];
-      for (var k = 0; k < 6; k++) { plan.push(['read', a[k]]); plan.push(['match', b[k]]); }
+      for (var k = 0; k < 6; k++) { plan.push(['read', a[k], k % 2 ? 'fingers' : 'build']); plan.push(['match', b[k]]); }
     },
     demo: async function (F) {
       await F.say("Let's show what you know! Watch me first.");
-      readLayout(2); $('check').hidden = false;
+      readLayout(2, 'build'); $('check').hidden = false;
       await F.say('This says two. I build two.');
       for (var k = 0; k < 2; k++) { await F.handTo(FF.box(k)); await F.handTap(); FF.box(k).innerHTML = '<i class="ctr"></i>'; NK.sound.pop(); }
-      await F.say('I show two on fingers.');
-      for (k = 0; k < 2; k++) { await F.handTo(H.el, .5, .7); await F.handTap(); H.set(H.count() + 1); NK.sound.pop(); }
-      await F.handTo($('check')); await F.handTap(); await F.yes($('work'), 'Two and two. Yes!');
+      await F.handTo($('check')); await F.handTap(); await F.yes($('work'), 'Two. Yes!');
+      readLayout(3, 'fingers');
+      await F.say('This says three. I show three on fingers.');
+      for (k = 0; k < 3; k++) { await F.handTo(H.el, .5, .7); await F.handTap(); H.set(H.count() + 1); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('work'), 'Three. Yes!');
       $('prompt').innerHTML = ''; $('work').innerHTML = '';
     },
     endSay: function (s) { return s >= 2 ? 'Unit four is done! You know zero to five!' : 'Good try! Let\'s practice and try again.'; },
@@ -108,9 +118,10 @@
           return;
         }
         /* read it: the written number is shown and NOT said */
-        readLayout(n);
+        var tool = plan[i][2]; readLayout(n, tool);
         done = res; GAME.phase = 'answer'; F.lock(false); hooks();
-        await F.say(i < 2 ? 'Read this number. Build it, and show it on fingers.' : 'Read it. Build it. Show it.', { repeat: 'Read this number. Build it, and show it on fingers.' });
+        var line = tool === 'build' ? 'Read this number. Build it.' : 'Read this number. Show it on fingers.';
+        await F.say(line, { repeat: line });
       });
     }
   });
