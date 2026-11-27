@@ -75,7 +75,7 @@ function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true);
     const hide = R.kind === 'hide'; $('hp').hidden = $('check').hidden = !hide; $('bond').hidden = $('src').hidden = hide;
-    if (hide) { H.set(0); K.hidePlates(); K.setKugel(R.n); await F.say(F.Word(R.n) + ' slices. Close your eyes!'); await K.hide(R.k); open();
+    if (hide) { H.set(0); K.hidePlates(); K.setKugel(R.n); await F.say(F.Word(R.n) + ' slices. Watch the towel!'); await K.hide(R.k); open();
       await F.say('How many are hiding? Show me.', { repeat: F.Word(R.n) + ' in all. I see ' + F.word(R.n - R.k) + '. How many hide?' }); }
     else { K.setPlates(R.miss === 0 ? 0 : R.a, R.miss === 1 ? 0 : R.b); fill('bw', R.miss === 'w' ? null : R.a + R.b); fill('b0', R.miss === 0 ? null : R.a); fill('b1', R.miss === 1 ? null : R.b); open();
       await F.say('Fill the empty circle.', { repeat: 'Drag a number into the empty circle.' }); }
