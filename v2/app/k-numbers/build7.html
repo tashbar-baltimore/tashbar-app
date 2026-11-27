@@ -5,16 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>One More, One Less — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 7 "More, less, the same": ONE MORE, ONE LESS. Dovid has some apples on his blanket.
-     "Give Shmuel one more than Dovid" (or one less, or the same). He taps the apple tree and an apple drops onto Shmuel's blanket;
+     "Give Shmuel one more than Dovid" (or one less, or the same). He taps the big apple button and an apple drops onto Shmuel's blanket (the blue one);
      tapping one of Shmuel's apples puts it back. Then he taps the check. A slip: both lines show, and we say "Dovid has four. One more is five." -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>#add svg{ width:84%; height:84%; }   /* the big apple button: the apple fills it (one more apple) */</style>
 </head>
 <body>
 <div id="world"></div>
 <div id="game" class="locked"><div class="stage s6" id="stage">
   <div class="ui" id="panel">
     <div class="goal" id="goal"></div>
+    <button id="add" class="bigbtn btn3d b-white" aria-label="One more apple"><svg viewBox="0 0 48 48"><circle cx="20" cy="29" r="14" fill="#E8322B"/><path d="M20 15c0-4 2-7 5-8" stroke="#7A4A22" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="37" cy="12" r="10" fill="#22B45E"/><path d="M37 6.5v11M31.5 12h11" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/></svg></button>
     <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
 </div></div>
@@ -26,7 +28,7 @@ let O, R, done, busy = Promise.resolve();
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
 const ICON = { 1: '<svg viewBox="0 0 48 48"><path d="M24 10v28M10 24h28" stroke="#22B45E" stroke-width="8" stroke-linecap="round"/></svg>', '-1': '<svg viewBox="0 0 48 48"><path d="M10 24h28" stroke="#FF8A3D" stroke-width="8" stroke-linecap="round"/></svg>', 0: '<svg viewBox="0 0 48 48"><path d="M10 18h28M10 30h28" stroke="#2B2350" stroke-width="7" stroke-linecap="round"/></svg>' };
 function want() { return R.base + R.d; }
-function moves(to) { const out = [], c = O.count(1); for (let k = c; k < to; k++) out.push({ tap: '.tspot[data-id="tree"]' }); for (let k = c; k > to; k--) out.push({ tap: '.tspot[data-id="a1-' + (k - 1) + '"]' }); return out; }
+function moves(to) { const out = [], c = O.count(1); for (let k = c; k < to; k++) out.push({ tap: '#add' }); for (let k = c; k > to; k--) out.push({ tap: '.tspot[data-id="a1-' + (k - 1) + '"]' }); return out; }
 function hooks() { GAME.right = () => moves(want()).concat([{ tap: '#check' }]); GAME.wrong = () => moves(R.d === 0 ? R.base + 1 : R.base).concat([{ tap: '#check' }]); }   /* the usual slip: copying Dovid's number */
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
 function change(fn) { busy = busy.then(fn); return busy; }
@@ -39,7 +41,7 @@ async function check() {
   FR.oops($('check')); R.misses++;
   O.glowSide(0, true); await FR.say("Let's look. Dovid has " + FR.word(R.base) + '.'); O.glowSide(0, false);
   await FR.say(R.d > 0 ? 'One more is ' + FR.word(w) + '.' : R.d < 0 ? 'One less is ' + FR.word(w) + '.' : 'The same is ' + FR.word(w) + '.');
-  await FR.say(have < w ? 'Shmuel needs ' + FR.word(w - have) + ' more. Tap the tree.' : 'Too many. Tap an apple to put it back.');
+  await FR.say(have < w ? 'Shmuel needs ' + FR.word(w - have) + ' more. Tap the apple button.' : 'Too many. Tap an apple to put it back.');
   open();
 }
 const PLAN = [[3, 1], [5, 1], [4, -1], [6, 0], [7, 1], [8, -1]];
@@ -47,23 +49,24 @@ function play(F, i) {
   return new Promise(async res => {
     const [b, d] = PLAN[i]; R = { base: b, d, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true);
     O.setApples(0, b, 'row'); O.setApples(1, 0, 'row'); $('goal').innerHTML = ICON[d];
-    await F.say('Dovid has ' + F.word(b) + ' apples.');
-    open(); await F.say(d > 0 ? 'Give Shmuel one more than Dovid!' : d < 0 ? 'Give Shmuel one less than Dovid!' : 'Give Shmuel the same as Dovid!', { repeat: 'Tap the tree for apples. Then tap the check.' });
+    O.glowSide(0, true); await F.say('Dovid has ' + F.word(b) + ' apples.'); O.glowSide(0, false);
+    open(); await F.say(d > 0 ? 'Give Shmuel one more than Dovid!' : d < 0 ? 'Give Shmuel one less than Dovid!' : 'Give Shmuel the same as Dovid!', { repeat: 'Tap the apple button. Then tap the check.' });
   });
 }
 FR.game({
   id: 'u7-build', title: 'One More, One Less', rounds: 6,
   hero: '<div class="hero6"><img src="art/shmuel-happy.png" alt=""></div>',
   init() {
-    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true, tree: true }); O.treeSpot();
-    O.onTap = (id) => { if (GAME.phase !== 'answer') return; if (id === 'tree') change(() => O.count(1) < 10 ? O.drop(1) : null);
-      else if (id.startsWith('a1-')) change(() => O.take(1)); };
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true });
+    O.onTap = (id) => { if (GAME.phase !== 'answer') return; if (id.startsWith('a1-')) change(() => O.take(1)); };
+    $('add').addEventListener('click', () => { NK.unlock(); if (GAME.phase !== 'answer') return; change(() => O.count(1) < 10 ? O.drop(1) : null); });
     $('check').addEventListener('click', check);
   },
   demo: async F => {
     O.setApples(0, 2, 'row'); O.setApples(1, 0); $('goal').innerHTML = ICON[1]; R = { base: 2, d: 1 };
+    await F.say('Dovid has the orange blanket. Shmuel has the blue one.');
     await F.say('Dovid has two. One more than two? Watch me.');
-    for (let k = 0; k < 3; k++) { await F.handTo(document.querySelector('.tspot[data-id="tree"]')); await F.handTap(); await O.drop(1); await F.say(F.Word(k + 1) + '!', { noRepeat: true }); }
+    for (let k = 0; k < 3; k++) { await F.handTo($('add')); await F.handTap(); await O.drop(1); await F.say(F.Word(k + 1) + '!', { noRepeat: true }); }
     await F.say('Two, and one more. Three!'); await F.handTo($('check')); await F.handTap(); O.sparkle(O.sides[1].g.position); O.setApples(1, 0);
   },
   round: (F, i) => play(F, i),

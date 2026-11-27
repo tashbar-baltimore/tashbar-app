@@ -1,7 +1,8 @@
 /* Kindergarten Numbers, Unit 7 "More, less, the same": a real 3D apple orchard.
-   Two friends sit on two picnic blankets with apples. Boys pair apples one to one, add one more, take one away,
-   and balance a see-saw. On a Chromebook the blankets sit side by side; on a phone one is in front of the other.
-   Every thing he taps (an apple, a blanket, the tree, a see-saw end) has a see-through tap spot laid over it.
+   Calm world (K clarity 10): plain grass and sky, no trees or props. Two friends stand by two picnic blankets with apples;
+   each boy stands on a mat the colour of his blanket's edge (Dovid orange, in front; Shmuel blue, behind), so the voice can say whose is whose. Boys pair apples one to one, add one more, take one away,
+   and balance a see-saw. The blankets sit one in front of the other, and the camera comes in until they fill the screen.
+   Every thing he taps (an apple, a blanket, a see-saw end) has a see-through tap spot laid over it. When he must tap a blanket, both blankets shine white (choose).
    ES module: import { mount } from './orchard7.js'. Needs kit.js, frame.js, unit5.js first. */
 import * as THREE from 'three';
 
@@ -18,7 +19,7 @@ export function mount(host, opt) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.08;
   renderer.shadowMap.enabled = !FAST; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   host.appendChild(renderer.domElement); renderer.domElement.className = 'p6canvas';
-  const scene = new THREE.Scene(); scene.background = new THREE.Color('#BDE6FF'); scene.fog = new THREE.Fog('#DDEFD6', 30, 80);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color('#BDE6FF'); scene.fog = new THREE.Fog('#D7EEDB', 30, 80);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
   scene.add(new THREE.HemisphereLight('#E8F6FF', '#9CC27A', 1.25));
   const sun = new THREE.DirectionalLight('#FFF1D6', 2.1); sun.position.set(-8, 14, 9); sun.castShadow = !FAST;
@@ -28,12 +29,8 @@ export function mount(host, opt) {
   const loader = new THREE.TextureLoader();
   /* a picture from art/, trying the orchard one first and then a stand-in until the orchard pictures arrive */
   function tex(files, fn) { const list = [].concat(files); (function next(i) { if (i >= list.length) return; loader.load('art/' + list[i], t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; fn(t); }, undefined, () => next(i + 1)); })(0); }
-  const gMat = new THREE.MeshStandardMaterial({ color: '#CDEBB6', roughness: 1 });
-  tex(['orchard-ground.jpg', 'garden-ground.jpg'], t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(14, 11); gMat.map = t; gMat.needsUpdate = true; });
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(140, 110), gMat); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
-  if (!FAST) tex(['orchard-panorama.jpg', 'garden-panorama.jpg'], t => { t.wrapS = THREE.MirroredRepeatWrapping; t.repeat.x = -2; t.offset.x = 1; const R = 40, span = 2.6, H = R * span / 2 * t.image.height / t.image.width;
-    const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, fog: false }));
-    back.position.set(0, H * 0.12 + 1, 6); scene.add(back); });
+  const gMat = new THREE.MeshStandardMaterial({ color: '#A6DC86', roughness: 1 });   /* plain soft grass, one calm colour */
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), gMat); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
 
   /* ---------------- apples ---------------- */
   const appleMat = new THREE.MeshPhysicalMaterial({ color: '#E8322B', roughness: 0.35, clearcoat: 0.8, clearcoatRoughness: 0.25 });
@@ -54,30 +51,40 @@ export function mount(host, opt) {
     x.fillStyle = 'rgba(80,150,230,.35)'; for (let i = 0; i < 4; i++) { x.fillRect(i * 32, 0, 16, 128); x.fillRect(0, i * 32, 128, 16); }
     const ct = new THREE.CanvasTexture(c); ct.colorSpace = THREE.SRGBColorSpace; ct.wrapS = ct.wrapT = THREE.RepeatWrapping; ct.repeat.set(3, 2); blanketMat.map = ct; }
   const sides = [];
-  const W = 4.3, D = 2.5;
+  const W = 4.3, D = 2.5, KH = 2.1, COLORS = ['#FF8A3D', '#3D8FE0'];
   function side(i, who) {
     const g = new THREE.Group(); scene.add(g);
     const bl = new THREE.Mesh(new THREE.BoxGeometry(W, 0.05, D), blanketMat); bl.position.y = 0.03; bl.receiveShadow = true; g.add(bl);
-    const edge = new THREE.Mesh(new THREE.BoxGeometry(W + 0.12, 0.04, D + 0.12), new THREE.MeshStandardMaterial({ color: i ? '#5AA8E8' : '#FF9A5A' })); edge.position.y = 0.015; g.add(edge);
+    /* a wide coloured edge: Dovid's blanket is orange, Shmuel's is blue; each boy stands on a mat of the same colour */
+    const COL = COLORS[i] || '#FF8A3D';
+    const edge = new THREE.Mesh(new THREE.BoxGeometry(W + 0.44, 0.04, D + 0.44), new THREE.MeshStandardMaterial({ color: COL, roughness: 0.8 })); edge.position.y = 0.015; g.add(edge);
+    const kh = new THREE.Group(); g.add(kh);
+    const mat = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.06, 40), new THREE.MeshStandardMaterial({ color: COL, roughness: 0.8 })); mat.position.y = 0.03; kh.add(mat);
     const kid = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.05, visible: false, toneMapped: false }));
-    kid.onBeforeRender = () => kid.quaternion.copy(camera.quaternion); g.add(kid);
-    const S = { i, who, g, kid, apples: [], glowRing: null, pose(p) { const k = p; loader.load('art/' + who + '-' + p + '.png', t => { t.colorSpace = THREE.SRGBColorSpace; kid.material.map = t; kid.material.visible = true; kid.material.needsUpdate = true; const H = 2.1; kid.scale.set(H * t.image.width / t.image.height, H, 1); kid.position.y = H / 2; }, undefined, () => { if (k !== 'idle') S.pose('idle'); }); } };
-    const ring = new THREE.Mesh(new THREE.BoxGeometry(W + 0.5, 0.03, D + 0.5), new THREE.MeshBasicMaterial({ color: '#FFD23D', transparent: true, opacity: 0.8, toneMapped: false })); ring.position.y = 0.005; ring.visible = false; g.add(ring); S.glowRing = ring;
+    kid.onBeforeRender = () => kid.quaternion.copy(camera.quaternion); kh.add(kid);
+    /* a soft cloth over the apples (Which is more?: the apples are there, but hidden until we check) */
+    const cloth = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 20, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#FFEFD2', roughness: 0.95 }));
+    cloth.scale.set(W / 2 - 0.1, 0.75, D / 2 - 0.12); cloth.position.y = 0.04; cloth.castShadow = true; cloth.visible = false; g.add(cloth);
+    /* a white shining frame: "tap a blanket" */
+    const pick = new THREE.Group(), pm = new THREE.MeshBasicMaterial({ color: '#FFFFFF', transparent: true, opacity: 0.9, toneMapped: false }); pick.visible = false; g.add(pick); pick.material = pm;
+    [[0, -(D / 2 + 0.42), W + 1.0, 0.2], [0, D / 2 + 0.42, W + 1.0, 0.2], [-(W / 2 + 0.42), 0, 0.2, D + 0.64], [W / 2 + 0.42, 0, 0.2, D + 0.64]].forEach(([x, z, w, d]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, d), pm); b.position.set(x, 0.03, z); pick.add(b); });
+    const S = { i, who, g, kid, kh, cloth, pick, apples: [], glowRing: null, pose(p) { const k = p; loader.load('art/' + who + '-' + p + '.png', t => { t.colorSpace = THREE.SRGBColorSpace; kid.material.map = t; kid.material.visible = true; kid.material.needsUpdate = true; const H = KH; kid.scale.set(H * t.image.width / t.image.height, H, 1); kid.position.y = H / 2 + 0.06; }, undefined, () => { if (k !== 'idle') S.pose('idle'); }); } };
+    const ring = new THREE.Mesh(new THREE.BoxGeometry(W + 0.8, 0.03, D + 0.8), new THREE.MeshBasicMaterial({ color: '#FFD23D', transparent: true, opacity: 0.8, toneMapped: false })); ring.position.y = 0.005; ring.visible = false; g.add(ring); S.glowRing = ring;
     S.pose('idle'); return S;
   }
   opt.kids.forEach((w, i) => sides.push(side(i, w)));
 
   /* where things go: side by side (wide screens) or one behind the other (phones) */
   let narrow = false; const isPhone = () => Wd < Hh * 0.95 || Wd < 700;
-  function layout() {
-    sides.forEach((s, i) => { if (narrow) s.g.position.set(0, 0, i ? -1.2 - D / 2 : 1.6 + 0.15); else s.g.position.set(i ? 2.75 : -2.75, 0, 0.3); });
-    /* one behind the other: each friend stands beside his own blanket (left front, right back), never on the apples */
-    if (narrow) { sides[0].kid.position.set(-W / 2 - 0.45, 1.05, 0.2); } else { sides[0].kid.position.set(0, 1.05, -D / 2 - 0.35); }
-    if (sides[1]) { if (narrow) sides[1].kid.position.set(W / 2 + 0.45, 1.05, 0); else sides[1].kid.position.set(0, 1.05, -D / 2 - 0.35); }
-    /* a phone: each friend is a little smaller and stands close beside his own blanket, so the camera can come near and the apples are big;
-       he never stands in front of an apple (K-CLARITY-RULES 8, 9) */
-    sides.forEach((s, i) => { const ph = isPhone() && narrow; s.kid.scale.setScalar(ph ? 0.75 : 1); if (ph) s.kid.position.set(i ? W / 2 + 0.3 : -W / 2 - 0.3, 0.85, i ? 0 : 0.2); });
-    sides.forEach(s => s.apples.forEach((a, j) => a.position.copy(s.slots[j] || a.position)));
+  function layout(moved) {
+    /* one behind the other, close together: Dovid's blanket in front, Shmuel's behind; each boy stands beside his own blanket
+       (Dovid on the left, Shmuel on the right), never in front of an apple (K-CLARITY-RULES 8, 9) */
+    sides.forEach((s, i) => { if (narrow) s.g.position.set(0, 0, i ? -(D / 2 + 0.7) : D / 2 + 0.7); else s.g.position.set(i ? 2.75 : -2.75, 0, 0.3); });
+    /* a phone (tall and narrow): both boys stand on the left, so the blankets can be as wide as the screen allows */
+    const ph = isPhone();
+    sides.forEach((s, i) => { if (narrow && ph) { s.kh.position.set(-W / 2 - 0.62, 0, i ? -0.2 : 0.2); s.kh.scale.setScalar(0.72); }
+      else if (narrow) { s.kh.position.set(i ? W / 2 + 0.75 : -W / 2 - 0.75, 0, i ? -0.3 : 0.3); s.kh.scale.setScalar(0.85); } else { s.kh.position.set(0, 0, -D / 2 - 0.55); s.kh.scale.setScalar(1); } });
+    if (moved) sides.forEach(s => s.apples.forEach((a, j) => a.position.copy(s.slots[j] || a.position)));
   }
   /* apple places on a blanket: 'row' = neat rows of five (left to right), 'scatter' = anywhere */
   function slots(n, how) {
@@ -90,16 +97,6 @@ export function mount(host, opt) {
     return out;
   }
 
-  /* ---------------- the apple tree (tap it: an apple falls) ---------------- */
-  const tree = new THREE.Group(); scene.add(tree);
-  { const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.32, 2.2, 12), new THREE.MeshStandardMaterial({ color: '#9A6A3E' })); tr.position.y = 1.1; tr.castShadow = true; tree.add(tr);
-    const m = new THREE.MeshStandardMaterial({ color: '#5DBB5A', roughness: 0.85 });
-    [[0, 3.0, 0, 1.4], [0.9, 2.6, 0.2, 1.0], [-0.9, 2.7, 0.1, 1.05], [0, 3.6, -0.2, 0.9]].forEach(b => { const o = new THREE.Mesh(new THREE.SphereGeometry(b[3], 24, 18), m); o.position.set(b[0], b[1], b[2]); o.castShadow = true; tree.add(o); });
-    /* K clarity (rule 8): no apples hang on the trees, so the only apples he sees are the ones to count; an apple still falls out of the leaves for "one more" */ }
-  tree.visible = !!opt.tree;   /* the apple tree stands only in the games that use it (one more, one less) */
-  /* orchard trees around */
-  const rnd = (() => { let s = 11; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
-  for (let i = 0; i < (FAST ? 2 : 8); i++) { const t = tree.clone(); t.visible = true; t.scale.setScalar(0.8 + rnd() * 0.4); t.position.set(-16 + rnd() * 32, 0, -8 - rnd() * 6); if (Math.abs(t.position.x) < 3) t.position.x += 6; scene.add(t); }
 
   /* ---------------- the see-saw (built when a game asks) ---------------- */
   let saw = null;
@@ -135,26 +132,42 @@ export function mount(host, opt) {
       const out = cx < 0 || cx > Wd || cy < 0 || cy > Hh; d.el.style.display = out ? 'none' : ''; d.el.style.width = d.el.style.height = size + 'px'; d.el.style.left = (cx - size / 2) + 'px'; d.el.style.top = (cy - size / 2) + 'px'; });
   }
 
-  /* ---------------- sparkles when he is right ---------------- */
-  const bits = [], PET = ['#FF7FA8', '#FFD23D', '#FFFFFF', '#B98CFF', '#7FD67A', '#7FC8FF'];
-  function sparkle(p) { if (FAST) return; const g = new THREE.SphereGeometry(0.07, 8, 6); for (let i = 0; i < 24; i++) { const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: PET[i % 6] })); m.scale.set(1, .4, 1); m.position.copy(p).setY(1.2);
-    m.userData.v = new THREE.Vector3((Math.random() - .5) * .09, .08 + Math.random() * .06, (Math.random() - .5) * .09); m.userData.t = 0; scene.add(m); bits.push(m); } }
+  /* when he is right, that blanket shines for a moment (K clarity 10: no flying bits) */
+  function sparkle(p) { const sd = sides.find(x => x.g.position.distanceTo(p) < 0.01 && x.g.visible); if (!sd) return; sd.glowRing.visible = true; setTimeout(() => { sd.glowRing.visible = false; }, T(900)); }
 
   /* ---------------- camera ---------------- */
-  let Wd = 1, Hh = 1; const DIR = new THREE.Vector3(0, 0.46, 0.89).normalize(), V = 34;   /* low enough that the painted orchard shows behind */ let dist = 20, center = new THREE.Vector3(0, 0.6, 0);
+  let Wd = 1, Hh = 1; const DIR = new THREE.Vector3(0, 0.52, 0.85).normalize(), V = 34;   /* looking down a little, so the apples stand apart */ let dist = 20, center = new THREE.Vector3(0, 0.6, 0);
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false);
-    const wasNarrow = narrow; narrow = opt.stack || Wd < Hh * 0.95 || Wd < 700; if (wasNarrow !== narrow || !fit.done) layout(); fit.done = true;
-    const span = saw ? (isPhone() ? 4.9 : 9.4) : isPhone() && narrow ? W + 2.3 : narrow ? W + 2.9 : 2 * W + 3.4, needH = saw ? 4.2 : isPhone() && narrow ? (opt.tree ? 8.4 : 6.6) : narrow ? (opt.tree ? 7.4 : 5.6) : 5.2;   /* no tree: the camera comes closer, so the blankets and apples fill the screen */
+    const wasNarrow = narrow; narrow = opt.stack || Wd < Hh * 0.95 || Wd < 700; layout(wasNarrow !== narrow || !fit.done); fit.done = true;
     const [b0, b1] = band(), bc = (b0 + b1) / 2, bh = Math.max(120, b1 - b0), fullH = Hh + 2 * Math.abs(Hh / 2 - bc);
-    const tn = Math.tan(THREE.MathUtils.degToRad(V / 2)); dist = Math.max(span * fullH / (2 * Wd * tn), needH * fullH / (2 * tn * bh));
+    const tn = Math.tan(THREE.MathUtils.degToRad(V / 2));
     camera.aspect = Wd / fullH; camera.fov = V; camera.setViewOffset(Wd, fullH, 0, fullH / 2 - bc, Wd, Hh); camera.updateProjectionMatrix();
+    if (saw) { const span = isPhone() ? 4.9 : 9.4, needH = 4.2; dist = Math.max(span * fullH / (2 * Wd * tn), needH * fullH / (2 * tn * bh)); center.set(0, 1.0, 0.3); saw.g.position.set(0, 0, 0.3); }
+    else frame2(b0, b1);   /* the camera comes in until the blankets and the boys just fit: the picnic fills the screen */
     scene.fog.near = dist + 8; scene.fog.far = dist + 60;
-    center.set(0, saw ? 1.0 : 0.6, saw ? 0.3 : 0); const phone = Wd < Hh * 0.95 || Wd < 700;   /* the apple tree: behind on a phone, beside the blankets on a wide screen */
-    if (!narrow) tree.position.set(0, 0, -2.6); else if (phone) tree.position.set(0.9, 0, -5.4); else tree.position.set(W / 2 + 2.3, 0, -0.9);
-    tree.scale.setScalar(narrow ? 0.8 : 1);
-    if (saw) saw.g.position.set(0, 0, narrow ? 0.3 : 0.3);
+  }
+  /* the smallest distance at which every corner of both blankets and both boys (head to mat) shows inside the free band */
+  function keyPoints() { const P = [], q = new THREE.Vector3();
+    sides.forEach(s => { if (!s.g.visible) return; s.g.updateMatrixWorld(true);
+      [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => P.push(s.g.localToWorld(new THREE.Vector3(a * (W / 2 + 0.55), 0, b * (D / 2 + 0.55)))));
+      s.kh.getWorldPosition(q); const k = s.kh.scale.y; P.push(q.clone().add(new THREE.Vector3(0, (KH + 0.1) * k, 0)), q.clone().add(new THREE.Vector3(-0.65 * k, 0, 0.6 * k)), q.clone().add(new THREE.Vector3(0.65 * k, 0, 0.6 * k))); });
+    return P; }
+  function fits(P, x0, x1, y0, y1) { cam(); return P.every(p => { v.copy(p).project(camera); const x = (v.x + 1) / 2 * Wd, y = (1 - v.y) / 2 * Hh; return v.z < 1 && x >= x0 && x <= x1 && y >= y0 && y <= y1; }); }
+  function midY(P) { cam(); let a = 1e9, b = -1e9; P.forEach(p => { v.copy(p).project(camera); const y = (1 - v.y) / 2 * Hh; a = Math.min(a, y); b = Math.max(b, y); }); return (a + b) / 2; }
+  function frame2(b0, b1) {
+    const P = keyPoints(); if (!P.length) return; const m = Math.max(10, Wd * 0.015);
+    const cx = (Math.min(...P.map(p => p.x)) + Math.max(...P.map(p => p.x))) / 2, cz = (Math.min(...P.map(p => p.z)) + Math.max(...P.map(p => p.z))) / 2;
+    let best = null; const all = [];
+    for (let dz = -8; dz <= 8.001; dz += 0.25) { center.set(cx, 0.6, cz + dz); let lo = 2, hi = 120;
+      if (!fits(P, m, Wd - m, b0 + m, b1 - m)) { dist = hi; if (!fits(P, m, Wd - m, b0 + m, b1 - m)) continue; }
+      for (let it = 0; it < 26; it++) { dist = (lo + hi) / 2; if (fits(P, m, Wd - m, b0 + m, b1 - m)) hi = dist; else lo = dist; }
+      all.push([dz, hi]); }
+    /* the closest camera; then the picture slides up or down so the picnic sits in the middle of the free space */
+    if (all.length) best = all.sort((x, y) => x[1] - y[1])[0];
+    if (best) { center.set(cx, 0.6, cz + best[0]); dist = best[1]; } else { center.set(cx, 0.6, cz); dist = 30; }
+    const sh = (b0 + b1) / 2 - midY(P), fullH = camera.view.fullHeight; camera.setViewOffset(Wd, fullH, 0, camera.view.offsetY - sh, Wd, Hh); camera.updateProjectionMatrix();
   }
   function cam() { camera.position.copy(center).addScaledVector(DIR, dist); camera.lookAt(center); camera.updateMatrixWorld(); }
   let last = performance.now(), alive = true;
@@ -162,7 +175,8 @@ export function mount(host, opt) {
     if (!alive) return; requestAnimationFrame(frame); const now = performance.now(), dt = Math.min(50, now - last); last = now; const tt = now / 1000;
     sides.forEach(s => { if (s.glowRing.visible) s.glowRing.material.opacity = 0.55 + Math.sin(tt * 6) * 0.3; });
     if (saw) { const want = Math.max(-1, Math.min(1, (saw.n[1] - saw.n[0]) / 3)) * 0.22; saw.tilt += (want - saw.tilt) * Math.min(1, dt / (FAST ? 16 : 260)); saw.beam.rotation.z = -saw.tilt; }
-    for (let i = bits.length - 1; i >= 0; i--) { const b = bits[i]; b.userData.t += dt; b.userData.v.y -= 0.0022 * dt / 16; b.position.addScaledVector(b.userData.v, dt / 16); if (b.userData.t > 1600 || b.position.y < 0.05) { scene.remove(b); bits.splice(i, 1); } }
+    sides.forEach(s => { if (s.pick.visible) s.pick.material.opacity = 0.6 + Math.sin(tt * 4) * 0.35; });
+    if (now - (frame.t || 0) > 250) { frame.t = now; const b = band(); if (!frame.b || Math.abs(b[0] - frame.b[0]) > 4 || Math.abs(b[1] - frame.b[1]) > 4) { frame.b = b; if (frame.t0) fit(); frame.t0 = 1; } }   /* the panel grew or shrank: fit again */
     cam(); renderer.render(scene, camera); place();
   }
 
@@ -171,21 +185,25 @@ export function mount(host, opt) {
     /* put n apples on a side's blanket ('row' or 'scatter'); each gets a tap spot "a<side>-<j>" */
     setApples(i, n, how) {
       const s = sides[i]; s.apples.forEach((a, j) => { s.g.remove(a); unspot('a' + i + '-' + j); }); s.apples = []; s.slots = slots(n, how || 'row');
-      for (let j = 0; j < n; j++) { const a = apple(); a.position.copy(s.slots[j]); s.g.add(a); s.apples.push(a); spot('a' + i + '-' + j, a, { cls: 'apple', r: 0.34, y: 0.3 }); }
+      for (let j = 0; j < n; j++) { const a = apple(); a.position.copy(s.slots[j]); a.visible = !s.cloth.visible; s.g.add(a); s.apples.push(a); spot('a' + i + '-' + j, a, { cls: 'apple', r: 0.34, y: 0.3 }); }
     },
     count(i) { return sides[i].apples.length; },
+    /* a cloth hides a side's apples (they are there, he cannot see how many), or comes off */
+    cover(i, on) { const s = sides[i]; s.cloth.visible = on; s.apples.forEach(a => { a.visible = !on; }); },
+    /* "tap a blanket": both blankets shine white while he chooses */
+    choose(on) { sides.forEach(s => { s.pick.visible = on; }); },
     /* the "spread out" trick: a few apples spread wide across the blanket, or many squeezed close together */
     spread(i, wide) { const s = sides[i], n = s.apples.length, gap = wide ? Math.min(1.25, (W - 0.5) / Math.max(1, n - 1)) : 0.62;   /* close together, but every apple stands apart and can be counted (K-CLARITY-RULES 8) */
       s.slots = s.apples.map((a, j) => new THREE.Vector3(-((n - 1) * gap) / 2 + j * gap, 0.05, 0)); s.apples.forEach((a, j) => a.position.copy(s.slots[j])); },
-    /* an apple drops from the tree onto a side (one more) */
+    /* one more: an apple drops gently from above onto its place on a side's blanket */
     async drop(i) {
-      const s = sides[i], a = apple(); scene.add(a); const from = new THREE.Vector3(); tree.getWorldPosition(from); from.y = 2.8; from.z += 0.9;
+      const s = sides[i], a = apple(); scene.add(a);
       s.slots = slots(s.apples.length + 1, s.how || 'row'); s.apples.forEach((p, j) => p.position.copy(s.slots[j]));
-      const to = s.slots[s.apples.length].clone(); s.g.localToWorld(to); NK.sound.pop();
-      await tween(520, e => { a.position.lerpVectors(from, to, e); a.position.y += Math.sin(Math.PI * e) * 1.2; a.rotation.x = e * 4; });
+      const to = s.slots[s.apples.length].clone(); s.g.localToWorld(to); const from = to.clone(); from.y += 3.2; NK.sound.pop();
+      await tween(460, e => { a.position.lerpVectors(from, to, e); });
       scene.remove(a); a.position.copy(s.slots[s.apples.length]); a.rotation.x = 0; s.g.add(a); const j = s.apples.length; s.apples.push(a); spot('a' + i + '-' + j, a, { cls: 'apple', r: 0.34, y: 0.3 });
     },
-    /* the last apple rolls back to the tree's basket (one less) */
+    /* one less: the last apple lifts away */
     async take(i) {
       const s = sides[i]; if (!s.apples.length) return; const j = s.apples.length - 1, a = s.apples.pop(); unspot('a' + i + '-' + j); NK.sound.back();
       const p0 = a.position.clone(); await tween(380, e => { a.position.set(p0.x, p0.y + e * 1.6, p0.z - e * 1.5); a.scale.setScalar(1 - e); }); s.g.remove(a);
@@ -210,14 +228,13 @@ export function mount(host, opt) {
     glowSide(i, on) { if (i == null) sides.forEach(s => { s.glowRing.visible = false; }); else sides[i].glowRing.visible = on; },
     bump(obj) { const y0 = obj.position.y; return tween(300, (e, t) => { obj.position.y = y0 + Math.sin(Math.PI * t) * 0.35; }); },
     sideSpot(i) { return spot('side' + i, sides[i].g, { cls: 'side', r: W / 2 - 0.3, y: 0.2, min: 64 }); },
-    treeSpot() { return spot('tree', tree, { cls: 'tree', r: 1.1, y: 2.3, min: 90 }); },
     /* see-saw apples */
     setSaw(nl, nr) { const S = seesaw(); S.g.scale.setScalar(narrow ? 0.9 : 1); sides.forEach(s => { s.g.visible = false; }); S.n = [nl, nr];
       S.trays.forEach((tr, k) => { while (tr.children.length > 1) tr.remove(tr.children[1]); const ps = sawSlots(S.n[k]); ps.forEach(p => { const a = apple(); a.scale.setScalar(saw && saw.cols === 3 ? 0.68 : 0.75); a.position.copy(p); tr.add(a); }); }); },
     async sawAdd(k, d) { const S = seesaw(); const n = S.n[k] + d; if (n < 0 || n > 10) return false; S.n[k] = n; const tr = S.trays[k];
       while (tr.children.length > 1) tr.remove(tr.children[1]); sawSlots(n).forEach(p => { const a = apple(); a.scale.setScalar(saw && saw.cols === 3 ? 0.68 : 0.75); a.position.copy(p); tr.add(a); }); NK.sound[d > 0 ? 'pop' : 'back'](); return true; },
     sawSpot(k) { const S = seesaw(); return spot('saw' + k, S.trays[k], { cls: 'tray', r: 1.0, y: 0.3, min: 72 }); },
-    hideSaw() { if (saw) { scene.remove(saw.g); saw = null; fit(); } unspot('saw0'); unspot('saw1'); sides.forEach(s => { s.g.visible = true; }); },
+    hideSaw() { sides.forEach(s => { s.g.visible = true; }); if (saw) { scene.remove(saw.g); saw = null; fit(); } unspot('saw0'); unspot('saw1'); },
     fit, destroy() { alive = false; renderer.dispose(); }
   };
   /* for the clarity test (v2/tests/k-clarity-numbers.js): measure what a boy sees */

@@ -36,8 +36,10 @@ function hooks() {
 }
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
 async function walkAlong(from, to) {   /* we count along the path together: each stone shines as we say it */
-  for (let n = from; n <= to; n++) { P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === to ? '.' : ','), { noRepeat: true }); P.glow(n, false); }
+  for (let n = from; n <= to; n++) { P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === to ? '.' : ','), { noRepeat: true }); P.glow(n, false); } stretch(R.kind === 'swap');
 }
+/* the swap rounds: the mix-up is always two numbers side by side, from zero to five, and those six stones shine */
+function stretch(on) { P.glow(null); if (on) for (let n = 0; n <= 5; n++) P.glow(n, true); }
 /* Avi's piece: he drags Avi (or taps Avi, then the stone) to where Avi should be */
 async function moveAvi(chip, stone) {
   if (GAME.phase !== 'answer' || R.kind !== 'hop') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n, ok = R.at + R.k;
@@ -57,13 +59,13 @@ async function tap(n, el) {
     await FR.yes(el, 'Swapped back! Now they go in order.'); return finish();
   }
   FR.oops(el); R.misses++;
-  await FR.say('That one is right. Look along the path.'); await walkAlong(Math.max(0, R.a - 1), Math.min(10, R.b + 1));
+  await FR.say('That one is right. Count with me.'); stretch(false); await walkAlong(Math.max(0, R.a - 1), Math.min(5, R.b + 1));
   await FR.say(FR.Word(R.b) + " can't come before " + FR.word(R.a) + '.');
-  if (R.misses > 1) { P.el(R.a).classList.add('hint'); P.el(R.b).classList.add('hint'); await FR.say('Find two numbers in the wrong places.'); setTimeout(() => { if (R.picked == null) { P.el(R.a).classList.remove('hint'); P.el(R.b).classList.remove('hint'); } }, 2500); }
-  else await FR.say('Find two numbers in the wrong places.');
+  if (R.misses > 1) { P.el(R.a).classList.add('hint'); P.el(R.b).classList.add('hint'); await FR.say('Find the two mixed-up numbers.'); setTimeout(() => { if (R.picked == null) { P.el(R.a).classList.remove('hint'); P.el(R.b).classList.remove('hint'); } }, 2500); }
+  else await FR.say('Find the two mixed-up numbers.');
   open();
 }
-function finish() { $('avichip').hidden = true; P.showAll(true); for (let n = 0; n <= 10; n++) P.el(n).classList.remove('hint'); const d = done; done = null; d(R.misses === 0); }
+function finish() { stretch(false); $('avichip').hidden = true; P.showAll(true); for (let n = 0; n <= 10; n++) P.el(n).classList.remove('hint'); const d = done; done = null; d(R.misses === 0); }
 const KINDS = ['hop', 'swap', 'hop', 'swap', 'hop', 'swap'];
 function play(F, i) {
   return new Promise(async res => {
@@ -77,11 +79,11 @@ function play(F, i) {
       $('avichip').hidden = false; open();
       await F.say('Move Avi where he should be.', { repeat: 'Avi was on ' + F.word(at) + '. Two hops. Move him there.' });
     } else {
-      const s = FR.pick(i < 3 ? [1, 2, 3, 4, 5] : [5, 6, 7, 8]), gap = i === 5 ? 2 : 1, a = s, b = s + gap;
+      const a = FR.pick(i === 1 ? [1, 2] : i === 3 ? [3, 4] : [0, 2, 4]), b = a + 1;   /* two neighbours, inside zero to five */
       R = { kind: 'swap', a, b, picked: null, misses: 0 }; A.place(0); A.show(false); $('spin').hidden = true;
-      P.label(a, b); P.label(b, a); P.focus((a + b) / 2);
-      await F.say('Avi put the numbers on the path.'); open();
-      await F.say('Two are in the wrong places. Find them!', { repeat: 'Tap the two numbers in the wrong places.' });
+      P.label(a, b); P.label(b, a); P.focus(P.narrow() ? (a + b) / 2 : 5); stretch(true);
+      await F.say('Avi mixed up two numbers here.'); open();
+      await F.say('Look at the shining stones. Tap the two mixed-up numbers.', { repeat: 'Two numbers swapped places. Tap them both.' });
     }
   });
 }

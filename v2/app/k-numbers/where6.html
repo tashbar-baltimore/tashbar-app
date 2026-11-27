@@ -9,6 +9,10 @@
      "After four comes five." Each round more stones are empty (2, then 3, then 4). On a phone the arrows move along the path. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>
+/* a phone: the number tiles are big (80 px) and there are no scroll arrows: the camera brings the empty stones to him */
+@media (max-width:760px), (max-aspect-ratio:4/5){ #src .numcard{ width:80px; height:80px; } }
+</style>
 </head>
 <body>
 <div id="world"></div>
@@ -28,6 +32,7 @@ const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect
 function left() { return R.gaps.filter(n => !R.put[n]); }
 function hooks() {
   const g = left(); if (!g.length) { GAME.right = GAME.wrong = null; return; }
+  P.focus((g[0] + g[g.length - 1]) / 2);   /* before he answers, the empty stones come into view by themselves (a phone shows four stones) */
   const k = g[0], other = g.find(n => n !== k), bad = other != null ? other : (k === 10 ? 9 : k + 1);
   GAME.right = () => { P.focus(k, true); return [{ drag: ['#src .numcard[data-n="' + k + '"]', '.stone[data-n="' + k + '"]'] }]; };
   GAME.wrong = () => { P.focus(bad, true); return [{ drag: ['#src .numcard[data-n="' + k + '"]', '.stone[data-n="' + bad + '"]'] }]; };
@@ -57,7 +62,7 @@ async function drop(card, stone) {
 function play(F, i) {
   return new Promise(async res => {
     const many = i < 2 ? 2 : i < 4 ? 3 : P.narrow() ? 3 : 4, pool = FR.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    let gaps; if (P.narrow()) { const s = 1 + Math.floor(Math.random() * 7); gaps = FR.shuffle([s, s + 1, s + 2, s + 3].filter(n => n <= 10)).slice(0, many).sort((a, b) => a - b); }
+    let gaps; if (P.narrow()) { const s = 1 + Math.floor(Math.random() * 8); gaps = FR.shuffle([s, s + 1, s + 2].filter(n => n <= 10)).slice(0, many).sort((a, b) => a - b); }   /* a phone: the empty stones sit close together, so all of them show at once */
     else gaps = pool.slice(0, many).sort((a, b) => a - b);
     R = { gaps, put: {}, misses: 0 }; done = res; P.showAll(true);
     GAME.phase = 'busy'; FR.lock(true); NK.sound.cloth && NK.sound.cloth();
@@ -73,7 +78,6 @@ FR.game({
   init() {
     P = mount($('world'), { kids: ['mendy'], band }); M = P.kids.mendy; M.show(false);
     FR.dragTap({ sources: '#src .numcard', targets: '.p6layer .stone', drop });
-    if (P.narrow()) { $('left').hidden = $('right').hidden = false; $('left').onclick = () => { NK.sound.pop(); P.pan(-2); }; $('right').onclick = () => { NK.sound.pop(); P.pan(2); }; }
   },
   demo: async F => {
     R = { gaps: [3], put: {}, misses: 0 }; P.shown(3, false); cards(); P.focus(3);

@@ -1,5 +1,5 @@
 /* Kindergarten Numbers, Unit 6 "The path game": a real 3D garden with a straight number path (stepping stones 0 to 10).
-   The boy is inside the world: soft sun, a painted garden far behind, flowers and bushes, Mendy and Avi (painted) hop from stone to stone.
+   The boy is inside the world: soft sun, plain calm grass and sky (K clarity 10: no trees, bushes or flowers to look at), Mendy and Avi (painted) hop from stone to stone.
    On a Chromebook the whole path shows; on a phone the camera follows along (five stones at a time, each at least 64 px).
    Every stone has a see-through tap spot (.stone, data-n) laid over it, so taps and drags work like any other game piece.
    Used as an ES module: import { mount, spinner } from './path6.js'. Needs kit.js, frame.js and unit5.js (U5.num) loaded first. */
@@ -43,7 +43,7 @@ export function mount(host, opt) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.08;
   renderer.shadowMap.enabled = !FAST; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   host.appendChild(renderer.domElement); renderer.domElement.className = 'p6canvas';
-  const scene = new THREE.Scene(), SKY = new THREE.Color('#BDE6FF'); scene.background = SKY; scene.fog = new THREE.Fog('#DDEFD6', 26, 60);
+  const scene = new THREE.Scene(), SKY = new THREE.Color('#BDE6FF'); scene.background = SKY; scene.fog = new THREE.Fog('#D7EEDB', 26, 60);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
 
   /* light: a warm sun from the upper left, a soft sky fill, a gentle rim */
@@ -53,15 +53,10 @@ export function mount(host, opt) {
   const rim = new THREE.DirectionalLight('#FFD9B0', 0.6); rim.position.set(6, 5, -10); scene.add(rim);
 
   const loader = new THREE.TextureLoader(), tex = (f, fn) => loader.load('art/' + f, t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; if (fn) fn(t); });
-  /* the ground: painted garden grass */
-  const gMat = new THREE.MeshStandardMaterial({ color: '#CDEBB6', roughness: 1 });
-  tex('garden-ground.jpg', t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(14, 11); gMat.map = t; gMat.needsUpdate = true; });
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(140, 110), gMat); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
-  /* the painted garden far behind, softly curved like a film backdrop */
-  /* the painted garden panorama (painted for us: order N6), wrapped far behind like a film backdrop; its grassy foot sinks into our grass */
-  if (!FAST) tex('garden-panorama.jpg', t => { t.wrapS = THREE.MirroredRepeatWrapping; t.repeat.x = -2; t.offset.x = 1; const R = 40, span = 2.6, H = R * span / 2 * t.image.height / t.image.width;   /* twice round, so the garden looks far away */
-    const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, fog: false }));
-    back.position.set(0, H * 0.12 + 1, 6); scene.add(back); });   /* the fence line (about 62% down the picture) sits just above our ground's far edge */
+  /* the ground: plain soft grass, one calm colour (K clarity 10: the painted grass had little daisies that looked like more flowers to count) */
+  const gMat = new THREE.MeshStandardMaterial({ color: '#A6DC86', roughness: 1 });
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), gMat); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+  /* no painted garden behind: a plain sky over plain grass, so the path is the one thing to look at (K clarity 9, 10) */
 
   /* the path: a soft sandy track joining the stones, a start mat and a finish flag */
   const tMat = new THREE.MeshStandardMaterial({ color: '#F6E6C8', roughness: 1 });
@@ -75,9 +70,9 @@ export function mount(host, opt) {
     const s = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.76, TOP, 48), new THREE.MeshStandardMaterial({ color: '#FFF4E0', map: stoneTex, roughness: 0.85 }));
     s.position.y = TOP / 2; s.castShadow = s.receiveShadow = true; s.rotation.y = n * 1.3; g.add(s);
     const lip = new THREE.Mesh(new THREE.TorusGeometry(0.69, 0.05, 10, 48), new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.6 })); lip.rotation.x = Math.PI / 2; lip.position.y = TOP; g.add(lip);
-    const top = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 1.15), new THREE.MeshBasicMaterial({ map: numeralTexture(n), transparent: true, depthWrite: false, toneMapped: false }));
+    const top = new THREE.Mesh(new THREE.PlaneGeometry(1.45, 1.45), new THREE.MeshBasicMaterial({ map: numeralTexture(n), transparent: true, depthWrite: false, toneMapped: false }));
     /* the number stands up on its stone like a little round sign and always faces the boy, so it reads clearly at any camera angle (Esti, 2026-11-27) */
-    top.position.y = TOP + 0.62; top.renderOrder = 2; top.onBeforeRender = () => top.quaternion.copy(camera.quaternion); g.add(top);
+    top.position.y = TOP + 0.8; top.renderOrder = 2; top.onBeforeRender = () => top.quaternion.copy(camera.quaternion); g.add(top);
     const ring = new THREE.Mesh(new THREE.TorusGeometry(0.86, 0.09, 12, 56), new THREE.MeshBasicMaterial({ color: '#FFD23D', transparent: true, opacity: 0.95, toneMapped: false }));
     ring.rotation.x = Math.PI / 2; ring.position.y = 0.08; ring.visible = false; g.add(ring);
     stones.push(g); tops.push(top); rings.push(ring);
@@ -92,32 +87,7 @@ export function mount(host, opt) {
     fm.position.y = 1.15; fm.onBeforeRender = () => fm.quaternion.copy(camera.quaternion); flag.add(fm); });
   const mat = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.05, 40), new THREE.MeshStandardMaterial({ color: '#7FD67A' })); mat.position.set(X(opt.from, opt.from) - 1.3, 0.03, 0.2); scene.add(mat);
 
-  /* the garden around: flowers, bushes, round trees (none in front of the stones) */
-  const rnd = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
-  const deco = [];
-  const PET = ['#FF7FA8', '#FFD23D', '#FFFFFF', '#B98CFF', '#FF9E5A', '#7FC8FF'];
-  function flower(x, z, s, parent, color) {
-    const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s); (parent || scene).add(g); if (!parent && z < 0) deco.push(g);
-    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.04, 0.6, 6), new THREE.MeshStandardMaterial({ color: '#3FA34D' })); stem.position.y = 0.3; g.add(stem);
-    const pm = new THREE.MeshStandardMaterial({ color: color || PET[Math.floor(rnd() * PET.length)], roughness: 0.6 }), pg = new THREE.SphereGeometry(0.12, 12, 8);
-    for (let i = 0; i < 5; i++) { const p = new THREE.Mesh(pg, pm); const a = i / 5 * Math.PI * 2; p.position.set(Math.cos(a) * 0.14, 0.62, Math.sin(a) * 0.14); p.scale.set(1, 0.5, 1); g.add(p); }
-    const c = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 8), new THREE.MeshStandardMaterial({ color: '#FFB000' })); c.position.y = 0.66; g.add(c);
-  }
-  function bush(x, z, s) {
-    const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s); scene.add(g); const m = new THREE.MeshStandardMaterial({ color: '#5DBB5A', roughness: 0.9 });
-    [[0, .45, 0, .6], [.5, .35, .1, .45], [-.5, .35, .05, .48], [.15, .75, -.1, .4]].forEach(b => { const o = new THREE.Mesh(new THREE.SphereGeometry(b[3], 18, 14), m); o.position.set(b[0], b[1], b[2]); o.castShadow = true; g.add(o); });
-  }
-  function tree(x, z, s) {
-    const g = new THREE.Group(); g.position.set(x, 0, z); g.scale.setScalar(s); scene.add(g);
-    const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 1.6, 10), new THREE.MeshStandardMaterial({ color: '#9A6A3E' })); tr.position.y = 0.8; tr.castShadow = true; g.add(tr);
-    const m = new THREE.MeshStandardMaterial({ color: ['#58B856', '#6CC765', '#4FA94E'][Math.floor(rnd() * 3)], roughness: 0.85 });
-    [[0, 2.2, 0, 1.05], [.6, 1.9, .2, .7], [-.6, 1.95, .1, .75]].forEach(b => { const o = new THREE.Mesh(new THREE.SphereGeometry(b[3], 20, 16), m); o.position.set(b[0], b[1], b[2]); o.castShadow = true; g.add(o); });
-  }
-  const L0 = X(opt.from, opt.from) - 4, L1 = X(opt.to, opt.from) + 4;
-  const nF = FAST ? 10 : 46;
-  for (let i = 0; i < nF; i++) { const x = L0 + rnd() * (L1 - L0), back = rnd() < .62; flower(x, back ? -1.2 - rnd() * 3.5 : 1.25 + rnd() * 1.6, back ? 0.9 + rnd() * .5 : 0.55 + rnd() * .3); }
-  for (let i = 0; i < (FAST ? 3 : 9); i++) bush(L0 + rnd() * (L1 - L0), -3.2 - rnd() * 2.5, 0.8 + rnd() * .6);
-  for (let i = 0; i < (FAST ? 2 : 7); i++) tree(L0 - 2 + rnd() * (L1 - L0 + 4), -7 - rnd() * 5, 1 + rnd() * .5);
+  /* no garden props around the path (K clarity 10): no flowers, bushes or trees */
 
   /* ---------------- the boys (painted) ---------------- */
   const kids = {};
@@ -143,15 +113,10 @@ export function mount(host, opt) {
     card.onBeforeRender = () => { card.quaternion.copy(camera.quaternion); };
     api.pose('idle'); api.place(opt.from); return api;
   }
-  opt.kids.forEach((w, i) => { kids[w] = kid(w, i === 0 ? -0.6 : -1.2); });
+  opt.kids.forEach((w, i) => { kids[w] = kid(w, i === 0 ? -1.35 : -2.1); });   /* he stands just behind his stone, so its number sign never hides him */
 
-  /* ---------------- petals when he is right ---------------- */
-  const bits = [];
-  function petals(n) {
-    if (FAST) return; const at = X(n, opt.from), g = new THREE.SphereGeometry(0.07, 8, 6);
-    for (let i = 0; i < 26; i++) { const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: PET[i % PET.length] })); m.scale.set(1, 0.4, 1);
-      m.position.set(at, 1.2, 0); m.userData.v = new THREE.Vector3((Math.random() - .5) * 0.09, 0.08 + Math.random() * 0.06, (Math.random() - .5) * 0.09); m.userData.t = 0; scene.add(m); bits.push(m); }
-  }
+  /* when he is right, the stone shines for a moment (K clarity 10: no flying petals) */
+  function petals(n) { const r = rings[Math.round(n) - opt.from]; if (!r) return; r.visible = true; setTimeout(() => { r.visible = false; }, T(900)); }
 
   /* ---------------- tap spots over the stones ---------------- */
   const layer = document.createElement('div'); layer.className = 'p6layer'; host.appendChild(layer);
@@ -160,7 +125,7 @@ export function mount(host, opt) {
 
   /* ---------------- camera: fit the path into the free band; follow on a phone ---------------- */
   let W = 1, Hh = 1, camX = X(mid, opt.from), wantX = camX, span = N * STEP;
-  const DIR = new THREE.Vector3(0, 0.27, 0.96).normalize(), V = 32;
+  const DIR = new THREE.Vector3(0, 0.4, 0.92).normalize(), V = 32;
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function narrow() { return W < Hh * 0.95 || W < 700; }
   function fit() {
@@ -188,16 +153,14 @@ export function mount(host, opt) {
     }
   }
   function cam() { camera.position.set(camX, TOP, 0).addScaledVector(DIR, camera.userData.dist || 20); camera.lookAt(camX, TOP + 0.55, 0); camera.updateMatrixWorld(); }
-  let bedG = null;
   let api = null, last = performance.now(), alive = true;
   function frame() {
     if (!alive) return; requestAnimationFrame(frame); const now = performance.now(), dt = Math.min(50, now - last); last = now;
-    camX += (wantX - camX) * Math.min(1, dt / (FAST ? 16 : 140)); if (bedG) bedG.position.x = camX;
+    camX += (wantX - camX) * Math.min(1, dt / (FAST ? 16 : 140));
+    if (now - (frame.t || 0) > 250) { frame.t = now; const b = band(); if (!frame.b || Math.abs(b[0] - frame.b[0]) > 4 || Math.abs(b[1] - frame.b[1]) > 4) { frame.b = b; if (frame.t0) fit(); frame.t0 = 1; } }   /* the panel grew or shrank: fit again */
     cam();
     const tt = now / 1000; cloth.rotation.y = Math.sin(tt * 2) * 0.15;
     rings.forEach(r => { if (r.visible) r.material.opacity = 0.65 + Math.sin(tt * 6) * 0.3; });
-    for (let i = bits.length - 1; i >= 0; i--) { const b = bits[i]; b.userData.t += dt; b.userData.v.y -= 0.0022 * dt / 16; b.position.addScaledVector(b.userData.v, dt / 16); b.rotation.x += 0.1;
-      if (b.userData.t > 1600 || b.position.y < 0.05) { scene.remove(b); bits.splice(i, 1); } }
     Object.values(kids).forEach(k => { if (k.obj.position.y === TOP && k.obj.scale.y === 1) k.obj.children[0].position.y = 1.0 + Math.sin(tt * 2 + k.z * 3) * 0.015; });
     renderer.render(scene, camera); place();
   }
@@ -210,20 +173,6 @@ export function mount(host, opt) {
     /* a stone shows a different number than it should (Find the mistake) */
     label(n, k) { tops[n - opt.from].material.map = numeralTexture(k); tops[n - opt.from].material.needsUpdate = true; },
     glow(n, on) { if (n == null) { rings.forEach(r => { r.visible = false; }); return; } rings[n - opt.from].visible = on; },
-    /* a flower bed behind the path with k big flowers: a row of five, then the more (for counting) */
-    bed(k) {
-      if (bedG) { scene.remove(bedG); bedG = null; } deco.forEach(f => { f.visible = k == null; }); if (k == null) return [];
-      bedG = new THREE.Group(); bedG.position.set(wantX, 0, -2.3); scene.add(bedG); const out = [];
-      /* two tiers, like garden steps: the row of five in front, the more on the higher step behind (every flower shows).
-         The bed stays in front of the camera while it pans, so the flowers never go off screen. */
-      bedG.position.z = -1.9; bedG.scale.setScalar(1.35);
-      const sm = new THREE.MeshStandardMaterial({ color: '#9A6A44', roughness: 1 }), wm = new THREE.MeshStandardMaterial({ color: '#E9D3AE', roughness: 0.9 });
-      [[0.2, 0], [1.05, -1.0]].forEach(([h, z]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(5.4, h, 1.0), wm); b.position.set(0, h / 2, z); b.castShadow = b.receiveShadow = true; bedG.add(b);
-        const top = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.04, 0.86), sm); top.position.set(0, h + 0.01, z); bedG.add(top); });
-      for (let i = 0; i < k; i++) { const row = i < 5 ? 0 : 1, col = i % 5, f = new THREE.Group(); f.position.set((col - 2) * 1.02, row ? 1.07 : 0.22, row ? -1.0 : 0); bedG.add(f);
-        flower(0, 0, 1.75, f, row ? '#FFD23D' : '#FF7FA8'); out.push(f); }
-      return out;
-    },
     focus(n, now) { follow(n, now); if (now) { cam(); place(); } },
     /* pan by some stones (the arrows on a phone) */
     pan(d) { follow(Math.max(opt.from, Math.min(opt.to, Math.round(wantX / STEP) + opt.from + d))); },

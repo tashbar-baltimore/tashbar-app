@@ -30,7 +30,7 @@ let P, M, done, want = null;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
 const say = (n, last) => FR.say(FR.Word(n) + (last ? '!' : ','), { noRepeat: true });
 const SLIDES = [
-  async F => { M.place(0); P.focus(0); P.showAll(true); await F.say('Hi! Welcome to the number garden.'); await F.say('Numbers live on this path, in order.'); },
+  async F => { M.place(0); P.focus(0); P.showAll(true); await F.say('Hi! Welcome to the number path.'); await F.say('Numbers live on this path, in order.'); },
   async F => { await F.say('Mendy walks the path. Say each number with him!');
     M.pose('happy'); await M.hop(5, n => { P.glow(n, true); return say(n, false).then(() => P.glow(n, false)); }); M.pose('idle'); },
   async F => { await F.chant('Step and say, step and say!', true); M.pose('happy'); await M.hop(10, n => { P.glow(n, true); return say(n, n === 10).then(() => P.glow(n, false)); }); M.pose('idle'); P.petals(10); await F.say('Ten! The flag!'); },

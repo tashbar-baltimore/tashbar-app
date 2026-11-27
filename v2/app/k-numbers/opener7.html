@@ -6,7 +6,7 @@
 <title>Learn it: More, less, the same — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 7 OPENER: a short, warm lesson in the 3D apple orchard. Dovid and Shmuel have apples.
      Line them up: partners join, and the apples left over show who has more (and who has less). Every apple with a partner: the same.
-     The unit song "One more, one more, step up one more!" (stand up). An apple drops from the tree: one more. One goes back: one less.
+     The unit song "One more, one more, step up one more!" (stand up). An apple drops onto the blanket: one more. One goes back: one less.
      He taps the big arrow to go on; on the last slide he taps who has more himself. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
@@ -29,7 +29,7 @@ let O, done, want = null;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
 async function lineUp() { const n = Math.min(O.count(0), O.count(1)); for (let k = 0; k < n; k++) await O.pair(k, k); }
 const SLIDES = [
-  async F => { O.setApples(0, 3); O.setApples(1, 5); await F.say('Welcome to the apple orchard!'); await F.say('Dovid has apples. Shmuel has apples.'); },
+  async F => { O.setApples(0, 3); O.setApples(1, 5); await F.say('Welcome to the apple picnic!'); O.glowSide(0, true); await F.say('Dovid has the orange blanket.'); O.glowSide(0, false); O.glowSide(1, true); await F.say('Shmuel has the blue blanket.'); O.glowSide(1, false); },
   async F => { await F.say("Who has more? Let's line them up."); await lineUp(); O.glowSide(1, true); await F.say('Two apples have no partner.');
     await F.say('Shmuel has more. Dovid has less.'); O.glowSide(1, false); O.clearPairs(); },
   async F => { O.setApples(0, 4); O.setApples(1, 4); await F.say('Now four and four.'); await lineUp(); await F.say('Every apple has a partner. The same!'); O.clearPairs(); },
@@ -38,8 +38,8 @@ const SLIDES = [
     await O.take(0); await F.say('Four, one less is three.'); O.glowSide(0, false); },
   async F => { O.setApples(0, 0); O.setApples(1, 0); $('cards').hidden = false; await F.say('Numbers can be more, too. Three or five?');
     await F.say('When we count, five comes later. Five is more!'); $('c1').classList.add('good'); await F.wait(900); $('c1').classList.remove('good'); $('cards').hidden = true; },
-  async F => { O.setApples(0, 6, 'scatter'); O.setApples(1, 4, 'scatter'); O.sideSpot(0); O.sideSpot(1); await F.say('Your turn! Who has more?');
-    await F.say('Tap the one with more.', { repeat: 'Six apples or four. Tap who has more.' }); want = 0; }
+  async F => { O.setApples(0, 6, 'scatter'); O.setApples(1, 4, 'scatter'); O.sideSpot(0); O.sideSpot(1); O.choose(true); await F.say('Your turn! Who has more?');
+    await F.say('Tap the blanket with more.', { repeat: 'Six apples or four. Tap the blanket with more.' }); want = 0; }
 ];
 FR.game({
   id: 'u7-opener', title: 'More, Less, the Same', rounds: SLIDES.length, stars: () => 3,
@@ -47,12 +47,12 @@ FR.game({
   endSay: () => "Great! Now let's line them up!",
   init() {
     document.getElementById('c0').innerHTML = U5.num(3); document.getElementById('c1').innerHTML = U5.num(5);
-    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true, tree: true });
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true });
     $('go').addEventListener('click', () => { if (GAME.phase !== 'answer' || want != null) return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; const d = done; done = null; d(true); });
     O.onTap = async (id, el) => {
       if (GAME.phase !== 'answer' || want == null || !id.startsWith('side')) return; GAME.phase = 'busy'; const k = +id[4];
       if (k !== want) { FR.oops(el); await FR.say("Let's look. Line them up in your head."); await lineUp(); await FR.say('Who has apples left over?'); O.clearPairs(); GAME.phase = 'answer'; return; }
-      want = null; O.sparkle(O.sides[0].g.position); await FR.yes(el, 'Yes! Six is more than four!'); const d = done; done = null; d(true);
+      want = null; O.choose(false); O.sparkle(O.sides[0].g.position); await FR.yes(el, 'Yes! Six is more than four!'); const d = done; done = null; d(true);
     };
   },
   round: (F, i) => new Promise(async res => {

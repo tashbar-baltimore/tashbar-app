@@ -33,12 +33,12 @@ function hooks() {
   const m = more(), right = m < 0 ? '#same' : '.tspot[data-id="side' + m + '"]', wrong = m < 0 ? '.tspot[data-id="side0"]' : m === 0 ? '.tspot[data-id="side1"]' : '#same';
   GAME.right = () => [{ tap: right }]; GAME.wrong = () => [{ tap: wrong }];
 }
-function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); if (!pairing()) O.choose(true); }   /* tap a blanket: both blankets shine */
 async function afterPairs() {
   GAME.phase = 'busy'; FR.lock(true); picked = null;
   O.sideSpot(0); O.sideSpot(1);
   await FR.say(free(0).length || free(1).length ? 'Look! Some apples have no partner.' : 'Every apple has a partner!');
-  open(); await FR.say('Who has more? Or the same?', { repeat: 'Tap who has more. Or tap the same.' });
+  open(); await FR.say('Who has more? Tap his blanket. Or tap the same.', { repeat: 'Tap the blanket with more. Or tap the same.' });
 }
 async function tapApple(id, el) {
   const [i, j] = id.slice(1).split('-').map(Number); if (O.sides[i].apples[j].userData.paired) return;
@@ -48,7 +48,7 @@ async function tapApple(id, el) {
   if (pairing()) { open(); return; } await afterPairs();
 }
 async function answer(k, el) {   /* k: 0 or 1 (a blanket), -1 (the same) */
-  if (GAME.phase !== 'answer' || pairing()) return; GAME.phase = 'busy'; FR.lock(true);
+  if (GAME.phase !== 'answer' || pairing()) return; GAME.phase = 'busy'; FR.lock(true); O.choose(false);
   const m = more();
   if (k === m) { const w = m < 0 ? null : O.sides[m].g.position; if (w) O.sparkle(w); O.sides.forEach(s => s.pose(m < 0 || s.i === m ? 'happy' : 'idle'));
     await FR.yes(el, m < 0 ? 'The same! Every apple has a partner.' : 'Yes! ' + NAME[m] + ' has more. Those apples are left over.'); const d = done; done = null; d(R.misses === 0); return; }
@@ -61,7 +61,7 @@ const PLAN = [[3, 5, 'row'], [6, 4, 'row'], [4, 4, 'row'], [7, 5, 'scatter'], [2
 function play(F, i) {
   return new Promise(async res => {
     const [a, b, how] = PLAN[i]; R = { misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); picked = null;
-    O.clearPairs(); O.unspot('side0'); O.unspot('side1'); O.sides.forEach(s => s.pose('idle'));
+    O.clearPairs(); O.unspot('side0'); O.unspot('side1'); O.choose(false); O.sides.forEach(s => s.pose('idle'));
     O.setApples(0, a, how); O.setApples(1, b, how);
     await F.say(i === 0 ? 'Line them up! One of Dovid\'s, one of Shmuel\'s.' : F.pick(['Line them up!', 'Make partners!', 'Pair them up!']), { repeat: 'Tap one apple of each. They become partners.' });
     open();
@@ -77,7 +77,7 @@ FR.game({
   },
   demo: async F => {
     O.setApples(0, 2, 'row'); O.setApples(1, 3, 'row'); R = { misses: 0 };
-    await F.say('Dovid has apples. Shmuel has apples. Watch me.');
+    await F.say('Dovid has the orange blanket. Shmuel has the blue one.'); await F.say('Watch me make partners.');
     for (let k = 0; k < 2; k++) { await F.handTo(document.querySelector('.tspot[data-id="a0-' + k + '"]')); await F.handTap(); await F.handTo(document.querySelector('.tspot[data-id="a1-' + k + '"]')); await F.handTap(); await O.pair(k, k); }
     await F.say('One apple is left over. Shmuel has more!'); O.glowSide(1, true); await F.wait(800); O.glowSide(1, false); O.clearPairs();
   },
