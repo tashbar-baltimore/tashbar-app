@@ -28,7 +28,7 @@ export default function setup(E, { struggled, unit, game }) {
   function makeCard(k) { const old = card; card = E.letter(k, 1.9); card.visible = false; E.scene.add(card); E.scene.remove(old); }   /* each letter has its own shape */
   let pair = pairs[0], labels = [], P = false, CS = 1, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, wrongInRow = 0, missed = false, deck = [], idx = 0, onDone = null, kRound = 0;
   E.onLayout(p => { P = p; CS = p ? 1.05 : 1;
-    if (p) { E.camBase.set(0, 3.0, 11.2); E.camTarget.set(0, 2.3, 0); crates[0].position.set(1.3, 0, .3); crates[1].position.set(-1.3, 0, .3); crates.forEach(c => c.scale.setScalar(.82)); cardHome.set(0, 4.3, 1.5); kid.visible = false; }   /* phone: bigger crates and card (graphics pass) */
+    if (p) { E.camBase.set(0, 3.0, 11.2); E.camTarget.set(0, 2.3, 0); crates[0].position.set(1.3, 0, .3); crates[1].position.set(-1.3, 0, .3); crates.forEach(c => c.scale.setScalar(.82)); cardHome.set(0, 3.85, 1.5);   /* well below the progress pips, so nothing gold sits at Shin's or Sin's dot place */ kid.visible = false; }   /* phone: bigger crates and card (graphics pass) */
     else { E.camBase.set(0, 2.7, 9.8); E.camTarget.set(0, 1.5, 0); crates[0].position.set(2.6, 0, 0); crates[1].position.set(-2.6, 0, 0); crates.forEach(c => c.scale.setScalar(1)); cardHome.set(0, 2.1, 1.5); kid.visible = true; kid.position.set(-4.7, 0, 1.4); }
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
@@ -55,7 +55,7 @@ export default function setup(E, { struggled, unit, game }) {
     if (c.userData.key === k) {
       busy = true; enabled = false; wrongInRow = 0; const p0 = card.position.clone(), to = centre(c);
       await E.tween(420, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar(CS * (1 - q * .85)); });
-      card.visible = false; { const m = E.letter(k, .42); const n = c.userData.inCrate = (c.userData.inCrate || 0) + 1; m.position.set(((n - 1) % 4 - 1.5) * .42, .24 + Math.floor((n - 1) / 4) * .46, 1.0); m.userData.inPile = true; c.add(m); E.popIn(m, 1, 250); }   /* the crate fills up: he sees his sorted letters pile in (reviewer: more fun) */ E.joy(to); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F); E.hop(c, .15, 300);
+      card.visible = false; { const m = E.letter(k, .58); const n = c.userData.inCrate = (c.userData.inCrate || 0) + 1; m.position.set(((n - 1) % 3 - 1) * .62, .32 + Math.floor((n - 1) / 3) * .66, 1.0); m.userData.inPile = true; c.add(m); E.popIn(m, 1, 250); }   /* the crate fills up: he sees his sorted letters pile in (reviewer: more fun) */ E.joy(to); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F); E.hop(c, .15, 300);
       idx++; E.setProgress(deck.length, idx);
       await E.say(['Yes! ' + E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd)]);
       if (idx < deck.length) { busy = true; await setCard(deck[idx]); busy = false; enabled = true; } else onDone();

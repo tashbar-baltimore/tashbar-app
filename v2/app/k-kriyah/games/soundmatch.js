@@ -77,6 +77,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
     E.setProgress(deck.length, 0);
     if (game.review) { const nm = keys.map(k => E.LETTERS[k].name); await E.say('Remember ' + nm.slice(0, -1).join(', ') + ' and ' + nm[nm.length - 1] + '? Let\u2019s match again!'); }   /* names the letters on the stands */
     await E.say('Each picture goes to the letter it starts with.');
+    for (const k of keys) { const from = [...new Set(Object.keys(ALLWORDS).filter(w => (ALLWORDS[w].also || []).includes(k) && WORDS[w].letter === k).map(w => ALLWORDS[w].letter))];   /* a word he matched before to another letter */
+      for (const o of from) await E.say([E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd), ', just like ' + E.LETTERS[o].name + '!']); }
     await showCard(first);
     const k0 = WORDS[first].letter, pd0 = peds.find(pd => pd.userData.key === k0);
     await E.say(E.quiet(k0) ? 'Watch me. ' + WORD_NAME[first] + ' starts with ' + E.LETTERS[k0].name + '.' : ['Watch me. ' + WORD_NAME[first] + ' starts with', S(E.LETTERS[k0].snd), '.']);

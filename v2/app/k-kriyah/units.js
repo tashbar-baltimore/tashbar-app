@@ -87,7 +87,7 @@ export const UNITS = [
       { id: 'u8g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
       { id: 'u8g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u8g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['daled', 'reish'], ['hei', 'kuf']] },   /* Unit 7's look-alikes come back */
-      { id: 'u8g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
+      { id: 'u8g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true, bg: 'kitchen' },   /* no painted sun where Shin's and Sin's dots fall (reviewer) */
     ] },
 ];
 /* every game in order, each knowing its unit */
