@@ -201,7 +201,7 @@
     your:[
       {type:'match', pairs:[['the cause','what makes it happen'],['the effect','what happens because of it'],['a chain','each effect causes the next']],
         say:'Match each word to what it means.', how:'Did it make something happen, or did it happen?'},
-      {type:'sort', bins:['One cause, many effects','A chain'], cards:[['Drought: low lake, brown lawns, small crops.',0],['Yeast made gas, which made bubbles, which raised dough.',1],['Heat wave: dry garden, warm rooms, full pool.',0],['Snow led to ice, which led to cancelled buses.',1]],
+      {type:'sort', bins:['One cause, many effects','A chain'], cards:[['Drought: low lake, brown lawns, small crops.',0],['Yeast made gas, which made bubbles, which raised dough.',1],['Heat wave: dry garden, warm rooms, crowded pool.',0],['Snow led to ice, which led to cancelled buses.',1]],
         say:'Which plan is each one? Sort it.', how:'Straight from one cause, or each causing the next?'},
       {type:'evidence', q:'Benny’s explainer on why bread rises. Tap the flipped link.', p:['Here is how yeast makes bread rise.','Yeast eats the sugar in the dough.','This makes a gas called carbon dioxide.','The dough rose, which led to the gas forming bubbles.','As a result, the baked loaf is light and soft.'], a:3, look:'an effect written as if it were the cause', mis:true,
         say:'Tap the link that is written backwards.', how:'Ask of each link: which really made the other happen?'},
@@ -334,7 +334,9 @@
       { who: { q: 'Benny already explained *reservoir*. Now it comes again.', o: [['Shimon', '"The reservoir feeds the pipes."'], ['Levi', '"The big water lake feeds the pipes."']], a: 0,
         why: 'Keep the *same word*. Explain it only *once*.' } },
       TEACHBACK('*Teach it back*: tell your chavrusa how to *explain* words.', 'Use the exact topic word. The first time, explain it with a comma, "called", or "which is". After that, keep the same word.')];
-    b.play = [D[1], Y[1], Y[2], Y[3], Y[4]];
+    b.play = [D[1], Y[1], Y[2], Y[3],
+      { type: 'cloze', t: 'Benny explained "reservoir" already. Later: The ___ feeds the pipes.', o: ['reservoir', 'big water lake', 'water place'], a: 'reservoir',
+        say: 'Second time: which words fit?', how: 'Explain it *once*. Then keep the *same word*.' }];
     b.done = 'You use the *exact* word, *explain* it once, and *keep* it.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.05']);
 

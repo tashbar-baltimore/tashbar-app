@@ -318,7 +318,9 @@
       { who: { q: '"Eli was twelve. He lived in Baltimore." A good opening?', o: [['Mendy', 'Yes: it says who and where'], ['Shaya', 'No: it is facts only']], a: 1,
         why: 'No *hook* and no reason to *care*. Facts alone are dull.' } },
       TEACHBACK('*Teach it back*: tell your chavrusa the two jobs.', 'Hook him: start at the trouble. Orient him: who, where, and why he should care.')];
-    b.play = [D[0], Y[3], Y[0], Y[4], D[1]];
+    b.play = [D[0], Y[3], Y[0], Y[4],
+      { type: 'tiles', q: 'Open with where, then who and the trouble.', w: ['In the newsroom,', 'Akiva saw', 'the front page', 'was blank.'], extra: ['One day,'],
+        say: 'Build an opening: *where*, *who*, then the trouble.', how: 'Place first. Then the person. Then what is at *stake*.' }];
     b.done = 'Your opening *hooks* the reader and tells *who*, *where* and *why care*.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L07.05']);
 
@@ -334,7 +336,7 @@
       { who: { q: 'Told by Gavriel: "I knelt. Gavriel raised his camera."', o: [['Yitzy', 'Fine: it is all Gavriel'], ['Zevi', 'A slip: it switches person']], a: 1,
         why: 'Gavriel is *I*. "Gavriel raised *his*" switches to *third person*.' } },
       TEACHBACK('*Teach it back*: tell your chavrusa the two slips.', 'Slip 1: switching person, I becomes he. Slip 2: knowing too much, like someone else’s secret thoughts.')];
-    Y[0].mis = true;
+    Y[0].mis = true; Y[0].why = D[1].why; delete D[1].why;
     b.play = [Y[0], Y[2], Y[3], Y[4]];
     b.done = 'You choose a *point of view* and *keep* it.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L07.06']);

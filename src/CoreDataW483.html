@@ -302,13 +302,13 @@
      The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
   var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
-    b.hook = { kind: 'whatswrong', pic: '♻️', t: 'Akiva wants a school recycling program. His proof: "Plastic is a hundred years old."',
+    b.hook = { kind: 'whatswrong', pic: '♻️', t: 'Akiva wants a school recycling program. His proof: "Plastic was first made over 100 years ago."',
       q: 'What is wrong with his proof?', o: ['It does not prove his claim', 'It has a spelling mistake', 'Nothing is wrong'],
       pay: 'It is about plastic, not *his claim*. Proof must pass *two tests*.' };
     D[1].say = 'Match each source to how much you can *trust* it.';
     b.learn = [
       { t: 'Test 1: *relevant*. Does it prove *this* claim?', act: { type: 'sort', q: 'Claim: our school should start recycling.', bins: ['Relevant', 'Not relevant'],
-        cards: [['Recycling cuts school trash by a third.', 0], ['Plastic was made 100 years ago.', 1], ['Recycling trucks are green.', 1], ['Our lunchroom fills 9 trash bags a day.', 0]],
+        cards: [['Recycling cuts school trash by a third.', 0], ['Plastic was first made over 100 years ago.', 1], ['Recycling trucks are green.', 1], ['Our lunchroom fills 9 trash bags a day.', 0]],
         say: 'Does each fact prove *this* claim? Sort it.', how: 'Ask: if it is true, is the claim *stronger*? Same topic is not enough.' } },
       { t: 'Test 2: *credible*. Can you *trust* the source?', act: D[1] },
       { who: { q: 'Claim: boys should drink more water. Proof: an ad from a water company.', o: [['Eli', 'Strong: it is about water'], ['Moshe', 'Weak: the ad wants to sell']], a: 1,
@@ -317,9 +317,9 @@
     b.play = [
       { type: 'sort', q: 'Claim: our yeshiva should add a second recess.', bins: ['Strong', 'Not relevant', 'Not credible'], mis: true,
         cards: [['A study: short breaks help boys focus.', 0], ['Recess began in the 1800s.', 1], ['My friend heard breaks help.', 2], ['The office counted fewer interruptions.', 0], ['A history book: recess was longer long ago.', 1], ['A toy company ad says boys need recess.', 2]],
-        say: 'Sneaky mistakes! Which test does each card fail?', how: 'Not about *this* claim? Not relevant. No trusted source? Not credible.' },
+        say: 'Sneaky mistakes! Which test does each card pass or fail?', how: 'Not about *this* claim? Not relevant. No trusted source? Not credible.' },
       { type: 'evidence', q: 'Akiva’s editorial. Tap the evidence that is not credible.', look: 'proof with no source you can check',
-        p: ['Our school should start recycling.', 'The city says recycling cuts school trash by a third.', 'Our lunchroom fills nine bags of trash a day.', 'Everyone knows recycling is the best thing ever.', 'So recycling would make a real difference here.'], a: 3,
+        p: ['Our school should start recycling.', 'The city says recycling cuts school trash by a third.', 'The custodian counts nine bags of trash a day.', 'Everyone knows recycling is the best thing ever.', 'So recycling would make a real difference here.'], a: 3,
         say: 'Tap the proof nobody can check.', how: 'Who said it? "*Everyone knows*" names no source.' },
       Y[0],
       { type: 'cloze', t: 'An ad wants to sell you something, so it is not ___.', o: ['credible', 'relevant', 'formal'], a: 'credible',
@@ -336,8 +336,8 @@
     b.learn = [
       { t: 'Glue has *three jobs*: add, result, proof.', act: D[0] },
       { t: 'Now sort the glue by its *job*.', act: Y[1] },
-      { who: { q: '"The rain stopped. ___, the game went on."', o: [['Dovid', 'However,'], ['Shimon', 'As a result,']], a: 1,
-        why: '"*However*" turns to the other side. The game is a *result*.' } },
+      { who: { q: '"The bell rang. ___, the boys lined up."', o: [['Dovid', 'However,'], ['Shimon', 'As a result,']], a: 1,
+        why: '"*However*" turns to the other side. Lining up is a *result*.' } },
       TEACHBACK('*Teach it back*: tell your chavrusa the three glue jobs.', 'Add a reason: In addition. Show a result: As a result. Point to proof: For example. "However" only turns to the other side.')];
     b.play = [D[1], Y[2],
       { type: 'tiles', q: 'Point to proof.', w: ['The club works.', 'For instance,', 'it fed', 'ten families.'], extra: ['However,'],
@@ -387,7 +387,7 @@
     Y[1].mis = true; Y[1].say = 'Strong close, or a mistake? Sort each.';
     b.play = [Y[1],
       { type: 'order', q: 'Argument: our class should visit the old-age home before Pesach.', steps: ['Therefore, our class should visit the old-age home.', 'The residents said our visit was their happiest day.', 'Sign up with Mr. Gross by Friday.'],
-        extra: ['Also, the home has a garden.'], say: 'Put the close in order. Leave out the extra.', how: '*Claim*, then strongest *reason*, then the *action*. "Also" brings something new.' },
+        extra: ['Also, the home has a garden.', 'But maybe it is too far.'], say: 'Put the close in order. Leave out the extras.', how: '*Claim*, then strongest *reason*, then the *action*. "Also" brings something new; "But maybe" doubts.' },
       Y[2], Y[0]];
     b.done = 'You close the case: *claim*, best *reason*, *action*.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.03']);

@@ -195,7 +195,7 @@
     do:[
       {type:'match', pairs:[['Fair and strongest','The reason a wise opponent leads with'],['Fair but weak','True, but it carries little weight'],['Straw man','Polite words that shrink their side']],
         say:'Match each label to what it means.', how:'Most weight? Little weight? Or shrunk?'},
-      {type:'sort', q:'Claim: our school should hold a coat drive.', bins:['Fair','Mistake: straw man'], cards:[['They worry it takes learning time.',0],['A few just prefer not to bother.',1],['They say shuls already collect coats.',0],['Some just feel it is not really our job.',1]], mis:true,
+      {type:'sort', q:'Claim: our school should hold a coat drive.', bins:['Fair','Mistake: straw man'], cards:[['They worry it takes learning time.',0],['A few just prefer not to bother.',1],['They say shuls already collect coats.',0],['Some just do not feel like helping.',1]], mis:true,
         say:'Fair counterclaim, or a polite straw man? Sort each.', how:'Would the other side say, "Yes, that is my point"?'}],
     your:[
       {type:'tiles', q:'Claim: join the debate tournament.', w:['Some argue','practice','would cost','study time.'], extra:['a little'],
@@ -230,7 +230,7 @@
     your:[
       {type:'evidence', q:'Yoni’s op-ed paragraph. Tap the sentence that really answers the worry.', p:['The Beacon should add a puzzle page.','Some worry that boys will do the puzzles during class.','Anyone who says that just does not like puzzles.','In fact, a school rule already keeps The Beacon in the boys’ lockers until dismissal.','We should add the puzzle page anyway.'], a:3, look:'evidence that answers the point', mis:true,
         say:'Find the real rebuttal. Skip the insult and the repeat.', how:'A real rebuttal brings evidence about the worry itself.'},
-      {type:'sort', q:'Counterclaim: "The election will cause fights."', bins:['Shows it is mistaken','Shows it matters less','Concede and outweigh'], cards:[['In fact, last year’s election had no fights at all.',0],['The campaign lasts only one week.',1],['Yes, some may argue, but all learn to vote fairly.',2],['At most a few boys argue, and only for a day or two.',1]],
+      {type:'sort', q:'Counterclaim: "The election will cause fights."', bins:['Shows it is mistaken','Shows it matters less','Concede and outweigh'], cards:[['In fact, last year’s election had no fights at all.',0],['The campaign lasts only one week.',1],['Yes, a few may quarrel, but all learn to vote fairly.',2],['At most a few boys quarrel, and only for a day or two.',1]],
         say:'Which move does each rebuttal use?', how:'False? Smaller problem? Or a different good that outweighs?'},
       {type:'tiles', q:'Counterclaim: "The debate tournament is on a school day."', w:['In fact, it','falls during','Chanukah','vacation.'], extra:['says who?'],
         say:'Build a rebuttal that shows it is mistaken.', how:'Start with "In fact," then the evidence.'},
@@ -305,7 +305,7 @@
      The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
   var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
-    b.hook = { kind: 'compare', pic: '🗳️', t: 'Two debaters state the other side. One of them shrinks it.',
+    b.hook = { kind: 'compare', pic: '🗳️', t: 'Claim: use a secret ballot. Two debaters give the other side.',
       q: 'Which version is fairer?', o: ['"A few just like raising hands."', '"An open count lets everyone check it."'],
       pay: 'The *second*! It gives their *real reason*, at full *strength*.' };
     D[0].say = 'Match each *label* to what it means.';
@@ -350,7 +350,7 @@
         why: 'He hides *other choices*, like a leader each month.' } },
       TEACHBACK('*Teach it back*: tell your chavrusa the four weak links.', 'Overgeneralizing: one case becomes always. False cause: it came after, so it caused it. Attacking the person. Either-or: only two choices.')];
     b.play = [D[0], Y[1], Y[3], Y[2],
-      { type: 'tiles', q: 'He says: "Print every week, or not at all."', w: ['That is either-or,', 'because', 'it could print', 'every other week.'], extra: ['he is new'],
+      { type: 'tiles', q: 'He says: "Play outside, or have no recess at all."', w: ['That is either-or,', 'because', 'we could play', 'in the gym.'], extra: ['he is new'],
         say: 'Name the weak link, then give a *third choice*.', how: 'Say "either-or" first. Then the choice he *left out*.' }];
     b.done = 'You *name* the weak link, then *answer* it.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.01']);
@@ -364,7 +364,7 @@
     b.learn = [
       { t: 'Evidence climbs a *ladder* with four rungs.', act: D[0] },
       { t: 'Each rung has its own *example*.', act: Y[0] },
-      { who: { q: 'Which is *stronger*: a coach’s opinion or a city record?', o: [['Shmuli', 'The coach: he is an expert'], ['Dovid', 'The record: it is counted']], a: 1,
+      { who: { q: 'Our corner’s traffic: a coach’s opinion or a city record? Which is *stronger*?', o: [['Shmuli', 'The coach: he is an expert'], ['Dovid', 'The record: it is counted']], a: 1,
         why: 'A careful *count* is a higher *rung* than an opinion.' } },
       TEACHBACK('*Teach it back*: tell your chavrusa the four rungs.', 'One story. An expert’s opinion. A careful number from a study or an official record. Several careful sources that agree.')];
     b.play = [D[1], Y[1], Y[3], Y[4], Y[2]];
