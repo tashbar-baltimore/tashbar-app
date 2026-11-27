@@ -9,7 +9,7 @@
      The muffin tin proves it: the pink number of pink cupcakes, then the blue number of blue cupcakes. Full tin: friends! Both cards go.
      A slip: the tin shows what happened ("seven and two make nine; one cup is empty", or "too many: only ten cups"), the empty cups are counted, another try. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
-<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css">
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css"><link rel="stylesheet" href="hands-side.css">
 <style>
 .cards{ display:flex; flex-direction:column; gap:10px; } .row{ display:flex; gap:12px; justify-content:center; }
 .pc{ width:clamp(70px,10.5vh,90px); height:clamp(70px,10.5vh,90px); border-radius:20px; background:#fff; border:6px solid #FF7FAE; display:flex; align-items:center; justify-content:center; padding:8px;
@@ -30,7 +30,7 @@ import { mount } from './bakery10.js';
 const $ = id => document.getElementById(id);
 let K, R, done;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
-const card = (n, c) => '<div class="pc ' + c + '" data-n="' + n + '" role="button" aria-label="' + n + '">' + U5.num(n) + '</div>';
+const card = (n, c) => '<div class="pc ' + c + '" data-n="' + n + '" role="button" aria-label="' + n + '">' + U5.num(n, c === 'pink' ? '#FF5C9A' : '#2F8FEF') + '</div>';
 const left = () => R.pairs.filter(p => !R.got.includes(p[0]));
 function hooks() {
   const [p] = left(); if (!p) return; const wrongB = R.pairs.map(q => q[1]).find(b => b !== p[1] && !R.got.includes(10 - b));
@@ -38,7 +38,7 @@ function hooks() {
   GAME.wrong = wrongB == null ? null : () => [{ drag: ['.pc.pink[data-n="' + p[0] + '"]', '.pc.blue[data-n="' + wrongB + '"]'] }];
 }
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
-async function fillTo(a, b) { K.setTin(a); for (let i = a; i < Math.min(10, a + b); i++) await K.add(i); }
+async function fillTo(a, b) { K.setTin(a); K.setExtra(0); for (let i = a; i < Math.min(10, a + b); i++) await K.add(i); if (a + b > 10) K.setExtra(a + b - 10); }   /* too many: the extras wait on the plate, so he SEES them */
 async function drop(pc, bc) {
   NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); const a = +pc.dataset.n, b = +bc.dataset.n;
   await fillTo(a, b);
@@ -49,7 +49,7 @@ async function drop(pc, bc) {
   FR.oops(bc); R.misses++;
   if (a + b < 10) { await FR.say("Let's look. " + FR.Word(a) + ' and ' + FR.word(b) + ' make ' + FR.word(a + b) + '.');
     const e = await K.countEmpty((j) => FR.say(FR.Word(j + 1) + ',', { noRepeat: true })); await FR.say(FR.Word(e) + (e === 1 ? ' cup is' : ' cups are') + ' empty.'); K.unglow(); }
-  else await FR.say("Let's look. Too many! The tin has only ten cups.");
+  else { await FR.say("Let's look. Too many! The tin is full, and look."); const ex = K.extras(); await K.bumpAll(ex, i => FR.say(FR.Word(i + 1) + ' left over' + (i === ex.length - 1 ? '.' : ','), { noRepeat: true })); K.setExtra(0); }
   await FR.say(FR.Word(a) + ' needs ' + FR.word(10 - a) + '. Find ' + FR.word(10 - a) + '.'); $('blues').querySelector('[data-n="' + (10 - a) + '"]').classList.add('hint');
   setTimeout(() => document.querySelectorAll('.pc.hint').forEach(x => x.classList.remove('hint')), 2500); K.setTin(0); open();
 }

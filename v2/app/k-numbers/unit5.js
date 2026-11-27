@@ -121,8 +121,8 @@
     4: ['M30 20 L22 86 L84 86', 'M64 44 L64 122'],
     5: ['M34 22 L30 64 C 44 54 80 56 80 88 C 80 124 34 126 22 108', 'M34 22 L78 22'] };
   U5.COLOR = { 0: '#2FB5E8', 1: '#FF4D3D', 2: '#FFB31A', 3: '#22B45E', 4: '#A779FF', 5: '#FF6FA8', 6: '#FF8A1F', 7: '#2FB5E8', 8: '#22B45E', 9: '#A779FF', 10: '#FF4D3D' };
-  U5.num = function (n) {
-    var big = n > 5, d = big ? U5.NUMERALS[n].strokes : U5.STROKES04[n], c = U5.COLOR[n], w = big ? 34 : 18;
+  U5.num = function (n, col) {   /* col: an optional colour (Unit 10: pink and blue numbers match the pink and blue cupcakes) */
+    var big = n > 5, d = big ? U5.NUMERALS[n].strokes : U5.STROKES04[n], c = col || U5.COLOR[n], w = big ? 34 : 18;
     var s = '<svg viewBox="' + (big ? (n === 10 ? '20 30 190 220' : '30 30 150 220') : '0 0 100 140') + '">';
     d.forEach(function (p) { s += '<path d="' + p + '" fill="none" stroke="#3B2A7A" stroke-width="' + (w + (big ? 16 : 9)) + '" stroke-linecap="round" stroke-linejoin="round"/>'; });
     d.forEach(function (p) { s += '<path d="' + p + '" fill="none" stroke="' + c + '" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"/>'; });

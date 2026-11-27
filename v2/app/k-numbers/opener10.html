@@ -9,8 +9,8 @@
      The call-and-answer song "Friends of ten" (stand up). Six needs four. Then his turn: eight in the tin, he shows how many more make ten on his fingers.
      He taps the big arrow to go on. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
-<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css">
-<style>#go{ visibility:hidden; animation:pulse 1.2s infinite; } #go.on{ visibility:visible; } #hp[hidden], #check[hidden], .sum[hidden]{ display:none; } #hp .fhand{ width:clamp(96px,14vh,130px); aspect-ratio:170/230; }</style>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css"><link rel="stylesheet" href="hands-side.css">
+<style>#go{ visibility:hidden; animation:pulse 1.2s infinite; } #go.on{ visibility:visible; } #hp[hidden], #check[hidden], .sum[hidden]{ display:none; } </style>
 </head>
 <body>
 <div id="world"></div>
@@ -28,7 +28,7 @@ import { mount } from './bakery10.js';
 const $ = id => document.getElementById(id);
 let K, H, done, asking = false;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
-function sum(a, b) { $('sum').hidden = false; $('sum').innerHTML = '<span class="p pink">' + U5.num(a) + '</span><span class="op">+</span><span class="p blue">' + (b == null ? '<b>?</b>' : U5.num(b)) + '</span><span class="op">=</span><span class="p ten">' + U5.num(10) + '</span>'; }
+function sum(a, b) { $('sum').hidden = false; $('sum').innerHTML = '<span class="p pink">' + U5.num(a, '#FF5C9A') + '</span><span class="op">+</span><span class="p blue">' + (b == null ? '<b>?</b>' : U5.num(b, '#2F8FEF')) + '</span><span class="op">=</span><span class="p ten">' + U5.num(10) + '</span>'; }
 async function fill(a) { for (let i = a; i < 10; i++) await K.add(i); }
 const count = j => FR.say(FR.Word(j + 1) + (j === 9 ? '!' : ','), { noRepeat: true });
 const SLIDES = [

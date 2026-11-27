@@ -9,7 +9,7 @@
      until the tin is full. Then: "How many did you add?" He shows it on two hands and taps the check. Seven and three make ten!
      A slip: the empty cups light up one by one as we count them together, then another try. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
-<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css">
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css"><link rel="stylesheet" href="hands-side.css">
 </head>
 <body>
 <div id="world"></div>
@@ -27,7 +27,7 @@ const $ = id => document.getElementById(id);
 let K, H, R, done;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
 /* the panel: pink part + blue part = 10, with "?" for the part he still needs */
-function sum(a, b) { $('sum').innerHTML = '<span class="p pink">' + U5.num(a) + '</span><span class="op">+</span><span class="p blue">' + (b == null ? '<b>?</b>' : U5.num(b)) + '</span><span class="op">=</span><span class="p ten">' + U5.num(10) + '</span>'; }
+function sum(a, b) { $('sum').innerHTML = '<span class="p pink">' + U5.num(a, '#FF5C9A') + '</span><span class="op">+</span><span class="p blue">' + (b == null ? '<b>?</b>' : U5.num(b, '#2F8FEF')) + '</span><span class="op">=</span><span class="p ten">' + U5.num(10) + '</span>'; }
 function hooks() {
   if (R.step === 'fill') { GAME.right = () => { const i = K.firstEmpty(); return [{ tap: '.tspot[data-id="cup' + i + '"]' }]; }; GAME.wrong = null; return; }
   GAME.right = () => H.moves(10 - R.n, '#hh').concat([{ tap: '#check' }]); GAME.wrong = () => H.moves(10 - R.n + 1, '#hh').concat([{ tap: '#check' }]);

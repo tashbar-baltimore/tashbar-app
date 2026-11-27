@@ -9,7 +9,7 @@
      too few (an empty cup: he taps it to fill it), too many (one is left on the plate: he taps the plate to take it away), or Mendy is right (thumbs up).
      The blue number in the panel changes as he fixes it. A slip (thumbs up when Mendy is wrong): we count the empty cups or the left-over cupcakes. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
-<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css">
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css"><link rel="stylesheet" href="hands-side.css">
 <style>@media (max-width:760px), (max-aspect-ratio:4/5){ .sum{ width:auto; } }</style>
 </head>
 <body>
@@ -26,7 +26,7 @@ import { mount } from './bakery10.js';
 const $ = id => document.getElementById(id);
 let K, R, done;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
-function sum() { $('sum').innerHTML = '<span class="p pink">' + U5.num(R.a) + '</span><span class="op">+</span><span class="p blue">' + U5.num(R.b) + '</span><span class="op">=</span><span class="p ten">' + U5.num(10) + '</span>'; }
+function sum() { $('sum').innerHTML = '<span class="p pink">' + U5.num(R.a, '#FF5C9A') + '</span><span class="op">+</span><span class="p blue">' + U5.num(R.b, '#2F8FEF') + '</span><span class="op">=</span><span class="p ten">' + U5.num(10) + '</span>'; }
 function hooks() {
   const t = R.a + R.b;
   if (t === 10) { GAME.right = () => [{ tap: '#ok' }]; GAME.wrong = null; return; }
@@ -68,6 +68,9 @@ FR.game({
     await F.say('Mendy says seven and two make ten. Watch me check.'); await F.say('One cup is empty! Mendy needs one more.'); K.spots(true);
     await F.handTo(document.querySelector('.tspot[data-id="cup9"]')); await F.handTap(); await K.add(9); R.b = 3; sum(); K.celebrate(); F.handHide();
     await F.say('Seven and three make ten!');
+    R = { a: 8, b: 3 }; sum(); K.setTin(10, { blueFrom: 8 }); K.setExtra(1); await F.say('Eight and three? One is left over.');
+    await F.handTo(document.querySelector('.tspot[data-id="plate"]')); await F.handTap(); await K.dropExtra(); R.b = 2; sum(); await F.say('Take it away. Eight and two!');
+    R = { a: 6, b: 4 }; sum(); K.setTin(10, { blueFrom: 6 }); await F.say('Six and four? The tin is full.'); await F.handTo($('ok')); await F.handTap(); F.handHide(); await F.say('Thumbs up! Mendy is right.');
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'Mendy says thank you! You fixed every one.' : 'Good looking! Let\'s play once more.'

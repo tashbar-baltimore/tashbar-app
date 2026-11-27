@@ -65,6 +65,9 @@ export function mount(host, opt) {
   for (let i = 0; i < 10; i++) { const h = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.02, 28), holeM); h.position.copy(cupPos(i)).setY(0.17); tin.add(h); holes.push(h);
     const anchor = new THREE.Object3D(); anchor.position.copy(cupPos(i)); tin.add(anchor); cups.push({ anchor, cake: null }); }
 
+  /* a soft cream cloth that covers the whole tin ("can you do it without looking?") */
+  const coverM = new THREE.MeshStandardMaterial({ color: '#F3E3C8', roughness: 0.95 }); tex('tablecloth.jpg', t => { coverM.map = rep(t, 2, 1); coverM.needsUpdate = true; });
+  const cover = new THREE.Mesh(new THREE.BoxGeometry(5 * GAP + 0.6, 0.9, 2 * ROW + 0.56), coverM); cover.position.y = 0.45; cover.castShadow = true; cover.visible = false; tin.add(cover);
   /* the plate of extra cupcakes (for "finish the ten") */
   const plate = new THREE.Group(); scene.add(plate); plate.visible = false;
   { const p = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 0.9, 0.08, 40), new THREE.MeshStandardMaterial({ color: '#BFDDFF', roughness: 0.3 })); p.position.y = 0.04; p.castShadow = true; plate.add(p); }
@@ -91,8 +94,8 @@ export function mount(host, opt) {
   let Wd = 1, Hh = 1, narrow = false; const DIR = new THREE.Vector3(0, 0.62, 0.78).normalize(), V = 34; let dist = 14; const center = new THREE.Vector3(0, 0.3, 0.3);
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function layout() {
-    tin.position.set(narrow ? 0 : -1.0, 0, narrow ? -0.45 : 0.3); tin.scale.setScalar(1);
-    plate.position.set(narrow ? 0 : 2.75, 0, narrow ? 1.35 : 0.3);   /* phone: in front of the tin, on the table */
+    tin.position.set(narrow ? 0 : -1.0, 0, narrow ? -0.7 : 0.3); tin.scale.setScalar(1);
+    plate.position.set(narrow ? 0 : 2.75, 0, narrow ? 1.5 : 0.3);   /* phone: in front of the tin, on the table */
     kids.forEach((k, i) => k.m.position.set(narrow ? (i ? 1.9 : -1.9) : (i ? 3.4 : -3.4), 0.35, -3.1));
   }
   function fit() {
@@ -131,6 +134,8 @@ export function mount(host, opt) {
     async countEmpty(say) { const e = cups.map((c, i) => [c, i]).filter(([c]) => !c.cake); for (let j = 0; j < e.length; j++) { const h = holes[e[j][1]]; h.material = h.material.clone(); h.material.emissive = new THREE.Color('#FFD23D'); h.material.emissiveIntensity = 0.9; if (say) await say(j); }
       return e.length; },
     unglow() { holes.forEach(h => { h.material = holeM; }); },
+    async cover(on) { if (on) { cover.visible = true; await tween(420, e => { cover.position.y = 2.4 - e * 1.95; }); cover.position.y = 0.45; }
+      else if (cover.visible) { await tween(420, e => { cover.position.y = 0.45 + e * 2.2; }); cover.visible = false; } },
     celebrate() { tin.getWorldPosition(wp); sparkle(wp.x, wp.z); },
     fit, destroy() { alive = false; renderer.dispose(); }
   };
