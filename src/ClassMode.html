@@ -76,10 +76,12 @@ function ycwBuild(){ if(YCW.el&&document.body.contains(YCW.el)) return YCW.el; c
  document.body.appendChild(w); YCW.el=w; if(!YCW.raf) ycwLoop(); return w; }
 const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
 function ycwLoop(){ YCW.raf=requestAnimationFrame(ycwLoop); const w=YCW.el; if(!w||!(document.body.classList.contains('yc-world')||document.body.classList.contains('yc-home'))) return;
+ if(!YCW.fly&&YCW.rest) return;   /* at rest nothing is written (the gentle drift is a CSS animation) */
  const now=performance.now(); let cx=YCW.cam.x, cy=YCW.cam.y, cloud=0;
  if(YCW.fly){ const f=YCW.fly, u=Math.min(1,(now-f.t0)/f.dur), e=ease(u); cx=f.fx+(f.tx-f.fx)*e; cy=f.fy+(f.ty-f.fy)*e; cloud=f.up?Math.sin(u*Math.PI):Math.sin(u*Math.PI)*0.35;
-   if(u>=1){ YCW.fly=null; YCW.cam={x:f.tx,y:f.ty}; w.classList.add('ycw-arrived'); if(f.done) f.done(); } }
- const vw=innerWidth, vh=innerHeight, t=now/1000, sway=YCW.reduce?0:Math.sin(t*0.25)*6, bob=YCW.reduce?0:Math.sin(t*0.33)*4;
+   if(u>=1){ YCW.fly=null; YCW.cam={x:f.tx,y:f.ty}; cx=f.tx; cy=f.ty; cloud=0; w.classList.add('ycw-arrived'); if(f.done) f.done(); } }
+ else YCW.rest=true;
+ const vw=innerWidth, vh=innerHeight, sway=0, bob=0;
  /* at rest every layer sits centred; during a flight it slides by how far is left to go (at most one screen), deeper layers slide more */
  const S=YCW_SCENES[YCW.scene]||{x:0,y:0}, ox=Math.max(-1,Math.min(1,cx-S.x)), oy=Math.max(-1,Math.min(1,cy-S.y));
  const push=YCW.fly?Math.sin(Math.min(1,(now-YCW.fly.t0)/YCW.fly.dur)*Math.PI):0;   /* the camera pushes forward through the scenery */
@@ -90,7 +92,7 @@ function ycwLoop(){ YCW.raf=requestAnimationFrame(ycwLoop); const w=YCW.el; if(!
 function ycwGo(name,done){ const w=ycwBuild(), S=YCW_SCENES[name]||YCW_SCENES.hall; if(YCW.scene===name){ if(done) done(); return; }
  const from=YCW_SCENES[YCW.scene]; YCW.scene=name; const place=w.querySelector('.ycw-place');
  const showPlace=()=>{ place.innerHTML=YCP(S.place,'ycw-placepic')||`<div class="ycw-paint ycw-paint-${name}"></div>`; place.classList.remove('ycw-in'); void place.offsetWidth; place.classList.add('ycw-in'); };
- w.classList.remove('ycw-arrived');
+ w.classList.remove('ycw-arrived'); YCW.rest=false;
  if(!from||YCW.reduce){ w.dataset.scene=name; YCW.cam={x:S.x,y:S.y}; YCW.fly=null; showPlace(); w.classList.add('ycw-arrived'); if(done) done(); return; }
  place.classList.remove('ycw-in'); place.classList.add('ycw-out');
  YCW.fly={fx:from.x,fy:from.y,tx:S.x,ty:S.y,t0:performance.now(),dur:S.y!==from.y?2800:2200,up:S.y>from.y,done:()=>{ place.classList.remove('ycw-out'); showPlace(); if(done) done(); }};
@@ -99,7 +101,7 @@ function ycwGo(name,done){ const w=ycwBuild(), S=YCW_SCENES[name]||YCW_SCENES.ha
 function ycCss(){ if(document.getElementById('yc-css')) return; const s=document.createElement('style'); s.id='yc-css'; s.textContent=`
 #ycworld{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none;display:none;background:#CFEAFF;--k:1;--c:0}
 body.yc-world #tl-tourhint{display:none!important}
-body.yc-home #ycworld{display:block;z-index:29}
+body.yc-home.gm-home #ycworld{display:block;z-index:29}
 #ycgate{position:fixed;inset:0;z-index:2147483600;pointer-events:none;overflow:hidden;background:transparent;opacity:0}#ycgate.ycg-go{opacity:1;background:#FFF6DA;animation:ycgOut 3.4s ease-in forwards}#ycgate:not(.ycg-go) *{animation-play-state:paused!important}
 #ycgate .ycg-scene{position:absolute;inset:0;container-type:size;animation:ycgFly 3.2s cubic-bezier(.55,0,.6,1) forwards;transform-origin:62% 46%}
 #ycgate .ycw-pic{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:max(100cqw,177.78cqh);height:max(100cqh,56.25cqw);display:flex}#ycgate .ycw-pic img{flex:1 1 0;min-width:0;height:100%;object-fit:fill}
@@ -109,15 +111,17 @@ body.yc-home #ycworld{display:block;z-index:29}
 @keyframes ycgDoors{to{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
 @keyframes ycgFlash{0%,45%{opacity:0}85%{opacity:1}100%{opacity:1}}
 @keyframes ycgOut{0%,88%{opacity:1}100%{opacity:0}}
-body.yc-home #gm{background:transparent!important}
-body.yc-home #app{visibility:hidden}
-body.yc-home #gm .gm-hi{display:inline-block;margin:10px 0 4px;padding:10px 22px 12px;border-radius:22px;background:rgba(255,255,255,.86);box-shadow:0 10px 28px rgba(40,70,120,.22)}
-body.yc-home #gm .gm-hi h1{color:#13305A!important;text-shadow:none!important}
+body.yc-home.gm-home #gm{background:transparent!important}
+body.yc-home.gm-home #app{visibility:hidden}
+body.yc-home.gm-home #gm .gm-hi{display:inline-block;margin:10px 0 4px;padding:10px 22px 12px;border-radius:22px;background:rgba(255,255,255,.86);box-shadow:0 10px 28px rgba(40,70,120,.22)}
+body.yc-home.gm-home #gm .gm-hi h1{color:#13305A!important;text-shadow:none!important}
 body.yc-world #ycworld{display:block}
 body.yc-world #app{position:relative;z-index:2;background:transparent!important}
 body.yc-world .ycw{background:transparent}
 .ycw-l{position:absolute;inset:-6%;will-change:transform}.ycw-place,.ycw-fx{position:absolute;inset:-4%;will-change:transform}
 .ycw-l,.ycw-place,.ycw-fx{container-type:size}
+.ycw-l>.ycw-pic{animation:ycAmb 40s ease-in-out infinite alternate}@keyframes ycAmb{from{translate:-0.6% 0}to{translate:0.6% -0.4%}}
+@media (prefers-reduced-motion:reduce){.ycw-l>.ycw-pic{animation:none}}
 .ycw-pic{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:max(100cqw,177.78cqh);height:max(100cqh,56.25cqw);display:flex}.ycw-pic img{flex:1 1 0;min-width:0;height:100%;object-fit:fill;display:block;user-select:none}
 .ycb-back .ycw-pic,.ycb-front .ycw-pic{left:0;top:0;transform:none;width:100%;height:100%}
 .ycw-sky,.ycw-far,.ycw-mid,.ycw-near,.ycw-cl{opacity:var(--k)}.ycw-csky,.ycw-cmid,.ycw-cfar,.ycw-cnear{opacity:var(--c)}
@@ -335,7 +339,8 @@ function ycGate(){ if(YCW.reduce||!YCW_ART['ycw-k-gate']||document.getElementByI
 /* THE BOYS' WORLD on his HOME (docs/WORLD.md): when he is not in class time and is on the home tab, the Great Terrace is behind his tiles.
    Grade 2 and up only (K-1 keep their games home). Turning away from home (a lesson, a page) hides it again. */
 setInterval(()=>{ try{ const g=window.TL_MAP&&TL_MAP.grade, b=document.body;
-  const home=!locked()&&A.st&&A.view==='hub'&&b.classList.contains('gm-on')&&window.GM&&GM.tab==='home'&&!b.classList.contains('k1-home')&&!(g!=null&&g<2)&&!!YCW_ART['ycw-k-terrace'];
+  const mine=window.TL_MAP&&A.st&&String(TL_MAP.sid||'')===String(A.st.id);
+  const home=!locked()&&A.st&&A.view==='hub'&&mine&&g!=null&&g>=2&&b.classList.contains('gm-on')&&b.classList.contains('gm-home')&&window.GM&&GM.tab==='home'&&!b.classList.contains('k1-home')&&!!YCW_ART['ycw-k-terrace'];
   if(home&&!b.classList.contains('yc-home')){ ycCss(); b.classList.add('yc-home'); ycwGo('terrace'); }
   else if(!home&&b.classList.contains('yc-home')) b.classList.remove('yc-home');
  }catch(e){} },600);
