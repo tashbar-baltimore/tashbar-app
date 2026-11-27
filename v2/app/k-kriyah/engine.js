@@ -159,7 +159,8 @@ body{background:linear-gradient(#3fb4ff 0%,#8fd8ff 45%,#dff6ff 75%,#fff6d8 100%)
 body[data-review] #again{z-index:10}
 #rev button.right{animation:revpop .5s}
 @keyframes revpop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
-#rev .dots{display:flex;gap:10px}#rev .dots i{width:18px;height:18px;border-radius:50%;background:#d6e2ee}#rev .dots i.on{background:#ffcf3a}
+#rev .dots{display:flex;gap:14px}#rev .dots i{width:34px;height:34px;background:#d6e2ee;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}#rev .dots i.on{background:#ffcf3a;animation:revstar .6s}
+@keyframes revstar{0%{transform:scale(.4) rotate(-40deg)}60%{transform:scale(1.5) rotate(10deg)}100%{transform:scale(1) rotate(0)}}   /* a star fills for each right answer (reviewer: more fun) */
 @keyframes revshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}75%{transform:translateX(12px)}}
 @media (max-width:700px){#rev button{width:100px;height:120px;font-size:76px;border-radius:26px}#rev .row{gap:12px}}
 @media (max-width:700px){#start{width:150px;height:150px}#start svg{width:70px;height:70px}.endbar .btn.big{width:100px;height:100px}.stars svg{width:80px;height:80px}.stars{gap:10px;padding:14px 18px}#prog{top:96px}#prog i{width:18px;height:18px}}
@@ -609,7 +610,7 @@ export async function quickReview(unit, game) {
       (async () => { if (qi === 0 && firstEver) { await say('Watch me. Tap ' + LETTERS[k].name + '.'); const r = btns.find(x => x.dataset.k === k).getBoundingClientRect(); hand.at(r.x + r.width / 2, r.y + r.height / 2 + 20, true); await wait(900); hand.hide(); await say('Now you!'); }
         await say(ask); busy = false; window.__review.ready = 1; })();
       btns.forEach(b => b.onclick = async () => { if (busy) return; const c = b.dataset.k;
-        if (c === k) { busy = true; b.classList.add('right'); sfx.chime(); if (firstTry) noteLetter(k, true); dots.children[qi].classList.add('on');
+        if (c === k) { busy = true; b.classList.add('right'); sfx.chime(); if (firstTry) noteLetter(k, true); dots.children[qi].classList.add('on'); if (qi === picks.length - 1) sfx.fanfare && sfx.fanfare();
           await say(k === 'alef' || k === 'ayin' ? [LETTERS[k].name + '! ' + LETTERS[k].name + ' is quiet.'] : [LETTERS[k].name + '! ' + LETTERS[k].name + ' says', S(LETTERS[k].snd)]); res(); }
         else { busy = true; sfx.boop(); b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong'); if (firstTry) noteLetter(k, false); firstTry = false;
           const r = btns.find(x => x.dataset.k === k); r.classList.add('right');
