@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Come In! — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 11 "Adding and taking away within 5" (MAP.md "Act it out"), in a calm 3D sukkah.
+     A story: "Three boys are in the sukkah. One more comes." The boys who come wait outside on the right; he taps each one and he walks in to his chair.
+     Then: "How many boys now?" He shows it on his fingers and taps the check. A slip: we count the boys one by one, and he tries again. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="hands-side.css">
+<style>#hp[hidden], #check[hidden]{ display:none; } .story{ display:flex; align-items:center; gap:8px; font:900 clamp(26px,4.6vh,40px)/1 system-ui, sans-serif; color:#5A4A3A; }
+.story i{ display:inline-block; width:clamp(18px,3vh,26px); height:clamp(18px,3vh,26px); border-radius:50%; background:#3B7BD8; } .story i.new{ background:#22B45E; } .story i.ghost{ background:none; box-shadow:inset 0 0 0 3px #22B45E; } .story span{ display:flex; gap:5px; white-space:nowrap; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; width:min(100%,370px); } .story{ width:100%; justify-content:center; } } .story[hidden]{ display:none; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="story" id="story"></div>
+    <div id="hp" hidden></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './sukkah11.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+/* the story in dots: blue for the boys inside, green for the boys who come */
+function story(come) { $('story').innerHTML = '<span>' + '<i></i>'.repeat(R.a) + '</span><span>+</span><span>' + '<i class="new"></i>'.repeat(come) + '<i class="new ghost"></i>'.repeat(R.b - come) + '</span>'; }
+function hooks() {
+  if (R.step === 'come') { GAME.right = () => [{ tap: '.tspot[data-id="w' + K.inRoom() + '"]' }]; GAME.wrong = null; return; }
+  const n = R.a + R.b; GAME.right = () => FR.fingerTaps(H, n, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, n === 5 ? 4 : n + 1, '#hp').concat([{ tap: '#check' }]);
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+async function tap(id) {
+  if (GAME.phase !== 'answer' || R.step !== 'come' || !id.startsWith('w')) return; GAME.phase = 'busy';
+  await K.comeOne(); R.came++; story(R.came);
+  if (K.waiting()) { open(); return; }
+  FR.lock(true); R.step = 'show'; $('hp').hidden = $('check').hidden = false; H.set(0);
+  open(); await FR.say('How many boys in the sukkah now?', { repeat: 'Count the boys. Show me on your fingers.' });
+}
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.step !== 'show') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const n = R.a + R.b;
+  if (H.count() === n) { K.celebrate(); await FR.yes($('check'), FR.Word(R.a) + ' and ' + FR.word(R.b) + ' more make ' + FR.word(n) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++; await FR.say("Let's look. Count the boys with me.");
+  const b = K.boyMeshes(); await K.bumpAll(b, i => FR.say(FR.Word(i + 1) + (i === b.length - 1 ? '.' : ','), { noRepeat: true }));
+  H.set(0); await FR.say('Show me again.'); open();
+}
+const PLAN = [[3, 1], [2, 2], [1, 3], [2, 3], [4, 1], [1, 2]];
+function play(F, i) {
+  return new Promise(async res => {
+    const [a, b] = PLAN[i]; R = { a, b, came: 0, step: 'come', misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
+    $('hp').hidden = $('check').hidden = true; K.setBoys(a); story(0);
+    await F.say(F.Word(a) + (a === 1 ? ' boy is' : ' boys are') + ' in the sukkah.'); K.showWaiting(b);
+    await F.say(F.Word(b) + ' more ' + (b === 1 ? 'comes!' : 'come!')); open();
+    await F.say(b === 1 ? 'Tap him. Bring him in!' : 'Tap them. Bring them in!', { repeat: 'Tap a boy outside. He comes in.' });
+  });
+}
+FR.game({
+  id: 'u11-join', title: 'Come In!', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""><img src="art/avi-happy.png" alt=""></div>',
+  init() {
+    K = mount($('world'), { band }); K.showPlate(false); H = FR.fingers(0, true); $('hp').appendChild(H.el);
+    K.onTap = id => tap(id); $('check').addEventListener('click', check);
+  },
+  demo: async F => {
+    R = { a: 2, b: 1 }; K.setBoys(2); story(0); await F.say('Two boys are in the sukkah. Watch me.'); K.showWaiting(1); await F.say('One more comes.');
+    await F.handTo(document.querySelector('.tspot[data-id="w2"]')); await F.handTap(); await K.comeOne(); story(1); F.handHide();
+    await F.say('Two and one more make three!');
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'The sukkah is full of friends!' : 'Good work! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
