@@ -66,7 +66,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     x.fillStyle = 'rgba(255,255,255,.95)'; x.beginPath(); x.moveTo(32, 0); x.quadraticCurveTo(35, 29, 64, 32); x.quadraticCurveTo(35, 35, 32, 64); x.quadraticCurveTo(29, 35, 0, 32); x.quadraticCurveTo(29, 29, 32, 0); x.fill(); });
 
   /* ---------- the world's own things: cupcakes in the bakery, a tyre on the farm ... (treasures.js) ---------- */
-  const TR = createTreasures({ world, PM, paint, FAST, ANISO, vivid });
+  const TR = createTreasures({ world, PM, paint, FAST, ANISO, vivid, CALM: !/[?&]busy=1/.test(location.search) });   /* calm: same test as CALM below (K-CLARITY-RULES 10) */
   L.bead = TR.bead; L.board = TR.board; L.treasures = TR; TR.camera = camera;
 
   /* ---------- renderer: sharp, bright, soft shadows ---------- */
@@ -1028,6 +1028,9 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
      softly blurred like an animated film background. The 3D things in front give depth; far 3D scenery steps aside for the painting.
      g: where its ground line is (0 top .. 1 bottom); y: the height of that line; R / span: how far away and how wide; cut: 3D things wholly behind this line (z) hide. */
   const PAINT = { toyland: {}, garden: {}, sky: { g: 1, y: -7, haze: false }, bakery: { R: 14, span: 2.3, y: -0.4, cut: -7.9 }, space: {}, beach: {}, underwater: { span: 2.9 }, traintown: {}, jungle: {}, snow: {}, farm: { cut: -11 }, party: {} };
+  /* flying creatures in the paintings: [x, y, radius, sky x, sky y] as parts of the painting's width / height (radius: of the width), found by looking at worlds/*.jpg; the sky point is plain sky right beside it */
+  const FLYERS = { garden: [[0.2113, 0.3113, 0.022, 0.2406, 0.3304], [0.2644, 0.4426, 0.022, 0.2938, 0.4348], [0.7244, 0.3270, 0.024, 0.7231, 0.4087], [0.6644, 0.4904, 0.021, 0.6938, 0.4957]],
+    jungle: [[0.7613, 0.1878, 0.030, 0.7875, 0.2435], [0.7125, 0.2487, 0.017, 0.7188, 0.3043]] };
   function painted(name) {
     const P = PAINT[name]; if (!P || FAST) return;
     /* the painted ground under the toys (worlds/<name>-ground.jpg, seamless): same size of pattern as the drawn one */
@@ -1039,7 +1042,13 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     new THREE.TextureLoader().load(new URL('./worlds/' + name + '.jpg', import.meta.url).href, tex => {
       if (CALM) try {   /* calm (Esti 2026-11-27, "the backgrounds are so busy"): the painting is paler, softer and less colourful, so the game in front is what he sees */
         const im = tex.image, cv = document.createElement('canvas'); cv.width = im.width; cv.height = im.height; const cx = cv.getContext('2d');
-        cx.filter = 'saturate(0.5) blur(' + Math.max(4, Math.round(im.width / 170)) + 'px)';   /* blurred enough that small things in the painting (butterflies, lollipops, planets) melt into soft colour (K-CLARITY-RULES 10) */ cx.drawImage(im, 0, 0); cx.filter = 'none';
+        /* first the flying creatures are painted out with the sky around them (butterflies in the garden, birds in the jungle; K-CLARITY-RULES 10: nothing that looks like it moves) */
+        const c0 = document.createElement('canvas'); c0.width = im.width; c0.height = im.height; const x0 = c0.getContext('2d'); x0.drawImage(im, 0, 0);
+        (FLYERS[name] || []).forEach(([fx, fy, fr, sx, sy]) => { const W = im.width, H = im.height, px = fx * W, py = fy * H, r = fr * W;
+          const q = x0.getImageData(Math.round(sx * W) - 4, Math.round(sy * H) - 4, 9, 9).data; let R = 0, G = 0, B = 0; for (let i = 0; i < q.length; i += 4) { R += q[i]; G += q[i + 1]; B += q[i + 2]; }
+          const rgb = Math.round(R / 81) + ',' + Math.round(G / 81) + ',' + Math.round(B / 81), gr = x0.createRadialGradient(px, py, 0, px, py, r * 1.85);   /* the sky colour just beside it, soft at the edge */
+          gr.addColorStop(0, 'rgb(' + rgb + ')'); gr.addColorStop(0.54, 'rgb(' + rgb + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)'); x0.fillStyle = gr; x0.fillRect(px - r * 2, py - r * 2, r * 4, r * 4); });
+        cx.filter = 'saturate(0.5) blur(' + Math.max(4, Math.round(im.width / 170)) + 'px)';   /* blurred enough that small things in the painting (lollipops, planets) melt into soft colour (K-CLARITY-RULES 10) */ cx.drawImage(c0, 0, 0); cx.filter = 'none';
         cx.fillStyle = 'rgba(255,255,255,0.38)'; cx.fillRect(0, 0, cv.width, cv.height);
         const soft = new THREE.CanvasTexture(cv); tex = soft;
       } catch (e) {}
