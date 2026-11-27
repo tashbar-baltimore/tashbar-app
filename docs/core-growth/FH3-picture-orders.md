@@ -8,7 +8,7 @@ The process is the same as job F's (`docs/core-growth/F-picture-orders.md`, `doc
 
 Until a picture arrives, the page shows a few emoji. Pages with no picture in the order keep their emoji.
 
-## Order LA-1 (2026-11-24) · status: WRITTEN, not yet sent
+## Order LA-1 (2026-11-24) · status: CANCELLED 2026-11-26 (no new K–1 game pictures in 1.0; K–1 is moving to 2.0; see `SWEEP-picture-orders.md`)
 
 **Style:** K1 · Little Learners (STYLE-SHEETS.md). Bright, round, friendly picture-book art, thick soft outlines, flat colors with a gentle shadow, a soft cream background.
 
