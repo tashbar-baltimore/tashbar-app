@@ -148,3 +148,18 @@ Choices I made (small, Esti can change):
 - k in the meet says "This one says the same sound as the cat letter!"; in the opener, tapping c for kite is praised, not marked wrong.
 - In the sort, c and k words are sorted by looking at the first letter (the rule for which one comes later in Grade 1).
 - Eli again for "fix it" (Tzvi's pictures were not kept; he can come in a later unit).
+
+## The calm way (Esti 2026-11-27): rebuild with one skill per game
+Esti: "these games need major help! i opened one game and three different skills are being taught and the graphics look terrible".
+The plan and the prompt she approved: doc "Making the K ABC games great". Sample first (the letter p, Unit 2), then wait for her yes.
+- New page `learn.html?l=p&g=hear` and `learn.js`: 2D, painted pictures (order B1), Mendy painted, a calm sky and lawn until the painted backgrounds (order C1) arrive.
+- Five games per letter, one skill each:
+| Game | The one skill | What the boy does |
+|---|---|---|
+| hear | hear the sound at the start of a word | hears a word, thumbs up or down |
+| meet | link the sound to the letter's shape | hears the sound, taps its letter (next to an old letter) |
+| write | form the letter | traces it: on the path, on dots, alone |
+| find | from the letter to the sound to a picture | sees the letter (no sound given), taps the picture that starts with it |
+| read | blend sounds into a word | taps each letter and the arrow; then hears a word and taps it; last, reads one word and taps its picture |
+- Every game: the goal in one line; I do (Mendy); we do (together); you do (5–7 alone, the only rounds that give stars); done.
+- My choices: p is the sample because it is the first letter where all five games work (he knows s, a, t, so there are words to read). The 3D games stay until Esti says yes to the sample; then each unit is rebuilt this way.

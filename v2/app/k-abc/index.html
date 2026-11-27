@@ -63,8 +63,15 @@ var UNITS = [
   { u: 4, icon: '<span style="font:800 22px/1 system-ui">gocke</span>',
     games: ['opener', 'g-meet', 'g-trace', 'g-hunt', 'o-meet', 'o-trace', 'o-hunt', 'slide', 'c-meet', 'c-trace', 'c-hunt', 'k-meet', 'k-trace', 'k-hunt', 'ksort', 'e-meet', 'e-trace', 'e-hunt', 'slide2', 'fixit', 'review', 'check'] }
 ];
+/* the calm way (Esti 2026-11-27): a sample of five games for one letter, one skill each; shown first, so it is easy to find */
+var CALM = { l: 'p', games: ['hear', 'meet', 'write', 'find', 'read'] };
 (function () { var stars = {}; try { stars = JSON.parse(localStorage.getItem('kabc-stars') || '{}'); } catch (e) {}
   var host = document.getElementById('units'), play = '<span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span>';
+  (function () { var sec = document.createElement('section'); sec.className = 'unit'; sec.setAttribute('data-unit', 'calm');
+    var h = '<div class="badge"><b><span style="font:800 30px/1 system-ui">' + CALM.l + '</span></b></div><div class="path">';
+    CALM.games.forEach(function (g) { var n = stars['l' + CALM.l + '.' + g] || 0, st = ''; for (var i = 0; i < 3; i++) st += '<i' + (i < n ? ' class="on"' : '') + '></i>';
+      h += '<a class="game" href="learn.html?l=' + CALM.l + '&g=' + g + '" aria-label="' + g + '"><img src="art/thumb-calm-' + CALM.l + '-' + g + '.webp" alt="" onerror="this.style.visibility=\'hidden\'"><span class="st">' + st + '</span>' + play + '</a>'; });
+    sec.innerHTML = h + '</div>'; host.appendChild(sec); })();
   UNITS.forEach(function (U) { var sec = document.createElement('section'); sec.className = 'unit'; sec.setAttribute('data-unit', U.u);
     var h = '<div class="badge"><b>' + U.icon + '</b></div><div class="path">';
     U.games.forEach(function (g) { var n = stars['u' + U.u + '.' + g] || 0, st = '';
