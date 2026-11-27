@@ -8,7 +8,7 @@
    No teaching, voice or rules live here. Used only with the full look (look.js); the automatic test (?fast=1) keeps the plain pieces. */
 import * as THREE from 'three';
 
-export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c => c }) {
+export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c => c, CALM = false }) {
   /* every treasure reflects the room only softly (as the old pieces did), so colours stay rich, never washed to white */
   class PM extends PM0 { constructor(o = {}) { super(Object.assign({ envMapIntensity: o.metalness ? 0.6 : 0.25 }, o)); } }
   const T = {};
@@ -306,12 +306,14 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     const B = BOXLOOK[world]; if (!B || FAST) return;
     let bodyM;
     if (B.body === 'stripes') { const t = once('pastryStripes', () => { const q = paint(256, 64, (x, w, h) => { for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#FFF4E6' : '#F7A8BE'; x.fillRect(i * w / 8, 0, w / 8, h); } }); q.wrapS = THREE.RepeatWrapping; q.repeat.set(2, 1); return q; }); bodyM = new PM({ color: '#FFFFFF', map: t, roughness: 0.6 }); }
+    else if (B.wicker && CALM) bodyM = new PM({ color: '#D9B27A', roughness: 0.4, clearcoat: 0.6 });   /* calm: a plain basket colour, no woven checks */
     else if (B.wicker) { const t = once('wicker', () => { const q = paint(128, 128, (x, w, h) => { x.fillStyle = '#C99456'; x.fillRect(0, 0, w, h); for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) { x.fillStyle = (i + j) % 2 ? '#E0B477' : '#B07D44'; x.fillRect(i * 16 + 1, j * 16 + 1, 14, 14); } }); q.wrapS = q.wrapT = THREE.RepeatWrapping; q.repeat.set(3, 1); return q; }); bodyM = new PM({ color: '#FFFFFF', map: t, roughness: 0.75 }); }
     else bodyM = new PM({ color: B.body, roughness: 0.35, clearcoat: 0.8, metalness: B.metal || 0 });
     const rimM = new PM({ color: B.rim, roughness: 0.3, clearcoat: 1 });
     /* repaint: the box's planks are its first five meshes (floor, back, front, left, right), then four rim planks */
     const planks = g.children.filter(c => c.isMesh);
     planks.forEach((p, i) => { if (i >= 1 && i <= 4) p.material = bodyM; else if (i >= 5 && i <= 8) p.material = rimM; });
+    if (CALM) return;   /* calm (Esti 2026-11-27, K-CLARITY-RULES 10): a plain box in the world's colours; no wheels, rivets, leaves, shells, snow or bows to look at */
     const add = o => { o.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } }); g.add(o); return o; };
     if (B.wheels) { const wg = new THREE.CylinderGeometry(0.24, 0.24, 0.1, 28); wg.rotateZ(Math.PI / 2); const wm = new PM({ color: B.wheels, roughness: 0.5 }), hm = new PM({ color: B.hubs, roughness: 0.3, clearcoat: 1 });
       [-1, 1].forEach(sx => [-1, 1].forEach(sz => { const w = add(new THREE.Mesh(wg, wm)); w.position.set(sx * (BX.w / 2 + 0.05), 0.12, sz * BX.d * 0.3);

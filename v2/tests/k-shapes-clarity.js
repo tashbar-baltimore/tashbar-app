@@ -13,6 +13,19 @@ const ALSO_PLAIN = ['flat-or-solid', 'build-shapes', 'where-is-it', 'sort-colors
 ALSO_PLAIN.push('mystery-shape', 'solid-shapes');   /* shapes-b: he counts corners in Mystery shape; The solid shapes is the first meeting with the solids (rules 1, 6) */
 module.exports = async function (browser) {
   const out = { fails: [], oks: [] }, bad = m => out.fails.push('2.0 K shapes clarity: ' + m);
+  /* rule 10: no flying creatures behind the game. Every painted world was looked at; the ones with butterflies or birds have them painted out (look.js FLYERS).
+     A new painting must be looked at and added here (and to FLYERS if anything flies in it). */
+  const LOOKED = { garden: 4, jungle: 2, toyland: 0, sky: 0, bakery: 0, space: 0, beach: 0, underwater: 0, traintown: 0, snow: 0, farm: 0, party: 0 };
+  const lookSrc = fs.readFileSync(path.join(R, 'v2', 'app', 'k-shapes', 'look.js'), 'utf8'), fm = lookSrc.match(/const FLYERS = (\{[\s\S]*?\});/);
+  let FLY = {}; try { FLY = fm ? Function('return ' + fm[1])() : {}; } catch (e) { bad('look.js FLYERS cannot be read'); }
+  if (!fm) bad('look.js has no FLYERS list (butterflies and birds painted out of the backdrops)');
+  for (const f of fs.readdirSync(path.join(R, 'v2', 'app', 'k-shapes', 'worlds')).filter(f => /^[a-z]+\.jpg$/.test(f))) {
+    const w = f.slice(0, -4);
+    if (!(w in LOOKED)) bad('the painting worlds/' + f + ' was never checked for butterflies or birds (add it to LOOKED in this test, and to FLYERS in look.js if anything flies in it)');
+    else if ((FLY[w] || []).length !== LOOKED[w]) bad('worlds/' + f + ' has ' + LOOKED[w] + ' flying creatures, but look.js FLYERS paints out ' + (FLY[w] || []).length);
+  }
+  /* the "no corners" card must not look like a circle (review 1): dot cards are rounded dice cards, never a disc */
+  if (/CircleGeometry\(0\.37/.test(fs.readFileSync(path.join(R, 'v2', 'app', 'k-shapes', 'kit.js'), 'utf8'))) bad('the dot cards on the corner boxes are round discs again (an empty one looks like a circle label)');
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'v2kclar-'));
   try { cp.execFileSync(process.execPath, [path.join(R, 'v2', 'build.js')], { env: Object.assign({}, process.env, { V2_OUT: dist }), stdio: 'pipe' }); }
   catch (e) { bad('build failed: ' + String(e.stderr || e).slice(0, 200)); return out; }

@@ -183,7 +183,7 @@ export function startGame(cfg) {
     if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none (new look: bigger, on a card tilted up to face the boy) */
       const card = new THREE.Group(); card.position.set(0, LK ? BX.h * 0.6 + 0.24 : BX.h * 0.4, BX.d / 2 + (LK ? 0.42 : 0.005)); if (LK) { card.rotation.x = -0.55; card.scale.setScalar(1.4); facers.push(card); } g.add(card);   /* big and in front: the dots are what he matches */
       const k = LK ? 1.15 : 1;
-      if (LK) { const bg = new THREE.Mesh(new THREE.CircleGeometry(0.37, 40), new THREE.MeshStandardMaterial({ color: bc.color && bc.color !== '#FFFFFF' ? '#FFFFFF' : '#2B3A6B', roughness: 0.6 })); bg.position.z = -0.004; card.add(bg); }
+      if (LK) { const rs = new THREE.Shape(), h = 0.35, rr = 0.12; rs.moveTo(-h + rr, -h); rs.lineTo(h - rr, -h); rs.quadraticCurveTo(h, -h, h, -h + rr); rs.lineTo(h, h - rr); rs.quadraticCurveTo(h, h, h - rr, h); rs.lineTo(-h + rr, h); rs.quadraticCurveTo(-h, h, -h, h - rr); rs.lineTo(-h, -h + rr); rs.quadraticCurveTo(-h, -h, -h + rr, -h);   /* a dice card, never a disc: an empty round card looked like a circle label (review 1) */ const bg = new THREE.Mesh(new THREE.ShapeGeometry(rs, 12), new THREE.MeshStandardMaterial({ color: bc.color && bc.color !== '#FFFFFF' ? '#FFFFFF' : '#2B3A6B', roughness: 0.6 })); bg.position.z = -0.004; card.add(bg); }
       if (!bc.dots && !LK) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }   /* the new look: the "no corners" card is simply empty (a ring looked like one dot) */
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
@@ -540,7 +540,7 @@ export function startGame(cfg) {
   function goHome(o) { return moveTo(o, o.home, 420, 0.4).then(() => { if (LK) LK.squash(o.g, o.scale, 0.22); }); }
 
   canvas.addEventListener('pointerdown', e => {
-    ac(); if (SHOT && !handOn) hand.style.display = 'none';
+    ac(); if (SHOT && !handOn) hand.style.display = 'none'; if (glowHeld) { glowHeld = false; if (PS) coreGlow(false); }
     if (cornerTap) { cornerTap(e.clientX, e.clientY); return; }
     if (shapeTap) { shapeTap(e.clientX, e.clientY); return; }
     if (chantOn) { boyClap(); return; }
@@ -877,6 +877,7 @@ export function startGame(cfg) {
     return Promise.all([say(line || PS.R.seq.slice(0, list.length).map(t => BEADS[t].word).join(', ') + '.'), bounce]);
   }
   const wordsOf = (seq, k) => seq.slice(0, k).map(t => BEADS[t].word).join(', ');
+  let glowHeld = false;   /* pictures (shot=1): the help glow stays until his next touch, like the hand */
   function coreGlow(on) { const c = PS.R.core || 2; (PS.R.copy && PS.model && PS.model.length ? PS.model : PS.beads).slice(0, c).forEach(m => { if (m.userData.glow) { m.userData.glow(on); return; } m.material.emissive = new THREE.Color(on ? '#FFC400' : '#000000'); m.material.emissiveIntensity = on ? 0.5 : 0; }); }   /* world items glow with a soft halo behind them, so their own colour never changes (a red car stays red) */
   function patternRound(R, bonus, help) {
     return new Promise(resolve => {
@@ -901,7 +902,7 @@ export function startGame(cfg) {
         }
         if (!bonus) W.misses++; chime(false); goHome(o);
         /* the first miss already SHOWS how (K-CLARITY-RULES 16): the part that repeats glows while the pattern is sung; fixing: the ring sits on the wrong one */
-        const steps = ['Not that one.', () => coreGlow(true), () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, R.copy ? 'Look at the pattern above.' : null), () => coreGlow(false)];
+        const steps = ['Not that one.', () => coreGlow(true), () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, R.copy ? 'Look at the pattern above.' : null), () => wait(900), () => { if (SHOT) glowHeld = true; else coreGlow(false); }];   /* the glow stays a moment after the song, so he sees the part that repeats */
         if (R.fixAt != null && !PS.showRing) steps.push(() => { PS.showRing = true; markNext(); }, 'The wrong one is in the ring.');
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember, () => coreGlow(true), () => say(wordsOf(R.seq, R.core || 2) + ' repeats.'), () => wait(600), () => coreGlow(false)); }
         steps.push(...ask);
@@ -998,7 +999,14 @@ export function startGame(cfg) {
     return moveTo(o, slotWorld(sl), 380, 0.4).then(() => { PZ.g.add(o.g); o.g.position.set(sl.at[0], sl.at[1], 0.06 + (sl.z || 0)); o.g.rotation.set(0, 0, 0); o.g.scale.setScalar(sl.s || 1); o.turn.rotation.z = sl.rot || 0;
       sl.hole.visible = false; sl.edge.visible = false; if (sl.hole.userData.rim) sl.hole.userData.rim.visible = false; pop(); markSlots(); });
   }
-  function flashSlot(sl) { if (!sl) return Promise.resolve(); const rm = sl.hole.userData.rim && sl.hole.userData.rim.material; return tween(900, k => { const on = Math.sin(k * Math.PI * 4) > 0; sl.edge.material.color.set(on ? '#F5B400' : '#6E5B3E'); if (rm) rm.color.set(on || k >= 1 ? (k >= 1 ? '#5A4528' : '#F5B400') : '#5A4528'); }); }   /* the hint flashes the whole dark edge gold */
+  function flashSlot(sl, ms = 900) { if (!sl) return Promise.resolve(); const rm = sl.hole.userData.rim && sl.hole.userData.rim.material, fl = Math.max(2, Math.round(ms / 450)); return tween(ms, k => { const on = Math.sin(k * Math.PI * fl) > 0; sl.edge.material.color.set(on ? '#F5B400' : '#6E5B3E'); if (rm) rm.color.set(on || k >= 1 ? (k >= 1 ? '#5A4528' : '#F5B400') : '#5A4528'); }); }   /* the hint flashes the whole dark edge gold */
+  function showSlotFor(o) {   /* a wrong drop SHOWS how (K-CLARITY-RULES 16): the hand sits on the piece, then moves to its own hole while that hole flashes */
+    const sl = o.box >= 0 ? PZ.slots[o.box] : null; if (!sl) return Promise.resolve();
+    const hw = ms => (SHOT ? new Promise(r => setTimeout(r, ms)) : wait(ms));
+    handOn = o; hand.style.display = 'block';
+    return hw(1300).then(() => { handOn = null; const p = toScreen(slotWorld(sl)); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; return Promise.all([hw(1800), flashSlot(sl, 1800)]); })
+      .then(() => { if (!SHOT) hand.style.display = 'none'; });
+  }
   function puzzleRound(R, bonus, help) {
     return new Promise(resolve => {
       setName(bonus ? 'bonus' : 'find'); dots(2); setPuzzle(R); allow = true;
@@ -1021,7 +1029,8 @@ export function startGame(cfg) {
           return;
         }
         if (!bonus) W.misses++; chime(false); goHome(o);
-        const steps = ['That shape does not fit there.', () => flashSlot(sl), 'Look at the hole. ' + cap(FAMILY(sl.k)) + ' fits there.'];
+        const steps = ['That shape does not fit there.', () => flashSlot(sl, 1600), 'Look at the hole. ' + cap(FAMILY(sl.k)) + ' fits there.'];
+        if (o.box >= 0) steps.push('Watch. This one goes here.', () => showSlotFor(o));
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
         steps.push(...ask);
         allow = false; play(steps).then(() => { if (onDrop) allow = true; });
