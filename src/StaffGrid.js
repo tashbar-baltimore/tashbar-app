@@ -48,6 +48,7 @@ function sgQuest_() {
 function sgPage_() {
   var page = HtmlService.createHtmlOutputFromFile('StaffScreen').getContent(), add = '';
   try { add = HtmlService.createHtmlOutputFromFile('StaffMore').getContent(); } catch (e) {}
+  try { add += HtmlService.createHtmlOutputFromFile('StaffClasses').getContent(); } catch (e) {}   /* Your Classes & Bucket (ClassesBucket.js), right after StaffMore */
   try { add += HtmlService.createHtmlOutputFromFile('StoreStaff').getContent(); } catch (e) {}   /* v162: Store orders (real prizes, refunds, tzedakah totals) */   /* v128 (DECISION 2230): Messages, My classes, My lessons */
   try { add += HtmlService.createHtmlOutputFromFile('StaffPlus').getContent(); } catch (e) {}   /* v176: tabs (Today, General Studies, Limudei Kodesh grid, Levels), clean header, filters (StaffViews.js). LAST, so it sees every button */
   try { add += HtmlService.createHtmlOutputFromFile('StaffDesk').getContent(); } catch (e) {}   /* v182: picks, notes, shout-outs, This week (StaffNotes.js); right AFTER StaffPlus (uses window.SPX) */

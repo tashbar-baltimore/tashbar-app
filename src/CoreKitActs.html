@@ -21,6 +21,9 @@
    read      {type:'read', text:'C45.B1.01', page:0}   opens the Reader (src/CoreReader.html) on a text from texts/; right when he reaches the end. Only in do.
    proof     {type:'proof', text:'C45.B1.01', q:'Which sentence shows Dovid was surprised?', proof:'Dovid gasped', look:'how Dovid felt'}
              opens the Reader on the page with the proof; he taps the sentence (3 tries, then the book shows it).
+   map       {type:'map', map:'eretz', text:'S.ANCI6.01', steps:[{tap:'lebanon', line:'To the north is Lebanon.', say:'Tap Lebanon.', hint:'...'}], extra:['arabia'], show:[]}
+             a map he builds as he reads (docs/VISUAL-SUPPORT.md): each step quotes the book, he taps the place, it locks in with its name.
+             Compass rose and "You are here" always on. Base maps: eretz (the land and its neighbors), waters (its lakes and river), nile (Mitzrayim).
    No double slash in this file (HtmlService rule). */
 (function () {
   var W = window;
@@ -267,6 +270,120 @@
   };
   CSS += '.cka-book{display:grid;justify-items:center;gap:10px;max-width:520px;margin:0 auto;padding:18px;border-radius:18px;background:linear-gradient(160deg,#FFF8E6,#F4ECFF);border:2px solid #E4D7F5;text-align:center}' +
     '.cka-bk{font-size:64px;line-height:1}.cka-bt{font-weight:800;font-size:22px;line-height:1.3;color:#1F2A44}.cka-bw{font-weight:600;font-size:18px;line-height:1.4;color:#33415C}.cka-book.busy{opacity:.6}.cka-open{min-height:64px;font-size:20px}';
+
+  /* ---------- map: a map he builds as he reads (Visual support rules, HoS 2026-11-27, docs/VISUAL-SUPPORT.md) ---------- */
+  /* {type:'map', map:'eretz', text:'S.ANCI6.01', show:['sea'], extra:['arabia'],
+      steps:[{tap:'lebanon', line:'To the north is Lebanon.', say:'Tap Lebanon.', hint:'Lebanon is to the north. North is at the top.', o:['lebanon','syria']}]}
+     Each step quotes the book's own line, then he taps the place. Right: it locks in, colored, patterned and named. Wrong: a hint that
+     points back to the book and the compass. A compass rose (N S E W and the in-betweens) is always in the corner, and "You are here" marks
+     Eretz Yisroel. The places are drawn from real latitude and longitude (rough outlines), so every direction on the map is true.
+     o = the places he may tap on that step (default: every place not yet found, plus extra). show = places already found before. */
+  var G = {
+    med: { k: 'water', n: 'Mediterranean Sea', pat: 'wave', p: [[36.8, 35.95], [35.52, 35.78], [34.9, 35.88], [34.64, 35.97], [34.45, 35.82], [34.1, 35.65], [33.9, 35.48], [33.56, 35.37], [33.27, 35.2], [33.09, 35.1], [32.92, 35.07], [32.83, 34.96], [32.5, 34.89], [32.08, 34.77], [31.8, 34.64], [31.5, 34.45], [31.28, 34.24], [31.13, 33.8], [31.08, 33.3], [31.15, 32.9], [31.26, 32.3], [31.42, 31.81], [31.53, 31.5], [31.45, 31.0], [31.46, 30.37], [31.2, 29.9], [30.95, 29.5], [30.83, 29.0], [30.9, 28.4], [31.3, 27.5], [31.5, 25.2], [37.5, 25.0], [37.5, 35.95]] },
+    redsea: { k: 'water', n: 'Red Sea', p: [[29.97, 32.55], [29.6, 32.35], [29.1, 32.65], [28.6, 32.9], [28.36, 33.08], [27.8, 33.5], [27.25, 33.82], [26.73, 33.94], [26.1, 34.28], [25.07, 34.9], [23.9, 35.47], [22.0, 36.75], [21.0, 37.2], [21.0, 39.2], [24.1, 38.05], [25.5, 37.1], [26.23, 36.45], [27.35, 35.69], [27.95, 35.1], [28.05, 34.8], [28.5, 34.82], [29.0, 34.88], [29.29, 34.94], [29.52, 35.0], [29.55, 34.97], [29.49, 34.89], [28.97, 34.65], [28.5, 34.51], [27.91, 34.33], [27.73, 34.25], [28.24, 33.62], [28.9, 33.18], [29.6, 32.7]] },
+    eretz: { k: 'home', n: 'Eretz Yisroel', fill: '#FCE7A2', p: [[33.09, 35.1], [32.92, 35.07], [32.83, 34.96], [32.5, 34.89], [32.08, 34.77], [31.8, 34.64], [31.5, 34.45], [31.28, 34.24], [30.9, 34.43], [30.6, 34.53], [30.3, 34.55], [29.9, 34.72], [29.49, 34.89], [29.55, 34.97], [30.0, 35.08], [30.5, 35.16], [30.8, 35.32], [31.05, 35.45], [31.25, 35.48], [31.5, 35.52], [31.77, 35.555], [31.83, 35.545], [31.93, 35.54], [32.05, 35.53], [32.18, 35.545], [32.3, 35.565], [32.42, 35.555], [32.52, 35.58], [32.62, 35.565], [32.7, 35.572], [32.68, 35.66], [32.75, 35.72], [33.0, 35.82], [33.3, 35.84], [33.4, 35.86], [33.28, 35.58], [33.1, 35.52], [33.08, 35.3]] },
+    lebanon: { k: 'land', n: 'Lebanon', fill: '#CBE3AE', pat: 'dots', p: [[34.64, 35.97], [34.65, 36.45], [34.45, 36.6], [34.0, 36.35], [33.6, 36.05], [33.4, 35.86], [33.28, 35.58], [33.1, 35.52], [33.08, 35.3], [33.09, 35.1], [33.27, 35.2], [33.56, 35.37], [33.9, 35.48], [34.1, 35.65], [34.45, 35.82]] },
+    syria: { k: 'land', n: 'Syria', fill: '#F3C6A0', pat: 'stripes', p: [[34.64, 35.97], [34.9, 35.88], [35.52, 35.78], [36.8, 35.95], [37.2, 38.0], [37.1, 42.3], [34.5, 41.0], [33.37, 38.79], [32.33, 36.84], [32.55, 36.25], [32.72, 35.95], [32.68, 35.66], [32.75, 35.72], [33.0, 35.82], [33.3, 35.84], [33.4, 35.86], [33.6, 36.05], [34.0, 36.35], [34.45, 36.6], [34.65, 36.45]] },
+    jordan: { k: 'land', n: 'Jordan (the country)', fill: '#E7D27C', pat: 'cross', p: [[32.68, 35.66], [32.7, 35.572], [32.62, 35.565], [32.52, 35.58], [32.42, 35.555], [32.3, 35.565], [32.18, 35.545], [32.05, 35.53], [31.93, 35.54], [31.83, 35.545], [31.77, 35.555], [31.5, 35.52], [31.25, 35.48], [31.05, 35.45], [30.8, 35.32], [30.5, 35.16], [30.0, 35.08], [29.55, 34.97], [29.52, 35.0], [29.36, 34.96], [29.19, 36.07], [29.5, 36.5], [30.5, 37.7], [31.5, 37.0], [32.0, 39.0], [32.23, 39.3], [33.37, 38.79], [32.33, 36.84], [32.55, 36.25], [32.72, 35.95]] },
+    egypt: { k: 'land', n: 'Egypt (Mitzrayim)', fill: '#EDBE8C', pat: 'dots', p: [[31.28, 34.24], [31.13, 33.8], [31.08, 33.3], [31.15, 32.9], [31.26, 32.3], [31.42, 31.81], [31.53, 31.5], [31.45, 31.0], [31.46, 30.37], [31.2, 29.9], [30.95, 29.5], [30.83, 29.0], [30.9, 28.4], [31.3, 27.5], [31.5, 25.0], [21.9, 25.0], [21.9, 37.0], [25.0, 35.7], [27.5, 34.6], [28.5, 34.68], [29.49, 34.89], [29.9, 34.72], [30.3, 34.55], [30.6, 34.53], [30.9, 34.43]] },
+    kinneret: { k: 'water', n: 'Kinneret (fresh)', fill: '#BFE3FA', p: [[32.89, 35.59], [32.87, 35.64], [32.81, 35.65], [32.75, 35.64], [32.71, 35.6], [32.71, 35.57], [32.76, 35.53], [32.83, 35.52], [32.88, 35.55]] },
+    deadsea: { k: 'water', n: 'Dead Sea (salty)', fill: '#F7F9FB', pat: 'salt', p: [[31.78, 35.53], [31.76, 35.58], [31.6, 35.59], [31.4, 35.58], [31.27, 35.55], [31.2, 35.55], [31.05, 35.47], [31.05, 35.4], [31.2, 35.39], [31.35, 35.4], [31.5, 35.44], [31.65, 35.47], [31.74, 35.49]] },
+    river: { k: 'river', n: 'Jordan River', l: [[[32.7, 35.572], [32.62, 35.565], [32.52, 35.58], [32.42, 35.555], [32.3, 35.565], [32.18, 35.545], [32.05, 35.53], [31.93, 35.54], [31.83, 35.545], [31.77, 35.555]]] },
+    nile: { k: 'river', n: 'Nile River', l: [[[24.09, 32.9], [24.45, 32.93], [24.98, 32.87], [25.69, 32.64], [26.16, 32.72], [26.05, 32.24], [26.56, 31.69], [27.18, 31.18], [28.1, 30.75], [29.07, 31.1], [30.05, 31.24], [30.6, 31.3], [31.0, 31.6], [31.42, 31.81]], [[30.05, 31.24], [30.5, 30.9], [31.0, 30.6], [31.4, 30.42]]] },
+    strip: { k: 'farm', n: 'Farms and towns', fill: '#8FCB7E', pat: 'dots' },
+    yerushalayim: { k: 'city', n: 'Yerushalayim' },
+    amman: { k: 'spot', n: 'a city east of the Dead Sea' }, arabia: { k: 'spot', n: 'Arabia' }, wdesert: { k: 'spot', n: 'the desert' }, edesert: { k: 'spot', n: 'the desert' }
+  };
+  (function () { var L = G.nile.l[0].slice(0, 11), w = [], e = [];   /* the green strip: a band along the Nile from the south to Cairo, and the delta */
+    L.forEach(function (q) { w.push([q[0], q[1] - 0.2]); e.unshift([q[0], q[1] + 0.2]); });
+    G.strip.p = w.concat([[30.6, 30.95], [31.4, 30.2], [31.55, 31.0], [31.45, 31.95], [30.6, 31.55]], e); })();
+  /* each base map: what it shows (lat and lon edges), what it draws, and where each place's pin and name go: [pin lat, pin lon, name lat, name lon] */
+  var MAPS = {
+    eretz: { lat: [29.0, 35.0], lon: [32.0, 38.6], draw: ['egypt', 'jordan', 'syria', 'lebanon', 'eretz', 'med', 'redsea', 'kinneret', 'deadsea', 'river'], home: [31.55, 34.85, 31.0, 34.75],
+      at: { med: [32.7, 33.3], lebanon: [34.0, 35.95, 34.25, 36.05], syria: [33.9, 37.5], jordan: [30.9, 36.6], egypt: [29.9, 33.4], arabia: [29.5, 37.8] } },
+    waters: { lat: [30.6, 33.5], lon: [33.9, 36.7], draw: ['egypt', 'jordan', 'syria', 'lebanon', 'eretz', 'med', 'redsea', 'kinneret', 'deadsea', 'river'], home: [31.25, 34.85, 30.95, 35.0],
+      at: { med: [32.45, 34.35], lebanon: [33.4, 35.4], syria: [33.2, 36.35], jordan: [30.85, 36.25], egypt: [30.75, 34.32], kinneret: [32.8, 35.59, 32.95, 35.25], river: [32.25, 35.56, 32.25, 35.1], deadsea: [31.42, 35.49, 31.4, 35.0], yerushalayim: [31.78, 35.22, 31.78, 34.75], amman: [31.95, 35.93] } },
+    nile: { lat: [22.8, 32.6], lon: [28.0, 36.4], draw: ['egypt', 'jordan', 'syria', 'eretz', 'strip', 'med', 'redsea', 'kinneret', 'deadsea', 'river', 'nile'], home: [31.35, 34.85, 32.0, 34.6],
+      at: { egypt: [27.0, 29.4, 24.3, 29.8], jordan: [30.6, 35.9], arabia: [28.4, 35.8], nile: [27.18, 31.18, 25.0, 31.3], med: [31.95, 31.9], redsea: [25.8, 35.3, 25.0, 35.4], strip: [28.6, 30.8, 28.7, 32.3], wdesert: [27.6, 29.0], edesert: [26.7, 33.05] } }
+  };
+  function proj(m) { var c = Math.cos((m.lat[0] + m.lat[1]) / 2 * Math.PI / 180), k = 1000 / ((m.lon[1] - m.lon[0]) * c);
+    return { W: 1000, H: Math.round((m.lat[1] - m.lat[0]) * k), f: function (q) { return [Math.round((q[1] - m.lon[0]) * c * k), Math.round((m.lat[1] - q[0]) * k)]; } }; }
+  function mapSteps(d) { return isArr(d.steps) ? d.steps : []; }
+  function mapOpts(d, s, i) { var st = mapSteps(d)[i]; if (!st) return []; if (isArr(st.o)) return st.o.filter(function (x) { return !s.got[x]; });
+    var o = []; mapSteps(d).forEach(function (x) { if (!s.got[x.tap] && o.indexOf(x.tap) < 0) o.push(x.tap); }); (d.extra || []).forEach(function (x) { if (o.indexOf(x) < 0) o.push(x); }); return o; }
+  function gmName(id) { return (G[id] && G[id].n) || id; }
+  T.map = {
+    err: function (d) { var m = MAPS[d.map]; if (!m) return 'map must be one of ' + Object.keys(MAPS).join(', ');
+      var st = mapSteps(d); if (st.length < 1 || st.length > 8) return 'steps must be a list of 1 to 8 steps';
+      var e = '', seen = {}; st.forEach(function (x, i) { if (e) return; if (!x || !m.at[x.tap]) e = 'step ' + (i + 1) + ': tap must be a place on the ' + d.map + ' map (' + Object.keys(m.at).join(', ') + ')';
+        else if (seen[x.tap]) e = 'step ' + (i + 1) + ': ' + x.tap + ' is asked twice'; else if (!x.line || !x.say) e = 'step ' + (i + 1) + ' needs line (the book’s words) and say (what to tap)';
+        else if (x.o && (!isArr(x.o) || x.o.indexOf(x.tap) < 0 || x.o.some(function (y) { return !m.at[y]; }))) e = 'step ' + (i + 1) + ': o must list places on the map, with the right one';
+        seen[x.tap] = 1; });
+      if (!e) (d.show || []).concat(d.extra || []).forEach(function (y) { if (!e && !m.at[y] && m.draw.indexOf(y) < 0) e = y + ' is not on the ' + d.map + ' map'; });
+      if (!e && (d.show || []).some(function (y) { return seen[y]; })) e = 'a place cannot be both shown and asked';
+      return e; },
+    opts: function (d) { return mapSteps(d).map(function (x) { return x.tap; }); },
+    init: function () { return { k: 0, got: {}, bad: '' }; },
+    say: function () { return 'Build the map. Read each line, then tap the place.'; },
+    how: function () { return 'Read the line from the book. Find north on the compass. Tap the place the line names.'; },
+    label: function (d) { return 'Map: ' + mapSteps(d).map(function (x) { return gmName(x.tap); }).join(', '); },
+    view: function (d, s, c) {
+      var m = MAPS[d.map], P = proj(m), st = mapSteps(d), cur = st[s.k], done = s.k >= st.length, opts = done || s.over ? [] : mapOpts(d, s, s.k);
+      var on = function (id) { return !!s.got[id] || (d.show || []).indexOf(id) >= 0; };
+      var pts = function (L) { return L.map(function (q) { return P.f(q).join(','); }).join(' '); };
+      var g = '<defs><pattern id="gm-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="3.4" fill="#1F2A44" opacity=".22"/></pattern>' +
+        '<pattern id="gm-stripes" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="20" fill="#1F2A44" opacity=".16"/></pattern>' +
+        '<pattern id="gm-cross" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M0 12H24M12 0V24" stroke="#1F2A44" stroke-width="2.5" opacity=".18"/></pattern>' +
+        '<pattern id="gm-wave" width="60" height="26" patternUnits="userSpaceOnUse"><path d="M0 13q15-10 30 0t30 0" fill="none" stroke="#fff" stroke-width="3" opacity=".55"/></pattern>' +
+        '<pattern id="gm-salt" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="2.6" fill="#8796A8"/><circle cx="14" cy="13" r="2" fill="#8796A8"/></pattern></defs>' +
+        '<rect width="' + P.W + '" height="' + P.H + '" fill="#F2EAD6"/>';
+      var tapAttr = function (id) { return opts.indexOf(id) >= 0 ? ' data-gm="' + id + '" style="cursor:pointer"' : ''; };   /* the land or water itself can be tapped too (mount); the pins are the real 46 px buttons */
+      m.draw.forEach(function (id) { var f = G[id], lit = on(id);
+        if (f.k === 'farm' && !lit) return;
+        if (f.p) { var fill = f.k === 'water' ? (lit && f.fill ? f.fill : '#8EC5EE') : f.k === 'home' ? f.fill : lit ? f.fill : '#F2EAD6';
+          g += '<polygon points="' + pts(f.p) + '" fill="' + fill + '" stroke="' + (f.k === 'water' ? '#4F8FC6' : '#A8977A') + '" stroke-width="' + (f.k === 'water' ? 2 : 3) + '" stroke-linejoin="round"' + tapAttr(id) + '/>';
+          if (lit && f.pat) g += '<polygon points="' + pts(f.p) + '" fill="url(#gm-' + f.pat + ')" pointer-events="none"/>'; }
+        if (f.l) f.l.forEach(function (L) { var a = pts(L);
+          if (opts.indexOf(id) >= 0) g += '<polyline points="' + a + '" fill="none" stroke="transparent" stroke-width="60"' + tapAttr(id) + '/>';
+          g += '<polyline points="' + a + '" fill="none" stroke="' + (lit ? '#1E63B5' : '#4F8FC6') + '" stroke-width="' + (lit ? 9 : 6) + '" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>';
+          if (lit) [0.3, 0.6, 0.85].forEach(function (t) { var i = Math.max(1, Math.round(t * (L.length - 1))), A = P.f(L[i - 1]), B = P.f(L[i]), x = (A[0] + B[0]) / 2, y = (A[1] + B[1]) / 2, r = Math.atan2(B[1] - A[1], B[0] - A[0]) * 180 / Math.PI;
+            g += '<path d="M-14 -13L14 0L-14 13Z" fill="#0E3F7A" transform="translate(' + x + ' ' + y + ') rotate(' + r.toFixed(1) + ')"/>'; }); }); });
+      Object.keys(m.at).forEach(function (id) { if (G[id].k === 'city' && on(id)) { var q = P.f(m.at[id]); g += '<circle cx="' + q[0] + '" cy="' + q[1] + '" r="13" fill="#C0392B" stroke="#fff" stroke-width="4"/>'; } });
+      var lab = function (q, t, big) { t = S(t); var cut = t.length > 13 ? (t.indexOf(' (') > 0 ? t.indexOf(' (') : t.lastIndexOf(' ')) : -1, L = cut > 0 ? [t.slice(0, cut), t.slice(cut + 1)] : [t], fs = big ? 44 : 38;   /* a long name takes two lines, so it never runs off the map */
+        return '<text text-anchor="middle" font-size="' + fs + '" font-weight="800" fill="#1F2A44" stroke="#fff" stroke-width="10" stroke-linejoin="round" paint-order="stroke">' +
+          L.map(function (x, i) { return '<tspan x="' + q[0] + '" y="' + Math.round(q[1] + fs * 0.35 + (i - (L.length - 1) / 2) * fs * 1.05) + '">' + E(x) + '</tspan>'; }).join('') + '</text>'; };
+      var h = m.home, hp = P.f(h), hl = P.f([h[2], h[3]]);
+      g += '<path d="' + star(hp[0], hp[1], 26, 11) + '" fill="#E0AE4F" stroke="#1F2A44" stroke-width="3"/>' + lab(hl, 'Eretz Yisroel', true) + lab([hl[0], hl[1] + 46], 'You are here');
+      Object.keys(m.at).forEach(function (id) { if (!on(id)) return; var a = m.at[id]; g += lab(P.f(a.length > 2 ? [a[2], a[3]] : a), gmName(id)); });
+      g += compass();
+      var pins = opts.map(function (id) { var q = P.f(m.at[id]);
+        return '<button type="button" class="cka-pin' + (s.bad === id ? ' obk-shake' : '') + (c.hint && cur && id === cur.tap ? ' obk-pulse' : '') + '" data-obk="place" data-k="' + id + '" style="left:' + (q[0] / P.W * 100).toFixed(2) + '%;top:' + (q[1] / P.H * 100).toFixed(2) + '%" aria-label="a place on the map">?</button>'; }).join('');
+      var top = done || s.over ? '<div class="cka-gq done"><div class="cka-gt">✓ You built the map!</div></div>' :
+        '<div class="cka-gq"><div class="cka-gl">📖 “' + E(cur.line) + '”</div><div class="cka-gt"><span class="cka-gn">' + (s.k + 1) + ' of ' + st.length + '</span> ' + E(cur.say) + '</div></div>';
+      var w = Math.min(100, 64 * P.W / P.H);
+      return top + '<div class="cka-gm" style="width:min(100%,640px,' + w.toFixed(1) + 'vh)"><svg viewBox="0 0 ' + P.W + ' ' + P.H + '" role="img" aria-label="A map of ' + E(gmName('eretz')) + ' and the lands around it, north at the top">' + g + '</svg>' + pins + '</div>' +
+        '<p class="obk-count sm" aria-live="polite">Found ' + Math.min(s.k, st.length) + ' of ' + st.length + '</p>'; },
+    tap: function (d, s, a, k) { if (a !== 'place') return; var st = mapSteps(d), cur = st[s.k]; if (!cur || s.got[k]) return; s.bad = '';
+      if (mapOpts(d, s, s.k).indexOf(k) < 0) return;
+      if (k === cur.tap) { s.got[k] = 1; s.k++; return s.k >= st.length ? 'ok' : undefined; }
+      s.bad = k; s.msg = cur.hint || ('Reread: “' + cur.line + '” Then look at the compass.'); return 'bump'; },
+    mount: function (root) { var sv = root && root.querySelector && root.querySelector('.cka-gm svg'); if (!sv || sv.__gm) return; sv.__gm = 1;
+      sv.addEventListener('click', function (e) { var t = e.target && e.target.closest ? e.target.closest('[data-gm]') : null; if (!t || !W.OB || !W.OB.kitTap) return; e.preventDefault(); e.stopPropagation(); W.OB.kitTap('place', t.getAttribute('data-gm'), null); }); },
+    solve: function (d, s) { mapSteps(d).forEach(function (x) { s.got[x.tap] = 1; }); s.k = mapSteps(d).length; }
+  };
+  function star(x, y, R, r) { var p = []; for (var i = 0; i < 10; i++) { var t = (i * 36 - 90) * Math.PI / 180, q = i % 2 ? r : R; p.push((x + q * Math.cos(t)).toFixed(1) + ' ' + (y + q * Math.sin(t)).toFixed(1)); } return 'M' + p.join('L') + 'Z'; }
+  function compass() { var x = 132, y = 142, g = '<g aria-label="compass: north is up">' + '<circle cx="' + x + '" cy="' + y + '" r="116" fill="#fff" fill-opacity=".94" stroke="#1F2A44" stroke-width="4"/>';
+    g += '<path d="M' + x + ' ' + (y - 62) + 'L' + (x + 13) + ' ' + y + 'L' + x + ' ' + (y + 62) + 'L' + (x - 13) + ' ' + y + 'Z" fill="#1F2A44"/><path d="M' + (x - 62) + ' ' + y + 'L' + x + ' ' + (y - 13) + 'L' + (x + 62) + ' ' + y + 'L' + x + ' ' + (y + 13) + 'Z" fill="#7A879C"/><path d="M' + x + ' ' + (y - 62) + 'L' + (x + 13) + ' ' + y + 'L' + (x - 13) + ' ' + y + 'Z" fill="#C0392B"/>';
+    var t = function (dx, dy, s, sz) { return '<text x="' + (x + dx) + '" y="' + (y + dy) + '" text-anchor="middle" dominant-baseline="middle" font-size="' + sz + '" font-weight="900" fill="#1F2A44">' + s + '</text>'; };
+    g += t(0, -92, 'N', 42) + t(0, 94, 'S', 36) + t(92, 2, 'E', 36) + t(-92, 2, 'W', 36) + t(62, -62, 'NE', 25) + t(-62, -62, 'NW', 25) + t(62, 64, 'SE', 25) + t(-62, 64, 'SW', 25);
+    return g + '</g>'; }
+  CSS += '.cka-gq{width:100%;max-width:640px;margin:0 auto;display:grid;gap:6px;padding:12px 14px;border-radius:14px;background:#FFF8E6;border:2px solid #EAD9AE;text-align:left;box-sizing:border-box}' +
+    '.cka-gq.done{background:#DDF4E6;border-color:#3FA36B;text-align:center}.cka-gl{font-size:18px;line-height:1.45;color:#33415C;font-style:italic}.cka-gt{font-size:20px;font-weight:800;color:#1F2A44;line-height:1.35}' +
+    '.cka-gn{display:inline-block;font-size:14px;font-weight:800;color:#fff;background:#3B6FD8;border-radius:999px;padding:2px 10px;margin-right:6px;vertical-align:2px}' +
+    '.cka-gm{position:relative;margin:4px auto 0;max-width:100%;border-radius:14px;overflow:hidden;border:3px solid #1F2A44;box-sizing:border-box;touch-action:manipulation}.cka-gm svg{display:block;width:100%;height:auto}' +
+    '.cka-pin{all:unset;box-sizing:border-box;position:absolute;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:#fff;border:4px solid #3B6FD8;color:#3B6FD8;font-weight:900;font-size:24px;line-height:38px;text-align:center;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.3)}' +
+    '.cka-pin:hover{background:#EAF1FF}.cka-pin:focus-visible{outline:4px solid #E0AE4F;outline-offset:2px}' +
+    '@media (max-width:480px){.cka-gl{font-size:16px}.cka-gt{font-size:18px}}';
 
   W.TLCORE = W.TLCORE || {}; W.TLCORE.acts = T;
   /* join the kit as soon as it exists (OneBiteKit.html loads right after the core files).
