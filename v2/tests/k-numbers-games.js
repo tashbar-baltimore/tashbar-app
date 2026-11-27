@@ -1,7 +1,7 @@
 /* 2.0 TEST (run by tests/run.js): Kindergarten Numbers — every game built on the shared frame, and the Numbers map, played as a made-up boy.
    For each game page (quick mode): it loads with its start picture and no errors; the demo shows first ("Now you!") where there is one;
    a wrong move is answered kindly and he can go on; the game can be won to the end; stars are saved and 2+ stars marks it passed;
-   every spoken line is 12 words or fewer and never says "bite"; on a phone everything fits and the big buttons are at least 64 px.
+   every spoken line is 12 words or fewer and never says "bite"; on a phone everything fits and the big buttons (and each hand's put-down button) are at least 64 px.
    The map: the next stop shines, later stops and units are locked, a passed stop shows its stars, a locked tap is explained.
    Pictures go to tests/out/k-numbers-*.png. Returns { fails, oks }. */
 const path = require('path'), fs = require('fs'), os = require('os'), cp = require('child_process');
@@ -85,7 +85,7 @@ module.exports = async function (browser) {
       const cut = fit.filter(f => f.r[0] < -2 || f.r[1] < -2 || f.r[2] > 392 || f.r[3] > 846); if (cut.length) bad(file + ': on a phone something is cut off: ' + cut.slice(0, 3).map(c => c.q).join(', '));
       const small = await ph.evaluate(() => [...document.querySelectorAll('#stage button, .top button')].filter(b => b.offsetParent && getComputedStyle(b).visibility !== 'hidden').map(b => { const r = b.getBoundingClientRect(); return [b.id || b.className, Math.min(r.width, r.height)]; }).filter(x => x[1] < 63));
       if (small.length) bad(file + ': on a phone these buttons are under 64 px: ' + small.map(x => x[0] + ' ' + Math.round(x[1])).join(', '));
-      const tiny = await ph.evaluate(() => [...document.querySelectorAll('.ff:not(.locked) .box, #src .numcard, .srcs .numcard, .stone, #rolls svg')].filter(b => b.offsetParent || b.getBoundingClientRect().width).map(b => { const r = b.getBoundingClientRect(); return [b.className.baseVal != null ? 'svg' : b.className, Math.min(r.width, r.height)]; }).filter(x => x[1] < 63));
+      const tiny = await ph.evaluate(() => [...document.querySelectorAll('.ff:not(.locked) .box, #src .numcard, .srcs .numcard, .stone, #rolls svg, .fdown')].filter(b => b.offsetParent || b.getBoundingClientRect().width).map(b => { const r = b.getBoundingClientRect(); return [b.className.baseVal != null ? 'svg' : b.className, Math.min(r.width, r.height)]; }).filter(x => x[1] < 63));
       if (tiny.length) bad(file + ': on a phone these things he taps are under 64 px: ' + tiny.slice(0, 4).map(x => x[0] + ' ' + Math.round(x[1])).join(', '));
       await ph.screenshot({ path: path.join(shots, 'k-numbers-' + name + '-round-phone.png') });
       w.errs.forEach(e => bad(file + ' page error (phone): ' + e)); await w.ctx.close(); w = null;
