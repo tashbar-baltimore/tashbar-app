@@ -307,6 +307,8 @@ Object.assign(B, {
     [[-0.22, -0.1, 0.1], [0.2, -0.2, 0]].forEach(([x, y, z]) => { const o = mesh(sph(0.3, 24), m, x, y, z); o.scale.set(0.85, 1.1, 0.85); G.add(o); });
     G.add(tube([[0, 0.55, 0], [-0.05, 0.3, 0], [-0.2, 0.2, 0.05]], 0.03, mat(0x7A5230))); G.add(tube([[0, 0.45, 0], [0.18, 0.12, 0]], 0.03, mat(0x7A5230)));
     [-1, 1].forEach(s2 => { const l = mesh(sph(0.16, 14), mat(0x8FB85A), s2 * 0.2, 0.5, 0); l.scale.set(1.6, 0.4, 0.6); l.rotation.z = s2 * 0.5; G.add(l); }); return G; },
+  eggplant() { const G = new THREE.Group(), b = new THREE.Mesh(lathe(Array.from({ length: 21 }, (_, i) => { const t = i / 20, a = Math.PI * t; return [Math.sin(a) * (0.26 + 0.18 * (1 - Math.cos(a)) / 2), -Math.cos(a) * 0.62]; })), mat(0x5B2A86, { clear: 1, rough: .15 }));   /* a shiny purple eggplant with a green cap */
+    b.castShadow = true; G.add(b); const cap = mesh(new THREE.ConeGeometry(0.2, 0.2, 8), mat(0x5DAE3A), 0, -0.64, 0); cap.rotation.x = Math.PI; G.add(cap); G.add(mesh(cyl(0.04, 0.05, 0.22, 10), mat(0x5DAE3A), 0, -0.8, 0));   /* the cap on the narrow end, which points up */ G.rotation.z = Math.PI + 0.5; return G; },
   card() { const G = new THREE.Group(), sh = new THREE.Shape(), w = 1.0, h = 0.42, r = 0.16;   /* a blank cream word card (the word tiles sit on it) */
     sh.moveTo(-w + r, -h); sh.lineTo(w - r, -h); sh.quadraticCurveTo(w, -h, w, -h + r); sh.lineTo(w, h - r); sh.quadraticCurveTo(w, h, w - r, h); sh.lineTo(-w + r, h); sh.quadraticCurveTo(-w, h, -w, h - r); sh.lineTo(-w, -h + r); sh.quadraticCurveTo(-w, -h, -w + r, -h);
     G.add(mesh(ext(sh, 0.08, 0.04), mat(0xFFE9A8, { rough: .5, clear: .6 }))); return G; },
@@ -339,7 +341,7 @@ export const WORDS = {
   grapes: { say: 'grapes', beats: ['grapes'] }, gate: { say: 'gate', beats: ['gate'] }, gift: { say: 'gift', beats: ['gift'] },
   octopus: { say: 'octopus', beats: ['oc', 'to', 'pus'] }, olive: { say: 'olive', beats: ['ol', 'ive'] }, otter: { say: 'otter', beats: ['ot', 'ter'] }, ox: { say: 'ox', beats: ['ox'] },
   kite: { say: 'kite', beats: ['kite'] }, key: { say: 'key', beats: ['key'] }, kettle: { say: 'kettle', beats: ['ket', 'tle'] }, kitten: { say: 'kitten', beats: ['kit', 'ten'] },
-  egg: { say: 'egg', beats: ['egg'] }, elephant: { say: 'elephant', beats: ['el', 'e', 'phant'] }, envelope: { say: 'envelope', beats: ['en', 've', 'lope'] },
+  egg: { say: 'egg', beats: ['egg'] }, eggplant: { say: 'eggplant', beats: ['egg', 'plant'] }, elephant: { say: 'elephant', beats: ['el', 'e', 'phant'] }, envelope: { say: 'envelope', beats: ['en', 've', 'lope'] },
   cup: { say: 'cup', beats: ['cup'] }, carrot: { say: 'carrot', beats: ['car', 'rot'] }, cap: { say: 'cap', beats: ['cap'] },
   rock: { say: 'rock', beats: ['rock'] }, lock: { say: 'lock', beats: ['lock'] }, truck: { say: 'truck', beats: ['truck'] }
 };
