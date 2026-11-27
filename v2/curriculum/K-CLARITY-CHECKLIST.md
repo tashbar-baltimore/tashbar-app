@@ -72,3 +72,10 @@ New test: `v2/tests/k-shapes-compare.js` checks rule 7 for the three comparing g
 
 **Other K pull requests looked at (other-<PR>):** the old K ABC unit pull requests (tashbar-baltimore/tashbar-app#595, #603, #610, #612) are being replaced by the calm ABC rebuild (tashbar-baltimore/tashbar-app#620, Esti's own request, a session working on it now), so a separate clarity pass on them would be thrown away. #620 had commits in the last 2 hours, so it was left alone.
 
+## other-612: K ABC Review week A (tashbar-baltimore/tashbar-app#612)
+
+| What | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| All 7 review games (shared ABC world) | A field of thousands of grass blades, floating sparkles and butterflies behind every game (10); a big confetti storm after each right answer (9); no game name on screen (13). | The same calm world as the Unit 1 pass (#595): no grass blades, butterflies or sparkles, a few flowers; a small burst near the answer; the name on top (Sound Parade, Sound Bingo, Chalkboard, Rhyme Catch, Word Bridge, Speed Slide, Show Me). Review-week test passes. | `v2/screens/k-clarity/abc-ra-*` on claude/v2-k-abc-reviewa |
+| Seen, not changed | Sound Bingo's 3×3 board holds 8 letters, so one letter (t) is on it twice; when he hears /t/ either stone is right, but a child may wonder which. | Left for the ABC builder (the calm rebuild in #620 may replace this game). | |
+
