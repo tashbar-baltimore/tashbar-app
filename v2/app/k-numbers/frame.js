@@ -29,8 +29,9 @@
     var art = document.createElement('div'); art.innerHTML = NK.ART; document.body.insertBefore(art, document.body.firstChild);
     var top = document.createElement('div'); top.className = 'top';
     top.innerHTML = '<button id="again" class="rb btn3d b-blue" aria-label="Hear it again"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#fff"/><path d="M32 17c3 2 5 4.5 5 7s-2 5-5 7M36 11c5 3.5 8 8 8 13s-3 9.5-8 13" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg></button>' +
-      '<div class="dots" id="dots"></div><button id="home" class="rb btn3d b-white" aria-label="Back to the map"><svg viewBox="0 0 48 48"><path d="M6 24 24 8l18 16" stroke="#2B2350" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22v18h9V30h6v10h9V22" fill="#FFC940" stroke="#2B2350" stroke-width="4" stroke-linejoin="round"/></svg></button>';
+      '<div class="mid"><div class="gtitle" id="gtitle"></div><div class="dots" id="dots"></div></div><button id="home" class="rb btn3d b-white" aria-label="Back to the map"><svg viewBox="0 0 48 48"><path d="M6 24 24 8l18 16" stroke="#2B2350" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22v18h9V30h6v10h9V22" fill="#FFC940" stroke="#2B2350" stroke-width="4" stroke-linejoin="round"/></svg></button>';
     var g = $('game'); g.insertBefore(top, g.firstChild);
+    top.querySelector('#gtitle').textContent = String(cfg.title || document.title).replace(/<[^>]*>/g, '');   /* the game's name is always on screen (K-CLARITY-RULES 13) */
     var more = document.createElement('div');
     more.innerHTML = '<div id="clap" hidden><img src="img/clapping-hands.webp" alt="" class="claphands"></div>' +
       '<svg id="hand" viewBox="0 0 100 100" aria-hidden="true"><use href="#nkHand"/></svg>' +

@@ -46,7 +46,7 @@ FR.game({
   endSay: () => "Great! Now let's line them up!",
   init() {
     document.getElementById('c0').innerHTML = U5.num(3); document.getElementById('c1').innerHTML = U5.num(5);
-    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true });
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true, tree: true });
     $('go').addEventListener('click', () => { if (GAME.phase !== 'answer' || want != null) return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; const d = done; done = null; d(true); });
     O.onTap = async (id, el) => {
       if (GAME.phase !== 'answer' || want == null || !id.startsWith('side')) return; GAME.phase = 'busy'; const k = +id[4];
