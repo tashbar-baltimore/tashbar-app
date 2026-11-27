@@ -42,3 +42,11 @@
 @keyframes k-foil{ 0%{ background-position:100% 0 } 100%{ background-position:-150% 0 } }
 @keyframes k-shine{ 0%,55%{ background-position:120% 0 } 100%{ background-position:-120% 0 } }
 @media (prefers-reduced-motion: reduce){ .k-btn::before,.k-btn::after,.k-foil{ animation:none } .k-btn,.k-icon,.k-dots button::before{ transition:none } }
+/* A LITTLE SPARKLE (sparkle.js; M. Heinemann 2026-11-27): a few soft gold twinkles behind everything, and a tiny gold burst where she taps */
+.k-twinkles{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.k-twinkles i{ position:absolute; width:var(--s,10px); height:var(--s,10px); opacity:.2; animation:k-twinkle 5s ease-in-out var(--d,0s) infinite; }
+.k-twinkles svg,.k-burst svg{ width:100%; height:100%; fill:var(--gold1); filter:drop-shadow(0 0 4px rgba(246,227,176,.8)); display:block; }
+@keyframes k-twinkle{ 0%,100%{ opacity:.12; transform:scale(.7) } 50%{ opacity:.95; transform:scale(1.1) rotate(20deg) } }
+.k-burst{ position:fixed; width:10px; height:10px; margin:-5px 0 0 -5px; pointer-events:none; z-index:50; animation:k-burst .6s ease-out forwards; }
+@keyframes k-burst{ from{ opacity:1; transform:translate(0,0) scale(1) } to{ opacity:0; transform:translate(var(--x),var(--y)) scale(.4) } }
+@media (prefers-reduced-motion: reduce){ .k-twinkles i{ animation:none; opacity:.3 } }

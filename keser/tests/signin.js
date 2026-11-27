@@ -55,6 +55,8 @@ module.exports = async (browser) => {
       if (pics.some(p => !p)) fails.push('Keser home (' + tag + '): a choice picture did not load');
       { const f = await fits(pg); f.bad.forEach(b => fails.push('Keser home (' + tag + '): ' + b)); if (f.wide) fails.push('Keser home (' + tag + '): the page is wider than the screen');
         if (/\$|\bcoins?\b|\bpoints?\b|\bprices?\b|\bmoney\b/i.test(f.text)) fails.push('Keser home (' + tag + '): money or points on the screen'); }
+      { const tw = await pg.evaluate(() => document.querySelectorAll('.k-twinkles i').length);   /* a little sparkle, never overwhelming (M. Heinemann 2026-11-27) */
+        if (tw < 1 || tw > 12) fails.push('Keser home (' + tag + '): expected a few twinkles (1 to 12), got ' + tw); }
       if (tag !== 'reduce motion') await pg.screenshot({ path: path.join(shots, 'keser-home-' + tag + '.png') });
       /* General Studies: straight to its page, and back */
       await pg.click('.choice[data-go="general"]');
@@ -71,6 +73,6 @@ module.exports = async (browser) => {
     }
   } catch (e) { fails.push('Keser sign-in and home test stopped: ' + String(e).slice(0, 200)); }
   finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
-  if (!fails.length) oks.push('Keser Girls 3.0 way in: welcome, code (wrong code clears, practice code goes straight home), home with קודש, Timeline and General Studies in burgundy, green and royal blue, each straight in, at Chromebook and phone size, reduce motion, no pink');
+  if (!fails.length) oks.push('Keser Girls 3.0 way in: welcome, code (wrong code clears, practice code goes straight home), home with קודש, Timeline and General Studies in burgundy, green and royal blue, each straight in, at Chromebook and phone size, reduce motion, a few twinkles, no pink');
   return { fails, oks };
 };
