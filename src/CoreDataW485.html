@@ -301,6 +301,75 @@
       {type:'match', pairs:[['A study vs. one story','The first is stronger.'],['An opinion vs. a record','The second is stronger.'],['A careful survey of 200 boys vs. an official count','Both are on the same rung.']],
         say:'Match each pair to the right answer.', how:'Find each one’s rung. Then compare.'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
+  var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'compare', pic: '🗳️', t: 'Two debaters state the other side. One of them shrinks it.',
+      q: 'Which version is fairer?', o: ['"A few just like raising hands."', '"An open count lets everyone check it."'],
+      pay: 'The *second*! It gives their *real reason*, at full *strength*.' };
+    D[0].say = 'Match each *label* to what it means.';
+    Y[3].say = 'Put Eli’s *thinking steps* in order.';
+    b.learn = [
+      { t: 'A counterclaim can be *strong*, *weak*, or a *straw man*.', act: D[0] },
+      { t: 'Find the strongest one in *four steps*.', act: Y[3] },
+      { who: { q: 'Claim: hold a coat drive. Which counterclaim is *fair*?', o: [['Avi', '"A few just prefer not to bother."'], ['Naftali', '"It may take learning time."']], a: 1,
+        why: 'Avi *shrinks* the other side. That is a *straw man*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa weak, strongest, straw man.', 'Fair but weak: true, but light. Fair and strongest: the reason a wise opponent leads with. Straw man: polite words that shrink their side.')];
+    b.play = [D[1], Y[2], Y[0], Y[4], Y[1]];
+    b.done = 'You state the other side *fairly*, at its *strongest*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L09.02']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'wouldyou', pic: '↩️', t: 'Someone says: "The election will cause fights." You must answer.',
+      q: 'Which answer would you pick?', o: ['"Only troublemakers say that."', '"In fact, last year had no fights."'],
+      pay: 'The *evidence*! An insult answers *nothing*.' };
+    Y[1].say = 'Which *move* does each rebuttal use?';
+    D[0].say = '*Concede*, then outweigh. Pick the joining word.';
+    b.learn = [
+      { t: 'First ask: is the worry *false*, *small*, or *true*?', act: Y[1] },
+      { t: 'A true worry? *Concede*, then *outweigh*.', act: D[0] },
+      { who: { q: 'Worry: "The book fair is noisy." Reply: "Only for one hour."', o: [['Moshe', 'Shows it is mistaken'], ['Yaakov', 'Shows it matters less']], a: 1,
+        why: 'The noise is real. The reply makes it *smaller*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three moves.', 'False worry: show it is mistaken, "In fact…". Small worry: show it matters less. True worry: "Yes, … but …" a bigger good.')];
+    b.play = [Y[0], D[1], Y[2], Y[3]];
+    b.done = 'You answer the other side with *evidence* and *reasons*, never insults.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L09.03']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'notice', pic: '⛓️', t: '"Don’t vote for Naftali’s plan. He is new here."',
+      q: 'What do you notice about this answer?', o: ['It never talks about the plan', 'It gives strong evidence', 'It is too long'],
+      pay: 'It attacks the *person*, not the *plan*. That is a *weak link*.' };
+    D[1].pairs = D[1].pairs.concat([['It came after, so it caused it', 'False cause']]);
+    D[1].say = 'Match each *weak link* to its name.';
+    Y[0].say = 'Name the *weak link*, or say it is sound.';
+    b.learn = [
+      { t: 'Four *weak links* can break an argument.', act: D[1] },
+      { t: 'Now spot them in a real *debate*.', act: Y[0] },
+      { who: { q: '"Elect a council now, or no boy ever leads."', o: [['Chaim', 'Either-or: there are more choices'], ['Ari', 'Sound: only two choices exist']], a: 0,
+        why: 'He hides *other choices*, like a leader each month.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the four weak links.', 'Overgeneralizing: one case becomes always. False cause: it came after, so it caused it. Attacking the person. Either-or: only two choices.')];
+    b.play = [D[0], Y[1], Y[3], Y[2],
+      { type: 'tiles', q: 'He says: "Print every week, or not at all."', w: ['That is either-or,', 'because', 'it could print', 'every other week.'], extra: ['he is new'],
+        say: 'Name the weak link, then give a *third choice*.', how: 'Say "either-or" first. Then the choice he *left out*.' }];
+    b.done = 'You *name* the weak link, then *answer* it.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.01']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'challenge', pic: '🪜', t: 'Three kinds of evidence. Only one can lead your op-ed.',
+      q: 'Which would you lead with?', o: ['Moshe’s story', 'An expert’s opinion', 'Three studies that agree'],
+      pay: '*Three studies that agree*: the *top rung* of the ladder.' };
+    D[0].say = 'Build the *ladder* from weakest to strongest.';
+    Y[0].say = 'Match each *rung* to its example.';
+    b.learn = [
+      { t: 'Evidence climbs a *ladder* with four rungs.', act: D[0] },
+      { t: 'Each rung has its own *example*.', act: Y[0] },
+      { who: { q: 'Which is *stronger*: a coach’s opinion or a city record?', o: [['Shmuli', 'The coach: he is an expert'], ['Dovid', 'The record: it is counted']], a: 1,
+        why: 'A careful *count* is a higher *rung* than an opinion.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the four rungs.', 'One story. An expert’s opinion. A careful number from a study or an official record. Several careful sources that agree.')];
+    b.play = [D[1], Y[1], Y[3], Y[4], Y[2]];
+    b.done = 'You *rank* evidence and lead with the *top rung*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.02']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
