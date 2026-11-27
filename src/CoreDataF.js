@@ -131,3 +131,6 @@ CORE_SKILLS.F = [
   ["READ.FLU.L03.19", "Theatre: The Snow Day Fort", "Act out a play with strong feelings, until it sounds like talking", { after: "READ.FLU.L03.18", std: "RF.2.4b", file: "CoreDataFH4", min: 10 }],
   ["READ.FLU.L03.20", "The Club Fair", "Read the end-of-Grade-2 story with every pattern, and prove what happened", { after: "READ.PHON.L03.18", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }]
 ];
+/* New-shape lessons for job F (board row R6, docs/lesson-redesign/BOARD.md): they load after the lesson files above. */
+var CORE_DATA_FILES = (typeof CORE_DATA_FILES !== 'undefined' && CORE_DATA_FILES) || {};
+CORE_DATA_FILES.F = ['CoreDataFN1'];

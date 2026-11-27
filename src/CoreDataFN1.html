@@ -1,0 +1,356 @@
+<script>
+/* CoreDataFN1.html: NEW LESSONS for Core Growth job F, Grade 2 (board row R6, docs/lesson-redesign/BOARD.md; HoS 2026-11-27).
+   The new shape from docs/lesson-redesign/DESIGN.md: THINK (hook), LEARN (cards he does), TRY IT (play), SHOW ME (the check questions, unchanged), DONE.
+   Words in *stars* are key words. The lessons themselves stay in CoreDataF1/F3/FH4.html; this file loads after them
+   (CORE_DATA_FILES.F in src/CoreDataF.js) and moves each lesson to the new shape: NL(id, lesson) puts on hook, learn, play and done,
+   and takes off the old do, your and ready. The old watch and oops stay for the staff preview. No double slash in this file. */
+(function () {
+  var OBL = window.ONE_BITE || {};
+  function NL(id, n) { var b = OBL[id]; if (!b) return; Object.keys(n).forEach(function (k) { b[k] = n[k]; }); delete b.do; delete b.your; delete b.ready; }
+
+  NL('READ.PHON.L03.04', {
+    hook: { kind: 'mystery', pic: '🚪', t: '*hi* and *hit* have the same i. But they sound different!', q: 'What changes the i sound?',
+      o: ['the last letter', 'the first letter', 'how loud you say it'], pay: 'The *last letter*! It opens or closes the *door*.' },
+    learn: [
+      { t: 'A vowel at the *end* leaves the door *open*. It says its *name*.', m: { type: 'tiles', w: ['h', 'i'], hi: [1] },
+        act: { type: 'sort', bins: ['Open: says its name', 'Closed: short'], cards: [['go', 0], ['got', 1], ['me', 0], ['met', 1]],
+          say: 'Look at the *last letter*. Open or closed?', how: 'Ends with a *vowel*? Open and long. A consonant? Closed and short.' } },
+      { t: 'A *consonant* at the end *closes* the door. The vowel is *short*.', m: { type: 'chant', lines: ['Open door: the vowel says its name!', 'Closed door: it is short, not the same!'] },
+        act: { type: 'findall', grid: ['she', 'shed', 'be', 'bed', 'no', 'not'], find: ['shed', 'bed', 'not'], findSay: 'closed word',
+          say: 'Sing it! Then tap every *closed* word.', how: 'Look at the *last letter*. A consonant closes the door.' } },
+      { t: 'Big words have *parts*. Check the *first part*.', m: { type: 'tiles', w: ['ti', 'ger'], hi: [0] },
+        act: { type: 'tiles', w: ['ro', 'bot'], extra: ['rob'], hear: 'robot', pic: '🤖', say: 'Build *robot*. Is ro open or closed?', how: 'Ro ends with a *vowel*. Open door: long o.' } },
+      { who: { q: 'How do you read *tiger*?', o: [['Yossi', 'tig-er'], ['Shloime', 'ti-ger']], a: 1, why: '*Ti* ends with a vowel. The door is *open*: long i.' } }],
+    play: [
+      { type: 'sort', mis: true, bins: ['Read right', 'Mistake'], cards: [['go: long o', 0], ['so: short o', 1], ['hot: short o', 0], ['be: short e', 1], ['hi: long i', 0], ['hit: long i', 1]],
+        say: 'Mistake Detective! Right, or a mistake?', how: 'Check the *last letter*. A vowel: open and *long*. A consonant: *short*.' },
+      { type: 'match', pairs: [['be', 'long e'], ['bet', 'short e'], ['no', 'long o'], ['not', 'short o']],
+        say: 'Read each word. Match it to its vowel sound.', how: 'Last letter a *vowel*: long. A *consonant*: short.' },
+      { type: 'findall', grid: ['ba | sin', 'nap | kin', 'ze | ro', 'bas | ket', 'mu | sic', 'rab | bit', 'ro | bot', 'pic | nic'], find: ['ba | sin', 'ze | ro', 'mu | sic', 'ro | bot'], findSay: 'open first part',
+        say: 'Tap every word with an *open* first part.', how: 'Cover the second part. Does the first part end with a *vowel*?' },
+      { type: 'tiles', w: ['spi', 'der'], extra: ['spid'], hear: 'spider', pic: '🕷️', say: 'Challenge! Build *spider* part by part.', how: 'Spi ends with a *vowel*: open, long i. Then der.' }],
+    done: 'Hi and hit! A vowel at the end: *open* and long. A consonant: *closed* and short.' });
+
+  NL('READ.PHON.L03.05', {
+    hook: { kind: 'whatswrong', pic: '🕵️', t: 'Avi reads the word *wagon* out loud: "WAY-gon."', q: 'What went wrong?',
+      o: ['WAY-gon is not a word', 'He read it too fast', 'Nothing is wrong'], pay: '*WAY-gon* is not a word! He had to *slide the line*.' },
+    learn: [
+      { t: 'One consonant in the middle? *Split before* it. Read it *long*.', m: { type: 'tiles', w: ['ro', 'bot'], hi: [0] },
+        act: { type: 'tiles', w: ['pa', 'per'], extra: ['pap'], hear: 'paper', pic: '📄', say: 'Build *paper*. Split before the p.', how: 'Pa ends with a vowel: *open*, long a. Pa-per!' } },
+      { t: 'Not a real word? *Slide the line* past the consonant. Read it *short*.', m: { type: 'tiles', w: ['wag', 'on'], hi: [0] },
+        act: { type: 'sort', bins: ['Real word: keep it', 'Not a word: slide the line'], cards: [['pa | per', 0], ['ze | ro', 0], ['vi | sit', 1], ['ra | dish', 1]],
+          say: 'Read the first part *long*. Is it a real word?', how: 'A real word? Keep it. Not a word? *Slide the line*.' } },
+      { t: 'Sing it with Avi. *Try long* first, then *slide*!', m: { type: 'chant', lines: ['Split before, and read it long.', 'Not a word? Then slide it along!'] },
+        act: { type: 'tiles', w: ['lem', 'on'], extra: ['le'], hear: 'lemon', pic: '🍋', say: 'Build *lemon*. Try long first!', how: 'Lee-mon is not a word. *Slide*: lem-on, short e.' } },
+      { who: { q: 'How do you read *seven*?', o: [['Dovid', 'see-ven'], ['Ari', 'sev-en']], a: 1, why: 'See-ven is not a word. *Slide the line*: sev-en.' } }],
+    play: [
+      { type: 'sort', mis: true, bins: ['Split right', 'Mistake'], cards: [['rob | in', 0], ['ro | bin', 1], ['so | da', 0], ['sod | a', 1], ['ti | ger', 0], ['tig | er', 1]],
+        say: 'Mistake Detective! Is each split right?', how: 'Read it. Is it a *real word*? Try long first.' },
+      { type: 'match', pairs: [['robin', 'short o'], ['total', 'long o'], ['habit', 'short a'], ['paper', 'long a']],
+        say: 'Match each word to its first vowel sound.', how: 'Try the first part *long*. Not a word? Slide: *short*.' },
+      { type: 'listen', hear: 'planet', o: ['plan | et', 'pla | net'], a: 'plan | et', pic: '🪐',
+        say: 'Listen. Which split makes the word you hear?', how: 'Read both splits. Keep the one that is a *real word*.' },
+      { type: 'sort', bins: ['Long: split before', 'Short: slide after'], cards: [['spider', 0], ['frozen', 0], ['silent', 0], ['visit', 1], ['never', 1], ['finish', 1]],
+        say: 'Challenge! Long first part, or short?', how: 'Try *long* first. Not a word? It is *short*.' }],
+    done: 'Avi\'s *wagon*: try long first. Not a word? *Slide the line*!' });
+
+  NL('READ.PHON.L03.06', {
+    hook: { kind: 'oddone', pic: '🧁', t: '*cupcake*, *sunrise*, *invite*, *napkin*.', q: 'Which one is the odd one out?',
+      o: ['cupcake', 'sunrise', 'invite', 'napkin'], pay: '*Napkin*! It has no *quiet e* part.' },
+    learn: [
+      { t: 'Split a long word into *two parts*.', m: { type: 'tiles', w: ['cup', 'cake'], hi: [1] },
+        act: { type: 'tiles', w: ['pan', 'cake'], extra: ['pane', 'cak'], hear: 'pancake', pic: '🥞', say: 'Build *pancake* from its two parts.', how: 'Say it slowly: *pan*, then *cake*.' } },
+      { t: 'A *quiet e* at the end makes the vowel *long*.', m: { type: 'chant', lines: ['Split it in two, read part by part.', 'A quiet e at the end: the vowel says its name!'] },
+        act: { type: 'sort', bins: ['Long: quiet e', 'Short: closed'], cards: [['sun | rise', 0], ['sun | set', 1], ['in | side', 0], ['nap | kin', 1]],
+          say: 'Sing it! Is the *last part* long or short?', how: 'Is there a *quiet e* at the end of the part?' } },
+      { t: 'Check *each part*. The other part can be *short*.', m: { type: 'tiles', w: ['in', 'vite'], hi: [1] },
+        act: { type: 'match', pairs: [['in', 'short i'], ['vite', 'long i']], say: 'Read each part of *invite*. Match its sound.', how: '*In* is closed: short. *Vite* has a quiet e: long.' } },
+      { who: { q: 'How do you read *inside*?', o: [['Moishe', 'in-sid'], ['Eli', 'in-side']], a: 1, why: '*Side* ends with a quiet e. The i is *long*.' } }],
+    play: [
+      { type: 'sort', mis: true, bins: ['Read right', 'Mistake'], cards: [['bedtime: bed-time', 0], ['bedtime: beed-time', 1], ['cupcake: cup-cake', 0], ['cupcake: cup-cak', 1], ['sunrise: sun-rise', 0], ['sunrise: sun-riz', 1]],
+        say: 'Mistake Detective! Is each reading right?', how: 'Check *each part*. Closed part: short. Quiet e part: *long*.' },
+      { type: 'findall', grid: ['vite', 'vit', 'shine', 'shin', 'cake', 'cak', 'bone', 'bon'], find: ['vite', 'shine', 'cake', 'bone'], findSay: 'part with a long vowel',
+        say: 'Tap every part with a *long* vowel.', how: 'A *quiet e* at the end makes the vowel say its name.' },
+      { type: 'tiles', w: ['con', 'crete'], extra: ['cret'], hear: 'concrete', say: 'Build *concrete* part by part.', how: 'Con is closed. Which part has the *quiet e*?' },
+      { type: 'sort', bins: ['Has a quiet e part', 'No quiet e part'], cards: [['mistake', 0], ['dentist', 1], ['sunshine', 0], ['basket', 1], ['escape', 0], ['napkin', 1]],
+        say: 'Challenge! Does it have a *quiet e* part?', how: 'Split it. Check *each part* for a quiet e.' }],
+    done: '*Napkin* was the odd one: no *quiet e*! A quiet e part reads *long*.' });
+
+  NL('READ.PHON.L03.07', {
+    hook: { kind: 'riddle', pic: '🍽️', t: 'I have four legs but never walk. Shabbos food sits on me.', q: 'What am I?',
+      o: ['a table', 'a chair', 'a dog'], pay: 'A *table*! Ta-*ble*: the le grabs the b.' },
+    learn: [
+      { t: 'At the end, *le* grabs *one consonant* before it.', m: { type: 'tiles', w: ['ta', 'ble'], hi: [1] },
+        act: { type: 'tiles', w: ['bub', 'ble'], extra: ['bu'], hear: 'bubble', pic: '🫧', say: 'Build *bubble*. Le grabs one b.', how: '*Ble* is the last part. What is left? *Bub*.' } },
+      { t: 'Now check the *first part*. Open is *long*. Closed is *short*.', m: { type: 'move', t: 'Clap two beats: ta! ble! Again: pud! dle!' },
+        act: { type: 'sort', bins: ['Long: open first part', 'Short: closed first part'], cards: [['ta | ble', 0], ['pud | dle', 1], ['ti | tle', 0], ['lit | tle', 1]],
+          say: 'Clap the beats. Is the first part *open*?', how: 'Ends with a vowel: *long*. Ends with a consonant: *short*.' } },
+      { who: { q: 'Where does *cable* split?', o: [['Avi', 'cab | le'], ['Yehuda', 'ca | ble']], a: 1, why: '*Le* grabs the b. Ca is open: long a.' } }],
+    play: [
+      { type: 'sort', mis: true, bins: ['Split right', 'Mistake'], cards: [['ma | ple', 0], ['map | le', 1], ['can | dle', 0], ['ca | ndle', 1], ['puz | zle', 0], ['pu | zzle', 1]],
+        say: 'Mistake Detective! Is each split right?', how: '*Le* takes just *one* consonant before it.' },
+      { type: 'match', pairs: [['bottle', '🍼'], ['candle', '🕯️'], ['eagle', '🦅'], ['turtle', '🐢']],
+        say: 'Read each word. Match it to its picture.', how: 'Split before the *consonant-le*. Read each part.' },
+      { type: 'tiles', w: ['pad', 'dle'], extra: ['pa'], hear: 'paddle', pic: '🛶', say: 'Build *paddle*. Which d goes with le?', how: 'Two of the same letter: *one* stays, one goes with le.' },
+      { type: 'findall', grid: ['table', 'tablet', 'candle', 'candy', 'gentle', 'garden', 'needle', 'needed'], find: ['table', 'candle', 'gentle', 'needle'], findSay: 'consonant-le word',
+        say: 'Tap every word that ends in *consonant-le*.', how: 'Look at the end: a *consonant*, then *le*.' },
+      { type: 'listen', q: 'A little cradle sat by the puddle.', hear: 'Which word has a long first part?', o: ['cradle', 'little', 'puddle'], a: 'cradle',
+        say: 'Challenge! Find the *long* first part.', how: 'Split each word. Is the first part *open*?' }],
+    done: 'The riddle was a *table*: ta-ble! *Le* grabs one consonant.' });
+
+  NL('READ.PHON.L03.08', {
+    hook: { kind: 'secret', pic: '🔐', t: 'Crack the code: ca _ ch, bri _ ge, fe _ ch.', q: 'Which letters hide in the gaps?',
+      o: ['t, d, t', 'h, j, h', 'e, e, e'], pay: '*t, d, t*! A short vowel brings a *guard* letter.' },
+    learn: [
+      { t: 'Short vowel *right before* ch? Spell it *tch*.', m: { type: 'tiles', w: ['c', 'a', 'tch'], hi: [2] },
+        act: { type: 'tiles', w: ['m', 'a', 'tch'], extra: ['ch'], hear: 'match', say: 'Build *match*. The a is short.', how: 'Short a *right before* ch? Add a *t*: tch.' } },
+      { t: 'Short vowel *right before* the j sound? Spell it *dge*.', m: { type: 'chant', lines: ['Short vowel? Bring a guard along:', 't before ch, d before ge!'] },
+        act: { type: 'tiles', w: ['b', 'r', 'i', 'dge'], extra: ['ge'], hear: 'bridge', pic: '🌉', say: 'Sing it! Then build *bridge*.', how: 'Short i, then the j sound: *dge*.' } },
+      { t: '*Long* vowel? No guard. Just *ch* or *ge*.', m: { type: 'tiles', w: ['c', 'oa', 'ch'], hi: [1] },
+        act: { type: 'sort', bins: ['Short: tch or dge', 'Long: ch or ge'], cards: [['catch', 0], ['coach', 1], ['badge', 0], ['cage', 1]],
+          say: 'Read the vowel. *Short* or *long*?', how: 'Short: tch or dge. Long: ch or ge.' } },
+      { who: { q: 'How do you spell *itch*?', o: [['Eli', 'ich'], ['Shmuel', 'itch']], a: 1, why: 'The i is *short*. Short vowels bring the *t*.' } }],
+    play: [
+      { type: 'findall', mis: true, grid: ['ditch', 'beatch', 'sketch', 'peach', 'juge', 'badge', 'hedge', 'coatch'], find: ['ditch', 'sketch', 'peach', 'badge', 'hedge'], findSay: 'word spelled right',
+        say: 'Mistake hunt! Tap every word spelled right.', how: 'Read the vowel. Short: *tch*, *dge*. Long: *ch*, *ge*.' },
+      { type: 'cloze', t: 'The puppy will ___ the ball.', o: ['fetch', 'fech'], a: 'fetch', say: 'Which spelling is right? Tap it in.', how: 'Is the e *short*? A short vowel takes *tch*.' },
+      { type: 'match', pairs: [['bridge', '🌉'], ['kitchen', '🍳'], ['fudge', '🍫'], ['badge', '📛']],
+        say: 'Read the word. Tap its picture to match.', how: 'Short vowel, then *tch* or *dge*.' },
+      { type: 'sort', bins: ['Short: guard letter', 'Long: no guard'], cards: [['pitch', 0], ['beach', 1], ['lodge', 0], ['stage', 1], ['sketch', 0], ['coach', 1]],
+        say: 'Challenge! Guard letter, or no guard?', how: 'A *short* vowel brings a guard. A *long* vowel does not.' }],
+    done: 'You cracked the code: *t* and *d* guard a *short* vowel!' });
+
+  NL('READ.PHON.L03.09', {
+    hook: { kind: 'notice', pic: '🏙️', t: 'Look: *cat*, *cup*, *city*, *cent*. Two say kuh. Two say sss.', q: 'What do you notice?',
+      o: ['The letter after c changes it', 'Long words say sss', 'It is just luck'], pay: 'The *letter after c*! E, i or y make it say *sss*.' },
+    learn: [
+      { t: 'C before *a*, *o* or *u* says *kuh*.', m: { type: 'tiles', w: ['c', 'a', 't'], hi: [0] },
+        act: { type: 'findall', grid: ['cat', 'cot', 'cub', 'cent', 'city', 'cap'], find: ['cat', 'cot', 'cub', 'cap'], findSay: 'c that says kuh',
+          say: 'Tap every c that says *kuh*.', how: 'Look at the letter *after* c: a, o or u?' } },
+      { t: 'C before *e*, *i* or *y* says *sss*. Soft c!', m: { type: 'chant', lines: ['E, i and y make c say sss:', 'city, cent and ice, yes yes!'] },
+        act: { type: 'sort', bins: ['sss, like city', 'kuh, like cat'], cards: [['cell', 0], ['cave', 1], ['icy', 0], ['cup', 1]],
+          say: 'Whisper the chant! Then sort by the c sound.', how: 'E, i or y after c: *sss*. Any other letter: *kuh*.' } },
+      { t: 'Two c\'s in one word? Check *each one*.', m: { type: 'tiles', w: ['c', 'i', 'r', 'c', 'l', 'e'], hi: [0, 3] },
+        act: { type: 'listen', hear: 'circle', o: ['sss, then kuh', 'kuh, then sss', 'sss, then sss'], a: 'sss, then kuh', pic: '⭕',
+          say: 'Read *circle*. What do the two c\'s say?', how: 'First c is before *i*: sss. Second c is before *l*: kuh.' } },
+      { who: { q: 'How do you read *city*?', o: [['Avi', 'kitty'], ['Mendy', 'sit-ee']], a: 1, why: 'C before *i* says sss. City!' } }],
+    play: [
+      { type: 'sort', mis: true, bins: ['Read right', 'Mistake'], cards: [['cent: sent', 0], ['cent: kent', 1], ['cup: kup', 0], ['cup: sup', 1], ['cot: kot', 0], ['cell: kell', 1]],
+        say: 'Mistake Detective! Right, or a mistake?', how: 'Look at the letter *after* c. E, i or y: *sss*.' },
+      { type: 'tiles', w: ['d', 'a', 'n', 'c', 'e'], extra: ['k'], hear: 'dance', say: 'Build *dance*. Which letter says sss?', how: 'Before *e*, c says sss. Use *c*, not k.' },
+      { type: 'match', pairs: [['pencil', '✏️'], ['cake', '🎂'], ['circle', '⭕'], ['carrot', '🥕']],
+        say: 'Read each c word. Which picture is it?', how: 'Check the letter *after* each c. Then read.' },
+      { type: 'findall', grid: ['face', 'cap', 'icy', 'cut', 'mice', 'cot', 'rice', 'cave'], find: ['face', 'icy', 'mice', 'rice'], findSay: 'c that says sss',
+        say: 'Challenge! Tap every word where c says *sss*.', how: 'Is the letter after c an *e*, *i* or *y*?' }],
+    done: 'You noticed it: *e, i, y* make c *soft*. City, cent, ice!' });
+
+  NL('READ.PHON.L03.10', {
+    hook: { kind: 'predict', pic: '🦒', t: '*Gem* starts with juh. *Goat* starts with guh.', q: 'How will giant start?',
+      o: ['juh, like gem', 'guh, like goat'], pay: '*Juh*! The *i* after g makes it soft. Giant!' },
+    learn: [
+      { t: 'G before *a*, *o* or *u* says *guh*.', m: { type: 'tiles', w: ['g', 'oa', 't'], hi: [0] },
+        act: { type: 'findall', grid: ['goat', 'gum', 'gem', 'gap', 'gym', 'gold'], find: ['goat', 'gum', 'gap', 'gold'], findSay: 'g that says guh',
+          say: 'Tap every g that says *guh*.', how: 'Look at the letter *after* g: a, o or u?' } },
+      { t: 'G before *e*, *i* or *y* often says *juh*. Some break it: *get*, *give*.', m: { type: 'move', t: 'Juh: jump! Guh: stand still! Gem, goat, gym, gum!' },
+        act: { type: 'sort', bins: ['juh, like gem', 'guh, like goat'], cards: [['germ', 0], ['gold', 1], ['gym', 0], ['gas', 1]],
+          say: 'Jump for juh! Then sort by the g sound.', how: 'Look at the letter *after* g. E, i or y: try *juh*.' } },
+      { t: '*Ge* at the end says juh too.', m: { type: 'tiles', w: ['p', 'a', 'ge'], hi: [2] },
+        act: { type: 'tiles', w: ['h', 'u', 'ge'], extra: ['j'], hear: 'huge', say: 'Build *huge*. How does it end?', how: 'At the end, juh is spelled *ge*.' } },
+      { who: { q: 'How do you read *gym*?', o: [['Chaim', 'gim'], ['Moshe', 'jim']], a: 1, why: 'G before *y* says juh. Gym!' } }],
+    play: [
+      { type: 'sort', mis: true, bins: ['Read right', 'Mistake'], cards: [['page: ends in juh', 0], ['page: ends in guh', 1], ['gem: starts with juh', 0], ['gold: starts with juh', 1], ['gum: starts with guh', 0], ['gym: starts with guh', 1]],
+        say: 'Shua read these. Right, or a mistake?', how: 'Look at the letter *after* g. E, i or y: *juh*. A, o, u: *guh*.' },
+      { type: 'cloze', t: 'The shiny ___ sparkled in the ring.', o: ['gem', 'gum'], a: 'gem',
+        say: 'Which word fits? Read both first.', how: 'G before *e*: juh, *gem*. G before *u*: guh, *gum*.' },
+      { type: 'findall', grid: ['cage', 'bag', 'germ', 'gold', 'page', 'gum', 'gentle', 'frog'], find: ['cage', 'germ', 'page', 'gentle'], findSay: 'g that says juh',
+        say: 'Tap every word where g says *juh*.', how: 'Is the letter after g an *e*, *i* or *y*?' },
+      { type: 'tiles', w: ['st', 'a', 'ge'], extra: ['j'], hear: 'stage', say: 'Challenge! Build *stage*.', how: 'Long a, then juh at the end: *ge*.' }],
+    done: '*Giant* starts with juh! *E, i, y* make g soft.' });
+
+  NL('READ.PHON.L03.11', {
+    hook: { kind: 'fact', pic: '🦵', t: 'Did you know? Long ago, people said "kuh-nee" for *knee*!', q: 'Do we say that k today?',
+      o: ['No, it is quiet', 'Yes, kuh-nee'], pay: 'No! The k is still written, but now it is *quiet*.' },
+    learn: [
+      { t: 'In *kn*, the k is *quiet*. Just say nnn.', m: { type: 'tiles', w: ['kn', 'ee'], hi: [0] },
+        act: { type: 'tiles', w: ['kn', 'o', 't'], extra: ['k'], hear: 'knot', say: 'Build *knot*. Start with the quiet k!', how: 'Knot starts with *kn*. The k is quiet.' } },
+      { t: 'In *wr*, the w is quiet. In *mb*, the b is quiet.', m: { type: 'chant', lines: ['K before n, w before r,', 'b after m: shh, quiet you are!'] },
+        act: { type: 'sort', bins: ['k is quiet', 'w is quiet', 'b is quiet'], cards: [['knit', 0], ['wrong', 1], ['numb', 2], ['kneel', 0], ['wrap', 1], ['comb', 2]],
+          say: 'Finger on your lips! Which letter is quiet?', how: 'Look for *kn*, *wr* or *mb*.' } },
+      { who: { q: 'How do you read *knife*?', o: [['Moishe', 'kuh-nife'], ['Yaakov', 'nife']], a: 1, why: 'In *kn*, the k is quiet. Knife!' } }],
+    play: [
+      { type: 'sort', mis: true, bins: ['Read right', 'Mistake'], cards: [['lamb: lam', 0], ['lamb: lam-buh', 1], ['write: right', 0], ['write: wuh-rite', 1], ['knee: nee', 0], ['knee: kuh-nee', 1]],
+        say: 'Mistake Detective! Right, or a mistake?', how: 'Find *kn*, *wr* or *mb*. That letter is *quiet*.' },
+      { type: 'match', pairs: [['knee', '🦵'], ['thumb', '👍'], ['wrench', '🔧'], ['lamb', '🐑']],
+        say: 'Find the quiet letter. Then match the picture.', how: 'Find the *quiet* letter. Then read the word.' },
+      { type: 'tiles', w: ['c', 'l', 'i', 'mb'], extra: ['m'], hear: 'climb', say: 'Build *climb*. Is there a quiet letter?', how: 'Climb ends in *mb*. The b is quiet.' },
+      { type: 'findall', grid: ['knot', 'nod', 'wrap', 'rag', 'thumb', 'tub', 'write', 'rid'], find: ['knot', 'wrap', 'thumb', 'write'], findSay: 'word with a quiet letter',
+        say: 'Challenge! Tap every word with a *quiet* letter.', how: 'Look for *kn*, *wr* or *mb*.' }],
+    done: 'Long ago, *knee* said kuh-nee. Now *kn*, *wr* and *mb* hide a *quiet* letter!' });
+
+  NL('READ.PHON.L03.12', {
+    hook: { kind: 'puzzle', pic: '🧩', t: 'Fill the gaps: dol__in, ele__ant, __one.', q: 'Which two letters fit all three?',
+      o: ['ph', 'ff', 'pf'], pay: '*ph* fits all three! Dolphin, elephant, phone.' },
+    learn: [
+      { t: '*P* and *h* side by side say *fff*.', m: { type: 'tiles', w: ['ph', 'o', 'n', 'e'], hi: [0] },
+        act: { type: 'tiles', w: ['ph', 'o', 't', 'o'], extra: ['f'], hear: 'photo', pic: '📷', say: 'Build *photo*. Which letters say fff?', how: 'The fff at the start of photo is *ph*.' } },
+      { t: '*Ph* can be at the start, middle or end.', m: { type: 'chant', lines: ['P and h, side by side,', 'say fff in phone and photo!', 'Dolphin, graph and elephant too:', 'ph says fff for me and you!'] },
+        act: { type: 'match', pairs: [['phone', '📱'], ['dolphin', '🐬'], ['elephant', '🐘'], ['graph', '📊']], say: 'Sing it! Then match each word to its picture.', how: '*Ph* says fff. Read it, then find the picture.' } },
+      { t: 'Two small words? Then *no fff*. Up + hill!', m: { type: 'tiles', w: ['up', 'hill'], hi: [0, 1] },
+        act: { type: 'sort', bins: ['Ph says fff', 'P and h in two parts'], cards: [['photo', 0], ['uphill', 1], ['trophy', 0], ['cupholder', 1]],
+          say: 'Does *ph* say fff here?', how: 'Two small words, like *up* + *hill*? Then no fff.' } },
+      { who: { q: 'How do you spell *phone*?', o: [['Chaim', 'fone'], ['Dovid', 'phone']], a: 1, why: 'Phone spells fff with *ph*. Learn how it looks.' } }],
+    play: [
+      { type: 'listen', mis: true, q: 'Avi read "phone" as "puh-hone".', hear: 'What should ph say?', o: ['fff', 'puh', 'huh'], a: 'fff',
+        say: 'Mistake Detective! What should ph say?', how: '*P* and *h* side by side make *one* sound: fff.' },
+      { type: 'cloze', t: 'Dovid can say the whole ___ from A to Z.', o: ['alphabet', 'alfabet', 'alpabet'], a: 'alphabet',
+        say: 'Tap the right spelling into the gap.', how: 'This word spells fff with *ph*.' },
+      { type: 'tiles', w: ['el', 'e', 'ph', 'ant'], extra: ['f'], hear: 'elephant', pic: '🐘', say: 'Build *elephant* part by part.', how: 'Say it slowly. Which two letters spell *fff*?' },
+      { type: 'findall', grid: ['graph', 'uphill', 'dolphin', 'push', 'trophy', 'path', 'phone', 'hip'], find: ['graph', 'dolphin', 'trophy', 'phone'], findSay: 'ph that says fff',
+        say: 'Challenge! Tap every word where *ph* says fff.', how: '*P* and *h* side by side say fff. Up + hill: no fff.' }],
+    done: '*Ph* fit all three: dolphin, elephant, phone. *P* and *h* say *fff*!' });
+
+  NL('READ.PHON.L03.13', {
+    hook: { kind: 'story', pic: '🍞', t: 'Zaidy and Avi bake challah. Avi makes a sign.', q: 'How should the sign say it?',
+      o: ['Zaidy is baking', 'Zaidy is bakeing', 'Zaidy is bakking'], pay: '*Baking*! The quiet e *waves bye-bye* before -ing.' },
+    learn: [
+      { t: '*Bake* ends in a *quiet e*.', m: { type: 'tiles', w: ['b', 'a', 'k', 'e'], hi: [3] },
+        act: { type: 'sort', bins: ['Ends in a quiet e', 'No quiet e'], cards: [['bake', 0], ['jump', 1], ['ride', 0], ['read', 1]],
+          say: 'Look at the end. Is there a *quiet e*?', how: 'A quiet e is the *last letter*. You do not hear it.' } },
+      { t: '*Drop the e*. Then add *-ing* or *-ed*.', m: { type: 'chant', lines: ['Quiet e, wave bye-bye,', '-ing and -ed come in, say hi!'] },
+        act: { type: 'tiles', w: ['b', 'a', 'k', 'ing'], extra: ['e'], hear: 'baking', pic: '🍞', say: 'Wave bye-bye to the e! Build *baking*.', how: 'Bake: *drop the e*, then add -ing.' } },
+      { t: 'No quiet e? *Just add* the ending.', m: { type: 'tiles', w: ['j', 'u', 'm', 'p', 'ing'], hi: [4] },
+        act: { type: 'match', pairs: [['smile + ed', 'smiled'], ['jump + ed', 'jumped'], ['wave + ing', 'waving'], ['help + ing', 'helping']],
+          say: 'Match each word to its new spelling.', how: 'Quiet e? *Drop it*. No quiet e? *Just add*.' } },
+      { who: { q: 'Add -ing to *ride*.', o: [['Dovid', 'rideing'], ['Mendy', 'riding']], a: 1, why: 'Ride ends in a *quiet e*. Drop it first.' } }],
+    play: [
+      { type: 'listen', mis: true, q: 'Dovid wrote "smileing".', hear: 'How should he spell it?', o: ['smiling', 'smileing', 'smilling'], a: 'smiling',
+        say: 'Mistake Detective! Fix the spelling.', how: 'Smile ends in a *quiet e*. Drop it before -ing.' },
+      { type: 'findall', grid: ['joked', 'jokeed', 'hiking', 'hikeing', 'waved', 'waveed', 'closed', 'closeed'], find: ['joked', 'hiking', 'waved', 'closed'], findSay: 'right spelling',
+        say: 'Tap every word spelled the right way.', how: 'A *quiet e* drops before -ing or -ed.' },
+      { type: 'tiles', w: ['sk', 'a', 't', 'ing'], extra: ['e'], hear: 'skating', pic: '⛸️', say: 'Build *skating*. Where did the e go?', how: 'Skate: *drop the e*, then add -ing.' },
+      { type: 'sort', bins: ['Drop the e', 'Just add -ed'], cards: [['rake', 0], ['help', 1], ['wipe', 0], ['fill', 1]],
+        say: 'Challenge! Adding -ed: drop the e, or just add it?', how: 'Look at the end. Is there a *quiet e*?' }],
+    done: 'Avi\'s sign says *baking*: drop the *quiet e*, then add the ending!' });
+
+  NL('READ.PHON.L03.14', {
+    hook: { kind: 'wouldyou', pic: '🐇', t: 'Would you rather go *hopping* or *hoping*?', q: 'Which one is jumping on one foot?',
+      o: ['hopping', 'hoping'], pay: '*Hopping*! Two p\'s keep the o *short*. *Hoping* means wishing.' },
+    learn: [
+      { t: '*Hop*: a short vowel, then *one* consonant.', m: { type: 'tiles', w: ['h', 'o', 'p'], hi: [2] },
+        act: { type: 'findall', grid: ['hop', 'sit', 'run', 'jump', 'help', 'rest'], find: ['hop', 'sit', 'run'], findSay: 'short vowel, then one consonant',
+          say: 'Tap every word that ends: short vowel, *one* consonant.', how: 'Look at the end. *One* vowel, then *one* consonant?' } },
+      { t: '*Double* that consonant before *-ing* or *-ed*.', m: { type: 'move', t: 'Hopping: hop, hop! Jumping: stand! Running: hop, hop!' },
+        act: { type: 'tiles', w: ['h', 'o', 'pp', 'ing'], extra: ['p'], hear: 'hopping', say: 'Hop twice for the double! Build *hopping*.', how: 'Short o, one p: *double* it. Then -ing.' } },
+      { t: 'Two consonants, or a quiet e? *Do not double*.', m: { type: 'tiles', w: ['j', 'u', 'm', 'p', 'ing'], hi: [4] },
+        act: { type: 'sort', bins: ['Double it', 'Do not double'], cards: [['plan', 0], ['rest', 1], ['skip', 0], ['hope', 1]],
+          say: 'Double the last letter, or not?', how: 'Short vowel and *one* consonant? Double. If not, do not.' } },
+      { who: { q: 'Add -ing to *hope*.', o: [['Naftali', 'hopping'], ['Shimmy', 'hoping']], a: 1, why: 'Hope ends in a *quiet e*. Drop it. *Do not double*.' } }],
+    play: [
+      { type: 'listen', mis: true, q: 'Naftali wrote: "I am hoping on one foot."', hear: 'Which word should he write?', o: ['hopping', 'hoping', 'hopeing'], a: 'hopping',
+        say: 'Mistake Detective! Which word fits?', how: 'On one foot means *hop*. Short o: *double* the p.' },
+      { type: 'match', pairs: [['running', '🏃'], ['clapping', '👏'], ['shopping', '🛒'], ['napping', '😴']],
+        say: 'Read the double-letter words. Match the pictures.', how: 'Find the *double* letter. Then read the word.' },
+      { type: 'findall', grid: ['clapped', 'claped', 'helped', 'helpped', 'grabbed', 'grabed', 'rested', 'restted'], find: ['clapped', 'helped', 'grabbed', 'rested'], findSay: 'right spelling',
+        say: 'Tap every word spelled the right way.', how: 'Short vowel, *one* consonant: double. Two consonants: do not.' },
+      { type: 'tiles', w: ['s', 'w', 'i', 'mm', 'ing'], extra: ['m'], hear: 'swimming', say: 'Build *swimming*. Does the m double?', how: 'Short i, one m: *double* it before -ing.' },
+      { type: 'listen', q: 'Avi taped a picture. Then he tapped on the door.', hear: 'Which word means he touched it lightly?', o: ['tapped', 'taped', 'picture'], a: 'tapped',
+        say: 'Challenge! Which word means touched lightly?', how: 'A *double* letter keeps the vowel short: *tap*.' }],
+    done: '*Hopping* on one foot: short vowel, one consonant, *double it*!' });
+
+  NL('READ.PHON.L03.15', {
+    hook: { kind: 'challenge', pic: '👶', t: 'Challenge! One *baby*. Two ___?', q: 'How do you spell more than one baby?',
+      o: ['babies', 'babys', 'babyes'], pay: '*Babies*! The y turned into an *i*.' },
+    learn: [
+      { t: 'Look at the letter *before* the y.', m: { type: 'tiles', w: ['b', 'a', 'b', 'y'], hi: [2] },
+        act: { type: 'sort', bins: ['Consonant before y', 'Vowel before y'], cards: [['baby', 0], ['play', 1], ['cry', 0], ['toy', 1]],
+          say: 'What comes *before* the y?', how: 'A, e, i, o, u are *vowels*. The rest are *consonants*.' } },
+      { t: 'Consonant + y? *Change y to i*. Add *-es* or *-ed*.', m: { type: 'chant', lines: ['Change y to i for -es and -ed,', 'keep the y for -ing instead!'] },
+        act: { type: 'tiles', w: ['c', 'r', 'i', 'ed'], extra: ['y'], hear: 'cried', say: 'Make a Y with your arms! Build *cried*.', how: 'R before y: *change y to i*, then -ed.' } },
+      { t: 'Adding *-ing*? *Keep the y*. Vowel before y? Keep it too.', m: { type: 'tiles', w: ['p', 'l', 'a', 'y', 'ed'], hi: [3] },
+        act: { type: 'sort', bins: ['Change y to i', 'Keep the y'], cards: [['baby + es', 0], ['play + ed', 1], ['fly + ing', 1], ['dry + ed', 0]],
+          say: 'Change the y, or *keep* it?', how: 'Before -ing, *keep* the y. After a vowel, *keep* it.' } },
+      { who: { q: 'The baby ___. (cry + ed)', o: [['Mendy', 'cryed'], ['Shloime', 'cried']], a: 1, why: 'R comes before y. *Change y to i*.' } }],
+    play: [
+      { type: 'findall', mis: true, grid: ['crying', 'criing', 'played', 'plaied', 'stayed', 'staied', 'studies', 'studys'], find: ['crying', 'played', 'stayed', 'studies'], findSay: 'right spelling',
+        say: 'Mistake hunt! Tap every word spelled right.', how: 'Consonant + y: change to *i*. Keep the y before *-ing*.' },
+      { type: 'match', pairs: [['cherries', '🍒'], ['keys', '🔑'], ['flies', '🪰'], ['pennies', '🪙']],
+        say: 'Read each ending. Match its picture.', how: '*ies* means the word ended in y. Read, then find.' },
+      { type: 'tiles', w: ['h', 'u', 'rr', 'y', 'ing'], extra: ['i'], hear: 'hurrying', say: 'Build *hurrying*. Keep the y, or change it?', how: 'Adding *-ing*? *Keep the y*.' },
+      { type: 'cloze', t: 'We read two ___ before bed.', o: ['stories', 'storys', 'storyes'], a: 'stories',
+        say: 'Challenge! Tap the right spelling.', how: 'R before y: *change y to i*, then add -es.' }],
+    done: 'One baby, two *babies*: consonant + y? *Change y to i*!' });
+
+  NL('READ.PHON.L03.16', {
+    hook: { kind: 'compare', pic: '🥚', t: '*Careful* Dovid and *careless* Moishe. Same base word: care.', q: 'Who should carry the eggs?',
+      o: ['careful Dovid', 'careless Moishe'], pay: '*Careful* Dovid! -ful means *full of*. -less means *without*.' },
+    learn: [
+      { t: '*Cover* the ending. Read the *base word*.', m: { type: 'tiles', w: ['help', 'ful'], hi: [1] },
+        act: { type: 'match', pairs: [['helpful', 'help'], ['careless', 'care'], ['slowly', 'slow'], ['kindness', 'kind']],
+          say: 'Cover the ending. Match each word to its *base*.', how: 'Hide -ful, -less, -ly or -ness. Read what is left.' } },
+      { t: '*-ful* means full of. *-less* means without.', m: { type: 'chant', lines: ['Cover the end and read the base,', 'then snap the ending back in place!', '-ful: full of. -less: without.', '-ly: that way. -ness: being.'] },
+        act: { type: 'sort', bins: ['-ful: full of', '-less: without'], cards: [['thankful', 0], ['fearless', 1], ['hopeful', 0], ['useless', 1]],
+          say: 'Sing it! Full of, or without?', how: 'Cover the ending. *-ful*: full of. *-less*: without.' } },
+      { t: '*-ly* says lee: in that way. *-ness*: being.', m: { type: 'tiles', w: ['slow', 'ly'], hi: [1] },
+        act: { type: 'parts', q: 'Build the word that means being kind.', parts: ['kind', 'ness'], extra: ['ly'], mean: 'being kind',
+          say: 'Read the meaning. Snap the parts together.', how: 'Base word first. Then *-ness*: being.' } },
+      { who: { q: 'What does *helpless* mean?', o: [['Avi', 'full of help'], ['Ari', 'without help']], a: 1, why: '*-less* means without. Helpless: without help.' } }],
+    play: [
+      { type: 'findall', mis: true, grid: ['joyful', 'joyfull', 'sadness', 'sadnes', 'useful', 'usefull', 'gladly', 'gladlee'], find: ['joyful', 'sadness', 'useful', 'gladly'], findSay: 'right spelling',
+        say: 'Mistake hunt! Tap every word spelled right.', how: '*-ful* has one l. *-ness* has two s. *-ly* says lee.' },
+      { type: 'match', pairs: [['gladly', 'in a glad way'], ['darkness', 'being dark'], ['careless', 'without care'], ['hopeful', 'full of hope']],
+        say: 'Match each word to what it means.', how: 'Cover the ending. Read the base. What does the ending *add*?' },
+      { type: 'tiles', w: ['fear', 'less'], extra: ['ful'], hear: 'fearless', say: 'Build *fearless*. Which ending do you hear?', how: 'Hear the base word. Then: *full of*, or *without*?' },
+      { type: 'parts', q: 'Build the word that means in a way without care.', parts: ['care', 'less', 'ly'], roles: ['root', 'suffix', 'suffix'], extra: ['ful'], mean: 'in a way without care',
+        say: 'Challenge! Snap three parts together.', how: 'Base word first. Then *-less*. Then *-ly*.' }],
+    done: '*Careful* Dovid carried the eggs! Cover the ending, read the base, add its meaning.' });
+
+  NL('READ.PHON.L03.17', {
+    hook: { kind: 'riddle', pic: '🍌', t: 'I hide inside *unpacking*. Peel off the front and back.', q: 'What word am I?',
+      o: ['pack', 'pick', 'king'], pay: '*Pack*! Peel *un* and *ing*. Read the middle.' },
+    learn: [
+      { t: 'Peel the *front*. Peel the *end*. Read the *middle*.', m: { type: 'tiles', w: ['un', 'pack', 'ing'], hi: [1] },
+        act: { type: 'match', pairs: [['unfolded', 'fold'], ['reheated', 'heat'], ['dislikes', 'like'], ['unhelpful', 'help']],
+          say: 'Peel off both ends. Match the *base* word.', how: 'Hide the front and the end. Read the *middle*.' } },
+      { t: 'A prefix gives a hint. *re*: again. *pre*: before.', m: { type: 'move', t: 'Peel the front! Peel the back! Read the middle! Snap it back!' },
+        act: { type: 'parts', q: 'Build the word that means heated again.', parts: ['re', 'heat', 'ed'], extra: ['pre'], mean: 'heated again',
+          say: 'Peel a pretend banana! Then snap the parts together.', how: '*re* means again. Then the base word, then the ending.' } },
+      { t: '*un* and *dis* both mean *not*.', m: { type: 'tiles', w: ['dis', 'agree'], hi: [0] },
+        act: { type: 'sort', bins: ['not', 'again', 'before'], cards: [['unhappy', 0], ['redo', 1], ['preschool', 2], ['dislike', 0], ['refill', 1], ['preheat', 2]],
+          say: 'What hint does the *prefix* give?', how: '*un*, *dis*: not. *re*: again. *pre*: before.' } },
+      { who: { q: 'Is *re* a prefix in *ready*?', o: [['Yanky', 'yes, a real one'], ['Chaim', 'no, a fake one']], a: 1, why: 'Peel off re: *ady*. Not a word! A *fake* prefix.' } }],
+    play: [
+      { type: 'sort', mis: true, bins: ['Real prefix', 'Fake prefix'], cards: [['preheat', 0], ['press', 1], ['dislike', 0], ['dish', 1], ['unpack', 0], ['uncle', 1]],
+        say: 'Mistake check! Real prefix, or a fake one?', how: 'Peel off the front. Is a *real word* left?' },
+      { type: 'listen', q: 'Chaim will prewash the apples.', hear: 'What does pre tell you?', o: ['before', 'again', 'not'], a: 'before',
+        say: 'Read it. What does *pre* add?', how: '*Pre* is a hint about time. Peel it off: wash.' },
+      { type: 'tiles', w: ['dis', 'agree'], extra: ['un'], hear: 'disagree', say: 'Build *disagree*. Which prefix is at the front?', how: 'Listen to the front. *dis* means not.' },
+      { type: 'parts', q: 'Build the word that means not helpful.', parts: ['un', 'help', 'ful'], extra: ['re'], mean: 'not helpful',
+        say: 'Challenge! Snap three parts together.', how: 'Prefix first, then the base word, then the ending.' }],
+    done: 'The riddle word was *pack*! Peel the front, peel the end, read the *middle*.' });
+
+  NL('READ.PHON.L03.18', {
+    hook: { kind: 'whatswrong', pic: '📝', t: 'Avi wrote: "The babys are hoping in the kichen."', q: 'How many spelling mistakes?',
+      o: ['1', '2', '3'], pay: '*Three*! babies, hopping, kitchen. Today you fix them all.' },
+    learn: [
+      { t: '*Listen*, then think: *which pattern* is it?', m: { type: 'tiles', w: ['c', 'a', 'tch'], hi: [2] },
+        act: { type: 'match', pairs: [['catch', 'short vowel, then tch'], ['hopping', 'double it'], ['babies', 'y to i'], ['knee', 'quiet k']],
+          say: 'Match each word to its *pattern*.', how: 'Say the word slowly. Which rule did it use?' } },
+      { t: '*Short* vowel *right before* j? Spell it *dge*.', m: { type: 'move', t: 'Write "bridge" in the air! Clap on d-g-e.' },
+        act: { type: 'tiles', w: ['b', 'r', 'i', 'dge'], extra: ['j', 'ge'], hear: 'bridge', say: 'Spell it in the air! Then build *bridge*.', how: 'Short i, then the j sound: *dge*.' } },
+      { t: 'Hear a *sentence*. Spell each *pattern word* right.', m: { type: 'tiles', w: ['b', 'a', 'k', 'ing'], hi: [3] },
+        act: { type: 'dictation', hear: 'Chaim is baking a cake.', w: ['Chaim', 'is', 'baking', 'a', 'cake.'], extra: ['bakeing'],
+          say: 'Listen. Build the sentence you hear.', how: 'Bake + ing: *drop the e*. Capital first, period last.' } },
+      { who: { q: 'Spell *stop* + ed.', o: [['Mendy', 'stoped'], ['Eli', 'stopped']], a: 1, why: 'Short o, one p: *double* it first.' } }],
+    play: [
+      { type: 'listen', mis: true, q: 'Avi spelled "hopping" as "hoping".', hear: 'What went wrong?', o: ['he did not double the p', 'he dropped an e', 'he left out the i'], a: 'he did not double the p',
+        say: 'Mistake Detective! What went wrong?', how: 'Short o, one last letter. *Double* it before -ing.' },
+      { type: 'findall', grid: ['wrist', 'rist', 'graph', 'graf', 'fudge', 'fuj', 'city', 'sity'], find: ['wrist', 'graph', 'fudge', 'city'], findSay: 'right spelling',
+        say: 'Tap every word spelled the right way.', how: 'Think of the *pattern* for each sound.' },
+      { type: 'dictation', hear: 'The bunnies hopped in the grass.', w: ['The', 'bunnies', 'hopped', 'in', 'the', 'grass.'], extra: ['bunnys', 'hoped'],
+        say: 'Listen. Build the sentence you hear.', how: '*Y to i* in bunnies. *Double* the p in hopped.' },
+      { type: 'cloze', t: 'Two little ___ ate the hay.', o: ['ponies', 'ponys', 'ponyes'], a: 'ponies',
+        say: 'Challenge! Tap the right spelling.', how: 'Pony ends in y. *Change y to i*, then add -es.' }],
+    done: 'Avi\'s three mistakes? Fixed! *Listen*, find the *pattern*, then spell.' });
+
+})();
+</script>
