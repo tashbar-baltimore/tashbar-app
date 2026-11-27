@@ -36,6 +36,7 @@ const item=id=>M.info?(M.info.items||[]).find(x=>x.id===id):null;
 (function css(){ if(document.getElementById('shm-css')) return; const s=document.createElement('style'); s.id='shm-css'; s.textContent=`
 .shm .shk-body{display:flex;flex-direction:column;gap:16px}
 .shm .shk-top{padding-right:48px}
+.shm .shk-top>.tlk{flex:none}.shm .shk-top .shk-plaque{min-width:0;flex:0 1 auto;padding-left:16px;padding-right:16px}.shm .shk-top .shk-plaque h1{overflow:hidden;text-overflow:ellipsis}
 .shm .shk-top .tlk-pill{font-size:18px;padding:8px 16px;box-shadow:0 4px 14px rgba(30,27,75,.12)}
 .shm h2.shm-h{margin:6px 4px 0;font-size:clamp(18px,2.2vw,24px);font-weight:900;color:#1E1B4B;text-shadow:0 1px 0 rgba(255,255,255,.8)}
 .shm-hero{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;overflow:hidden}
@@ -143,7 +144,7 @@ body.st-theme-gold{background:linear-gradient(160deg,#FEF3C7,#E9C46A 50%,#B08968
 @media (max-width:600px){.shm-hero{grid-template-columns:auto 1fr}.shm-hero .shm-side{grid-column:1/-1;align-items:flex-start;text-align:left}.shm-coin{width:72px;height:72px;font-size:46px}
  .shm-rows .r{grid-template-columns:1fr auto;gap:2px 10px}.shm-rows .r small{grid-column:1/-1}.shm-rows .r em{grid-column:2}
  .shm .shk-tiles{grid-template-columns:1fr 1fr}.shm .tlk.tlk-tile.shk-tile{padding:12px}.shm-grid{grid-template-columns:1fr}.shm-week{gap:4px}.shm-club{grid-template-columns:1fr}
- .shm .shk-top .tlk-pill{font-size:15px;padding:6px 10px}#tlcash.shm-badge{left:10px;bottom:10px}}
+ .shm .shk-top .tlk-pill{font-size:15px;padding:6px 10px}.shm .shk-top:has(.tlk-back)>.tlk-pill{display:none}.shm .shk-top:has(.tlk-back){flex-wrap:wrap;row-gap:8px}.shm .shk-top:has(.tlk-back) .shk-plaque{min-width:auto;flex:0 0 auto}.shm .shk-top .shk-plaque img{width:30px;height:30px}#tlcash.shm-badge{left:10px;bottom:10px}}
 @media (prefers-reduced-motion:reduce){.shm-coin img,.shm-coin span,.shm-shine,.shm-item,.shm-item .em,.shm-sky span,.shm-week i,.shm-rain i,.stpet,.st-frame-fire,.st-frame-rainbow{animation:none!important}.shm-paper .ln,.shm-stamp{animation-duration:.01s!important;animation-delay:0s!important}}`; document.head.appendChild(s); })();
 
 /* ---------- sounds (made here, no files; off when his sound is off) ---------- */
