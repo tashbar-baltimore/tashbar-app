@@ -540,7 +540,7 @@ export function startGame(cfg) {
   function goHome(o) { return moveTo(o, o.home, 420, 0.4).then(() => { if (LK) LK.squash(o.g, o.scale, 0.22); }); }
 
   canvas.addEventListener('pointerdown', e => {
-    ac();
+    ac(); if (SHOT && !handOn) hand.style.display = 'none';
     if (cornerTap) { cornerTap(e.clientX, e.clientY); return; }
     if (shapeTap) { shapeTap(e.clientX, e.clientY); return; }
     if (chantOn) { boyClap(); return; }
@@ -577,8 +577,9 @@ export function startGame(cfg) {
   function stopIdle() { clearTimeout(idleT); idleFn = null; idleN = 0; }
   function pointAt(o, toBox) {   /* the hand points at a piece (and then at the box it goes in) */
     handOn = o; hand.style.display = 'block';
-    return wait(1500).then(() => { handOn = null; if (toBox && o.box >= 0 && NB) { const p = toScreen(boxAt(o.box).clone().setY(1.1)); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; return wait(1300); } })
-      .then(() => { hand.style.display = 'none'; });
+    const hw = ms => (SHOT ? new Promise(r => setTimeout(r, ms)) : wait(ms));   /* pictures (shot=1) keep the hand on screen long enough to be seen */
+    return hw(1500).then(() => { handOn = null; if (toBox && o.box >= 0 && NB) { const p = toScreen(boxAt(o.box).clone().setY(1.1)); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; return hw(1300); } })
+      .then(() => { if (!SHOT) hand.style.display = 'none'; });   /* pictures: the hand stays until his next touch, so the slow picture machine still catches it */
   }
   W.idleNow = () => { if (idleFn) idleFn(++idleN); }; W.waitingTap = () => !!(shapeTap || cornerTap);   /* the test waits until the lesson really waits for his tap */
 
@@ -1510,6 +1511,8 @@ export function startGame(cfg) {
         if (clueNoCorners && o.marks.length && /side/i.test(cfg.clues[clueN].say.join(' '))) steps.push('Look at its sides.', ...sideSteps(o));   /* the clue was about sides: show its sides */
         if (o.marks.length && lines.count !== false && !clueNoCorners) { steps.push('Count the corners.'); o.marks.forEach((m, i) => steps.push(() => lightCorner(o, i), NUMS[i])); }
         steps.push(...lines.slice(1), () => { clearCorners(o); });
+        if (o.box < 0 && !bonus) { const t = shapes.find(s => s.box >= 0 && !s.inBox && s.g.visible && !s.busy && s !== o);   /* a piece that does not belong: the hand shows one that does, going into the box */
+          if (t) steps.push(() => pointAt(t, true)); }
         if (o.box >= 0 && NB > 1) steps.push(() => pointAt(o, true));   /* the first miss already shows how: the hand goes from the piece to its right box (K-CLARITY-RULES 16) */
         if (W.misses >= 2 && !helped && !bonus) { const t = shapes.find(s => s.box === (NB === 1 ? 0 : o.box) && !s.inBox && s.g.visible && s !== o) || (o.box >= 0 ? o : null);
           if (t && t.box >= 0) { helped = true; steps.push(...teachAgain(t)); } }
