@@ -49,6 +49,8 @@ function obkStep(wrong) {
       if (s.sel < 0) return tap('card', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); return tap('box', i); }
     case 'parts': case 'dictation': case 'order': { if (OBK.ready(d, s)) return check(); const list = d.parts || d.w || d.steps, i = s.slots.indexOf(-1), want = S(list[i]);
       return tap(d.type === 'parts' ? 'part' : d.type === 'order' ? 'strip' : 'tile', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); }
+    case 'map': { const st = d.steps[s.k]; if (!st) return 'map has no step left'; if (w) { const o = [...document.querySelectorAll('.cka-pin[data-obk=place]')].map(x => x.dataset.k).find(k => k !== st.tap); if (o) return tap('place', o); }
+      return tap('place', st.tap); }
     /* the two Reader kinds (src/CoreKitActs.html): the book opens over the lesson; read every page to the end, or tap the proof sentence */
     case 'read': case 'proof': { const R = window.TLCORE && TLCORE.reader, cr = document.getElementById('crd'), cq = sel => cr && cr.querySelector(sel);
       if (R && R.isOpen() && cr) { const st = R.state();

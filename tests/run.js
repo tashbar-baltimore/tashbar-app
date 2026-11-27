@@ -47,6 +47,8 @@ function staticChecks() {
   try { const a = require('./lib/art.js')(); a.fails.forEach(fail); a.oks.forEach(ok); } catch (e) { fail('art library check crashed: ' + String(e).slice(0, 200)); }
   /* CSS FONT SHORTHAND (gap A4, issue #402): no "font:<size> inherit", which the browser drops */
   try { const cf = require('./lib/cssfont.js')(); cf.fails.forEach(fail); cf.oks.forEach(ok); } catch (e) { fail('CSS font check crashed: ' + String(e).slice(0, 200)); }
+  /* LESSON DATA FILES (B1b): a listed lesson must be in the data file it names (two PRs once shared a file name and 6 lessons vanished) */
+  try { const cd = require('./lib/corefiles.js')(); cd.fails.forEach(fail); cd.oks.forEach(ok); } catch (e) { fail('lesson data files check crashed: ' + String(e).slice(0, 200)); }
 }
 
 /* No leftover merge-conflict marks in any text file in the repository (25 Nov: #484 left them in docs/CORE-GROWTH-LANES.md). */

@@ -67,8 +67,21 @@ function openVault() {
   [0, 4, 7, 12].forEach((s, i) => setTimeout(() => chime(s), i * 120));
   const r = $('doorBox').getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, 40, '#FFD27A');
   setTimeout(() => $('doorBox').classList.add('open'), calm ? 50 : 650);
-  setTimeout(() => { S.stage = 'flying'; body.classList.add('flying'); chime(16, true, 1.6); }, calm ? 200 : 2100);
-  setTimeout(arrive, calm ? 600 : 4300);
+  /* the camera pushes into the open door, then the flight: through the vault, out through the clouds, into her treasure house */
+  setTimeout(() => { const d = $('doorBox').getBoundingClientRect(); body.style.setProperty('--ox', (d.left + d.width / 2) + 'px'); body.style.setProperty('--oy', (d.top + d.height / 2) + 'px'); body.classList.add('pushing'); whoosh(1.6, .5); }, calm ? 100 : 1900);
+  setTimeout(() => { S.stage = 'flying'; body.classList.add('flying'); whoosh(4.4, .9); chime(16, true, 1.6); }, calm ? 200 : 2900);
+  setTimeout(arrive, calm ? 600 : 7300);
+}
+/* a soft whoosh: rushing air, made from filtered noise that rises and falls (no recording needed) */
+function whoosh(len, vol) {
+  if (calm) return; try {
+    const ac = whoosh.ac || (whoosh.ac = new (window.AudioContext || window.webkitAudioContext)()); if (ac.state === 'suspended') ac.resume();
+    const n = Math.floor(ac.sampleRate * len), buf = ac.createBuffer(1, n, ac.sampleRate), d = buf.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    const src = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain(), t = ac.currentTime; src.buffer = buf;
+    bp.type = 'bandpass'; bp.Q.value = 0.9; bp.frequency.setValueAtTime(250, t); bp.frequency.exponentialRampToValueAtTime(1800, t + len * .55); bp.frequency.exponentialRampToValueAtTime(400, t + len);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.09 * vol, t + len * .45); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    src.connect(bp); bp.connect(g); g.connect(ac.destination); src.start(t); src.stop(t + len);
+  } catch (e) {}
 }
 function arrive() {
   S.stage = 'home'; body.classList.add('home'); $('house').setAttribute('aria-hidden', 'false'); $('vault').setAttribute('aria-hidden', 'true');
@@ -82,7 +95,7 @@ const STEP = Math.PI * 2 / N, front = () => ((Math.round(-ang / STEP) % N) + N) 
 function turnTo(i) { let d = (-i * STEP - aim) % (Math.PI * 2); if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; aim += d; idle = 0; }
 order.forEach((id, i) => { const p = PLACES.find(x => x.id === id), v = progress[id] || 0, b = document.createElement('button');
   b.type = 'button'; b.className = 'globe' + (v > 0 ? '' : ' waiting'); b.style.setProperty('--c', p.color); b.dataset.place = id;
-  b.innerHTML = '<img class="mark" src="/pics/keser-logo-mark.webp" alt=""><img class="orb" src="' + GLOBES[id] + '" alt="">' + (INSIDE[id] ? '<img class="inside" src="' + INSIDE[id] + '" alt="">' : '') + '<span' + (p.lang ? ' lang="he" dir="rtl"' : '') + '>' + p.name + '</span>';   /* the Keser crown mark sits on top of every globe */ b.setAttribute('aria-label', (p.label || p.name) + (v > 0 ? '' : ', waiting for her first treasure'));
+  b.innerHTML = '<img class="orb" src="' + GLOBES[id] + '" alt="">' + (INSIDE[id] ? '<img class="inside" src="' + INSIDE[id] + '" alt="">' : '') + '<span' + (p.lang ? ' lang="he" dir="rtl"' : '') + '>' + p.name + '</span>';   /* no crowns floating over the globes (HoS 2026-11-26: "those crowns are like awkward") */ b.setAttribute('aria-label', (p.label || p.name) + (v > 0 ? '' : ', waiting for her first treasure'));
   b.onclick = () => { if (moved) return; const r = b.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 3, 18, p.color); chime(p.note);
     turnTo(i); setTimeout(() => { location.href = 'world.html?place=' + id; }, calm ? 0 : 750); };
   $('globes').appendChild(b); globes.push(b); });
