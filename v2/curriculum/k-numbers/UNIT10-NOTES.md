@@ -8,7 +8,7 @@
 - `bakery10.js` (three.js): a wooden counter with a cream cloth, and the star of the unit, a **muffin tin with ten cups in two rows of five**: a real ten-frame.
 - **Pink cupcakes** are the ones already there; **blue cupcakes** are the ones he adds. The two parts of ten are always two clear colours.
 - A light-blue plate holds extra cupcakes (Make a Ten, Find the Mistake, Review).
-- Calm and still: nothing moves unless it is part of the game. A short sparkle when a tin is full is the one reward.
+- Calm and still: nothing moves unless it is part of the game.
 - The bakery pictures (order N10) are not here yet: until they come, the background is Bubby's kitchen picture.
 
 ## Seven stops, seven ways to play
