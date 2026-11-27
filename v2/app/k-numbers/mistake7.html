@@ -15,13 +15,18 @@
 <style>.cardrow{ display:flex; gap:clamp(14px,4vw,40px); align-items:center; } .cardrow .numcard{ cursor:pointer; } .cardrow[hidden], #check[hidden]{ display:none; }
 .numcard.good{ box-shadow:0 0 0 6px #22B45E; } .numcard.shake{ animation:shake .45s; }
 /* K clarity (rules 9, 11): Ari, who says the mistake, is big enough to see; the numbers he taps are big */
-#panel .who img{ height:clamp(84px,14vh,130px); width:auto; } .cardrow .numcard{ width:clamp(110px,min(20vh,34vw),160px); height:clamp(110px,min(20vh,34vw),160px); }</style>
+#panel .who img{ height:clamp(84px,14vh,130px); width:auto; transition:transform .2s; } #ari{ position:relative; }
+/* when Ari says something, he grows and a speech bubble shows what he says (a blanket colour or a number: nothing to read) */
+#ari.talk img{ transform:scale(1.25) translateY(-8px); }
+.bub{ position:absolute; left:78%; bottom:62%; min-width:64px; height:64px; padding:6px 10px; border-radius:20px; background:#fff; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 0 #C9D8EE, 0 8px 14px rgba(30,40,90,.25); z-index:3; }
+.bub::after{ content:''; position:absolute; left:8px; bottom:-12px; border:10px solid transparent; border-top-color:#fff; border-left-width:4px; }
+.bub[hidden]{ display:none; } .bub svg{ height:48px; width:auto; } .bub .chip{ width:52px; height:34px; border-radius:8px; } .cardrow .numcard{ width:clamp(110px,min(20vh,34vw),160px); height:clamp(110px,min(20vh,34vw),160px); }</style>
 </head>
 <body>
 <div id="world"></div>
 <div id="game" class="locked"><div class="stage s6" id="stage">
   <div class="ui" id="panel">
-    <div class="who"><img src="art/ari-talk.png" alt=""></div>
+    <div class="who" id="ari"><img src="art/ari-talk.png" alt="Ari"><div class="bub" id="bub" hidden></div></div>
     <div class="cardrow" id="cards" hidden><div class="numcard" id="c0" role="button"></div><div class="numcard" id="c1" role="button"></div></div>
     <button id="add" hidden class="bigbtn btn3d b-white" aria-label="One more apple"><svg viewBox="0 0 48 48"><circle cx="20" cy="29" r="14" fill="#E8322B"/><path d="M20 15c0-4 2-7 5-8" stroke="#7A4A22" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="37" cy="12" r="10" fill="#22B45E"/><path d="M37 6.5v11M31.5 12h11" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/></svg></button>
     <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -45,6 +50,9 @@ function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); O.choose(R.kin
 /* "which number": the apples wait under cloths until we check */
 function hide() { O.cover(0, true); O.cover(1, true); O.setApples(0, R.n[0], 'row'); O.setApples(1, R.n[1], 'row'); }
 function unhide() { O.cover(0, false); O.cover(1, false); }
+/* Ari says something: he grows, and his bubble shows it */
+async function ari(html, line) { $('bub').innerHTML = html; $('bub').hidden = false; $('ari').classList.add('talk'); await FR.say(line); $('ari').classList.remove('talk'); $('bub').hidden = true; }
+const CHIP = i => '<i class="chip" style="background:' + (i ? '#3D8FE0' : '#FF8A3D') + '"></i>';
 function finish() { const d = done; done = null; d(R.misses === 0); }
 async function lineUp() {   /* we line them up together: partners join, the leftovers show who has more */
   await FR.say("Let's line them up."); const n = Math.min(O.count(0), O.count(1)); for (let k = 0; k < n; k++) await O.pair(k, k);
@@ -76,15 +84,23 @@ function play(F, i) {
     if (R.kind === 'spread') {
       const few = R.n[0] < R.n[1] ? 0 : 1; R.how = 'row'; O.setApples(0, R.n[0], 'row'); O.setApples(1, R.n[1], 'row');
       O.spread(few, true); O.spread(1 - few, false); O.sideSpot(0); O.sideSpot(1); O.glowSide(few, true);
-      await F.say('Ari says: ' + NAME[few] + ' has more! His are spread out.'); O.glowSide(few, false);
+      await ari(CHIP(few), 'Ari says: ' + NAME[few] + ' has more! His are spread out.'); O.glowSide(few, false);
       open(); await F.say('Is Ari right? Tap the blanket that really has more.', { repeat: 'Tap the blanket that really has more.' });
     } else if (R.kind === 'fix') {
+      if (i === 1) {   /* the first time: watch me fix one */
+        O.setApples(0, 2, 'row'); O.setApples(1, 4, 'row'); $('add').hidden = $('check').hidden = false;
+        await F.say('Watch me. Dovid has two. One more is three.'); await F.handTo(document.querySelector('.tspot[data-id="a1-3"]')); await F.handTap(); await O.take(1);
+        await F.say('Shmuel had four. I take one away. Three!'); await F.handTo($('check')); await F.handTap(); await F.say('Now you!'); }
       O.setApples(0, R.base, 'row'); O.setApples(1, R.put, 'row');
-      await F.say('Ari tried to give Shmuel one more than Dovid.'); O.glowSide(0, true); await F.say('Dovid has ' + F.word(R.base) + '. Oops! Shmuel has ' + F.word(R.put) + '.'); O.glowSide(0, false); open();
+      await ari(CHIP(1), 'Ari tried to give Shmuel one more than Dovid.'); O.glowSide(0, true); await F.say('Dovid has ' + F.word(R.base) + '. Oops! Shmuel has ' + F.word(R.put) + '.'); O.glowSide(0, false); open();
       await F.say('Fix Shmuel\'s apples. Then tap the check.', { repeat: 'One more than ' + F.word(R.base) + '. Fix it, then check.' });
     } else {
+      if (i === 2) {   /* the first time: watch me check a number */
+        const keep = R.n; R.n = [3, 5]; hide(); $('c0').innerHTML = U5.num(3); $('c1').innerHTML = U5.num(5);
+        await F.say('Watch me. Three or five? Five comes later. Five is more!'); await F.handTo($('c1')); await F.handTap();
+        O.cover(0, false); O.cover(1, false); await F.say('See? Shmuel has more apples. Now you!'); R.n = keep; }
       hide(); $('c0').innerHTML = U5.num(R.n[0]); $('c1').innerHTML = U5.num(R.n[1]);
-      const lo = Math.min(...R.n), hi = Math.max(...R.n); await F.say('Ari says: ' + F.word(lo) + ' is more than ' + F.word(hi) + '!');
+      const lo = Math.min(...R.n), hi = Math.max(...R.n); await ari(U5.num(lo), 'Ari says: ' + F.word(lo) + ' is more than ' + F.word(hi) + '!');
       open(); await F.say('Show Ari. Tap the number that is more.', { repeat: 'Which is more, ' + F.word(R.n[0]) + ' or ' + F.word(R.n[1]) + '?' });
     }
   });
