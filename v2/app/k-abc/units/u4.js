@@ -128,9 +128,9 @@ const hunt = {
       /* the peek loop: one picture at a time; every other one starts with c */
       const peek = async () => { const isYes = k % 2 === 1, w = isYes ? yes[(k >> 1) % yes.length] : no[(k >> 1) % no.length], bi = Math.floor(rnd(0, 3)) % 3, b = bushes[bi]; k++;
         const it = G.item(w, () => b.position.clone().add(V(0, n() ? 1.0 : 1.4, n() ? 0.1 : 0.2)), { size: n() ? 0.7 : 0.95, data: { yes: isYes } }); cur = it; it.say();
-        const T0 = S.t, stay = FAST ? 3.0 : 3.2; await new Promise(res => { const id = setInterval(() => { if (it.data.hit || S.t - T0 > stay || got >= 3) { clearInterval(id); res(); } }, 50); });
+        const T0 = S.t, stay = FAST ? 3.0 : 3.2; it.data.until = T0 + stay; await new Promise(res => { const id = setInterval(() => { if (it.data.hit || S.t - T0 > stay || got >= 3) { clearInterval(id); res(); } }, 50); });
         if (!it.data.hit) { cur = null; await it.remove(200); } };
-      const setExp = () => { const c2 = cur && cur.live && !cur.data.hit ? cur : null; G.expect(c2 && c2.data.yes ? { kind: 'tap', at: c2 } : { kind: 'wait' }); G.A.wrongMove = c2 && !c2.data.yes ? { kind: 'tap', at: c2 } : null; };
+      const setExp = () => { const c2 = cur && cur.live && !cur.data.hit && (cur.data.until || 1e9) - S.t > 1.2 ? cur : null;   /* not while it is about to hide */ G.expect(c2 && c2.data.yes ? { kind: 'tap', at: c2 } : { kind: 'wait' }); G.A.wrongMove = c2 && !c2.data.yes ? { kind: 'tap', at: c2 } : null; };
       const timer = setInterval(setExp, 120);
       G.onItemTap = async it => { if (busy || it.data.hit || !it.live) return; busy = true;
         if (it.data.yes) { it.data.hit = true; got++; const p0 = it.obj.position.clone(); await S.tween(350, e => it.obj.position.lerpVectors(p0, cat.position.clone().add(V(0, 1.2, 0)), e)); await G.right(cat.position.clone().add(V(0, 1, 0)), say(it.name) + '! Got it!'); await it.remove(200); if (got < 3) G.newRound(); }

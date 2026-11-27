@@ -276,8 +276,8 @@ export function worldE(S) {
       return { hit: hitBall(S2, egg.position, 0.8), at: () => egg.position.clone(), react: () => wob = 1, cheer: () => { wob = 1; hatch = 1.5; } }; } });
   return W;
 }
-LW.g = { word: 'grapes', make: S => worldG(S), mouth: 'g', action: 'Gulp a drink of water! G, g!', rhyme: ['Around the grapes, then the vine goes down and curls.'] };
+LW.g = { word: 'grapes', make: S => worldG(S), mouth: 'g', action: 'Gulp a drink of water! Glug, glug!', rhyme: ['Around the grapes, then the vine goes down and curls.'] };
 LW.o = { word: 'octopus', make: S => worldO(S), mouth: 'o', action: 'Open wide, like the doctor says!', rhyme: ['Start at the top, and all the way around.'] };
-LW.c = { word: 'cat', make: S => worldC(S), mouth: 'c', action: 'Cough a tiny cough. C, c!', rhyme: ['Start at her head, and curl around.'] };
-LW.k = { word: 'kite', make: S => worldK(S), mouth: 'k', action: 'Kick your foot! K, k!', note: ['This one says the same sound as the cat letter!'], rhyme: ['The tall pole down, then in, and out.'] };
+LW.c = { word: 'cat', make: S => worldC(S), mouth: 'c', action: 'Pretend to cough. A tiny one!', rhyme: ['Start at her head, and curl around.'] };
+LW.k = { word: 'kite', make: S => worldK(S), mouth: 'k', action: 'Kick your foot, like a ball!', note: ['This one says the same sound as the cat letter!'], rhyme: ['The tall pole down, then in, and out.'] };
 LW.e = { word: 'egg', make: S => worldE(S), mouth: 'e', action: 'Wobble like an egg!', rhyme: ['Straight across, then up and around the egg.'] };
