@@ -171,6 +171,12 @@ export function startGame(cfg) {
     if (BM) { plank(BX.w + 0.06, 0.1, BX.t + 0.06, 0, BX.h, -BX.d / 2 + BX.t / 2, BM.rim); plank(BX.w + 0.06, 0.1, BX.t + 0.06, 0, BX.h * 0.8, BX.d / 2 - BX.t / 2, BM.rim);
       plank(BX.t + 0.06, 0.1, BX.d + 0.06, -BX.w / 2 + BX.t / 2, BX.h, 0, BM.rim); plank(BX.t + 0.06, 0.1, BX.d + 0.06, BX.w / 2 - BX.t / 2, BX.h, 0, BM.rim); }
     if (LK && LK.treasures.decorBox) LK.treasures.decorBox(g, BX);   /* the box belongs to the world: a farm wagon, a treasure chest, a pastry box ... */
+    if (cfg.sortBy === 'color' && bc.color) {   /* sorting by colour: the whole box is painted its colour, so the boy sees at once which box is red, blue or yellow (Esti, 2026-11-27) */
+      const hsl = {}; new THREE.Color(bc.color).getHSL(hsl); const col = hsl.h > 0.1 && hsl.h < 0.2 ? '#FFEE00' : bc.color;   /* yellow stays yellow (the light would turn it orange) */
+      const cm = new THREE.MeshStandardMaterial({ color: col, roughness: 0.45, toneMapped: false }), cin = new THREE.MeshStandardMaterial({ color: col, roughness: 0.8, toneMapped: false });
+      const yel = col === '#FFEE00'; cm.color.multiplyScalar(yel ? 1 : 0.62); cin.color.multiplyScalar(yel ? 1 : 0.72); if (yel) { cm.emissive = new THREE.Color('#5A5200'); cin.emissive = new THREE.Color('#6A6000'); }   /* the bright sun lifts every colour; this keeps red red, blue blue and yellow yellow */
+      g.children.filter(c => c.isMesh).forEach((m, i) => { if (i === 0) m.material = cin; else if (i <= 8) m.material = cm; });   /* floor, walls and rims all in the box's colour */
+    }
     const paintM = new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 });
     if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none (new look: bigger, on a card tilted up to face the boy) */
       const card = new THREE.Group(); card.position.set(0, LK ? BX.h * 0.62 : BX.h * 0.4, BX.d / 2 + (LK ? 0.26 : 0.005)); if (LK) card.rotation.x = -0.55; g.add(card);
