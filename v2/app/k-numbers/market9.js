@@ -101,7 +101,7 @@ export function mount(host, opt) {
   }
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false); narrow = Wd < Hh * 0.95 || Wd < 700; layout();
-    const span = narrow ? 6.2 : 9.6, needH = narrow ? 5.4 : 4.6;
+    const span = narrow ? 7.0 : 9.6, needH = narrow ? 5.4 : 4.6; center.x = narrow ? 0.3 : 0;   /* phone: the basket on the right stays on screen */
     const [b0, b1] = band(), bc = (b0 + b1) / 2, bh = Math.max(120, b1 - b0), fullH = Hh + 2 * Math.abs(Hh / 2 - bc), tn = Math.tan(THREE.MathUtils.degToRad(V / 2));
     dist = Math.max(span * fullH / (2 * Wd * tn), needH * fullH / (2 * tn * bh));
     camera.aspect = Wd / fullH; camera.fov = V; camera.setViewOffset(Wd, fullH, 0, fullH / 2 - bc, Wd, Hh); camera.updateProjectionMatrix();
