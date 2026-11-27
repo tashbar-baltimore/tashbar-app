@@ -174,19 +174,22 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     [-0.22, 0.22].forEach(d => { const band = new THREE.Mesh(new THREE.BoxGeometry(e * 1.02, e * 1.02, e * 0.05), twine); band.position.z = d * e; g.add(band); });
     g.position.y = e / 2; return g;
   }
-  function henFeather() {   /* a warm brown hen's feather, cream at the quill end (white was lost on the pale mat) */
-    const sh = new THREE.Shape(); sh.moveTo(-0.8, 0); sh.bezierCurveTo(-0.5, 0.42, 0.35, 0.48, 0.8, 0.03); sh.bezierCurveTo(0.35, -0.36, -0.5, -0.34, -0.8, 0);
-    const tex = once('featherT', () => paint(256, 128, (x, w, h) => { const g = x.createLinearGradient(0, 0, w, 0); g.addColorStop(0, '#FFF3E0'); g.addColorStop(0.45, '#D9935A'); g.addColorStop(1, '#A8622F'); x.fillStyle = g; x.fillRect(0, 0, w, h);
-      x.strokeStyle = 'rgba(255,240,220,.35)'; x.lineWidth = 1.5; for (let i = 0; i < 40; i++) { const px = i / 40 * w; x.beginPath(); x.moveTo(px, h / 2); x.lineTo(px + 18, 4); x.moveTo(px, h / 2); x.lineTo(px + 18, h - 4); x.stroke(); } }));
-    const geo = new THREE.ShapeGeometry(sh, 24), uv = geo.attributes.uv, p = geo.attributes.position; for (let i = 0; i < p.count; i++) uv.setXY(i, (p.getX(i) + 0.8) / 1.6, (p.getY(i) + 0.45) / 0.9);
-    const f = new THREE.Group(), vane = new THREE.Mesh(geo, new PM({ color: '#FFFFFF', map: tex, roughness: 0.85, sheen: 1, sheenColor: C('#FFFFFF'), side: THREE.DoubleSide })); vane.rotation.x = -Math.PI / 2 + 1.25; vane.scale.setScalar(1.45); f.add(vane);
-    const quill = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.012, 1.75, 6), once('quill', () => new PM({ color: '#E2D2B6', roughness: 0.5 }))); quill.rotation.z = Math.PI / 2; quill.position.set(0.05, 0.01, 0); f.add(quill);
-    f.position.y = 0.35; f.rotation.y = 0.2; return f;
+  function henFeather(color) {   /* a small light feather (review 2: the brown one read as a leaf and looked bigger than the rock): barbs drawn one by one from the quill, a soft fluffy end, light blue */
+    const col = color || '#6FB3E6';
+    const tex = once('featherT' + col, () => paint(512, 192, (x, w, h) => { x.clearRect(0, 0, w, h); const c = new THREE.Color(col), lite = '#' + c.clone().lerp(new THREE.Color('#FFFFFF'), 0.45).getHexString(), dark = '#' + c.clone().multiplyScalar(0.8).getHexString();
+      const q0 = 40, q1 = w - 24, mid = h / 2, env = t => Math.sin(Math.PI * Math.min(1, t * 1.08)) * (0.42 - 0.12 * t) * h;   /* how far the barbs reach along the feather */
+      x.lineCap = 'round';
+      for (let i = 0; i < 120; i++) { const t = i / 119, px = q0 + (q1 - q0) * t, L = env(t), gap = (i % 23 === 7) || (i % 31 === 15);   /* a few gaps, like a real feather */
+        if (gap) continue; [-1, 1].forEach(sd => { x.strokeStyle = i % 3 ? col : lite; x.lineWidth = 4; x.beginPath(); x.moveTo(px, mid); x.quadraticCurveTo(px + L * 0.35, mid + sd * L * 0.55, px + L * 0.55, mid + sd * L); x.stroke(); }); }
+      for (let i = 0; i < 26; i++) { const px = q0 + i * 2.2, a = (i % 2 ? 1 : -1) * (0.6 + (i % 5) * 0.15); x.strokeStyle = lite; x.lineWidth = 3; x.beginPath(); x.moveTo(px, mid); x.lineTo(px + Math.cos(a) * 26, mid + Math.sin(a) * 30); x.stroke(); }   /* fluffy down at the quill end */
+      x.strokeStyle = dark; x.lineWidth = 5; x.beginPath(); x.moveTo(8, mid + 3); x.quadraticCurveTo(w * 0.5, mid - 4, q1 + 10, mid - 2); x.stroke(); }, { srgb: true }));
+    const vane = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.6), new PM({ color: '#FFFFFF', map: tex, transparent: true, alphaTest: 0.35, roughness: 0.9, side: THREE.DoubleSide }));
+    vane.rotation.x = -Math.PI / 2 + 1.25; vane.scale.setScalar(0.95); const f = new THREE.Group(); f.add(vane); f.position.y = 0.3; f.rotation.y = 0.2; return f;
   }
   T.weighable = (W) => {
     if (world !== 'farm') return null;
     const s = W.s || 1;
-    const o = W.look === 'rock' ? fieldStone(s) : W.look === 'ball' ? woolBall(s, W.color) : W.look === 'balloon' ? balloon(s, W.color) : W.look === 'block' ? hayBale(s) : W.look === 'feather' ? henFeather() : null;
+    const o = W.look === 'rock' ? fieldStone(s) : W.look === 'ball' ? woolBall(s, W.color) : W.look === 'balloon' ? balloon(s, W.color) : W.look === 'block' ? hayBale(s) : W.look === 'feather' ? henFeather(W.color) : null;
     if (!o) return null;
     const first = []; o.traverse(c => { if (c.isMesh && !first.length) first.push(c); }); if (!o.material) o.material = first[0].material;
     o.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
