@@ -20,6 +20,8 @@
 .u2stone .faint{ position:absolute; inset:0; opacity:.3; }   /* each stone's own dots, faint: what the stone is, next to what was said */
 #ok{ transition:filter .3s, opacity .3s, transform .3s; width:clamp(96px,14vh,120px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
 #ok svg{ width:60%; height:60%; position:relative; }
+@media (max-width:760px){ #ok{ width:80px; } }   /* round 3 review: on a phone the thumbs-up is no bigger than a stone */
+.u2stone .okmark{ position:absolute; right:-8%; top:-8%; width:42%; aspect-ratio:1; border-radius:50%; background:#2EAA4F; color:#fff; font:900 clamp(18px,3vh,30px)/1 system-ui,sans-serif; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 0 #1E7A37; z-index:3; }
 #path .u2stone.tapme{ cursor:pointer; }
 #path .u2path{ row-gap:clamp(60px,9vh,80px); max-width:min(1240px,120vh); }
 /* K clarity review (2026-11-27): what he said is BIG (at least 70% of the stone), and the stone and its bubble glow together
@@ -63,7 +65,7 @@
   async function count(F) {
     $('ok').classList.add('wait'); P.reset(); plain(); P.stones.forEach(function (s) { s.classList.add('tapme'); });
     for (var i = 0; i < R.w.length; i++) { P.place(i, true); bubble(i); glow(i); await F.say(U2.Word(R.w[i]) + (i === R.w.length - 1 ? '.' : ','), { noRepeat: true }); }
-    glow(-1); $('ok').classList.remove('wait');   /* counting done: the thumbs-up is bright again */
+    glow(-1); P.place(-1); P.stones.forEach(function (s) { s.classList.remove('lit'); }); $('ok').classList.remove('wait');   /* counting done: no stone stays bright, the ball goes, the thumbs-up is bright again */   /* counting done: the thumbs-up is bright again */
   }
   /* a stone counts as "found" if the word there is wrong, or (said twice) it is either of the two same words */
   function isFound(i) { if (i < 0) return R.bad < 0; if (R.w[i] !== i + 1) return true; return R.kind === 'twice' && R.w[i] === R.w[R.bad]; }
@@ -84,11 +86,12 @@
       NK.sound.yes(); await FR.say('Yes! You found it!'); await showRight(FR, where); await FR.yes(P.stones[where], 'Now it is right!'); d(R.misses === 0); return;
     }
     FR.oops(where < 0 ? $('ok') : P.stones[where]); R.misses++;
-    if (where >= 0) await FR.say(R.who + ' said ' + U2.word(R.w[where]) + ' here. That is right.');
+    function tick() { if (where >= 0 && !P.stones[where].querySelector('.okmark')) P.stones[where].insertAdjacentHTML('beforeend', '<span class="okmark">✓</span>'); }   /* a green tick: this stone was counted right */
+    if (where >= 0) { tick(); await FR.say(R.who + ' said ' + U2.word(R.w[where]) + ' here. That is right.'); }
     else await FR.say('Listen. ' + R.who + ' made a mistake.');
     if (R.misses === 1) {
       if (where < 0) { await count(FR); await FR.say("Look again. Tap where he went wrong."); }
-      else { await FR.say('Look and listen again. Did he make a mistake?'); await count(FR); }
+      else { await FR.say('Look and listen again. Did he make a mistake?'); await count(FR); tick(); }
       GAME.phase = 'answer'; FR.lock(false); hooks(); return; }
     var d2 = done; done = null;
     if (R.bad < 0) await FR.say(R.who + ' counted right this time.'); else await showRight(FR);
@@ -114,7 +117,7 @@
     },
     demo: async function (F) {
       P = U2.path($('path'), { from: 1, to: 4 }); plain(); R = { who: 'Mendy', kind: 'skip', w: words(4, 'skip', 2), bad: 2, misses: 0 };
-      await F.say('Mendy counts. Did he make a mistake?'); await count(F);
+      await F.say('Watch me. Mendy counts. Did he make a mistake?'); await count(F);
       await F.say('Look! He said four on the three stone.');
       await F.handTo(P.stones[2]); await F.handTap(); NK.sound.yes();
       await showRight(F);

@@ -188,7 +188,7 @@ export function mount(host, opt) {
     /* "tap a blanket": both blankets shine white while he chooses */
     choose(on) { sides.forEach(s => { s.pick.visible = on; }); },
     /* the "spread out" trick: a few apples spread wide across the blanket, or many squeezed close together */
-    spread(i, wide) { const s = sides[i], n = s.apples.length, gap = wide ? Math.min(1.25, (W - 0.5) / Math.max(1, n - 1)) : 0.62;   /* close together, but every apple stands apart and can be counted (K-CLARITY-RULES 8) */
+    spread(i, wide) { const s = sides[i], n = s.apples.length, gap = wide ? Math.min(1.25, (W - 0.5) / Math.max(1, n - 1)) : 0.66;   /* close together, but every apple stands apart and can be counted (K-CLARITY-RULES 8) */
       s.slots = s.apples.map((a, j) => new THREE.Vector3(-((n - 1) * gap) / 2 + j * gap, 0.05, 0)); s.apples.forEach((a, j) => a.position.copy(s.slots[j])); },
     /* one more: an apple drops gently from above onto its place on a side's blanket */
     async drop(i) {
@@ -209,7 +209,9 @@ export function mount(host, opt) {
       /* the partners line up: column k, at the edges that face each other (one behind the other), so the pairs make a line */
       if (narrow) { const k = api.npairs = (api.npairs || 0) + 1, maxp = Math.min(api.count(0), api.count(1)), gap = Math.min(0.78, (W - 0.7) / Math.max(1, maxp)), x = -((maxp - 1) * gap) / 2 + (k - 1) * gap;
         const ta = new THREE.Vector3(x, 0.05, -D / 2 + 0.4), tb = new THREE.Vector3(x, 0.05, D / 2 - 0.4), fa = a.position.clone(), fb = b.position.clone();
-        [[0, ta], [1, tb]].forEach(([i, t]) => sides[i].apples.forEach(o => { if (!o.userData.paired && Math.hypot(o.position.x - t.x, o.position.z - t.z) < 0.62) o.position.z += (i ? -0.7 : 0.7); }));
+        /* the apples not paired yet wait in their own row, away from the line of partners, so a left-over apple never sits on a paired one (round 3 review) */
+        [0, 1].forEach(i => { const left = sides[i].apples.filter(o => !o.userData.paired), lg = Math.min(0.78, (W - 0.7) / Math.max(1, left.length - 1));
+          left.forEach((o, q) => { o.position.set(-((left.length - 1) * lg) / 2 + q * lg, 0.05, i ? -0.35 : 0.35); }); });
         await tween(300, e => { a.position.lerpVectors(fa, ta, e); b.position.lerpVectors(fb, tb, e); }); }
       const pa = new THREE.Vector3(), pb = new THREE.Vector3(); a.getWorldPosition(pa); b.getWorldPosition(pb);
       const rib = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1, 8), new THREE.MeshBasicMaterial({ color: '#FFC93D', toneMapped: false }));

@@ -29,7 +29,7 @@ function want() { return R.base + R.d; }
 function moves(to) { const out = [], c = O.count(1); for (let k = c; k < to; k++) out.push({ tap: '#add' }); for (let k = c; k > to; k--) out.push({ tap: '.tspot[data-id="a1-' + (k - 1) + '"]' }); return out; }
 function hooks() { GAME.right = () => moves(want()).concat([{ tap: '#check' }]); GAME.wrong = () => moves(R.d === 0 ? R.base + 1 : R.base).concat([{ tap: '#check' }]); }   /* the usual slip: copying Dovid's number */
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
-function change(fn) { busy = busy.then(fn); return busy; }
+function change(fn) { $('check').classList.remove('dim'); busy = busy.then(fn); return busy; }   /* the check stays grey until Shmuel's apples change (round 3 review: the apples come first) */
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); await busy;
   const have = O.count(1), w = want();
@@ -37,8 +37,12 @@ async function check() {
     await FR.yes($('check'), R.d > 0 ? 'Yes! ' + FR.Word(w) + ' is one more than ' + FR.word(R.base) + '.' : R.d < 0 ? 'Yes! ' + FR.Word(w) + ' is one less than ' + FR.word(R.base) + '.' : 'Yes! The same. ' + FR.Word(w) + ' and ' + FR.word(w) + '.');
     O.sides[1].pose('idle'); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops($('check')); R.misses++;
+  /* the help SHOWS how (round 3 review): Shmuel gets Dovid's apples, then one drops in or lifts away, then his own apples come back */
   O.glowSide(0, true); await FR.say("Let's look. Dovid has " + FR.word(R.base) + '.'); O.glowSide(0, false);
-  await FR.say(R.d > 0 ? 'One more is ' + FR.word(w) + '.' : R.d < 0 ? 'One less is ' + FR.word(w) + '.' : 'The same is ' + FR.word(w) + '.');
+  O.setApples(1, R.base, 'row'); O.glowSide(1, true); await FR.say('The same is ' + FR.word(R.base) + '.');
+  if (R.d > 0) await O.drop(1); else if (R.d < 0) await O.take(1);
+  if (R.d) await FR.say((R.d > 0 ? 'One more is ' : 'One less is ') + FR.word(w) + '.');
+  await FR.wait(500); O.glowSide(1, false); O.setApples(1, have, 'row');
   await FR.say(have < w ? 'Shmuel needs ' + FR.word(w - have) + ' more. Tap the apple button.' : 'Too many. Tap an apple to put it back.');
   open();
 }
@@ -48,7 +52,9 @@ function play(F, i) {
     const [b, d] = PLAN[i]; R = { base: b, d, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true);
     O.setApples(0, b, 'row'); O.setApples(1, d < 0 ? b : 0, 'row');
     O.glowSide(0, true); await F.say('Dovid has ' + F.word(b) + ' apples.'); O.glowSide(0, false);
-    open(); await F.say(d > 0 ? 'Give Shmuel one more than Dovid!' : d < 0 ? 'Give Shmuel one less than Dovid!' : 'Give Shmuel the same as Dovid!', { repeat: d < 0 ? 'Tap an apple to take it away. Then tap the check.' : 'Tap the apple button. Then tap the check.' });
+    $('check').classList.add('dim'); open();
+    if (d < 0) await F.say('Give Shmuel one less than Dovid!');
+    await F.say(d > 0 ? 'Give Shmuel one more than Dovid! Tap the apple button.' : d < 0 ? 'Tap an apple to take one away.' : 'Give Shmuel the same as Dovid! Tap the apple button.', { repeat: d < 0 ? 'Tap an apple to take it away. Then tap the check.' : 'Tap the apple button. Then tap the check.' });
   });
 }
 FR.game({
