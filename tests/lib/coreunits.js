@@ -57,7 +57,7 @@ function server() {
   return { fails, oks: fails.length ? [] : ['unit checks (server): one pre-check per unit, shown skills leave the path (on for every boy; the test switch still keeps it to TEST- boys), a missed skill comes back, 80% passes and stays passed, no money or mastery'] };
 }
 
-const LONG_OLD = ['C68.U75', 'W13.U31', 'S.U04', 'S.U06', 'S.U07', 'S.U08'];   /* may only shrink */
+const LONG_OLD = ['C68.U75', 'S.U04', 'S.U06', 'S.U07', 'S.U08'];   /* may only shrink */
 async function page(pg) {
   const fails = [], oks = [];
   /* every live unit: a lesson question keeps its reading passage in the boss level (the lesson keeps it in pic), and the unit's own

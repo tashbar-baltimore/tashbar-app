@@ -217,21 +217,85 @@
   if (window.TLCORE) TLCORE.add('F', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
   /* Grade 2 word-study unit checks (docs/core-growth/HOW-TO-ADD-A-UNIT.md): F.U2<n> = Grade 2, F-map Unit n. Each mixes the unit's skills with 2 from earlier units. */
   if (window.TLCORE && TLCORE.units) {
-    TLCORE.units.add({ id: 'F.U21', title: 'Syllables and Long Vowels', c: 'READ', grade: 2,
+    TLCORE.units.add({ id: 'F.U21', pre: 'lessons', title: 'Syllables and Long Vowels', c: 'READ', grade: 2,
       skills: ['READ.PHON.L03.04', 'READ.PHON.L03.01', 'READ.PHON.L03.05', 'READ.PHON.L03.06', 'READ.FLU.L03.01'],
-      review: ['READ.LV.L02.01', 'READ.PHON.L02.03'], n: 10 });
-    TLCORE.units.add({ id: 'F.U22', title: 'Vowel Teams 2', c: 'READ', grade: 2,
+      review: ['READ.LV.L02.01', 'READ.PHON.L02.03'], n: 10,
+    items: [
+      {skill: "READ.PHON.L03.04",type: "cloze",t: "Read \"Fri | day\". The first part, \"Fri\", is ___.",o: ["closed, so i is short","open, so i is long","closed, so i is long"],a: "open, so i is long",say: "Is the first part open or closed?",how: "Look at the last letter of the first part. Vowel or consonant?"},
+      {skill: "READ.PHON.L03.04",type: "cloze",t: "Read hem, he and hen. The open word, with a long e, is ___.",o: ["hem","hen","he"],a: "he",say: "Find the open word.",how: "Look at the last letter. Does a consonant close the door?"},
+      {skill: "READ.PHON.L03.01",type: "cloze",t: "Yehuda ate a muffin. Where do you snip \"muffin\"? ___",o: ["mu | ffin","muff | in","muf | fin"],a: "muf | fin",say: "Snip the long word.",how: "Find the two consonants between the vowels. Snip between them."},
+      {skill: "READ.PHON.L03.01",type: "cloze",t: "Ima held the pot by the handle. Where do you snip \"handle\"? ___",o: ["han | dle","hand | le","ha | ndle"],a: "han | dle",say: "Where does handle snip?",how: "Ends in le? Keep one consonant with the le."},
+      {skill: "READ.PHON.L03.05",type: "cloze",t: "Try \"le | mon\" with a long e. Not a word! Slide the line: ___",o: ["l | emon","lemo | n","lem | on"],a: "lem | on",say: "Slide the line to make a real word.",how: "Make the first vowel short. Where does the line go now?"},
+      {skill: "READ.PHON.L03.05",type: "cloze",t: "Read \"tulip\". The u sounds ___.",o: ["short, like up","long, like you","quiet, not heard"],a: "long, like you",say: "How does the u sound?",how: "Split before the middle consonant first. Is it a real word?"},
+      {skill: "READ.PHON.L03.06",type: "cloze",t: "Read \"pinecone\". The number of parts with a long vowel is ___.",o: ["one","two","none"],a: "two",say: "Count the long parts.",how: "Split it into two parts. Check each part for a quiet e."},
+      {skill: "READ.PHON.L03.06",type: "cloze",t: "In \"flagpole\", the long vowel is in the part ___.",o: ["pole","flag","both parts"],a: "pole",say: "Which part is long?",how: "A quiet e at the end makes the vowel say its name."},
+      {skill: "READ.FLU.L03.01",type: "evidence",q: "Which line should you read in an excited voice?",p: ["\"Can we go to the park now?\" asked Ezra.","\"The cake is ready!\" said Ima.","Nissim sat down to eat."],a: 1,look: "the end mark of each line",say: "Tap the excited line.",how: "Look at the mark at the end of each line."},
+      {skill: "READ.FLU.L03.01",type: "cloze",t: "Read: \"On Friday, we cleaned the house.\" At the comma, you ___.",o: ["rest a tiny bit","stop and drop your voice","make your voice go up"],a: "rest a tiny bit",say: "What do you do at a comma?",how: "Each mark tells your voice what to do. What does a comma say?"}
+    ] });
+    TLCORE.units.add({ id: 'F.U22', pre: 'lessons', title: 'Vowel Teams 2', c: 'READ', grade: 2,
       skills: ['READ.LV.L03.01', 'READ.LV.L03.02', 'READ.LV.L03.03', 'READ.LV.L03.04', 'READ.LV.L03.05', 'READ.FLU.L03.02'],
-      review: ['READ.PHON.L03.04', 'READ.PHON.L03.05'], n: 10 });
-    TLCORE.units.add({ id: 'F.U23', title: 'Bossy R and Tricky Endings', c: 'READ', grade: 2,
+      review: ['READ.PHON.L03.04', 'READ.PHON.L03.05'], n: 10,
+    items: [
+      {skill: "READ.LV.L03.01",type: "cloze",t: "Yitzy put on his ___ to walk in the snow.",o: ["boots","bats","bottles"],a: "boots",say: "Read each word. Which one fits?",how: "Which word has oo, like moon, and makes sense?"},
+      {skill: "READ.LV.L03.01",type: "cloze",t: "Refael wore a gold ___ in the Purim play.",o: ["crow","crown","crayon"],a: "crown",say: "Pick the word that makes sense.",how: "Read each word. Ow can say oh or ow. Which fits?"},
+      {skill: "READ.LV.L03.02",type: "cloze",t: "Netanel flew his kite up ___ in the sky.",o: ["hay","high","hidden"],a: "high",say: "Which word fits the sentence?",how: "Which word makes sense? Remember: igh says i, like night."},
+      {skill: "READ.LV.L03.02",type: "cloze",t: "Read \"windy\". The y at the end says ___.",o: ["eye, like my","yuh, like yes","ee, like see"],a: "ee, like see",say: "What does the y say?",how: "Clap it first. One beat or two beats?"},
+      {skill: "READ.LV.L03.03",type: "cloze",t: "The cat has a sharp ___.",o: ["clau","clal","claw"],a: "claw",say: "Pick the right spelling.",how: "Where is the aw sound: at the end or inside?"},
+      {skill: "READ.LV.L03.03",type: "cloze",t: "Hillel is too ___ to reach the top shelf.",o: ["small","smawll","smaul"],a: "small",say: "Pick the right spelling.",how: "Remember the three ways to spell aw. Which one fits this word?"},
+      {skill: "READ.LV.L03.04",type: "cloze",t: "Shimon ___ a picture of the shul.",o: ["drum","dress","drew"],a: "drew",say: "Which word makes sense?",how: "Read each word. Which one says oo and fits?"},
+      {skill: "READ.LV.L03.04",type: "cloze",t: "Read \"threw\". The ew says ___.",o: ["oo, like zoo","oh, like snow","ow, like a cow"],a: "oo, like zoo",say: "What does ew say?",how: "Think of the blue moon team. What sound do they make?"},
+      {skill: "READ.LV.L03.05",type: "cloze",t: "Good split for \"sailboat\": ___",o: ["sa | ilboat","sailb | oat","sail | boat"],a: "sail | boat",say: "Where should the split go?",how: "Find the vowel teams. Keep each team whole."},
+      {skill: "READ.LV.L03.05",type: "cloze",t: "In \"daydream\", the team in the second part is ___.",o: ["ay","ea","ream"],a: "ea",say: "Find the vowel team.",how: "Snip it into two small words. Find the team in each."},
+      {skill: "READ.FLU.L03.02",type: "evidence",q: "Which line is read in good scoops?",p: ["Shmuel read / a sefer after / Maariv.","Shmuel read a sefer / after Maariv.","Shmuel / read a / sefer after Maariv."],a: 1,look: "pauses only at the end of a scoop",say: "Tap the line with good scoops.",how: "Read each one softly. Which sounds like talking?"},
+      {skill: "READ.FLU.L03.02",type: "cloze",t: "Read: \"Tzvi swept the floor / in the kitchen.\" The scoop \"in the kitchen\" tells ___.",o: ["where","what he did","who did it"],a: "where",say: "What does this scoop tell?",how: "Ask: who, did what, where or when?"}
+    ] });
+    TLCORE.units.add({ id: 'F.U23', pre: 'lessons', title: 'Bossy R and Tricky Endings', c: 'READ', grade: 2,
       skills: ['READ.PHON.L03.02', 'READ.LV.L03.06', 'READ.PHON.L03.07', 'READ.PHON.L03.08', 'READ.FLU.L03.03'],
-      review: ['READ.LV.L03.03', 'READ.PHON.L03.06'], n: 10 });
-    TLCORE.units.add({ id: 'F.U24', title: 'Soft Letters and Quiet Letters', c: 'READ', grade: 2,
+      review: ['READ.LV.L03.03', 'READ.PHON.L03.06'], n: 10,
+    items: [
+      {skill: "READ.PHON.L03.02",type: "cloze",t: "We stayed inside during the ___.",o: ["storm","stamps","stop"],a: "storm",say: "Which word makes sense?",how: "Look for a vowel with r after it. Read them as one sound."},
+      {skill: "READ.PHON.L03.02",type: "cloze",t: "Read \"third\". The ir says ___.",o: ["ih, like it","ar, like a car","er, like her"],a: "er, like her",say: "What does ir say?",how: "Bossy R tells the vowel what to say. Read them together."},
+      {skill: "READ.LV.L03.06",type: "cloze",t: "Meir walked up the ___ to his room.",o: ["starts","stairs","stickers"],a: "stairs",say: "Pick the word that makes sense.",how: "Read each word carefully. Which one makes sense here?"},
+      {skill: "READ.LV.L03.06",type: "cloze",t: "Pesach comes once a ___.",o: ["yard","yellow","year"],a: "year",say: "Which word fits?",how: "Ear can say air or eer. Try eer first."},
+      {skill: "READ.PHON.L03.07",type: "cloze",t: "Split \"cradle\" as cra | dle. The a says ___.",o: ["a, like at","a, like ape","ar, like car"],a: "a, like ape",say: "How does the a sound?",how: "Is the first part open or closed?"},
+      {skill: "READ.PHON.L03.07",type: "cloze",t: "The word with a short first part is ___.",o: ["ankle","noble","staple"],a: "ankle",say: "Find the short first part.",how: "Let le take one consonant. Is the first part open or closed?"},
+      {skill: "READ.PHON.L03.08",type: "cloze",t: "The bird sat on the window ___.",o: ["lege","ledge","leadge"],a: "ledge",say: "Pick the right spelling.",how: "Short vowel or long vowel before the j sound?"},
+      {skill: "READ.PHON.L03.08",type: "cloze",t: "We built a sand castle at the ___.",o: ["beach","beatch","bech"],a: "beach",say: "Pick the right spelling.",how: "Long vowel or short vowel before the ch sound?"},
+      {skill: "READ.FLU.L03.03",type: "cloze",t: "Ima asked Yehuda, \"Did you feed the fish?\" The one talking is ___.",o: ["Yehuda","Ima","the fish"],a: "Ima",say: "Who is talking?",how: "Find the tag. Who asked?"},
+      {skill: "READ.FLU.L03.03",type: "evidence",q: "Which line should be read in a loud voice?",p: ["\"Shh, the baby is sleeping,\" whispered Rivky.","\"Is it time for Mincha?\" asked Ovadia.","\"Mazel tov!\" shouted the boys."],a: 2,look: "the tag word that tells how",say: "Tap the loud line.",how: "Read the tag. How did they say it?"}
+    ] });
+    TLCORE.units.add({ id: 'F.U24', pre: 'lessons', title: 'Soft Letters and Quiet Letters', c: 'READ', grade: 2,
       skills: ['READ.PHON.L03.09', 'READ.PHON.L03.10', 'READ.PHON.L03.11', 'READ.PHON.L03.12', 'READ.PHON.L03.03'],
-      review: ['READ.LV.L03.06', 'READ.PHON.L03.08'], n: 10 });
-    TLCORE.units.add({ id: 'F.U25', title: 'Endings That Change the Word', c: 'READ', grade: 2,
+      review: ['READ.LV.L03.06', 'READ.PHON.L03.08'], n: 10,
+    items: [
+      {skill: "READ.PHON.L03.09",type: "cloze",t: "The word with a c that says sss is ___.",o: ["clocks","comb","place"],a: "place",say: "Find the soft c.",how: "Look at the letter right after each c."},
+      {skill: "READ.PHON.L03.09",type: "cloze",t: "Read: \"Bubby got a nice coat.\" The word with a c that says sss is ___.",o: ["coat","nice","Bubby"],a: "nice",say: "Which c says sss?",how: "Check the letter after c. E, i or y?"},
+      {skill: "READ.PHON.L03.10",type: "cloze",t: "Read \"magic\". The g says ___.",o: ["juh, like jam","guh, like goat","ch, like chin"],a: "juh, like jam",say: "What does the g say?",how: "Look at the letter right after the g."},
+      {skill: "READ.PHON.L03.10",type: "cloze",t: "Pick the word where g says guh: ___",o: ["gel","large","gate"],a: "gate",say: "Find the hard g.",how: "Look at the letter after each g. E, i or y?"},
+      {skill: "READ.PHON.L03.11",type: "cloze",t: "Please ___ on the door before you come in.",o: ["knife","knock","kneeling"],a: "knock",say: "Which word makes sense?",how: "Kn says nnn. Read each word, then pick the one that fits."},
+      {skill: "READ.PHON.L03.11",type: "cloze",t: "Shloimy ___ a letter to his Zaidy.",o: ["wren","wrists","wrote"],a: "wrote",say: "Which word makes sense?",how: "Wr says rrr. Read each word, then pick the one that fits."},
+      {skill: "READ.PHON.L03.12",type: "cloze",t: "In class, we learn ___ to help us read.",o: ["phonics","fonics","fonnicks"],a: "phonics",say: "Pick the right spelling.",how: "Some fff words use ph. Check which two letters sit side by side."},
+      {skill: "READ.PHON.L03.12",type: "cloze",t: "At the school play, Ezra spoke into the ___.",o: ["microfone","microfhone","microphone"],a: "microphone",say: "Pick the right spelling.",how: "Which two letters, side by side, say fff?"},
+      {skill: "READ.PHON.L03.03",type: "cloze",t: "Bubby cut a ___ of kugel for each of us.",o: ["slice","slipper","slim"],a: "slice",say: "Which word makes sense?",how: "Read each word. Check what c says before e."},
+      {skill: "READ.PHON.L03.03",type: "cloze",t: "Read: \"Yisroel drew a knight on his kite.\" The word with a quiet k is ___.",o: ["Yisroel","knight","kite"],a: "knight",say: "Find the quiet k.",how: "Look at the start of each word. Where is k next to n?"}
+    ] });
+    TLCORE.units.add({ id: 'F.U25', pre: 'lessons', title: 'Endings That Change the Word', c: 'READ', grade: 2,
       skills: ['READ.PHON.L03.13', 'READ.PHON.L03.14', 'READ.PHON.L03.15', 'READ.PHON.L03.16', 'READ.PHON.L03.17', 'READ.FLU.L03.04'],
-      review: ['READ.PHON.L03.09', 'READ.LV.L03.05'], n: 10 });
+      review: ['READ.PHON.L03.09', 'READ.LV.L03.05'], n: 10,
+    items: [
+      {skill: "READ.PHON.L03.13",type: "cloze",t: "Yechiel is ___ a letter to his Saba.",o: ["writing","writeing","writting"],a: "writing",say: "Pick the right spelling.",how: "Does the base word end in a quiet e? What happens before -ing?"},
+      {skill: "READ.PHON.L03.13",type: "cloze",t: "Last week, we ___ to a new house.",o: ["moveed","movd","moved"],a: "moved",say: "Pick the right spelling.",how: "Base word ends in a quiet e? Then add -ed the right way."},
+      {skill: "READ.PHON.L03.14",type: "cloze",t: "Akiva ___ his little brother good night.",o: ["huged","hugged","huggeed"],a: "hugged",say: "Pick the right spelling.",how: "Short vowel and one last consonant? Then what do you do?"},
+      {skill: "READ.PHON.L03.14",type: "cloze",t: "Ima and Leah are ___ in the garden.",o: ["diging","diggeing","digging"],a: "digging",say: "Pick the right spelling.",how: "Short vowel and one last consonant? Then what do you do?"},
+      {skill: "READ.PHON.L03.15",type: "cloze",t: "Bubby ___ the latkes in oil for Chanukah.",o: ["fryed","fried","frid"],a: "fried",say: "Pick the right spelling.",how: "Consonant before y? What happens to y before -ed?"},
+      {skill: "READ.PHON.L03.15",type: "cloze",t: "Many ___ came to the shul kiddush.",o: ["families","familys","familyies"],a: "families",say: "Pick the right spelling.",how: "Consonant before y? What happens to y before -es?"},
+      {skill: "READ.PHON.L03.16",type: "cloze",t: "Shabbos is a calm and ___ day.",o: ["restless","restly","restful"],a: "restful",say: "Which word makes sense?",how: "Cover the ending. Read the base word. What does each ending add?"},
+      {skill: "READ.PHON.L03.16",type: "cloze",t: "Shh! The baby is sleeping, so talk ___.",o: ["quietly","quietness","quietful"],a: "quietly",say: "Which word fits?",how: "Cover each ending. Which ending tells how you do something?"},
+      {skill: "READ.PHON.L03.17",type: "cloze",t: "Itamar drank all his water. He went to ___ his cup.",o: ["unfill","disfill","refill"],a: "refill",say: "Which word makes sense?",how: "Peel off the prefix. What hint does each prefix give?"},
+      {skill: "READ.PHON.L03.17",type: "cloze",t: "Gedalya got a gift. He ran to ___ it.",o: ["rewrap","unwrap","prewrap"],a: "unwrap",say: "Which word makes sense?",how: "Peel off the prefix. What hint does each prefix give?"},
+      {skill: "READ.FLU.L03.04",type: "evidence",q: "Which reader sounds just right?",p: ["Mordechai read: \"We. Ate. Lunch. In. The. Sukkah.\"","Tzvi read: \"We ate lunch in the sukkah.\"","Eli read fast: \"We ate lunch sukkah.\""],a: 1,look: "the reader who sounds like talking",say: "Tap the just-right reader.",how: "Read each one. Which sounds like talking, with no words skipped?"},
+      {skill: "READ.FLU.L03.04",type: "cloze",t: "Akiva reads an easy line he knows well. He reads at a ___ speed.",o: ["steady","snail","racing"],a: "steady",say: "How fast should he read?",how: "Think of riding a bike on a smooth road."}
+    ] });
   }
 })();
 </script>
