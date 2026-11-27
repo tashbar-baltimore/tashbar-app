@@ -37,7 +37,7 @@ export default function setup(E, { struggled, unit }) {
     cards.forEach((c, i) => { if (c !== drag && !c.userData.busy) c.position.copy(cardHome(i)); c.scale.setScalar(P ? .8 : 1); });
   });
   E.onFrame(t => {
-    endStar.rotation.y = Math.sin(t * 1.5) * .5; endStar.scale.setScalar(P ? 1.45 : 1);   /* it rocks gently, never edge-on; bigger on a phone */
+    endStar.rotation.y = E.CALM ? 0 : Math.sin(t * 1.5) * .5; endStar.scale.setScalar(P ? 1.45 : 1);   /* it rocks gently, never edge-on; bigger on a phone */
     const fl = performance.now() < slotFlash; slotM.opacity = fl ? 1 : .45 + Math.sin(t * 3) * .15; slot.scale.setScalar(fl ? 1.3 : 1 + Math.sin(t * 3) * .04);
     cards.forEach((c, i) => { if (c !== drag && !c.userData.busy) c.position.y = cardHome(i).y + Math.sin(t * 2 + i) * .05; });
     const g = help && enabled && cards.find(c => word && c.userData.key === word.keys[word.gap]); if (g) { glow.position.copy(g.position).setZ(g.position.z - .3); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;

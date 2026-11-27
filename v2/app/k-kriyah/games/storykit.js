@@ -18,7 +18,7 @@ export function makeStory(E, unit, script) {
     if (p) { E.camBase.set(0, 2.4, 11.5); E.camTarget.set(0, 1.9, 0); } else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.4, 0); }
     if (script.layout) script.layout(E, props, p);
   });
-  E.onFrame(t => floaters.forEach(l => { if (!l.userData.base) return; l.position.y = l.userData.base.y + Math.sin(t * 2 + l.position.x) * .07; l.rotation.y = Math.sin(t * .9 + l.position.x) * .3; }));
+  E.onFrame(t => floaters.forEach(l => { if (!l.userData.base) return; if (E.CALM) { l.rotation.y = 0; return; }   /* calm: still, face-on */ l.position.y = l.userData.base.y + Math.sin(t * 2 + l.position.x) * .07; l.rotation.y = Math.sin(t * .9 + l.position.x) * .3; }));
   const float = (l, on = true) => { if (on) { l.userData.base = l.position.clone(); floaters.add(l); } else floaters.delete(l); };
   const showHand = obj => { const [x, y] = E.toScreen(E.worldPos(obj).add(new THREE.Vector3(.5, -.6, .6))); E.hand.at(x, y, true); };
   async function tapIt(l, line) {
@@ -130,7 +130,7 @@ export function makeStory(E, unit, script) {
       left.splice(left.indexOf(l), 1);
       E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .3, .5)), 20, 1); E.hop(l, .45);
       if (lines.length > 1) { const s0 = l.scale.x; E.tween(300, q => l.scale.setScalar(s0 * (1 + .18 * q))); }   /* more than one line: no star, which could sit under a letter above and look like a nekudah; the letter grows instead */
-      else { const st = E.star3d(.14); st.position.copy(l.position).add(new THREE.Vector3(0, sz * .85, .3)); E.scene.add(st); E.popIn(st); E.onFrame(t => st.rotation.y = t * 2); }
+      else { const st = E.CALM ? E.tick3d(.14) : E.star3d(.14); st.position.copy(l.position).add(new THREE.Vector3(0, sz * .85, .3)); E.scene.add(st); E.popIn(st); if (!E.CALM) E.onFrame(t => st.rotation.y = t * 2); }
       await E.say(E.nameLine(l.userData.key));
     }
     delete document.body.dataset.tapReady;

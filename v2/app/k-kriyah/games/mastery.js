@@ -30,14 +30,14 @@ export default function setup(E, { struggled, unit, id }) {
   /* a basket that fills up: every letter he gets right jumps in and stays, so he can watch his letters pile up */
   const basket = new THREE.Group(), wick = E.M(0xc68a52, { roughness: .7 }); basket.add(E.mesh(new THREE.CylinderGeometry(.75, .55, .7, 28, 1, true), wick, 0, .35, 0)); basket.children[0].material.side = THREE.DoubleSide;
   for (let i = 0; i < 3; i++) basket.add(E.mesh(new THREE.TorusGeometry(.6 + i * .07, .035, 8, 32), E.M(0xa86f3c, { roughness: .6 }), 0, .12 + i * .23, 0)).children.at(-1).rotation.x = Math.PI / 2;
-  basket.add(E.mesh(new THREE.CylinderGeometry(.56, .56, .04, 28), E.M(0x8a5a3c), 0, .05, 0)); E.scene.add(basket); let inBasket = 0;
-  async function toBasket(k) { const c = E.letter(k, .55), p0 = E.worldPos(L[k]); c.position.copy(p0); E.scene.add(c); const n = inBasket++, to = basket.position.clone().add(new THREE.Vector3(((n % 3) - 1) * .32 * basket.scale.x, (.5 + Math.floor(n / 3) * .12) * basket.scale.x, ((n % 2) - .5) * .2));
+  basket.add(E.mesh(new THREE.CylinderGeometry(.56, .56, .04, 28), E.M(0x8a5a3c), 0, .05, 0)); E.scene.add(basket); let inBasket = 0; basket.visible = !E.CALM;   /* calm: no basket of tumbling little letters (a second thing to look at); the dots at the top count */
+  async function toBasket(k) { if (E.CALM) return; const c = E.letter(k, .55), p0 = E.worldPos(L[k]); c.position.copy(p0); E.scene.add(c); const n = inBasket++, to = basket.position.clone().add(new THREE.Vector3(((n % 3) - 1) * .32 * basket.scale.x, (.5 + Math.floor(n / 3) * .12) * basket.scale.x, ((n % 2) - .5) * .2));
     E.sfx.whoosh(); await E.tween(520, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * 1.2; c.rotation.y = q * Math.PI * 2; c.scale.setScalar(basket.scale.x * (1 - q * .2) + .2 * (1 - q)); }); E.sfx.pop(); E.hop(basket, .12, 250); }
   let set = keys.slice(0, 3), slot = {}, gap = 2.3, active = false, glowOn = null, resolveQ = null, hidden = null, hiddenPed = null;
   set.forEach((k, i) => slot[k] = i);
   const slotPos = i => new THREE.Vector3((1 - i) * gap, 0, .6);   /* right to left */
   E.onLayout(p => {
-    gap = p ? 1.5 : 2.55; keys.forEach(k => L[k].scale.setScalar(LS()));
+    gap = p ? (E.CALM ? 1.3 : 1.5) : 2.55;   /* calm: on a phone the outer letters stay clear of the edges */ keys.forEach(k => L[k].scale.setScalar(LS()));
     basket.position.set(p ? .9 : 4.3, 0, p ? 3.3 : .4); basket.scale.setScalar(p ? .5 : 1);   /* on a phone it sits on the grass in front */
     if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, 1.9, 0); rebbe.visible = false;   /* a phone has no room for him beside the letters */ peds.forEach(x => x.scale.setScalar(.62)); }
     else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.visible = true; rebbe.position.set(-4.8, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
@@ -52,7 +52,7 @@ export default function setup(E, { struggled, unit, id }) {
       const from = l.position.clone(); l.userData.base = null; ps.push(E.tween(600, q => { l.position.lerpVectors(from, to, q); l.position.y += Math.sin(q * Math.PI) * 1.0; }).then(() => { l.userData.base = to.clone(); })); });
     return Promise.all(ps);
   }
-  E.onFrame(t => { keys.forEach((k, i) => { const l = L[k]; if (l.userData.base && !l.userData.hopping) { l.position.y = l.userData.base.y + Math.sin(t * 2 + i * 2) * .06; l.rotation.y = Math.sin(t * 1.1 + i) * .25; } });
+  E.onFrame(t => { keys.forEach((k, i) => { const l = L[k]; if (l.userData.base && !l.userData.hopping) { if (E.CALM) { l.position.y = l.userData.base.y; l.rotation.y = 0; return; } l.position.y = l.userData.base.y + Math.sin(t * 2 + i * 2) * .06; l.rotation.y = Math.sin(t * 1.1 + i) * .25; } });
     if (glowOn) { glow.position.copy(glowOn.position).add(new THREE.Vector3(0, 0, -.4)); glow.material.opacity = .6 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0; });
   window.__info = () => ({ active, want: cur && cur.k, letters: Object.fromEntries(keys.filter(k => L[k].visible).map(k => [k, E.toScreen(E.worldPos(L[k]))])) });
   let cur = null;
@@ -110,12 +110,16 @@ export default function setup(E, { struggled, unit, id }) {
         if ((PAIR[got] === q.k || PAIR[q.k] === got || ALSO[got] === q.k) && clue(q.k, got)) {   /* a look-alike mix-up: show and say what to look for */
           [got, q.k].forEach((k, i) => E.pointAt(arrows[i], L[k], k, 1.6, feat(k, i ? got : q.k))); await E.say(clue(q.k, got)); arrows.forEach(a => a.visible = false); }
         glowOn = L[q.k]; E.hop(L[q.k]); await E.say(E.quiet(q.k) ? 'Here is ' + E.LETTERS[q.k].name + ', the quiet one.' : ['Here is ' + E.LETTERS[q.k].name + '.', ...E.nameLine(q.k)]); glowOn = null; rebbe.mood('calm');
+        { /* shown, then he does it himself (K-CLARITY 16): the hand points at the right letter and he taps it */
+          glowOn = L[q.k]; const [hx, hy] = E.toScreen(E.worldPos(L[q.k])); E.hand.at(hx, hy + 20); await E.say('Now you tap ' + E.LETTERS[q.k].name + '.'); active = true; document.body.dataset.askReady = 1;
+          for (let g = null; g !== q.k;) g = await new Promise(r => resolveQ = r);
+          active = false; delete document.body.dataset.askReady; E.hand.hide(); glowOn = null; E.sfx.chime(); E.hop(L[q.k]); }
         if (q.first) queue.push({ ...q, first: false }); }
       if (hidden) { hidden.visible = true; hidden = null; } if (hiddenPed) { hiddenPed.visible = true; hiddenPed = null; }
       if (q.first && easy && !q.again) queue.push({ ...q, again: true });   /* with only two letters it was practice: it comes back with all three */
       else if (q.first) { done++; E.setProgress(Qs.length, done); }
     }
-    E.hop(basket, .35, 450); E.confetti(basket.position.clone().add(new THREE.Vector3(0, 1, .5)), 50);
+    E.hop(basket, .35, 450); if (!E.CALM) E.confetti(basket.position.clone().add(new THREE.Vector3(0, 1, .5)), 50);
     const nQ = Qs.length, stars = right >= nQ - 1 ? 3 : right >= Math.ceil(nQ * .67) ? 2 : 1;   /* 9 questions: 8 for three stars, 6 for two */ window.__right = right;
     const names = unit.letters.map(k => E.LETTERS[k].name);
     if (unit.gate) { const days = E.gateDays(id) + (stars >= 3 && !(E.loadSave().games[id] || {}).days3?.includes(E.today()) ? 1 : 0);   /* the champion gate: two different days */

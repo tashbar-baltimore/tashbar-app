@@ -17,10 +17,10 @@ export default function setup(E, { unit, game }) {
     if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.6, 0); boy.position.set(-1.35, 0, 1.6); boy.scale.setScalar(.75); sign.position.set(-1.35, 2.55, 1.0); sign.scale.setScalar(.8); basket.position.set(-.75, 0, 1.9); basket.scale.setScalar(.6); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); boy.position.set(-4.3, 0, 1.2); boy.scale.setScalar(1); sign.position.set(-4.3, 3.35, .6); sign.scale.setScalar(.9); basket.position.set(-3.5, 0, 1.6); basket.scale.setScalar(1); }
   });
-  E.onFrame((t) => { if (signL) signL.rotation.y = Math.sin(t * 1.4) * .25;
+  E.onFrame((t) => { if (signL && !E.CALM) signL.rotation.y = Math.sin(t * 1.4) * .25;
     const tg = missRound >= 2 && active && falling.find(f => f.userData.key === want && !f.userData.busy && !f.userData.gone); hint.material.opacity = tg ? .55 + Math.sin(t * 5) * .3 : 0; if (tg) hint.position.copy(tg.position).add(new THREE.Vector3(0, 0, -.3));
     for (let i = falling.length - 1; i >= 0; i--) { const l = falling[i], u = l.userData; if (u.gone) { falling.splice(i, 1); continue; }
-      const k = Math.min(1, (performance.now() - u.t0) / u.ms); l.position.y = u.y0 + (u.y1 - u.y0) * k; l.position.x = u.x + Math.sin(k * 6 + u.x) * (E.portrait ? .08 : .25); l.rotation.z = Math.sin(k * 8 + u.x) * .25;
+      const k = Math.min(1, (performance.now() - u.t0) / u.ms); l.position.y = u.y0 + (u.y1 - u.y0) * k; l.position.x = u.x + (E.CALM ? 0 : Math.sin(k * 6 + u.x) * (E.portrait ? .08 : .25)); l.rotation.z = E.CALM ? 0 : Math.sin(k * 8 + u.x) * .25;   /* calm: letters fall straight down, face-on, so the dot and every leg always show */
       if (k >= 1 && !u.busy) { u.gone = true; E.sparkle(l.position, 6, .4); E.scene.remove(l); falling.splice(i, 1); } } });
   window.__info = () => ({ want, active, targets: falling.filter(l => !l.userData.busy && l.userData.key === want).map(l => E.toScreen(l.position)),
     others: falling.filter(l => !l.userData.busy && l.userData.key !== want).map(l => E.toScreen(l.position)), caught, targetsSoFar: targets });
@@ -28,7 +28,7 @@ export default function setup(E, { unit, game }) {
   const FALL_F = E.FAST ? (E.LITE ? 1.4 : 2.5) : 1;    /* quick test runs draw very few frames a second, so letters fall slower there to stay tappable */
   let pauseUntil = 0, lastNow = performance.now(); E.onFrame(() => { const now = performance.now(); if (now < pauseUntil) falling.forEach(l => { l.userData.t0 += now - lastNow; }); lastNow = now; });   /* the rain stops while he hears the correction (reviewer) */
   function drop(k, ms) {
-    const l = E.letter(k, 1.0); let x; if (E.portrait) { const top = lx => Math.max(-9, ...falling.filter(f => !f.userData.busy && !f.userData.gone && Math.abs(f.userData.x - lx) < .5).map(f => f.position.y)); x = [-.25, 1.45].sort((a, b) => top(a) - top(b))[0]; }   /* a phone has two lanes: the one whose last letter is lowest */
+    const l = E.letter(k, 1.0); let x; if (E.portrait) { const top = lx => Math.max(-9, ...falling.filter(f => !f.userData.busy && !f.userData.gone && Math.abs(f.userData.x - lx) < .5).map(f => f.position.y)); x = [-.25, 1.2].sort((a, b) => top(a) - top(b))[0]; }   /* a phone has two lanes: the one whose last letter is lowest */
     else { const free = c => !falling.some(f => !f.userData.busy && !f.userData.gone && f.position.y > 1.6 && Math.abs(f.userData.x - c) < 1.5); let best = null, bd = -1;   /* a free lane: never on top of another falling letter */
       for (let t = 0; t < 40; t++) { const c = Math.max(-2.0, (Math.random() * 2 - 1) * X * .85 + .6); if (free(c)) { best = c; break; } const d = Math.min(9, ...falling.filter(f => !f.userData.gone).map(f => Math.abs(f.userData.x - c))); if (d > bd) { bd = d; best = c; } } x = best; }
     l.userData = Object.assign(l.userData, { t0: performance.now(), ms: ms * FALL_F * (missRound >= 2 ? 1.5 : 1),   /* gentler after two misses in a round (reviewer) */ y0: E.portrait ? 5.0 : 4.0, y1: .5, x }); l.position.set(x, l.userData.y0, .8); E.scene.add(l); falling.push(l); E.popIn(l, 1, 250);   /* appears inside the sky, below the top buttons */

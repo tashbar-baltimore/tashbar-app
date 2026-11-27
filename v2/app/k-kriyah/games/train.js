@@ -23,7 +23,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const cars = ORDER.map((k, i) => { const c = new THREE.Group(); c.add(E.mesh(E.rbox(1.0, .55, .75, .08), E.M(carCols[i % 7], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     [-.3, .3].forEach(x => [-.38, .38].forEach(z => { const w = E.mesh(new THREE.CylinderGeometry(.15, .15, .08, 16), dark, x, .2, z); w.rotation.x = Math.PI / 2; c.add(w); }));
     c.add(E.mesh(new THREE.BoxGeometry(.12, .06, .06), gold, .56, .4, 0));
-    const l = E.letter(k, .8); l.position.set(0, 1.15 + l.userData.below, .1);   /* Kuf's long leg shows above the car */ c.add(l); c.userData = { key: k, i, on: false, letter: l }; E.scene.add(c); return c; });
+    const l = E.letter(k, .8); l.position.set(0, 1.15 + l.userData.below, .1); if (E.CALM) { l.position.set(0, 0, .1); l.updateMatrixWorld(true); const lift = -new THREE.Box3().setFromObject(l.userData.body).min.y; l.children.forEach(ch => ch.position.y += lift); l.position.y = .95; }   /* calm: the letter's foot stands on the roof, so nothing of it sinks into the car (reviewer: Alef was two bumps, Hei lost its leg) */   /* Kuf's long leg shows above the car */ c.add(l); c.userData = { key: k, i, on: false, letter: l }; E.scene.add(c); return c; });
   const glow = E.glowSprite('#fff7b0', 2.2, 0); E.scene.add(glow);
   let LX = 4.6, P = false, S = 1, slotX = [], homes = [], busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), help = struggled, wrong = 0, wrongInRow = 0, resolveRound = null, gaps = null, rolling = false;
   const slotPos = i => new THREE.Vector3(slotX[i], 0, .2);
@@ -38,7 +38,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   });
   E.onFrame(t => {
     puffs.forEach((p, i) => { const k = ((t * .8 + i / 4) % 1); p.position.set(-.35 - k * .5, 1.4 + k * .9, 0); p.scale.setScalar(.6 + k * 1.2); p.material.opacity = .8 * (1 - k); });
-    cars.forEach((c, i) => { if (!c.userData.on && c !== drag && !c.userData.busy && c.visible) { c.position.y = homes[c.userData.home ?? i].y + Math.sin(t * 2 + i) * .05; } c.userData.letter.rotation.y = Math.sin(t * 1.3 + i) * .2; if (P) c.userData.letter.scale.setScalar(c.userData.on ? (swapPairs.length ? 1.15 : ORDER.length >= 6 ? 1.25 : 1.2) : 1.3);   /* in the mix-up round the letters on the train are bigger, so the dots show */ });   /* on a phone, letters on the train are bigger */
+    cars.forEach((c, i) => { if (!c.userData.on && c !== drag && !c.userData.busy && c.visible) { c.position.y = homes[c.userData.home ?? i].y + Math.sin(t * 2 + i) * .05; } if (!E.CALM) c.userData.letter.rotation.y = Math.sin(t * 1.3 + i) * .2; if (P) c.userData.letter.scale.setScalar(c.userData.on ? (swapPairs.length ? 1.15 : ORDER.length >= 6 ? 1.25 : 1.2) : 1.3);   /* in the mix-up round the letters on the train are bigger, so the dots show */ });   /* on a phone, letters on the train are bigger */
     const need = nextNeeded(), g = swapPairs.length ? cars.find(c => swapPairs.some(p => p.includes(c.userData.slot))) : need != null && cars.find(c => c.userData.key === ORDER[need] && !c.userData.on);   /* in the mix-up round, a mixed-up car glows */
     if (help && g && enabled) { glow.position.copy(g.position).add(new THREE.Vector3(0, .9 * g.scale.x, -.4)); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
@@ -73,6 +73,10 @@ export default function setup(E, { struggled, unit, game = {} }) {
       await E.say('That is ' + E.LETTERS[c.userData.key].name + '. Listen.');
       await chant(need, true);
       await E.say(E.LETTERS[ORDER[need]].name + ' goes here!');
+      { const r = cars.find(x => x.userData.key === ORDER[need] && !x.userData.on);   /* show how (K-CLARITY 16): the hand moves the right car halfway, then he does it */
+        if (r) { r.userData.busy = true; const a = r.position.clone(), b = a.clone().lerp(slotPos(need).add(new THREE.Vector3(0, .6, .3)), .5);
+          await E.tween(700, q => { r.position.lerpVectors(a, b, q); const [x, y] = E.toScreen(r.position); E.hand.at(x, y); }); await E.wait(250); E.hand.hide();
+          await E.tween(350, q => r.position.lerpVectors(b, a, q), E.ease.out); r.userData.busy = false; await E.say('Now you!'); } }
       if (wrongInRow >= 2 || wrong >= 3) help = true;
       busy = false;
     }
@@ -114,6 +118,11 @@ export default function setup(E, { struggled, unit, game = {} }) {
     const on = cars.filter(c => c.userData.on), sx = on.map(c => c.position.x);
     await E.tween(1600, q => { loco.position.x = lx + 10 * (1 - q); on.forEach((c, i) => c.position.x = sx[i] - 10 * q); }, E.ease.out);
     await E.say('Some cars are missing! Fill the empty places.');
+    { /* a new kind of round: show it first (K-CLARITY 15) */ const g0 = gaps[0], c0 = cars.find(c => c.userData.key === ORDER[g0]);
+      await E.say('Watch me. ' + E.LETTERS[ORDER[g0]].name + ' goes after ' + E.LETTERS[ORDER[g0 - 1]].name + '.');
+      let [x, y] = E.toScreen(c0.position); E.hand.at(x, y); await E.wait(350);
+      const p0 = c0.position.clone(), p1 = slotPos(g0).add(new THREE.Vector3(0, .6, .3)); await E.tween(1100, q => { c0.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(c0.position); E.hand.at(a, b); });
+      E.hand.hide(); resolveRound = null; await place(c0, g0); await E.say('Now you! Fill the other places.'); }
     const done = new Promise(r => resolveRound = r); enabled = true; busy = false;
     await done; enabled = false;
     E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant();   /* the full train stays on screen for the end */

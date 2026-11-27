@@ -29,7 +29,7 @@ export default function setup(E, { struggled, unit }) {
   }
   E.onFrame(t => {
     for (const b of bubbles.slice()) { if (b.userData.popping || b.userData.hopping) continue; const y = -.6 + (performance.now() - b.userData.t0) / 1000 * b.userData.sp * (E.FAST ? 3 : 1);
-      b.position.set(b.userData.x + Math.sin(t * 1.5 + b.userData.x) * .15, y, 1.2); b.userData.l.rotation.y = Math.sin(t + b.userData.x) * .25;
+      b.position.set(b.userData.x + Math.sin(t * 1.5 + b.userData.x) * .15, y, 1.2); b.userData.l.rotation.y = E.CALM ? 0 : Math.sin(t + b.userData.x) * .25;
       if (y > (P ? 4.5 : 4.3)) {   /* gone before it reaches the top bar */ E.scene.remove(b); bubbles.splice(bubbles.indexOf(b), 1); if (active) queue.push(b.userData.key); } }   /* a bubble that floats away comes back later */
     const h = help && active && bubbles.find(b => b.userData.key === want && !b.userData.popping); if (h) { glow.position.copy(h.position).setZ(.8); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });

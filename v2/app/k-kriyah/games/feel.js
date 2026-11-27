@@ -53,9 +53,9 @@ export default function setup(E, { unit, game }) {
   });
   function layoutDone(l, i) { if (E.portrait) l.position.set(1.4 - i * .62, .42, 2.0); else l.position.set(4.2 - i * .95, .4, 1.2);   /* low and to the right of the big letter, all on screen (reviewer) */ l.scale.setScalar(E.portrait ? .24 : .27); }
   E.onFrame(t => {
-    if (cur && !cur.userData.spin) cur.rotation.y = Math.sin(t * .7) * .12;
+    if (cur && !cur.userData.spin && !E.CALM) cur.rotation.y = Math.sin(t * .7) * .12;
     if (target.parent) { const b = beads.find(x => !x.userData.lit); target.visible = !!b && active; if (b) { target.position.copy(b.position); target.scale.setScalar(.16 * H / 3.2 * (1 + Math.sin(t * 7) * .15)); } }
-    done.forEach((l, i) => l.rotation.y = Math.sin(t * 1.2 + i) * .3);
+    done.forEach((l, i) => l.rotation.y = E.CALM ? 0 : Math.sin(t * 1.2 + i) * .3);
   });
   function makeBeads(key) {
     beads = []; roads.forEach(r => r.parent && r.parent.remove(r)); golds.forEach(r => r.parent && r.parent.remove(r)); roads = []; golds = [];

@@ -19,9 +19,9 @@ export default function setup(E, { struggled, game = {} }) {
     HB.scale.setScalar(HS); HV.scale.setScalar(HS); if (card.visible && !dragging && !busy) { card.position.copy(cardHome); card.scale.setScalar(CS); }
   });
   E.onFrame(t => {
-    if (card.visible && !dragging && !busy) { card.position.y = cardHome.y + Math.sin(t * 2.2) * .08; card.rotation.y = Math.sin(t * 1.1) * .3; }
+    if (card.visible && !dragging && !busy && !E.CALM) { card.position.y = cardHome.y + Math.sin(t * 2.2) * .08; card.rotation.y = Math.sin(t * 1.1) * .3; }   /* calm: the letter hangs still, face-on */
     kid.userData.head.rotation.y = Math.sin(t * 1.5) * .3;
-    [signB, signV].forEach((s, i) => s.rotation.y = Math.sin(t * 1.2 + i) * .25);
+    if (!E.CALM) [signB, signV].forEach((s, i) => s.rotation.y = Math.sin(t * 1.2 + i) * .25);
     const k = card.userData.key, pulse = .55 + Math.sin(t * 4) * .25;
     glowB.material.opacity = help && card.visible && k === 'beis' ? pulse : 0; glowV.material.opacity = help && card.visible && k === 'veis' ? pulse : 0;
     if (card.userData.dot) card.userData.dot.material.emissiveIntensity = (help || ring.visible) ? .6 + Math.sin(t * 6) * .4 : .25;
@@ -53,10 +53,10 @@ export default function setup(E, { struggled, game = {} }) {
     const k = card.userData.key, right = (h === HB) === (k === 'beis');
     if (right) {
       busy = true; dragEnabled = false; wrongInRow = 0; const p0 = card.position.clone(), target = h.localToWorld(h.userData.window.clone());
-      await E.tween(450, q => { card.position.lerpVectors(p0, target, q); card.scale.setScalar(CS * (1 - q * .92)); card.rotation.y = q * Math.PI; });
+      await E.tween(450, q => { card.position.lerpVectors(p0, target, q); card.scale.setScalar(CS * (1 - q * .92)); if (!E.CALM) card.rotation.y = q * Math.PI; });   /* calm: it never turns its back (a mirrored letter) */
       card.visible = false; E.joy(target); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900);
       const s0 = h.scale.x; E.tween(500, q => h.scale.set(s0 * (1 + Math.sin(q * Math.PI) * .12), s0 * (1 - Math.sin(q * Math.PI) * .1), s0));
-      const sh = shelf[k[0]], mini = E.letter(k, .42); h.add(mini); mini.position.set(-.85 + (sh.length % 4) * .55, .32 + Math.floor(sh.length / 4) * .5, 1.55); sh.push(mini);
+      const sh = shelf[k[0]], mini = E.letter(k, .42); mini.visible = !E.CALM; h.add(mini);   /* calm: no pile of little letters; the dots at the top count */ mini.position.set(-.85 + (sh.length % 4) * .55, .32 + Math.floor(sh.length / 4) * .5, 1.55); sh.push(mini);
       idx++; E.setProgress(deck.length, idx);
       await E.say(k === 'beis' ? ['Yes! Someone home. Beis says', S('b')] : ['Yes! Nobody home. Veis says', S('v')]);
       if (idx < deck.length) { await setCard(deck[idx]); busy = false; dragEnabled = true; if (help) E.say(k === 'beis' ? 'Look for the dot!' : 'Is anyone home?'); }
@@ -67,7 +67,11 @@ export default function setup(E, { struggled, game = {} }) {
       await E.say(k === 'beis' ? 'Look! A dot. Someone is home. That is Beis.' : 'Look! No dot. Nobody is home. That is Veis.');
       ring.visible = false; kid.mood('calm');
       if ((wrongInRow >= 2 || mistakes >= 2) && !help) { help = true; }     /* quietly easier: the right house glows */
-      await E.say('Try again!');
+      { /* show how (K-CLARITY 16): the hand carries the letter halfway to its house, then he does it */
+        busy = true; const H = k === 'beis' ? HB : HV, p0 = card.position.clone(), p1 = p0.clone().lerp(new THREE.Vector3(H.position.x, p0.y, p0.z), .5);
+        await E.say(k === 'beis' ? 'Beis goes to the house with Mendy.' : 'Veis goes to the empty house.');
+        await E.tween(700, q => { card.position.lerpVectors(p0, p1, q); const [x, y] = E.toScreen(card.position); E.hand.at(x, y); }); await E.wait(250); E.hand.hide(); await back(); }
+      await E.say('Now you!');
     }
   }
 

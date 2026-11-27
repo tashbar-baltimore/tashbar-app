@@ -11,12 +11,12 @@ export default function setup(E) {
   const glow = E.glowSprite('#ffffff', 6, 0); E.scene.add(glow);
   const ticks = {};
   let P = false, floaters = new Set();
-  const X = () => P ? { row: 1.5, s: .5, chederX: 1.1, walkTo: -.35, dadX: -1.1 } : { row: 3.1, s: .9, chederX: 2.6, walkTo: .6, dadX: -.5 };
+  const X = () => P ? { row: E.CALM ? 1.25 : 1.5, s: E.CALM ? .4 : .5, chederX: 1.1, walkTo: -.35, dadX: -1.1 } : { row: 3.1, s: .9, chederX: 2.6, walkTo: .6, dadX: -.5 };
   E.onLayout(p => { P = p;
     if (p) { E.camBase.set(0, 2.4, 11.5); E.camTarget.set(0, 1.9, 0); } else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.4, 0); }
     cheder.position.x = X().chederX; cheder.scale.setScalar(p ? .75 : 1); rebbe.position.set(X().chederX - (p ? .1 : .2), 0, 1.7);
   });
-  E.onFrame(t => { floaters.forEach(l => { if (!l.userData.base) return; l.position.y = l.userData.base.y + Math.sin(t * 2 + l.position.x) * .07; l.rotation.y = Math.sin(t * .9 + l.position.x) * .3; }); });
+  E.onFrame(t => { floaters.forEach(l => { if (!l.userData.base) return; if (E.CALM) { l.rotation.y = 0; return; }   /* calm: learned letters stand still, face-on */ l.position.y = l.userData.base.y + Math.sin(t * 2 + l.position.x) * .07; l.rotation.y = Math.sin(t * .9 + l.position.x) * .3; }); });
   const float = (l, on = true) => { if (on) { l.userData.base = l.position.clone(); floaters.add(l); } else floaters.delete(l); };
   const showHand = (obj, dy = -.6) => { const [x, y] = E.toScreen(E.worldPos(obj).add(new THREE.Vector3(.5, dy, .6))); E.hand.at(x, y, true); };
   async function tapIt(l, line) {
@@ -53,7 +53,7 @@ export default function setup(E) {
     await E.popOut(dad); dad.scale.setScalar(ds);
     /* 3. Beis: the house turns into Beis, and Mendy becomes the dot */
     float(alef, false); const a0 = alef.position.clone();
-    await E.tween(700, k => { alef.position.lerpVectors(a0, new THREE.Vector3(X().row, 1.6, .2), k); alef.scale.setScalar(1 - k * (1 - X().s)); glow.material.opacity = .8 * (1 - k); }); float(alef);
+    await E.tween(700, k => { alef.position.lerpVectors(a0, new THREE.Vector3(X().row, P && E.CALM ? 3.55 : 1.6, .2), k); alef.scale.setScalar(1 - k * (1 - (P && E.CALM ? .3 : X().s)));   /* on a phone Alef waits up high, so the big Beis never covers it */ glow.material.opacity = .8 * (1 - k); }); float(alef);
     home.position.set(0, 0, 0); home.scale.setScalar(P ? .75 : .9); boy.scale.setScalar(1); boy.position.set(-.55, 0, 1.3); boy.visible = true; await Promise.all([E.popIn(home, P ? .75 : .9), E.popIn(boy)]);
     E.setProgress(4, 2);
     boy.mood('wave'); await E.say('This is Mendy’s house.');   /* English words only (HoS 2026-11-26) */
@@ -86,6 +86,7 @@ export default function setup(E) {
     await tapIt(veis, ['Veis says', S('v')]);
     /* 5. all three in a row (right to left: Alef, Beis, Veis), and a short chant */
     float(veis, false); const v0 = veis.position.clone();
+    if (P && E.CALM) { float(alef, false); const aa = alef.position.clone(), as = alef.scale.x; await E.tween(500, k => { alef.position.lerpVectors(aa, new THREE.Vector3(X().row, 1.6, .2), k); alef.scale.setScalar(as + (X().s - as) * k); }); float(alef); }
     await E.tween(700, k => { veis.position.lerpVectors(v0, new THREE.Vector3(-X().row, 1.6, .2), k); veis.scale.setScalar(1 - k * (1 - X().s)); glow.material.opacity = .8 * (1 - k); }); float(veis);
     beis.position.set(0, 1.6, .2); beis.rotation.set(0, 0, 0); beis.userData.dot.visible = true; beis.userData.dot.scale.setScalar(1); await E.popIn(beis, X().s); float(beis);
     E.setProgress(4, 4);
@@ -99,7 +100,7 @@ export default function setup(E) {
       showHand(left[0]); document.body.dataset.tapReady = left.map(l => l.userData.key).join(',');
       const l = await E.waitTap(left); left.splice(left.indexOf(l), 1); E.hand.hide();
       E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .3, .6)), 22, 1.1); E.hop(l, .5);
-      const tk = E.star3d(.26); tk.position.copy(l.position).add(new THREE.Vector3(0, 1.75 * X().s, .3)); E.onFrame(t => tk.rotation.y = t * 2); E.scene.add(tk); E.popIn(tk); ticks[l.userData.key] = tk;
+      const tk = E.CALM ? E.tick3d(.26) : E.star3d(.26); tk.position.copy(l.position).add(new THREE.Vector3(0, 1.75 * X().s, .3)); if (!E.CALM) E.onFrame(t => tk.rotation.y = t * 2); E.scene.add(tk); E.popIn(tk); ticks[l.userData.key] = tk;
       await E.say(E.nameLine(l.userData.key));
     }
     delete document.body.dataset.tapReady;

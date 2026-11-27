@@ -122,7 +122,7 @@ body{background:linear-gradient(#3fb4ff 0%,#8fd8ff 45%,#dff6ff 75%,#fff6d8 100%)
 #gtitle{left:50%;top:14px;transform:translateX(-50%);max-width:calc(100% - 200px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800;font-size:22px;color:#17324d;padding:6px 16px;border-radius:40px;background:#ffffffe0;box-shadow:0 4px 14px #0b3a6626;pointer-events:none}
 #gtitle:empty{display:none}
 body.titled #prog{top:64px}
-body.calmbg::before{content:'';position:fixed;inset:0;pointer-events:none;backdrop-filter:saturate(.6) blur(2.5px);-webkit-backdrop-filter:saturate(.6) blur(2.5px)}
+body.calmbg::before{content:'';position:fixed;inset:0;pointer-events:none;backdrop-filter:saturate(.45) blur(6px);-webkit-backdrop-filter:saturate(.45) blur(6px)}
 .ui{position:fixed;z-index:5}
 .btn{width:76px;height:76px;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;padding:0;
  background:radial-gradient(circle at 32% 28%,#ffffff 0 18%,#e8f3ff 40%,#b9d8f5 100%);
@@ -158,7 +158,7 @@ body.calmbg::before{content:'';position:fixed;inset:0;pointer-events:none;backdr
 .stars{display:flex;gap:20px;padding:20px 30px;border-radius:44px;background:linear-gradient(#ffffffe8,#ffffffb8);box-shadow:0 16px 40px #0b3a6640,inset 0 -4px 0 #0001}
 .stars svg{width:126px;height:126px;animation:pop .5s backwards;filter:drop-shadow(0 6px 4px #b4730066)}
 .stars svg:nth-child(2){animation-delay:.2s}.stars svg:nth-child(3){animation-delay:.4s}
-.note{position:fixed;left:50%;bottom:4px;transform:translateX(-50%);font-size:11px;line-height:1.25;color:#234;background:#ffffffb0;padding:2px 10px;border-radius:10px;text-align:center;width:max-content;max-width:92vw;z-index:4;pointer-events:none}
+body.played .note{display:none}.note{position:fixed;left:50%;bottom:4px;transform:translateX(-50%);font-size:11px;line-height:1.25;color:#234;background:#ffffffb0;padding:2px 10px;border-radius:10px;text-align:center;width:max-content;max-width:92vw;z-index:4;pointer-events:none}
 #flat{position:fixed;inset:0;display:none;z-index:20;background:linear-gradient(#8fd8ff,#fff6d8);align-items:center;justify-content:center;flex-direction:column;gap:22px;padding:20px;text-align:center;color:#1d2b3a}
 #flat .row{display:flex;gap:18px;direction:rtl;flex-wrap:wrap;justify-content:center}
 #flat button{width:130px;height:150px;border-radius:30px;border:none;font-size:96px;line-height:1;font-family:"Noto Serif Hebrew","Times New Roman",serif;font-weight:800;color:#1f5fff;cursor:pointer;
@@ -179,7 +179,7 @@ body[data-review] #again{z-index:10}
 @keyframes revstar{0%{transform:scale(.4) rotate(-40deg)}60%{transform:scale(1.5) rotate(10deg)}100%{transform:scale(1) rotate(0)}}   /* a star fills for each right answer (reviewer: more fun) */
 @keyframes revshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}75%{transform:translateX(12px)}}
 @media (max-width:700px){#rev button{width:100px;height:120px;font-size:76px;border-radius:26px}#rev .row{gap:12px}}
-@media (max-width:700px){#start{width:150px;height:150px}#start svg{width:70px;height:70px}.endbar .btn.big{width:100px;height:100px}.stars svg{width:80px;height:80px}.stars{gap:10px;padding:14px 18px}#prog{top:96px}#gtitle{font-size:16px;top:24px;padding:5px 12px}body.titled #prog{top:96px}#prog i{width:18px;height:18px}}
+@media (max-width:700px){#start{width:150px;height:150px}#start svg{width:70px;height:70px}.endbar .btn.big{width:100px;height:100px}.stars svg{width:80px;height:80px}.stars{gap:10px;padding:14px 18px}#prog{top:96px}#gtitle{font-size:16px;top:24px;padding:5px 12px;white-space:normal;text-align:center;line-height:1.15;width:max-content;max-width:calc(100% - 190px)}body.titled #prog{top:96px}#prog i{width:18px;height:18px}}
 `;
 const HAND = '<svg class="hand" id="hand" viewBox="0 0 64 64"><path d="M26 6c3 0 5 2 5 5v19l2-1c2-6 10-5 10 1l1-1c2-4 9-3 9 2v2c2-3 8-2 8 3v12c0 9-7 16-16 16h-6c-6 0-10-3-13-8L10 40c-2-4 2-8 6-5l5 5V11c0-3 2-5 5-5z" fill="#fff" stroke="#1d2b3a" stroke-width="3"/></svg>';
 export function buildPage({ home = true } = {}) {
@@ -203,7 +203,7 @@ let curUnit = 1; export const setUnit = n => { curUnit = n; };
 export function goPath(u = curUnit) { location.href = 'index.html?u=' + u + keep(); }
 export function goGame(id) { location.href = 'play.html?g=' + id + keep(); }
 export function setProgress(n, on) { const p = $('#prog'); if (p.children.length !== n) p.innerHTML = '<i></i>'.repeat(n); [...p.children].forEach((x, i) => x.classList.toggle('on', i < on)); }
-export function waitStart() { const b = $('#start'); b.style.display = 'grid'; document.body.dataset.startReady = 1; return new Promise(r => { b.onclick = () => { b.style.display = 'none'; delete document.body.dataset.startReady; tone(1, .01); try { speechSynthesis.speak(new SpeechSynthesisUtterance(' ')); } catch (e) {} r(); }; }); }
+export function waitStart() { const b = $('#start'); b.style.display = 'grid'; document.body.dataset.startReady = 1; return new Promise(r => { b.onclick = () => { b.style.display = 'none'; document.body.classList.add('played'); delete document.body.dataset.startReady; tone(1, .01); try { speechSynthesis.speak(new SpeechSynthesisUtterance(' ')); } catch (e) {} r(); }; }); }
 
 /* the pointing hand used in every "Watch me" demo */
 export const hand = {
@@ -268,7 +268,7 @@ export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5:
 export const KIND_BACKDROP = { mastery: 'classroom', bonus: 'beach', story: 'street', detective: 'street', hunt: null };   /* the sukkah hunt keeps its 3D world */
 export const backdropFor = (game, unitN) => game && 'bg' in game ? game.bg : game && game.kind in KIND_BACKDROP ? KIND_BACKDROP[game.kind] : UNIT_BACKDROP[unitN || (game && game.unit) || 1] || null;
 export let backdrop = null;
-export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `radial-gradient(ellipse 70% 60% at 50% 58%, #ffffff40, #ffffff1a 70%, #ffffff10), ${CALM ? 'linear-gradient(#ffffff5c, #ffffff5c), ' : ''}url(art/bg/${name}.jpg) center 64% / cover no-repeat, #8fd8ff` : ''; document.body.classList.toggle('calmbg', !!name && CALM);   /* a soft light veil: the painting stays, the letter stands out (RESEARCH.md: few distractions) */ }
+export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `radial-gradient(ellipse 70% 60% at 50% 58%, #ffffff40, #ffffff1a 70%, #ffffff10), ${CALM ? 'linear-gradient(#ffffffa8, #ffffffa8), ' : ''}url(art/bg/${name}.jpg) center 64% / cover no-repeat, #8fd8ff` : ''; document.body.classList.toggle('calmbg', !!name && CALM);   /* a soft light veil: the painting stays, the letter stands out (RESEARCH.md: few distractions) */ }
 export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, indoor = null } = {}) {
   const indoorWorld = indoor === 'shul';
   if (!bd && indoorWorld) return buildShul();   /* Unit 8: inside a festive shul on Simchas Torah */
@@ -413,7 +413,7 @@ export function house({ lit = true, wall = 0xffa552, roof = 0xe8322b, bushes = t
   h.add(mesh(rbox(.86, .82, .12, .06), white, .45, 1.12, 1.02));
   const glass = mesh(new THREE.BoxGeometry(.66, .62, .06), new THREE.MeshStandardMaterial({ color: 0xfff1a8, emissive: 0xffd36a, emissiveIntensity: .9 }), .45, 1.12, 1.07, false);
   const dark = M(0x3d5f8f, { roughness: .15, clearcoat: 1 }); const litM = glass.material; glass.material = lit ? litM : dark; h.add(glass);
-  if (bushes) [[-1.35, .28, 1.05], [1.35, .3, 1.0]].forEach(([x, y, z]) => { h.add(mesh(new THREE.SphereGeometry(.34, 18, 12), M(0x3fae4a, { roughness: .6 }), x, y, z)); h.add(mesh(new THREE.SphereGeometry(.07, 10, 8), M(0xff6fa5), x + .12, y + .26, z + .22)); });
+  if (bushes && !CALM) [[-1.35, .28, 1.05], [1.35, .3, 1.0]].forEach(([x, y, z]) => { h.add(mesh(new THREE.SphereGeometry(.34, 18, 12), M(0x3fae4a, { roughness: .6 }), x, y, z)); h.add(mesh(new THREE.SphereGeometry(.07, 10, 8), M(0xff6fa5), x + .12, y + .26, z + .22)); });
   h.userData = { window: new THREE.Vector3(.45, 1.12, 1.1), setLit: v => { glass.material = v ? litM : dark; } };
   return h;
 }
@@ -556,7 +556,7 @@ function letterMats(color) { if (!faceMats[color]) { const [f, s] = FACE[color] 
 function letterGeo(ch) {
   if (!geoCache[ch]) { const d = new SVGLoader().parse(`<svg xmlns="http://www.w3.org/2000/svg"><path d="${OUTLINES[ch].d}"/></svg>`);
     const shapes = d.paths.flatMap(p => SVGLoader.createShapes(p));
-    const g = new THREE.ExtrudeGeometry(shapes, { depth: 14, bevelEnabled: true, bevelThickness: 3, bevelSize: 2.2, bevelSegments: LITE ? 1 : 5, curveSegments: LITE ? 3 : 10 });   /* the quick test run uses plainer letters */ g.computeBoundingBox();
+    const g = new THREE.ExtrudeGeometry(shapes, { depth: CALM ? 6 : 14, bevelEnabled: true, bevelThickness: CALM ? 2 : 3, bevelSize: CALM ? 1.6 : 2.2, bevelSegments: LITE ? 1 : 5, curveSegments: LITE ? 3 : 10 });   /* the quick test run uses plainer letters */ g.computeBoundingBox();
     const c = new THREE.Vector3(); g.boundingBox.getCenter(c); g.translate(-c.x, -c.y, -c.z); g.computeBoundingBox(); geoCache[ch] = { g, c }; }
   return geoCache[ch];
 }
@@ -594,7 +594,7 @@ export function letter(key, height = 2.6, color = 'blue') {
   let dot = null;
   const dp = dotAt(key);
   if (dp) {   /* the dagesh sits in the middle of the letter's open space (font units /10: Beis x 24, y 29.6 of 56.1 x 64.7) */
-    dot = mesh(new THREE.SphereGeometry(Math.max(.2 * height / 2.6, .075), 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - REF_CY) * s, .42 * height / 2.6); grp.add(dot); dot.visible = !!(L.dagesh || L.top); }
+    dot = mesh(new THREE.SphereGeometry(Math.max(.2 * height / 2.6, .075), 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - REF_CY) * s, CALM ? (5 / REF_H) * height + Math.max(.2 * height / 2.6, .075) * .35 : .42 * height / 2.6); grp.add(dot); dot.visible = !!(L.dagesh || L.top); }
   const below = Math.max(0, -(bb.min.y + c.y) - 4) * s;   /* how far a long leg (Kuf) reaches below the line: stands and cars lift it by this much */
   grp.userData = { key, body: m, dot, hit, height, width: W * s, color, below, dotHome: dot ? dot.position.clone() : null };
   grp.setKey = k => { grp.userData.key = k; if (dot) { const d = dotAt(k); if (LETTERS[k].top) { grp.userData.dotHome.set((d[0] - c.x) * s, (d[1] - REF_CY) * s, dot.position.z); } dot.visible = !!(LETTERS[k].dagesh || LETTERS[k].top); dot.scale.setScalar(1); dot.position.copy(grp.userData.dotHome); } };   /* Shin to Sin: the dot moves to the other head */
@@ -605,6 +605,9 @@ export function letter(key, height = 2.6, color = 'blue') {
 export function fontToLocal(key, height, x, y) { const L = LETTERS[key], { g, c } = letterGeo(L.ch); const s = height / REF_H; return new THREE.Vector3((x / 10 - c.x) * s, (y / 10 - REF_CY) * s, 0); }
 export const nameLine = key => quiet(key) ? [LETTERS[key].name + '. ' + LETTERS[key].name + ' is quiet.'] : [LETTERS[key].name + ' says', S(LETTERS[key].snd)];
 
+/* a green tick: the calm "done" mark above a letter (not gold, not round, so it can't look like the dot) */
+export function tick3d(r = .22) { const sh = new THREE.Shape(); sh.moveTo(-r, 0); sh.lineTo(-r * .35, -r * .65); sh.lineTo(r, r * .7); sh.lineTo(r * .78, r * .9); sh.lineTo(-r * .35, -r * .25); sh.lineTo(-r * .8, .2 * r); sh.closePath();
+  const g = new THREE.ExtrudeGeometry(sh, { depth: r * .15, bevelEnabled: false }); g.center(); return mesh(g, new THREE.MeshStandardMaterial({ color: 0x1fae5a, emissive: 0x0d6b33, emissiveIntensity: .3, roughness: .4 }), 0, 0, 0, false); }
 /* a glossy gold 3D star (used as a "done" mark above a letter, never below it, so it can't look like a nekudah) */
 export function star3d(r = .22) { const sh = new THREE.Shape(); for (let i = 0; i < 10; i++) { const a = Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; const x = Math.cos(a) * rr, y = Math.sin(a) * rr; i ? sh.lineTo(x, y) : sh.moveTo(x, y); } sh.closePath();
   const g = new THREE.ExtrudeGeometry(sh, { depth: r * .25, bevelEnabled: true, bevelThickness: r * .12, bevelSize: r * .1, bevelSegments: 3 }); g.center(); return mesh(g, goldDot(), 0, 0, 0, false); }
@@ -634,11 +637,11 @@ export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'
 export function pointAt(arrow, l, key, height, feat) { const f = feat === false ? null : feat || FEATURES[key]; if (!f) { arrow.visible = false; return false; }   /* false: nothing to point at (Kaf beside Pei: its tongue's place holds its dot, so the words say it) */ const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;
   const d = { down: [0, off], up: [0, -off], right: [-off, 0], left: [off, 0] }[f[2]]; if (arrow.setDir) arrow.setDir(f[2]); arrow.position.set(p.x + d[0], p.y + d[1], .5); if (arrow.parent !== l) l.add(arrow); arrow.visible = true; return true; }
 /* a soft ring that circles the thing to notice */
-export function noticeRing(r = .42) { const ring = mesh(new THREE.TorusGeometry(r, .06, 16, 40), new THREE.MeshStandardMaterial({ color: 0xff8a00, emissive: 0xff8a00, emissiveIntensity: 1.2 }), 0, 0, .7, false); ring.visible = false; onFrame(t => { if (ring.visible) ring.scale.setScalar(1 + Math.sin(t * 10) * .08); }); return ring; }
+export function noticeRing(r = .42) { const ring = mesh(new THREE.TorusGeometry(r, CALM ? .03 : .06, 16, 40), new THREE.MeshStandardMaterial({ color: CALM ? 0xff2d8a : 0xff8a00, emissive: CALM ? 0xff2d8a : 0xff8a00, emissiveIntensity: 1.2 }), 0, 0, .7, false); ring.visible = false; onFrame(t => { if (ring.visible) ring.scale.setScalar(1 + Math.sin(t * 10) * .08); }); return ring; }
 
 /* ---------------- sparkles and confetti ---------------- */
 let sparkTex; const sparks = [], confs = []; let confGeo; const confCols = [0xff5d8f, 0xffc21a, 0x2dbb6a, 0x2f7de1, 0x9b5de5, 0x00c2d1];
-export function sparkle(pos, n = 18, spread = 1) { sparkTex = sparkTex || starTex(); for (let i = 0; i < n; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sparkTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+export function sparkle(pos, n = 18, spread = 1) { sparkTex = sparkTex || starTex(); if (CALM) { n = Math.min(n, 8); spread = Math.min(spread, .7); }   /* calm: a few small sparkles, never a cloud over the letter */ for (let i = 0; i < n; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sparkTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
   s.position.copy(pos); const v = new THREE.Vector3((Math.random() - .5), (Math.random() - .2), (Math.random() - .5)).normalize().multiplyScalar(.03 + Math.random() * .06 * spread); s.userData = { v, life: 50 + Math.random() * 30 }; s.scale.setScalar(.12 + Math.random() * .16); scene.add(s); sparks.push(s); } }
 export function confetti(pos, n = 60) { confGeo = confGeo || new THREE.PlaneGeometry(.12, .07); for (let i = 0; i < n; i++) { const m = new THREE.Mesh(confGeo, new THREE.MeshStandardMaterial({ color: confCols[i % 6], side: THREE.DoubleSide, roughness: .4, metalness: .3 }));
   m.position.copy(pos); m.userData = { v: new THREE.Vector3((Math.random() - .5) * .16, .08 + Math.random() * .14, (Math.random() - .5) * .1), r: new THREE.Vector3(Math.random() * .3, Math.random() * .3, Math.random() * .3), life: 80 }; scene.add(m); confs.push(m); } }
@@ -647,7 +650,7 @@ function stepParticles() {
   for (let i = confs.length - 1; i >= 0; i--) { const c = confs[i]; c.position.add(c.userData.v); c.userData.v.y -= .004; c.userData.v.x *= .99; c.rotation.x += c.userData.r.x; c.rotation.y += c.userData.r.y; if (--c.userData.life <= 0) { scene.remove(c); c.material.dispose(); confs.splice(i, 1); } }
 }
 /* joy: chime, sparkles, confetti (well under 2 seconds) */
-export function joy(pos, big = false) { sfx.chime(); sparkle(pos, big ? 14 : 8, CALM ? .8 : 1.2); confetti(pos, CALM ? (big ? 16 : 8) : (big ? 45 : 22)); }   /* short and light, so his eyes come back to the letter */
+export function joy(pos, big = false) { sfx.chime(); if (CALM) { sparkle(pos.clone().add(new THREE.Vector3(0, .85, .4)), big ? 8 : 5, .5); return; } sparkle(pos, big ? 14 : 8, 1.2); confetti(pos, big ? 45 : 22); }   /* short and light, so his eyes come back to the letter */
 
 /* ---------------- tweens ---------------- */
 const tweens = []; export const ease = { lin: t => t, out: t => 1 - Math.pow(1 - t, 3), inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, back: t => { const c = 1.7; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); } };

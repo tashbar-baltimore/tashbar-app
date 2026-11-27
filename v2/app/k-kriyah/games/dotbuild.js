@@ -57,7 +57,7 @@ export default function setup(E, { struggled, unit, game }) {
     dotGlow.material.opacity = .45 + Math.sin(t * 4) * .15;
     if (typeof okBtn !== 'undefined' && okBtn.style.display !== 'none') okBtn.style.transform = 'translateX(-50%) scale(' + (help && want && goodSpot(want) === at ? 1 + Math.abs(Math.sin(t * 4)) * .12 : 1) + ')';   /* with help on and the letter already right, the check button pulses */
     Object.values(rings).forEach(r => r.visible && (r.scale.setScalar(1 + Math.sin(t * 3) * .06)));
-    if (L) L.rotation.y = Math.sin(t * .9) * .12;
+    if (L && !E.CALM) L.rotation.y = Math.sin(t * .9) * .12;
     const g = want && enabled && help ? goodSpot(want) : null; if (g && g !== at) { helpGlow.position.copy(spotPos(g)).add(new THREE.Vector3(0, 0, -.1)); helpGlow.material.opacity = .6 + Math.sin(t * 5) * .3; } else helpGlow.material.opacity = 0;
   });
   window.__info = () => { const spots = {}; [...spotsFor()].forEach(n => spots[n] = E.toScreen(spotPos(n)));

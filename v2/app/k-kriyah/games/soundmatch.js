@@ -12,21 +12,22 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4 + l.userData.below;   /* Kuf's long leg stands above the stand */ p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
-  const PS = () => P ? (peds.length > 3 ? .74 : .62) : (peds.length > 3 ? .88 : 1);
+  const ROW1 = () => E.CALM;   /* calm: on a phone four stands stand in ONE row, all the same size (two rows seen from above made the back letters tiny) */
+  const PS = () => P ? (peds.length > 3 ? (ROW1() ? .5 : .74) : .62) : (peds.length > 3 ? .88 : 1);
   const card = new THREE.Group(); E.scene.add(card); card.visible = false;
   const cardGlow = E.glowSprite('#ffffff', 2.6, .7); cardGlow.position.z = -.4; card.add(cardGlow);
   const cardBack = E.mesh(E.rbox(2.05, 2.05, .08, .2), E.M(0xffe9b8, { roughness: .4, clearcoat: .6, depthWrite: false }), 0, 0, -.35, false); cardBack.renderOrder = -1; card.add(cardBack);   /* a white card behind the picture, so it never melts into the painting */
   const hint = E.glowSprite('#fff7b0', 2.8, 0); E.scene.add(hint);
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
-  E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? 1.12 : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
-    if (p) { if (peds.length > 3) { E.camBase.set(0, 5.6, 11.5); E.camTarget.set(0, 1.3, .8); cardHome.set(0, 3.6, -3.4); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
+  E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? (ROW1() ? .9 : 1.12) : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
+    if (p) { if (peds.length > 3 && !ROW1()) { E.camBase.set(0, 5.6, 11.5); E.camTarget.set(0, 1.3, .8); cardHome.set(0, 3.6, -3.4); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.15, 2.2);   /* higher when a raised Kuf stands below */   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
-    const m = peds.length, two = P && m > 3; peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -3.0 : 2.6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */
+    const m = peds.length, two = P && m > 3 && !ROW1(); peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -3.0 : 2.6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
   E.onFrame(t => {
-    if (card.visible && !dragging && !busy) { card.position.y = cardHome.y + Math.sin(t * 2.2) * .08; card.rotation.y = Math.sin(t * 1.1) * .35; }
-    peds.forEach((pd, i) => L[pd.userData.key].rotation.y = Math.sin(t * 1.2 + i) * .25);
+    if (card.visible && !dragging && !busy && !E.CALM) { card.position.y = cardHome.y + Math.sin(t * 2.2) * .08; card.rotation.y = Math.sin(t * 1.1) * .35; }
+    if (!E.CALM) peds.forEach((pd, i) => L[pd.userData.key].rotation.y = Math.sin(t * 1.2 + i) * .25);   /* calm: still, face-on */
     const want = word && WORDS[word].letter, tgt = peds.find(pd => pd.userData.key === want);
     if (help && tgt && card.visible) { hint.position.copy(tgt.position).add(new THREE.Vector3(0, 1.4 * tgt.scale.x, -.5)); hint.material.opacity = .55 + Math.sin(t * 5) * .3; } else hint.material.opacity = 0;
     if (pic && pic.userData.flame) pic.userData.flame.scale.y = 1 + Math.sin(t * 9) * .08;
@@ -62,7 +63,10 @@ export default function setup(E, { struggled, unit, game = {} }) {
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; kid.mood('think'); await back(); busy = true; await E.shake(card, .15); busy = false;
       help = true; await E.say(E.quiet(k) ? ['Listen. ' + WORD_NAME[w] + '.', WORD_NAME[w] + ' starts with ' + name + '.'] : ['Listen. ' + WORD_NAME[w] + '.', WORD_NAME[w] + ' starts with', S(snd), '.']);
-      E.hop(L[k], .35); await E.say(E.quiet(k) ? name + ' is quiet. Try again!' : [name + ' says', S(snd), '. Try again!']); kid.mood('calm');
+      E.hop(L[k], .35); await E.say(E.quiet(k) ? name + ' is quiet.' : [name + ' says', S(snd), '.']); kid.mood('calm');
+      { /* show how (K-CLARITY 16): the hand carries the picture halfway to its letter, then he does it */
+        const tp = peds.find(x => x.userData.key === k); busy = true; const a = card.position.clone(), b = a.clone().lerp(top(tp), .5);
+        await E.tween(700, q => { card.position.lerpVectors(a, b, q); const [x, y] = E.toScreen(card.position); E.hand.at(x, y); }); await E.wait(250); E.hand.hide(); await back(); busy = false; await E.say('Now you!'); }
       if (mistakes < 2 && !struggled) help = false;   /* the glow stays on once he has missed twice */
     }
   }

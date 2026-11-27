@@ -29,7 +29,7 @@ export default function setup(E, { struggled, unit }) {
     if (A) { A.position.set(X(), Y(), .3); A.scale.setScalar(S2()); } if (B) { B.position.set(-X(), Y(), .3); B.scale.setScalar(S2()); }   /* both on the gold line; a long leg hangs below it, above the stand */
     if (card && !drag) card.position.copy(cardHome);
   });
-  E.onFrame(t => { [A, B].forEach((l, i) => { if (l) l.rotation.y = Math.sin(t * .9 + i) * .12; }); marks.forEach(m => m.visible && (m.material.opacity = m.userData.on ? .65 + Math.sin(t * 5) * .25 : 0)); hint.forEach(h => h.material.opacity = (help && active) || performance.now() < hintUntil ? .35 + Math.sin(t * 4) * .2 : 0);
+  E.onFrame(t => { [A, B].forEach((l, i) => { if (l) l.rotation.y = E.CALM ? 0 : Math.sin(t * .9 + i) * .12; }); marks.forEach(m => m.visible && (m.material.opacity = m.userData.on ? .65 + Math.sin(t * 5) * .25 : 0)); hint.forEach(h => h.material.opacity = (help && active) || performance.now() < hintUntil ? .35 + Math.sin(t * 4) * .2 : 0);
     if (card && card !== drag && !card.userData.busy) card.position.y = cardHome.y + Math.sin(t * 2) * .06; });
   /* where the difference is, on each letter, in its own space */
   const spot = (k, other, l) => { const f = E.featFor(k, other) || E.FEATURES[k]; return l.localToWorld(E.fontToLocal(k, H, f[0], f[1]).add(new THREE.Vector3(0, 0, .4))); };

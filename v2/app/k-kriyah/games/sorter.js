@@ -44,7 +44,7 @@ export default function setup(E, { struggled, unit, game }) {
     pr.forEach((k, i) => E.pointAt(arrows[i], labels[i], k, 1.3, feat(k, pr)));
   }
   E.onFrame(t => {
-    if (card.visible && !dragging && !busy) { card.position.y = cardHome.y + Math.sin(t * 2.2) * .08; card.rotation.y = Math.sin(t * 1.1) * .25; }
+    if (card.visible && !dragging && !busy && !E.CALM) { card.position.y = cardHome.y + Math.sin(t * 2.2) * .08; card.rotation.y = Math.sin(t * 1.1) * .25; }
     const want = boxOf(card.userData.key); crates.forEach((c, i) => glows[i].material.opacity = help && card.visible && c.userData.key === want ? .55 + Math.sin(t * 5) * .3 : 0);
   });
   const centre = c => c.position.clone().add(new THREE.Vector3(0, .8 * c.scale.x, .5));
