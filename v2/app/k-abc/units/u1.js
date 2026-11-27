@@ -93,7 +93,7 @@ const rhyme = {
     const pads = []; for (let i = 0; i < 6; i++) { const p = lilypad(G.S, 0.75); pads.push(p); } G.pads = pads; G.cur = [];
     G.S.tick(t => pads.forEach((p, i) => { p.rotation.y = i + Math.sin(t * 0.5 + i) * 0.1; const it = G.cur[i];   /* each picture floats on its own lily pad */
       if (it && it.live && !it.placed) { p.visible = true; p.position.set(it.home.x, 0.1, it.home.z); } else p.visible = false; }));
-    G.view({ wide: [0, 1.7, 11.6, 5.4, 0.3], narrow: [0, 1.4, 5.0, 7.6, 0.42] }); G.mendyAt = { wide: [-5.0, -0.6, 1.0], narrow: [-1.4, 3.7, 0.55] }; return W; },
+    G.view({ wide: [0, 1.2, 11.6, 6.8, 0.62], narrow: [0, 1.4, 5.0, 7.6, 0.42] }); G.mendyAt = { wide: [-5.0, -0.6, 1.0]   /* seen more from above, so the near pictures never cover the far ones (K clarity 8) */, narrow: [-1.4, 3.7, 0.55] }; return W; },
   async play(G) {
     const extra = []; G.rounds(6);
     const rowZ = [1.8, 0.0, -1.8], spot = (side, i) => () => G.narrow() ? V(-1.45 + i * 1.6, 0.8, side ? -2.6 : 0.4) : V(side ? 3.4 : -3.4, 0.8, rowZ[i]);   /* standing on lily pads in the pond */

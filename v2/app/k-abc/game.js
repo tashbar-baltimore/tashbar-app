@@ -108,7 +108,7 @@ export function makeGame(host, o) {
   G.rounds = n => { pips.innerHTML = ''; for (let i = 0; i < n; i++) { const d = document.createElement('i'); pips.appendChild(d); } A.total = n; G.ri = 0; };
   let miss = 0;
   G.newRound = () => { miss = 0; A.round = (A.round || 0) + 1; G.hintFn = null; };
-  G.right = async (at, line) => { audio.chime([784, 988, 1319]); if (at) G.P.burst(at, 0.5); G.mendy.set('happy', 1.1); G.mendy.hopNow();
+  G.right = async (at, line) => { audio.chime([784, 988, 1319]); if (at) G.P.burst(at, 0.12);   /* a small reward burst near the answer, not a storm over the screen (K clarity 10) */ G.mendy.set('happy', 1.1); G.mendy.hopNow();
     A.rounds++; if (miss === 0) A.firstTry++; const d = pips.children[G.ri++]; if (d) d.className = miss === 0 ? 'star' : 'done';
     await G.say([line || PRAISE[Math.floor(Math.random() * PRAISE.length)]]); };
   G.wrong = async (lines, it) => { miss++; A.misses++; A.fixes++; audio.hmm(); if (it) it.poke(); G.mendy.wiggle();
@@ -119,7 +119,7 @@ export function makeGame(host, o) {
   G.done = async (line) => {
     const r = A.rounds ? A.firstTry / A.rounds : 1, stars = r >= 0.85 ? 3 : r >= 0.55 ? 2 : 1; A.stars = stars;
     try { const k = 'kabc-stars', all = JSON.parse(localStorage.getItem(k) || '{}'), id = 'u' + o.unit + '.' + o.id; all[id] = Math.max(all[id] || 0, stars); localStorage.setItem(k, JSON.stringify(all)); } catch (e) {}
-    G.mendy.set('happy', 2.5); G.mendy.hopNow(); G.P.burst(V(0, 3, 1)); audio.party();
+    G.mendy.set('happy', 2.5); G.mendy.hopNow(); G.P.burst(V(0, 3, 1), 0.4); audio.party();
     const st = $('stars'); st.innerHTML = ''; for (let i = 0; i < 3; i++) { const s = document.createElement('i'); if (i < stars) s.className = 'on'; s.style.animationDelay = (i * 0.25) + 's'; st.appendChild(s); }
     st.classList.add('on'); A.name = 'end';
     await G.say([line || 'You did it!']);
