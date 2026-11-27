@@ -16,13 +16,20 @@
                { t:'Every sentence starts with a capital and ends with . ! or ?', caps:true }, { t:'I used every part of my plan.', plan:true }, { t:'I read it out loud to myself.', self:true }],
        rubric:['My opinion is clear','Reasons with details','Order and linking words','Capitals, end marks and spelling'],   (2-6 rows; the teacher scores 1-4)
        pics:['🐠','🐹','🦜','📚'] }   (his book page picture: 2-6 choices)
+   QUICK WRITES (W13 helper, HoS 2026-11-27): a short task, kind:'quick', tied to one text he read. Two steps, Write then Check, then Send
+   to the same teacher inbox. No plan boxes or strategy card: the prompt and a "How to do it" box sit above his writing.
+     { id:'W13.QW.ST01A', kind:'quick', text:'C23.ST.01', story:'The Noise in the Sukkah', grade:2, skill:'WRIT.PARA.L03.08', title:'...', prompt:'...',
+       how:['First, ...','Next, ...','Last, ...'], starters:['First,','Next,'], min:25, checks:[...no first/plan...], rubric:[...] }
+   TLCORE.write.quick.add([q, ...]) registers them (a broken one is refused, with the reason in the console); quick.of(textId) lists a
+   text's; quick.forBite(bite) -> the first text a lesson opened (read or proof) that has quick writes, or null; quick.pick(textId, opts)
+   lets him pick one of the text's prompts and opens it (opts as for open). The prompt goes to the teacher with his writing.
    Buttons come only from the button system (window.TLK). No money here. A draft is kept on the Chromebook as he types and on the server
    at each step. No double slash in this file. */
 (function () {
   var W = window, C = W.TLCORE = W.TLCORE || {}, WR = C.write = {};
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var RM = false; try { RM = W.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var STAGES = ['Plan', 'Write', 'Fix', 'Finish'], S = null;
+  var STAGES = ['Plan', 'Write', 'Fix', 'Finish'], QSTAGES = ['Write', 'Check'], S = null, QW = {};
   function K() { return W.TLK || null; }
   function btn(kind, text, attrs) { var k = K(); return k && k[kind] ? k[kind](text, attrs) : '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
   function pill(kind, text) { var k = K(); return k ? k.pill(kind, text) : '<span>' + esc(text) + '</span>'; }
@@ -40,8 +47,15 @@
     if (!t || typeof t !== 'object') return 'not a task';
     if (!/^[A-Z][A-Z0-9]*(\.[A-Z0-9]+){1,3}$/.test(String(t.id || ''))) return 'id must look like W48.OPIN.01';
     if (!t.title || !t.prompt) return 'title and prompt are needed';
-    if (!t.strategy || !Array.isArray(t.strategy.steps) || !t.strategy.steps.length) return 'strategy.steps (the memory strategy, for example POW) is needed';
-    if (!Array.isArray(t.plan) || t.plan.length < 2 || t.plan.length > 8 || t.plan.some(function (p) { return !p || !p.k || !p.label; })) return 'plan must be 2 to 8 boxes, each { k, label }';
+    var quick = t.kind === 'quick';
+    if (quick) {
+      if (!/^[A-Z][A-Z0-9]*\.[A-Z0-9]+\.\d\d$/.test(String(t.text || ''))) return 'a quick write needs text: the id of the text he read (like C23.ST.01)';
+      if (!t.story) return 'a quick write needs story: the title of the text, for the screen';
+      if (!Array.isArray(t.how) || t.how.length < 2 || t.how.length > 5 || t.how.some(function (x) { return !x || typeof x !== 'string'; })) return 'a quick write needs how: 2 to 5 short "How to do it" steps';
+      if (Array.isArray(t.checks) && t.checks.some(function (c) { return c && (c.first || c.plan); })) return 'a quick write has no plan boxes, so no first or plan checks';
+    }
+    if (!quick && (!t.strategy || !Array.isArray(t.strategy.steps) || !t.strategy.steps.length)) return 'strategy.steps (the memory strategy, for example POW) is needed';
+    if (!quick && (!Array.isArray(t.plan) || t.plan.length < 2 || t.plan.length > 8 || t.plan.some(function (p) { return !p || !p.k || !p.label; }))) return 'plan must be 2 to 8 boxes, each { k, label }';
     if (!Array.isArray(t.checks) || t.checks.length < 3) return 'checks must have 3 or more lines';
     if (t.min != null && Number(t.min) < gradeFloor(t.grade)) return 'min must be at least ' + gradeFloor(t.grade) + ' words for grade ' + t.grade + ' (Gr 2-5: 25, Gr 6-8: 35)';
     var bad = t.checks.filter(function (c) { return !c || !c.t || !(c.sentences || c.words || c.first || c.any || c.caps || c.plan || c.self); });
@@ -77,24 +91,32 @@
   function top() {
     var k = K(), young = S.g <= 3, ex = S.o.exit === 'x' ? (k ? k.x('data-cw="exit"', 'tl') : '') : (k ? k.home('data-cw="exit"', 'tl', young) : '');
     var read = (S.view === 'write' || S.view === 'fix') && k ? k.tool('🔊', 'Read my writing to me', 'data-cw="read"') : '';
-    var prog = S.view === 'stage' || S.view === 'write' || S.view === 'fix' || S.view === 'finish' ? pill('prog', 'Step ' + (S.st + 1) + ' of 4 · ' + STAGES[S.st]) : '';
-    return '<div class="cw-top">' + ex + '<div class="cw-ttl">' + esc(S.task.title) + '</div><div class="cw-tools">' + prog + read + '</div></div>';
+    var story = S.quick && (S.view === 'write' || S.view === 'fix') && k && W.TLCORE.reader ? k.tool('📖', 'Read the story again', 'data-cw="story"') : '';
+    var prog = S.view === 'stage' || S.view === 'write' || S.view === 'fix' || S.view === 'finish' ? pill('prog', S.quick ? 'Step ' + S.st + ' of 2 · ' + QSTAGES[S.st - 1] : 'Step ' + (S.st + 1) + ' of 4 · ' + STAGES[S.st]) : '';
+    return '<div class="cw-top">' + ex + '<div class="cw-ttl">' + esc(S.task.title) + '</div><div class="cw-tools">' + prog + story + read + '</div></div>';
   }
-  function strip() { return '<ol class="cw-strip" aria-label="Steps">' + STAGES.map(function (s, i) { return '<li class="' + (i < S.st ? 'done' : i === S.st ? 'on' : '') + '">' + (i < S.st ? '✓ ' : '') + s + '</li>'; }).join('') + '</ol>'; }
+  function strip() { if (S.quick) return '<ol class="cw-strip" aria-label="Steps">' + QSTAGES.map(function (s, i) { return '<li class="' + (i + 1 < S.st ? 'done' : i + 1 === S.st ? 'on' : '') + '">' + (i + 1 < S.st ? '✓ ' : '') + s + '</li>'; }).join('') + '</ol>';
+    return '<ol class="cw-strip" aria-label="Steps">' + STAGES.map(function (s, i) { return '<li class="' + (i < S.st ? 'done' : i === S.st ? 'on' : '') + '">' + (i < S.st ? '✓ ' : '') + s + '</li>'; }).join('') + '</ol>'; }
   function strat() { var st = S.task.strategy;
     return '<div class="cw-strat" aria-label="My strategy"><b>' + esc(st.name || 'My strategy') + '</b><div class="cw-letters">' + st.steps.map(function (x) { return '<span><i>' + esc(x[0]) + '</i>' + esc(x[1]) + '</span>'; }).join('') + '</div>' +
       (st.more && st.more.length ? '<div class="cw-letters more">' + st.more.map(function (x) { return '<span><i>' + esc(x[0]) + '</i>' + esc(x[1]) + '</span>'; }).join('') + '</div>' : '') + '</div>'; }
   function planCard(ro) { return '<div class="cw-plan">' + S.task.plan.map(function (p) { var v = S.piece.plan[p.k] || '';
       return '<label class="cw-box"><span>' + esc(p.label) + '</span>' + (ro ? '<div class="cw-ro">' + (esc(v) || '…') + '</div>' : '<textarea data-cwp="' + esc(p.k) + '" rows="2" maxlength="300" placeholder="' + esc(p.hint || '') + '">' + esc(v) + '</textarea>') + '</label>'; }).join('') + '</div>'; }
   function foot(nextOk, nextText) {
-    var back = S.st > 0 && S.g >= 3 ? btn('quiet', '‹ Back', 'data-cw="back"') : '';
+    var back = S.st > (S.quick ? 1 : 0) && S.g >= 3 ? btn('quiet', '‹ Back', 'data-cw="back"') : '';
     return '<div class="cw-foot">' + back + '<span class="cw-sp"></span><span class="cw-why" aria-live="polite">' + esc(S.why || '') + '</span>' + btn('main', nextText || 'Next', 'data-cw="next"' + (nextOk ? '' : ' aria-disabled="true"')) + '</div>';
   }
   function viewPlan() {
     return strip() + '<div class="cw-body"><img class="cw-hero" alt="" src="/pics/core-t-workshop.webp" onerror="this.remove()"><div class="cw-prompt"><b>' + esc(S.task.title) + '</b><p>' + esc(S.task.prompt) + '</p></div>' + strat() + '<h3>My plan</h3>' + planCard(false) + '</div>';
   }
+  function quickCard() { var q = S.task;
+    return '<div class="cw-prompt cw-qp"><span class="cw-qs">✍️ Quick write · ' + esc(q.story) + '</span><p>' + esc(q.prompt) + '</p></div>' +
+      '<div class="cw-how" role="note"><b>How to do it</b><ol>' + q.how.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol></div>'; }
   function viewWrite() {
     var n = words(S.piece.text), m = minWords();
+    if (S.quick) return strip() + '<div class="cw-body cw-quick">' + quickCard() + '<div class="cw-starters">' + (S.task.starters || []).map(function (x) { return btn('quiet', x, 'data-cw="starter" data-k="' + esc(x) + '"'); }).join('') + '</div>' +
+      '<textarea class="cw-text" data-cw-text="1" spellcheck="true" aria-label="My writing" placeholder="Write 3 to 5 sentences.">' + esc(S.piece.text) + '</textarea>' +
+      '<div class="cw-count">' + pill(n >= m ? 'prog' : 'now', n + ' of ' + m + ' words') + '</div></div>';
     return strip() + '<div class="cw-body cw-two"><aside class="cw-side"><details' + (innerWidth >= 900 ? ' open' : '') + '><summary>My plan</summary>' + strat() + planCard(true) + '</details></aside>' +
       '<div class="cw-main"><div class="cw-starters">' + (S.task.starters || []).map(function (x) { return btn('quiet', x, 'data-cw="starter" data-k="' + esc(x) + '"'); }).join('') + '</div>' +
       '<textarea class="cw-text" data-cw-text="1" spellcheck="true" aria-label="My writing" placeholder="Start with your first plan box.">' + esc(S.piece.text) + '</textarea>' +
@@ -118,16 +140,19 @@
     return '<div class="cw-done"><div class="cw-star" aria-hidden="true">✉️</div><h2>Sent to your teacher!</h2><p>Your teacher will read it and write you a note.</p><div>' + pill('prog', words(S.piece.text) + ' words written') + '</div>' + btn('main', 'Next', 'data-cw="close"') + '</div>';
   }
   function draw() {
-    var el = S.el, v = S.view, body = v === 'sent' ? viewSent() : v === 'book' ? viewBook() : v === 'read' ? viewRead() : [viewPlan, viewWrite, viewFix, viewFinish][S.st]();
+    var el = S.el, v = S.view, body = v === 'sent' ? viewSent() : v === 'book' ? viewBook() : v === 'read' ? viewRead() : v === 'pick' ? viewPick() : [viewPlan, viewWrite, viewFix, viewFinish][S.st]();
     var nextOk = S.st === 0 ? planDone() : S.st === 1 ? words(S.piece.text) >= minWords() : S.st === 2 ? S.task.checks.every(check) : !!S.piece.title.trim();
     el.className = 'b-' + (S.g <= 1 ? 'K1' : S.g <= 3 ? 'B23' : S.g <= 5 ? 'E45' : 'M68');
-    el.innerHTML = top() + '<div class="cw-scroll">' + body + '</div>' + (v === 'stage' || v === 'write' || v === 'fix' || v === 'finish' ? foot(nextOk, S.st === 3 ? (K() && K().WORDS ? K().WORDS.send : 'Send') : 'Next') : '');
+    el.innerHTML = top() + '<div class="cw-scroll">' + body + '</div>' + (v === 'stage' || v === 'write' || v === 'fix' || v === 'finish' ? foot(nextOk, lastStep() ? (K() && K().WORDS ? K().WORDS.send : 'Send') : 'Next') : '');
   }
+  function lastStep() { return S.st === 3 || (S.quick && S.st === 2); }
   function setStage(i) { S.st = i; S.view = ['stage', 'write', 'fix', 'finish'][i]; S.why = ''; draw(); var f = S.el.querySelector('textarea,input'); if (f && S.st < 3) try { f.focus({ preventScroll: true }); } catch (e) {} saveDraft(); }
 
   /* ---------- saving ---------- */
-  function payload(status) { var plan = {}, lab = {}; S.task.plan.forEach(function (p) { plan[p.k] = String(S.piece.plan[p.k] || ''); lab[p.k] = p.label; }); plan._labels = lab;   /* the teacher sees the box names */
-    return { id: S.piece.id || '', task: S.task.id, title: S.piece.title || S.task.title, text: S.piece.text, plan: plan, pic: S.piece.pic || '', status: status,
+  function payload(status) { var plan = {}, lab = {};
+    if (S.quick) { plan.prompt = S.task.prompt; lab.prompt = 'Quick write about "' + S.task.story + '"'; }   /* the teacher sees the prompt he answered */
+    (S.task.plan || []).forEach(function (p) { plan[p.k] = String(S.piece.plan[p.k] || ''); lab[p.k] = p.label; }); plan._labels = lab;   /* the teacher sees the box names */
+    return { id: S.piece.id || '', task: S.task.id, title: S.piece.title || S.task.title, text: S.piece.text, plan: plan, pic: S.piece.pic || (S.quick ? '✍️' : ''), status: status,
     checks: S.task.checks.map(function (c) { return { t: c.t, ok: check(c) }; }), rubric: S.task.rubric }; }
   function saveDraft() { stash(); if (!S.piece.text && !Object.keys(S.piece.plan).length) return Promise.resolve(); return call('cwSave', payload('draft')).then(function (r) { if (S && r && r.id) S.piece.id = r.id; }).catch(function () {}); }
   function send() {
@@ -161,10 +186,11 @@
     if (S.st === 3) { var pg = el.querySelector('.cw-page h2'); if (pg) pg.textContent = S.piece.title || S.task.title; }
     var ok = S.st === 0 ? planDone() : S.st === 1 ? words(S.piece.text) >= minWords() : S.st === 2 ? S.task.checks.every(check) : !!S.piece.title.trim();
     var nb = el.querySelector('[data-cw=next]'); if (nb) { if (ok) nb.removeAttribute('aria-disabled'); else nb.setAttribute('aria-disabled', 'true'); }
+    if (ok && S.why) { S.why = ''; var wy = el.querySelector('.cw-why'); if (wy) wy.textContent = ''; }   /* an old "Keep writing" never stays once he has done it */
   }
   function whyNot() {
     if (S.st === 0) { var p = S.task.plan.filter(function (x) { return words(S.piece.plan[x.k]) < 2; })[0]; return p ? 'Fill in "' + p.label + '" first (a few words is enough).' : ''; }
-    if (S.st === 1) return 'Keep writing: ' + (minWords() - words(S.piece.text)) + ' more words. Use your plan.';
+    if (S.st === 1) return 'Keep writing: ' + (minWords() - words(S.piece.text)) + ' more words. ' + (S.quick ? 'Use the How to do it box.' : 'Use your plan.');
     if (S.st === 2) { var c = S.task.checks.filter(function (x) { return !check(x); })[0]; if (!c) return '';
       if (c.first) { var pb = S.task.plan.filter(function (p) { return p.k === c.first; })[0]; return 'Not yet: ' + c.t + ' Start with words from your plan box "' + (pb ? pb.label : c.first) + '".'; }
       if (c.plan) { var miss = S.task.plan.filter(function (p) { var kw = keyWords(S.piece.plan[p.k]), low = S.piece.text.toLowerCase(); return !kw.some(function (w) { return low.indexOf(w) >= 0; }); })[0]; return 'Not yet: ' + c.t + (miss ? ' Use words from "' + miss.label + '".' : ''); }
@@ -175,16 +201,19 @@
   }
   function onClick(e) {
     if (!S) return; var t = e.target.closest('[data-cw]'); if (!t) return; var a = t.getAttribute('data-cw');
-    if (a === 'exit') { if (S.o.exit === 'x' && K() && K().ask && S.view !== 'sent') return askLeave(); saveDraft(); return finish(); }
+    if (a === 'exit') { if (S.o.exit === 'x' && K() && K().ask && S.view !== 'sent' && S.view !== 'pick') return askLeave(); saveDraft(); return finish(); }
     if (a === 'stay') { var ak = S.el.querySelector('.cw-askbox'); if (ak) ak.remove(); return; }
     if (a === 'leave') { saveDraft(); return finish(); }
     if (a === 'close') return finish();
     if (a === 'read') { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(S.piece.text || 'Nothing written yet.'); u.rate = .92; speechSynthesis.speak(u); } catch (er) {} return; }
-    if (a === 'back') { if (S.st > 0) setStage(S.st - 1); return; }
+    if (a === 'back') { if (S.st > (S.quick ? 1 : 0)) setStage(S.st - 1); return; }
+    if (a === 'story') { saveDraft(); if (W.TLCORE.reader) W.TLCORE.reader.open(S.task.text, { exit: 'x', grade: S.g }).catch(function () {}); return; }
+    if (a === 'qpick') { if (t.getAttribute('aria-disabled') === 'true') return; var q = (S.picks || []).filter(function (x) { return x.id === t.getAttribute('data-k'); })[0]; if (!q) return;
+      var r0 = S.resolve, o0 = S.o; S.resolve = function () {}; finish(); WR.open(q, o0).then(r0, function () { r0({ sent: false }); }); return; }
     if (a === 'next') {
       if (S.sending) return;
       if (t.getAttribute('aria-disabled') === 'true') { S.why = whyNot(); var w = S.el.querySelector('.cw-why'); if (w) w.textContent = S.why; return; }
-      if (S.st < 3) return setStage(S.st + 1);
+      if (!lastStep()) return setStage(S.st + 1);
       return send();
     }
     if (a === 'starter') { var ta = S.el.querySelector('[data-cw-text]'), x = t.getAttribute('data-k'); if (!ta) return; var pos = ta.selectionStart || ta.value.length, pre = ta.value.slice(0, pos), sp = pre && !/\s$/.test(pre) ? ' ' : '';
@@ -215,7 +244,8 @@
     if (S) finish();
     return new Promise(function (resolve) {
       var g = opts.grade != null && opts.grade !== '' && !isNaN(Number(opts.grade)) ? Number(opts.grade) : Number(task.grade) || 4;
-      S = { task: task, o: opts, g: g, piece: { id: '', plan: {}, text: '', title: task.title, pic: '', status: 'draft' }, self: {}, st: 0, view: 'stage', resolve: resolve, el: mount(opts) };
+      var qk = task.kind === 'quick';
+      S = { task: task, o: opts, g: g, quick: qk, piece: { id: '', plan: {}, text: '', title: task.title, pic: '', status: 'draft' }, self: {}, st: qk ? 1 : 0, view: qk ? 'write' : 'stage', resolve: resolve, el: mount(opts) };
       var local = unstash(); if (local) { S.piece.plan = local.plan || {}; S.piece.text = local.text || ''; S.piece.title = local.title || task.title; S.piece.pic = local.pic || ''; }
       draw();
       call('cwMine').then(function (r) {
@@ -223,7 +253,7 @@
         var p = ((r && r.pieces) || []).filter(function (x) { return x.task === task.id && x.status !== 'published'; })[0]; if (!p) return;
         if (p.status === 'sent') { S.piece.status = 'sent'; S.piece.id = p.id; S.view = 'sent'; draw(); var h = S.el.querySelector('.cw-done h2'); if (h) h.textContent = 'Your teacher has this piece now.'; return; }
         S.piece.id = p.id; var newer = (local && local.at > (p.updated || p.sent || p.created || 0)) || S.touched;   /* never throw away what he typed, or a newer copy on this Chromebook */
-        if (!newer) { S.piece.plan = p.plan || {}; S.piece.text = p.text || ''; S.piece.title = p.title || task.title; S.piece.pic = p.pic || ''; }
+        if (!newer) { S.piece.plan = qk ? {} : p.plan || {}; S.piece.text = p.text || ''; S.piece.title = p.title || task.title; S.piece.pic = p.pic || ''; }
         if (p.status === 'returned') { S.returned = p.note || 'Look at your checklist again.'; S.st = 2; S.view = 'fix'; }
         draw();
       }).catch(function () {});
@@ -237,8 +267,33 @@
       call('cwMine').then(function (r) { if (!S || S.view !== 'book') return; S.mine = (r && r.pieces) || []; draw(); }).catch(function () { if (S) { S.mine = []; draw(); } });
     });
   };
+  /* ---------- quick writes: a text's short prompts, and the picker ---------- */
+  function viewPick() {
+    var sent = S.sentTasks || {};
+    return '<div class="cw-body"><div class="cw-prompt"><span class="cw-qs">✍️ Quick write · ' + esc(S.story) + '</span><p>Pick one. Write 3 to 5 sentences. Your teacher will read it.</p></div><div class="cw-picks">' +
+      S.picks.map(function (q) { var done = !!sent[q.id];
+        return '<button type="button" class="tlk tlk-tile cw-pick" data-cw="qpick" data-k="' + esc(q.id) + '"' + (done ? ' aria-disabled="true"' : '') + '><b>' + esc(q.title) + '</b><span>' + esc(q.prompt) + '</span>' + (q.uses ? '<small class="cw-uses">Skill: ' + esc(q.uses) + '</small>' : '') + (done ? pill('prog', 'Sent to your teacher') : '') + '</button>'; }).join('') + '</div></div>';
+  }
+  WR.quick = {
+    add: function (list) { (Array.isArray(list) ? list : [list]).forEach(function (q) { var e = WR.err(q) || (q.kind !== 'quick' ? 'kind must be quick' : '');
+      if (e) { console.error('Quick write ' + (q && q.id) + ': ' + e); return; } var l = QW[q.text] = QW[q.text] || []; if (!l.some(function (x) { return x.id === q.id; })) l.push(q); }); },
+    of: function (textId) { return (QW[textId] || []).slice(); },
+    forBite: function (b) { var acts = [].concat((b && b.do) || [], (b && b.your) || []);
+      for (var i = 0; i < acts.length; i++) { var x = acts[i]; if (x && (x.type === 'read' || x.type === 'proof') && QW[x.text] && QW[x.text].length) return { text: x.text, story: QW[x.text][0].story, n: QW[x.text].length }; }
+      return null; },
+    pick: function (textId, opts) {
+      opts = opts || {}; var list = QW[textId] || []; if (!list.length) return Promise.resolve({ skipped: true });
+      if (S) finish();
+      return new Promise(function (resolve) {
+        S = { task: { id: 'PICK', title: 'Quick write', checks: [], plan: [] }, o: opts, g: opts.grade != null && opts.grade !== '' ? Number(opts.grade) : Number(list[0].grade) || 2, piece: { plan: {}, text: '', title: '' }, self: {},
+          st: 0, view: 'pick', picks: list, story: list[0].story, sentTasks: {}, resolve: resolve, el: mount(opts) };
+        draw();
+        call('cwMine').then(function (r) { if (!S || S.view !== 'pick') return; ((r && r.pieces) || []).forEach(function (p) { if (p.status === 'sent' || p.status === 'published') S.sentTasks[p.task] = 1; }); draw(); }).catch(function () {});
+      });
+    }
+  };
   WR.close = function () { if (S) finish(); };
-  WR.state = function () { return S ? { view: S.view, st: S.st, task: S.task.id, id: S.piece.id, status: S.piece.status, words: words(S.piece.text), checks: (S.task.checks || []).map(function (c) { return check(c); }) } : null; };
+  WR.state = function () { return S ? { view: S.view, st: S.st, quick: !!S.quick, task: S.task.id, id: S.piece.id, status: S.piece.status, words: words(S.piece.text), checks: (S.task.checks || []).map(function (c) { return check(c); }) } : null; };
 
   function css() { if (document.getElementById('cw-css')) return; var s = document.createElement('style'); s.id = 'cw-css'; s.textContent = '' +
     '#cwr{position:fixed;inset:0;z-index:2147483500;display:flex;flex-direction:column;background:#F6F3EC;color:#1F2633;font:17px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}' +
@@ -273,6 +328,12 @@
     '#cwr .cw-shelf{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}#cwr .cw-card{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px;text-align:left;min-height:140px}#cwr .cw-cp{font-size:44px}#cwr .cw-bt{margin:4px 0 12px}' +
     '@media (max-width:480px){#cwr .cw-strip li{font-size:12px}#cwr .cw-why{max-width:46%;font-size:13px}#cwr .cw-ttl{font-size:14px}#cwr .cw-page{padding:16px;font-size:17px}}' +
     '#cwr .cw-askbox{position:absolute;inset:0;background:rgba(20,24,34,.45);display:grid;place-items:center;padding:16px;z-index:5}#cwr .cw-askcard{background:#fff;border-radius:18px;padding:22px;max-width:420px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.3)}' +
+    'html:has(> #cwr) #tlms,html:has(> #cwr) #tlms-fx{visibility:hidden!important}' +   /* no money in the workshop: the money show from Level clear never floats over his writing */
+    '#cwr .cw-qs{display:block;font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#8A5A12}#cwr .cw-qp p{font-size:19px;font-weight:600}#cwr.b-B23 .cw-qp p{font-size:21px}' +
+    '#cwr .cw-how{margin:12px 0;background:#EEF6FF;border:1px solid #C9DBF2;border-radius:14px;padding:10px 14px}#cwr .cw-how b{font-size:15px;color:#1D4E9E}#cwr .cw-how ol{margin:6px 0 0;padding-left:22px}#cwr .cw-how li{margin:3px 0}' +
+    '@media (max-width:480px){#cwr .cw-top .cw-tools .tlk-pill{display:none}}#cwr .cw-quick .cw-text{min-height:22vh}#cwr .cw-quick .cw-how{margin:10px 0}#cwr .cw-quick{max-width:820px}' +
+    '#cwr .cw-picks{display:grid;gap:12px;margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}#cwr .cw-pick{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:16px;text-align:left;min-height:120px}' +
+    '#cwr .cw-pick b{font-size:19px}#cwr .cw-pick span{font-weight:500}#cwr .cw-uses{font-size:14px;font-weight:700;color:#5A5040}#cwr .cw-pick[aria-disabled=true]{opacity:.7;cursor:default}' +
     '@media (prefers-reduced-motion:reduce){#cwr .cw-star{animation:none}}';
     (document.head || document.documentElement).appendChild(s); }
 })();

@@ -1,0 +1,89 @@
+<script>
+/* CoreDataW13H7.html: Core Growth job W13 (helper piece: Grade 2-3 quick writes), data only (docs/core-growth/HOW-TO-ADD-A-WRITING-TASK.md,
+   "Quick writes"). No double slash in this file (HtmlService rule). Keep it under 150 KB.
+   Two quick-write prompts for every live C23 text (texts/C23/). A lesson that opens one of these texts (a read or proof activity) ends,
+   after Level clear, with "Quick write": the boy picks one of the two prompts, writes 3 to 5 sentences (25+ words) in the Writing
+   Workshop's short mode (Write, then Check), and sends it to his teacher's Writing inbox. It is never marked right for being typed:
+   the teacher reads it and scores the rubric.
+   Each prompt uses a writing skill from the live Grade 2 W13 units (named in uses/skill), and every fact it states is checked against
+   the text. Cast: the Shabbos Street Club (docs/core-growth/C23-map.md, section 5). Kosher food, warm frum family life. */
+(function () {
+  var CHECK_CAPS = { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true };
+  var CHECK_3 = { t: 'I wrote at least 3 sentences.', sentences: 3 };
+  var CHECK_FACTS = { t: 'I checked my facts in the story.', self: true };
+  var TIME = ['first', 'next', 'then', 'last', 'after that', 'finally', 'at the end'];
+  var FEEL = ['scared', 'afraid', 'frightened', 'nervous', 'worried', 'brave', 'happy', 'glad', 'surprised', 'relieved', 'excited', 'calm', 'proud'];
+  var OPINION = ['i agree', 'i think', 'i do not agree', 'i don’t agree', 'i don\'t agree', 'i disagree', 'i believe', 'i feel'];
+  function q(o) { o.kind = 'quick'; o.grade = 2; o.min = 25; return o; }
+
+  var QUICK = [
+    /* ---- C23.ST.01 "The Noise in the Sukkah" ---- */
+    q({ id: 'W13.QW.ST01A', text: 'C23.ST.01', story: 'The Noise in the Sukkah', skill: 'WRIT.PARA.L03.08', uses: 'Time-Order Words',
+      title: 'What Happened That Night',
+      prompt: 'Tell what happened in the sukkah that night, in order. Use time-order words.',
+      how: ['First: what did Dovid hear?', 'Next: what did he do?', 'Then: what did he see?', 'Last: what did the boys do with the challah?'],
+      starters: ['First,', 'Next,', 'Then,', 'Last,'],
+      checks: [CHECK_3, { t: 'I used time-order words (first, next, then, last).', any: TIME }, CHECK_CAPS, CHECK_FACTS],
+      rubric: ['Tells what happened, in the right order', 'Time-order words move it along', 'Facts match the story', 'Capitals, end marks and spelling'] }),
+    q({ id: 'W13.QW.ST01B', text: 'C23.ST.01', story: 'The Noise in the Sukkah', skill: 'WRIT.PARA.L03.07', uses: 'Actions and Thoughts',
+      title: 'Scared, but Brave',
+      prompt: 'Dovid was scared, but he was also brave. Tell how Dovid felt and what he did when he heard the noise.',
+      how: ['Tell how Dovid felt when he heard the noise.', 'Tell what he did. Look at the blanket and the flashlight.', 'Tell how the story ends. Why did he laugh?'],
+      starters: ['Dovid felt', 'He was scared, but', 'So he', 'At the end,'],
+      checks: [CHECK_3, { t: 'I told how Dovid felt (scared, brave, surprised ...).', any: FEEL }, CHECK_CAPS, CHECK_FACTS],
+      rubric: ['Tells how Dovid felt', 'Tells what Dovid did', 'Facts match the story', 'Capitals, end marks and spelling'] }),
+
+    /* ---- C23.ST.02 "Why Chaim Was Late" ---- */
+    q({ id: 'W13.QW.ST02A', text: 'C23.ST.02', story: 'Why Chaim Was Late', skill: 'WRIT.PARA.L03.01', uses: 'My Opinion',
+      title: 'Was It Worth It?',
+      prompt: 'Chaim said, “Being late was worth it.” Do you agree? Tell your opinion and give a reason from the story.',
+      how: ['Start with your opinion: “I agree” or “I do not agree.”', 'Give a reason with because.', 'Use a fact from the story.', 'End by telling your opinion again.'],
+      starters: ['I agree that', 'I think', 'because', 'That is why'],
+      checks: [CHECK_3, { t: 'I told my opinion (I agree, I think ...).', any: OPINION }, { t: 'I gave a reason with because.', any: ['because'] }, CHECK_CAPS, CHECK_FACTS],
+      rubric: ['My opinion is clear', 'A real reason with because', 'The reason comes from the story', 'Capitals, end marks and spelling'] }),
+    q({ id: 'W13.QW.ST02B', text: 'C23.ST.02', story: 'Why Chaim Was Late', skill: 'WRIT.PARA.L03.04', uses: 'Topic Sentence',
+      title: 'The Reason Chaim Was Late',
+      prompt: 'Write a short paragraph that answers: why was Chaim late? Start with a topic sentence. End with a closing sentence.',
+      how: ['Topic sentence: tell the main idea. “Chaim was late because …”', 'Details: tell what he did, in order.', 'Closing sentence: tell the main idea again in new words.'],
+      starters: ['Chaim was late because', 'First,', 'Then,', 'That is why'],
+      checks: [CHECK_3, { t: 'I told about the nest.', any: ['nest', 'eggs'] }, CHECK_CAPS, { t: 'My last sentence tells the main idea again.', self: true }, CHECK_FACTS],
+      rubric: ['Topic sentence tells the main idea', 'Details from the story, in order', 'Closing sentence', 'Capitals, end marks and spelling'] }),
+
+    /* ---- C23.B1.01 "Half a Map" (Book C1, chapter 1) ---- */
+    q({ id: 'W13.QW.B101A', text: 'C23.B1.01', story: 'Half a Map', skill: 'WRIT.SENT.L03.01', uses: 'Spice It Up',
+      title: 'Inside Zeidy’s Workshop',
+      prompt: 'Describe Zeidy’s workshop so a reader can see it and hear it. Use describing words.',
+      how: ['Tell what fills the workshop. Look at page 1.', 'Add describing words: big, small, old, dusty …', 'Tell one sound a reader would hear.'],
+      starters: ['The workshop is full of', 'There are', 'I can hear', 'The old drawer'],
+      checks: [CHECK_3, { t: 'I told about the clocks.', any: ['clock'] }, { t: 'I used at least 2 describing words.', self: true }, CHECK_CAPS, CHECK_FACTS],
+      rubric: ['A reader can picture the workshop', 'Describing words', 'Facts match the story', 'Capitals, end marks and spelling'] }),
+    q({ id: 'W13.QW.B101B', text: 'C23.B1.01', story: 'Half a Map', skill: 'WRIT.PARA.L03.10', uses: 'Real Reasons',
+      title: 'My Partner for the Case',
+      prompt: 'Which club boy would you want next to you on this case: Naftali, Avi, Chaim or Dovid? Tell your choice and give a real reason from the chapter.',
+      how: ['Pick one boy.', 'Find what the chapter says about him. Look at page 3.', 'Give a real reason with because, not “just because”.'],
+      starters: ['I would pick', 'because', 'The chapter says', 'That is why'],
+      checks: [CHECK_3, { t: 'I named the boy I picked.', any: ['naftali', 'avi', 'chaim', 'dovid'] }, { t: 'I gave a reason with because.', any: ['because'] }, CHECK_CAPS, CHECK_FACTS],
+      rubric: ['My choice is clear', 'A real reason with because', 'The reason comes from the chapter', 'Capitals, end marks and spelling'] }),
+
+    /* ---- C23.B1.02 "Who Has the Other Half?" (Book C1, chapter 2) ---- */
+    q({ id: 'W13.QW.B102A', text: 'C23.B1.02', story: 'Who Has the Other Half?', skill: 'WRIT.PARA.L03.08', uses: 'Time-Order Words',
+      title: 'Three Stops',
+      prompt: 'Tell how the club found out who drew the map. Tell the three places they went, in order.',
+      how: ['First: the corner grocery. What did Mr. Benhamou say?', 'Next: the shul. What did Rabbi Feld find?', 'Last: the workshop. What did Zeidy tell them?'],
+      starters: ['First,', 'Next,', 'Then,', 'Last,'],
+      checks: [CHECK_3, { t: 'I used time-order words (first, next, then, last).', any: TIME }, CHECK_CAPS, CHECK_FACTS],
+      rubric: ['Tells the three stops, in the right order', 'Time-order words move it along', 'Facts match the story', 'Capitals, end marks and spelling'] }),
+    q({ id: 'W13.QW.B102B', text: 'C23.B1.02', story: 'Who Has the Other Half?', skill: 'WRIT.PARA.L03.15', uses: 'Friendly Letter',
+      title: 'A Letter to Shmuel',
+      prompt: 'Write a short letter from Naftali to Zeidy’s old friend Shmuel. Tell him what the club found, and ask him one question.',
+      how: ['Greeting: Dear Shmuel,', 'Tell what the club found, and who drew it.', 'Ask Shmuel one question.', 'Closing and name: Your friend, Naftali'],
+      starters: ['Dear Shmuel,', 'We found', 'Do you', 'Your friend,'],
+      checks: [CHECK_3, { t: 'I started with a greeting (Dear Shmuel,).', any: ['dear'] }, { t: 'I ended with a closing (Your friend,).', any: ['your friend', 'your new friend', 'love', 'sincerely', 'thank you'] },
+        { t: 'I asked Shmuel one question.', self: true }, CHECK_FACTS],
+      rubric: ['All the letter parts: greeting, body, closing, name', 'Tells what the club found', 'Facts match the story', 'Capitals, end marks and spelling'] })
+  ];
+
+  if (window.TLCORE && TLCORE.write && TLCORE.write.quick) TLCORE.write.quick.add(QUICK);
+  window.W13_QUICK = QUICK;
+})();
+</script>
