@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn it: Parts of ten — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 9 OPENER: a short, warm lesson at the calm 3D fruit market. Numbers six to ten are made of two parts.
+     Seven pieces of fruit spill: four oranges and three lemons, "four and three make seven". Two plates: five and two make seven.
+     The bond picture. The call-and-answer chant "Seven is five and two!" (stand up). Oranges: three hide under the basket.
+     He taps the big arrow to go on; on the last slide he shows how many are under the basket on his fingers. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>.bond{ position:relative; width:clamp(200px,30vh,250px); height:clamp(130px,19vh,160px); } .bond[hidden]{ display:none; } .bond svg.lines{ position:absolute; inset:0; width:100%; height:100%; }
+.bc{ position:absolute; width:clamp(64px,9.5vh,80px); height:clamp(64px,9.5vh,80px); border-radius:50%; background:#fff; border:5px solid #FF8A3D; display:flex; align-items:center; justify-content:center; padding:8px; } .bc svg{ height:100%; width:auto; }
+#bw{ left:50%; top:0; transform:translateX(-50%); border-color:#2FB5E8; } #b0{ left:0; bottom:0; } #b1{ right:0; bottom:0; }
+#go{ visibility:hidden; animation:pulse 1.2s infinite; } #go.on{ visibility:visible; } #hp[hidden], #check[hidden]{ display:none; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="bond" id="bond" hidden><svg class="lines" viewBox="0 0 100 64" preserveAspectRatio="none"><path d="M50 18 L16 48 M50 18 L84 48" stroke="#8A6A4A" stroke-width="2.5"/></svg>
+      <div class="bc" id="bw"></div><div class="bc" id="b0"></div><div class="bc" id="b1"></div></div>
+    <div id="hp" hidden></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button id="go" class="bigbtn btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './market9.js';
+const $ = id => document.getElementById(id);
+let K, H, done, asking = false;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const SLIDES = [
+  async F => { await F.say('Welcome to the fruit market!'); K.showCup(true); await F.say('Seven pieces of fruit in the basket.'); await K.shake(); await K.spill(7, 4);
+    await F.say('Four oranges and three lemons.'); await F.say('Four and three make seven! Those are the parts.'); },
+  async F => { K.clearCounters(); K.showCup(false); K.setPlates(5, 2); await F.say('Five on this plate. Two on that plate.'); await F.say('Five and two make seven, too!'); },
+  async F => { $('bond').hidden = false; await F.say('We draw it like this. Seven on top.'); await F.say('Five and two below. Part, part, whole!'); $('bond').hidden = true; },
+  async F => { await F.say('I say the number. You say the parts!'); await F.chant('Seven is five and two!', true); },
+  async F => { K.hidePlates(); K.setKugel(8); await F.say('Eight oranges.'); await K.hide(3); await F.say('There were eight. I see five.'); await F.say('Three are under the basket!'); await K.lift(); },
+  async F => { K.setKugel(7); await F.say('Your turn! Seven oranges.'); await K.hide(2); asking = true; $('hp').hidden = $('check').hidden = false; $('go').hidden = true;
+    await F.say('How many are under the basket? Show me.', { repeat: 'There were seven. I see five. Show how many hide.' }); }
+];
+FR.game({
+  id: 'u9-opener', title: 'Parts of Ten', rounds: SLIDES.length, stars: () => 3,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""><img src="art/dovid-happy.png" alt="" style="height:86%"></div>',
+  endSay: () => "Great! Now let's find the hiding oranges!",
+  init() {
+    K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = FR.fingers(0, true); $('hp').appendChild(H.el);
+    $('bw').innerHTML = U5.num(7); $('b0').innerHTML = U5.num(5); $('b1').innerHTML = U5.num(2);
+    $('go').addEventListener('click', () => { if (GAME.phase !== 'answer' || asking) return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; const d = done; done = null; d(true); });
+    $('check').addEventListener('click', async () => { NK.unlock(); if (GAME.phase !== 'answer' || !asking) return; GAME.phase = 'busy';
+      if (H.count() !== 2) { FR.oops($('check')); await FR.say("Let's look under the basket."); await K.lift(); const hid = K.slices().slice(5);
+        await K.bumpAll(hid, i => FR.say(FR.Word(i + 1) + (i === hid.length - 1 ? '.' : ','), { noRepeat: true })); await K.hide(2); H.set(0); await FR.say('Show me on your fingers.'); GAME.phase = 'answer'; return; }
+      asking = false; await K.lift(); K.sparkle(2.2, 0.4); await FR.yes($('check'), 'Yes! Two were hiding. Five and two make seven!'); const d = done; done = null; d(true); });
+  },
+  round: (F, i) => new Promise(async res => {
+    GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on'); await SLIDES[i](F); done = res; GAME.phase = 'answer'; F.lock(false);
+    if (asking) { GAME.right = () => FR.fingerTaps(H, 2, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, 1, '#hp').concat([{ tap: '#check' }]); }
+    else { GAME.right = () => [{ tap: '#go' }]; GAME.wrong = null; $('go').classList.add('on'); }
+  })
+});
+</script>
+</body>
+</html>
