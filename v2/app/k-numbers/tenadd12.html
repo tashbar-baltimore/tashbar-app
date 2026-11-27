@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ten-Frame Add — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 12 (MAP.md "Ten-frame add": five-and-ten structure, see the total without counting by ones), at the bakery muffin tin.
+     "Six plus three." The pink cupcakes are already in the tin; he taps the plate and the blue ones jump in. Then: how many in all?
+     He looks at the tin: a full row is five, a full tin is ten, one empty cup means nine. He shows it on two hands.
+     A slip: "Let's look. A full row is five" (the top row lights up), then the rest, or the empty cups if that is quicker, then another try. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css"><link rel="stylesheet" href="hands-side.css">
+<style>.sum .q{ font:900 clamp(30px,5vh,44px)/1 system-ui, sans-serif; color:#8A7A6A; } #hh[hidden], #check[hidden]{ display:none; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="sum" id="sum"></div>
+    <div id="hh" hidden></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './bakery10.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function sum(show) { $('sum').innerHTML = '<span class="p pink">' + U5.num(R.a, '#FF5C9A') + '</span><span class="op">+</span><span class="p blue">' + U5.num(R.b, '#2F8FEF') + '</span><span class="op">=</span>' + (show ? '<span class="p ten">' + U5.num(R.a + R.b) + '</span>' : '<span class="p ten"><b class="q">?</b></span>'); }
+function hooks() {
+  if (R.step === 'fill') { GAME.right = () => [{ tap: '.tspot[data-id="plate"]' }]; GAME.wrong = null; return; }
+  const k = R.a + R.b; GAME.right = () => H.moves(k, '#hh').concat([{ tap: '#check' }]); GAME.wrong = () => H.moves(k === 10 ? 9 : k + 1, '#hh').concat([{ tap: '#check' }]);
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+async function tapPlate() {
+  if (GAME.phase !== 'answer' || R.step !== 'fill') return; GAME.phase = 'busy'; await K.moveOne();
+  if (K.extraLeft()) { open(); return; }
+  FR.lock(true); R.step = 'show'; $('hh').hidden = $('check').hidden = false; H.set(0); open();
+  await FR.say('How many in all? Look at the rows.', { repeat: 'A full row is five. Show me on two hands.' });
+}
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.step !== 'show') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const k = R.a + R.b, have = H.count();
+  if (have === k) { sum(true); await FR.yes($('check'), FR.Word(R.a) + ' plus ' + FR.word(R.b) + ' is ' + FR.word(k) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++;
+  if (k >= 8) { await FR.say("Let's look. A full tin is ten."); const e = await K.countEmpty(j => FR.say(FR.Word(j + 1) + ' empty.', { noRepeat: true })); K.unglow();
+    await FR.say('Ten, take away ' + FR.word(e) + ', is ' + FR.word(k) + '.'); }
+  else { await FR.say("Let's look. A full row is five."); const extra = K.cakes().slice(5); await FR.say('Five,', { noRepeat: true });
+    await K.bumpAll(extra, i => FR.say(FR.Word(6 + i) + (i === extra.length - 1 ? '.' : ','), { noRepeat: true })); }
+  await FR.say(have < k ? 'Put up ' + FR.word(k - have) + ' more.' : 'Put ' + FR.word(have - k) + ' down.'); open();
+}
+const PLAN = [[6, 3], [5, 3], [7, 2], [5, 2], [6, 1], [4, 4]];   /* answers 9, 8, 9, 7, 7, 8 */
+function play(F, i) {
+  return new Promise(async res => {
+    const [a, b] = PLAN[i]; R = { a, b, step: 'fill', misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true); $('hh').hidden = $('check').hidden = true;
+    K.setTin(a); K.setExtra(b); sum(false); await F.say(F.Word(a) + ' plus ' + F.word(b) + '.'); open();
+    await F.say('Tap the plate. Put them in the tin.', { repeat: 'Tap the plate. The blue ones jump in.' });
+  });
+}
+FR.game({
+  id: 'u12-tenadd', title: 'Ten-Frame Add', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""></div>',
+  init() { K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = U5.hands(0, true); $('hh').appendChild(H.el); K.onTap = id => { if (id === 'plate') tapPlate(); }; $('check').addEventListener('click', check); },
+  demo: async F => {
+    R = { a: 5, b: 3 }; K.setTin(5); K.setExtra(3); sum(false); $('hh').hidden = $('check').hidden = false; await F.say('Five plus three. Watch me.');
+    for (let j = 0; j < 3; j++) { await F.handTo(document.querySelector('.tspot[data-id="plate"]')); await F.handTap(); await K.moveOne(); } F.handHide();
+    await F.say('A full row is five. Then six, seven, eight.'); await F.handTo(H.el, .3, .6); for (let k = 1; k <= 8; k++) { H.set(k); } NK.sound.pop(); await F.handTap();
+    await F.handTo($('check')); await F.handTap(); F.handHide(); sum(true); await F.say('Five plus three is eight!'); H.set(0);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You see the tens! Great adding!' : 'Good adding! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

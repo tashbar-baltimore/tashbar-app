@@ -96,11 +96,12 @@ export function mount(host, opt) {
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function layout() {
     tin.position.set(narrow ? 0 : -1.0, 0, narrow ? -0.7 : 0.3); tin.scale.setScalar(1);
-    plate.position.set(solo ? (narrow ? 0 : -1.0) : narrow ? 0 : 2.75, 0, solo ? 0.3 : narrow ? 1.4 : 0.3); plate.scale.setScalar(narrow && !solo ? 0.85 : 1); tin.visible = !solo;   /* solo: only the plate, in the middle */   /* phone: in front of the tin, on the table */
+    plate.position.set(solo ? (narrow ? 0 : -1.0) : narrow ? 0 : 2.75, 0, solo ? 0.3 : narrow ? 1.65 : 0.3); plate.scale.setScalar(narrow && !solo ? 0.85 : 1); tin.visible = !solo;   /* solo: only the plate, in the middle */   /* phone: in front of the tin, on the table */
     kids.forEach((k, i) => k.m.position.set(narrow ? (i ? 1.9 : -1.9) : (i ? 3.4 : -3.4), 0.35, -3.1));
   }
   function fit() {
     Wd = host.clientWidth || innerWidth; Hh = host.clientHeight || innerHeight; renderer.setSize(Wd, Hh, false); narrow = Wd < Hh * 0.95 || Wd < 700; layout();
+    DIR.set(0, narrow ? 0.7 : 0.5, narrow ? 0.72 : 0.86).normalize();   /* phone: look more from above, so no cupcake hides another */
     const span = narrow ? 4.7 : 9.0, needH = narrow ? 4.6 : 4.4; center.z = narrow ? 0.5 : 0.3;
     const [b0, b1] = band(), bc = (b0 + b1) / 2, bh = Math.max(120, b1 - b0), fullH = Hh + 2 * Math.abs(Hh / 2 - bc), tn = Math.tan(THREE.MathUtils.degToRad(V / 2));
     dist = Math.max(span * fullH / (2 * Wd * tn), needH * fullH / (2 * tn * bh));

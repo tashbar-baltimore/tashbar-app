@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me: Stories within ten — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 12 MASTERY CHECK ("Show me"), from the map: 6 mixed story problems within 10 (add and take away), each with its number sentence.
+     Each story: he acts it out at the Shabbos table (sets cups from the tray, or eats candies), then drags in the sign and the answer.
+     A slip: the sign ("did they come or go?") or we count the table, then another try. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>
+.ui{ flex-direction:column; gap:10px; }
+.sent{ display:flex; align-items:center; gap:8px; }
+.slot{ width:clamp(64px,9.5vh,84px); height:clamp(64px,9.5vh,84px); border-radius:18px; background:#fff; border:4px dashed #C9B8A0; display:flex; align-items:center; justify-content:center; padding:7px; }
+.slot.full{ border-style:solid; border-color:#8AC97A; } .slot svg{ height:100%; width:auto; } .slot.sign{ width:clamp(56px,8vh,70px); }
+.eq{ font:900 clamp(32px,5vh,46px)/1 system-ui, sans-serif; color:#5A4A3A; }
+.tiles{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+.tile{ width:clamp(64px,9.5vh,80px); height:clamp(64px,9.5vh,80px); border-radius:18px; background:linear-gradient(180deg,#fff,#F3F7FF); display:flex; align-items:center; justify-content:center; padding:8px;
+  box-shadow:0 6px 0 #B9C7E6, 0 10px 16px rgba(30,40,90,.2); cursor:grab; touch-action:none; } .tile svg{ height:100%; width:auto; pointer-events:none; }
+.tile.picked{ outline:5px solid #FFC93D; transform:translateY(-6px); } .tile.hint{ box-shadow:0 0 0 6px rgba(255,210,61,.9), 0 0 24px 8px rgba(255,210,61,.7); }
+.sg{ font:900 54px/1 system-ui, sans-serif; } .sg.plus{ color:#22B45E; } .sg.minus{ color:#FF6A3D; }
+.tiles[hidden]{ display:none; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .slot{ width:64px; height:64px; } .slot.sign{ width:56px; } .sent{ gap:5px; } .ui{ width:min(100%,370px); } }
+.tiles{ max-width:430px; } @media (max-width:760px), (max-aspect-ratio:4/5){ .tile{ width:60px; height:60px; } .tiles{ gap:8px; } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="sent"><div class="slot" id="sa"></div><div class="slot sign" id="ss"></div><div class="slot" id="sb"></div><span class="eq">=</span><div class="slot" id="sc"></div></div>
+    <div class="tiles" id="tiles" hidden></div>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './shabbos12.js';
+const $ = id => document.getElementById(id);
+let K, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const SG = { '+': '<span class="sg plus">+</span>', '-': '<span class="sg minus">−</span>' };
+const ans = () => R.op === '+' ? R.a + R.b : R.a - R.b;
+function fill(id, html) { $(id).innerHTML = html; $(id).classList.toggle('full', !!html); }
+function tiles(list) { $('tiles').hidden = false; $('tiles').innerHTML = list.map(t => '<div class="tile" data-v="' + t + '">' + (t === '+' || t === '-' ? SG[t] : U5.num(+t)) + '</div>').join('');  requestAnimationFrame(() => K.fit()); }   /* the panel grew: the camera keeps the whole table above it */
+function hooks() {
+  if (R.step === 'act') { GAME.right = () => [{ tap: R.op === '+' ? '.tspot[data-id="tray"]' : '.tspot[data-id="' + K.items()[0].userData.id + '"]' }]; GAME.wrong = null; return; }
+  if (R.step === 'sign') { const ok = R.op; GAME.right = () => [{ drag: ['.tile[data-v="' + ok + '"]', '#ss'] }]; GAME.wrong = () => [{ drag: ['.tile[data-v="' + (ok === '+' ? '-' : '+') + '"]', '#ss'] }]; return; }
+  const k = ans(), w = k === 10 ? 9 : k + 1; GAME.right = () => [{ drag: ['.tile[data-v="' + k + '"]', '#sc'] }]; GAME.wrong = () => [{ drag: ['.tile[data-v="' + w + '"]', '#sc'] }];
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+async function toSign() { R.step = 'sign'; fill('sb', U5.num(R.b)); tiles(['+', '-']); open(); await FR.say('Now the sentence. Which sign?', { repeat: 'Set on the table is plus. Eaten is minus.' }); }
+async function tap(id) {
+  if (GAME.phase !== 'answer' || R.step !== 'act') return;
+  if (R.op === '+' && id === 'tray') { GAME.phase = 'busy'; await K.setOne(); R.did++; if (R.did < R.b) { open(); return; } K.traySpot(false); FR.lock(true); await FR.say(FR.Word(R.b) + ' more are set.'); return toSign(); }
+  if (R.op === '-' && id.startsWith('it')) { GAME.phase = 'busy'; await K.eatOne(id); R.did++; if (R.did < R.b) { open(); return; } K.candySpots(false); FR.lock(true); await FR.say(FR.Word(R.b) + ' are eaten. Yum!'); return toSign(); }
+}
+async function countUp() { const list = K.items();   /* count ON, never from one */
+  if (R.op === '+') { await FR.say('Start at ' + FR.word(R.a) + '.', { noRepeat: true }); const more = list.slice(R.a); await K.bumpAll(more, i => FR.say(FR.Word(R.a + 1 + i) + (i === more.length - 1 ? '.' : ','), { noRepeat: true })); }
+  else if (list.length > 5) { await K.bumpAll(list.slice(0, 5)); await FR.say('Five,', { noRepeat: true }); const more = list.slice(5); await K.bumpAll(more, i => FR.say(FR.Word(6 + i) + (i === more.length - 1 ? '.' : ','), { noRepeat: true })); }
+  else await K.bumpAll(list, i => FR.say(FR.Word(i + 1) + (i === list.length - 1 ? '.' : ','), { noRepeat: true })); }
+async function drop(tile, slot) {
+  NK.unlock(); if (GAME.phase !== 'answer') return; const v = tile.dataset.v;
+  if (R.step === 'sign' && slot.id === 'ss') {
+    GAME.phase = 'busy'; FR.lock(true);
+    if (v === R.op) { fill('ss', SG[v]); NK.sound.yes(); R.step = 'ans'; tiles(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']); open(); await FR.say('Now the answer. How many now?', { repeat: 'Count the table. Drag the answer.' }); return; }
+    FR.oops(slot); R.misses++; await FR.say(R.op === '+' ? "Let's look. More cups were set. That is plus." : "Let's look. Candies were eaten. That is minus.");
+    $('tiles').querySelector('[data-v="' + R.op + '"]').classList.add('hint'); open(); return; }
+  if (R.step === 'ans' && slot.id === 'sc') {
+    GAME.phase = 'busy'; FR.lock(true); const k = ans();
+    if (+v === k) { fill('sc', U5.num(k)); await FR.yes(slot, FR.Word(R.a) + (R.op === '+' ? ' plus ' : ' minus ') + FR.word(R.b) + ' is ' + FR.word(k) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+    FR.oops(slot); R.misses++; await FR.say("Let's look. Count the table with me."); await countUp(); await FR.say('Drag that number.'); open(); }
+}
+const PLAN = [{ op: '+', a: 5, b: 3 }, { op: '-', a: 7, b: 3 }, { op: '+', a: 6, b: 4 }, { op: '-', a: 10, b: 2 }, { op: '+', a: 8, b: 2 }, { op: '-', a: 9, b: 5 }];
+function play(F, i) {
+  return new Promise(async res => {
+    R = Object.assign({ step: 'act', did: 0, misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); ['sa', 'ss', 'sb', 'sc'].forEach(id => fill(id, '')); $('tiles').hidden = true; requestAnimationFrame(() => K.fit()); fill('sa', U5.num(R.a));
+    if (R.op === '+') { K.setCups(R.a, R.b); await F.say(F.Word(R.a) + ' cups on the Shabbos table.'); K.traySpot(true); open(); await F.say(F.Word(R.b) + ' more are set. Tap the tray!', { repeat: 'Tap the tray. One cup each time.' }); }
+    else { K.setCandies(R.a); await F.say(F.Word(R.a) + ' candies on the table.'); K.candySpots(true); open(); await F.say(F.Word(R.b) + ' are eaten. Tap them!', { repeat: 'Tap a candy. It goes in the bowl.' }); }
+  });
+}
+FR.game({
+  id: 'u12-check', title: 'Show Me!', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""></div>',
+  init() { K = mount($('world'), { band }); K.onTap = id => tap(id); FR.dragTap({ sources: '.tile', targets: '.slot', drop }); },
+  demo: async F => {
+    R = { op: '+', a: 4, b: 2 }; K.setCups(4, 2); ['sa', 'ss', 'sb', 'sc'].forEach(id => fill(id, '')); fill('sa', U5.num(4)); await F.say('Show me what you know! Watch me first.'); await F.say('Four cups. Two more are set.'); K.traySpot(true);
+    for (let j = 0; j < 2; j++) { await F.handTo(document.querySelector('.tspot[data-id="tray"]')); await F.handTap(); await K.setOne(); }
+    fill('sb', U5.num(2)); tiles(['+', '-']); await F.say('More are set. That is plus.'); await F.handDrag(document.querySelector('.tile[data-v="+"]'), $('ss')); fill('ss', SG['+']);
+    tiles(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']); await F.say('Start at four. Five, six.'); await F.handDrag(document.querySelector('.tile[data-v="6"]'), $('sc')); fill('sc', U5.num(6)); F.handHide(); $('tiles').hidden = true;
+    await F.say('Four plus two is six!');
+    K.setCandies(7); ['sa', 'ss', 'sb', 'sc'].forEach(id => fill(id, '')); fill('sa', U5.num(7)); await F.say('Seven candies. Two are eaten.'); await K.eatOne(); await K.eatOne();
+    fill('sb', U5.num(2)); fill('ss', SG['-']); await F.say('Eaten is minus. Five are left.'); fill('sc', U5.num(5));
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You can add and take away to ten! Unit twelve done!' : 'Good try! Let\'s practise and come back.',
+  practice: 'story12.html'
+});
+</script>
+</body>
+</html>

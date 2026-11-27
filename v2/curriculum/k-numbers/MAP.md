@@ -232,14 +232,14 @@
 
 **Skill:** solves add and take-away stories within 10, and writes the number sentence.
 **Standard:** K.OA.1, K.OA.2.
-**Song:** a Shabbos table story song.
+**Song:** "Start with the big one... count on!" (call and answer, sung at the Shabbos table).
 
 | Game | What he does | The trick |
 |---|---|---|
 | Story builder | Shabbos table stories within 10. He acts each one out, then builds the sentence. | Act it out, then numbers. |
 | Hop on the path | 6 + 3: start at 6 and hop 3. | Counting on along the number line. |
 | Ten-frame add | He adds on the ten-frame and sees the total without counting by ones. | Five-and-ten structure. |
-| Find the mistake | Shloimy hopped wrong on the path. He fixes the hops. | Mistakes teach. |
+| Find the mistake | Shmuli hopped wrong on the path. He fixes the hops. | Mistakes teach. |
 
 **Mastery check:** 6 mixed story problems within 10 (add and take away), each with its number sentence.
 **Review:** Units 9–11.
