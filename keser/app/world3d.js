@@ -13,7 +13,7 @@ import { OutputPass } from './vendor/postprocessing/OutputPass.js';
 const TAU = Math.PI * 2, R = 5.0;
 /* M. Heinemann 2026-11-26: the Keser Academy colors (royal purple and gold) and the Keser crown mark from the school logo (keser-logo-mark).
    Each place shows its own picture (places.js: art); the stage painting is tinted royal purple. */
-const ART = { crown: '/pics/keser-logo-mark.webp', stage: '/pics/keser-stage.webp' };
+const ART = { crown: '/pics/keser-logo-mark.webp' };
 /* where each place's jewel sits on the Keser crown (0..1 across and down the picture): the diamond in the middle, and the two at the sides */
 const GEMS = { kodesh: [0.5, 0.67, 1.5], general: [0.045, 0.33, 1], timeline: [0.955, 0.35, 1] };
 
@@ -58,25 +58,55 @@ export function start(o) {
 
   /* the stage: the rose-quartz jewel box, always facing her; a soft glow beneath it */
   const stageGlow = glowSprite(SOFT, 0xd4aa50, 1, 0.35); scene.add(stageGlow);
-  const stage = painting(ART.stage, 1, 1600 / 756); stage.material.color.set(0x7d68c0);   /* the stage tinted toward Keser purple */ stage.renderOrder = -5; scene.add(stage);
+  const floorTex = (() => { const c = document.createElement('canvas'); c.width = 1024; c.height = 484; const x = c.getContext('2d'), cx = 512, cy = 242;
+    x.save(); x.translate(cx, cy); x.scale(1, 484 / 1024);
+    const g = x.createRadialGradient(0, 0, 40, 0, 0, 500); g.addColorStop(0, 'rgba(110,70,170,.85)'); g.addColorStop(0.6, 'rgba(75,42,133,.55)'); g.addColorStop(1, 'rgba(42,22,80,0)'); x.fillStyle = g; x.beginPath(); x.arc(0, 0, 500, 0, TAU); x.fill();
+    x.strokeStyle = 'rgba(212,170,80,.7)'; x.lineWidth = 3; x.beginPath(); x.arc(0, 0, 430, 0, TAU); x.stroke(); x.lineWidth = 1.5; x.strokeStyle = 'rgba(246,227,176,.4)'; x.beginPath(); x.arc(0, 0, 400, 0, TAU); x.stroke();
+    x.restore(); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();
+  /* a soft lit floor in Keser purple with fine gold rings (M. Heinemann 2026-11-27: flow, not stuck on) */
+  const stage = new THREE.Sprite(new THREE.SpriteMaterial({ map: floorTex, transparent: true, depthWrite: false })); stage.renderOrder = -5; scene.add(stage);
 
   /* the places on a ring that turns; each glows in its Keser house color, with a Keser girl in the school uniform beside it */
   const ring = new THREE.Group(); scene.add(ring);
-  const ASPECT = { kodesh: 690 / 860, general: 703 / 900, timeline: 900 / 760 };
+  /* M. Heinemann 2026-11-27: "it kind of looks like stuck on ... It needs to like flow more and be a little bit more clear."
+     Each place is a framed card that belongs to the scene: rounded, a fine gold frame, the picture filling it, a soft glow in its house color,
+     a gentle float and sway; the two places stand side by side so both are always in view. */
+  const CW = 600, CH = 780;
+  function card(pl) {
+    const c = document.createElement('canvas'); c.width = CW; c.height = CH; const x = c.getContext('2d'), t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+    const rr = (X, Y, W, H, r) => { x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + W, Y, X + W, Y + H, r); x.arcTo(X + W, Y + H, X, Y + H, r); x.arcTo(X, Y + H, X, Y, r); x.arcTo(X, Y, X + W, Y, r); x.closePath(); };
+    const draw = img => { x.clearRect(0, 0, CW, CH);
+      const P = 26, R0 = 46;
+      const gold = x.createLinearGradient(0, 0, CW, CH); gold.addColorStop(0, '#F6E3B0'); gold.addColorStop(0.45, '#D4AA50'); gold.addColorStop(0.55, '#B8892E'); gold.addColorStop(1, '#F6E3B0');
+      rr(P, P, CW - 2 * P, CH - 2 * P, R0); x.fillStyle = gold; x.fill();                                  /* the gold frame */
+      rr(P + 8, P + 8, CW - 2 * P - 16, CH - 2 * P - 16, R0 - 8); x.fillStyle = pl.color; x.fill();        /* the house color */
+      if (img) { x.save(); rr(P + 14, P + 14, CW - 2 * P - 28, CH - 2 * P - 28, R0 - 14); x.clip();
+        const W = CW - 2 * P - 28, H = CH - 2 * P - 28, cover = pl.id !== 'timeline', s = cover ? Math.max(W / img.width, H / img.height) : Math.min(W / img.width, H / img.height) * 0.92;
+        if (!cover) { const gr = x.createRadialGradient(CW / 2, CH / 2, 40, CW / 2, CH / 2, CH * 0.6); gr.addColorStop(0, 'rgba(255,255,255,.16)'); gr.addColorStop(1, 'rgba(0,0,0,.25)'); x.fillStyle = gr; x.fillRect(P + 14, P + 14, W, H); }   /* the timeline sits on its own deep green, not on white */
+        x.drawImage(img, P + 14 + (W - img.width * s) / 2, P + 14 + (H - img.height * s) / 2, img.width * s, img.height * s);
+        const v = x.createLinearGradient(0, P, 0, CH - P); v.addColorStop(0, 'rgba(255,255,255,.18)'); v.addColorStop(0.25, 'rgba(255,255,255,0)'); x.fillStyle = v; x.fillRect(0, 0, CW, CH);   /* a soft sheen, like glass */
+        x.restore(); }
+      t.needsUpdate = true; };
+    draw(null); manager.itemStart(pl.art); const img = new Image(); img.onload = () => { draw(img); manager.itemEnd(pl.art); }; img.onerror = () => manager.itemEnd(pl.art); img.src = pl.art;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false })); const h = 3.1; sp.scale.set(h * CW / CH, h, 1); return sp;
+  }
+  /* two or three places stand side by side on a gentle arc (so none hides behind another); more would go round a full ring */
+  const STEP = places.length <= 3 ? 0.62 : TAU / places.length;
   const pav = places.map((pl, i) => {
-    const th = i / places.length * TAU, g = new THREE.Group(); g.position.set(Math.sin(th) * R, 0, Math.cos(th) * R); ring.add(g);
-    const halo = glowSprite(SOFT, pl.hex, 4.4, 0.35); halo.position.y = 1.9; g.add(halo);
-    const dome = painting(pl.art, pl.id === 'timeline' ? 2.9 : 3.6, ASPECT[pl.id]); dome.center.set(0.5, 0); g.add(dome);
+    const th = i * STEP, g = new THREE.Group(); g.position.set(Math.sin(th) * R, 0, Math.cos(th) * R); ring.add(g);
+    const halo = glowSprite(SOFT, pl.hex, 5.2, 0.35); halo.position.y = 1.7; g.add(halo);
+    const pool = glowSprite(SOFT, pl.hex, 1, 0.5); pool.scale.set(3.6, 0.9, 1); pool.position.y = -0.05; g.add(pool);   /* a pool of its color on the floor beneath it */
+    const dome = card(pl); dome.center.set(0.5, 0); dome.position.y = 0.75; g.add(dome);
     if (pl.id === 'general') dome.material.color.set(0xb4c6ff);
     /* a Keser girl in the school uniform stands on the stage beside her place */
-    const girl = pl.girl ? painting(pl.girl, 2.9, pl.girlAspect) : null; if (girl) { girl.center.set(0.5, 0); girl.position.set(1.85, -0.25, 0.5); g.add(girl); }   /* the rose glass dome tinted toward the Keser Malchus royal blue */
+    const girl = pl.girl ? painting(pl.girl, 2.9, pl.girlAspect) : null; if (girl) { girl.center.set(0.5, 0); girl.position.set(i === 0 ? -1.75 : 1.75, -0.2, 0.6); g.add(girl); }   /* on the side away from the other place, so nothing covers anything */   /* the rose glass dome tinted toward the Keser Malchus royal blue */
     const motes = [...Array(0)].map((_, k) => { const s = glowSprite(STAR, [0xffffff, 0xfff1b8, pl.hex][k % 3], 0.2); s.userData.k = k; g.add(s); return s; });
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 4, 10), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 2; hit.userData.idx = i; g.add(hit);
-    return { g, th, halo, dome, girl, motes, hit, sc: 1 };
+    return { g, th, halo, pool, dome, girl, motes, hit, sc: 1 };
   });
 
   /* her crown: the painted tiara high in the middle, with a jewel per subject that lights up as she learns */
-  const crownRig = new THREE.Group(); crownRig.position.set(0, 5.6, 0); scene.add(crownRig);
+  const crownRig = new THREE.Group(); crownRig.position.set(0, 6.0, 0); scene.add(crownRig);
   const crownHalo = glowSprite(radial([[0, 'rgba(255,214,140,.75)'], [0.45, 'rgba(140,80,200,.3)'], [1, 'rgba(140,80,200,0)']]), 0xffffff, 7.5, 0.9); crownRig.add(crownHalo);
   const crownH = 2.8, crownW = crownH * 600 / 472;
   const crown = painting(ART.crown, crownH, 600 / 472); crownRig.add(crown);
@@ -116,7 +146,7 @@ export function start(o) {
   }
 
   /* ---------- camera, the turning ring, her moves ---------- */
-  let focus = o.focus || 0, angle = -focus / places.length * TAU, dragOff = 0, dragTo = 0, entered = false, nudge = 0;
+  let focus = o.focus || 0, angle = -focus * STEP, dragOff = 0, dragTo = 0, entered = false, nudge = 0;
   const now = () => performance.now() / 1000;
   const backOut = x => { const c = 1.25; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); }, smooth = x => x * x * (3 - 2 * x);
   const tween = (v, dur, ease) => ({ from: v, to: v, t0: 0, dur, ease, get() { const k = Math.min(1, (now() - this.t0) / this.dur); return this.from + (this.to - this.from) * this.ease(k); }, set(to) { this.from = this.get(); this.to = to; this.t0 = now(); } });
@@ -154,14 +184,15 @@ export function start(o) {
     stageGlow.scale.set(R * 3.4, R * 1.6, 1); stageGlow.position.set(0, -0.4, -0.5);
     pav.forEach((p, i) => { const front = i === focus, sTo = front ? 1.15 : 0.86; p.sc += (sTo - p.sc) * Math.min(1, dt * 6 + (calm ? 1 : 0)); if (Math.abs(sTo - p.sc) > 0.15 && dt >= 0.05) p.sc = sTo;
       const s = p.sc + (front ? Math.sin(nudge * 18) * nudge * 0.06 : 0); p.g.scale.setScalar(s); p.g.rotation.y = -ring.rotation.y;   /* keep each host girl on her dome's right side */
-      p.dome.position.y = Math.sin(t * 1.1 + i) * 0.06 * sp;
+      p.dome.position.y = 0.75 + Math.sin(t * 0.9 + i * 1.7) * 0.09 * sp; p.dome.material.rotation = Math.sin(t * 0.6 + i) * 0.025 * sp;   /* a gentle float and sway */
+      p.pool.material.opacity += ((front ? 0.55 : 0.2) - p.pool.material.opacity) * Math.min(1, dt * 5);
       p.halo.material.opacity += ((front ? 0.5 : 0.22) - p.halo.material.opacity) * Math.min(1, dt * 5);
-      p.dome.material.opacity += ((entered && !front ? 0.35 : 1) - p.dome.material.opacity) * Math.min(1, dt * 4);
-      if (p.girl) p.girl.material.opacity += ((entered && !front ? 0.25 : 1) - p.girl.material.opacity) * Math.min(1, dt * 4);
+      p.dome.material.opacity += ((front ? 1 : 0.6) - p.dome.material.opacity) * Math.min(1, dt * 4);
+      if (p.girl) p.girl.material.opacity += ((front && !entered ? 1 : 0) - p.girl.material.opacity) * Math.min(1, dt * 4);   /* her girl stands beside the place in front only */
       p.motes.forEach(m => { const k = m.userData.k, y = ((t * 0.22 + k / p.motes.length) % 1); m.position.set(Math.sin(k * 2.3 + t * 0.7 * sp) * 0.7, 0.8 + y * 2.6, 0.3); m.material.opacity = Math.sin(y * Math.PI) * (calm ? 0.5 : 0.9); m.scale.setScalar(0.12 + 0.12 * Math.sin(y * Math.PI)); }); });
     nudge = Math.max(0, nudge - dt * 1.6);
     /* the crown floats, twirls when tapped (it turns like a card), and its jewels glint */
-    crownRig.position.y = 5.6 + Math.sin(t * 0.9) * 0.1 * sp - (1 - e) * 1.2; const tw = twirlT.get();
+    crownRig.position.y = 6.0 + Math.sin(t * 0.9) * 0.1 * sp - (1 - e) * 1.2; const tw = twirlT.get();
     crown.scale.x = crownW * Math.cos(tw); crownHalo.material.rotation = t * 0.1 * sp;
     jewels.forEach(j => { const k = calm ? 0.4 : Math.pow(Math.max(0, Math.sin(t * 1.3 + j.i * 1.9)), 10); const s = j.p > 0 ? (0.25 + j.p * 0.6) * k : 0; j.glint.scale.set(s, s, 1); j.glint.material.rotation = t * 0.8;
       if (j.p > 0) j.glow.material.opacity = (0.3 + j.p * 0.45) * (0.8 + 0.2 * Math.sin(t * 2 + j.i)); });
@@ -179,8 +210,8 @@ export function start(o) {
   applyLite(); fit(); frame();
 
   return {
-    focus(i) { const old = focus; focus = i; glide.set(shortest(glide.get(), -i / places.length * TAU)); return old; },
-    drag(f, release) { dragTo = release ? 0 : f * TAU / places.length * 1.2; if (release) { const to = glide.to; glide.from = glide.get() + dragOff; glide.to = to; glide.t0 = now(); dragOff = 0; } },
+    focus(i) { const old = focus; focus = i; glide.set(shortest(glide.get(), -i * STEP)); return old; },
+    drag(f, release) { dragTo = release ? 0 : f * STEP * 1.2; if (release) { const to = glide.to; glide.from = glide.get() + dragOff; glide.to = to; glide.t0 = now(); dragOff = 0; } },
     enter() { entered = true; zoomT.set(1); },
     back() { entered = false; zoomT.set(0); },
     twirl() { twirlT.set(twirlT.to + TAU); },
