@@ -84,9 +84,9 @@ export function mount(host, opt) {
     const out = [];
     if (how === 'scatter') {   /* try a few fresh scatters; if the apples will not fit, fall back to neat rows (never hang) */
       for (let tries = 0; tries < 6 && out.length < n; tries++) { out.length = 0; let t = 0;
-        while (out.length < n && t++ < 2000) { const x = (Math.random() - .5) * (W - 0.7), z = (Math.random() - .5) * (D - 0.6); if (out.every(p => Math.hypot(p.x - x, p.z - z) > 0.88)) out.push(new THREE.Vector3(x, 0.05, z)); } }
+        while (out.length < n && t++ < 2000) { const x = (Math.random() - .5) * (W - 0.7), z = (Math.random() - .5) * (D - 0.6); if (out.every(p => Math.hypot(p.x - x, p.z - z) > 0.88 && Math.hypot(p.x - x, (p.z - z) * 0.55) > 0.66)) out.push(new THREE.Vector3(x, 0.05, z)); } }
       if (out.length >= n) return out; out.length = 0; }
-    if (true) for (let j = 0; j < n; j++) { const r = j < 5 ? 0 : 1, c = j % 5; out.push(new THREE.Vector3((c - 2) * 0.92, 0.05, n > 5 ? (r ? 0.5 : -0.5) : 0)); }   /* 0.92 apart: their tap spots never overlap, even on a phone */
+    if (true) for (let j = 0; j < n; j++) { const r = j < 5 ? 0 : 1, c = j % 5; out.push(new THREE.Vector3((c - 2) * 0.92, 0.05, n > 5 ? (r ? 0.72 : -0.72) : 0)); }   /* rows far enough apart that, from the camera, no apple hides behind another */   /* 0.92 apart: their tap spots never overlap, even on a phone */
     return out;
   }
 
