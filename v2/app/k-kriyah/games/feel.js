@@ -20,6 +20,9 @@ export default function setup(E, { unit }) {
     tes: [[[100, 560], [130, 400], [130, 280], [140, 170], [200, 90], [320, 85], [450, 100], [540, 200], [545, 320], [530, 450], [440, 520], [325, 400]]],
     yud: [[[50, 600], [60, 505], [160, 505], [250, 490], [260, 400], [230, 320], [160, 240]]],
     kaf: KAF, chaf: KAF,
+    lamed: [[[60, 800], [100, 700], [95, 620], [150, 505], [280, 505], [420, 500], [450, 400], [450, 320], [400, 240], [300, 170], [255, 100], [255, 30]]],
+    mem: [[[70, 600], [120, 520], [200, 420], [150, 320], [115, 220], [95, 100], [90, 20]], [[280, 555], [400, 530], [530, 470], [555, 350], [555, 250], [530, 150], [420, 90], [300, 90]]],
+    nun: [[[130, 610], [140, 505], [250, 500], [300, 420], [305, 300], [300, 200], [250, 95], [150, 90], [40, 60]]],
     hei: [[[75, 615], [80, 510], [200, 500], [340, 500], [505, 495], [507, 380], [500, 250], [494, 120], [490, 25]], [[102, 300], [100, 190], [100, 80], [100, 20]]],
   };
   const REVIEW = { 2: 'beis', 3: 'hei', 5: 'gimmel' }[unit.n];   /* one earlier letter comes back: Beis in Unit 2, Hei (Ches's look-alike) in Unit 3; Unit 4 already has four letters */
@@ -84,8 +87,8 @@ export default function setup(E, { unit }) {
   async function oneLetter(key, first) {
     cur = E.letter(key, H); cur.position.set(0, 0, 0); holder.add(cur); makeBeads(key); glow.material.opacity = .12;
     E.sfx.whoosh(); await E.popIn(cur, 1, 500);
-    const showsPlace = ['vov', 'zayin', 'hei', 'ches'].includes(key) && E.pointAt(arrow, cur, key, H);   /* the place the line talks about */
-    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : key === 'kaf' ? 'This is Kaf. It has a dot. Feel it!' : key === 'chaf' ? 'This is Chaf. No dot. Feel it!' : key === 'yud' ? 'This is Yud, the little one. Feel it!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
+    const showsPlace = ['vov', 'zayin', 'hei', 'ches', 'lamed', 'mem', 'nun'].includes(key) && E.pointAt(arrow, cur, key, H);   /* the place the line talks about */
+    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : key === 'kaf' ? 'This is Kaf. It has a dot. Feel it!' : key === 'chaf' ? 'This is Chaf. No dot. Feel it!' : key === 'yud' ? 'This is Yud, the little one. Feel it!' : key === 'lamed' ? 'This is Lamed, the tall one. Feel it!' : key === 'mem' ? 'This is Mem. Feel the opening at the bottom!' : key === 'nun' ? 'This is Nun. Feel its flat bottom!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
     if (showsPlace) { await E.wait(500); arrow.visible = false; }
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');

@@ -51,7 +51,7 @@ export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); retu
    Every letter sound plays the rebbe's recording when audio/sounds.json lists it; until then the computer voice says it
    (marked on screen as temporary). A line is an array of words and sounds: ['Beis says', S('b')]. */
 export const S = k => ({ snd: k });
-const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', t: 'tuh', y: 'yuh', k: 'kuh', ch: 'the sound at the start of challah' };   /* a computer can't say Ches: it names it until the rebbe's recording */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
+const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', t: 'tuh', y: 'yuh', k: 'kuh', l: 'luh', m: 'muh', n: 'nuh', ch: 'the sound at the start of challah' };   /* a computer can't say Ches: it names it until the rebbe's recording */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
 let SOUNDS = {}; const audioCache = {};
 export const soundsReady = fetch('audio/sounds.json').then(r => r.ok ? r.json() : {}).then(j => { SOUNDS = j || {}; }).catch(() => {});
 export let lastLine = null; let sayToken = 0;
@@ -447,9 +447,11 @@ export const rebbe = () => { const p = pictureCard('rebbe', () => person({ beard
 export const mommy = () => { const p = pictureCard('mommy', () => person({ woman: true, hair: 0x5a3a22, dress: 0x3f5fa8, shirt: 0x3f5fa8 }));   /* long sleeves in the dress colour */ p.scale.setScalar(1.35); return p; };
 export const ari = () => pictureCard('ari', () => person({ kippah: 0xd97706, hair: 0x3b2a1a }));
 export const shloimy = () => pictureCard('shloimy', () => person({ kippah: 0x2e8b57, hair: 0x8a5a3c }));
+export const eli = () => pictureCard('eli', () => person({ kippah: 0x1f7a8c, hair: 0x7a4a24, shirt: 0xfff4e0 }));
+export const bubby = () => { const p = pictureCard('bubby', () => person({ woman: true, hair: 0xb8a48c, dress: 0x6b4f8a, shirt: 0x6b4f8a, skin: 0xf6cfae })); p.scale.setScalar(1.3); return p; };   /* a light sheitel and a long dress */
 export const dovid = () => pictureCard('dovid', () => person({ kippah: 0x6a3fa0, hair: 0x2b1d12, shirt: 0xeaf4ff }));
 /* each unit's own boy: Mendy, Shloimy, Ari, Dovid */
-export const unitBoy = n => ({ 2: shloimy, 3: ari, 4: dovid }[n] || mendy)();
+export const unitBoy = n => ({ 2: shloimy, 3: ari, 4: dovid, 5: eli }[n] || mendy)();
 export const yaakov = () => pictureCard('yaakov', () => person({ kippah: 0xc0392b, hair: 0xb5532a, shirt: 0xfff7e0, skin: 0xffdcc2 }));
 
 /* a little jump, used for joy */
@@ -479,8 +481,9 @@ const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, dept
 export const LETTERS = { alef: { ch: 'א', name: 'Alef' }, beis: { ch: 'ב', name: 'Beis', dagesh: true, snd: 'b' }, veis: { ch: 'ב', name: 'Veis', snd: 'v' },
   gimmel: { ch: 'ג', name: 'Gimmel', snd: 'g' }, daled: { ch: 'ד', name: 'Daled', snd: 'd' }, hei: { ch: 'ה', name: 'Hei', snd: 'h' },
   vov: { ch: 'ו', name: 'Vov', snd: 'v' }, zayin: { ch: 'ז', name: 'Zayin', snd: 'z' }, ches: { ch: 'ח', name: 'Ches', snd: 'ch' },
-  tes: { ch: 'ט', name: 'Tes', snd: 't' }, yud: { ch: 'י', name: 'Yud', snd: 'y' }, kaf: { ch: 'כ', name: 'Kaf', dagesh: true, snd: 'k' }, chaf: { ch: 'כ', name: 'Chaf', snd: 'ch' } };
-export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB' };
+  tes: { ch: 'ט', name: 'Tes', snd: 't' }, yud: { ch: 'י', name: 'Yud', snd: 'y' }, kaf: { ch: 'כ', name: 'Kaf', dagesh: true, snd: 'k' }, chaf: { ch: 'כ', name: 'Chaf', snd: 'ch' },
+  lamed: { ch: 'ל', name: 'Lamed', snd: 'l' }, mem: { ch: 'מ', name: 'Mem', snd: 'm' }, nun: { ch: 'נ', name: 'Nun', snd: 'n' } };
+export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB', lamed: '\u05DC', mem: '\u05DE', nun: '\u05E0' };
 /* letters that can hold a dagesh: where the dot sits (Beis/Veis, Kaf/Chaf share one shape each) */
 /* the full letter height in font units (baseline to the top of the roof's little tag), and its middle */
 const REF_H = 64.7, REF_CY = 32.35;
@@ -521,10 +524,13 @@ export function arrow3d(size = .35, dir = 'down') {
 }
 /* where to look on each letter (font units) and which way the arrow points at it */
 export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [135, 375, 'left'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [205, 440, 'left'],
-  beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'] };   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+  beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'],
+  lamed: [90, 820, 'down'], mem: [195, 70, 'up'], nun: [310, 50, 'left'] };   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
+/* a place to look that depends on the look-alike beside it: Tes's closed round bottom (beside Mem) */
+const PAIR_FEAT = { 'tes|mem': [300, 20, 'up'] };   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
 /* the place to look on k when it might be taken for other: the dot place for a dot pair or any lone dotted letter, the shape for Beis/Kaf */
-export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : ((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]);
+export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : PAIR_FEAT[k + '|' + other] || (((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]));
 export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'] };
 /* put an arrow at a letter's feature (the letter object, its height); returns false if the letter has none */
 export function pointAt(arrow, l, key, height, feat) { const f = feat || FEATURES[key]; if (!f) return false; const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;

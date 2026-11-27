@@ -7,12 +7,13 @@ const PLAN = {
   1: { R: [['beis', 'beis'], ['alef', 'beis'], ['veis', 'veis'], ['beis', 'veis'], ['alef', 'alef'], ['veis', 'beis']], demo: ['veis', 'beis', 'Hmm. Watch me. No dot. That is not a Beis!'] },
   3: { R: [['vov', 'vov'], ['vov', 'zayin'], ['ches', 'ches'], ['hei', 'ches'], ['zayin', 'zayin'], ['ches', 'hei']], demo: ['zayin', 'vov', 'Hmm. Watch me. A crown! That is not a Vov.'] },
   4: { R: [['tes', 'tes'], ['kaf', 'chaf'], ['yud', 'yud'], ['beis', 'kaf'], ['chaf', 'chaf'], ['chaf', 'kaf']], demo: ['kaf', 'beis', 'Hmm. Watch me. Round at the bottom. That is not a Beis!'] },
+  5: { R: [['lamed', 'lamed'], ['gimmel', 'nun'], ['mem', 'mem'], ['mem', 'tes'], ['nun', 'nun'], ['tes', 'mem']], demo: ['nun', 'gimmel', 'Hmm. Watch me. Flat at the bottom. That is not a Gimmel!'] },
   2: { R: [['gimmel', 'gimmel'], ['daled', 'hei'], ['hei', 'hei'], ['gimmel', 'daled'], ['beis', 'beis'], ['veis', 'beis']],   /* the last two bring back Unit 1 */ demo: ['daled', 'gimmel', 'Hmm. Watch me. No foot. That is not a Gimmel!'] },
 };
 /* what to look for, in a few words */
-const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof', tes: 'the round one', yud: 'the little one', kaf: 'with the dot', chaf: 'with no dot' };
-const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.', tes: 'Tes is round, with a curl.', yud: 'Yud is the little one.', kaf: 'A dot!', chaf: 'No dot.' };
-const lookOf = (k, c) => k === 'beis' && c === 'kaf' ? 'Beis has a tail at the bottom.' : k === 'kaf' && c === 'beis' ? 'Kaf is round at the bottom.' : LOOK[k];
+const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof', tes: 'the round one', yud: 'the little one', kaf: 'with the dot', chaf: 'with no dot', lamed: 'the tall one', mem: 'with the opening at the bottom', nun: 'flat at the bottom' };
+const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.', tes: 'Tes is round, with a curl.', yud: 'Yud is the little one.', kaf: 'A dot!', chaf: 'No dot.', lamed: 'Lamed is the tall one.', mem: 'Mem has an opening at the bottom.', nun: 'Nun is flat at the bottom.' };
+const lookOf = (k, c) => k === 'beis' && c === 'kaf' ? 'Beis has a tail at the bottom.' : k === 'kaf' && c === 'beis' ? 'Kaf is round at the bottom.' : k === 'tes' && c === 'mem' ? 'Tes is closed at the bottom.' : LOOK[k];
 export default function setup(E, { struggled, unit }) {
   const plan = PLAN[unit.n] || PLAN[1];
   const { THREE, S, ICON } = E;
@@ -48,7 +49,7 @@ export default function setup(E, { struggled, unit }) {
   function showLetter(k) { if (shown) board.remove(shown); shown = E.letter(k, 1.3); shown.position.set(0, 0, .3); board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown); }
   /* the ring circles the dot place (Beis/Veis, Kaf/Chaf); an orange arrow points at any other shape difference */
   const arrow = E.arrow3d(.4);
-  const mark = k => { const s = shown.userData; if (s.dotHome && (!curClaim || E.sameShape(k, curClaim) || !E.FEATURES[curClaim])) { ring.position.copy(s.dotHome).setZ(.6); ring.visible = true; return true; } return E.pointAt(arrow, shown, k, 1.3); };   /* a ring round the dot place (same shape, dot or no dot); otherwise an arrow at the shape difference */
+  const mark = k => { const s = shown.userData; if (s.dotHome && (!curClaim || E.sameShape(k, curClaim) || !E.FEATURES[curClaim])) { ring.position.copy(s.dotHome).setZ(.6); ring.visible = true; return true; } return E.pointAt(arrow, shown, k, 1.3, curClaim ? E.featFor(k, curClaim) : undefined); };   /* a ring round the dot place (same shape, dot or no dot); otherwise an arrow at the shape difference */
   const unmark = () => { ring.visible = false; arrow.visible = false; };
   /* why the letter is not what Yaakov said, in a few words */
   const why = (k, c) => k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
