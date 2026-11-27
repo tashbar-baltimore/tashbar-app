@@ -180,7 +180,7 @@ export function startGame(cfg) {
     }
     const paintM = new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 });
     if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none (new look: bigger, on a card tilted up to face the boy) */
-      const card = new THREE.Group(); card.position.set(0, LK ? BX.h * 0.62 : BX.h * 0.4, BX.d / 2 + (LK ? 0.26 : 0.005)); if (LK) card.rotation.x = -0.55; g.add(card);
+      const card = new THREE.Group(); card.position.set(0, LK ? BX.h * 0.6 : BX.h * 0.4, BX.d / 2 + (LK ? 0.42 : 0.005)); if (LK) { card.rotation.x = -0.55; card.scale.setScalar(1.4); } g.add(card);   /* big and in front: the dots are what he matches */
       const k = LK ? 1.15 : 1;
       if (LK) { const bg = new THREE.Mesh(new THREE.CircleGeometry(0.37, 40), new THREE.MeshStandardMaterial({ color: bc.color && bc.color !== '#FFFFFF' ? '#FFFFFF' : '#2B3A6B', roughness: 0.6 })); bg.position.z = -0.004; card.add(bg); }
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
@@ -251,7 +251,7 @@ export function startGame(cfg) {
   }
   function makeShape(id, k, color, rotZ, scale) {
     const solid = KINDS[k].solid, { s, corners } = solid ? { s: null, corners: [] } : shapeOf(k);
-    const dep = cfg.thinFlat ? 0.06 : DEPTH, bev = cfg.thinFlat ? 0.03 : BEV;   /* "flat or solid": flat pieces are thin, like card */
+    const dep = cfg.thinFlat ? 0.06 : cfg.plain && !solid ? 0.12 : DEPTH, bev = cfg.thinFlat ? 0.03 : cfg.plain && !solid ? 0.06 : BEV;   /* plain first-meeting shapes are thin, so they read as flat */   /* "flat or solid": flat pieces are thin, like card */
     const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: LK ? bev * 1.25 : bev, bevelSize: bev, bevelSegments: LK && (!FAST || SHOT) ? 6 : 3, curveSegments: LK && (!FAST || SHOT) ? 64 : 48 });
     if (!solid) geo.translate(0, 0, -dep / 2);
     const TP = LK && !solid && !cfg.plain && LK.treasures.piece ? LK.treasures.piece(k, color, s, FAMILY(k)) : null;   /* the world's own thing in this exact outline (treasures.js); cfg.plain (first meeting with a shape, K-CLARITY-RULES 1): a plain flat shape in one solid colour, nothing painted on it */
@@ -371,6 +371,8 @@ export function startGame(cfg) {
   /* for the automatic test */
   W.shapePt = id => toScreen(shapes.find(s => s.id === id).g.position);
   W.boxPt = i => cfg.mode === 'balance' ? (i === 9 || !BS ? toScreen(new THREE.Vector3(0, 0.3, tall ? 3.6 : 3.2)) : toScreen(panWorld(i).add(new THREE.Vector3(0, 0.45, 0)))) : cfg.mode === 'measure' ? (i === 9 ? toScreen(new THREE.Vector3(LINE_X() + 3.2, 1.25, 0)) : W.boxPtM(i)) : cfg.mode === 'position' ? toScreen(zoneWorld(i === 0 ? posWant : i === 1 ? (posWant === 'behind' ? 'front' : 'behind') : i)) : cfg.mode === 'puzzle' ? toScreen(slotWorld(PZ.slots[i || 0])) : cfg.mode === 'pattern' ? toScreen(slotAt(PS.next, PS.n, PS.z).setY(1.25)) : cfg.mode === 'fix' ? toScreen(OL.mark.getWorldPosition(new THREE.Vector3()).setY(1.25)) : toScreen(boxAt(i || 0).clone().setY(1.25));
+  W.pieces = () => shapes.map(o => ({ id: o.id, k: o.k, marks: o.marks.length, painted: [].concat(o.mat || []).some(m => m && m.map) }));   /* the clarity test: every corner has its marker; plain games paint nothing on a piece */
+  W.plain = !!cfg.plain;
   W.list = () => shapes.filter(o => o.g.visible && !o.inBox && o.slot != null).map(o => ({ id: o.id, k: o.k, box: o.box, busy: o.busy }));
 
   /* ---------- sound ---------- */
