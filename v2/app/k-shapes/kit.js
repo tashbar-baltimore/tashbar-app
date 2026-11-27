@@ -165,7 +165,7 @@ export function startGame(cfg) {
   const wood = BM ? BM.body : new THREE.MeshStandardMaterial({ color: '#D49A5E', roughness: 0.55 }), woodDark = BM ? BM.inside : new THREE.MeshStandardMaterial({ color: '#8A5A33', roughness: 0.7 });
   const BX = NB === 1 ? { w: 3.0, d: 1.9, h: 0.95, t: 0.16 } : { w: 2.25, d: 1.55, h: 0.8, t: 0.14 };
   const boxes = cfg.boxes.map(bc => {
-    const g = new THREE.Group(); scene.add(g);
+    const g = new THREE.Group(); scene.add(g); if (bc.boxScale) g.scale.setScalar(bc.boxScale);   /* Big and small: the big box is big, the small box is small (review 2) */
     const plank = (w, h, d, x, y, z, m) => { const p = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 3, 0.05), m || wood); p.position.set(x, y, z); p.castShadow = true; p.receiveShadow = true; g.add(p); };
     plank(BX.w, 0.14, BX.d, 0, 0.07, 0, woodDark);
     plank(BX.w, BX.h, BX.t, 0, BX.h / 2, -BX.d / 2 + BX.t / 2);
@@ -292,6 +292,7 @@ export function startGame(cfg) {
     if (m === 'close' && tall && cfg.mode === 'pattern' && cfg.world === 'bakery') return { pos: new THREE.Vector3(0, 3.6, 9.4), look: new THREE.Vector3(0, 1.7, 0.9) };   /* phone, cupcakes (no engine): closer, so the row fills the width (review round 2) */
     if (m === 'close' && tall && cfg.mode === 'pattern') return { pos: new THREE.Vector3(-0.75, 4.4, 14.4), look: new THREE.Vector3(-0.75, 2.0, 0.9) };   /* review 2: centred on cars AND engine, a little further back, so the engine is never cut off */
     if (m === 'close' && cfg.mode === 'pattern' && cfg.world === 'traintown') return { pos: new THREE.Vector3(-0.75, 3.0, 7.8), look: new THREE.Vector3(-0.75, 2.0, 0.9) };   /* Chromebook train lesson: the engine fits too */   /* phone: the whole train, engine too, as big as fits (K-CLARITY-RULES 9) */
+    if (m === 'close' && cfg.sortBy && W.name === 'mistake') return tall ? { pos: new THREE.Vector3(0, 6.2, 13.5), look: new THREE.Vector3(0, 1.3, 1.6) } : { pos: new THREE.Vector3(0, 4.6, 9.8), look: new THREE.Vector3(0, 1.0, 1.4) };   /* sorting mistake: every box whole, the piece above them (review 2: the red box was cut off) */
     if (m === 'close') return tall ? { pos: new THREE.Vector3(...CLOSE[0]).multiplyScalar(1.95), look: new THREE.Vector3(...CLOSE[1]) } : { pos: new THREE.Vector3(...CLOSE[0]), look: new THREE.Vector3(...CLOSE[1]) };
     if (cfg.view) { const v = cfg.view[tall ? 'tall' : 'wide'], look = new THREE.Vector3(...v[1]), pos = new THREE.Vector3(...v[0]);
       if (tall && cfg.mode === 'pattern' && cfg.world === 'traintown' && patN > 6) pos.sub(look).multiplyScalar(1 + 0.09 * (patN - 6)).add(look);   /* phone: a longer train steps the camera back, so the engine and the next spot stay on screen (review 2) */
@@ -1485,6 +1486,7 @@ export function startGame(cfg) {
     $('#end').classList.remove('show');
     if (LK) LK.family(false);
     buildSet(); resize(); camTo('close', 10);
+    if (FAST && /[?&]jump=mistake/.test(location.search)) { mistake(); return; }   /* pictures only (with fast=1): straight to the friend's mistake */
     if (BALANCED) { const ok = await balanceLesson(); if (ok) balanceGame(); return; }
     if (MEASURED) { const ok = await measureLesson(); if (ok) measureGame(); return; }
     if (POSITIONED) { const ok = await posLesson(); if (ok) posGame(); return; }
