@@ -103,3 +103,16 @@ Small choices: Dovid is the friend for Unit 3 (the map names no one). "Mountain"
 First review about 3.6 (correct/clear 2). Fixed: the device "nnn" is now higher and brighter than the closed-lip "mmm", and the check never offers m and n side by side; "Tap the butterfly" (n) and "Tap the moon" (m) in the meets; the n pictures are nest, net, noodles (the nut looked like an acorn) and the i pictures are igloo, inchworm, iguana ("ink" is a weak short i); no spelled-out letters in speech ("Pin. Three sounds!"); every hunt ends with a word made with that day's sound (sit, tin, mat, dad); sound boxes use only known sounds (it, in, pin, tin, sit, tip), call the tokens green chips, make no sound for an extra chip, and show the dot stone after each right answer (as in the check); memory cards start with a long look at all the pictures, so it is memory, not guessing; the inchworm's fork pictures stand side by side; the opener uses the meets' pictures (inchworm, net, mountain, drum); Fix It starts with a "watch me" round; on a phone the check shows letters in a 2 x 2 grid and words in a column.
 Second review about 4.3 (thinking steps 3). Fixed: from the third word in sound boxes the chips are silent (he says the sounds himself); every letter shown so far can be tapped in the opener (a real choice, as in the check); "Tap the net" (its hoop); look-alike decoys (pin/tin, mat/map; sit/sat/tin in the check); a missed d gets one more try with the drum glowing; butterflies wait when the net comes near; the net picture shows its mesh bag.
 Third review about 4.7 (every point 4 or 5). Also done: "What word is it? Say it!" with a pause before the voice says a blended word (word slide and the day's word); the memory game's fix plays the m sound to listen for.
+
+### Review week A (week 8)
+Every game is a new kind of play, all mixing Units 1–3:
+| Game | Kind | World |
+|---|---|---|
+| opener | the sound parade: all eight letters march in; he taps each and says its sound; all eight together | morning meadow |
+| bingo | sound bingo: a 3 x 3 board of letter stones; he hears a sound and taps its stone (the stones light up) | sunset |
+| chalk | mixed tracing on a chalkboard: a different letter each round, a chalk line follows his finger | garden chalkboard |
+| catch | rhyme catch: pictures drift down from a tree; he taps the one that rhymes | the big tree |
+| bridge | the word bridge: he reads the word on each stone and taps its picture to help the duck cross | stream |
+| speed | bonus word slide for quick boys (sad, mad, dip, tip, pad, sip), then "hear a word, tap it" | playground slide |
+| check | mixed mastery check: sound → letter, read a word → its picture, rhyme | sunset stage |
+"A boy who missed a sound gets that letter again, quietly": the checks of Units 2–3 and Review A save the sounds he missed in his browser (`kabc-weak`); sound bingo calls those first. (When 2.0 has saved progress, this moves there.)
