@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me: Plus and minus — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 11 MASTERY CHECK ("Show me"), from the map: story problems he acts out, then quick facts within 5.
+     Rounds 1-4: a story in the sukkah (boys come in, or cookies are eaten); he acts it out by tapping, then shows the answer on his fingers.
+     Rounds 5-10: a fact (3 + 2, 4 - 1 ...) shows big; he shows the answer on his fingers. A slip: we count (the boys, the plate, or dots), then another try. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="hands-side.css">
+<style>
+.fact{ display:flex; align-items:center; gap:6px; background:#fff; border-radius:22px; padding:8px 14px; box-shadow:0 6px 0 #E3D3BE, 0 10px 18px rgba(60,40,20,.18); }
+.fact .n{ height:clamp(54px,8.5vh,74px); display:flex; } .fact .n svg{ height:100%; width:auto; } .fact b{ font:900 clamp(32px,5vh,46px)/1 system-ui, sans-serif; color:#5A4A3A; }
+.fact b.plus{ color:#22B45E; } .fact b.minus{ color:#FF6A3D; } .fact .q{ color:#8A7A6A; } .fact[hidden], #hp[hidden], #check[hidden]{ display:none; }
+.pdots{ display:flex; gap:6px; } .pdots i{ width:24px; height:24px; border-radius:50%; background:#3B7BD8; } .pdots i.b{ background:#22B45E; } .pdots i.x{ background:#ccc; outline:3px solid #FF6A3D; } .pdots[hidden]{ display:none; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; width:min(100%,370px); } .fact{ width:100%; justify-content:center; } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="fact" id="fact" hidden></div>
+    <div class="pdots" id="pic" hidden></div>
+    <div id="hp" hidden></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './sukkah11.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const ans = () => R.op === '+' ? R.a + R.b : R.a - R.b;
+function fact(show) { $('fact').hidden = false; $('fact').innerHTML = '<span class="n">' + U5.num(R.a) + '</span><b class="' + (R.op === '+' ? 'plus">+' : 'minus">−') + '</b><span class="n">' + U5.num(R.b) + '</span><b>=</b>' + (show ? '<span class="n">' + U5.num(ans()) + '</span>' : '<b class="q">?</b>'); }
+function hooks() {
+  if (R.step === 'act') { GAME.right = () => [{ tap: R.op === '+' ? '.tspot[data-id="w' + K.inRoom() + '"]' : '.tspot[data-id="' + K.cookies()[0].userData.id + '"]' }]; GAME.wrong = null; return; }
+  const k = ans(); GAME.right = () => FR.fingerTaps(H, k, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, k === 5 ? 4 : k + 1, '#hp').concat([{ tap: '#check' }]);
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+async function ask() { R.step = 'show'; $('hp').hidden = $('check').hidden = false; H.set(0); open(); await FR.say(R.op === '+' ? 'How many boys now? Show me.' : 'How many cookies left? Show me.'); }
+async function tap(id) {
+  if (GAME.phase !== 'answer' || R.step !== 'act') return;
+  if (R.op === '+' && id.startsWith('w')) { GAME.phase = 'busy'; await K.comeOne(); if (K.waiting()) { open(); return; } FR.lock(true); return ask(); }
+  if (R.op === '-' && id.startsWith('ck')) { GAME.phase = 'busy'; await K.takeCookie(id); R.took++; if (R.took < R.b) { open(); return; } K.cookieSpots(false); FR.lock(true); return ask(); }
+}
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.step !== 'show') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const k = ans();
+  if (H.count() === k) { if (R.kind === 'fact') fact(true); await FR.yes($('check'), FR.Word(R.a) + (R.op === '+' ? ' plus ' : ' minus ') + FR.word(R.b) + ' is ' + FR.word(k) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++; await FR.say("Let's look. Count with me.");
+  if (R.kind === 'fact') { $('pic').hidden = false; $('pic').innerHTML = R.op === '+' ? '<i></i>'.repeat(R.a) + '<i class="b"></i>'.repeat(R.b) : '<i></i>'.repeat(R.a - R.b) + '<i class="x"></i>'.repeat(R.b);
+    const left = [...$('pic').querySelectorAll('i:not(.x)')]; for (let j = 0; j < left.length; j++) { left[j].style.outline = '4px solid #FFC93D'; await FR.say(FR.Word(j + 1) + (j === left.length - 1 ? '.' : ','), { noRepeat: true }); } }
+  else { const list = R.op === '+' ? K.boyMeshes() : K.cookies(); await K.bumpAll(list, i => FR.say(FR.Word(i + 1) + (i === list.length - 1 ? '.' : ','), { noRepeat: true })); }
+  H.set(0); await FR.say('Show me again.'); open();
+}
+const PLAN = [{ kind: 'story', a: 2, op: '+', b: 2 }, { kind: 'story', a: 5, op: '-', b: 2 }, { kind: 'story', a: 1, op: '+', b: 3 }, { kind: 'story', a: 4, op: '-', b: 3 },
+  { kind: 'fact', a: 3, op: '+', b: 2 }, { kind: 'fact', a: 5, op: '-', b: 1 }, { kind: 'fact', a: 2, op: '+', b: 1 }, { kind: 'fact', a: 4, op: '-', b: 2 }, { kind: 'fact', a: 1, op: '+', b: 4 }, { kind: 'fact', a: 3, op: '-', b: 2 }];
+function play(F, i) {
+  return new Promise(async res => {
+    R = Object.assign({ misses: 0, took: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true); $('pic').hidden = true; $('hp').hidden = $('check').hidden = true; $('fact').hidden = true;
+    if (R.kind === 'fact') { if (i === 4) { K.showPlate(false); K.setBoys(0); await F.say('Now quick facts!'); } fact(false); R.step = 'show'; $('hp').hidden = $('check').hidden = false; open();
+      await F.say(F.Word(R.a) + (R.op === '+' ? ' plus ' : ' minus ') + F.word(R.b) + '?', { repeat: 'Show me on your fingers.' }); return; }
+    R.step = 'act';
+    if (R.op === '+') { K.showPlate(false); K.setBoys(R.a); await F.say(F.Word(R.a) + (R.a === 1 ? ' boy is' : ' boys are') + ' in the sukkah.'); K.showWaiting(R.b); open();
+      await F.say(F.Word(R.b) + ' more come. Bring them in!', { repeat: 'Tap a boy outside.' }); }
+    else { K.setBoys(0); K.showPlate(true); K.setCookies(R.a); await F.say(F.Word(R.a) + ' cookies. ' + F.Word(R.b) + ' are eaten.'); K.cookieSpots(true); open();
+      await F.say('Take ' + F.word(R.b) + ' away.', { repeat: 'Tap a cookie. It goes away.' }); }
+  });
+}
+FR.game({
+  id: 'u11-check', title: 'Show Me!', rounds: 10,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() { K = mount($('world'), { band }); H = FR.fingers(0, true); $('hp').appendChild(H.el); K.onTap = id => tap(id); $('check').addEventListener('click', check); },
+  demo: async F => {
+    R = { kind: 'story', a: 1, op: '+', b: 1, step: 'demo' }; K.showPlate(false); K.setBoys(1); await F.say('Show me what you know! Watch me first.'); K.showWaiting(1); await F.say('One boy. One more comes.');
+    await F.handTo(document.querySelector('.tspot[data-id="w1"]')); await F.handTap(); await K.comeOne(); $('hp').hidden = $('check').hidden = false;
+    await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); await F.handTap(); H.set(2); await F.handTo($('check')); await F.handTap(); F.handHide(); await F.say('One plus one is two!'); H.set(0); $('hp').hidden = $('check').hidden = true;
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You can add and take away! Unit eleven done!' : 'Good try! Let\'s practise and come back.',
+  practice: 'facts11.html'
+});
+</script>
+</body>
+</html>
