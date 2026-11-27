@@ -10,6 +10,7 @@
      3. One more (Units 6-7): the tin; "seven, one more?" A slip: one more drops in and we count. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="unit10.css"><link rel="stylesheet" href="hands-side.css">
+<style>#goal .q{ font:900 clamp(40px,7vh,60px)/1 system-ui, sans-serif; color:#8A7A6A; }</style>
 </head>
 <body>
 <div id="world"></div>
@@ -30,14 +31,14 @@ const ans = () => R.kind === 'less' ? R.n - 1 : R.kind === 'more' ? R.n + 1 : R.
 function hooks() { if (R.step === 'take') { GAME.right = () => [{ tap: '.tspot[data-id="plate"]' }]; GAME.wrong = null; return; } GAME.right = () => H.moves(ans(), '#hh').concat([{ tap: '#check' }]); GAME.wrong = () => H.moves(ans() + 1, '#hh').concat([{ tap: '#check' }]); }
 function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
 const say = (list, end) => i => FR.say(FR.Word(i + 1) + (i === list.length - 1 ? end || '.' : ','), { noRepeat: true });
-function setup() { if (R.kind === 'less') { K.setTin(0); K.setExtra(R.n); } else if (R.kind === 'more') { K.setExtra(0); K.setTin(R.n); } else { K.setExtra(0); K.setTin(R.n, { blueFrom: R.pink }); } }
+function setup() { K.plateOnly(R.kind === 'less'); if (R.kind === 'less') { K.setTin(0); K.setExtra(R.n); } else if (R.kind === 'more') { K.setExtra(0); K.setTin(R.n); } else { K.setExtra(0); K.setTin(R.n, { blueFrom: R.pink }); } }
 /* one less: he takes one away himself (taps the plate), then shows how many are left */
 async function takeOne() { if (GAME.phase !== 'answer' || R.step !== 'take') return; GAME.phase = 'busy'; FR.lock(true); await K.dropExtra(); R.step = 'show'; $('hh').hidden = $('check').hidden = false;
   open(); await FR.say('One less! How many now? Show me.', { repeat: 'Count the plate. Show me on two hands.' }); }
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const have = H.count(), k = ans();
   if (have === k) { const line = R.kind === 'less' ? 'Yes! One less than ' + FR.word(R.n) + ' is ' + FR.word(k) + '.' : R.kind === 'more' ? 'Yes! One more than ' + FR.word(R.n) + ' is ' + FR.word(k) + '.' : 'Yes! ' + FR.Word(R.pink) + ' and ' + FR.word(k) + ' make ' + FR.word(R.n) + '.';
-    await FR.yes($('check'), line); const d = done; done = null; d(R.misses === 0); return; }
+    $('goal').innerHTML = U5.num(k); await FR.yes($('check'), line); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops($('check')); R.misses++;
   if (R.kind === 'less') { await FR.say("Let's look. Count the plate."); const ex = K.extras(); await K.bumpAll(ex, say(ex)); }
   else if (R.kind === 'more') { await FR.say("Let's look. One more comes."); await K.add(R.n); const all = K.cakes(); await K.bumpAll(all, say(all)); }
@@ -47,7 +48,7 @@ async function check() {
 const PLAN = [{ kind: 'less', n: 5 }, { kind: 'part', n: 6, pink: 4 }, { kind: 'more', n: 7 }, { kind: 'less', n: 4 }, { kind: 'part', n: 8, pink: 5 }, { kind: 'more', n: 9 }];
 function play(F, i) {
   return new Promise(async res => {
-    R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true); setup(); $('goal').innerHTML = U5.num(R.n);
+    R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true); setup(); $('goal').innerHTML = '<b class="q">?</b>';   /* the card never shows a number he could copy; it shows the answer once he has it */
     R.step = R.kind === 'less' ? 'take' : 'show'; $('hh').hidden = $('check').hidden = R.step === 'take';
     if (R.kind === 'less') { await F.say(F.Word(R.n) + ' on the plate.'); open(); await F.say('Take one away! Tap the plate.', { repeat: 'Tap the plate. One goes away.' }); return; }
     else if (R.kind === 'more') await F.say(F.Word(R.n) + ' in the tin. One more is?');
@@ -60,9 +61,11 @@ FR.game({
   hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""><img src="art/dovid-happy.png" alt=""></div>',
   init() { K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = U5.hands(0, true); $('hh').appendChild(H.el); $('check').addEventListener('click', check); K.onTap = id => { if (id === 'plate') takeOne(); }; },
   demo: async F => {
-    R = { kind: 'demo' }; K.setExtra(0); K.setTin(3); $('goal').innerHTML = U5.num(3);
-    await F.say('Review time! Watch me. Three in the tin.'); await F.say('One more?'); await K.add(3); $('goal').innerHTML = U5.num(4); await F.say('Four! I show four.');
-    await F.handTo(H.el, .3, .6); for (let k = 1; k <= 4; k++) { await F.handTap(); H.set(k); NK.sound.pop(); } await F.handTo($('check')); await F.handTap(); F.handHide(); H.set(0);
+    R = { kind: 'demo' }; K.plateOnly(true); K.setTin(0); K.setExtra(5); $('goal').innerHTML = '<b class="q">?</b>'; $('hh').hidden = $('check').hidden = true;
+    await F.say('Review time! Watch me. Five on the plate.'); await F.say('Take one away. I tap the plate.');
+    await F.handTo(document.querySelector('.tspot[data-id="plate"]')); await F.handTap(); await K.dropExtra(); await F.say('Four now. I show four.');
+    $('hh').hidden = $('check').hidden = false; await F.handTo(H.el, .3, .6); for (let k = 1; k <= 4; k++) { await F.handTap(); H.set(k); NK.sound.pop(); }
+    await F.handTo($('check')); await F.handTap(); $('goal').innerHTML = U5.num(4); F.handHide(); H.set(0); K.setExtra(0); K.plateOnly(false);
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'You remember so much!' : 'Good work! Let\'s play once more.'

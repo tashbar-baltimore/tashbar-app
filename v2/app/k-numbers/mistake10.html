@@ -50,7 +50,7 @@ async function ok() {
     await FR.say('Tap the plate. Take it away.'); }
   open();
 }
-const PLAN = [[6, 3], [7, 3], [8, 3], [5, 4], [4, 6], [9, 2]];   /* too few, right, too many, too few, right, too many */
+const PLAN = [[6, 3], [7, 3], [8, 3], [5, 3], [4, 6], [9, 2]];   /* too few (by one), right, too many, too few (by two), right, too many */
 function play(F, i) {
   return new Promise(async res => {
     const [a, b] = PLAN[i]; R = { a, b, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); sum();
@@ -73,7 +73,7 @@ FR.game({
     R = { a: 6, b: 4 }; sum(); K.setTin(10, { blueFrom: 6 }); await F.say('Six and four? The tin is full.'); await F.handTo($('ok')); await F.handTap(); F.handHide(); await F.say('Thumbs up! Mendy is right.');
   },
   round: (F, i) => play(F, i),
-  endSay: s => s >= 2 ? 'Mendy says thank you! You fixed every one.' : 'Good looking! Let\'s play once more.'
+  endSay: s => s >= 2 ? 'Mendy says thank you! You fixed every one.' : 'Good checking! Let\'s play once more.'
 });
 </script>
 </body>

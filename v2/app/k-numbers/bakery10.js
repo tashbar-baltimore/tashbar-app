@@ -91,11 +91,11 @@ export function mount(host, opt) {
     m.userData.v = new THREE.Vector3((Math.random() - .5) * .08, .07 + Math.random() * .05, (Math.random() - .5) * .08); m.userData.t = 0; scene.add(m); bits.push(m); } }
 
   /* ---------------- camera ---------------- */
-  let Wd = 1, Hh = 1, narrow = false; const DIR = new THREE.Vector3(0, 0.62, 0.78).normalize(), V = 34; let dist = 14; const center = new THREE.Vector3(0, 0.3, 0.3);
+  let Wd = 1, Hh = 1, narrow = false, solo = false; const DIR = new THREE.Vector3(0, 0.62, 0.78).normalize(), V = 34; let dist = 14; const center = new THREE.Vector3(0, 0.3, 0.3);
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function layout() {
     tin.position.set(narrow ? 0 : -1.0, 0, narrow ? -0.7 : 0.3); tin.scale.setScalar(1);
-    plate.position.set(narrow ? 0 : 2.75, 0, narrow ? 1.5 : 0.3);   /* phone: in front of the tin, on the table */
+    plate.position.set(solo ? (narrow ? 0 : -1.0) : narrow ? 0 : 2.75, 0, solo ? 0.3 : narrow ? 1.65 : 0.3); tin.visible = !solo;   /* solo: only the plate, in the middle */   /* phone: in front of the tin, on the table */
     kids.forEach((k, i) => k.m.position.set(narrow ? (i ? 1.9 : -1.9) : (i ? 3.4 : -3.4), 0.35, -3.1));
   }
   function fit() {
@@ -134,6 +134,7 @@ export function mount(host, opt) {
     async countEmpty(say) { const e = cups.map((c, i) => [c, i]).filter(([c]) => !c.cake); for (let j = 0; j < e.length; j++) { const h = holes[e[j][1]]; h.material = h.material.clone(); h.material.emissive = new THREE.Color('#FFD23D'); h.material.emissiveIntensity = 0.9; if (say) await say(j); }
       return e.length; },
     unglow() { holes.forEach(h => { h.material = holeM; }); },
+    plateOnly(on) { solo = !!on; layout(); },
     async cover(on) { if (on) { cover.visible = true; await tween(420, e => { cover.position.y = 2.4 - e * 1.95; }); cover.position.y = 0.45; }
       else if (cover.visible) { await tween(420, e => { cover.position.y = 0.45 + e * 2.2; }); cover.visible = false; } },
     celebrate() { tin.getWorldPosition(wp); sparkle(wp.x, wp.z); },
