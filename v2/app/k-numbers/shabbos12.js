@@ -51,7 +51,7 @@ export function mount(host, opt) {
     const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.08, 0.14, 16), silverM); cup.position.y = 1.05; g.add(cup);
     const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.6, 16), new THREE.MeshStandardMaterial({ color: '#FFFDF5' })); candle.position.y = 1.4; g.add(candle);
     const flame = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 8), new THREE.MeshBasicMaterial({ color: '#FFC94A' })); flame.scale.set(1, 1.8, 1); flame.position.y = 1.78; g.add(flame); });
-  { const coverM = new THREE.MeshStandardMaterial({ color: '#3D5BC4', roughness: 0.8 }); tex('challah-cover.jpg', t => { coverM.map = t; coverM.color.set('#FFFFFF'); coverM.needsUpdate = true; });
+  { const coverM = new THREE.MeshStandardMaterial({ color: '#3D5BC4', roughness: 0.8 }); tex('challah-cover.jpg', t => { coverM.map = t; coverM.color.set('#FFFFFF'); coverM.emissive.set('#22348A'); coverM.emissiveIntensity = 0.45; coverM.needsUpdate = true; });
     const c = new THREE.Mesh(new THREE.SphereGeometry(0.75, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2), coverM); c.scale.set(1.15, 0.7, 0.7); c.position.set(1.75, 0.02, -1.9); c.castShadow = true; deco.add(c);
     const rim = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.04, 8, 48), new THREE.MeshStandardMaterial({ color: '#E8C15A', roughness: 0.4 })); rim.rotation.x = Math.PI / 2; rim.scale.set(1.15, 0.7, 1); rim.position.set(1.75, 0.03, -1.9); deco.add(rim); }   /* a plain blue cover with a gold edge (no letters) */
 
