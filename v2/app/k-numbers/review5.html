@@ -142,8 +142,8 @@
   }
   FR.game({
     id: 'u5-review', bonusSay: '', title: 'Review Time', rounds: 8,
-    hero: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#fff" stroke="#3B2A7A" stroke-width="5"/><path d="M50 50 L50 22 M50 50 L70 60" stroke="#3B2A7A" stroke-width="6" stroke-linecap="round"/><path d="M14 30 A40 40 0 0 1 40 11" stroke="#22B45E" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M40 11 l-2 -8 M40 11 l-8 2" stroke="#22B45E" stroke-width="6" stroke-linecap="round"/></svg>',
-    init: function (F) { H = U5.hands(0, true); $('aH').appendChild(H.el); H.onChange = ready; H.lock(true); $('check').addEventListener('click', check); },
+    hero: '<div id="herotf" style="width:100%;margin-top:14%"></div>',   /* a ten-frame, like every Unit 5 stop (a clock looked like telling time) */
+    init: function (F) { var hf = U5.frame(6, false); $('herotf').appendChild(hf.el); H = U5.hands(0, true); $('aH').appendChild(H.el); H.onChange = ready; H.lock(true); $('check').addEventListener('click', check); },
     reset: function (F, again) { plan = ITEMS.slice(); if (!again) { easy = 0; seen = {}; } },
     demo: async function (F) { await F.say('Review time! Things we learned before.'); },
     endSay: function (s) { return s >= 2 ? 'Great remembering!' : 'Good try! We will practice these again.'; },

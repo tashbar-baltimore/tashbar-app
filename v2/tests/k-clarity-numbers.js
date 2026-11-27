@@ -3,6 +3,7 @@
    - Unit 2 path stones: every stone shows its own amount (n dots for n), so 6 to 10 never look alike (rule 8, "things to count are clear").
    - No faces on objects: the peek cloth and towel have no eyes (school rule; rule 10, no silly props).
    - Candle cards: 4 and 5 Shabbos candles never overlap each other (rule 8).
+   - Unit 7 orchard: apples never touch, even squeezed; the spread-out row is longer; no apples on the trees; see-saw apples apart (rules 7, 8).
    Returns { fails, oks }. */
 const path = require('path'), fs = require('fs'), os = require('os'), cp = require('child_process');
 const R = path.join(__dirname, '..', '..');
@@ -63,8 +64,31 @@ module.exports = async function (browser) {
         if (eyes) bad(f + ': the cloth or towel has eyes (no faces on objects)');
       } finally { await p.ctx.close(); }
     }
+    /* Unit 7 orchard (numbers-d): apples never touch or hide each other, even "squeezed together"; the spread-out row is always the longer one
+       (the trick must be visible); no apples hang on the trees (only the apples to count); see-saw apples sit apart in rows (rules 7, 8) */
+    for (const [w, h] of [[1366, 768], [390, 844]]) {
+      const p = await open('mistake7.html?fast=1', w, h);
+      try {
+        await p.pg.click('#play', { force: true }); await p.pg.waitForFunction(() => window.__orchard, null, { timeout: 20000 });
+        const r = await p.pg.evaluate(() => { const O = window.__orchard, res = [];
+          for (const [few, many] of [[2, 3], [4, 6]])   /* the pairs mistake7 uses (its PLAN and demo) */ { O.setApples(0, few, 'row'); O.setApples(1, many, 'row'); O.spread(0, true); O.spread(1, false);
+            res.push({ few, many, gap: O._minGap(1), spreadLen: O._rowLen(0), squeezeLen: O._rowLen(1) }); }
+          return { res, tree: O._treeApples(), apple: O.APPLE }; });
+        for (const x of r.res) {
+          if (x.gap < r.apple) bad('mistake7 (' + w + ' wide): ' + x.many + ' squeezed apples touch or hide each other');
+          if (x.few <= 4 && x.many >= 6 && !(x.spreadLen > x.squeezeLen + 0.3)) bad('mistake7 (' + w + ' wide): ' + x.few + ' spread out is not longer than ' + x.many + ' squeezed (the trick does not show)');
+        }
+        if (r.tree) bad('mistake7: ' + r.tree + ' apples hang on the trees (only the apples to count may show)');
+      } finally { await p.ctx.close(); }
+      const q = await open('seesaw7.html?fast=1', w, h);
+      try {
+        await q.pg.click('#play', { force: true }); await q.pg.waitForFunction(() => window.__orchard, null, { timeout: 20000 });
+        const g = await q.pg.evaluate(() => { const O = window.__orchard; O.setSaw(10, 9); return O._sawMinGap(); });
+        if (g < 0.6 * 0.68) bad('seesaw7 (' + w + ' wide): apples on a tray touch or hide each other');
+      } finally { await q.ctx.close(); }
+    }
   } catch (e) { bad('crashed: ' + String(e).slice(0, 200)); }
   finally { fs.rmSync(dist, { recursive: true, force: true }); }
-  if (!out.fails.length) out.oks.push('2.0 K Numbers clarity: the map fits both screens, every path stone shows its amount, no faces on objects, candles never overlap');
+  if (!out.fails.length) out.oks.push('2.0 K Numbers clarity: the map fits both screens, every path stone shows its amount, no faces on objects, candles never overlap; orchard apples never touch, spread-out shows longer, no apples on the trees');
   return out;
 };
