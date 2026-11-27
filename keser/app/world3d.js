@@ -99,7 +99,7 @@ export function start(o) {
     const dome = card(pl); dome.center.set(0.5, 0); dome.position.y = 0.75; g.add(dome);
     if (pl.id === 'general') dome.material.color.set(0xb4c6ff);
     /* a Keser girl in the school uniform stands on the stage beside her place */
-    const girl = pl.girl ? painting(pl.girl, 2.9, pl.girlAspect) : null; if (girl) { girl.center.set(0.5, 0); girl.position.set(i === 0 ? -1.75 : 1.75, -0.2, 0.6); g.add(girl); }   /* on the side away from the other place, so nothing covers anything */   /* the rose glass dome tinted toward the Keser Malchus royal blue */
+    const girl = pl.girl ? painting(pl.girl, 3.25, pl.girlAspect) : null; if (girl) { girl.center.set(0.5, 0); girl.position.set(i === 0 ? -1.85 : 1.85, -0.2, 0.6); g.add(girl); }   /* on the side away from the other place, so nothing covers anything */   /* the rose glass dome tinted toward the Keser Malchus royal blue */
     const motes = [...Array(0)].map((_, k) => { const s = glowSprite(STAR, [0xffffff, 0xfff1b8, pl.hex][k % 3], 0.2); s.userData.k = k; g.add(s); return s; });
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 4, 10), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 2; hit.userData.idx = i; g.add(hit);
     return { g, th, halo, pool, dome, girl, motes, hit, sc: 1 };
@@ -142,7 +142,7 @@ export function start(o) {
   function applyLite() {
     glitter[1].visible = !lite; glitter[0].geometry.setDrawRange(0, Infinity);
     petals.count = 0; bokeh.forEach(b => b.visible = false);   /* less busy (M. Heinemann 2026-11-27): no petals or bokeh */
-    renderer.setPixelRatio(lite ? 1 : Math.min(devicePixelRatio || 1, 1.5)); fit();
+    renderer.setPixelRatio(lite ? 1 : Math.min(devicePixelRatio || 1, 2)); fit();
   }
 
   /* ---------- camera, the turning ring, her moves ---------- */
