@@ -363,7 +363,9 @@
         { t: 'Three things color it: his *spot*, his *news*, his *heart*.', act: A(id, 'your', 0, { pairs: [['"I could not see the flames."', 'Where he is'], ['"Nobody had told us yet."', 'What he knows'], ['"My knees shook."', 'How he feels']],
           say: 'Match each line to what *colors* it.', how: 'Is it about where he *is*, what he *knows*, or how he *feels*?' }) }],
       play: [
-        A(id, 'do', 1, { why: { q: 'Why is "the most frightening sky" not a plain fact?', o: ['It shows his fear; others saw it differently', 'It gives a date', 'It is too short'], a: 'It shows his fear; others saw it differently' } }),
+        A(id, 'do', 1, { bins: ['Right', 'Mistake'], cards: [['"My knees shook" shows how he feels.', 0], ['"The most frightening sky" is colored by his fear.', 0], ['"Wagons rattled down the street" is colored, because it is exciting.', 1], ['"The fire bells began to ring" shows his feelings.', 1]],
+          say: 'Mistake Detective: is each claim *right*, or a *mistake*?', how: 'Colored lines show *his* view. Plain facts are what *anyone* there would say.',
+          why: { q: 'Why is "Wagons rattled down the street" a plain fact?', o: ['Anyone there would say it the same way', 'It is exciting', 'It has wagons'], a: 'Anyone there would say it the same way' } }),
         A(id, 'your', 3, {}),
         A(id, 'your', 2, { q: 'Shloimy is on a roof, far from the flames.' }),
         A(id, 'your', 1, {})],
@@ -374,7 +376,7 @@
       hook: { kind: 'guess', pic: '👞', t: 'One shoe store, two *narrators*: a boy and his Tatty. One *counts trips*.', q: 'Who do you guess counts every trip?',
         o: ['The boy, Yankel', 'His Tatty'], pay: '*Yankel* counts trips. *Tatty* watches the door. Same scene, two views.' },
       learn: [
-        { t: '*One scene*, two *narrators*: a boy and his Tatty.', act: A(id, 'do', 0, { q: 'The Shoe Store: One Scene, Two Narrators', bins: ['Yankel (the boy)', 'Tatty (the father)', 'Both tell it'],
+        { t: '*One scene*, two *narrators*: a boy and his Tatty.', act: A(id, 'do', 0, { q: 'The Shoe Store: One Scene, Two Narrators', bins: ['Narrator 1: Yankel', 'Narrator 2: Tatty', 'Both tell it'],
           say: 'Who tells it: *Yankel*, *Tatty*, or *both*?', how: 'A boy *counts trips*. A father thinks of his *work*. Events are in *both*.' }) },
         { who: { q: 'Tatty tells the scene. What *changes*?', o: [['Akiva', 'What happened changes.'], ['Dov', 'What he notices and feels.']], a: 1,
           why: 'The store, policeman and wagon are in *both* tellings.' } },
@@ -384,8 +386,13 @@
       play: [
         A(id, 'your', 0, { why: { q: 'Why is "A new narrator changes what happened" a mistake?', o: ['The same events are in both tellings', 'Tatty was not there', 'It is too short'], a: 'The same events are in both tellings' } }),
         A(id, 'your', 3, { q: 'Retell it as Tatty. Which line would Tatty say?' }),
-        A(id, 'your', 2, { q: 'Both tellings share these events.' }),
-        A(id, 'your', 1, { t: 'Tatty is a father, so he watches the ___ each time his son runs inside.' })],
+        { type: 'sort', q: 'Who could tell this part of the story?', bins: ['Only Tatty could tell', 'Only Yankel could tell', 'Both could tell'],
+          cards: [['Twenty years of work stood on the shelves.', 0], ['I felt strong, like a real man.', 1], ['A policeman shouted a warning.', 2], ['I thanked Hashem my boy was safe.', 0]],
+          say: 'Who *knows* this? Only Tatty, only Yankel, or *both*?', how: 'A narrator can only tell what *he* knows or feels.',
+          why: { q: 'Why could only Tatty tell about the shelves?', o: ['He built them over twenty years', 'He is taller', 'He counted the trips'], a: 'He built them over twenty years' } },
+        A(id, 'your', 1, { t: 'Yankel feels ___, like a real man helping his father.', o: ['strong', 'ashamed', 'bored'], a: 'strong',
+          say: 'Fill the gap: how does *Yankel* feel?', how: 'Think like a *boy* helping his father.',
+          why: { q: 'Why would Tatty not say this about himself?', o: ['It is Yankel\'s own feeling', 'Tatty was not there', 'Tatty is a boy'], a: 'It is Yankel\'s own feeling' } })],
       done: 'Yankel *counted trips*; Tatty *watched the door*. A new narrator, a new *view*.' }); })();
 
   (function () { var id = 'READ.COMP.L06.14';
@@ -407,7 +414,7 @@
           p: ['Fireman: "We came by train on Sunday."', 'Fireman: "Our hose end would not fit."', 'Report: "Firemen came by train from Washington."', 'Report: "More than 1,500 buildings are gone."', 'Mendel: "My little seforim store is gone."'], a: [0, 2],
           say: 'Find *one fact* told in *two* accounts.', how: 'Look for the same fact from *two different* writers.',
           why: { q: 'Why does a shared fact matter?', o: ['Two accounts agree, so we can trust it', 'It is longer', 'It is in a letter'], a: 'Two accounts agree, so we can trust it' } },
-        A(id, 'your', 3, {})],
+        A(id, 'your', 3, { say: 'Put the fire\'s events in *order*.', steps: ['The fire begins downtown.', 'Firemen arrive by train.', 'The fire is stopped at the Jones Falls.', 'A report says the fire is under control.'] })],
       done: 'The *report* counted buildings. Many accounts, one fire, *shared facts*.' }); })();
 
   (function () { var id = 'READ.COMP.L06.15';
@@ -422,7 +429,7 @@
         { who: { q: 'Ezra never says which blasts made *new fires*. Is he wrong?', o: [['Yisroel', 'Yes. His account is wrong.'], ['Baruch', 'No. He was far away.']], a: 1,
           why: 'What he *saw* and *why he wrote* shape it.' } }],
       play: [
-        A(id, 'your', 1, { why: { q: 'Why is "Every account should tell the same details" a mistake?', o: ['Each writer saw different things, for different reasons', 'Accounts never share facts', 'It is too long'], a: 'Each writer saw different things, for different reasons' } }),
+        A(id, 'your', 1, { cards: [['The fireman tells which blasts helped: he was right there.', 0], ['Ezra writes BOOM to excite his cousin.', 0], ['A letter saying "Do not worry, we are safe" is written to comfort.', 0], ['Ezra is wrong because he leaves out the new fires.', 1], ['Every account should tell the same details.', 1]], why: { q: 'Why is "Every account should tell the same details" a mistake?', o: ['Each writer saw different things, for different reasons', 'Accounts never share facts', 'It is too long'], a: 'Each writer saw different things, for different reasons' } }),
         A(id, 'your', 0, { pairs: [['"so next time we know what works"', 'To report to his chief'], ['"the most exciting night of my life!"', 'To share an exciting story'], ['Camp note: "We are all fine."', 'To comfort his family'], ['A paper for the whole city', 'To tell the news']] }),
         { type: 'sort', q: 'How close was each writer to the fire?', bins: ['Saw it up close', 'Saw it from far away', 'Only heard about it'],
           cards: [['The fireman at the fire line', 0], ['Ezra on his back porch', 1], ['A man in Chicago, reading his newspaper', 2], ['Mendel, carrying out his siddurim', 0]],

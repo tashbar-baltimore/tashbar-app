@@ -351,19 +351,22 @@
 
   (function () { var id = 'READ.COMP.L06.13';
     NL(id, {
-      hook: { kind: 'compare', pic: '🚀', t: 'Two texts. Same topic: the *moon landing*.', q: 'What could be different about them?',
+      hook: { kind: 'compare', pic: '🚀', t: 'Shmuli and Zeidy read two library books on the *moon landing*.', q: 'What could be different about them?',
         o: ['The topic', 'How each one is built', 'Nothing at all'], pay: '*How they are built*! One follows *dates*. One solves *problems*.' },
       learn: [
-        { t: '*Signal words* show how a text is *built*.', act: A(id, 'do', 0, {
+        { t: '*Signal words* show how a text is *built*.', act: A(id, 'do', 0, { pairs: [['in 1957, next, finally', 'Time order'], ['the problem was, the solution was', 'Problem and solution'], ['so, because, as a result', 'Cause and effect'], ['both, while, unlike', 'Compare and contrast']],
           say: 'Match the *signal words* to how a text is built.', how: 'Do the words tell *when*, a *fix*, *why*, or *side by side*?' }) },
-        { t: 'Build the *two-text table*: one topic, two *patterns*.', act: A(id, 'your', 2, { q: 'Two Texts About the Moon Landing',
+        { t: 'Build the *two-text table*: one topic, two *patterns*.', act: A(id, 'your', 2, { q: 'Two Texts About the Moon Landing', slots: ['Text A is built in', 'Text A: "In 1957... Next..."', 'Text B is built as', 'Text B: "The first problem was..."'], cards: ['Time order', 'Signal words: dates, Next, Finally', 'Problem and solution', 'Signal words: problem, solution'],
           say: 'Fill in the *two-text table*.', how: 'Find each text\'s *signal words*. Then name its *pattern*.' }) },
-        { who: { q: 'Text B says "The *first problem*..." How is it built?', o: [['Ari', 'Time order. It says "first."'], ['Ben', 'Problem and solution.']], a: 1,
+        { who: { q: 'Text B says "The *first problem*..." How is it built?', o: [['Shmuli', 'Time order. It says "first."'], ['Pinchas', 'Problem and solution.']], a: 1,
           why: 'Here "first" *counts problems*, not dates.' } }],
       play: [
         A(id, 'your', 1, { why: { q: 'Why is "Same topic, so they are built the same way" wrong?', o: ['One topic can be built many ways', 'They have different topics', 'It is too long'], a: 'One topic can be built many ways' } }),
         A(id, 'your', 0, {}),
-        A(id, 'do', 1, { q: 'Two Texts About the Moon Landing' }),
+        { type: 'sort', q: 'New moon sentences: how is each built?', bins: ['Cause and effect', 'Compare and contrast', 'Time order'],
+          cards: [['Because the moon has no air, there is no wind.', 0], ['The Earth has seas, while the moon has dust.', 1], ['Unlike Earth, the moon has no weather.', 1], ['So a crater stays for millions of years.', 0], ['Finally, the astronauts came home.', 2]],
+          say: 'Sort each sentence by its *signal word*.', how: '*Because, so*: cause. *While, unlike, both*: compare. *Finally*: time.',
+          why: { q: 'What does "while" show here?', o: ['Two things side by side, and different', 'A cause', 'A time'], a: 'Two things side by side, and different' } },
         { type: 'match', q: 'New moon sentences. How is each built?', pairs: [['Both the sun and moon pull.', 'Compare and contrast'], ['No air, so no wind.', 'Cause and effect'], ['First new, then full.', 'Time order']],
           say: 'New sentences! Match each to its *pattern*.', how: 'Look for the *signal word*: both, so, or first.' }],
       done: 'Same topic, two *patterns*: *dates* in one, *problems and fixes* in the other.' }); })();
@@ -382,16 +385,16 @@
       play: [
         A(id, 'your', 0, { why: { q: 'What is wrong with "the boys look at a map at a table"?', o: ['It retells, but does not say its job', 'It is not in the book', 'It is too short'], a: 'It retells, but does not say its job' } }),
         A(id, 'your', 1, { q: 'Which chapter picks up each ending?' }),
-        A(id, 'your', 2, { q: 'The Map in Zeidy\'s Attic' }),
-        { type: 'storymap', q: 'New book: The Missing Lulav', slots: ['Ch 1: the lulav is missing', 'Ch 2: a leaf by the bike rack', 'Ch 3: shul starts in ten minutes', 'Ch 4: it was in the sukkah'],
+        A(id, 'your', 2, { q: 'The Map in Zeidy\'s Attic', say: 'Put the events of five chapters in *book order*.', steps: ['Yehuda finds the map in the attic.', 'The boys find a pencil note on the back.', 'The boys read the 1904 newspaper.', 'A minute book says the scroll was saved.', 'Zeidy tells Yehuda to lock the box.'] }),
+        { type: 'storymap', q: 'New book: The Missing Lulav', slots: ['Ch 1: the lulav is missing', 'Ch 2: a torn lulav leaf: bad news!', 'Ch 3: shul starts in ten minutes', 'Ch 4: it was in the sukkah'],
           cards: ['Sets up the problem', 'Adds a clue', 'Makes the problem harder', 'Solves the problem'],
-          say: 'New book! Give each chapter its *job*.', how: '*Starts* it, *adds* a clue, makes it *harder*, or *solves* it?' }],
+          say: 'New book! Give each chapter its *job*.', how: 'Finding something out *adds a clue*, even bad news. Harder means a new *block*.' }],
       done: 'That ending was a *hook*. Every chapter does a *job* for the book.' }); })();
 
   (function () { var id = 'READ.LIT.L06.11';
     NL(id, {
-      hook: { kind: 'notice', pic: '🌙', t: 'A poem: night. Clouds hide the moon. Then the clouds *slide by*.', q: 'What do you notice about its order?',
-        o: ['A problem, then it turns around', 'It is all mixed up', 'Every stanza says the same'], pay: 'Each *stanza* has a *job*: scene, problem, turn, *big idea*.' },
+      hook: { kind: 'predict', pic: '🌙', t: 'A poem in four stanzas. In stanza 2, *clouds hide the moon*.', q: 'What will stanza 3 most likely do?',
+        o: ['Turn it around', 'Bring a new problem', 'Say the same thing again'], pay: 'Each *stanza* has a *job*: scene, problem, turn, *big idea*.' },
       learn: [
         { t: 'Each *stanza* has a *job* in the poem.', act: A(id, 'do', 0, { q: 'Under the New Moon', slots: ['Stanza 1: we step out the door', 'Stanza 2: clouds cover every star', 'Stanza 3: the clouds slide by', 'Stanza 4: we can start again too'],
           say: 'Give each *stanza* its job in the poem.', how: 'Read each stanza. Ask: what does it *add* to the poem?' }) },
@@ -401,7 +404,9 @@
           why: 'A last stanza often tells what it all *means*.' } }],
       play: [
         A(id, 'your', 0, { why: { q: 'Why is "Each stanza is its own poem" a mistake?', o: ['The stanzas build one idea together', 'The poem has one stanza', 'It rhymes'], a: 'The stanzas build one idea together' } }),
-        A(id, 'your', 1, { q: 'The Night of the Landing (a play)' }),
+        { type: 'storymap', q: 'New play: The Lost Siddur', slots: ['Scene 1: shul, before Shacharis', 'Scene 2: Moshe\'s siddur is gone', 'Scene 3: Zeidy finds it under a bench', 'Scene 4: "Keep your things in their place."'],
+          cards: ['Sets the scene', 'Brings the problem', 'Turns it around', 'Ends with the big idea'],
+          say: 'New play! Give each scene its *job*.', how: '*Where*? A *worry*? The worry *ends*? What it all *means*?' },
         A(id, 'your', 2, { q: 'The Night of the Landing (a play)', pairs: [['A radio on the table, July 1969', 'Sets the scene'], ['The lander is low on fuel', 'Brings the problem'], ['"The Eagle has landed."', 'Turns it around'], ['Zeidy tells what he learned', 'Ends with the big idea']] })],
       done: 'Clouds, then the moon: a *problem*, a *turn*, then the *big idea*.' }); })();
 
@@ -417,10 +422,10 @@
         { who: { q: '"a curve of white / hangs low..." Stop after *white*?', o: [['Gavi', 'Yes. Stop at every line end.'], ['Rafi', 'No. Keep going, there is no mark.']], a: 1,
           why: '*No mark* at a line\'s end means *keep going*.' } }],
       play: [
-        A(id, 'your', 0, { why: { q: 'Why is stopping at every line end a mistake?', o: ['The marks lead your voice, not the line ends', 'Poems have no marks', 'It is too fast'], a: 'The marks lead your voice, not the line ends' } }),
+        A(id, 'your', 0, { cards: [['Reads two lines in one breath when there is no mark.', 0], ['Takes a long pause at the blank line.', 0], ['Period, then a blank line: takes a long pause.', 0], ['Stops dead at the end of every line.', 1], ['Reads in a sing-song voice, banging every beat.', 1]], why: { q: 'Why is stopping at every line end a mistake?', o: ['The marks lead your voice, not the line ends', 'Poems have no marks', 'It is too fast'], a: 'The marks lead your voice, not the line ends' } }),
         A(id, 'your', 1, {}),
-        A(id, 'your', 2, { q: 'The Moon\'s Month', w: ['then, on', 'the fifteenth,', 'throws its light', 'on all the ground.'], extra: ['the silver grows'] }),
-        A(id, 'your', 3, {})],
+        A(id, 'your', 2, { q: '"Each night the silver grows / from half to nearly round,"', say: 'Finish the sentence. It runs across the *line end*.', w: ['then, on', 'the fifteenth,', 'throws its light', 'on all the ground.'], extra: ['a curve of white'] }),
+        A(id, 'your', 3, { steps: ['Read the poem silently first.', 'Find the mark at the end of each line.', 'Read it aloud: pause where the marks say.', 'Reread it, smoother each time.'] })],
       done: 'Follow the *marks*: keep going, *short pause*, full stop, *long pause*.' }); })();
 
   if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
