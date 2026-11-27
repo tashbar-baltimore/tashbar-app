@@ -184,7 +184,7 @@ export function stage(host, opts = {}) {
 
   /* sky: a warm painted gradient, with the sun glow low on the left */
   const sky = opts.sky || { top: '#5DB2F2', mid: '#A8DBFF', low: '#FFF1D6' };
-  scene.add(new THREE.Mesh(new THREE.SphereGeometry(200, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false,
+  scene.add(S.sky = new THREE.Mesh(new THREE.SphereGeometry(200, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false,
     uniforms: { top: { value: col(sky.top) }, mid: { value: col(sky.mid) }, low: { value: col(sky.low) } },
     vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
     fragmentShader: 'uniform vec3 top; uniform vec3 mid; uniform vec3 low; varying vec3 vP; void main(){ float h = vP.y; vec3 c = h > 0.06 ? mix(mid, top, smoothstep(0.06, 0.55, h)) : mix(low, mid, smoothstep(-0.12, 0.06, h)); float s = pow(max(0.0, dot(vP, normalize(vec3(-0.6,0.25,-0.75)))), 24.0); c += vec3(1.0,0.85,0.55)*s*0.6; gl_FragColor = vec4(c,1.0); }' })));
@@ -205,8 +205,9 @@ export function stage(host, opts = {}) {
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(260, 260, 1, 1), matte('#FFFFFF', { map: grassTex }));
   ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground); S.ground = ground;
   const hillM = matte('#8CCB66'), hillM2 = matte('#A6D77A');
+  const hills = S.hills = new THREE.Group(); scene.add(hills);
   [[-60, -70, 34, hillM], [-8, -88, 42, hillM2], [52, -74, 36, hillM], [95, -40, 30, hillM2], [-100, -35, 30, hillM2]].forEach(([x, z, r, m]) => {
-    const h = new THREE.Mesh(new THREE.SphereGeometry(r, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), m); h.scale.y = 0.38; h.position.set(x, -1, z); scene.add(h); });
+    const h = new THREE.Mesh(new THREE.SphereGeometry(r, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), m); h.scale.y = 0.38; h.position.set(x, -1, z); hills.add(h); });
 
   /* clouds: soft painted puffs that drift */
   const cloudM = new THREE.SpriteMaterial({ map: softTex, color: '#FFFFFF', transparent: true, opacity: 0.9, depthWrite: false, fog: false });
@@ -249,7 +250,14 @@ export function stage(host, opts = {}) {
     camera.setViewOffset(W, H, -((rx + rw / 2) - W / 2), -((ry + rh / 2) - H / 2), W, H); camera.updateProjectionMatrix(); }
   S.aim = aim;
   S.frame = (center, w, h, dir, now) => { S.view = { center: center.clone(), w, h, dir: (dir || S.view.dir).clone().normalize() }; aim(); if (now || FAST) { camPos.copy(S.goal.pos); camLook.copy(S.goal.look); } };
-  function resize() { renderer.setSize(innerWidth, innerHeight); aim(); }
+  function resize() { renderer.setSize(innerWidth, innerHeight); aim(); fitBg(); }
+  /* a PAINTED backdrop (from the HoS's image account) as the whole background, cover-fitted to the screen; the 3D ground then only
+     catches soft shadows, so the stones, crates and boys stand in the painted world */
+  let bgTex = null; function fitBg() { if (!bgTex || !bgTex.image) return; const ia = bgTex.image.width / bgTex.image.height, sa = innerWidth / innerHeight;
+    if (sa < ia) { bgTex.repeat.set(sa / ia, 1); bgTex.offset.set((1 - sa / ia) / 2, 0); } else { bgTex.repeat.set(1, ia / sa); bgTex.offset.set(0, (1 - ia / sa) * 0.35); } }
+  S.paintedBackdrop = file => artTex(file).then(t => { if (!t) return false; bgTex = t; scene.background = t; fitBg();
+    S.sky.visible = false; S.hills.visible = false; clouds.visible = false; scene.fog = null;
+    S.ground.material = new THREE.ShadowMaterial({ opacity: 0.22, color: '#3A2A10' }); S.painted = true; return true; });
   addEventListener('resize', resize); resize(); camPos.copy(S.goal.pos); camLook.copy(S.goal.look);
 
   /* the loop */
@@ -274,7 +282,7 @@ export function orchard(S, o = {}) {
   const { scene } = S, g = new THREE.Group(); scene.add(g);
   const trunkM = matte('#8A5A3A'), leafM = [matte('#4FA43F', { roughness: 0.75 }), matte('#66B84A', { roughness: 0.75 }), matte('#3F9440', { roughness: 0.75 })], appleM = phys('#E2302E', { roughness: 0.3, clearcoat: 0.9 });
   const trees = o.trees || (FAST ? [[-14, -10], [15, -11], [0, -26]] : [[-14, -10], [-20, -4], [15, -11], [21, -3], [-9, -20], [10, -22], [0, -26], [-26, -16], [27, -17]]);
-  trees.forEach(([x, z], i) => { const t = new THREE.Group(); const s = 0.9 + (i % 3) * 0.15;
+  if (!o.painted) trees.forEach(([x, z], i) => { const t = new THREE.Group(); const s = 0.9 + (i % 3) * 0.15;
     const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.42, 3, 10), trunkM); tr.position.y = 1.5; tr.castShadow = true; t.add(tr);
     for (let j = 0; j < 7; j++) { const r = 1.3 + Math.random() * 0.6, l = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), leafM[j % 3]); const a = j / 7 * Math.PI * 2;
       l.position.set(Math.cos(a) * 1.2, 3.8 + (j % 2) * 0.8 + Math.random() * 0.4, Math.sin(a) * 1.0); l.castShadow = true; l.receiveShadow = true; t.add(l); }
@@ -284,12 +292,12 @@ export function orchard(S, o = {}) {
     t.position.set(x, 0, z); t.scale.setScalar(s); t.rotation.y = i; g.add(t); });
   /* round bushes near the play area */
   const bushM = [matte('#5DB04A', { roughness: 0.8 }), matte('#74C25A', { roughness: 0.8 })];
-  [[-15, -6], [-17, 0], [15, -7], [17, -1], [-12, -9], [12, -10], [-6, -12], [6, -13]].forEach(([x, z], i) => { for (let j = 0; j < 3; j++) { const b = new THREE.Mesh(new THREE.SphereGeometry(1.1 - j * 0.2, 16, 12), bushM[(i + j) % 2]); b.position.set(x + (j - 1) * 1.1, 0.6, z + (j % 2) * 0.5); b.scale.y = 0.8; b.castShadow = !FAST; g.add(b); } });
+  if (!o.painted) [[-15, -6], [-17, 0], [15, -7], [17, -1], [-12, -9], [12, -10], [-6, -12], [6, -13]].forEach(([x, z], i) => { for (let j = 0; j < 3; j++) { const b = new THREE.Mesh(new THREE.SphereGeometry(1.1 - j * 0.2, 16, 12), bushM[(i + j) % 2]); b.position.set(x + (j - 1) * 1.1, 0.6, z + (j % 2) * 0.5); b.scale.y = 0.8; b.castShadow = !FAST; g.add(b); } });
   /* flowers in the grass */
   const fN = FAST ? 60 : 260, stem = new THREE.InstancedMesh(new THREE.SphereGeometry(0.2, 10, 8), matte('#FFFFFF', { roughness: 0.6 }), fN), fc = new THREE.Color(), m = new THREE.Matrix4();
   const FC = ['#FFFFFF', '#FFD84A', '#FF9EC4', '#B9A4FF', '#FFB36B'];
   for (let i = 0; i < fN; i++) { let x, z; do { x = (Math.random() - 0.5) * 70; z = 8 - Math.random() * 45; } while (Math.abs(x) < 12 && z > -7); m.makeTranslation(x, 0.12, z); m.multiply(new THREE.Matrix4().makeScale(1, 0.35, 1)); stem.setMatrixAt(i, m); stem.setColorAt(i, fc.set(FC[i % 5])); }
-  g.add(stem);
+  if (!o.painted) g.add(stem);
   /* butterflies: two soft wings, gentle flight */
   const wingM = new THREE.MeshStandardMaterial({ color: '#FFB0D8', side: THREE.DoubleSide, roughness: 0.6 }), wingM2 = new THREE.MeshStandardMaterial({ color: '#FFE27A', side: THREE.DoubleSide, roughness: 0.6 });
   const bf = []; for (let i = 0; i < (FAST ? 1 : 5); i++) { const b = new THREE.Group(); [-1, 1].forEach(s => { const w = new THREE.Mesh(new THREE.CircleGeometry(0.22, 12), i % 2 ? wingM : wingM2); w.position.x = s * 0.2; w.userData.s = s; b.add(w); });
@@ -416,7 +424,42 @@ export const CAST = {
   eli: { name: 'Eli', shirt: '#F2A9A0', hair: '#C9782F', kippah: '#203858', eye: '#3F6A3A' },
   yossi: { name: 'Yossi', shirt: '#C8B4EE', hair: '#1C140E', kippah: '#2A2A2A' }
 };
-export function addKid(S, who, pos) { const k = kid(CAST[who] || CAST.mendy); k.position.copy(pos); S.scene.add(k); S.tick.push((dt, t) => k.live(dt, t)); return k; }
+/* PAINTED children (the pictures from the HoS's image account, art/g1-<who>-<pose>.webp): a picture card that always faces the camera,
+   with a soft shadow at his feet, gentle breathing, and poses for talking, cheering and pointing. If a picture is missing, the 3D child is used. */
+const texLoader = new THREE.TextureLoader(), texCache = {};
+const POSES = { mendy: ['idle', 'talk', 'happy', 'point'], shmuel: ['idle', 'happy'], dovid: ['idle', 'happy'], eli: ['idle'], yossi: ['idle'] };
+export function artTex(file) { return texCache[file] || (texCache[file] = new Promise(res => texLoader.load('art/' + file, t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; res(t); }, undefined, () => res(null)))); }
+const ACT_POSE = { wave: 'talk', think: 'talk', point: 'point', cheer: 'happy', clap: 'happy' };
+export function paintedKid(S, who, H = 3.3) {
+  const k = new THREE.Group(), card = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ transparent: true, alphaTest: 0.05, side: THREE.DoubleSide, visible: false, fog: false }));
+  k.add(card);
+  const sh = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.75), new THREE.MeshBasicMaterial({ map: SOFT, color: '#4A3A2A', transparent: true, opacity: 0.32, depthWrite: false })); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; k.add(sh);
+  const PX = H / 607;   /* world height of one picture pixel: every picture is drawn at the same scale */
+  let cur = '', base = 0;
+  const pose = name => { const p = (POSES[who] || ['idle']).includes(name) ? name : 'idle'; if (p === cur) return; cur = p;
+    artTex('g1-' + who + '-' + p + '.webp').then(t => { if (cur !== p) return; if (!t) { if (p !== 'idle') { cur = ''; pose('idle'); } else fallback(); return; }
+      card.material.map = t; card.material.visible = true; card.material.needsUpdate = true; card.scale.set(t.image.width * PX, t.image.height * PX, 1); base = t.image.height * PX / 2 + (p === 'happy' && who === 'mendy' ? 0.35 : 0); card.position.y = base; }); };
+  let fb = null; const fallback = () => { if (fb) return; fb = kid(CAST[who] || CAST.mendy); k.add(fb); S.tick.push((dt, t) => fb.live(dt, t)); };
+  pose('idle');
+  k.userData = { name: (CAST[who] || CAST.mendy).name, painted: true, act: null, actT: 0, card };
+  k.act = (name, dur = 1.4) => { if (fb) return fb.act(name, dur); k.userData.act = name; k.userData.actT = 0; k.userData.actD = dur; pose(ACT_POSE[name] || 'idle'); };
+  const cp = new THREE.Vector3(), kp = new THREE.Vector3();
+  k.live = (dt, t) => { const u = k.userData;
+    if (u.act) { u.actT += dt; if (u.actT > u.actD) { u.act = null; pose('idle'); } }
+    const breathe = 1 + Math.sin(t * 2.2 + k.id) * 0.012, hop = u.act === 'cheer' ? Math.abs(Math.sin(u.actT * 6)) * 0.18 : 0;
+    card.position.y = base * breathe + hop; if (card.material.map) card.scale.y = card.material.map.image.height * PX * breathe;
+    /* face the camera (turn about the up axis only) */
+    S.camera.getWorldPosition(cp); k.getWorldPosition(kp); card.rotation.y = Math.atan2(cp.x - kp.x, cp.z - kp.z) - k.rotation.y; };
+  return k;
+}
+/* a painted backdrop far behind the 3D world (the faraway scenery), hiding the plain 3D hills */
+export function backdrop(S, file, o = {}) {
+  const w = o.w || 230, h = w / 2, m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: '#FFFFFF', fog: false, visible: false }));
+  m.position.set(0, h / 2 + (o.y != null ? o.y : -14), o.z || -80); S.scene.add(m);
+  artTex(file).then(t => { if (!t) return; m.material.map = t; m.material.visible = true; m.material.needsUpdate = true; if (S.hills) S.hills.visible = false; });
+  return m;
+}
+export function addKid(S, who, pos) { const k = paintedKid(S, who); k.position.copy(pos); S.scene.add(k); S.tick.push((dt, t) => k.live(dt, t)); return k; }
 
 /* ---------------- a gentle celebration: soft confetti and twinkles that float down (never a hard flash) ---------------- */
 export function confetti(S, at, n = 60) {

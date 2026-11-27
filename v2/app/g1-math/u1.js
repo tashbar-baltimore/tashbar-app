@@ -8,14 +8,15 @@
    ?g=check   Mastery check: 8 mixed items, no help; 7 of 8 is "mastered"
    ?g=review  Review of Kindergarten: teen numbers, tens, adding within 10 on the path
    Test hooks: window.__g1 (kit3d.js). */
-import { THREE, FAST, QUICK, G, say, wait, ui, stage, orchard, stone, glow, crate, apple, addKid, confetti, tween, hopTo, dots, pad, endScreen, numTex, chime, starsFor, shuffle, rnd, goButton, canvasTex, SOFT, MATS } from './kit3d.js';
+import { THREE, FAST, QUICK, G, say, wait, ui, stage, orchard, backdrop, stone, glow, crate, apple, addKid, confetti, tween, hopTo, dots, pad, endScreen, numTex, chime, starsFor, shuffle, rnd, goButton, canvasTex, SOFT, MATS } from './kit3d.js';
 
 const GAME = new URLSearchParams(location.search).get('g') || 'hill';
 const ORDER = ['opener', 'hop', 'wall', 'crates', 'mistake', 'check', 'review'];
 const host = ui({ home: GAME === 'hill' ? './' : 'unit1.html' });
 let S;
 try { S = stage(host); } catch (e) { throw e; }
-orchard(S);
+orchard(S, { painted: true });
+S.paintedBackdrop('g1-orchard-hill-bg.webp');   /* the painted orchard (from the HoS's image account) is the world behind the stones */
 G.isReady = () => S.frames > 2; G.kids = () => S.scene.children.filter(o => o.userData && o.userData.name).map(o => o.userData.name + '@' + o.position.x.toFixed(1) + ',' + o.position.z.toFixed(1));
 const PORTRAIT = innerHeight > innerWidth;
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
@@ -31,6 +32,11 @@ function floatNum(n, at, color = '#FFE27A') {
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: numTex(n, { bg: color }), depthTest: false, transparent: true }));
   s.scale.setScalar(1.15); s.position.copy(at); s.renderOrder = 10; keep(s); return s;
 }
+/* the ONE stone to tap: a pulsing glow and a gentle bounce (nothing else glows while he looks for it). Returns a function that stops it. */
+function target(o) { const g = glow('#7FFFB0', 3.0); g.position.set(0, 0.03, 0); o.add(g); const y0 = o.position.y, f = (dt, t) => { g.material.opacity = 0.45 + Math.sin(t * 5) * 0.4; o.position.y = y0 + Math.abs(Math.sin(t * 3)) * 0.25; };
+  S.tick.push(f); return () => { S.tick.splice(S.tick.indexOf(f), 1); o.remove(g); o.position.y = y0; }; }
+/* a quick happy pop when a stone gets its number (no lasting glow) */
+function pop(o) { const s0 = o.scale.x; return tween(300, u => o.scale.setScalar(s0 * (1 + Math.sin(u * Math.PI) * 0.18))); }
 function shake(o) { const x = o.position.x; return tween(420, u => { o.position.x = x + Math.sin(u * Math.PI * 6) * 0.12 * (1 - u); }); }
 function lightUp(o, color) { const g = glow(color || '#FFD84A', 2.8); g.position.set(0, 0.02, 0); o.add(g); return g; }
 
@@ -127,9 +133,9 @@ async function hopRound(start, hops, o = {}) {
     firstTry = false; G.fixes++; shake(at(n));
     if (o.check) { await hopAlong(start + hops, false); lightUp(at(start + hops)); await say('He lands on ' + (start + hops) + '.'); await wait(300); return false; }
     await say('Let us count the hops together.');
-    await hopAlong(start + hops, true); lightUp(at(start + hops), '#FFB0D8');
+    await hopAlong(start + hops, true); const shown = lightUp(at(start + hops), '#FFB0D8');
     await say(hops + ' hops from ' + start + ' is ' + (start + hops) + '.'); await wait(300);
-    m.position.copy(at(start).position).add(BEH);
+    at(start + hops).remove(shown); m.position.copy(at(start).position).add(BEH);
     await say('Your turn. Tap where he lands.'); G.state = 'ask';
   }
 }
@@ -273,14 +279,14 @@ async function opener() {
   S.frame(V(PORTRAIT ? 0 : -1.2, 0.6, PORTRAIT ? 0.6 : -1), PORTRAIT ? 12 : 27, PORTRAIT ? 10 : 7, V(0, 0.8, 1));
   await say('After 100, we keep going.');
   await say('Watch me. One hundred, then one hundred one!');
-  past[1].setNum(101); lightUp(past[1]); chime('tap'); await say('101');
-  past[2].setNum(102); lightUp(past[2]); chime('tap'); await say('102');
+  past[1].setNum(101); pop(past[1]); chime('tap'); await say('101');
+  past[2].setNum(102); pop(past[2]); chime('tap'); await say('102');
   await say('Now you! Tap the glowing stone.');
   G.state = 'tapnext';
   for (let i = 3; i < past.length; i++) {
-    const s = past[i], g = lightUp(s, '#7FFFB0'); G.next = s.userData.n; G.hit = { next: () => sc(s, 0.3), prev: () => sc(past[i - 1], 0.3) };
+    const s = past[i], g = target(s); G.next = s.userData.n; G.hit = { next: () => sc(s, 0.3), prev: () => sc(past[i - 1], 0.3) };
     await new Promise(res => { const t = S.onTap(past, o => { if (o !== s) { say('Tap the glowing stone.'); return; } t.enabled = false; res(); }); });
-    s.remove(g); s.setNum(s.userData.n); lightUp(s); chime('tap'); await say(String(s.userData.n));
+    g(); s.setNum(s.userData.n); pop(s); chime('tap'); await say(String(s.userData.n));
   }
   S.clearInput(); dots(3, 2); m.act('cheer');
   /* 3: the pattern: 101-110 looks like 1-10 with a hundred in front */
@@ -296,13 +302,13 @@ async function opener() {
   for (let i = 0; i < 10; i++) { const n = 111 + i, s = keep(stone(null)); const rr = Math.floor(i / cols3), c = i % cols3; s.position.set((c - (cols3 - 1) / 2) * 2.25, 0, rr * 2.5 - 2); s.userData.n = n; top.push(s); }
   S.frame(V(0, 0.6, PORTRAIT ? 0.6 : -2), PORTRAIT ? 12 : 23.5, PORTRAIT ? 9 : 6, V(0, 0.8, 1));
   await say('Up to the top of the hill!');
-  for (let i = 0; i < 7; i++) { top[i].setNum(top[i].userData.n); lightUp(top[i]); chime('tap'); await say(String(top[i].userData.n)); }
+  for (let i = 0; i < 7; i++) { top[i].setNum(top[i].userData.n); pop(top[i]); chime('tap'); await say(String(top[i].userData.n)); }
   await say('Now you! Finish the climb.');
   G.state = 'writenext';
-  for (let i = 7; i < 10; i++) { const s = top[i], g = lightUp(s, '#7FFFB0'); G.next = s.userData.n;
+  for (let i = 7; i < 10; i++) { const s = top[i], g = target(s); G.next = s.userData.n;
     await say('What comes next? Write it.', { cap: 'What comes after ' + (s.userData.n - 1) + '? Write it.' });
     while ((await pad(3)) !== s.userData.n) { G.fixes++; await say('Count on from ' + (s.userData.n - 1) + '. Try again.'); }
-    s.remove(g); s.setNum(s.userData.n); lightUp(s); chime('good'); await say(String(s.userData.n)); }
+    g(); s.setNum(s.userData.n); pop(s); chime('good'); await say(String(s.userData.n)); }
   S.clearInput(); G.state = 'busy';
   await say('120! The top of the hill!');
   /* 5: how a big number is written */
@@ -368,7 +374,7 @@ async function mistake() {
     let first = true; G.state = 'find';
     for (;;) { const i = await new Promise(res => { const t = S.onTap(stones, s => { t.enabled = false; G.state = 'busy'; res(stones.indexOf(s)); }); });
       if (i === q.bad) { chime('good'); lightUp(stones[i], '#FFB0D8'); await say('You found it!'); break; }
-      first = false; G.fixes++; lightUp(stones[i], '#7FD6FF'); await say('That one is right. Count along with me.');
+      first = false; G.fixes++; const ok = lightUp(stones[i], '#7FD6FF'); await say('That one is right. Count along with me.'); stones[i].remove(ok);
       for (let k = 0; k < q.bad; k++) { chime('tap'); await say(String(q.row[k])); } await say('What comes next?'); G.state = 'find'; }
     G.state = 'write'; await say('Write the right number.', { cap: 'Write the right number for the pink stone.' });
     for (;;) { const v = await pad(4); if (v === q.right) { stones[q.bad].setNum(v); sh.act('cheer'); confetti(S, stones[q.bad].position.clone().add(V(0, 1, 0)), 40); await say('Yes! ' + v + '. Thank you!'); break; }
