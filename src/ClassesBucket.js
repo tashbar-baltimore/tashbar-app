@@ -136,7 +136,7 @@ function ycMine_(sid, session) {
       var nm = skills.length === 1 ? (st.asg.j.names && st.asg.j.names[skills[0]]) || (lessons[0] && lessons[0].title) || skills[0] : st.cls.name;
       return { id: 'yc:' + st.date + ':' + st.k + ':' + st.asg.id + ':' + st.asg.at, skill: skills[0], skills: skills, lessons: lessons, clsName: st.cls.name, name: nm,
         subj: typeof tmSubjOf_ === 'function' ? tmSubjOf_(skills[0]) : '', by: st.cls.staff, until: st.until, now: now,
-        names: st.asg.j.names || {}, handed: ycHanded_(sid, skills, st.rows),
+        names: st.asg.j.names || {}, handed: ycHanded_(sid, skills, st.rows), doors: ycOpenFor_(sid, now, st.rows, false),
         yc: { k: st.k, label: st.name, cls: st.cls.name, next: st.next } };
     }
     /* Independent Study (the period itself, an empty Teacher Time, or "Independent Study now"): his bucket list.
@@ -144,7 +144,8 @@ function ycMine_(sid, session) {
     var B = ycBucketNow_(sid, st, now); if (!B) return null;
     return { id: 'yc:' + st.date + ':IS:' + B.sig, skill: B.skills[0], skills: B.skills, lessons: [], clsName: 'Independent Study', name: 'Independent Study',
       subj: '', by: B.by, until: ov ? Math.min(Number(ov.j.until), st.until) : st.until, now: now,
-      yc: { k: 'IS', label: 'Independent Study', cls: 'Your bucket list', next: st.next, why: st.k !== 'IS' ? (ov ? 'now' : 'empty') : '' }, bucket: B.view };
+      yc: { k: 'IS', label: 'Independent Study', cls: 'Your bucket list', next: st.next, why: st.k !== 'IS' ? (ov ? 'now' : 'empty') : '' }, bucket: B.view,
+      doors: ycOpenFor_(sid, now, st.rows, B.view.complete) };
   } catch (e) { try { console.error('ycMine_', e); } catch (x) {} return undefined; }   /* never block a boy because of this */
 }
 
@@ -420,4 +421,98 @@ function ycSheetAnswer(token, id, sid) {
 function ycSheetReopen(token, id, sid) {
   var me = crMe_(token); tlGuard_(token, [sid]); var r = ycSheetRow_(id), a = r && ycAnsRow_(r.key, String(sid)); if (!a) throw new Error('He has no work on this worksheet.');
   return sgLock_(function () { var j = a.j; j.status = 'started'; ycPut_('ans', a.key, j, me.name); return ycSheetWork(token, id); });
+}
+
+/* ---------- WHO GETS WHAT, WHEN: the app's doors ----------
+   Every part of the app a boy can open is a "door" (YC.DOORS). During the afternoon schedule every door is shut except his class work or
+   bucket. Any teacher can open doors for his own boys with a RULE: which doors, which days and times, for which class (or all his boys),
+   and whether only after the boy finished his core ("after 3:00, boys who finished their core get the Canteen and Chavrusa duels").
+   Any teacher can also TAKE A DOOR AWAY from a boy until a day and time (it comes back by itself); that holds all day, not only in the afternoon.
+   Rules: kind 'acc' in MS_YC. Take-aways: kind 'nox' in MS_YC, with a small list in Script Properties (YC.NOX) so a boy with none costs nothing. */
+YC.NOX = 'yc_nox_v1';
+YC.DOORS = [];   /* filled below: [id, name, icon] */
+function ycDoorIds_() { var o = {}; YC.DOORS.forEach(function (d) { o[d[0]] = 1; }); return o; }
+function ycCleanDoors_(list) { var ok = ycDoorIds_(); return (Array.isArray(list) ? list : []).map(String).filter(function (d, i, a) { return ok[d] && a.indexOf(d) === i; }); }
+function ycNoxList_() { try { return JSON.parse(PropertiesService.getScriptProperties().getProperty(YC.NOX) || '{}') || {}; } catch (e) { return {}; } }
+function ycNoxSync_(rows) {   /* keep the small list in step with the live take-aways */
+  var now = ycNow_(), o = {}; rows.forEach(function (x) { if (x.kind === 'nox' && Number(x.j.until) > now) (x.j.sids || []).forEach(function (s) { o[s] = Math.max(o[s] || 0, Number(x.j.until)); }); });
+  PropertiesService.getScriptProperties().setProperty(YC.NOX, JSON.stringify(o));
+}
+/* doors taken away from this boy right now */
+function ycClosedFor_(sid, now, rows) {
+  var L = ycNoxList_(); if (!(Number(L[sid]) > now)) return [];
+  var out = []; (rows || ycRows_()).forEach(function (x) { if (x.kind === 'nox' && Number(x.j.until) > now && (x.j.sids || []).indexOf(sid) >= 0) (x.j.doors || []).forEach(function (d) { if (out.indexOf(d) < 0) out.push(d); }); });
+  return out;
+}
+/* doors the teachers' rules open for this boy right now (coreDone: he finished his bucket's core today) */
+function ycOpenFor_(sid, now, rows, coreDone) {
+  var clk = ycClock_(now), mine = {}; crRows_(CR.CLS).map(crClassRow_).forEach(function (c) { if (c.active && c.sids.indexOf(sid) >= 0) mine[c.id] = 1; });
+  var out = [];
+  rows.forEach(function (x) {
+    if (x.kind !== 'acc') return; var j = x.j;
+    if ((j.days || [1, 2, 3, 4]).indexOf(clk.dow) < 0) return;
+    if (!(clk.min >= ycMin_(j.from) && clk.min < ycMin_(j.to))) return;
+    if (j.when === 'core' && !coreDone) return;
+    var forMe = j.classId ? !!mine[j.classId] : (j.sids || []).indexOf(sid) >= 0;
+    if (!forMe) return;
+    (j.doors || []).forEach(function (d) { if (out.indexOf(d) < 0) out.push(d); });
+  });
+  return out;
+}
+/* staff: the door list, my rules, and take-aways for my boys */
+function ycAccess(token) {
+  var me = crMe_(token), rows = ycRows_(), now = ycNow_(), classes = crMyClasses_(me), mySids = {};
+  classes.forEach(function (c) { c.sids.forEach(function (s) { mySids[s] = 1; }); });
+  var names = {}; msRoster_().forEach(function (b) { names[b.id] = b.name; });
+  var cname = {}; crRows_(CR.CLS).map(crClassRow_).forEach(function (c) { cname[c.id] = c.name + ' (' + c.staff + ')'; });
+  return {
+    doors: YC.DOORS.map(function (d) { return { id: d[0], name: d[1], icon: d[2] }; }),
+    classes: classes.map(function (c) { return { id: c.id, name: c.name, sids: c.sids }; }),
+    boys: Object.keys(mySids).map(function (s) { return { id: s, name: names[s] || s }; }).sort(function (a, b) { return a.name.localeCompare(b.name); }),
+    rules: rows.filter(function (x) { return x.kind === 'acc' && (x.j.byId === me.id || me.head || (x.j.classId && classes.some(function (c) { return c.id === x.j.classId; }))); })
+      .map(function (x) { return { id: x.key, doors: x.j.doors, from: x.j.from, to: x.j.to, days: x.j.days, when: x.j.when, classId: x.j.classId || '', cls: cname[x.j.classId] || '', sids: x.j.sids || [], by: x.by, mine: x.j.byId === me.id }; }),
+    takeaways: rows.filter(function (x) { return x.kind === 'nox' && Number(x.j.until) > now && (me.head || x.j.byId === me.id || (x.j.sids || []).some(function (s) { return mySids[s]; })); })
+      .map(function (x) { return { id: x.key, sids: x.j.sids, names: (x.j.sids || []).map(function (s) { return names[s] || s; }), doors: x.j.doors, until: Number(x.j.until), why: x.j.why || '', by: x.by, mine: x.j.byId === me.id }; })
+  };
+}
+function ycSaveRule(token, r) {
+  var me = crMe_(token); r = r || {};
+  var doors = ycCleanDoors_(r.doors); if (!doors.length) throw new Error('Tick at least one thing to open.');
+  var from = String(r.from || ''), to = String(r.to || ''); if (!(ycMin_(from) >= 0 && ycMin_(to) > ycMin_(from))) throw new Error('The end time must be after the start time.');
+  var days = (Array.isArray(r.days) && r.days.length ? r.days : [1, 2, 3, 4]).map(Number).filter(function (d, i, a) { return d >= 1 && d <= 7 && a.indexOf(d) === i; });
+  var classId = String(r.classId || ''), sids = [];
+  if (classId) ycMyClass_(me, classId);
+  else { var ok = {}; crMyClasses_(me).forEach(function (c) { c.sids.forEach(function (s) { ok[s] = 1; }); }); sids = (Array.isArray(r.sids) ? r.sids : []).map(String).filter(function (s, i, a) { return (ok[s] || me.head) && a.indexOf(s) === i; }); if (!sids.length) throw new Error('Pick a class or at least one boy.'); }
+  var id = String(r.id || '') || Utilities.getUuid().slice(0, 8), old = id && ycRows_().filter(function (x) { return x.kind === 'acc' && x.key === id; })[0];
+  if (old && old.j.byId !== me.id && !me.head) throw new Error('Only the teacher who made this rule can change it.');
+  return sgLock_(function () { ycPut_('acc', id, { doors: doors, from: ycHHMM_(ycMin_(from)), to: ycHHMM_(ycMin_(to)), days: days, when: r.when === 'core' ? 'core' : 'any', classId: classId, sids: sids, byId: old ? old.j.byId : me.id }, me.name); return ycAccess(token); });
+}
+function ycDeleteRule(token, id) {
+  var me = crMe_(token); id = String(id || ''); var r = ycRows_().filter(function (x) { return x.kind === 'acc' && x.key === id; })[0];
+  if (r && r.j.byId !== me.id && !me.head) throw new Error('Only the teacher who made this rule can remove it.');
+  return sgLock_(function () { if (r) ycPut_('acc', id, null, me.name); return ycAccess(token); });
+}
+/* take doors away from boys until a time (ms) */
+function ycTakeAway(token, x) {
+  var me = crMe_(token); x = x || {};
+  var doors = ycCleanDoors_(x.doors); if (!doors.length) throw new Error('Tick at least one thing to take away.');
+  var ok = {}; crMyClasses_(me).forEach(function (c) { c.sids.forEach(function (s) { ok[s] = 1; }); });
+  var sids = (Array.isArray(x.sids) ? x.sids : []).map(String).filter(function (s, i, a) { return (ok[s] || me.head) && a.indexOf(s) === i; });
+  if (!sids.length) throw new Error('Pick at least one of your boys.');
+  var now = ycNow_(), until = Number(x.until); if (!(until > now + 60000 && until <= now + 30 * 864e5)) throw new Error('Pick when it comes back (up to 30 days).');
+  return sgLock_(function () { ycPut_('nox', Utilities.getUuid().slice(0, 8), { sids: sids, doors: doors, until: until, why: crClean_(x.why, 120), byId: me.id }, me.name); ycNoxSync_(ycRows_()); return ycAccess(token); });
+}
+function ycGiveBack(token, id) {
+  var me = crMe_(token); id = String(id || ''); var r = ycRows_().filter(function (x) { return x.kind === 'nox' && x.key === id; })[0];
+  if (r && r.j.byId !== me.id && !me.head) throw new Error('Only the teacher who took it away (or the Head of School) can give it back.');
+  return sgLock_(function () { if (r) ycPut_('nox', id, null, me.name); ycNoxSync_(ycRows_()); return ycAccess(token); });
+}
+
+/* tmMine's last step: take-aways hold all day. A lock keeps its open doors minus the taken ones; no lock but taken doors = {open:true, closed}. */
+function ycDecorate_(sid, res) {
+  try {
+    var now = ycNow_(), closed = ycClosedFor_(sid, now); if (!closed.length) return res;
+    if (res) { res.closed = closed; res.doors = (res.doors || []).filter(function (d) { return closed.indexOf(d) < 0; }); return res; }
+    return { open: true, id: 'yc-open:' + closed.join(','), closed: closed, now: Date.now() };
+  } catch (e) { return res; }
 }
