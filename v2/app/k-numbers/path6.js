@@ -21,7 +21,15 @@ function numeralTexture(n) {
     /* a round white sign with a soft gold edge, so the number reads clearly from any angle */
     x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(128, 128, 118, 0, Math.PI * 2); x.fill(); x.lineWidth = 10; x.strokeStyle = '#F2C14E'; x.stroke();
     const hh = h, w = hh * img.width / img.height; x.drawImage(img, 128 - w / 2, 128 - hh / 2 + 2, w, hh); t.needsUpdate = true; };
-  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(U5.num(n).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="' + (n === 10 ? 190 : n > 5 ? 150 : 100) + '" height="' + (n > 5 ? 220 : 140) + '" '));
+  const svgOf = k => U5.num(k).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="' + (k === 10 ? 190 : k > 5 ? 150 : 100) + '" height="' + (k > 5 ? 220 : 140) + '" ');
+  if (n > 10) {   /* 11-20 (Unit 13): two numerals side by side, drawn one after the other */
+    const parts = [Math.floor(n / 10), n % 10], imgs = parts.map(() => new Image()); let left = 2;
+    const draw = () => { if (--left) return; const x = c.getContext('2d'); x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(128, 128, 118, 0, Math.PI * 2); x.fill(); x.lineWidth = 10; x.strokeStyle = '#F2C14E'; x.stroke();
+      const hh = 128, ws = imgs.map(im => hh * im.width / im.height), tot = ws[0] + ws[1] + 6; let cx = 128 - tot / 2; imgs.forEach((im, k) => { x.drawImage(im, cx, 128 - hh / 2 + 2, ws[k], hh); cx += ws[k] + 6; }); t.needsUpdate = true; };
+    imgs.forEach((im, k) => { im.onload = draw; im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgOf(parts[k])); });
+    return (numTex[n] = t);
+  }
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgOf(n));
   return (numTex[n] = t);
 }
 let emptyTex = null;
