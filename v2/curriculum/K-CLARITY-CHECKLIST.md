@@ -165,3 +165,4 @@ More fixes (review-shapes takeover session, Units 7-12):
 | Sort by color, Big and small: counting each box put small 1 2 3 4 tags in a row (about 20 px) and no total (8, 12) | After each box is counted, one big number for the whole box stands above it ("the last number says how many") |
 | Big and small: the small pieces were tiny (a 20 px ball), hard to see and to grab (9, 13) | Small pieces bigger (0.56-0.6); every big piece is still more than twice as big |
 | Pattern games: the glow on the part that repeats was a pale yellow disc on a light floor; it hardly showed (16) | A clear gold glow, a little bigger |
+| Pattern train, Fix the pattern (phone): the engine was off the left edge and the gold "next" spot touched the right edge (9) | Phone camera centred on the whole train and a little further back; it steps back more for an 8-car train |
