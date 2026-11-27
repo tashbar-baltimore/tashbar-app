@@ -14,25 +14,27 @@
 import { startGame } from './kit.js';
 const nc = a => { a.count = false; return a; };
 const P = '#7C4DFF';
-const BOXES = [{ paint: 'circle', color: P, paintScale: 1.3, acceptSize: 'big', word: 'big' }, { paint: 'circle', color: P, paintScale: 0.55, acceptSize: 'small', word: 'small' }];
+const BOXES = [{ paint: 'circle', color: P, paintScale: 1.3, acceptSize: 'big', word: 'big' }, { paint: 'circle', color: P, paintScale: 0.5, acceptSize: 'small', word: 'small' }];
 const word = o => BOXES[o.box].word;
 startGame({
-  id: 'sortsize', world: 'jungle', sortBy: 'size', boxes: BOXES, countAfter: true,
+  id: 'sortsize', world: 'jungle', plain: true, sortBy: 'size', boxes: BOXES, countAfter: true, countTags: true,   /* plain one-colour pieces; a big number over each thing as it is counted (K clarity) */
   intro: ['Mendy has big toys and small toys.', 'Let us sort them by size.', 'Big with big, small with small!'],
   lessons: [{ k: 'sphere', kind: 'solid', word: 'big ball', color: '#F2A900', scale: 1.5, like: 'It takes up lots of room.', action: 'roll' },
-            { k: 'sphere', kind: 'solid', word: 'small ball', color: '#F2A900', scale: 0.6, like: 'It takes up a little room.', action: 'roll',
+            { k: 'sphere', kind: 'solid', word: 'small ball', color: '#F2A900', scale: 0.55, keep: true, like: 'It takes up a little room.', action: 'roll',   /* keep: it comes beside the big ball, so he sees them together */
               tap: 'Tap the small ball.', tapSay: 'Small!', chant: [['Big!', 2], ['Small!', 2], ['Big and small!', 3]] }],
-  set: [['a1', 'cube', 0.2, 1.1, '#E03A33'], ['a2', 'tri', 0, 0.62, '#1F6FEB'], ['a3', 'circle', 0, 0.65, '#12A766'], ['a4', 'square', 0.3, 1.1, '#F2A900'],
-        ['a5', 'sphere', 0, 0.6, '#FF7A1A'], ['a6', 'rect', 0.2, 0.62, '#00A3B8'], ['a7', 'cone', 0, 1.05, '#7C4DFF'], ['a8', 'hex', 0, 0.6, '#F0458E']],
+  /* the same thing in a big and a small size, side by side, so big and small are never in doubt (big is 2.5 times the small); 3 big, 5 small */
+  set: [['a1', 'sphere', 0, 1.25, '#FF7A1A'], ['a2', 'sphere', 0, 0.5, '#FF7A1A'], ['a3', 'cube', 0.2, 1.15, '#E03A33'], ['a4', 'cube', 0.2, 0.46, '#E03A33'],
+        ['a5', 'tri', 0, 1.25, '#1F6FEB'], ['a6', 'tri', 0, 0.5, '#1F6FEB'], ['a7', 'circle', 0, 0.5, '#12A766'], ['a8', 'square', 0, 0.5, '#F2A900']],
   watchLine: 'Watch me sort by size.', watchDone: 'Big goes with big!', yourTurn: 'Now you. Big or small?',
-  ask: 'Is it big or small? Put it in its box.', hint: 'Look at the big circle and the small circle.', hint2: 'This one goes in its box.', remember: 'Remember: big with big, small with small.',
+  ask: 'Is it big or small? Put it in its box.', hint: 'Look at the big circle and the small circle on the boxes.', hint2: 'This one goes in its box.', remember: 'Remember: big with big, small with small.',
   yesDefault: o => 'Yes! ' + word(o)[0].toUpperCase() + word(o).slice(1) + '!', allDone: 'Everything is sorted!',
   wrong: o => nc(['That one is ' + word(o) + '.', 'It goes in the ' + word(o) + ' box.']),
   mostAsk: 'Which box has more?', mostYes: 'Yes! The small box has more!',
-  bonus: [['b1', 'cyl', 0, 1.1, 0], ['b2', 'kite', 0.3, 0.6, 2], ['b3', 'oval', 0.4, 1.1, 4]], bonusAsk: 'Big or small? Sort these too.',
+  bonus: [['b1', 'cyl', 0, 1.2, 0, '#00A3B8'], ['b2', 'cyl', 0, 0.48, 2, '#00A3B8'], ['b3', 'circle', 0, 1.25, 4, '#7C4DFF']], bonusAsk: 'Big or small? Sort these too.',
   mistake: { friend: { name: 'Avi', shirt: '#3C7A89', hair: '#5A3A22' }, icon: 'sphere', piece: ['sphere', 0, 1.3, '#F2A900'], box: 0,
-    claim: ['Avi says this ball is small.'], ask: 'Is it small?', answer: false,
-    explain: ['Look how big it is!', 'It takes up lots of room.'], right: ['Right! It is big.', 'It goes in the big box.'] },
+    beside: ['sphere', 0, 0.5, '#1F6FEB'],   /* a small blue ball next to it, so he can compare */
+    claim: ['Avi says the yellow ball is small.'], ask: 'Is the yellow ball small?', answer: false,
+    explain: ['Look at the two balls.', 'This one takes up lots of room.'], right: ['Right! It is big.', 'It goes in the big box.'] },
   endLine: 'You sorted by size!', praise: 'Big with big, small with small. Great sorting and counting!'
 });
 </script>

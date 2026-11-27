@@ -12,7 +12,7 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
 #again svg{ width:40px; height:40px; }
 #again.wait{ opacity:.45; }
 .mid{ display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0; max-width:100%; }
-.gtitle{ font:800 clamp(17px, 2.4vw, 24px)/1.15 system-ui, -apple-system, 'Segoe UI', sans-serif; color:#1F2A44; background:rgba(255,255,255,.88); padding:6px 16px; border-radius:999px; box-shadow:0 4px 14px rgba(31,42,68,.12); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+.gtitle{ font:800 clamp(17px, 2.4vw, 24px)/1.15 system-ui, -apple-system, 'Segoe UI', sans-serif; color:#1F2A44; background:rgba(255,255,255,.88); padding:6px 16px; border-radius:999px; box-shadow:0 4px 14px rgba(31,42,68,.12); white-space:normal; text-align:center; overflow-wrap:break-word; max-width:100%; }   /* a long name wraps on a phone, never "What comes ..." (K-CLARITY-RULES 13) */
 .dots{ display:flex; gap:7px; background:rgba(255,255,255,.75); padding:8px 12px; border-radius:999px; }
 .dots i{ width:12px; height:12px; border-radius:50%; background:var(--line); display:block; transition:background .3s; }
 .dots i.on{ background:var(--green); }
@@ -24,6 +24,11 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
 .judge.show{ display:flex; }
 .judge button{ width:116px; height:116px; }
 .judge svg{ width:64px; height:64px; }
+.judge button{ position:relative; }
+.judge .badge{ position:absolute; right:-6px; top:-6px; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; box-shadow:0 3px 8px rgba(0,0,0,.2); pointer-events:none; }
+.judge .badge svg{ width:30px; height:30px; }
+.judge .okb{ background:#1E9E5A; }
+.judge .nob{ background:#E0574F; }   /* yes = a green check, no = a red X (K-CLARITY: he knows which button means yes) */
 .shake{ animation:shake .45s; }
 @keyframes shake{ 0%,100%{ transform:none;} 20%,60%{ transform:translateX(-10px);} 40%,80%{ transform:translateX(10px);} }
 .end{ position:fixed; left:0; right:0; top:104px; display:none; flex-direction:column; align-items:center; gap:16px; z-index:4; }
@@ -61,3 +66,5 @@ body.world .judge .yesB{ background:radial-gradient(circle at 35% 28%, #FFFFFF, 
 body.world .judge .noB{ background:radial-gradient(circle at 35% 28%, #FFFFFF, #FDE9E6 60%, #F8CFC9) !important; box-shadow:0 7px 0 #EBA49B, 0 14px 26px rgba(224,87,79,.25) !important; }
 body.world #hand{ filter:drop-shadow(0 8px 10px rgba(120,60,20,.35)); }
 body.world .stars svg{ filter:drop-shadow(0 6px 10px rgba(196,143,0,.45)); }
+/* phone: the title gets the room on the right (the sound button is on the left), so the whole name shows (K-CLARITY-RULES 13) */
+@media (max-width: 560px){ .hud{ grid-template-columns:88px 1fr 6px; } .hud > div[style]{ width:0 !important; } .gtitle{ font-size:16px; padding:6px 12px; } }

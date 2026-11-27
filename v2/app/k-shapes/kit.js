@@ -93,8 +93,8 @@ export function startGame(cfg) {
 <button class="btn" id="start" aria-label="Start"><svg viewBox="0 0 48 48"><path d="M16 10 L38 24 L16 38Z" fill="#fff" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg></button>
 <svg id="hand" viewBox="-50 -60 100 110"><path d="M-10 0 L-10 -46 C-10 -56 6 -56 6 -46 L6 -22 L6 -26 C6 -34 20 -34 20 -26 L20 -20 C20 -28 34 -28 34 -20 L34 -14 C34 -22 46 -22 46 -14 L46 14 C46 36 30 46 12 46 L0 46 C-12 46 -18 38 -24 30 L-40 6 C-46 -2 -36 -10 -28 -4 L-10 10Z" fill="#FFFFFF" stroke="#1F2A44" stroke-width="4" stroke-linejoin="round"/></svg>
 <div class="judge" id="judge">
-  <button class="btn yesB" aria-label="yes, it is" style="background:#E3F6EA;box-shadow:0 6px 0 #9ED9B5">${iconSVG(cfg.mistake.icon, '#1E9E5A')}</button>
-  <button class="btn noB" aria-label="no, it is not" style="background:#FDE8E6;box-shadow:0 6px 0 #F2B8B2">${iconSVG(cfg.mistake.icon, '#F2B8B2', true)}</button>
+  <button class="btn yesB" aria-label="yes, it is" style="background:#E3F6EA;box-shadow:0 6px 0 #9ED9B5">${iconSVG(cfg.mistake.icon, '#1E9E5A')}<span class="badge okb"><svg viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 7" stroke="#fff" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+  <button class="btn noB" aria-label="no, it is not" style="background:#FDE8E6;box-shadow:0 6px 0 #F2B8B2">${iconSVG(cfg.mistake.icon, '#F2B8B2', true)}<span class="badge nob"><svg viewBox="0 0 24 24"><path d="M7 7 L17 17 M17 7 L7 17" stroke="#fff" stroke-width="3.6" fill="none" stroke-linecap="round"/></svg></span></button>
 </div>
 <div class="end" id="end"><div class="stars" id="stars"></div>
   <button class="btn" id="replay" aria-label="Play again"><svg viewBox="0 0 48 48"><path d="M36 16 A14 14 0 1 0 38 28" stroke="#1F2A44" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M30 8 L38 16 L28 20Z" fill="#1F2A44"/></svg></button></div>
@@ -242,7 +242,7 @@ export function startGame(cfg) {
   const DEPTH = 0.34, BEV = 0.09, shapes = [];
   const cornerGeo = new THREE.SphereGeometry(0.11, 24, 16);
   const cornerMat = new THREE.MeshStandardMaterial({ color: '#FFD23F', emissive: '#FFB000', emissiveIntensity: 1.4, roughness: 0.3 });
-  const cornerFaint = new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 0.5, transparent: true, opacity: 0.75 });
+  const cornerFaint = new THREE.MeshStandardMaterial({ color: '#1F6FEB', emissive: '#1F6FEB', emissiveIntensity: 0.45, roughness: 0.35 });   /* 'tap me' dots: solid blue, easy to see on any shape; a tapped one turns gold */
   function solidGeo(kind) {
     if (kind === 'sphere') return new THREE.SphereGeometry(0.62, 48, 32);
     if (kind === 'cube') return new RoundedBoxGeometry(1.0, 1.0, 1.0, 4, 0.08);
@@ -262,7 +262,7 @@ export function startGame(cfg) {
     if (TP && !cfg.thinFlat) TP.extras.forEach(x => { const front = x.clone(); front.position.z = dep / 2 + bev * 1.25 + 0.004; mesh.add(front); const back = x.clone(); back.rotation.y = Math.PI; back.position.z = -(dep / 2 + bev * 1.25 + 0.004); mesh.add(back); });
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
-    const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], dep / 2 + bev + 0.02); m.scale.setScalar(0); if (LK) m.add(LK.cornerHalo()); mesh.add(m); return m; });
+    const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], Math.max(dep / 2 + bev, DEPTH / 2 + BEV) + 0.07);   /* always in front of the lit sides, so no corner marker is hidden */ m.scale.setScalar(0); if (LK) m.add(LK.cornerHalo()); mesh.add(m); return m; });
     const o = { id, k, solid, color, box: cfg.sortBy ? sortBox(color, scale) : boxOf(k), g, turn, mesh, mat, marks, corners, scale, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false };
     mesh.userData.shape = o; shapes.push(o); return o;
   }
@@ -438,12 +438,13 @@ export function startGame(cfg) {
   const NUMS = ['One.', 'Two.', 'Three.', 'Four.', 'Five.', 'Six.', 'Seven.', 'Eight.'], NUMX = ['One!', 'Two!', 'Three!', 'Four!', 'Five!', 'Six!', 'Seven!', 'Eight!'];
   const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
   const cap = s => s[0].toUpperCase() + s.slice(1);
-  function lightCorner(o, i) { plink(); const m = o.marks[i]; m.material = cornerMat; return tween(260, k => m.scale.setScalar(k * 1.15)); }
+  function lightCorner(o, i) { if (i === 0) shapes.forEach(x => { if (x !== o && x.marks.length && x.marks.some(q => q.scale.x > 0 && q.material === cornerMat)) clearCorners(x); });   /* one thing at a time: only the shape being counted has lit corners */
+    plink(); const m = o.marks[i]; m.material = cornerMat; return tween(260, k => m.scale.setScalar(k * 1.45)); }
   function clearCorners(o) { o.marks.forEach(m => { m.scale.setScalar(0); m.material = cornerMat; }); }
   let cornerTap = null, shapeTap = null;
   function tapCorners(o) {   /* HE counts: faint dots on the corners; each tap lights one and the voice counts */
     return new Promise(done => {
-      o.marks.forEach(m => { m.material = cornerFaint; m.scale.setScalar(1.25); });
+      o.marks.forEach(m => { m.material = cornerFaint; m.scale.setScalar(1.5); });
       const got = new Set(); let nag = null;
       const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (cornerTap) { say('Tap each corner.'); remind(); } }, FAST ? 1e9 : 9000); };
       cornerTap = (cx, cy) => {
@@ -658,7 +659,10 @@ export function startGame(cfg) {
     const gap = sideOf(corners, miss, sc), fill = new THREE.Mesh(new THREE.ShapeGeometry(shp, 32), new THREE.MeshStandardMaterial({ color, roughness: 0.5, transparent: true, opacity: 0.55, side: THREE.DoubleSide }));
     fill.scale.setScalar(sc); fill.position.z = -0.02; fill.visible = false; g.add(fill);
     const close = new THREE.Mesh(stickGeo(gap.len), m); close.position.copy(gap.mid); close.rotation.z = gap.ang; close.visible = false; g.add(close);
-    const mark = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 32), new THREE.MeshBasicMaterial({ color: '#F5B400', transparent: true, opacity: 0.9 })); mark.position.copy(gap.mid); mark.position.z = 0.05; g.add(mark);
+    /* the gap (K clarity, Esti 2026-11-27): a dashed ghost of the missing side, in the shape's colour, shows exactly where the stick goes */
+    const mark = new THREE.Group(), nd = Math.max(3, Math.round(gap.len / 0.34)), dm = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5, depthWrite: false });
+    for (let i = 0; i < nd; i++) { const d = new THREE.Mesh(new THREE.CapsuleGeometry(SR * 0.6, gap.len / nd * 0.45, 4, 8), dm); d.rotation.z = Math.PI / 2; d.position.x = -gap.len / 2 + (i + 0.5) * gap.len / nd; mark.add(d); }
+    mark.position.copy(gap.mid); mark.rotation.z = gap.ang; mark.position.z = 0.05; g.add(mark);
     scene.add(g);
     return { g, k, corners, sc, gap, fill, close, mark, marks: [], color };
   }
@@ -673,20 +677,20 @@ export function startGame(cfg) {
     const t = new THREE.Mesh(o.mesh.geometry, o.mat); t.position.copy(OL.gap.mid); t.rotation.z = OL.gap.ang; t.position.z = 0.04; OL.g.add(t);
     return wait(1400).then(() => { OL.g.remove(t); });
   }
-  function makeStick(id, kind, len, color, slot) {   /* kind: 'right' | 'short' | 'long' | 'curvy' */
+  function makeStick(id, kind, len, color, slot, ang) {   /* kind: 'right' | 'short' | 'long' | 'curvy' */
     const L = kind === 'short' ? len * 0.55 : kind === 'long' ? len * 1.5 : len;
     const mat = stickMat(color), mesh = new THREE.Mesh(stickGeo(L, kind === 'curvy'), mat); mesh.castShadow = true;
-    const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = 0.12 * ((slot % 2) ? 1 : -1);
+    /* K clarity: every stick lies the same way as the gap, so he compares only the length (no colour clue, no perspective trick) */
+    const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = ang || 0;
     const g = new THREE.Group(); g.add(turn); scene.add(g);
     const o = { id, k: 'stick-' + kind, kind, box: kind === 'right' ? 0 : -1, g, turn, mesh, mat, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false, slot };
-    o.home.copy(fixSlot(slot)); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
+    o.home.copy(fixSlot(slot)); o.home.y = Math.max(o.home.y, 0.35 + L * Math.abs(Math.sin(ang || 0)) / 2); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
   }
   function fixSlot(i) { const S = tall ? [[-1.0, 2.7], [1.0, 3.6], [0, 4.4]] : [[-2.3, 3.0], [2.3, 3.0], [0, 3.9]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
-  const STICK_C = ['#C98B4E', '#2F7FD8', '#E0574F'];
   function setRound(R) {
     if (OL) scene.remove(OL.g); shapes.splice(0).forEach(o => scene.remove(o.g));
     OL = makeOutline(R.k, R.miss, R.color, R.sc || (tall ? 1.6 : 2.1)); OL.g.position.copy(OL_AT()); OL.g.rotation.x = -Math.atan2(viewFor('wide').pos.y - OL.g.position.y, viewFor('wide').pos.z - OL.g.position.z);   /* faces the camera: a square looks square */
-    roundN++; R.options.forEach((kind, i) => makeStick('r' + roundN + 's' + i, kind, OL.gap.len, STICK_C[(i + (R.k.length % 3)) % 3], i));
+    roundN++; R.options.forEach((kind, i) => makeStick('r' + roundN + 's' + i, kind, OL.gap.len, R.color, i, OL.gap.ang));
   }
   async function fixLesson() {
     const L = cfg.fixLesson;
@@ -1141,9 +1145,13 @@ export function startGame(cfg) {
     if (MS) MS.parts.forEach(q => scene.remove(q)); shapes.splice(0).forEach(o => scene.remove(o.g));
     const parts = [], items = [];
     if (R.kind !== 'tall') {
-      const line = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.03, tall ? 4.4 : 4.6), new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 0.3 }));
-      line.position.set(LINE_X(), 0.08, ROW_Z(1)); scene.add(line); parts.push(line);
-      const flag = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.5, 3), new THREE.MeshStandardMaterial({ color: '#12A766' })); flag.position.set(LINE_X(), 0.35, ROW_Z(0) - 0.9); if (LK) { flag.scale.setScalar(1.7); flag.position.y = 0.5; }   /* the start flag, big enough to see */ scene.add(flag); parts.push(flag);
+      /* the start line: a thick dark line he can always see (a white line was lost on the snow; K clarity, 2026-11-27), with a green flag on a pole at its far end */
+      const line = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.08, tall ? 4.2 : 4.2), new THREE.MeshStandardMaterial({ color: '#22304F', roughness: 0.6 }));
+      line.position.set(LINE_X(), 0.12, ROW_Z(1)); scene.add(line); parts.push(line);
+      const flag = new THREE.Group(), pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.5, 12), new THREE.MeshStandardMaterial({ color: '#22304F' })); pole.position.y = 0.75; flag.add(pole);
+      const cloth = new THREE.Shape(); cloth.moveTo(0, 0); cloth.lineTo(0.75, -0.25); cloth.lineTo(0, -0.5); cloth.lineTo(0, 0);
+      const cl = new THREE.Mesh(new THREE.ShapeGeometry(cloth), new THREE.MeshStandardMaterial({ color: '#12A766', side: THREE.DoubleSide })); cl.position.set(0.05, 1.5, 0); flag.add(cl);
+      flag.position.set(LINE_X(), 0, ROW_Z(0) - (tall ? 1.1 : 1.2)); if (tall) flag.scale.setScalar(0.85); scene.add(flag); parts.push(flag);
       R.items.forEach((it, i) => { const o = makeRod('m' + (++msN), it.L * (tall ? 0.72 : 1), it.color, i); o.word = it.word;
         o.home.set(LINE_X() + o.len / 2 + (it.off || 0) * (tall ? 0.7 : 1), ROD_Y, ROW_Z(i)); o.g.position.copy(o.home); o.inBox = !!R.lined; if (R.lined) o.g.position.x = LINE_X() + o.len / 2; items.push(o); });
     } else {
@@ -1331,10 +1339,10 @@ export function startGame(cfg) {
     const L = cfg.balanceLesson; await camTo('wide', 10);
     setBalance({ items: L.items });
     const [a, b] = BS.items;
-    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, 'Watch. I put the rock on.', () => putOnPan(a, 0), () => wait(900), 'The heavy side goes down!',
-      'Now the big ball.', () => putOnPan(b, 1), () => wait(900), 'The rock side is still down.', 'The rock is heavy. The ball is light.',
+    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, 'Watch. I put the ' + a.word + ' on.', () => putOnPan(a, 0), () => wait(900), 'The heavy side goes down!',
+      'Now the big ' + b.word + '.', () => putOnPan(b, 1), () => wait(900), 'The ' + a.word + ' side is still down.', 'The ' + a.word + ' is heavy. The ' + b.word + ' is light.',   /* the words name what he sees (a balloon is a balloon) */
       'Your turn! Tap the heavy one.', () => { setName('tap'); task = ['Tap the heavy one.']; W.tapPt = () => toScreen(a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)));
-        return tapPoint(() => a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)), 'Tap the heavy one.'); }, () => { setName('learn'); task = null; }, 'Yes! The rock is heavy.',
+        return tapPoint(() => a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)), 'Tap the heavy one.'); }, () => { setName('learn'); task = null; }, 'Yes! The ' + a.word + ' is heavy.',
       ...L.rule, () => { chant(true); }, 'Clap it with me! Tap the hands.'];
     L.chant.forEach(c => steps.push(c[0], () => claps({ marks: [], g: BS.beam }, c[1])));
     steps.push(() => { chant(false); return cheer(mendy); });
@@ -1372,7 +1380,11 @@ export function startGame(cfg) {
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }];
     const shows = [];
     cfg.lessons.forEach((L, li) => {
-      steps.push(() => { shows.forEach(s => { s.g.visible = false; }); shows.push(showcase(L.k, L.color || COLORS[li * 3 % COLORS.length], L.rot, L.scale)); });
+      steps.push(() => {
+        if (!L.keep) { shows.forEach(s => { s.g.visible = false; }); shows.push(showcase(L.k, L.color || COLORS[li * 3 % COLORS.length], L.rot, L.scale)); return; }
+        /* L.keep (big and small): the one before stays, and this one comes beside it, so he compares the two (size is only clear side by side) */
+        shows.push(showcase(L.k, L.color || COLORS[li * 3 % COLORS.length], L.rot, L.scale, new THREE.Vector3(tall ? 1.85 : 2.5, 2.05, 0.9)));
+      });
       steps.push(() => wait(300));
       steps.push(() => play2(lessonFor(L, shows[li])));
     });
@@ -1462,13 +1474,21 @@ export function startGame(cfg) {
     };
     play(ask);
   }
+  /* cfg.countTags: as each thing is counted, a big number stands above it and stays, so he can see every one was counted once (K-CLARITY-RULES 8, 12) */
+  function numTag(n, at) {
+    const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+    x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(64, 64, 60, 0, 7); x.fill(); x.lineWidth = 6; x.strokeStyle = '#1F2A44'; x.stroke();
+    x.fillStyle = '#1F2A44'; x.font = 'bold 84px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(n), 64, 70);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, toneMapped: false })); sp.renderOrder = 9; sp.scale.setScalar(tall ? 0.6 : 0.5); sp.position.copy(at); scene.add(sp); return sp;
+  }
   function countBoxes() {   /* count each box together, then he taps the box with the most */
-    setName('counting'); stopIdle();
+    setName('counting'); stopIdle(); const tags = [];
     const counts = boxes.map((b, i) => shapes.filter(o => o.inBox && o.inBoxAt === i));
     const steps = ["Now let's count each box!"];
     counts.forEach((items, i) => { const word = cfg.boxes[i].word;
       steps.push('The ' + word + ' box.');
-      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
+      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); if (cfg.countTags) tags.push(numTag(j + 1, o.g.position.clone().setY(y0 + 1.0))); return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
       steps.push(cap(WORDS[items.length]) + ' ' + word + '!'); });
     const most = counts.reduce((b, c, i) => (c.length > counts[b].length ? i : b), 0);
     return play(steps).then(ok => { if (!ok) return false; return new Promise(done => {
@@ -1478,7 +1498,7 @@ export function startGame(cfg) {
         let best = -1, bd = 1e9; boxes.forEach((b, i) => { const p = toScreen(boxAt(i).clone().setY(0.6)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
         if (bd > Math.max(120, innerWidth * 0.1)) return;
         if (best === most) { shapeTap = null; task = null; chime(true); burst(boxAt(best).clone().setY(1.2), 30);
-          play([cfg.mostYes, () => cheer(mendy)]).then(() => done(true)); return; }
+          play([cfg.mostYes, () => cheer(mendy)]).then(() => { tags.forEach(t => scene.remove(t)); done(true); }); return; }
         if (!costed) { W.misses++; costed = true; } chime(false);
         play(['That box has ' + WORDS[counts[best].length] + '.', 'Look for the box with the most.', cfg.mostAsk]);
       };
@@ -1513,10 +1533,14 @@ export function startGame(cfg) {
       PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }
     else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; }
+    let side = null;   /* M.beside: a second piece next to it, to compare with (big and small: a ball is only big next to a small one) */
+    if (M.beside) { side = makeShape('mk2', M.beside[0], M.beside[3] || '#FF7A1A', M.beside[1], 1); side.slot = null; side.busy = true; side.g.position.set(tall ? 1.75 : 2.15, 2.05, 0.9); side.g.scale.setScalar(0.01); }
+    const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
     if (!M.where && !M.measure && !M.balance) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
     if (M.where || M.measure || M.balance) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
-      camTo('close', 1000).then(() => tween(500, k => d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))))); }
+      if (side) d.g.position.x = -0.1;
+      camTo('close', 1000).then(() => tween(500, k => { d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))); if (side) side.g.scale.setScalar(Math.max(0.01, ease(k) * (M.beside[2] || 0.5))); })); }
     if (friend.userData.pose) friend.userData.pose('talk');   /* a painted friend explains with an open hand */
     const j = $('#judge'); let answered = false, costed = false;
     const right = M.answer ? j.querySelector('.yesB') : j.querySelector('.noB'), wrong = M.answer ? j.querySelector('.noB') : j.querySelector('.yesB');
@@ -1534,7 +1558,7 @@ export function startGame(cfg) {
       play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), ...(M.outline ? [M.closeLine || 'Let us close it.', () => closeIt()] : []),
         ...(M.measure ? [M.fixLine || 'Let us line them up.', () => Promise.all(MS.items.map(o => alignRod(o))), M.after || 'Now we can see.'] : []),
         ...(M.pattern && M.pattern.bad != null ? [M.fixLine || 'Let us fix it.', fixBad] : M.pattern ? [() => sing()] : []), () => cheer(friend), M.after || (() => {}),
-        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.balance ? (shapes.splice(0), scene.remove(BS.g), BS = null, Promise.resolve()) : M.measure ? (MS.parts.forEach(q => scene.remove(q)), MS.items.forEach(o => scene.remove(o.g)), MS = null, Promise.resolve()) : M.where ? (scene.remove(d.g), scene.remove(BR.g), BR = null, Promise.resolve()) : M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer && NB ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
+        () => { friend.visible = false; sideAway(); return camTo('wide', 1000); }, () => (M.balance ? (shapes.splice(0), scene.remove(BS.g), BS = null, Promise.resolve()) : M.measure ? (MS.parts.forEach(q => scene.remove(q)), MS.items.forEach(o => scene.remove(o.g)), MS = null, Promise.resolve()) : M.where ? (scene.remove(d.g), scene.remove(BR.g), BR = null, Promise.resolve()) : M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer && NB ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
     };
     play(['This is ' + F.name + '.', ...M.claim, M.ask, () => { task = [M.ask + ' Tap your answer.']; j.classList.add('show'); }, 'Green means yes. Crossed means no.']);
     setTimeout(() => { if (!answered) j.classList.add('show'); }, FAST ? 0 : 14000);
@@ -1598,8 +1622,8 @@ export function wrongFor(T) {
     if (o.k === 'oval') return noCount(['That is an oval. It is long and squished.', T === 'circle' ? 'A circle is perfectly round.' : 'A ' + T + ' has straight sides.']);
     if (o.k === 'semi') return noCount(['That is half a circle.', T === 'circle' ? 'It has a straight side. A circle is all round.' : 'It has a round side. A ' + T + ' has straight sides.']);
     if (f === 'circle') return ['That is a circle.', 'A circle has no corners at all. A ' + T + ' has ' + has(CORNERS[T]) + '.'];
-    if (o.k === 'lean') return noCount(['This shape leans over.', 'A ' + T + ' has corners like a box.']);
-    if (o.k === 'kite') return noCount(['That is a kite shape.', 'Its corners are pointy, not like a box. It is not a ' + T + '.']);
+    if (o.k === 'lean' && (T === 'square' || T === 'rectangle')) return noCount(['Look at its corners.', 'Two corners are pointy. Two are wide.', 'A ' + T + ' has four corners all the same.']);
+    if (o.k === 'kite' && (T === 'square' || T === 'rectangle')) return noCount(['That is a kite shape.', 'Its corners are not all the same.', 'It is not a ' + T + '.']);
     if (T === 'square' && f === 'rectangle') return noCount(['That is a rectangle.', 'Two sides are long. Two are short.', 'A square has four sides the same.']);
     const name = (f === T || ['triangle', 'square', 'rectangle', 'circle'].includes(f) || T === 'hexagon') && !['pentagon', 'octagon'].includes(f) ? 'That is a ' + f + '.' : 'That shape is not a ' + T + '.';
     if (T === 'circle') return [name, 'It has ' + has(n) + '. A circle has none.'];
