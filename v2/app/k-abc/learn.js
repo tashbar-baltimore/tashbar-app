@@ -17,8 +17,8 @@ export const GAMES = ['hear', 'meet', 'write', 'find', 'read'];
 /* each letter: the sound's pictures, other pictures, the letters he already knows, the words he can read (from the 3rd letter) */
 export const LESSONS = {
   p: { show: 'pot', together: 'sun',   /* hear: Mendy shows "pot" (yes), together "sun" (no) */
-    yes: ['pear', 'penguin', 'pumpkin', 'pinwheel', 'pan', 'pin'], easyNo: ['sock', 'apple', 'ant', 'cat'], hardNo: ['top', 'tent', 'bee'],   /* easy "no" pictures first; top (ends in p), tent and bee later */
-    known: ['s', 'a', 't'], findShow: 'pumpkin', findTogether: 'pot',
+    yes: ['pear', 'penguin', 'pumpkin', 'pinwheel', 'pot'],   /* not pan ("frying pan") or pin ("safety pin"), unless their names are said */ easyNo: ['sock', 'apple', 'ant', 'cat'], hardNo: ['top', 'tent', 'bee'],   /* easy "no" pictures first; top (ends in p), tent and bee later */
+    known: ['s', 'a', 't'], findShow: 'pumpkin', findTogether: 'pan',   /* pan only where its name is said aloud */
     read: { show: 'pat', together: 'sat', blend: ['at', 'sat', 'tap'], pairs: [['at', 'pat'], ['pat', 'sat'], ['tap', 'pat']] } }   /* easy to hard; tap/pat last */
 };
 const $ = id => document.getElementById(id);
@@ -105,7 +105,7 @@ export function letterSVG(ch, col = '#1F4FB8') {
 
 /* ===================================================== 1. HEAR IT: ears only ===================================================== */
 async function hear(G, C, L) {
-  const snd = G.snd(L), yes = shuffle(C.yes).slice(0, 3), no = [...shuffle(C.easyNo).slice(0, 1), ...shuffle(C.hardNo).slice(0, 2)];
+  const snd = G.snd(L), yes = shuffle(C.yes.filter(w => w !== C.show)).slice(0, 3), no = [...shuffle(C.easyNo).slice(0, 1), ...shuffle(C.hardNo).slice(0, 2)];
   const pick = [[yes[0], true], [no[0], false], ...shuffle([[yes[1], true], [yes[2], true], [no[1], false], [no[2], false]])];   /* easy "no" first, the close ones later */
   G.rounds(pick.length);
   const thumbs = on => { G.button('yes', on); G.button('no', on); $('yes').classList.remove('glow'); $('no').classList.remove('glow'); };
@@ -170,11 +170,12 @@ async function write(G, C, L) {
   G.A.traceStrokes = () => strokes.map(s => s.pts.map(toScr));
   /* goal + I do */ show('path'); start.style.display = arrow.style.display = 'none'; await G.say('Today we write this letter.'); G.pose('point', 4000); await G.say('Watch me.'); await demo(); await audio.letter(L);
   const trace = (mode, line) => new Promise(async res => { reset(); show(mode); await G.say(line);
-    G.expect({ kind: 'trace' }); let down = false, far = 0;
-    const dn = async e => { const p = toSvg(e), s = strokes[si]; if (!s) return; const q = s.pts[k]; if (Math.hypot(p.x - q.x, p.y - q.y) < 24) { down = true; try { svg.setPointerCapture(e.pointerId); } catch (x) {} return; }
-      far++; if (far === 2) { G.A.helps++; G.pose('point', 3000); await G.say('Watch me again.'); await demo(); strokes.forEach(s2 => setInk(s2, 0)); for (let i = 0; i < si; i++) setInk(strokes[i], 1); }   /* help after two starts in the wrong place */
+    G.expect({ kind: 'trace' }); let down = false, far = 0, showing = false, offT = 0;
+    const dn = async e => { if (showing) return; const p = toSvg(e), s = strokes[si]; if (!s) return; const q = s.pts[k]; if (Math.hypot(p.x - q.x, p.y - q.y) < 24) { down = true; try { svg.setPointerCapture(e.pointerId); } catch (x) {} return; }
+      far++; if (far === 2) { showing = true; G.A.helps++; G.pose('point', 3000); await G.say('Watch me again.'); await demo(); showing = false; strokes.forEach(s2 => setInk(s2, 0)); for (let i = 0; i < si; i++) setInk(strokes[i], 1); }   /* help after two starts in the wrong place */
       else if (far % 2 === 1) G.say('Start at the green light.'); };
-    const mv = e => { if (!down) return; const p = toSvg(e), s = strokes[si]; for (let j = k + 1; j < Math.min(s.pts.length, k + 6); j++) { if (Math.hypot(p.x - s.pts[j].x, p.y - s.pts[j].y) < 20) k = j; }
+    const mv = e => { if (!down || showing) return; const p = toSvg(e), s = strokes[si]; for (let j = k + 1; j < Math.min(s.pts.length, k + 6); j++) { if (Math.hypot(p.x - s.pts[j].x, p.y - s.pts[j].y) < 20) k = j; }
+      const near = Math.min(...s.pts.slice(k, k + 8).map(q => Math.hypot(p.x - q.x, p.y - q.y))); if (near > 34) { if (!offT) offT = Date.now(); else if (Date.now() - offT > 900) { offT = Date.now() + 3000; G.say('Stay on the path.'); } } else offT = 0;
       setInk(s, k / (s.pts.length - 1)); placeStart();
       if (k >= s.pts.length - 2) { setInk(s, 1); audio.chime([784, 988]); si++; k = 0; down = false; placeStart(); if (si >= strokes.length) { cleanup(); res(); } } };
     const up = () => { down = false; };
@@ -209,14 +210,14 @@ async function read(G, C, L) {
     const col = G.el('div'); col.style.cssText = 'display:flex;flex-direction:column;align-items:stretch'; col.appendChild(box); return { col, box, ts: [...row.children] }; };
   const blend = async (w, ts, arrow) => { for (const t of ts) { t.classList.add('on'); await audio.letter(t.dataset.ch); await wait(150); t.classList.remove('on'); } arrow.classList.add('go'); await audio.say(say(w)); arrow.classList.remove('go'); };
   /* he blends it himself: each letter, left to right, then the arrow. A letter out of order gets a gentle fix */
-  const himself = async (w, lead) => { G.clear(); const { col, ts } = wordBox(w); const arrow = G.el('div', 'arrow'); col.appendChild(arrow); G.add(col); await wait(150); if (lead) await G.say(lead);
-    for (let i = 0; i < ts.length; i++) { const t = ts[i]; t.classList.add('glow');
+  const himself = async (w, lead, together) => { G.clear(); const { col, ts } = wordBox(w); const arrow = G.el('div', 'arrow'); col.appendChild(arrow); G.add(col); await wait(150); if (lead) await G.say(lead);
+    for (let i = 0; i < ts.length; i++) { const t = ts[i]; if (together || i === 0) t.classList.add('glow');   /* alone, only the first letter shines: he keeps the order himself */
       G.hint(async () => { t.classList.add('on'); await G.say('Start here, on the left.'); });
-      for (;;) { G.expect({ kind: 'tap', el: t }, i === 0 ? { kind: 'tap', el: ts[ts.length - 1] } : null); const x = await G.tapOne(ts); audio.letter(x.dataset.ch); if (x === t) break; await G.wrong(['We read this way.', 'Tap the shining letter.'], x); }
+      for (;;) { G.expect({ kind: 'tap', el: t }, i === 0 ? { kind: 'tap', el: ts[ts.length - 1] } : null); const x = await G.tapOne(ts); audio.letter(x.dataset.ch); if (x === t) break; await G.wrong(['We read this way, from the left.', 'Which sound comes next?'], x); }
       t.classList.remove('glow'); await wait(250); }
     arrow.classList.add('glow'); G.expect({ kind: 'tap', el: arrow }); await G.tapOne([arrow]); await blend(w, ts, arrow); };
   /* goal + I do */ { G.clear(); const { col, ts } = wordBox(R0.show); const arrow = G.el('div', 'arrow'); col.appendChild(arrow); G.add(col); await G.say('Let\'s read!'); G.pose('point', 4000); await G.say('Watch me.'); await blend(R0.show, ts, arrow); }
-  /* we do */ await himself(R0.together, 'Now with me. Tap each letter.'); await G.say('We read ' + R0.together + '!');
+  /* we do */ await himself(R0.together, 'Now with me. Tap each letter.', true); await G.say('We read ' + R0.together + '!');
   /* you do: blend a word yourself, then hear-and-find (word cards: a tap anywhere on the card chooses it) */
   for (let r = 0; r < R0.blend.length; r++) {
     G.newRound(); await himself(R0.blend[r], r === 0 ? 'Your turn!' : null); await G.right(null, 'You read ' + R0.blend[r] + '!');
