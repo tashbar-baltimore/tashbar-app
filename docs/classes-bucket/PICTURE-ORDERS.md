@@ -2,7 +2,7 @@
 
 Orders go by email to the Head of School's image account (the address is not written here: this repository is public). Every picture is checked against its order and `docs/HANDOFF-PICS.md` when it arrives, then goes into `art/` with a catalog row in the pull request that first uses it.
 
-## Order YCB-1 (2026-11-27) · status: SENT, waiting
+## Order YCB-1 (2026-11-27) · status: SENT, waiting (#1, #2, #7, #8, #9 replaced by YCB-2)
 
 What it is for: the new look for the afternoon (docs/CLASSES-BUCKET.md). The HoS's practice copy (claude.ai artifact) showed the movement and idea; these pictures make it beautiful.
 
@@ -70,3 +70,108 @@ What it is for: the new look for the afternoon (docs/CLASSES-BUCKET.md). The HoS
 | 28 | `ycb-ic-store.png` | Store (opened by a teacher) | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a colourful shopping bag with a small wrapped gift peeking out (no logos). |
 | 29 | `ycb-ic-lock.png` | Locked (add-ons before the core is done) | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a friendly rounded golden padlock. |
 | 30 | `ycb-ic-worksheet.png` | A worksheet from his teacher | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a white sheet of paper with a pencil resting on it, the paper blank. |
+
+## Order YCB-2 (2026-11-27) · status: SENT, waiting
+
+The whole boys' world (`docs/WORLD.md`): the Mountain Kingdom (school work) and the Golden City in the Clouds (free time). From order YCB-1, please SKIP #1 (ycb-sky), #2 (ycb-sky-far), #7 (Teacher Time island), #8 (bucket island) and #9 (golden path) if they are not made yet: the world is now a mountain kingdom, and this order replaces them. Every other YCB-1 picture is still needed (clouds, the four crystal bucket pictures, papers, confetti, sparkles and the 12 icons).
+
+**The world:** The world has two parts. THE MOUNTAIN KINGDOM (school work): a bright alpine kingdom with green meadows and terraces, warm stone and timber buildings, stone and rope bridges, many waterfalls, crystal rivers, distant snowy peaks; colours sky blue, meadow green, warm stone, sunrise gold, waterfall white. THE GOLDEN CITY IN THE CLOUDS (free time, earned): a joyful golden city floating above a sea of clouds, with towers, sky bridges, gardens and fountains; colours gold, cream, sky blue, soft rose, sparkle white. The boy flies through both: scenes are delivered in layers (far, middle, near) so the camera can move through them.
+
+**Style for every picture:** Top-quality 3D animated-film look (the quality of a top animated movie). Bright late-morning sun from the upper right, rich detail, soft glow, vivid but not neon. Happy, calm, stunning and inspiring; cool for boys 9 to 14; never babyish, never dark or scary. ALL pictures in this order (and order YCB-1) are ONE world and must match in light, colours and finish.
+
+**Rules:**
+- No words, letters, numbers or symbols anywhere (signs, banners, boards, books, screens and scoreboards stay blank).
+- No people anywhere in this order.
+- Kosher food only (#25).
+- No crosses or other religions' symbols anywhere: check window bars (single panes only), railings (plain vertical bars only), patterns and roofs.
+- No domes, spires or towers that look like a church, mosque or temple; golden towers must look like a fantasy city, not a house of worship.
+- No logos, brands or watermarks.
+- Layers and cut-outs marked TRANSPARENT must be PNG with a truly transparent background (no white or checkered box) and soft natural edges.
+- Layers of the same place (far, middle, near) must line up: same size, same horizon, same light.
+
+**The Mountain Kingdom: layers for flying (the backdrop of every school-work screen)**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 1 | `ycw-k-sky.jpg` | Kingdom sky behind everything | 3200 x 1800, JPG | A bright, breathtaking mountain sky at late morning: soft blue overhead, warm gold near the horizon, big fluffy sunlit clouds, gentle sun rays. |
+| 2 | `ycw-k-far.png` | Far layer (moves slowest) | 3200 x 1800, TRANSPARENT | A far range of tall snowy mountain peaks, soft and slightly hazy with distance, warm sunlight on the snow. Only the mountains; the sky is transparent. |
+| 3 | `ycw-k-mid.png` | Middle layer | 3200 x 1800, TRANSPARENT | A green mountain valley with terraced meadows, several tall white waterfalls, a winding crystal river, stone arch bridges, and a few warm stone-and-timber buildings with blank banners. The sky is transparent. |
+| 4 | `ycw-k-near.png` | Near layer (frames the screen, moves fastest) | 3200 x 1800, TRANSPARENT | Close-up framing at the left and right edges and bottom: pine branches, wildflowers, mossy rocks. The whole middle is transparent. |
+| 5 | `ycw-k-waterfall.png` | A waterfall to place anywhere | 1200 x 2400, TRANSPARENT | One tall, sparkling waterfall pouring from a rocky cliff edge into mist, sunlit. Transparent background. |
+| 6 | `ycw-k-bridge.png` | A bridge the camera flies over | 3000 x 1000, TRANSPARENT | A long sturdy rope-and-timber bridge with stone towers at each end (plain posts, no crossing bars), spanning left to right. Transparent background. |
+| 7 | `ycw-k-birds.png` | Soaring birds | 2000 x 1000, TRANSPARENT | Three graceful eagles soaring in a loose group, wings wide, sunlit. Transparent background. |
+
+**The Mountain Kingdom: places (one full screen each)**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 8 | `ycw-k-gate.jpg` | The Gate: the sign-in fly-through | 3200 x 1800, JPG | A grand, welcoming stone-and-gold gateway built into the mountain, standing at the end of a bridge over a waterfall gorge. The gate is wide open and warm golden light pours out of it; the bridge leads the eye straight in. |
+| 9 | `ycw-k-gate-doors.png` | The Gate's doors closed (they swing open) | 3200 x 1800, TRANSPARENT | EXACTLY the same gateway, angle and size as ycw-k-gate.jpg, showing ONLY its two big carved wooden doors with gold trim, closed. Everything else transparent. |
+| 10 | `ycw-k-terrace.jpg` | The Great Terrace: his home | 3200 x 1800, JPG | A wide sunny stone terrace high on a mountain, with a low stone wall and flower boxes, overlooking a green valley full of waterfalls and bridges. Several paths lead off the terrace to different places, each marked with a blank wooden signpost or blank banner. Warm, open, inviting. |
+| 11 | `ycw-k-hall.jpg` | The Teacher Time Hall | 3200 x 1800, JPG | A bright, calm study hall of warm timber and stone, with tall single-pane windows full of sunlight and a waterfall visible outside. Long wooden tables and benches, a big blank board at the front, plants, open floor space in the middle. Peaceful and focused. |
+| 12 | `ycw-k-spring.jpg` | The Bucket Spring: Independent Study | 3200 x 1800, JPG | A sunny glade beside a waterfall pool, with a round stone pedestal in the centre (empty; a crystal bucket will stand on it), glowing crystals around the pool, flowers, soft mist from the waterfall. |
+| 13 | `ycw-k-trail.jpg` | The Trail up the mountain: his map and levels | 4000 x 1800, JPG | A wide panorama of a winding path that climbs a mountain from a green meadow on the left to a sunny summit on the right, crossing bridges and stone steps, with several empty round stone platforms along the way (the stops). |
+| 14 | `ycw-k-stop.png` | One stop on the trail (a lesson) | 800 x 600, TRANSPARENT | A round stone platform with a softly glowing gold ring around its edge, seen from slightly above. Transparent background. |
+| 15 | `ycw-k-fortress.png` | The fortress at the end of a unit (the big challenge) | 1600 x 1600, TRANSPARENT | A friendly, impressive mountain fortress of warm stone with round towers, blank banners and a golden gate, on a rocky peak. No crosses or religious shapes. Transparent background. |
+| 16 | `ycw-k-library.jpg` | The Library Tower | 3200 x 1800, JPG | Inside a tall round library tower: curved wooden shelves full of books with blank spines, rolling ladders, warm lamps, a big single-pane window with a mountain view, a cozy reading chair. |
+| 17 | `ycw-k-nook.jpg` | The quiet nook behind every lesson | 3200 x 1800, JPG | A very calm, softly blurred background: a wooden desk by a big window with a gentle mountain and waterfall view, morning light. Low detail and soft focus, so text on top of it stays easy to read. |
+| 18 | `ycw-k-summit.jpg` | The Summit: celebrations | 3200 x 1800, JPG | The very top of the mountain above a sea of clouds at golden hour, warm light rays streaming across, a feeling of victory and joy. |
+
+**The Golden City in the Clouds: layers for flying (free time)**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 19 | `ycw-c-sky.jpg` | City sky behind everything | 3200 x 1800, JPG | High above a soft sea of white clouds, a glowing golden-blue sky with warm light and a few sparkles. |
+| 20 | `ycw-c-far.png` | Far layer | 3200 x 1800, TRANSPARENT | Far away, a skyline of slender golden fantasy towers connected by delicate sky bridges, hazy with distance. No domes, spires or religious shapes. Sky transparent. |
+| 21 | `ycw-c-mid.png` | Middle layer | 3200 x 1800, TRANSPARENT | Floating golden city platforms at different heights, linked by curving sky bridges, with gardens, fountains and waterfalls spilling off the edges into the clouds. Sky transparent. |
+| 22 | `ycw-c-near.png` | Near layer (frames the screen) | 3200 x 1800, TRANSPARENT | Close-up framing at the edges: puffy clouds and a golden balcony railing (plain vertical bars only) along the bottom. The middle is transparent. |
+| 23 | `ycw-c-gondola.png` | The ride up (the flight from the kingdom to the city) | 1600 x 1200, TRANSPARENT | A small open golden sky-gondola with soft glowing lights, floating, empty. Transparent background. |
+
+**The Golden City in the Clouds: places (one full screen each)**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 24 | `ycw-c-skygate.jpg` | The Sky Gate: arriving in free time (the big moment) | 3200 x 1800, JPG | Rising out of the clouds toward a huge golden arch of light that opens into the city beyond, with golden light pouring through and sparkles in the air. Awe and joy. |
+| 25 | `ycw-c-square.jpg` | The City Square: free-time home | 3200 x 1800, JPG | A grand golden plaza floating in the clouds, with a big sparkling fountain in the middle and several inviting entrances around it, each with a blank banner. Flowers, light, open sky. |
+| 26 | `ycw-c-canteen.jpg` | The Canteen Court | 3200 x 1800, JPG | A bright golden food court in the clouds with colourful food stalls (blank signs) showing kosher foods: pizza slices, falafel in pita, fresh fruit, pretzels, ice cream cones, juice. Tables and stools. No people. |
+| 27 | `ycw-c-market.jpg` | The Grand Market (the store) | 3200 x 1800, JPG | A glittering golden market hall with shelves of prizes: sports balls, building sets, board games, books with blank covers, wrapped gift boxes. No logos. Warm sparkle. |
+| 28 | `ycw-c-arena.jpg` | The Chavrusa Arena (learning duels) | 3200 x 1800, JPG | A round open-air arena on a floating cloud platform, with two glowing podiums facing each other in the centre, blank scoreboards, blank banners and soft spotlights. Exciting but friendly. |
+| 29 | `ycw-c-pavilion.jpg` | The Game Pavilion (arcade, Mistake Detective, Kodesh Quest) | 3200 x 1800, JPG | A colourful glowing game pavilion in the clouds with puzzle tables, game stations with blank screens, giant floating puzzle pieces and a big magnifying glass. Playful. |
+| 30 | `ycw-c-workshop.jpg` | The Workshop (Block Builders, Chumash Lab) | 3200 x 1800, JPG | A bright golden workshop with a big worktable, colourful building blocks, neat tools on the wall, and a small science corner with glowing beakers and an open book with blank pages. |
+| 31 | `ycw-c-calm.jpg` | The quiet sky (the Olam Haba cloud page) | 3200 x 1800, JPG | A peaceful sky of soft white clouds and gentle golden light, calm and uplifting. No figures, no shapes, just light and clouds. |
+
+**Flying effects**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 32 | `ycw-fx-cloudwall.png` | Flying through clouds | 3200 x 1800, TRANSPARENT | A thick bright cloud wall that fills the whole picture, thinning to transparent at the edges, so the camera can pass through it. |
+| 33 | `ycw-fx-rays.png` | Golden light rays | 3200 x 1800, TRANSPARENT | Soft golden light rays streaming diagonally from the upper right, mostly see-through. |
+| 34 | `ycw-fx-trail.png` | Sparkle trail | 2400 x 800, TRANSPARENT | A curving streak of golden sparkle dust, like the trail of a shooting star. Transparent background. |
+| 35 | `ycw-fx-mist.png` | Waterfall mist | 3200 x 1200, TRANSPARENT | Soft white mist and spray drifting near the bottom, mostly see-through. |
+
+**Glowing pieces for the screens**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 36 | `ycw-ui-plaque-kingdom.png` | Title plaque in the kingdom | 2000 x 700, TRANSPARENT | A wide plaque of warm stone with a gold trim border, slightly 3D, with a completely blank smooth centre for a title. Transparent background. |
+| 37 | `ycw-ui-plaque-city.png` | Title plaque in the city | 2000 x 700, TRANSPARENT | A wide glowing plaque of gold and cream with a soft light edge, slightly 3D, completely blank centre. Transparent background. |
+| 38 | `ycw-ui-ring.png` | Progress ring | 1024 x 1024, TRANSPARENT | A glowing golden ring, smooth and thick, empty in the middle. Transparent background. |
+| 39 | `ycw-ui-coin.png` | His money | 1024 x 1024, TRANSPARENT | A shiny 3D gold coin with a simple raised star in the middle (no letters or numbers). Transparent background. |
+| 40 | `ycw-ui-star.png` | An achievement | 1024 x 1024, TRANSPARENT | A glossy 3D golden star with a soft glow. Transparent background. |
+
+**Icons for every place (glossy 3D, matching the YCB-1 icon set)**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 41 | `ycw-ic-trail.png` | My map (the Trail) | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a little mountain with a winding path to a gold flag (flag blank). |
+| 42 | `ycw-ic-work.png` | My work | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a small clear crystal bucket with three blank papers in it. |
+| 43 | `ycw-ic-profile.png` | My profile | 1024 x 1024, TRANSPARENT | A glossy 3D icon: an adventure backpack with a gold buckle. |
+| 44 | `ycw-ic-library.png` | My Library | 1024 x 1024, TRANSPARENT | A glossy 3D icon: three books with blank colourful spines and a reading lamp. |
+| 45 | `ycw-ic-music.png` | Music | 1024 x 1024, TRANSPARENT | A glossy 3D icon: headphones with two small music notes. |
+| 46 | `ycw-ic-calm.png` | The Olam Haba cloud | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a soft white cloud glowing gold from inside. |
+| 47 | `ycw-ic-blocks.png` | Block Builders | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a little tower of colourful building blocks. |
+| 48 | `ycw-ic-lab.png` | Chumash Lab | 1024 x 1024, TRANSPARENT | A glossy 3D icon: an open sefer with blank pages and a small glowing magnifying glass over it. |
+| 49 | `ycw-ic-games.png` | Game Pavilion | 1024 x 1024, TRANSPARENT | A glossy 3D icon: two colourful puzzle pieces fitting together. |
+| 50 | `ycw-ic-detective.png` | Mistake Detective | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a big magnifying glass with a sparkle. |
+| 51 | `ycw-ic-tracks.png` | Torah Tracks | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a golden path leading to an open sefer with blank pages. |
+| 52 | `ycw-ic-talk.png` | Talk to my Rebbe | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a sealed envelope with a small gold heart seal. |
