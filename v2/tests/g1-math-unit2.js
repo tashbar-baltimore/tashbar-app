@@ -76,7 +76,7 @@ module.exports = async function (browser) {
     await step('opener', async () => { P = await open(w, h, 'opener', label);
       await W(P.pg, () => __g1.state === 'tapcount', null, 60000); await notBlank(P, 'count on');
       if (!(await P.pg.evaluate(() => __g1.said.some(t => /in my head/.test(t))))) bad(P.label + ': the lesson does not teach "in my head"');
-      for (let i = 0; i < 3; i++) { await tap(P.pg, 'hit.barrel', i); await P.pg.waitForTimeout(150); }
+      for (let i = 0; i < 3; i++) { await tap(P.pg, 'hit.barrel', i); await W(P.pg, n => __g1.said.includes(String(n)), 7 + i).catch(() => bad(P.label + ': tapping a barrel does not count on')); }
       await W(P.pg, () => __g1.state === 'write');
       const k = await saidN(P.pg); await typePad(P.pg, 8); await P.pg.waitForTimeout(150); if (!(await saidSince(P.pg, k, 'then 7, 8, 9'))) bad(P.label + ': a wrong answer in the lesson is not explained');
       await typePad(P.pg, 9);

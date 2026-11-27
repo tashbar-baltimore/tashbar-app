@@ -259,7 +259,7 @@ async function pullRound(start, k, o = {}) {
   const bt = keep(bob(boat())); bt.position.copy(boatSpot(L.posOf(start))); bt.setHatch(start); if (PORTRAIT) bt.rotation.y = Math.PI / 2;
   lightUp(L.at(start), '#7FD6FF');
   /* the rope runs from the boat to a big ring the boy pulls, near the low end of the line */
-  const ringPos = PORTRAIT ? V(2.2, 0.6, 6 + 1.9) : V(-(W * 2.05) / 2 - 0.6, 0.6, 5.2);
+  const ringPos = PORTRAIT ? V(2.2, 0.6, 6 + 1.9) : V(-6.2, 0.6, 5.8);
   const ring = keep(new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.11, 10, 28), MATS.phys('#FF7A59', { clearcoat: 1 }))); ring.position.copy(ringPos); ring.rotation.x = -Math.PI / 2.4;
   const ringHit = keep(new THREE.Mesh(new THREE.SphereGeometry(0.95, 10, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }))); ringHit.position.copy(ringPos);
   let rp = keep(rope(bt.position.clone().add(V(0, 0.7, 0)), ringPos));
@@ -268,7 +268,7 @@ async function pullRound(start, k, o = {}) {
   const arm = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.08, 8, 20, Math.PI), am); arm.rotation.z = Math.PI; arm.position.y = 0.45; anchor.add(arm);
   const eye = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.06, 8, 16), am); eye.position.y = 1.38; anchor.add(eye);
   const aHit = new THREE.Mesh(new THREE.SphereGeometry(0.95, 10, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); aHit.position.y = 0.8; anchor.add(aHit);
-  anchor.position.copy(PORTRAIT ? V(2.2, 0.2, 6 - 7 * 1.85 + 0.2) : V((W * 2.05) / 2 + 0.4, 0.2, 5.2));
+  anchor.position.copy(PORTRAIT ? V(2.2, 0.2, 6 - 7 * 1.85 + 0.2) : V(6.2, 0.2, 5.8));
   const sg = keep(signBoard(eq(start, '−', k))); sg.position.copy(PORTRAIT ? V(-2.6, 0, 7.6) : V(0, 1.4, -6.5)); sg.scale.setScalar(PORTRAIT ? 0.6 : 1.25);
   let at = start; G.at = at; const pulls = () => start - at;
   const back = async voice => { if (at <= L.lo) return; at--; G.at = at; chime('tap'); S.scene.remove(rp); temp.splice(temp.indexOf(rp), 1);
