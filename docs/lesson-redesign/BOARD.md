@@ -28,7 +28,7 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | R5 | C68 Grades 6–8 reading | 37 lessons (L07–L09) | src/CoreDataC68*.html | OPEN | | | |
 | R6 | F Grade 2 fluency + C23 | 39 + 3 lessons (L03) | src/CoreDataF*.html, src/CoreDataFH*.html, src/CoreDataC23*.html | OPEN | | | |
 | R7 | Other reading, language, writing (not in a job) | READ.*, LANG.*, WRIT.* in OneBiteData*.html, L03+ (about 40) | src/OneBiteDataRead*.html, src/OneBiteDataWrit.html, src/OneBiteDataUpper.html | OPEN | | | |
-| G1 | Grammar Grades 2–4 | G lessons L03–L05 (49) | src/CoreDataG*.html | OPEN | | | |
+| G1 | Grammar Grades 2–4 | G lessons L03–L05 (49) | src/CoreDataG*.html | TAKEN | https://claude.ai/code/session_015qpxB96x8R6g6AwDQctSaM | 2026-11-27 18:40 | Claimed; reading the lessons, batch 1 next |
 | G2 | Grammar Grades 5–8 | G lessons L06–L09 (53) | src/CoreDataG*.html | OPEN | | | |
 | W1 | Writing Grades 2–3 (W13) | 37 lessons (L03–L04) | src/CoreDataW13*.html | OPEN | | | |
 | W2 | Writing Grades 4–5 (W48) | 50 lessons (L05–L06) | src/CoreDataW48*.html | OPEN | | | |
