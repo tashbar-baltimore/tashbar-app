@@ -254,6 +254,10 @@ async function kidTests(browser) {
       if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked && g.tabs === 1 && g.plays === 1 && H.n === 6 && H.equal && H.canteen) ok('home: 6 equal tiles (work first, Canteen its own door), the kit house top left elsewhere; map: one PLAY, Change subject; My profile; next level + real skill, path with BOSS, PLAY starts it, locked says so, All lessons is a game screen, no old pages; missions: 3 rounds, Arcade locked until cleared'); }
     /* TODAY'S LIST on My work (Core Growth job D, tests/lib/dailyplan.js) */
     try { const dp = await require('./lib/dailyplan.js').page(pg, km.map); dp.fails.forEach(fail); dp.oks.forEach(ok); } catch (e) { fail("today's list page test crashed: " + String(e && e.stack || e).slice(0, 300)); }
+    /* THE NEW SHELL (docs/SHELL-CONTRACT.md): every tests/lib/shell-*.js file checks its own places on the page (each restores the page afterwards) */
+    for (const f of require('fs').readdirSync(require('path').join(__dirname, 'lib')).filter(f => /^shell-[a-z0-9-]+\.js$/.test(f)).sort()) {
+      try { const sr = await require('./lib/' + f).page(pg, km.map); sr.fails.forEach(fail); sr.oks.forEach(ok); } catch (e) { fail('new shell test ' + f + ' crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+    }
     try { const yp = await require('./lib/classesbucket.js').page(pg); yp.fails.forEach(fail); yp.oks.forEach(ok); } catch (e) { fail('your classes & bucket page test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   }
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }

@@ -1,0 +1,365 @@
+<script>
+/* ShPlaces.html — THE NEW SHELL (docs/SHELL-OVERHAUL.md; rules: docs/SHELL-CONTRACT.md).
+   Workstream E: the Canteen Court, the Library Tower (My Library), the Olam Haba sky, the Music Pavilion, the Message Tower (Talk to my Rebbe).
+   Only this workstream edits this file. Places register with SHK.place({...}) (src/ShellKit.html).
+   Rebuilt fresh (2026-11-27) with the same functions and the same server calls as the old screens (CanteenKid, BoyLibrary, OlamHaba sheet,
+   Music panel, TalkRebbe). Buttons come only from the button kit (window.TLK); every place is a full page with the house top left.
+   The server sets every money amount: this file only shows what the server sends (the canteen's cart line adds up the prices the
+   server sent, as a money lesson; the server checks and charges). Nothing here pays, saves mastery or changes money.
+   Attributes are data-shp="..." (never the old data-cno / data-bl / data-tr / data-act), so the old screens never hear these taps.
+   Grade 2 and up only (SHK.on()); K-1 boys keep their games and see none of this. */
+(function(){
+if(!window.SHK||window.SHP) return;
+const S=window.SHK, E=S.esc;
+const K=()=>window.TLK;
+const st=()=>{ try{ return (typeof A!=='undefined'&&A.st)||null; }catch(e){ return null; } };
+const sid=()=>{ const s=st(); return s?String(s.id||''):''; };
+const young=()=>S.young();
+const tap=()=>{ try{ SND.tap(); }catch(e){} };
+const say=t=>{ try{ const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,' ').replace(/\$(\d+)\.(\d\d)/g,(m,d,c)=>d+' dollars and '+c+' cents').replace(/(\d+)¢/g,'$1 cents')); u.rate=.95; speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){} };
+const card=(h,cls)=>`<div class="shk-card shp-card${cls?' '+cls:''}">${h}</div>`;
+const isOpen=id=>S.open.indexOf(id)>=0;
+/* money as the server sent it (formatting only) */
+const cents=n=>Math.round((Number(n)||0)*100);
+const money=n=>(n<0?'−':'')+'$'+Math.abs(Number(n)||0).toFixed(2);
+const amt=c=>c<100?c+'¢':money(c/100);
+function css(){ if(document.getElementById('shp-css')) return; const s=document.createElement('style'); s.id='shp-css'; s.textContent=`
+.shp-card{margin:0 0 14px}
+.shp-card h3{margin:0 0 8px;font-size:21px;font-weight:900}
+.shp-card p{margin:6px 0;font-size:17px;line-height:1.45}
+.shp-sm{font-size:15px!important;opacity:.85}
+.shp-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.shp-c{text-align:center}.shp-c .shp-row{justify-content:center}
+.shp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.shp-grid .tlk-tile,.shp-tiles4 .tlk-tile,.shp-books .tlk-tile{padding:12px 14px!important;box-sizing:border-box;height:auto}.shp-grid .tlk-tile>*,.shp-tiles4 .tlk-tile>*,.shp-books .tlk-tile>*{flex:0 0 auto}
+.shp-grid .tlk-tile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;min-height:96px}
+.shp-grid .tlk-tile b{font-size:18px;white-space:normal;line-height:1.2}.shp-grid .tlk-tile small{white-space:normal}.shp-grid .tlk-tile small{font-size:14px;opacity:.85}
+.shp-em{font-size:40px;line-height:48px;height:48px}.shp-grid .tlk-tile img.shp-em{width:48px;object-fit:contain}
+.shp-tiles4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 14px}
+.shp-tiles4 .tlk-tile{display:flex;flex-direction:column;align-items:center!important;justify-content:center;gap:4px;text-align:center;min-height:112px}
+.shp-tiles4 .tlk-tile b{font-size:18px;white-space:normal;line-height:1.15}.shp-tiles4 .tlk-tile small{font-size:13px;opacity:.85}
+.shp-tiles4 .tlk-tile[aria-selected="true"],.shp-grid .tlk-tile[aria-pressed="true"]{box-shadow:0 0 0 4px #F4C542,0 10px 26px rgba(244,197,66,.45)}
+.shp-tiles4 .tlk-tile .shp-ti{font-size:34px;line-height:40px}
+.shp-wallet{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.shp-wallet .tlk-box b{font-size:30px}
+.shp-coins{display:flex;flex-wrap:wrap;gap:5px;align-items:center;max-width:520px}
+.shp-coin{display:inline-grid;place-items:center;border-radius:50%;font-weight:900;font-size:11px;color:#5A3A00;background:radial-gradient(circle at 35% 30%,#FFF6C8,#E9B949 70%,#B8860B);box-shadow:0 2px 4px rgba(0,0,0,.18)}
+.shp-coin.q{width:34px;height:34px}.shp-coin.di{width:26px;height:26px;background:radial-gradient(circle at 35% 30%,#fff,#D1D5DB 70%,#9CA3AF)}.shp-coin.n{width:30px;height:30px;background:radial-gradient(circle at 35% 30%,#fff,#CBD5E1 70%,#94A3B8)}.shp-coin.p{width:24px;height:24px;background:radial-gradient(circle at 35% 30%,#FDE68A,#C2410C 75%)}
+.shp-bill{display:inline-grid;place-items:center;width:58px;height:30px;border-radius:6px;font-weight:900;font-size:13px;color:#14532D;background:linear-gradient(135deg,#DCFCE7,#86EFAC);border:2px solid #16A34A}
+.shp-steps{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.shp-steps .tlk-pill{opacity:.55}.shp-steps .tlk-pill.on{opacity:1}
+.shp-math{font-size:20px;font-weight:900;margin:8px 0}.shp-math i{font-style:normal;color:#BE123C}.shp-math u{text-decoration:none;color:#047857}
+.shp-list{display:grid;gap:6px;margin:8px auto;max-width:480px;text-align:left}.shp-list>div{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:17px;font-weight:700;padding:6px 0;border-bottom:1px dashed rgba(30,27,75,.15)}
+.shp-track{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.shp-track>div{border-radius:16px;padding:10px;text-align:center;font-weight:800;background:rgba(30,27,75,.06);opacity:.6}.shp-track>div.ok{background:#DCFCE7;opacity:1}.shp-track>div.on{background:#FEF3C7;opacity:1}
+.shp-track span{display:block;font-size:30px}
+.shp-coach{display:flex;gap:10px;align-items:flex-start;background:rgba(255,247,214,.9);border-radius:16px;padding:10px 12px;margin-top:12px;font-size:15px}.shp-coach b{display:block}
+.shp-msg{margin:0 0 12px}
+.shp-ways{display:grid;grid-template-columns:1fr 1fr;gap:12px}.shp-ways>div{border-radius:16px;padding:12px;background:rgba(30,27,75,.05)}.shp-ways span{font-size:32px}
+.shp-tray{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.shp-fixed{display:flex;justify-content:center;margin-top:12px}
+/* My Library: books stand on shelves */
+.shp-shelf{margin:0 0 18px}.shp-shelf h3 small{font-weight:600;font-size:14px;opacity:.75;margin-left:6px}
+.shp-books{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:10px 10px 18px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0) calc(100% - 14px),#B07A45 calc(100% - 14px),#8B5E34)}
+.shp-books .tlk-tile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-height:104px;text-align:left}
+.shp-books .tlk-tile b{font-size:16px;line-height:1.2;white-space:normal}.shp-bk{font-size:28px;line-height:30px}
+.shp-tabs{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+/* the Olam Haba sky */
+.shp-oh{position:relative;text-align:center;padding-top:10px}
+.shp-gate{position:relative;width:150px;height:120px;margin:0 auto -64px;border-radius:75px 75px 6px 6px;background:radial-gradient(ellipse at 50% 75%,#FFFDF3,#FFE9A8 60%,rgba(255,214,102,.25));box-shadow:0 0 50px rgba(255,214,102,.85);overflow:hidden}
+.shp-gate i{position:absolute;top:0;bottom:0;width:50%;background:repeating-linear-gradient(90deg,#F5C542 0 4px,#EAB308 4px 8px);border:2px solid #B8860B;box-sizing:border-box}
+.shp-gate i:first-child{left:0;border-radius:75px 0 0 6px;transform-origin:0 50%}.shp-gate i:last-child{right:0;border-radius:0 75px 6px 0;transform-origin:100% 50%}
+.shp-cloud{position:relative;width:240px;height:130px;margin:0 auto;animation:shp-float 7s ease-in-out infinite}
+.shp-cloud i{position:absolute;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#FFF6D6 60%,#FFE7A0);box-shadow:0 0 calc(20px + 50px*var(--g)) rgba(255,205,70,calc(.4 + .6*var(--g)))}
+.shp-cloud i:nth-of-type(1){left:14px;top:52px;width:96px;height:72px}.shp-cloud i:nth-of-type(2){left:66px;top:10px;width:116px;height:108px}.shp-cloud i:nth-of-type(3){left:142px;top:46px;width:88px;height:76px}
+.shp-ring{position:absolute;left:50%;top:50%;width:300px;height:300px;margin:-150px;border-radius:50%;border:3px solid rgba(255,214,102,calc(.15 + .55*var(--g)));animation:shp-breathe 5s ease-in-out infinite alternate;pointer-events:none}
+.shp-stars{position:absolute;inset:0;pointer-events:none}.shp-stars i{position:absolute;width:6px;height:6px;margin:-3px;border-radius:50%;background:radial-gradient(circle,#fff,#FFD447 60%,rgba(255,212,71,0));animation:shp-tw 3s ease-in-out infinite}
+.shp-heb{font:700 34px 'Frank Ruhl Libre','David',serif;color:#7A5200;direction:rtl;margin-top:6px}
+.shp-pearls{display:grid;gap:8px;text-align:right}.shp-pearl{border-radius:14px;padding:10px 12px;background:#FFF7D6;border:1px solid #F5D77A}
+.shp-pearl b{display:block;font:700 20px 'Frank Ruhl Libre','David',serif;color:#7A5200}.shp-pearl span{display:block;text-align:left;font-size:15px}.shp-pearl em{display:block;text-align:left;font-size:12px;font-style:normal;color:#A07A1A}
+.shp-pearl.no{background:rgba(30,27,75,.05);border-color:transparent;text-align:center}
+.shp-q{display:block;font-weight:800;color:#7A5200;margin:10px 0 2px}
+@keyframes shp-float{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+@keyframes shp-breathe{from{opacity:.5;transform:scale(.96)}to{opacity:1;transform:scale(1.04)}}
+@keyframes shp-tw{0%,100%{opacity:.4}50%{opacity:1}}
+/* the Music Pavilion */
+.shp-vol{display:flex;align-items:center;gap:10px;font-size:22px;margin:12px 0}.shp-vol input{flex:1;accent-color:#D97706;height:32px}
+.shp-eq{display:inline-flex;gap:3px;align-items:flex-end;height:22px}.shp-eq i{width:5px;background:#D97706;border-radius:2px;height:40%;animation:shp-eq 1s ease-in-out infinite alternate}.shp-eq i:nth-child(2){animation-delay:-.3s}.shp-eq i:nth-child(3){animation-delay:-.6s}
+@keyframes shp-eq{from{height:25%}to{height:100%}}
+/* the Message Tower */
+.shp-form label{display:block;font-weight:900;font-size:18px;margin:12px 0 6px}
+.shp-form select,.shp-form textarea{width:100%;box-sizing:border-box;border:2px solid #C7D2FE;border-radius:14px;padding:12px;font:inherit;font-size:18px;background:#fff;color:#111827}
+.shp-form textarea{min-height:150px;resize:vertical}.shp-n{font-size:14px;opacity:.7;text-align:right;margin-top:4px}
+@media (max-width:600px){.shp-track{grid-template-columns:1fr}.shp-track>div{display:flex;gap:10px;align-items:center;text-align:left}.shp-track span{font-size:24px}.shp-tiles4{grid-template-columns:1fr 1fr;gap:10px}.shp-ways{grid-template-columns:1fr}.shp-grid{grid-template-columns:1fr 1fr}.shp-books{grid-template-columns:1fr 1fr}.shp-wallet .tlk-box b{font-size:24px}.shp-cloud{transform:scale(.8)}}
+@media (prefers-reduced-motion:reduce){.shp-cloud,.shp-ring,.shp-stars i,.shp-eq i{animation:none!important}}`; document.head.appendChild(s); }
+
+/* ======================= THE CANTEEN COURT (city; door canteen) ======================= */
+const CN={info:null,infoAt:0,infoBusy:false,menu:null,cash:null,pf:1,story:[],order:null,recent:[],panel:'buy',step:'shop',tray:{},cid:null,busy:false,msg:'',last:null,lastStatus:null,poll:0,tip:0,cls:false};
+const TIPS=[
+ ['Need or want?','Water is a need. A treat is a want. Both are OK. Just think before you buy.'],
+ ['Save some!','Money you do not spend today is still yours tomorrow. You can save up for something bigger.'],
+ ['Compare','Two snacks you like? The cheaper one leaves you more money.'],
+ ['Look at "Left after"','Every time you buy, your money goes down. Check how much will be left.'],
+ ['Tzedakah','Some money can help others. You can give in the Store.'],
+ ['Locked','Locked food costs more than you have. Save up, and it opens by itself!']];
+/* the four doors, in this order (the order tests/run.js and tests/lib/shell-places.js check) */
+const CN_DOORS=[['buy','🍕','Buy food','Pick, pay, get it'],['cash','💳','Get canteen money','Where it comes from'],['story','📒','My story','Money in and out'],['learn','📚','Lessons','Learn to use money']];
+function inClass(){ try{ return !!(window.TM_CLASS&&TM_CLASS()); }catch(e){ return false; } }
+function cnInfo(force){ if(!S.on()||CN.infoBusy) return; if(!force&&CN.infoSid===sid()&&Date.now()-CN.infoAt<60000) return; CN.infoBusy=true; CN.infoSid=sid();
+ S.call('cnKidInfo').then(r=>{ CN.infoBusy=false; CN.infoAt=Date.now(); CN.info=r&&r.ok?r:null; if(isOpen('canteen')&&CN.panel==='learn') cnDraw(); }).catch(()=>{ CN.infoBusy=false; CN.infoAt=Date.now(); }); }
+function cnLoad(){ return S.call('cnOrderMenu').then(r=>{ r=r||{}; CN.menu=r.menu||[]; CN.cash=r.cash==null?null:r.cash; CN.pf=r.pf==null?1:r.pf; CN.story=r.story||[]; CN.order=(r.open||[])[0]||null; CN.recent=r.recent||[]; cnStatus(); cnDraw(); })
+ .catch(e=>{ CN.msg=(e&&e.message)||'Could not load the menu.'; cnDraw(); }); }
+/* the canteen tells him when his food is ready: while he waits for an order, ask again every 15 s (only on that screen) */
+function cnWatch(){ clearTimeout(CN.poll); if(!isOpen('canteen')||!CN.order||CN.panel!=='buy') return; CN.poll=setTimeout(()=>{ if(isOpen('canteen')&&CN.order) cnLoad().then(cnWatch); },15000); }
+function cnStatus(){ const o=CN.order, s=o?(o.seen?'seen':o.status):null;
+ if(s&&s!==CN.lastStatus&&CN.lastStatus){ try{ SND.right(3); }catch(e){} }
+ if(!o&&CN.lastStatus){ const r=CN.recent[0]; if(r&&r.status==='picked') CN.msg='The canteen gave you your food. Enjoy! Say a bracha!'; else if(r&&r.status==='cancelled') CN.msg='The canteen could not make it. All your money is back.'; CN.step='shop'; CN.last=null; }
+ CN.lastStatus=s; }
+function coinsHTML(c){ c=Math.max(0,Math.round(c)); let h='', n=0; const max=14;
+ const d=Math.floor(c/100); c-=d*100; if(d>4) h+=`<span class="shp-bill">$1</span><b>× ${d}</b>`, n+=2; else for(let i=0;i<d;i++){ h+='<span class="shp-bill">$1</span>'; n++; }
+ [[25,'q','25¢'],[10,'di','10¢'],[5,'n','5¢'],[1,'p','1¢']].forEach(([v,k,l])=>{ let q=Math.floor(c/v); c-=q*v; while(q-->0&&n<max){ h+=`<span class="shp-coin ${k}" title="${l}">${l}</span>`; n++; } });
+ return h; }
+function coinWords(c){ c=Math.max(0,Math.round(c)); const d=Math.floor(c/100), q=Math.floor((c%100)/25), r=c%25, w=[];
+ if(d) w.push(d+(d===1?' dollar':' dollars')); if(q) w.push(q+(q===1?' quarter':' quarters')); if(r) w.push(r+(r===1?' cent':' cents')); return w.join(' and ')||'nothing yet'; }
+function trayLines(){ return (CN.menu||[]).filter(m=>CN.tray[m.id]>0).map(m=>({m,q:CN.tray[m.id]})); }
+function trayCents(){ return trayLines().reduce((s,l)=>s+cents(l.m.price)*l.q,0); }
+function coach(t){ const x=t||TIPS[CN.tip%TIPS.length]; return `<div class="shp-coach"><span style="font-size:28px" aria-hidden="true">🦉</span><div><b>Money coach: ${E(x[0])}</b>${E(x[1])}</div></div>`; }
+function steps(n){ return `<div class="shp-steps">${['1 Pick food','2 Pay','3 Get your food'].map((s,i)=>K().pill(i===n?'now':'prog',s).replace('tlk-pill','tlk-pill'+(i===n?' on':''))).join('')}</div>`; }
+/* the Level Pass rule (HoS 2026-11-20; server: PathfinderLevel.js): the server sends pf; below 1 a level still waits for its quick check. Canteen money is never cut. */
+function quarter(pf){ if(!(pf<1)) return ''; const on=Math.max(1,Math.min(3,Math.round(pf*4)));
+ return card(`<p><b>Take the quick level check to unlock full pay at this level.</b> Until then, lessons there give ${on===1?'1 quarter':on+' quarters'} for every dollar. A <b>quarter</b> is 25¢; <b>4 quarters make $1.00</b>. Your canteen money is not cut.</p>`); }
+function wallet(){ const c=cents(CN.cash);
+ return card(`<div class="shp-wallet">${K().box('money','My canteen money',CN.cash==null?'…':money(CN.cash))}<div><div class="shp-coins" aria-hidden="true">${CN.cash==null?'':coinsHTML(c)}</div><p class="shp-sm">${CN.cash==null?'':'That is '+E(coinWords(c))+'.'}</p></div></div>`); }
+function cnDoors(){ const crew=CN.info&&CN.info.crew&&CN.info.crew.assigned;
+ return `<div class="shp-tiles4" role="tablist" aria-label="In the canteen">${CN_DOORS.map(x=>`<button type="button" role="tab" class="tlk tlk-tile shp-door" aria-selected="${CN.panel===x[0]}" data-shp="cn-door" data-p="${x[0]}"><span class="shp-ti" aria-hidden="true">${x[1]}</span><b>${x[2]}</b><small>${x[0]==='learn'&&crew?'Money and Canteen Crew':x[3]}</small></button>`).join('')}</div>`; }
+function vShop(){ const have=cents(CN.cash), used=trayCents(), left=have-used, L=trayLines();
+ let h=steps(0)+`<div class="shp-grid">${CN.menu.map(m=>{ const p=cents(m.price), q=CN.tray[m.id]||0, lock=!m.out&&p>left;
+  return `<button type="button" class="tlk tlk-tile shp-food" data-shp="cn-add" data-id="${E(m.id)}"${m.out||lock?' aria-disabled="true"':''} aria-label="${E(m.name)}, ${amt(p)}${m.out?', sold out':lock?', locked':''}">${m.pic?`<img class="shp-em" src="${E(m.pic)}" alt="">`:`<span class="shp-em" aria-hidden="true">${E(m.emoji||'🍪')}</span>`}<b>${E(m.name)}</b><span class="shp-row">${K().pill('money',amt(p))}${q?K().pill('now','In your tray: '+q):''}${m.out?K().pill('lock','Sold out'):lock?K().pill('lock',q?'No money for one more':'Need '+amt(p-left)+' more'):''}</span></button>`; }).join('')}</div>`;
+ h+=`<div class="shp-tray">${L.length?L.map(l=>K().quiet('Take out '+l.m.name+(l.q>1?' (×'+l.q+')':''),'data-shp="cn-sub" data-id="'+E(l.m.id)+'"','tlk-small')).join(''):'<p><b>Tap the food you want.</b></p>'}</div>`;
+ if(L.length) h+=`<p class="shp-math">${money(have/100)} <i>− ${money(used/100)}</i> = <u>${money(left/100)} left</u></p>`;
+ h+=`<div class="shp-fixed">${L.length?K().main('Next','data-shp="cn-check"'):''}</div>`;
+ return card(h)+card(coach(CN.menu.some(m=>!m.out&&cents(m.price)>left)&&!L.length?TIPS[5]:null)); }
+function vCheck(){ const have=cents(CN.cash), used=trayCents(), L=trayLines();
+ return card(steps(1)+`<div class="shp-list">${L.map(l=>`<div><span>${E(l.m.emoji||'🍪')} ${E(l.m.name)}${l.q>1?' ×'+l.q:''}</span>${K().pill('money',money(cents(l.m.price)*l.q/100))}</div>`).join('')}
+  <div><span>You have</span>${K().pill('money',money(have/100))}</div><div><span>You pay</span>${K().pill('money','− '+money(used/100))}</div><div><span><b>Left after</b></span>${K().pill('money',money((have-used)/100))}</div></div>`
+  +K().ask({title:CN.busy?'Paying…':'Buy it for '+money(used/100)+'?',text:'The money comes off your canteen money right now. Then go to the canteen and get your food.',yes:'Buy it',yesAttrs:'data-shp="cn-buy"'+(CN.busy?' disabled':''),noAttrs:'data-shp="cn-back"'}),'shp-c')+card(coach(TIPS[3])); }
+function vTrack(){ const o=CN.order, done=o.status==='picked', seen=o.seen||o.status==='ready', idx=done?3:seen?1:0;
+ const stages=[['🛒',o.paid===false?'I ordered':'I paid'],['👀','The canteen is making it'],['😋','I got my food']];
+ let h=steps(2);
+ if(CN.last) h+=`<h3>You paid ${money(CN.last.total)}!</h3><p class="shp-math">${money(CN.last.before)} <i>− ${money(CN.last.total)}</i> = <u>${money(CN.last.after)}</u></p><p>Now you have ${money(CN.last.after)} (${E(coinWords(cents(CN.last.after)))}).</p>`;
+ h+=`<div class="shp-track">${stages.map((x,i)=>`<div class="${i<idx||i===0?'ok':i===idx?'on':''}"><span aria-hidden="true">${x[0]}</span>${i<idx||i===0?'✓ ':''}${E(x[1])}</div>`).join('')}</div>`;
+ h+=`<p><b>${seen?'The canteen saw your order. It is still being made.':'Go to the canteen and say your name. They will give you your food.'}</b></p>`;
+ h+=`<div class="shp-list">${(o.items||[]).map(i=>`<div><span>${E(i.emoji||'🍪')} ${E(i.name)}${i.qty>1?' ×'+i.qty:''}</span>${K().pill('money',money(cents(i.price)*i.qty/100))}</div>`).join('')}<div><span><b>${o.paid===false?'You pay at the canteen':'Paid'}</b></span>${K().pill('money',money(o.est))}</div></div>`;
+ if(o.status==='pending'&&!o.seen&&Date.now()-(o.at||0)<110000) h+=`<div class="shp-fixed">${K().quiet('Cancel and get my money back','data-shp="cn-cancel"')}</div>`;
+ return card(h)+card(coach(['Good habit','After you buy, check your money. Do you know how much you have left?'])); }
+function vCash(){
+ return card(`<h3>Where canteen money comes from</h3><div class="shp-ways"><div><span aria-hidden="true">🧑‍🏫</span><p><b>From your teachers</b></p><p>Every class they sign you off: on time, did your work, middos. <b>20¢ each.</b></p></div>
+  <div><span aria-hidden="true">🏪</span><p><b>From the Store</b></p><p>Turn Tashbar cash into canteen money with a <b>Canteen Card</b>.</p></div></div>
+  <div class="shp-fixed">${K().quiet('Get a Canteen Card','data-shp="cn-store"')}</div><p class="shp-sm shp-c">Canteen money is only for food at the canteen. Tashbar cash is for the Store.</p>`)+card(coach(TIPS[1])); }
+function vStory(){ if(CN.cash==null&&!CN.menu) return card('<p>Opening your money story…</p>');
+ return card(`<h3>My money story</h3>${CN.story.length?`<div class="shp-list" style="max-width:none">${CN.story.map(r=>`<div><span>${E(r.note||r.kind)}</span>${K().pill('money',(r.cents>=0?'+':'−')+amt(Math.abs(r.cents)))}</div>`).join('')}</div>`:'<p><b>Nothing yet.</b> When canteen money comes in or goes out, it shows here.</p>'}
+  <p class="shp-sm">Canteen money comes in when your teachers sign you off (on time, did your work, middos: 20¢ each) and from Canteen Cards in the Store. It goes out when you buy.</p>`); }
+const lessonHave=id=>(typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]);
+const lessonName=id=>{ const b=lessonHave(id); return (b&&b.name)||id; };
+const mastered=id=>{ const s=st(); return !!(s&&s.skills&&s.skills[id]&&s.skills[id].m); };
+function lessonRow(ids,crewDone){ let nx=false; return `<div class="shp-grid">${ids.filter(lessonHave).map(id=>{ const d=mastered(id)||(crewDone||[]).indexOf(id)>=0, n=!d&&!nx; if(n) nx=true;
+ return `<button type="button" class="tlk tlk-tile" data-shp="lesson" data-id="${E(id)}"><span class="shp-em" aria-hidden="true">${d?'✅':'📘'}</span><b>${E(lessonName(id))}</b>${d?K().pill('rank','Done'):n?K().pill('now','Next'):''}</button>`; }).join('')}</div>`; }
+function vLearn(){ const fin=(typeof BANK_ALL!=='undefined'?Object.keys(BANK_ALL):[]).filter(id=>/^LIFE\.FIN\./.test(id)).sort();
+ let h=card(`<h3>Money lessons</h3><p class="shp-sm">Earning, saving, spending and giving. Tap a lesson to start it.</p>${fin.length?lessonRow(fin):'<p>The money lessons are still loading. Try again in a moment.</p>'}`);
+ const cr=CN.info&&CN.info.crew; if(cr&&cr.assigned) h+=card(`<h3>Canteen Crew</h3><p class="shp-sm">${cr.isCrew?'You are Canteen Crew! You can be cashier at the canteen.':'Finish all 6 lessons to become Canteen Crew.'}</p>${lessonRow(cr.all||[],cr.done)}`);
+ return h; }
+function cnBody(){
+ if(CN.cls) return card(`<div class="shp-c"><div style="font-size:54px" aria-hidden="true">🔔</div><h3>The canteen opens after class.</h3><p>Come back when class is over.</p></div>`);
+ let h=(CN.msg?`<div class="shp-msg">${card('<p role="alert"><b>'+E(CN.msg)+'</b></p>')}</div>`:'')+wallet()+quarter(CN.pf)+cnDoors(), b='';
+ if(CN.panel==='cash') b=vCash(); else if(CN.panel==='learn') b=vLearn(); else if(CN.panel==='story') b=vStory();
+ else if(!CN.menu&&!CN.order) b=card('<p>Opening the canteen…</p>');
+ else if(CN.cash==null&&!CN.order) b=card('<p><b>You don’t have canteen money yet. Ask the office.</b></p>');
+ else if(CN.order) b=vTrack();
+ else if(!CN.menu.length) b=card('<p><b>The canteen menu is empty right now. Check again soon!</b></p>');
+ else if(CN.step==='check'&&trayLines().length) b=vCheck();
+ else { CN.step='shop'; b=vShop(); }
+ return h+b; }
+function cnDraw(){ if(!isOpen('canteen')) return; const el=document.getElementById('shk-canteen'), y=el?el.scrollTop:0; S.body('canteen',cnBody()); if(el) el.scrollTop=y; cnWatch(); }
+function cnOpen(){ css(); CN.cls=inClass(); CN.panel='buy'; CN.step='shop'; CN.tray={}; CN.cid=null; CN.msg=''; CN.last=null; CN.tip=Math.floor(Math.random()*TIPS.length);
+ S.page({id:'canteen',world:'c',scene:'ycw-c-canteen',title:'The Canteen Court',icon:'ycb-ic-canteen',body:cnBody(),right:K().tool('🔊','Read it to me','data-shp="cn-say"'),onClose:()=>{ clearTimeout(CN.poll); try{ speechSynthesis.cancel(); }catch(e){} }});
+ if(CN.cls) return; cnLoad(); cnInfo(true); }
+function cnSay(){ if(CN.cls) return say('The canteen opens after class.'); const o=CN.panel==='buy'?CN.order:null; let t='You have '+coinWords(cents(CN.cash))+' of canteen money. ';
+ if(CN.pf<1) t+='Take the quick level check to unlock full pay at your level. ';
+ if(o) t+=o.status==='picked'?'You got your food.':o.seen?'The canteen saw your order. It is still being made.':'You paid. Go to the canteen and say your name.';
+ else if(CN.panel==='cash') t+='Canteen money comes from your teachers, 20 cents for each goal, and from Canteen Cards in the Store.';
+ else if(CN.panel==='story') t+='This is your money story: money in, and money out.';
+ else if(CN.panel==='learn') t+='Tap a money lesson to start it.';
+ else if(CN.step==='check') t+='Do you want to pay '+coinWords(trayCents())+'? Tap Buy it. Or tap Not now.';
+ else t+='Tap the food you want. Food with a lock costs more than you have.';
+ say(t); }
+function cnClick(a,b){
+ if(a==='cn-say') return cnSay();
+ if(a==='cn-door'){ CN.panel=b.dataset.p; CN.msg=''; tap(); if(CN.panel!=='buy'&&!CN.menu) cnLoad(); if(CN.panel==='learn') cnInfo(); return cnDraw(); }
+ if(a==='cn-store'){ S.close('canteen'); if(S.places().some(d=>d.id==='store')) return S.go('store');
+  const t=document.createElement('button'); t.type='button'; t.dataset.st='open'; t.dataset.t='canteen'; t.style.display='none'; document.body.appendChild(t); t.click(); t.remove(); return; }
+ if(a==='cn-add'||a==='cn-sub'){ const m=(CN.menu||[]).find(x=>x.id===b.dataset.id); if(!m) return;
+  if(a==='cn-add'){ if(m.out) return; if(cents(m.price)>cents(CN.cash)-trayCents()){ CN.msg=m.name+' costs '+amt(cents(m.price))+'. You need '+amt(cents(m.price)-(cents(CN.cash)-trayCents()))+' more.'; tap(); return cnDraw(); } }
+  let q=(CN.tray[m.id]||0)+(a==='cn-add'?1:-1); q=Math.max(0,Math.min(10,q)); if(m.left!=null) q=Math.min(q,m.left); CN.tray[m.id]=q; CN.cid=null; CN.msg=''; tap(); return cnDraw(); }
+ if(a==='cn-check'){ CN.step='check'; CN.msg=''; return cnDraw(); }
+ if(a==='cn-back'){ CN.step='shop'; return cnDraw(); }
+ if(a==='cn-buy'){ if(CN.busy) return; CN.busy=true; CN.cid=CN.cid||(Date.now().toString(36)+Math.random().toString(36).slice(2,8)); const before=CN.cash; cnDraw();
+  return S.call('cnOrderPlace',trayLines().map(l=>({id:l.m.id,qty:l.q})),CN.cid).then(r=>{ CN.busy=false; r=r||{};
+   if(!r.ok&&r.short){ CN.msg=`Not enough canteen money: this costs ${money(r.total)} and you have ${money(r.cash)}.`; CN.cash=r.cash; CN.step='shop'; return cnDraw(); }
+   if(!r.order){ CN.msg='Could not buy. Try again.'; return cnDraw(); }
+   CN.last={before:r.before!=null?r.before:before,total:r.order.est,after:r.cash}; CN.cash=r.cash; CN.order=r.order; CN.tray={}; CN.msg=''; CN.step='paid'; cnStatus(); try{ SND.right(5); }catch(x){} cnDraw(); setTimeout(()=>{ if(isOpen('canteen')) cnLoad(); },800); })
+   .catch(err=>{ CN.busy=false; CN.msg=String((err&&err.message)||'Could not buy. Try again.').replace(/^Error:\s*/,''); cnDraw(); }); }
+ if(a==='cn-cancel'&&CN.order){ if(CN.busy) return; CN.busy=true; CN.lastStatus=null;
+  return S.call('cnOrderCancel',CN.order.id).then(r=>{ CN.busy=false; CN.order=null; CN.last=null; CN.step='shop'; CN.msg=r&&r.back?'Cancelled. '+money(r.back)+' is back in your canteen money.':''; cnLoad(); })
+   .catch(err=>{ CN.busy=false; CN.msg=String((err&&err.message)||'Could not cancel.').replace(/^Error:\s*/,''); cnLoad(); }); }
+}
+S.place({id:'canteen',name:'Canteen',world:'c',icon:'ycb-ic-canteen',scene:'ycw-c-canteen',door:'canteen',order:62,
+ show:()=>S.on(),
+ sub:()=>{ cnInfo(); const o=CN.info&&CN.info.order; return o?(o.status==='picked'?'You got your food':o.seen?'Your food is being made':'Get your food at the canteen'):'Buy food with canteen money'; },
+ pill:()=>CN.info&&CN.info.cash!=null?K().pill('money',money(CN.info.cash)):'',
+ open:()=>{ if(S.on()) cnOpen(); }});
+
+/* ======================= THE LIBRARY TOWER: My Library (kingdom; door library) ======================= */
+const LB={d:null,sid:null,busy:false,tab:0};
+function lbLoad(force){ const id=sid(); if(!id||!S.on()) return; if(LB.sid!==id){ LB.sid=id; LB.d=null; } if(LB.busy||(LB.d&&!force)) return; LB.busy=true;
+ S.call('libMyLibrary').then(r=>{ LB.busy=false; if(sid()!==LB.sid) return; LB.d=r||{off:true}; if(isOpen('library')) lbDraw(); }).catch(()=>{ LB.busy=false; if(isOpen('library')){ LB.d=LB.d||{err:1}; lbDraw(); } }); }
+function dayName(iso){ try{ const d=new Date(iso+'T12:00:00'), t=new Date(); t.setHours(12,0,0,0); const n=Math.round((d-t)/864e5); if(n===0) return 'today'; if(n===1) return 'tomorrow'; if(n<0) return 'already'; if(n<7) return d.toLocaleDateString([], {weekday:'long'}); return d.toLocaleDateString([], {month:'short',day:'numeric'}); }catch(e){ return iso; } }
+function lbBody(){ const d=LB.d;
+ if(!d) return card('<p>Opening your Library…</p>');
+ if(d.err) return card('<p>Your Library could not open. Try again in a moment.</p>');
+ if(!d.on) return card('<p>Your Library is not open yet.</p>');
+ const pk={}; (d.picks||[]).forEach(p=>{ pk[p[0]]=p; });
+ const tabs=[{name:'For me',icon:'📌'}].concat(d.shelves||[]); if(LB.tab>=tabs.length) LB.tab=0;
+ let h=`<div class="shp-tabs" role="tablist" aria-label="My shelves">${tabs.map((s,i)=>i===LB.tab?K().pill('subj',s.icon+' '+s.name):K().quiet(s.icon+' '+s.name,'data-shp="lb-tab" data-i="'+i+'" role="tab"','tlk-small')).join('')}</div>`;
+ if(LB.tab===0){ const open=(d.picks||[]).filter(p=>!mastered(p[0]));
+  h+=card(`<h3>Picked for you</h3>${open.length?`<div class="shp-grid">${open.map(p=>`<button type="button" class="tlk tlk-tile" data-shp="lesson" data-id="${E(p[0])}"><span class="shp-em" aria-hidden="true">📌</span><b>${E(p[1])}</b><small>From ${E(p[2])}${p[3]?' · due '+E(dayName(p[3])):''}</small></button>`).join('')}</div>`:'<p>Nothing assigned right now. Pick any shelf above and choose a book!</p>'}`); }
+ else { const sh=tabs[LB.tab], books=sh.books||[], groups=[['before','Earlier','Books from before your shelf'],['now','Now','Your shelf right now'],['next','Next','Peek ahead'],['track','Your books','In order']];
+  let nextId=null; ['now','track','next','before'].some(k=>books.some(b=>{ if(b[2]===k&&!mastered(b[0])){ nextId=b[0]; return true; } return false; }));
+  h+=card(`<div class="shp-row">${K().pill('rank','Gold: you mastered it')}${K().pill('now','Your next book')}${K().pill('prog','📌 Picked for you')}</div>`);
+  groups.forEach(g=>{ const bs=books.filter(b=>b[2]===g[0]); if(!bs.length) return;
+   h+=card(`<div class="shp-shelf"><h3>${g[1]}<small>${g[2]}</small></h3><div class="shp-books">${bs.map(b=>{ const m=mastered(b[0]), n=b[0]===nextId;
+    return `<button type="button" class="tlk tlk-tile" data-shp="lesson" data-id="${E(b[0])}" aria-label="${E(b[1])}${m?', mastered':''}${n?', your next book':''}${pk[b[0]]?', picked for you':''}"><span class="shp-bk" aria-hidden="true">${m?'📙':n?'📘':'📗'}${pk[b[0]]?'📌':''}</span><b>${E(b[1])}</b>${m?K().pill('rank','Mastered'):n?K().pill('now','Next'):''}</button>`; }).join('')}</div></div>`); }); }
+ return h; }
+function lbDraw(){ if(isOpen('library')) S.body('library',lbBody()); }
+function lbTitle(){ const s=st(), first=String((s&&s.name)||'').split(' ')[0]; return first?first+'’s Library':'My Library'; }
+S.place({id:'library',name:'My Library',world:'k',icon:'ycw-ic-library',scene:'ycw-k-library',door:'library',order:64,
+ show:()=>{ if(!S.on()) return false; lbLoad(); return !(LB.d&&LB.d.off); },
+ sub:()=>{ const d=LB.d; const n=d&&d.on?(d.picks||[]).filter(p=>!mastered(p[0])).length:0; return n?n+' book'+(n===1?'':'s')+' picked for you':'Choose a book from your shelves'; },
+ pill:()=>'',
+ open:()=>{ if(!S.on()) return; css(); LB.tab=0; S.page({id:'library',world:'k',scene:'ycw-k-library',title:lbTitle(),icon:'ycw-ic-library',body:lbBody()}); lbLoad(true); }});
+
+/* ======================= THE OLAM HABA SKY (city; door olamhaba) =======================
+   His cloud of light as it is today (st.ohb, filled by src/OlamHaba.html as he learns). Words only: NEVER a number. */
+const PEARLS=[
+ ['כָּל יִשְׂרָאֵל יֵשׁ לָהֶם חֵלֶק לָעוֹלָם הַבָּא','Every Jew has a portion in Olam Haba. You are building yours right now!','Sanhedrin 10:1'],
+ ['הַתְקֵן עַצְמְךָ בַּפְּרוֹזְדוֹר','This world is like a hallway, and Olam Haba is the palace. Get ready in the hallway!','Pirkei Avos 4:16'],
+ ['הַיּוֹם לַעֲשׂוֹתָם','Today is for doing. The reward comes later, and it lasts forever.','Eruvin 22a'],
+ ['לְפוּם צַעֲרָא אַגְרָא','According to the effort is the reward. Trying hard is what counts!','Pirkei Avos 5:23'],
+ ['תַּלְמוּד תּוֹרָה כְּנֶגֶד כֻּלָּם','Learning Torah is as great as all the other mitzvos together.','Mishnah Peah 1:1'],
+ ['שְׂכַר מִצְוָה מִצְוָה','The reward of a mitzvah is another mitzvah. One good deed brings the next!','Pirkei Avos 4:2'],
+ ['שֶׁאֵין אַתָּה יוֹדֵעַ מַתַּן שְׂכָרָן שֶׁל מִצְוֹת','We do not know how great the reward of each mitzvah is. Only Hashem knows, so every one matters.','Pirkei Avos 2:1'],
+ ['עוֹלָם שֶׁכֻּלּוֹ טוֹב','Olam Haba is a world that is all good.','Kiddushin 39b']];
+function ohData(){ const s=st(), o=(s&&s.ohb)||{}, d=new Date(), today=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(), fresh=o.d===today;
+ const t=fresh?(o.t||0):0, k=fresh?(o.k||0):0, L=o.L||0;
+ return { t, k, g:Math.min(1,.15+Math.sqrt(t+k*5)/14), tier:L>=4000?5:L>=1500?4:L>=600?3:L>=200?2:L>=40?1:0, S:Math.min(90,o.S||0), P:Array.isArray(o.P)?o.P:[] }; }
+function ohBody(){ const o=ohData();
+ const now=o.t===0?'Your cloud is waiting for today’s first effort.':o.k>=20?'Your Torah learning today is filling your cloud with light!':o.g>.7?'Your cloud is glowing very brightly today!':o.g>.4?'Your cloud is glowing more and more today.':'Your cloud has started to glow today.';
+ const grown=['It is just beginning.','It has grown a halo of light.','Rays of light now shine from it.','Sparks of light now circle it.','It shines with more sparks than ever.','It is shining brighter than ever.'][o.tier];
+ const open=[1,.86,.7,.55,.4,.26][o.tier]; let stars=''; for(let i=0;i<o.S;i++) stars+=`<i style="left:${4+((i*37)%92)}%;top:${((i*53+i*i*7)%100)}%;animation-delay:-${((i*.37)%3).toFixed(2)}s"></i>`;
+ return `<div class="shp-oh" style="--g:${o.g.toFixed(2)}" aria-hidden="true"><div class="shp-stars">${stars}</div><div class="shp-gate"><i style="transform:scaleX(${open})"></i><i style="transform:scaleX(${open})"></i></div><div class="shp-cloud"><span class="shp-ring"></span><i></i><i></i><i></i></div></div>`
+  +card(`<div class="shp-c"><div class="shp-heb" lang="he">עוֹלָם הַבָּא</div><h3>My Olam Haba</h3><p class="shp-row" style="justify-content:center">${K().pill('now',now)}</p><p>${E(grown)}</p></div>`)
+  +card(`<h3>How it works</h3><p>Every time you try, light goes up into your cloud. Right answer or not: <b>the effort is what counts</b>. The pillar of light under the cloud grows all day as you work.</p>
+   <p>📜 <b>Limudei Kodesh</b> fills it fastest: learning Torah is the greatest of all.<br>📚 General Studies learning adds light too.<br>💪 Trying again after a mistake makes it surge.<br>🏁 Finishing a lesson makes it shine.</p>
+   <p>⭐ Every lesson you finish becomes a <b>star that shines forever</b> in your sky. 🚪 The <b>gate of light</b> opens wider as you grow: this world is the hallway, Olam Haba is the palace.</p>`)
+  +card(`<h3>My Pearls of Olam Haba</h3><div class="shp-pearls">${PEARLS.map((x,i)=>o.P.indexOf(i)>=0?`<div class="shp-pearl"><b lang="he">${x[0]}</b><span>${E(x[1])}</span><em>${E(x[2])}</em></div>`:`<div class="shp-pearl no">${K().pill('lock','A pearl still waiting for you. Keep learning!')}</div>`).join('')}</div>
+   <span class="shp-q" lang="he">לְפוּם צַעֲרָא אַגְרָא: According to the effort is the reward.</span><small>Pirkei Avos 5:23</small>
+   <span class="shp-q">We do not know the reward of each mitzvah.</span><small>Pirkei Avos 2:1 · Only Hashem knows how great it is. We just keep adding light.</small>`)
+  +`<div class="shp-fixed">${K().main('Keep going!','data-shp="oh-go"')}</div>`; }
+S.place({id:'olamhaba',name:'Olam Haba',world:'c',icon:'ycw-ic-calm',scene:'ycw-c-calm',door:'olamhaba',order:66,
+ show:()=>S.on(),
+ sub:()=>'My cloud of light',
+ pill:()=>'',
+ open:()=>{ if(!S.on()) return; css(); S.page({id:'olamhaba',world:'c',scene:'ycw-c-calm',title:'Olam Haba',icon:'ycw-ic-calm',body:ohBody()}); try{ SND.right(2); }catch(e){} }});
+
+/* ======================= THE MUSIC PAVILION (city; door music) =======================
+   The panel only. The music player itself (sound effects, songs, fades, Next, school off switch) is the engine in src/Music.html
+   (window.TashbarMusic, muPlay, muPrefs, muTracks); this page uses it and asks the server for the song list (msMusicInfo). Songs come in
+   parts from msMusicPart (the engine asks while a song loads). Music can always be turned off ("No music"). */
+const MU_=()=>(window.TashbarMusic&&TashbarMusic.state)||null;
+const mu=()=>typeof muPlay==='function'&&typeof muPrefs==='function'&&!!MU_();
+function muInfo(){ const M=MU_(); if(!mu()||M.info) return Promise.resolve(); return S.call('msMusicInfo').then(i=>{ M.info=i||{tracks:[]}; }).catch(()=>{}); }
+/* the kinds of music the engine plays (the same keys as MU_MOODS in src/Music.html, which is private to that file) */
+const MOODS=[['mix','🎉','Happy Mix','Everything, shuffled: happy, EDM, trance, techno'],['edm','💥','EDM Drops','Big build-ups, bigger drops'],['trance','🌌','Trance','Soaring, high-energy 138'],
+ ['techno','⚡','Techno','Pounding 128 beats'],['dnb','🏎️','Drum & Bass','Super fast 174'],['happy','😄','Happy Day','Bouncy, cheerful, smiley'],['parade','🎺','Parade','Marching band power'],
+ ['swing','🎷','Swing Time','Jazzy, toe-tapping'],['sunny','🏝️','Sunny Island','Steel drums, banjo, sunshine'],['hero','🚀','Hero Quest','Big, brave adventure'],['arcade','🕹️','Arcade','Beeps, bleeps and beats'],
+ ['game','🎮','Game tunes','Fun and bouncy'],['energy','🎻','Energy','Lively orchestra'],['focus','🎹','Focus','Calm and steady']];
+function muMoods(){ return MOODS; }
+function muCount(k){ try{ return muTracks(k).length; }catch(e){ return 0; } }
+function muNow(){ if(!mu()) return ''; const MU=MU_(); if(MU.loading) return card(`<div class="shp-row"><span class="shp-eq" aria-hidden="true"><i></i><i></i><i></i></span><b>Getting the music ready…</b></div>`);
+ if(!MU.track) return ''; return card(`<div class="shp-row" style="justify-content:space-between"><div class="shp-row">${MU.paused?'':'<span class="shp-eq" aria-hidden="true"><i></i><i></i><i></i></span>'}<div><small>Now playing</small><br><b>${E(MU.track.title)}</b><br><small>${E(MU.track.by||'')}</small></div></div>${K().quiet('Next song','data-shp="mu-next"')}</div>`); }
+function muBody(){ if(!mu()) return card('<p>Music is not ready on this computer. Try again later.</p>');
+ const MU=MU_(), m=muPrefs(), off=MU.info&&MU.info.off, wait=!MU.info;
+ const tile=(k,ic,name,sub,dis)=>`<button type="button" class="tlk tlk-tile" data-shp="mu-mood" data-m="${E(k)}" aria-pressed="${m.mood===k}"${dis?' disabled':''}><span class="shp-em" aria-hidden="true">${ic}</span><b>${E(name)}</b><small>${E(sub)}</small>${m.mood===k?K().pill('now',k==='off'?'On now':'Playing'):''}</button>`;
+ return (off?card(`<p>${K().pill('lock','Your teacher turned music off for the school right now.')} Sound effects still work.</p>`):'')
+  +card(`<p>${wait?'Getting the songs ready…':'Pick a kind of music. It keeps playing new songs of that kind.'}</p><div class="shp-grid">${tile('off','🔇','No music','Quiet. Game sounds stay on.',false)}${muMoods().map(r=>{ const n=muCount(r[0]); return tile(r[0],r[1],r[2],r[3]+(n?' · '+n+' songs':''),off||wait); }).join('')}</div>`)
+  +card(`<label class="shp-vol"><span aria-hidden="true">🔈</span><input type="range" min="0" max="100" value="${Math.round((m.vol==null?.6:m.vol)*100)}" aria-label="Volume" data-shp="mu-vol"><span aria-hidden="true">🔊</span></label><p class="shp-sm">🎧 Please use headphones, so the music is just for you.</p>`)
+  +`<div id="shp-munow">${muNow()}</div>`; }
+function muDraw(){ if(isOpen('music')) S.body('music',muBody()); }
+/* the engine says when a song starts or stops (muUI); the Now playing box follows it */
+try{ if(typeof window.muUI==='function'&&!window.muUI.__shp){ const _u=window.muUI; window.muUI=function(){ const r=_u.apply(this,arguments); try{ const n=document.getElementById('shp-munow'); if(n&&isOpen('music')) n.innerHTML=muNow(); }catch(e){} return r; }; window.muUI.__shp=true; } }catch(e){}
+S.place({id:'music',name:'Music',world:'c',icon:'ycw-ic-music',scene:'ycw-c-music',door:'music',order:68,
+ show:()=>S.on(),
+ sub:()=>{ if(!mu()) return 'Pick your music'; const m=muPrefs(), r=muMoods().find(x=>x[0]===m.mood); return m.mood==='off'||!r?'Music is off':'Playing: '+r[2]; },
+ pill:()=>'',
+ open:()=>{ if(!S.on()) return; css(); try{ muCtx(); muLoadSfx(); }catch(e){} S.page({id:'music',world:'c',scene:'ycw-c-music',title:'Music',icon:'ycw-ic-music',body:muBody()}); muInfo().then(muDraw); }});
+
+/* ======================= THE MESSAGE TOWER: Talk to my Rebbe (kingdom; door talk) =======================
+   He picks ANY staff member, writes a note, and sends it (asked first with TLK.ask). Only that staff member sees it (Classroom.js crSend). */
+const TR={staff:null,to:'',text:'',busy:false,step:'write',sent:'',msg:''};
+function trName(id){ const s=(TR.staff||[]).find(x=>String(x.id)===String(id)); return s?s.name:''; }
+function trBody(){
+ if(TR.step==='sent') return card(`<div class="shp-c"><div style="font-size:54px" aria-hidden="true">✅</div><h3>Your note was sent</h3><p>It went to <b>${E(TR.sent)}</b>. Only they will see it.</p><div class="shp-fixed">${K().quiet('Write another note','data-shp="tr-new"')}</div></div>`);
+ if(TR.step==='ask') return card(K().ask({icon:'✉️',title:TR.busy?'Sending…':'Send this note to '+trName(TR.to)+'?',text:'Only '+trName(TR.to)+' will see it.',yes:'Send',yesAttrs:'data-shp="tr-send"'+(TR.busy?' disabled':''),noAttrs:'data-shp="tr-no"'}),'shp-c');
+ const opts=(TR.staff||[]).map(s=>`<option value="${E(s.id)}"${String(s.id)===String(TR.to)?' selected':''}>${E(s.name)}</option>`).join('');
+ return card(`<div class="shp-form"><p>Write a note to any rebbe or teacher.</p>
+  <label for="shp-tr-to">Who is it for?</label>${TR.staff?`<select id="shp-tr-to"><option value="">Pick a rebbe or teacher</option>${opts}</select>`:'<p>Loading the list…</p>'}
+  <label for="shp-tr-text">Your note</label><textarea id="shp-tr-text" maxlength="1000" placeholder="Write what you want to say.">${E(TR.text)}</textarea>
+  <div class="shp-n" id="shp-tr-n">${TR.text.length} / 1000</div>
+  <p>${K().pill('lock','🔒 Only the person you pick will see this note.')}</p>
+  ${TR.msg?`<p role="alert">${K().pill('now',TR.msg)}</p>`:''}
+  <div class="shp-fixed">${K().main('Send my note','data-shp="tr-ask"')}</div></div>`); }
+function trKeep(){ const ta=document.getElementById('shp-tr-text'), sel=document.getElementById('shp-tr-to'); if(ta) TR.text=ta.value; if(sel) TR.to=sel.value; }
+function trDraw(){ if(isOpen('talk')) S.body('talk',trBody()); }
+function trOpen(note){ if(!S.on()) return; css(); TR.step='write'; TR.msg=''; TR.busy=false; if(note&&!TR.text) TR.text=String(note).slice(0,1000);
+ S.page({id:'talk',world:'k',scene:'ycw-k-post',title:'Talk to my Rebbe',icon:'ycw-ic-talk',body:trBody()});
+ if(!TR.staff) S.call('crStaffList').then(l=>{ TR.staff=l||[]; trDraw(); }).catch(()=>{ TR.staff=[]; trDraw(); }); }
+function trClick(a){
+ if(a==='tr-ask'){ trKeep(); if(!TR.to){ TR.msg='Pick who the note is for.'; return trDraw(); } if(!TR.text.trim()){ TR.msg='Write your note first.'; return trDraw(); } TR.msg=''; TR.step='ask'; tap(); return trDraw(); }
+ if(a==='tr-no'){ TR.step='write'; return trDraw(); }
+ if(a==='tr-new'){ TR.step='write'; TR.msg=''; return trDraw(); }
+ if(a==='tr-send'){ if(TR.busy) return; TR.busy=true; trDraw();
+  return S.call('crSend',TR.to,TR.text).then(r=>{ TR.busy=false; TR.sent=(r&&r.to)||trName(TR.to); TR.text=''; TR.to=''; TR.step='sent'; try{ SND.right(3); }catch(e){} trDraw(); })
+   .catch(err=>{ TR.busy=false; TR.step='write'; TR.msg=String((err&&err.message)||err||'Could not send. Try again.').replace(/^Error:\s*/,''); trDraw(); }); }
+}
+document.addEventListener('input',e=>{ const t=e.target; if(!t) return;
+ if(t.id==='shp-tr-text'){ TR.text=t.value; const n=document.getElementById('shp-tr-n'); if(n) n.textContent=TR.text.length+' / 1000'; }
+ if(t.dataset&&t.dataset.shp==='mu-vol'&&mu()){ const MU=MU_(), m=muPrefs(); m.vol=(+t.value)/100; try{ if(MU.audio) MU.audio.volume=muTarget(); }catch(x){} clearTimeout(MU.shpSave); MU.shpSave=setTimeout(()=>{ try{ if(A.st) saveStudent(A.st); }catch(x){} },1500); } });
+document.addEventListener('change',e=>{ const t=e.target; if(t&&t.id==='shp-tr-to') TR.to=t.value; });
+S.place({id:'talk',name:'Talk to my Rebbe',world:'k',icon:'ycw-ic-talk',scene:'ycw-k-post',door:'talk',order:70,
+ show:()=>S.on(),
+ sub:()=>'Write a note to your rebbe or teacher',
+ pill:()=>'',
+ open:()=>trOpen()});
+
+/* ======================= one tap listener for all five places ======================= */
+document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-shp]'); if(!b||!b.closest('.shk-page,.shk-pop')) return;
+ const a=b.dataset.shp; if(b.disabled||b.getAttribute('aria-disabled')==='true'&&a!=='cn-add') return;
+ if(a.indexOf('cn-')===0) return cnClick(a,b);
+ if(a.indexOf('tr-')===0) return trClick(a);
+ if(a==='lesson'){ const id=b.dataset.id; tap(); return S.openLesson(id); }
+ if(a==='lb-tab'){ LB.tab=+b.dataset.i||0; tap(); return lbDraw(); }
+ if(a==='oh-go') return S.close('olamhaba','home');
+ if(a==='mu-mood'&&mu()){ const m=muPrefs(); m.mood=b.dataset.m; try{ if(m.mood==='off') muStop(); else muPlay(false); }catch(x){} try{ if(A.st) saveStudent(A.st); }catch(x){} return muDraw(); }
+ if(a==='mu-next'&&mu()){ try{ if(muPrefs().mood!=='off') muPlay(true); }catch(x){} return; }
+});
+/* other parts of the app (a lesson's "Still stuck?", Kodesh Quest) can open the Message Tower with a note already written */
+window.SHP={ talk:note=>{ if(!S.on()) return false; S.fly('k',()=>trOpen(note)); return true; }, doors:CN_DOORS.map(d=>d[0]) };
+})();
+</script>
