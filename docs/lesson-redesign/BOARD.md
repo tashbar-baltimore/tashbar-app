@@ -18,14 +18,14 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 
 | Row | Job | Lessons (levels) | Files | Status | Owner (session link) | Last update (UTC) | Where I am / pull requests |
 |---|---|---|---|---|---|---|---|
-| P0 | Engine + 3 sample lessons | MATH.OPS.L03.01, READ.COMP.L05.05, SS.GEO.L07.01 | src/OneBite.html, src/UiKit.html, tests | DONE | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 15:25 | Live: #635. Coordinator follow-up (tap-to-land number line, streak banner on the top strip in lessons): see C1 |
-| C1 | Coordinator fixes after the first play-through | MATH.OPS.L03.01 (hops) | src/OneBiteKit.html, src/MoneyShow.html, tests/lib/onebite.js | TAKEN | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 16:00 | Hop `land:true`; banner on the top strip in lessons (gap B7, part). Math lesson 62 → 51 taps |
-| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | OPEN | | | Note (coordinator): use hop `land:true`, not tap-tap hopping (DESIGN.md "No tap-tap counting"). MATH.OPS.L03.01 is done; its "build 73" still takes 10 taps |
+| P0 | Engine + 3 sample lessons | MATH.OPS.L03.01, READ.COMP.L05.05, SS.GEO.L07.01 | src/OneBite.html, src/UiKit.html, tests | DONE | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 15:25 | Live: #635 |
+| C1 | Coordinator fixes after the first play-through | MATH.OPS.L03.01 (hops) | src/OneBiteKit.html, src/MoneyShow.html, tests/lib/onebite.js | TAKEN | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 18:30 | Hop `land:true` (tap where the frog lands); streak banner on the top strip in lessons (gap B7, part). Math sample 62 → 48 taps |
+| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | TAKEN | https://claude.ai/code/session_01Cri5bRC4HsP9vYnMCURp1S | 2026-11-27 17:04 | Claimed; reading the lessons, batch 1 next |
 | M2 | Math Grades 4–8 | MATH.* L05–L09 (about 22) | src/OneBiteDataMath*.html, src/OneBiteDataUpper.html | OPEN | | | |
-| R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | OPEN | | | Note (coordinator): READ.COMP.L05.05 is done; its Try it 2 tile "the oven is hot by 5" reads oddly ("by 5 o'clock"?). Fix with a fresh review |
+| R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | TAKEN | https://claude.ai/code/session_01JPKZXGrA39PYd4bzsQc36i | 2026-11-27 17:10 | Claimed; starting batch 1 (first 6-10 lessons) |
 | R2 | C45 Grade 4 reading, part 2 | READ.* L05 in C45 (other 30) | src/CoreDataC45*.html | OPEN | | | |
 | R3 | C45 Grade 5 reading, part 1 | READ.* L06 in C45 (first 31) | src/CoreDataC45*.html | OPEN | | | |
-| R4 | C45 Grade 5 reading, part 2 | READ.* L06 in C45 (other 31) | src/CoreDataC45*.html | OPEN | | | |
+| R4 | C45 Grade 5 reading, part 2 | READ.* L06 in C45 (other 31) | src/CoreDataC45*.html | TAKEN | https://claude.ai/code/session_01HB2X6azif4KsNBt5xr8e8K | 2026-11-27 17:18 | Claimed. My 31 = rows 32–62 of the C45 teaching order (src/CoreDataC45.js): READ.LIT.L06.31–41 (Lighthouse 2–12) and READ.FLU.L06.11–30 (Read It 3 Times). Batch 1 (Lighthouse) next |
 | R5 | C68 Grades 6–8 reading | 37 lessons (L07–L09) | src/CoreDataC68*.html | OPEN | | | |
 | R6 | F Grade 2 fluency + C23 | 39 + 3 lessons (L03) | src/CoreDataF*.html, src/CoreDataFH*.html, src/CoreDataC23*.html | OPEN | | | |
 | R7 | Other reading, language, writing (not in a job) | READ.*, LANG.*, WRIT.* in OneBiteData*.html, L03+ (about 40) | src/OneBiteDataRead*.html, src/OneBiteDataWrit.html, src/OneBiteDataUpper.html | OPEN | | | |
@@ -38,6 +38,11 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | S2 | Science | SCI.* (20) | src/CoreDataS2.html, src/CoreDataS3.html and the other src/CoreDataS*.html | OPEN | | | |
 | K1 | Kodesh (Chumash, Kriah, Halacha, Tefillah, Navi, Mishnah) | LK.* (65) | src/OneBiteDataKodesh.html (and src/KriyahMore.html) | OPEN | | | Kodesh: REBBE review after live |
 | L1 | Young levels (seen as bridges and by older boys filling gaps; K–1 boys play the K–1 games) | MATH.*, READ.* L01–L02 (about 70) | src/OneBiteData*.html | OPEN (last) | | | |
+
+## Coordinator notes (play-through 2026-11-27)
+- **Math (M1, M2):** for Grade 2 and up, use hop `land:true` (the boy taps where the frog lands), not tap-tap hopping. See DESIGN.md, "No tap-tap counting". In MATH.OPS.L03.01, "build 73" still takes about 10 taps.
+- **R1 (or whichever row holds it):** READ.COMP.L05.05 is done (P0). Its Try it 2 tile "the oven is hot by 5" reads oddly ("by 5 o'clock"?). Fix it with a fresh review.
+- **All rows:** on a phone, a "try again" line can push the activity below the Check bar (gap B7).
 
 ## Rules for every row (binding)
 - Follow `DESIGN.md` and CLAUDE.md. The quality gate (`node tests/run.js`) must pass; it checks the new rules, including hook variety inside a set.
