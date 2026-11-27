@@ -10,5 +10,6 @@ Downloaded pictures are untrusted files: saved in their own folder, never run, c
 | N6-r1 | 2026-11-26 19:15 | redo | spinner-arrow.png on a fully clear background. | arrived 20:3x, checked 21:15: clear background, pin centred. ACCEPTED, now the spinner arrow (320 px, 41 KB). |
 | N7 | 2026-11-26 19:50 UTC | Unit 7 apple orchard (3D) | orchard-panorama.jpg, orchard-ground.jpg, picnic-blanket.jpg, basket-weave.jpg, apple-skin.jpg, wood-plank.jpg | arrived 20:38, checked 21:15: all six ACCEPTED and compressed (panorama 1920x720, 176 KB). basket-weave kept for later baskets. |
 | N8 | 2026-11-26 22:35 UTC | Unit 8 Bubby's kitchen (3D) | kitchen-panorama.jpg, table-wood.jpg, tablecloth.jpg, kugel-top.jpg, towel-cloth.jpg, ceramic-glaze.jpg | arrived, checked 23:32: all six ACCEPTED (warm, modest, no writing; plain jars, silver candlesticks) and compressed (panorama 1920x720). |
+| N9 | 2026-11-27 05:15 UTC | Unit 9 calm fruit market (3D) | market-panorama.jpg, stall-wood.jpg, awning-stripes.jpg, orange-skin.jpg, lemon-skin.jpg, wicker-basket.jpg | waiting |
 
 Unit 6 now uses the N6 panorama, stone top, path sand, spinner and flag, plus the painted grass and the painted Mendy and Avi made for Shapes (copied into `art/`). The spinner arrow is the painted one from N6-r1.

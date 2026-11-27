@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Under the Basket — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 9 "Parts of 6 to 10" (v2/curriculum/k-numbers/MAP.md): UNDER THE BASKET, at a calm 3D fruit market.
+     A tray of oranges (6 to 10, in rows of five). We count them together. Then some roll over and a big basket comes down over them.
+     "There were eight. I see five. How many are under the basket?" He shows the hidden number on his fingers and taps the check;
+     the basket lifts to show him. A slip: the basket lifts, we count the hidden ones together, and it goes back for another try. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>#hp .fhand{ width:clamp(96px,14vh,130px); aspect-ratio:170/230; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="goal" id="goal"></div>
+    <div id="hp"></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './market9.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function hooks() { GAME.right = () => FR.fingerTaps(H, R.k, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, R.k === 1 ? 2 : R.k - 1, '#hp').concat([{ tap: '#check' }]); }
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+async function countAll(list, last) { await K.bumpAll(list, i => FR.say(FR.Word(i + 1) + (i === list.length - 1 ? last || '!' : ','), { noRepeat: true })); }
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true);
+  const have = H.count(), see = R.n - R.k;
+  if (have === R.k) { await K.lift(); K.sparkle(2.2, 0.4); await FR.yes($('check'), FR.Word(see) + ' and ' + FR.word(R.k) + ' make ' + FR.word(R.n) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++;
+  await FR.say("Let's look under the basket."); await K.lift(); const hid = K.slices().slice(see);
+  await countAll(hid, '.'); await FR.say(FR.Word(R.k) + ' were hiding.'); await K.hide(R.k); H.set(0);
+  await FR.say('Show me on your fingers.'); open();
+}
+const PLAN = [[6, 2], [7, 3], [8, 3], [9, 4], [10, 5], [8, 5]];
+function play(F, i) {
+  return new Promise(async res => {
+    const [n, k] = PLAN[i]; R = { n, k, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
+    K.setKugel(n); $('goal').innerHTML = U5.num(n);
+    await F.say(i === 0 ? 'Oranges at the market! Count them.' : F.pick(['Count the oranges.', 'More oranges! Count with me.']));
+    await countAll(K.slices());
+    await F.say('Close your eyes!'); await K.hide(k); await F.say('Open!');
+    open(); await F.say('There were ' + F.word(n) + '. How many are under the basket?', { repeat: 'There were ' + F.word(n) + '. I see ' + F.word(n - k) + '. How many hide?' });
+  });
+}
+FR.game({
+  id: 'u9-hide', title: 'Under the Basket', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""></div>',
+  init() {
+    K = mount($('world'), { kids: ['mendy', 'dovid'], band });
+    H = FR.fingers(0, true); $('hp').appendChild(H.el); $('check').addEventListener('click', check);
+  },
+  demo: async F => {
+    K.setKugel(6); $('goal').innerHTML = U5.num(6); R = { n: 6, k: 1 };
+    await F.say('Six oranges. Watch me.'); await K.hide(1); await F.say('I see five. Five and one more is six.');
+    await F.say('One is under the basket! One finger.'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); NK.sound.pop();
+    await F.handTo($('check')); await F.handTap(); await K.lift(); await F.say('Yes! One was under the basket.'); H.set(0);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You found every hiding orange!' : 'Good looking! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shake and Spill to Ten — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 9 "Parts of 6 to 10": SHAKE AND SPILL TO TEN (number bonds). A wicker basket holds oranges and lemons.
+     He taps the basket: it shakes, and the fruit spills onto the stall, oranges together and lemons together.
+     He shows the oranges on the orange hand and the lemons on the yellow hand, then taps the check: "Four and three make seven!"
+     A slip: we count the oranges together, then the lemons. Each part is five or less, so one hand shows it. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>.hcol{ display:flex; flex-direction:column; align-items:center; gap:2px; } .hcol .dot{ width:26px; height:26px; border-radius:50%; border:3px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,.2); }
+.hcol .fhand{ width:clamp(86px,12vh,118px); aspect-ratio:170/230; } #hands[hidden], #check[hidden]{ display:none; } #hands{ display:flex; gap:14px; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div id="hands" hidden><div class="hcol" id="h0"><i class="dot" style="background:#FF8A1E"></i></div><div class="hcol" id="h1"><i class="dot" style="background:#FFE03A"></i></div></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './market9.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function hooks() {
+  if (R.stage === 'shake') { GAME.right = () => [{ tap: '.tspot[data-id="cup"]' }]; GAME.wrong = null; return; }
+  const y = R.n - R.r;
+  GAME.right = () => FR.fingerTaps(H[0], R.r, '#h0').concat(FR.fingerTaps(H[1], y, '#h1'), [{ tap: '#check' }]);
+  GAME.wrong = () => FR.fingerTaps(H[0], R.r, '#h0').concat(FR.fingerTaps(H[1], y < 5 ? y + 1 : y - 1, '#h1'), [{ tap: '#check' }]);   /* one too many yellow */
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); H.forEach(h => h.lock(false)); hooks(); }
+async function shake() {
+  if (GAME.phase !== 'answer' || R.stage !== 'shake') return; GAME.phase = 'busy'; FR.lock(true);
+  await K.shake(); await K.spill(R.n, R.r); R.stage = 'parts'; $('hands').hidden = $('check').hidden = false;
+  open(); await FR.say('Show the oranges and the lemons.', { repeat: 'How many oranges? How many lemons? Show them on the hands.' });
+}
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'parts') return; GAME.phase = 'busy'; FR.lock(true); H.forEach(h => h.lock(true));
+  const y = R.n - R.r;
+  if (H[0].count() === R.r && H[1].count() === y) { K.sparkle(0, 0.5); await FR.yes($('check'), FR.Word(R.r) + ' and ' + FR.word(y) + ' make ' + FR.word(R.n) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++; const cs = K.counters();
+  await FR.say("Let's look. Count the oranges."); await K.bumpAll(cs.filter(c => c.userData.red), i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true }));
+  await FR.say('Now the lemons.'); await K.bumpAll(cs.filter(c => !c.userData.red), i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true }));
+  await FR.say(FR.Word(R.r) + ' oranges, ' + FR.word(y) + ' lemons. Fix the hands.'); open();
+}
+const PLAN = [[7, 4], [8, 5], [6, 3], [9, 5], [10, 5], [8, 4]];
+function play(F, i) {
+  return new Promise(async res => {
+    const [n, r] = PLAN[i]; R = { n, r, misses: 0, stage: 'shake' }; done = res; GAME.phase = 'busy'; F.lock(true);
+    K.clearCounters(); H.forEach(h => h.set(0)); $('hands').hidden = $('check').hidden = true;
+    await F.say(F.Word(n) + ' pieces of fruit in the basket.');
+    open(); await F.say(i === 0 ? 'Tap the basket to shake and spill!' : F.pick(['Shake and spill!', 'Shake it!']), { repeat: 'Tap the basket.' });
+  });
+}
+FR.game({
+  id: 'u9-shake', title: 'Shake and Spill to Ten', rounds: 6,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() {
+    K = mount($('world'), { kids: ['mendy', 'dovid'], band }); K.showCup(true); K.cupSpot();
+    H = [FR.fingers(0, true), FR.fingers(0, true)]; $('h0').appendChild(H[0].el); $('h1').appendChild(H[1].el); H[0].el.classList.add('mirror');
+    K.onTap = id => { if (id === 'cup') shake(); }; $('check').addEventListener('click', check);
+  },
+  demo: async F => {
+    R = { n: 7, r: 4, stage: 'demo' }; await F.say('Watch me shake and spill.');
+    await F.handTo(document.querySelector('.tspot[data-id="cup"]')); await F.handTap(); await K.shake(); await K.spill(7, 4);
+    $('hands').hidden = $('check').hidden = false; await F.say('Four oranges. Three lemons.');
+    await F.handTo(H[0].el, .5, .6); for (let t = 1; t <= 4; t++) { await F.handTap(); H[0].set(t); NK.sound.pop(); }
+    await F.handTo(H[1].el, .5, .6); for (let t = 1; t <= 3; t++) { await F.handTap(); H[1].set(t); NK.sound.pop(); }
+    await F.say('Four and three make seven!'); H.forEach(h => h.set(0)); K.clearCounters();
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You found the parts every time!' : 'Good shaking! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
