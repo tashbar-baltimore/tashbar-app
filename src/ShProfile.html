@@ -1,5 +1,408 @@
 <script>
-/* ShProfile.html — THE NEW SHELL (docs/SHELL-OVERHAUL.md; rules: docs/SHELL-CONTRACT.md).
-   Workstream B: his room (My profile: his picture, settings, All my lessons, Skill tree, My week), the Trophy Hall (trophies, ranks, badges, streaks), and the Passport (Torah Tracks, Taryag Quest, Torah Plus, the Chumash page).
-   Only this workstream edits this file. Places register with SHK.place({...}) (src/ShellKit.html). */
+/* ShProfile.html — THE NEW SHELL (docs/SHELL-OVERHAUL.md; rules: docs/SHELL-CONTRACT.md). Workstream B: who he is.
+   Three places, rebuilt fresh with every function the old screens had (GameMap more/me tabs, TorahTracks, TaryagQuest map, TorahPlus):
+   - profile  (his room, Mountain Kingdom): his picture (16 to pick, saved with saveStudent, shown on the page, the home tile and the Arena),
+     settings (Sound, Music, Sign out), a level row per subject, Find my levels, the button tour, recently finished, his badges and rank,
+     his bank, what he bought and his things (stInfo), and the doors: All my lessons, Skill tree, My week (each with the round Back to My profile),
+     the Trophy Hall, his passport and the Store.
+   - trophies (the Trophy Hall): rank, XP, the rank ladder, the 8 badges with what each asks and how close he is, this week vs last week,
+     days in a row, bosses beaten, Arena trophies (arMyStats).
+   - passport (Torah Tracks and his passport): the seven lands and their stations, the passport stamps, Taryag Quest (14 Worlds, the Six-Wall Room,
+     every mitzvah card), Torah Plus (Shabbos and Yom Tov, Did you daven today?, Parsha of the week, My Torah scroll) and the Chumash page.
+   Lessons open only with SHK.openLesson(id). Buttons only from the kit (window.TLK). No money is set here: every amount is the server's.
+   Nothing is drawn by script at rest (no timers). Grade 2 and up only (SHK.on()). Only this workstream edits this file. No double slash in this file. */
+(function(){
+if(typeof A==='undefined'||!window.SHK||window.SHP) return;
+const K=window.SHK, esc=K.esc;
+const Q=()=>window.TLK;
+/* a picture on order (YCB-4) shows its emoji until it is in the library (SHK.ART) */
+const FALL={'ycw-ic-profile':'🙂','ycw-ic-trophy':'🏆','ycw-ic-passport':'🛂','ycw-ic-lessons':'📚','ycw-ic-skills':'🌳','ycw-ic-week':'📈','ycw-ic-kodesh':'📜','ycw-ic-library':'📚','ycb-ic-store':'🛍️','ycb-ic-lock':'🔒'};
+const IC=n=>K.has(n)?n:(FALL[n]||n);
+/* ---------- who he is: the same data the old screens read (his state, his map from kmMyMap, the store's list) ---------- */
+const st=()=>(A&&A.st)||null;
+function M(){ const m=window.TL_MAP, s=st(); return m&&s&&String(m.sid)===String(s.id)?m:null; }
+const WORLDS={MATH:['🧮','Math'],READ:['📖','Reading'],LANG:['✍️','Writing'],SCI:['🔬','Science'],SOC:['🌍','Social Studies'],COMP:['💻','Computing'],HEB:['🔤','Lashon Hakodesh'],ELEC:['🛠️','Electives'],VOC:['🧰','Trades'],LIFE:['💰','Life & Money'],
+ 'K:KRI':['🔤','Kriyah'],'K:CHU':['📜','Chumash'],'K:RAS':['✒️','Rashi'],'K:MSH':['📚','Mishnayos'],'K:GEM':['🏛️','Gemara']};
+const ORDER=['MATH','K:CHU','READ','K:GEM','K:MSH','K:RAS','K:KRI','LANG','HEB','SCI','SOC','LIFE','COMP','ELEC','VOC'];
+const RANKS=[[0,'🥉','Bronze'],[10,'🥈','Silver'],[30,'🥇','Gold'],[60,'💎','Platinum'],[100,'💠','Diamond'],[160,'👑','Legend']];
+const AVS=['🦁','🦅','🐻','🦌','🐬','🐢','🦉','🐝','🐎','🐑','🦒','🐘','🚀','⭐','🎺','🏰'];   /* the Arena's 16 pictures (ArenaPage.html AVS) */
+function srvMast(){ const m=M(), o={}; if(!m) return o; [m.subjects||{},m.kodesh||{}].forEach(G=>Object.keys(G).forEach(k=>(G[k].skills||[]).forEach(x=>{ if(x[2]) o[x[0]]=1; }))); return o; }
+function mast(id,S){ const s=st(), x=s&&s.skills&&s.skills[id]; return !!(x&&x.m)||!!(S||srvMast())[id]; }
+function known(id,S){ const m=M(); return !!(m&&m.lc&&m.lc.known&&m.lc.known.indexOf(id)>=0)&&!mast(id,S); }
+const done=(id,S)=>mast(id,S)||known(id,S);
+function nm(id){ const m=M(), n=m&&m.names&&m.names[id]; if(n) return n; const b=typeof BANK_ALL!=='undefined'&&BANK_ALL[id]; return [b&&b.name?String(b.name):id,'']; }
+/* his subjects and levels, from his map (the same list the old My profile and Skill tree used) */
+function worlds(){ const m=M(); if(!m) return []; const out=[];
+ const add=(k,c,isK)=>{ if(!c||!c.level) return; const W=WORLDS[k]||['⭐',k], sk=(c.skills||[]).slice(); let ids=isK?sk.map(x=>x[0]):((c.unit&&c.unit.ids)||[]); if(!ids.length&&c.now) ids=[c.now]; if(!ids.length&&!sk.length) return;
+  out.push({k,icon:W[0],name:W[1],level:c.level,isK,skills:sk.length?sk:ids.map(id=>[id,1,0]),now:c.now||'',strands:c.strands||{}}); };
+ Object.keys(m.subjects||{}).forEach(k=>add(k,m.subjects[k],false)); Object.keys(m.kodesh||{}).forEach(k=>add(k,m.kodesh[k],true));
+ const o=k=>ORDER.indexOf(k)<0?99:ORDER.indexOf(k); return out.sort((a,b)=>o(a.k)-o(b.k)); }
+const young2=()=>{ const w=worlds(); return !!w.length&&w.every(x=>Number(x.level)<=2); };   /* the old "k2" rule: Skill tree and My week wait until a level above 2 */
+function steps(){ const sk=(st()&&st().skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m).length; }
+function rankOf(n){ let r=RANKS[0],nx=null; RANKS.forEach((x,i)=>{ if(n>=x[0]){ r=x; nx=RANKS[i+1]||null; } }); return {r,nx}; }
+function weekCounts(){ const sk=(st()&&st().skills)||{}, now=Date.now(), d=864e5; let w=0,p=0; Object.keys(sk).forEach(id=>{ const x=sk[id]; if(!x||!x.m) return; const at=Number(x.at)||0; if(at>=now-7*d) w++; else if(at>=now-14*d) p++; }); return {w,p}; }
+function bossesBeaten(ws){ const S=srvMast(); let n=0; ws.forEach(w=>{ const b=w.skills.filter(x=>x[1]); if(w.isK){ if(b.length&&b.every(x=>mast(x[0],S))) n++; return; }
+  const by={}; b.forEach(x=>{ const s=String(x[0]).split('.')[1]; (by[s]=by[s]||[]).push(x[0]); }); Object.keys(by).forEach(s=>{ if(by[s].every(id=>mast(id,S))) n++; }); }); return n; }
+function learned(){ const sk=(st()&&st().skills)||{}, since=Date.now()-7*864e5; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&Number(sk[id].at)>=since).sort((a,b)=>sk[b].at-sk[a].at).slice(0,8); }
+function subjOf(id){ const p=String(id).split('.'); return p[0]==='LK'?'K:'+p[1]:p[0]==='WRIT'?'LANG':p[0]; }
+function dayWord(at){ const d=new Date(Number(at)), t=new Date(), y=new Date(t.getFullYear(),t.getMonth(),t.getDate()-1);
+ return d.toDateString()===t.toDateString()?'Today':d.toDateString()===y.toDateString()?'Yesterday':d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'}); }
+function badges(){ try{ return typeof BADGES!=='undefined'&&Array.isArray(BADGES)?BADGES:[]; }catch(e){ return []; } }
+const earnedB=b=>((st()&&st().badges)||[]).indexOf(b[0])>=0;
+function gradeWord(){ const g=K.grade(); return g==null||g===''?'':Number(g)===0?'Kindergarten':'Grade '+Number(g); }
+const soundOn=()=>{ try{ return typeof SND==='undefined'||SND.on!==false; }catch(e){ return true; } };
+/* HIS PICTURE: kept in his state (st.av, saved with saveStudent) and given to the Arena (localStorage arAv), as today */
+function av(){ const a=st()&&st().av; return AVS.indexOf(a)>=0?a:''; }
+function avHTML(cls){ const a=av(), n=String((st()&&st().name)||'').trim(); return `<span class="${cls}" aria-hidden="true">${a||esc((n[0]||'?').toUpperCase())}</span>`; }
+/* ---------- small pieces: only kit buttons and kit information ---------- */
+const pill=(k,t)=>Q().pill(k,t), box=(k,l,v)=>Q().box(k,l,String(v));
+const sec=(t,extra)=>`<h2 class="shp-h">${t}${extra?' '+extra:''}</h2>`;
+const card=(h,cls)=>`<div class="shk-card shp-card${cls?' '+cls:''}">${h}</div>`;
+const tileB=(ic,ti,sub,attrs,extra)=>`<button type="button" class="tlk tlk-tile shk-tile shp-tile" ${attrs}><span class="shp-in">${K.ic(ic)}<b>${esc(ti)}</b>${sub?`<small>${esc(sub)}</small>`:''}${extra||''}</span></button>`;
+function css(){ if(document.getElementById('shp-css')) return; const s=document.createElement('style'); s.id='shp-css'; s.textContent=`
+.shp-cols{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+.shp-me{display:grid;justify-items:center;gap:10px;text-align:center;position:sticky;top:76px}
+.shp-big{width:124px;height:124px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#FFFDF5,#FFE8A8 70%,#F4C95D);box-shadow:0 0 0 6px rgba(255,255,255,.9),0 0 0 9px #E9C46A,0 16px 34px rgba(120,80,10,.25);animation:shp-glow 5s ease-in-out infinite alternate}
+.shp-big .shp-av{font-size:70px;line-height:1}.shp-av.ltr{font-weight:900;font-size:56px;color:#7C5A10}
+@keyframes shp-glow{from{box-shadow:0 0 0 6px rgba(255,255,255,.9),0 0 0 9px #E9C46A,0 16px 34px rgba(120,80,10,.22)}to{box-shadow:0 0 0 6px rgba(255,255,255,.95),0 0 0 9px #F6D77E,0 18px 44px rgba(233,196,106,.55)}}
+.shp-me h1{margin:4px 0 0;font-size:26px;font-weight:900}
+.shp-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+.shp-set{display:flex;align-items:center;gap:8px;width:100%;justify-content:space-between;padding:6px 0;border-top:1px solid rgba(30,27,75,.08)}
+.shp-set>span:first-child{font-weight:800}
+.shp-main{display:grid;gap:14px;min-width:0}
+.shp-h{margin:4px 2px 0;font-size:20px;font-weight:900;display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:#1E1B4B;text-shadow:0 1px 0 rgba(255,255,255,.8)}
+.shk-body>.shp-card,.shk-body>.shp-tiles,.shk-body>.shp-nodes,.shk-body>.shp-hand,.shk-body>.shp-stamps,.shk-body>.shp-shelves{margin-bottom:14px}
+.shk-body>.shp-h{margin:18px 2px 10px}
+.shp-card h2.shp-h{margin-top:0}
+.shp-lv{display:grid;gap:6px;padding:8px 0;border-bottom:1px solid rgba(30,27,75,.07)}.shp-lv:last-child{border-bottom:0}
+.shp-lv .r{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.shp-lv .n{margin-left:auto;font-weight:700;opacity:.8}
+.shp-bar{display:block;height:10px;border-radius:99px;background:#E9E6F8;overflow:hidden}.shp-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#F6C445,#F59E0B)}
+.shp-li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(30,27,75,.07)}.shp-li:last-child{border-bottom:0}.shp-li .sp{flex:1}.shp-li .e{font-size:26px}.shp-li small{display:block;opacity:.75;font-weight:600}
+.shp-none{margin:4px 0;opacity:.8;font-weight:600}
+.shp-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;align-items:center}
+.shp-badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.shp-b{display:grid;justify-items:center;gap:6px;text-align:center;padding:12px 8px;border-radius:18px;background:rgba(255,255,255,.7);border:2px dashed #D9D4F2}
+.shp-b .e{font-size:38px;line-height:1;filter:grayscale(1);opacity:.45}.shp-b.on{border:2px solid #E9C46A;background:linear-gradient(180deg,#FFFBEA,#FFF)}.shp-b.on .e{filter:none;opacity:1;animation:shp-bob 4s ease-in-out infinite alternate}
+@keyframes shp-bob{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+.shp-b small{opacity:.8;font-weight:600;line-height:1.3}
+.shp-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shp-shelves{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.shp-shelf .h{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.shp-it{display:flex;align-items:center;gap:8px;padding:4px 0;font-weight:600}
+.shp-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.shp-in{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px 14px;width:100%;box-sizing:border-box;min-height:inherit}
+.shp-in .tlk-pill{margin-top:auto}
+.shp-tile .shk-ic{font-size:36px}
+.shp-tour{width:100%;min-height:0}.shp-tour .shp-in{flex-direction:row;align-items:center;gap:14px;flex-wrap:wrap}
+.shp-tprev{display:flex;flex-wrap:wrap;gap:8px;pointer-events:none}
+.shp-pick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.shp-pick .shp-avb{min-height:0;aspect-ratio:1;display:grid;place-items:center;font-size:36px;padding:0;border-radius:50%}
+.shp-pick .shp-avb[aria-pressed="true"]{outline:4px solid #E9C46A;outline-offset:2px}
+.shp-hero{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.shp-medal{font-size:84px;line-height:1;filter:drop-shadow(0 10px 18px rgba(120,80,10,.35));animation:shp-bob 3.5s ease-in-out infinite alternate}
+.shp-hero h2{margin:0;font-size:32px;font-weight:900}
+.shp-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.shp-ladder{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.shp-ladder span{font-size:28px;width:46px;height:46px;display:grid;place-items:center;border-radius:50%;background:#F1EFFA;filter:grayscale(1);opacity:.45}
+.shp-ladder span.got{filter:none;opacity:1;background:#FFF6D8}.shp-ladder span.cur{box-shadow:0 0 0 3px #E9C46A}
+.shp-cheer{font-size:18px;font-weight:800;margin:0}
+.shp-four{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.shp-learned{display:grid;gap:8px}
+.shp-nodes{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.shp-node{min-height:0}.shp-node b{font-size:16px}
+.shp-find{display:flex;align-items:center;gap:8px;background:#fff;border-radius:16px;padding:8px 12px;border:2px solid #E6E2F7}
+.shp-find input{flex:1;border:0;outline:0;font:inherit;font-size:17px;background:transparent;min-width:0}
+.shp-find:focus-within{border-color:#E9C46A}
+.shp-chips{display:flex;flex-wrap:wrap;gap:8px}
+.shp-chips .tlk[aria-pressed="true"]{outline:3px solid #E9C46A;outline-offset:1px}
+.shp-stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.shp-stamp{display:grid;justify-items:center;gap:4px;text-align:center;padding:10px 6px;border-radius:14px;border:3px dashed #CBD5E1;font-size:12px;font-weight:700;color:#94A3B8;min-height:88px;background:rgba(255,255,255,.6)}
+.shp-stamp .e{font-size:28px;filter:grayscale(1);opacity:.4}
+.shp-stamp.on{border:3px solid var(--sc,#4338CA);color:#1E1B4B;background:#FFFDF5;transform:rotate(-3deg)}.shp-stamp.on .e{filter:none;opacity:1}
+.shp-land{border-left:6px solid var(--lc,#4338CA)}
+.shp-occ{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:linear-gradient(135deg,#FFF8E1,#FFEFC2);border:2px solid #F3D27A}
+.shp-occ .he{font-size:24px;font-weight:700;color:#92400E;direction:rtl}
+.shp-occ h2{margin:2px 0;font-size:24px;font-weight:900}
+.shp-occ svg{width:120px;height:94px;flex:none}
+.shp-flame{transform-origin:50% 100%;animation:shp-fl 1.1s ease-in-out infinite alternate}.shp-flame.b{animation-duration:.9s;animation-delay:-.4s}
+@keyframes shp-fl{0%{transform:scale(1,1) rotate(-2deg)}50%{transform:scale(.92,1.08) rotate(2deg)}100%{transform:scale(1.04,.95) rotate(-1deg)}}
+.shp-dav{display:flex;flex-wrap:wrap;gap:10px}
+.shp-dav .tlk{flex:1;min-width:110px}
+.shp-dav .tlk[aria-pressed="true"]{outline:4px solid #E9C46A;outline-offset:1px}
+.shp-he{direction:rtl;font-weight:700}
+.shp-scroll ol{margin:8px 0 0;padding-left:24px;line-height:1.7;font-weight:600}
+.shp-hand{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.shp-pas{font-size:24px;line-height:1.6;direction:rtl;text-align:right;font-weight:700;background:#FFF8E1;border-radius:14px;padding:10px 14px}
+.shp-pv p{margin:6px 0;line-height:1.45}
+.shp-walls{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+@media (prefers-reduced-motion:reduce){.shp-big,.shp-b.on .e,.shp-medal,.shp-flame{animation:none!important}}
+@media (max-width:860px){.shp-cols{grid-template-columns:1fr}.shp-me{position:static}}
+@media (max-width:600px){.shp-four{grid-template-columns:1fr 1fr}.shp-two{grid-template-columns:1fr}.shp-tiles,.shp-nodes,.shp-hand{grid-template-columns:1fr 1fr}.shp-badges{grid-template-columns:1fr 1fr}.shp-h{font-size:18px}.shp-medal{font-size:64px}.shp-hero h2{font-size:26px}}`; document.head.appendChild(s); }
+/* ---------- the store's own list (stInfo), asked once, the same call the old My profile made ---------- */
+const STI={busy:false};
+function storeInfo(redraw){ const I=window.TLSTORE&&TLSTORE.info; if(I) return I; if(STI.r) return STI.r;
+ if(!STI.busy){ STI.busy=true; K.call('stInfo').then(r=>{ STI.busy=false; if(r&&r.ok){ STI.r=r; if(window.TLSTORE&&!TLSTORE.info){ TLSTORE.info=r; TLSTORE.at=Date.now(); } if(redraw) redraw(); } }).catch(()=>{ STI.busy=false; }); }
+ return null; }
+/* ===================================================================== MY PROFILE (his room) */
+const SHELF=[['trail','🌈 Trails'],['tap','💥 Tap blasts'],['color','🎨 App colors'],['bonus','🎁 Bonuses'],['home','🏠 Home upgrades'],['other','✨ Other things']];
+function profileHTML(){ const s=st()||{}, nm0=String(s.name||'').trim(), ws=worlds(), B=badges(), earned=B.filter(earnedB).length, g=M()&&M().growth, lessons=g&&g.total!=null?g.total:steps(), snd=soundOn(), S=srvMast();
+ const me=card(`<div class="shp-big">${avHTML('shp-av shp-bav'+(av()?'':' ltr'))}</div>${Q().quiet('Change','data-shp="pick" aria-label="Change my picture"','tlk-small')}
+  <h1>${esc(nm0||'Me')}</h1>${gradeWord()?pill('subj',gradeWord()):''}${schoolHTML()}
+  <div class="shp-boxes">${box('rank','Days in a row',(s.streak&&s.streak.n)||0)}${box('rank','Badges',earned)}${box('prog','Lessons done',lessons)}</div>
+  <h2 class="shp-h">My settings</h2>
+  <div class="shp-set"><span>Sound</span>${pill(snd?'prog':'lock',snd?'On':'Off')}${Q().quiet(snd?'Turn off':'Turn on','data-shp="sound"','tlk-small')}</div>
+  <div class="shp-set"><span>Music</span>${Q().quiet('Choose music','data-shp="music"','tlk-small')}</div>
+  <div class="shp-set"><span>Done for now?</span>${Q().quiet('Sign out','data-shp="out"','tlk-small')}</div>`,'shp-me');
+ /* his levels: one row per subject on his map */
+ const lv=ws.map(w=>{ const b=w.skills.filter(x=>x[1]), tot=b.length||w.skills.length, dn=(b.length?b:w.skills).filter(x=>done(x[0],S)).length, pc=tot?Math.round(100*dn/tot):0;
+  return `<div class="shp-lv"><div class="r">${pill('subj',w.name)}${pill('rank','Level '+w.level)}<span class="n">${dn} of ${tot} steps</span></div><span class="shp-bar" role="img" aria-label="${dn} of ${tot} steps"><i style="width:${pc}%"></i></span></div>`; }).join('')
+  ||'<p class="shp-none">Your rebbe or teacher sets your levels. Until then, find your levels below.</p>';
+ const P=s.place||{}, left=[['MATH','MATH','Math'],['READ','READ','Reading'],['SOC','SS','Social Studies']];
+ const find=typeof window.tlOpenCheck==='function'&&left.some(x=>!P[x[0]])?`<div class="shp-row">${pill('now','Find my levels: a quick check each')}${left.map(x=>Q().quiet(x[2]+(P[x[0]]?' again':''),`data-shp="check" data-s="${x[1]}"`,'tlk-small')).join('')}</div>`:'';
+ const levels=card(sec('My levels')+lv+find);
+ const tour=sec('How the buttons work')+`<button type="button" class="tlk tlk-tile shk-tile shp-tour" data-shp="tour" aria-label="Show me how the buttons work"><span class="shp-in"><span class="shp-tprev" aria-hidden="true">${pill('money','$5')}${pill('prog','2 of 3')}${pill('now','Now')}${pill('rank','Gold')}</span><span><b>Show me how</b><small>A short tour on your home page</small></span></span></button>`;
+ const wk=((g&&g.week)||[]).slice(0,5);
+ const fin=card(sec('Recently finished')+(wk.length?wk.map(x=>{ const w=WORLDS[subjOf(x[0])]; return `<div class="shp-li">${w?pill('subj',w[1]):''}<b>${esc(nm(x[0])[0])}</b><span class="sp"></span><span>${esc(dayWord(x[1]))}</span></div>`; }).join(''):'<p class="shp-none">Nothing finished this week yet. Your next lesson is waiting on My map.</p>'));
+ const R=rankOf(steps()).r;
+ const bdg=card(sec('My badges',pill('prog',earned+' of '+B.length+' earned')+' '+pill('rank','Rank: '+R[2]))+`<div class="shp-badges">${B.map(b=>`<div class="shp-b${earnedB(b)?' on':''}"><span class="e" aria-hidden="true">${b[1]}</span><b>${esc(b[2])}</b>${pill('money',b[5])}${earnedB(b)?pill('rank','Earned'):''}</div>`).join('')}</div><div class="shp-row">${Q().quiet('Open the Trophy Hall','data-shp="go" data-k="trophies"')}</div>`);
+ const L=(s.ledger||[]).filter(x=>x&&x.at&&Number(x.amt)>0), last=L[0];
+ const bank=card(sec('My bank')+`<div class="shp-two">${box('money',(Q().WORDS&&Q().WORDS.money)||'My money',K.money())}${last?box('money','Latest money in · '+dayWord(last.at),'+$'+Number(last.amt).toFixed(2)):box('money','Latest money in','None yet')}</div><div class="shp-row">${Q().quiet('Open my bank','data-shp="bank"')}</div>`);
+ const I=storeInfo(redrawProfile), items={}; ((I&&I.items)||[]).forEach(x=>{ items[x.id]=x; });
+ const SW={waiting:'On its way',handed:'Got it',cancelled:'Money back'};
+ const ord=((I&&I.orders)||[]).slice(0,5).map(o=>{ const it=items[o.item]||{}, kept=it.kind==='wear'||it.kind==='keep', w=o.status==='cancelled'?SW.cancelled:kept?'':(SW[o.status]||'Done');
+  return `<div class="shp-li"><span class="e" aria-hidden="true">${esc(o.emoji||it.emoji||'🎁')}</span><b>${esc(o.label||it.name||'')}<small>${esc(it.cat==='real'?'Real prize':/canteen|card/.test(it.kind||'')?'Canteen':'Store')} · ${esc(dayWord(o.at))}</small></b><span class="sp"></span>${pill('money','$'+(Number(o.cents||0)/100).toFixed(2))}${w?pill('prog',w):''}</div>`; }).join('');
+ const bought=card(sec('Recently bought')+(!I?'<p class="shp-none">Loading…</p>':ord||'<p class="shp-none">Nothing bought yet.</p>')+(ord?`<div class="shp-row">${Q().quiet('See all','data-shp="shop" data-t="mine"')}</div>`:''));
+ const wear=(s.store&&s.store.wear)||{}, by={}; ((I&&I.owned)||[]).map(id=>items[id]).filter(Boolean).forEach(x=>{ const k=x.slot==='trail'||x.slot==='tap'||x.slot==='color'?x.slot:x.slot==='theme'||x.grp==='home'?'home':x.grp==='bonus'?'bonus':'other'; (by[k]=by[k]||[]).push(x); });
+ const shelves=SHELF.filter(z=>by[z[0]]).map(z=>card(`<div class="h"><b>${z[1]}</b>${by[z[0]].some(x=>x.kind==='wear')?Q().quiet('Change','data-shp="shop" data-t="fun"','tlk-small'):''}</div>${by[z[0]].map(x=>`<div class="shp-it"><span aria-hidden="true">${esc(x.emoji||'🎁')}</span>${esc(x.name)}${wear[x.slot]===x.id?' '+pill('prog','In use'):''}</div>`).join('')}`,'shp-shelf')).join('');
+ const stuff=sec('My stuff')+(!I?card('<p class="shp-none">Loading…</p>'):shelves?`<div class="shp-shelves">${shelves}</div>`:card('<p class="shp-none">Nothing yet. Things you buy in the Tashbar Store show up here.</p>'));
+ const k2=young2();
+ let doors=tileB(IC('ycw-ic-lessons'),'All my lessons','Every lesson in one place','data-shp="lessons"');
+ if(!k2&&ws.length) doors+=tileB(IC('ycw-ic-skills'),'Skill tree','Every skill on your map, in order','data-shp="tree"');
+ if(!k2) doors+=tileB(IC('ycw-ic-week'),'My week','Your rank and what you learned','data-shp="week"');
+ doors+=tileB(IC('ycw-ic-trophy'),'Trophy Hall','Rank, badges and trophies','data-shp="go" data-k="trophies"');
+ doors+=tileB(IC('ycw-ic-passport'),'My Torah passport','Stamps, Taryag Quest, Torah Plus','data-shp="go" data-k="passport"');
+ doors+=tileB(IC('ycb-ic-store'),'Tashbar Store','Find more things to buy','data-shp="shop" data-t="fun"');
+ const more=sec('More of my things')+`<div class="shp-tiles">${doors}</div>`;
+ return `<div class="shp-cols">${me}<div class="shp-main">${levels}${more}${tour}${fin}${bdg}${bank}${bought}${stuff}</div></div>`; }
+/* his school band (a family, homeschool pod, group or another school sees its own name; sbMySchool, as the old home asked) */
+const SCH={sid:null};
+function schoolHTML(){ const s=st(); if(!s) return ''; if(SCH.sid!==s.id&&window.TL_MYSCHOOL===undefined){ SCH.sid=s.id; K.call('sbMySchool').then(r=>{ window.TL_MYSCHOOL=r||null; redrawProfile(); }).catch(()=>{}); }
+ const m=window.TL_MYSCHOOL; if(!m||m.def) return ''; const k={family:'family',homeschool:'homeschool pod',group:'group',school:'school'}[m.kind]||'school';
+ return `<p class="shp-none" style="margin:0">${esc(String(m.emoji||'🏫'))} <b>${esc(m.name||'')}</b></p>${pill('subj','My '+k)}`; }
+function redrawProfile(){ if(document.getElementById('shk-profile')) K.body('profile',profileHTML()); }
+function openProfile(){ if(!K.on()) return; css(); K.page({id:'profile',world:'k',scene:'ycw-k-room',title:'My profile',icon:IC('ycw-ic-profile'),body:profileHTML()}); }
+function openPick(){ const cur=av(); K.pop({id:'profile-pick',world:'k',title:'Pick your picture',icon:IC('ycw-ic-profile'),
+ body:`<div class="shp-pick">${AVS.map(a=>`<button type="button" class="tlk tlk-tile shp-avb" data-shp="avk" data-k="${a}" aria-label="${a}" aria-pressed="${a===cur}">${a}</button>`).join('')}</div>`}); }
+function pickAv(k){ const s=st(); if(AVS.indexOf(k)<0||!s) return; s.av=k; try{ localStorage.setItem('arAv',k); }catch(e){} try{ saveStudent(s); }catch(e){ console.error('ShProfile save',e); }
+ K.close('profile-pick'); redrawProfile(); }
+/* INNER PAGES of My profile: the round Back returns to My profile; the house goes home */
+function inner(id,title,icon,body,scene){ css(); return K.page({id,world:'k',scene:scene||'ycw-k-room',title,icon,body,back:true,onBack:()=>K.close(id,'back'),onClose:how=>{ if(how==='home') K.closeAll(); }}); }
+/* ---- My week (the old "me" page) ---- */
+function weekHTML(){ const ws=worlds(), n=steps(), R=rankOf(n), wk=weekCounts(), s=(st()&&st().streak&&st().streak.n)||0, bb=bossesBeaten(ws);
+ const cheer=wk.w>wk.p?`You're stronger than last week! ${wk.w} steps vs ${wk.p}.`:wk.w&&wk.w===wk.p?`Same as last week (${wk.w}). One more step beats it!`:wk.p?`Last week: ${wk.p} steps. Let's beat it. You're ${wk.p-wk.w+1} away!`:`Every step you clear shows up here. Let's climb!`;
+ const L=learned();
+ return card(`<div class="shp-hero"><span class="shp-medal" aria-hidden="true">${R.r[1]}</span><div><h2>${R.r[2]}</h2><div class="shp-pills">${pill('rank','⚡ '+(n*100).toLocaleString()+' XP')}${pill('prog',n+' step'+(n===1?'':'s')+' mastered')}${R.nx?pill('prog',(R.nx[0]-n)+' to '+R.nx[2]):pill('rank','Top rank!')}</div><div class="shp-ladder">${RANKS.map(r=>`<span class="${n>=r[0]?'got':''}${r===R.r?' cur':''}" title="${r[2]}: ${r[0]} steps">${r[1]}</span>`).join('')}</div></div></div>`)
+ +card(`<p class="shp-cheer">${esc(cheer)}</p><div class="shp-four" style="margin-top:10px">${box('prog','This week',wk.w)}${box('prog','Last week',wk.p)}${box('rank','Days in a row',s)}${box('rank','Bosses beaten',bb)}</div>`)
+ +card(sec('What I learned this week')+`<div class="shp-learned">${L.length?L.map(id=>{ const x=nm(id), W=WORLDS[subjOf(id)]; return `<div class="shp-li">${W?pill('subj',W[1]):''}<b>${esc(x[0])}${x[1]?`<small>${/ Level \d+$/.test(x[1])?esc(x[1]):'I learned: '+esc(x[1])}</small>`:''}</b></div>`; }).join(''):'<p class="shp-none">Nothing yet this week. Clear a level and it shows up here!</p>'}</div>`)
+ +card(sec('My badges')+`<div class="shp-badges">${badges().map(b=>`<div class="shp-b${earnedB(b)?' on':''}" title="${esc(b[3])}"><span class="e" aria-hidden="true">${b[1]}</span><b>${esc(b[2])}</b></div>`).join('')}</div>`); }
+/* ---- Skill tree ---- */
+const TR={k:''};
+function treeHTML(){ const ws=worlds(); if(!ws.length) return card('<p class="shp-none">Your map is almost ready. Your rebbe or teacher sets your levels.</p>');
+ const w=ws.find(x=>x.k===TR.k)||ws[0]; TR.k=w.k; const S=srvMast();
+ const chips=`<div class="shp-chips">${ws.map(x=>Q().quiet(x.name,`data-shp="treew" data-k="${esc(x.k)}" aria-pressed="${x.k===w.k}"`,'tlk-small')).join('')}</div>`;
+ const br=[], idx={}; w.skills.forEach(x=>{ const s=w.isK?'K':(String(x[0]).split('.')[1]||''); if(!(s in idx)){ idx[s]=br.length; br.push({name:w.isK?(w.name+' Level '+w.level):(w.strands[s]||s),items:[]}); } br[idx[s]].items.push(x); });
+ const built=w.skills.filter(x=>x[1]), nd=built.filter(x=>done(x[0],S)).length, pc=built.length?Math.round(100*nd/built.length):0;
+ let h=card(chips+`<h2 class="shp-h" style="margin-top:12px">${esc(w.name)} ${pill('rank','Level '+w.level)}</h2><span class="shp-bar" role="img" aria-label="${nd} of ${built.length} skills done"><i style="width:${pc}%"></i></span><p class="shp-none">${nd} of ${built.length} skills done${nd===built.length&&built.length?' · Level complete!':''}</p>`);
+ br.forEach(b=>{ const bb=b.items.filter(x=>x[1]), bd=bb.filter(x=>done(x[0],S)).length, here=b.items.some(x=>x[0]===w.now);
+  h+=card(sec(esc(b.name),(here?pill('now','You are here'):'')+(bb.length&&bd===bb.length?pill('prog','Complete'):pill('prog',bd+' of '+bb.length)))+`<div class="shp-nodes">${b.items.map(x=>{ const id=x[0], n=nm(id), s=nodeSt(w,x,S);
+   const p=s==='d'?pill('prog','✓ Done'):s==='k'?pill('prog','You know it'):s==='now'?pill('now','Your goal now'):s==='s'?pill('lock','Soon'):pill('lock','Locked');
+   return `<button type="button" class="tlk tlk-tile shk-tile shp-node" data-shp="node" data-id="${esc(id)}" data-st="${s}"><span class="shp-in"><b>${esc(n[0])}</b>${n[1]&&!/ Level \d+$/.test(n[1])?`<small>${esc(n[1])}</small>`:''}${p}</span></button>`; }).join('')}</div>`); });
+ return h; }
+function nodeSt(w,x,S){ const id=x[0]; return !x[1]?'s':mast(id,S)?'d':known(id,S)?'k':id===w.now?'now':'u'; }
+function nodeSheet(id,s){ const n=nm(id), can=s==='d'||s==='k'||s==='now';
+ const line=s==='d'?pill('prog','✓ Mastered'):s==='k'?pill('prog','You know it: skipped'):s==='now'?pill('now','Your goal now'):s==='s'?pill('lock','Coming soon'):pill('lock','Locked: clear the steps before it first');
+ K.pop({id:'profile-node',world:'k',title:n[0],icon:IC('ycw-ic-skills'),body:`<div class="shp-pv">${n[1]?`<p><b>${/ Level \d+$/.test(n[1])?esc(n[1]):'You learn: '+esc(n[1])}</b></p>`:''}<p>${line}</p>${can?`<div class="shp-row">${Q().main(s==='now'?'Start':'Play it again',`data-shp="play" data-id="${esc(id)}"`)}</div>`:''}</div>`}); }
+/* ---- All my lessons ---- */
+const LB={f:'all',q:''};
+const LF=[['all','All'],['kod','Kodesh'],['gen','General'],['prog','Started'],['new','New'],['done','Done']];
+function lessonsHTML(){ const ws=worlds(), S=srvMast(), sk=(st()&&st().skills)||{};
+ const mr=window.tlMastery&&typeof tlMastery.due==='function'?(()=>{ try{ return tlMastery.due().length; }catch(e){ return 0; } })():0;
+ let h=card(`<div class="shp-find"><span aria-hidden="true">🔎</span><input id="shp-q" type="search" autocomplete="off" placeholder="Find a lesson…" value="${esc(LB.q)}" aria-label="Find a lesson"></div><div class="shp-chips" style="margin-top:10px">${LF.map(f=>Q().quiet(f[1],`data-shp="lf" data-f="${f[0]}" aria-pressed="${LB.f===f[0]}"`,'tlk-small')).join('')}</div>`);
+ const top=[];
+ if(mr&&typeof window.tlMasteryQuick==='function') top.push(tileB('🔁','Keep it strong',mr+' skill'+(mr===1?' is':'s are')+' ready for a quick review','data-shp="mr"',pill('now','About 5 minutes')));
+ const started=Object.keys(sk).filter(id=>sk[id]&&!sk[id].m&&typeof BANK_ALL!=='undefined'&&BANK_ALL[id]).sort((a,b)=>(Number(sk[b].at)||0)-(Number(sk[a].at)||0)).slice(0,3);
+ started.forEach(id=>top.push(tileB('⏯️',nm(id)[0],'Pick up where you left off',`data-shp="play" data-id="${esc(id)}"`,pill('now','Started'))));
+ top.push(tileB(IC('ycw-ic-library'),'My bookshelf','Your books in the Library Tower','data-shp="go" data-k="library"'));
+ if(!LB.q&&LB.f==='all') h+=sec('Pick up where you left off')+`<div class="shp-tiles">${top.join('')}</div>`;
+ const q=LB.q.toLowerCase(); let any=false;
+ ws.forEach(w=>{ if(LB.f==='kod'&&!w.isK) return; if(LB.f==='gen'&&w.isK) return;
+  const rows=w.skills.filter(x=>x[1]).filter(x=>{ const id=x[0], s=nodeSt(w,x,S), n=nm(id);
+   if(q&&(n[0]+' '+n[1]).toLowerCase().indexOf(q)<0) return false;
+   if(LB.f==='done') return s==='d'||s==='k'; if(LB.f==='prog') return !!(sk[id]&&!sk[id].m)||s==='now'; if(LB.f==='new') return s==='u'||s==='now'&&!sk[id]; return true; });
+  if(!rows.length) return; any=true;
+  h+=sec(esc(w.icon+' '+w.name),pill('rank','Level '+w.level))+`<div class="shp-nodes">${rows.map(x=>{ const id=x[0], n=nm(id), s=nodeSt(w,x,S), can=s==='d'||s==='k'||s==='now';
+   return `<button type="button" class="tlk tlk-tile shk-tile shp-node" data-shp="${can?'play':'locked'}" data-id="${esc(id)}"><span class="shp-in"><b>${esc(n[0])}</b>${n[1]&&!/ Level \d+$/.test(n[1])?`<small>${esc(n[1])}</small>`:''}${s==='d'||s==='k'?pill('prog','✓ Done'):s==='now'?pill('now','Next'):pill('lock','Locked')}</span></button>`; }).join('')}</div>`; });
+ if(!any) h+=card('<p class="shp-none">'+(ws.length?'Nothing here. Try another word or filter.':'Your map is almost ready. Your rebbe or teacher sets your levels.')+'</p>');
+ h+=sec('Torah Tracks and Taryag Quest')+`<div class="shp-tiles">${tileB(IC('ycw-ic-passport'),'My Torah passport','Every land, every station, every stamp','data-shp="go" data-k="passport"')}</div>`;
+ return h; }
+/* ===================================================================== THE TROPHY HALL */
+function trophiesHTML(){ const ws=worlds(), s=st()||{}, n=steps(), R=rankOf(n), wk=weekCounts(), B=badges(), earned=B.filter(earnedB).length;
+ const hero=card(`<div class="shp-hero"><span class="shp-medal" aria-hidden="true">${R.r[1]}</span><div><h2>${R.r[2]}</h2><div class="shp-pills">${pill('rank','⚡ '+(n*100).toLocaleString()+' XP')}${pill('prog',n+' step'+(n===1?'':'s')+' mastered')}${R.nx?pill('prog',(R.nx[0]-n)+' steps to '+R.nx[2]):pill('rank','Top rank!')}</div><div class="shp-ladder">${RANKS.map(r=>`<span class="${n>=r[0]?'got':''}${r===R.r?' cur':''}" title="${r[2]}: ${r[0]} steps">${r[1]}</span>`).join('')}</div></div></div>`);
+ const four=card(`<div class="shp-four">${box('prog','This week',wk.w)}${box('prog','Last week',wk.p)}${box('rank','Days in a row',(s.streak&&s.streak.n)||0)}${box('rank','Bosses beaten',bossesBeaten(ws))}</div>`);
+ const TIERS={bronze:'Bronze',silver:'Silver',gold:'Gold',legend:'Legendary'};
+ const bd=card(sec('My badges',pill('prog',earned+' of '+B.length+' earned'))+`<div class="shp-badges shp-bd8">${B.map(b=>{ const on=earnedB(b); let pr=null; try{ pr=typeof b[7]==='function'?b[7](s):null; }catch(e){ pr=null; }
+  return `<div class="shp-b${on?' on':''}"><span class="e" aria-hidden="true">${b[1]}</span><b>${esc(b[2])}</b><small>${esc(on&&b[8]?b[8]:b[3])}</small>${TIERS[b[4]]?pill('rank',TIERS[b[4]]):''}${pill('money',b[5])}${on?pill('rank','Earned'):pr&&pr[1]?pill('prog',Math.min(pr[0],pr[1])+' of '+pr[1]):''}</div>`; }).join('')}</div>`);
+ const ar=TH.ar, T=arTrophies(ar);
+ const arena=card(sec('Chavrusa Arena trophies',ar?pill('rank',(ar.wins||0)+' win'+((ar.wins||0)===1?'':'s'))+pill('prog','Taught '+(ar.taught||0)):'')+(!ar?'<p class="shp-none">Loading…</p>':T.length?`<div class="shp-badges">${T.map(t=>`<div class="shp-b on"><span class="e" aria-hidden="true">${t[0]}</span><b>${esc(t[1])}</b></div>`).join('')}</div>`:'<p class="shp-none">Win a duel or teach a chavrusa in the Arena and your first trophy stands here.</p>'));
+ return hero+four+bd+arena; }
+const TH={ar:null,busy:false};
+const ARS=[['LK','Kodesh','📜'],['HEB','Lashon Hakodesh','א'],['MATH','Math','➗'],['READ','Reading','📖'],['WRIT','Writing','✏️'],['LANG','Language','🔤'],['SCI','Science','🔬'],['SOC','Social Studies','🌎'],['SS','Social Studies','🌎'],['COMP','Computing','💻'],['ELEC','Electives','⚛️'],['LIFE','Life Skills','🧭'],['ART','Arts','🎨'],['FF','Fact Finders','🔎']];
+function arTrophies(s){ const T=[]; if(!s) return T; [[1,'🥉','First win'],[5,'🥈','5 wins'],[10,'🥇','10 wins'],[25,'🏆','25 wins'],[50,'👑','50 wins']].forEach(x=>{ if((s.wins||0)>=x[0]) T.push([x[1],x[2]]); });
+ [[1,'🕯️','Taught a chavrusa'],[5,'📚','Taught 5 times'],[15,'🌟','Rebbe of the Arena: taught 15']].forEach(x=>{ if((s.taught||0)>=x[0]) T.push([x[1],x[2]]); });
+ [[1,'🤝','Good sport'],[10,'💛','Mentsch of the Arena: 10 handshakes']].forEach(x=>{ if((s.shakes||0)>=x[0]) T.push([x[1],x[2]]); }); [[1,'⚡','Lightning winner'],[5,'🌩️','Storm master: 5 Lightning wins']].forEach(x=>{ if((s.lwins||0)>=x[0]) T.push([x[1],x[2]]); });
+ Object.keys(s.subj||{}).forEach(k=>{ if(s.subj[k]>=3){ const S=ARS.find(x=>x[0]===k); if(S) T.push([S[2],S[1]+' champion']); } }); return T; }
+function openTrophies(back){ if(!K.on()) return; css();
+ const o={id:'trophies',world:'k',scene:'ycw-k-trophies',title:'Trophy Hall',icon:IC('ycw-ic-trophy'),body:trophiesHTML()};
+ if(back){ o.back=true; o.onBack=()=>K.close('trophies','back'); o.onClose=how=>{ if(how==='home') K.closeAll(); }; } K.page(o);
+ if(!TH.busy){ TH.busy=true; K.call('arMyStats').then(r=>{ TH.busy=false; TH.ar=r||{}; if(document.getElementById('shk-trophies')) K.body('trophies',trophiesHTML()); }).catch(()=>{ TH.busy=false; TH.ar=TH.ar||{}; if(document.getElementById('shk-trophies')) K.body('trophies',trophiesHTML()); }); } }
+/* ===================================================================== THE PASSPORT: Torah Tracks, the passport, Taryag Quest, Torah Plus, the Chumash page */
+const LANDS={HAL:['#16a34a','🍎','The Orchard of Halacha','Brachos, Shabbos, kashrus, mitzvos we do every day'],TEF:['#2563eb','🙏','The Gates of Tefillah','From Modeh Ani to Shemoneh Esrei and Ani Ma\'amin'],YT:['#d97706','🕎','The Calendar Road','Every Yom Tov, every month, every fast'],MID:['#db2777','💛','The Garden of Middos','Pirkei Avos and the middos of a mentsch'],PAR:['#7c3aed','📜','The Parsha Trail','From Bereishis to Vezos Habrachah'],NAV:['#b91c1c','👑','The Road of the Nevi\'im','Yehoshua, Shmuel, Dovid, Eliyahu, Ezra'],CHEM:['#0f766e','💎','The Chemdas Treasury','Yediyos Kelaliyos: lists, orders, who and when']};
+const GR={1:'Grades K–2',2:'Grades 3–5',3:'Grades 6–8'};
+const lvl=id=>+(/\.L(\d\d)\./.exec(id)||[0,1])[1];
+const short=n=>String(n).replace(/^[^:]*:\s*/,'');
+function stations(k){ if(typeof BANK_ALL==='undefined') return []; const O=window.TL_LK_ORDER&&window.TL_LK_ORDER[k]; if(Array.isArray(O)&&O.length) return O.filter(id=>BANK_ALL[id]);   /* the Torah Tracks order (TorahTracks.html fills it) */
+ const re=new RegExp('^LK\\.'+k+'\\.L\\d\\d\\.'); return Object.keys(BANK_ALL).filter(id=>re.test(id)&&BANK_ALL[id]&&BANK_ALL[id].name).sort(); }
+function allStations(){ return Object.keys(LANDS).reduce((a,k)=>a.concat(stations(k)),[]); }
+const nextIn=k=>stations(k).find(id=>!done(id))||null;
+function opener(id){ const b=BANK_ALL[id]||{}; if(b.op) return String(b.op); const t=String((b.teach&&b.teach[0]&&b.teach[0].how)||'').replace(/^Opener:\s*/,''); const m=/^(.*?[.!?])\s/.exec(t); return m?m[1]:t; }
+/* Taryag Quest (TaryagQuest.html keeps the lessons; window.TL_TRY = {cards, order}): the 14 Worlds of the Rambam on the 14 finger bones, the five pegs */
+const TQW=[['Mada','Knowing Hashem','🗼'],['Ahavah','Love of Hashem every day','🏠'],['Zmanim','Holy Times','🕰️'],['Nashim','The Jewish Home','🌸'],['Kedushah','Holy Living, Kosher Eating','🍽️'],['Hafla\'ah','Promises and Words','🌉'],['Zera\'im','Seeds and Giving','🌾'],['Avodah','The Beis HaMikdash','⛰️'],['Korbanos','Coming Close','🔥'],['Taharah','Pure and Clean','💧'],['Nezikin','Careful with Others','🚸'],['Kinyan','Honest Business','🏪'],['Mishpatim','Lending, Working, Borrowing','🛠️'],['Shoftim','Judges, Kings and Peace','⚖️']];
+const TQP=[['📜','613 = Torah + 2','Torah is 611, plus the first two of the Aseres HaDibros that we heard from Hashem Himself.'],['🙆','248 + 365','248 Do mitzvos, like the parts of the body. 365 Don\'t mitzvos, like the days of the year.'],['🧶','Tzitzis math','Tzitzis is 600, plus 8 strings and 5 knots: 613.'],['👑','620 letters','The Aseres HaDibros have 620 letters: 613, plus 7 mitzvos of the Chachamim.'],['✋','Yad = 14','The hand has 14 bones in its fingers. Each bone is one World of the Rambam\'s 14 books.']];
+const TRY=()=>window.TL_TRY&&TL_TRY.cards&&Array.isArray(TL_TRY.order)?TL_TRY:null;
+const tqMet=()=>{ const T=TRY(); return T?T.order.filter(id=>T.cards[id]&&T.cards[id].n>0&&done(id)).length:0; };
+/* Torah Plus: the Jewish day (the browser's Hebrew calendar), davening, the Parsha his rebbe set, the Torah scroll */
+const today=()=>window.TL_TODAY?new Date(window.TL_TODAY):new Date();
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+function heb(d){ try{ const p=new Intl.DateTimeFormat('en-u-ca-hebrew',{day:'numeric',month:'long'}).formatToParts(d); return {day:+p.find(x=>x.type==='day').value,month:p.find(x=>x.type==='month').value}; }catch(e){ return null; } }
+function occasion(){ const d=today(), h=heb(d); if(!h) return d.getDay()===5?{k:'shabbos'}:null; const add=n=>{ const x=new Date(d); x.setDate(x.getDate()+n); return heb(x); };
+ if(h.month==='Kislev'&&h.day===24) return {k:'chanukah',night:1,shabbos:d.getDay()===5};
+ for(let i=0;i<8;i++){ const x=add(-i); if(x&&x.month==='Kislev'&&x.day===25) return {k:'chanukah',night:Math.min(8,i+2),zos:i===7,shabbos:d.getDay()===5}; }
+ if((h.month==='Adar'||h.month==='Adar II')&&h.day===14) return {k:'purim'}; if((h.month==='Adar'||h.month==='Adar II')&&h.day===15) return {k:'shushan'};
+ if(h.month==='Nisan'&&h.day===14) return {k:'erev',name:'Pesach',heb:'פֶּסַח'}; if(h.month==='Tishri'&&h.day===14) return {k:'erev',name:'Sukkos',heb:'סֻכּוֹת'};
+ if(h.month==='Sivan'&&h.day===5) return {k:'erev',name:'Shavuos',heb:'שָׁבוּעוֹת'}; if(h.month==='Elul'&&h.day===29) return {k:'erevrh'};
+ if(d.getDay()===5) return {k:'shabbos'}; if(h.day===1||h.day===30) return {k:'rc',month:h.day===30?(add(1)||{}).month:h.month}; return null; }
+const isKod=id=>/^(LK|HEB)\./.test(String(id));
+function torahAll(){ const sk=(st()&&st().skills)||{}; return Object.keys(sk).filter(id=>isKod(id)&&sk[id]&&sk[id].m).sort((a,b)=>(Number(sk[a].at)||0)-(Number(sk[b].at)||0)); }
+function torahWeek(){ const d=today(), w=new Date(d); w.setHours(0,0,0,0); w.setDate(w.getDate()-w.getDay()); const sk=(st()&&st().skills)||{}; return torahAll().filter(id=>Number(sk[id].at)>=w.getTime()); }
+function candles(){ const c=x=>`<rect x="${x-7}" y="44" width="14" height="44" rx="3" fill="#fff7ed" stroke="#f3d27a"/><path class="shp-flame${x>70?' b':''}" d="M${x} 20 C${x+9} 32 ${x+6} 42 ${x} 44 C${x-6} 42 ${x-9} 32 ${x} 20 Z" fill="#fbbf24"/>`;
+ return `<svg viewBox="0 0 140 110" aria-hidden="true"><rect x="34" y="86" width="72" height="8" rx="4" fill="#d4a017"/>${c(48)}${c(92)}</svg>`; }
+function menorah(n){ const xs=[14,26,38,50,90,102,114,126]; let h=`<svg viewBox="0 0 140 110" aria-hidden="true"><path d="M70 96 V60 M58 100 H82" stroke="#e5b84b" stroke-width="5" stroke-linecap="round"/>`;
+ xs.forEach((x,i)=>{ const r=Math.abs(x-70); h+=`<path d="M${x} 60 Q${x} ${60+r*.5} 70 ${60+r*.55}" stroke="#e5b84b" stroke-width="3" fill="none"/><rect x="${x-3}" y="46" width="6" height="14" rx="2" fill="#fff7ed" stroke="#f3d27a"/>`;
+  if(8-i<=n) h+=`<path class="shp-flame${i%2?' b':''}" d="M${x} 33 C${x+5} 40 ${x+4} 45 ${x} 46 C${x-4} 45 ${x-5} 40 ${x} 33 Z" fill="#fbbf24"/>`; });
+ return h+`<rect x="66" y="36" width="8" height="24" rx="2" fill="#fff7ed" stroke="#f3d27a"/><path class="shp-flame" d="M70 20 C76 28 75 35 70 36 C65 35 64 28 70 20 Z" fill="#fbbf24"/></svg>`; }
+const PS={desk:null,busy:false};
+function desk(){ const rp=window.tlRP&&window.tlRP(); if(rp) return rp; if(PS.desk) return PS.desk;
+ if(!PS.busy&&!PS.asked){ PS.busy=true; PS.asked=true; K.call('sgMyDesk').then(r=>{ PS.busy=false; PS.desk=r||{}; redrawPassport(); }).catch(()=>{ PS.busy=false; }); } return null; }
+function occHTML(){ const o=occasion(), s=st()||{}; if(!o) return ''; const first=String(s.name||'').split(' ')[0], wk=torahWeek(), rp=desk(), msg=rp&&(rp.shouts||[]).find(x=>x.kind==='shabbos');
+ let art=candles(), he='', h2='', p='';
+ if(o.k==='shabbos'||(o.k==='chanukah'&&o.shabbos)){ if(o.k==='chanukah') art=menorah(o.night); he='שַׁבָּת שָׁלוֹם'; h2='Good Shabbos, '+esc(first)+'!';
+  p=wk.length?`<p>This week you learned <b>${wk.length}</b> Torah lesson${wk.length===1?'':'s'}. Bring them to your Shabbos table!</p><ul>${wk.slice(-5).map(id=>`<li>${esc(nm(id)[0])}</li>`).join('')}</ul>`:'<p>Share one thing you learned this week at your Shabbos table!</p>';
+  if(msg) p+=`<p>🕯️ ${esc(msg.text)} <small>(${esc(msg.by)})</small></p>`; if(o.k==='chanukah'&&!o.zos) p+=`<p>And before Shabbos: light number ${o.night} of Chanukah!</p>`; }
+ else if(o.k==='chanukah'){ art=menorah(o.night); he=o.zos?'זֹאת חֲנֻכָּה':'חֲנֻכָּה שָׂמֵחַ'; h2=(o.zos?'Zos Chanukah, ':'Happy Chanukah, ')+esc(first)+'!'; p=o.zos?'<p>Last night all eight lights burned bright. Keep the light of Torah burning all year!</p>':'<p>Tonight we light <b>'+(o.night===8?'all eight lights':o.night+(o.night===1?' light':' lights'))+'</b>. Every lesson you learn adds light, just like the menorah.</p>'; }
+ else if(o.k==='purim'||o.k==='shushan'){ art=''; he=o.k==='purim'?'פּוּרִים שָׂמֵחַ':'שׁוּשַׁן פּוּרִים'; h2=(o.k==='purim'?'Freilichen Purim, ':'Happy Shushan Purim, ')+esc(first)+'!'; p='<p>Mishloach manos, matanos la\'evyonim, the Megillah and the seudah. Have a joyful Purim!</p>'; }
+ else if(o.k==='erev'){ he='חַג שָׂמֵחַ · '+o.heb; h2='Good Yom Tov, '+esc(first)+'!'; p='<p>Tonight is '+esc(o.name)+'. Bring something you learned to the Yom Tov table!</p>'; }
+ else if(o.k==='erevrh'){ art=''; he='כְּתִיבָה וַחֲתִימָה טוֹבָה'; h2='A good and sweet new year, '+esc(first)+'!'; p='<p>Tonight is Rosh Hashanah. Learning that tastes sweet, all year long!</p>'; }
+ else if(o.k==='rc'){ art=''; he='חֹדֶשׁ טוֹב'; h2='Chodesh Tov, '+esc(first)+'!'; p='<p>A new month of learning'+(o.month?' ('+esc(o.month)+')':'')+'.</p>'; }
+ return card(`${art}<div><div class="he">${he}</div><h2>${h2}</h2>${p}</div>`,'shp-occ'); }
+const DAV=[['shacharis','Shacharis','שַׁחֲרִית'],['mincha','Mincha','מִנְחָה'],['maariv','Maariv','מַעֲרִיב']];
+function plusHTML(){ const s=st()||{}, got=(s.dav&&s.dav[ymd(today())])||[], rp=desk(), p=rp&&rp.parsha, n=torahAll().length;
+ const dav=card(sec('Did you daven today?',got.length?pill('prog',got.length+' of 3 today'):pill('now','Tap each one you davened'))+`<div class="shp-dav">${DAV.map(d=>Q().quiet(d[1],`data-shp="dav" data-d="${d[0]}" aria-pressed="${got.indexOf(d[0])>=0}"`)).join('')}</div>${got.length?`<p class="shp-none" style="margin-top:8px">${got.map(x=>'✓ '+DAV.find(d=>d[0]===x)[1]).join(' · ')}: your tefillah lights up your Olam Haba.</p>`:''}`);
+ const par=p&&p.name?card(sec('Parsha of the week',pill('subj','from '+(p.by||'your rebbe')))+`<p><b style="font-size:22px">Parshas ${esc(p.name)}</b></p>${p.note?`<p class="shp-none">${esc(p.note)}</p>`:''}<div class="shp-row">${p.lesson?Q().quiet(p.done?'Learn it again':'Learn it',`data-shp="play" data-id="${esc(p.lesson)}"`)+(p.done?pill('prog','✓ Done'):''):''}${window.tlChm?Q().quiet('The whole Parsha in the Chumash',`data-shp="chm" data-p="${esc(p.name)}"`):''}</div>`):'';
+ const scr=card(sec('My Torah scroll',pill('prog',n+' Torah lesson'+(n===1?'':'s')))+`<p class="shp-none">${n?'It grows with every Torah lesson you master.':'Master a Kodesh lesson to begin your scroll.'}</p><div class="shp-row">${Q().quiet('Open my scroll','data-shp="scroll"')}</div>`);
+ return dav+par+scr; }
+function passportHTML(){ const all=allStations(), sn=all.filter(id=>done(id)).length, T=TRY(), met=tqMet();
+ const lastK=(st()&&st().ttLast)||'HAL', nx=(LANDS[lastK]&&nextIn(lastK))||Object.keys(LANDS).map(nextIn).find(Boolean);
+ const top=card(`<div class="shp-hero"><span class="shp-medal" aria-hidden="true">🛂</span><div><h2>My Torah passport</h2><div class="shp-pills">${pill('prog',sn+' of '+all.length+' stamps')}${T?pill('prog',met+' of 613 mitzvos'):''}</div></div></div>${nx?`<div class="shp-row">${Q().main('Start','data-shp="play" data-id="'+esc(nx)+'"')}${pill('now','Next stop: '+short(nm(nx)[0]))}</div>`:''}`);
+ const lands=sec('Torah Tracks',pill('subj','Seven lands'))+`<div class="shp-tiles">${Object.keys(LANDS).map(k=>{ const R=LANDS[k], L=stations(k), d=L.filter(id=>done(id)).length, x=nextIn(k);
+  return tileB(R[1],R[2],x?'Next: '+short(nm(x)[0]):'Land complete!',`data-shp="land" data-k="${k}"`,pill('prog',d+' of '+L.length)); }).join('')}</div>`;
+ const more=sec('More Torah')+`<div class="shp-tiles">${tileB(IC('ycw-ic-passport'),'My stamps','Every station you master gets a stamp','data-shp="stamps"',pill('prog',sn+' of '+all.length))}${T?tileB('✋','Taryag Quest','All 613 mitzvos, World by World','data-shp="taryag"',pill('prog',met+' of 613')):''}${window.tlChm?tileB(IC('ycw-ic-kodesh'),'Chumash page','Every parsha, every pasuk, every word','data-shp="chm"'):''}</div>`;
+ return occHTML()+top+lands+more+sec('Torah Plus')+plusHTML(); }
+function redrawPassport(){ if(document.getElementById('shk-passport')) K.body('passport',passportHTML()); if(document.getElementById('shk-passport-scroll')) K.body('passport-scroll',scrollHTML()); }
+function openPassport(back){ if(!K.on()) return; css(); const o={id:'passport',world:'k',scene:'ycw-k-library',title:'Torah Tracks',icon:IC('ycw-ic-passport'),body:passportHTML()};
+ if(back){ o.back=true; o.onBack=()=>K.close('passport','back'); o.onClose=how=>{ if(how==='home') K.closeAll(); }; } K.page(o); }
+function pinner(id,title,icon,body){ css(); return K.page({id,world:'k',scene:'ycw-k-library',title,icon,body,back:true,onBack:()=>K.close(id,'back'),onClose:how=>{ if(how==='home') K.closeAll(); }}); }
+function landHTML(k){ const R=LANDS[k], L=stations(k), x=nextIn(k);
+ return card(`<p style="margin:0"><b>${esc(R[3])}</b></p><p class="shp-none">${x?'Next stop: '+esc(short(nm(x)[0]))+'. '+esc(opener(x)):'You traveled this whole land. Mazel tov! Review any station, or pick a new land.'}</p>`,'shp-land')
+ +`<div class="shp-nodes" style="margin-top:12px">${L.map((id,i)=>{ const ok=done(id), now=id===x; return `<button type="button" class="tlk tlk-tile shk-tile shp-node" data-shp="station" data-id="${esc(id)}"><span class="shp-in"><b>${ok?'✓':now?'⭐':(i+1)} ${esc(short(nm(id)[0]))}</b><small>${GR[lvl(id)]||''}</small>${ok?pill('prog','Stamped'):now?pill('now','Next stop'):''}</span></button>`; }).join('')}</div>`; }
+function stationPop(id){ const k=id.split('.')[1], R=LANDS[k]||['','⭐'], b=BANK_ALL[id]||{}, ok=done(id);
+ K.pop({id:'passport-station',world:'k',title:short(nm(id)[0]),icon:R[1],body:`<div class="shp-pv"><p>${esc(opener(id))}</p>${b.peg&&b.peg.show?`<p>${pill('now','Remember')} ${esc(b.peg.show)}</p>`:''}<p class="shp-none">${GR[lvl(id)]||''} · learn it, try it together, practice, then show what you know</p>${ok?pill('prog','Already stamped ✓'):''}<div class="shp-row">${Q().main(ok?'Review':'Start','data-shp="play" data-id="'+esc(id)+'"')}</div></div>`}); }
+function stampsHTML(){ const all=allStations(), n=all.filter(id=>done(id)).length;
+ return card(`<p style="margin:0;font-weight:700">${n?'You have '+n+' stamp'+(n===1?'':'s')+'. Every stamp is Torah you carry with you forever.':'Your passport is waiting for its first stamp. Pick a land and start traveling!'}</p>`)
+ +Object.keys(LANDS).map(k=>{ const R=LANDS[k]; return sec(R[1]+' '+esc(R[2]))+`<div class="shp-stamps">${stations(k).map(id=>`<div class="shp-stamp${done(id)?' on':''}" style="--sc:${R[0]}"><span class="e" aria-hidden="true">${R[1]}</span>${esc(short(nm(id)[0]))}</div>`).join('')}</div>`; }).join(''); }
+const TQS={w:1};
+function taryagHTML(){ const T=TRY(); if(!T) return card('<p class="shp-none">Taryag Quest is on its way.</p>'); const C=T.cards, O=T.order, met=tqMet(), nx=O.find(id=>!done(id)), op=O.find(id=>C[id]&&C[id].kind==='open');
+ const hero=card(`<p style="margin:0"><b>248 Do mitzvos, like the parts of the body. 365 Don't mitzvos, like the days of the year.</b> One mitzvah at a time: know it, feel it, live it.</p><div class="shp-pills">${pill('prog',met+' of 613 mitzvos mastered')}</div><span class="shp-bar" style="margin-top:8px" role="img" aria-label="${met} of 613"><i style="width:${Math.max(1,Math.round(100*met/613))}%"></i></span>${nx?`<div class="shp-row">${Q().main(op&&done(op)?'Next mitzvah':'Start the Quest','data-shp="tqpv" data-id="'+esc(nx)+'"')}${pill('now',short(nm(nx)[0]))}</div>`:pill('prog','World 1 so far is complete. Mazel tov!')}<div class="shp-pills" style="margin-top:10px">${TQP.map(p=>pill('rank',p[0]+' '+p[1])).join('')}</div>`);
+ const worldsH=sec('The 14 Worlds on your hand',pill('subj','The Rambam\'s 14 books'))+`<div class="shp-hand">${TQW.map((w,i)=>{ const L=O.filter(id=>C[id]&&C[id].world===i+1), d=L.filter(id=>done(id)).length;
+  return `<button type="button" class="tlk tlk-tile shk-tile shp-node" data-shp="tqw" data-w="${i+1}" aria-pressed="${TQS.w===i+1}"><span class="shp-in">${K.ic(w[2])}<b>World ${i+1}: ${esc(w[1])}</b>${L.length?pill('prog',d+' of '+L.length):pill('lock','Coming soon')}</span></button>`; }).join('')}</div>`;
+ const w=TQS.w, W=TQW[w-1], L=O.filter(id=>C[id]&&C[id].world===w&&C[id].kind!=='open');
+ const walls=w===1?O.filter(id=>C[id]&&C[id].wall):[];
+ const room=walls.length?card(sec('My Six-Wall Room')+'<p class="shp-none">Six mitzvos never stop, like the six Cities of Refuge (Sefer HaChinuch). Each one you master builds a wall.</p>'+`<div class="shp-walls">${walls.map(id=>`<div class="shp-stamp${done(id)?' on':''}" style="--sc:#B45309"><span class="e" aria-hidden="true">🧱</span>${esc(C[id].wall)}</div>`).join('')}</div>`):'';
+ const cards=L.length?`<div class="shp-nodes">${(w===1&&op?[op]:[]).concat(L).map(id=>{ const c=C[id]; return `<button type="button" class="tlk tlk-tile shk-tile shp-node" data-shp="tqpv" data-id="${esc(id)}"><span class="shp-in"><b>${esc(short(nm(id)[0]))}</b><small>${c.kind==='open'?'Start here':(c.kind==='do'?'Do #':'Don\'t #')+c.n}</small>${done(id)?pill('prog','✓ Mastered'):''}${c.badge==='green'?pill('now','Applies today'):''}</span></button>`; }).join('')}</div>`:card('<p class="shp-none">Coming soon. The mitzvos of this World are being written now, in the Rambam\'s order. Finish World 1 first!</p>');
+ return hero+worldsH+sec('World '+w+': '+esc(W[1]),pill('subj','Sefer '+W[0]))+room+cards; }
+function tqPop(id){ const T=TRY(); if(!T) return; const c=T.cards[id]||{}, b=BANK_ALL[id]||{}, peg=b.peg||{}, ok=done(id);
+ const body=c.kind==='open'?`<p>${esc(b.op||'')}</p>${c.card?`<p class="shp-none">${esc(c.card)}</p>`:''}${TQP.map(p=>`<p><b>${esc(p[0]+' '+p[1])}:</b> ${esc(p[2])}</p>`).join('')}`
+  :`${c.card?`<p class="shp-none">${esc(c.card)}</p>`:''}${c.pasuk?`<div class="shp-pas" lang="he">${esc(c.pasuk)}<div class="shp-none" style="direction:ltr;text-align:left;font-size:14px">${esc(c.src||'')}</div></div>`:''}${c.key?`<p>Key word: <b class="shp-he" lang="he">${esc(c.key)}</b> = "${esc(c.keyen||'')}"</p>`:''}${c.hook?`<p><b>The story:</b> ${esc(c.hook)}${c.hooksrc?` <small>(${esc(c.hooksrc)})</small>`:''}</p>`:''}${peg.show?`<p><b>Peg:</b> ${esc(peg.show)}. ${esc(peg.say||'')}</p>`:''}${c.live?`<p><b>Live it:</b> ${esc(c.live)}</p>`:''}${c.table?`<p><b>Shabbos table:</b> ${esc(c.table)}</p>`:''}`;
+ K.pop({id:'passport-tq',world:'k',title:short(nm(id)[0]),icon:'✋',body:`<div class="shp-pv">${body}${ok?pill('prog','✓ Mastered'):''}<div class="shp-row">${Q().main(ok?'Review':'Learn it','data-shp="play" data-id="'+esc(id)+'"')}</div></div>`}); }
+function scrollHTML(){ const L=torahAll(), sk=(st()&&st().skills)||{}, first=String((st()&&st().name)||'').split(' ')[0];
+ const day=t=>{ try{ return t?new Date(Number(t)).toLocaleDateString([],{month:'short',day:'numeric'}):''; }catch(e){ return ''; } };
+ return `<div class="shp-scroll"><p class="shp-he" style="text-align:center;font-size:22px;margin:0">תּוֹרָה צִוָּה לָנוּ מֹשֶׁה</p><p style="text-align:center;font-weight:900;font-size:20px;margin:4px 0">${esc(first)}'s Torah Scroll</p>${L.length?`<ol>${L.map(id=>`<li>${esc(nm(id)[0])} <small>· ${esc(day(sk[id].at))}${sk[id].bechina?' · bechina':''}</small></li>`).join('')}</ol>`:'<p class="shp-none" style="text-align:center">Your scroll is ready. Every Kodesh lesson you master is written here.</p>'}</div>`; }
+function dav(d){ const s=st(); if(!s||!DAV.some(x=>x[0]===d)) return; const t=ymd(today()); s.dav=s.dav||{}; const L=s.dav[t]=s.dav[t]||[], i=L.indexOf(d);
+ if(i>=0) L.splice(i,1); else { L.push(d); try{ if(window.tlOH){ tlOH.effort(true,true); tlOH.surge(true,'תְּפִלָּה','Your tefillah lights up your Olam Haba! ✨'); } }catch(e){} }
+ Object.keys(s.dav).sort().slice(0,-40).forEach(k=>delete s.dav[k]);   /* keep the last 40 days, as before */
+ try{ saveStudent(s); }catch(e){ console.error('ShProfile dav',e); } redrawPassport(); }
+function openChumash(name){ if(!window.tlChm) return; const p=name||(()=>{ const rp=desk(); return rp&&rp.parsha&&rp.parsha.name; })()||undefined; K.closeAll(); try{ tlChm.open(p); }catch(e){ console.error('Chumash page',e); } }
+/* ===================================================================== CLICKS */
+function goPlace(k,from){ if(k==='trophies') return openTrophies(true); if(k==='passport') return openPassport(true); if(!K.go(k)&&k==='library'){ try{ const b=document.querySelector('[data-bl-open]'); if(b) b.click(); }catch(e){} } }
+function openStore(t){ try{ if(window.TLSTORE) TLSTORE.tab=t||'fun'; }catch(e){} if(K.go('store')) return; try{ K.closeAll(); if(window.tlStore) tlStore(true); }catch(e){} }
+function openBank(){ if(K.go('bank')) return; openStore('week'); }
+document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-shp]'); if(!b||!b.closest('.shk-page,.shk-pop')) return; const a=b.getAttribute('data-shp'), id=b.getAttribute('data-id'); e.preventDefault();
+ try{ if(typeof SND!=='undefined'&&SND.tap) SND.tap(); }catch(x){}
+ if(a==='pick') return openPick();
+ if(a==='avk') return pickAv(b.getAttribute('data-k'));
+ if(a==='sound'){ const on=soundOn(); try{ if(window.TL_MENU) TL_MENU.actions.setSound(!on); }catch(x){} setTimeout(redrawProfile,60); return; }
+ if(a==='music'){ if(K.go('music')) return; try{ if(window.TL_MENU) TL_MENU.actions.openMusicPanel(); }catch(x){} return; }
+ if(a==='out'){ K.closeAll(); try{ if(window.TL_MENU) TL_MENU.actions.signOut(); }catch(x){} return; }
+ if(a==='check'){ K.closeAll(); try{ window.tlOpenCheck(b.getAttribute('data-s')); }catch(x){} return; }
+ if(a==='tour'){ K.closeAll(); try{ window.TLTOUR&&TLTOUR.open(); }catch(x){ console.error('tour',x); } return; }
+ if(a==='bank') return openBank();
+ if(a==='shop') return openStore(b.getAttribute('data-t'));
+ if(a==='go') return goPlace(b.getAttribute('data-k'));
+ if(a==='lessons'){ LB.f='all'; LB.q=''; return inner('profile-lessons','All my lessons',IC('ycw-ic-lessons'),lessonsHTML(),'ycw-k-library'); }
+ if(a==='lf'){ LB.f=b.getAttribute('data-f')||'all'; K.body('profile-lessons',lessonsHTML()); return; }
+ if(a==='mr'){ K.closeAll(); try{ window.tlMasteryQuick(); }catch(x){ console.error('review',x); } return; }
+ if(a==='tree'){ return inner('profile-tree','Skill tree',IC('ycw-ic-skills'),treeHTML()); }
+ if(a==='treew'){ TR.k=b.getAttribute('data-k')||''; K.body('profile-tree',treeHTML()); return; }
+ if(a==='node') return nodeSheet(id,b.getAttribute('data-st'));
+ if(a==='week') return inner('profile-week','My week',IC('ycw-ic-week'),weekHTML(),'ycw-k-summit');
+ if(a==='play'){ if(id) K.openLesson(id); return; }
+ if(a==='locked'){ K.pop({id:'profile-node',world:'k',title:nm(id)[0],icon:IC('ycb-ic-lock'),body:`<p>${pill('lock','Locked')} Clear the lessons before it first. Your next one is on My map.</p>`}); return; }
+ if(a==='land'){ const k=b.getAttribute('data-k'); try{ if(A.st) A.st.ttLast=k; }catch(x){} return pinner('passport-land',LANDS[k][2],LANDS[k][1],landHTML(k)); }
+ if(a==='station') return stationPop(id);
+ if(a==='stamps') return pinner('passport-stamps','My stamps',IC('ycw-ic-passport'),stampsHTML());
+ if(a==='taryag'){ TQS.w=TQS.w||1; return pinner('passport-taryag','Taryag Quest','✋',taryagHTML()); }
+ if(a==='tqw'){ TQS.w=+b.getAttribute('data-w')||1; K.body('passport-taryag',taryagHTML()); return; }
+ if(a==='tqpv') return tqPop(id);
+ if(a==='dav') return dav(b.getAttribute('data-d'));
+ if(a==='scroll'){ css(); K.pop({id:'passport-scroll',world:'k',title:'My Torah scroll',icon:'📜',body:scrollHTML()}); return; }
+ if(a==='chm') return openChumash(b.getAttribute('data-p')); });
+document.addEventListener('input',e=>{ const t=e.target; if(!t||t.id!=='shp-q') return; LB.q=String(t.value||''); const pos=t.selectionStart; K.body('profile-lessons',lessonsHTML()); const n=document.getElementById('shp-q'); if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(x){} } });
+/* ===================================================================== THE PLACES */
+K.place({id:'profile',name:'My profile',world:'k',get icon(){ return av()||IC('ycw-ic-profile'); },scene:'ycw-k-room',door:'profile',order:60,
+ sub:()=>'Badges, levels, my stuff',pill:()=>pill('rank','Rank: '+rankOf(steps()).r[2]),show:()=>K.on(),open:()=>openProfile()});
+K.place({id:'trophies',name:'Trophy Hall',world:'k',get icon(){ return IC('ycw-ic-trophy'); },scene:'ycw-k-trophies',door:'profile',order:62,
+ sub:()=>'Rank, badges and trophies',pill:()=>{ const B=badges(); return pill('prog',B.filter(earnedB).length+' of '+B.length+' badges'); },show:()=>K.on(),open:()=>openTrophies(false)});
+K.place({id:'passport',name:'Torah Tracks',world:'k',get icon(){ return IC('ycw-ic-passport'); },scene:'ycw-k-library',door:'torah',order:64,
+ sub:()=>'My passport, Taryag Quest, Torah Plus',pill:()=>{ const a=allStations(); return pill('prog',a.filter(id=>done(id)).length+' of '+a.length+' stamps'); },show:()=>K.on(),open:()=>openPassport(false)});
+/* for the home and others: his picture (the same one on the page, the home tile and the Arena) */
+window.SHP={av,avHTML,AVS,profile:openProfile,trophies:openTrophies,passport:openPassport};
+})();
 </script>
