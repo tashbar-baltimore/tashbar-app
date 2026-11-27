@@ -37,4 +37,4 @@ Played as a made-up boy in the full look at Chromebook and phone size, one wrong
 | Slide the Sounds, Sound Boxes, Slide Again, Fix It, Show Me | Clear: big letter tiles, one thing at a time | No change | abc-u3-slide, boxes, fixit, check |
 
 Choices made without asking: the picture-letters stay (a picture that becomes the letter helps children remember the sound), but always next to the plain letter; the iguana stays for now. Not changed: ABC is also being rebuilt "the calm way" in a sample (#620) that waits for Esti; these 3D games stay until she decides.
-Test note: on this overloaded machine, the "Drum on d" wrong-move check (it waits only 4 seconds) failed even on the untouched branch; the pull request's own test run is the judge.
+Tests: the whole Unit 3 test (`v2/tests/k-abc-unit3.js`) passes: all 19 games to the end at Chromebook and phone size, wrong moves get a gentle fix, 3 stars for perfect play. (Under heavy load the "Drum on d" wrong-move check, which waits only 4 seconds, can time out; it passes on a quiet machine.)
