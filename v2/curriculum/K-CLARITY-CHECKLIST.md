@@ -44,6 +44,9 @@ Choices made without asking (as a kindergarten teacher would): the cupcakes stay
 | Fix the pattern | The train world is already calm and the cars are plain toy cars in one colour each (good). In the friend's mistake, Ari stood hidden behind the train cars, and the close camera cut the train off (9). | The friend's mistake is seen from the normal view: the whole train shows and Ari stands in front of it, where Mendy stood. The yes/no buttons have the green tick and red cross. | `fix-the-pattern/` |
 | Pattern train | Same hidden-friend problem in Shloimy's mistake (9). In the shape round the circle, triangle and square signs on the cars were small (9). | Shloimy stands in front of the whole train. The shape signs are bigger and stand higher. The sound round (drum, bell) is kept: the drum and bell are sound makers in a sound pattern, not shapes. **(decided: keep it; Esti's "no drum" was about a drum used as a circle.)** | `pattern-train/` |
 
+Phone checks (390×844): the ball in Where is it waited half off the left edge and Mendy seemed to stand on the bridge; the second triangle in Build with shapes (lesson and Dovi's mistake) was cut off on the right; the friend in the pattern games was cut off on the left. All moved in. Seen, not changed: on a phone the pattern train (8 cars) is small, because the whole train must fit across the screen; the cars he drags are bigger than the ones on the track.
+Picture sheets: `v2/screens/k-clarity/<game>/after-chromebook.jpg` and `after-phone.jpg` (start, lesson, find, wrong move, friend's mistake, end; taken just before the last small phone moves above). "Before" phone sheets, and the Pattern train "before" Chromebook sheet, are the previous round's sheets from `v2/screens/k-shapes-graphics/` (the state before this pass).
+
 
 ## shapes-d: Big and small, Line them up, Heavy and light, Shape party 1, 2 and 3, Graduation day
 

@@ -1009,10 +1009,10 @@ export function startGame(cfg) {
     const a = makeShape('la', L.k, '#E03A33', L.rotA || 0, 1), b = makeShape('lb', L.k, '#1F6FEB', L.rotB || Math.PI, 1);
     [a, b].forEach(o => { o.slot = null; o.busy = true; });
     const ca = slotCenter({ k: L.k, rot: L.rotA || 0, off: [0, 0] }), cb = slotCenter({ k: L.k, rot: L.rotB || Math.PI, off: [0, 0] });
-    const at = new THREE.Vector3(1.0, 2.0, 0.9);
-    a.g.position.set(at.x + ca[0] - 0.9, at.y + ca[1], at.z); b.g.position.set(at.x + cb[0] + 0.9, at.y + cb[1], at.z);
+    const at = new THREE.Vector3(tall ? 0.6 : 1.0, 2.0, 0.9), gap = tall ? 0.75 : 0.9;   /* phone: a little closer, so both triangles fit on the screen */
+    a.g.position.set(at.x + ca[0] - gap, at.y + ca[1], at.z); b.g.position.set(at.x + cb[0] + gap, at.y + cb[1], at.z);
     const join = () => Promise.all([moveTo(a, new THREE.Vector3(at.x + ca[0], at.y + ca[1], at.z), 900), moveTo(b, new THREE.Vector3(at.x + cb[0], at.y + cb[1], at.z), 900)]).then(() => { a.busy = b.busy = true; pop(); });
-    const apart = () => Promise.all([moveTo(a, new THREE.Vector3(at.x + ca[0] - 0.9, at.y + ca[1], at.z), 600), moveTo(b, new THREE.Vector3(at.x + cb[0] + 0.9, at.y + cb[1], at.z), 600)]).then(() => { a.busy = b.busy = true; });
+    const apart = () => Promise.all([moveTo(a, new THREE.Vector3(at.x + ca[0] - gap, at.y + ca[1], at.z), 600), moveTo(b, new THREE.Vector3(at.x + cb[0] + gap, at.y + cb[1], at.z), 600)]).then(() => { a.busy = b.busy = true; });
     const both = { marks: [], g: new THREE.Group() }; scene.add(both.g);
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, 'Watch them slide together.', join, L.made, () => burst(at.clone(), 26),
       L.again, apart, 'Your turn! Tap a triangle.', () => { setName('tap'); task = ['Tap a triangle.']; return tapShape(a, 'Tap a triangle.', () => join().then(() => say(L.made))); }, () => { setName('learn'); task = null; },
@@ -1558,7 +1558,7 @@ export function startGame(cfg) {
     const joinSide = (on) => side ? tween(700, k => { const e = ease(k); const sx = SX; side.g.position.x = on ? sx + (d.g.position.x - sx) * e : d.g.position.x + (sx - d.g.position.x) * e; }).then(() => { pop(); return wait(on ? 600 : 0); }) : null;   /* M.join: the second piece slides onto the first (two triangles make a square), and back */
     const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
     if (!M.where && !M.measure && !M.balance && !M.wide) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
-    if (M.wide) { friend.position.copy(mendyAt()); if (PAINTED && PATTERNED) friend.position.add(new THREE.Vector3(0.75, 0, 1.9)); if (tall) friend.position.set(-1.6, 0, 2.6); friend.rotation.set(tall ? -0.6 : 0, tall ? -0.35 : 0.5, 0); friend.visible = true; mendy.visible = false; }   /* M.wide: the friend stands where Mendy stood, in front of the whole train, never hidden behind it */
+    if (M.wide) { friend.position.copy(mendyAt()); if (PAINTED && PATTERNED) friend.position.add(new THREE.Vector3(0.75, 0, 1.9)); if (tall) friend.position.set(-0.95, 0, 2.6); friend.rotation.set(tall ? -0.6 : 0, tall ? -0.35 : 0.5, 0); friend.visible = true; mendy.visible = false; }   /* M.wide: the friend stands where Mendy stood, in front of the whole train, never hidden behind it */
     else if (M.where || M.measure || M.balance) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
       if (side) d.g.position.x = M.join ? -0.1 : (tall ? 0.35 : 0.6);   /* big and small: clear of the friend */
