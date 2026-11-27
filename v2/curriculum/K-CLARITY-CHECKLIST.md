@@ -36,7 +36,7 @@ Taken over at 10:30 by another session (claim `numbers-b-takeover`): numbers-b w
 | Learn it (opener4), Fill the frame, Match the number, Fix the frame, Show me 0 to 5 (check4), Review time | Clear: big numerals, dot cards and ten-frames, no decoration. | No change needed. | numbers-b-match4-after, numbers-b-check4-wrong-after |
 | Trace it (trace4), Empty plate (zero4) | A card with ONE thing drew it as small as when there are five (29% of the card), so the one apple next to the big 1 was small (9). | A card with one thing draws it big (46%) (shared `frame.js`; one thing only, so nothing can overlap). All Numbers game tests pass. | numbers-b-trace4-before / -after, numbers-b-trace4-phone-after |
 
-Seen, kept: Learn it (opener4) shows "apple = finger = 1" with = signs between the cards. The voice explains it ("one apple, one finger, the number one"), so it stays; a teacher could swap the = signs for arrows later.
+Seen, kept: Learn it (opener4) shows "apple = finger = 1" with = signs between the cards. The voice names the cards ("One apple. One finger."), so it stays; a teacher could swap the = signs for arrows later.
 
 ## numbers-c: Unit 5 (Five and more) and Unit 6 (The number path)
 
