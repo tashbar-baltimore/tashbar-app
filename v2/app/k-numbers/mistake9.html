@@ -20,6 +20,7 @@
 #hp .hands2{ width:clamp(220px,32vh,270px); gap:34px; padding-right:28px; } #hp .fhand{ margin-right:0 !important; width:auto !important; }
 #hp .fhand .fdown{ width:64px; height:64px; right:-30px; bottom:-10px; }   /* the 'put one down' button sits beside each hand, never over its middle */
 @media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; row-gap:6px; } .bond{ width:144px; height:96px; margin:0 calc(50% - 72px); } .bc{ width:50px; height:50px; } #hp .hands2{ width:262px; gap:30px; padding-right:28px; } #check{ width:72px; } }   /* phone: the bond on its own row, then big hands and the check */   /* phone: the bond and the hands share a row, so the plates stay in view */
+.bc.lookc{ box-shadow:0 0 0 6px #FFC93D, 0 0 20px 6px rgba(255,201,61,.7); }
 </style>
 </head>
 <body>
@@ -51,13 +52,16 @@ async function pick(c) {
   NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'find') return; GAME.phase = 'busy'; FR.lock(true); const el = $(ID[c]);
   if (c === R.bad) { el.classList.add('wrongc'); NK.sound.yes(); await FR.say('Yes! That number is wrong.'); R.stage = 'fix'; $('hp').hidden = $('check').hidden = false; H.set(0);
     open(); await FR.say('Show the right number on your fingers.', { repeat: 'Count the plates. Show the right number. Then check.' }); return; }
-  FR.oops(el); R.misses++; await FR.say('That one is right. Look at the plates.'); await countAll(); if (R.misses >= 2) $(ID[R.bad]).classList.add('wrongc'); await FR.say(R.misses >= 2 ? 'The red one is wrong. Tap it.' : 'Which number is wrong?'); open();
+  FR.oops(el); R.misses++; el.classList.add('lookc');   /* count what that circle stands for, while it glows */
+  if (c === 'w') { await FR.say("Let's count all the fruit."); await countAll(); }
+  else { const pl = K.plates[c]; await FR.say("Let's count this plate."); await K.bumpAll(pl.children, i => FR.say(FR.Word(i + 1) + (i === pl.children.length - 1 ? '.' : ','), { noRepeat: true })); }
+  await FR.say('The circle says ' + FR.word(truth(c)) + '. That one is right.'); el.classList.remove('lookc'); if (R.misses >= 2) $(ID[R.bad]).classList.add('wrongc'); await FR.say(R.misses >= 2 ? 'The red one is wrong. Tap it.' : 'Which number is wrong?'); open();
 }
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'fix') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const k = truth(R.bad), el = $(ID[R.bad]);
   if (H.count() === k) { fill(ID[R.bad], k); el.classList.remove('wrongc'); K.sparkle(0, 0.4); await FR.yes(el, 'Fixed! ' + FR.Word(R.a) + ' and ' + FR.word(R.b) + ' make ' + FR.word(R.a + R.b) + '.'); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops($('check')); R.misses++;
-  if (R.bad === 'w') { await FR.say("Let's look. Count all the slices."); await countAll(); }
+  if (R.bad === 'w') { await FR.say("Let's look. Count all the fruit."); await countAll(); }
   else { const pl = K.plates[R.bad]; await FR.say("Let's count that plate."); await K.bumpAll(pl.children, i => FR.say(FR.Word(i + 1) + (i === pl.children.length - 1 ? '!' : ','), { noRepeat: true })); }
   H.set(0); await FR.say('Show me again.'); open();
 }

@@ -5,14 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Review time — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 9 REVIEW (Units 6-8 come back at the fruit market), three kinds in turn:
-     1. Which plate has more oranges, or the same? He taps the plate, or the "same" button (Unit 7).
-     2. Oranges under the basket (up to 8): he shows the hidden part on two hands (Unit 8).
-     3. "One less than seven": he shows it on two hands (Unit 6). -->
+     1. Which plate has more oranges, or the same? He taps the plate (it has a soft ring), or the "same" button (Unit 7).
+     2. Oranges under the basket (parts of 4 and 5): he shows the hidden part on two hands (Unit 8).
+     3. One step on: "Six oranges, one more?" (Unit 6), then one less (Unit 7). The oranges are on the tray; a slip adds or takes one and we count. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css">
 <style>#show{ display:flex; align-items:center; } #show .tf{ width:min(28vw,220px); } #hh .hands2{ width:clamp(220px,32vh,270px); gap:34px; padding-right:28px; } #hh .fhand{ margin-right:0 !important; width:auto !important; }
 #hh .fhand .fdown{ width:64px; height:64px; right:-30px; bottom:-10px; }   /* the 'put one down' button sits beside each hand */ #show[hidden], #hh[hidden], #same[hidden], #check[hidden]{ display:none; }
-@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; } #show{ width:100%; justify-content:center; }  #hh .hands2{ width:262px; gap:30px; } #check{ width:72px; } }</style>
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; } #show{ width:100%; justify-content:center; }  #hh .hands2{ width:262px; gap:30px; } #check{ width:72px; } }.p6layer .tspot.side{ box-shadow:inset 0 0 0 5px rgba(255,201,61,.85); }   /* the plates show they can be tapped */
+</style>
 </head>
 <body>
 <div id="world"></div>
@@ -46,14 +47,16 @@ async function plate(k, el) {
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer' || R.kind === 'plates') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const have = H.count();
   if (have === R.n) { if (R.kind === 'hide') await K.lift();
-    return fin($('check'), R.kind === 'hide' ? 'Yes! ' + FR.Word(R.all - R.n) + ' and ' + FR.word(R.n) + ' make ' + FR.word(R.all) + '.' : 'Yes! One less than ' + FR.word(R.n + 1) + ' is ' + FR.word(R.n) + '.'); }
+    return fin($('check'), R.kind === 'hide' ? 'Yes! ' + FR.Word(R.all - R.n) + ' and ' + FR.word(R.n) + ' make ' + FR.word(R.all) + '.' : R.kind === 'more' ? 'Yes! One more than ' + FR.word(R.n - 1) + ' is ' + FR.word(R.n) + '.' : 'Yes! One less than ' + FR.word(R.n + 1) + ' is ' + FR.word(R.n) + '.'); }
   FR.oops($('check')); R.misses++;
   if (R.kind === 'hide') { await FR.say("Let's look under the basket."); await K.lift(); const hid = K.slices().slice(R.all - R.n);
     await K.bumpAll(hid, i => FR.say(FR.Word(i + 1) + (i === hid.length - 1 ? '.' : ','), { noRepeat: true })); await K.hide(R.n); }
-  else await FR.say("Let's look. Count back: " + FR.word(R.n + 1) + ', then ' + FR.word(R.n) + '.');
+  else { const from = R.kind === 'more' ? R.n - 1 : R.n + 1; await FR.say(R.kind === 'more' ? "Let's look. One more orange comes." : "Let's look. One orange rolls away.");
+    K.setKugel(R.n); K.unspot('towel'); const all = K.slices(); await K.bumpAll(all, i => FR.say(FR.Word(i + 1) + (i === all.length - 1 ? '.' : ','), { noRepeat: true }));
+    await FR.say(FR.Word(R.n) + ' oranges now.'); K.setKugel(from); K.unspot('towel'); }
   await FR.say(have < R.n ? 'Put up ' + FR.word(R.n - have) + ' more.' : 'Put ' + FR.word(have - R.n) + ' down.'); open();
 }
-const PLAN = [{ kind: 'plates', a: 2, b: 5 }, { kind: 'hide', all: 5, n: 2 }, { kind: 'less', n: 6 }, { kind: 'plates', a: 4, b: 4 }, { kind: 'hide', all: 8, n: 3 }, { kind: 'less', n: 8 }];
+const PLAN = [{ kind: 'plates', a: 2, b: 5 }, { kind: 'hide', all: 5, n: 2 }, { kind: 'more', n: 7 }, { kind: 'plates', a: 4, b: 4 }, { kind: 'hide', all: 4, n: 1 }, { kind: 'less', n: 5 }];
 function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0);
@@ -63,7 +66,10 @@ function play(F, i) {
     K.unspot('plate0'); K.unspot('plate1'); K.hidePlates(); K.setKugel(0); K.unspot('towel');
     if (R.kind === 'hide') { $('show').innerHTML = '<div class="goal">' + U5.num(R.all) + '</div>'; K.setKugel(R.all); K.unspot('towel'); await F.say(F.Word(R.all) + ' oranges. Close your eyes!'); await K.hide(R.n); open();
       await F.say('How many are under the basket? Show me.', { repeat: F.Word(R.all) + ' in all. I see ' + F.word(R.all - R.n) + '. How many hide?' }); }
-    else { open(); await F.say('Show me one less than ' + F.word(R.n + 1) + '.', { repeat: 'One less than ' + F.word(R.n + 1) + '. Count back one.' }); }
+    else if (R.kind === 'more') { K.setKugel(R.n - 1); K.unspot('towel'); await F.say(F.Word(R.n - 1) + ' oranges. One more is how many?'); open();
+      await F.say('Show me on two hands.', { repeat: F.Word(R.n - 1) + ' and one more. Show me.' }); }
+    else { K.setKugel(R.n + 1); K.unspot('towel'); await F.say(F.Word(R.n + 1) + ' oranges. One less is how many?'); open();
+      await F.say('Show me on two hands.', { repeat: F.Word(R.n + 1) + ', take one away. Show me.' }); }
   });
 }
 FR.game({
@@ -76,7 +82,10 @@ FR.game({
   demo: async F => {
     R = { kind: 'demo' }; K.setPlates(1, 3); K.spot('plate1', K.plates[1], { cls: 'side', r: 1.3, y: 0.3 }); $('same').hidden = false; $('hh').hidden = $('check').hidden = true;
     await F.say('Review time! Watch me. One or three oranges?'); await F.say('Three is more. I tap that plate.');
-    await F.handTo(document.querySelector('.tspot[data-id="plate1"]')); await F.handTap(); K.unspot('plate1');
+    await F.handTo(document.querySelector('.tspot[data-id="plate1"]')); await F.handTap(); K.unspot('plate1'); F.handHide();
+    K.hidePlates(); $('same').hidden = true; $('hh').hidden = $('check').hidden = false; K.setKugel(3); K.unspot('towel');
+    await F.say('Three oranges. One more?'); K.setKugel(4); K.unspot('towel'); await F.say('Four! I show four.');
+    await F.handTo(H.el, .3, .6); await F.handTap(); H.set(4); NK.sound.pop(); await F.handTo($('check')); await F.handTap(); F.handHide(); H.set(0);
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'You remember so much!' : 'Good work! Let\'s play once more.'

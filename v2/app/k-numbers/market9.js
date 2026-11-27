@@ -65,13 +65,13 @@ export function mount(host, opt) {
   let counters = []; cup.visible = false;
   /* ---------------- a tray of oranges, and the big upside-down basket some of them hide under ---------------- */
   const plateM = new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.3 });
-  const platter = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.08, 1.9), new THREE.MeshStandardMaterial({ color: '#EBD5B0', roughness: 0.8 })); platter.position.set(-1.0, 0.05, 0.4); platter.castShadow = true; scene.add(platter);
+  const platter = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.08, 2.2), new THREE.MeshStandardMaterial({ color: '#EBD5B0', roughness: 0.8 })); platter.position.set(-1.0, 0.05, 0.4); platter.castShadow = true; scene.add(platter);
   let slices = [];
   const towel = new THREE.Group(); towel.visible = false; scene.add(towel);   /* (kept the name 'towel' so the games share one API) a wicker dome */
   { const dm = new THREE.Mesh(new THREE.SphereGeometry(1.15, 32, 18, 0, Math.PI * 2, 0, Math.PI / 2), glazeMat); dm.castShadow = true; dm.scale.set(1, 0.85, 0.8); towel.add(dm);
     const rimB = new THREE.Mesh(new THREE.TorusGeometry(1.15, 0.07, 10, 40), new THREE.MeshStandardMaterial({ color: '#B57E3E' })); rimB.rotation.x = Math.PI / 2; rimB.scale.set(1, 0.8, 1); towel.add(rimB); }
   const HIDE_X = 2.2;
-  const slot = (j, n) => { const per = Math.min(5, Math.max(1, n)), row = Math.floor(j / 5), col = j % 5; return new THREE.Vector3(-1.0 + (col - (Math.min(5, n) - 1) / 2) * 0.76, 0.08, 0.4 + (n > 5 ? (row ? 0.42 : -0.42) : 0)); };
+  const slot = (j, n) => { const per = Math.min(5, Math.max(1, n)), row = Math.floor(j / 5), col = j % 5; return new THREE.Vector3(-1.0 + (col - (Math.min(5, n) - 1) / 2) * 0.76, 0.08, 0.4 + (n > 5 ? (row ? 0.6 : -0.6) : 0)); };   /* rows far enough apart that the front row never covers the back row */
   const hideSlot = (j, k) => { const per = Math.min(3, k), row = Math.floor(j / 3), col = j % 3; return new THREE.Vector3(HIDE_X + (col - (per - 1) / 2) * 0.55, 0.08, 0.4 + (k > 3 ? (row % 2 ? 0.3 : -0.3) : 0)); };
   /* two little plates for the two parts */
   const plates = [-1, 1].map(s => { const p = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.3, 0.1, 40), new THREE.MeshStandardMaterial({ color: s < 0 ? '#FFD9B0' : '#CFE6FF', roughness: 0.3 })); p.position.set(s * 1.75, 0.06, 0.4); p.castShadow = true; p.visible = false; scene.add(p); return p; });
@@ -121,7 +121,7 @@ export function mount(host, opt) {
     async shake() { NK.sound.pop(); await tween(600, (e, t) => { cup.rotation.z = Math.sin(t * Math.PI * 6) * 0.25 * (1 - t); cup.position.y = Math.abs(Math.sin(t * Math.PI * 6)) * 0.15; }); cup.rotation.z = 0; cup.position.y = 0; },
     async spill(n, red) {
       api.clearCounters(); platter.visible = false; slices.forEach(o => scene.remove(o)); slices = []; const from = cup.position.clone().setY(1.4); NK.sound.cloth && NK.sound.cloth();
-      const xs = []; for (let j = 0; j < n; j++) xs.push(new THREE.Vector3((j - (n - 1) / 2) * 0.82 - (narrow ? 0.9 : 0.6), 0.07, 0.55 + (j % 2 ? 0.25 : -0.25)));
+      const xs = []; for (let j = 0; j < n; j++) xs.push(new THREE.Vector3((j - (n - 1) / 2) * (narrow ? 0.62 : 0.82) + (narrow ? center.x : -0.6), 0.07, 0.55 + (j % 2 ? 0.25 : -0.25)));   /* phone: closer together and centred, so all ten stay on screen */
       const flags = []; for (let j = 0; j < n; j++) flags.push(j < red); flags.sort((a, b) => b - a);   /* reds together on the left, yellows on the right: easy to see the two parts */
       for (let j = 0; j < n; j++) { const c = fruit(flags[j]); c.position.copy(from); scene.add(c); counters.push(c); }
       await Promise.all(counters.map((c, j) => new Promise(r => setTimeout(r, j * T(90))).then(() => tween(520, e => { c.position.lerpVectors(from, xs[j], e); c.position.y += Math.sin(Math.PI * e) * 1.2; c.rotation.y = e * Math.PI * 2; }))));
@@ -138,10 +138,10 @@ export function mount(host, opt) {
     slices: () => slices, towelOn: () => towel.visible,
     async bumpAll(list, say) { for (let i = 0; i < list.length; i++) { const o = list[i], y0 = o.position.y; await tween(240, (e, t) => { o.position.y = y0 + Math.sin(Math.PI * t) * 0.35; }); o.position.y = y0; if (say) await say(i); } },
     /* parts on two plates: show a and b slices (or counters) on the two little plates */
-    setPlates(a, b, what) { platter.visible = false; slices.forEach(s => scene.remove(s)); slices = []; towel.visible = false; plates.forEach((p, i) => { p.visible = true; while (p.children.length) p.remove(p.children[0]); p.position.x = (i ? 1 : -1) * (narrow ? 1.5 : 1.75); p.scale.setScalar(narrow ? 0.85 : 1); });
+    setPlates(a, b, what) { platter.visible = false; slices.forEach(s => scene.remove(s)); slices = []; towel.visible = false; plates.forEach((p, i) => { p.visible = true; while (p.children.length) p.remove(p.children[0]); p.position.x = (i ? 1 : -1) * (narrow ? 1.5 : 1.75); p.scale.setScalar(narrow ? 0.9 : 1); });
       [a, b].forEach((n, k) => { for (let j = 0; j < n; j++) { const o = fruit(what === 'counters' ? !k : true);
-        const per = n > 3 ? Math.ceil(n / 2) : n, row = Math.floor(j / per), col = j % per, inRow = row ? n - per : per; if (what !== 'counters') o.scale.setScalar(0.5);
-        o.position.set((col - (inRow - 1) / 2) * 0.66, what === 'counters' ? 0.1 : 0.2, n > 3 ? (row ? 0.38 : -0.38) : 0); plates[k].add(o); } }); },   /* rows with gaps, so each one can be counted */
+        const per = n > 3 ? Math.ceil(n / 2) : n, row = Math.floor(j / per), col = j % per, inRow = row ? n - per : per; if (what !== 'counters') o.scale.setScalar(0.8);   /* big enough to count */
+        o.position.set((col - (inRow - 1) / 2) * 0.72, 0.1, n > 3 ? (row ? 0.42 : -0.42) : 0); plates[k].add(o); } }); },   /* rows with gaps, so each one can be counted */
     hidePlates() { plates.forEach(p => { p.visible = false; }); platter.visible = true; },
     fit, destroy() { alive = false; renderer.dispose(); }
   };

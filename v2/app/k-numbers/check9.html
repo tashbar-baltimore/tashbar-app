@@ -45,6 +45,10 @@ function hooks() {
 function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
 function fin(line) { return FR.yes($('check'), line).then(() => { const d = done; done = null; d(R.misses === 0); }); }
 function step(d) { NK.unlock(); if (GAME.phase !== 'answer' || R.kind !== 'split') return; const k = R.k + d; if (k < 0 || k > R.n) { NK.sound.oops(); return; } R.k = k; NK.sound.pop(); show(); }
+/* a wrong split: the hand SHOWS one move to a new way (one more orange, or one more lemon), then he checks */
+async function showHow(have) { let d = [1, -1].find(dd => { const k = R.k + dd; return k > 0 && k < R.n && !have.includes(k); }); if (!d) d = R.k < R.n / 2 ? 1 : -1;
+  const btn = $(d > 0 ? 'more' : 'less'); await FR.say(d > 0 ? 'Watch. One more orange.' : 'Watch. One more lemon.'); await FR.handTo(btn); await FR.handTap(); FR.handHide();
+  R.k += d; NK.sound.pop(); show(); await FR.say('A new way! Now tap the check.'); }
 async function check() {
   NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true);
   if (R.kind === 'hide') {
@@ -53,8 +57,8 @@ async function check() {
     await K.bumpAll(hid, i => FR.say(FR.Word(i + 1) + (i === hid.length - 1 ? '.' : ','), { noRepeat: true })); await K.hide(R.k); H.set(0); await FR.say('Show me on your fingers.'); open(); return;
   }
   const k = R.k;
-  if (k === 0 || k === R.n) { FR.oops($('check')); R.misses++; await FR.say("Let's look. We need oranges and lemons."); open(); return; }
-  if (ways.includes(k)) { FR.oops($('check')); R.misses++; await FR.say("Let's look. That way we have. Find a new way."); open(); return; }
+  if (k === 0 || k === R.n) { FR.oops($('check')); R.misses++; await FR.say("Let's look. We need oranges and lemons."); await showHow(ways); open(); return; }
+  if (ways.includes(k)) { FR.oops($('check')); R.misses++; await FR.say("Let's look. We have that one."); await showHow(ways); open(); return; }
   ways.push(k); return fin(FR.Word(k) + ' and ' + FR.word(R.n - k) + ' make seven!');
 }
 const PLAN = [{ kind: 'hide', n: 6, k: 2 }, { kind: 'hide', n: 9, k: 4 }, { kind: 'hide', n: 10, k: 3 }, { kind: 'split', n: 7 }, { kind: 'split', n: 7 }];
@@ -64,7 +68,9 @@ function play(F, i) {
     const hide = R.kind === 'hide'; $('hp').hidden = $('goal').hidden = !hide; $('more').hidden = $('less').hidden = $('bond').hidden = hide;
     if (hide) { H.set(0); K.setKugel(R.n); $('goal').innerHTML = U5.num(R.n); await F.say(F.Word(R.n) + ' oranges. Close your eyes!'); await K.hide(R.k); open();
       await F.say('How many are under the basket? Show me.', { repeat: F.Word(R.n) + ' in all. I see ' + F.word(R.n - R.k) + '. How many hide?' }); return; }
-    R.k = 0; show(); await F.say(ways.length ? 'Now a different way to make seven!' : 'Show me a way to make seven.'); open();
+    R.k = 0; show();
+    if (!ways.length) { await F.say('Seven lemons. Watch me.'); await F.handTo($('more')); await F.handTap(); R.k = 1; NK.sound.pop(); show(); await F.say('One orange and six lemons make seven.'); F.handHide(); R.k = 0; show(); }
+    await F.say(ways.length ? 'Now a different way to make seven!' : 'Now you. Show me a way to make seven.'); open();
     await F.say('Use the arrows. Then tap the check.', { repeat: 'Orange arrow: one more orange. Then check.' });
   });
 }
