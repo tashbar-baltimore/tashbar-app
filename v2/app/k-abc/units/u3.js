@@ -77,11 +77,11 @@ const hunt = {
       const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 0.6, 28, 1, true), toon(0xD9A05B, { rough: .6 })); bowl.material.side = THREE.DoubleSide; net.add(bowl);
       const rimB = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.06, 10, 36), wood); rimB.rotation.x = Math.PI / 2; rimB.position.y = 0.3; net.add(rimB);
       const hnd = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.05, 8, 30, Math.PI), wood); hnd.position.y = 0.3; net.add(hnd);
-      const netHome = () => n() ? V(1.4, 1.6, 2.4) : V(3.6, 1.6, 2.0); net.position.copy(netHome()); S.scene.add(net); G.W.layout = () => { if (!net.userData.d) net.position.copy(netHome()); };
+      const netHome = () => n() ? V(0.3, 0.75, 2.6) : V(3.6, 1.6, 2.0);   /* a phone: the basket waits below the pictures, never on top of one */ net.position.copy(netHome()); S.scene.add(net); G.W.layout = () => { if (!net.userData.d) net.position.copy(netHome()); };
       const netItem = { obj: net, screen: () => S.toScreen(net.position) };
       const its = set.map(([w, yes], i) => { const it = G.item(w, () => V(0, 3, 0), { size: 0.95, data: { yes, slot: i } }); it.wings = new THREE.Group(); return it; });
       /* still: two rows of three (a phone: three rows of two), well apart, above the grass */
-      const spot = k => n() ? V(-0.95 + (k % 2) * 1.9, 4.3 - Math.floor(k / 2) * 1.45, -0.3) : V(-3.0 + (k % 3) * 2.6, 3.5 - Math.floor(k / 3) * 1.7, -0.3);
+      const spot = k => n() ? V(-0.95 + (k % 2) * 1.9, 5.0 - Math.floor(k / 2) * 1.35, -0.3) : V(-3.0 + (k % 3) * 2.6, 3.5 - Math.floor(k / 3) * 1.7, -0.3);
       S.tick(() => { its.forEach(it => { if (it.placed || !it.live) return; it.home.copy(spot(it.data.slot)); if (!it.moving) it.obj.position.copy(it.home); }); });
       G.rounds(3); await G.say('Look at these pictures.', 'Catch the ones that start with this sound.', snd('n'), 'Drag the basket over them.');
       /* dragging the basket: it catches whatever picture it touches */
@@ -97,7 +97,7 @@ const hunt = {
         let lastG; const exp = () => { const v = vis(), g = v.find(i => i.data.yes), b = v.find(i => !i.data.yes); if (g !== lastG) { lastG = g; G.expect(g ? { kind: 'drag', from: netItem, to: () => g.obj.position } : null); } G.A.wrongMove = b ? { kind: 'drag', from: netItem, to: () => b.obj.position } : null; };
         const timer = setInterval(exp, 200); exp();
         G.hint(async () => { const g = its.find(i => i.data.yes && !i.placed); if (g) { g.glow(true); await G.say(say(g.name) + '.', snd('n')); } });
-        await new Promise(res => { roundDone = async it => { if (it.data.yes) { roundDone = null; it.placed = true; it.glow(false); it.wings.visible = false; it.size *= 0.6; await it.moveTo(netHome().add(V(-0.6 + got * 0.6, -0.9, 0)), 400); got++; await G.right(it.obj.position, say(it.name) + '!'); res(); }
+        await new Promise(res => { roundDone = async it => { if (it.data.yes) { roundDone = null; it.placed = true; it.glow(false); it.wings.visible = false; it.size *= 0.6; await it.moveTo(netHome().add(V(-0.6 + got * 0.6, n() ? -0.2 : -0.9, 0)), 400); got++; await G.right(it.obj.position, say(it.name) + '!'); res(); }
           else { await G.wrong([say(it.name) + '. Listen to the start.', snd('n')], it); } }; });
         clearInterval(timer);
       }
