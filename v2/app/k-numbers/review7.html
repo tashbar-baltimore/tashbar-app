@@ -10,15 +10,15 @@
      A slip: we count along from five (or zero) together, and the right stone shines. On a phone the arrows move along the path. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
-<style>.mchip{ width:clamp(80px,12vh,104px); height:clamp(80px,12vh,104px); } .mchip img{ height:100%; width:auto; pointer-events:none; }</style>
+<style>.nchip{ width:clamp(110px,16vh,128px); height:clamp(110px,16vh,128px); } .nchip svg{ pointer-events:none; }   /* the number he drags is big (K clarity 9) */
+@media (max-width:760px), (max-aspect-ratio:4/5){ .nchip{ width:100px; height:100px; } }</style>
 </head>
 <body>
 <div id="world"></div>
 <div id="game" class="locked"><div class="stage s6" id="stage">
   <div class="ui" id="panel">
     <button id="left" class="bigbtn btn3d b-white" aria-label="Look left" hidden><svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div class="goal" id="goal"></div>
-    <div class="numcard mchip" id="mchip"><img src="art/mendy-idle.png" alt="Mendy"></div>
+    <div class="numcard nchip" id="nchip" role="button"></div>
     <button id="right" class="bigbtn btn3d b-white" aria-label="Look right" hidden><svg viewBox="0 0 48 48"><path d="M18 10l14 14-14 14" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
 </div></div>
@@ -30,27 +30,27 @@ let P, M, R, done;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
 const ANCHORS = [0, 5, 10];
 function hooks() { const k = R.n, bad = k === 9 ? 8 : k + 1;
-  GAME.right = () => { P.focus(k, true); return [{ drag: ['#mchip', '.stone[data-n="' + k + '"]'] }]; };
-  GAME.wrong = () => { P.focus(bad, true); return [{ drag: ['#mchip', '.stone[data-n="' + bad + '"]'] }]; }; }
+  GAME.right = () => { P.focus(k, true); return [{ drag: ['#nchip', '.stone[data-n="' + k + '"]'] }]; };
+  GAME.wrong = () => { P.focus(bad, true); return [{ drag: ['#nchip', '.stone[data-n="' + bad + '"]'] }]; }; }
 function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
 function nearest(n) { return ANCHORS.filter(a => a <= n).pop(); }   /* always count up, from 0 or 5 (gentler than counting back) */
 async function drop(chip, stone) {
   if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n;
-  if (n === R.n) { M.show(true); M.pose('happy'); await M.hop(n); P.shown(n, true); P.lift(n); P.petals(n); await FR.yes(stone, FR.pick(['Yes! ' + FR.Word(n) + ' lives there!', 'Right! That is ' + FR.word(n) + '.']));
+  if (n === R.n) { $('nchip').classList.add('done'); P.shown(n, true); P.lift(n); NK.sound.yes(); M.show(true); M.pose('happy'); await M.hop(n); P.petals(n); await FR.yes(stone, FR.pick(['Yes! ' + FR.Word(n) + ' lives there!', 'Right! That is ' + FR.word(n) + '.']));
     M.pose('idle'); const d = done; done = null; d(R.misses === 0); return; }
   FR.oops(stone); R.misses++; const a = nearest(R.n), dir = R.n > a ? 1 : -1;
   await FR.say("Let's look. Start at " + FR.word(a) + ' and count.');
   for (let k = a; k !== R.n + dir; k += dir) { P.focus(k); P.glow(k, true); await FR.say(FR.Word(k) + (k === R.n ? '!' : ','), { noRepeat: true }); P.glow(k, false); }
-  if (R.misses > 1) P.el(R.n).classList.add('hint'); await FR.say('Bring Mendy to ' + FR.word(R.n) + '.'); open();
+  if (R.misses > 1) P.el(R.n).classList.add('hint'); await FR.say('Put ' + FR.word(R.n) + ' on its stone.'); open();
 }
 const PLAN = [3, 7, 1, 9, 2, 6];
 function play(F, i) {
   return new Promise(async res => {
     R = { n: PLAN[i], misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); for (let k = 0; k <= 10; k++) P.el(k).classList.remove('hint');
-    P.showAll(false); ANCHORS.forEach(n => P.shown(n, true)); M.show(false); M.place(nearest(R.n)); $('goal').innerHTML = U5.num(R.n);
+    P.showAll(false); ANCHORS.forEach(n => P.shown(n, true)); M.show(true); M.pose('idle'); M.place(nearest(R.n)); $('nchip').innerHTML = U5.num(R.n); $('nchip').classList.remove('done');
     P.focus(P.narrow() ? (R.n + nearest(R.n)) / 2 : 5);
-    await F.say(i === 0 ? 'Back on the number path! Only some numbers show.' : F.pick(['A new number!', 'Where does Mendy go now?', 'Look at this number.']));
-    open(); await F.say('Bring Mendy to this number.', { repeat: 'Drag Mendy to ' + F.word(R.n) + '. Count from the numbers that show.' });
+    await F.say(i === 0 ? 'Back on the number path! Only some numbers show.' : F.pick(['A new number!', 'Where does this number live?', 'Look at this number.']));
+    open(); await F.say('Put this number on its stone. Mendy will hop there!', { repeat: 'Drag ' + F.word(R.n) + ' to its stone. Count from the numbers that show.' });
   });
 }
 FR.game({
@@ -58,13 +58,13 @@ FR.game({
   hero: '<div class="hero6"><img src="art/mendy-point.png" alt=""></div>',
   init() {
     P = mount($('world'), { kids: ['mendy'], band }); M = P.kids.mendy;
-    FR.dragTap({ sources: '#mchip', targets: '.p6layer .stone', drop });
+    FR.dragTap({ sources: '#nchip', targets: '.p6layer .stone', drop });   /* the number he drags is the thing he looks at (as in Where does it go?) */
     if (P.narrow()) { $('left').hidden = $('right').hidden = false; $('left').onclick = () => { NK.sound.pop(); P.pan(-2); }; $('right').onclick = () => { NK.sound.pop(); P.pan(2); }; }
   },
   demo: async F => {
-    R = { n: 6, misses: 0 }; P.showAll(false); ANCHORS.forEach(n => P.shown(n, true)); M.show(false); $('goal').innerHTML = U5.num(6); P.focus(5.5);
+    R = { n: 6, misses: 0 }; P.showAll(false); ANCHORS.forEach(n => P.shown(n, true)); M.place(5); M.show(true); $('nchip').innerHTML = U5.num(6); P.focus(5.5);
     await F.say('This is six. Watch me find it.'); P.glow(5, true); await F.say('Here is five. Six comes next!'); P.glow(5, false);
-    await F.handDrag($('mchip'), P.el(6)); M.place(5); M.show(true); await M.hop(6); P.shown(6, true); P.petals(6); await F.say('Six lives right after five!');
+    await F.handDrag($('nchip'), P.el(6)); P.shown(6, true); P.lift(6); await M.hop(6); P.petals(6); await F.say('Six lives right after five!'); M.place(0);
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'You remember where numbers live!' : 'Good work! Let\'s play once more.'
