@@ -664,8 +664,8 @@ N('MATH.MEAS.L05.02',{ today:'Use area and perimeter formulas for any rectangle'
     q:'Abba fences a yard 9 by 4. How much fence?', o:['36','26','13'],
     pay:'A fence goes *around*: *26*. A rug covers the inside: 36.' },
   learn:[
-    { t:'*Area* covers the inside. A *square*? Side × side.', m:{type:'rect', w:5, h:3, unit:'ft'}, act:{type:'count', n:15, pic:'🟩', o:['15','8','16'], q:'A rug 5 feet by 3 feet',
-      say:'Count the *square feet* the rug covers.', how:'3 rows of 5: *5 × 3 = 15* square feet. A *square* has equal sides: sides 7 make 7 × 7 = 49.'} },
+    { t:'*Area* covers the inside: *length × width*.', m:{type:'rect', w:5, h:3, unit:'ft'}, act:{type:'count', n:15, pic:'🟩', o:['15','8','16'], q:'A rug 5 feet by 3 feet',
+      say:'Count the *square feet* the rug covers.', how:'3 rows of 5: *5 × 3 = 15* square feet. A *square* has equal sides: side × side, so 7 × 7 = 49.'} },
     { t:'*Perimeter* walks all the way around the *edge*.', m:{type:'rect', w:8, h:5, unit:'ft', edge:true}, act:{type:'cloze', t:'Around 8 by 5: 8 + 5 + 8 + 5 = ___', o:['26','40','13'], a:'26',
       say:'Walk all *4 sides*. Add them up.', how:'Two lengths, two widths: *2 × (8 + 5) = 26* feet.'} },
     { t:'Know the *area*? *Divide*: area ÷ length = width.', m:{type:'rect', w:8, h:4, unit:'ft', hl:'?'}, act:{type:'cloze', t:'A rug covers 32 square feet. It is 8 feet long. Width: ___ feet', o:['4','24','256'], a:'4',
@@ -675,17 +675,17 @@ N('MATH.MEAS.L05.02',{ today:'Use area and perimeter formulas for any rectangle'
     { who:{ q:'Carpet for a room *7 by 5*?', o:[['Yitzi','24'],['Baruch','35']], a:1,
       why:'Yitzi found the *edge*. Carpet covers the *inside*: area.' } } ],
   play:[
-    {type:'sort', mis:true, q:'Yehuda’s sukkah floor is 8 by 6', bins:['Right','Mistake'], cards:[['Mat: 48',0],['Mat: 28',1],['Border: 28',0],['Border: 48',1],['Floor P 28, L 8: width 6',0],['Floor P 28, L 8: width 20',1]],
-      say:'Mistake Detective: right or mistake? Sort each one.', how:'A mat covers the inside: *area*, 8 × 6. A border goes around: *perimeter*. Width from P: *half* first.',
-      why:{q:'Why is "Mat: 28" a mistake?', o:['28 is the distance around, not the inside','28 is too small','Mats use feet'], a:'28 is the distance around, not the inside'}},
-    {type:'storymap', q:'Mendel’s garden is 12 feet by 7 feet', slots:['Fence around it','Grass inside it'], cards:['38 feet','84 square feet'], extra:['19 feet','24 square feet'],
-      say:'How much *fence*? How much *grass*?', how:'Fence: 2 × (12 + 7) = *38*. Grass: 12 × 7 = *84*.',
-      why:{q:'Why add, then double, for the fence?', o:['There are 2 lengths and 2 widths','Fences are long','Double is faster'], a:'There are 2 lengths and 2 widths'}},
     {type:'sort', bins:['Area','Perimeter'], cards:[['Rug',0],['Fence',1],['Paint a wall',0],['Frame’s edge',1],['Floor tiles',0],['Ribbon edge',1]],
       say:'Covering or going around? Sort each job.', how:'Covers the inside: *area*. Goes around the edge: *perimeter*.'},
+    {type:'storymap', q:'Mendel’s garden is 12 feet by 7 feet', slots:['Fence around it','Grass inside it'], cards:['38 feet','84 square feet'], extra:['19 feet','38 square feet'],
+      say:'How much *fence*? How much *grass*?', how:'Fence: 2 × (12 + 7) = *38*. Grass: 12 × 7 = *84*.',
+      why:{q:'Why add, then double, for the fence?', o:['There are 2 lengths and 2 widths','Fences are long','Double is faster'], a:'There are 2 lengths and 2 widths'}},
+    {type:'sort', mis:true, q:'Yehuda’s sukkah floor is 8 by 6. His shelf: perimeter 30, length 9.', bins:['Right','Mistake'], cards:[['Floor mat: 48',0],['Floor mat: 28',1],['Floor border: 28',0],['Floor border: 48',1],['Shelf width: 6',0],['Shelf width: 21',1]],
+      say:'Mistake Detective: right or mistake? Sort each one.', how:'A mat covers the inside: *area*, 8 × 6. A border goes around: *perimeter*. Shelf width: *half* of 30 is 15, then 15 − 9.',
+      why:{q:'Why is "Mat: 28" a mistake?', o:['28 is the distance around, not the inside','28 is too small','Mats use feet'], a:'28 is the distance around, not the inside'}},
     {type:'match', q:'A = area, P = perimeter, L = length', pairs:[['Area, 10 by 2','20'],['Width? P 30, L 10','5'],['Width? A 198, L 22','9'],['Area, square, sides 7','49']],
       say:'Area, perimeter or width? Solve and match each.', how:'Width from area: *area ÷ length*. 22 × ? = 198: try 9. From P: half, then take the length away.'} ],
-  done:'*Area* covers the inside. *Perimeter* goes around the edge.' });
+  done:'*Area* covers the inside. *Perimeter* goes around. Missing width? *Divide*, or halve then subtract.' });
 
 N('MATH.STAT.L05.01',{ today:'Read a line plot: count Xs, then use the values',
   hook:{ kind:'mystery', pic:'🌱', t:'Chaim\'s class plot shows *4 Xs* above 2/8 inch. Each X is a sprout.',
