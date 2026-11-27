@@ -36,7 +36,7 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | W3 | Writing Grades 6–8 (W48) | 57 lessons (L07–L09) | src/CoreDataW48*.html | OPEN | | | |
 | S1 | Social Studies | SS.* (about 30) | src/CoreDataS*.html, src/OneBiteData*.html | OPEN | | | |
 | S2 | Science | SCI.* (20) | src/CoreDataS2.html, src/CoreDataS3.html and the other src/CoreDataS*.html | OPEN | | | |
-| K1 | Kodesh (Chumash, Kriah, Halacha, Tefillah, Navi, Mishnah) | LK.* (65) | src/OneBiteDataKodesh.html (and src/KriyahMore.html) | OPEN | | | Kodesh: REBBE review after live |
+| K1 | Kodesh (Chumash, Kriah, Halacha, Tefillah, Navi, Mishnah) | LK.* (65) | src/OneBiteDataKodesh.html (and src/KriyahMore.html) | WAIT (take only when every other row is TAKEN or DONE; HoS 2026-11-27) | | | Kodesh: REBBE review after live |
 | L1 | Young levels (seen as bridges and by older boys filling gaps; K–1 boys play the K–1 games) | MATH.*, READ.* L01–L02 (about 70) | src/OneBiteData*.html | OPEN (last) | | | |
 
 ## Coordinator notes (play-through 2026-11-27)
