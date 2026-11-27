@@ -73,6 +73,7 @@ const hunt = {
       const netItem = { obj: net, screen: () => S.toScreen(net.position) };
       const its = set.map(([w, yes], i) => { const it = G.item(w, () => V(0, 3, 0), { size: 0.8, data: { yes, ph: i * 1.05, roam: true } }); const b = new THREE.Group(); [-1, 1].forEach(s2 => { const wg = new THREE.Mesh(new THREE.SphereGeometry(0.35, 14, 10), toon([0xFF7AC8, 0xB46BFF, 0x4FC3FF][i % 3], { emissive: 0x331133, ei: .2 })); wg.scale.set(1, 1.2, 0.12); wg.position.set(s2 * 0.4, 0.6, -0.2); b.add(wg); }); it.obj.add(b); it.wings = b; return it; });
       let t0 = 0; S.tick((t, dt) => { t0 += dt * (FAST ? 0.4 : 1); its.forEach((it, i) => { if (it.placed || !it.live) return; const a = t0 * 0.35 + it.data.ph, w = n() ? 1.7 : 3.4;
+        const nearNet = net.userData.d && it.obj.position.distanceTo(net.position) < 1.6; if (nearNet) { it.data.ph -= dt * 0.35 * (FAST ? 0.4 : 1); }   /* it waits for the net */
         it.home.set(Math.sin(a) * w - (n() ? 0 : 0.4), (n() ? 3.6 : 3.0) + Math.sin(a * 1.7) * (n() ? 1.6 : 1.1), -0.3); if (!it.moving) it.obj.position.copy(it.home); it.wings.children.forEach((wg, k) => wg.rotation.y = Math.sin(t * 12 + i) * 0.6 * (k ? -1 : 1)); }); });
       G.rounds(3); await G.say('Butterflies are carrying pictures!', 'Catch the ones that start with this sound.', snd('n'), 'Drag the net over them.');
       /* dragging the net: it catches whatever picture it touches */
@@ -133,7 +134,8 @@ const hunt = {
       G.rounds(seq.length); await G.say('Drum time! Watch the stump.', 'Tap the drum only when it starts with this sound.', snd('d'));
       await G.say('If it does not, wait. Let it go by.');
       for (const [w, yes] of seq) {
-        G.newRound(); const it = G.item(w, () => V(0, 1.75, -1.2), { size: 1.2 }); await it.say(); tapped = 0;
+        G.newRound(); const it = G.item(w, () => V(0, 1.75, -1.2), { size: 1.2 }); await it.say(); tapped = 0; let tries = 0;
+        for (;;) { tries++;
         /* he has a few seconds: tap (yes) or wait (no); the hourglass is the glowing ring around the stump */
         const ring = new THREE.Mesh(new THREE.RingGeometry(1.05, 1.18, 48, 1, 0, Math.PI * 2), new THREE.MeshBasicMaterial({ color: C(0xFFF3A0).multiplyScalar(1.4), side: THREE.DoubleSide, transparent: true, opacity: 0.8 })); ring.rotation.x = -Math.PI / 2; ring.position.set(0, 1.02, -1.2); S.scene.add(ring);
         G.expect(yes ? { kind: 'tap', at: drum } : { kind: 'wait' }); G.A.wrongMove = yes ? null : { kind: 'tap', at: drum };
@@ -142,9 +144,11 @@ const hunt = {
           if (tapped > 0) { clearInterval(id); ok = yes; res(); } else if (el > limit) { clearInterval(id); ok = !yes ? true : null; res(); } }, 50); });
         S.scene.remove(ring);
         if (ok === true) await G.right(it.obj.position, yes ? say(w) + '! Drum, drum!' : 'Good waiting! ' + say(w) + ' is not this sound.');
+        else if (ok === null && tries < 2) { await G.wrong([say(w) + '!', snd('d'), 'It starts with this sound. Try again!']); drum.scale.setScalar(1.9); setTimeout(() => drum.scale.setScalar(1.6), 900); tapped = 0; continue; }   /* one more try, the drum glows big */
         else { if (ok === false) await G.wrong([say(w) + '. Listen to the start.', 'Wait when it is not this sound.']);
-          else await G.wrong([say(w) + '!', snd('d'), 'That one was this sound. Tap the drum!']);
+          else await G.wrong([say(w) + ' starts with this sound.', 'Next time, tap the drum!']);
           G.A.rounds++; const pip = document.getElementById('pips').children[G.ri++]; if (pip) pip.className = 'done'; }   /* a missed round still counts (no star) */
+        break; }
         await it.remove();
       }
       await todayWord(G, 'dad'); await G.done('Drum, drum! Great listening!');
@@ -162,13 +166,13 @@ const boxes = {
     const bx = i => n() ? V(-1.3 + i * 1.3, 1.25, -0.6) : V(-1.8 + i * 1.8, 1.25, -0.6);
     const boxesM = [0, 1, 2].map(i => { const b = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.25, 1.0), toon(0xFFF6E2, { rough: .5 })); b.position.copy(bx(i)); S.scene.add(b); return b; });
     let first = true;
-    for (const [w] of WORDS3) {
+    for (const [wi, [w]] of WORDS3.entries()) {
       G.newRound(); const pic = WORDS[w] ? G.item(w, () => V(n() ? 1.5 : 3.8, 2.4, -0.6), { size: 1.0 }) : null; const need = w.length; let c = 0; const tokens = [];
       const pile = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.16, 24), toon(0x4DDB6A, { clear: 1 })); pile.position.copy(n() ? V(0, 0.75, 2.2) : V(0, 0.75, 2.0)); S.scene.add(pile);
       const pileItem = { obj: pile, screen: () => S.toScreen(pile.position) };
       if (first) { first = false; await G.say('Watch me.', 'Sat.'); for (let k = 0; k < 3; k++) { const tk = token(S); tk.position.copy(bx(k)).add(V(0, 0.25, 0)); tokens.push(tk); await audio.letter('sat'[k]); await G.wait(250); }
         await G.say('Three sounds, three chips!'); tokens.splice(0).forEach(t => S.scene.remove(t)); }
-      await G.say('Listen: ' + w + '.', 'Push a chip for each sound.');
+      await G.say('Listen: ' + w + '.', wi < 2 ? 'Push a chip for each sound.' : 'Say it slowly. A chip for each sound.');
       const setExp = () => { G.expect(c < need ? { kind: 'drag', from: pileItem, to: () => bx(c) } : { kind: 'button', sel: '#ok' }); G.A.wrongMove = c === 0 ? null : c === need ? { kind: 'drag', from: pileItem, to: () => bx(Math.min(2, c)) } : { kind: 'button', sel: '#ok' }; };
       setExp();
       G.hint(async () => { await G.say('Say it slowly with me.', sounds(w)); });
@@ -176,7 +180,7 @@ const boxes = {
       const el = S.renderer.domElement; let d = false;
       const down = e => { const p = S.toScreen(pile.position); if (Math.hypot(e.clientX - p.x, e.clientY - p.y) < 70) { d = true; G.locked = true; } };
       const up = e => { if (!d) return; d = false; G.locked = false; const q = S.onPlane(e, -0.6); if (!q || c >= 3) return; const tgt = bx(c); const a1 = { x: e.clientX, y: e.clientY }, b1 = S.toScreen(tgt);
-        if (Math.hypot(a1.x - b1.x, a1.y - b1.y) < 110 * Math.max(0.6, Math.min(innerWidth, innerHeight) / 768)) { const tk = token(S); tk.position.copy(tgt).add(V(0, 0.25, 0)); tokens.push(tk); if (w[c]) audio.letter(w[c]); else audio.pop(); c++; G.button('ok', true); setExp(); } };
+        if (Math.hypot(a1.x - b1.x, a1.y - b1.y) < 110 * Math.max(0.6, Math.min(innerWidth, innerHeight) / 768)) { const tk = token(S); tk.position.copy(tgt).add(V(0, 0.25, 0)); tokens.push(tk); if (wi < 2 && w[c]) audio.letter(w[c]); else audio.pop(); c++;   /* from the third word the chips are silent: he says the sounds himself */ G.button('ok', true); setExp(); } };
       el.addEventListener('pointerdown', down); addEventListener('pointerup', up);
       for (;;) { await G.pressed('ok'); G.button('ok', false);
         if (c === need) { const ds = dotStone(S, need); ds.position.copy(bx(1)).add(V(0, 1.6, 0.3)); ds.scale.setScalar(0.8);   /* the dot stone for this many sounds (as in the check) */
@@ -261,7 +265,7 @@ const check = {
       G.newRound(); let objs = [], goal, ask;
       if (q.k === 'sound') { const pool = ['i', 'n', 'm', 'd', 's', 'a', 't', 'p'].filter(c => c !== q.ch && !(q.ch === 'm' && c === 'n') && !(q.ch === 'n' && c === 'm')); const L = shuffle([q.ch, ...shuffle(pool).slice(0, 3)]);   /* m and n (both hums) never side by side */ objs = L.map((c, i) => { const t = letterTile(c); t.position.copy(pos(i, 4)); t.scale.setScalar(n() ? 0.85 : 0.82); S.scene.add(t); t.userData.c = c; return t; });
         goal = objs[L.indexOf(q.ch)]; ask = ['Which letter says this sound?', snd(q.ch)]; }
-      if (q.k === 'word') { const pool = ['sit', 'man', 'dip', 'nap', 'mat', 'tin', 'dad', 'pin'].filter(x => x !== q.w); const ws = shuffle([q.w, ...shuffle(pool).slice(0, 2)]);
+      if (q.k === 'word') { const near = { sit: ['sat', 'tin'], man: ['mat', 'nap'], dip: ['dad', 'tip'], nap: ['pan', 'map'] }[q.w] || ['mat', 'tin']; const ws = shuffle([q.w, ...near]);   /* look-alike words, so a first-letter guess does not work */
         objs = ws.map((w, i) => { const g = wordTiles(S, w, 0.62); g.position.copy(pos(i, 3, true)); g.scale.setScalar(n() ? 0.75 : 1); return g; }); goal = objs[ws.indexOf(q.w)]; ask = ['Tap the word ' + q.w + '.']; }
       if (q.k === 'count') { objs = [1, 2, 3].map((k, i) => { const p = dotStone(S, k); p.position.copy(pos(i, 3)); return p; }); goal = objs[q.n - 1];
         ask = [(q.w === 'it' ? 'It.' : say(q.w) + '.'), 'How many sounds? Tap the stone with that many dots.']; }
@@ -291,7 +295,8 @@ const opener = {
     for (let i = 0; i < 4; i++) { const [w, c, line] = F[i]; G.newRound();
       await G.say(line, snd(c)); await S.tween(400, e => lets[i].scale.setScalar(Math.max(0.0001, e * (n() ? 0.58 : 0.9))), ease.back);
       await G.say('Tap the letter for that sound.');
-      await new Promise(res => { G.expect({ kind: 'tap', at: lets[i] }); G.A.wrongMove = null; G.tap(tapHit(lets[i], 0.8), () => { audio.letter(c); G.taps = []; res(); }); });
+      await new Promise(res => { G.expect({ kind: 'tap', at: lets[i] }); G.A.wrongMove = i > 0 ? { kind: 'tap', at: lets[0] } : null; G.taps = [];
+        lets.slice(0, i + 1).forEach((t, k) => G.tap(tapHit(t, 0.8), async () => { audio.letter(F[k][1]); if (k === i) { G.taps = []; res(); } else await G.wrong(['That one says a different sound.', 'Listen again.', snd(c)]); })); });   /* a real choice: every letter so far */
       await G.right(lets[i].position, say(w) + '!'); }
     /* the chant (MAP.md): "Mmm, the Shabbos soup is yum." */
     G.A.name = 'song'; await clearItems(G); lets.forEach(t => S.scene.remove(t)); const soup = G.item('soup', () => V(0.3, 2.0, -0.6), { size: 1.5 });
@@ -302,5 +307,5 @@ const opener = {
 };
 
 export const GAMES = { opener, 'i-meet': meet('i'), 'i-trace': trace('i'), 'i-hunt': hunt.i, 'n-meet': meet('n'), 'n-trace': trace('n'), 'n-hunt': hunt.n,
-  slide: slide(['it', 'in', 'sit', 'tin', 'pin'], 'Back to the word slide!', 'cat'), boxes, 'm-meet': meet('m'), 'm-trace': trace('m'), 'm-hunt': hunt.m,
-  'd-meet': meet('d'), 'd-trace': trace('d'), 'd-hunt': hunt.d, slide2: slide(['nap', 'man', 'mat', 'map', 'dip', 'dad', 'did', 'mad'], 'New sounds on the word slide!', 'sun', true), fixit, review, check };
+  slide: slide(['it', 'in', 'sit', 'tin', 'pin'], 'Back to the word slide!', { pin: 'tin', tin: 'pin' }), boxes, 'm-meet': meet('m'), 'm-trace': trace('m'), 'm-hunt': hunt.m,
+  'd-meet': meet('d'), 'd-trace': trace('d'), 'd-hunt': hunt.d, slide2: slide(['nap', 'man', 'mat', 'map', 'dip', 'dad', 'did', 'mad'], 'New sounds on the word slide!', { mat: 'map', map: 'mat' }, true), fixit, review, check };

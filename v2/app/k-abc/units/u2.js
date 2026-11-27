@@ -54,7 +54,7 @@ export function meet(ch) {
       await G.say(L.action); G.mendy.wiggle(); W.cheer(); await audio.letter(ch); await G.wait(400);
       /* round 1: tap the picture-letter to hear it */
       G.newRound(); const target = W.hero || tapHit(G, (() => { const o = new THREE.Object3D(); o.position.set(0, 2.75, 0.2); S.scene.add(o); return o; })(), 1.6);
-      await G.say('Tap the ' + ({ t: 'woodpecker', a: 'apple vine', n: 'butterfly', m: 'moon' }[ch] || KEYWORD[ch]) + ' to hear its sound.');
+      await G.say('Tap the ' + ({ t: 'woodpecker', a: 'apple vine', m: 'moon' }[ch] || KEYWORD[ch]) + ' to hear its sound.');
       await new Promise(res => { G.expect({ kind: 'tap', at: () => target.getWorldPosition(new THREE.Vector3()) }); G.A.wrongMove = null; G.tap(target, () => { W.poke(); audio.letter(ch); G.taps = []; res(); }); });
       await G.right(V(0, 3.2, 0.6), 'You heard it!');
       /* rounds 2-3: which picture starts with it? (two pictures stand on the grass) */
@@ -250,9 +250,9 @@ export function slide(words, title, decoy = 'pan', finalRead = false) {
         }
         await G.right(tiles[tiles.length - 1].position.clone().add(V(0, 0.6, 0.4)), PIC[w] ? 'You blended it!' : say(w) + '!');
         /* the word goes to its picture, if it has one */
-        if (PIC[w]) { const opts = shuffle([PIC[w], decoy]).map((p, i) => G.item(p, () => n() ? V(-1.2 + i * 2.4, 0.8, 2.2) : V(-1.6 + i * 3.2, 0.8, 2.2), { size: 1.0 })); const good = opts.find(o => o.name === PIC[w]);
+        if (PIC[w]) { const dk = typeof decoy === 'string' ? decoy : (PIC[decoy[w]] || 'pan'), opts = shuffle([PIC[w], dk]).map((p, i) => G.item(p, () => n() ? V(-1.2 + i * 2.4, 0.8, 2.2) : V(-1.6 + i * 3.2, 0.8, 2.2), { size: 1.0 })); const good = opts.find(o => o.name === PIC[w]);
           await G.say('Which picture shows this word?'); G.expect({ kind: 'tap', at: good }); G.A.wrongMove = { kind: 'tap', at: opts.find(o => o !== good) };
-          await new Promise(res => opts.forEach(it => it.onTap = async () => { it.poke(); if (it === good) { audio.chime([784, 988, 1319]); G.P.burst(it.obj.position, 0.4); await G.say('Yes! ' + say(w) + '!'); res(); } else await G.wrong(['That is ' + an(say(decoy)).toLowerCase() + '. Read it again.', echo(async () => { for (const c of chs) await audio.letter(c); })], it); }));
+          await new Promise(res => opts.forEach(it => it.onTap = async () => { it.poke(); if (it === good) { audio.chime([784, 988, 1319]); G.P.burst(it.obj.position, 0.4); await G.say('Yes! ' + say(w) + '!'); res(); } else await G.wrong(['That is ' + an(say(dk)).toLowerCase() + '. Read it again.', echo(async () => { for (const c of chs) await audio.letter(c); })], it); }));
           await clearItems(G); }
         await S.tween(300, e => tiles.forEach(t => t.scale.setScalar(Math.max(0.0001, (1 - e) * (n() ? 0.8 : 1))))); tiles.forEach(t => S.scene.remove(t)); G.taps = [];
       }
