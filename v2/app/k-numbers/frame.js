@@ -96,7 +96,9 @@
   F.dragTap = function (opts) {
     var drag = null, picked = null;
     function srcOf(e) { var s = e.target.closest(opts.sources); return s && !s.classList.contains('done') ? s : null; }
-    function tgtAt(x, y) { var best = null; document.querySelectorAll(opts.targets).forEach(function (t) { if (t.classList.contains('done')) return; var r = t.getBoundingClientRect(); if (x > r.left - 16 && x < r.right + 16 && y > r.top - 16 && y < r.bottom + 16) best = t; }); return best; }
+    function tgtAt(x, y) {   /* the target under the finger (16 px of slack); when two are close, the nearest centre wins */
+      var best = null, bd = 1e9; document.querySelectorAll(opts.targets).forEach(function (t) { if (t.classList.contains('done')) return; var r = t.getBoundingClientRect(); if (!r.width) return;
+        if (x > r.left - 16 && x < r.right + 16 && y > r.top - 16 && y < r.bottom + 16) { var d = Math.hypot(x - (r.left + r.right) / 2, y - (r.top + r.bottom) / 2); if (d < bd) { bd = d; best = t; } } }); return best; }
     document.addEventListener('pointerdown', function (e) {
       if (!F.canPlay()) return; var s = srcOf(e);
       if (!s) { var t = e.target.closest(opts.targets); if (t && picked && !t.classList.contains('done')) { var p = picked; picked.classList.remove('picked'); picked = null; opts.drop(p, t); } return; }

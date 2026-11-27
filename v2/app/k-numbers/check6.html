@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me: The path — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 6 MASTERY CHECK ("Show me"), from the map: place 5 numbers on an empty 0-10 path, and a short race.
+     Only zero and ten show. He puts five numbers on their stones, one at a time (no help with the stones next door until a slip).
+     Then two race turns: spin, and tap where Mendy lands (counting on). Two stars or more passes the unit stop. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <button id="left" class="bigbtn btn3d b-white" aria-label="Look left" hidden><svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="srcs" id="src"></div>
+    <button id="spin" class="spin6" aria-label="Spin" hidden></button>
+    <button id="right" class="bigbtn btn3d b-white" aria-label="Look right" hidden><svg viewBox="0 0 48 48"><path d="M18 10l14 14-14 14" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount, spinner } from './path6.js';
+const $ = id => document.getElementById(id);
+let P, M, SP, R, done, order;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function hooks() {
+  if (R.kind === 'place') { const k = R.n, bad = k === 9 ? 8 : k + 1;
+    GAME.right = () => { P.focus(k, true); return [{ drag: ['#src .numcard', '.stone[data-n="' + k + '"]'] }]; };
+    GAME.wrong = () => { P.focus(bad, true); return [{ drag: ['#src .numcard', '.stone[data-n="' + bad + '"]'] }]; }; return; }
+  if (R.stage === 'spin') { GAME.right = () => [{ tap: '#spin' }]; GAME.wrong = null; return; }
+  const k = R.to; GAME.right = () => { P.focus(k, true); return [{ tap: '.stone[data-n="' + k + '"]' }]; }; GAME.wrong = () => { P.focus(k + 1, true); return [{ tap: '.stone[data-n="' + (k + 1) + '"]' }]; };
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+function finish(ok) { const d = done; done = null; d(ok); }
+async function drop(card, stone) {
+  if (GAME.phase !== 'answer' || R.kind !== 'place') return; const at = +stone.dataset.n; GAME.phase = 'busy'; FR.lock(true);
+  if (at === R.n) { card.classList.add('done'); R.placed.push(R.n); P.shown(R.n, true); P.lift(R.n); P.petals(R.n); await FR.yes(stone, FR.pick(['Yes!', 'Right there!', FR.Word(R.n) + '!'])); return finish(R.misses === 0); }
+  if (at === 0 || at === 10 || R.placed.includes(at)) { FR.oops(stone); await FR.say('That stone has its number. Look for an empty one.'); open(); return; }
+  FR.oops(stone); R.misses++;
+  if (R.misses === 1) { await FR.say("Let's look. Count from zero, stone by stone."); for (let n = 0; n <= R.n; n++) { P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === R.n ? '!' : ','), { noRepeat: true }); P.glow(n, false); } }
+  else { P.focus(R.n); P.el(R.n).classList.add('hint'); await FR.say('Put it on the shining stone.'); }
+  open();
+}
+async function spin() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.kind !== 'race' || R.stage !== 'spin') return; GAME.phase = 'busy'; FR.lock(true); SP.glow(false);
+  await SP.spin(R.k); await FR.say(R.k === 1 ? 'One dot! One hop.' : 'Two dots! Two hops.'); R.stage = 'land'; P.focus(M.n + 1); open();
+  await FR.say('Where will Mendy land?', { repeat: 'Mendy is on ' + FR.word(M.n) + '. Where will he land?' });
+}
+async function land(n, el) {
+  if (GAME.phase !== 'answer' || R.kind !== 'race' || R.stage !== 'land') return; GAME.phase = 'busy'; FR.lock(true);
+  if (n === R.to) { M.pose('happy'); await M.hop(R.to, k => FR.say(FR.Word(k) + (k === R.to ? '!' : ','), { noRepeat: true })); M.pose('idle'); P.petals(n); await FR.yes(el, 'Yes! You counted on!'); return finish(R.misses === 0); }
+  FR.oops(el); R.misses++; const back = M.n;
+  await FR.say("Let's look. Count the hops with Mendy."); await M.hop(R.to, k => FR.say(FR.Word(k) + ',', { noRepeat: true })); M.place(back);
+  if (R.misses > 1) P.el(R.to).classList.add('hint'); await FR.say('Now you find that stone.'); open();
+}
+function play(F, i) {
+  return new Promise(async res => {
+    done = res; GAME.phase = 'busy'; F.lock(true); for (let n = 0; n <= 10; n++) P.el(n).classList.remove('hint');
+    if (i < 5) {
+      const n = order[i]; R = { kind: 'place', n, misses: 0, placed: (R && R.placed) || [] };
+      $('spin').hidden = true; $('src').hidden = false; $('src').innerHTML = '<div class="numcard" data-n="' + n + '">' + U5.num(n) + '</div>';
+      if (i === 0) { P.showAll(false); P.shown(0, true); P.shown(10, true); M.show(false); await F.say('Show me! Zero and ten are here.'); }
+      if (P.narrow()) {   /* a phone shows 4 stones: include the nearest number already on the path, so he can count from it */
+        const s = [0, 10].concat(R.placed).sort((x, y) => Math.abs(x - n) - Math.abs(y - n))[0]; P.focus(Math.abs(n - s) <= 3 ? (n + s) / 2 : n + Math.sign(s - n) * 1.5);
+      } else P.focus(5);
+      open(); await F.say('Where does ' + F.word(n) + ' go?', { repeat: 'Put ' + F.word(n) + ' on its stone.' });
+    } else {
+      const start = i === 5 ? 3 : 6, k = i === 5 ? 2 : 1; R = { kind: 'race', stage: 'spin', k, to: start + k, misses: 0 };
+      if (i === 5) { P.showAll(true); $('src').hidden = true; $('src').innerHTML = ''; $('spin').hidden = false; M.show(true); await F.say('Now a race turn!'); }
+      M.place(start); P.focus(start + 1); SP.glow(true); open(); await F.say('Mendy is on ' + F.word(start) + '. Spin!', { repeat: 'Tap the spinner.' });
+    }
+  });
+}
+FR.game({
+  id: 'u6-check', title: 'Show Me!', rounds: 7,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""></div>',
+  init() {
+    P = mount($('world'), { kids: ['mendy'], band }); M = P.kids.mendy; SP = spinner($('spin'));
+    FR.dragTap({ sources: '#src .numcard', targets: '.p6layer .stone', drop }); P.onStone = (n, el) => land(n, el); $('spin').addEventListener('click', spin);
+    if (P.narrow()) { $('left').hidden = $('right').hidden = false; $('left').onclick = () => { NK.sound.pop(); P.pan(-2); }; $('right').onclick = () => { NK.sound.pop(); P.pan(2); }; }
+  },
+  reset() { R = null; order = FR.shuffle([2, 3, 4, 6, 7, 8, 9]).slice(0, 5); },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You know the number path! Unit six done!' : 'Good try! Let\'s practise and come back.',
+  practice: 'where6.html'
+});
+</script>
+</body>
+</html>
