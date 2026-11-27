@@ -1102,7 +1102,7 @@ export function startGame(cfg) {
   function posWord(k) { return k === 'sphere' && cfg.ballWord ? BW : FAMILY(k); }   /* one word for the round thing all game (K-CLARITY-RULES 11) */
   async function posLesson() {
     const L = cfg.posLesson; if (!BR) BR = makeBridge();
-    const ball = makeShape('lball', 'sphere', '#F2A900', 0, 0.55); ball.slot = null; ball.busy = true; ball.g.position.copy(zoneWorld('left'));
+    const ball = makeShape('lball', 'sphere', '#FFC814', 0, 0.55); ball.slot = null; ball.busy = true; ball.g.position.copy(zoneWorld('left'));
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, 'Look at the ' + BW + '. Where is it?'];
     for (const z of ['top', 'under', 'right', 'front', 'behind']) steps.push(() => placeAt(ball, z).then(() => { ball.busy = true; }), cap(ZWORD[z]) + ' the bridge!');
     const ball2 = () => { const b2 = makeShape('lball2', 'sphere', '#12A766', 0, 0.55); b2.slot = null; b2.busy = true; b2.g.position.copy(zoneWorld('under')); return b2; };
@@ -1545,7 +1545,7 @@ export function startGame(cfg) {
       setBalance({ items: M.balance }); BS.items.forEach((o, i) => { BS.pans[i].item = o; o.inBox = true; o.busy = true; BS.pans[i].g.add(o.g); o.g.position.set(0, 0.07, 0); o.g.scale.setScalar(1); }); tipScale(); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }
     else if (M.where) {   /* a friend says where the ball is, on the bridge scene */
-      BR = makeBridge(); const b = makeShape('mball', 'sphere', '#F2A900', 0, 0.6); b.slot = null; b.busy = true; b.g.position.copy(zoneWorld(M.where)); d = { g: b.g, marks: [] };
+      BR = makeBridge(); const b = makeShape('mball', 'sphere', '#FFC814', 0, 0.6); b.slot = null; b.busy = true; b.g.position.copy(zoneWorld(M.where)); d = { g: b.g, marks: [] };
     }
     else if (M.pattern) {   /* a friend's bead string with one wrong bead */
       setPattern({ seq: M.pattern.seq, blanks: 0, tray: [] }); ghost.visible = false;
