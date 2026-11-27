@@ -7,11 +7,11 @@ module.exports = async function (pg, shots) {
   const r = await pg.evaluate(async () => {
     const out = { bad: [], kinds: {}, shots: [] }, sleep = ms => new Promise(x => setTimeout(x, ms));
     for (let i = 0; i < 100 && !(window.TLCORE && TLCORE.actsJoined); i++) await sleep(50);
-    const KINDS = ['evidence', 'combine', 'storymap', 'parts', 'cloze', 'dictation', 'order'];
+    const KINDS = ['evidence', 'combine', 'storymap', 'parts', 'cloze', 'dictation', 'order', 'map'];
     KINDS.forEach(k => { if (!OBK.types[k]) out.bad.push(k + ' did not join the Activity Kit'); });
     /* bad data is refused */
     const badData = { evidence: { type: 'evidence', p: ['One.'], a: 0, q: 'x' }, combine: { type: 'combine', a: 'A.', b: 'B.', o: ['and', 'but'], j: 'so' }, storymap: { type: 'storymap', slots: ['Who'], cards: ['x'] },
-      parts: { type: 'parts', parts: ['un', 'kind'] }, cloze: { type: 'cloze', t: 'No gap here.', o: ['a', 'b'], a: 'a' }, dictation: { type: 'dictation', hear: 'The cat sat.', w: ['The', 'dog', 'sat.'] }, order: { type: 'order', steps: ['only one'] } };
+      parts: { type: 'parts', parts: ['un', 'kind'] }, cloze: { type: 'cloze', t: 'No gap here.', o: ['a', 'b'], a: 'a' }, dictation: { type: 'dictation', hear: 'The cat sat.', w: ['The', 'dog', 'sat.'] }, order: { type: 'order', steps: ['only one'] }, map: { type: 'map', map: 'moon', steps: [] } };
     KINDS.forEach(k => { if (!OBK.err(badData[k], 'B23')) out.bad.push(k + ': bad data was not refused'); });
     /* one fixture per kind: [activity, wrong tap (a, k) or null, right taps [[a,k],...]] */
     const F = {
@@ -21,7 +21,8 @@ module.exports = async function (pg, shots) {
       parts: [{ type: 'parts', parts: ['un', 'help', 'ful'], extra: ['re'], mean: 'not helpful' }, null, 'seq'],
       cloze: [{ type: 'cloze', t: 'The ant carried a ___ twice its size.', o: ['crumb', 'cloud', 'song'], a: 'crumb' }, null, 'cloze'],
       dictation: [{ type: 'dictation', hear: 'The cat sat on the mat.', w: ['The', 'cat', 'sat', 'on', 'the', 'mat.'], extra: ['sit'] }, null, 'seq'],
-      order: [{ type: 'order', steps: ['Dovid saw paw prints.', 'He followed them.', 'He found Biscuit.'] }, null, 'seq'] };
+      order: [{ type: 'order', steps: ['Dovid saw paw prints.', 'He followed them.', 'He found Biscuit.'] }, null, 'seq'],
+      map: [{ type: 'map', map: 'eretz', extra: ['arabia'], steps: [{ tap: 'lebanon', line: 'To the north is Lebanon.', say: 'Tap Lebanon.' }, { tap: 'egypt', line: 'To the southwest is Egypt.', say: 'Tap Egypt.' }] }, ['place', 'arabia'], 'gm'] };
     const app = document.getElementById('app'), Q = s => app.querySelector(s), click = el => { if (!el || el.disabled) return false; el.click(); return true; };
     /* one tap toward solving the current screen of one of the new kinds */
     function step(d, s, wrongOnce) {
@@ -31,6 +32,7 @@ module.exports = async function (pg, shots) {
       if (wrongOnce && f[1] && !s.__w) { s.__w = 1; return click(Q('[data-obk="' + f[1][0] + '"][data-k="' + f[1][1] + '"]')) ? 'wrong' : 'no wrong target'; }
       const chk = () => click(Q('.ob-foot [data-obk=check]')) ? 'check' : 'no check';
       if (Array.isArray(f[2])) { const t = f[2].find(x => !Q('[data-obk="' + x[0] + '"][data-k="' + x[1] + '"][disabled]')) || f[2][0]; return click(Q('[data-obk="' + t[0] + '"][data-k="' + t[1] + '"]')) ? 'tap' : 'no target ' + t.join(); }
+      if (f[2] === 'gm') { const st = d.steps[s.k]; return st && click(Q('.cka-pin[data-obk=place][data-k="' + st.tap + '"]')) ? 'pin' : 'no pin'; }
       if (f[2] === 'cloze') { if (OBK.ready(d, s)) return chk(); return click(Q('[data-obk=word][data-k="' + d.a + '"]')) ? 'word' : 'no word'; }
       if (f[2] === 'map') { if (OBK.ready(d, s)) return chk(); const i = s.at.indexOf(-1), want = d.cards[i]; if (s.sel < 0) { const j = s.pool.findIndex((x, jj) => x === want && !s.used[jj]); return click(Q('[data-obk=card][data-k="' + j + '"]')) ? 'card' : 'no card'; } return click(Q('[data-obk=box][data-k="' + i + '"]')) ? 'box' : 'no box'; }
       if (f[2] === 'seq') { if (OBK.ready(d, s)) return chk(); const list = d.parts || d.w || d.steps, i = s.slots.indexOf(-1), want = String(list[i]); const j = s.pool.findIndex((x, jj) => x === want && !s.used[jj]);
@@ -42,7 +44,8 @@ module.exports = async function (pg, shots) {
     const keep = ONE_BITE[FIX], prev = window.OB_LIVE; window.OB_LIVE = 'test';
     const base = { band: 'B23', pic: '📖', today: 'Kit test lesson', why: 'Testing the new activities.', watch: { q: 'Watch', steps: ['One.', 'Two.'] }, oops: { wrong: '1', right: '2', why: 'x' }, ways: ['a', 'b'] };
     const plans = [ { do: ['evidence', 'combine'], your: ['storymap', 'parts', 'cloze', 'dictation', 'order'], wrongAt: { do0: 1, do1: 1 } },
-                    { do: ['order', 'cloze'], your: ['combine', 'evidence', 'dictation', 'parts', 'storymap'], wrongAt: { your0: 1, your1: 1 } } ];
+                    { do: ['order', 'cloze'], your: ['combine', 'evidence', 'dictation', 'parts', 'storymap'], wrongAt: { your0: 1, your1: 1 } },
+                    { do: ['map', 'cloze'], your: ['order', 'evidence', 'combine', 'parts', 'storymap'], wrongAt: { do0: 1 } } ];
     for (const plan of plans) {
       ONE_BITE[FIX] = Object.assign({}, base, { do: plan.do.map(k => Object.assign({}, F[k][0])), your: plan.your.map(k => Object.assign({}, F[k][0])) });
       fresh(); await sleep(15); startMission(worldOf(FIX), FIX, 'skill'); await sleep(20);
@@ -72,8 +75,8 @@ module.exports = async function (pg, shots) {
     return out;
   }).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 300)], kinds: {}, shots: [] }));
   r.bad.forEach(b => fails.push('new activity kinds: ' + b));
-  const missing = ['evidence', 'combine', 'storymap', 'parts', 'cloze', 'dictation', 'order'].filter(k => !r.kinds[k]);
+  const missing = ['evidence', 'combine', 'storymap', 'parts', 'cloze', 'dictation', 'order', 'map'].filter(k => !r.kinds[k]);
   if (missing.length) fails.push('new activity kinds: never played: ' + missing.join(', '));
-  if (!fails.length) oks.push('new activity kinds: evidence, combine, story map, word parts, fill the gap, dictation and story order play by tap inside the real lesson player to "mastered"; misses say what to do; bad data refused');
+  if (!fails.length) oks.push('new activity kinds: evidence, combine, story map, word parts, fill the gap, dictation, story order and the build-a-map map play by tap inside the real lesson player to "mastered"; misses say what to do; bad data refused');
   return { fails, oks };
 };
