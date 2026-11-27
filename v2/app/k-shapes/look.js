@@ -1011,7 +1011,12 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
 
   /* the automatic test (?fast=1) builds a light world: the sky, ground and stage, without the decorations (quicker on a test machine) */
-  if (FAST) { const stub = (...a) => group(0, 0, 0, a.find(x => x && x.isObject3D));
+  /* CALM (Esti, 2026-11-27: "the backgrounds are so busy that it's so hard to focus ... butterflies flying around ... distracting"):
+     every world is only its painted picture, its ground and the game. No butterflies, no floating sparkles, no made-in-code trees, flowers or props.
+     (?busy=1 shows the old busy world, only for comparing.) */
+  const CALM = !/[?&]busy=1/.test(location.search);
+  if (CALM) { motes = butterflies = () => {}; }
+  if (FAST || CALM) { const stub = (...a) => group(0, 0, 0, a.find(x => x && x.isObject3D));
     puff = cloud = lollipopTree = roundTree = pine = flower = tulip = mushroom = bush = house = balloon = bunting = hill = rainbow = palm = umbrella = sandcastle = bucket = starfish = shell = coralBranch = seaweed = fishSchool = barn = pumpkin = hay = fence = windmill = snowman = cabin = cupcake = cookie = challah = gift = lights = planet = rocket = crystal = bigLeaf = parrot = waterfall = train = track = tuft = bloomFlower = stub; }
   const WORLDS = { playroom, toyland, garden, sky, bakery, space, beach, underwater, traintown, jungle, snow, farm, party };
   /* painted backdrops (v2/app/k-shapes/worlds/*.jpg, painted for us, ground cut away): a big curved picture far behind the 3D world,
@@ -1049,7 +1054,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
   L.buildWorld = () => { (WORLDS[world] || playroom)(); painted(world);
     /* the automatic test (?fast=1): no far scenery (it is only seen softly blurred), so a test machine stays quick. A boy always gets the full world. */
-    if (FAST) scene.children.slice().forEach(c => { if ((c.layers.mask & 2) && !(c.layers.mask & 1) && !noDepth.includes(c)) scene.remove(c); }); };
+    if (FAST || CALM) scene.children.slice().forEach(c => { if ((c.layers.mask & 2) && !(c.layers.mask & 1) && !noDepth.includes(c)) scene.remove(c); }); };
 
   /* ================= toy boxes: glossy painted toy chests ================= */
   L.boxMats = () => ({ body: phys(ENV.box[0], { roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.1 }), rim: phys(ENV.box[1], { roughness: 0.3, clearcoat: 1 }), inside: std(ENV.box[2], { roughness: 0.8 }) });

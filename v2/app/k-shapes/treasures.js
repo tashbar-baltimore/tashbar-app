@@ -155,6 +155,14 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(tail), 30, R0 * 0.045, 6, false), yarn));
     g.position.y = R0; return g;
   }
+  /* a party balloon resting on the scale: every child knows a balloon is light, even a big one (Esti: a big ball of yarn against a rock was confusing) */
+  function balloon(s, color) {
+    const R0 = 0.62 * s, g = new THREE.Group(), col = vivid(color), m = new PM({ color: col, roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.05 });
+    const b = new THREE.Mesh(new THREE.SphereGeometry(R0, 40, 28), m); b.scale.set(1, 1.15, 1); b.position.y = R0 * 1.15; g.add(b);
+    const knot = new THREE.Mesh(new THREE.ConeGeometry(R0 * 0.12, R0 * 0.16, 16), m); knot.position.y = 0.02; g.add(knot);
+    const ribbon = new THREE.Mesh(new THREE.TorusGeometry(R0 * 0.35, R0 * 0.02, 6, 24, Math.PI), new PM({ color: '#FFFFFF' })); ribbon.rotation.x = Math.PI / 2; ribbon.position.set(R0 * 0.35, 0.02, 0); g.add(ribbon);
+    return g;
+  }
   function hayBale(s) {
     const e = 0.75 * s, g = new THREE.Group(), t = strawTex().clone(); t.needsUpdate = true; t.repeat.set(1.5 * s, 1.5 * s);
     const b = new THREE.Mesh(new THREE.BoxGeometry(e, e, e, 1, 1, 1), new PM({ color: '#FFFFFF', map: t, roughness: 0.95, sheen: 0.4, sheenColor: C('#FFE9A8') })); g.add(b);
@@ -174,7 +182,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   T.weighable = (W) => {
     if (world !== 'farm') return null;
     const s = W.s || 1;
-    const o = W.look === 'rock' ? fieldStone(s) : W.look === 'ball' ? woolBall(s, W.color) : W.look === 'block' ? hayBale(s) : W.look === 'feather' ? henFeather() : null;
+    const o = W.look === 'rock' ? fieldStone(s) : W.look === 'ball' ? woolBall(s, W.color) : W.look === 'balloon' ? balloon(s, W.color) : W.look === 'block' ? hayBale(s) : W.look === 'feather' ? henFeather() : null;
     if (!o) return null;
     const first = []; o.traverse(c => { if (c.isMesh && !first.length) first.push(c); }); if (!o.material) o.material = first[0].material;
     o.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
