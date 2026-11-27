@@ -10,12 +10,13 @@
      He taps that friend's blanket, or the "the same" button when every apple has a partner. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>#same svg{ width:94%; height:94%; }   /* "the same": an apple, equals, an apple */</style>
 </head>
 <body>
 <div id="world"></div>
 <div id="game" class="locked"><div class="stage s6" id="stage">
   <div class="ui" id="panel">
-    <button id="same" class="bigbtn btn3d b-white eq" aria-label="The same"><svg viewBox="0 0 48 48"><path d="M10 18h28M10 30h28" stroke="#2B2350" stroke-width="7" stroke-linecap="round"/></svg></button>
+    <button id="same" class="bigbtn btn3d b-white eq" aria-label="The same"><svg viewBox="0 0 56 40"><circle cx="10" cy="22" r="8.5" fill="#E8322B"/><path d="M10 13.5c0-3 1.5-5 3.5-6" stroke="#7A4A22" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M22 17h12M22 27h12" stroke="#2B2350" stroke-width="5" stroke-linecap="round"/><circle cx="46" cy="22" r="8.5" fill="#E8322B"/><path d="M46 13.5c0-3 1.5-5 3.5-6" stroke="#7A4A22" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></button>
   </div>
 </div></div>
 <script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
@@ -29,7 +30,7 @@ function free(i) { return O.unpaired(i); }
 function pairing() { return free(0).length && free(1).length; }
 function more() { const a = O.count(0), b = O.count(1); return a === b ? -1 : a > b ? 0 : 1; }
 function hooks() {
-  if (pairing()) { GAME.right = () => [{ tap: '.tspot[data-id="a0-' + free(0)[0] + '"]' }, { tap: '.tspot[data-id="a1-' + free(1)[0] + '"]' }]; GAME.wrong = null; return; }
+  if (pairing()) { GAME.right = () => [{ tap: '.tspot[data-id="a0-' + free(0)[0] + '"]' }]; GAME.wrong = null; return; }
   const m = more(), right = m < 0 ? '#same' : '.tspot[data-id="side' + m + '"]', wrong = m < 0 ? '.tspot[data-id="side0"]' : m === 0 ? '.tspot[data-id="side1"]' : '#same';
   GAME.right = () => [{ tap: right }]; GAME.wrong = () => [{ tap: wrong }];
 }
@@ -38,13 +39,14 @@ async function afterPairs() {
   GAME.phase = 'busy'; FR.lock(true); picked = null;
   O.sideSpot(0); O.sideSpot(1);
   await FR.say(free(0).length || free(1).length ? 'Look! Some apples have no partner.' : 'Every apple has a partner!');
-  open(); await FR.say('Who has more? Tap his blanket. Or tap the same.', { repeat: 'Tap the blanket with more. Or tap the same.' });
+  open(); await FR.say('Who has more? Tap his blanket.', { repeat: 'Tap the blanket with more. Or tap the same.' });
+  $('same').classList.add('ready'); await FR.say('Or the same? Tap this.', { noRepeat: true }); $('same').classList.remove('ready');
 }
+/* one tap on an apple: it and the next free apple on the other blanket become partners */
 async function tapApple(id, el) {
   const [i, j] = id.slice(1).split('-').map(Number); if (O.sides[i].apples[j].userData.paired) return;
-  if (!picked || picked.i === i) { if (picked) picked.el.classList.remove('picked'); picked = { i, j, el }; el.classList.add('picked'); NK.sound.pop(); return; }
-  GAME.phase = 'busy'; FR.lock(true); picked.el.classList.remove('picked');
-  const a = i === 0 ? j : picked.j, b = i === 1 ? j : picked.j; picked = null; await O.pair(a, b);
+  GAME.phase = 'busy'; FR.lock(true); const k = free(1 - i)[0];
+  const a = i === 0 ? j : k, b = i === 1 ? j : k; await O.pair(a, b);
   if (pairing()) { open(); return; } await afterPairs();
 }
 async function answer(k, el) {   /* k: 0 or 1 (a blanket), -1 (the same) */
@@ -63,7 +65,7 @@ function play(F, i) {
     const [a, b, how] = PLAN[i]; R = { misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); picked = null;
     O.clearPairs(); O.unspot('side0'); O.unspot('side1'); O.choose(false); O.sides.forEach(s => s.pose('idle'));
     O.setApples(0, a, how); O.setApples(1, b, how);
-    await F.say(i === 0 ? 'Line them up! One of Dovid\'s, one of Shmuel\'s.' : F.pick(['Line them up!', 'Make partners!', 'Pair them up!']), { repeat: 'Tap one apple of each. They become partners.' });
+    await F.say(i === 0 ? 'Line them up! Tap an apple to give it a partner.' : F.pick(['Line them up!', 'Make partners!', 'Pair them up!']), { repeat: 'Tap an apple. It gets a partner.' });
     open();
   });
 }
@@ -77,9 +79,13 @@ FR.game({
   },
   demo: async F => {
     O.setApples(0, 2, 'row'); O.setApples(1, 3, 'row'); R = { misses: 0 };
-    await F.say('Dovid has the orange blanket. Shmuel has the blue one.'); await F.say('Watch me make partners.');
-    for (let k = 0; k < 2; k++) { await F.handTo(document.querySelector('.tspot[data-id="a0-' + k + '"]')); await F.handTap(); await F.handTo(document.querySelector('.tspot[data-id="a1-' + k + '"]')); await F.handTap(); await O.pair(k, k); }
-    await F.say('One apple is left over. Shmuel has more!'); O.glowSide(1, true); await F.wait(800); O.glowSide(1, false); O.clearPairs();
+    await F.say('Dovid has the orange blanket. Shmuel has the blue one.'); await F.say('Watch me. I tap an apple. It gets a partner.');
+    for (let k = 0; k < 2; k++) { await F.handTo(document.querySelector('.tspot[data-id="a0-' + k + '"]')); await F.handTap(); await O.pair(k, k); }
+    await F.say('One apple is left over. Shmuel has more!'); O.glowSide(1, true); await F.handTo(document.querySelector('.tspot[data-id="side1"]') || O.sideSpot(1)); await F.handTap(); O.glowSide(1, false); O.unspot('side1'); O.clearPairs();
+    /* the same: every apple has a partner, so I tap the same button */
+    O.setApples(0, 3, 'row'); O.setApples(1, 3, 'row');
+    for (let k = 0; k < 3; k++) { await F.handTo(document.querySelector('.tspot[data-id="a0-' + k + '"]')); await F.handTap(); await O.pair(k, k); }
+    await F.say('Every apple has a partner. The same!'); await F.handTo($('same')); await F.handTap(); await F.say('I tap the same button.'); O.clearPairs();
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'Partners show who has more!' : 'Good work! Let\'s play once more.'

@@ -86,13 +86,15 @@ export function mount(host, opt) {
       else if (narrow) { s.kh.position.set(i ? W / 2 + 0.75 : -W / 2 - 0.75, 0, i ? -0.3 : 0.3); s.kh.scale.setScalar(0.85); } else { s.kh.position.set(0, 0, -D / 2 - 0.55); s.kh.scale.setScalar(1); } });
     if (moved) sides.forEach(s => s.apples.forEach((a, j) => a.position.copy(s.slots[j] || a.position)));
   }
-  /* apple places on a blanket: 'row' = neat rows of five (left to right), 'scatter' = anywhere */
+  /* apple places on a blanket: 'row' = neat rows of five (left to right), 'scatter' = mixed about, but on a loose grid of
+     two rows of five, each apple nudged a little: from the slanted camera no apple ever touches or hides another (K clarity 8) */
   function slots(n, how) {
     const out = [];
-    if (how === 'scatter') {   /* try a few fresh scatters; if the apples will not fit, fall back to neat rows (never hang) */
-      for (let tries = 0; tries < 6 && out.length < n; tries++) { out.length = 0; let t = 0;
-        while (out.length < n && t++ < 2000) { const x = (Math.random() - .5) * (W - 0.7), z = (Math.random() - .5) * (D - 0.6); if (out.every(p => Math.hypot(p.x - x, p.z - z) > 0.88 && Math.hypot(p.x - x, (p.z - z) * 0.55) > 0.66)) out.push(new THREE.Vector3(x, 0.05, z)); } }
-      if (out.length >= n) return out; out.length = 0; }
+    if (how === 'scatter' && n <= 10) {
+      const cells = []; for (let r = 0; r < 2; r++) for (let c = 0; c < 5; c++) cells.push([c, r]);
+      for (let k = cells.length - 1; k > 0; k--) { const m = Math.floor(Math.random() * (k + 1)); [cells[k], cells[m]] = [cells[m], cells[k]]; }
+      cells.slice(0, n).forEach(([c, r]) => out.push(new THREE.Vector3((c - 2) * 0.92 + (Math.random() - .5) * 0.18, 0.05, (r ? 0.72 : -0.72) + (Math.random() - .5) * 0.2)));
+      return out; }
     if (true) for (let j = 0; j < n; j++) { const r = j < 5 ? 0 : 1, c = j % 5; out.push(new THREE.Vector3((c - 2) * 0.92, 0.05, n > 5 ? (r ? 0.72 : -0.72) : 0)); }   /* rows far enough apart that, from the camera, no apple hides behind another */   /* 0.92 apart: their tap spots never overlap, even on a phone */
     return out;
   }
