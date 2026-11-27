@@ -684,13 +684,25 @@ export function startGame(cfg) {
     const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = ang || 0;
     const g = new THREE.Group(); g.add(turn); scene.add(g);
     const o = { id, k: 'stick-' + kind, kind, box: kind === 'right' ? 0 : -1, g, turn, mesh, mat, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false, slot };
-    /* the sticks are nearer to him than the shape, so perspective would make them look longer: each is drawn at the size it would look beside the gap,
-       so the right stick LOOKS exactly as long as the gap (K-CLARITY-RULES 7: no trick he could argue about) */
-    o.home.copy(fixSlot(slot)); o.L = L;
-    const cam = viewFor('wide').pos, f = OL ? Math.min(1, o.home.distanceTo(cam) / OL.g.position.distanceTo(cam)) : 1; mesh.scale.setScalar(f);
-    o.home.y = Math.max(o.home.y, 0.35 + L * f * Math.abs(Math.sin(ang || 0)) / 2); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
+    /* the sticks are nearer to him than the shape, so perspective would make them look longer: each stick is sized so that, on HIS screen,
+       the right one is exactly as long as the gap (K-CLARITY-RULES 7: no trick he could argue about); and no stick is ever off the screen */
+    o.L = L; const a = Math.abs(Math.cos(ang || 0)) > 0.75 && tall;   /* a phone: lying-down sticks go in rows, one under the other */
+    o.home.copy(fixSlot(slot, a));
+    const V = viewFor('wide'), pc = new THREE.PerspectiveCamera(tall ? 46 : 40, innerWidth / innerHeight, 0.1, 100); pc.position.copy(V.pos); pc.lookAt(V.look); pc.updateMatrixWorld();
+    const ends = (obj, p, q) => { obj.updateMatrixWorld(true); const A = obj.localToWorld(p.clone()).project(pc), B = obj.localToWorld(q.clone()).project(pc);
+      const ax = (A.x + 1) / 2 * innerWidth, bx = (B.x + 1) / 2 * innerWidth; return { len: Math.hypot(ax - bx, (A.y - B.y) / 2 * innerHeight), x0: Math.min(ax, bx), x1: Math.max(ax, bx) }; };
+    const gapPx = OL ? ends(OL.g, OL.gap.mid.clone().add(new THREE.Vector3(-Math.cos(OL.gap.ang), -Math.sin(OL.gap.ang), 0).multiplyScalar(OL.gap.len / 2)),
+      OL.gap.mid.clone().add(new THREE.Vector3(Math.cos(OL.gap.ang), Math.sin(OL.gap.ang), 0).multiplyScalar(OL.gap.len / 2))).len : 0;
+    const place = f => { mesh.scale.setScalar(f); o.home.y = Math.max(fixSlot(slot, a).y, 0.35 + L * f * Math.abs(Math.sin(ang || 0)) / 2); g.position.copy(o.home);
+      g.rotation.x = -Math.atan2(pc.position.y - o.home.y, pc.position.z - o.home.z); return ends(mesh, new THREE.Vector3(-L / 2, 0, 0), new THREE.Vector3(L / 2, 0, 0)); };
+    let f = 1;
+    if (gapPx) for (let it = 0; it < 3; it++) { const e = place(f); f *= gapPx / (e.len * len / L); }
+    for (let n = 0; n < 60; n++) { const e = place(f), m = 14; if (e.x0 < m) o.home.x += 0.06; else if (e.x1 > innerWidth - m) o.home.x -= 0.06; else break; }
+    o.px = place(f); if (OL) OL.gapPx = gapPx; mesh.userData.shape = o; shapes.push(o); return o;
   }
-  function fixSlot(i) { const S = tall ? [[-1.0, 2.7], [1.0, 3.6], [0, 4.4]] : [[-2.3, 3.0], [2.3, 3.0], [0, 3.9]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
+  W.fixPx = () => OL && { gap: OL.gapPx, w: innerWidth, sticks: shapes.filter(x => x.L != null && x.g.visible).map(x => ({ kind: x.kind, len: x.px.len, x0: x.px.x0, x1: x.px.x1 })) };   /* the test: on screen, the right stick is as long as the gap */
+  function fixSlot(i, rows) { if (rows) return new THREE.Vector3(0, 0.92, [2.4, 3.4, 4.3][i]);
+    const S = tall ? [[-1.0, 2.7], [1.0, 3.6], [0, 4.4]] : [[-2.3, 3.0], [2.3, 3.0], [0, 3.9]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
   function setRound(R) {
     if (OL) scene.remove(OL.g); shapes.splice(0).forEach(o => scene.remove(o.g));
     OL = makeOutline(R.k, R.miss, R.color, R.sc || (tall ? 1.6 : 2.1)); OL.g.position.copy(OL_AT()); OL.g.rotation.x = -Math.atan2(viewFor('wide').pos.y - OL.g.position.y, viewFor('wide').pos.z - OL.g.position.z);   /* faces the camera: a square looks square */
