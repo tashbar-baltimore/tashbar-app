@@ -186,7 +186,7 @@ export function startGame(cfg) {
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
-      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar(LK ? 0.42 : 0.28); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18)); b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
+      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (LK) {
       const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5, BX.d / 2 + 0.3); lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
     } else {
@@ -255,7 +255,7 @@ export function startGame(cfg) {
     const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: LK ? bev * 1.25 : bev, bevelSize: bev, bevelSegments: LK && (!FAST || SHOT) ? 6 : 3, curveSegments: LK && (!FAST || SHOT) ? 64 : 48 });
     if (!solid) geo.translate(0, 0, -dep / 2);
     const TP = LK && !solid && !cfg.plain && LK.treasures.piece ? LK.treasures.piece(k, color, s, FAMILY(k)) : null;   /* the world's own thing in this exact outline (treasures.js); cfg.plain (first meeting with a shape, K-CLARITY-RULES 1): a plain flat shape in one solid colour, nothing painted on it */
-    const TS = LK && solid && LK.treasures.solid ? LK.treasures.solid(solid, color) : null;   /* the world's own thing in this exact solid (planet, gift box ...) */
+    const TS = LK && solid && !cfg.plain && LK.treasures.solid ? LK.treasures.solid(solid, color) : null;   /* the world's own thing in this exact solid (planet, gift box ...); cfg.plain: a plain one-colour solid (K-CLARITY-RULES 6) */
     const mat = TS ? TS.mat : TP ? TP.mats : LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
     if (TS && TS.extras) TS.extras.forEach(x => mesh.add(x));
@@ -1030,7 +1030,7 @@ export function startGame(cfg) {
   const ZONES = { top: [0, PLANK_Y + 0.55, 0], under: [0, 0.45, 0], left: [-2.3, 0.55, 0], right: [2.3, 0.55, 0], front: [0, 0.55, 2.1], behind: [0, 0.55, -2.3] };
   const ZWORD = { top: 'on top of', under: 'under', left: 'next to', right: 'next to', front: 'in front of', behind: 'behind' };
   function makeBridge() {
-    const TB = LK && LK.treasures.bridge ? LK.treasures.bridge(PLANK_Y) : null;   /* under the sea: a stone bridge on coral rocks (treasures.js) */
+    const TB = LK && !cfg.plain && LK.treasures.bridge ? LK.treasures.bridge(PLANK_Y) : null;   /* cfg.plain: the plain block bridge (no pearls on it that look like one more ball) */   /* under the sea: a stone bridge on coral rocks (treasures.js) */
     if (TB) { const ring = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.06, 12, 40), new THREE.MeshBasicMaterial({ color: '#F5B400' })); ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
       TB.position.set(0, 0, POS_Z()); scene.add(TB); return { g: TB, ring }; }
     const g = new THREE.Group(), m1 = new THREE.MeshPhysicalMaterial({ color: '#E03A33', roughness: 0.35, clearcoat: 1 }), m2 = new THREE.MeshPhysicalMaterial({ color: '#1F6FEB', roughness: 0.35, clearcoat: 1 });
@@ -1054,7 +1054,7 @@ export function startGame(cfg) {
   function posRound(R, bonus, help) {
     return new Promise(resolve => {
       setName(bonus ? 'bonus' : 'find'); dots(2); setPosRound(R); allow = true;
-      const ask = ['Put the ' + FAMILY(R.k) + ' ' + ZWORD[R.where] + ' the bridge.']; task = ask;
+      const ask = ['Put the ' + posWord(R.k) + ' ' + ZWORD[R.where] + ' the bridge.']; task = ask;
       idleFn = n => { W.reminders = (W.reminders || 0) + 1; play(n === 1 ? [...ask, () => pointAt(posPiece)] : [cfg.hint2, () => { showRing(R.where, true); return wait(1500); }, ...ask]); };
       idle();
       onDrop = (o, z) => {
@@ -1078,6 +1078,7 @@ export function startGame(cfg) {
   }
   W.zonePt = z => toScreen(zoneWorld(z)); if (POSITIONED) W.wrongBox = 1;
   const BW = cfg.ballWord || 'ball';   /* what the voice calls the round thing (under the sea: a pearl) */
+  function posWord(k) { return k === 'sphere' && cfg.ballWord ? BW : FAMILY(k); }   /* one word for the round thing all game (K-CLARITY-RULES 11) */
   async function posLesson() {
     const L = cfg.posLesson; if (!BR) BR = makeBridge();
     const ball = makeShape('lball', 'sphere', '#F2A900', 0, 0.55); ball.slot = null; ball.busy = true; ball.g.position.copy(zoneWorld('left'));
@@ -1095,7 +1096,7 @@ export function startGame(cfg) {
   async function posGame() {
     setName('watch'); dots(1); await camTo('wide', 1200);
     const R0 = cfg.rounds[0]; setPosRound(R0);
-    let ok = await play([cfg.watchLine, 'Put the ' + FAMILY(R0.k) + ' ' + ZWORD[R0.where] + ' the bridge.', () => { handOn = posPiece; hand.style.display = 'block'; return wait(400); },
+    let ok = await play([cfg.watchLine, 'Put the ' + posWord(R0.k) + ' ' + ZWORD[R0.where] + ' the bridge.', () => { handOn = posPiece; hand.style.display = 'block'; return wait(400); },
       () => moveTo(posPiece, zoneWorld(R0.where), 1200), () => { hand.style.display = 'none'; handOn = null; return placeAt(posPiece, R0.where); }, cap(ZWORD[R0.where]) + ' the bridge!', cfg.yourTurn]);
     if (!ok) return;
     const help = { done: false };
@@ -1489,7 +1490,7 @@ export function startGame(cfg) {
   function bonusRound() {
     W.bonus = true; setName('bonus');
     const bc = ['#E03A33', '#00A3B8', '#F2A900', '#7C4DFF'];
-    const news = cfg.bonus.map((b, i) => { const o = makeShape(b[0], b[1], bc[i % bc.length], b[2], b[3]); o.slot = b[4]; o.home.copy(homeFor(b[4])); o.g.position.copy(o.home); o.g.scale.setScalar(0.01); return o; });
+    const news = cfg.bonus.map((b, i) => { const o = makeShape(b[0], b[1], b[5] || bc[i % bc.length], b[2], b[3]);   /* b[5]: the piece's own colour (sort by colour: every bonus piece has its box) */ o.slot = b[4]; o.home.copy(homeFor(b[4])); o.g.position.copy(o.home); o.g.scale.setScalar(0.01); return o; });
     news.forEach((o, i) => setTimeout(() => { pop(); tween(420, k => o.g.scale.setScalar(Math.max(0.01, o.scale * ease(k)))); }, FAST ? 0 : 300 + i * 200));
     play(['Bonus round! You are so good at this.', 'Here come some tricky ones.', { wait: 500 }]).then(ok => { if (ok) find(true); });
   }
