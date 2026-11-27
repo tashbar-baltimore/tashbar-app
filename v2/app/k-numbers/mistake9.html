@@ -51,8 +51,8 @@ async function pick(c) {
   if (c === R.bad) { el.classList.add('wrongc'); NK.sound.yes(); await FR.say('Yes! That number is wrong.'); R.stage = 'fix'; $('hp').hidden = $('check').hidden = false; H.set(0);
     open(); await FR.say('Show the right number on your fingers.', { repeat: 'Count the plates. Show the right number. Then check.' }); return; }
   FR.oops(el); R.misses++; el.classList.add('lookc');   /* count what that circle stands for, while it glows */
-  if (c === 'w') { await FR.say("Let's count all the fruit."); await countAll(); }
-  else { const pl = K.plates[c]; await FR.say("Let's count this plate."); await K.bumpAll(pl.children, i => FR.say(FR.Word(i + 1) + (i === pl.children.length - 1 ? '.' : ','), { noRepeat: true })); }
+  if (c === 'w') { await FR.say("Let's look. Count all the fruit."); await countAll(); }
+  else { const pl = K.plates[c]; await FR.say("Let's look. Count this plate."); await K.bumpAll(pl.children, i => FR.say(FR.Word(i + 1) + (i === pl.children.length - 1 ? '.' : ','), { noRepeat: true })); }
   await FR.say('The circle says ' + FR.word(truth(c)) + '. That one is right.'); el.classList.remove('lookc'); if (R.misses >= 2) $(ID[R.bad]).classList.add('wrongc'); await FR.say(R.misses >= 2 ? 'The red one is wrong. Tap it.' : 'Which number is wrong?'); open();
 }
 async function check() {
@@ -89,7 +89,7 @@ FR.game({
     await F.handTo($('check')); await F.handTap(); fill('bw', 7); $('bw').classList.remove('wrongc'); await F.say('Five and two make seven.'); H.set(0);
   },
   round: (F, i) => play(F, i),
-  endSay: s => s >= 2 ? 'Ari says thank you! You fixed them all.' : 'Good looking! Let\'s play once more.'
+  endSay: s => s >= 2 ? 'Ari says thank you! You fixed them all.' : 'Good checking! Let\'s play once more.'
 });
 </script>
 </body>
