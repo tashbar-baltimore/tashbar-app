@@ -129,5 +129,10 @@ CORE_SKILLS.F = [
   ["READ.FLU.L03.13", "Unpack and Repack", "Read a little story full of prefixes", { after: "READ.PHON.L03.17", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
   ["READ.FLU.L03.18", "Theatre: The Lost Siddur", "Act out a play: find your cue and read in the right voice", { after: "READ.FLU.L03.06", std: "RF.2.4b", file: "CoreDataFH4", min: 10 }],
   ["READ.FLU.L03.19", "Theatre: The Snow Day Fort", "Act out a play with strong feelings, until it sounds like talking", { after: "READ.FLU.L03.18", std: "RF.2.4b", file: "CoreDataFH4", min: 10 }],
-  ["READ.FLU.L03.20", "The Club Fair", "Read the end-of-Grade-2 story with every pattern, and prove what happened", { after: "READ.PHON.L03.18", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }]
+  ["READ.FLU.L03.20", "The Club Fair", "Read the end-of-Grade-2 story with every pattern, and prove what happened", { after: "READ.PHON.L03.18", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.PHON.L01.11", "Cat and Kite", "Know that c and k both say kuh", { after: "READ.PHON.L01.01.c", std: "RF.K.3a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L01.12", "Ox and Drum", "Know the sounds of o (ox) and d (drum)", { after: "READ.PHON.L01.11", std: "RF.K.3a", file: "CoreDataF2", min: 5 }],
+  ["READ.PA.L01.10", "Last Sound", "Hear the last sound in a word", { after: "READ.PHON.L01.12", std: "RF.K.2d", file: "CoreDataF2", min: 4 }],
+  ["READ.PHON.L01.13", "Word Chain", "Change one letter to make a new word", { after: "READ.PA.L01.10", std: "RF.K.2e", file: "CoreDataF2", min: 5 }],
+  ["READ.FLU.L01.04", "Heart Words: to, see", "Read the heart words to and see by sight", { after: "READ.PHON.L01.13", std: "RF.K.3c", file: "CoreDataF2", min: 4 }]
 ];
