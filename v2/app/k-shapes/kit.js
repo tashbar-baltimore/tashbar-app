@@ -294,6 +294,7 @@ export function startGame(cfg) {
     if (m === 'close' && cfg.mode === 'pattern' && cfg.world === 'traintown') return { pos: new THREE.Vector3(-0.75, 3.0, 7.8), look: new THREE.Vector3(-0.75, 2.0, 0.9) };   /* Chromebook train lesson: the engine fits too */   /* phone: the whole train, engine too, as big as fits (K-CLARITY-RULES 9) */
     if (m === 'close' && cfg.sortBy && W.name === 'mistake') return tall ? { pos: new THREE.Vector3(0, 6.2, 13.5), look: new THREE.Vector3(0, 1.3, 1.6) } : { pos: new THREE.Vector3(0, 4.6, 9.8), look: new THREE.Vector3(0, 1.0, 1.4) };   /* sorting mistake: every box whole, the piece above them (review 2: the red box was cut off) */
     if (m === 'close') return tall ? { pos: new THREE.Vector3(...CLOSE[0]).multiplyScalar(1.95), look: new THREE.Vector3(...CLOSE[1]) } : { pos: new THREE.Vector3(...CLOSE[0]), look: new THREE.Vector3(...CLOSE[1]) };
+    if (W.towers && m !== 'close') return tall ? { pos: new THREE.Vector3(0, 2.8, 10.8), look: new THREE.Vector3(0, 1.45, -0.2) } : { pos: new THREE.Vector3(0, 2.3, 7.6), look: new THREE.Vector3(0, 1.35, -0.2) };   /* towers are seen from the side, so "taller" shows (review 2: the top-down camera hid the heights) */
     if (cfg.view) { const v = cfg.view[tall ? 'tall' : 'wide'], look = new THREE.Vector3(...v[1]), pos = new THREE.Vector3(...v[0]);
       if (tall && cfg.mode === 'pattern' && cfg.world === 'traintown' && patN > 6) pos.sub(look).multiplyScalar(1 + 0.09 * (patN - 6)).add(look);   /* phone: a longer train steps the camera back, so the engine and the next spot stay on screen (review 2) */
       return { pos, look }; }
@@ -1255,7 +1256,7 @@ export function startGame(cfg) {
     } else {
       R.items.forEach((it, i) => { const xs = R.items.length === 2 ? [-1.1, 1.1] : [-1.8, 0, 1.8]; const o = makeTower('m' + (++msN), it.n, it.color, i, xs[i] * (tall ? 0.8 : 1)); o.word = it.word; items.push(o); });
     }
-    MS = { parts, items, R };
+    MS = { parts, items, R }; W.towers = R.kind === 'tall';
   }
   /* a wrong move SHOWS how (K-CLARITY-RULES 16) */
   function showLineFor(o) {   /* the start line flashes gold; the hand goes from the scarf's end to the line */
@@ -1293,7 +1294,7 @@ export function startGame(cfg) {
   }
   function measureRound(R, bonus, help) {
     return new Promise(resolve => {
-      setMeasure(R);
+      setMeasure(R); camTo('wide', 700);
       const toLine = MS.items.filter(o => o.k === 'rod' && !o.inBox);
       if (!toLine.length) { play([R.say].filter(Boolean)).then(() => compareStep(R, bonus, help)).then(resolve); return; }
       setName(bonus ? 'bonus' : 'find'); dots(2); allow = true;
@@ -1334,6 +1335,8 @@ export function startGame(cfg) {
     return play(steps);
   }
   async function measureGame() {
+    const JR = FAST && location.search.match(/[?&]jump=round(\d)/);   /* pictures only (fast=1): straight to round N */
+    if (JR) { for (let r = +JR[1]; r < cfg.rounds.length; r++) { if (await measureRound(cfg.rounds[r], false, { done: true }) === false) return; } return; }
     setName('watch'); dots(1);
     const R0 = cfg.rounds[0]; setMeasure(R0);
     let ok = await play([cfg.watchLine, ...MS.items.flatMap(o => [() => { handOn = o; hand.style.display = 'block'; return wait(300); }, () => alignRod(o)]), () => { hand.style.display = 'none'; handOn = null; },
@@ -1488,7 +1491,7 @@ export function startGame(cfg) {
     buildSet(); resize(); camTo('close', 10);
     if (FAST && /[?&]jump=mistake/.test(location.search)) { mistake(); return; }   /* pictures only (with fast=1): straight to the friend's mistake */
     if (BALANCED) { const ok = await balanceLesson(); if (ok) balanceGame(); return; }
-    if (MEASURED) { const ok = await measureLesson(); if (ok) measureGame(); return; }
+    if (MEASURED) { if (FAST && /[?&]jump=round/.test(location.search)) { measureGame(); return; } const ok = await measureLesson(); if (ok) measureGame(); return; }
     if (POSITIONED) { const ok = await posLesson(); if (ok) posGame(); return; }
     if (PUZZLED) { const ok = await puzzleLesson(); if (ok) puzzleGame(); return; }
     if (PATTERNED) { const ok = await patternLesson(); if (ok) patternGame(); return; }
