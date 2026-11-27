@@ -6,7 +6,7 @@
 
 ## The look: a calm fruit market, in real 3D
 - `market9.js` (three.js, adapted from Unit 8's `kitchen8.js`, same game API): a wooden market table with a soft cloth, round oranges and lemons on a tray in rows of five (so 6–10 is "five and some more"), a big wicker basket that comes down over the hidden part, and two little plates for the two parts.
-- Calm, still background: no flying bits, no props. The one exception: a short burst of sparkles when he gets it right (a reward, not a distraction while he works). Mendy and Dovid (painted) stand behind the table.
+- Calm, still background: no flying bits, no props. Mendy and Dovid (painted) stand behind the table.
 - The market pictures (order N9) are not here yet: until they come, the background uses the garden panorama and the fruit uses plain colours.
 - Phone: the camera moves a little to the right so the basket is never cut off.
 
