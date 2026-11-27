@@ -287,11 +287,14 @@ export function startGame(cfg) {
   const CLOSE = [[0, 2.7, 6.4], [0, 2.05, 0.9]];
   let camMode = 'wide';
   const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
+  let patN = 0;   /* cars in the train now (phone camera fits the whole train) */
   function viewFor(m) {
     if (m === 'close' && tall && cfg.mode === 'pattern' && cfg.world === 'bakery') return { pos: new THREE.Vector3(0, 3.6, 9.4), look: new THREE.Vector3(0, 1.7, 0.9) };   /* phone, cupcakes (no engine): closer, so the row fills the width (review round 2) */
     if (m === 'close' && tall && cfg.mode === 'pattern') return { pos: new THREE.Vector3(-0.35, 4.2, 13.2), look: new THREE.Vector3(-0.35, 2.0, 0.9) };   /* phone: the whole train, engine too, as big as fits (K-CLARITY-RULES 9) */
     if (m === 'close') return tall ? { pos: new THREE.Vector3(...CLOSE[0]).multiplyScalar(1.95), look: new THREE.Vector3(...CLOSE[1]) } : { pos: new THREE.Vector3(...CLOSE[0]), look: new THREE.Vector3(...CLOSE[1]) };
-    if (cfg.view) { const v = cfg.view[tall ? 'tall' : 'wide']; return { pos: new THREE.Vector3(...v[0]), look: new THREE.Vector3(...v[1]) }; }
+    if (cfg.view) { const v = cfg.view[tall ? 'tall' : 'wide'], look = new THREE.Vector3(...v[1]), pos = new THREE.Vector3(...v[0]);
+      if (tall && cfg.mode === 'pattern' && cfg.world === 'traintown' && patN > 6) pos.sub(look).multiplyScalar(1 + 0.09 * (patN - 6)).add(look);   /* phone: a longer train steps the camera back, so the engine and the next spot stay on screen (review 2) */
+      return { pos, look }; }
     const v = (NB === 1 ? VIEW1 : VIEWN)[tall ? 'tall' : 'wide']; return { pos: new THREE.Vector3(...v[0]), look: new THREE.Vector3(...v[1]) };
   }
   function homeFor(i) { const s = (tall ? SLOTS_TALL : SLOTS_WIDE)[i]; return new THREE.Vector3(s[0], 0.92, s[1]); }
@@ -848,6 +851,7 @@ export function startGame(cfg) {
   function setPattern(R) {
     ringsOff(); if (PS) { PS.parts.forEach(p => scene.remove(p)); } shapes.splice(0).forEach(o => scene.remove(o.g));
     const n = R.seq.length, parts = [], beads = [];
+    patN = R.copy ? 0 : n;
     const z = R.copy ? STR().copyZ : null;
     /* copy: Mendy's row stands well behind the row he fills, so the two rows never overlap (K-CLARITY-RULES 9: one thing to look at) */
     const model = [];
@@ -1199,7 +1203,7 @@ export function startGame(cfg) {
 
   /* =========== "Measuring" mode (cfg.mode === 'measure'): line things up at the start, then say which is longer, shorter or taller =========== */
   const MEASURED = cfg.mode === 'measure';
-  let MS = null, msN = 0;
+  let MS = null, msN = 0, MS_LINE = null, MS_ENDS = null;
   const LINE_X = () => tall ? -2.1 : -3.6;
   const ROW_Z = i => (tall ? [-1.0, 0.7, 2.4] : [-1.2, 0.5, 2.2])[i];
   const ROD_Y = 0.28;
@@ -1226,12 +1230,12 @@ export function startGame(cfg) {
     hull.userData.shape = o; shapes.push(o); return o;
   }
   function setMeasure(R) {
-    if (MS) MS.parts.forEach(q => scene.remove(q)); shapes.splice(0).forEach(o => scene.remove(o.g));
+    if (MS) MS.parts.forEach(q => scene.remove(q)); endMarks(false); MS_LINE = null; shapes.splice(0).forEach(o => scene.remove(o.g));
     const parts = [], items = [];
     if (R.kind !== 'tall') {
       /* the start line: a thick dark line he can always see (a white line was lost on the snow; K clarity, 2026-11-27), with a green flag on a pole at its far end */
       const line = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.08, tall ? 4.2 : 4.2), new THREE.MeshStandardMaterial({ color: '#22304F', roughness: 0.6 }));
-      line.position.set(LINE_X(), 0.12, ROW_Z(1)); scene.add(line); parts.push(line);
+      line.position.set(LINE_X(), 0.12, ROW_Z(1)); scene.add(line); parts.push(line); MS_LINE = line;
       const flag = new THREE.Group(), pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.5, 12), new THREE.MeshStandardMaterial({ color: '#22304F' })); pole.position.y = 0.75; flag.add(pole);
       const cloth = new THREE.Shape(); cloth.moveTo(0, 0); cloth.lineTo(0.75, -0.25); cloth.lineTo(0, -0.5); cloth.lineTo(0, 0);
       const cl = new THREE.Mesh(new THREE.ShapeGeometry(cloth), new THREE.MeshStandardMaterial({ color: '#12A766', side: THREE.DoubleSide })); cl.position.set(0.05, 1.5, 0); flag.add(cl);
@@ -1242,6 +1246,19 @@ export function startGame(cfg) {
       R.items.forEach((it, i) => { const xs = R.items.length === 2 ? [-1.1, 1.1] : [-1.8, 0, 1.8]; const o = makeTower('m' + (++msN), it.n, it.color, i, xs[i] * (tall ? 0.8 : 1)); o.word = it.word; items.push(o); });
     }
     MS = { parts, items, R };
+  }
+  /* a wrong move SHOWS how (K-CLARITY-RULES 16) */
+  function showLineFor(o) {   /* the start line flashes gold; the hand goes from the scarf's end to the line */
+    const hw = ms => (SHOT ? new Promise(r => setTimeout(r, ms)) : wait(ms)), at = v => { const p = toScreen(v); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; };
+    const end = new THREE.Vector3(o.g.position.x - o.len / 2, ROD_Y + 0.2, o.g.position.z), onLine = new THREE.Vector3(LINE_X(), ROD_Y + 0.2, o.g.position.z);
+    handOn = null; hand.style.display = 'block'; at(end);
+    const ln = MS_LINE, fl = ln ? tween(1800, k => { ln.material.color.set(Math.sin(k * Math.PI * 4) > 0 && k < 1 ? '#F5B400' : '#22304F'); }) : Promise.resolve();
+    return hw(1000).then(() => { at(onLine); return Promise.all([hw(1300), fl]); }).then(() => { if (!SHOT) hand.style.display = 'none'; });
+  }
+  function endMarks(on) {   /* a gold ball on the far end of each scarf (the top of each tower): "look at the other ends" */
+    if (MS_ENDS) { MS_ENDS.forEach(m => scene.remove(m)); MS_ENDS = null; } if (!on || !MS) return;
+    MS_ENDS = MS.items.map(o => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), cornerMat);
+      m.position.copy(o.k === 'tower' ? new THREE.Vector3(o.g.position.x, 0.3 + o.len * 0.57 + 0.45, o.g.position.z + 0.2) : new THREE.Vector3(o.g.position.x + o.len / 2 + 0.1, ROD_Y + 0.3, o.g.position.z)); scene.add(m); return m; });
   }
   function alignRod(o) { o.inBox = true; return moveTo(o, new THREE.Vector3(LINE_X() + o.len / 2, ROD_Y, o.home.z), 400, 0.3).then(() => { o.busy = true; o.home.copy(o.g.position); pop(); }); }
   function msItemPt(o) { return toScreen(o.k === 'tower' ? o.g.position.clone().setY(o.len * 0.3) : o.g.position.clone()); }
@@ -1254,10 +1271,10 @@ export function startGame(cfg) {
       shapeTap = (cx, cy) => {
         let best = -1, bd = 1e9; MS.items.forEach((o, i) => { const p = msItemPt(o), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
         if (bd > Math.max(130, innerWidth * 0.12)) return;
-        if (best === ans) { shapeTap = null; task = null; chime(true); burst(MS.items[ans].g.position.clone().setY(1), 26);
+        if (best === ans) { shapeTap = null; task = null; endMarks(false); chime(true); burst(MS.items[ans].g.position.clone().setY(1), 26);
           play(['Yes! The ' + MS.items[ans].word + ' one is ' + R.ask + '!', () => cheer(mendy), { wait: 300 }]).then(done); return; }
         if (!costed && !bonus) { W.misses++; costed = true; } chime(false);
-        const steps = ['Look again.', R.kind === 'tall' ? 'Look at the tops.' : 'Look at the other ends.'];
+        const steps = ['Look again.', () => endMarks(true), R.kind === 'tall' ? 'Look at the tops.' : 'Look at the other ends.', () => wait(1500), () => { if (!SHOT) endMarks(false); }];
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
         play([...steps, q]);
       };
@@ -1284,7 +1301,7 @@ export function startGame(cfg) {
         }
         if (!bonus) W.misses++; chime(false);
         moveTo(o, new THREE.Vector3(o.g.position.x, ROD_Y, o.home.z), 300).then(() => { o.home.copy(o.g.position); });
-        const steps = ['Not yet! The end must touch the start line.'];
+        const steps = ['Not yet! The end must touch the start line.', 'Watch.', () => showLineFor(o)];
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
         steps.push(...ask);
         allow = false; play(steps).then(() => { if (onDrop) allow = true; });
@@ -1392,13 +1409,14 @@ export function startGame(cfg) {
         if (bd > Math.max(130, innerWidth * 0.12)) return;
         if (best === ans) { shapeTap = null; task = null; chime(true); play(['Yes! The ' + BS.items[ans].word + ' is ' + R.ask + '!', () => cheer(mendy), { wait: 300 }]).then(done); return; }
         if (!costed && !bonus) { W.misses++; costed = true; } chime(false);
-        const steps = ['Look at the scale.', /light/.test(R.ask) ? 'The light side goes up.' : 'The heavy side goes down.'];
+        const steps = ['Look at the scale.', () => showHandAt(ptOf(BS.items[ans])), /light/.test(R.ask) ? 'The light side goes up.' : 'The heavy side goes down.', () => wait(1200), () => { if (!SHOT) hand.style.display = 'none'; }];   /* the hand points at the side that went down (up): it SHOWS how to read the scale (K-CLARITY-RULES 16) */
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
         play([...steps, q]);
       };
       play([R.big ? 'Look! Big is not always heavy.' : 'Look at the scale.', q]);
     });
   }
+  function showHandAt(p) { handOn = null; hand.style.display = 'block'; hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; }
   function balanceRound(R, bonus, help) {
     return new Promise(resolve => {
       setName(bonus ? 'bonus' : 'find'); dots(2); setBalance(R); allow = true;
@@ -1410,6 +1428,8 @@ export function startGame(cfg) {
         if (bi < 0 || BS.pans[bi].item) {
           if (!bonus) W.misses++; chime(false); goHome(o);
           const steps = [bi < 0 ? 'Not yet! Put it on a pan of the scale.' : 'That pan is full. Use the other pan.'];
+          const free = BS.pans.findIndex(P => !P.item); if (free >= 0) steps.push('Watch.', () => { handOn = o; hand.style.display = 'block'; const hw = ms => (SHOT ? new Promise(r => setTimeout(r, ms)) : wait(ms));
+            return hw(1100).then(() => { handOn = null; showHandAt(toScreen(panWorld(free).add(new THREE.Vector3(0, 0.3, 0)))); return hw(1300); }).then(() => { if (!SHOT) hand.style.display = 'none'; }); });   /* the hand goes from the thing to the empty pan */
           if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
           allow = false; play([...steps, ...ask]).then(() => { if (onDrop) allow = true; }); return;
         }
@@ -1634,7 +1654,7 @@ export function startGame(cfg) {
     const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
     if (!M.where && !M.measure && !M.balance && !M.wide) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
     if (M.wide) { friend.position.copy(mendyAt()); if (PAINTED && PATTERNED) friend.position.add(new THREE.Vector3(0.75, 0, 1.9)); if (tall) friend.position.set(-0.95, 0, 2.6); friend.rotation.set(tall ? -0.6 : 0, tall ? -0.35 : 0.5, 0); friend.visible = true; mendy.visible = false; }   /* M.wide: the friend stands where Mendy stood, in front of the whole train, never hidden behind it */
-    else if (M.where || M.measure || M.balance) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
+    else if (M.where || M.measure || M.balance) { friend.position.set(M.measure ? (tall ? 1.7 : 3.6) : (tall ? -1.6 : -3.4), 0, tall ? 2.6 : 1.4);   /* measuring: he stands on the right, never on the start line the question is about (review 2) */ friend.rotation.y = M.measure ? -0.5 : 0.5; if (friend.userData.painted && friend.userData.body) friend.userData.body.scale.x = M.measure ? -1 : 1;   /* on the right he is mirrored, so his hand points at the scarves */ friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
       if (side) d.g.position.x = M.join ? -0.1 : (tall ? 0.35 : 0.6);   /* big and small: clear of the friend */
       camTo('close', 1000).then(() => tween(500, k => { d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))); if (side) side.g.scale.setScalar(Math.max(0.01, ease(k) * (M.beside[2] || 0.5))); })); }

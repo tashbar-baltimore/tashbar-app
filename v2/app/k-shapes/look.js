@@ -169,7 +169,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* calm (K-CLARITY-RULES 10, Esti 2026-11-27 "the backgrounds are so busy"): the painted mat under the shapes is paler and less colourful,
      so the shapes on it are the strongest thing he sees */
   function calmMat(t) { if (!CALM) return t; try { const im = t.image, cv = document.createElement('canvas'); cv.width = im.width; cv.height = im.height; const cx = cv.getContext('2d');
-    cx.filter = 'saturate(0.45)'; cx.drawImage(im, 0, 0); cx.filter = 'none'; cx.fillStyle = 'rgba(255,255,255,0.5)'; cx.fillRect(0, 0, cv.width, cv.height); return new THREE.CanvasTexture(cv); } catch (e) { return t; } }
+    cx.filter = 'saturate(0.45) blur(' + Math.max(4, Math.round(im.width / 80)) + 'px)'; cx.drawImage(im, 0, 0);   /* soft, like the painting behind: petals, lanterns and leaves on the mat melt into colour, so only the pieces are sharp (review 2) */ cx.filter = 'none'; cx.fillStyle = 'rgba(255,255,255,0.5)'; cx.fillRect(0, 0, cv.width, cv.height); return new THREE.CanvasTexture(cv); } catch (e) { return t; } }
   function stage(draw, o = {}) {
     const t = paint(1024, 1024, (x, w) => draw(x, w / 2, w));
     const top = new PM({ color: '#FFFFFF', map: t, roughness: o.rough || 0.9, sheen: o.sheen == null ? 0.8 : o.sheen, sheenColor: new THREE.Color(o.sheenColor || '#FFF6E8'), sheenRoughness: 0.7, clearcoat: o.coat || 0, clearcoatRoughness: 0.3 });
@@ -884,7 +884,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     track(path, near); train(path, ['#FF5A5A', '#3AA8FF', '#FFC93C', '#4CD964', '#B98CFF'], near);
     /* a puff of steam now and then */
     const puffs = []; for (let i = 0; i < 6; i++) { const p = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: '#FFFFFF', transparent: true, opacity: 0, depthWrite: false })); scene.add(p); puffs.push(p); }
-    anim.push((t, q) => { const u = ((t * 0.018) % 1 + 1) % 1, p0 = path.getPointAt(u); puffs.forEach((p, i) => { const k = ((t * 0.5 + i / puffs.length) % 1); p.position.set(p0.x, 1.6 + k * 2.4, p0.z); p.scale.setScalar(0.4 + k * 1.2); p.material.opacity = q >= 1 ? (1 - k) * 0.7 : 0; }); });
+    anim.push((t, q) => { const u = ((t * 0.018) % 1 + 1) % 1, p0 = path.getPointAt(u); puffs.forEach((p, i) => { const k = ((t * 0.5 + i / puffs.length) % 1); p.position.set(p0.x, 1.6 + k * 2.4, p0.z); p.scale.setScalar(0.4 + k * 1.2); p.material.opacity = q >= 1 && !CALM ? (1 - k) * 0.7 : 0; }); });   /* calm: no steam drifting across the sky (K-CLARITY-RULES 10) */
     const roofs = ['#FF5A5A', '#3AA8FF', '#FFC93C', '#B98CFF', '#4CD964', '#FF8A3D'], walls = ['#FFF4E2', '#FFE3EC', '#E3F4FF', '#FFF7C8', '#E8FFE3'];
     [[-15, -6, 2.2, 2.2, 0.4], [-16.5, 0, 2.0, 2.0, 0.6], [-13, -13, 2.4, 2.8, 0.2], [-7, -16, 2.2, 2.4, 0], [7.5, -16, 2.4, 2.6, 0], [13.5, -13, 2.2, 2.4, -0.2], [15.5, -6, 2.2, 2.2, -0.4], [16.5, 0.5, 2.0, 2.2, -0.6], [-3, -17.5, 2, 2.2, 0], [3, -18, 2.2, 2.6, 0]].forEach(([x, z, w, h, r], i) => house(x, z, w, h, walls[i % 5], roofs[i % 6], far, r));
     /* the clock tower (no numbers) */
