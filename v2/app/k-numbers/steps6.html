@@ -13,8 +13,9 @@
 <style>
 .feet{ display:flex; align-items:center; gap:6px; padding:8px 12px; min-height:clamp(84px,12vh,112px); border-radius:24px; background:#fff; box-shadow:0 6px 0 #C9D8EE, 0 10px 18px rgba(30,40,90,.2); }
 .feet svg{ width:clamp(40px,6vh,56px); height:auto; opacity:.35; transition:opacity .15s, transform .15s; } .feet svg.on{ opacity:1; transform:translateY(-4px); }
+.feet .me{ height:clamp(70px,10vh,96px); width:auto; margin:0 6px; }   /* Mendy's picture starts the footprints: these are HIS steps */
 .feet.back{ flex-direction:row-reverse; } .feet .dir{ width:clamp(36px,5vh,48px); opacity:1; }
-@media (max-width:760px), (max-aspect-ratio:4/5){ .feet{ min-height:80px; gap:3px; padding:6px 8px; } .feet svg{ width:34px; } .feet .dir{ width:30px; } }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .feet .me{ height:64px; margin:0 2px; } .feet{ min-height:80px; gap:3px; padding:6px 8px; } .feet svg{ width:34px; } .feet .dir{ width:30px; } }
 </style>
 </head>
 <body>
@@ -30,7 +31,7 @@ let P, M, R, done;
 const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
 const FOOT = '<svg viewBox="0 0 40 60"><ellipse cx="20" cy="36" rx="13" ry="20" fill="#3B2A7A"/><circle cx="9" cy="10" r="4.5" fill="#3B2A7A"/><circle cx="17" cy="6" r="4.5" fill="#3B2A7A"/><circle cx="25" cy="7" r="4" fill="#3B2A7A"/><circle cx="32" cy="12" r="3.5" fill="#3B2A7A"/></svg>';
 const ARROW = d => '<svg class="dir" viewBox="0 0 48 48"><path d="' + (d > 0 ? 'M8 24h28M26 12l12 12-12 12' : 'M40 24H12M22 12 10 24l12 12') + '" stroke="' + (d > 0 ? '#22B45E' : '#FF8A3D') + '" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-function feet(n, d) { const f = $('feet'); f.className = 'feet' + (d < 0 ? ' back' : ''); f.innerHTML = Array(n).fill(FOOT).join('') + ARROW(d); }
+function feet(n, d) { const f = $('feet'); f.className = 'feet' + (d < 0 ? ' back' : ''); f.innerHTML = '<img class="me" src="art/mendy-idle.png" alt="Mendy">' + Array(n).fill(FOOT).join('') + ARROW(d); }
 async function stepAlong(n) {   /* the footprints light one by one: he takes a real step for each */
   const fs = $('feet').querySelectorAll('svg:not(.dir)'); fs.forEach(x => x.classList.remove('on'));
   for (let i = 0; i < n; i++) { fs[i].classList.add('on'); NK.sound.pop(); await FR.say('Step!', { noRepeat: true }); await FR.wait(NK.fast ? 20 : 350); }
@@ -59,7 +60,7 @@ function play(F, i) {
     await F.say('Mendy is on ' + F.word(a) + '.');
     await F.say(d > 0 ? 'Take ' + F.word(n) + ' big steps forward!' : 'Take ' + F.word(n) + ' big steps back!');
     await stepAlong(n);
-    open(); await F.say('Where is Mendy now? Tap it.', { repeat: 'Mendy was on ' + F.word(a) + '. ' + FR.Word(n) + ' steps. Where now?' });
+    open(); await F.say('Where will Mendy land? Tap that stone.', { repeat: 'Mendy is on ' + F.word(a) + '. ' + FR.Word(n) + ' steps. Where will he land?' });
   });
 }
 FR.game({
@@ -70,7 +71,7 @@ FR.game({
   demo: async F => {
     R = { from: 0, n: 3, d: 1, to: 3 }; M.place(0); P.focus(1.5); feet(3, 1);
     await F.say('Watch me. Mendy is on zero.'); await F.say('Three big steps!'); await stepAlong(3);
-    await F.say('Three steps from zero lands on three.'); await F.handTo(P.el(3)); await F.handTap(); await walk(false); P.petals(3); M.place(0);
+    await F.say('Where will Mendy land? Three steps from zero is three.'); await F.handTo(P.el(3)); await F.handTap(); await walk(false); P.petals(3); M.place(0);
   },
   round: (F, i) => play(F, i),
   endSay: s => s >= 2 ? 'Great big steps! Sit down now.' : 'Good stepping! Let\'s play once more.'
