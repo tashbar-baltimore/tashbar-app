@@ -1,5 +1,419 @@
 <script>
-/* ShWork.html — THE NEW SHELL (docs/SHELL-OVERHAUL.md; rules: docs/SHELL-CONTRACT.md).
-   Workstream C: My work (Today's list, Today's path, the rounds, rebbe picks), the Trail (the My map frame), and the list of his subjects and levels that replaces the tlFindLevelCard chain.
-   Only this workstream edits this file. Places register with SHK.place({...}) (src/ShellKit.html). */
+/* ShWork.html — THE NEW SHELL (docs/SHELL-OVERHAUL.md; rules: docs/SHELL-CONTRACT.md). Workstream C: his work and his way up the mountain.
+   Places (SHK.place):
+   - 'work'  My work, in the study loft (kingdom, no door): DO THIS NOW first; Today's list (server tdlToday, Grade 2 up) or the 3 rounds;
+             Today's path for TEST- boys (pfdToday); his rebbe's picks and shout-outs (sgMyDesk, sgShoutSeen); the school goal (msSchoolGoal);
+             the Daily Mix; the bonus round (the Game Pavilion opens when his work is done); the treasure chest line.
+   - 'map'   the Trail up the mountain (kingdom, no door): his map (window.TL_MAP from kmMyMap; how lessons are organized does not change):
+             his goal now with ONE Start, the real skill, stops climbing to the BOSS fortress, the level check, locked stops say so,
+             My subjects (change subject, more to learn, Find my levels), the skill tree, a fresh map after a mastered step (kmMyMap).
+   Also SHK.subjects(): the clean list of his subjects and level panels (replaces the tlFindLevelCard chain on the old hub), and
+   SHK.today(): today's progress for the home ("N of M done today") and the Game Pavilion lock.
+   Lessons open only with SHK.openLesson(id). Buttons only from the button kit (window.TLK). Nothing here pays or sets money.
+   Nothing is drawn by script at rest: movement is CSS only. Grade 2 and up only (SHK.on()). No double slash in this file. */
+(function(){
+if(!window.SHK||window.SHW) return;
+const K=window.SHK, W=window.SHW={tdl:{},desk:null,deskAt:0,pfd:{},goal:null,goalAt:0,steps:{},shown:{},say:false};
+const E=K.esc, L=()=>window.TLK;
+const WORLDS={MATH:['🧮','Math'],READ:['📖','Reading'],LANG:['✍️','Writing'],SCI:['🔬','Science'],SOC:['🌍','Social Studies'],COMP:['💻','Computing'],HEB:['🔤','Lashon Hakodesh'],ELEC:['🛠️','Electives'],VOC:['🧰','Trades'],LIFE:['💰','Life & Money'],
+ 'K:KRI':['🔤','Kriyah'],'K:CHU':['📜','Chumash'],'K:RAS':['✒️','Rashi'],'K:MSH':['📚','Mishnayos'],'K:GEM':['🏛️','Gemara']};
+const ORDER=['MATH','K:CHU','READ','K:GEM','K:MSH','K:RAS','K:KRI','LANG','HEB','SCI','SOC','LIFE','COMP','ELEC','VOC'];
+const BADGE={MATH:'core-gm-world-math',READ:'core-gm-world-reading',LANG:'core-gm-world-writing',SCI:'core-gm-world-science',SOC:'core-gm-world-social-studies',COMP:'core-gm-world-computing','K:CHU':'core-gm-world-chumash','K:GEM':'core-gm-world-gemara'};
+const ROUNDS=3;
+
+/* ---------- who he is, his map, what he mastered ---------- */
+function st(){ try{ return (typeof A!=='undefined'&&A.st)||null; }catch(e){ return null; } }
+function sid(){ const s=st(); return s&&s.id?String(s.id):''; }
+function M(){ const m=window.TL_MAP, s=st(); return m&&s&&m.sid===s.id?m:null; }
+const MC=new WeakMap();
+function srvMast(){ const m=M(); if(!m) return {}; if(MC.has(m)) return MC.get(m); const o={}; [m.subjects||{},m.kodesh||{}].forEach(G=>Object.keys(G).forEach(k=>(G[k].skills||[]).forEach(x=>{ if(x[2]) o[x[0]]=1; }))); MC.set(m,o); return o; }
+function mast(id){ const s=st(), x=s&&s.skills&&s.skills[id]; return !!(x&&x.m)||!!srvMast()[id]; }
+function known(id){ const m=M(); return !!(m&&m.lc&&m.lc.known&&m.lc.known.indexOf(id)>=0)&&!mast(id); }
+function done(id){ return mast(id)||known(id); }
+function lcOf(w){ return w&&!w.isK&&w.now&&typeof window.tlLevelCheckFor==='function'?window.tlLevelCheckFor(w.now):null; }
+function nm(id){ const m=M(), n=m&&m.names&&m.names[id]; if(n) return n; try{ if(typeof BANK_ALL!=='undefined'&&BANK_ALL[id]&&BANK_ALL[id].name) return [BANK_ALL[id].name,'']; }catch(e){} return [String(id),'']; }
+const realLevel=n=>!!(n[1]&&/ Level \d+$/.test(n[1]));
+function day(at){ const d=new Date(Number(at)||0); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+const today=()=>day(Date.now());
+function steps(){ const sk=(st()&&st().skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m).length; }
+function todayDone(){ const t=today(), sk=(st()&&st().skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&day(sk[id].at)===t).sort((a,b)=>sk[a].at-sk[b].at); }
+/* his worlds: one per subject he is placed in; the unit is the path, its last step the BOSS (the same rule as the map has always used) */
+function worlds(){ const m=M(); if(!m) return []; const out=[];
+ const add=(k,c,isK)=>{ if(!c||!c.level) return; const w0=WORLDS[k]||['⭐',k];
+  let ids=isK?(c.skills||[]).map(x=>x[0]):((c.unit&&c.unit.ids)||[]); if(!ids.length&&c.now) ids=[c.now]; if(!ids.length) return;
+  const now=ids.find(id=>!done(id))||'';
+  out.push({k,icon:w0[0],name:w0[1],level:c.level,ids,now,cleared:!now,next:c.next,unitName:isK?(w0[1]+' Level '+c.level):((c.unit&&c.unit.name)||w0[1]),isK,c}); };
+ Object.keys(m.subjects||{}).forEach(k=>add(k,m.subjects[k],false)); Object.keys(m.kodesh||{}).forEach(k=>add(k,m.kodesh[k],true));
+ const o=k=>ORDER.indexOf(k)<0?99:ORDER.indexOf(k); return out.sort((a,b)=>o(a.k)-o(b.k)); }
+function doneToday(w){ const t=today(), sk=(st()&&st().skills)||{}; return w.ids.some(id=>sk[id]&&sk[id].m&&day(sk[id].at)===t); }
+function pick(ws){ const live=ws.filter(w=>w.now); return live.find(w=>!doneToday(w))||live[0]||ws[0]||null; }
+const toBoss=w=>w&&w.now?w.ids.length-w.ids.indexOf(w.now)-1:0;
+const k2=ws=>ws.length>0&&ws.every(w=>w.level<=2);
+
+/* ---------- the server's answers (the newest one wins: ours, or the one the older add-on fetched) ---------- */
+function tdlData(){ const s=sid(), mine=W.tdl[s], old=window.TL_TDL;
+ if(old&&old.by&&Object.prototype.hasOwnProperty.call(old.by,s)){ const oa=(old.asked&&old.asked[s])||0; if(!mine||oa>mine.at) return old.by[s]; }
+ return mine?mine.d:null; }
+function desk(){ const s=st(); if(W.desk&&s&&W.desk.sid===s.id) return W.desk; const d=window.TL_DESK; return d&&s&&d.sid===s.id?d:null; }
+function pfdData(){ const s=sid(), o=window.TLPFD; return (o&&o.by&&o.by[s])||W.pfd[s]||null; }
+
+/* ---------- TODAY: his list (Grade 2 up, from the server) or the 3 rounds ---------- */
+const SUBJ=id=>{ const p=(/^([A-Z]+)\./.exec(String(id||''))||[])[1]||''; return p==='READ'?'READ':(p==='LANG'||p==='WRIT')?'LANG':p==='MATH'?'MATH':(p==='LK'||p==='HEB')?'KODESH':(p==='SCI'||p==='SS')?'KNOW':''; };
+function localToday(){ const o={}; todayDone().forEach(id=>{ const k=SUBJ(id); if(k) (o[k]=o[k]||[]).push(id); }); return o; }
+function stepOf(w,j){ if(!w) return w; const up=(w.ids||[]).filter(id=>!done(id)), id=up[j]||(j===1&&w.next)||w.now; return id===w.now?w:Object.assign({},w,{now:id}); }
+function lineWorld(it,ws){ const live=ws.filter(w=>w.now);
+ if(it.k==='KODESH') return live.find(w=>w.k===it.w)||live.find(w=>w.isK||w.k==='HEB')||null;
+ if(it.k==='KNOW') return live.find(w=>w.k===it.w)||live.find(w=>w.k==='SCI'||w.k==='SOC')||null;
+ return live.find(w=>w.k===it.k)||null; }
+function listPlan(ws){ const d=tdlData(); if(!d||!d.on||!Array.isArray(d.items)) return null;
+ const loc=localToday(), rounds=[]; let dn=0, total=0;
+ d.items.forEach(it=>{ const n=Math.max(0,Number(it.n)||0), ids=(it.ids||[]).slice(); (loc[it.k]||[]).forEach(id=>{ if(ids.indexOf(id)<0) ids.push(id); });
+  const got=ids.slice(0,n), w=lineWorld(it,ws);
+  for(let i=0;i<n;i++){ if(i<got.length) rounds.push({won:true,id:got[i],k:it.k,name:it.name}); else rounds.push({w:stepOf(w,i-got.length),k:it.k,name:it.name}); }
+  dn+=got.length; total+=n; });
+ /* open (the bonus round) only when the SERVER says the whole list is done: a row can turn done here first, the bonus is the server's */
+ return {rounds,done:dn,total,left:Math.max(0,total-dn),open:!total||(dn>=total&&!!d.complete),list:true}; }
+function plan(ws){ let p=null; try{ p=listPlan(ws); }catch(e){ console.error('ShWork list',e); } if(p) return p;
+ const live=ws.filter(w=>w.now), dt=todayDone(), n=Math.min(ROUNDS,dt.length), out=[];
+ if(!live.length) return {rounds:[],done:n,total:ROUNDS,open:true,left:0};
+ const fresh=live.filter(w=>!doneToday(w)), order=fresh.concat(live.filter(w=>fresh.indexOf(w)<0));
+ for(let i=0;i<ROUNDS;i++){ if(i<n){ out.push({won:true,id:dt[i]}); continue; } out.push({w:order[(i-n)%order.length]}); }
+ return {rounds:out,done:n,total:ROUNDS,open:n>=ROUNDS,left:ROUNDS-n}; }
+function lockText(P){ return P.list?`Finish ${P.left} more thing${P.left===1?'':'s'} on today's list to open the Game Pavilion!`:`Clear ${P.left} more round${P.left===1?'':'s'} of your work to open the Game Pavilion!`; }
+K.today=function(){ const ws=worlds(), P=plan(ws); return {done:P.done,total:P.total||ROUNDS,left:P.left,open:!!P.open,list:!!P.list,line:P.rounds.length?(P.open?'All your work is done today!':P.done+' of '+(P.total||ROUNDS)+' done today'):'',lock:P.open?'':lockText(P)}; };
+
+/* ---------- server calls this place needs (the old hidden home used to make them) ---------- */
+function redraw(){ try{ if(K.open.indexOf('work')>=0) K.body('work',workHTML()); if(K.open.indexOf('map')>=0) K.body('map',mapHTML()); }catch(e){ console.error('ShWork redraw',e); } }
+function askList(){ const s=sid(); if(!s) return Promise.resolve(); return K.call('tdlToday').then(d=>{ if(sid()===s) W.tdl[s]={d:d&&d.on?d:null,at:Date.now()}; }).catch(()=>{}); }
+function askDesk(force){ const s=st(); if(!s) return Promise.resolve(); if(!force&&W.desk&&W.desk.sid===s.id&&Date.now()-W.deskAt<180000) return Promise.resolve();
+ const id=s.id; return K.call('sgMyDesk').then(r=>{ if(st()&&st().id===id&&r){ W.desk=r; W.deskAt=Date.now(); } }).catch(()=>{ W.deskAt=Date.now(); }); }
+function askGoal(){ if(W.goal&&Date.now()-W.goalAt<600000) return Promise.resolve(); W.goalAt=Date.now(); return K.call('msSchoolGoal').then(r=>{ W.goal=r||null; W.goalAt=Date.now(); }).catch(()=>{}); }
+function askPath(){ const s=sid(); if(!/^TEST-/i.test(s)||pfdData()) return Promise.resolve(); return K.call('pfdToday').then(d=>{ if(d&&sid()===s) W.pfd[s]=d; }).catch(()=>{}); }
+function refreshWork(){ Promise.all([askList(),askDesk(),askGoal(),askPath()]).then(()=>{ redraw(); bigShout(); }); }
+function refreshMap(){ const s=sid(); if(!s) return; const n=steps(); if(!(s in W.steps)){ W.steps[s]=n; return; } if(n<=W.steps[s]) return; W.steps[s]=n;
+ K.call('kmMyMap').then(r=>{ if(r&&r.sid===s&&sid()===s){ window.TL_MAP=r; redraw(); } }).catch(()=>{}); }
+/* after a save: his list's count from the server and Today's path (only when the older add-ons that did this are gone, so nothing is asked twice) */
+try{ if(typeof saveStudent==='function'&&!W._ss){ W._ss=saveStudent; saveStudent=function(s0,cb){ return W._ss.call(this,s0,function(r){
+  try{ if(s0&&s0.id&&String(s0.id)===sid()){ if(!window.TL_TDL) askList().then(redraw); if(!window.TL_PFD&&r&&r.pfd){ W.pfd[s0.id]=r.pfd; if(r.pfd.moments&&r.pfd.moments.length) climb(r.pfd.moments); } } }catch(e){ console.error('ShWork save',e); }
+  if(cb) return cb.apply(this,arguments); }); }; } }catch(e){}
+try{ if(typeof loadStudent==='function'&&!W._ls){ W._ls=loadStudent; loadStudent=function(r){ const s0=W._ls.apply(this,arguments); try{ if(r&&r.id&&!window.TL_PFD){ if(r.pfd) W.pfd[r.id]=r.pfd; else delete W.pfd[r.id]; } }catch(e){} return s0; }; } }catch(e){}
+
+/* ---------- the look ---------- */
+function css(){ if(document.getElementById('shw-css')) return; const s=document.createElement('style'); s.id='shw-css'; s.textContent=`
+.shw-wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;max-width:980px;margin:0 auto}
+.shw-wrap>*,.shw-big>div,.shw-side>*{min-width:0}
+.shw-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.shw-k{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 6px}
+.shw-card h2{margin:4px 0 4px;font-size:clamp(22px,2.6vw,30px);font-weight:900;line-height:1.15;color:#1E1B4B}
+.shw-card h3{margin:0 0 8px;font-size:18px;font-weight:900;color:#1E1B4B}
+.shw-card p{margin:4px 0;font-size:16px;line-height:1.4;color:#3B3A5A}
+.shw-learn{font-size:16px;font-weight:700;color:#3B3A5A;margin:4px 0 10px}
+.shw-act{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.shw-now{border:3px solid #F5C542;background:linear-gradient(135deg,rgba(255,251,230,.95),rgba(255,255,255,.92));animation:shw-glow 3.6s ease-in-out infinite alternate}
+@keyframes shw-glow{from{box-shadow:0 10px 34px rgba(30,27,75,.16),0 0 0 0 rgba(245,197,66,.0)}to{box-shadow:0 10px 34px rgba(30,27,75,.16),0 0 0 8px rgba(245,197,66,.22)}}
+.shw-now .shw-big{display:flex;gap:16px;align-items:center}
+.shw-now .shw-big img,.shw-now .shw-big .shw-emo{width:84px;height:84px;object-fit:contain;flex:none;font-size:56px;line-height:84px;text-align:center}
+.shw-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.shw-head small{display:block;font-size:13px;font-weight:900;letter-spacing:.12em;color:#7A5B00}
+.shw-head h2{margin:2px 0 0}
+.shw-rows{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.shw-rows>*{min-width:0;width:100%;box-sizing:border-box}
+.shw-row{flex-direction:row!important;align-items:center!important;gap:12px;padding:10px 14px!important;min-height:64px}
+.shw-row .n,.shw-done .n{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:20px;font-weight:900;background:#EEF2FF;color:#3730A3}
+.shw-row.live{border:2.5px solid #F5C542}.shw-row.live .n{background:#F5C542;color:#3A2600}
+.shw-row .t,.shw-done .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.shw-row .t b,.shw-done .t b{font-size:15px;font-weight:900;letter-spacing:.04em;color:#1E1B4B}
+.shw-row .t span,.shw-done .t span{font-size:15px;color:#4B4A6A;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.shw-done{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:18px;background:rgba(236,253,245,.9);min-height:56px}
+.shw-done .n{background:#22C55E;color:#fff}
+.shw-done.wait .n{background:#E5E7EB;color:#4B5563}
+.shw-chest{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:15px;font-weight:800;color:#3B3A5A}
+.shw-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.shw-tile{padding:14px!important;gap:6px;min-height:112px}
+.shw-tile .ic{font-size:34px;line-height:40px;height:40px}.shw-tile .ic img{width:44px;height:44px;object-fit:contain}
+.shw-tile b{font-size:17px;font-weight:900;color:#1E1B4B}.shw-tile small{font-size:14px;color:#4B4A6A}
+.shw-tile q{font-size:14px;color:#6D28D9;font-weight:700}
+.shw-shout{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:18px;background:linear-gradient(120deg,rgba(254,243,199,.95),rgba(252,231,243,.95) 55%,rgba(237,233,254,.95))}
+.shw-shout.star{background:linear-gradient(120deg,#FDE68A,#FBBF24)}
+.shw-shout .ic{font-size:36px;flex:none}.shw-shout .tx{flex:1;min-width:0}.shw-shout b{display:block;font-size:17px;color:#1E1B4B}.shw-shout small{display:block;font-size:13px;color:#57534E;font-weight:700;margin-top:2px}
+.shw-bar{display:block;height:12px;border-radius:999px;background:#EDE9FE;overflow:hidden;margin-top:6px}.shw-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#8B5CF6,#22C55E)}
+.shw-list{display:grid;gap:10px}
+/* THE TRAIL */
+.shw-map{display:grid;grid-template-columns:minmax(280px,380px) minmax(0,1fr);gap:16px;align-items:start;max-width:1060px;margin:0 auto}
+.shw-side{position:sticky;top:76px;display:grid;gap:12px}
+.shw-unit b{font-size:18px;font-weight:900;color:#1E1B4B}
+.shw-unit .shw-badge{width:40px;height:40px;object-fit:contain;vertical-align:middle;margin-right:6px}
+.shw-trail{position:relative;margin:0 auto;width:100%;max-width:640px}
+.shw-trail svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.shw-trail path{fill:none;stroke:#FFF6D8;stroke-width:9;stroke-linecap:round;stroke-dasharray:2 18;filter:drop-shadow(0 2px 3px rgba(80,60,10,.35))}
+.shw-at{position:absolute;transform:translate(-50%,-50%);z-index:1}.shw-at:has(.s-now){z-index:2}
+.shw-stop{width:212px;flex-direction:row!important;align-items:center!important;gap:8px;padding:6px 10px 6px 6px!important}
+.shw-stop .pad{position:relative;flex:none;width:64px;height:52px;display:grid;place-items:center}
+.shw-stop .pad img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.shw-stop .pad .num{position:relative;font-size:22px;font-weight:900;color:#fff;text-shadow:0 2px 0 #7A5B00,0 0 6px rgba(0,0,0,.35)}
+.shw-stop .pad .emo{position:relative;font-size:24px}
+.shw-stop .lab{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.shw-stop .lab b{font-size:14px;line-height:1.2;color:#1E1B4B;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.shw-stop .tlk-pill{white-space:normal;line-height:1.2;align-self:flex-start}
+.shw-stop.s-lock{opacity:.86}.shw-stop.s-lock .pad img{filter:grayscale(.6)}
+.shw-stop.s-now{width:240px;border:3px solid #F5C542;animation:shw-ring 2.8s ease-in-out infinite alternate;z-index:2}
+@keyframes shw-ring{from{box-shadow:0 8px 24px rgba(30,27,75,.18),0 0 0 0 rgba(245,197,66,.0)}to{box-shadow:0 8px 24px rgba(30,27,75,.18),0 0 0 10px rgba(245,197,66,.28)}}
+.shw-stop.s-boss{width:240px}.shw-stop.s-boss .pad{width:86px;height:80px}
+.shw-msg{position:absolute;transform:translate(-50%,0);z-index:3;pointer-events:none;animation:shw-in .25s ease both}
+@keyframes shw-in{from{opacity:0;transform:translate(-50%,6px)}to{opacity:1;transform:translate(-50%,0)}}
+.shw-more{position:absolute;left:50%;transform:translateX(-50%)}
+.shw-intro{animation:shw-rise 2.6s cubic-bezier(.45,0,.25,1) both;transform-origin:50% 100%}
+@keyframes shw-rise{0%{transform:scale(.62) translateY(18%);opacity:.2}35%{opacity:1}100%{transform:none}}
+.shw-tree{display:grid;gap:12px}
+.shw-nodes{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.shw-node{padding:10px 12px!important;min-height:74px;gap:4px}
+.shw-node b{font-size:14px;color:#1E1B4B}
+.shw-say{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:#4B4A6A}
+.shw-sheet p{font-size:16px;margin:6px 0}
+@media (prefers-reduced-motion:reduce){.shw-now,.shw-stop.s-now,.shw-intro,.shw-msg{animation:none!important}}
+@media (max-width:820px){.shw-map{grid-template-columns:1fr;padding-bottom:250px}.shw-side{position:static}.shw-two{grid-template-columns:1fr}
+ .shw-side .shw-goal{position:fixed;left:10px;right:10px;bottom:10px;z-index:5;max-height:46vh;overflow:auto;padding:12px 14px}.shw-side .shw-goal h2{font-size:21px}.shw-side .shw-goal .shw-learn{margin-bottom:4px}.shw-side .shw-goal .shw-act{margin-top:6px}}
+@media (max-width:600px){.shw-stop{width:156px}.shw-stop.s-now,.shw-stop.s-boss{width:172px}.shw-stop .pad{width:50px;height:42px}.shw-stop.s-boss .pad{width:62px;height:58px}.shw-stop .lab b{font-size:13px}.shw-now .shw-big img,.shw-now .shw-big .shw-emo{width:60px;height:60px;font-size:40px;line-height:60px}.shw-tiles{grid-template-columns:1fr}}`; document.head.appendChild(s); }
+const pill=(k,t)=>L()?L().pill(k,t):'<span>'+E(t)+'</span>';
+const box=(k,l,v)=>L()?L().box(k,l,v):'<span>'+E(l)+' '+E(v)+'</span>';
+function badge(k,cls){ return BADGE[k]?`<img class="${cls||''}" src="/pics/${BADGE[k]}.webp" alt="" draggable="false" decoding="async">`:''; }
+function wIcon(w,cls){ return badge(w.k,cls)||`<span class="shw-emo" aria-hidden="true">${w.icon}</span>`; }
+function learnLine(n){ if(!n[1]) return ''; return realLevel(n)?`<div class="shw-learn">🧠 Real skill: <b>${E(n[0])}</b> · ${E(n[1])}</div>`:`<div class="shw-learn">🧠 You'll learn: <b>${E(n[1])}</b></div>`; }
+const subjOfId=id=>{ const p=String(id).split('.'); if(p[0]==='LK') return 'K:'+p[1]; return p[0]==='WRIT'?'LANG':p[0]==='SS'?'SOC':p[0]; };
+const wordOf=id=>(WORLDS[subjOfId(id)]||['⭐',''])[1];
+
+/* ========== MY WORK ========== */
+function workHTML(){ const ws=worlds(), P=plan(ws), pk=pick(ws), T=P.total||ROUNDS;
+ let live=null, rows='';
+ P.rounds.forEach((r,i)=>{ const num=i+1;
+  if(r.won){ const lc=/^LEVELCHECK\./.test(String(r.id)), n=lc?['Level check passed: you already knew it','']:nm(r.id), what=P.list&&r.name?r.name:wordOf(r.id);
+   rows+=`<div class="shw-done won" data-id="${E(r.id)}"><div class="n" aria-hidden="true">✓</div><div class="t"><b>${P.list?'':'ROUND '+num+' · '}${E(String(what||'').toUpperCase())}</b><span>${E(n[0])}</span></div>${pill('prog',P.list?'Done':'Cleared')}</div>`; return; }
+  if(!r.w){ rows+=`<div class="shw-done wait"><div class="n" aria-hidden="true">${num}</div><div class="t"><b>${E(String(r.name||'').toUpperCase())}</b><span>Nothing left at your level today. Tell your rebbe!</span></div>${pill('now','Ask your rebbe')}</div>`; return; }
+  const w=r.w, n=nm(w.now), isLive=!live; if(isLive) live={w,name:r.name};
+  rows+=`<button type="button" class="tlk tlk-tile shw-row${isLive?' live':''}" data-shw="play" data-id="${E(w.now)}" aria-label="${E(P.list?(r.name||w.name):'Round '+num+': '+w.name)}, ${E(n[0])}"><div class="n" aria-hidden="true">${isLive?num:w.icon}</div><div class="t"><b>${P.list?E(String(r.name||w.name).toUpperCase()):'ROUND '+num+' · '+E(w.name.toUpperCase())}</b><span>${E(n[0])}${n[1]&&!realLevel(n)?' · '+E(n[1]):''}</span></div>${isLive?pill('now','Your turn'):pill('prog','Next')}</button>`; });
+ /* the bonus round: the Game Pavilion opens when his work is done (the server pays the daily bonus; nothing here pays) */
+ if(P.rounds.length){ const pav=K.places().some(d=>d.id==='games');
+  rows+=P.open&&pav?`<button type="button" class="tlk tlk-tile shw-row" data-shgo="games"><div class="n" aria-hidden="true">🎮</div><div class="t"><b>BONUS ROUND</b><span>The Game Pavilion is open. Go play!</span></div>${pill('prog','Open')}</button>`
+   :`<div class="shw-done${P.open?'':' wait'}"><div class="n" aria-hidden="true">${P.open?'🎮':'🏆'}</div><div class="t"><b>BONUS ROUND</b><span>${P.open?'The Game Pavilion is open. Go play!':P.list?"Finish your list: the Game Pavilion opens and you get the daily bonus.":'Clear all '+ROUNDS+' rounds: the Game Pavilion opens and you reach the daily goal.'}</span></div>${P.open?pill('prog','Open'):pill('lock','Locked')}</div>`; }
+ const ch=st()&&st().chest, chest=ch&&ch.need?`<div class="shw-chest">🎁 Treasure chest: daily goal ${pill('prog',Math.min(ch.days||0,ch.need)+' of '+ch.need+' days this week')}${ch.paid?pill('prog','Opened'):''}</div>`:'';
+ const KICK=P.list?"TODAY'S LIST":'MY WORK TODAY';
+ const head=P.open?`<small>${KICK}</small><h2>All done!</h2>`:`<small>${KICK}</small><h2>${P.rounds.length?P.done+' of '+T+' done':'All clear!'}</h2>`;
+ const why=P.open?(P.list?(P.rounds.length?'Your whole list is done today. Every extra level still counts!':'Nothing on your list today: every subject is cleared!'):(P.rounds.length?'All '+ROUNDS+' rounds cleared today. Every extra level still counts!':'No rounds today: every subject is cleared!')):(P.list?(P.left?P.left+' more to go.':'Saving your work…'):'Round '+(P.done+1)+' is next.');
+ /* DO THIS NOW: the one next thing, first on the page */
+ let now='';
+ const nowCard=(w,id,kick,btn,line)=>{ const n=nm(id); return `<section class="shk-card shw-card shw-now" aria-label="Do this now"><div class="shw-k">${pill('now','Do this now')}${pill('subj',(kick||w.name)+' · Level '+w.level)}</div><div class="shw-big">${wIcon(w)}<div><h2>${E(n[0])}</h2>${learnLine(n)}${line?`<p>${E(line)}</p>`:''}</div></div><div class="shw-act">${L().main(btn,'data-shw="play" data-id="'+E(id)+'"')}</div></section>`; };
+ if(live) now=nowCard(live.w,live.w.now,P.list&&live.name?live.name:live.w.name,P.list?'Next':'Start','');
+ else if(pk&&pk.now) now=nowCard(pk,pk.now,pk.name,'Start',P.open?'Your work is done. Keep climbing!':'');
+ else now=`<section class="shk-card shw-card shw-now" aria-label="Do this now"><div class="shw-k">${pill('prog','All clear')}</div><h2>${M()?'Every subject is cleared!':'Your map is almost ready!'}</h2><p>${M()?'Your rebbe or teacher opens your next unit.':'Your rebbe or teacher sets your level. Until then, find your level or pick any lesson.'}</p></section>`;
+ const todayCard=`<section class="shk-card shw-card shw-today"><div class="shw-head"><div>${head}</div>${pill('prog',P.rounds.length?P.done+' of '+T+' done':'All clear')}</div><p>${E(why)}</p><div class="shw-rows">${rows}</div>${chest}</section>`;
+ return `<div class="shw-wrap">${now}${todayCard}${pathHTML()}${rebbeHTML()}${moreWorkHTML()}</div>`; }
+/* TODAY'S PATH (Pathfinder D): only boys the server sends a path to (TEST- boys today). Kodesh first, one stop per subject, a booster stop last. */
+function pathHTML(){ const d=pfdData(), s=st(); if(!d||!Array.isArray(d.stops)||!d.stops.length||!s) return '';
+ const playable=id=>{ try{ return !!((typeof GEN!=='undefined'&&GEN[id])||(typeof BANK_ALL!=='undefined'&&BANK_ALL[id])); }catch(e){ return false; } };
+ const isM=id=>{ const x=s.skills&&s.skills[id]; return !!(x&&x.m); };
+ const PRE={KRI:/^LK\.KRI\./,HEB:/^HEB\./,CHU:/^LK\.CHU\./,RAS:/^LK\.RAS\./,MSH:/^LK\.MSH\./,GEM:/^LK\.GEM\./,MATH:/^MATH\./,READ:/^READ\./,LANG:/^(LANG|WRIT)\./,SCI:/^SCI\./,SOC:/^SS\./};
+ const nToday=k=>{ const re=PRE[k]; if(!re) return 0; const t=new Date().toDateString(); return Object.keys(s.skills||{}).filter(id=>re.test(id)&&s.skills[id]&&s.skills[id].m&&s.skills[id].at&&new Date(s.skills[id].at).toDateString()===t).length; };
+ const clean=n=>String(n||'').replace(/\s*\bLevel\s*\d+\b/gi,'').replace(/\s*\b\d+-\d+\b/g,'').replace(/\s+:/g,':').replace(/^\s*:\s*/,'').trim();
+ const kod=d.stops.filter(t=>t.area==='kodesh'), rank=t=>['MATH','READ','WRIT','LANG'].indexOf(t.k), rest=d.stops.filter(t=>t.area!=='kodesh').sort((a,b)=>(rank(a)<0?9:rank(a))-(rank(b)<0?9:rank(b)));
+ const all=kod.concat(rest), min=Math.max(2,Math.round((Number(d.total)||35)/Math.max(1,all.length)));
+ const stop=(t,mn,booster)=>{ const ids=(t.ids||[]).filter(playable), nid=ids.find(id=>!isM(id)), dn=nToday(t.k)>=(booster&&d.stops.some(z=>z.k===t.k)?2:1)||!nid;
+  const name=booster?'Booster: '+t.name:t.name, lesson=nid?clean((t.names&&t.names[nid])||nm(nid)[0]):'';
+  const line=nid?'Next: '+lesson+(booster?' · extra practice':''):'Everything here is done. Great work!';
+  if(!nid||dn&&!nid) return `<div class="shw-done"><div class="n" aria-hidden="true">✓</div><div class="t"><b>${E(name)}</b><span>${E(line)}</span></div>${pill('prog','Done')}</div>`;
+  return `<button type="button" class="tlk tlk-tile shw-row" data-shw="play" data-id="${E(nid)}"><div class="n" aria-hidden="true">${booster?'🚀':E(t.ic||'⭐')}</div><div class="t"><b>${E(name)}</b><span>${E(line)}</span></div>${dn?pill('prog','Done'):pill('now','Your turn')}</button>`; };
+ return `<section class="shk-card shw-card"><div class="shw-head"><div><small>TODAY'S PATH</small><h2>Your path up the mountain</h2></div></div><div class="shw-rows">${all.map(t=>stop(t,min,false)).join('')}${d.booster?stop(d.booster,Number(d.boostMin)||5,true):''}</div></section>`; }
+/* FROM MY REBBE: shout-outs (star of the week, goals with progress, praise, Torah moments, Good Shabbos) and the lessons he picked */
+const ICON={MATH:'📐',READ:'📖',LANG:'✍️',SCI:'🔬',ELEC:'⚛️'};
+const ago=t=>{ const d=Math.round((Date.now()-t)/864e5); return d<=0?'today':d===1?'yesterday':d+' days ago'; };
+function pickDone(p){ return !!p.done||mast(p.id); }
+function rebbeHTML(){ const d=desk(); if(!d) return ''; const P=d.picks||[], S=d.shouts||[]; if(!P.length&&!S.length) return '';
+ const ty=s=>s.thanked?pill('rank','Thanked'):L().quiet('Thank you','data-shw="thanks" data-id="'+E(s.id)+'"','tlk-small');
+ const star=S.find(s=>s.kind==='star'), goals=S.filter(s=>s.kind==='goal'&&s.progress).slice(0,2), rest=S.filter(s=>s.kind!=='star'&&!(s.kind==='goal'&&s.progress)).slice(0,2);
+ let h='';
+ if(star) h+=`<div class="shw-shout star"><span class="ic" aria-hidden="true">⭐</span><span class="tx"><small>STAR OF THE WEEK · from ${E(star.by)}</small><b>${E(star.text)}</b></span>${ty(star)}</div>`;
+ h+=goals.map(s=>{ const p=s.progress, pc=Math.round(100*p.done/Math.max(1,p.total)), ok=p.done>=p.total; return `<div class="shw-shout"><span class="ic" aria-hidden="true">${ok?'🏆':'🎯'}</span><span class="tx"><small>${ok?'Goal reached!':'My goal'} · from ${E(s.by)}</small><b>${E(s.text)}</b><span class="shw-bar"><i style="width:${Math.max(3,pc)}%"></i></span><small>${E(p.track)} through Level ${E(p.level)}: ${p.done} of ${p.total} lessons${ok?'':' · '+(p.total-p.done)+' to go!'}</small></span></div>`; }).join('');
+ h+=rest.map(s=>`<div class="shw-shout"><span class="ic" aria-hidden="true">${s.kind==='torah'?'📜':s.kind==='shabbos'?'🕯️':s.kind==='goal'?'🎯':'🎉'}</span><span class="tx"><b>${E(s.text)}</b><small>${s.kind==='torah'?'Torah moment':s.kind==='shabbos'?'Good Shabbos':s.kind==='goal'?'Your goal':'Shout-out'} from ${E(s.by)} · ${E(ago(s.at))}</small></span>${ty(s)}</div>`).join('');
+ const open=P.filter(p=>!pickDone(p)).slice(0,4), fin=P.filter(pickDone).slice(0,2);
+ if(open.length||fin.length) h+=`<div class="shw-tiles">${open.map(p=>{ const n=nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id); return `<button type="button" class="tlk tlk-tile shw-tile shw-pick" data-shw="play" data-id="${E(p.id)}"><span class="ic" aria-hidden="true">📌</span><b>${E(n)}</b><small>From ${E(p.by||'your rebbe')}</small>${p.note?`<q>${E(p.note)}</q>`:''}${pill('now','Picked for you')}</button>`; }).join('')}${fin.map(p=>`<div class="shk-card shw-tile" style="box-shadow:none"><span class="ic" aria-hidden="true">✅</span><b>${E(nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id))}</b><small>Done! ${E(p.by||'Your rebbe')} will see it</small></div>`).join('')}</div>`;
+ return `<section class="shk-card shw-card"><h3>💌 From my rebbe</h3><div class="shw-list">${h}</div></section>`; }
+/* more for his day: the Daily Mix (review he already knows) and the school goal */
+function moreWorkHTML(){ let h='';
+ const mix=subjectsList().find(x=>x.k==='rvcard');
+ if(mix) h+=`<button type="button" class="tlk tlk-tile shw-tile" data-shw="panel" data-k="rvcard"><span class="ic" aria-hidden="true">${E(mix.icon)}</span><b>${E(mix.name)}</b><small>${E(mix.sub)}</small>${pill('now','Keep them strong')}</button>`;
+ const G=W.goal; let g='';
+ if(G&&G.goal){ const pc=Math.min(100,Math.round(G.total/G.goal*100)); g=`<section class="shk-card shw-card"><h3>🏫 School goal for ${E(G.month)}: ${E(G.goal)} skills</h3><span class="shw-bar"><i style="width:${Math.max(3,pc)}%"></i></span><p>${E(G.total)} of ${E(G.goal)} mastered by all the students together${pc>=100?' · We did it!':' · every skill you master helps'}${G.top&&G.top.length?' · 🌟 Most improved: '+E(G.top.join(', ')):''}</p></section>`; }
+ return (h?`<div class="shw-tiles">${h}</div>`:'')+g; }
+/* a new shout-out opens BIG once (the server remembers it was seen; "Thank you" sends a thank-you to his rebbe) */
+function shoutSeenElsewhere(id){ try{ const d=typeof window.tlRP==='function'&&window.tlRP(); return !!(d&&(d.shouts||[]).some(x=>x.id===id&&x.seen)); }catch(e){ return false; } }
+function bigShout(){ const d=desk(), s0=st(); if(!d||!s0||K.open.indexOf('work')<0||K.open.indexOf('shw-shout')>=0) return;
+ const s=(d.shouts||[]).find(x=>!x.seen&&!W.shown[x.id]&&!shoutSeenElsewhere(x.id)); if(!s) return; W.shown[s.id]=1;
+ const first=String(s0.name||'').split(' ')[0], kind=s.kind, icon=kind==='torah'?'📜':kind==='shabbos'?'🕯️':kind==='star'?'⭐':kind==='goal'?'🎯':'🎉';
+ const tag=kind==='torah'?'A Torah moment from':kind==='shabbos'?'Good Shabbos from':kind==='star'?'Star of the week · from':kind==='goal'?'A goal from':'A shout-out from';
+ const h2=kind==='torah'?'A Torah moment, '+first+'!':kind==='shabbos'?'Good Shabbos, '+first+'!':kind==='star'?'You are the Star of the Week, '+first+'!':kind==='goal'?'Here is your goal!':'Way to go, '+first+'!';
+ let thanked=false;
+ K.pop({id:'shw-shout',world:'k',title:tag+' '+s.by,icon,body:`<div class="shw-sheet" style="text-align:center"><div style="font-size:72px;line-height:1.1" aria-hidden="true">${icon}</div><h2 style="margin:6px 0">${E(h2)}</h2><p style="font-size:19px;white-space:pre-wrap">${E(s.text)}</p>${kind==='goal'&&s.progress?`<p>${E(s.progress.track)} through Level ${E(s.progress.level)}: ${s.progress.done} of ${s.progress.total} lessons done</p>`:''}<div class="shw-act" style="justify-content:center">${L().main('Thank you','data-shw="shoutok" data-id="'+E(s.id)+'"')}</div></div>`,
+  onClose:how=>{ if(!thanked) seen(s,false); }});
+ W.thank=()=>{ thanked=true; seen(s,true); K.close('shw-shout','x'); };
+ try{ if(typeof SND!=='undefined'&&SND.win) SND.win(); }catch(e){} try{ if(typeof confetti==='function') confetti(); }catch(e){} }
+function seen(s,thanks){ s.seen=true; if(thanks) s.thanked=true; try{ const o=typeof window.tlRP==='function'&&window.tlRP(), x=o&&(o.shouts||[]).find(y=>y.id===s.id); if(x){ x.seen=true; if(thanks) x.thanked=true; } }catch(e){} K.call('sgShoutSeen',[s.id],!!thanks).catch(()=>{});
+ if(s.kind==='torah'&&window.tlOH) setTimeout(()=>{ try{ window.tlOH.torah(s.by); }catch(e){} },350);
+ if(K.open.indexOf('work')>=0) K.body('work',workHTML()); }
+/* the climb moment from Today's path (only when the older add-on that showed it is gone) */
+function climb(list){ const m=(list||[])[0]; if(!m||!K.on()) return; const up=m.kind==='up';
+ K.pop({id:'shw-climb',world:'k',title:up?'Level up!':"Let's build this step",icon:up?'⛰️':'🧱',body:`<p style="font-size:19px">${up?'You climbed higher in <b>'+E(m.name)+'</b>. New stops are on your path.':'In <b>'+E(m.name)+'</b> we will make this step strong first. You’ve got this!'}</p><div class="shw-act">${L().main(up?'Next':'Start','data-shw="climbok"')}</div>`}); }
+
+/* ========== THE TRAIL (his map) ========== */
+function curWorld(ws){ const p=pick(ws); return ws.find(w=>w.k===W.world)||p; }
+function goalHTML(w,isPick){ const lc=lcOf(w), n=w.now?nm(w.now):null;
+ const say=t=>`<span class="shw-say">${L().tool('🔊','Read it to me','data-shw="say" data-text="'+E(t)+'"')}</span>`;
+ if(lc){ const t=`Level check first. ${w.name} Level ${lc.L}. About ${lc.min} minutes. Questions you get right are skills you skip, and taking it unlocks full pay at this level. Tap Start!`;
+  return `<section class="shk-card shw-card shw-goal shw-lcg"><div class="shw-k">${pill('subj','Level check · '+w.name+' Level '+lc.L)}${isPick?pill('now',"Today's pick"):''}</div><h2>🎫 Level Check</h2><div class="shw-learn">⏭ <b>Skip what you know</b> · <b>unlock full pay</b> at Level ${E(lc.L)}</div><p class="m">About ${E(lc.min)} minutes · then: ${E(n[0])}</p><div class="shw-act">${L().main('Start','data-shw="play" data-id="'+E(w.now)+'"')}${say(t)}</div></section>`; }
+ if(!w.now) return `<section class="shk-card shw-card shw-goal"><div class="shw-k">${pill('prog','Cleared')}</div><h2>🏆 ${E(w.name)} unit cleared!</h2><p>Your rebbe or teacher opens your next unit. Pick another subject in My subjects.</p></section>`;
+ const left=toBoss(w), meta=left===0?pill('now','Boss level')+pill('subj','Beat it to finish '+w.unitName):pill('subj',w.name+' · Level '+w.level)+pill('prog',left+' level'+(left===1?'':'s')+' to the boss');
+ const t=`Your next level: ${n[0]}.${n[1]?(realLevel(n)?' A real '+n[1]+' skill.':' You will learn: '+n[1]+'.'):''} Tap Start!`;
+ return `<section class="shk-card shw-card shw-goal"><div class="shw-k">${pill('now','Your next level')}${isPick?pill('now',"Today's pick"):''}</div><h2>${E(n[0])}</h2>${learnLine(n)}<div class="shw-k">${meta}</div><div class="shw-act">${L().main('Start','data-shw="play" data-id="'+E(w.now)+'"')}${say(t)}</div></section>`; }
+function trailHTML(w){
+ const all=w.ids, ni=w.now?all.indexOf(w.now):all.length-1, from=ni>12?ni-12:0, ids=all.slice(from), N=ids.length, gap=124, top=70, H=top+(N-1)*gap+110+(from?40:0), lc=lcOf(w);
+ const X=[50,76,50,24], pos=i=>{ const j=N-1-i; return [X[j%4],top+i*gap]; };   /* the boss at the top, his first stop at the bottom: he climbs up */
+ let d=''; for(let i=0;i<N;i++){ const p=pos(i); if(!i){ d='M'+p[0]+' '+p[1]; continue; } const q=pos(i-1), my=(q[1]+p[1])/2; d+=' C'+q[0]+' '+my+' '+p[0]+' '+my+' '+p[0]+' '+p[1]; }
+ let h=`<svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" vector-effect="non-scaling-stroke"/></svg>`;
+ ids.forEach((id,k)=>{ const i=N-1-k, p=pos(i), num=from+k+1, isBoss=from+k===all.length-1, isNow=id===w.now, isDone=mast(id), isKnown=known(id), n=nm(id);
+  const cls='s-'+(isNow?'now':isDone||isKnown?'done':'lock')+(isBoss?' s-boss':'')+(isKnown?' s-known':'')+(isNow&&lc?' s-lc':'');
+  const pad=isBoss?(K.has('ycw-k-fortress')?K.img('ycw-k-fortress'):'')+'<span class="emo" aria-hidden="true">'+(K.has('ycw-k-fortress')?'':'🏰')+'</span>':(K.has('ycw-k-stop')?K.img('ycw-k-stop'):'')+`<span class="num" aria-hidden="true">${num}</span>`;
+  const lab=isNow?(lc?pill('now','Level check'):isBoss?pill('now','Boss · you are here'):pill('now','You are here')):isKnown?pill('prog','You know it · skipped'):isDone?pill('prog','Cleared'):isBoss?pill('lock','Boss · unit finish'):pill('lock','Locked');
+  h+=`<span class="shw-at" style="left:${p[0]}%;top:${p[1]}px"><button type="button" class="tlk tlk-tile shw-stop ${cls}" data-shw="node" data-id="${E(id)}" aria-label="Step ${num}: ${E(n[0])}${n[1]?': '+E(n[1]):''}"><span class="pad">${pad}</span><span class="lab"><b>${E(n[0])}</b>${lab}</span></button></span>`; });
+ if(from) h+=`<span class="shw-more" style="top:${H-40}px">${pill('prog','✓ '+from+' more cleared')}</span>`;
+ return `<section class="shw-trail" style="height:${H}px" aria-label="The trail up the mountain">${h}</section>`; }
+function noMapHTML(){ const lv=findLevels();
+ return `<div class="shw-wrap"><section class="shk-card shw-card"><h2>🗺️ Your map is almost ready!</h2><p>Your rebbe or teacher sets your level. Until then, find your level or pick any lesson.</p><div class="shw-act">${lv?L().quiet('Find my levels','data-shw="levels"'):''}${L().quiet('My subjects','data-shw="subjects"')}</div></section></div>`; }
+function mapHTML(){ const ws=worlds(); if(!ws.length) return noMapHTML();
+ const p=pick(ws), w=curWorld(ws); W.world=w.k; const left=toBoss(w), K2=k2(ws);
+ const unit=`<section class="shk-card shw-card shw-unit"><b>${badge(w.k,'shw-badge')||w.icon+' '}${E(w.unitName)}</b><div class="shw-k" style="margin-top:6px">${pill('subj',w.name+' · Level '+w.level)}${w.now?(left?pill('prog',left+' to the boss'):pill('now','Boss now!')):pill('prog','Cleared')}</div><div class="shw-act" style="margin-top:8px">${L().quiet(ws.length>1?'Change subject':'My subjects','data-shw="subjects"','tlk-small')}${K2?'':L().quiet('Skill tree','data-shw="tree"','tlk-small')}</div></section>`;
+ return `<div class="shw-map"><aside class="shw-side">${goalHTML(w,p&&w.k===p.k)}${unit}</aside>${trailHTML(w)}</div>`; }
+function intro(){ try{ const s=sid(), key='shw-zoom:'+s+':'+new Date().toDateString(); if(!s||W.zoom===key) return; W.zoom=key; try{ if(localStorage.getItem(key)) return; localStorage.setItem(key,'1'); }catch(e){}
+ const t=document.querySelector('#shk-map .shw-trail'); if(t) t.classList.add('shw-intro'); }catch(e){} }
+function scrollToNow(){ try{ const pg=document.getElementById('shk-map'), n=pg&&pg.querySelector('.shw-stop.s-now'); if(!n) return; const r=n.getBoundingClientRect(), want=r.top+pg.scrollTop-pg.clientHeight*0.45; if(want>0) pg.scrollTop=Math.round(want); }catch(e){} }
+function openMap(){ css(); refreshMap(); K.page({id:'map',world:'k',scene:'ycw-k-trail',title:'My map',icon:'ycw-ic-trail',body:mapHTML(),onClose:()=>{ stopSay(); }});
+ scrollToNow(); intro(); }
+function lockMsg(b,id){ const tr=b.closest('.shw-trail'); if(!tr) return; tr.querySelectorAll('.shw-msg').forEach(x=>x.remove()); const n=nm(id), w=curWorld(worlds());
+ const el=document.createElement('div'); el.className='shw-msg'; el.setAttribute('role','status'); const at=b.closest('.shw-at')||b; el.style.left=at.style.left; el.style.top=(parseFloat(at.style.top)+40)+'px';
+ el.innerHTML=pill('lock','Locked · '+(w&&w.now&&b.classList.contains('s-lock')?'clear '+nm(w.now)[0]+' first':n[0])); tr.appendChild(el); clearTimeout(W.msgT); W.msgT=setTimeout(()=>{ el.remove(); },2600); }
+/* MY SUBJECTS (change subject + more to learn + Find my levels): an inner page with the round Back */
+function subjectsHTML(){ const ws=worlds(), cur=W.world, S=subjectsList();
+ const tiles=ws.map(w=>{ const lc=lcOf(w); return `<button type="button" class="tlk tlk-tile shw-tile${w.k===cur?' on':''}" data-shw="world" data-k="${E(w.k)}"><span class="ic">${badge(w.k)||E(w.icon)}</span><b>${E(w.name)}</b><small>${w.cleared?'All cleared':lc?'Level check first':'Level '+E(w.level)+(w.k===cur?' · on your map now':'')}</small>${w.cleared?pill('prog','Cleared'):pill('subj','Level '+w.level)}</button>`; }).join('');
+ const more=S.filter(x=>x.kind==='panel').map(x=>`<button type="button" class="tlk tlk-tile shw-tile" data-shw="panel" data-k="${E(x.k)}"><span class="ic" aria-hidden="true">${E(x.icon)}</span><b>${E(x.name)}</b><small>${E(x.sub)}</small>${x.items.some(i=>i.state==='go')?pill('now','Open'):pill('lock','Not open yet')}</button>`).join('');
+ const lv=S.find(x=>x.kind==='find');
+ return `<div class="shw-wrap">${ws.length?`<section class="shk-card shw-card"><h3>On my map</h3><div class="shw-tiles">${tiles}</div></section>`:''}${lv?`<section class="shk-card shw-card"><h3>🧭 Find my levels</h3><p>${E(lv.sub)}</p><div class="shw-act">${L().quiet('Find my levels','data-shw="levels"')}</div></section>`:''}${more?`<section class="shk-card shw-card"><h3>More to learn</h3><div class="shw-tiles">${more}</div></section>`:''}</div>`; }
+function openSubjects(){ css(); K.page({id:'shw-subjects',world:'k',scene:'ycw-k-trail',title:'My subjects',icon:'ycw-ic-trail',back:true,body:subjectsHTML(),onBack:()=>K.close('shw-subjects','back'),onClose:how=>{ if(how==='home') K.closeAll(); }}); }
+/* THE SKILL TREE: one branch per kind of skill in his level; tap a skill for its card */
+function treeHTML(w){ const c=w.c||{}, sk=c.skills||[], S=c.strands||{}, br=[], idx={};
+ sk.forEach(x=>{ const s=w.isK?'K':(String(x[0]).split('.')[1]||''); if(!(s in idx)){ idx[s]=br.length; br.push({name:w.isK?(w.name+' Level '+w.level):(S[s]||s),items:[]}); } br[idx[s]].items.push(x); });
+ const built=sk.filter(x=>x[1]), nd=built.filter(x=>done(x[0])).length, pc=built.length?Math.round(100*nd/built.length):0;
+ let h=`<section class="shk-card shw-card"><div class="shw-k">${pill('subj',w.name+' · Level '+w.level)}${pill('prog',nd+' of '+built.length+' skills done')}</div><span class="shw-bar"><i style="width:${Math.max(3,pc)}%"></i></span>${nd===built.length&&built.length?'<p>Level complete!</p>':''}</section>`;
+ br.forEach(b=>{ const bb=b.items.filter(x=>x[1]), bd=bb.filter(x=>done(x[0])).length;
+  h+=`<section class="shk-card shw-card"><div class="shw-head"><h3>${E(b.name)}</h3>${bb.length&&bd===bb.length?pill('prog','Complete'):pill('prog',bd+' of '+bb.length)}</div><div class="shw-nodes">${b.items.map(x=>{ const id=x[0], n=nm(id), s=!x[1]?'s':mast(id)?'d':known(id)?'k':id===w.now?'now':'u';
+   const p=s==='d'?pill('prog','Mastered'):s==='k'?pill('prog','You know it'):s==='now'?pill('now','Your goal now'):s==='s'?pill('lock','Coming soon'):pill('lock','Locked');
+   return `<button type="button" class="tlk tlk-tile shw-node" data-shw="tn" data-id="${E(id)}" data-st="${s}"><b>${s==='d'?'✓ ':s==='k'?'⏭ ':s==='now'?E(w.icon)+' ':''}${E(n[0])}</b>${p}</button>`; }).join('')}</div></section>`; });
+ return `<div class="shw-tree">${h}</div>`; }
+function openTree(k){ css(); const ws=worlds(), w=ws.find(x=>x.k===(k||W.world))||curWorld(ws); if(!w) return; W.world=w.k;
+ K.page({id:'shw-tree',world:'k',scene:'ycw-k-trail',title:'Skill tree',icon:'ycw-ic-trail',back:true,body:treeHTML(w),onBack:()=>K.close('shw-tree','back'),onClose:how=>{ if(how==='home') K.closeAll(); }}); }
+function treeSheet(id,s){ const n=nm(id), w=curWorld(worlds()), real=realLevel(n);
+ const status=s==='d'?pill('prog','Mastered'):s==='k'?pill('prog','You know it · skipped'):s==='now'?pill('now','Your goal now'):s==='s'?pill('lock','Coming soon'):pill('lock','Locked');
+ const line=n[1]?(real?`Real skill: <b>${E(n[0])}</b> · ${E(n[1])}`:`You learn: <b>${E(n[1])}</b>`):'';
+ const more=s==='k'?'You showed you know this in your level check, so it is skipped. You can still play it for practice.':s==='u'&&w&&w.now?'Clear '+nm(w.now)[0]+' first. Every level you clear brings this one closer!':s==='s'?'This skill is being built. It opens soon!':'';
+ K.pop({id:'shw-sheet',world:'k',title:n[0],icon:'ycw-ic-trail',body:`<div class="shw-sheet"><div class="shw-k">${status}</div>${line?`<p>${line}</p>`:''}${more?`<p>${E(more)}</p>`:''}${s==='d'||s==='k'||s==='now'?`<div class="shw-act">${L().main('Start','data-shw="play" data-id="'+E(id)+'"')}</div>`:''}</div>`}); }
+/* READ IT TO ME: tap to read, tap again to stop */
+function stopSay(){ W.say=false; try{ speechSynthesis.cancel(); }catch(e){} }
+function say(t){ if(W.say){ stopSay(); return; } try{ const u=new SpeechSynthesisUtterance(t); u.rate=.95; u.onend=()=>{ W.say=false; }; speechSynthesis.cancel(); speechSynthesis.speak(u); W.say=true; }catch(e){ W.say=false; } }
+
+/* ========== SHK.subjects(): his subjects and level panels ==========
+   One clean list instead of the tlFindLevelCard chain on the old hub. The packs still describe their own panels (they are lesson files and
+   stay as they are); this reads what each one offers him now and gives every panel the same shape:
+   {k, kind:'map'|'panel'|'find'|'place', name, icon, sub, level, now, items:[{label, group, state:'go'|'lock', run()}], open()}
+   - 'map'   a subject on his map (opens the Trail on that subject)
+   - 'panel' a subject or track outside his map (Limudei Kodesh, Science, Electives, Fact Finders, Spark Path, Computer Town, Life & Money,
+             Social Studies, B'Simcha, Hashem Moments, the Kindergarten to Grade 6 packs, Algebra Ascent, Practice Again, Daily Mix ...)
+   - 'find'  Find my levels (math, reading, social studies), while any has no level yet
+   - 'place' a card that belongs to another new-shell place (Mistake Detective and Kodesh Quest: the Game Pavilion; Talk to my Rebbe; the school goal: My work) */
+const PLACE_CARDS={mdcard:'games',kkcard:'games',trcard:'talk',sgoal:'work'};
+const txt=e=>e?(e.textContent||'').replace(/\s+/g,' ').trim():'';
+const txtSp=e=>e?[...e.childNodes].map(n=>(n.textContent||'').replace(/\s+/g,' ').trim()).filter(Boolean).join(' · '):'';
+function fire(b){ const id=b.getAttribute('data-id'), go=[...b.attributes].find(a=>/^data-/.test(a.name)&&a.name!=='data-id'&&a.value==='go');
+ if(go&&id&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))) return K.openLesson(id);
+ K.closeAll(); const oc=b.getAttribute('onclick'), m=oc&&/^\s*([A-Za-z_$][\w$]*)\(\)\s*;?\s*$/.exec(oc); if(m&&typeof window[m[1]]==='function') return window[m[1]]();
+ const c=document.createElement('button'); c.type='button'; [...b.attributes].filter(a=>/^data-/.test(a.name)).forEach(a=>c.setAttribute(a.name,a.value)); c.style.display='none'; document.body.appendChild(c); try{ c.click(); }catch(e){} c.remove(); }
+function panelOf(sec){ const cls=String(sec.className||'').split(/\s+/).filter(Boolean), k=cls.indexOf('arpanel')>=0?'arpanel':cls[0]||'panel';
+ const head=sec.querySelector('b,h3,h2'), name=txt(head)||k, sm=sec.querySelector('small'), ic=sec.querySelector('[aria-hidden="true"]'), icon=(ic&&txt(ic).length<=4&&txt(ic))||'⭐';
+ const items=[]; sec.querySelectorAll('button,[role=button]').forEach(b=>{ const lock=b.disabled||/^🔒/.test(txt(b)), act=[...b.attributes].some(a=>/^data-/.test(a.name)&&a.name!=='data-id')||!!b.getAttribute('onclick');
+  if(!lock&&!act) return; let g=b.parentElement, group='';
+  while(g&&g!==sec){ const lab=[...g.children].find(c=>c!==b&&c.tagName!=='BUTTON'&&!c.querySelector('button')&&!c.contains(head)&&/\S/.test(c.textContent)); if(lab){ group=txtSp(lab); break; } g=g.parentElement; }
+  const label=txt(b).replace(/^[▶🔒]\s*/u,'').trim()||b.getAttribute('aria-label')||'';
+  items.push({label,group,state:lock?'lock':'go',run:lock?null:()=>fire(b)}); });
+ const note=items.length?'':[...sec.querySelectorAll('p')].filter(p=>!p.querySelector('button')).map(txt).find(Boolean)||'';
+ return {k,kind:PLACE_CARDS[k]?'place':'panel',place:PLACE_CARDS[k]||'',name,icon,sub:txt(sm)||note,note,items,open(){ openPanel(k); }}; }
+function findLevels(){ const s=st(); if(!s) return null; const P=s.place||{}, left=[['MATH','Math'],['READ','Reading'],['SOC','Social Studies']].filter(x=>!P[x[0]]);
+ if(!left.length||!(typeof window.tlOpenCheck==='function'||typeof window.tlFindLevel==='function')) return null;
+ return {k:'levels',kind:'find',name:'Find my levels',icon:'🧭',sub:left.map(x=>x[1]).join(' · ')+': a quick check each. Not for marks.',left,items:[],open(){ openLevels(); }}; }
+function subjectsList(){ const out=[], s=st(); if(!s) return out;
+ worlds().forEach(w=>out.push({k:w.k,kind:'map',name:w.name,icon:w.icon,sub:w.cleared?'All cleared':'Level '+w.level,level:w.level,now:w.now,items:[],open(){ W.world=w.k; K.closeAll(); K.go('map'); }}));
+ let h=''; try{ h=typeof window.tlFindLevelCard==='function'?window.tlFindLevelCard(s)||'':''; }catch(e){ console.error('ShWork subjects',e); }
+ const box=document.createElement('div'); box.innerHTML=h; let lv=false;
+ [...box.children].forEach(sec=>{ if(sec.classList.contains('tlfind')){ lv=true; return; } if(sec.tagName==='STYLE'||sec.tagName==='SCRIPT') return; out.push(panelOf(sec)); });
+ const f=findLevels(); if(f) out.push(f); else if(lv) out.push({k:'levels',kind:'find',name:'Find my levels',icon:'🧭',sub:'A quick check of a few questions.',left:[],items:[],open(){ openLevels(); }});
+ return out; }
+K.subjects=function(){ try{ return subjectsList(); }catch(e){ console.error('ShWork subjects',e); return []; } };
+function openPanel(k){ const x=subjectsList().find(y=>y.k===k); if(!x) return; css(); W.panel=x;
+ const groups=[]; x.items.forEach((it,i)=>{ let g=groups.find(z=>z.name===it.group); if(!g){ g={name:it.group,items:[]}; groups.push(g); } g.items.push([it,i]); });
+ const body=`<div class="shw-wrap"><section class="shk-card shw-card"><div class="shw-big" style="display:flex;gap:12px;align-items:center"><span style="font-size:48px" aria-hidden="true">${E(x.icon)}</span><div><h2>${E(x.name)}</h2>${x.sub?`<p>${E(x.sub)}</p>`:''}</div></div>${x.note&&x.note!==x.sub?`<p>${E(x.note)}</p>`:''}</section>${groups.map(g=>`<section class="shk-card shw-card">${g.name&&g.name!==x.name?`<h3>${E(g.name)}</h3>`:''}<div class="shw-nodes">${g.items.map(([it,i])=>it.state==='go'?`<button type="button" class="tlk tlk-tile shw-node" data-shw="item" data-i="${i}"><b>${E(it.label)}</b>${pill('now','Open')}</button>`:`<div class="shk-card shw-node" style="box-shadow:none;padding:10px 12px"><b style="font-size:14px">${E(it.label)}</b> ${pill('lock','Locked')}</div>`).join('')}</div></section>`).join('')}</div>`;
+ K.page({id:'shw-panel',world:'k',scene:'ycw-k-library',title:x.name,icon:x.icon,back:true,body,onBack:()=>K.close('shw-panel','back'),onClose:how=>{ if(how==='home') K.closeAll(); }}); }
+function openLevels(){ const f=findLevels(); const P=(st()&&st().place)||{};
+ const rows=[['MATH','MATH','Math'],['READ','READ','Reading'],['SOC','SS','Social Studies']].map(r=>(P[r[0]]?L().quiet(r[2]+' · check again','data-shw="check" data-s="'+r[1]+'"'):L().quiet(r[2],'data-shw="check" data-s="'+r[1]+'"'))).join('');
+ K.pop({id:'shw-levels',world:'k',title:'Find my levels',icon:'🧭',body:`<p style="font-size:17px">A short check for each subject finds where your own path starts. Not for marks.</p><div class="shw-list">${rows}</div>${f?'':'<p>All your levels are found.</p>'}`}); }
+function check(s){ K.closeAll(); if(typeof window.tlOpenCheck==='function') return window.tlOpenCheck(s); if(s==='READ'&&typeof window.tlFindReadLevel==='function') return window.tlFindReadLevel(); if(typeof window.tlFindLevel==='function') return window.tlFindLevel(); }
+
+/* STAND-IN for the seam (issue SHELL-KIT #647): SHK.openLesson calls window.GM_PLAY, which GameMap.html sets in the wrong scope today.
+   Only when it is missing: the same steps as the map's Play (a K game pack that has the lesson, else startMission(world, id, 'skill')). */
+if(typeof window.GM_PLAY!=='function') window.GM_PLAY=function(id){
+ try{ const ob=window.ONE_BITE&&window.ONE_BITE[id]&&(window.OB_LIVE==='on'||(window.OB_LIVE==='test'&&/^TEST-/i.test(sid())));
+  const P=ob?null:[window.KL,window.KR,window.KK].find(x=>x&&typeof x.has==='function'&&x.has(id)&&(typeof x.on!=='function'||x.on())); if(P) return P.open(id); }catch(e){}
+ const pre=String(id).split('.')[0], alt=/^(LK|HEB)$/.test(pre)?'LK':/^(READ|WRIT|LANG)$/.test(pre)?'READ':/^(SS|SOC|FACT)$/.test(pre)?'SS':/^(COMP|VOC)$/.test(pre)?'COMP':pre;
+ let c=''; try{ c=typeof WORLD!=='undefined'?(WORLD[pre]?pre:WORLD[alt]?alt:''):''; }catch(e){}
+ const have=(typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]);
+ if(c&&have&&typeof startMission==='function') return startMission(c,id,'skill');
+ try{ if(window.GM&&typeof GM.sync==='function'){ GM.tab='lib'; GM.sig=''; GM.sync(); } }catch(e){} };
+
+/* ========== THE TWO PLACES ========== */
+K.place({id:'work',name:'My work',world:'k',icon:'ycw-ic-work',scene:'ycw-k-study',order:1,
+ show:()=>K.on(),
+ sub:()=>{ const ws=worlds(), P=plan(ws), r=P.rounds.find(x=>!x.won&&x.w); return r?nm(r.w.now)[0]:P.open?'All your work is done today!':''; },
+ pill:()=>{ const t=K.today(); return t.left&&!t.open?pill('now','Do this now'):pill('prog',t.open?'All done':t.line); },
+ open:()=>{ css(); K.page({id:'work',world:'k',scene:'ycw-k-study',title:'My work',icon:'ycw-ic-work',body:workHTML()}); refreshWork(); bigShout(); }});
+K.place({id:'map',name:'My map',world:'k',icon:'ycw-ic-trail',scene:'ycw-k-trail',order:2,
+ show:()=>K.on(),
+ sub:()=>{ const ws=worlds(), w=curWorld(ws); return w?w.name+' · Level '+w.level:'Your map is almost ready'; },
+ pill:()=>{ const w=curWorld(worlds()); return w&&w.now?pill('prog',toBoss(w)+' to the boss'):''; },
+ open:openMap});
+/* the Trail on one subject or its skill tree, for other places (My profile's levels, Skill tree) */
+K.trail=function(k,view){ if(k) W.world=k; if(view==='tree'){ K.go('map'); openTree(k); return; } K.go('map'); };
+
+/* ========== TAPS ========== */
+document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-shw]'); if(!b||!b.closest('.shk-page,.shk-pop')) return;
+ const a=b.getAttribute('data-shw'), id=b.getAttribute('data-id'); e.preventDefault();
+ try{ if(typeof SND!=='undefined'&&SND.tap&&a!=='play') SND.tap(); }catch(x){}
+ if(a==='play'){ stopSay(); return K.openLesson(id); }
+ if(a==='node'){ const w=curWorld(worlds()); if(done(id)||(w&&id===w.now)){ stopSay(); return K.openLesson(id); } return lockMsg(b,id); }
+ if(a==='say') return say(b.getAttribute('data-text')||'');
+ if(a==='subjects') return openSubjects();
+ if(a==='world'){ W.world=b.getAttribute('data-k'); K.close('shw-subjects','back'); if(K.open.indexOf('map')>=0){ K.body('map',mapHTML()); scrollToNow(); } else K.go('map'); return; }
+ if(a==='tree') return openTree();
+ if(a==='tn') return treeSheet(id,b.getAttribute('data-st'));
+ if(a==='panel') return openPanel(b.getAttribute('data-k'));
+ if(a==='item'){ const it=W.panel&&W.panel.items[Number(b.getAttribute('data-i'))]; if(it&&it.run) it.run(); return; }
+ if(a==='levels') return openLevels();
+ if(a==='check') return check(b.getAttribute('data-s'));
+ if(a==='thanks'){ const d=desk(), s=d&&(d.shouts||[]).find(x=>x.id===id); if(!s||s.thanked) return; seen(s,true); return; }
+ if(a==='shoutok'){ if(W.thank) W.thank(); return; }
+ if(a==='climbok'){ K.close('shw-climb','x'); return; }
+});
+})();
 </script>
