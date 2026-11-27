@@ -180,7 +180,7 @@ export function startGame(cfg) {
     }
     const paintM = new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 });
     if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none (new look: bigger, on a card tilted up to face the boy) */
-      const card = new THREE.Group(); card.position.set(0, LK ? BX.h * 0.6 : BX.h * 0.4, BX.d / 2 + (LK ? 0.42 : 0.005)); if (LK) { card.rotation.x = -0.55; card.scale.setScalar(1.4); } g.add(card);   /* big and in front: the dots are what he matches */
+      const card = new THREE.Group(); card.position.set(0, LK ? BX.h * 0.6 + 0.24 : BX.h * 0.4, BX.d / 2 + (LK ? 0.42 : 0.005)); if (LK) { card.rotation.x = -0.55; card.scale.setScalar(1.4); } g.add(card);   /* big and in front: the dots are what he matches */
       const k = LK ? 1.15 : 1;
       if (LK) { const bg = new THREE.Mesh(new THREE.CircleGeometry(0.37, 40), new THREE.MeshStandardMaterial({ color: bc.color && bc.color !== '#FFFFFF' ? '#FFFFFF' : '#2B3A6B', roughness: 0.6 })); bg.position.z = -0.004; card.add(bg); }
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
