@@ -94,7 +94,75 @@ function model(m){ if(!m||typeof m!=='object') return '';
   if(m.type==='scene'){ return '<div class="ob-scene"><span class="ob-scene-e">'+E(m.e||'🏠')+'</span><p>'+E(m.t||'')+'</p></div>'; }
   if(m.type==='chant'){ return '<div class="ob-chant">'+(m.lines||[]).map(l=>'<p>🎵 '+E(l)+'</p>').join('')+'</div>'; }
   if(m.type==='move'){ return '<div class="ob-move"><span>🧍</span><p>'+E(m.t||'Stand up!')+'</p></div>'; }
+  if(MODELS2[m.type]) return MODELS2[m.type](m);
   }catch(e){} return ''; }
+/* MORE PICTURE MODELS for grades 4-8 (row M2, HoS 2026-11-27 "much better informative graphics"): information only, never buttons.
+   angle  {type:'angle', a:10, b:55, show:true}          a half protractor with two rays at a and b degrees; show:false hides the size
+   lplot  {type:'lplot', d:8, vals:[1,2,3], xs:[2,4,1], unit:'inch'}   a line plot: Xs stacked over each value (vals are tops over d)
+   rect   {type:'rect', w:5, h:3, unit:'ft', edge:false}  a rectangle of unit squares with its sides labeled; edge:true lights the edge
+   scatter{type:'scatter', pts:[[1,23],[2,25]], line:[2,20], odd:[9,8]}   a scatter plot, an optional trend line y = m x + b, an outlier ring
+   table  {type:'table', head:['','Chess','Ball'], rows:[['7th','13','10']], hi:[[0,1]]}   a small two-way table; hi lights cells (row, col)
+   grid   {type:'grid', n:6, pts:[[3,2,'A'],[3,-2,"A'"]], mirror:'x', arrow:true}   a coordinate grid with labeled points (mirror lights an axis)
+   tri    {type:'tri', a:'70°', b:'60°', c:'?', ext:'?'} angles at the corners  ·  {type:'tri', right:true, sides:['6','8','?']} legs and hypotenuse
+   para   {type:'para', labels:{tBR:'130°', bBR:'?'}}   two parallel lines and a transversal; t/b = top or bottom crossing, TL TR BL BR = the corner
+   solid  {type:'solid', kind:'cyl'|'cone'|'sphere', r:'3', h:'4'}   a cylinder, cone or sphere with its radius and height */
+const NS=n=>String(Math.round(n*10)/10);
+const MODELS2={
+  angle(m){ const a=+m.a||0, b=+m.b||0, cx=160, cy=150, R=124, P=(d,r)=>[cx+r*Math.cos(d*Math.PI/180), cy-r*Math.sin(d*Math.PI/180)];
+    let s='<svg class="ob-svgm" viewBox="0 0 320 172" role="img" aria-label="'+E(m.label||('an angle from '+a+' to '+b+' degrees'))+'">';
+    s+='<path d="M'+(cx-R)+' '+cy+' A'+R+' '+R+' 0 0 1 '+(cx+R)+' '+cy+' Z" fill="#F4F7FC" stroke="#9AA6BD" stroke-width="2"/>';
+    for(let d=0;d<=180;d+=10){ const o=P(d,R), i=P(d,d%30?R-8:R-14); s+='<line x1="'+NS(o[0])+'" y1="'+NS(o[1])+'" x2="'+NS(i[0])+'" y2="'+NS(i[1])+'" stroke="#9AA6BD" stroke-width="2"/>';
+      if(d%30===0){ const t=P(d,R-28); s+='<text x="'+NS(t[0])+'" y="'+NS(t[1]+4)+'" font-size="12" text-anchor="middle" fill="#6B7894">'+(180-d)+'</text>'; } }
+    const lo=Math.min(a,b), hi=Math.max(a,b), A1=P(180-lo,46), A2=P(180-hi,46), big=(hi-lo)>180?1:0;
+    s+='<path d="M'+cx+' '+cy+' L'+NS(A1[0])+' '+NS(A1[1])+' A46 46 0 '+big+' 0 '+NS(A2[0])+' '+NS(A2[1])+' Z" fill="#FFD9C2"/>';
+    [lo,hi].forEach(d=>{ const e=P(180-d,R+6); s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+NS(e[0])+'" y2="'+NS(e[1])+'" stroke="#FF7A3D" stroke-width="4" stroke-linecap="round"/>'; });
+    if(m.show!==false){ const t=P(180-(lo+hi)/2,66); s+='<text x="'+NS(t[0])+'" y="'+NS(t[1]+6)+'" font-size="18" font-weight="900" text-anchor="middle" fill="#1F2A44">'+(hi-lo)+'°</text>'; }
+    return s+'<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#1F2A44"/></svg>'; },
+  lplot(m){ const d=+m.d||8, vals=(m.vals||[]).map(Number), xs=(m.xs||[]).map(Number), lo=Math.max(0,Math.min.apply(null,vals)-1), hi=Math.max.apply(null,vals)+1, W=320, pad=22, sx=v=>pad+(v-lo)*(W-2*pad)/Math.max(1,hi-lo), top=Math.max(1,Math.max.apply(null,xs)), H=34+top*20;
+    let s='<svg class="ob-svgm" viewBox="0 0 '+W+' '+(H+38)+'" role="img" aria-label="'+E(m.label||'a line plot')+'"><line x1="'+pad+'" y1="'+H+'" x2="'+(W-pad)+'" y2="'+H+'" stroke="#1F2A44" stroke-width="3"/>';
+    for(let v=lo;v<=hi;v++){ const x=sx(v); s+='<line x1="'+NS(x)+'" y1="'+(H-7)+'" x2="'+NS(x)+'" y2="'+(H+7)+'" stroke="#1F2A44" stroke-width="2"/><text x="'+NS(x)+'" y="'+(H+24)+'" font-size="13" font-weight="700" text-anchor="middle" fill="#1F2A44">'+(v===0?'0':v===d?'1':v+'/'+d)+'</text>'; }
+    vals.forEach((v,i)=>{ for(let k=0;k<(xs[i]||0);k++) s+='<text x="'+NS(sx(v))+'" y="'+(H-12-k*20)+'" font-size="20" font-weight="900" text-anchor="middle" fill="#FF7A3D">×</text>'; });
+    return s+(m.unit?'<text x="'+(W-pad)+'" y="'+(H+36)+'" font-size="11" text-anchor="end" fill="#6B7894">'+E(m.unit)+'</text>':'')+'</svg>'; },
+  rect(m){ const w=Math.max(1,Math.min(14,+m.w||1)), h=Math.max(1,Math.min(10,+m.h||1)), c=Math.min(26,Math.floor(250/w)), X=40, Y=12, u=E(m.unit||'');
+    let s='<svg class="ob-svgm" viewBox="0 0 '+(X+w*c+20)+' '+(Y+h*c+34)+'" role="img" aria-label="'+E(m.label||('a rectangle '+w+' by '+h))+'">';
+    for(let i=0;i<w;i++) for(let j=0;j<h;j++) s+='<rect x="'+(X+i*c)+'" y="'+(Y+j*c)+'" width="'+c+'" height="'+c+'" fill="'+(m.edge?'#fff':'#CDEBC0')+'" stroke="#9AA6BD" stroke-width="1"/>';
+    s+='<rect x="'+X+'" y="'+Y+'" width="'+(w*c)+'" height="'+(h*c)+'" fill="none" stroke="'+(m.edge?'#FF7A3D':'#1F2A44')+'" stroke-width="'+(m.edge?5:2.5)+'"/>';
+    s+='<text x="'+(X+w*c/2)+'" y="'+(Y+h*c+24)+'" font-size="14" font-weight="800" text-anchor="middle" fill="#1F2A44">'+w+' '+u+'</text><text x="'+(X-8)+'" y="'+(Y+h*c/2+5)+'" font-size="14" font-weight="800" text-anchor="end" fill="#1F2A44">'+h+' '+u+'</text>';
+    return s+'</svg>'; },
+  scatter(m){ const pts=(m.pts||[]).map(p=>[+p[0],+p[1]]), mx=Math.max(1,+m.maxX||Math.max.apply(null,pts.map(p=>p[0]))+1), my=Math.max(1,+m.maxY||Math.max.apply(null,pts.map(p=>p[1]))+5), W=300, H=170, L=34, B=24, sx=x=>L+x*(W-L-10)/mx, sy=y=>H-B-y*(H-B-10)/my;
+    let s='<svg class="ob-svgm" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+E(m.label||'a scatter plot')+'"><line x1="'+L+'" y1="'+(H-B)+'" x2="'+(W-6)+'" y2="'+(H-B)+'" stroke="#1F2A44" stroke-width="2"/><line x1="'+L+'" y1="'+(H-B)+'" x2="'+L+'" y2="6" stroke="#1F2A44" stroke-width="2"/>';
+    s+='<text x="'+(W-6)+'" y="'+(H-6)+'" font-size="11" text-anchor="end" fill="#6B7894">'+E(m.x||'x')+'</text><text x="'+(L+4)+'" y="14" font-size="11" fill="#6B7894">'+E(m.y||'y')+'</text>';
+    if(m.line){ const k=+m.line[0], c=+m.line[1]; s+='<line x1="'+NS(sx(0))+'" y1="'+NS(sy(c))+'" x2="'+NS(sx(mx))+'" y2="'+NS(sy(k*mx+c))+'" stroke="#3B6FD8" stroke-width="3" stroke-dasharray="7 5"/>'; }
+    pts.forEach(p=>{ s+='<circle cx="'+NS(sx(p[0]))+'" cy="'+NS(sy(p[1]))+'" r="6" fill="#FF7A3D"/>'; });
+    if(m.odd) s+='<circle cx="'+NS(sx(+m.odd[0]))+'" cy="'+NS(sy(+m.odd[1]))+'" r="12" fill="none" stroke="#1F2A44" stroke-width="2.5"/>';
+    return s+'</svg>'; },
+  grid(m){ const n=Math.max(2,Math.min(8,+m.n||6)), W=240, c=W/(2*n), X=v=>W/2+v*c, Y=v=>W/2-v*c;
+    let s='<svg class="ob-svgm ob-sq" viewBox="-14 -14 '+(W+28)+' '+(W+28)+'" role="img" aria-label="'+E(m.label||'a coordinate grid')+'">';
+    for(let v=-n;v<=n;v++){ s+='<line x1="'+X(v)+'" y1="0" x2="'+X(v)+'" y2="'+W+'" stroke="#E4E9F2" stroke-width="1"/><line x1="0" y1="'+Y(v)+'" x2="'+W+'" y2="'+Y(v)+'" stroke="#E4E9F2" stroke-width="1"/>'; }
+    s+='<line x1="0" y1="'+(W/2)+'" x2="'+W+'" y2="'+(W/2)+'" stroke="'+(m.mirror==='x'?'#3B6FD8':'#1F2A44')+'" stroke-width="'+(m.mirror==='x'?4:2)+'"/><line x1="'+(W/2)+'" y1="0" x2="'+(W/2)+'" y2="'+W+'" stroke="'+(m.mirror==='y'?'#3B6FD8':'#1F2A44')+'" stroke-width="'+(m.mirror==='y'?4:2)+'"/>';
+    s+='<text x="'+(W+2)+'" y="'+(W/2-5)+'" font-size="12" fill="#6B7894" text-anchor="end">x</text><text x="'+(W/2+6)+'" y="8" font-size="12" fill="#6B7894">y</text>';
+    const P=m.pts||[]; if(m.arrow&&P.length>1) s+='<line x1="'+X(+P[0][0])+'" y1="'+Y(+P[0][1])+'" x2="'+X(+P[1][0])+'" y2="'+Y(+P[1][1])+'" stroke="#FF7A3D" stroke-width="2.5" stroke-dasharray="6 5"/>';
+    P.forEach((p,i)=>{ const x=X(+p[0]), y=Y(+p[1]); s+='<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+(i?'#3B6FD8':'#FF7A3D')+'"/><text x="'+(x+9)+'" y="'+(y-8)+'" font-size="13" font-weight="900" fill="#1F2A44">'+E((p[2]||'')+' ('+p[0]+', '+p[1]+')')+'</text>'; });
+    return s+'</svg>'; },
+  tri(m){ const r=!!m.right, A=[30,150], B=[r?30:270,r?30:150], C=r?[230,150]:[120,28], T=(p,t)=>t?'<text x="'+p[0]+'" y="'+p[1]+'" font-size="15" font-weight="900" text-anchor="middle" fill="#1F2A44">'+E(t)+'</text>':'';
+    let s='<svg class="ob-svgm" viewBox="0 0 320 180" role="img" aria-label="'+E(m.label||'a triangle')+'">';
+    if(m.ext&&!r) s+='<line x1="270" y1="150" x2="315" y2="150" stroke="#1F2A44" stroke-width="3" stroke-dasharray="6 4"/>'+T([300,140],m.ext);
+    s+='<path d="M'+A+' L'+B+' L'+C+' Z" fill="#FFF1E8" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round"/>';
+    if(r){ s+='<path d="M30 132 L48 132 L48 150" fill="none" stroke="#1F2A44" stroke-width="2"/>'; const sd=m.sides||[]; s+=T([18,95],sd[0])+T([130,172],sd[1])+T([150,80],sd[2]); }
+    else { s+=T([58,140],m.a)+T([238,140],m.b)+T([120,60],m.c); }
+    return s+'</svg>'; },
+  para(m){ const L=m.labels||{}, P={tTL:[118,40],tTR:[162,40],tBL:[96,80],tBR:[146,80],bTL:[78,116],bTR:[124,116],bBL:[44,156],bBR:[106,156]};
+    let s='<svg class="ob-svgm" viewBox="0 0 300 180" role="img" aria-label="'+E(m.label||'two parallel lines cut by a transversal')+'"><line x1="10" y1="60" x2="290" y2="60" stroke="#1F2A44" stroke-width="3"/><line x1="10" y1="136" x2="290" y2="136" stroke="#1F2A44" stroke-width="3"/>';
+    s+='<line x1="170" y1="8" x2="50" y2="176" stroke="#FF7A3D" stroke-width="3"/><text x="284" y="54" font-size="16" fill="#6B7894" text-anchor="end">→</text><text x="284" y="130" font-size="16" fill="#6B7894" text-anchor="end">→</text>';
+    Object.keys(L).forEach(k=>{ const p=P[k]; if(p) s+='<text x="'+p[0]+'" y="'+p[1]+'" font-size="14" font-weight="900" text-anchor="middle" fill="'+(L[k]==='?'?'#FF7A3D':'#1F2A44')+'">'+E(L[k])+'</text>'; });
+    return s+'</svg>'; },
+  solid(m){ const k=m.kind, T=(x,y,t)=>t?'<text x="'+x+'" y="'+y+'" font-size="14" font-weight="900" fill="#1F2A44">'+E(t)+'</text>':''; let s='<svg class="ob-svgm" viewBox="0 0 240 180" role="img" aria-label="'+E(m.label||('a '+(k||'shape')))+'">';
+    if(k==='sphere'){ s+='<circle cx="120" cy="90" r="70" fill="#E6EEFB" stroke="#1F2A44" stroke-width="3"/><ellipse cx="120" cy="90" rx="70" ry="18" fill="none" stroke="#9AA6BD" stroke-width="2" stroke-dasharray="5 4"/><line x1="120" y1="90" x2="190" y2="90" stroke="#FF7A3D" stroke-width="3"/>'+T(146,84,m.r?'r = '+m.r:''); }
+    else if(k==='cone'){ s+='<path d="M60 150 L120 20 L180 150" fill="#E6EEFB" stroke="#1F2A44" stroke-width="3"/><ellipse cx="120" cy="150" rx="60" ry="16" fill="#E6EEFB" stroke="#1F2A44" stroke-width="3"/><line x1="120" y1="150" x2="120" y2="20" stroke="#9AA6BD" stroke-width="2" stroke-dasharray="5 4"/><line x1="120" y1="150" x2="180" y2="150" stroke="#FF7A3D" stroke-width="3"/>'+T(140,172,m.r?'r = '+m.r:'')+T(126,90,m.h?'h = '+m.h:''); }
+    else { s+='<path d="M60 36 L60 146 A60 16 0 0 0 180 146 L180 36" fill="#E6EEFB" stroke="#1F2A44" stroke-width="3"/><ellipse cx="120" cy="36" rx="60" ry="16" fill="#F4F7FC" stroke="#1F2A44" stroke-width="3"/><line x1="120" y1="36" x2="180" y2="36" stroke="#FF7A3D" stroke-width="3"/>'+T(132,30,m.r?'r = '+m.r:'')+T(188,96,m.h?'h = '+m.h:''); }
+    return s+'</svg>'; },
+  table(m){ const hi=(m.hi||[]).map(x=>x.join(',')); let h='<table class="ob-tbl"><tr>'+(m.head||[]).map(x=>'<th>'+E(x)+'</th>').join('')+'</tr>';
+    (m.rows||[]).forEach((r,i)=>{ h+='<tr>'+r.map((x,j)=>j?'<td class="'+(hi.indexOf(i+','+j)>=0?'hi':'')+'">'+E(x)+'</td>':'<th>'+E(x)+'</th>').join('')+'</tr>'; }); return h+'</table>'; } };
 OB.model=model;
 function stepParts(s){ if(s&&typeof s==='object') return {t:strip(s.t||s.say||''), m:s.m||s.model||null}; return {t:strip(s), m:null}; }
 
@@ -461,6 +529,13 @@ body.ob-on .wrap{ max-width:760px; margin:0 auto; padding:0 !important; backgrou
 .ob-tf{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; } .ob-tf-f{ display:grid; grid-template-columns:repeat(5,34px); gap:4px; padding:6px; background:#fff; border:3px solid #1F2A44; border-radius:8px; }
 .ob-tf i{ width:34px; height:34px; border:1px solid #D8D1C2; border-radius:4px; display:block; position:relative; } .ob-tf i.a::after,.ob-tf i.b::after{ content:''; position:absolute; inset:5px; border-radius:50%; background:#C2453D; } .ob-tf i.b::after{ background:#3B6FD8; }
 .ob-nl{ width:100%; max-width:420px; color:#1F2A44; align-self:center; }
+.ob-svgm{ width:100%; max-width:420px; align-self:center; display:block; margin:0 auto; }
+.ob-svgm.ob-sq{ max-width:300px; }
+.ob-tbl{ border-collapse:separate; border-spacing:4px; margin:0 auto; font-size:calc(var(--fs) * 1.05); }
+.ob-tbl th, .ob-tbl td{ padding:8px 12px; border-radius:10px; text-align:center; }
+.ob-tbl th{ color:#6B7894; font-weight:800; }
+.ob-tbl td{ background:#fff; border:2px solid #E4DED2; font-weight:900; color:#1F2A44; }
+.ob-tbl td.hi{ border-color:#FF7A3D; background:#FFF1E8; }
 .ob-bl{ display:flex; gap:6px; align-items:flex-end; justify-content:center; flex-wrap:wrap; } .ob-bl .ten{ width:14px; height:120px; background:repeating-linear-gradient(#3B6FD8 0 11px,#fff 11px 12px); border:1px solid #2A55B0; } .ob-bl .one{ width:14px; height:12px; background:#FF7A3D; border:1px solid #C85A26; }
 .ob-kpic{ display:flex; flex-wrap:wrap; gap:14px 18px; justify-content:center; align-items:center; font-size:48px; max-width:100%; } .ob-kpic .obk-bar{ margin:0; }
 .ob-fb{ display:flex; border:3px solid #1F2A44; border-radius:8px; overflow:hidden; height:46px; max-width:420px; width:100%; align-self:center; } .ob-fb i{ flex:1; border-right:2px solid #1F2A44; background:#fff; } .ob-fb i:last-child{ border-right:0; } .ob-fb i.a{ background:#FFB347; }
