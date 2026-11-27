@@ -5,6 +5,9 @@
 import { THREE, FAST, C, rnd, clamp, smooth, ease, toon, glow, merge, M4, sky, clouds, hills, ground, grass, flowers, flowerGeo, sparkles, butterflies, party, blob, Q } from './kit3d.js';
 
 const PLAIN = /[?&]plain=1/.test(location.search);
+/* CALM (Esti, 2026-11-27: "the backgrounds are so busy that it's so hard to focus ... butterflies flying around ... distracting"; K-CLARITY-RULES 10):
+   no grass blades, no floating sparkles, no butterflies, only a few flowers far from the play. ?busy=1 shows the old busy world. */
+const CALM = !/[?&]busy=1/.test(location.search);
 export const PALETTES = {
   morning: { sky: { top: 0x2A78F0, mid: 0x6CC8FF, hor: 0xFFE0C8, sunDir: [0.4, 0.32, -1] }, g: [0x3DB54E, 0x8CD94A, 0x2CA56A, 0xA8DC70], grass: [0x22A24A, 0x3FC25A, 0x73D84A, 0xA6E64A], tip: 0xF2FF8C, flowers: [0xFF4FA3, 0xFFD23F, 0xffffff, 0x4FC3FF] },
   pond: { sky: { top: 0x1C64F2, mid: 0x4DB8FF, hor: 0xFFD4C4, sunDir: [0.42, 0.3, -1] }, g: [0x2FB34C, 0x7FD83F, 0x23A374, 0x9BD96A], grass: [0x16A34A, 0x2CC45C, 0x5BD93F, 0x9BE83A], tip: 0xF2FF8C, flowers: [0xFF6FB5, 0xffffff, 0xFFD23F] },
@@ -25,9 +28,9 @@ export function base(S, pal, o = {}) {
     c.lerp(sunny, smooth(9, 2.5, d) * 0.55); c.lerp(warm, smooth(5, 1, d) * 0.18); if (o.paint) o.paint(x, z, c); } });
   const play = (x, z) => Math.abs(x) < (o.clearW || 6) && z > -3.2 && z < 2.3;   /* the play area stays clear; grass in the front and all around */
   const skip = (x, z) => play(x, z) || (o.skip && o.skip(x, z));
-  grass(S, { colors: P.grass, tip: P.tip, skip, count: PLAIN || (FAST && !/tier=/.test(location.search)) ? 1 : 5000, tall: 0.55 });   /* the automatic test draws no grass blades */
-  flowers(S, { count: 40, size: 1.05, skip, colors: P.flowers });
-  sparkles(S, { count: 30 }); butterflies(S, 1);
+  grass(S, { colors: P.grass, tip: P.tip, skip, count: PLAIN || CALM || (FAST && !/tier=/.test(location.search)) ? 1 : 5000, tall: 0.55 });   /* the automatic test draws no grass blades */
+  flowers(S, { count: CALM ? 10 : 40, size: 1.05, skip, colors: P.flowers });
+  if (!CALM) { sparkles(S, { count: 30 }); butterflies(S, 1); }
   return { P: party(S), pal: P };
 }
 
