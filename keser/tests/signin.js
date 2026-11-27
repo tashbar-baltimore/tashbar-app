@@ -1,6 +1,6 @@
 /* Keser Girls 3.0, HER SIGN-IN (the jewel vault): builds, is served like the real site, and works for a made-up girl at Chromebook (1366x768)
    and phone size: the vault and 12 gem keys show, the paintings load, a wrong code shakes the vault and clears, the practice code opens the
-   vault and flies her into her treasure house, five globes show (a subject she has not started waits, dimmed), a globe takes her to that
+   vault and flies her into her treasure house, a globe for each of her three places shows (a subject she has not started waits, dimmed), a globe takes her to that
    place in her world, it fits the screen with no sideways scroll, no money or points, and "reduce motion" still lets her in quickly.
    The welcome page's Enter leads here (keser/tests/welcome.js). Until the girls' records are built, only the practice code opens it. */
 const path = require('path'), os = require('os'), fs = require('fs'), cp = require('child_process'), http = require('http');
@@ -34,21 +34,22 @@ module.exports = async (browser) => {
       const home = await pg.waitForFunction(() => KSIGN.state.stage === 'home' && document.body.classList.contains('home'), null, { timeout: 12000 }).then(() => true, () => false);
       if (!home) { fails.push('Keser sign-in (' + tag + '): the practice code did not open the vault into her treasure house'); errs.forEach(e => fails.push('Keser sign-in (' + tag + '): ' + e)); await ctx.close(); continue; }
       await pg.waitForTimeout(1200);
-      const t = await pg.evaluate(() => ({ globes: [...document.querySelectorAll('.globe')].map(g => ({ id: g.dataset.place, waiting: g.classList.contains('waiting'), ok: g.querySelector('.orb').complete && g.querySelector('.orb').naturalWidth > 0 && g.querySelector('.mark').naturalWidth > 0 })),
+      const t = await pg.evaluate(() => ({ globes: [...document.querySelectorAll('.globe')].map(g => ({ id: g.dataset.place, waiting: g.classList.contains('waiting'), ok: g.querySelector('.orb').complete && g.querySelector('.orb').naturalWidth > 0 && !g.querySelector('.mark') })), crowns: document.querySelectorAll('#house .tcrown, .globe .mark').length,
         text: document.body.innerText, house: document.querySelector('#house .bg').naturalWidth > 0 }));
-      if (t.globes.map(g => g.id).join() !== 'kodesh,reading,math,science,writing' || t.globes.some(g => !g.ok) || !t.house) fails.push('Keser sign-in (' + tag + '): her treasure house must show five globes and its painting (' + JSON.stringify(t.globes) + ')');
+      if (t.globes.map(g => g.id).join() !== 'kodesh,general,timeline' || t.globes.some(g => !g.ok) || !t.house) fails.push('Keser sign-in (' + tag + '): her treasure house must show three globes (קודש, General Studies, Timeline) and its painting (' + JSON.stringify(t.globes) + ')');
+      if (t.crowns) fails.push('Keser sign-in (' + tag + '): crowns float over her treasures again (HoS 2026-11-26: "those crowns are like awkward")');
       if (!t.globes.every(g => g.waiting)) fails.push('Keser sign-in (' + tag + '): with no progress yet, every globe should be waiting');
       if (/\$|\bcoins?\b|\bpoints?\b|\bprices?\b|\bmoney\b/i.test(t.text)) fails.push('Keser sign-in (' + tag + '): money or points on the screen');
       if (tag === 'chromebook') await pg.screenshot({ path: path.join(shots, 'keser-signin-treasure-house.png') });
-      await pg.$eval('.globe[data-place="math"]', b => b.click());   /* the ring keeps turning, so tap it where it is */
-      const went = await pg.waitForURL(/world\.html\?place=math/, { timeout: 6000 }).then(() => true, () => false);
+      await pg.$eval('.globe[data-place="timeline"]', b => b.click());   /* the ring keeps turning, so tap it where it is */
+      const went = await pg.waitForURL(/world\.html\?place=timeline/, { timeout: 6000 }).then(() => true, () => false);
       if (!went) fails.push('Keser sign-in (' + tag + '): a globe does not take her to that place in her world');
-      else { const at = await pg.waitForFunction(() => document.getElementById('placeName') && document.getElementById('placeName').textContent === 'Math', null, { timeout: 15000 }).then(() => true, () => false);
-        if (!at) fails.push('Keser sign-in (' + tag + '): her world did not open at Math after she tapped the Math globe'); }
+      else { const at = await pg.waitForFunction(() => document.getElementById('placeName') && document.getElementById('placeName').textContent === 'Timeline', null, { timeout: 15000 }).then(() => true, () => false);
+        if (!at) fails.push('Keser sign-in (' + tag + '): her world did not open at Timeline after she tapped the Timeline globe'); }
       errs.filter(e => !/world3d|WebGL/.test(e)).forEach(e => fails.push('Keser sign-in (' + tag + '): ' + e)); await ctx.close();
     }
   } catch (e) { fails.push('Keser sign-in test stopped: ' + String(e).slice(0, 200)); }
   finally { srv.close(); fs.rmSync(out, { recursive: true, force: true }); }
-  if (!fails.length) oks.push('Keser Girls 3.0 sign-in: the jewel vault at Chromebook and phone size, a wrong code shakes and clears, the practice code opens it into her treasure house with five globes, a globe takes her to that place, reduce motion');
+  if (!fails.length) oks.push('Keser Girls 3.0 sign-in: the jewel vault at Chromebook and phone size, a wrong code shakes and clears, the practice code opens it into her treasure house with three globes, a globe takes her to that place, reduce motion');
   return { fails, oks };
 };

@@ -1,0 +1,54 @@
+name: keser-setup
+# KESER GIRLS 3.0 · ONE-TIME SET-UP (HoS 2026-11-26: "I give you permission to create the girls database ... and the setup word").
+# 1. Makes the girls' own Firestore database "keser" in us-east4 if it is not there yet (never touches the boys' database).
+#    A new database has no web-page rules, so no page can read it; only the server can.
+# 2. If no lead has been made yet, puts the setup word's sha256 (never the word) in keser: sys/setup.hash. The Head of School
+#    is given the word privately; he types it on the Keser staff page ("First time setting up?") to make his staff code.
+# Run by hand: Actions -> keser-setup -> Run workflow, with the word's sha256. Safe to run again: nothing is replaced once a lead exists.
+on:
+  workflow_dispatch:
+    inputs:
+      setup_hash:
+        description: 'sha256 of the setup word (64 hex characters; never the word itself)'
+        required: true
+concurrency: { group: keser-setup, cancel-in-progress: false }
+permissions:
+  contents: read
+  id-token: write
+env:
+  PROJECT: tashbar-learning-live
+  WIF_PROVIDER: projects/594290752127/locations/global/workloadIdentityPools/github/providers/tashbar-app
+  DEPLOY_SA: github-deploy@tashbar-learning-live.iam.gserviceaccount.com
+jobs:
+  setup:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check the input
+        env: { H: '${{ inputs.setup_hash }}' }
+        run: '[[ "$H" =~ ^[0-9a-f]{64}$ ]] || { echo "setup_hash must be 64 lower-case hex characters (a sha256)"; exit 1; }'
+      - name: Sign in to Google (keyless, short-lived)
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.DEPLOY_SA }}
+          token_format: access_token
+          access_token_lifetime: 900s
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Make the girls' database "keser" (if it is not there yet)
+        run: |
+          if gcloud firestore databases describe --database=keser --project="$PROJECT" >/dev/null 2>&1; then echo "The keser database is already there."
+          else gcloud firestore databases create --database=keser --location=us-east4 --type=firestore-native --project="$PROJECT" --quiet && echo "Made the keser database."; fi
+          gcloud firestore databases describe --database=keser --project="$PROJECT" --format='value(name,locationId,type)'
+      - name: Put in the setup word's hash (only while no lead exists)
+        env: { TOKEN: '${{ steps.auth.outputs.access_token }}', H: '${{ inputs.setup_hash }}' }
+        run: |
+          base="https://firestore.googleapis.com/v1/projects/$PROJECT/databases/keser/documents/sys"
+          for i in 1 2 3 4 5 6; do c=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $TOKEN" "$base/firstLead"); [ "$c" = 200 ] || [ "$c" = 404 ] && break; echo "database not ready yet ($c), waiting"; sleep 20; done
+          [ "$c" = 200 ] && { echo "A lead already exists: nothing to do."; exit 0; }
+          [ "$c" = 404 ] || { echo "Could not read the keser database (HTTP $c)."; exit 1; }
+          body=$(printf '{"fields":{"hash":{"stringValue":"%s"},"at":{"stringValue":"%s"}}}' "$H" "$(date -u +%FT%TZ)")
+          c=$(curl -s -o /tmp/r.json -w '%{http_code}' -X PATCH -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d "$body" "$base/setup")
+          [ "$c" = 200 ] && echo "The setup word is in place. The Head of School can now tap 'First time setting up?' on the Keser staff page." || { echo "Could not write sys/setup (HTTP $c)"; head -c 400 /tmp/r.json; exit 1; }
