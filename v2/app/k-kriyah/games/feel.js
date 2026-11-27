@@ -55,7 +55,7 @@ export default function setup(E, { unit }) {
     done.forEach(l => layoutDone(l, ROW.indexOf(l.userData.key)));
   });
   const wideRow = ROW.some(k => E.topDot(k));   /* Shin and Sin are wide and carry a dot on top: a little smaller, a little further apart */
-  function layoutDone(l, i) { if (E.portrait) l.position.set((wideRow ? 1.25 : 1.4) - i * (wideRow ? .66 : .62), .42, 2.0); else l.position.set((wideRow ? 5.2 : 5.0) - i * (wideRow ? 1.2 : 1.05), .45, 1.6);   /* low and to the right, clear of the big letter */ l.scale.setScalar(E.portrait ? (wideRow ? .21 : .24) : (wideRow ? .3 : .34)); }
+  function layoutDone(l, i) { if (E.portrait) l.position.set((wideRow ? 1.25 : 1.4) - i * (wideRow ? .66 : .62), .42, 2.0); else l.position.set(4.1 - i * (wideRow ? 1.0 : ROW.length > 4 ? .85 : .95), .45, 1.6);   /* low and to the right of the big letter, all on screen (reviewer) */ l.scale.setScalar(E.portrait ? (wideRow ? .21 : .24) : (wideRow ? .3 : .34)); }
   E.onFrame(t => {
     if (cur && !cur.userData.spin) cur.rotation.y = Math.sin(t * .7) * .12;
     if (target.parent) { const b = beads.find(x => !x.userData.lit); target.visible = !!b && active; if (b) { target.position.copy(b.position); target.scale.setScalar(.16 * H / 3.2 * (1 + Math.sin(t * 7) * .15)); } }
