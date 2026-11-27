@@ -10,6 +10,7 @@ const QS = {
   4: [N('kaf'), N('tes'), N('chaf'), SND('kaf'), N('yud'), SND('tes'), N('beis'), SND('yud'), N('ches')],   /* Beis comes with Kaf; no 'Which says ch?' */
   5: [N('lamed'), N('nun'), SND('mem'), N('mem'), SND('nun'), N('tes'), SND('lamed'), N('gimmel'), N('kaf')],   /* Nun beside Gimmel, Mem beside Tes */
   6: [N('pei'), N('nun'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), SND('fei')],   /* Pei beside Fei; Kaf beside Chaf; 'Which says f?' with Pei beside it */
+  7: [N('reish'), N('tzadik'), N('kuf'), SND('reish'), N('daled'), SND('tzadik'), N('hei'), SND('mem'), SND('kuf')],   /* an older letter comes back too */   /* Reish beside Daled, Kuf beside Hei */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {
@@ -36,14 +37,14 @@ export default function setup(E, { struggled, unit }) {
     gap = p ? 1.5 : 2.55; keys.forEach(k => L[k].scale.setScalar(LS()));
     basket.position.set(p ? .9 : 4.3, 0, p ? 3.3 : .4); basket.scale.setScalar(p ? .5 : 1);   /* on a phone it sits on the grass in front */
     if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, 1.9, 0); rebbe.visible = false;   /* a phone has no room for him beside the letters */ peds.forEach(x => x.scale.setScalar(.62)); }
-    else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.visible = true; rebbe.position.set(-4.3, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
+    else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.visible = true; rebbe.position.set(-4.8, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
     place(false);
   });
   function place(animate = true) {
     peds.forEach((p, i) => p.position.copy(slotPos(i)));
     const ps = [];
     keys.forEach(k => { const l = L[k]; if (!set.includes(k)) { l.visible = false; l.userData.base = null; return; }
-      const to = slotPos(slot[k]).add(new THREE.Vector3(0, E.portrait ? 1.05 : 1.75, 0));
+      const to = slotPos(slot[k]).add(new THREE.Vector3(0, (E.portrait ? .38 : .61) + .5 * 1.6 * LS() + .12 + l.userData.below * LS(), 0));   /* just above the pedestal top, Kuf's leg too */   /* Kuf's long leg above the pedestal */
       if (!animate || !l.visible) { l.visible = true; l.position.copy(to); l.userData.base = to.clone(); if (animate) ps.push(E.popIn(l, LS(), 400)); return; }
       const from = l.position.clone(); l.userData.base = null; ps.push(E.tween(600, q => { l.position.lerpVectors(from, to, q); l.position.y += Math.sin(q * Math.PI) * 1.0; }).then(() => { l.userData.base = to.clone(); })); });
     return Promise.all(ps);
@@ -54,16 +55,16 @@ export default function setup(E, { struggled, unit }) {
   let cur = null;
   E.onPointer('down', e => { if (!active) return; const l = E.pickFrom(e, keys.map(k => L[k]).filter(l => l.visible)); if (l && resolveQ) { const r = resolveQ; resolveQ = null; r(l.userData.key); } });
   /* the three letters for a question: the answer, its look-alike if it has one, then a new letter and an older one */
-  const PAIR = { beis: unit.n >= 4 ? 'kaf' : 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', hei: 'ches', ches: 'hei', kaf: 'chaf', chaf: 'kaf', ...(unit.n >= 5 ? { gimmel: 'nun', nun: 'gimmel', tes: 'mem', mem: 'tes' } : {}), ...(unit.n >= 6 ? { pei: 'fei', fei: 'pei' } : {}) };   /* from Unit 4, Beis is shown with its look-alike Kaf */
-  const SAME = { vov: 'veis', veis: 'vov', chaf: 'ches', ches: 'chaf', alef: 'ayin', ayin: 'alef', samech: 'sin', kaf: 'kuf' };   /* the same sound, never asked side by side */   /* the same sound */
-  const CLUE = { beis: 'Beis has a dot.', veis: 'Veis has no dot.', zayin: 'Zayin has a crown.', vov: 'Vov has no crown.', ches: 'Ches\u2019s leg touches the roof.', hei: 'Hei\u2019s leg doesn\u2019t touch the roof.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.', gimmel: 'Gimmel has a foot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', lamed: 'Lamed is the tall one.', pei: 'Pei has a dot.', fei: 'Fei has no dot.' };
+  const PAIR = { beis: unit.n >= 4 ? 'kaf' : 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', hei: 'ches', ches: 'hei', kaf: 'chaf', chaf: 'kaf', ...(unit.n >= 5 ? { gimmel: 'nun', nun: 'gimmel', tes: 'mem', mem: 'tes' } : {}), ...(unit.n >= 6 ? { pei: 'fei', fei: 'pei' } : {}), ...(unit.n >= 7 ? { reish: 'daled', daled: 'reish', kuf: 'hei', hei: 'kuf' } : {}) };   /* from Unit 4, Beis is shown with its look-alike Kaf */
+  const SAME = { vov: 'veis', veis: 'vov', chaf: 'ches', ches: 'chaf', alef: 'ayin', ayin: 'alef', samech: 'sin', kaf: 'kuf', kuf: 'kaf' };   /* the same sound, never asked side by side */   /* the same sound */
+  const CLUE = { beis: 'Beis has a dot.', veis: 'Veis has no dot.', zayin: 'Zayin has a crown.', vov: 'Vov has no crown.', ches: 'Ches\u2019s leg touches the roof.', hei: 'Hei\u2019s leg doesn\u2019t touch the roof.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.', gimmel: 'Gimmel has a foot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', lamed: 'Lamed is the tall one.', pei: 'Pei has a dot.', fei: 'Fei has no dot.', reish: 'Reish is round on top.', kuf: 'Kuf has a long leg.' };
   const ALSO = unit.n >= 6 ? { kaf: 'pei', pei: 'kaf' } : {};   /* this unit's own look-alike (Pei's little tongue) */
-  const clue = (k, got) => (k === 'pei' && got === 'kaf') ? 'Pei has a little tongue inside.' : (k === 'kaf' && got === 'pei') ? 'Kaf has no little tongue.' : (k === 'beis' && got === 'kaf') ? 'Beis has a tail at the bottom.' : (k === 'kaf' && got === 'beis') ? 'Kaf is round at the bottom.' : CLUE[k];   /* Vov and Veis both say v: never ask one with the other on screen */
+  const clue = (k, got) => (k === 'pei' && got === 'kaf') ? 'Pei has a little tongue inside.' : (k === 'kaf' && got === 'pei') ? 'Kaf has no little tongue.' : (k === 'daled' && got === 'reish') ? 'Daled has a corner.' : (k === 'hei' && got === 'kuf') ? 'Hei has a short leg.' : (k === 'beis' && got === 'kaf') ? 'Beis has a tail at the bottom.' : (k === 'kaf' && got === 'beis') ? 'Kaf is round at the bottom.' : CLUE[k];   /* Vov and Veis both say v: never ask one with the other on screen */
   const mix = a => a.slice().sort(() => Math.random() - .5);
   function pick(k) {
     if (keys.length <= 3) return mix(keys);
     const out = [k]; if (PAIR[k]) out.push(PAIR[k]);
-    const ok = c => !out.includes(c) && c !== SAME[k];
+    const ok = c => !out.includes(c) && !out.some(o => SAME[o] === c);   /* never two letters with the same sound together (Kuf and Kaf, Alef and Ayin) */
     const newer = mix(unit.letters).find(ok); if (out.length < 3 && newer) out.push(newer);   /* one new letter and one older one, so old and new stay mixed */
     const older = mix(unit.known).find(ok); if (out.length < 3 && older) out.push(older);
     for (const c of mix(keys)) if (out.length < 3 && ok(c)) out.push(c);

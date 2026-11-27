@@ -9,12 +9,13 @@ const PLAN = {
   4: { R: [['tes', 'tes'], ['kaf', 'chaf'], ['yud', 'yud'], ['beis', 'kaf'], ['chaf', 'chaf'], ['chaf', 'kaf']], demo: ['kaf', 'beis', 'Hmm. Watch me. Round at the bottom. That is not a Beis!'] },
   5: { R: [['lamed', 'lamed'], ['gimmel', 'nun'], ['mem', 'mem'], ['mem', 'tes'], ['nun', 'nun'], ['tes', 'mem']], demo: ['nun', 'gimmel', 'Hmm. Watch me. Flat at the bottom. That is not a Gimmel!'] },
   6: { R: [['samech', 'samech'], ['pei', 'fei'], ['ayin', 'ayin'], ['pei', 'kaf'], ['fei', 'fei'], ['kaf', 'pei']], demo: ['fei', 'pei', 'Hmm. Watch me. No dot. That is not a Pei!'] },
+  7: { R: [['reish', 'reish'], ['daled', 'reish'], ['kuf', 'kuf'], ['hei', 'kuf'], ['tzadik', 'tzadik'], ['reish', 'daled']], demo: ['kuf', 'hei', 'Hmm. Watch me. A long leg! That is not a Hei!'] },   /* the demo is not one of his own questions */
   2: { R: [['gimmel', 'gimmel'], ['daled', 'hei'], ['hei', 'hei'], ['gimmel', 'daled'], ['beis', 'beis'], ['veis', 'beis']],   /* the last two bring back Unit 1 */ demo: ['daled', 'gimmel', 'Hmm. Watch me. No foot. That is not a Gimmel!'] },
 };
 /* what to look for, in a few words */
-const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof', tes: 'the round one', yud: 'the little one', kaf: 'with the dot', chaf: 'with no dot', lamed: 'the tall one', mem: 'with the opening at the bottom', nun: 'flat at the bottom', samech: 'the round one', ayin: 'with two arms up', pei: 'with the dot', fei: 'with no dot' };
-const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.', tes: 'Tes is round, with a curl.', yud: 'Yud is the little one.', kaf: 'A dot!', chaf: 'No dot.', lamed: 'Lamed is the tall one.', mem: 'Mem has an opening at the bottom.', nun: 'Nun is flat at the bottom.', samech: 'Samech is round all around.', ayin: 'Ayin has two arms up.', pei: 'A dot!', fei: 'No dot.' };
-const lookOf = (k, c) => k === 'beis' && c === 'kaf' ? 'Beis has a tail at the bottom.' : k === 'kaf' && c === 'beis' ? 'Kaf is round at the bottom.' : k === 'tes' && c === 'mem' ? 'Tes is closed at the bottom.' : k === 'pei' && c === 'kaf' ? 'Pei has a little tongue inside.' : k === 'kaf' && c === 'pei' ? 'Kaf has no little tongue.' : LOOK[k];
+const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof', tes: 'the round one', yud: 'the little one', kaf: 'with the dot', chaf: 'with no dot', lamed: 'the tall one', mem: 'with the opening at the bottom', nun: 'flat at the bottom', samech: 'the round one', ayin: 'with two arms up', pei: 'with the dot', fei: 'with no dot', reish: 'round on top', kuf: 'with the long leg', tzadik: 'with its little arm up' };
+const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.', tes: 'Tes is round, with a curl.', yud: 'Yud is the little one.', kaf: 'A dot!', chaf: 'No dot.', lamed: 'Lamed is the tall one.', mem: 'Mem has an opening at the bottom.', nun: 'Nun is flat at the bottom.', samech: 'Samech is round all around.', ayin: 'Ayin has two arms up.', pei: 'A dot!', fei: 'No dot.', reish: 'Reish is round on top.', kuf: 'Kuf has a long leg.', tzadik: 'Tzadik has a little arm on top.' };
+const lookOf = (k, c) => k === 'beis' && c === 'kaf' ? 'Beis has a tail at the bottom.' : k === 'kaf' && c === 'beis' ? 'Kaf is round at the bottom.' : k === 'tes' && c === 'mem' ? 'Tes is closed at the bottom.' : k === 'pei' && c === 'kaf' ? 'Pei has a little tongue inside.' : k === 'kaf' && c === 'pei' ? 'Kaf has no little tongue.' : k === 'daled' && c === 'reish' ? 'Daled has a corner.' : k === 'hei' && c === 'kuf' ? 'Hei has a short leg.' : LOOK[k];
 export default function setup(E, { struggled, unit }) {
   const plan = PLAN[unit.n] || PLAN[1];
   const { THREE, S, ICON } = E;
@@ -31,7 +32,7 @@ export default function setup(E, { struggled, unit }) {
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); yak.position.set(-3.3, 0, 1.2); yak.scale.setScalar(1.1); board.position.set(.2, 2.35, .4); board.scale.setScalar(1); }
     tiles.forEach((t, i) => { if (t !== dragT) t.position.copy(tileHome(i)); });
   });
-  const tileHome = i => P ? new THREE.Vector3([1.55, -.1, -1.1][i], .5, 2.1) : new THREE.Vector3(2.3 - i * 1.55, .6, 1.9);   /* never in front of the sign's pole */
+  const tileHome = i => P ? new THREE.Vector3([1.35, -.1, -1.25][i], .5, 2.1) : new THREE.Vector3(2.55 - i * 1.65, .6, 1.9);   /* never in front of the sign's pole */
   E.onFrame(t => {
     if (shown) shown.rotation.y = Math.sin(t * 1.2) * .15;
     tiles.forEach((tl, i) => { if (tl !== dragT && tl.visible && !tl.userData.busy) { tl.position.y = tileHome(i).y + Math.sin(t * 2 + i) * .05; tl.lookAt(E.cam.position); }   /* each tile faces the boy, so Hei's gap always shows */ });
@@ -47,7 +48,7 @@ export default function setup(E, { struggled, unit }) {
     tiles: tiles.filter(t => t.visible).map(t => ({ k: t.userData.key, xy: E.toScreen(E.worldPos(t)) })), board: E.toScreen(E.worldPos(board)) });
   let curClaim = null;
 
-  function showLetter(k) { if (shown) board.remove(shown); shown = E.letter(k, 1.3); shown.position.set(0, 0, .3); board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown); }
+  function showLetter(k) { if (shown) board.remove(shown); shown = E.letter(k, 1.3); if (shown.userData.below) { shown.scale.setScalar(.8); shown.position.set(0, shown.userData.below * .8, .3); } else shown.position.set(0, 0, .3);   /* Kuf smaller and higher, so its leg stays on the sign */ board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown); }
   /* the ring circles the dot place (Beis/Veis, Kaf/Chaf); an orange arrow points at any other shape difference */
   const arrow = E.arrow3d(.4);
   const mark = k => { const s = shown.userData; if (s.dotHome && (!curClaim || E.sameShape(k, curClaim))) { ring.position.copy(s.dotHome).setZ(.6); ring.visible = true; return true; } return E.pointAt(arrow, shown, k, 1.3, curClaim ? E.featFor(k, curClaim) : undefined); };   /* a ring round the dot place (same shape, dot or no dot); otherwise an arrow at the shape difference */
@@ -57,7 +58,7 @@ export default function setup(E, { struggled, unit }) {
     : k === 'beis' && c === 'veis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
     : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : lookOf(k, c)) + ' This is ' + E.LETTERS[k].name + '.';
   const an = k => E.an(k);
-  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters])].slice(0, 3).sort((a, b) => E.AB(a) - E.AB(b)).forEach((k, i) => { const t = E.letter(k, P ? .8 : .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
+  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters])].slice(0, 3).sort((a, b) => E.AB(a) - E.AB(b)).forEach((k, i) => { const t = E.letter(k, P ? .8 : .95); if (t.userData.below) t.children.forEach(ch => ch.position.y += t.userData.below);   /* Kuf's long leg stays above the floor */ t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
   const onBoard = () => { const [bx, by] = E.toScreen(E.worldPos(board)), [tx, ty] = E.toScreen(dragT.position); return Math.hypot(bx - tx, by - ty) < Math.min(innerWidth, innerHeight) * .16; };
   E.onPointer('down', e => { if (!fixKey || busy) return; const t = E.pickFrom(e, tiles); if (t) { dragT = t; const p = E.planePoint(e, t.position.z); if (p) grab.copy(t.position).sub(p); t.scale.setScalar(1.12); } });
   E.onPointer('move', e => { if (!dragT) return; const p = E.planePoint(e, dragT.position.z); if (p) dragT.position.copy(p.add(grab)); });
@@ -72,7 +73,7 @@ export default function setup(E, { struggled, unit }) {
       const r = resolveFix; resolveFix = null; busy = false; r && r();
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; t.userData.busy = true; await E.tween(350, k => t.position.lerpVectors(p0, home, k), E.ease.out); await E.shake(t, .15); t.userData.busy = false;
-      const has = k => tiles.some(x => x.userData.key === k), cue = fixKey === 'kaf' && has('beis') ? 'round at the bottom' : fixKey === 'kaf' && has('pei') ? 'with no little tongue' : fixKey === 'pei' && has('kaf') ? 'with the little tongue inside' : CUE[fixKey];   /* Beis and Pei have a dot too */
+      const has = k => tiles.some(x => x.userData.key === k), cue = fixKey === 'kaf' && has('beis') ? 'round at the bottom' : fixKey === 'kaf' && has('pei') ? 'with no little tongue' : fixKey === 'pei' && has('kaf') ? 'with the little tongue inside' : fixKey === 'daled' && has('reish') ? 'with the corner' : fixKey === 'hei' && has('kuf') ? 'with the short leg' : CUE[fixKey];   /* Beis and Pei have a dot too */
       await E.say('That is ' + E.LETTERS[t.userData.key].name + '. Find ' + E.LETTERS[fixKey].name + (cue ? ', ' + cue : '') + '!');
       help = true;
     }

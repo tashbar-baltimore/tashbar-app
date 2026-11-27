@@ -89,6 +89,10 @@ function runOne(browser0, id, kind, label) {
       const stars = Number(await pg.evaluate(() => document.body.dataset.stars));
       if (stars >= 2) oks.push(tag + ': can be won (' + stars + ' stars, after one mistake)'); else fails.push(tag + ': could not be won (' + stars + ' stars)');
       log.oks.forEach(m => oks.push(tag + ': ' + m)); log.fails.forEach(m => fails.push(tag + ': ' + m));
+      const badLines = await pg.evaluate(() => window.__lines.filter(l => /\bundefined\b|\bnull\b|\bNaN\b|\[undefined\]/.test(l)));   /* a missing word must never be spoken */
+      if (badLines.length) fails.push(tag + ': a spoken line is missing a word: ' + badLines[0]); else oks.push(tag + ': every spoken line is whole words');
+      const longLines = await pg.evaluate(() => window.__lines.filter(l => l.split(/\s+/).filter(w => /[A-Za-z\u0590-\u05FF\[]/.test(w)).length > 12));   /* HoS rule: 12 words or fewer (a sound counts as one) */
+      if (longLines.length) fails.push(tag + ': a spoken line is longer than 12 words: ' + longLines[0]); else oks.push(tag + ': every spoken line is 12 words or fewer');
       if (log.wrongHandled) oks.push(tag + ': a wrong answer gets a kind correction'); else fails.push(tag + ': a wrong answer was not handled');
       if (/^(story|feel)/.test(kind)) { const said = await pg.evaluate(() => window.__lines.filter(l => /^Say it with me: /.test(l)).length);   /* RESEARCH.md: he says each new letter out loud */
         if (said >= 3) oks.push(tag + ': asks him to say each new letter out loud (' + said + ' times)'); else fails.push(tag + ': "Say it with me" came ' + said + ' times'); }

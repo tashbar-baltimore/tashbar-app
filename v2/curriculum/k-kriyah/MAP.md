@@ -99,8 +99,8 @@ Each game starts by showing how to play: the voice says "Watch me… now you!" w
 
 ### Unit 7. Tzadik, Kuf, Reish (צ ק ר) — 2 weeks
 - **Skill:** צ "tz", ק "k", ר "r". Tells ד from ר: Daled has a corner, Reish is round.
-- **Story:** Tzvi checks his tzitzis. Zeidy makes Kiddush. A rimon on Rosh Hashanah.
-- **Games:** Picture Story, Look-Alike Detective (ד/ר), Letter Hunt, Find the Mistake.
+- **Story:** Tzvi plays in the playroom: a bird (tzipor), a toy monkey (kof) and a toy train (rakeves). (Everyday theme.)
+- **Games:** Picture Story, Look-Alike Detective (ד/ר and ה/ק), Sound Match, Find the Mistake. (Sound Match in place of Letter Hunt, whose world is a sukkah.)
 - **Mastery:** all letters so far, mixed.
 
 ### Unit 8. Shin, Sin, Tuf, Suf (שׁ שׂ תּ ת) — 2 weeks
