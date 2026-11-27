@@ -24,6 +24,20 @@ Every game checked against `v2/curriculum/K-CLARITY-RULES.md`, played as a made-
 
 Choices made without asking (as a kindergarten teacher would): dots in rows of five rather than written numerals on the Unit 2 stones (boys meet numerals in Unit 4); the flash stays in the Unit 1 check and the Peek and Finger flash games, because seeing a small amount at a glance is the skill being taught.
 
+## numbers-b: Unit 3 (Counting things) and Unit 4 (Numbers 0 to 5)
+
+Taken over at 10:30 by another session (claim `numbers-b-takeover`): numbers-b was claimed at 05:56 and nothing had been pushed in 4½ hours. Every game played as a made-up boy at Chromebook and phone size with one wrong move (the Numbers game test: round, wrong move, end, phone), every picture looked at.
+
+| Game | What was wrong | What changed | Pictures |
+|---|---|---|---|
+| Learn it (opener3), Mix it up, Oops! Find it, Show me (check3), Review (review3) | Clear: plain board, one group to count, every counted thing marked, a kind fix that shows how. | No change needed. | |
+| Touch and Count (count3) | The voice called the same picture "siddurim" and once "the books" (11). | Always "siddurim". | numbers-b-count3-after |
+| Give me (giveme) | Clear: challah rolls, a plate, the count is said one by one. | No change needed. | numbers-b-giveme-after |
+| Learn it (opener4), Fill the frame, Match the number, Fix the frame, Show me 0 to 5 (check4), Review time | Clear: big numerals, dot cards and ten-frames, no decoration. | No change needed. | numbers-b-match4-after, numbers-b-check4-wrong-after |
+| Trace it (trace4), Empty plate (zero4) | A card with ONE thing drew it as small as when there are five (29% of the card), so the one apple next to the big 1 was small (9). | A card with one thing draws it big (46%) (shared `frame.js`; one thing only, so nothing can overlap). All Numbers game tests pass. | numbers-b-trace4-before / -after, numbers-b-trace4-phone-after |
+
+Seen, kept: Learn it (opener4) shows "apple = finger = 1" with = signs between the cards. The voice explains it ("one apple, one finger, the number one"), so it stays; a teacher could swap the = signs for arrows later.
+
 ## numbers-c: Unit 5 (Five and more) and Unit 6 (The number path)
 
 Each stop played as a made-up boy at Chromebook and phone size, start to end, with one wrong move; pictures of the start, the lesson, a round, the wrong move, its help and the end. (Pictures were taken in quick mode, `?fast=1`, which only shortens the waits; the screens are the same.) Pictures: `v2/screens/k-clarity/numbers-c-<stop>-<before|after>-<chromebook|phone>.jpg`.

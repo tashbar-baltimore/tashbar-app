@@ -132,7 +132,7 @@
     d.L = L;
     var h2 = ''; L.p.forEach(function (p, i) {
       if (kind === 'dots') h2 += '<i class="dot" data-i="' + i + '" style="left:' + p[0] + '%;top:' + p[1] + '%"></i>';
-      else h2 += '<svg class="q" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%' + (kind === 'candle' ? (n >= 4 ? ';width:34%;height:40%' : ';width:46%;height:60%') : '') + '"><use href="#' + KIND[kind] + '"/></svg>';
+      else h2 += '<svg class="q" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%' + (kind === 'candle' ? (n >= 4 ? ';width:34%;height:40%' : ';width:46%;height:60%') : n === 1 ? ';width:46%;height:46%' : '')   /* one thing alone is drawn big (K clarity: what he looks at is big and clear) */ + '"><use href="#' + KIND[kind] + '"/></svg>';
     });
     d.innerHTML = h2; return d;
   };
