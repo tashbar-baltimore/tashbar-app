@@ -1027,7 +1027,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* painted backdrops (v2/app/k-shapes/worlds/*.jpg, painted for us, ground cut away): a big curved picture far behind the 3D world,
      softly blurred like an animated film background. The 3D things in front give depth; far 3D scenery steps aside for the painting.
      g: where its ground line is (0 top .. 1 bottom); y: the height of that line; R / span: how far away and how wide; cut: 3D things wholly behind this line (z) hide. */
-  const PAINT = { toyland: {}, garden: {}, sky: { g: 1, y: -7, haze: false }, bakery: { R: 14, span: 2.3, y: -0.4, cut: -7.9 }, space: {}, beach: {}, underwater: {}, traintown: {}, jungle: {}, snow: {}, farm: { cut: -11 }, party: {} };
+  const PAINT = { toyland: {}, garden: {}, sky: { g: 1, y: -7, haze: false }, bakery: { R: 14, span: 2.3, y: -0.4, cut: -7.9 }, space: {}, beach: {}, underwater: { span: 2.9 }, traintown: {}, jungle: {}, snow: {}, farm: { cut: -11 }, party: {} };
   function painted(name) {
     const P = PAINT[name]; if (!P || FAST) return;
     /* the painted ground under the toys (worlds/<name>-ground.jpg, seamless): same size of pattern as the drawn one */

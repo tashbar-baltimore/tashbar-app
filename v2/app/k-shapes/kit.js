@@ -1192,7 +1192,7 @@ export function startGame(cfg) {
       const flag = new THREE.Group(), pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.5, 12), new THREE.MeshStandardMaterial({ color: '#22304F' })); pole.position.y = 0.75; flag.add(pole);
       const cloth = new THREE.Shape(); cloth.moveTo(0, 0); cloth.lineTo(0.75, -0.25); cloth.lineTo(0, -0.5); cloth.lineTo(0, 0);
       const cl = new THREE.Mesh(new THREE.ShapeGeometry(cloth), new THREE.MeshStandardMaterial({ color: '#12A766', side: THREE.DoubleSide })); cl.position.set(0.05, 1.5, 0); flag.add(cl);
-      flag.position.set(LINE_X(), 0, ROW_Z(0) - (tall ? 1.1 : 1.2)); if (tall) flag.scale.setScalar(0.85); scene.add(flag); parts.push(flag);
+      flag.position.set(LINE_X(), 0, ROW_Z(0) - (tall ? 1.1 : 1.2)); if (tall) flag.scale.setScalar(0.85); flag.visible = false; scene.add(flag); parts.push(flag);   /* the camera now looks down from above, where the pole read as a slanted stick nobody talks about: hidden (review round 2) */
       R.items.forEach((it, i) => { const o = makeRod('m' + (++msN), it.L * (tall ? 0.72 : 1), it.color, i); o.word = it.word;
         o.home.set(LINE_X() + o.len / 2 + (it.off || 0) * (tall ? 0.7 : 1), ROD_Y, ROW_Z(i)); o.g.position.copy(o.home); o.inBox = !!R.lined; if (R.lined) o.g.position.x = LINE_X() + o.len / 2; items.push(o); });
     } else {
