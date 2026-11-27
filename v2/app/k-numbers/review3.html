@@ -34,7 +34,8 @@
   var KINDS = ['dots', 'apple', 'candle'];
   /* a real hand demo the first time each kind of item appears */
   async function showOnHands(F, n) {
-    for (var k = 0; k < n; k++) { var h = k < 5 ? H.a : H.b, f = h.finger(k % 5); await F.handTo(f, .5, .3); await F.handTap(); f.classList.remove('down'); NK.sound.pop(); }
+    for (var k = 0; k < n; k++) { var h = k < 5 ? H.a : H.b, f = h.finger(k % 5); await F.handTo(h.el, .5, .62);   /* point at the hand: the finger marks are hidden */
+      await F.handTap(); f.classList.remove('down'); NK.sound.pop(); }
     await F.handTo($('check')); await F.handTap(); await F.yes($('hands'), F.Word(n) + '!'); F.handHide(); H.set(0);
   }
   function card(n, kind) {

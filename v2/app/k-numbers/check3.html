@@ -36,7 +36,8 @@
       await F.say('Watch. I count in my head. No voice.');
       for (var i = 0; i < 3; i++) { await F.handTo(els[i]); await F.handTap(); els[i].classList.add('counted'); NK.sound.pop(); await F.wait(350); }
       await F.say('I counted three. I show three.');
-      for (i = 0; i < 3; i++) { var f = H.a.finger(i); await F.handTo(f, .5, .3); await F.handTap(); f.classList.remove('down'); NK.sound.pop(); }
+      for (i = 0; i < 3; i++) { var f = H.a.finger(i); await F.handTo(H.a.el, .5, .62);   /* point at the hand: the finger marks are hidden (no screen spot) */
+      await F.handTap(); f.classList.remove('down'); NK.sound.pop(); }
       await F.handTo($('check')); await F.handTap(); await F.yes($('hands'), 'Three!'); H.set(0);
       await F.say('Count carefully. Touch each one once.');
     },

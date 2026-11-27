@@ -77,10 +77,12 @@
       await F.say('Peek fast! How many fingers? Watch me.');
       cloth(true); await F.wait(1300); cloth(false); await F.wait(400);
       await F.say('Two fingers. I tap two up.');
-      for (var i = 0; i < 2; i++) { await F.handTo(H.finger(i), .5, .3); await F.handTap(); H.finger(i).classList.remove('down'); NK.sound.pop(); }
+      for (var i = 0; i < 2; i++) { await F.handTo(H.el, .45, .75);   /* point at the hand, as meet.js does: the finger marks are hidden */
+      await F.handTap(); H.finger(i).classList.remove('down'); NK.sound.pop(); }
       await F.handTo($('check')); await F.handTap(); cloth(true);
       await F.yes($('bighand'), 'Yes! Two!');
       await F.say('Show me on your hand too!');
+      await F.say('Tap the hand. One finger each tap.');
     },
     bonus: async function (F) {   /* quick boys: two super-quick peeks of 4 and 5 */
       for (var b = 0; b < 2; b++) {
