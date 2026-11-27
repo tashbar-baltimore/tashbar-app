@@ -70,10 +70,10 @@
 
   /* ---------- the clapping chant: he taps along ---------- */
   function hit() { var c = $('clap'); NK.sound.clap(); c.classList.add('hit'); setTimeout(function () { c.classList.remove('hit'); }, 140); }
-  F.chant = async function (line, stand) {
+  F.chant = async function (line, stand, answer) {   /* with answer: call and answer ("Seven is..." a pause for him, then "five and two!") */
     var c = $('clap'); c.hidden = false;
     await F.say(stand ? 'Stand up! Clap with me!' : 'Tap and clap with me!');
-    for (var k = 0; k < 2; k++) { await F.say(line, { noRepeat: true }); for (var b = 0; b < 3; b++) { hit(); await F.wait(420); } }
+    for (var k = 0; k < 2; k++) { await F.say(line, { noRepeat: true }); if (answer) { await F.wait(1500); await F.say(answer, { noRepeat: true }); } for (var b = 0; b < 3; b++) { hit(); await F.wait(420); } }
     await F.wait(200); c.hidden = true;
   };
 

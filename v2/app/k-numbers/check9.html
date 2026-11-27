@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me: Parts of ten — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 9 MASTERY CHECK ("Show me"), from the map: find the hidden part for 6-10, and show 2 ways to make 7.
+     Three "under the basket" rounds (he shows the hidden part on his fingers), then two "split it" rounds for seven (two different ways). -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="hands-side.css">
+<style>
+.b-orange{ --b:#FF8A1E; --b-l:#FFC08A; --b-d:#C85A10; } .b-lemon{ --b:#F5D10A; --b-l:#FFF08A; --b-d:#B89A00; }
+#more svg, #less svg{ width:60%; height:60%; position:relative; } #more[hidden], #less[hidden], #check[hidden], #hp[hidden], .bond[hidden], #goal[hidden]{ display:none; }
+.bond{ position:relative; flex-shrink:0; width:clamp(150px,22vh,190px); height:clamp(100px,15vh,124px); } .bond svg.lines{ position:absolute; inset:0; width:100%; height:100%; }
+.bc{ position:absolute; width:clamp(54px,8vh,64px); height:clamp(54px,8vh,64px); border-radius:50%; background:#fff; border:5px solid #FF8A1E; display:flex; align-items:center; justify-content:center; padding:6px; }
+.bc svg{ height:100%; width:auto; } #bw{ left:50%; top:0; transform:translateX(-50%); border-color:#2FB5E8; } #b0{ left:0; bottom:0; } #b1{ right:0; bottom:0; border-color:#F5D10A; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; width:min(100%,370px); } .bond{ order:-1; width:100%; max-width:220px; margin:0 calc(50% - 110px); } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="goal" id="goal"></div>
+    <div id="hp"></div>
+    <button id="less" class="bigbtn btn3d b-lemon" aria-label="One more lemon" hidden><svg viewBox="0 0 48 48"><path d="M30 10 16 24l14 14" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="bond" id="bond" hidden><svg class="lines" viewBox="0 0 100 64" preserveAspectRatio="none"><path d="M50 18 L16 48 M50 18 L84 48" stroke="#8A6A4A" stroke-width="2.5"/></svg>
+      <div class="bc" id="bw"></div><div class="bc" id="b0"></div><div class="bc" id="b1"></div></div>
+    <button id="more" class="bigbtn btn3d b-orange" aria-label="One more orange" hidden><svg viewBox="0 0 48 48"><path d="M18 10l14 14-14 14" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './market9.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done, ways = [];
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function show() { K.setSplit(R.n, R.k); $('bw').innerHTML = U5.num(R.n); $('b0').innerHTML = U5.num(R.k); $('b1').innerHTML = U5.num(R.n - R.k); }
+function moves(to) { const out = []; for (let k = R.k; k < to; k++) out.push({ tap: '#more' }); for (let k = R.k; k > to; k--) out.push({ tap: '#less' }); return out; }
+function hooks() {
+  if (R.kind === 'hide') { GAME.right = () => FR.fingerTaps(H, R.k, '#hp').concat([{ tap: '#check' }]); GAME.wrong = () => FR.fingerTaps(H, R.k === 1 ? 2 : R.k - 1, '#hp').concat([{ tap: '#check' }]); return; }
+  const t = [5, 4, 3, 2, 1, 6].find(k => !ways.includes(k)); GAME.right = () => moves(t).concat([{ tap: '#check' }]); GAME.wrong = () => moves(ways.length ? ways[0] : 0).concat([{ tap: '#check' }]);
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+function fin(line) { return FR.yes($('check'), line).then(() => { const d = done; done = null; d(R.misses === 0); }); }
+function step(d) { NK.unlock(); if (GAME.phase !== 'answer' || R.kind !== 'split') return; const k = R.k + d; if (k < 0 || k > R.n) { NK.sound.oops(); return; } R.k = k; NK.sound.pop(); show(); }
+/* a wrong split: the hand SHOWS one move to a new way (one more orange, or one more lemon), then he checks */
+async function showHow(have) { let d = [1, -1].find(dd => { const k = R.k + dd; return k > 0 && k < R.n && !have.includes(k); }); if (!d) d = R.k < R.n / 2 ? 1 : -1;
+  const btn = $(d > 0 ? 'more' : 'less'); await FR.say(d > 0 ? 'Watch. One more orange.' : 'Watch. One more lemon.'); await FR.handTo(btn); await FR.handTap(); FR.handHide();
+  R.k += d; NK.sound.pop(); show(); await FR.say('A new way! Now tap the check.'); }
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true);
+  if (R.kind === 'hide') {
+    if (H.count() === R.k) { await K.lift(); return fin('Yes! ' + FR.Word(R.n - R.k) + ' and ' + FR.word(R.k) + ' make ' + FR.word(R.n) + '.'); }
+    FR.oops($('check')); R.misses++; await FR.say("Let's look under the basket."); await K.lift(); const hid = K.slices().slice(R.n - R.k);
+    await K.bumpAll(hid, i => FR.say(FR.Word(i + 1) + (i === hid.length - 1 ? '.' : ','), { noRepeat: true })); await K.hide(R.k); H.set(0); await FR.say('Show me on your fingers.'); open(); return;
+  }
+  const k = R.k;
+  if (k === 0 || k === R.n) { FR.oops($('check')); R.misses++; await FR.say("Let's look. We need oranges and lemons."); await showHow(ways); open(); return; }
+  if (ways.includes(k)) { FR.oops($('check')); R.misses++; await FR.say("Let's look. We have that one."); await showHow(ways); open(); return; }
+  ways.push(k); return fin(FR.Word(k) + ' and ' + FR.word(R.n - k) + ' make seven!');
+}
+const PLAN = [{ kind: 'hide', n: 6, k: 2 }, { kind: 'hide', n: 9, k: 4 }, { kind: 'hide', n: 10, k: 3 }, { kind: 'split', n: 7 }, { kind: 'split', n: 7 }];
+function play(F, i) {
+  return new Promise(async res => {
+    R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true);
+    const hide = R.kind === 'hide'; $('hp').hidden = $('goal').hidden = !hide; $('more').hidden = $('less').hidden = $('bond').hidden = hide;
+    if (hide) { H.set(0); K.setKugel(R.n); K.unspot('towel'); $('goal').innerHTML = U5.num(R.n); await F.say(F.Word(R.n) + ' oranges. Close your eyes!'); await K.hide(R.k); open();
+      await F.say('How many are under the basket? Show me.', { repeat: F.Word(R.n) + ' in all. I see ' + F.word(R.n - R.k) + '. How many hide?' }); return; }
+    R.k = 0; show();
+    if (!ways.length) { await F.say('Seven lemons. Watch me.'); await F.handTo($('more')); await F.handTap(); R.k = 1; NK.sound.pop(); show(); await F.say('One orange and six lemons make seven.'); F.handHide(); R.k = 0; show(); }
+    await F.say(ways.length ? 'Now a different way to make seven!' : 'Now you. Make some oranges!'); open();
+    await F.say('Use the arrows. Then tap the check.', { repeat: 'Orange arrow: one more orange. Then check.' });
+  });
+}
+FR.game({
+  id: 'u9-check', title: 'Show Me!', rounds: 5,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() {
+    K = mount($('world'), { kids: ['mendy', 'dovid'], band }); H = FR.fingers(0, true); $('hp').appendChild(H.el);
+    $('more').addEventListener('click', () => step(1)); $('less').addEventListener('click', () => step(-1)); $('check').addEventListener('click', check);
+  },
+  reset() { ways = []; },
+  demo: async F => {
+    R = { kind: 'demo', n: 6, k: 1 }; K.setKugel(6); K.unspot('towel'); $('goal').innerHTML = U5.num(6); await F.say('Show me what you know! Watch me first.'); await K.hide(1);
+    await F.say('Six in all. I see five. One is hiding.'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); NK.sound.pop(); await F.handTo($('check')); await F.handTap(); await K.lift(); H.set(0);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You know the parts of ten! Unit nine done!' : 'Good try! Let\'s practise and come back.',
+  practice: 'hide9.html'
+});
+</script>
+</body>
+</html>
