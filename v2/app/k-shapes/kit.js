@@ -187,7 +187,8 @@ export function startGame(cfg) {
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
-      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(...(bc.solid === 'cube' ? [0.5, 0.75, 0] : bc.solid === 'cyl' ? [0.3, 0, 0] : [0, 0, 0]));   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
+      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(...(bc.solid === 'cube' ? [0.38, 0.62, 0] : bc.solid === 'cyl' ? [0.3, 0, 0] : [0, 0, 0]));
+      if (bc.solidScale && bc.solid === 'cube') b3.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.0, 1.0, 1.0)), new THREE.LineBasicMaterial({ color: '#13224A' })));   /* dark edges: three faces plainly seen, never a flat diamond */   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (bc.paint === 'none') {   /* a plain box with nothing on its front (the clue games: he finds the shape the clue tells) */
     } else if (LK) {
       const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5 + (NB > 1 ? 0.5 : 0), BX.d / 2 + 0.3);   /* several boxes (phone: two rows): high enough that the box in front never hides it */ lab.rotation.x = -0.55; facers.push(lab); g.add(lab);   /* tilted up to face the boy (and turned to face the camera every frame, so on a phone a circle stays round), so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
@@ -320,6 +321,7 @@ export function startGame(cfg) {
   }
   function camTo(mode, ms) {
     camMode = mode; const v = viewFor(mode), p0 = camPos.clone(), l0 = camLook.clone(); placeMendy(mode);
+    if (typeof boxes !== 'undefined') boxes.forEach(b => { b.g.visible = !(mode === 'close' && tall && W.name !== 'mistake'); });   /* phone close-up lesson: the boxes would only show cut off at the bottom */
     return tween(ms, k => { const e = ease(k); camPos.lerpVectors(p0, v.pos, e); camLook.lerpVectors(l0, v.look, e); });
   }
   const sparks = [], sparkGeo = new THREE.OctahedronGeometry(0.09);
@@ -338,6 +340,7 @@ export function startGame(cfg) {
     const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime, now = performance.now();
     for (let i = tweens.length - 1; i >= 0; i--) { const tw = tweens[i], k = Math.min(1, (now - tw.t0) / tw.ms); tw.fn(k); if (k >= 1) { tweens.splice(i, 1); tw.res(); } }
     shapes.forEach(o => {
+      if (o.slot == null && !o.inBox && o !== dragging && o.g.visible && !o.solid && !o.upright && KINDS[o.k] && o.parentLocked !== true && o.g.parent === scene) { o.g.quaternion.copy(camera.quaternion); return; }   /* lesson and friend's pieces face the camera too: a flat circle never looks like a drum */
       if (o.inBox || o.busy || o.still || o === dragging || !o.g.visible || o.slot == null) return;
       o.g.position.set(o.home.x, o.home.y + Math.sin(t * 1.6 + o.phase) * 0.06, o.home.z);
       if (o.solid) { o.g.rotation.y = t * 0.5 + o.phase; o.g.rotation.x = 0; return; }
@@ -978,7 +981,7 @@ export function startGame(cfg) {
     order.forEach((ti, j) => { const [k, sc] = tray[ti], o = makeShape('p' + pzN + '_' + j, k, R.colors ? R.colors[ti % R.colors.length] : COLORS[(ti + 2) % COLORS.length], 0, sc * BS * 0.8); o.slot = j; o.home.copy(puzzleTray(j, tray.length)); o.g.position.copy(o.home); });
     markSlots();
   }
-  function puzzleTray(j, n) { const per = tall ? 3 : 5, row = Math.floor(j / per), col = j % per, cnt = Math.min(per, n - row * per), sp = tall ? 1.45 : 2.0;
+  function puzzleTray(j, n) { const per = tall ? 3 : 5, row = Math.floor(j / per), col = j % per, cnt = Math.min(per, n - row * per), sp = tall ? 1.2 : 2.0;   /* phone: the outer pieces stay on screen */
     return new THREE.Vector3((col - (cnt - 1) / 2) * sp, 0.92, (tall ? 3.2 : 3.5) + row * 1.3); }
   function markSlots() { if (!PZ) return; shapes.forEach(o => { if (o.inBox) return; const sl = PZ.slots.find(q => !q.filled && q.k === o.k); o.box = sl ? sl.i : -1; }); }
   function slotWorld(sl) { return new THREE.Vector3(sl.at[0], sl.at[1], 0.05).applyMatrix4(PZ.g.matrixWorld); }
@@ -1066,7 +1069,7 @@ export function startGame(cfg) {
   const POSITIONED = cfg.mode === 'position';
   let BR = null;
   const PLANK_Y = 1.45;
-  const ZONES = { top: [0, PLANK_Y + 0.55, 0], under: [0, 0.45, 0], left: [-2.3, 0.55, 0], right: [2.3, 0.55, 0], front: [0, 0.55, 2.1], behind: [0, 0.55, -3.3] };   /* behind: well back, with ground showing between, so it never looks on top */
+  const ZONES = { top: [0, PLANK_Y + 0.55, 0], under: [0, 0.45, 0], left: [-2.3, 0.55, 0], right: [2.3, 0.55, 0], front: [0, 0.55, 2.1], behind: [0.5, 0.55, -3.3] };   /* behind: well back, with ground showing between, so it never looks on top */
   const ZWORD = { top: 'on top of', under: 'under', left: 'next to', right: 'next to', front: 'in front of', behind: 'behind' };
   function makeBridge() {
     const TB = LK && !cfg.plain && LK.treasures.bridge ? LK.treasures.bridge(PLANK_Y) : null;   /* cfg.plain: the plain block bridge (no pearls on it that look like one more ball) */   /* under the sea: a stone bridge on coral rocks (treasures.js) */
