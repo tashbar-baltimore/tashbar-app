@@ -27,7 +27,7 @@
   check:[
     {q:'Topic: Dovid helps Ima on Erev Shabbos. Draft: “Dovid sets the table. Dovid likes trains. He puts out the candlesticks.” What should he do with “Dovid likes trains.”?', o:['Cut it','Add to it','Move it to the top'], h:'Is it about helping on Erev Shabbos?'},
     {q:'Draft: “Zeidy has a workshop.” Avi adds: “His hammers hang in a row on the wall.” This added detail…', o:['Helps you see it','Shows nothing','Does not fit the topic'], h:'Can you picture it in your head?'},
-    {q:'Draft: “The club made a sign. Naftali cut the board. Avi painted it. We hung it up.” Where does the new detail “He used a big brush.” go?', o:['right after the sentence it tells more about','at the very start','after the closing sentence'], h:'It is about painting. Which sentence tells about painting?'}
+    {q:'Draft: “The club made a sign. Naftali cut the board. Avi painted it. We hung it up.” Where does the new detail “He used a big brush.” go?', o:['right after “Avi painted it.”','right after “Naftali cut the board.”','at the very start'], h:'It is about painting. Which sentence tells about painting?'}
   ],
   re:[
     {how:'A new way: revising is like packing for a trip. Add what you need. Take out what does not belong.', q:'Packing for Shabbos at Zeidy’s house. What does NOT belong in your bag?', o:['a snow shovel','your Shabbos shoes','your siddur']},
@@ -52,9 +52,9 @@
     {t:'write', q:'Your turn. Fix this sentence with CUPS: “on sunday we was in the garaj”', min:0, checks:['C: capitals on the first word and on Sunday.','U: we WERE.','P: an end mark.','S: garage is spelled right.'], h:'Check one letter of CUPS at a time.'}
   ],
   check:[
-    {q:'“chaim fed the birds.” Which CUPS check catches the mistake?', o:['C: Capitals','U: Usage','P: Punctuation'], h:'Look at the very first letter.'},
-    {q:'“Avi and Dovid is at the shul.” Which CUPS check catches the mistake?', o:['U: Usage','C: Capitals','P: Punctuation'], h:'Say it out loud. Does it sound right?'},
-    {q:'“Where is the clubhouse.” Which CUPS check catches the mistake?', o:['P: Punctuation','C: Capitals','U: Usage'], h:'Is it asking? What mark ends a question?'}
+    {q:'“chaim fed the birds.” Which CUPS check catches the mistake?', o:['C: Capitals','U: Usage','P: Punctuation','S: Spelling'], h:'Look at the very first letter.'},
+    {q:'“Avi and Dovid is at the shul.” Which CUPS check catches the mistake?', o:['U: Usage','C: Capitals','P: Punctuation','S: Spelling'], h:'Say it out loud. Does it sound right?'},
+    {q:'“Where is the clubhouse.” Which CUPS check catches the mistake?', o:['P: Punctuation','C: Capitals','U: Usage','S: Spelling'], h:'Is it asking? What mark ends a question?'}
   ],
   re:[
     {how:'A new way: hold up four fingers and check one thing on each finger: Capitals, Usage, Punctuation, Spelling.', q:'Which finger checks the end mark?', o:['Punctuation','Capitals','Spelling']},
@@ -82,7 +82,7 @@
   check:[
     {q:'“Naftali fixed the clock with Zeidy’s tiny.” What is wrong?', o:['a missing word','an extra word','nothing'], h:'Read it out loud. Tiny what?'},
     {q:'“The club club meets on Sunday.” What is wrong?', o:['an extra word','a missing word','nothing'], h:'Point to each word as you read it out loud.'},
-    {q:'“Mr. Benhamou gave us fresh pita.” What is wrong?', o:['nothing','a missing word','an extra word'], h:'Read it out loud, word by word. Does it sound just right?'}
+    {q:'“Mr. Benhamou gave us fresh pita.” What is wrong?', o:['nothing: it is just right','a missing word','an extra word'], h:'Read it out loud, word by word. Does it sound just right?'}
   ],
   re:[
     {how:'A new way: be a reader who has never seen your writing. Read only what is on the page, not what you meant.', q:'The page says: “We ate the.” What does a reader hear?', o:['We ate the.','We ate the cholent.','We ate.']},
@@ -222,7 +222,7 @@
       pay: 'The *red bike* does not fit. And the reader wants *more*! *Add and cut* fixes it.' },
     learn: [
       { t: '*Add* a detail that helps the reader *see* it.', act: X(Y[1], { say: 'Does this detail *help you see* it?', how: 'A good add lets you *see* something. “It was good” shows nothing.' }) },
-      { t: 'Put the add *right after* the sentence it tells about.', act: X(Y[4], { say: 'Pick the detail to *add* in the gap.', how: 'Seeds go *right after* making the feeder. Then *read it again*.' }) },
+      { t: 'Put the new detail *right after* its sentence. Then *read it again*.', act: X(Y[4], { say: 'Pick the detail to *add* in the gap.', how: 'Seeds go *right after* making the feeder. Then *read it again*.' }) },
       { t: 'Hands wide to *add*. Fingers snip to *cut*!', m: { type: 'move', t: 'Open your hands wide: ADD! Snip with two fingers: CUT!' },
         act: X(D[1], { say: 'Tap the sentence to *cut*.', how: 'Each one is about Chaim. Which one is *not about the shelf*?' }) },
       { who: { q: 'Naftali wants to *add* to his bird feeder draft. Who has a good add?', o: [['Avi', 'It was good.'], ['Chaim', 'We filled it with seeds.']], a: 1,
@@ -230,7 +230,7 @@
     play: [
       X(D[0], { mis: true, say: '*Add it* or *cut it*? Watch for the mistakes.', how: 'Fits and helps you see it? Add it. Does *not fit* the topic? Cut it.' }),
       X(Y[0], { say: 'Match each sentence to the add that tells *more about it*.', how: 'Which detail tells more about *that same* sentence?' }),
-      X(Y[3], { say: 'Build the detail to *add* about the bird feeder.', how: 'Who hung it? *Where* did it go? Leave out what does not fit.' }),
+      X(Y[3], { extra: ['on the red bike.'], say: 'Build the detail to *add* about the bird feeder.', how: 'Who hung it? *Where* did it go? Leave out what does not fit.' }),
       X(Y[2], { say: 'Challenge! Put the *revising steps* in order.', how: '*Read* first. Find, then change. Then *read it again*.' })],
     done: 'The red bike is *cut*, and the seeds are *added*. You can *add and cut*!' }; });
 
@@ -241,15 +241,15 @@
     learn: [
       { t: '*C*: Capitals start a sentence. Names get *capitals* too.', act: X(Y[3], { say: 'Build it with every *capital* right.', how: 'A *capital* at the start, and on *Purim*.' }) },
       { t: '*U*: Usage. Say it out loud. Does it *sound right*?', act: X(Y[2], { say: '*Usage* check: pick the word that sounds right.', how: 'Say it out loud. Which one sounds right for *yesterday*?' }) },
-      { t: '*P*: end marks. *S*: Spelling. Check *all four*!', m: { type: 'chant', lines: ['C! Capitals!', 'U! Usage!', 'P! Punctuation!', 'S! Spelling!'] },
-        act: X(Y[1], { pairs: [['dovid ran home.', 'Dovid ran home.'], ['We was late.', 'We were late.'], ['We fixd a clock.', 'We fixed a clock.']], say: 'Match each mistake to its *fixed* sentence.', how: 'Find the same sentence with the *mistake fixed*.' }) },
-      { who: { q: 'Draft: “the boys was hapy.” Who *edited* it right?', o: [['Dovid', 'the boys was happy'], ['Yehuda', 'The boys were happy.']], a: 1,
+      { t: '*P*: Punctuation, the *end mark*. *S*: Spelling.', m: { type: 'chant', lines: ['C! Capitals!', 'U! Usage!', 'P! Punctuation!', 'S! Spelling!'] },
+        act: X(Y[1], { pairs: [['dovid ran home.', 'C: Capitals'], ['Where is Chaim', 'P: Punctuation'], ['We fixd a clock.', 'S: Spelling']], say: 'Match each mistake to the *CUPS* check that catches it.', how: 'First letter small? *C*. No end mark? *P*. Word spelled wrong? *S*.' }) },
+      { who: { q: 'Draft: “the boys was hapy.” Who *edited* it right?', o: [['Dovid', 'the boys was happy.'], ['Yehuda', 'The boys were happy.']], a: 1,
         why: 'Dovid checked *only spelling*. Use *all four* CUPS checks.' } }],
     play: [
       X(D[1], { say: 'Which *CUPS* check catches each mistake?', how: 'A small first letter? Words that sound wrong? A missing *end mark*?' }),
       X(Y[0], { say: 'Tap the sentence with *no mistakes*.', how: 'Check the *capital*, the words, the *end mark* and the spelling.' }),
       { type: 'cloze', t: 'Zeidy ___ the old clock.', o: ['fixed', 'fixd', 'fixt'], a: 'fixed',
-        say: '*S* check: pick the word spelled right.', how: 'Say it slowly: fix-ed. Fixed ends with *e-d*.' },
+        say: '*S* check: pick the word spelled right.', how: 'Past words often end in *-ed*, even when it sounds like t.' },
       X(Y[4], { say: 'Challenge! Ready for the notebook, or needs *CUPS*?', how: 'Check the *capital*, the words, the end mark and the *spelling*.' })],
     done: 'You cracked the code! *CUPS*: Capitals, Usage, Punctuation, Spelling.' }; });
 
@@ -261,15 +261,16 @@
       { t: '*Point* to each word. Read it *out loud*.', act: X(D[1], { say: 'Pick the *missing word*.', how: 'Read it *out loud*. Which word makes it sound right?' }) },
       { t: 'A word there *two times*? That is an *extra word*.', act: X(Y[0], { say: 'Tap the sentence with an *extra word*.', how: 'Read each one out loud. Listen for a word said *twice*.' }) },
       { t: 'Point and read with me, *slow* and *out loud*.', m: { type: 'move', t: 'Point to each word, one at a time, and read out loud.' },
-        act: X(Y[3], { extra: ['the'], say: 'Build the sentence with *no extra* words.', how: 'Read it out loud. Is a word there *twice*?' }) },
+        act: X(Y[3], { extra: ['the'], say: 'Fix “We fed the the ducks by the river.” Build it right.', how: 'Read it out loud. Is a word there *twice*?' }) },
       { who: { q: 'Dovid wrote: “We went the park.” Who read it *like a reader*?', o: [['Dovid', 'I read it fast. Looks fine!'], ['Naftali', 'I read it out loud. “to” is missing!']], a: 1,
         why: 'Fast reading *skips* missing words. Read *out loud*.' } }],
     play: [
       X(D[0], { say: '*Missing* word, *extra* word, or just right?', how: 'Read it out loud, *pointing* to each word. Some are just right.' }),
       X(Y[1], { say: 'Match each sentence to its *fixed* sentence.', how: 'Read both out loud. Which one sounds *just right*?' }),
-      { type: 'cloze', t: 'Dovid wrote: Zeidy fixed ___ old clock.', o: ['the', 'clock', 'fixed'], a: 'the',
-        say: 'Fix it! Pick the *missing word*.', how: 'Point and read it *out loud*. Which word is missing?' },
-      X(Y[4], { say: 'Challenge! Sounds right, or *fix it*?', how: 'Read each one *out loud*, pointing to each word.' })],
+      { type: 'evidence', q: 'Which sentence is missing a word?', p: ['Chaim read a new book.', 'Avi drew the map.', 'Dovid sat the bench.', 'We ate fresh pita.'], a: 2,
+        look: 'a sentence that sounds wrong out loud', say: 'Fix it! Tap the sentence with a *missing word*.', how: 'Point and read each one *out loud*.' },
+      { type: 'tiles', w: ['We hung', 'the sign', 'on the door.'], extra: ['the door.'],
+        say: 'Challenge! Fix “We hung the sign the door.” Build it right.', how: 'Read it *out loud*. Which word was *missing*?' }],
     done: 'You found the missing *to*! Read *out loud*, pointing, to catch *missing* and *extra* words.' }; });
 
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
