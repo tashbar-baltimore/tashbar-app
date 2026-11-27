@@ -156,6 +156,15 @@ Fixed after round 2 (Units 1-6, and shared):
 
 **(decided: in The solid shapes the word "face" is used for a cube's flat sides: it is the Common Core K.G word, and "side" stays the word for a flat shape's edge, so the two never clash.)**
 
+**Re-scores after the round-2 fixes (Units 1-6; a new fresh reviewer each time, pictures and game file only):** Find the squares 4; The solid shapes 4; Copy and sing 3, then 3, then **4** (round 3; wrong-move help 5). Units 1-6 are now all 4 or 5.
+| Copy and sing problem (rule) | Fix |
+|---|---|
+| On a phone a row of 6-8 ran off both edges (9, 13) | A long row closes up a little on a phone; the camera steps back less |
+| The reminder sang his half-made row; the glow lit the start of the row, not the one he needed (16) | The reminder sings Mendy's row; the glow lights only the cupcake he copies now |
+| After a wrong cupcake he saw where to put it but not which one (16) | A thick gold ring on the cupcake to copy in Mendy's row AND on the same cupcake in the tray, then the hand. Phone ring smaller so it circles one cupcake |
+| The drum rounds started with no word that the game changed (2) | "Now we finish a pattern. Listen to the drum and bell." |
+Not done (small, reviewer said not blockers): the phone lesson row is a thin strip with empty space below; the bakery shelves behind could be softer.
+
 More fixes (review-shapes takeover session, Units 7-12):
 | Problem (rule) | Fix |
 |---|---|
