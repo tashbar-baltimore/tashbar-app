@@ -34,7 +34,7 @@ async function call(fn, args) {
      Every library file that 1.0 names (in src/, packs/ or texts/: e.g. TL_PICS in RealPics.html, the theme tune in GameMap.html)
      is served at /pics/, /sounds/ and /models/, the same addresses as before. Without this a rebuild REMOVES them from the site. */
   { const n = require('../tools/art-use.js').copyUsed(['src', 'packs', 'texts'], OUT); console.log('art: ' + n.pics + ' pictures, ' + n.sounds + ' sounds, ' + n.models + ' models from art/'); }
-  /* the screen-snapshot helper (html2canvas 1.4.1, MIT) for the Chanukah olive oil on the home screen (OilTrail.html), served at /vendor/ from our own site. */
+  /* the screen-snapshot helper (html2canvas 1.4.1, MIT) for the Chanukah olive oil on the home screen (OilTrail.html), and the PDF reader (pdf.js 3.11.174, Apache-2.0) that turns an uploaded worksheet into pages (StaffClasses.html), served at /vendor/ from our own site. */
   const VENDOR = path.join(__dirname, 'vendor'); if (fs.existsSync(VENDOR)) fs.cpSync(VENDOR, path.join(OUT, 'vendor'), { recursive: true });
   /* CORE GROWTH content store (job T): long texts (texts/<JOB>/<ID>.txt) as /texts/<ID>.json, loaded only when a boy opens one (TLCORE.text in CoreKit.html). A text with a problem stops the build. */
   { const n = require('../tools/core/texts.js').build(path.join(OUT, 'texts')); console.log('texts: ' + n); }
