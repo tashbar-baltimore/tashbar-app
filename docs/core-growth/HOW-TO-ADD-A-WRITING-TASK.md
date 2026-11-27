@@ -66,6 +66,32 @@ A plan box with very short words ("a dog", "Yes!") is still checked by its own w
 
 `TLCORE.write.err(task)` returns `''` or what is wrong. It is checked when the task opens, and a broken task never opens.
 
+## Quick writes (W13, HoS 2026-11-27)
+A **quick write** is 3 to 5 sentences (25+ words) about a text the boy just read, using a writing skill he already has. It goes to the same teacher inbox, and the teacher scores it like a piece.
+
+**How it reaches him:** a lesson that opens a text (a `read` or `proof` activity) with quick writes ends, on **Level clear**, with a "Next: a quick write for your teacher" line, **Quick write** (main) and **Not now** (quiet). He picks one of the text's prompts, then: **Write** (the prompt, a "How to do it" box, sentence starters, the word count; 📖 opens the story again) and **Check** (the checklist he must meet), then **Send**. The teacher sees the prompt above his writing. Two steps only: no plan boxes, no strategy card, no title or picture step.
+
+**The data** (`kind: 'quick'`; W13's are in `src/CoreDataW13H7.html`, loaded through `CORE_DATA_FILES.W13` in `src/CoreDataW13.js`):
+
+```js
+TLCORE.write.quick.add([{
+  id: 'W13.QW.ST01A', kind: 'quick', text: 'C23.ST.01', story: 'The Noise in the Sukkah',   /* story = the text's title, exactly */
+  grade: 2, skill: 'WRIT.PARA.L02.05', uses: 'Time Words',                                 /* a writing skill he has had */
+  title: 'What Happened That Night',
+  prompt: 'Tell what happened in the sukkah that night, in order. Use time-order words.',
+  how: ['First: what did Dovid hear?', 'Next: what did he do?', 'Then: what did he see?', 'Last: what did the boys do with the challah?'],   /* 2-5 steps */
+  starters: ['First,', 'Next,', 'Then,', 'Last,'], min: 25,
+  checks: [{ t: 'I wrote at least 3 sentences.', sentences: 3 }, { t: 'I used time-order words.', any: ['first', 'next', 'then', 'last'] },
+           { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true }, { t: 'I checked my facts in the story.', self: true }],
+  rubric: ['Tells what happened, in the right order', 'Time-order words move it along', 'Facts match the story', 'Capitals, end marks and spelling']
+}]);
+```
+
+- `TLCORE.write.err` checks it (a quick write needs `text`, `story` and 2–5 `how` steps, and may not use `first` or `plan` checks). A broken one is refused, with the reason in the console.
+- **Two per text.** Check every fact against the text. An `any` line must be one a good, honest answer always meets (a letter has no end mark after "Your friend, Naftali", so a letter uses no `caps` line).
+- `TLCORE.write.quick.pick(textId, opts)` opens the picker; `quick.forBite(bite)` says whether a lesson offers one; `quick.of(textId)` lists a text's.
+- `tests/lib/quickwrite.js` checks every quick write and plays the screens at 1366 and 390.
+
 ## Strategies to use (SRSD: Graham and Harris)
 | Kind | Strategy | Plan boxes |
 |---|---|---|

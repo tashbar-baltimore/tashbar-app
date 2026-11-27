@@ -2,7 +2,8 @@
 /* CoreUnits.html: UNIT CHECKS (the "boss level") AND TEST-OUT (the pre-check), Core Growth job T, T-5, 2026-11-24. Server: src/CoreChecks.js.
    A job lists its units in its data file:  TLCORE.units.add({ id:'C45.U01', title:'Main Idea Detectives', c:'READ', grade:5,
      skills:['READ.COMP.L06.13', ...] (the unit's small skills, in order), review:['READ.COMP.L05.01', ...] (2-3 from earlier units; only the first 3 are asked), n:10,
-     pre:'lessons' (optional: the pre-check asks the lessons' own check questions, so the unit's own items stay new for the boss level) });
+     pre:'lessons' (optional: the pre-check asks the lessons' own check questions, so the unit's own items stay new for the boss level)
+     or pre:'items' (optional: the pre-check asks only the own items marked pre:true; the boss level never asks those) });
    PRE-CHECK (before the unit): one question per skill. A skill he answers right is "shown": the server takes it out of his path, so he never
      sits through what he already knows. One pre-check per unit.
    UNIT CHECK (after the unit): 8-12 questions mixing every skill of the unit plus 2-3 review skills, one try each, a dramatic entrance and a
@@ -64,8 +65,10 @@
   function build(u, mode) {
     var used = {}, out = [], extra = (u.items || []).filter(function (x) { var ty = x && W.OBK && OBK.types[x.type]; return x && x.skill && !(ty && ty.reader); });   /* again here: a unit added before the kit loaded was not checked for Reader kinds */
     /* own items are picked at random (a retake is not the same check). A unit with pre:'lessons' (its lessons' check questions all have
-       3+ choices) gets a pre-check from those lesson questions, so its own items stay new for the boss level (reviews 26 Nov) */
-    var ownOf = function (id) { var c = extra.filter(function (x) { return x.skill === id && !x.__used; }); var o = c[Math.floor(Math.random() * c.length)]; if (!o) return null; o.__used = 1; return { skill: id, kind: 'kit', act: o }; };
+       3+ choices) gets a pre-check from those lesson questions, so its own items stay new for the boss level (reviews 26 Nov). A unit with
+       pre:'items' asks only its own items marked pre:true in the pre-check, and only the others in the boss level: a pre-check miss shows the
+       right answer, so its question must not come back later as a lesson's Show me or a boss question (gap C2a review, 26 Nov) */
+    var ownOf = function (id) { var c = extra.filter(function (x) { return x.skill === id && !x.__used && (u.pre !== 'items' || !!x.pre === (mode === 'pre')); }); var o = c[Math.floor(Math.random() * c.length)]; if (!o) return null; o.__used = 1; return { skill: id, kind: 'kit', act: o }; };
     var per = function (id) { if (mode === 'pre' && u.pre === 'lessons') return fromSkill(id, used) || ownOf(id); return ownOf(id) || fromSkill(id, used); };
     u.skills.forEach(function (id) { var q = per(id); if (q) out.push(q); });
     if (mode === 'check') {
@@ -93,7 +96,8 @@
     if (q.kind === 'mc') h += '<div class="cu-opts">' + q.o.map(function (o, k) { var cls = a ? (o === q.a ? ' yes' : (a.pick === k ? ' no' : '')) : ''; return qb(o, 'data-cu="pick" data-k="' + k + '"' + (a ? ' disabled' : ''), 'cu-opt' + cls); }).join('') + '</div>';
     else if (q.kind === 'order') { var st = S.ord; h += '<div class="cu-slots">' + q.tiles.map(function (_, i) { var j = st.slots[i]; return qb(j >= 0 ? st.pool[j] : String(i + 1), 'data-cu="slot" data-k="' + i + '"' + (a ? ' disabled' : ''), 'cu-slot' + (j >= 0 ? ' full' : '') + (a ? (a.ok ? ' yes' : (st.pool[j] !== q.tiles[i] ? ' no' : '')) : '')); }).join('') + '</div>' +
       '<div class="cu-pool">' + st.pool.map(function (t, j) { return st.used[j] ? '' : qb(t, 'data-cu="tile" data-k="' + j + '"' + (a ? ' disabled' : ''), 'cu-tile'); }).join('') + '</div>'; }
-    else if (q.kind === 'kit' && W.OBK) h += '<div class="obk cu-kit">' + OBK.view(q.act, S.ks, {}) + '</div>';
+    else if (q.kind === 'kit' && W.OBK) { var g = Number(S.u.grade), tz = g <= 1 ? '--fs:26px;--tap:76px' : g <= 3 ? '--fs:22px;--tap:64px' : g <= 5 ? '--fs:20px;--tap:58px' : '--fs:18px;--tap:54px';   /* the kit's sizes by age, as in a lesson (OneBite.html .ob-K1 ... .ob-M68): without them its buttons were small */
+      h += '<div class="obk cu-kit" style="' + tz + '">' + OBK.view(q.act, S.ks, {}) + '</div>'; }
     if (a) h += '<p class="cu-fb ' + (a.ok ? 'ok' : 'miss') + '" role="status">' + (a.ok ? 'Right!' : 'Not this one. This was about: ' + esc(nameOf(q.skill)) + '.') + '</p>';
     return h + '</div>';
   }
@@ -167,6 +171,7 @@
   function open(u, mode) {
     if (typeof u === 'string') u = BY[u]; if (!u) return Promise.reject(new Error('Unknown unit'));
     if (S) close();
+    try { if (W.OBK && W.OBK.css) W.OBK.css(); } catch (e) {}   /* the kit's styles: before any lesson has opened, its questions showed as tiny bare boxes (27 Nov) */
     var qs = build(u, mode); if (qs.length < 2) { console.error('Unit ' + u.id + ': not enough tap questions for a ' + mode + ' (' + qs.length + ')'); return Promise.resolve({ mode: mode, unit: u.id, done: false, skipped: true }); }
     return new Promise(function (resolve) {
       var el = document.createElement('div'); el.id = 'cun'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', mode === 'pre' ? 'Quick check' : 'Unit check'); css();

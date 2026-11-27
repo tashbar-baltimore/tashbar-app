@@ -134,6 +134,8 @@ function vDone(){ const r=A.res, ob=OB.res||{}, b=ob.bite||{}, ok=r.outcome==='m
   let earned=0; try{ earned=(r.payout||[]).reduce((a,x)=>a+(+x[1]||0),0); }catch(e){}
   let nx=null; try{ nx=suggestion(A.st); }catch(e){}
   const ret=OB.ret&&OB.ret.from===r.id?OB.ret:null;
+  /* quick write (W13, HoS 2026-11-27): a lesson that opened a text with quick-write prompts ends with "Quick write" (main) or "Not now" */
+  let qw=null; try{ const WQ=window.TLCORE&&TLCORE.write&&TLCORE.write.quick; if(ok&&!ret&&!r.qwSeen&&WQ&&window.TLK) qw=WQ.forBite(b); }catch(e){}
   let btn='', title='', line='', icon='';
   if(ok){ icon='🌟'; title='LEVEL CLEAR!'; line=b.done?E(b.done):'You learned: <b>'+E(b.today||b.title||nameOf(r.id))+'</b>';
     if(ret) btn='<button type="button" class="'+GOC()+'" data-ob="back" data-id="'+E(ret.id)+'" data-c="'+E(ret.c)+'">Back to: '+E(nameOf(ret.id))+'</button>';
@@ -145,9 +147,10 @@ function vDone(){ const r=A.res, ob=OB.res||{}, b=ob.bite||{}, ok=r.outcome==='m
   const party=ok&&b.band==='K1'?'<div class="ob-party" aria-hidden="true">'+['⭐','🎉','🌟','✨','🎈','⭐','🌟','🎉'].map((x,i)=>'<i style="--i:'+i+'">'+x+'</i>').join('')+'</div>':'';
   const stars=ok&&r.stars?'<div class="ob-stars" aria-label="'+r.stars+' stars">'+'⭐'.repeat(r.stars)+'</div>':'';
   const inner=party+'<div class="ob-burst'+(party?' big':'')+'" aria-hidden="true">'+icon+'</div><h1 class="ob-done">'+title+'</h1>'+stars+'<p class="ob-why">'+line+'</p>'+
-    (ok&&earned>0?'<p class="ob-earn"><span class="tlk-pill tlk-money">+ $'+earned.toFixed(2)+' earned</span></p>':'')+(ok?'<p class="ob-meta">It will come back for a quick review in a few days.</p>':'');
+    (qw?'<p class="ob-qw">'+TLK.pill('now','✍️ Next: a quick write for your teacher')+'</p>':'')+(ok&&earned>0?'<p class="ob-earn"><span class="tlk-pill tlk-money">+ $'+earned.toFixed(2)+' earned</span></p>':'')+(ok?'<p class="ob-meta">It will come back for a quick review in a few days.</p>':'');
   return '<div class="ob ob-'+(b.band||'B23')+'" data-dot="5">'+head(5,b.title||'',strip(title+'. '+line))+'<main class="ob-main ob-center">'+inner+'</main><footer class="ob-foot">'+
-    (ok&&!ret?'<button type="button" class="'+LKC()+'" data-act="tohub">My map</button>':'')+btn+'</footer></div>'; }
+    (qw?'<button type="button" class="'+LKC()+'" data-ob="qwno">Not now</button><button type="button" class="'+GOC()+'" data-ob="qw" data-k="'+E(qw.text)+'">Quick write</button>':
+    (ok&&!ret?'<button type="button" class="'+LKC()+'" data-act="tohub">My map</button>':'')+btn)+'</footer></div>'; }
 
 /* ---------- take over the start ---------- */
 const _sm=startMission;
@@ -226,6 +229,8 @@ document.addEventListener('click',e=>{ const b=e.target.closest('[data-ob],[data
   if(a==='quit'){ return _ov(`<div class="oe">🚪</div><h2>Leave this lesson?</h2><p>You can come back to it any time.</p>${window.TLK?'<div class="tlk-actions" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+TLK.main('Keep learning','data-act="closeov"','btn')+TLK.quiet('Leave','data-act="quit-yes"')+'</div>':'<button class="btn go big" data-act="closeov">Keep learning</button> <button class="btn big" data-act="quit-yes">Leave</button>'}`); }
   if(a==='peek'){ const c=b.closest('.qcard'); if(c){ c.classList.remove('ob-fold'); c.classList.add('ob-open'); b.remove(); } return; }
   if(a==='back'){ OB.ret=null; return startMission(b.dataset.c,b.dataset.id,'skill'); }
+  if(a==='qwno'||a==='qw'){ if(A.res) A.res.qwSeen=1; if(a==='qwno') return render();
+    return TLCORE.write.quick.pick(b.dataset.k,{exit:'x'}).then(()=>render(),()=>render()); }
   if(!p) return;
   const ob=p.ob;
   if(a==='go'){ ob.stage=(ob.bite.ready&&ob.bite.ready.length)?'ready':ob.bite.watch?'watch':postWatch(p); }
