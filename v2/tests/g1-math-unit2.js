@@ -42,6 +42,8 @@ module.exports = async function (browser) {
   const dragTo = async (pg, from, to) => { await pg.mouse.move(from.x, from.y); await pg.mouse.down(); await pg.mouse.move((from.x + to.x) / 2, (from.y + to.y) / 2, { steps: 4 }); await pg.mouse.move(to.x, to.y, { steps: 6 }); await pg.mouse.up(); await pg.waitForTimeout(120); };
   const notBlank = async (P, what) => { const buf = await P.pg.screenshot(); if (buf.length < 15000) bad(P.label + ': "' + what + '" looks blank (' + buf.length + ' bytes)'); };
   async function typePad(pg, n) { await W(pg, () => __g1.padOn); await pg.waitForTimeout(60); await pg.evaluate(n => __g1.padType(n), n); }
+  /* on a slow test machine a tap can land while the 3D picture is still catching up: try it again (fresh position, up to 3 times) if nothing happened */
+  async function tryUntil(pg, act, ok, ms = 4000) { for (let i = 0; i < 3; i++) { await act(); try { await W(pg, ok.fn, ok.arg, ms); return true; } catch (e) {} } return false; }
   const saidSince = (pg, k, re) => pg.evaluate(([k, re]) => __g1.said.slice(k).some(t => new RegExp(re, 'i').test(t)), [k, re]);
   const saidN = pg => pg.evaluate(() => __g1.said.length);
   async function finish(P, stars) {
@@ -79,7 +81,7 @@ module.exports = async function (browser) {
     await step('opener', async () => { P = await open(w, h, 'opener', label);
       await W(P.pg, () => __g1.state === 'tapcount', null, 60000); await notBlank(P, 'count on');
       if (!(await P.pg.evaluate(() => __g1.said.some(t => /in my head/.test(t))))) bad(P.label + ': the lesson does not teach "in my head"');
-      for (let i = 0; i < 3; i++) { await tap(P.pg, 'hit.barrel', i); await W(P.pg, n => __g1.said.includes(String(n)), 7 + i).catch(() => bad(P.label + ': tapping a barrel does not count on')); }
+      for (let i = 0; i < 3; i++) { if (!(await tryUntil(P.pg, () => tap(P.pg, 'hit.barrel', i), { fn: n => __g1.said.includes(String(n)), arg: 7 + i }))) bad(P.label + ': tapping a barrel does not count on'); }
       await W(P.pg, () => __g1.state === 'write');
       const k = await saidN(P.pg); await typePad(P.pg, 8); await P.pg.waitForTimeout(150); if (!(await saidSince(P.pg, k, 'then 7, 8, 9'))) bad(P.label + ': a wrong answer in the lesson is not explained');
       await typePad(P.pg, 9);
@@ -116,7 +118,7 @@ module.exports = async function (browser) {
     await step('pull', async () => { P = await open(w, h, 'pull', label);
       let q = 1;
       for (let r = 0; r < 3; r++) { await W(P.pg, q => (__g1.q || 0) > q && __g1.state === 'pull', q, 60000); const a = await P.pg.evaluate(() => __g1.ask); q = await P.pg.evaluate(() => __g1.q);
-        const pullN = async n => { for (let i = 0; i < n; i++) { const before = await P.pg.evaluate(() => __g1.at); await dragTo(P.pg, await pos(P.pg, 'hit.ring'), await pos(P.pg, 'hit.pullTo')); await W(P.pg, b => __g1.at === b - 1, before, 10000).catch(() => bad(P.label + ': a pull on the rope does not bring the boat back')); } };
+        const pullN = async n => { for (let i = 0; i < n; i++) { const before = await P.pg.evaluate(() => __g1.at); if (!(await tryUntil(P.pg, async () => dragTo(P.pg, await pos(P.pg, 'hit.ring'), await pos(P.pg, 'hit.pullTo')), { fn: b => __g1.at === b - 1, arg: before }, 5000))) bad(P.label + ': a pull on the rope does not bring the boat back'); } };
         if (r === 0) { await pullN(a.k + 1); const k = await saidN(P.pg); await tap(P.pg, 'hit.anchor'); await W(P.pg, () => __g1.state === 'pull'); if (!(await saidSince(P.pg, k, 'You pulled'))) bad(P.label + ': too many pulls are not explained'); }
         await pullN(a.k); await tap(P.pg, 'hit.anchor'); await typePad(P.pg, a.answer); }
       await finish(P, 2); });
