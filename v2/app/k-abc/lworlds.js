@@ -62,7 +62,7 @@ export function worldT(S) {
     appear: () => S.tween(600, e => birdS = e, ease.elastic),
     sound: () => { peck = 1; return audio.tick(); },
     soundStart: () => { if (S.t - lastTap > 0.4) { lastTap = S.t; peck = 1; audio.tick(); } }, soundStop: () => {},
-    cheer: () => { dance = 2; P.burst(new THREE.Vector3(0, 3.6, 0.6)); audio.party(); },
+    cheer: () => { dance = 2; P.burst(new THREE.Vector3(0, 3.6, 0.6), 0.15); audio.party(); },   /* a small burst, not a storm (K clarity 10) */
     poke: () => { dance = 0.6; peck = 1; audio.tick(); P.twinkle(bird.position, 4); } });
   common(S, W, strokes, [{ geo: trunkG, pops: pops[0] }, { geo: branchG, pops: pops[1] }]);
   /* the bird follows the growing tip and taps */
@@ -103,7 +103,7 @@ export function worldP(S) {
     appear: async () => {},
     sound: () => { spinV = 6; blow(2); return audio.puff(); },
     soundStart: () => { if (S.t - lastPuff > 0.5) { lastPuff = S.t; spinV = 4; audio.puff(); } }, soundStop: () => {},
-    cheer: () => { spinV = 14; blow(10); P.burst(c0.clone().add(new THREE.Vector3(0, 0.5, 0.5))); audio.party(); },
+    cheer: () => { spinV = 14; blow(10); P.burst(c0.clone().add(new THREE.Vector3(0, 0.5, 0.5)), 0.15); audio.party(); },
     poke: () => { spinV = 10; blow(4); audio.puff(); } });
   common(S, W, strokes, [{ geo: stickG, pops: [] }, { geo: bowlG, pops }]);
   W.onPop = o => { audio.pop(); P.twinkle(c0, 2); };
@@ -143,7 +143,7 @@ function simpleWorld(S, o) {
   Object.assign(W, { hero: hero.hit, heroPos: () => hero.at(), appear: hero.appear || (async () => {}),
     sound: () => { hero.react && hero.react(); return audio.letter(o.ch); },
     soundStart: () => { if (S.t - last > (o.every || 0.9)) { last = S.t; audio.letter(o.ch); } }, soundStop: () => {},
-    cheer: () => { hero.cheer && hero.cheer(); P.burst(new THREE.Vector3(0, 3.4, 0.6)); audio.party(); },
+    cheer: () => { hero.cheer && hero.cheer(); P.burst(new THREE.Vector3(0, 3.4, 0.6), 0.15); audio.party(); },
     poke: () => { hero.react && hero.react(); audio.letter(o.ch); P.twinkle(hero.at(), 4); } });
   W._hero = hero; common(S, W, strokes, parts); W.onPop = () => audio.pop(); return W;
 }

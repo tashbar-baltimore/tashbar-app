@@ -45,9 +45,13 @@ export function meet(ch) {
       await G.say('Look! ' + an(KEYWORD[ch]) + '!', 'Watch it make a shape.');
       G.mendy.set('point', 2.5); await W.demo(); W.cheer(); await G.wait(800);
       await G.say('This shape is a letter.', 'It shows a sound.');
+      /* K clarity (like plain shapes before real things): the plain letter, as it looks in a book, stands beside the picture-letter all game */
+      const plain = letterTile(ch), pAt = () => G.narrow() ? V(-1.25, 0.95, 1.6) : V(-3.0, 3.0, 0.4); plain.position.copy(pAt()); plain.scale.setScalar(0.0001); S.scene.add(plain);
+      const lay0 = G.W.layout; G.W.layout = () => { lay0 && lay0(); plain.position.copy(pAt()); };
+      await S.tween(400, e => plain.scale.setScalar(Math.max(0.0001, e * 1.5)), ease.back); await G.say('In a book, it looks like this.');
       await G.say(cap(say(KEYWORD[ch])) + ' starts with this sound.', snd(ch), 'Say it with me!', snd(ch), echo(() => G.wait(250)), snd(ch));
       /* the mouth picture */
-      const mouth = mouthCard(S, L.mouth), mAt = () => G.narrow() ? V(1.25, 0.95, 1.6) : V(3.8, 3.6, 0.4); mouth.position.copy(mAt()); G.W.layout = () => mouth.position.copy(mAt());
+      const mouth = mouthCard(S, L.mouth), mAt = () => G.narrow() ? V(1.25, 0.95, 1.6) : V(3.8, 3.6, 0.4); mouth.position.copy(mAt()); const lay1 = G.W.layout; G.W.layout = () => { lay1 && lay1(); mouth.position.copy(mAt()); };
       await S.tween(400, e => mouth.scale.setScalar(Math.max(0.0001, e)), ease.back);
       await G.say({ s: 'Teeth together. Let the air hiss out.', a: 'Open your mouth wide, like this.', t: 'Tongue up behind your teeth. Tap!', p: 'Lips together, then pop!',
         i: 'A little smile. Short and quick!', n: 'Tongue up. Hum through your nose.', m: 'Lips together. Hum!', d: 'Tongue up, then drop it. Quick!' }[ch], snd(ch));
