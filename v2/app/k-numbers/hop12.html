@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hop On! — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 12 "Adding and taking away within 10" (MAP.md "Hop on the path": counting on along the number line), on the garden path.
+     "Six plus three." First he puts Shmuli on the start stone (drag him, or tap him and then the stone). Then he taps the next stone, one hop at a time,
+     and we count on from the start: "Seven, eight, nine!" (minus: he hops back). The dots in the panel show the hops still to go.
+     A slip: a wrong start stone ("Let's look. Find six."), or a stone that is not the next one ("One hop at a time. Look, the next stone."), then another try. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>
+.sent{ display:flex; align-items:center; gap:6px; background:#fff; border-radius:20px; padding:6px 12px; } .sent .n{ height:clamp(52px,8vh,68px); display:flex; } .sent .n svg{ height:100%; width:auto; }
+.sent b{ font:900 clamp(30px,5vh,44px)/1 system-ui, sans-serif; color:#5A4A3A; } .sent b.plus{ color:#22B45E; } .sent b.minus{ color:#FF6A3D; } .sent .q{ color:#8A7A6A; }
+.hops{ display:flex; gap:6px; } .hops i{ width:24px; height:24px; border-radius:50%; box-shadow:inset 0 0 0 4px #22B45E; } .hops i.done{ background:#22B45E; } .hops.back i{ box-shadow:inset 0 0 0 4px #FF6A3D; } .hops.back i.done{ background:#FF6A3D; }
+.chip{ width:clamp(80px,12vh,104px); height:clamp(80px,12vh,104px); } .chip img{ height:100%; width:auto; pointer-events:none; } .chip[hidden], .hops[hidden]{ display:none; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; width:min(100%,370px); } }
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="sent" id="sent"></div>
+    <div class="hops" id="hops" hidden></div>
+    <div class="numcard chip" id="chip" hidden><img src="art/shmuli-idle.png" alt="Shmuli"></div>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './path6.js';
+const $ = id => document.getElementById(id);
+let P, A, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const ans = () => R.op === '+' ? R.a + R.b : R.a - R.b;
+function sent(show) { $('sent').innerHTML = '<span class="n">' + U5.num(R.a) + '</span><b class="' + (R.op === '+' ? 'plus">+' : 'minus">−') + '</b><span class="n">' + U5.num(R.b) + '</span><b>=</b>' + (show ? '<span class="n">' + U5.num(ans()) + '</span>' : '<b class="q">?</b>'); }
+function hops() { $('hops').hidden = false; $('hops').classList.toggle('back', R.op === '-'); $('hops').innerHTML = '<i class="done"></i>'.repeat(R.done) + '<i></i>'.repeat(R.b - R.done); }
+const next = () => A.n + (R.op === '+' ? 1 : -1);
+function hooks() {
+  if (R.step === 'start') { const bad = R.a + 1 <= 10 ? R.a + 1 : R.a - 1; GAME.right = () => [{ drag: ['#chip', '.stone[data-n="' + R.a + '"]'] }]; GAME.wrong = () => [{ drag: ['#chip', '.stone[data-n="' + bad + '"]'] }]; return; }
+  const n = next(), skip = R.op === '+' ? n + 1 : n - 1;
+  GAME.right = () => [{ tap: '.stone[data-n="' + n + '"]' }]; GAME.wrong = skip >= 0 && skip <= 10 ? () => [{ tap: '.stone[data-n="' + skip + '"]' }] : null;
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+async function walkTo(to) { for (let n = 0; n <= to; n++) { P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === to ? '.' : ','), { noRepeat: true }); P.glow(n, false); } }
+async function place(chip, stone) {
+  if (GAME.phase !== 'answer' || R.step !== 'start') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n;
+  if (n === R.a) { $('chip').hidden = true; A.show(true); A.place(n); P.focus(n, true); NK.sound.yes(); await FR.say('Shmuli starts on ' + FR.word(n) + '.');
+    R.step = 'hop'; hops(); open(); await FR.say(R.op === '+' ? 'Hop ' + FR.word(R.b) + ' forward. Tap the next stone.' : 'Hop ' + FR.word(R.b) + ' back. Tap the stone before.', { repeat: 'Tap the next stone. One hop at a time.' }); return; }
+  FR.oops(stone); R.misses++; await FR.say("Let's look. Find " + FR.word(R.a) + '. Count along the path.'); await walkTo(R.a); P.el(R.a).classList.add('hint');
+  setTimeout(() => P.el(R.a).classList.remove('hint'), 2500); await FR.say('Put Shmuli on ' + FR.word(R.a) + '.'); open();
+}
+async function stone(n, el) {
+  if (GAME.phase !== 'answer' || R.step !== 'hop') return; GAME.phase = 'busy'; FR.lock(true);
+  if (n === next()) { A.pose('happy'); await A.hop(n); R.done++; hops(); await FR.say(FR.Word(n) + '!', { noRepeat: true }); A.pose('idle');
+    if (R.done < R.b) { open(); return; }
+    sent(true); P.petals(n); await FR.yes(el, FR.Word(R.a) + (R.op === '+' ? ' plus ' : ' minus ') + FR.word(R.b) + ' is ' + FR.word(n) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops(el); R.misses++; await FR.say('One hop at a time. Look, the next stone.'); const t = next(); P.el(t).classList.add('hint'); P.focus(t); setTimeout(() => P.el(t).classList.remove('hint'), 2500); open();
+}
+const PLAN = [[6, '+', 3], [4, '+', 5], [8, '-', 2], [7, '+', 2], [9, '-', 3], [5, '+', 4]];
+function play(F, i) {
+  return new Promise(async res => {
+    const [a, op, b] = PLAN[i]; R = { a, op, b, done: 0, step: 'start', misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true);
+    A.show(false); $('hops').hidden = true; $('chip').hidden = false; sent(false); P.focus(a, true);   /* the start stone is in view, also on a phone */
+    await F.say(F.Word(a) + (op === '+' ? ' plus ' : ' minus ') + F.word(b) + '.'); open();
+    await F.say('Put Shmuli on ' + F.word(a) + ' to start.', { repeat: 'Drag Shmuli to stone ' + F.word(a) + '.' });
+  });
+}
+FR.game({
+  id: 'u12-hop', title: 'Hop On!', rounds: 6,
+  hero: '<div class="hero6"><img src="art/shmuli-happy.png" alt=""></div>',
+  init() {
+    P = mount($('world'), { kids: ['shmuli'], band }); A = P.kids.shmuli; A.lift = 1.1; A.show(false);   /* he stands on top of his number, so both show */
+    P.onStone = (n, el) => stone(n, el); FR.dragTap({ sources: '#chip', targets: '.p6layer .stone', drop: place });
+  },
+  demo: async F => {
+    R = { a: 3, op: '+', b: 2, done: 0 }; sent(false); $('chip').hidden = false; P.focus(4, true);
+    await F.say('Three plus two. Watch me.'); await F.handDrag($('chip'), P.el(3)); $('chip').hidden = true; A.show(true); A.place(3);
+    await F.say('Start on three. Now hop two.'); for (const n of [4, 5]) { await F.handTo(P.el(n)); await F.handTap(); await A.hop(n); await F.say(F.Word(n) + '!', { noRepeat: true }); }
+    F.handHide(); sent(true); await F.say('Three plus two is five!'); A.show(false);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'Great hopping! You can count on!' : 'Good hopping! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

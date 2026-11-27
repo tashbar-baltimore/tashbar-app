@@ -126,19 +126,19 @@ export function mount(host, opt) {
     k.add(card); const sh = new THREE.Mesh(new THREE.CircleGeometry(0.45, 24), new THREE.MeshBasicMaterial({ color: '#4A6A30', transparent: true, opacity: 0.25, depthWrite: false }));
     sh.rotation.x = -Math.PI / 2; sh.scale.set(1, 0.55, 1); sh.renderOrder = 1; scene.add(sh);
     const H = 2.5, cache = {}; let cur = '';   /* the boys are big enough to find at once (K clarity 9) */
-    const api = { n: opt.from, z: z, obj: k, shadow: sh, y: TOP,
+    const api = { n: opt.from, z: z, obj: k, shadow: sh, y: TOP, lift: 0,   /* lift: stand higher, on top of the number sign (Unit 12) */
       pose(p) { cur = p; (cache[p] = cache[p] || new Promise(res => loader.load('art/' + who + '-' + p + '.png', t => { t.colorSpace = THREE.SRGBColorSpace; res(t); }, undefined, () => res(null)))).then(t => {
         if (cur !== p) return; if (!t) { if (p !== 'idle') api.pose('idle'); return; } card.material.map = t; card.material.visible = true; card.material.needsUpdate = true; card.scale.set(H * t.image.width / t.image.height, H, 1); card.position.y = H / 2; }); },
-      place(n) { api.n = n; k.position.set(X(n, opt.from), TOP, z); sh.position.set(k.position.x, 0.33, z); },
+      place(n) { api.n = n; k.position.set(X(n, opt.from), TOP + api.lift, z); sh.position.set(k.position.x, 0.33, z); },
       show(on) { k.visible = sh.visible = on; },
       /* hop one stone at a time; onStep(n) runs as he lands (say the number there) */
       async hop(to, onStep) { const dir = to > api.n ? 1 : -1;
         while (api.n !== to) { const a = api.n, b = a + dir, x0 = X(a, opt.from), x1 = X(b, opt.from), dur = T(380), t0 = performance.now();
           await new Promise(res => { (function f() { const t = Math.min(1, (performance.now() - t0) / dur), e = ease(t);
-            k.position.x = x0 + (x1 - x0) * e; k.position.y = TOP + Math.sin(Math.PI * t) * 0.75; k.scale.set(1 + (t > .9 ? .08 : 0), 1 - (t > .9 ? .08 : 0), 1); sh.position.x = k.position.x; sh.scale.setScalar(1 - Math.sin(Math.PI * t) * .35);
+            k.position.x = x0 + (x1 - x0) * e; k.position.y = TOP + api.lift + Math.sin(Math.PI * t) * 0.75; k.scale.set(1 + (t > .9 ? .08 : 0), 1 - (t > .9 ? .08 : 0), 1); sh.position.x = k.position.x; sh.scale.setScalar(1 - Math.sin(Math.PI * t) * .35);
             if (t < 1) requestAnimationFrame(f); else { k.scale.set(1, 1, 1); res(); } })(); });
           api.n = b; NK.sound.pop(); follow(b); if (onStep) await onStep(b); } },
-      async jump() { const t0 = performance.now(), dur = T(420); await new Promise(res => { (function f() { const t = Math.min(1, (performance.now() - t0) / dur); k.position.y = TOP + Math.sin(Math.PI * t) * 0.6; if (t < 1) requestAnimationFrame(f); else res(); })(); }); }
+      async jump() { const t0 = performance.now(), dur = T(420); await new Promise(res => { (function f() { const t = Math.min(1, (performance.now() - t0) / dur); k.position.y = TOP + api.lift + Math.sin(Math.PI * t) * 0.6; if (t < 1) requestAnimationFrame(f); else res(); })(); }); }
     };
     card.onBeforeRender = () => { card.quaternion.copy(camera.quaternion); };
     api.pose('idle'); api.place(opt.from); return api;
