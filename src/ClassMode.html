@@ -336,7 +336,8 @@ function ycBg(n,veil){ const k=YCW_ART[n]||0; if(!k) return ''; const W='max(100
 function ycCityCss(){ if(document.getElementById('yc-city')) return; const st=document.createElement('style'); st.id='yc-city';
  const L='linear-gradient(rgba(255,255,255,.42),rgba(255,255,255,.58))', D='linear-gradient(rgba(20,10,58,.5),rgba(20,10,58,.72))', T='linear-gradient(rgba(255,250,235,.18),rgba(255,250,235,.3))';
  const R=[['#cn-shop','ycw-c-canteen',T],['#tlstore.stov','ycw-c-market',T],['#ar-ov','ycw-c-arena',D],['#mdx.on','ycw-c-pavilion','linear-gradient(rgba(255,255,255,.66),rgba(255,255,255,.78))'],['.kkov','ycw-c-pavilion',T],
-   ['#bbx','ycw-c-workshop',L],['#clab','ycw-c-workshop',L],['.bl-ov','ycw-k-library',L],['.ohsheet','ycw-c-calm',T]];
+   ['#bbx','ycw-c-workshop',L],['#clab','ycw-c-workshop',L],['.bl-ov','ycw-k-library',L],['.ohsheet','ycw-c-calm',T],
+   ['#gm-cel','ycw-k-summit','radial-gradient(circle at 50% 38%,rgba(255,190,40,.45) 0%,rgba(255,80,130,.35) 40%,rgba(60,10,90,.62) 85%)']];   /* the Summit behind his celebrations */
  let css=R.map(r=>{ const b=ycBg(r[1],r[2]); return b?`body.yc-city ${r[0]}{${b}}`:''; }).join('\n');
  const nook=ycBg('ycw-k-nook','linear-gradient(rgba(255,252,244,.12),rgba(255,252,244,.22))');   /* the quiet nook behind every lesson */
  if(nook) css+=`\nbody.yc-city.gm-lesson,body.yc-city.gm-lesson .lf-card{${nook}background-attachment:fixed!important}`;
