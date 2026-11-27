@@ -186,7 +186,7 @@ export function startGame(cfg) {
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16 * k, 0.24 * k, 40), paintM); card.add(ring); }
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075 * k, 24), paintM); dot.position.set(p[0] * 0.38 * (LK ? 0.85 : 1), p[1] * 0.38 * (LK ? 0.85 : 1), 0.002); card.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
-      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
+      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(0.5, 0.75, 0);   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (LK) {
       const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5, BX.d / 2 + 0.3); lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
     } else {
@@ -1046,7 +1046,7 @@ export function startGame(cfg) {
   function setPosRound(R) {
     if (posPiece) { scene.remove(posPiece.g); shapes.splice(shapes.indexOf(posPiece), 1); posPiece = null; }
     if (!BR) BR = makeBridge();
-    posPiece = makeShape('q' + (++pzN), R.k, R.color || '#F2A900', 0, R.s || 0.6); posPiece.slot = 0; posPiece.home.copy(tall ? new THREE.Vector3(0, 0.92, 3.3) : new THREE.Vector3(-3.4, 0.92, 2.9)); posPiece.g.position.copy(posPiece.home);
+    posPiece = makeShape('q' + (++pzN), R.k, R.color || '#F2A900', 0, R.s || 0.6); posPiece.slot = 0; posPiece.home.copy(tall ? new THREE.Vector3(0, 0.92, 3.3) : new THREE.Vector3(-2.9, 0.92, 2.3));   /* in from the corner, so it is round and easy to see (not stretched at the screen edge) */ posPiece.g.position.copy(posPiece.home);
     posWant = R.where; posPiece.box = 0;
   }
   function placeAt(o, z) { const p = zoneWorld(z); return moveTo(o, new THREE.Vector3(p.x, p.y + 0.05, p.z), 420, 0.5).then(() => { o.busy = true; o.g.rotation.set(0, 0, 0); pop(); }); }
