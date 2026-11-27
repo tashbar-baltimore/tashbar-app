@@ -27,7 +27,7 @@ export default function setup(E, { struggled, unit }) {
   const slotM = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffd36a, emissiveIntensity: .7, transparent: true, opacity: .6 });
   const slot = E.mesh(new THREE.TorusGeometry(.62, .05, 10, 40), slotM, 0, 0, .15, false); board.add(slot);
   const glow = E.glowSprite('#fff7b0', 2.0, 0); E.scene.add(glow);
-  let P = false, tiles = [], cards = [], word = null, busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), mistakes = 0, missed = false, wrongInRow = 0, help = struggled, resolveTask = null, done = 0;
+  let slotFlash = 0, P = false, tiles = [], cards = [], word = null, busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), mistakes = 0, missed = false, wrongInRow = 0, help = struggled, resolveTask = null, done = 0;
   const TH = 1.15, step = 1.35;
   const tileX = (i, n) => ((n - 1) / 2 - i) * step;   /* right to left */
   const cardHome = i => P ? new THREE.Vector3(i ? -.9 : .9, .9, 2.0) : new THREE.Vector3(i ? -1.4 : 1.4, .75, 2.4);
@@ -37,7 +37,8 @@ export default function setup(E, { struggled, unit }) {
     cards.forEach((c, i) => { if (c !== drag && !c.userData.busy) c.position.copy(cardHome(i)); c.scale.setScalar(P ? .8 : 1); });
   });
   E.onFrame(t => {
-    endStar.rotation.y = t * 1.5; slotM.opacity = .45 + Math.sin(t * 3) * .15; slot.scale.setScalar(1 + Math.sin(t * 3) * .04);
+    endStar.rotation.y = Math.sin(t * 1.5) * .5; endStar.scale.setScalar(P ? 1.45 : 1);   /* it rocks gently, never edge-on; bigger on a phone */
+    const fl = performance.now() < slotFlash; slotM.opacity = fl ? 1 : .45 + Math.sin(t * 3) * .15; slot.scale.setScalar(fl ? 1.3 : 1 + Math.sin(t * 3) * .04);
     cards.forEach((c, i) => { if (c !== drag && !c.userData.busy) c.position.y = cardHome(i).y + Math.sin(t * 2 + i) * .05; });
     const g = help && enabled && cards.find(c => word && c.userData.key === word.keys[word.gap]); if (g) { glow.position.copy(g.position).setZ(g.position.z - .3); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
@@ -70,7 +71,7 @@ export default function setup(E, { struggled, unit }) {
       busy = false; const r = resolveTask; resolveTask = null; r && r();
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; wrongInRow++; kid.mood('think'); await back(c); await E.shake(c, .12);
-      E.hop(endStar, .4, 500); slotM.opacity = 1; slot.scale.setScalar(1.3);   /* the star and the empty place light up */
+      E.hop(endStar, .4, 500); slotFlash = performance.now() + 2500 * E.F;   /* the star and the empty place light up */
       await E.say(E.LETTERS[k].partner ? NM(k) + ' goes only at the end of a word.' : 'This is the end of the word!');
       await E.say(atEnd() ? 'At the end, ' + NM(plainOf(k)) + ' wears Shabbos clothes.' : 'Here we need plain ' + NM(want) + '.');
       if (wrongInRow >= 2 || mistakes >= 3) help = true; kid.mood('calm'); busy = false;

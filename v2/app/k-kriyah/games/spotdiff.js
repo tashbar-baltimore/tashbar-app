@@ -19,17 +19,17 @@ export default function setup(E, { struggled, unit }) {
   const pads = [0, 1].map(() => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(1.25, 1.35, .25, 40), E.M(0xfff6e4, { roughness: .4, clearcoat: .6 }), 0, .12, 0)); { const rg = E.mesh(new THREE.TorusGeometry(1.3, .05, 10, 48), E.M(0xf2c14e, { metalness: .5, roughness: .3 }), 0, .26, 0); rg.rotation.x = Math.PI / 2; p.add(rg); } E.scene.add(p); return p; });
   /* the line where ordinary letters stop: a long leg goes below it */
   const lines = [0, 1].map(() => { const g = new THREE.Group(); g.add(E.mesh(E.rbox(2.6, .14, .1, .05), new THREE.MeshStandardMaterial({ color: 0xffd23a, emissive: 0xff9a00, emissiveIntensity: .55, roughness: .3 }), 0, 0, 0, false)); E.scene.add(g); return g; });
-  let P = false, A = null, B = null, R = null, busy = true, active = false, misses = 0, mistakes = 0, help = struggled, resolveFind = null, card = null, cardHome = new THREE.Vector3(), drag = null, grab = new THREE.Vector3(), resolveCard = null, cardMissed = false;
+  let hintUntil = 0, P = false, A = null, B = null, R = null, busy = true, active = false, misses = 0, mistakes = 0, help = struggled, resolveFind = null, card = null, cardHome = new THREE.Vector3(), drag = null, grab = new THREE.Vector3(), resolveCard = null, cardMissed = false;
   const X = () => P ? 1.15 : 2.0, Y = () => P ? 2.9 : 1.95, S2 = () => P ? .62 : 1;
   E.onLayout(p => { P = p;
     if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.4, 0); kid.visible = false; cardHome.set(0, .95, 2.2); } else { E.camBase.set(0, 2.5, 9.5); E.camTarget.set(0, 1.6, 0); kid.visible = true; kid.position.set(-4.9, 0, 1.2); cardHome.set(0, .7, 2.6); }
     const drop = H * S2() * .42;   /* room under the line for a long leg */
     pads.forEach((pd, i) => { pd.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .35 - drop, 0); pd.scale.setScalar(S2()); });
-    lines.forEach((ln, i) => { ln.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .02, .05); ln.scale.setScalar(S2()); });
+    lines.forEach((ln, i) => { ln.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .1 * S2(), .45); ln.scale.setScalar(S2()); });   /* where ordinary letters really end (with their bevel), in front */
     if (A) { A.position.set(X(), Y(), .3); A.scale.setScalar(S2()); } if (B) { B.position.set(-X(), Y(), .3); B.scale.setScalar(S2()); }   /* both on the gold line; a long leg hangs below it, above the stand */
     if (card && !drag) card.position.copy(cardHome);
   });
-  E.onFrame(t => { [A, B].forEach((l, i) => { if (l) l.rotation.y = Math.sin(t * .9 + i) * .12; }); marks.forEach(m => m.visible && (m.material.opacity = m.userData.on ? .65 + Math.sin(t * 5) * .25 : 0)); hint.forEach(h => h.material.opacity = help && active ? .35 + Math.sin(t * 4) * .2 : 0);
+  E.onFrame(t => { [A, B].forEach((l, i) => { if (l) l.rotation.y = Math.sin(t * .9 + i) * .12; }); marks.forEach(m => m.visible && (m.material.opacity = m.userData.on ? .65 + Math.sin(t * 5) * .25 : 0)); hint.forEach(h => h.material.opacity = (help && active) || performance.now() < hintUntil ? .35 + Math.sin(t * 4) * .2 : 0);
     if (card && card !== drag && !card.userData.busy) card.position.y = cardHome.y + Math.sin(t * 2) * .06; });
   /* where the difference is, on each letter, in its own space */
   const spot = (k, other, l) => { const f = E.featFor(k, other) || E.FEATURES[k]; return l.localToWorld(E.fontToLocal(k, H, f[0], f[1]).add(new THREE.Vector3(0, 0, .4))); };
@@ -55,7 +55,7 @@ export default function setup(E, { struggled, unit }) {
       hint[0].position.copy(spot(R.a, R.b, A)).setZ(.1); hint[1].position.copy(spot(R.b, R.a, B)).setZ(.1);
       const ok = await new Promise(r => resolveFind = r); active = false; busy = true;
       if (ok) { E.sfx.chime(); kid.mood('cheer'); E.sparkle(spot(R.a, R.b, A), 14, .7); E.sparkle(spot(R.b, R.a, B), 14, .7); await showDiff(); await E.say('You found it!'); await E.say(R.la); await E.say(R.lb); hideDiff(); kid.mood('calm'); return; }
-      E.sfx.boop(); misses++; if (misses === 1) mistakes++; kid.mood('think'); hint.forEach(h => { h.material.opacity = .8; }); const was = help; help = true; setTimeout(() => { help = was || misses >= 2; }, 1400 * E.F);   /* a soft glow shows where to look */ await E.say(R.where === 'bottom' ? 'Look at the bottom of the letters!' : 'Look at the top of the letters!'); kid.mood('calm');
+      E.sfx.boop(); misses++; if (misses === 1) mistakes++; kid.mood('think'); hintUntil = performance.now() + 6000 * E.F;   /* a soft glow shows where to look, until he taps again */ await E.say(R.where === 'bottom' ? 'Look at the bottom of the letters!' : 'Look at the top of the letters!'); kid.mood('calm');
       if (misses >= 2) help = true;
     }
   }
