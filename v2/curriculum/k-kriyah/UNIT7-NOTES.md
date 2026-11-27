@@ -38,3 +38,9 @@
 
 ## What's next
 Unit 8: Shin, Sin, Tuf, Suf (שׁ שׂ תּ ת), the last letters.
+
+## English picture words (Head of School, 2026-11-26)
+The boys' first language is English, so every picture now goes with the letter its **English** name starts with (a dog goes to Daled). The Hebrew picture words above (and in "For the rebbe") are no longer used.
+- Story: tzitzis (Tzadik), a kite (Kuf), a toy rabbit (Reish). Sound Match: tzitzis (Tzadik); kite, key (Kuf); rabbit, rose (Reish).
+- Ches and Tzadik have no English word with their sound, so they use words every boy knows: challah and tzitzis. Alef and Ayin are quiet and have no picture.
+- **For the rebbe:** please confirm challah (Ches) and tzitzis (Tzadik) as the picture words, and that teaching "dog starts with d" now is fine (the map had first sounds with the nekudos).
