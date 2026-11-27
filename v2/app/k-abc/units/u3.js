@@ -30,7 +30,7 @@ const wordTiles = (S, w, k = 0.62) => { const g = new THREE.Group(); w.split('')
 async function todayWord(G, w) {
   const S = G.S, pip = document.createElement('i'); document.getElementById('pips').appendChild(pip); G.newRound();
   const g = wordTiles(S, w, G.narrow() ? 0.6 : 0.75); g.position.set(0, 3.2, 0.3); const h = tapHit(g, 1.0); h.scale.set(1.8, 0.8, 1);
-  await G.say('A new word with this sound!', 'Read it with me.', sounds(w), w + '.');
+  await G.say('A new word with this sound!', 'Listen to the sounds.', sounds(w), 'What word is it? Say it!'); await G.wait(1800); await G.say(w + '!');
   await G.say('Tap the word and read it again.');
   await new Promise(res => { G.expect({ kind: 'tap', at: g }); G.A.wrongMove = null; G.tap(h, async () => { G.taps = []; for (const c of w) await audio.letter(c); res(); }); });
   await G.right(g.position, w + '! You read it!'); S.scene.remove(g);
@@ -118,7 +118,7 @@ const hunt = {
         await new Promise(res => { G.taps = []; cards.forEach(c => { if (c.userData.up) return; G.tap(c.children[c.children.length - 1], async () => { if (busy || c.userData.up) return; busy = true;
           await flip(c, true); const w = c.userData.w; await audio.say(say(w));
           if (c.userData.yes) { c.userData.up = true; c.scale.setScalar(1); busy = false; found++; G.taps = []; await G.right(c.position, say(w) + '! Mmm!'); res(); }
-          else { await G.wrong([say(w) + '. Not this sound. Try another card.']); await flip(c, false); busy = false; } }); }); });
+          else { await G.wrong([say(w) + '. Listen to the start.', snd('m'), 'Try another card.']); await flip(c, false); busy = false; } }); }); });
       }
       await todayWord(G, 'mat'); await G.done('You found every one!');
     }

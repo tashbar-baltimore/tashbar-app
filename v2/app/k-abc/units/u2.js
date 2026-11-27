@@ -248,6 +248,7 @@ export function slide(words, title, decoy = 'pan', finalRead = false) {
           tiles.slice(0, lead + 2).forEach(t => t.userData.joined = true); for (let k = 0; k <= lead + 1; k++) await audio.letter(chs[k]);
           lead++;
         }
+        if (!PIC[w]) { await G.say('What word is it? Say it!'); await G.wait(1800); }   /* he says it before the voice does */
         await G.right(tiles[tiles.length - 1].position.clone().add(V(0, 0.6, 0.4)), PIC[w] ? 'You blended it!' : say(w) + '!');
         /* the word goes to its picture, if it has one */
         if (PIC[w]) { const dk = typeof decoy === 'string' ? decoy : (PIC[decoy[w]] || 'pan'), opts = shuffle([PIC[w], dk]).map((p, i) => G.item(p, () => n() ? V(-1.2 + i * 2.4, 0.8, 2.2) : V(-1.6 + i * 3.2, 0.8, 2.2), { size: 1.0 })); const good = opts.find(o => o.name === PIC[w]);
