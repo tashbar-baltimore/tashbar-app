@@ -175,3 +175,29 @@ The whole boys' world (`docs/WORLD.md`): the Mountain Kingdom (school work) and 
 | 50 | `ycw-ic-detective.png` | Mistake Detective | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a big magnifying glass with a sparkle. |
 | 51 | `ycw-ic-tracks.png` | Torah Tracks | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a golden path leading to an open sefer with blank pages. |
 | 52 | `ycw-ic-talk.png` | Talk to my Rebbe | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a sealed envelope with a small gold heart seal. |
+
+## Order YCB-3 (2026-11-27) · the buttons · status: SENT, waiting
+Asked for (Head of School, 2026-11-27): "the rest of the buttons all should fit the theme ... upgraded to immersive 3D-like images that match the themes."
+Every boy-facing button stays the kit's (`src/UiKit.html`): the same kinds, words and places. Each kind gets a picture face, one set for the Mountain Kingdom (work) and one for the Golden City (free time). The picture sits on the kit's own colour, so main stays gold and quiet stays white. Information pills stay plain tints (information is never a button).
+
+**Style for every picture:** EXACTLY the same world as orders YCB-1 and YCB-2: top-quality 3D animated-film look, bright late-morning sun from the upper right, soft glow, rich but clean detail, vivid not neon. Cool for boys 9 to 14, never babyish, never dark.
+- No words, letters or numbers anywhere. Completely blank faces: the app writes the words on top.
+- Every picture PNG with a truly transparent background, the object filling the picture edge to edge (no empty margin), soft shadow only inside the object.
+- STRETCH RULE for the long buttons and the card: the decoration is only at the four corners and the left and right ends; the long middle part is a plain, even band, so the app can stretch it to any length without the corners changing.
+- No crosses or X shapes, no religious symbols, no logos.
+
+| # | File | Where | Size | Prompt |
+|---|---|---|---|---|
+| 1 | `ycw-btn-k-main.png` | Kingdom: the one main button (Start, Next, Check, Buy it) | 1600 x 400, TRANSPARENT | A wide, rounded-rectangle button face of glossy polished gold with a thin carved gold rim, a soft warm inner glow and a gentle highlight along the top edge, slightly raised like a 3D game button. Blank face. Follow the stretch rule. |
+| 2 | `ycw-btn-k-quiet.png` | Kingdom: every other choice (Not now, Leave) | 1600 x 400, TRANSPARENT | The same shape as #1, but a smooth white marble face with a thin gold rim, softly raised, clean and calm. Blank face. Stretch rule. |
+| 3 | `ycw-btn-k-round.png` | Kingdom: round buttons (close, home, back, read-to-me, music, hint) | 800 x 800, TRANSPARENT | A round raised medallion button: smooth white marble centre with a thick polished gold rim, soft highlight on the upper right. Blank centre. |
+| 4 | `ycw-btn-k-tile.png` | Kingdom: the cards that open a place (home tiles, his work papers) | 1600 x 1200, TRANSPARENT | A rounded-square card of warm cream stone with a thin gold trim border and a very slight 3D bevel, as if carved for a mountain palace. Large plain light centre. Stretch rule (decoration only in the corners and along the border). |
+| 5 | `ycw-btn-c-main.png` | Golden City: main button | 1600 x 400, TRANSPARENT | The same shape as #1: glossy bright gold with tiny sparkling sky-blue gems set into the two ends and a soft golden glow. Blank face. Stretch rule. |
+| 6 | `ycw-btn-c-quiet.png` | Golden City: other choices | 1600 x 400, TRANSPARENT | The same shape as #1: smooth pearly cream face with a thin gold rim and a faint rainbow pearl sheen. Blank face. Stretch rule. |
+| 7 | `ycw-btn-c-round.png` | Golden City: round buttons | 800 x 800, TRANSPARENT | A round raised medallion button: pearly cream centre with a thick polished gold rim set with four tiny sky-blue gems. Blank centre. |
+| 8 | `ycw-btn-c-tile.png` | Golden City: cards that open a place (store items, games) | 1600 x 1200, TRANSPARENT | A rounded-square card with a pearly cream centre and an ornate gold frame with small soft cloud swirls in the corners. Large plain light centre. Stretch rule. |
+| 9 | `ycw-btn-ic-home.png` | Icon on the round home button | 800 x 800, TRANSPARENT | A small 3D cottage-style house icon in warm stone and gold, with a little glowing window (plain, no window bars), on its own. |
+| 10 | `ycw-btn-ic-back.png` | Icon on the round back button | 800 x 800, TRANSPARENT | A single bold 3D curved arrow pointing left, polished gold, on its own. |
+| 11 | `ycw-btn-ic-speak.png` | Read it to me | 800 x 800, TRANSPARENT | A 3D speaker icon in gold and white with three soft sound waves to the right, on its own. |
+| 12 | `ycw-btn-ic-hint.png` | Hint | 800 x 800, TRANSPARENT | A 3D glowing light bulb icon, warm golden light inside, on its own. |
+| 13 | `ycw-btn-ic-music.png` | Music | 800 x 800, TRANSPARENT | A 3D pair of eighth notes in polished gold with a soft glow, on its own. |
