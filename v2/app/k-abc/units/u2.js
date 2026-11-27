@@ -20,6 +20,10 @@ import { LW, mouthCard } from '../lworlds.js';
 export const ORDER = ['opener', 's-meet', 's-trace', 's-hunt', 'a-meet', 'a-trace', 'a-hunt', 't-meet', 't-trace', 't-hunt', 'slide',
   'p-meet', 'p-trace', 'p-hunt', 'slide2', 'story', 'fixit', 'review', 'check'];
 const say = w => (WORDS[w] ? WORDS[w].say : w);
+/* the name at the top of each game (play.html; K-CLARITY-RULES 13: the title is always on screen) */
+export const TITLES = { opener: 'First Sounds', 's-meet': 'Meet s', 's-trace': 'Trace s', 's-hunt': 'Find s', 'a-meet': 'Meet a', 'a-trace': 'Trace a', 'a-hunt': 'Find a',
+  't-meet': 'Meet t', 't-trace': 'Trace t', 't-hunt': 'Find t', slide: 'Slide It', 'p-meet': 'Meet p', 'p-trace': 'Trace p', 'p-hunt': 'Find p', slide2: 'Slide It Again',
+  story: 'Story Time', fixit: 'Fix It', review: 'Review', check: 'Show Me' };
 const an = w => (/^[aeiou]/.test(w) ? 'An ' : 'A ') + w;
 const cap = w => w[0].toUpperCase() + w.slice(1);
 const snd = ch => echo(() => audio.letter(ch));
@@ -201,7 +205,7 @@ const hunt = {
         const timer = setInterval(exp, 200); exp();
         G.hint(async () => { const g = its.find(i => i.data.yes && !i.placed); if (g) { g.glow(true); await G.say(say(g.name) + '.', snd('p')); } });
         await new Promise(res => its.forEach(it => it.onTap = async () => { if (it.placed) return; it.poke(); await it.say();
-          if (it.data.yes) { its.forEach(x => x.onTap = () => {}); it.placed = true; audio.pop(); G.P.burst(it.obj.position, 0.3); it.bub.visible = false; it.size *= 0.75;
+          if (it.data.yes) { its.forEach(x => x.onTap = () => {}); it.placed = true; audio.pop(); G.P.burst(it.obj.position, 0.12); it.bub.visible = false; it.size *= 0.75;
             await it.moveTo(G.bk.position.clone().add(V(-0.4 + r * 0.4, 0.8 * G.bk.scale.x, 0.2)), 500); await G.right(G.bk.position, say(it.name) + '!'); res(); }
           else await G.wrong([say(it.name) + '. Not this sound.', snd('p')], it); }));
         clearInterval(timer); its.forEach(it => { if (!it.placed) it.onTap = () => it.say(); });

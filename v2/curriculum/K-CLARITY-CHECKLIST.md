@@ -1,4 +1,4 @@
-# Kindergarten clarity checklist (ABC Unit 1, pull request #595)
+# Kindergarten clarity checklist (ABC Units 1 and 2, pull requests #595 and #603)
 
 Checked against the Kindergarten clarity rules (`v2/curriculum/K-CLARITY-RULES.md` on the Shapes and Numbers branches; rules numbered the same).
 Every game was played as a made-up boy in the full 3D look (`?fast=1&tier=2`: quick waits, full picture) at Chromebook (1366×768) and phone (390×844) size, with one wrong move. Pictures: `v2/screens/k-clarity/abc-u1-<game>-<before|after>-<chromebook|phone>.jpg` (opener, rhyme, clap, sort and fixit; the other games share the same world change).
@@ -19,3 +19,16 @@ Every game was played as a made-up boy in the full 3D look (`?fast=1&tier=2`: qu
 | Listening Walk, Show Me | Busy world (10). | Calm world. | review, check |
 
 Not changed (for Esti): ABC is being rebuilt "the calm way" (#620, a sample waiting for her). These Unit 1 games stay 3D; if the calm rebuild replaces them, these fixes can be dropped.
+
+## other-603: Kindergarten ABC Unit 2 "First sounds s a t p"
+
+This branch now has Unit 1's clarity changes (merged from #595), so every Unit 2 game also gets the calm pond, garden and hill worlds, the small reward burst and the game's name at the top.
+
+| Game | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| All 19 games | No game name on screen (13). | Names at the top: First Sounds, Meet s, Trace s, Find s, ... Slide It, Story Time, Fix It, Review, Show Me (`units/u2.js` TITLES). | all |
+| Meet s, Meet a (and the s and a letter worlds) | The letter worlds kept their own older "calm": still 6,000 swaying grass blades, 45 flowers, floating pollen and a butterfly (10). Each step of the lesson set off a full confetti storm around the snake (10). | No grass blades, 12 flowers, nothing floating or flying (`worlds.js`, also the Unit 1 look sample); the letter-world cheers and the hunt bursts are about a third as big (`lworlds.js`, `units/u2.js`). | s-meet |
+| Find s, Find a, Find t, Find p | Busy grass all round the pond (10). | Calm world (from Unit 1). | s-hunt |
+| First Sounds, Slide It, Story Time | Busy world (10). | Calm world. | opener |
+
+Pictures: `v2/screens/k-clarity/abc-u2-<game>-<before|after>-chromebook.jpg`.
