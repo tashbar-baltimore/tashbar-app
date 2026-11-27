@@ -12,7 +12,9 @@
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 <link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
 <style>.cardrow{ display:flex; gap:clamp(14px,4vw,40px); align-items:center; } .cardrow .numcard{ cursor:pointer; } .cardrow[hidden], #check[hidden]{ display:none; }
-.numcard.good{ box-shadow:0 0 0 6px #22B45E; } .numcard.shake{ animation:shake .45s; }</style>
+.numcard.good{ box-shadow:0 0 0 6px #22B45E; } .numcard.shake{ animation:shake .45s; }
+/* K clarity (rules 9, 11): Ari, who says the mistake, is big enough to see; the numbers he taps are big */
+#panel .who img{ height:clamp(84px,14vh,130px); width:auto; } .cardrow .numcard{ width:clamp(110px,min(20vh,34vw),160px); height:clamp(110px,min(20vh,34vw),160px); }</style>
 </head>
 <body>
 <div id="world"></div>
@@ -61,7 +63,7 @@ async function card(k) {
   if (k === m) { await FR.yes(el, 'Yes! ' + FR.Word(R.n[m]) + ' is more. Thank you for helping Ari!'); return finish(); }
   FR.oops(el); R.misses++; await FR.say('Look at the apples.'); await lineUp(); O.setApples(0, 0); O.setApples(1, 0); await FR.say('Which number is more?'); open();
 }
-const PLAN = [{ kind: 'spread', n: [4, 6] }, { kind: 'fix', base: 4, put: 6 }, { kind: 'nums', n: [4, 6] }, { kind: 'spread', n: [7, 5] }, { kind: 'fix', base: 7, put: 7 }, { kind: 'nums', n: [9, 7] }];
+const PLAN = [{ kind: 'spread', n: [4, 6] }, { kind: 'fix', base: 4, put: 6 }, { kind: 'nums', n: [4, 6] }, { kind: 'spread', n: [6, 4] }, { kind: 'fix', base: 7, put: 7 }, { kind: 'nums', n: [9, 7] }];
 function play(F, i) {
   return new Promise(async res => {
     R = Object.assign({ misses: 0 }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true);
@@ -86,7 +88,7 @@ FR.game({
   id: 'u7-mistake', title: 'Find the Mistake', rounds: 6,
   hero: '<div class="hero6"><img src="art/ari-talk.png" alt=""></div>',
   init() {
-    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true });
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true, tree: true });
     O.onTap = (id, el) => { if (GAME.phase !== 'answer') return; if (id.startsWith('side')) side(+id[4], el);
       else if (R.kind === 'fix' && id === 'tree') busy = busy.then(() => O.count(1) < 10 ? O.drop(1) : null);
       else if (R.kind === 'fix' && id.startsWith('a1-')) busy = busy.then(() => O.take(1)); };

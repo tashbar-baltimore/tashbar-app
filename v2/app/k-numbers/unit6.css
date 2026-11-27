@@ -27,7 +27,7 @@
   box-shadow:0 6px 0 #B9C7E6, 0 10px 16px rgba(30,40,90,.2); border:4px solid #fff; cursor:grab; touch-action:none; }
 .numcard svg{ height:100%; width:auto; } .numcard.picked{ outline:5px solid #FFC93D; transform:translateY(-6px); } .numcard.done{ visibility:hidden; }
 /* the spinner */
-.spin6{ position:relative; width:clamp(96px,15vh,132px); aspect-ratio:1; border-radius:50%; cursor:pointer; filter:drop-shadow(0 8px 0 rgba(20,90,140,.35)) drop-shadow(0 12px 14px rgba(0,0,0,.2)); }
+.spin6{ position:relative; width:clamp(108px,18vh,150px); aspect-ratio:1; border-radius:50%; cursor:pointer; filter:drop-shadow(0 8px 0 rgba(20,90,140,.35)) drop-shadow(0 12px 14px rgba(0,0,0,.2)); }
 .spin6 svg{ position:absolute; inset:0; width:100%; height:100%; } .spin6.glow{ animation:pulse 1.2s infinite; } .spin6.landed{ transform:scale(1.08); transition:transform .15s; }
 /* the race board: who is ahead (two small faces on a bar) */
 .who{ display:flex; align-items:center; gap:10px; }
@@ -53,3 +53,5 @@
 .hcol .fhand, #hp .fhand{ width:clamp(96px,14vh,122px) !important; aspect-ratio:170/230; margin-right:34px; }
 .hcol .fhand .fdown, #hp .fhand .fdown{ width:64px; height:64px; right:-38px; bottom:-6px; }
 @media (max-width:760px), (max-aspect-ratio:4/5){ .hcol .fhand, #hp .fhand{ width:90px !important; } }
+/* K clarity 9: a panel with nothing showing in it is not drawn (it looked like an empty white bar) */
+.s6 > .ui:not(:has(> :not([hidden]))){ visibility:hidden; }

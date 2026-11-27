@@ -7,7 +7,8 @@
 const path = require('path'), fs = require('fs'), os = require('os'), cp = require('child_process');
 const R = path.join(__dirname, '..', '..');
 const GAMES = (() => { try { const src = fs.readFileSync(path.join(R, 'v2', 'app', 'k-numbers', 'units.js'), 'utf8'); const w = {}; new Function('window', src)(w);
-  return [].concat(...w.NK_UNITS.map(u => u.stops)).filter(s => s[1] !== 'peek.html').map(s => [s[0], s[1]]); } catch (e) { return null; } })();
+  return [].concat(...w.NK_UNITS.map(u => u.stops)).filter(s => s[1] !== 'peek.html').map(s => [s[0], s[1]])
+    .filter(s => !process.env.KNUM_ONLY || process.env.KNUM_ONLY.split(',').includes(s[1]));   /* KNUM_ONLY=a.html,b.html: only those (a builder's quick run); unset = every game */ } catch (e) { return null; } })();
 
 module.exports = async function (browser) {
   const out = { fails: [], oks: [] }, bad = m => out.fails.push('2.0 K Numbers: ' + m);

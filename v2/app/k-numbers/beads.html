@@ -13,7 +13,7 @@
 .stage{ grid-template-rows:auto 1fr auto; justify-items:center; align-items:center; gap:10px; }
 .ask{ display:flex; align-items:center; gap:18px; }
 .ask .panel{ display:flex; align-items:center; gap:16px; padding:8px 22px; }
-.ask .tf{ width:min(26vw,230px); }
+.ask .tf{ width:min(30vw,300px); } .ask .unum svg{ height:clamp(84px,17vh,150px) !important; }   /* the number he must make is big and clear (K clarity 12) */
 .rackwrap{ width:min(96vw,1100px); }
 @media (max-width:760px), (max-aspect-ratio:4/5){ .ask .tf{ width:40vw; } .rackwrap{ width:96vw; } }
 </style>
@@ -38,7 +38,7 @@
     GAME.phase = 'busy'; FR.lock(true); K.lock(true);
     if (have === R.n) { $('pic').classList.remove('hiddenpic'); K.el.classList.add('glowmoved'); await FR.yes(K.el, R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + some(R.n)); K.el.classList.remove('glowmoved'); var d = done; done = null; d(R.misses === 0); return; }
     FR.oops(K.el); R.misses++;
-    if (R.misses === 1) { await FR.say("Let's look again. Five red is five."); await FR.say('Fix your beads.'); }
+    if (R.misses === 1) { K.el.classList.add('glowmoved'); await FR.say("Let's look again."); await FR.say(some(R.n)); K.el.classList.remove('glowmoved'); await FR.say('Fix your beads.'); }   /* the help shows how: what the number is made of (K clarity 16) */
     else { $('pic').classList.remove('hiddenpic'); mark(true); K.el.classList.add('glowmoved'); await FR.say(some(R.n)); var k = R.n - have; await FR.say(k > 0 ? 'Push ' + FR.word(k) + ' more.' : 'Push ' + FR.word(-k) + ' back.'); K.el.classList.remove('glowmoved'); }
     GAME.phase = 'answer'; FR.lock(false); K.lock(false); ready(); hooks();
   }

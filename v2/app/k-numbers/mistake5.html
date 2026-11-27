@@ -16,7 +16,7 @@
 .says::after{ content:''; position:absolute; left:-18px; top:44%; border:12px solid transparent; border-right:18px solid #fff; }
 .says .spk{ width:54px; height:54px; border-radius:50%; background:radial-gradient(circle at 50% 30%,#8BE0FF,#2FB5E8); display:flex; align-items:center; justify-content:center; }
 .says .spk svg{ width:30px; height:30px; }
-.says .hands2{ width:clamp(170px,32vh,300px); }
+.says .hands2{ width:clamp(210px,38vh,340px); }   /* the friend's hands are big enough to count (K clarity 9) */
 .thumbs button{ width:clamp(104px,17vh,140px) !important; }
 .fixrow{ display:flex; align-items:center; gap:12px; } .fixrow[hidden], .thumbs[hidden]{ display:none; }
 .fixrow .panel .hands2{ width:min(34vw,46vh,420px); }
@@ -81,7 +81,7 @@
     NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'fix') return; var have = H.count(); if (!have) { FR.say('Raise some fingers first.'); return; }
     GAME.phase = 'busy'; FR.lock(true); H.lock(true);
     if (have === R.n) { await FR.yes($('hp'), 'Yes! ' + FR.Word(R.n) + '. Thank you for helping ' + R.who + '!'); finish(R.misses === 0); return; }
-    FR.oops($('hp')); R.misses++; await look(R.misses > 1);
+    FR.oops($('hp')); R.misses++; await look(true);   /* the help always shows how: the rows light and he hears the whole number (K clarity 16) */
     if (R.misses > 1) { var k = R.n - have; await FR.say(k > 0 ? 'Put ' + FR.word(k) + ' more up.' : 'Put ' + FR.word(-k) + ' down.'); } else await FR.say('Fix your fingers.');
     GAME.phase = 'answer'; FR.lock(false); H.lock(false); ready(); hooks();
   }

@@ -55,7 +55,7 @@ FR.game({
   id: 'u7-build', title: 'One More, One Less', rounds: 6,
   hero: '<div class="hero6"><img src="art/shmuel-happy.png" alt=""></div>',
   init() {
-    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true }); O.treeSpot();
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true, tree: true }); O.treeSpot();
     O.onTap = (id) => { if (GAME.phase !== 'answer') return; if (id === 'tree') change(() => O.count(1) < 10 ? O.drop(1) : null);
       else if (id.startsWith('a1-')) change(() => O.take(1)); };
     $('check').addEventListener('click', check);
