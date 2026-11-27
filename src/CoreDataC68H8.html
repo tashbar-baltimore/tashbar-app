@@ -26,8 +26,8 @@
   var SWAP = function (c, f, t) { return c.map(function (x) { return x[0] === f ? t : x; }); };
   var NL = function (id, f) { var b = BITE[id]; if (!b || !b.do || !b.your) return; f(b, b.do, b.your); delete b.do; delete b.your; delete b.ready; };
   NL('READ.COMP.L08.16', function (b, D, Y) {
-    b.hook = { kind: 'notice', pic: '🦀', t: 'Scientist: "Oysters filter the bay\'s water." Waterman: "Oysters filter the bay\'s water."',
-      q: 'What do you notice?', o: ['They agree on this', 'They disagree', 'One of them is wrong'],
+    b.hook = { kind: 'notice', pic: '🦪', t: 'Scientist: "Oysters clean the bay." Waterman: "Oysters clean the bay. But limits hurt us."',
+      q: 'What do you notice?', o: ['They agree on one thing, argue on another', 'They disagree on everything', 'They agree on everything'],
       pay: 'They *agree* on a fact! Opponents often *share* facts. Then they *disagree* on the rest.' };
     b.learn = [
       { t: 'Read both views on the *bay*.', act: { type: 'read', text: 'C68.BAY.05',
@@ -39,7 +39,8 @@
     D[0].how = 'Same answer? Different answers? Or one *fact* with two *meanings*?';
     Y[4].w = ['Opponents share facts', 'but disagree', 'on the cause', 'and the fix.']; Y[4].extra = ['on nothing.'];
     Y[4].say = 'Tap the pieces in order to build it.'; Y[4].how = 'Shared *facts* first. Then the real *disagreement*.';
-    D[1].cards = SWAP(D[1].cards, 'They agree that oysters filter the water.', ['Both say the bay is less clean than in 1900.', 0]); Y[1].look = 'View A\'s line about disease, and View B\'s';
+    D[1].cards = SWAP(D[1].cards, 'They agree that oysters filter the water.', ['Both say the bay is less clean than in 1900.', 0]); Y[1].p[0] = 'Pollution is a serious problem for the bay.'; Y[1].look = 'View A: "Pollution is serious." View B: "The bigger danger is pollution."';
+    D[0].pairs = D[0].pairs.map(function (x) { return /^More men came/.test(x[0]) ? ['More men came. One says: the new rav. One says: the new shiur.', x[1]] : x; });
     b.play = [D[1], Y[0], Y[2], Y[1]];
     b.done = 'You find where writers *agree*, where they *disagree*, and the fact they *read two ways*.'; });
 
@@ -50,7 +51,7 @@
     b.learn = [
       { t: 'Piece 1 is in the *estuary article*.', act: D[1] },
       { t: 'Join a *piece* from each text. Name each *source*.', act: { type: 'storymap', slots: ['Estuary article', 'Oyster article', 'View B'],
-        cards: ['Pennsylvania water drains to the bay.', 'Nutrients feed algae that use up oxygen.', 'Crabs cannot thrive in dead zones.'], extra: ['The skipjack is the state boat.'],
+        cards: ['Pennsylvania water drains to the bay.', 'Nutrients feed algae that rot and use up oxygen.', 'Crabs cannot thrive in dead zones.'], extra: ['The skipjack is the state boat.'],
         say: 'Put each piece under the text it came from.', how: 'Where does the *water* go? What do *nutrients* do? Where do *crabs* suffer?' } },
       { who: { q: '"The estuary article names *Pennsylvania*. So it answers everything."', o: [['Shimmy', 'Yes, one text is enough'], ['Yaakov', 'No, it gives one piece']], a: 1,
         why: 'It never explains *dead zones* or the *catch*. You need more texts.' } },
@@ -75,7 +76,7 @@
         say: 'Did the harvest fall or rise each time?', how: 'Compare the two *numbers*. Bigger later means it *rose*.' } },
       { who: { q: '"The chart shows the *whole bay\'s* oysters."', o: [['Dovi', 'Right, it is about the bay'], ['Leibel', 'No, Maryland only']], a: 1,
         why: 'The *title* says Maryland. Read the title *first*.' } },
-      { t: '*Teach it back*: the chart says *how much*. The text says *why*.', act: Y[4] }];
+      { t: '*Teach it back*: which gives *numbers*, which gives *reasons*?', act: Y[4] }];
     Y[4].w = ['The chart shows', 'how much;', 'the text', 'says why.']; Y[4].extra = ['the chart says why.'];
     Y[4].say = 'Tap the pieces in order to build it.'; Y[4].how = 'Which one has *numbers*? Which one has *reasons*?';
     D[1].cards = [['From the 1950s to the 1980s, the harvest was cut in half.', 0], ['By the 2010s, the harvest was back near the old days.', 1], ['The 1980s harvest was about 1 million bushels.', 0], ['The chart shows the exact harvest for every year.', 1]];
@@ -88,13 +89,13 @@
       q: 'Will the clock be saved?', o: ['Yes', 'No', 'I cannot tell yet'],
       pay: 'You asked a *question* before reading. That is move 1! The story answers it at the *end*.' };
     b.learn = [
-      { t: 'Read the whole story. Stop after *each page*.', act: D[0] },
+      { t: 'Move 1: ask a *question*. Then read page by *page*.', act: D[0] },
       { t: 'Move 2: *sum up* each page in *one sentence*.', act: Y[2] },
-      { who: { q: '"Page 2 is *slow*. I will skip to the end."', o: [['Hershy', 'Fine, the end is what matters'], ['Avromi', 'No, you will miss a choice']], a: 1,
-        why: 'Page 2 has Shuey\'s *choice*. Skip it, and the end *makes no sense*.' } },
+      { who: { q: '"Page 2 is *slow*. I will skip to the end."', o: [['Hershy', 'Fine, the end is what matters'], ['Avromi', 'No, you will miss a big moment']], a: 1,
+        why: 'Page 2 has the *motor* offer. Skip it, and the end *makes no sense*.' } },
       { t: '*Teach it back*: match each moment to its *move*.', act: { type: 'match',
         pairs: [['before you read', 'ask a question'], ['after each page', 'sum it up'], ['a question is not answered yet', 'keep an open question'], ['you cannot say what happened', 'reread']],
-        say: 'Match each moment to its move. Then teach your chavrusa.', how: 'Not answered *yet*? Keep the question. *Lost*? Reread.' } }];
+        say: 'Match each moment to its move. Then teach your chavrusa.', how: 'Is it *not told yet*, or did you get *lost*?' } }];
     D[0].how = 'Each page: *sum it up*. Then add or cross off a *question*.';
     Y[2].how = 'Does it cover the *whole page*, not one detail?';
     D[1].cards = SWAP(D[1].cards, 'Skip page 2, it is slow.', ['Read fast to reach the end sooner.', 1]);
@@ -114,9 +115,9 @@
     Y[4].w = ['The street changes,', 'the lease ends,', 'Shuey chooses well,', 'and he grows.']; Y[4].extra = ['the bakery opens,'];
     Y[4].say = 'Build the chain of gears.'; Y[4].how = 'What starts the *trouble*? What does Shuey *do*? What does it do to *him*?';
     D[1].q = 'In Mr. Tavares\'s visit, which words show the new street has no room for the old clock?';
-    Y[0].pairs = Y[0].pairs.map(function (x) { return x[0] === 'Tavares lets the clock stay' ? ['Shuey hurries while Zeidy davens Mincha', x[1]] : x; });
+    Y[0].pairs = Y[0].pairs.map(function (x) { return x[0] === 'Tavares lets the clock stay' ? ['Shuey hurries while Zeidy davens Mincha', x[1]] : x[0] === 'watches set by a wrong clock' ? ['the new building needs a modern front', x[1]] : x; });
     Y[2].t = 'Mendy stayed late to help his rebbe, so he missed the bus and walked home in the snow. His ___ changed the plot.';
-    D[0].cards = SWAP(D[0].cards, 'The story could happen anywhere.', ['The tower and garage do not matter to the plot.', 1]);
+    D[0].cards = SWAP(D[0].cards, 'The story could happen anywhere.', ['The story could happen on any street.', 1]);
     Y[0].say = 'Match each moment to its gear. Then teach it.'; Y[0].how = '*Place*, *choice*, or a change in *Shuey*?';
     b.play = [D[0], Y[1], Y[2],
       { type: 'sort', bins: ['setting → problem', 'choice → plot', 'plot → person'],
@@ -134,7 +135,7 @@
       { who: { q: '"No fights, no danger. So *no suspense*."', o: [['Yehoshua', 'True, suspense needs action'], ['Meir', 'False, a deadline builds it']], a: 1,
         why: 'A *deadline* and a *secret* pull you on too.' } },
       { t: '*Teach it back*: build the rule. Tell your chavrusa.', act: Y[4] }];
-    D[0].how = 'Find where Shuey walks *home* from the shop. How does that page *end*?';
+    D[0].how = 'Which page *ends* before you know his *choice*?';
     Y[1].how = 'A *secret*, a *time*, or a page that *stops*?';
     Y[4].w = ['Deadlines, secrets', 'and cliffhangers', 'make you need', 'to know more.']; Y[4].extra = ['a long list'];
     Y[4].say = 'Tap the pieces in order to build it.'; Y[4].how = 'Three *tools*, then what they *do*.';
@@ -160,9 +161,9 @@
     D[0].say = 'A good theme, or a mistake?'; D[0].how = 'A *sentence about life*. Not one word, not a *summary*.';
     D[0].cards = SWAP(D[0].cards, 'Shuey fixes the clock.', ['Shuey files three teeth and saves the clock.', 1]);
     Y[0].q = 'When Zeidy first shows Shuey the wheel, which words state his rule about patience?';
-    Y[1] = { type: 'evidence', q: 'Which moment is the strongest proof from the MIDDLE of the story?', p: ['After the ruined tooth, Shuey makes himself go slower.', 'Ezra watches Shuey file for twenty minutes.', 'Dovi spills the soup at supper.'], a: 0,
-      look: 'what Shuey does after the tooth is too short', say: 'Tap the strongest proof from the middle.', how: 'Which one shows *patience* after a *mistake*?' };
-    Y[2].look = 'the sentence right after "I was wrong"';
+    Y[1] = { type: 'evidence', q: 'Which moment is the strongest proof from the MIDDLE of the story?', p: ['After the ruined tooth, Shuey makes himself go slower.', 'Shuey hurries while Zeidy davens Mincha.', 'Dovi spills the soup at supper.'], a: 0,
+      look: 'what Shuey does after the tooth is too short', say: 'Tap the strongest proof from the middle.', how: 'Which one shows Shuey being *patient*?' };
+    Y[2].look = 'the sentence right after "I was wrong"'; Y[2].q = 'Which sentence first states the speech\'s big idea?';
     Y[4].w = ['A theme', 'is a life lesson,', 'proved at the start,', 'middle and end.']; Y[4].extra = ['is one word,'];
     Y[4].say = 'Tap the pieces in order to build it.'; Y[4].how = 'The *theme*, then where its *proofs* come from.';
     b.play = [
