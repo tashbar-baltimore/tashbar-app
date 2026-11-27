@@ -254,6 +254,7 @@ async function kidTests(browser) {
       if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked && g.tabs === 1 && g.plays === 1 && H.n === 6 && H.equal && H.canteen) ok('home: 6 equal tiles (work first, Canteen its own door), the kit house top left elsewhere; map: one PLAY, Change subject; My profile; next level + real skill, path with BOSS, PLAY starts it, locked says so, All lessons is a game screen, no old pages; missions: 3 rounds, Arcade locked until cleared'); }
     /* TODAY'S LIST on My work (Core Growth job D, tests/lib/dailyplan.js) */
     try { const dp = await require('./lib/dailyplan.js').page(pg, km.map); dp.fails.forEach(fail); dp.oks.forEach(ok); } catch (e) { fail("today's list page test crashed: " + String(e && e.stack || e).slice(0, 300)); }
+    try { const yp = await require('./lib/classesbucket.js').page(pg); yp.fails.forEach(fail); yp.oks.forEach(ok); } catch (e) { fail('your classes & bucket page test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   }
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* CORE GROWTH (tests/lib/core.js, job T): every core lesson reached the page, no clash with an existing lesson */
@@ -339,6 +340,8 @@ async function staffTests(browser) {
   catch (e) { fail('staff card test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const d = require('./lib/dailyplan.js').server(); d.fails.forEach(fail); d.oks.forEach(ok); }
   catch (e) { fail("today's list test crashed: " + String(e && e.stack || e).slice(0, 300)); }
+  try { const yc = require('./lib/classesbucket.js')(); yc.fails.forEach(fail); yc.oks.forEach(ok); }   /* Your Classes & Bucket (src/ClassesBucket.js) */
+  catch (e) { fail('your classes & bucket test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const fc = require('./lib/flagchecker.js')(); fc.fails.forEach(fail); fc.oks.forEach(ok); } catch (e) { fail('flag checker check crashed: ' + String(e).slice(0, 200)); }   /* HoS 2026-11-24: docs/FLAG-CHECKER.md */
   try { const l = require('./lib/levelpass.js')(); l.fails.forEach(fail); if (!l.fails.length) ok('level checks and the 🎫 Level Pass: 25% before the check, full pay after, known skills skipped and not paid, one check per level, staff placement wins, no check = never cut'); report.timings.levelCheckStartMs = l.ms.start; report.timings.levelCheckSaveMs = l.ms.save; }
   catch (e) { fail('level pass test crashed: ' + String(e && e.stack || e).slice(0, 300)); }

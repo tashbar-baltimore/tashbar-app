@@ -148,6 +148,7 @@ async function page(pg, rep) {
   try { const un = await require('./coreunits.js').page(pg); un.fails.forEach(f => fails.push(f)); un.oks.forEach(o => oks.push(o)); } catch (e) { fail('unit checks (page) crashed: ' + String(e).slice(0, 200)); }
   try { const su = await require('./ssunits.js').page(pg); su.fails.forEach(f => fails.push(f)); su.oks.forEach(o => oks.push(o)); } catch (e) { fail('Social Studies unit checks crashed: ' + String(e).slice(0, 200)); }   /* HoS 2026-11-25 (#432): src/CoreDataS11.html */
   try { const cu = await require('./corewriteui.js')(pg); cu.fails.forEach(f => fails.push(f)); cu.oks.forEach(o => oks.push(o)); } catch (e) { fail('Writing Workshop screens crashed: ' + String(e).slice(0, 200)); }
+  try { const qw = await require('./quickwrite.js')(pg); qw.fails.forEach(f => fails.push(f)); qw.oks.forEach(o => oks.push(o)); } catch (e) { fail('quick writes crashed: ' + String(e).slice(0, 200)); }   /* W13 helper, HoS 2026-11-27: src/CoreDataW13H7.html */
   await pg.setViewportSize({ width: 390, height: 844 });
   try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push('390px: ' + f)); } catch (e) { fail('new activity kinds (390 px) crashed: ' + String(e).slice(0, 200)); }
   await pg.setViewportSize({ width: 1366, height: 768 });
