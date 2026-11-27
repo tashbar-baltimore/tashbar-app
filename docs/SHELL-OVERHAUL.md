@@ -18,6 +18,8 @@ Binding: `CLAUDE.md`, `CONTRIBUTING.md`, `docs/BUTTON-SYSTEM.md`, `docs/WORLD.md
 - **The seam:** lessons open only through `startMission(world, skillId, 'skill')` (wrapped as `openLesson(id)`); the way out is the done screen's `data-act` `tohub` / `start` / `retry`. Changes to `src/UiKit.html` and `tests/run.js` are add-only; anything else on the seam needs a `SEAM:` issue first.
 
 ## The plan (each step is its own pull request)
+Several Claude accounts build it at once (Esti, 2026-11-27): who owns which file and place, the kit (`src/ShellKit.html`) and the rules are in **`docs/SHELL-CONTRACT.md`**.
+
 1. **New shell home and flights.** One new add-on (`src/Shell.html`, `window.SH`): the Great Terrace home (layered picture scene with gentle CSS drift), his place tiles (the kit's `tlk-tile` with the YCB-3 picture faces), the money pill and corner menu, a place registry (one row per place: world, scene, icon, how it opens, its door), and the flight engine (about 2 s, tap to skip, "reduce motion" fades). Places still open their existing screens. Grade 2+ only; K–1 keep their games.
 2. **His places and pop-ups**, rebuilt one by one inside the new shell, each with its scene and every function from Part B.
 3. **Your Classes & Bucket** moved into the new shell (Teacher Time Hall, Bucket Spring, worksheet screen, the airtight lock and doors), still passing `tests/lib/classesbucket.js`.

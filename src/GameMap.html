@@ -1549,5 +1549,6 @@ function hint(){ const id=sid(); if(!id){ hintFor=''; hideHint(); return; }
 document.addEventListener('click',e=>{ if(hintEl&&e.target.closest&&e.target.closest('[data-gm="pftour"]')) hideHint(); },true);
 (function tick(){ try{ hint(); }catch(e){} setTimeout(tick,2500); })();   /* one cheap look every 2.5 s, nothing else */
 window.TLTOUR={open,close,cards,hint};
+window.GM_PLAY=play;   /* the new shell's SHK.openLesson(id) opens a lesson exactly as the map's Play does (docs/SHELL-CONTRACT.md) */
 })();
 </script>
