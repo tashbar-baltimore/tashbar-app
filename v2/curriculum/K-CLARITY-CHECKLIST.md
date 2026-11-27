@@ -82,3 +82,33 @@ New test: `v2/tests/k-shapes-compare.js` checks rule 7 for the three comparing g
 | All 7 review games (shared ABC world) | A field of thousands of grass blades, floating sparkles and butterflies behind every game (10); a big confetti storm after each right answer (9); no game name on screen (13). | The same calm world as the Unit 1 pass (#595): no grass blades, butterflies or sparkles, a few flowers; a small burst near the answer; the name on top (Sound Parade, Sound Bingo, Chalkboard, Rhyme Catch, Word Bridge, Speed Slide, Show Me). Review-week test passes. | `v2/screens/k-clarity/abc-ra-*` on claude/v2-k-abc-reviewa |
 | Seen, not changed | Sound Bingo's 3×3 board holds 8 letters, so one letter (t) is on it twice; when he hears /t/ either stone is right, but a child may wonder which. | Left for the ABC builder (the calm rebuild in #620 may replace this game). | |
 
+
+## review-shapes: independent review of all 25 Shapes games
+
+**Round 1** (three fresh reviewers who did not build the games; each looked at every after-picture and read each game's lines and code). Score = "Would a 5-year-old know exactly what to do and what is taught, without an adult, and does it meet every rule?"
+Find the triangles 4, Find the hexagons 4, What comes next? 4, Heavy and light 4; the other 21 games 3. No game scored below 3.
+
+**What was fixed after round 1** (shared engine fixes help every game):
+| Problem the reviewers found (rule) | Fix |
+|---|---|
+| Yes/no buttons showed a topic icon (a square, a ball) with a tiny tick or cross: "Is it flat?" answered with a square (11) | One plain big green tick and one big red X in every game; "The tick means yes. The X means no." |
+| Pieces at the side of the screen and box labels looked slanted or squashed (a circle label became an oval on a phone; a skinny triangle seen edge-on) (9) | Flat pieces, lesson pieces, the friend's pieces and box labels all face the camera straight on |
+| The first wrong move only got words; showing came on the second miss (16) | First miss: the hand goes from the piece to its right box; in pattern games the part that repeats glows and (fixing) a ring sits on the wrong car |
+| The voice talked about sides while nothing lit (5) | Every side lights one by one whenever a line talks about sides (lessons, teaching again, clue games, the friend's proof); long sides blue, short sides yellow, equal sides green |
+| Copy and sing never sang Mendy's row (a bug: the voice said "." and nothing bounced) | Mendy's row is sung and bounces; its repeating part glows |
+| The kite fits "two long sides, two short sides" (Mystery shape, Shape party 1); the leaning shape fits it too (Find the rectangles) and was almost "four sides the same" (Find the squares) (7) | Kite replaced by a pentagon; the leaning shape is not in Find the rectangles and is clearly long and short |
+| Star on the clue games' box: "Find me!" sounded like "find a star" (11) | Plain box |
+| Upside-down and lying cones looked like a circle or a flat triangle (6) | Cones stand up in every game |
+| "That is a oval"; clue help counted corners when the clue was about sides | "an oval"; the help shows what the clue was about |
+| Shape party 2: the friend's "flat" square looked like a block | Face-on and thin, with a real cube beside it |
+| Shape party 3: the proof said sides but tapped corners | The sides light |
+| Sort by color: a gold ring round the red circle in a colour game; the friend's words did not match the picture | No ring in colour games; "Tzvi says this blue square goes in the red box." |
+| Big and small: two small pieces looked as big as others; the small box sign was 10 px | Every small piece clearly small; box signs bigger |
+| Line them up: the start line slanted, so lined-up ends did not look lined up; thin scarves (7, 9) | Seen from above: the start line stands straight, scarves are big; Mendy fits on both screens |
+| Heavy and light: the balloon looked like an egg; a hay bale is not known heavy (7) | A real balloon with a knot and a string; rocks |
+| Fix the shape: "This triangle has a gap" vs "an open shape is not a square"; the friend's gap was drawn closed; a hexagon before its own game | "This shape has a gap. Make a triangle!"; a real gap; a square in the bonus |
+| Flat or solid: the solid label (a cube from above) looked like a flat diamond | A ball on the solid box |
+| The shape sorter: label colours matched other boxes' pieces; phone lesson boxes cut off; the lesson circle looked like a drum | One dark blue for every label; boxes hidden in the phone close-up; pieces face the camera |
+| Phone: pattern cars 25 px and the engine cut off; the empty next spot faint; tray pieces cut off (9) | Pattern trains twice as big with a gold outline on the next spot; trays and Mendy fit |
+| Busy painted backdrops (butterflies, lollipops, planets) behind lessons; celebration bits floating among pieces (10) | Backdrops blurred into soft colour; celebration gone in under a second |
+| Count the corners: "same dots"; the "no corners" card looked like one dot | "Put it in the box with that many dots"; an empty card |
