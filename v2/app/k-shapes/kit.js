@@ -1489,7 +1489,7 @@ export function startGame(cfg) {
     $('#end').classList.remove('show');
     if (LK) LK.family(false);
     buildSet(); resize(); camTo('close', 10);
-    if (FAST && /[?&]jump=mistake/.test(location.search)) { mistake(); return; }
+    if (FAST && /[?&]jump=mistake/.test(location.search)) { await camTo('wide', 10); mistake(); return; }
     if (FAST && /[?&]jump=end/.test(location.search)) { W.misses = 0; end(); return; }   /* pictures only: the end screen */   /* pictures only (with fast=1): straight to the friend's mistake */
     if (BALANCED) { const ok = await balanceLesson(); if (ok) balanceGame(); return; }
     if (MEASURED) { if (FAST && /[?&]jump=round/.test(location.search)) { measureGame(); return; } const ok = await measureLesson(); if (ok) measureGame(); return; }
@@ -1677,7 +1677,7 @@ export function startGame(cfg) {
     const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
     if (!M.where && !M.measure && !M.balance && !M.wide) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
     if (M.wide) { friend.position.copy(mendyAt()); if (PAINTED && PATTERNED) friend.position.add(new THREE.Vector3(0.75, 0, 1.9)); if (tall) friend.position.set(-0.95, 0, 2.6); friend.rotation.set(tall ? -0.6 : 0, tall ? -0.35 : 0.5, 0); friend.visible = true; mendy.visible = false; }   /* M.wide: the friend stands where Mendy stood, in front of the whole train, never hidden behind it */
-    else if (M.where || M.measure || M.balance) { friend.position.set(M.measure ? (tall ? 1.7 : 3.6) : (tall ? -1.6 : -3.4), 0, tall ? 2.6 : 1.4);   /* measuring: he stands on the right, never on the start line the question is about (review 2) */ friend.rotation.y = M.measure ? -0.5 : 0.5; if (friend.userData.painted && friend.userData.body) friend.userData.body.scale.x = M.measure ? -1 : 1;   /* on the right he is mirrored, so his hand points at the scarves */ friend.visible = true; mendy.visible = false; }
+    else if (M.where || M.measure || M.balance) { friend.position.set(M.measure ? (tall ? 1.7 : 3.0) : (tall ? -1.6 : -3.4), 0, M.measure && !tall ? 0.9 : tall ? 2.6 : 1.4);   /* measuring: he stands on the right, never on the start line the question is about (review 2) */ friend.rotation.y = M.measure ? -0.5 : 0.5; friend.userData.mirror = !!M.measure;   /* on the right his picture is mirrored, so his hand points at the scarves */ friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
       if (side) d.g.position.x = M.join ? -0.1 : (tall ? 0.35 : 0.6);   /* big and small: clear of the friend */
       camTo('close', 1000).then(() => tween(500, k => { d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))); if (side) side.g.scale.setScalar(Math.max(0.01, ease(k) * (M.beside[2] || 0.5))); })); }
