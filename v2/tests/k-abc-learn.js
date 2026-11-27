@@ -22,6 +22,7 @@ module.exports = async function (shared) {
         const wrong = w === 1366 && g !== 'write';
         let looked = false;
         const r = await T.play(pg, { wrong, shot: async nm => { if (!/^round[2-3]$/.test(nm) || looked) return; looked = true;
+          await pg.waitForFunction(() => [...document.querySelectorAll('#board img')].every(i => i.complete), null, { timeout: 5000 }).catch(() => {});   /* give the pictures a moment to load */
           const it = await pg.evaluate(() => ({ items: window.__abc.items(), imgs: [...document.querySelectorAll('#board img')].map(i => ({ ok: i.complete && i.naturalWidth > 0, src: i.getAttribute('src'), h: i.parentElement.getBoundingClientRect().height })) }));
           it.imgs.forEach(i => { if (!i.ok) bad(label + ': the picture ' + i.src + ' did not load'); if (w === 1366 && i.h < h / 5) bad(label + ': the picture ' + i.src + ' is small (' + Math.round(i.h) + ' px)'); });
           it.items.forEach(i => { if (i.x < 0 || i.x > w || i.y < 0 || i.y > h) bad(label + ': "' + i.name + '" is off the screen'); }); } });
