@@ -10,6 +10,8 @@ A unit (prompt section 3, step 2) is 4–10 small skills, plus a real reading or
 
 Nothing here pays money or marks a skill mastered. Any money for checks is an HoS decision.
 
+**Visual support (HoS 2026-11-27):** before building, read the text and every question on it, and write the unit's Visual Support Plan in `docs/visual-plans/<unit id>.md`. Rules: `docs/VISUAL-SUPPORT.md`.
+
 ## Add a unit
 In your data file, next to `TLCORE.add(...)`:
 
