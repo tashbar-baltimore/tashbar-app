@@ -385,10 +385,13 @@
       hook: { kind: 'oddone', pic: '🐟', t: 'Shark, catfish, salmon. Only *one* is kosher.', q: 'Which one is the odd one out?',
         o: ['Shark', 'Catfish', 'Salmon'], pay: '*Salmon*! A kosher fish has *fins and scales*.' },
       learn: [
-        { t: 'Explain with the *text*, not a *guess*.', act: A(id, 'do', 0, {
+        { t: 'Explain with the *text*, not a *guess*.', act: A(id, 'do', 0, { p: ['Behind the counter lay salmon, carp and whitefish.', 'A catfish has fins but no scales at all, so it is not kosher.', '"Which fish are kosher?" Yehuda asked.'],
           say: 'Tap the sentence that *explains* why.', how: 'Find the catfish sentence with a *reason*, not just its name.' }) },
         { who: { q: 'Why is a catfish not kosher?', o: [['Moishe', 'Because it has whiskers.'], ['Yosef', 'The text says: fins but no scales.']], a: 1,
           why: 'Whiskers are *not in the text*. Use the text\'s *own detail*.' } },
+        { t: 'Now the *shark*: find the text\'s *reason*.', act: { type: 'evidence', q: 'Why are shark points not kosher scales?', look: 'the reason in the text',
+          p: ['A shark\'s skin is covered with tiny hard points.', 'They cannot be scraped off without tearing the skin.', 'Sharks swim in every ocean.'], a: 1,
+          say: 'Tap the sentence that gives the *reason*.', how: 'Not what sharks *have*. Find *why* it does not count.' } },
         { t: 'Build it: *answer*, the text\'s *detail*, what it *shows*.', act: A(id, 'your', 2, { q: 'Why is a shark not kosher?',
           say: 'Build the *explanation* in order.', how: '*Answer*, then the text\'s *detail*, then what it *shows*.' }) }],
       play: [
