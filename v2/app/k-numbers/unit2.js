@@ -8,12 +8,13 @@
   css.textContent = [
     '.u2path{ position:relative; display:grid; grid-template-columns:repeat(var(--cols,10),1fr); gap:clamp(6px,1vw,14px); width:100%; max-width:1240px; align-items:center; padding:28px 4px 6px; }',
     '.u2stone{ position:relative; aspect-ratio:1; border-radius:42% 46% 44% 48%; background:radial-gradient(circle at 40% 30%,#FFFFFF,#E3ECF8 55%,#B9C9E0); border:4px solid #fff; box-shadow:0 7px 0 #8FA3C2, 0 12px 16px rgba(40,70,140,.25); display:flex; align-items:center; justify-content:center; transition:transform .2s, box-shadow .2s; touch-action:none; }',
-    '.u2stone .dd{ position:absolute; inset:0 10%; display:flex; flex-direction:column; justify-content:center; gap:5%; }',
-    '.u2stone .dd b{ display:flex; justify-content:flex-start; align-items:center; gap:4%; }',
-    '.u2stone .dd i{ width:16.8%; aspect-ratio:1; border-radius:50%; flex:none; }',
+    /* 6-10: two rows of five BIG dots (K clarity review: at least 14 px on every screen; they were tiny rows) */
+    '.u2stone .dd{ position:absolute; inset:0 3%; display:flex; flex-direction:column; justify-content:center; gap:6%; }',
+    '.u2stone .dd b{ display:flex; justify-content:flex-start; align-items:center; gap:2%; }',
+    '.u2stone .dd i{ width:18.4%; aspect-ratio:1; border-radius:50%; flex:none; }',
     '.u2stone.glowme{ box-shadow:0 7px 0 #C98A00, 0 0 0 8px rgba(255,201,61,.85), 0 0 22px 8px rgba(255,201,61,.7); animation:u2gap 1s infinite; }',
     '.u2stone.redmark{ box-shadow:0 7px 0 #C0392B, 0 0 0 6px rgba(255,90,78,.55) !important; }',
-    '.u2stone svg.hear{ width:52% !important; height:52% !important; }',
+    '.u2stone > svg.hear{ width:52% !important; height:52% !important; }',
     '.u2stone .dd i, .u2stone .dice i{ background:radial-gradient(circle at 35% 30%,#FF9B8A,#E5322D 55%,#8E0E17); box-shadow:0 2px 0 rgba(90,0,10,.35); }',
     '.u2stone .dice{ position:absolute; inset:8%; } .u2stone .dice i{ position:absolute; width:25%; aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%); }',
     '.u2stone.gap .dice{ display:none; }',
@@ -27,13 +28,16 @@
     '.u2ball{ position:absolute; width:var(--bw,60px); height:var(--bw,60px); left:0; top:0; z-index:4; pointer-events:none; transition:left .32s ease-in-out, top .32s ease-in-out; filter:drop-shadow(0 8px 5px rgba(0,0,0,.3)); }',
     '.u2ball.hop svg{ animation:u2hop .32s ease-in-out; } @keyframes u2hop{ 50%{ transform:translateY(-34px) scale(1.05,.95); } }',
     '.u2loose{ display:flex; gap:clamp(14px,3vw,36px); justify-content:center; align-items:center; min-height:clamp(84px,14vh,120px); }',
-    '.u2loose .u2stone{ width:clamp(84px,14vh,120px); cursor:grab; }',
+    '.u2loose .u2stone{ width:clamp(104px,17vh,140px); cursor:grab; }',
+    /* a loose stone shows its own dots (the same look as the path stones); a small speaker in the corner: tap to hear it too */
+    '.u2loose .u2stone .ear{ position:absolute; right:-10px; top:-10px; width:34px; height:34px; border-radius:50%; background:#fff; box-shadow:0 2px 6px rgba(40,70,140,.35); display:flex; align-items:center; justify-content:center; pointer-events:none; }',
+    '.u2loose .u2stone .ear svg{ width:70%; height:70%; }',
     '.u2loose .u2stone.picked{ box-shadow:0 7px 0 #C98A00, 0 0 0 7px rgba(255,201,61,.7); }',
     '.u2drum{ width:clamp(150px,30vh,250px); aspect-ratio:1; border-radius:50%; position:relative; cursor:pointer; touch-action:none; background:none; border:0; }',
     '.u2drum svg{ width:100%; height:100%; transition:transform .08s; filter:drop-shadow(0 12px 10px rgba(80,20,10,.3)); } .u2drum.hit svg{ transform:scale(.94,.9) translateY(6px); }',
     '.u2drum::after{ content:""; position:absolute; inset:10%; border-radius:50%; border:8px solid var(--sun); opacity:0; pointer-events:none; } .u2drum.hit::after{ animation:ring .35s ease-out; }',
     '.u2car{ width:clamp(120px,22vh,200px); transition:transform 1.4s cubic-bezier(.5,0,.8,.4); } .u2car.go{ transform:translateX(120vw); }',
-    '@media (max-width:760px), (max-aspect-ratio:4/5){ .u2path{ --cols:5 !important; padding:40px 0 4px; column-gap:3px; row-gap:54px; } .u2stone{ border-width:3px; } .u2loose .u2stone{ width:clamp(80px,24vw,104px); } .u2drum{ width:clamp(170px,48vw,230px); } }'
+    '@media (max-width:760px), (max-aspect-ratio:4/5){ .u2path{ --cols:5 !important; padding:40px 0 4px; column-gap:3px; row-gap:54px; } .u2path.long{ --cols:4 !important; row-gap:48px; } .u2stone{ border-width:3px; } .u2loose .u2stone{ width:clamp(100px,27vw,112px); } .u2drum{ width:clamp(170px,48vw,230px); } }'
   ].join('\n');
   document.head.appendChild(css);
 
@@ -58,7 +62,7 @@
   /* the path: numbers from..to (or to..from when reverse) */
   U2.path = function (el, o) {
     el.innerHTML = ''; var nums = []; for (var n = o.from; n <= o.to; n++) nums.push(n); if (o.reverse) nums.reverse();
-    var p = document.createElement('div'); p.className = 'u2path'; p.style.setProperty('--cols', nums.length); el.appendChild(p);
+    var p = document.createElement('div'); p.className = 'u2path' + (nums.length > 5 ? ' long' : ''); p.style.setProperty('--cols', nums.length); el.appendChild(p);
     var stones = nums.map(function (k, i) { var s = U2.stone(k); s.id = 'st' + i; s.dataset.i = i; p.appendChild(s); return s; });
     var ball = document.createElement('div'); ball.className = 'u2ball'; ball.innerHTML = BALL; ball.style.opacity = 0; p.appendChild(ball);
     var api = { el: p, stones: stones, nums: nums, at: -1, ball: ball };
@@ -159,8 +163,9 @@
       P = U2.path($('path'), { from: pl.from, to: pl.to, reverse: pl.reverse != null ? pl.reverse : o.reverse });
       var g = P.nums.indexOf(pl.gapN), s = P.nums.indexOf(pl.startN);
       R = { g: g, s: s, want: pl.gapN, misses: 0 }; P.gap(g);
-      /* loose stones show a "listen" picture, not dots: he taps to hear each one, so the dots never give the answer away */
-      $('loose').innerHTML = ''; looseFor(P.nums, g).forEach(function (k, i) { var st = U2.stone(k); st.id = 'lo' + i; st.innerHTML = HEAR; $('loose').appendChild(st); });
+      /* K clarity review (2026-11-27): loose stones show their own dots, big, like the path stones (three identical speakers
+         made him tap, remember three sounds, then drag). Tap still says its number: the small speaker shows that. */
+      $('loose').innerHTML = ''; looseFor(P.nums, g).forEach(function (k, i) { var st = U2.stone(k); st.id = 'lo' + i; st.insertAdjacentHTML('beforeend', '<span class="ear">' + HEAR + '</span>'); $('loose').appendChild(st); });
       return { P: P, R: R };
     }
     function round(F, i, pl) {
