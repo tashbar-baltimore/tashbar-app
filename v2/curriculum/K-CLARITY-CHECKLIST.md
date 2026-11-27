@@ -59,3 +59,14 @@ Played each game as a made-up boy in the full look at Chromebook and phone size,
 
 Shared kit changes (only games that ask for them are affected): `keep` (a lesson piece stays beside the one before), `mistake.beside` (a second piece to compare with), `countTags` (a number over each counted thing); the measuring start line and flag (only Line them up measures); the balance lesson's words use the names of its things (only Heavy and light weighs).
 New test: `v2/tests/k-shapes-compare.js` checks rule 7 for the three comparing games.
+
+## other-622: Kindergarten Kriyah, Units 1–10 (tashbar-baltimore/tashbar-app#622)
+
+| What | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| Every Kriyah game (shared engine) | Painted scenes at full colour behind the letters; in the 3D hills world butterflies and birds flew, clouds drifted, shul flags swayed, light specks floated (10). Each right answer threw 22 to 45 confetti bits over the letters (9). No game name on screen (13). | Paler, softer painted picture; nothing moving that is not the game; small joy bursts; the game's name at the top. New test `k-kriyah-clarity` (all 80 games). Notes: `v2/curriculum/k-kriyah/CLARITY-PASS.md` on that branch. | `v2/screens/k-clarity/kriyah/` on claude/v2-k-kriyah-all |
+| Champion Day (Unit 10) | The red stage top flickered in red and brown stripes. | Fixed. | same |
+| Seen, not changed | Unit 8 story: the shofar sits across the rebbe's face for a moment. Gallery pictures for Units 1–7 still show the older 3D people (the games use painted people). | Left for the Kriyah builder (written in CLARITY-PASS.md). | |
+
+**Other K pull requests looked at (other-<PR>):** the old K ABC unit pull requests (tashbar-baltimore/tashbar-app#595, #603, #610, #612) are being replaced by the calm ABC rebuild (tashbar-baltimore/tashbar-app#620, Esti's own request, a session working on it now), so a separate clarity pass on them would be thrown away. #620 had commits in the last 2 hours, so it was left alone.
+
