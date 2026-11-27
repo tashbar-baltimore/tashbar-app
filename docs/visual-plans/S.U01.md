@@ -19,3 +19,5 @@ Rules: `docs/VISUAL-SUPPORT.md`. Reviewed 2026-11-27 with the New Lessons redo (
 ## 3. Accuracy problems
 - The SCI.SKY.L05.02 check hint says "My Very Easy Method"; the lesson teaches "My Very Excited Mother Just Served Us Noodles". Both give M, V, E, M, so the answer is the same. Flagged; not changed in this batch (it is a pack change).
 - SCI.SKY.L05.03 check uses kilograms for moon weight (mass does not change; weight does). The lesson uses pounds. Flagged for the science coordinator.
+- SCI.SKY.L05.03: none of its 3 check questions asks about the phases, though the lesson teaches them. A phases check would fit (pack change, for the science coordinator).
+- SCI.SKY.L05.04: the check's order tiles say "high tide again" / "low tide again"; the word "again" gives the order away. For the science coordinator.
