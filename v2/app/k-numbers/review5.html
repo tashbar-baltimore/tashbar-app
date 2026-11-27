@@ -4,9 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Review — Kindergarten Numbers</title>
-<!-- Kindergarten Numbers, Unit 5 REVIEW ROUND: 6 short mixed items from earlier units, so he never forgets (spaced review).
-     Unit 1: a quick peek at 1-5. Unit 2: what comes next when counting. Unit 3: give Bubby a number (tap oranges onto her
-     plate, counting out); count a scattered group. Unit 4: zero is none; a written number 0-5.
+<!-- Kindergarten Numbers, Unit 5 REVIEW ROUND: 6 short mixed items, so he never forgets (spaced review).
+     Unit 1: a quick peek at 1-5. Unit 3: count a scattered group. Unit 4: zero is none; a written number 0-5.
+     Unit 5: peek at a ten-frame (6-8) and show it on two hands; trace a number.
+     K clarity review (2026-11-27): every answer is on the two hands Unit 5 used (or tracing, as in Trace It). "What comes next"
+     and "count down" were dropped: they were answered on fingers, which Unit 2 never taught; giving oranges was a third control.
      It is practice: a miss gets help (look or count together) and he tries again; a second miss shows the answer.
      The first time each kind of item comes, a short demo shows how to answer. A boy who misses twice gets smaller numbers next;
      a quick boy gets a bonus count. -->
@@ -43,7 +45,6 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var H, R, done, plan, shown, easy = 0, seen = {};
-  var EAR = '<div class="ear"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#2FB5E8"/><path d="M10 19h7l9-7v24l-9-7h-7z" fill="#fff"/><path d="M30 17c3 2 4 4.5 4 7s-1 5-4 7M34 12c4 3.5 6 8 6 12s-2 8.5-6 12" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div>';
   var OG = '<svg class="og" viewBox="0 0 100 100"><use href="#nkOrange"/></svg>';
   function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
   /* Bubby's plate: tap an orange in the bowl to give it; tap one on the plate to take it back */
@@ -72,9 +73,8 @@
   async function help(second) {
     if (R.type === 'count') { await FR.say("Let's count together. Touch each one."); await countTogether(); }
     else if (R.type === 'give') { await FR.say("Let's count the plate together."); var os = $('plt').querySelectorAll('.og'); for (var i = 0; i < os.length; i++) { os[i].style.filter = 'drop-shadow(0 0 8px #FFD23D)'; await FR.say(FR.Word(i + 1) + (i === os.length - 1 ? '.' : ','), { noRepeat: true }); } os.forEach(function (x) { x.style.filter = ''; }); await FR.say('Bubby needs ' + FR.word(R.n) + '.'); }
-    else if (R.type === 'down') await FR.say("Let's look again. Counting down, after " + FR.word(R.n + 1) + ' comes ' + (second ? FR.word(R.n) + '.' : '...?'));
-    else if (R.type === 'next') await FR.say("Let's look again. After " + FR.word(R.n - 1) + ' comes ' + (second ? FR.word(R.n) + '.' : '...?'));
     else if (R.type === 'zero') await FR.say("Let's look. Nothing there. That is zero!");
+    else if (R.type === 'frame') { cloth(true); R.F.glow(true); await FR.say(second ? FR.Word(R.n) + ' is five and ' + FR.word(R.n - 5) + '.' : "Let's look again. One full row is five."); await FR.wait(700); R.F.glow(false); }
     else if (R.type === 'peek') { cloth(true); await FR.say("Let's look again."); if (R.L) await FR.showShape(shown.querySelector('.qcard') || shown, second); }
     else if (!second) { await FR.say("Let's look again. It means this many."); var d = put('<div class="bignum" style="bottom:42%">' + U5.num(R.n) + '</div>'); var c = FR.card(R.n, 'dots'); c.style.cssText = 'position:absolute;left:25%;right:25%;bottom:4%;border:0;box-shadow:none;background:none'; d.appendChild(c); await FR.wait(1500); }
     else { await FR.say('That is ' + FR.word(R.n) + '. Like this.'); }
@@ -99,8 +99,8 @@
       var keep = shown; put('<div class="bignum">' + U5.num(3) + '</div>'); cloth(true); await F.say('This is three. I show three fingers.');
       await F.handTo(H.hands[0].el, .5, .6); for (var t = 1; t <= 3; t++) { await F.handTap(); H.hands[0].set(t); NK.sound.pop(); } await F.wait(400); H.set(0); F.handHide(); cloth(false); await F.wait(380);
       if (shown) shown.remove(); shown = keep; $('flash').insertBefore(keep, $('flash').firstChild); },
-    next: async function (F) { $('flash').classList.add('open'); await F.say('Listen. One, two, three... next is four!'); H.set(4); NK.sound.pop(); await F.wait(900); H.set(0); },
-    down: async function (F) { $('flash').classList.add('open'); await F.say('Counting down. Five, four, three... next is two!'); H.set(2); NK.sound.pop(); await F.wait(900); H.set(0); },
+    frame: async function (F) { await F.say('More than five? One whole hand is five.'); await F.handTo(H.hands[0].el, .5, .6); H.hands[0].set(5); NK.sound.pop(); await F.wait(300);
+      await F.say('Then the other hand.'); await F.handTo(H.hands[1].el, .5, .6); await F.handTap(); H.hands[1].set(1); NK.sound.pop(); await F.say('Five and one. Six!'); await F.wait(300); H.set(0); F.handHide(); },
     trace: async function (F) {   /* the hand traces a one, then he traces his number */
       var t = U5.tracer(1); $('aT').innerHTML = ''; $('aT').appendChild(t.el); t.lock(true); await F.say('Trace the number. Start at the green dot. Watch me.');
       var pts = t.points(), hand = document.getElementById('hand'); hand.style.transition = 'left .08s linear, top .08s linear';
@@ -111,11 +111,9 @@
   };
   var ITEMS = [
     { type: 'peek', make: function (F) { var n = easy ? F.pick([2, 3]) : F.pick([3, 4, 5]), c = F.card(n, 'dots'); c.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; put().appendChild(c); return { n: n, L: c.L, flash: true, line: 'Peek! How many dots?' }; } },
-    { type: 'next', make: function (F) { var a = easy ? F.pick([1, 2]) : F.pick([3, 4, 5, 6]); put(EAR); return { n: a + 3, a: a }; } },
-    { type: 'give', make: function (F) { var n = easy ? 2 : F.pick([3, 4]); put('<div class="bignum">' + U5.num(n) + '</div>'); return { n: n, ans: 'give', line: 'Bubby needs ' + F.word(n) + ' oranges. Give her ' + F.word(n) + '.' }; } },
     { type: 'count', make: function (F) { var n = easy ? 5 : F.pick([6, 7, 8]), h = ''; scattered(n).forEach(function (p) { h += '<svg class="q" viewBox="0 0 100 100" style="position:absolute;width:19%;height:19%;transform:translate(-50%,-50%);left:' + p[0] + '%;top:' + p[1] + '%"><use href="#nkApple"/></svg>'; }); put(h); return { n: n, line: 'How many apples? Count, then show me.' }; } },
+    { type: 'frame', make: function (F) { var n = easy ? 6 : F.pick([6, 7, 8]), tf = U5.frame(n, false), d = put('<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"></div>'); tf.el.style.width = '92%'; d.firstChild.appendChild(tf.el); return { n: n, F: tf, flash: true, line: 'Peek! A ten-frame. How many?' }; } },
     { type: 'zero', make: function (F) { put('<div style="position:absolute;inset:12%;border-radius:50%;background:radial-gradient(ellipse at 50% 42%, #fff 0 55%, #C7D9EE 86%, #A9C1DE 100%)"></div>'); return { n: 0, line: 'How many cookies on the plate?' }; } },
-    { type: 'down', make: function (F) { var a = easy ? F.pick([4, 5]) : F.pick([6, 7, 8]); put(EAR); return { n: a - 3, a: a }; } },
     { type: 'trace', make: function (F) { var n = easy ? F.pick([1, 4]) : F.pick([2, 3, 5]); put('<div class="bignum">' + U5.num(n) + '</div>'); return { n: n, ans: 'trace', line: 'Trace ' + F.word(n) + '. Start at the green dot.' }; } },
     { type: 'numeral', make: function (F) { var n = easy ? F.pick([1, 2, 4]) : F.pick([2, 4, 5]); put('<div class="bignum">' + U5.num(n) + '</div>'); return { n: n, line: 'What number is this? Show me.' }; } }
   ];
@@ -132,19 +130,17 @@
         done = function (first) { if (R.misses >= 2) easy = 2; res(first); };
         GAME.phase = 'answer'; F.lock(false); TR.lock(false); hooks(); return;
       }
-      if (R.type === 'down') { $('flash').classList.add('open'); await F.say('Count down with me. What comes next?'); for (var k2 = R.a; k2 > R.a - 3; k2--) await F.say(F.Word(k2) + '…', { noRepeat: true }); NK.last = 'Counting down, what comes after ' + F.word(R.n + 1) + '?'; await F.say('What comes next? Show me.', { noRepeat: true }); }
-      else if (R.type === 'next') { $('flash').classList.add('open'); await F.say('Count with me. What comes next?'); for (var k = R.a; k < R.a + 3; k++) await F.say(F.Word(k) + '…', { noRepeat: true }); NK.last = 'What comes after ' + F.word(R.n - 1) + '? Show me.'; await F.say('What comes next? Show me.', { noRepeat: true }); }
-      else if (R.flash) { await F.say(R.line, { repeat: 'How many dots? Show me.' }); cloth(true); await F.wait(1300); cloth(false); await F.wait(380); }
+      if (R.flash) { await F.say(R.line, { repeat: 'How many dots? Show me.' }); cloth(true); await F.wait(1300); cloth(false); await F.wait(380); }
       else { cloth(true); await F.say(R.line); }
       done = function (first) { if (R.misses >= 2) easy = 2; res(first); };
       GAME.phase = 'answer'; F.lock(false); W().lock(false); ready(); hooks();
     });
   }
   FR.game({
-    id: 'u5-review', bonusSay: '', title: 'Review Time', rounds: 8,
+    id: 'u5-review', bonusSay: '', title: 'Review Time', rounds: 6,
     hero: '<div id="herotf" style="width:100%;margin-top:14%"></div>',   /* a ten-frame, like every Unit 5 stop (a clock looked like telling time) */
     init: function (F) { var hf = U5.frame(6, false); $('herotf').appendChild(hf.el); H = U5.hands(0, true); $('aH').appendChild(H.el); H.onChange = ready; H.lock(true); $('check').addEventListener('click', check); },
-    reset: function (F, again) { plan = ITEMS.slice(); if (!again) { easy = 0; seen = {}; } },
+    reset: function (F, again) { var by = {}; ITEMS.forEach(function (it) { by[it.type] = it; }); plan = ['peek', 'count', 'frame', 'numeral', 'zero', 'trace'].map(function (t) { return by[t]; }); if (!again) { easy = 0; seen = {}; } },
     demo: async function (F) { await F.say('Review time! Things we learned before.'); },
     endSay: function (s) { return s >= 2 ? 'Great remembering!' : 'Good try! We will practice these again.'; },
     round: function (F, i) { return play(F, plan[i]); },

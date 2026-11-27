@@ -6,17 +6,16 @@
 <title>How Many Are Hiding? — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 8 "Parts of 5" (v2/curriculum/k-numbers/MAP.md): HOW MANY ARE HIDING? In Bubby's 3D kitchen,
      a plate of kugel slices (3, 4 or 5). We count them together. Then a yellow towel drops over some of them.
-     "There were five. I see three. How many are hiding?" He shows the hidden number on his fingers and taps the check;
-     the towel lifts to show him. A slip: the towel lifts, we count the hidden ones together, and it goes back for another try. -->
+     "There were five. How many are hiding?" He shows the hidden number on his big hand and taps the (smaller) check;
+     the towel lifts to show him. A slip: the towel lifts, we count the hidden ones together, and it goes back for another try.
+     K clarity (review 2026-11-27): no number card for the total in the panel (he copied it); the total is the slices he counted. -->
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
-<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
-<style>#hp .fhand{ width:clamp(96px,14vh,130px); aspect-ratio:170/230; }</style>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="kitchen8.css">
 </head>
 <body>
 <div id="world"></div>
 <div id="game" class="locked"><div class="stage s6" id="stage">
   <div class="ui" id="panel">
-    <div class="goal" id="goal"></div>
     <div id="hp"></div>
     <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
@@ -43,7 +42,7 @@ const PLAN = [[3, 1], [4, 2], [5, 2], [4, 1], [5, 3], [5, 4]];
 function play(F, i) {
   return new Promise(async res => {
     const [n, k] = PLAN[i]; R = { n, k, misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
-    K.setKugel(n); $('goal').innerHTML = U5.num(n);
+    K.setKugel(n);
     await F.say(i === 0 ? 'Bubby made kugel! Count the slices.' : F.pick(['Count the slices.', 'More kugel! Count with me.']));
     await countAll(K.slices());
     await F.say('Close your eyes!'); await K.hide(k); await F.say('Open!');
@@ -54,11 +53,11 @@ FR.game({
   id: 'u8-hide', title: 'How Many Are Hiding?', rounds: 6,
   hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""></div>',
   init() {
-    K = mount($('world'), { kids: ['mendy', 'dovid'], band });
+    K = mount($('world'), { band });
     H = FR.fingers(0, true); $('hp').appendChild(H.el); $('check').addEventListener('click', check);
   },
   demo: async F => {
-    K.setKugel(3); $('goal').innerHTML = U5.num(3); R = { n: 3, k: 1 };
+    K.setKugel(3); R = { n: 3, k: 1 };
     await F.say('Three slices. Watch me.'); await K.hide(1); await F.say('I see two. Two and one more is three.');
     await F.say('One is hiding! I show one finger.'); await F.handTo(H.el, .5, .6); await F.handTap(); H.set(1); NK.sound.pop();
     await F.handTo($('check')); await F.handTap(); await K.lift(); await F.say('Yes! One was hiding.'); H.set(0);
