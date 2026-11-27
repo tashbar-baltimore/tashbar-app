@@ -48,7 +48,7 @@ function view(id,def,back,html,keep){ let el=document.getElementById('shk-'+id);
   K.page(Object.assign({},def,{id,world:'c',back,onBack:def.onBack,onClose:how=>{ if(how==='swap') return; delete PG[id]; try{ def.onClose&&def.onClose(how); }catch(e){} }}));
   st.back=back; el=document.getElementById('shk-'+id); if(el&&keep) el.scrollTop=top; }
  const y=el?el.scrollTop:0; K.body(id,html); if(el) el.scrollTop=keep?y:0; return el; }
-function banner(id,txt,kind){ try{ const el=document.getElementById('shk-'+id); if(!el) return; const b=document.createElement('div'); b.className='cy-banner cy-b-'+(kind||'info'); b.setAttribute('role','status'); b.textContent=txt; el.appendChild(b); setTimeout(()=>b.remove(),1500); }catch(e){} }
+function banner(id,txt,kind){ try{ const el=document.getElementById('shk-'+id); if(!el) return; el.querySelectorAll('.cy-banner').forEach(x=>x.remove()); const b=document.createElement('div'); b.className='cy-banner cy-b-'+(kind||'info'); b.setAttribute('role','status'); b.textContent=txt; el.appendChild(b); setTimeout(()=>b.remove(),1500); }catch(e){} }
 function confetti(id,n){ try{ if(RM()) return; const el=document.getElementById('shk-'+id); if(!el) return; const C=['#F2B84B','#FF7AA8','#4FB6FF','#7BD88F','#FFFFFF','#FF9F4A'];
  for(let i=0;i<(n||60);i++){ const c=document.createElement('i'); c.className='cy-conf'; c.style.left=(Math.random()*100)+'%'; c.style.background=C[i%C.length]; c.style.animationDuration=(1.8+Math.random()*1.6)+'s'; c.style.animationDelay=(Math.random()*.5)+'s'; el.appendChild(c); setTimeout(()=>c.remove(),4000); } }catch(e){} }
 let AX=null; const sndOn=()=>{ try{ return typeof SND==='undefined'||SND.on!==false; }catch(e){ return true; } };
@@ -419,8 +419,8 @@ document.addEventListener('keydown',e=>{ const open=K.open, top=open[open.length
 .cy-sefer{margin-top:8px}
 .cy-list{display:grid;gap:8px}.cy-tlist{max-height:none}
 .tlk.tlk-quiet.cy-left{justify-content:flex-start;text-align:left;min-height:48px}
-.cy-find{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #E5E0D0;border-radius:14px;padding:6px 12px;margin-bottom:10px;font-size:17px}
-.cy-find input{flex:1;border:0;outline:0;font:inherit;font-size:18px;padding:8px 2px;background:transparent;min-width:0}
+.cy-find{box-sizing:border-box;max-width:100%;display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #E5E0D0;border-radius:14px;padding:6px 12px;margin-bottom:10px;font-size:17px}
+.cy-find input{flex:1;width:100%;border:0;outline:0;font:inherit;font-size:18px;padding:8px 2px;background:transparent;min-width:0}
 .cy-tog{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
 .cy-code{display:flex;justify-content:center;gap:10px;margin:14px 0}.cy-code b{width:64px;height:80px;display:grid;place-items:center;font-size:46px;font-weight:900;border-radius:16px;background:#fff;border:3px solid #F2B84B;box-shadow:0 6px 0 #E3A43A,0 10px 20px rgba(170,110,10,.18);color:#1E1B4B}
 .cy-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:0 auto}.tlk.cy-key{min-height:62px}
@@ -462,12 +462,12 @@ document.addEventListener('keydown',e=>{ const open=K.open, top=open[open.length
 .cy-stamp{display:inline-block;transform:rotate(-8deg);font-size:40px;font-weight:900;letter-spacing:.1em;color:#16A34A;border:5px solid #16A34A;border-radius:12px;padding:2px 16px;margin:6px 0 10px}
 .cy-stampgo{animation:cy-stamp .45s cubic-bezier(.2,1.6,.4,1) both}@keyframes cy-stamp{from{transform:rotate(-8deg) scale(2.2);opacity:0}to{transform:rotate(-8deg) scale(1);opacity:1}}
 .cy-truth{display:grid;gap:8px;font-size:17px}.cy-truth small{display:block;font-size:13px;opacity:.75}.cy-truth b{font-size:20px}.cy-why{padding:10px 12px;border-radius:12px;background:#FFFBEB}
-.cy-banner{position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:5;padding:12px 26px;border-radius:999px;font-size:22px;font-weight:900;background:#fff;color:#1E1B4B;box-shadow:0 10px 30px rgba(30,27,75,.25);animation:cy-ban 1.5s ease both;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+.cy-banner{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:5;padding:12px 26px;border-radius:999px;font-size:22px;font-weight:900;background:#fff;color:#1E1B4B;box-shadow:0 10px 30px rgba(30,27,75,.25);animation:cy-ban 1.5s ease both;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
 .cy-b-ok{background:#DCFCE7;color:#14532D}.cy-b-no{background:#FEF3C7;color:#78350F}.cy-b-pink{background:#FFE4EC;color:#9D174D}
-@keyframes cy-ban{0%{opacity:0;transform:translate(-50%,-16px) scale(.9)}15%,80%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-8px)}}
+@keyframes cy-ban{0%{opacity:0;transform:translate(-50%,16px) scale(.9)}15%,80%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-8px)}}
 .cy-conf{position:fixed;top:-12px;width:10px;height:14px;border-radius:2px;z-index:4;pointer-events:none;animation:cy-fall 2.6s linear both}
 @keyframes cy-fall{to{transform:translate3d(0,105vh,0) rotate(540deg)}}
-@media (max-width:600px){.cy-menu{grid-template-columns:1fr 1fr}.cy-hero{gap:12px}.cy-medal{width:60px;height:60px;font-size:34px}.cy-code b{width:52px;height:66px;font-size:36px}.cy-sc{font-size:36px}.cy-board{gap:6px}.cy-pod{padding:12px 6px}.cy-vs{font-size:20px}.cy-count b{font-size:84px}.cy-pw{grid-template-columns:1fr}.cy-pwi{grid-template-columns:auto auto 1fr;justify-items:start;align-items:center;text-align:left}.cy-banner{font-size:18px;top:74px}}
+@media (max-width:600px){.cy-menu{grid-template-columns:1fr 1fr}.cy-hero{gap:12px}.cy-medal{width:60px;height:60px;font-size:34px}.cy-code b{width:52px;height:66px;font-size:36px}.cy-sc{font-size:36px}.cy-board{gap:6px}.cy-pod{padding:12px 6px}.cy-vs{font-size:20px}.cy-count b{font-size:84px}.cy-pw{grid-template-columns:1fr}.cy-pwi{grid-template-columns:auto auto 1fr;justify-items:start;align-items:center;text-align:left}.cy-banner{font-size:18px;bottom:20px}}
 @media (prefers-reduced-motion:reduce){.cy-medal,.cy-crown,.cy-pop,.cy-stampgo,.cy-banner{animation:none!important}.cy-bar i,.cy-fuse i{transition:none}}`; document.head.appendChild(s); })();
 window.SHC={workDone,arena:R,md:G,bbOk,clOk,build,skillsBy};
 })();
