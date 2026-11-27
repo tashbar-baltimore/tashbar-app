@@ -31,10 +31,10 @@ export function mount(host, opt) {
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), new THREE.MeshStandardMaterial({ color: '#E8DCCB', roughness: 0.9 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -2.6; floor.receiveShadow = true; scene.add(floor);
   if (!FAST) tex(['bakery-panorama.jpg', 'kitchen-panorama.jpg'], t => { t.wrapS = THREE.MirroredRepeatWrapping; t.repeat.x = -2; t.offset.x = 1; const R = 24, span = 2.8, H = R * span / 2 * t.image.height / t.image.width;
     const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, color: '#F2F2F2' }));
-    back.position.set(0, H * 0.4 - 2.6, 4); scene.add(back); });
+    back.position.set(0, H * 0.4 - 2.6, 16); scene.add(back); });   /* the painted bakery stands close behind the counter */
   const TW = 9.5, TD = 5.2;
   const woodMat = new THREE.MeshStandardMaterial({ color: '#C79A68', roughness: 0.6 }); tex(['counter-wood.jpg', 'table-wood.jpg'], t => { woodMat.map = rep(t, 2, 1); woodMat.color.set('#FFFFFF'); woodMat.needsUpdate = true; });
-  const top = new THREE.Mesh(new THREE.BoxGeometry(TW, 0.25, TD), woodMat); top.position.y = -0.13; top.receiveShadow = true; scene.add(top);
+  const top = new THREE.Mesh(new THREE.BoxGeometry(TW, 0.25, TD), woodMat); top.position.y = -0.13; top.receiveShadow = true; top.castShadow = true; scene.add(top);
   const cloth = new THREE.Mesh(new THREE.BoxGeometry(TW - 1.2, 0.02, TD - 1.0), new THREE.MeshStandardMaterial({ color: '#FFF8EC', roughness: 0.95 })); cloth.position.y = 0.01; cloth.receiveShadow = true; scene.add(cloth);
   [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.35, 2.4, 0.35), woodMat); l.position.set(a * (TW / 2 - 0.5), -1.45, b * (TD / 2 - 0.5)); scene.add(l); });
 
@@ -87,15 +87,16 @@ export function mount(host, opt) {
 
   /* sparkles (only when a ten is finished) */
   const bits = [], COL = ['#FF7FA8', '#FFD23D', '#FFFFFF', '#B98CFF', '#7FD67A', '#7FC8FF'];
-  function sparkle(x, z) { if (FAST) return; const g = new THREE.SphereGeometry(0.06, 8, 6); for (let i = 0; i < 24; i++) { const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: COL[i % 6] })); m.position.set(x || 0, 1.2, z || 0);
+  function sparkle(x, z) { return;   /* no flying bits (Esti): the frame's star is the reward */
+    if (FAST) return; const g = new THREE.SphereGeometry(0.06, 8, 6); for (let i = 0; i < 24; i++) { const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: COL[i % 6] })); m.position.set(x || 0, 1.2, z || 0);
     m.userData.v = new THREE.Vector3((Math.random() - .5) * .08, .07 + Math.random() * .05, (Math.random() - .5) * .08); m.userData.t = 0; scene.add(m); bits.push(m); } }
 
   /* ---------------- camera ---------------- */
-  let Wd = 1, Hh = 1, narrow = false, solo = false; const DIR = new THREE.Vector3(0, 0.62, 0.78).normalize(), V = 34; let dist = 14; const center = new THREE.Vector3(0, 0.3, 0.3);
+  let Wd = 1, Hh = 1, narrow = false, solo = false; const DIR = new THREE.Vector3(0, 0.5, 0.86).normalize(), V = 34; let dist = 14; const center = new THREE.Vector3(0, 0.3, 0.3);
   function band() { const b = typeof opt.band === 'function' ? opt.band() : opt.band; return b || [0, Hh]; }
   function layout() {
     tin.position.set(narrow ? 0 : -1.0, 0, narrow ? -0.7 : 0.3); tin.scale.setScalar(1);
-    plate.position.set(solo ? (narrow ? 0 : -1.0) : narrow ? 0 : 2.75, 0, solo ? 0.3 : narrow ? 1.65 : 0.3); tin.visible = !solo;   /* solo: only the plate, in the middle */   /* phone: in front of the tin, on the table */
+    plate.position.set(solo ? (narrow ? 0 : -1.0) : narrow ? 0 : 2.75, 0, solo ? 0.3 : narrow ? 1.4 : 0.3); plate.scale.setScalar(narrow && !solo ? 0.85 : 1); tin.visible = !solo;   /* solo: only the plate, in the middle */   /* phone: in front of the tin, on the table */
     kids.forEach((k, i) => k.m.position.set(narrow ? (i ? 1.9 : -1.9) : (i ? 3.4 : -3.4), 0.35, -3.1));
   }
   function fit() {
