@@ -73,8 +73,9 @@ export function mount(host, opt) {
     const top = new THREE.Mesh(new THREE.PlaneGeometry(1.45, 1.45), new THREE.MeshBasicMaterial({ map: numeralTexture(n), transparent: true, depthWrite: false, toneMapped: false }));
     /* the number stands up on its stone like a little round sign and always faces the boy, so it reads clearly at any camera angle (Esti, 2026-11-27) */
     top.position.y = TOP + 0.8; top.renderOrder = 2; top.onBeforeRender = () => top.quaternion.copy(camera.quaternion); g.add(top);
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.86, 0.09, 12, 56), new THREE.MeshBasicMaterial({ color: '#FFD23D', transparent: true, opacity: 0.95, toneMapped: false }));
-    ring.rotation.x = Math.PI / 2; ring.position.y = 0.08; ring.visible = false; g.add(ring);
+    /* the shine round a stone: a thick gold ring at the top of the stone, plain to see (K clarity 9) */
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.84, 0.13, 12, 56), new THREE.MeshBasicMaterial({ color: '#FFC21A', transparent: true, opacity: 0.95, toneMapped: false }));
+    ring.rotation.x = Math.PI / 2; ring.position.y = TOP + 0.02; ring.visible = false; g.add(ring);
     stones.push(g); tops.push(top); rings.push(ring);
   }
   /* start: a small green mat; finish: a flag at the far end (no writing) */
@@ -160,7 +161,7 @@ export function mount(host, opt) {
     if (now - (frame.t || 0) > 250) { frame.t = now; const b = band(); if (!frame.b || Math.abs(b[0] - frame.b[0]) > 4 || Math.abs(b[1] - frame.b[1]) > 4) { frame.b = b; if (frame.t0) fit(); frame.t0 = 1; } }   /* the panel grew or shrank: fit again */
     cam();
     const tt = now / 1000; cloth.rotation.y = Math.sin(tt * 2) * 0.15;
-    rings.forEach(r => { if (r.visible) r.material.opacity = 0.65 + Math.sin(tt * 6) * 0.3; });
+    rings.forEach(r => { if (r.visible) r.material.opacity = 0.75 + Math.sin(tt * 4) * 0.2; });
     Object.values(kids).forEach(k => { if (k.obj.position.y === TOP && k.obj.scale.y === 1) k.obj.children[0].position.y = 1.0 + Math.sin(tt * 2 + k.z * 3) * 0.015; });
     renderer.render(scene, camera); place();
   }
