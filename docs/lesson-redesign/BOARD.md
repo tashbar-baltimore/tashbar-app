@@ -18,10 +18,11 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 
 | Row | Job | Lessons (levels) | Files | Status | Owner (session link) | Last update (UTC) | Where I am / pull requests |
 |---|---|---|---|---|---|---|---|
-| P0 | Engine + 3 sample lessons | MATH.OPS.L03.01, READ.COMP.L05.05, SS.GEO.L07.01 | src/OneBite.html, src/UiKit.html, tests | DONE when live | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 | This pull request |
-| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | OPEN | | | |
+| P0 | Engine + 3 sample lessons | MATH.OPS.L03.01, READ.COMP.L05.05, SS.GEO.L07.01 | src/OneBite.html, src/UiKit.html, tests | DONE | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 15:25 | Live: #635. Coordinator follow-up (tap-to-land number line, streak banner on the top strip in lessons): see C1 |
+| C1 | Coordinator fixes after the first play-through | MATH.OPS.L03.01 (hops) | src/OneBiteKit.html, src/MoneyShow.html, tests/lib/onebite.js | TAKEN | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 16:00 | Hop `land:true`; banner on the top strip in lessons (gap B7, part). Math lesson 62 → 51 taps |
+| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | OPEN | | | Note (coordinator): use hop `land:true`, not tap-tap hopping (DESIGN.md "No tap-tap counting"). MATH.OPS.L03.01 is done; its "build 73" still takes 10 taps |
 | M2 | Math Grades 4–8 | MATH.* L05–L09 (about 22) | src/OneBiteDataMath*.html, src/OneBiteDataUpper.html | OPEN | | | |
-| R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | OPEN | | | |
+| R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | OPEN | | | Note (coordinator): READ.COMP.L05.05 is done; its Try it 2 tile "the oven is hot by 5" reads oddly ("by 5 o'clock"?). Fix with a fresh review |
 | R2 | C45 Grade 4 reading, part 2 | READ.* L05 in C45 (other 30) | src/CoreDataC45*.html | OPEN | | | |
 | R3 | C45 Grade 5 reading, part 1 | READ.* L06 in C45 (first 31) | src/CoreDataC45*.html | OPEN | | | |
 | R4 | C45 Grade 5 reading, part 2 | READ.* L06 in C45 (other 31) | src/CoreDataC45*.html | OPEN | | | |

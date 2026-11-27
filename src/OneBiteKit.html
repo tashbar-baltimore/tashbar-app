@@ -11,6 +11,7 @@
    tenframe  {type:'tenframe', n:7, start:0}                  tap (or drag the dot) to fill the frame until it shows n
              {type:'tenframe', n:4, start:9}                  take away: start > n, he taps dots OFF until n are left (n can be 0)
    hop       {type:'hop', start:3, add:4, unit:1, from, to}   hop the frog on a number line; lands on start + add
+             {type:'hop', ..., land:true}                     he taps the number where the frog will land; the hops then draw (one thinking tap, Gr 2+)
    count     {type:'count', n:6, pic:'🍎', o:['5','6','7']}   tap each picture to count, then pick the number
    blocks    {type:'blocks', n:14}                            build n with tens and ones
    tiles     {type:'tiles', w:['c','a','t'], extra:['b'], he:false, hear:'cat'}   put tiles in order
@@ -84,23 +85,30 @@ T.hop={ check:true,
     const r=T.hop.rng(d), b=d.start+d.add; if(d.start<r[0]||d.start>r[1]||b<r[0]||b>r[1]) return 'start and the landing number must be on the line (from..to)';
     if((r[1]-r[0])/u>20) return 'the line is too long: at most 20 hops from one end to the other'; return ''; },
   init(d){ return {pos:d.start, path:[d.start]}; },
-  say(d){ const n=Math.abs(d.add)/T.hop.u(d), u=T.hop.u(d); return 'Start at '+d.start+'. Hop '+(d.add>0?'':'back ')+n+' '+(u>1?(n===1?'jump':'jumps')+' of '+u:(n===1?'time':'times'))+'. Where do you land?'; },
-  how(d){ return 'Put the frog on '+d.start+'. Tap Hop and count each hop out loud: 1, 2, 3. Stop when you have done them all.'; },
+  say(d){ const n=Math.abs(d.add)/T.hop.u(d), u=T.hop.u(d); return 'Start at '+d.start+'. Hop '+(d.add>0?'':'back ')+n+' '+(u>1?(n===1?'jump':'jumps')+' of '+u:(n===1?'time':'times'))+'. Where do you land?'+(d.land?' Tap it.':''); },
+  how(d){ return d.land?'Count the hops in your head from '+d.start+'. Tap the number where the frog lands.':'Put the frog on '+d.start+'. Tap Hop and count each hop out loud: 1, 2, 3. Stop when you have done them all.'; },
   label(d){ return 'Number line: '+d.start+(d.add>0?' + ':' - ')+Math.abs(d.add); },
   view(d,s,c){ const r=T.hop.rng(d), u=T.hop.u(d), W=340, pad=18, n=(r[1]-r[0])/u, sx=v=>pad+(v-r[0])*(W-2*pad)/Math.max(1,r[1]-r[0]);
-    const fs=n<=10?13:n<=15?11:9.5; let g='<svg class="obk-nl" viewBox="0 0 '+W+' 112" role="img" aria-label="number line from '+r[0]+' to '+r[1]+', the frog is on '+s.pos+'">';
+    const fs=n<=10||(d.land&&n<=12)?13:n<=15?11:9.5; let g='<svg class="obk-nl" viewBox="0 0 '+W+' 112" role="img" aria-label="number line from '+r[0]+' to '+r[1]+', the frog is on '+s.pos+'">';
     g+='<line x1="'+pad+'" y1="86" x2="'+(W-pad)+'" y2="86" stroke="#1F2A44" stroke-width="3"/>';
-    for(let v=r[0];v<=r[1]+1e-9;v+=u){ const x=sx(v); g+='<line x1="'+x+'" y1="79" x2="'+x+'" y2="93" stroke="#1F2A44" stroke-width="2"/><text x="'+x+'" y="109" font-size="'+fs+'" text-anchor="middle" fill="#1F2A44" font-weight="'+(v===d.start?'900':'600')+'">'+v+'</text>'; }
+    const t0=d.land?d.start-Math.floor((d.start-r[0])/u+1e-9)*u:r[0];   /* tap-to-land: the marks run from the start number, so every landing spot has a mark */
+    for(let v=t0;v<=r[1]+1e-9;v+=u){ const x=sx(v); g+='<line x1="'+x+'" y1="79" x2="'+x+'" y2="93" stroke="#1F2A44" stroke-width="2"/><text x="'+x+'" y="109" font-size="'+fs+'" text-anchor="middle" fill="#1F2A44" font-weight="'+(v===d.start?'900':'600')+'">'+v+'</text>'; }
     g+='<circle cx="'+sx(d.start)+'" cy="86" r="5" fill="#3B6FD8"/>';
     for(let k=0;k+1<s.path.length;k++){ const x1=sx(s.path[k]), x2=sx(s.path[k+1]), mx=(x1+x2)/2; g+='<path d="M'+x1+' 80 Q'+mx+' 46 '+x2+' 80" fill="none" stroke="#FF7A3D" stroke-width="3" stroke-dasharray="5 4"/>'; }
-    g+='<text x="'+sx(s.pos)+'" y="74" font-size="30" text-anchor="middle">🐸</text></svg>';
+    g+='<text x="'+sx(s.pos)+'" y="74" font-size="30" text-anchor="middle">🐸</text>';
+    if(d.land){ const cw=(W-2*pad)/Math.max(1,n); for(let v=t0;v<=r[1]+1e-9;v+=u) if(v!==d.start) g+='<rect data-obk="land" data-k="'+v+'" x="'+(sx(v)-cw/2)+'" y="40" width="'+cw+'" height="72" fill="'+(v===s.pos?'rgba(255,122,61,.18)':'transparent')+'" style="cursor:pointer" role="button" aria-label="land on '+v+'"/>'; }
+    g+='</svg>';
     const hops=Math.round(Math.abs(s.pos-d.start)/u);
+    if(d.land) return g+'<p class="obk-count sm" aria-live="polite">'+(s.pos===d.start?'Tap the number where the frog lands.':'Hops: '+hops)+'</p>';
     return g+'<p class="obk-count sm" aria-live="polite">Hops: '+hops+(c.guided?' of '+Math.round(Math.abs(d.add)/u):'')+'</p>'+
       '<div class="obk-row"><button class="obk-btn" data-obk="back" aria-label="Hop back"'+(s.pos-u<r[0]-1e-9?' disabled':'')+'>◀ Hop</button><button class="obk-btn obk-pri'+(c.guided&&hops<Math.abs(d.add)/u&&d.add>0?' obk-pulse':'')+'" data-obk="fwd" aria-label="Hop forward"'+(s.pos+u>r[1]+1e-9?' disabled':'')+'>Hop ▶</button></div>'; },
-  tap(d,s,a){ const r=T.hop.rng(d), u=T.hop.u(d); let np=s.pos; if(a==='fwd') np=s.pos+u; else if(a==='back') np=s.pos-u; else return;
+  tap(d,s,a,k){ const r=T.hop.rng(d), u=T.hop.u(d); let np=s.pos;
+    if(a==='land'){ const v=+k; if(!num(v)||v<r[0]-1e-9||v>r[1]+1e-9||v===d.start) return; const st=v>d.start?u:-u; s.path=[d.start]; for(let w=d.start;Math.abs(v-w)>=u-1e-9;){ w+=st; s.path.push(w); } s.pos=v; return; }
+    if(a==='fwd') np=s.pos+u; else if(a==='back') np=s.pos-u; else return;
     if(np<r[0]-1e-9||np>r[1]+1e-9) return; if(s.path.length>1&&s.path[s.path.length-2]===np) s.path.pop(); else s.path.push(np); s.pos=np; },
   ready(d,s){ return s.pos!==d.start; },
   judge(d,s){ const b=d.start+d.add; if(s.pos===b) return {ok:true}; const past=d.add>0?s.pos>b:s.pos<b;
+    if(d.land) return {ok:false,msg:'Count the orange hops. Are there '+Math.abs(d.add)/T.hop.u(d)+'? Tap again.'};
     return {ok:false,msg:past?'Too far! Hop back and count the hops again.':'Keep hopping. Count every hop.'}; },
   solve(d,s){ const u=T.hop.u(d), st=d.add>0?u:-u; s.path=[d.start]; for(let v=d.start;v!==d.start+d.add;){ v+=st; s.path.push(v); } s.pos=d.start+d.add; } };
 
