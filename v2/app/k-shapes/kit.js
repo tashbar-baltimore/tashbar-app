@@ -188,7 +188,7 @@ export function startGame(cfg) {
     } else if (bc.solid) {   /* a little real solid stuck on the front */
       const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || (LK ? '#FFD21F' : '#FFFFFF'), roughness: 0.4 })); b3.scale.setScalar((LK ? 0.42 : 0.28) * (bc.solidScale || 1)); b3.position.set(0, BX.h * (LK ? 0.6 : 0.45), BX.d / 2 + (LK ? 0.3 : 0.18) + (LK && bc.solidScale ? 0.3 * (bc.solidScale - 1) : 0));   /* solidScale: a bigger solid, so the label is easy to read */ if (bc.solidScale) b3.rotation.set(0.5, 0.75, 0);   /* turned, so he sees three faces: a cube never looks like a flat square */ b3.castShadow = true; g.add(b3);   /* new look: bigger and golden, so the solid on each box is easy to read */
     } else if (LK) {
-      const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5, BX.d / 2 + 0.3); lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
+      const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.5 + (NB > 1 ? 0.5 : 0), BX.d / 2 + 0.3);   /* several boxes (phone: two rows): high enough that the box in front never hides it */ lab.rotation.x = -0.55; g.add(lab);   /* tilted up to face the boy, so a circle looks round, not squashed; out in front of the box, so no part of it hides inside the wall (a circle must never look like a half circle) */
     } else {
       const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
       lab.scale.setScalar((NB === 1 ? 0.48 : 0.5) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
@@ -273,7 +273,7 @@ export function startGame(cfg) {
   const SLOTS_TALL = [[-1.8, -4.7], [0, -5.0], [1.8, -4.7], [-1.8, -2.4], [0, -2.5], [1.8, -2.4], [-1.8, -0.1], [0, -0.2], [1.8, -0.1]];
   function boxAt(i) {
     if (NB === 1) return tall ? new THREE.Vector3(0, 0, 2.6) : new THREE.Vector3(0, 0, 2.3);
-    if (tall) return new THREE.Vector3(NB === 3 && i === 2 ? 0 : i % 2 ? 1.3 : -1.3, 0, i < 2 ? 1.9 : 3.95);
+    if (tall) return new THREE.Vector3(NB === 3 && i === 2 ? 0 : i % 2 ? 1.3 : -1.3, 0, i < 2 ? 1.75 : 4.35);
     return new THREE.Vector3((i - (NB - 1) / 2) * (NB === 3 ? 3.2 : 2.7), 0, 2.6);
   }
   const VIEW1 = { wide: [[0, 8.6, 11.6], [0, 0.2, -0.4]], tall: [[0, 15.6, 7.0], [0, 0, -1.4]] };
@@ -1639,7 +1639,7 @@ export function wrongFor(T) {
     if (o.k === 'oval') return noCount(['That is an oval. It is long and squished.', T === 'circle' ? 'A circle is perfectly round.' : 'A ' + T + ' has straight sides.']);
     if (o.k === 'semi') return noCount(['That is half a circle.', T === 'circle' ? 'It has a straight side. A circle is all round.' : 'It has a round side. A ' + T + ' has straight sides.']);
     if (f === 'circle') return ['That is a circle.', 'A circle has no corners at all. A ' + T + ' has ' + has(CORNERS[T]) + '.'];
-    if (o.k === 'lean' && (T === 'square' || T === 'rectangle')) return noCount(['Look at its corners.', 'Two corners are pointy. Two are wide.', 'A ' + T + ' has four corners all the same.']);
+    if (o.k === 'lean' && (T === 'square' || T === 'rectangle')) return noCount(['This shape leans over.', 'Two corners are pointy. Two are wide.', 'A ' + T + ' has four corners all the same.']);
     if (o.k === 'kite' && (T === 'square' || T === 'rectangle')) return noCount(['That is a kite shape.', 'Its corners are not all the same.', 'It is not a ' + T + '.']);
     if (T === 'square' && f === 'rectangle') return noCount(['That is a rectangle.', 'Two sides are long. Two are short.', 'A square has four sides the same.']);
     const name = (f === T || ['triangle', 'square', 'rectangle', 'circle'].includes(f) || T === 'hexagon') && !['pentagon', 'octagon'].includes(f) ? 'That is a ' + f + '.' : 'That shape is not a ' + T + '.';
