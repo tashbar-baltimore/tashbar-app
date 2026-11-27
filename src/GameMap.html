@@ -1033,6 +1033,7 @@ function sync(){
  show(true,true);
  if(first){ if(GM.view==='tree') scrollToNow(g); else scrollToHim(g); }
 }
+{ const s0=sync; sync=function(){ const r=s0.apply(this,arguments); try{ if(typeof window.SH_SYNC==='function') window.SH_SYNC(); }catch(e){ console.error('SH_SYNC',e); } return r; }; }   /* the new shell's home (ShHome.html) follows every redraw of the map */
 /* HoS 2026-11-20: the map always opens at the step he is up to (near the top), even when he is far down the road */
 function scrollToHim(g){ try{ g.scrollTop=0; const n=g.querySelector('.gm-n.now'); if(!n) return; const tp=g.querySelector('.gm-unit')||g.querySelector('.gm-top'), top=tp?tp.getBoundingClientRect().bottom:0;
  const want=n.getBoundingClientRect().top-(top+70); if(want>0) g.scrollTop=Math.round(want); zoomIntro(g); }catch(e){} }
@@ -1067,6 +1068,7 @@ function play(id){ if(RD.on){ rdStop(); try{ speechSynthesis.cancel(); }catch(e)
  if(c&&typeof startMission==='function'&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))){ GM.sig=''; startMission(c,id,'skill'); return; }
  GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); }
 window.GM_PLAY=play;   /* the new shell's SHK.openLesson(id) opens a lesson exactly as the map's Play does (docs/SHELL-CONTRACT.md) */
+window.GM_STATE=()=>{ const ws=worldsOf(M()||{}); return {ws,P:plan(ws),pick:pick(ws),tab:GM.tab}; };   /* the new shell's home reads today's work from here (docs/SHELL-CONTRACT.md) */
 /* "Read it to me": tap to read, tap the square to stop. The ring follows the real audio (TL_VOICE.now from VoicePro); with the device
    voice it follows an estimate of the reading time and finishes when the voice ends. The button is found again each frame, since the home redraws. */
 const RD={on:false,t0:0,est:0,u:null,raf:0,stopAt:0};
