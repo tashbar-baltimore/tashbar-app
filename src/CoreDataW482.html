@@ -230,7 +230,7 @@
     your:[
       {type:'match', pairs:[['The Golds bake all night before Yom Tov.','They work hard for their customers.'],['Binyamin beat three older boys.','His practice paid off.'],['Yehuda found the siddur with his notes.','Careful notes solve mysteries.']],
         say:'Match each proof to what it shows.', how:'Read the proof. What does THAT proof show?'},
-      {type:'sort', q:'Paragraph about Dovid’s strong sukkah.', bins:['Point','Proof','Explain'], cards:[['Dovid built a sukkah that stands up to wind.',0],['In the storm, his was the only one standing.',1],['His braces held all four walls.',1],['This shows his careful building worked.',2]],
+      {type:'sort', q:'Paragraph about Dovid’s strong sukkah.', bins:['Point','Proof','Explain'], cards:[['Dovid built a sukkah that stands up to wind.',0],['In the storm, his was the only one standing.',1],['After the storm, all four walls were still straight.',1],['This shows his careful building worked.',2]],
         say:'Point, proof, or explain? Sort each sentence.', how:'Point: what it proves. Proof: what happened. Explain: what it shows.',
         why:{q:'Why is "In the storm, his was the only one standing" proof?', o:['It tells what really happened','It says what the paragraph proves','It tells what it means','It is a question'], a:'It tells what really happened'}},
       {type:'tiles', q:'Point: Binyamin is patient. Proof: he showed the move again and again.', w:['This shows','he never','gives up','on a friend.'], extra:['he moved'],
@@ -266,7 +266,7 @@
       {type:'tiles', q:'Piece: what a sofer does.', w:['Next time,','thank','a sofer','for his care.'], extra:['the end.'],
         say:'Build a final thought from the tiles.', how:'Start with Next time. Then what the reader should do.'},
       {type:'match', pairs:[['It adds a new point.','Move it into a body paragraph.'],['It just stops.','Add a final thought.'],['It copies the introduction.','Restate in new words.']],
-        say:'Match each ending mistake to its fix.', how:'What would make the ending strong?'},
+        say:'Match each ending mistake to its fix.', how:'A new point belongs in the middle. Just stopped? Add a final thought. Copied? Say it a new way.'},
       {type:'sort', bins:['Good final thought','Mistake'], cards:[['So the next time you taste honey, thank a bee.',0],['Some bees live in the ground.',1],['That is all I know.',1],['Next time you see a sofer, think of every letter.',0]],
         say:'Good final thought, or a mistake?', how:'A final thought leaves the reader thinking. No new facts, no "the end".'}] },
 
@@ -308,7 +308,7 @@
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
     b.hook = { kind: 'wouldyou', pic: '📖', t: 'Book one starts: "This book is about bees." Book two starts: "Bzzz! The hive went wild."',
       q: 'Which book would you keep reading?', o: ['Book one', 'Book two'],
-      pay: 'Book two! Its first line *hooks* you. Now you know three hooks.' };
+      pay: 'Book two! Its first line *hooks* you.' };
     D[0].say = 'Match each *hook* to its kind.';
     b.learn = [
       { t: 'Three hooks: a *question*, a *fact*, a *scene*.', act: D[0] },
@@ -333,7 +333,7 @@
         cards: ['Bees help farmers grow more food.', 'One farmer got more apples after he brought in bees.', 'This shows bees help plants make fruit.'],
         say: 'Put each sentence in its *box*.', how: '*Point*: what it proves. *Proof*: what happened. *Explain*: what it shows.' } },
       { t: 'The *explain* answers the reader: *so what?*', act: Y[0] },
-      { who: { q: 'Point: Avrumi is generous. Proof: he gave his snack to a new boy. Explain?', o: [['Dani', 'He gave his snack to the new boy.'], ['Ephraim', 'He shares even when he is hungry.']], a: 1,
+      { who: { q: 'Point: Avrumi is generous. Proof: he was hungry, but gave his snack to a new boy. Explain?', o: [['Dani', 'He gave his snack to the new boy.'], ['Ephraim', 'He shares even when he is hungry.']], a: 1,
         why: 'Dani just *repeated* the proof. Ephraim *explained* it.' } }];
     b.play = [D[1], Y[2], Y[1],
       { type: 'order', q: 'Put the body paragraph in order. Leave out the extra.', steps: ['Mr. Halpern makes science exciting.', 'Last week he let us build a real volcano.', 'This shows he turns lessons into adventures.'], extra: ['He has a gray van.'],
@@ -353,12 +353,14 @@
       { t: 'A *final thought* can tie back to the *hook*.', act: Y[1] },
       { who: { q: 'Last line of the bee piece. Which is stronger?', o: [['Yitzy', 'That is all I know about bees. The end.'], ['Moshe', 'So the next time you taste honey, thank a bee.']], a: 1,
         why: '*The end* just stops. A *final thought* leaves him thinking.' } }];
-    b.play = [D[0], Y[2], Y[0], Y[3]];
+    var J = { type: 'order', q: 'Piece: why Shabbos guests matter. Build the conclusion.', steps: ['Guests make Shabbos more special.', 'They bring stories, friends and a full table.', 'So this Shabbos, invite someone new.'], extra: ['That is all. The end.', 'Some guests drive a long way.'],
+      say: 'Build the conclusion. Leave out the two mistakes.', how: '*Restate*, then *sum up*, then the *final thought*. Skip "the end" and the new point.', why: Y[0].why };
+    b.play = [D[0], Y[2], J, Y[3]];
     b.done = 'No more "The end." You *restate*, *sum up*, and leave a *final thought*.';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L06.04']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
-    b.hook = { kind: 'story', pic: '🏆', t: 'Yehuda won the science fair! He tells his rebbe, his friend and his sister.',
+    b.hook = { kind: 'story', pic: '🏆', t: 'Yehuda won the science fair! He tells Mr. Halpern, his friend and his sister.',
       q: 'Should he use the same words for all three?', o: ['Yes, news is news', 'No, each reader is different'],
       pay: '*Different* readers need *different* words. Always ask: *who* is reading?' };
     D[1].say = 'Match each *reader* to the words that fit.';
