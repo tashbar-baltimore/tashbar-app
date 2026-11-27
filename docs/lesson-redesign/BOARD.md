@@ -19,7 +19,7 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | Row | Job | Lessons (levels) | Files | Status | Owner (session link) | Last update (UTC) | Where I am / pull requests |
 |---|---|---|---|---|---|---|---|
 | P0 | Engine + 3 sample lessons | MATH.OPS.L03.01, READ.COMP.L05.05, SS.GEO.L07.01 | src/OneBite.html, src/UiKit.html, tests | DONE when live | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 | This pull request |
-| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | TAKEN | https://claude.ai/code/session_01Cri5bRC4HsP9vYnMCURp1S | 2026-11-27 17:04 | Claimed; reading the lessons, batch 1 next |
+| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | TAKEN | https://claude.ai/code/session_01Cri5bRC4HsP9vYnMCURp1S | 2026-11-27 | Batch 1 (9 of 40): MATH.OPS.L03.02–.06 and MATH.PV.L03.01–.04 in the "New Lessons M1 batch 1" pull request (11 fresh reviews; final all 4–5). Next: batch 2 = MATH.MEAS.L03.01–.04, NUM.L03.01–.02, GEO.L03.01, STAT.L03.01 (drafted, not yet reviewed). Then the 23 L04 lessons. |
 | M2 | Math Grades 4–8 | MATH.* L05–L09 (about 22) | src/OneBiteDataMath*.html, src/OneBiteDataUpper.html | OPEN | | | |
 | R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | TAKEN | https://claude.ai/code/session_01JPKZXGrA39PYd4bzsQc36i | 2026-11-27 17:10 | Claimed; starting batch 1 (first 6-10 lessons) |
 | R2 | C45 Grade 4 reading, part 2 | READ.* L05 in C45 (other 30) | src/CoreDataC45*.html | OPEN | | | |
