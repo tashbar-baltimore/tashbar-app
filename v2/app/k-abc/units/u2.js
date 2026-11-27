@@ -62,7 +62,7 @@ export function meet(ch) {
       await new Promise(res => { G.expect({ kind: 'tap', at: () => target.getWorldPosition(new THREE.Vector3()) }); G.A.wrongMove = null; G.tap(target, () => { W.poke(); audio.letter(ch); G.taps = []; res(); }); });
       await G.right(V(0, 3.2, 0.6), 'You heard it!');
       /* rounds 2-3: which picture starts with it? (two pictures stand on the grass) */
-      const pairs = shuffle(START[ch].filter(w => w !== KEYWORD[ch])).slice(0, 2).map((w, i) => [w, shuffle(others(ch))[i]]);
+      const pairs = shuffle(START[ch].filter(w => w !== KEYWORD[ch] && w !== 'dish')).slice(0, 2)   /* the dish looks like a plate (a p word): never asked about */.map((w, i) => [w, shuffle(others(ch))[i]]);
       for (const [pi, [good, bad]] of pairs.entries()) {
         G.newRound(); const order = shuffle([good, bad]), its = order.map((w, i) => G.item(w, () => G.narrow() ? V(-1.2 + i * 2.4, 0.85, 1.2) : V(-1.6 + i * 3.2, 0.9, 0.9), { size: 1.1 }));
         const g = its[order.indexOf(good)], b = its[order.indexOf(bad)];

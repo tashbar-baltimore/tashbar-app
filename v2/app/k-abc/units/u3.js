@@ -139,7 +139,7 @@ const hunt = {
     async play(G) {
       const S = G.S, n = () => G.narrow(); const drum = prop('drum'); drum.scale.setScalar(1.6); S.scene.add(drum); const dAt = () => n() ? V(1.2, 0.9, 2.0) : V(3.0, 0.9, 1.6); drum.position.copy(dAt()); G.W.layout = () => drum.position.copy(dAt());
       const hit = tapHit(drum, 0.75); let tapped = 0; G.tap(hit, () => { tapped++; audio.drum(); drum.scale.set(1.7, 1.5, 1.7); setTimeout(() => drum.scale.setScalar(1.6), 120); });
-      const seq = shuffle([...shuffle(START.d).slice(0, 3).map(w => [w, true]), ...shuffle(others('d')).slice(0, 3).map(w => [w, false])]);
+      const seq = shuffle([...shuffle(START.d.filter(w => w !== 'dish')).slice(0, 3)   /* K clarity (rule 7): the dish looks like a plate (a p word), so it is not used here */.map(w => [w, true]), ...shuffle(others('d')).slice(0, 3).map(w => [w, false])]);
       G.rounds(seq.length); await G.say('Drum time! Watch the stump.', 'Tap the drum only when it starts with this sound.', snd('d'));
       await G.say('If it does not, wait. Let it go by.');
       for (const [w, yes] of seq) {
