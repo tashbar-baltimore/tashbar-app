@@ -382,21 +382,21 @@
 
   (function () { var id = 'READ.COMP.L06.12';
     NL(id, {
-      hook: { kind: 'predict', pic: '🐟', t: 'A shark\'s skin is covered with tiny *scale-like* points.', q: 'Is a shark kosher?',
+      hook: { kind: 'predict', pic: '🦈', t: 'A shark\'s skin is covered with tiny *scale-like* points.', q: 'Is a shark kosher?',
         o: ['Kosher', 'Not kosher', 'Can\'t tell'], pay: '*Not kosher*! Its points cannot come off, so they are not *scales*.' },
       learn: [
         { t: 'Explain with the *text*, not a *guess*.', act: A(id, 'do', 0, { p: ['Behind the counter lay salmon, carp and whitefish.', 'A catfish has long whiskers and smooth skin.', 'A catfish has fins but no scales at all, so it is not kosher.', '"Which fish are kosher?" Yehuda asked.'], a: 2,
           say: 'Tap the sentence that *explains* why.', how: 'Find the sentence that says *why*, not just what it looks like.' }) },
         { who: { q: 'Why is a catfish not kosher?', o: [['Moishe', 'Because it has whiskers.'], ['Yosef', 'The text says: fins but no scales.']], a: 1,
-          why: 'Whiskers are *not in the text*. Use the text\'s *own detail*.' } },
+          why: 'Whiskers are in the *text*, but not as the *reason*.' } },
         { t: 'Now the *shark*: find the text\'s *reason*.', act: { type: 'evidence', q: 'Why are shark points not kosher scales?', look: 'the reason in the text',
           p: ['A shark\'s skin is covered with tiny hard points.', 'They cannot be scraped off without tearing the skin.', 'Sharks swim in every ocean.'], a: 1,
           say: 'Tap the sentence that gives the *reason*.', how: 'Not what sharks *have*. Find *why* it does not count.' } },
         { t: 'Build it: *answer*, the text\'s *detail*, what it *shows*.', act: A(id, 'your', 2, { q: 'Why is a shark not kosher?',
           say: 'Build the *explanation* in order.', how: '*Answer*, then the text\'s *detail*, then what it *shows*.' }) }],
       play: [
-        A(id, 'your', 0, { cards: [['A catfish has no scales at all.', 0], ['Shark points cannot be scraped off.', 0], ['Catfish are not kosher because they have whiskers.', 1], ['Sharks are not kosher because they are dangerous.', 1]], why: { q: 'How do you spot an outside guess?', o: ['You cannot point to it in the text', 'It uses the word because', 'It is about sharks'], a: 'You cannot point to it in the text' } }),
-        { type: 'order', q: 'Why should we ask before buying fish pieces?', steps: ['We ask before buying fish pieces.', 'The text says, "Without the skin, you cannot see the scales."', 'So we cannot check the signs ourselves.'], extra: ['Most fish in the store are kosher.'],
+        A(id, 'your', 0, { cards: [['A catfish has no scales at all.', 0], ['Shark points cannot be scraped off.', 0], ['Catfish are not kosher because they have whiskers.', 1], ['Sharks are not kosher because they are dangerous.', 1]], how: 'Does the text give this as the *reason*?', why: { q: 'How do you spot an outside guess?', o: ['You cannot point to it in the text', 'It uses the word because', 'It is about sharks'], a: 'You cannot point to it in the text' } }),
+        { type: 'order', q: 'Why should we ask before buying fish pieces?', steps: ['We should ask first.', 'The text says, "Without the skin, you cannot see the scales."', 'So we cannot check the signs ourselves.'], extra: ['Most fish in the store are kosher.'],
           say: 'Build the *explanation*: answer, *text detail*, what it *shows*.', how: 'Start with the *answer*. The text\'s *words* come next. Leave out the *guess*.' },
         A(id, 'your', 4, { q: 'Challenge: a new text. Why are some tides extra big?', a: 2, p: ['Twice a day, the ocean creeps up the beach, and twice a day it slides back out.', 'The moon\'s pull moves the ocean\'s water.', 'When the sun and moon line up, their pulls add together, and the tides are extra high and extra low.', 'Fishermen leave the harbor when the tide is right.'], why: { q: 'What reason does it give?', o: ['The sun\'s and moon\'s pulls add together', 'The water is warmer', 'The fishermen go out'], a: 'The sun\'s and moon\'s pulls add together' } })],
       done: 'A shark\'s points do not come off: *not kosher*. Explain with the *text\'s own words*.' }); })();
