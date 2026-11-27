@@ -15,7 +15,7 @@ import { startGame, FAMILY } from './kit.js';
 const PI = Math.PI;
 startGame({
   id: 'party2', world: 'party', mode: 'clues', plain: true,
-  boxes: [{ paint: 'star', accept: [], color: '#F5B400' }],
+  boxes: [{ paint: 'none', accept: [] }],   /* a plain party box: no star on it, so "find me" never means a star */
   intro: ['Shape party, number two!', 'Flat shapes and solid shapes came.', 'Listen to each clue, then find it!'],
   lessons: [{ k: 'square', word: 'square', short: true, color: '#12A766', rule: ['Four sides the same.'] },
             { k: 'hex', word: 'hexagon', short: true, color: '#F2A900' },
@@ -34,10 +34,10 @@ startGame({
     { say: ['I am flat.', 'I have six corners.'], accept: ['hex'] }
   ],
   watchLine: 'Watch me. Listen to the clue.', watchDone: 'The sphere! Solid and round, like a ball.', yourTurn: 'Now you. Listen to each clue!',
-  ask: 'Listen to the clue.', hint: 'Listen to the clue again.', hint2: 'Here I am!', remember: 'Remember: flat is thin, solid is fat.',
+  ask: 'Listen to the clue.', hint: 'Listen to the clue again.', hint2: 'Here I am!', remember: 'Remember: flat is thin, solid is thick.',
   yesDefault: o => 'Yes! I am the ' + FAMILY(o.k) + '!', allDone: 'You found every party shape!',
-  wrong: o => ['That is a ' + FAMILY(o.k) + '.', 'Listen to the clue again.'],
-  mistake: { friend: { name: 'Nachum', shirt: '#8C4A2F', hair: '#2A1A12' }, icon: 'cube', piece: ['square', 0.3, 1.15, '#12A766'],
+  wrong: o => ['That is ' + (/^[aeiou]/.test(FAMILY(o.k)) ? 'an ' : 'a ') + FAMILY(o.k) + '.', 'Listen to the clue again.'],
+  mistake: { friend: { name: 'Nachum', shirt: '#8C4A2F', hair: '#2A1A12' }, icon: 'cube', piece: ['square', 0, 1.0, '#12A766'], beside: ['cube', 0.5, 0.6, '#E03A33'],   /* the flat square face-on, a real cube beside it to compare */
     claim: ['The clue was: I am a solid block.', 'Nachum picked this one.'], ask: 'Is it a solid block?', answer: false,
     explain: ['It is thin and flat.', 'It is a square, not a cube.'], right: ['Right! It is flat.', 'A square is flat. A cube is solid.'] },
   endLine: 'What a shape party!', praise: 'Flat and solid. Shape party star!'

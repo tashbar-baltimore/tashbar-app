@@ -15,26 +15,26 @@ import { startGame, FAMILY } from './kit.js';
 const PI = Math.PI;
 startGame({
   id: 'graduation', world: 'party', mode: 'clues', plain: true, certificate: true,
-  boxes: [{ paint: 'star', accept: [], color: '#F5B400' }],
+  boxes: [{ paint: 'none', accept: [] }],   /* a plain party box: no star on it, so "find me" never means a star */
   intro: ['Mazel tov! It is graduation day!', 'You learned so many shapes this year.', 'One last game. Then your certificate!'],
   lessons: [{ k: 'hex', word: 'hexagon', short: true, color: '#F2A900' },
             { k: 'sphere', kind: 'solid', word: 'sphere', color: '#1F6FEB', like: 'It is round all over, like a ball.', action: 'roll', rule: ['A sphere rolls!'], tap: 'Tap the sphere to roll it.', tapSay: 'Roll, roll!',
               chant: [['Circle, square!', 2], ['Triangle, rectangle!', 2], ['Hexagon!', 3], ['Sphere, cube, cylinder, cone!', 4]] }],
-  set: [['g1', 'circle', 0, 0.75], ['g2', 'triSkinny', 0.6, 1], ['g3', 'cube', 0.5, 0.8], ['g4', 'rectLong', 0.4, 0.9],
-        ['g5', 'cone', PI / 2, 0.85], ['g6', 'square', PI / 4, 0.8], ['g7', 'hex', 0, 1.05], ['g8', 'oval', PI / 2, 0.9]],
+  set: [['g1', 'circle', 0, 0.75], ['g2', 'triSkinny', 0.15, 1.05], ['g3', 'cube', 0.5, 0.8], ['g4', 'rectLong', 0.4, 0.9],
+        ['g5', 'cone', 0, 0.85], ['g6', 'square', PI / 4, 0.8], ['g7', 'hex', 0, 1.05], ['g8', 'oval', PI / 2, 0.9]],
   clues: [
     { say: ['I am flat.', 'I have four sides the same.', 'I am turned.'], accept: ['square'] },
     { say: ['I am flat.', 'I have three corners.', 'I am very thin.'], accept: ['triSkinny', 'tri'] },
     { say: ['I am solid, like a block.'], accept: ['cube'] },
     { say: ['I am flat.', 'I am round. Not squished.'], accept: ['circle'] },
-    { say: ['I am solid.', 'I have a point. I am lying down.'], accept: ['cone'] },
+    { say: ['I am solid.', 'I have a point on top.'], accept: ['cone'] },
     { say: ['I am flat.', 'Two long sides, two short sides.'], accept: ['rectLong', 'rect'] },
     { say: ['I am flat.', 'I have six corners.'], accept: ['hex'] }
   ],
   watchLine: 'Watch me. Listen to the clue.', watchDone: 'The square! Turned, it is still a square.', yourTurn: 'Now you. Listen to each clue!',
   ask: 'Listen to the clue.', hint: 'Listen to the clue again.', hint2: 'Here I am!', remember: 'Remember: count the corners and the sides.',
   yesDefault: o => 'Yes! I am the ' + FAMILY(o.k) + '!', allDone: 'You found every shape!',
-  wrong: o => ['That is a ' + FAMILY(o.k) + '.', 'Listen to the clue again.'],
+  wrong: o => ['That is ' + (/^[aeiou]/.test(FAMILY(o.k)) ? 'an ' : 'a ') + FAMILY(o.k) + '.', 'Listen to the clue again.'],
   mistake: { friend: { name: 'Tzvi', shirt: '#3E6B48', hair: '#2A1A12' }, icon: 'dots6', piece: ['hex', 0.4, 1.15, '#F2A900'],
     claim: ['Tzvi says this shape has five corners.'], ask: 'Does it have five corners?', answer: false, prove: true,
     explain: ['Six corners! Not five.'], right: ['Right! It has six corners.', 'It is a hexagon.'] },

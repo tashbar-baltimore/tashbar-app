@@ -30,12 +30,12 @@ startGame({
   watchLine: 'Watch me put a shape in its box.', watchDone: 'A circle goes in the circle box!', yourTurn: 'Now you. Put each shape in its box!',
   ask: 'Drag each shape into its box.', hint: 'Look at the shape on each box.', hint2: 'This one goes in its box.', remember: 'Remember: count the corners.',
   ruleFor: t => ['Remember: a circle is round.', 'Remember: a triangle has three corners.', 'Remember: a square has four sides the same.', 'Remember: two long sides, two short sides.'][t.box],
-  yesDefault: o => 'Yes! A ' + fam(o.k) + '!', allDone: 'Every shape is in its box!',
+  yesDefault: o => 'Yes! ' + (/^[aeiou]/.test(fam(o.k)) ? 'An ' : 'A ') + fam(o.k) + '!', allDone: 'Every shape is in its box!',
   wrong: o => { const f = fam(o.k);
     if (f === 'square') { const a = ['That is a square.', 'Four sides the same. It goes in the square box.']; a.count = false; return a; }
     if (f === 'rectangle') { const a = ['That is a rectangle.', 'Two long, two short. It goes in the rectangle box.']; a.count = false; return a; }
     if (f === 'circle') return ['That is a circle. It has no corners.', 'It goes in the circle box.'];
-    return ['That is a ' + f + '.', 'It goes in the ' + f + ' box.']; },
+    return ['That is ' + (/^[aeiou]/.test(f) ? 'an ' : 'a ') + f + '.', 'It goes in the ' + f + ' box.']; },
   bonus: [['b1', 'triRight', 0.8, 1, 0], ['b2', 'rectFat', 0, 0.9, 2], ['b3', 'circle', 0, 1.15, 4]], bonusAsk: 'Sort the tricky ones too.',
   mistake: { friend: { name: 'Tzvi', shirt: '#C46A1E', hair: '#3A2A1E' }, icon: 'tri', piece: ['square', PI / 4, 1.1, '#1F6FEB'], box: 2,
     claim: ['Tzvi wants this in the triangle box.', 'He says it is a triangle.'], ask: 'Is it a triangle?', answer: false, prove: true,

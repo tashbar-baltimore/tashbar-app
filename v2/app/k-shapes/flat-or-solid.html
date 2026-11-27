@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Flat or solid?</title>
-<!-- Kindergarten Shapes, Unit 5 "Solid shapes" (v2/curriculum/k-shapes/MAP.md): tell flat shapes (thin, like paper) from solid shapes (fat, like a block). K.G.3.
+<!-- Kindergarten Shapes, Unit 5 "Solid shapes" (v2/curriculum/k-shapes/MAP.md): tell flat shapes (thin, like paper) from solid shapes (thick, like a block). K.G.3.
      Built on the shared 3D kit (kit.js). ?fast=1 for the automatic test. -->
 <link rel="stylesheet" href="kit.css">
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
@@ -16,21 +16,21 @@ const PI = Math.PI, fam = k => FAMILY(k), nc = a => { a.count = false; return a;
 startGame({
   id: 'flatsolid', world: 'space', thinFlat: true, plain: true,
   boxes: [{ paint: 'square', color: '#1F6FEB', paintScale: 1.5, accept: ['circle', 'square', 'tri', 'rect'] }, { solid: 'cube', color: '#1F6FEB', solidScale: 1.5, accept: ['sphere', 'cube', 'cyl', 'cone'] }],   /* big labels: a flat blue square and a solid blue cube (K-CLARITY-RULES 9) */
-  intro: ['Mendy has flat shapes and solid shapes.', 'Flat is thin, like paper.', 'Solid is fat, like a block.'],
+  intro: ['Mendy has flat shapes and solid shapes.', 'Flat is thin, like paper.', 'Solid is thick, like a block.'],
   lessons: [
     { k: 'circle', kind: 'solid', word: 'circle', color: '#1F6FEB', like: 'It is flat, like paper.', action: 'stand', rule: ['See? It is very thin.'] },
-    { k: 'sphere', kind: 'solid', word: 'sphere', color: '#1F6FEB', like: 'It is solid, like a ball.', action: 'roll', rule: ['It is fat and round all over.'],
+    { k: 'sphere', kind: 'solid', word: 'sphere', color: '#1F6FEB', like: 'It is solid, like a ball.', action: 'roll', rule: ['It is thick and round all over.'],
       tap: 'Tap the solid one.', tapSay: 'Solid!', chant: [['Flat!', 2], ['Solid!', 2], ['Flat or solid?', 3]] }],
   set: [['a1', 'square', 0, 1], ['a2', 'cube', 0.3, 0.85], ['a3', 'circle', 0, 1], ['a4', 'sphere', 0, 0.8],
         ['a5', 'tri', 0, 1], ['a6', 'cone', 0, 0.9], ['a7', 'rect', 0.2, 1], ['a8', 'cyl', 0, 0.85]],
   watchLine: 'Watch me. Is it flat or solid?', watchDone: 'A square is flat. It goes in the flat box!', yourTurn: 'Now you. Flat or solid?',
-  ask: 'Is it flat or solid? Drag it to its box.', hint: 'Flat is thin. Solid is fat.', hint2: 'This one goes in its box.', remember: 'Remember: flat is thin, like paper.',
-  yesDefault: o => (o.box === 0 ? 'Yes! A ' + fam(o.k) + ' is flat!' : 'Yes! A ' + fam(o.k) + ' is solid!'), allDone: 'Every shape is in its box!',
+  ask: 'Is it flat or solid? Drag it to its box.', hint: 'Flat is thin. Solid is thick.', hint2: 'This one goes in its box.', remember: 'Remember: flat is thin, like paper.',
+  yesDefault: o => (o.box === 0 ? 'Yes! ' + (/^[aeiou]/.test(fam(o.k)) ? 'An ' : 'A ') + fam(o.k) + ' is flat!' : 'Yes! ' + (/^[aeiou]/.test(fam(o.k)) ? 'An ' : 'A ') + fam(o.k) + ' is solid!'), allDone: 'Every shape is in its box!',
   wrong: o => o.box === 0 ? nc(['That ' + fam(o.k) + ' is flat, like paper.', 'It goes in the flat box.']) : nc(['That ' + fam(o.k) + ' is solid, like a block.', 'It goes in the solid box.']),
   bonus: [['b1', 'cyl', PI / 2, 0.8, 0], ['b2', 'rect', 0.6, 0.8, 2], ['b3', 'cone', PI, 0.8, 4]], bonusAsk: 'Flat or solid? These are tricky.',
   mistake: { friend: { name: 'Nachum', shirt: '#9C6B30', hair: '#3A2A1E' }, icon: 'square', piece: ['sphere', 0, 1, '#1F6FEB'], box: 1,
     claim: ['Nachum says a ball is flat.', 'He says it is a circle.'], ask: 'Is it flat?', answer: false,
-    explain: ['A ball is fat and round.', 'It is solid, not flat.'], right: ['Right! It is not flat.', 'A ball is a solid sphere.'] },
+    explain: ['A ball is thick and round.', 'It is solid, not flat.'], right: ['Right! It is not flat.', 'A ball is a solid sphere.'] },
   endLine: 'Every shape is in its box!', praise: 'Flat like paper, solid like a block. Great sorting!'
 });
 </script>

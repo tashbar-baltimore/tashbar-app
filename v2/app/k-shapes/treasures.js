@@ -158,9 +158,13 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
   /* a party balloon resting on the scale: every child knows a balloon is light, even a big one (Esti: a big ball of yarn against a rock was confusing) */
   function balloon(s, color) {
     const R0 = 0.62 * s, g = new THREE.Group(), col = vivid(color), m = new PM({ color: col, roughness: 0.18, clearcoat: 1, clearcoatRoughness: 0.05 });
-    const b = new THREE.Mesh(new THREE.SphereGeometry(R0, 40, 28), m); b.scale.set(1, 1.15, 1); b.position.y = R0 * 1.15; g.add(b);
-    const knot = new THREE.Mesh(new THREE.ConeGeometry(R0 * 0.12, R0 * 0.16, 16), m); knot.position.y = 0.02; g.add(knot);
-    const ribbon = new THREE.Mesh(new THREE.TorusGeometry(R0 * 0.35, R0 * 0.02, 6, 24, Math.PI), new PM({ color: '#FFFFFF' })); ribbon.rotation.x = Math.PI / 2; ribbon.position.set(R0 * 0.35, 0.02, 0); g.add(ribbon);
+    /* a real balloon shape (round on top, narrowing to a knot), so it never looks like an egg or a ball (K-CLARITY-RULES 7) */
+    const prof = []; for (let i = 0; i <= 24; i++) { const t = i / 24, a = Math.PI * t; prof.push(new THREE.Vector2(Math.max(0.001, Math.sin(a) * R0 * (1 - 0.32 * Math.pow(1 - t, 3))), -Math.cos(a) * R0 * 1.18)); }
+    const b = new THREE.Mesh(new THREE.LatheGeometry(prof, 48), m); b.position.y = R0 * 1.18 + R0 * 0.16; g.add(b);
+    const knot = new THREE.Mesh(new THREE.ConeGeometry(R0 * 0.16, R0 * 0.22, 16), m); knot.rotation.x = Math.PI; knot.position.y = R0 * 0.1; g.add(knot);
+    const sm = new PM({ color: '#FFFFFF', roughness: 0.5 });
+    const str = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0.02, 0), new THREE.Vector3(R0 * 0.35, 0.02, R0 * 0.25), new THREE.Vector3(R0 * 0.7, 0.02, -R0 * 0.1), new THREE.Vector3(R0 * 1.1, 0.02, R0 * 0.3), new THREE.Vector3(R0 * 1.5, 0.02, R0 * 0.05)]);
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(str, 40, Math.max(0.012, R0 * 0.025), 6, false), sm));   /* its string lies curled on the pan */
     return g;
   }
   function hayBale(s) {

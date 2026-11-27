@@ -15,14 +15,14 @@ import { startGame, FAMILY } from './kit.js';
 const PI = Math.PI;
 startGame({
   id: 'mystery', world: 'sky', mode: 'clues', plain: true,   /* he counts corners and sides: plain one-colour shapes, nothing painted on them (K-CLARITY-RULES 1, 9) */
-  boxes: [{ paint: 'star', accept: [], color: '#F5B400' }],
+  boxes: [{ paint: 'none', accept: [] }],   /* a plain box: no star on it, so "find me" never means a star */
   intro: ['Mendy has a mystery game!', 'A shape tells you clues.', 'Listen, then find the shape!'],
   lessons: [{ k: 'circle', word: 'circle', short: true, color: '#1F6FEB', rule: ['Round, no corners.'] },
             { k: 'tri', word: 'triangle', short: true, color: '#E03A33' },
             { k: 'square', word: 'square', short: true, color: '#12A766', rule: ['Four sides the same.'] },
             { k: 'rect', word: 'rectangle', short: true, color: '#F0458E', rule: ['Two long sides, two short sides.'] },
             { k: 'hex', word: 'hexagon', short: true, color: '#F2A900' }],
-  set: [['m1', 'circle', 0, 1], ['m2', 'tri', 0.3, 1], ['m3', 'kite', 0, 1], ['m4', 'square', PI / 4, 0.9],
+  set: [['m1', 'circle', 0, 1], ['m2', 'tri', 0.3, 1], ['m3', 'pent', 0, 1], ['m4', 'square', PI / 4, 0.9],
         ['m5', 'hex', 0, 1], ['m6', 'semi', 0, 1], ['m7', 'rect', 0.2, 1], ['m8', 'oval', 0.4, 1]],
   clues: [
     { say: ['I am perfectly round.', 'I have no corners.'], accept: ['circle'] },
@@ -35,7 +35,7 @@ startGame({
   watchLine: 'Watch me. Listen to the clue.', watchDone: 'The circle! It was round with no corners.', yourTurn: 'Now you. Listen to each clue!',
   ask: 'Listen to the clue.', hint: 'Listen to the clue again.', hint2: 'Here I am!', remember: 'Remember: count the corners.',
   yesDefault: o => 'Yes! I am the ' + FAMILY(o.k) + '!', allDone: 'You found every mystery shape!',
-  wrong: o => ['That is a ' + FAMILY(o.k) + '.', 'Listen to the clue again.'],
+  wrong: o => ['That is ' + (/^[aeiou]/.test(FAMILY(o.k)) ? 'an ' : 'a ') + FAMILY(o.k) + '.', 'Listen to the clue again.'],
   mistake: { friend: { name: 'Yaakov', shirt: '#6B8E23', hair: '#2A1A12' }, icon: 'dots4', piece: ['tri', 0, 1.15, '#E03A33'],
     claim: ['The clue was: I have four corners.', 'Yaakov picked this one.'], ask: 'Does it have four corners?', answer: false, prove: true,
     explain: ['Three corners! Not four.'], right: ['Right! It does not have four.', 'Three corners. It is a triangle.'] },
