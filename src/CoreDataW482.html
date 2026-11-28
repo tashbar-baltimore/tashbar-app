@@ -230,7 +230,7 @@
     your:[
       {type:'match', pairs:[['The Golds bake all night before Yom Tov.','They work hard for their customers.'],['Binyamin beat three older boys.','His practice paid off.'],['Yehuda found the siddur with his notes.','Careful notes solve mysteries.']],
         say:'Match each proof to what it shows.', how:'Read the proof. What does THAT proof show?'},
-      {type:'sort', q:'Paragraph about Dovid’s strong sukkah.', bins:['Point','Proof','Explain'], cards:[['Dovid built a sukkah that stands up to wind.',0],['In the storm, his was the only one standing.',1],['His braces held all four walls.',1],['This shows his careful building worked.',2]],
+      {type:'sort', q:'Paragraph about Dovid’s strong sukkah.', bins:['Point','Proof','Explain'], cards:[['Dovid built a sukkah that stands up to wind.',0],['In the storm, his was the only one standing.',1],['After the storm, all four walls were still straight.',1],['This shows his careful building worked.',2]],
         say:'Point, proof, or explain? Sort each sentence.', how:'Point: what it proves. Proof: what happened. Explain: what it shows.',
         why:{q:'Why is "In the storm, his was the only one standing" proof?', o:['It tells what really happened','It says what the paragraph proves','It tells what it means','It is a question'], a:'It tells what really happened'}},
       {type:'tiles', q:'Point: Binyamin is patient. Proof: he showed the move again and again.', w:['This shows','he never','gives up','on a friend.'], extra:['he moved'],
@@ -266,7 +266,7 @@
       {type:'tiles', q:'Piece: what a sofer does.', w:['Next time,','thank','a sofer','for his care.'], extra:['the end.'],
         say:'Build a final thought from the tiles.', how:'Start with Next time. Then what the reader should do.'},
       {type:'match', pairs:[['It adds a new point.','Move it into a body paragraph.'],['It just stops.','Add a final thought.'],['It copies the introduction.','Restate in new words.']],
-        say:'Match each ending mistake to its fix.', how:'What would make the ending strong?'},
+        say:'Match each ending mistake to its fix.', how:'A new point belongs in the middle. Just stopped? Add a final thought. Copied? Say it a new way.'},
       {type:'sort', bins:['Good final thought','Mistake'], cards:[['So the next time you taste honey, thank a bee.',0],['Some bees live in the ground.',1],['That is all I know.',1],['Next time you see a sofer, think of every letter.',0]],
         say:'Good final thought, or a mistake?', how:'A final thought leaves the reader thinking. No new facts, no "the end".'}] },
 
@@ -303,6 +303,80 @@
       {type:'tiles', q:'Explain the moon to a 5-year-old.', w:['The moon','goes around','and around','the earth.'], extra:['elliptical'],
         say:'Build a sentence that fits a little child.', how:'Simple words a little child knows. Leave out the hard word.'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     The good old activities are kept; the learn cards build the piece as he goes (a box for each part). */
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'wouldyou', pic: '📖', t: 'Book one starts: "This book is about bees." Book two starts: "Bzzz! The hive went wild."',
+      q: 'Which book would you keep reading?', o: ['Book one', 'Book two'],
+      pay: 'Book two! Its first line *hooks* you.' };
+    D[0].say = 'Match each *hook* to its kind.';
+    b.learn = [
+      { t: 'Three hooks: a *question*, a *fact*, a *scene*.', act: D[0] },
+      { t: 'A *question hook* makes the reader *wonder*.', act: Y[0] },
+      { who: { q: 'Piece: how bees make honey. Which opening is better?', o: [['Shloimy', 'Hi! I will tell you about bees.'], ['Gavriel', 'Bzzz! The hive hummed as the bees came home.']], a: 1,
+        why: 'Shloimy *announced*. Gavriel showed a *scene*.' } }];
+    var S1 = Y[1]; S1.why = { q: 'Why is "A maple tree can live 300 years" a fact hook?', o: ['It tells a surprising true fact', 'It asks a question', 'It shows a moment'], a: 'It tells a surprising true fact' };
+    b.play = [D[1],
+      { type: 'tiles', q: 'Piece: amazing ants.', w: ['An ant can lift', 'up to fifty times', 'its own weight.'], extra: ['This is about'],
+        say: 'Build a *fact hook* from the tiles.', how: 'What it is first. Then the surprising number. Skip the announcing tile.',
+        why: { q: 'What makes this a fact hook?', o: ['A surprising true fact', 'It asks a question', 'It shows a moment'], a: 'A surprising true fact' } },
+      S1, Y[2]];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'Book two won: its first line hooked you. You open with a *question*, a *fact* or a *scene*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L06.02']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'mystery', pic: '🐝', t: 'Eli writes: "Bees help farmers." Nobody believes him.',
+      q: 'What is missing?', o: ['proof', 'a longer word', 'a question'],
+      pay: '*Proof*, and then what it *shows*. That is point, proof, explain!' };
+    b.learn = [
+      { t: 'A body paragraph: *point*, *proof*, *explain*.', act: { type: 'storymap', slots: ['Point', 'Proof', 'Explain'],
+        cards: ['Bees help farmers grow more food.', 'One farmer got more apples after he brought in bees.', 'This shows bees help plants make fruit.'],
+        say: 'Put each sentence in its *box*.', how: '*Point*: what it proves. *Proof*: what happened. *Explain*: what it shows.' } },
+      { t: 'The *explain* answers the reader: *so what?*', act: Y[0] },
+      { who: { q: 'Point: Avrumi is generous. Proof: he was hungry, but gave his snack to a new boy. Explain?', o: [['Dani', 'He gave his snack to the new boy.'], ['Ephraim', 'He shares even when he is hungry.']], a: 1,
+        why: 'Dani just *repeated* the proof. Ephraim *explained* it.' } }];
+    b.play = [D[1], Y[2], Y[1],
+      { type: 'order', q: 'Put the body paragraph in order. Leave out the extra.', steps: ['Mr. Halpern makes science exciting.', 'Last week he let us build a real volcano.', 'This shows he turns lessons into adventures.'], extra: ['He has a gray van.'],
+        say: 'Point, proof, explain. Leave out the extra.', how: '*Point* first. Then what happened. Then *This shows*.',
+        why: { q: 'Why leave out "He has a gray van"?', o: ['It does not prove the point', 'It is too short', 'It is an explain'], a: 'It does not prove the point' } }];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'Now people believe Eli: *point*, *proof*, and *explain* what it shows.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L06.03']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'predict', pic: '🍯', t: 'Yehuda\'s bee piece ends: "That is all I know. The end."',
+      q: 'How will the reader feel?', o: ['Excited', 'Let down', 'Hungry for honey'],
+      pay: '*Let down*! A *strong finish* leaves the reader thinking.' };
+    b.learn = [
+      { t: 'A strong finish has *three jobs*.', act: { type: 'storymap', slots: ['Restate', 'Sum up', 'Final thought'],
+        cards: ['Snow days are the best days of winter.', 'We build forts and help neighbors.', 'So next time, grab your boots!'],
+        say: 'Put each sentence in its *job* box.', how: '*Restate*: the main idea. *Sum up*: the points. *Final thought*: what to do.' } },
+      { t: 'A *final thought* can tie back to the *hook*.', act: Y[1] },
+      { who: { q: 'Last line of the bee piece. Which is stronger?', o: [['Yitzy', 'That is all I know about bees. The end.'], ['Moshe', 'So the next time you taste honey, thank a bee.']], a: 1,
+        why: '*The end* just stops. A *final thought* leaves him thinking.' } }];
+    var J = { type: 'order', q: 'Piece: why Shabbos guests matter. Build the conclusion.', steps: ['Guests make Shabbos more special.', 'They bring stories, friends and a full table.', 'So this Shabbos, invite someone new.'], extra: ['That is all. The end.', 'Some guests drive a long way.'],
+      say: 'Build the conclusion. Leave out the two mistakes.', how: '*Restate*, then *sum up*, then the *final thought*. Skip "the end" and the new point.', why: Y[0].why };
+    b.play = [D[0], Y[2], J, Y[3]];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'No more "The end." You *restate*, *sum up*, and leave a *final thought*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L06.04']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'story', pic: '🏆', t: 'Yehuda won the science fair! He tells Mr. Halpern, his friend and his sister.',
+      q: 'Should he use the same words for all three?', o: ['Yes, news is news', 'No, each reader is different'],
+      pay: '*Different* readers need *different* words. Always ask: *who* is reading?' };
+    D[1].say = 'Match each *reader* to the words that fit.';
+    b.learn = [
+      { t: 'Ask first: *who* is reading?', act: D[1] },
+      { t: 'A *formal* reader needs polite words, *no slang*.', act: Y[0] },
+      { t: 'A *little* reader needs *simple* words.', act: Y[4] },
+      { who: { q: 'A note to the shul\'s rav after the siyum. Which fits?', o: [['Ari', 'Thanks a bunch, you are awesome!'], ['Shaya', 'Thank you for your beautiful words.']], a: 1,
+        why: '*Slang* does not fit a rav. *Formal* words show respect.' } }];
+    b.play = [D[0], Y[3], Y[1], Y[2]];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'One piece of news, three readers. You pick words that fit: *formal*, *friendly* or *simple*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L06.03']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
