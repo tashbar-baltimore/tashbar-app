@@ -24,6 +24,7 @@ The HoS decides the order. The list grows as pieces are found.
 | Money (T$), store, canteen, prizes | Money.js, Store.js, Canteen.js | Not looked at yet | |
 | Arena, class mode, teacher mode | Arena.js, ClassMode.html, TeacherMode.js | Not looked at yet | |
 | Pathfinder (several versions) | Pathfinder*.js | Not looked at yet | Many versions overlap; pick one. |
+| Chumash & Timeline Lab (its own curriculum, grades 3–8) | ChumashLab.html, ChumashLabData.html | Moving now | Copied to `v2/app/lab/` as its own page (no sign-in; progress kept on the device). Waits for an approver's yes. Kodesh: rebbe review applies. |
 | Block Builders | BlockBuilders*.html | Not looked at yet | |
 | Music, jokes, Simcha pages, themes | Music.html, JokeJar.html, Simcha*.html, Theme.html | Not looked at yet | |
 | Departments, School Builder, curriculum tools | Dept*.js, SchoolBuilder.js, Curriculum*.js | Not looked at yet | |
