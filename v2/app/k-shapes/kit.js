@@ -544,7 +544,7 @@ export function startGame(cfg) {
   function dropInBox(o, bi) {
     bi = bi == null ? Math.max(0, o.box) : bi;
     clearCorners(o); o.inBox = true; o.inBoxAt = bi; o.boxN = boxes[bi].n++; W.found++;
-    const to = inBoxSpot(bi, o.boxN), s0 = o.g.scale.x, s1 = Math.min(o.scale || s0, 1) * (NB === 1 ? 0.55 : 0.42);   /* from its own size, not its size this moment (a piece still popping in stayed a speck) */
+    const to = inBoxSpot(bi, o.boxN), s0 = o.g.scale.x, s1 = cfg.sortBy === 'size' ? (o.scale || s0) * 0.55 : Math.min(o.scale || s0, 1) * (NB === 1 ? 0.55 : 0.42);   /* sorting by size: a big piece stays big in its box (review 2: the big ball looked small once dropped) */   /* from its own size, not its size this moment (a piece still popping in stayed a speck) */
     tween(520, k => o.g.scale.setScalar(s0 + (s1 - s0) * ease(k)));
     return moveTo(o, to, 520, 1.2).then(() => { o.g.rotation.set(-1.45, (o.boxN % 3 - 1) * 0.6, 0); burst(to.clone().setY(1.2)); pop(); cheer(mendy);
       if (LK) { LK.squash(o.g, s1, 0.4); LK.wiggle(boxes[bi].g); LK.sparkle(to.clone().setY(1.0)); } });
@@ -1495,7 +1495,8 @@ export function startGame(cfg) {
     if (MEASURED) { if (FAST && /[?&]jump=round/.test(location.search)) { measureGame(); return; } const ok = await measureLesson(); if (ok) measureGame(); return; }
     if (POSITIONED) { const ok = await posLesson(); if (ok) posGame(); return; }
     if (PUZZLED) { const ok = await puzzleLesson(); if (ok) puzzleGame(); return; }
-    if (PATTERNED) { const ok = await patternLesson(); if (ok) patternGame(); return; }
+    if (PATTERNED) { const JP = FAST && location.search.match(/[?&]jump=round(\d)/); if (JP) { await camTo('wide', 10); patternRound(cfg.rounds[+JP[1]], false, { done: true }); return; }   /* pictures only (fast=1): straight to round N */
+      const ok = await patternLesson(); if (ok) patternGame(); return; }
     if (FIXED) { if (OL) { scene.remove(OL.g); OL = null; } const ok = await fixLesson(); if (OL) { scene.remove(OL.g); OL = null; } if (ok) fixGame(); return; }
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }];
     const shows = [];

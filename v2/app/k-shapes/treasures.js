@@ -240,8 +240,8 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     void color; g.material = brass; return shadowy(g);
   }
   function engine() {
-    const g = new THREE.Group(), red = once('engCab', () => new PM({ color: '#2F5FB8', roughness: 0.3, clearcoat: 1 })), black = wheelM();
-    const boiler = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.62, 28), once('engRedB', () => new PM({ color: '#E0372E', roughness: 0.3, clearcoat: 1 }))); boiler.rotation.z = Math.PI / 2; boiler.position.set(0.12, -0.08, 0); g.add(boiler);
+    const g = new THREE.Group(), red = once('engCab', () => new PM({ color: '#3A3F4A', roughness: 0.35, clearcoat: 0.8 }))   /* dark grey engine: a blue and red one looked like one more car in a red-blue pattern (review 2) */, black = wheelM();
+    const boiler = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.62, 28), once('engRedB', () => new PM({ color: '#5A606C', roughness: 0.35, clearcoat: 0.8 }))); boiler.rotation.z = Math.PI / 2; boiler.position.set(0.12, -0.08, 0); g.add(boiler);
     const cab = new THREE.Mesh(new RoundedBoxGeometryLite(0.36, 0.5, 0.48, 0.05), red); cab.position.set(-0.3, 0.0, 0); g.add(cab);
     const roof = new THREE.Mesh(new RoundedBoxGeometryLite(0.46, 0.06, 0.56, 0.03), black); roof.position.set(-0.3, 0.27, 0); g.add(roof);
     const stack = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.2, 16), black); stack.position.set(0.3, 0.18, 0); g.add(stack);

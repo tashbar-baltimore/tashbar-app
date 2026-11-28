@@ -14,7 +14,7 @@
 import { startGame } from './kit.js';
 const nc = a => { a.count = false; return a; };
 const P = '#7C4DFF';
-const BOXES = [{ paint: 'circle', color: P, paintScale: 1.05, boxScale: 1.3, acceptSize: 'big', word: 'big' }, { paint: 'circle', color: P, paintScale: 0.75, boxScale: 0.8, acceptSize: 'small', word: 'small' }];   /* the boxes themselves are big and small; labels smaller, so they never cover the box (review 2) */
+const BOXES = [{ paint: 'circle', color: P, paintScale: 0.8, boxScale: 1.3, acceptSize: 'big', word: 'big' }, { paint: 'circle', color: P, paintScale: 0.62, boxScale: 0.8, acceptSize: 'small', word: 'small' }];   /* the boxes themselves are big and small; labels smaller, so they never cover the box (review 2) */
 const word = o => BOXES[o.box].word;
 startGame({
   id: 'sortsize', world: 'jungle', plain: true, sortBy: 'size', boxes: BOXES, countAfter: true, countTags: true,   /* plain one-colour pieces; a big number over each thing as it is counted (K clarity) */
@@ -24,7 +24,7 @@ startGame({
               tap: 'Tap the small ball.', tapSay: 'Small!', chant: [['Big!', 2], ['Small!', 2], ['Big and small!', 3]] }],
   /* the same thing in a big and a small size, side by side, so big and small are never in doubt (big is 2.5 times the small); 3 big, 5 small */
   set: [['a1', 'sphere', 0, 1.4, '#FF7A1A'], ['a2', 'sphere', 0, 0.6, '#FF7A1A'], ['a3', 'cube', 0.2, 1.3, '#E03A33'], ['a4', 'cube', 0.2, 0.56, '#E03A33'],
-        ['a5', 'tri', 0, 1.4, '#1F6FEB'], ['a6', 'tri', 0, 0.6, '#1F6FEB'], ['a7', 'circle', 0, 0.58, '#12A766'], ['a8', 'square', 0, 0.56, '#F2A900']],   /* review 2: the small ones were too tiny to see and grab; still less than half the big ones */
+        ['a5', 'tri', 0, 1.4, '#1F6FEB'], ['a6', 'tri', 0, 0.6, '#1F6FEB'], ['a7', 'sphere', 0, 0.58, '#12A766'], ['a8', 'cube', 0.2, 0.56, '#F2A900']],   /* review 2: every small piece has a big piece of the same kind (ball, block, triangle) to compare with */   /* review 2: the small ones were too tiny to see and grab; still less than half the big ones */
   watchLine: 'Watch me sort by size.', watchDone: 'Big goes with big!', yourTurn: 'Now you. Big or small?',
   ask: 'Is it big or small? Put it in its box.', hint: 'Look at the big circle and the small circle on the boxes.', hint2: 'This one goes in its box.', remember: 'Remember: big with big, small with small.',
   yesDefault: o => 'Yes! ' + word(o)[0].toUpperCase() + word(o).slice(1) + '!', allDone: 'Everything is sorted!',
