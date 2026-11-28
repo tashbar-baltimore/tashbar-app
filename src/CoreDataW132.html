@@ -224,6 +224,66 @@
         say:'Put the paragraph in order. End with the strong close.', how:'Topic sentence first, then a detail, then the close.'}] }
   };
 
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     NL(id, f): f gets the old do and your lists (good activities are kept) and returns hook, learn, play and done. X(a, o) copies a with changes. */
+  function X(a, o) { if (!a) throw new Error('W13 new lesson: missing activity'); return Object.assign({}, a, o || {}); }
+  function NL(id, f) { var b = BITE[id]; if (!b || !b.do || !b.your) return; var n = f(b.do, b.your);
+    b.hook = n.hook; b.learn = n.learn; b.play = n.play; b.done = n.done; if (n.one && b.board) b.board.one = n.one; delete b.do; delete b.your; delete b.ready; }
+
+  NL('WRIT.PARA.L04.02', function (D, Y) { return {
+    hook: { kind: 'compare', pic: '🎣', t: 'Two first sentences. “This is about clocks.” Or: “Tick, tock, tick, tock!”',
+      q: 'Which one makes you want to read on?', o: ['This is about clocks.', 'Tick, tock, tick, tock!'],
+      pay: '*Tick, tock!* A *hook* grabs the reader right away.' },
+    learn: [
+      { t: 'A *hook* grabs the reader. There are *three kinds*.', act: X(D[0], { say: 'Match each *hook* to its kind.', how: 'Does it *ask*? Is it a *noise*? Is it a *wow fact*?' }) },
+      { t: 'A hook must be about the *topic*.', act: X(Y[3], { say: 'Pick the hook that fits the *topic*.', how: 'It must *grab* the reader *and* be about the garden.' }) },
+      { t: 'Cast it out, reel it in! *Hook* first, then the *topic sentence*.', m: { type: 'move', t: 'Cast your line out wide, then reel it in!' },
+        act: X(Y[2], { say: 'Put the start of the paragraph in order.', how: 'The *hook* first, then the *topic sentence*, then a detail.' }) },
+      { who: { q: 'The paragraph is about the bird feeder. Who wrote a *hook*?', o: [['Shmuli', 'This is about our bird feeder.'], ['Avi', 'Chirp, chirp, flap!']], a: 1,
+        why: 'Shmuli just *tells* the topic. Avi *grabs* the reader.' } }],
+    play: [
+      X(D[1], { say: 'Good *hook*, or a *mistake*?', how: 'A good hook *grabs* the reader *and* is about the library.' }),
+      X(Y[0], { say: 'Tap the *best hook*.', how: 'Which one grabs you *and* is about snow?' }),
+      X(Y[1], { say: '*Hook*, or *topic sentence*?', how: 'A hook *grabs*. A topic sentence *tells* what the paragraph is about.' }),
+      X(Y[4], { say: 'Challenge! Match each topic to its *hook*.', how: 'Which hook is about *each* topic?' })],
+    done: '*Tick, tock!* Start with a hook: a *question*, a *sound*, or a *wow fact*.' }; });
+
+  NL('WRIT.PARA.L04.03', function (D, Y) { return {
+    hook: { kind: 'challenge', pic: '🔍', t: 'Rebbe says: “Prove the grocery is busy before Shabbos!”',
+      q: 'Which sentence proves it?', o: ['It is really busy.', 'Ten people wait for challah.'],
+      pay: '*Ten people wait*! A *strong detail* shows it. “Really busy” proves nothing.' },
+    learn: [
+      { t: 'A *strong detail* shows who, what, *how many* or how.', act: X(D[1], { say: 'Match each *vague* detail to a *strong* one.', how: 'Find the one with *exact* words or a *number*.' }) },
+      { t: '*Vague* words like “a lot” prove *nothing*.', act: X(Y[1], { say: 'Pick the words that make the detail *strong*.', how: 'An *exact number* proves it best.' }) },
+      { t: 'Prove it! Stamp out each *strong detail*.', m: { type: 'chant', lines: ['Who? What?', 'How many? How?', 'Prove it, prove it,', 'Show me now!'] },
+        act: X(Y[0], { say: 'Build a *strong detail*.', how: 'Who? Did what? *How many*? When?' }) },
+      { who: { q: 'Topic: The shul library is a great place to read. Which detail *proves* it?', o: [['Eli', 'It has a blue door.'], ['Moshe', 'It has soft chairs and 500 books.']], a: 1,
+        why: 'Exact, but *off topic*. A blue door proves *nothing* here.' } }],
+    play: [
+      X(D[0], { say: '*Strong* detail, or *vague* mistake?', how: 'Strong shows who, what, *how many* or how.' }),
+      X(Y[2], { say: 'Tap the detail that *proves* it.', how: 'Which one shows *exactly* how good a reader he is?' }),
+      X(Y[3], { say: 'Does the detail *prove* the topic?', how: 'Does it show what made the morning *busy*? Snow is white, but so what?' }),
+      X(Y[4], { say: 'Challenge! Match each topic to the detail that *proves* it.', how: 'Which detail proves *exactly* that topic?' })],
+    done: 'You proved it: *ten people* in line! Strong details show who, what, *how many*.' }; });
+
+  NL('WRIT.PARA.L04.04', function (D, Y) { return {
+    hook: { kind: 'wouldyou', pic: '🎁', t: 'Two ways to end about Zeidy’s clock. “The end.” Or: “Now it ticks again, and Zeidy smiles.”',
+      q: 'Which ending would you pick?', o: ['“The end.”', '“Now it ticks again…”'],
+      pay: 'A *strong close*! The big idea in *new words*, plus a *final thought*.' },
+    learn: [
+      { t: 'Weak closes: “The end,” a *copy*, or *off topic*.', act: X(D[0], { say: 'Match each *weak close* to what is wrong.', how: 'Does it *stop*, go *off the topic*, or *copy*?' }) },
+      { t: 'Strong: *big idea* in new words, plus a *final thought*.', act: X(Y[0], { say: 'Tap the *strong close*.', how: '*New words* for the big idea, plus a *final thought*.' }) },
+      { t: 'Wrap it up like a gift! Tie the *bow*.', m: { type: 'move', t: 'Fold the paper, wrap it up, and tie the bow!' },
+        act: X(Y[1], { say: 'Pick the *final thought*.', how: 'It must stay on the big idea: a *feeling* or *why it matters*.' }) },
+      { who: { q: 'Topic: Chaim set up the shul library. Who wrote a *strong close*?', o: [['Yaakov', 'The end.'], ['Chaim', 'Now every boy has a book for Shabbos.']], a: 1,
+        why: '“The end” *just stops*. Chaim left a *final thought*.' } }],
+    play: [
+      X(D[1], { say: '*Strong* close, or a *weak* mistake?', how: 'Weak is a *copy*, *off the topic*, or “The end.”' }),
+      X(Y[2], { say: 'Topic: the club helped the Golds. Build the *close*.', how: '*Closing words*, who, then the *final thought*.' }),
+      X(Y[3], { say: 'Which kind of *final thought* is it?', how: '*Why it matters* tells what changed. *How it feels* tells a feeling.' }),
+      X(Y[4], { say: 'Challenge! Put the paragraph in order. End *strong*.', how: 'Topic sentence first, then a detail, then the *close*.' })],
+    done: 'Not “The end”! The *big idea* in new words, plus a *final thought*.' }; });
+
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
   /* Units: W13.U<grade><unit> (K = 0): W13.U31 = Grade 3, Unit 1 (docs/core-growth/HOW-TO-ADD-A-UNIT.md) */
   /* The unit's real task (map: Gr 3 piece): a Writing Workshop piece for The Shabbos Street News. It opens from "Unit cleared!";

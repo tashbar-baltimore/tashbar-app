@@ -364,6 +364,105 @@
         say:'Listen. What kind of ending is it?', how:'Does it tell why, tell what to do, or add a fact?'}] }
   };
 
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     NL(id, f): f gets the old do and your lists (good activities are kept) and returns hook, learn, play and done. X(a, o) copies a with changes. */
+  function X(a, o) { if (!a) throw new Error('W13 new lesson: missing activity'); return Object.assign({}, a, o || {}); }
+  function NL(id, f) { var b = BITE[id]; if (!b || !b.do || !b.your) return; var n = f(b.do, b.your);
+    b.hook = n.hook; b.learn = n.learn; b.play = n.play; b.done = n.done; if (n.one && b.board) b.board.one = n.one; delete b.do; delete b.your; delete b.ready; }
+
+  NL('WRIT.ESSAY.L04.03', function (D, Y) { return {
+    hook: { kind: 'puzzle', pic: '🧩', t: 'Naftali’s plan is jumbled. The ending is first. The topic is last.',
+      q: 'What should come first?', o: ['The topic sentence', 'The ending', 'A detail'],
+      pay: 'The *topic sentence*! *TIDE*: Topic, Important details, Describe, Ending.' },
+    learn: [
+      { t: '*T*: the topic sentence. It names the *big idea*.', act: X(Y[0], { say: 'Find the *topic sentence*.', how: 'Which line tells what the *whole* piece is about?' }) },
+      { t: '*I*: important details. Each one is about the *topic*.', act: X(D[1], { say: 'Does it fit the plan, or is it a *mistake*?', how: 'Each detail must be about the *oven*. An ending must *wrap up*.' }) },
+      { t: '*D*: describe each detail. Tap the table: *T-I-D-E*!', m: { type: 'chant', lines: ['T! Topic sentence!', 'I! Important details!', 'D! Describe each one!', 'E! Ending!'] },
+        act: X(Y[2], { say: '*D* step! Match each detail to the line that *describes* it.', how: 'Which line *says more* about that part?' }) },
+      { who: { q: 'Plan: How a bicycle bell rings. Who picked an *important detail*?', o: [['Yossi', 'Avi’s bike is red.'], ['Naftali', 'A tiny hammer hits the bell.']], a: 1,
+        why: 'A red bike is *not about* how it rings.' } }],
+    play: [
+      X(D[0], { say: 'Build Naftali’s *TIDE* plan. Leave out the mistake card.', how: '*Topic*, a detail, *describe* it, then the *ending*. Tea does not fit.' }),
+      X(Y[3], { say: 'Finish the *important detail*.', how: 'What makes the *ding*?' }),
+      X(Y[4], { q: '“So the next time it rains, open your umbrella!”', hear: 'So the next time it rains, open your umbrella!',
+        say: 'Listen. Which part of *TIDE* is it?', how: 'Does it start, give a fact, or *wrap up*? An ending can tell what to *do*.' }),
+      X(Y[1], { say: 'Challenge! Put the parts of *TIDE* in order.', how: 'Say the *TIDE* chant in your head.' })],
+    done: 'Jumble fixed! *TIDE*: Topic, Important details, Describe, *Ending*.' }; });
+
+  NL('WRIT.ESSAY.L04.04', function (D, Y) { return {
+    hook: { kind: 'oddone', pic: '🗂️', t: 'Heading: *The Parts*. Facts: the face, the hands, “dust it gently.”',
+      q: 'Which one is in the wrong group?', o: ['the face', 'the hands', 'dust it gently'],
+      pay: '*Dust it gently* is about *taking care* of it. Each fact goes under its *heading*.' },
+    learn: [
+      { t: 'Facts that go together share one *heading*.', act: X(D[1], { say: 'Put each fact under its *heading*.', how: 'Which *heading* does each fact answer?' }) },
+      { t: 'Check each fact: does it *answer its heading*?', act: X(Y[0], { say: 'Which fact fits *Taking Care of It*?', how: 'Which one tells what you must *do* to keep it safe?' }) },
+      { t: 'Point left, point right! *Sort* each fact into its group.', m: { type: 'move', t: 'Point left for one group, point right for the other!' },
+        act: X(Y[3], { say: 'Tap every word that names a *part*.', how: 'Which ones are *pieces* of the clock?' }) },
+      { who: { q: 'Picture: gears turning inside a clock. Whose *caption* fits?', o: [['Eli', 'I like clocks.'], ['Shimon', 'The gears turn inside the clock.']], a: 1,
+        why: 'A *caption* tells what the *picture shows*.' } }],
+    play: [
+      X(D[0], { say: 'Right *heading*, or a *mistake*?', how: 'Read the fact. Does it answer *that* heading?' }),
+      X(Y[1], { say: 'Match each picture to its *caption*.', how: 'A *caption* tells what the picture shows.' }),
+      { type: 'sort', q: 'Facts about a bike.', bins: ['The Parts', 'How It Works'], cards: [['It has two wheels.', 0], ['It has a chain.', 0], ['Pedals turn the chain.', 1], ['The chain turns the back wheel.', 1]],
+        say: 'Sort each bike fact under its *heading*.', how: '*Parts* are pieces. *How It Works* tells what *moves* what.' },
+      X(Y[4], { say: 'Challenge! Zeidy opens his clock. Build its *caption*.', how: 'Who, does what, to what.' })],
+    done: '“Dust it gently” moved to *Taking Care of It*! Group facts, then add a *caption*.' }; });
+
+  NL('WRIT.PARA.L04.14', function (D, Y) { return {
+    hook: { kind: 'fact', pic: '🕰️', t: 'Did you know? Many old clocks have a *pendulum*.',
+      q: 'What is a pendulum?', o: ['A weight that swings', 'A kind of bell', 'A tiny key'],
+      pay: 'A *weight that swings* back and forth! That sentence is a *definition*.' },
+    learn: [
+      { t: 'A *definition* tells what a word *means*.', act: X(D[0], { say: 'Match each clock word to its *meaning*.', how: 'Think of what each thing *is* or *does*.' }) },
+      { t: 'Definition words: *is a*, *means*, *is called*.', act: X(Y[4], { say: 'Tap every word that can start a *definition*.', how: 'Which words tell what something *is*?' }) },
+      { t: 'Then a *detail* says more. Swing like a *pendulum*!', m: { type: 'move', t: 'Swing your arm like a pendulum: left, right, tick, tock!' },
+        act: X(Y[3], { say: '*Fact*, then *definition*, then *detail*.', how: 'Fact: it has one. Definition: what it *is*. Detail: what it *does*.' }) },
+      { who: { q: 'Define *spring*. Who did it right?', o: [['Dovid', 'A spring is a springy thing.'], ['Avi', 'A spring is a coil of metal that pushes back.']], a: 1,
+        why: 'Repeating the word *teaches nothing*. Use *new words*.' } }],
+    play: [
+      X(D[1], { say: 'Good *definition*, or a *mistake*?', how: 'Does it teach what the thing is or does, in *new words*?' }),
+      X(Y[0], { say: 'Find the *definition*.', how: 'Look for “*is a*” or “*means*”.' }),
+      X(Y[2], { say: 'Listen, then build the *definition*.', how: 'The word, then “*is a*”, then what it is.' }),
+      { type: 'evidence', q: 'Which sentence is a *detail* that tells what the hands do?', p: ['A clock has hands.', 'The hands are thin pointers.', 'They move around to show the time.'], a: 2,
+        look: 'what the hands do', say: 'Challenge! Tap the *detail* about what the hands *do*.', how: 'Fact: it has hands. Definition: what they *are*. Detail: what they *do*.' }],
+    done: 'A pendulum is a *weight that swings*. Facts, *definitions* and *details* teach your reader.' }; });
+
+  NL('WRIT.PARA.L04.15', function (D, Y) { return {
+    hook: { kind: 'notice', pic: '🔗', t: 'Dovid wrote: “It has a face. It has hands. It has gears.”',
+      q: 'What do you notice?', o: ['It sounds choppy', 'It is too long', 'It has no facts'],
+      pay: '*Choppy*! *Linking words* like also, another and but make facts flow.' },
+    learn: [
+      { t: '*Also* and *another* add more of the *same* kind.', act: X(Y[0], { say: 'What does each *linking word* do?', how: 'Is the next fact *more of the same*, or a *surprise*?' }) },
+      { t: '*But* shows something *different*, like a surprise.', act: X(D[1], { say: 'Join the two facts with the right *word*.', how: 'Small and loud: same kind, or a *surprise*?' }) },
+      { t: 'Link arms! Facts hold hands like *train cars*.', m: { type: 'chant', lines: ['Also! One more!', 'Another! A new part!', 'But! A surprise!'] },
+        act: X(Y[3], { say: 'Build two *linked* sentences.', how: 'The second one starts a *new detail*: *Another* part.' }) },
+      { who: { q: '“It has a face. ___ it has hands.” Who picked the right *linking word*?', o: [['Yossi', 'But'], ['Chaim', 'Also,']], a: 1,
+        why: 'Hands are *not a surprise*. *But* is for something different.' } }],
+    play: [
+      X(D[0], { say: 'Careful! Which word fits a *surprise*?', how: 'Old and still perfect: is the second fact the *same kind*, or *different*?' }),
+      X(Y[1], { say: 'Which *linking word* is used right?', how: '“*But*” must come before something *truly different*.' }),
+      X(Y[2], { say: 'Match each start to its *linked* end.', how: 'Read each pair out loud. Does the *linking word* fit?' }),
+      X(Y[4], { say: 'Challenge! Put the *linked* paragraph in order.', how: 'Topic, *one part*, *another* part, then what it *also* does.' })],
+    done: 'No more *choppy* facts! *Also*, *another* and *but* link them up.' }; });
+
+  NL('WRIT.PARA.L04.16', function (D, Y) { return {
+    hook: { kind: 'whatswrong', pic: '🔔', t: 'Naftali’s bell piece ends: “Also, bells come in many sizes.”',
+      q: 'What is wrong with that ending?', o: ['It adds a new fact', 'It is too short', 'Nothing is wrong'],
+      pay: 'A *new fact* does not wrap up. *Sum it up* in new words instead.' },
+    learn: [
+      { t: 'Weak endings *stop*, *copy*, or add a *new fact*.', act: X(Y[2], { say: 'Match each *weak ending* to what is wrong.', how: 'Does it *stop*, *add*, or *copy*?' }) },
+      { t: 'Strong: *sum up* the big idea in new words.', act: X(D[1], { say: 'Find the *strong ending*.', how: 'Which one *sums up* the big idea in new words?' }) },
+      { t: 'Or tell the reader *what to do*. Tie the bow!', m: { type: 'move', t: 'Wrap it up like a gift, and tie the bow!' },
+        act: X(Y[4], { say: 'Listen. What kind of *ending* is it?', how: 'Does it tell why, tell *what to do*, or add a fact?' }) },
+      { who: { q: 'Piece: how a bell rings. Who wrote the *strong ending*?', o: [['Eli', 'Also, bells are old.'], ['Dovid', 'So every ding comes from one tiny hammer.']], a: 1,
+        why: 'Eli added a *new fact*. Dovid *summed it up*.' } }],
+    play: [
+      X(D[0], { say: '*Strong* ending, or *weak* mistake?', how: 'Weak endings *stop*, *copy*, or add a *new fact*.' }),
+      X(Y[1], { say: 'Put the piece in order. The *ending* goes last.', how: 'Topic, details, then the *ending*.' }),
+      X(Y[3], { say: 'Build the *TIDE* piece, ending last.', how: 'Which card *wraps it up*? One card does not fit.' }),
+      X(Y[0], { say: 'Challenge! Finish the *ending*.', how: 'What is the piece *about*?' })],
+    done: 'No new facts at the end! *Sum it up*, or tell the reader *what to do*.' }; });
+
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 
   /* Unit W13.U34 = Grade 3, Unit 4 "Explain It". The real task: Gr 3 piece 8, "How It Works", in the Writing Workshop (scored by the teacher). */
