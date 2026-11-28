@@ -142,3 +142,12 @@ Partner Match (phone): the five plain letters now stand in two rows (3 + 2), big
 | Letter rain | A wrong tap showed no right letter; a tall letter could fall close above another. | While the rain is still, the hand shows one to catch; more room between letters in the lane. |
 | Dot Builder | Taking the dot out (Suf) was only told; the check button only hovered; faint grey rings. | "Watch me … I take the dot out"; "Watch me. It is Suf already. I tap the green check."; clear orange rings. |
 | Many progress dots | 13–15 dots wrapped into two rows on a phone. | Smaller dots in one row. |
+
+## Round 4, part 2 (15 games, 7 now score 4): what changed for the rest
+| Where | Finding | Change |
+|---|---|---|
+| Find the Mistake (every unit) | The hand pressed the orange X with no words; "Tap yes or no" with no yes/no on screen; "Right!" as praise in a unit that teaches the dot on the **right**; a wrong answer about a sound got no second try; the dot was ringed when the mistake was the sound. | "Yaakov is wrong. I tap the orange X."; "Now you! Green check, or orange X?"; "Good job!" / "Good listening!"; a second try after a sound mistake; no ring on the shape in a sound round; "It is Beis. But Beis says [b]!". |
+| Stories | Waiting letters sat under the progress dots and touched on a phone; Mendy stood on Tuf's foot; the plain letter hid behind the Shabbos table; "stops at the line" with no line. | Waiting letters lower and further apart; the people stand clear of the big letter; the plain letter above the table; "Vov is short." / "Reish is short." (Spot the Difference keeps its drawn line). |
+| Dot Builder review | The dot in its dish sat beside Tuf on a phone; faint rings on a phone; Suf never shown in the review. | The dish in front, below the letter; strong orange rings on every screen; the review shows taking the dot out and pressing the check. |
+| My hard letters (phone) | Neighbouring discs overlapped; bubbles started cut off; the end line pointed to the wrong next game. | Two lanes, smaller discs, no sway, bubbles start on screen; "Great practice! You know your hard letters better now." |
+| Beat the sun | The sun sank toward the cars. | It slides across high up and never sinks. |
