@@ -62,7 +62,7 @@ export function worldT(S) {
     appear: () => S.tween(600, e => birdS = e, ease.elastic),
     sound: () => { peck = 1; return audio.tick(); },
     soundStart: () => { if (S.t - lastTap > 0.4) { lastTap = S.t; peck = 1; audio.tick(); } }, soundStop: () => {},
-    cheer: () => { dance = 2; P.burst(new THREE.Vector3(0, 3.6, 0.6)); audio.party(); },
+    cheer: () => { dance = 2; P.burst(new THREE.Vector3(0, 3.6, 0.6), 0.15); audio.party(); },   /* a small burst, not a storm (K clarity 10) */
     poke: () => { dance = 0.6; peck = 1; audio.tick(); P.twinkle(bird.position, 4); } });
   common(S, W, strokes, [{ geo: trunkG, pops: pops[0] }, { geo: branchG, pops: pops[1] }]);
   /* the bird follows the growing tip and taps */
@@ -103,7 +103,7 @@ export function worldP(S) {
     appear: async () => {},
     sound: () => { spinV = 6; blow(2); return audio.puff(); },
     soundStart: () => { if (S.t - lastPuff > 0.5) { lastPuff = S.t; spinV = 4; audio.puff(); } }, soundStop: () => {},
-    cheer: () => { spinV = 14; blow(10); P.burst(c0.clone().add(new THREE.Vector3(0, 0.5, 0.5))); audio.party(); },
+    cheer: () => { spinV = 14; blow(10); P.burst(c0.clone().add(new THREE.Vector3(0, 0.5, 0.5)), 0.15); audio.party(); },
     poke: () => { spinV = 10; blow(4); audio.puff(); } });
   common(S, W, strokes, [{ geo: stickG, pops: [] }, { geo: bowlG, pops }]);
   W.onPop = o => { audio.pop(); P.twinkle(c0, 2); };
@@ -144,7 +144,7 @@ function simpleWorld(S, o) {
   Object.assign(W, { hero: hero.hit, heroPos: () => hero.at(), appear: hero.appear || (async () => {}),
     sound: () => { hero.react && hero.react(); return audio.letter(o.ch); },
     soundStart: () => { if (S.t - last > (o.every || 0.9)) { last = S.t; audio.letter(o.ch); } }, soundStop: () => {},
-    cheer: () => { hero.cheer && hero.cheer(); P.burst(new THREE.Vector3(0, 3.4, 0.6)); audio.party(); },
+    cheer: () => { hero.cheer && hero.cheer(); P.burst(new THREE.Vector3(0, 3.4, 0.6), 0.15); audio.party(); },
     poke: () => { hero.react && hero.react(); audio.letter(o.ch); P.twinkle(hero.at(), 4); } });
   W._hero = hero; common(S, W, strokes, parts); W.onPop = () => audio.pop(); return W;
 }
@@ -159,17 +159,15 @@ export function worldI(S) {
         [-1, 1].forEach(s => { const e = eye(0.09, {}); e.position.set(s * 0.13, 0.08, 0.28); G.add(e); }); const sm = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.02, 8, 16, Math.PI), toon(0x3A5A1A)); sm.rotation.z = Math.PI; sm.position.set(0, -0.08, 0.33); G.add(sm); return G; } }],
     hero: (S2, st) => { const at = () => st[1][0].clone(), hit = hitBall(S2, at(), 0.8); return { hit, at, react: () => { wig = 1; }, cheer: () => { wig = 2; } }; } });
 }
-/* n: a butterfly net: the handle goes down, then the hoop arches over; a butterfly visits */
+/* n: a net: the handle goes down, then the hoop arches over (no butterfly: nothing flies that is not the game) */
 export function worldN(S) {
   const wood = C(0xC98A4B), hoop = C(0xFF7A45);
   const W = simpleWorld(S, { ch: 'n', pal: 'meadow', trees: [[-9, -6, { s: 1.6 }], [9.5, -6, { s: 1.4 }]], every: 1.0,
     style: [{ r: 0.15, col: (t, n, c) => c.copy(wood).lerp(C(0xFFE0B0), Math.max(0, n.z) * 0.4) },
       { r: 0.13, col: (t, n, c) => c.copy(hoop).lerp(C(0xFFFFFF), Math.max(0, n.z) * 0.3) }],
-    hero: (S2, st) => { const b = new THREE.Group(); [-1, 1].forEach(s => { const w = new THREE.Mesh(new THREE.SphereGeometry(0.28, 16, 10), toon(0xB46BFF, { emissive: 0xB46BFF, ei: .2 })); w.scale.set(1, 1.1, 0.15); w.position.x = s * 0.22; b.add(w); });
-      const bd = new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 0.35, 4, 8), toon(0x3A2A5A)); b.add(bd); S2.scene.add(b); let k = 0, react = 0;
-      S2.tick((t, dt) => { react = Math.max(0, react - dt); const a = t * 0.8; b.position.set(1.0 + Math.sin(a) * 0.9, 4.3 + Math.sin(a * 2) * 0.3 + react * Math.sin(t * 20) * 0.1, 0.4); b.children.slice(0, 2).forEach((w, i) => w.rotation.y = Math.sin(t * 14) * 0.7 * (i ? -1 : 1)); });
-      const c0 = new THREE.Vector3(); st[1].forEach(p => c0.add(p)); c0.divideScalar(st[1].length); const hit = new THREE.Mesh(new THREE.SphereGeometry(0.9, 8, 6), new THREE.MeshBasicMaterial({ visible: false })); hit.position.copy(c0); S2.scene.add(hit);   /* he taps the net's hoop; the butterfly flutters */
-      return { hit, at: () => c0.clone(), react: () => react = 1, cheer: () => react = 2 }; } });
+    hero: (S2, st) => {   /* K clarity (Esti: no butterflies flying around): only the net itself; he taps its hoop */
+      const c0 = new THREE.Vector3(); st[1].forEach(p => c0.add(p)); c0.divideScalar(st[1].length); const hit = new THREE.Mesh(new THREE.SphereGeometry(0.9, 8, 6), new THREE.MeshBasicMaterial({ visible: false })); hit.position.copy(c0); S2.scene.add(hit);   /* he taps the net's hoop */
+      return { hit, at: () => c0.clone(), react: () => {}, cheer: () => {} }; } });
   return W;
 }
 /* m: two mountains rise from the valley (the humps), snowy tops; a moon rises when he hums */

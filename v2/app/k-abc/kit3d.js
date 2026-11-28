@@ -461,16 +461,16 @@ export function tracer(S, strokes, o = {}) {
   const up = () => { if (T.down) { T.down = false; if (o.onUp) o.onUp(); } };
   addEventListener('pointerup', up); addEventListener('pointercancel', up);
   /* glowing guide dots along the path and a pulsing green start light */
-  const dots = new THREE.Group(), dm = new THREE.MeshBasicMaterial({ color: C(0xffffff).multiplyScalar(1.4), transparent: true, opacity: 0.9 }), dg = new THREE.SphereGeometry(0.1, 12, 8);
+  const dots = new THREE.Group(), dm = new THREE.MeshBasicMaterial({ color: C(0x2B3A8C), transparent: true, opacity: 0.95 }), dg = new THREE.SphereGeometry(0.12, 12, 8);   /* K clarity: dark dots on a white road, like a tracing worksheet (white dots on green could not be seen) */
   strokes.forEach(P => P.forEach((p, i) => { if (i % 3) return; const d = new THREE.Mesh(dg, dm); d.position.copy(p); d.position.z += 0.05; dots.add(d); }));
   const start = new THREE.Mesh(new THREE.SphereGeometry(0.26, 24, 16), glow(0x3DFF7A, 2.4)), halo = new THREE.Mesh(new THREE.RingGeometry(0.32, 0.42, 40), new THREE.MeshBasicMaterial({ color: C(0x9CFFBE).multiplyScalar(1.6), transparent: true, opacity: 0.8, side: THREE.DoubleSide }));
   start.add(halo); dots.visible = start.visible = false; S.scene.add(dots, start); if (o.ringOnly) { start.material.visible = false; }
   /* a wide, soft, shiny track under the dots so the path is easy to see on bright grass */
-  const trackM = new THREE.MeshBasicMaterial({ color: C(0xFFFBE8), transparent: true, opacity: 0.32, depthWrite: false });
+  const trackM = new THREE.MeshBasicMaterial({ color: C(0xFFFFFF), transparent: true, opacity: 0.9, depthWrite: false });
   strokes.forEach(P => { const g = growTube(P, () => 0.3, (t, n, c) => c.set(0xffffff), 10); g.userData.grow(1); const m = new THREE.Mesh(g, trackM); m.scale.z = 0.15; dots.add(m); });
   T.dots = dots; T.start = start; T.dm = dm;
   S.tick(t => { start.visible = T.on && (T.k < 3 || !T.down); if (start.visible) { start.position.copy(strokes[T.si][T.k]); start.position.z += o.startZ || 0.25; const k = 1 + Math.sin(t * 6) * 0.15; start.scale.setScalar(k); halo.scale.setScalar((o.ringOnly ? 1.7 : 1) * (1 + ((t * 1.2) % 1) * (o.ringOnly ? 0.3 : 0.8))); halo.material.opacity = 0.8 * (1 - (t * 1.2) % 1); }
-    dots.visible = !!(T.on || T.showDots); if (dots.visible) dm.opacity = 0.55 + Math.sin(t * 3) * 0.25; });
+    dots.visible = !!(T.on || T.showDots); });   /* the dots stay still (nothing moves that is not the game) */
   return T;
 }
 

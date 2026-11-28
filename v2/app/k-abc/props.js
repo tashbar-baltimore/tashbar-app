@@ -52,7 +52,8 @@ const B = {
     for (let i = 0; i <= 40; i++) { const a = (Math.PI * 2 - b1) - (Math.PI * 2 - 2 * b1) * i / 40; s.lineTo(d + Math.cos(a) * r, Math.sin(a) * r); }
     const m = new THREE.Mesh(ext(s, 0.22, 0.08), toon(0xFFE58A, { emissive: 0xFFC94A, ei: 0.55, rough: .35 })); m.rotation.z = 0.35; m.castShadow = true; G.add(m); return G; },
   mop() { const G = new THREE.Group(); const st = mesh(cyl(0.05, 0.05, 1.3, 14), mat(0x6FB7FF, { clear: .6 }), 0, 0.2, 0); G.add(st);
-    for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2, s = mesh(new THREE.CapsuleGeometry(0.06, 0.34, 4, 8), mat(0xF4F1EA, { rough: .9, sheen: .6 }), Math.cos(a) * 0.14, -0.55, Math.sin(a) * 0.14); s.rotation.set(Math.sin(a) * 0.4, 0, -Math.cos(a) * 0.4); G.add(s); }
+    /* K clarity: a real mop head, long floppy strands spreading out (the short ring of strands looked like a cupcake liner) */
+    for (let i = 0; i < 28; i++) { const a = i / 28 * Math.PI * 2, r = 0.12 + (i % 2) * 0.06, s = mesh(new THREE.CapsuleGeometry(0.045, 0.62, 4, 8), mat(0xEDEAE2, { rough: .95, sheen: .5 }), Math.cos(a) * (r + 0.16), -0.78, Math.sin(a) * (r + 0.16)); s.rotation.set(Math.sin(a) * 0.6, 0, -Math.cos(a) * 0.6); G.add(s); }
     G.add(mesh(cyl(0.18, 0.12, 0.12, 20), mat(0xFFD23F), 0, -0.4, 0)); G.rotation.z = 0.25; return G; },
   mug() { const G = new THREE.Group(), m = mat(0xFF6B8A, { clear: .8, rough: .25 }); G.add(mesh(cyl(0.38, 0.34, 0.75, 36), m));
     const h = mesh(tor(0.2, 0.06, Math.PI * 1.2), m, 0.42, 0, 0); h.rotation.z = -Math.PI * 0.6; G.add(h); const top = mesh(cyl(0.33, 0.33, 0.02, 36), mat(0xA8DCFF, { emissive: 0x2266AA, ei: .2 }), 0, 0.36, 0); G.add(top); G.rotation.x = 0.25; return G; },

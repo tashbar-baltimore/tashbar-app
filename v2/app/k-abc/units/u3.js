@@ -3,7 +3,7 @@
    The letter kit again (meet, trace), each letter in its own world: i the inchworm, n the butterfly net, m the mountains, d the drum.
    Every hunt is a NEW kind of play (none repeats Units 1–2):
      i-hunt  the fork path: the inchworm crawls along; at each fork he taps the picture that starts with i
-     n-hunt  the net catch: butterflies carry pictures; he drags the net over the ones that start with n
+     n-hunt  the basket catch: pictures sit still; he drags the basket over the ones that start with n (K clarity: no butterflies, nothing flying)
      m-hunt  the memory cards: flip cards to find every m picture
      d-hunt  drum only on d: pictures pop up one at a time; he taps the drum only when it starts with d
    boxes   sound boxes (light): he hears a picture word and pushes one token into a box for each sound (it = 2, pin = 3)
@@ -17,6 +17,10 @@ import { glow, C, toon } from '../kit3d.js';
 import { letterTile } from '../letters.js';
 import { meet, trace, slide, START, others, KEYWORD } from './u2.js';
 
+/* the game's name, always on screen (K-CLARITY-RULES 13; play.html shows it) */
+export const TITLES = { opener: 'Four New Sounds', 'i-meet': 'Meet i', 'i-trace': 'Trace i', 'i-hunt': 'The Inchworm Path', 'n-meet': 'Meet n', 'n-trace': 'Trace n',
+  'n-hunt': 'Basket Catch', slide: 'Slide the Sounds', boxes: 'Sound Boxes', 'm-meet': 'Meet m', 'm-trace': 'Trace m', 'm-hunt': 'Memory Cards',
+  'd-meet': 'Meet d', 'd-trace': 'Trace d', 'd-hunt': 'Drum on d', slide2: 'Slide Again', fixit: 'Fix It', review: 'Listening Walk', check: 'Show Me' };
 export const ORDER = ['opener', 'i-meet', 'i-trace', 'i-hunt', 'n-meet', 'n-trace', 'n-hunt', 'slide', 'boxes',
   'm-meet', 'm-trace', 'm-hunt', 'd-meet', 'd-trace', 'd-hunt', 'slide2', 'fixit', 'review', 'check'];
 const say = w => (WORDS[w] ? WORDS[w].say : w);
@@ -61,22 +65,26 @@ const hunt = {
       await S.tween(800, e => { wx = 4 * e + wx * (1 - e); placeWorm(); }); await todayWord(G, 'sit'); await G.done('The inchworm is home!');
     }
   },
-  /* n: the net catch. Butterflies carry pictures; he drags the net over the ones that start with n */
+  /* n: the basket catch. Pictures sit still in two rows; he drags the basket over the ones that start with n.
+     K clarity (Esti 2026-11-27, rules 9, 10, 11): no butterflies carrying them and nothing flying; the tool is a basket, so it is never confused with the picture of a net */
   n: {
     world(G) { const W = base(G.S, 'meadow', { clearW: 7 }); tree(G.S, -9, -6, { s: 1.6 }); tree(G.S, 9.5, -6, { s: 1.4 }); G.view({ wide: [0, 2.4, 11.6, 6.2, 0.17], narrow: [0, 2.6, 5.2, 8.2, 0.2] }); return W; },
     async play(G) {
       const S = G.S, n = () => G.narrow(); const set = shuffle([...shuffle(START.n).slice(0, 3).map(w => [w, true]), ...shuffle(others('n')).slice(0, 3).map(w => [w, false])]);
-      /* the net: a tool he drags (handle + hoop + mesh) */
-      const net = new THREE.Group(), wood = toon(0xC98A4B); const hdl = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.6, 10), wood); hdl.position.y = -0.95; net.add(hdl);
-      const hoop = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.06, 10, 36), toon(0xFF7A45, { clear: 1 })); net.add(hoop); const mesh = new THREE.Mesh(new THREE.CircleGeometry(0.55, 24), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25, side: THREE.DoubleSide })); net.add(mesh);
-      const netHome = () => n() ? V(1.4, 1.6, 2.4) : V(3.6, 1.6, 2.0); net.position.copy(netHome()); S.scene.add(net); G.W.layout = () => { if (!net.userData.d) net.position.copy(netHome()); };
+      /* the basket: a tool he drags */
+      /* the catcher is a plain basket (K clarity: a net-shaped tool next to a picture of a net would be confusing) */
+      const net = new THREE.Group(), wood = toon(0xC98A4B);
+      const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 0.6, 28, 1, true), toon(0xD9A05B, { rough: .6 })); bowl.material.side = THREE.DoubleSide; net.add(bowl);
+      const rimB = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.06, 10, 36), wood); rimB.rotation.x = Math.PI / 2; rimB.position.y = 0.3; net.add(rimB);
+      const hnd = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.05, 8, 30, Math.PI), wood); hnd.position.y = 0.3; net.add(hnd);
+      const netHome = () => n() ? V(0.3, 0.75, 2.6) : V(3.6, 1.6, 2.0);   /* a phone: the basket waits below the pictures, never on top of one */ net.position.copy(netHome()); S.scene.add(net); G.W.layout = () => { if (!net.userData.d) net.position.copy(netHome()); };
       const netItem = { obj: net, screen: () => S.toScreen(net.position) };
-      const its = set.map(([w, yes], i) => { const it = G.item(w, () => V(0, 3, 0), { size: 0.8, data: { yes, ph: i * 1.05, roam: true } }); const b = new THREE.Group(); [-1, 1].forEach(s2 => { const wg = new THREE.Mesh(new THREE.SphereGeometry(0.35, 14, 10), toon([0xFF7AC8, 0xB46BFF, 0x4FC3FF][i % 3], { emissive: 0x331133, ei: .2 })); wg.scale.set(1, 1.2, 0.12); wg.position.set(s2 * 0.4, 0.6, -0.2); b.add(wg); }); it.obj.add(b); it.wings = b; return it; });
-      let t0 = 0; S.tick((t, dt) => { t0 += dt * (FAST ? 0.4 : 1); its.forEach((it, i) => { if (it.placed || !it.live) return; const a = t0 * 0.35 + it.data.ph, w = n() ? 1.7 : 3.4;
-        const nearNet = net.userData.d && it.obj.position.distanceTo(net.position) < 1.6; if (nearNet) { it.data.ph -= dt * 0.35 * (FAST ? 0.4 : 1); }   /* it waits for the net */
-        it.home.set(Math.sin(a) * w - (n() ? 0 : 0.4), (n() ? 3.6 : 3.0) + Math.sin(a * 1.7) * (n() ? 1.6 : 1.1), -0.3); if (!it.moving) it.obj.position.copy(it.home); it.wings.children.forEach((wg, k) => wg.rotation.y = Math.sin(t * 12 + i) * 0.6 * (k ? -1 : 1)); }); });
-      G.rounds(3); await G.say('Butterflies are carrying pictures!', 'Catch the ones that start with this sound.', snd('n'), 'Drag the net over them.');
-      /* dragging the net: it catches whatever picture it touches */
+      const its = set.map(([w, yes], i) => { const it = G.item(w, () => V(0, 3, 0), { size: 0.95, data: { yes, slot: i } }); it.wings = new THREE.Group(); return it; });
+      /* still: two rows of three (a phone: three rows of two), well apart, above the grass */
+      const spot = k => n() ? V(-0.95 + (k % 2) * 1.9, 5.0 - Math.floor(k / 2) * 1.35, -0.3) : V(-3.0 + (k % 3) * 2.6, 3.5 - Math.floor(k / 3) * 1.7, -0.3);
+      S.tick(() => { its.forEach(it => { if (it.placed || !it.live) return; it.home.copy(spot(it.data.slot)); if (!it.moving) it.obj.position.copy(it.home); }); });
+      G.rounds(3); await G.say('Look at these pictures.', 'Catch the ones that start with this sound.', snd('n'), 'Drag the basket over them.');
+      /* dragging the basket: it catches whatever picture it touches */
       const el = S.renderer.domElement; let dragging = false, caught = null, roundDone = null;
       el.addEventListener('pointerdown', e => { const p = S.toScreen(net.position); if (Math.hypot(e.clientX - p.x, e.clientY - p.y) < 90) { dragging = true; G.locked = true; net.userData.d = true; } });
       addEventListener('pointermove', e => { if (!dragging) return; const q = S.onPlane(e, -0.3); if (q) net.position.copy(q); });
@@ -89,10 +97,11 @@ const hunt = {
         let lastG; const exp = () => { const v = vis(), g = v.find(i => i.data.yes), b = v.find(i => !i.data.yes); if (g !== lastG) { lastG = g; G.expect(g ? { kind: 'drag', from: netItem, to: () => g.obj.position } : null); } G.A.wrongMove = b ? { kind: 'drag', from: netItem, to: () => b.obj.position } : null; };
         const timer = setInterval(exp, 200); exp();
         G.hint(async () => { const g = its.find(i => i.data.yes && !i.placed); if (g) { g.glow(true); await G.say(say(g.name) + '.', snd('n')); } });
-        await new Promise(res => { roundDone = async it => { if (it.data.yes) { roundDone = null; it.placed = true; it.glow(false); it.wings.visible = false; it.size *= 0.6; await it.moveTo(netHome().add(V(-0.6 + got * 0.6, -0.9, 0)), 400); got++; await G.right(it.obj.position, say(it.name) + '!'); res(); }
+        await new Promise(res => { roundDone = async it => { if (it.data.yes) { roundDone = null; it.placed = true; it.glow(false); it.wings.visible = false; it.size *= 0.6; await it.moveTo(netHome().add(V(-0.6 + got * 0.6, n() ? -0.2 : -0.9, 0)), 400); got++; await G.right(it.obj.position, say(it.name) + '!'); res(); }
           else { await G.wrong([say(it.name) + '. Listen to the start.', snd('n')], it); } }; });
         clearInterval(timer);
       }
+      await clearItems(G); net.visible = false;   /* the leftover pictures and the basket go away before the word, so nothing sits on top of it */
       await todayWord(G, 'tin'); await G.done('What a catch!');
     }
   },
@@ -103,7 +112,7 @@ const hunt = {
       const S = G.S, n = () => G.narrow(), yes = shuffle(START.m).slice(0, 3), no = shuffle(others('m')).slice(0, 3), all = shuffle([...yes, ...no]);
       const pos = i => n() ? V(-1.3 + (i % 2) * 2.6, 4.6 - Math.floor(i / 2) * 1.6, 0) : V(-3 + (i % 3) * 3, 3.4 - Math.floor(i / 3) * 2.0, 0);
       const cards = all.map((w, i) => { const c = new THREE.Group(), back = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 0.12), toon(0x8A7BD8, { clear: 1, rough: .3 })); c.add(back);
-        const star = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.07, 10, 36), toon(0xFFD23F, { emissive: 0xAA7700, ei: .3 })); star.position.z = -0.08; c.add(star); const dotB = new THREE.Mesh(new THREE.CircleGeometry(0.12, 24), toon(0xFFFFFF)); dotB.position.z = -0.07; dotB.rotation.y = Math.PI; c.add(dotB);   /* a plain, friendly card back */
+        const star = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.07, 10, 36), toon(0xFFD23F, { emissive: 0xAA7700, ei: .3 })); star.position.z = -0.08; star.visible = false;   /* K clarity: a plain card back (a ring on it looked like one more picture) */ const dotB = new THREE.Mesh(new THREE.CircleGeometry(0.12, 24), toon(0xFFFFFF)); dotB.position.z = -0.07; dotB.rotation.y = Math.PI; dotB.visible = false;
         const pic = prop(w); pic.scale.setScalar(0.58); pic.position.z = 0.42; c.add(pic);   /* well in front of the card, so nothing shows through its back */ c.position.copy(pos(i)); c.rotation.y = Math.PI; c.userData = { w, yes: yes.includes(w), up: false, i }; S.scene.add(c); tapHit(c, 0.8); return c; });
       G.W.layout = () => cards.forEach(c => c.position.copy(pos(c.userData.i)));
       const flip = (c, up) => S.tween(350, e => c.rotation.y = up ? Math.PI * (1 - e) : Math.PI * e);
@@ -130,7 +139,8 @@ const hunt = {
     async play(G) {
       const S = G.S, n = () => G.narrow(); const drum = prop('drum'); drum.scale.setScalar(1.6); S.scene.add(drum); const dAt = () => n() ? V(1.2, 0.9, 2.0) : V(3.0, 0.9, 1.6); drum.position.copy(dAt()); G.W.layout = () => drum.position.copy(dAt());
       const hit = tapHit(drum, 0.75); let tapped = 0; G.tap(hit, () => { tapped++; audio.drum(); drum.scale.set(1.7, 1.5, 1.7); setTimeout(() => drum.scale.setScalar(1.6), 120); });
-      const seq = shuffle([...shuffle(START.d).slice(0, 3).map(w => [w, true]), ...shuffle(others('d')).slice(0, 3).map(w => [w, false])]);
+      const seq0 = shuffle([...shuffle(START.d.filter(w => w !== 'dish')).slice(0, 3)   /* K clarity (rule 7): the dish looks like a plate (a p word), so it is not used here */.map(w => [w, true]), ...shuffle(others('d')).slice(0, 3).map(w => [w, false])]);
+      const seq = [seq0.find(x => !x[1]), ...seq0.filter((x, i) => i !== seq0.findIndex(y => !y[1]))];   /* the first picture is never this sound: he first learns to wait */
       G.rounds(seq.length); await G.say('Drum time! Watch the stump.', 'Tap the drum only when it starts with this sound.', snd('d'));
       await G.say('If it does not, wait. Let it go by.');
       for (const [w, yes] of seq) {
@@ -236,7 +246,7 @@ const review = {
     const tapOne = (its, good, ask, fix) => new Promise(res => { G.expect({ kind: 'tap', at: good }); G.A.wrongMove = { kind: 'tap', at: its.find(i => i !== good) };
       its.forEach(it => it.onTap = async () => { it.poke(); await it.say(); if (it === good) { its.forEach(x => x.onTap = () => x.say()); await G.right(it.obj.position); res(); } else await G.wrong(fix, it); }); });
     /* 1. rhyme (Unit 1) */
-    G.newRound(); { const its = row(shuffle(['cake', 'dog', 'mop'])); await G.say('Tap the picture that rhymes with snake.'); await tapOne(its, its.find(i => i.name === 'cake'), [], ['Snake... listen to the end.']); await clearItems(G); }
+    G.newRound(); { const its = row(shuffle(['cake', 'sun', 'mop'])); await G.say('Tap the picture that rhymes with snake.'); await tapOne(its, its.find(i => i.name === 'cake'), [], ['Snake... listen to the end.']); await clearItems(G); }
     /* 2. first sound d (Unit 3) */
     G.newRound(); { const its = row(shuffle(['duck', 'sun', 'pear'])); await G.say('Tap the one that starts with this sound.', snd('d')); await tapOne(its, its.find(i => i.name === 'duck'), [], ['Listen for this sound.', snd('d')]); await clearItems(G); }
     /* 3. read the word (Units 2–3): tap its picture */

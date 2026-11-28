@@ -8,7 +8,7 @@
      k-hunt  swipe up the kites: kites with pictures lie in the grass; he swipes the k ones up into the sky
      e-hunt  mystery eggs: closed eggs say their word when tapped (no picture); he puts the e ones in the nest and they hatch
    ksort   the k-sound houses: c house, k house, ck house (the end); he looks at the word and takes it to its house
-   slide / slide2  word slide with the new sounds (on, got, dog, pot, top / cap, kid, pen, net, peg, sock, neck)
+   slide / slide2  word slide with the new sounds (on, got, dot, pot, top / cap, kid, pen, net, peg, sock, neck)
    fixit   Eli builds words with blocks: a high five if he is right, else he taps the wrong block and drags in the right one
    review (Units 1–4 mixed) before check (tap kinds: sound → letter, read 5 words, one k-sound sort) */
 import { THREE, V, shuffle, rnd, audio, echo, WORDS, FAST, ease, clamp } from '../game.js';
@@ -20,7 +20,7 @@ import { meet, trace, slide, START, others, huntSet, PIC, toks } from './u2.js';
 
 export const ORDER = ['opener', 'g-meet', 'g-trace', 'g-hunt', 'o-meet', 'o-trace', 'o-hunt', 'slide',
   'c-meet', 'c-trace', 'c-hunt', 'k-meet', 'k-trace', 'k-hunt', 'ksort', 'e-meet', 'e-trace', 'e-hunt', 'slide2', 'fixit', 'review', 'check'];
-Object.assign(PIC, { dog: 'dog', pot: 'pot', top: 'top', cap: 'cap', net: 'net', sock: 'sock' });
+Object.assign(PIC, { pot: 'pot', top: 'top', cap: 'cap', net: 'net', sock: 'sock' });
 const say = w => (WORDS[w] ? WORDS[w].say : w);
 const snd = ch => echo(() => audio.letter(ch));
 const sounds = w => echo(async () => { for (const c of toks(w)) await audio.letter(c); });
@@ -251,7 +251,7 @@ const ksort = {
 
 /* =========================================================== fix it: Eli builds words =========================================================== */
 const BUILDS = [{ w: 'pen', b: ['p', 'e', 'n'] }, { w: 'sock', b: ['s', 'o', 'k'], bad: 2, fix: 'ck', alt: 'c', pic: 'sock' }, { w: 'top', b: ['t', 'o', 't'], bad: 2, fix: 'p', alt: 'd', pic: 'top' },
-  { w: 'neck', b: ['n', 'e', 'k'], bad: 2, fix: 'ck', alt: 'g' }, { w: 'dog', b: ['d', 'o', 'g'], pic: 'dog' }, { w: 'peg', b: ['p', 'i', 'g'], bad: 1, fix: 'e', alt: 'a' }];
+  { w: 'neck', b: ['n', 'e', 'k'], bad: 2, fix: 'ck', alt: 'g' }, { w: 'pot', b: ['p', 'o', 't'], pic: 'pot' },   /* no dog (school rule 2026-11-28) */ { w: 'peg', b: ['p', 'i', 'g'], bad: 1, fix: 'e', alt: 'a' }];
 const fixit = {
   world(G) { const W = base(G.S, 'meadow', { clearW: 7 }); tree(G.S, -9, -7, { s: 1.6 }); tree(G.S, 8.5, -7.5, { s: 1.4 }); G.board = shelf(G.S, -2.8, 2.8, -1.2, 1.4, 0xC98A4B, 1.2);
     G.view({ wide: [-0.3, 2.0, 11.2, 5.6, 0.17], narrow: [0, 2.1, 5.2, 7.8, 0.2] }); return W; },
@@ -393,7 +393,7 @@ const opener = {
 };
 
 export const GAMES = { opener, 'g-meet': meet('g'), 'g-trace': trace('g'), 'g-hunt': hunt.g, 'o-meet': meet('o'), 'o-trace': trace('o'), 'o-hunt': hunt.o,
-  slide: slide(['on', 'got', 'dog', 'pot', 'top'], 'Back to the word slide!', { dog: 'pot', pot: 'top', top: 'dog' }),
+  slide: slide(['on', 'got', 'dot', 'pot', 'top'], 'Back to the word slide!', { pot: 'top', top: 'pot' }),   /* no dog (school rule 2026-11-28) */
   'c-meet': meet('c'), 'c-trace': trace('c'), 'c-hunt': hunt.c, 'k-meet': meet('k'), 'k-trace': trace('k'), 'k-hunt': hunt.k, ksort,
   'e-meet': meet('e'), 'e-trace': trace('e'), 'e-hunt': hunt.e,
   slide2: slide(['cap', 'kid', 'pen', 'net', 'peg', 'sock', 'neck'], 'New sounds on the word slide!', { cap: 'net', net: 'sock', sock: 'cap' }, true), fixit, review, check };
