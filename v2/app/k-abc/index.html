@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kindergarten ABC</title>
+<!-- Kindergarten ABC 2.0: the menu (Esti 2026-11-24: "a menu page with a big picture button for every finished game, so I can open everything from one look link").
+     Each button is a picture of the game; no reading needed. -->
+<style>
+:root{ --sky1:#3D8BFF; --sky2:#9FE0FF; }
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{ margin:0; min-height:100%; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+body{ background:linear-gradient(180deg,var(--sky1),var(--sky2) 70%,#C9F59A); min-height:100vh; }
+main{ max-width:1180px; margin:0 auto; padding:28px 16px 40px; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:26px; }
+a.card{ display:block; position:relative; border-radius:30px; overflow:hidden; aspect-ratio:16/10; background:#fff; text-decoration:none;
+  box-shadow:0 10px 0 rgba(0,40,90,.25), 0 18px 34px rgba(0,40,90,.35); transition:transform .15s ease; border:6px solid #fff; }
+a.card:active{ transform:scale(.96); }
+a.card img{ width:100%; height:100%; object-fit:cover; display:block; }
+a.card .go{ position:absolute; right:14px; bottom:14px; width:64px; height:64px; border-radius:50%; display:grid; place-items:center;
+  background:radial-gradient(circle at 35% 30%,#B8FFCE,#2EDB6A 55%,#109A45); box-shadow:0 5px 0 rgba(0,0,0,.18), inset 0 4px 8px rgba(255,255,255,.5); }
+a.card .go svg{ width:52%; height:52%; margin-left:8%; }
+a.card .tag{ position:absolute; left:14px; top:14px; min-width:64px; height:64px; padding:0 12px; border-radius:22px; display:grid; place-items:center; background:rgba(255,255,255,.92);
+  font:800 44px/1 "Comic Sans MS","Chalkboard SE",system-ui,sans-serif; color:#1F2A44; box-shadow:0 4px 0 rgba(0,0,0,.12); }
+.old{ filter:saturate(.75); }
+/* pictures come from the shared art library (art/pics, served at /pics/); until 2.0 copies it, each card shows a drawn picture instead */
+a.card{ background:radial-gradient(circle at 30% 25%,#FFF7C2,transparent 40%),linear-gradient(160deg,#7FD3FF,#5ED46A 62%,#2FA84F); }
+a.card.apple{ background:radial-gradient(circle at 70% 30%,#FFE0B0,transparent 40%),linear-gradient(160deg,#9FDCFF,#8BD44A 60%,#3D9E3A); }
+a.card .big{ position:absolute; inset:0; display:grid; place-items:center; font:800 150px/1 "Comic Sans MS","Chalkboard SE",system-ui,sans-serif; color:#fff; text-shadow:0 6px 0 rgba(0,60,20,.25); z-index:0; }
+a.card img{ position:relative; z-index:1; } a.card .tag, a.card .go{ z-index:2; }
+@media (max-width:600px){ main{ grid-template-columns:1fr; padding-top:20px; } }
+/* the year path: one row of picture buttons per unit, in the order he plays them (Esti 2026-11-24: "a menu page with a big picture button for every finished game") */
+.unit{ max-width:1180px; margin:0 auto; padding:22px 16px 6px; }
+.unit .badge{ display:flex; align-items:center; gap:12px; margin:0 0 14px 6px; }
+.unit .badge b{ width:64px; height:64px; border-radius:50%; display:grid; place-items:center; background:radial-gradient(circle at 35% 30%,#FFF,#FFE7A0 60%,#FFC83D); box-shadow:0 5px 0 rgba(0,0,0,.15); font:800 30px/1 system-ui; color:#7A4A00; }
+.unit .badge svg{ width:60%; height:60%; }
+.path{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:18px; }
+a.game{ position:relative; display:block; aspect-ratio:4/3; border-radius:26px; overflow:hidden; border:5px solid #fff; background:linear-gradient(160deg,#7FD3FF,#5ED46A 62%,#2FA84F);
+  box-shadow:0 8px 0 rgba(0,40,90,.22), 0 14px 26px rgba(0,40,90,.3); transition:transform .15s; }
+a.game:active{ transform:scale(.96); }
+a.game img{ width:100%; height:100%; object-fit:cover; display:block; }
+a.game .go{ position:absolute; right:10px; bottom:10px; width:64px; height:64px; border-radius:50%; display:grid; place-items:center; background:radial-gradient(circle at 35% 30%,#B8FFCE,#2EDB6A 55%,#109A45); box-shadow:0 5px 0 rgba(0,0,0,.18), inset 0 4px 8px rgba(255,255,255,.5); }
+a.game .go svg{ width:52%; height:52%; margin-left:8%; }
+a.game .st{ position:absolute; left:10px; top:10px; display:flex; gap:3px; }
+a.game .st i{ width:26px; height:26px; background:rgba(255,255,255,.7); clip-path:polygon(50% 2%,62% 36%,98% 37%,69% 59%,80% 95%,50% 74%,20% 95%,31% 59%,2% 37%,38% 36%); }
+a.game .st i.on{ background:#FFC81E; }
+.looks{ padding-top:6px; }
+@media (max-width:600px){ .path{ grid-template-columns:1fr 1fr; gap:12px; } a.game .go{ width:64px; height:64px; } }
+</style>
+</head>
+<body>
+<div id="units"></div>
+<script>
+/* every finished unit and its games, in order (units/uN.js ORDER) */
+var UNITS = [
+  { u: 1, icon: '<svg viewBox="0 0 24 24"><path fill="#7A4A00" d="M12 2a7 7 0 0 0-7 7h2.2A4.8 4.8 0 0 1 12 4.2 4.8 4.8 0 0 1 16.8 9c0 1.7-.8 2.6-1.8 3.5-1.1 1-2.2 2-2.2 4 0 1.3-1 2.3-2.3 2.3S8.2 17.8 8.2 16.5H6a4.5 4.5 0 0 0 4.5 4.5 4.5 4.5 0 0 0 4.5-4.5c0-1.1.5-1.6 1.4-2.4C17.6 13 19 11.7 19 9a7 7 0 0 0-7-7zm0 4.4A2.6 2.6 0 0 0 9.4 9h2.2c0-.2.2-.4.4-.4s.4.2.4.4c0 .5-.3.8-.8 1.2-.6.5-1.3 1.1-1.3 2.3h2.2c0-.2.2-.4.6-.7.6-.5 1.5-1.3 1.5-2.8A2.6 2.6 0 0 0 12 6.4z"/></svg>',
+    games: ['opener', 'rhyme', 'clap', 'sort', 'train', 'paths', 'fixit', 'review', 'check'] }
+];
+(function () { var stars = {}; try { stars = JSON.parse(localStorage.getItem('kabc-stars') || '{}'); } catch (e) {}
+  var host = document.getElementById('units'), play = '<span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span>';
+  UNITS.forEach(function (U) { var sec = document.createElement('section'); sec.className = 'unit'; sec.setAttribute('data-unit', U.u);
+    var h = '<div class="badge"><b>' + U.icon + '</b></div><div class="path">';
+    U.games.forEach(function (g) { var n = stars['u' + U.u + '.' + g] || 0, st = '';
+      for (var i = 0; i < 3; i++) st += '<i' + (i < n ? ' class="on"' : '') + '></i>';
+      h += '<a class="game" href="play.html?u=' + U.u + '&g=' + g + '" aria-label="unit ' + U.u + ' ' + g + '"><img src="art/thumb-u' + U.u + '-' + g + '.webp" alt="" onerror="this.style.visibility=\'hidden\'"><span class="st">' + st + '</span>' + play + '</a>'; });
+    sec.innerHTML = h + '</div>'; host.appendChild(sec); }); })();
+</script>
+<main class="looks">
+  <a class="card" href="look.html?w=s" data-img="/pics/v2-kabc-look-s.webp" aria-label="the snake world"><span class="big">s</span><img onerror="this.remove()" src="/pics/v2-kabc-look-s.webp" alt=""><span class="tag">s</span><span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span></a>
+  <a class="card apple" href="look.html?w=a" data-img="/pics/v2-kabc-look-a.webp" aria-label="the apple world"><span class="big">a</span><img onerror="this.remove()" src="/pics/v2-kabc-look-a.webp" alt=""><span class="tag">a</span><span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span></a>
+  <a class="card old" href="meet-s.html" data-img="/pics/v2-kabc-meet-s-old.webp" aria-label="the first snake game, old look"><span class="big">s</span><img onerror="this.remove()" src="/pics/v2-kabc-meet-s-old.webp" alt=""><span class="tag">s</span><span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span></a>
+</main>
+</body>
+</html>
