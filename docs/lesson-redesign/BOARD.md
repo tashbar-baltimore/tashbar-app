@@ -30,7 +30,7 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | R7 | Other reading, language, writing (not in a job) | READ.*, LANG.*, WRIT.* in OneBiteData*.html, L03+ (about 40) | src/OneBiteDataRead*.html, src/OneBiteDataWrit.html, src/OneBiteDataUpper.html | TAKEN | https://claude.ai/code/session_011PPoh5KFjyQeYYkHhgWn5e | 2026-11-27 19:00 | Claimed; listing the lessons, batch 1 next |
 | G1 | Grammar Grades 2–4 | G lessons L03–L05 (49) | src/CoreDataG*.html | OPEN | | | |
 | G2 | Grammar Grades 5–8 | G lessons L06–L09 (53) | src/CoreDataG*.html | OPEN | | | |
-| W1 | Writing Grades 2–3 (W13) | 37 lessons (L03–L04) | src/CoreDataW13*.html | TAKEN | https://claude.ai/code/session_015qpxB79jFSpAbmbdZf2W1w | 2026-11-27 18:45 | Claimed; reading the lessons, batch 1 next |
+| W1 | Writing Grades 2–3 (W13) | 37 lessons (L03–L04) | src/CoreDataW13*.html | TAKEN | https://claude.ai/code/session_015qpxB79jFSpAbmbdZf2W1w | 2026-11-28 07:20 | Batch 1 (11 Grade 2 lessons, branch claude/newlessons-W1-1) reviewed 4–5, in final tests; batches 2–4 (26 Grade 3 lessons) drafted |
 | W2 | Writing Grades 4–5 (W48) | 50 lessons (L05–L06) | src/CoreDataW48*.html | OPEN | | | |
 | W3 | Writing Grades 6–8 (W48) | 57 lessons (L07–L09) | src/CoreDataW48*.html | TAKEN | https://claude.ai/code/session_015qpxB94YmCQzBn7jqxa8Qk | 2026-11-27 18:45 | Claimed; reading the lessons, batch 1 next |
 | S1 | Social Studies | SS.* (about 30) | src/CoreDataS*.html, src/OneBiteData*.html | OPEN | | | |
