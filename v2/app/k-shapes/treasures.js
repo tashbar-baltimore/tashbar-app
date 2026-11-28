@@ -162,9 +162,9 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     const prof = []; for (let i = 0; i <= 24; i++) { const t = i / 24, a = Math.PI * t; prof.push(new THREE.Vector2(Math.max(0.001, Math.sin(a) * R0 * (1 - 0.32 * Math.pow(1 - t, 3))), -Math.cos(a) * R0 * 1.18)); }
     const b = new THREE.Mesh(new THREE.LatheGeometry(prof, 48), m); b.position.y = R0 * 1.18 + R0 * 0.16; g.add(b);
     const knot = new THREE.Mesh(new THREE.ConeGeometry(R0 * 0.16, R0 * 0.22, 16), m); knot.rotation.x = Math.PI; knot.position.y = R0 * 0.1; g.add(knot);
-    const sm = new PM({ color: '#FFFFFF', roughness: 0.5 });
+    const sm = new PM({ color: '#5B6170', roughness: 0.5 });   /* a dark string, easy to see on the light floor even on a small balloon (review 2) */
     const str = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0.02, 0), new THREE.Vector3(R0 * 0.35, 0.02, R0 * 0.25), new THREE.Vector3(R0 * 0.7, 0.02, -R0 * 0.1), new THREE.Vector3(R0 * 1.1, 0.02, R0 * 0.3), new THREE.Vector3(R0 * 1.5, 0.02, R0 * 0.05)]);
-    g.add(new THREE.Mesh(new THREE.TubeGeometry(str, 40, Math.max(0.012, R0 * 0.025), 6, false), sm));   /* its string lies curled on the pan */
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(str, 40, Math.max(0.022, R0 * 0.035), 6, false), sm));   /* its string lies curled on the pan */
     return g;
   }
   function hayBale(s) {
@@ -347,7 +347,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     return { g, body };
   };
   T.towerMat = (color) => world === 'snow' ? new PM({ color: tint(keepHue(vivid(color)), 0.15), roughness: 0.15, clearcoat: 1, transmission: 0.12, thickness: 0.5, emissive: '#FFC400', emissiveIntensity: 0 }) : null;
-  T.towerTop = () => { if (world !== 'snow') return null; const m = new THREE.Mesh(new THREE.SphereGeometry(0.36, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), new PM({ color: '#FFFFFF', roughness: 0.7, sheen: 1, sheenColor: C('#DCEBFF') })); m.scale.set(1, 0.32, 1); return m; };
+  T.towerTop = () => { if (world !== 'snow' || CALM) return null;   /* calm: no snow cap; it made a tower look taller than its blocks (review 2) */ const m = new THREE.Mesh(new THREE.SphereGeometry(0.36, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), new PM({ color: '#FFFFFF', roughness: 0.7, sheen: 1, sheenColor: C('#DCEBFF') })); m.scale.set(1, 0.32, 1); return m; };
   if (world !== 'snow') { T.towerMat = null; T.towerTop = null; T.rod = null; }
 
   /* ================= UNDER THE SEA: the bridge for "where is it?" is a smooth sandstone slab on two coral-pink rocks, with little shells

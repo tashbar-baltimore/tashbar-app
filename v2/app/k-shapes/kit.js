@@ -637,6 +637,7 @@ export function startGame(cfg) {
   function lessonFor(L, o) {
     const n = o.marks.length, steps = [() => { glowOutline(o, true); }];
     if (L.kind === 'solid') {   /* a solid shape: its name, what it is like, what it does; he taps it to make it do it */
+      if (o.solid === 'cyl' || o.solid === 'cube') o.turn.rotation.x = 0.45;   /* its top leans toward him, so a cylinder's circle end (a cube's top face) shows (review 2) */
       steps.push('This is a ' + L.word + '.', L.like, () => solidAction(o, L.action), ...(L.rule || []));
       if (L.tap) steps.push(L.tap, () => { setName('tap'); task = [L.tap]; return tapShape(o, L.tap, () => Promise.all([say(L.tapSay || 'Yes!'), solidAction(o, L.action)])); }, () => { setName('learn'); task = null; });
       if (!L.chant) return steps;
@@ -1458,8 +1459,8 @@ export function startGame(cfg) {
     const L = cfg.balanceLesson; await camTo('wide', 10);
     setBalance({ items: L.items });
     const [a, b] = BS.items;
-    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, 'Watch. I put the ' + a.word + ' on.', () => putOnPan(a, 0), () => wait(900), 'The heavy side goes down!',
-      'Now the big ' + b.word + '.', () => putOnPan(b, 1), () => wait(900), 'The ' + a.word + ' side is still down.', 'The ' + a.word + ' is heavy. The ' + b.word + ' is light.',   /* the words name what he sees (a balloon is a balloon) */
+    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, 'Watch. I put the ' + a.word + ' on.', () => putOnPan(a, 0), () => wait(900),
+      'Now the big ' + b.word + '.', () => putOnPan(b, 1), () => wait(900), 'The ' + a.word + ' side is still down.', 'The heavy side goes down!', 'The ' + a.word + ' is heavy. The ' + b.word + ' is light.',   /* review 2: "the heavy side goes down" only once BOTH are on (one thing alone always tips it) */   /* the words name what he sees (a balloon is a balloon) */
       'Your turn! Tap the heavy one.', () => { setName('tap'); task = ['Tap the heavy one.']; W.tapPt = () => toScreen(a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)));
         return tapPoint(() => a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)), 'Tap the heavy one.'); }, () => { setName('learn'); task = null; }, 'Yes! The ' + a.word + ' is heavy.',
       ...L.rule, () => { chant(true); }, 'Clap it with me! Tap the hands.'];

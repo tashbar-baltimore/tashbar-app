@@ -200,3 +200,9 @@ More fixes (review-shapes takeover session, Units 7-12):
 | Pattern games: the engine was blue with a red boiler, like one more car in a red-blue pattern; on 8-car trains the last spot fell beside Mendy | A dark grey engine; Mendy stands lower right, clear of the track |
 | Big and small: a big ball shrank in its box; a small circle and square had no big twin | Pieces keep their true size in the box; every small piece has a big piece of the same kind |
 | Sort by color: cut-off boxes in the lesson close-up; on a phone the lesson pieces overlapped or fell off the edge; title "bins" while the voice says "boxes" | No boxes in lesson close-ups; on a phone the red square slides under the red circle and the blue triangle waits apart; "Clean-up boxes" |
+| Line them up: snow caps made a tower look taller than its blocks; on a phone Mendy stood where the scarves go | No caps in the calm look; on a phone Mendy stands bottom right, below every scarf row |
+| Heavy and light: "The heavy side goes down!" was said with only the rock on (one thing alone always tips a scale); a small balloon's white string vanished, so it looked like an egg | The rule is said once both are on; a dark string, easy to see |
+| Shape party 1, Graduation: a long review lesson with nothing to tap | "Your turn! Tap each corner." on the hexagon |
+| Shape party 3 (and every solid lesson): a level camera hid the cylinder's circle ends while the voice said "Its ends are circles" | Cylinders and cubes lean their top toward him in the lesson |
+| Party world: the painting behind lessons and mistakes had a bright sun and balloon bunches | Paler and softer than the other worlds |
+| Where is it? (phone): the ball waits in front of the bridge before he moves it | Left as is: every waiting spot near a bridge is "somewhere"; the game checks the place he drops it, and the ring shows the right place after a wrong move |
