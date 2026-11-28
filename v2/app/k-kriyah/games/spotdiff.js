@@ -16,7 +16,7 @@ export default function setup(E, { struggled, unit }) {
   const { THREE, S } = E, NM = k => E.LETTERS[k].name;
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   const H = 2.3, arrows = [E.arrow3d(.45), E.arrow3d(.45)], marks = [E.glowSprite('#ffe680', 1.4, 0), E.glowSprite('#ffe680', 1.4, 0)], hint = [E.glowSprite('#fff7b0', 1.5, 0), E.glowSprite('#fff7b0', 1.5, 0)];
-  const pads = [0, 1].map(() => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(1.25, 1.35, .25, 40), E.M(0xfff6e4, { roughness: .4, clearcoat: .6 }), 0, .12, 0)); { const rg = E.mesh(new THREE.TorusGeometry(1.3, .05, 10, 48), E.M(E.CALM ? 0xd8dde6 : 0xf2c14e, { metalness: E.CALM ? 0 : .5, roughness: .3 }), 0, .26, 0); rg.rotation.x = Math.PI / 2; p.add(rg); } E.scene.add(p); return p; });
+  const pads = [0, 1].map(() => { const p = new THREE.Group(); p.visible = !E.CALM;   /* calm: no plates under the letters, only the grey line */ p.add(E.mesh(new THREE.CylinderGeometry(1.25, 1.35, .25, 40), E.M(0xfff6e4, { roughness: .4, clearcoat: .6 }), 0, .12, 0)); { const rg = E.mesh(new THREE.TorusGeometry(1.3, .05, 10, 48), E.M(E.CALM ? 0xd8dde6 : 0xf2c14e, { metalness: E.CALM ? 0 : .5, roughness: .3 }), 0, .26, 0); rg.rotation.x = Math.PI / 2; p.add(rg); } E.scene.add(p); return p; });
   /* the line where ordinary letters stop: a long leg goes below it */
   const lines = [0, 1].map(() => { const g = new THREE.Group(); g.add(E.mesh(E.rbox(2.6, .14, .1, .05), new THREE.MeshStandardMaterial(E.CALM ? { color: 0x8a96a8, roughness: .6 } : { color: 0xffd23a, emissive: 0xff9a00, emissiveIntensity: .55, roughness: .3 }), 0, 0, 0, false)); E.scene.add(g); return g; });
   let hintUntil = 0, P = false, A = null, B = null, R = null, busy = true, active = false, misses = 0, mistakes = 0, help = struggled, resolveFind = null, card = null, cardHome = new THREE.Vector3(), drag = null, grab = new THREE.Vector3(), resolveCard = null, cardMissed = false;
@@ -55,7 +55,7 @@ export default function setup(E, { struggled, unit }) {
       hint[0].position.copy(spot(R.a, R.b, A)).setZ(.1); hint[1].position.copy(spot(R.b, R.a, B)).setZ(.1);
       const ok = await new Promise(r => resolveFind = r); active = false; busy = true;
       if (ok) { E.sfx.chime(); kid.mood('cheer'); E.sparkle(spot(R.a, R.b, A), 14, .7); E.sparkle(spot(R.b, R.a, B), 14, .7); await showDiff(); await E.say('You found it!'); await E.say(R.la); await E.say(R.lb); hideDiff(); kid.mood('calm'); return; }
-      E.sfx.boop(); misses++; if (misses === 1) mistakes++; kid.mood('think'); hintUntil = performance.now() + 6000 * E.F;   /* a soft glow shows where to look, until he taps again */ await E.say(R.where === 'bottom' ? 'Look at the bottom of the letters!' : 'Look at the top of the letters!'); kid.mood('calm');
+      E.sfx.boop(); misses++; if (misses === 1) mistakes++; kid.mood('think'); hintUntil = performance.now() + 6000 * E.F;   /* a soft glow shows where to look, until he taps again */ if (E.CALM) { const [hx, hy] = E.toScreen(spot(R.b, R.a, B)); E.hand.at(hx - 39, hy - 9, true); }   /* calm: the hand shows the place to look on the first miss */ await E.say(R.where === 'bottom' ? 'Look at the bottom of the letters!' : 'Look at the top of the letters!'); kid.mood('calm'); if (E.CALM) E.hand.hide();
       if (misses >= 2) help = true;
     }
   }

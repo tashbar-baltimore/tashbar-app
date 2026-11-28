@@ -12,7 +12,7 @@ export default function setup(E, { unit }) {
   stage.add(E.mesh(E.rbox(12, .4, 3.2, .1), E.M(0xc68a52, { roughness: .55 }), 0, .2, -1.2));
   stage.add(E.mesh(E.rbox(12.2, .08, 3.3, .04), E.M(0xe8322b, { roughness: .6 }), 0, .45, -1.2));   /* the red top sits just above the wood (no flickering stripes) */
   const balCols = [0xff7aa8, 0xffcf3a, 0x46c3ff, 0x7bd94a, 0xb388ff, 0xff9f1a];
-  for (let i = 0; i <= 22; i++) { const a = Math.PI * i / 22, b = E.mesh(new THREE.SphereGeometry(.34, 18, 14), E.M(balCols[i % 6], { roughness: .2, clearcoat: 1 }), Math.cos(a) * 6.4, .5 + Math.sin(a) * 5.4, -2.6); b.scale.y = 1.15; stage.add(b); }
+  if (!E.CALM) for (let i = 0; i <= 22; i++) { const a = Math.PI * i / 22, b = E.mesh(new THREE.SphereGeometry(.34, 18, 14), E.M(balCols[i % 6], { roughness: .2, clearcoat: 1 }), Math.cos(a) * 6.4, .5 + Math.sin(a) * 5.4, -2.6); b.scale.y = 1.15; stage.add(b); }
   const gate = new THREE.Group(); stage.add(gate); const gold = E.goldDot();
   gate.add(E.mesh(new THREE.TorusGeometry(1.0, .12, 14, 40, Math.PI), gold, 0, 1.9, 0)); [-1, 1].forEach(s => gate.add(E.mesh(new THREE.CylinderGeometry(.12, .12, 1.9, 16), gold, s * 1.0, .95, 0)));
   const doors = [-1, 1].map(s => { const d = new THREE.Group(); d.position.set(s * 1.0, 0, 0); for (let i = 0; i < 4; i++) d.add(E.mesh(new THREE.CylinderGeometry(.04, .04, 1.9, 8), gold, -s * (.15 + i * .22), .95, 0)); d.add(E.mesh(new THREE.BoxGeometry(.95, .08, .06), gold, -s * .48, 1.4, 0)); gate.add(d); return d; });
@@ -26,7 +26,7 @@ export default function setup(E, { unit }) {
   });
   E.onFrame(t => { all.forEach((l, i) => { if (l.userData.base && !l.userData.hopping) l.position.y = l.userData.base + Math.sin(t * 2 + i * .5) * .03; }); });
   function wall() {   /* the whole Alef-Beis, right to left, in rows (top row first) */
-    const per = P ? 7 : 9, sz = P ? .48 : .72, gap = P ? .58 : .95, top = P ? 4.6 : 4.1, dy = P ? .78 : 1.05;
+    const per = P ? (E.CALM ? 6 : 7) : 9, sz = P ? (E.CALM ? .5 : .48) : .72, gap = P ? (E.CALM ? .66 : .58) : .95,   /* calm, on a phone: six to a line, with room between letters */ top = P ? 4.6 : 4.1, dy = P ? .78 : 1.05;
     const lines = []; for (let i = 0; i < BASE.length; i += per) lines.push(BASE.slice(i, i + per)); lines.push(FINALS);
     lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)); made.forEach((l, i) => { l.position.set(((ks.length - 1) / 2 - i) * gap, top - li * dy, .2); l.userData.base = l.position.y; l.visible = false; E.scene.add(l); all.push(l); }); rows.push(made); });
   }
@@ -61,7 +61,7 @@ export default function setup(E, { unit }) {
       await E.say(['Tap ' + NM(k) + '!']); document.body.dataset.tapReady = k; if (qi === 0) showHand(l);
       let tries = 0;
       for (;;) { const got = await E.waitTap(trio); E.hand.hide();
-        if (got === l) break; tries++; E.sfx.boop(); E.shake(got, .08); await E.say('That is ' + NM(got.userData.key) + '. ' + TIP[k]); if (tries >= 2) showHand(l); }
+        if (got === l) break; tries++; E.sfx.boop(); E.shake(got, .08); await E.say('That is ' + NM(got.userData.key) + '. ' + TIP[k]); if (tries >= (E.CALM ? 1 : 2)) showHand(l); }
       delete document.body.dataset.tapReady; E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .2, .4)), 16, .7); E.hop(l, .4); await E.say(E.nameLine(k));
     }
     trio.forEach(l => E.popOut(l, 250));

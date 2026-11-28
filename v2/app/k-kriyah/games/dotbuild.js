@@ -97,9 +97,10 @@ export default function setup(E, { struggled, unit, game }) {
       await E.say(RULE[want]);
       if (wrongInRow >= 2 || mistakes >= 3) help = true;
       if (shape === 'ש') await moveDot('dish', 450); kid.mood('calm');
-      if (E.CALM && goodSpot(want) !== 'dish') { /* show how (K-CLARITY 16): the hand carries the dot halfway to its place, then he does it */
+      if (E.CALM && goodSpot(want) !== at) { /* show how (K-CLARITY 16): the hand carries the dot halfway to its place, then he does it */
         const a = dot.position.clone(), b = a.clone().lerp(spotPos(goodSpot(want)), .5);
         await E.tween(700, q => { dot.position.lerpVectors(a, b, q); const [x, y] = E.toScreen(dot.position); E.hand.at(x, y); }); await E.wait(250); E.hand.hide(); await E.tween(350, q => dot.position.lerpVectors(b, a, q)); }
+      else if (E.CALM && okBtn.style.display !== 'none') { const r = okBtn.getBoundingClientRect(); E.hand.at(r.x + r.width / 2, r.y + 20, true); await E.say('It is already ' + NM(want) + '. Tap the green check!'); E.hand.hide(); }   /* already right: the hand shows the check */
       busy = false; enabled = true; await E.say((E.CALM ? 'Now you! ' : 'Try again! ') + 'Make it ' + NM(want) + '.');
     }
   }
@@ -126,7 +127,8 @@ export default function setup(E, { struggled, unit, game }) {
       total = 6; E.setProgress(total, 0); setShape('ש'); at = 'dish'; dot.position.copy(spotPos('dish'));
       await E.say('Remember the dot? Let’s build letters again!');
       await demo('sin', 'The dot is on the left head. This is Sin.'); await moveDot('dish', 400);
-      okBtn.style.display = 'grid'; { const r = okBtn.getBoundingClientRect(); E.hand.at(r.x + r.width / 2, r.y + 20, true); } await E.say('For Tuf and Suf: already right? Tap the green check!'); E.hand.hide(); okBtn.style.display = 'none'; mistakes = 0;
+      if (E.CALM) { setShape('ת'); at = 'dish'; dot.position.copy(spotPos('dish')); await E.wait(300); await demo('tav', 'The dot is inside. This is Tuf.'); }   /* calm: Tuf is shown on Tuf, not talked about over a Shin */
+      okBtn.style.display = 'grid'; { const r = okBtn.getBoundingClientRect(); E.hand.at(r.x + r.width / 2, r.y + 20, true); } await E.say(E.CALM ? 'Already right? Tap the green check!' : 'For Tuf and Suf: already right? Tap the green check!'); E.hand.hide(); okBtn.style.display = 'none'; mistakes = 0;
       for (const k of mix(['shin', 'tav', 'sin', 'sav', 'shin', 'tav'])) await task(k);
       const stars = mistakes <= 1 ? 3 : mistakes <= 2 ? 2 : 1;
       return { stars, line: stars >= 2 ? 'You still know the dots! Great!' : null };

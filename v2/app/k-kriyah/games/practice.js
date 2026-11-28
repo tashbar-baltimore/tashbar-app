@@ -24,13 +24,13 @@ export default function setup(E, { struggled, unit }) {
   function spawn() {
     if (!queue.length) return; const L0 = lanes(), free = L0.map((x, i) => i).filter(i => !bubbles.some(o => !o.userData.popping && Math.abs(o.userData.x - L0[i]) < (P ? .95 : 1.4) && o.position.y < 1.8));
     if (!free.length) return; seq = free[Math.floor(Math.random() * free.length)];   /* a lane with no bubble near the bottom: they never merge */
-    const k = queue.shift(), b = new THREE.Group(); const s = new THREE.Mesh(new THREE.SphereGeometry(.62, 28, 20), bubM); b.add(s);
-    const l = E.letter(k, .8); l.position.z = .05; b.add(l); b.userData = { key: k, l, x: lanes()[seq % lanes().length] + (Math.random() - .5) * .2, t0: performance.now(), sp: P ? .55 : .5 }; b.position.set(b.userData.x, -.6, 1.2); E.scene.add(b); bubbles.push(b);
+    const k = queue.shift(), b = new THREE.Group(); const s = E.CALM ? new THREE.Mesh(new THREE.CircleGeometry(.78, 40), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .6 })) : new THREE.Mesh(new THREE.SphereGeometry(.62, 28, 20), bubM); if (E.CALM) s.position.z = -.12; b.add(s);   /* calm: a plain white disc behind the letter, not a see-through rainbow bubble */
+    const l = E.letter(k, E.CALM ? 1.0 : .8); l.position.z = .05; b.add(l); b.userData = { key: k, l, x: lanes()[seq % lanes().length] + (Math.random() - .5) * .2, t0: performance.now(), sp: E.CALM ? (P ? .38 : .34) : P ? .55 : .5 }; b.position.set(b.userData.x, -.6, 1.2); E.scene.add(b); bubbles.push(b);
   }
   E.onFrame(t => {
     for (const b of bubbles.slice()) { if (b.userData.popping || b.userData.hopping) continue; const y = -.6 + (performance.now() - b.userData.t0) / 1000 * b.userData.sp * (E.FAST ? 3 : 1);
       b.position.set(b.userData.x + Math.sin(t * 1.5 + b.userData.x) * .15, y, 1.2); b.userData.l.rotation.y = E.CALM ? 0 : Math.sin(t + b.userData.x) * .25;
-      if (y > (P ? 4.5 : 4.3)) {   /* gone before it reaches the top bar */ E.scene.remove(b); bubbles.splice(bubbles.indexOf(b), 1); if (active) queue.push(b.userData.key); } }   /* a bubble that floats away comes back later */
+      if (y > (E.CALM ? (P ? 4.3 : 3.6) : P ? 4.5 : 4.3)) {   /* gone before it reaches the top bar */ E.scene.remove(b); bubbles.splice(bubbles.indexOf(b), 1); if (active) queue.push(b.userData.key); } }   /* a bubble that floats away comes back later */
     const h = help && active && bubbles.find(b => b.userData.key === want && !b.userData.popping); if (h) { glow.position.copy(h.position).setZ(.8); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
   let timer = null;
@@ -43,7 +43,7 @@ export default function setup(E, { struggled, unit }) {
     if (k === want) { b.userData.popping = true; caught++; E.sfx.pop && E.sfx.pop(); E.joy(b.position.clone()); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 700);
       await E.tween(250, q => b.scale.setScalar(1 + q * .5)); E.scene.remove(b); bubbles.splice(bubbles.indexOf(b), 1); E.say([NM(k) + '!'], false);
       if (caught >= 3 && resolveCatch) { const r = resolveCatch; resolveCatch = null; r(); } }
-    else { E.sfx.boop(); if (!wrongHere) wrong++; wrongHere++; b.userData.hopping = 1; E.shake(b.userData.l, .12, 350).then(() => { b.userData.hopping = 0; }); if (E.pointAt(arrow, b.userData.l, k, .8, E.featFor(k, want))) setTimeout(() => arrow.visible = false, 1500 * E.F); if (wrongHere >= 2) help = true; await E.say('That is ' + NM(k) + '. Find ' + NM(want) + '. ' + (TIP[want] || '')); }
+    else { E.sfx.boop(); if (!wrongHere) wrong++; wrongHere++; b.userData.hopping = 1; E.shake(b.userData.l, .12, 350).then(() => { b.userData.hopping = 0; }); if (E.pointAt(arrow, b.userData.l, k, .8, E.featFor(k, want))) setTimeout(() => arrow.visible = false, 1500 * E.F); if (wrongHere >= (E.CALM ? 1 : 2)) help = true;   /* calm: the first miss already lights a right one */ await E.say('That is ' + NM(k) + '. Find ' + NM(want) + '. ' + (TIP[want] || '')); }
   });
   async function letterRound(k, i) {
     want = k; caught = 0; wrongHere = 0;
@@ -69,6 +69,7 @@ export default function setup(E, { struggled, unit }) {
     await E.say('Let’s practice the letters that are hard for you.');
     for (let i = 0; i < picks.length; i++) { await letterRound(picks[i], i); E.setProgress(picks.length, i + 1); }
     const stars = wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1;
+    bubbles.slice().forEach(b => E.scene.remove(b)); bubbles.length = 0;   /* no bubble left on the end screen */
     return { stars, line: 'Great practice! Now try the champion check again.' };
   };
 }

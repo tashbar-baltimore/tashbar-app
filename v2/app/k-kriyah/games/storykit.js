@@ -74,7 +74,9 @@ export function makeStory(E, unit, script) {
         await E.tween(650, q => { src.scale.set(1, 1 - q * .99, 1); ring.material.opacity = q * .9; });
         E.scene.remove(src); const l = L[st.letter]; l.position.copy(c); l.visible = true; l.scale.set(1, .01, 1); E.sparkle(c.clone().add(new THREE.Vector3(0, .3, .5)), 30, 1.4);
         await E.tween(650, q => { l.scale.set(1, .01 + q * .99, 1); ring.material.opacity = .9 * (1 - q); }, E.ease.back); E.scene.remove(ring); float(l);
+        let plain = null; if (E.CALM) { plain = E.letter(st.dress, 1.5); plain.position.set(c.x + (P ? 1.15 : 2.6), P ? 3.55 : 1.0, c.z); E.scene.add(plain); await E.popIn(plain, P ? .7 : 1); if (E.pointAt) E.pointAt(arrow, l, st.letter, 2.5, E.featFor ? E.featFor(st.letter, st.dress) : undefined); }   /* calm: the plain letter stays beside its Shabbos clothes, and the arrow shows what changed */
         for (const line of st.lines) await E.say(line);
+        if (plain) { arrow.visible = false; E.scene.remove(plain); }
         await E.sayWithMe(st.letter);
         await askTap(l, st.letter); await tapIt(l, E.nameLine(st.letter));
         await letterDone(st.letter);

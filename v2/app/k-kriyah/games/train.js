@@ -137,7 +137,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   let sunObj = null, sunT0 = 0, beatSun = true, sunTick = null;
   const SUN_MS = 70000;
   function startClock() { sunObj = new THREE.Group(); sunObj.add(E.mesh(new THREE.SphereGeometry(.45, 24, 16), new THREE.MeshBasicMaterial({ color: 0xffd84a }), 0, 0, 0, false)); const g = E.glowSprite('#ffe680', 2.2, .7); sunObj.add(g); E.scene.add(sunObj); sunT0 = performance.now();
-    const f = () => { if (!sunObj) return; const q = Math.min(1, (performance.now() - sunT0) / (SUN_MS * (E.FAST ? .3 : 1))); sunObj.position.set((P ? 2.2 : 6) - q * (P ? 4.4 : 12), (P ? 4.4 : 5.0) + Math.sin(q * Math.PI) * (P ? .6 : 1.0) - q * q * 1.5, -3);   /* under the top bar on a phone */ if (q >= 1 && beatSun) { beatSun = false; } };
+    const f = () => { if (!sunObj) return; const q = Math.min(1, (performance.now() - sunT0) / (SUN_MS * (E.FAST ? .3 : 1))); sunObj.position.set((P ? 2.2 : 6) - q * (P ? 4.4 : 12), (E.CALM ? (P ? 5.5 : 5.7) : P ? 4.4 : 5.0) +   /* calm: the sun's path stays high above the cars, never behind a letter */ Math.sin(q * Math.PI) * (P ? .6 : 1.0) - q * q * 1.5, -3);   /* under the top bar on a phone */ if (q >= 1 && beatSun) { beatSun = false; } };
     E.onFrame(f); sunTick = f; }
   function stopClock() { if (sunTick) E.offFrame(sunTick); }
   /* Unit 8's twist (game.swap): the full train comes back, but Yaakov mixed up some cars. He listens to the order and taps a car
@@ -183,7 +183,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const derange = m => { let a; do { a = [...Array(m).keys()].sort(() => Math.random() - .5); } while (a.some((v, i) => v === i)); return a; };
   return async () => {
     const perm = derange(n); cars.forEach((c, i) => { c.userData.home = perm[i]; c.position.copy(homes[perm[i]]); });
-    await roundOne(); if (game.clock) { stopClock(); await E.say(beatSun ? 'Before the sun went down! Champion!' : 'The sun went down, and you finished it! Great!'); }
+    await roundOne(); if (game.clock) { stopClock(); await E.say(beatSun ? 'Before the sun went down! Champion!' : E.CALM ? 'You finished the train! Champion!' : 'The sun went down, and you finished it! Great!'); E.setProgress(2, 2); }
     else if (game.swap) await roundSwap(); else await roundTwo();
     const stars = wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Choo choo! You know the Alef-Beis order!' : null };
