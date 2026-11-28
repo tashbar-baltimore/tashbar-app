@@ -34,7 +34,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
     const top = Math.ceil(ORDER.length / 2), per = ORDER.length > 6 ? [top, ORDER.length - top] : [3, 3];   /* seven cars: four on top, three below, none on top of another */
     homes = ORDER.map((_, i) => p ? (() => { const r = i < per[0] ? 0 : 1, j = r ? i - per[0] : i, n = per[r], gap = n > 3 ? 1.05 : 1.3; return new THREE.Vector3(((n - 1) / 2 - j) * gap, r ? 1.6 : 3.2, .6); })() : new THREE.Vector3(ORDER.length > 6 ? ((ORDER.length - 1) / 2 - i) * .76 : E.CALM ? ((ORDER.length - 1) / 2 - i) * .9 - .2 : 2.25 - i * .98, 0, ORDER.length > 6 ? 3.7 : E.CALM ? 4.75 : 4.2));   /* calm: well in front of (below) the train, never over its cars */   /* calm: the waiting cars stand well apart, so they never look like a train already made */   /* seven cars: centred and a little closer, so none leaves the screen */   /* all inside the screen: on a phone, two rows above the train */   /* waiting on the grass in front of the track */
     cars.forEach(c => c.userData.letter.scale.setScalar(p ? 1.45 : 1));   /* much bigger letters on a phone (reviewer: Kaf's dot hardly showed) */
-    cars.forEach(c => { c.scale.setScalar(c.userData.on ? S : (p ? .75 : .7)); if (c.userData.on) c.position.copy(slotPos(c.userData.slot)); else if (c !== drag) c.position.copy(homes[c.userData.home ?? c.userData.i]); });
+    cars.forEach(c => { c.scale.setScalar(c.userData.on ? S : (p ? (E.CALM ? .6 : .75) : .7));   /* calm, on a phone: waiting cars smaller than the train he builds */ if (c.userData.on) c.position.copy(slotPos(c.userData.slot)); else if (c !== drag) c.position.copy(homes[c.userData.home ?? c.userData.i]); });
     if (p) { E.camBase.set(0, 2.3, 11); E.camTarget.set(0, 1.8, 0); } else { E.camBase.set(0, 2.7, 10.2); E.camTarget.set(0, E.CALM ? 1.05 : 1.5, 0); }   /* calm: a little more ground, so the waiting cars sit well below the train */
   });
   E.onFrame(t => {
@@ -52,7 +52,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
 
   E.onPointer('down', e => { if (!enabled || busy || swapPairs.length) return; const c = E.pickFrom(e, cars.filter(c => !c.userData.on && !c.userData.busy)); if (!c) return; drag = c; const p = E.planePoint(e, c.position.z); if (p) grab.copy(c.position).sub(p); c.scale.multiplyScalar(1.1); });
   E.onPointer('move', e => { if (!drag) return; const p = E.planePoint(e, drag.position.z); if (p) drag.position.copy(p.add(grab)); });
-  E.onPointer('up', () => { if (!drag) return; const c = drag; drag = null; c.scale.setScalar(P ? .75 : .7); place(c, slotUnder(c)); });
+  E.onPointer('up', () => { if (!drag) return; const c = drag; drag = null; c.scale.setScalar(P ? (E.CALM ? .6 : .75) : .7); place(c, slotUnder(c)); });
   /* which empty place on the train the car was dropped on (near the train, nearest empty place) */
   function slotUnder(c) { const [cx, cy] = E.toScreen(c.position); let best = null, bd = Math.min(innerWidth, innerHeight) * .22;
     slotX.forEach((_, i) => { if (cars.some(o => o.userData.on && o.userData.slot === i)) return; if (!gaps && i !== nextNeeded()) return; const [x, y] = E.toScreen(slotPos(i)), d = Math.hypot(x - cx, y - cy); if (d < bd) { bd = d; best = i; } });
@@ -64,7 +64,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
     busy = true;
     if (ORDER[slot] === c.userData.key) {
       wrongInRow = 0; c.userData.on = true; c.userData.slot = slot; const to = slotPos(slot);
-      await E.tween(420, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * .6; c.scale.setScalar((P ? .75 : .7) + (S - (P ? .75 : .7)) * q); });
+      await E.tween(420, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * .6; c.scale.setScalar((P ? (E.CALM ? .6 : .75) : .7) + (S - (P ? (E.CALM ? .6 : .75) : .7)) * q); });
       E.sfx.drum(); E.sparkle(to.clone().add(new THREE.Vector3(0, .8 * S, .4)), 14); E.hop(c, .25, 300);
       await E.say(E.quiet(c.userData.key) ? E.LETTERS[c.userData.key].name + '!' : [E.LETTERS[c.userData.key].name + '!', E.S(E.LETTERS[c.userData.key].snd)], false);
       busy = false;
@@ -117,7 +117,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
     /* the train comes back with some cars on, and gaps to fill */
     gaps = [...Array(n).keys()].filter(i => i % 2 === 1); const gapHomes = gaps.map((_, i) => i * 2).sort(() => Math.random() - .5);   /* every other car is missing, however long the train */
     const lx = LX; loco.position.x = lx + 10;
-    cars.forEach((c, i) => { if (gaps.includes(i)) { c.userData.on = false; c.userData.slot = null; c.userData.home = gapHomes[gaps.indexOf(i)]; c.scale.setScalar(P ? .75 : .7); c.position.copy(homes[c.userData.home]); c.visible = true; }
+    cars.forEach((c, i) => { if (gaps.includes(i)) { c.userData.on = false; c.userData.slot = null; c.userData.home = gapHomes[gaps.indexOf(i)]; c.scale.setScalar(P ? (E.CALM ? .6 : .75) : .7); c.position.copy(homes[c.userData.home]); c.visible = true; }
       else { c.userData.on = true; c.userData.slot = i; c.scale.setScalar(S); c.position.copy(slotPos(i)).add(new THREE.Vector3(10, 0, 0)); } });
     const on = cars.filter(c => c.userData.on), sx = on.map(c => c.position.x);
     await E.tween(1600, q => { loco.position.x = lx + 10 * (1 - q); on.forEach((c, i) => c.position.x = sx[i] - 10 * q); }, E.ease.out);

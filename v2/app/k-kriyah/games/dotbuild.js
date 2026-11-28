@@ -97,7 +97,10 @@ export default function setup(E, { struggled, unit, game }) {
       await E.say(RULE[want]);
       if (wrongInRow >= 2 || mistakes >= 3) help = true;
       if (shape === 'ש') await moveDot('dish', 450); kid.mood('calm');
-      busy = false; enabled = true; await E.say('Try again! Make it ' + NM(want) + '.');
+      if (E.CALM && goodSpot(want) !== 'dish') { /* show how (K-CLARITY 16): the hand carries the dot halfway to its place, then he does it */
+        const a = dot.position.clone(), b = a.clone().lerp(spotPos(goodSpot(want)), .5);
+        await E.tween(700, q => { dot.position.lerpVectors(a, b, q); const [x, y] = E.toScreen(dot.position); E.hand.at(x, y); }); await E.wait(250); E.hand.hide(); await E.tween(350, q => dot.position.lerpVectors(b, a, q)); }
+      busy = false; enabled = true; await E.say((E.CALM ? 'Now you! ' : 'Try again! ') + 'Make it ' + NM(want) + '.');
     }
   }
   async function task(k) {

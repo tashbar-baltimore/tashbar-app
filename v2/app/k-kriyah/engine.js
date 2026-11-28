@@ -339,12 +339,12 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, 
    Everything stays at the sides and high at the back, so the middle, where the letters are, stays clear and light. */
 export function buildShul() {
   const w = new THREE.Group(); scene.add(w); world.group = w;
-  document.body.style.background = 'linear-gradient(#fff4dc,#ffe9c2)';
+  document.body.style.background = 'linear-gradient(#fff4dc,#ffe9c2)'; if (CALM) scene.fog = new THREE.Fog(0xfff1dc, 9, 21);   /* calm: the back of the shul fades softly, the letters stay crisp */
   const wood = M(0xb9784a, { roughness: .55 }), woodL = M(0xd9a066, { roughness: .55 }), cream = M(0xfff3dc, { roughness: .8, clearcoat: 0 }), gold = M(0xf2c14e, { metalness: .55, roughness: .3, clearcoat: .8 });
   const floor = mesh(new THREE.PlaneGeometry(60, 40), M(0xd6a46b, { roughness: .6, clearcoat: .3 }), 0, 0, 0, false); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; w.add(floor);
   if (!LITE) for (let i = -14; i <= 14; i++) w.add(mesh(new THREE.BoxGeometry(.03, .005, 40), M(0xbf8c55, { roughness: .7 }), i * .9, .003, 0, false));   /* floor boards */
-  const runner = mesh(new THREE.PlaneGeometry(3.2, 30), M(0xc94b4b, { roughness: .85, clearcoat: 0 }), 0, .01, -1, false); runner.rotation.x = -Math.PI / 2; runner.receiveShadow = true; w.add(runner);   /* a red carpet up the middle */
-  [-1.5, 1.5].forEach(x => { const t = mesh(new THREE.PlaneGeometry(.12, 30), gold, x, .012, -1, false); t.rotation.x = -Math.PI / 2; w.add(t); });
+  const runner = mesh(new THREE.PlaneGeometry(3.2, 30), M(CALM ? 0xe6c3a8 : 0xc94b4b, { roughness: .85, clearcoat: 0 }), 0, .01, -1, false); runner.rotation.x = -Math.PI / 2; runner.receiveShadow = true; w.add(runner);   /* a red carpet up the middle */
+  if (!CALM) [-1.5, 1.5].forEach(x => { const t = mesh(new THREE.PlaneGeometry(.12, 30), gold, x, .012, -1, false); t.rotation.x = -Math.PI / 2; w.add(t); });
   w.add(mesh(new THREE.BoxGeometry(40, 14, .4), cream, 0, 7, -7.2, false));   /* the back wall */
   w.add(mesh(new THREE.BoxGeometry(40, 1.3, .3), wood, 0, .65, -6.9, false)); w.add(mesh(new THREE.BoxGeometry(40, .12, .4), woodL, 0, 1.35, -6.85, false));
   [-1, 1].forEach(sd => { const sw = mesh(new THREE.BoxGeometry(.4, 14, 30), cream, sd * 15, 7, 6, false); w.add(sw); });
@@ -356,7 +356,7 @@ export function buildShul() {
     const gl = glowSprite('#ffffff', wd * 2.6, .35); gl.position.set(0, h * .55, .3); g.add(gl); g.position.set(x, y, -6.98); w.add(g); };
   win(-8.5, 3.2, 1.6, 3.6); win(8.5, 3.2, 1.6, 3.6); win(-3.2, 5.6, 1.3, 2.6); win(3.2, 5.6, 1.3, 2.6);
   /* a round window high in the middle, like the morning sun coming in */
-  { const r = mesh(new THREE.CircleGeometry(.9, 40), sky, 0, 7.3, -6.97, false); w.add(r); const rf = mesh(new THREE.TorusGeometry(.92, .1, 10, 40), frameM, 0, 7.3, -6.95, false); w.add(rf); const gl = glowSprite('#fff6d0', 4, .4); gl.position.set(0, 7.3, -6.6); w.add(gl); }
+  if (!CALM) { const r = mesh(new THREE.CircleGeometry(.9, 40), sky, 0, 7.3, -6.97, false); w.add(r); const rf = mesh(new THREE.TorusGeometry(.92, .1, 10, 40), frameM, 0, 7.3, -6.95, false); w.add(rf); const gl = glowSprite('#fff6d0', 4, .4); gl.position.set(0, 7.3, -6.6); w.add(gl); }
   /* the aron kodesh: a wooden ark on two steps, a blue velvet curtain with a gold border, and the ner tamid above it */
   const aron = new THREE.Group(); w.add(aron); aron.position.set(-5.6, 0, -6.2);
   aron.add(mesh(rbox(3.4, .25, 1.4, .04), woodL, 0, .12, .3)); aron.add(mesh(rbox(3.0, .25, 1.1, .04), woodL, 0, .37, .2));
@@ -368,7 +368,7 @@ export function buildShul() {
   const ner = new THREE.Group(); ner.add(mesh(new THREE.CylinderGeometry(.16, .1, .26, 16), gold)); ner.add(mesh(new THREE.SphereGeometry(.09, 12, 10), new THREE.MeshStandardMaterial({ color: 0xff7a3a, emissive: 0xff4a1a, emissiveIntensity: 1.4 }), 0, -.05, .1, false));
   ner.add(mesh(new THREE.CylinderGeometry(.01, .01, .8, 6), gold, 0, .5, 0, false)); const ng = glowSprite('#ffb070', 1.3, .7); ner.add(ng); ner.position.set(0, 5.4, .4); aron.add(ner);
   /* shelves of seforim (plain coloured spines, no writing) */
-  const shelf = new THREE.Group(); w.add(shelf); shelf.position.set(5.8, 0, -6.6);
+  const shelf = new THREE.Group(); w.add(shelf); shelf.visible = !CALM; shelf.position.set(5.8, 0, -6.6);
   shelf.add(mesh(rbox(3.0, 3.6, .6, .06), wood, 0, 1.8, 0)); const bookCols = [0x7a1f2b, 0x1f3c88, 0x2d6a3e, 0x5a2d82, 0x8a5a2b, 0x20335a];
   for (let r = 0; r < 3; r++) { shelf.add(mesh(new THREE.BoxGeometry(2.7, .06, .5), woodL, 0, .55 + r * 1.05, .1, false)); let x = -1.25; let k = r * 3;
     while (x < 1.2) { const bw = .12 + ((k * 37) % 5) * .02, bh = .6 + ((k * 53) % 4) * .07; shelf.add(mesh(new THREE.BoxGeometry(bw, bh, .38), M(bookCols[k % 6], { roughness: .5 }), x + bw / 2, .58 + r * 1.05 + bh / 2, .12, false));
