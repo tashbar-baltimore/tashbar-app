@@ -65,7 +65,7 @@
   ],
   check:[
     {q:'Opening: “In the shul kitchen, Binyamin held the tray. The kiddush cake had slid onto the floor.” What do the words “in the shul kitchen” tell?', o:['where','who','the problem'], h:'Is it a person, a place, or something that went wrong?'},
-    {q:'Avrumi’s story begins: “I packed my bag. I zipped my coat. I walked to the corner.” What kind of opening is this?', o:['a slow start','jumps right in','announcing'], h:'Is anything going wrong yet? Does the reader have to wait?'},
+    {q:'Avrumi’s story begins: “I packed my bag. I zipped my coat. I walked to the corner.” What kind of opening is this?', o:['a slow start','jumps right in','an ending'], h:'Is anything going wrong yet? Does the reader have to wait?'},
     {t:'order', q:'Build Dovid’s opening. Tap the sentences in order.', tiles:['Dovid stood in the school gym on the morning of the science fair.','His robot sat on the table, ready to go.','But when he pressed the button, nothing happened.'], h:'Who and where first. Then set up the scene. The problem comes last.'}
   ],
   re:[
@@ -201,8 +201,8 @@
   ],
   check:[
     {q:'Binyamin’s chess story ends: “From that day on, Binyamin knew that every loss teaches you something.” What does the last line tell?', o:['what he learned','how it worked out','how he felt'], h:'Is it about the problem, his feeling, or a lesson he keeps?'},
-    {q:'Avrumi’s story about the Purim snowstorm ends: “Then he had supper. The end.” What kind of ending is it?', o:['just stops','new problem','good ending'], h:'Does the reader find out how it worked out? Does something new go wrong?'},
-    {t:'order', q:'Build Yehuda’s ending. He lost the key to the shul. Tap the sentences in order.', tiles:['In the end, the key was in Rabbi Feldman’s coat pocket.','Yehuda laughed and handed it to the gabbai.','He learned to look closely before worrying.'], h:'How it worked out first. Then how he felt. What he learned goes last.'}
+    {q:'Avrumi’s story about the Purim snowstorm ends: “Then everyone went to sleep. The end.” What kind of ending is it?', o:['just stops','new problem','good ending'], h:'Does the reader find out how it worked out? Does something new go wrong?'},
+    {t:'order', q:'Build Yehuda’s ending. He lost the key to the shul. Tap the sentences in order.', tiles:['In the end, the key was hiding in his own coat pocket.','Yehuda laughed and opened the shul door.','He learned to look closely before worrying.'], h:'How it worked out first. Then how he felt. What he learned goes last.'}
   ],
   re:[
     {how:'A new way: an ending is like landing a plane. Touch down: how it worked out. Roll to a stop: how he felt and what he learned.', q:'What is the touch down?', o:['how it worked out','the problem','the title']},
@@ -456,6 +456,116 @@
       {type:'tiles', q:'Binyamin finally beat Zeidy at chess. Show how he felt.', w:['Binyamin','smiled','at Zeidy.'], extra:['The end.'],
         say:'Build a sentence that shows how he felt.', how:'Start with who. Then what his face did. Then at whom.'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     The good old activities are kept; the learn cards build the story plan as he goes (a box for each part). */
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'notice', pic: '📝', t: 'Plan A: kite, park, fun. Plan B: Dovid wants to fly; kite snags; he fixes it.',
+      q: 'Which plan has an ending?', o: ['Plan A', 'Plan B', 'Neither'],
+      pay: 'Plan B! *POW* and the *W-W-W* notes give a story its *ending*.' };
+    Y[0].q = 'Put the W-W-W questions in order.'; Y[0].say = 'Put the *W-W-W* questions in order.';
+    Y[0].how = 'Who, when, where first. Then the two What questions. Then the two How questions: end, then feel.';
+    D[1].say = 'Match each letter of *POW* to its step.';
+    b.learn = [
+      { t: '*POW* has three steps: P, O, W.', act: D[1] },
+      { t: 'Five *W-W-W* questions plan the whole story.', act: Y[0] },
+      { t: 'Answer each W with a *short note*.', act: Y[2] },
+      { who: { q: 'Avrumi wants to write about his Purim map. What should he do first?', o: [['Leibel', 'Start writing right away.'], ['Chezky', 'Say POW and jot W-W-W notes.']], a: 1,
+        why: 'With no plan, the story *wanders*. Plan with *POW*.' } }];
+    b.play = [D[0], Y[3], Y[1],
+      { type: 'match', q: 'Dovid\'s bird feeder notes.', pairs: [['wants a bird feeder', 'What does he want?'], ['the glue will not hold', 'What happens?'], ['he uses screws, and it works', 'How does it end?'], ['worried, then happy', 'How does he feel?']],
+        say: 'Match each note to its *W-W-W* question.', how: 'Goal: *want*. Trouble: *happens*. Fixed: *end*. Inside him: *feel*.',
+        why: { q: 'How do you know "worried, then happy" answers How does he feel?', o: ['Its words are feelings inside him', 'It names a place', 'It tells the ending'], a: 'Its words are feelings inside him' } },
+      { type: 'evidence', q: 'Avrumi\'s Purim plan. Which line is a story sentence, not a plan note?', p: ['Avrumi, Purim morning', 'wants to deliver on time', 'The snow crunched under his boots.', 'basket tips over'], a: 2, look: 'a whole sentence with a detail',
+        say: 'Tap the *story sentence* hiding in the plan.', how: 'A *plan note* is a few words. A story sentence is whole.', why: Y[4].why }];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'Plan B wins! You plan with *POW* and a note for every *W-W-W* question.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L05.01']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'wouldyou', pic: '🚐', t: 'Story one: "I woke up. I davened. I ate." Story two: "The van would not start!"',
+      q: 'Which story would you keep reading?', o: ['Story one', 'Story two'],
+      pay: 'Story two! It *jumps right in* with a *problem*.' };
+    b.learn = [
+      { t: 'An opening shows *who*, *where*, and the *problem*.', act: { type: 'storymap', slots: ['Who', 'Where', 'The problem'], cards: ['Tzvi Hirsch and Abba', 'outside the bakery', 'the van will not start'],
+        say: 'Put each part of the opening in its *box*.', how: 'A person: *who*. A place: *where*. Something wrong: the *problem*.' } },
+      { t: 'Bring in the *problem* fast.', act: Y[1] },
+      { who: { q: 'Start Tzvi Hirsch\'s story. Which opening is better?', o: [['Hershy', 'I woke up. I davened. I ate breakfast.'], ['Yoni', 'Outside the bakery, Tzvi Hirsch\'s van would not start!']], a: 1,
+        why: 'Hershy made a *slow start*. Yoni *jumped right in*.' } }];
+    D[1].bins = ['Jumps right in', 'Mistake: slow start'];
+    b.play = [D[1], Y[0], Y[2], Y[4]];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'Story two won. You open with *who*, *where*, and the *problem*, right away.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L05.10']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'puzzle', pic: '🧩', t: '"In the end, he won. First, he lost. Just then, Zeidy smiled."',
+      q: 'Which happened first?', o: ['He won', 'He lost', 'Zeidy smiled'],
+      pay: '*He lost* first! The *time words* told you the order.' };
+    b.learn = [
+      { t: '*Time words* show the order: beginning, middle, end.', act: Y[3] },
+      { t: 'A *surprise* word means all at once.', act: D[0] },
+      { t: 'Some time words *jump* far ahead.', act: D[1] },
+      { who: { q: 'Tell the van story. Which is better?', o: [['Moishy', 'And then the van died, and then they walked.'], ['Avi', 'Just then, the van died. After that, they walked.']], a: 1,
+        why: '*And then* again sounds the same. Use *different* time words.' } }];
+    var E = Y[4]; E.bins = ['Beginning', 'Middle', 'End'];
+    E.cards = [['One morning,', 0], ['First,', 0], ['After that,', 1], ['Just then,', 1], ['In the end,', 2], ['Finally,', 2]];
+    E.say = 'Where does each *time word* go: beginning, middle, or end?'; E.how = '*Start* words open. *Middle* words keep it moving. *End* words wrap up.';
+    E.why = { q: 'Why does "After that," go in the middle?', o: ['It keeps the story moving', 'It opens the story', 'It wraps it up'], a: 'It keeps the story moving' };
+    Y[0].why = { q: 'How do you know "Three days later," goes last?', o: ['It jumps ahead to after the string snapped', 'It is a surprise word', 'It starts the story'], a: 'It jumps ahead to after the string snapped' };
+    b.play = [Y[1], Y[0], E, Y[2]];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'He lost first: the *time words* told you. You tell events in order with *time words*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L05.11']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'mystery', pic: '🥖', t: 'Warm cinnamon. A bell rings. Golden braids on a shelf.',
+      q: 'Where are you?', o: ['a bakery', 'a shul', 'a park'],
+      pay: 'A *bakery*! *Sense details* put you right there.' };
+    b.learn = [
+      { t: 'Your *sense camera* sees, hears and smells.', act: D[0] },
+      { t: 'It also *tastes* and *touches*.', act: D[1] },
+      { who: { q: 'Describe the bakery. Which is better?', o: [['Shmuel', 'The bakery was nice.'], ['Tuvia', 'The bakery smelled of warm cinnamon.']], a: 1,
+        why: '*Nice* is vague. The reader *smells* cinnamon.' } }];
+    b.play = [Y[2], Y[0], Y[1],
+      { type: 'match', q: 'Fix each vague sentence.', pairs: [['The soup was good.', 'The soup tasted salty and hot.'], ['The wind was bad.', 'Cold wind stung his cheeks.'], ['The shul was loud.', 'The chazzan\'s voice rang out.']], mis: true,
+        say: 'Match each *vague* sentence to its *sense* fix.', how: 'Find the fix about the same thing, told with a *sense*.' }, Y[4]];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'You found the bakery with your senses. Your details let the reader *see*, *hear*, *smell*, *taste* and *touch*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L05.12']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'secret', pic: '🔐', t: 'Crack the code: his knees shook, and he gripped the chair.',
+      q: 'What is he feeling?', o: ['sleepy', 'nervous', 'proud'],
+      pay: '*Nervous*! You cracked it from his *body*. That is *showing*.' };
+    D[1].w = ['His hands', 'shook', 'on the', 'doorknob.']; D[1].extra = ['was nervous'];
+    var F = { type: 'sort', bins: ['sleepy', 'proud', 'nervous'], cards: [['He yawned and rubbed his eyes.', 0], ['He stood tall and grinned.', 1], ['His knees shook.', 2], ['His eyes drooped at the table.', 0], ['He bit his lip and looked at the door.', 2]],
+      say: 'Which *feeling* does each sentence show?', how: 'Act it out. What feeling makes your body do that?' };
+    b.learn = [
+      { t: '*Showing* lets the reader *see* the feeling.', act: F },
+      { t: 'Show it three ways: *actions*, *face*, *words*.', act: Y[1] },
+      { who: { q: 'Show that Avrumi is sad about his torn map.', o: [['Zalmy', 'Avrumi was sad.'], ['Elchonon', 'Avrumi stared at the map, and his chin shook.']], a: 1,
+        why: '*Sad* is telling. His *chin* shows it.' } },
+      { t: 'Build it with his body. *Skip* the feeling word.', act: D[1] }];
+    b.play = [Y[0], Y[4], Y[3], Y[2]];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'You cracked the code from his knees. You *show* a feeling with *actions*, *face* and *words*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L05.13']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'predict', pic: '🏁', t: 'Avrumi\'s story ends: "Then he had supper. The end."',
+      q: 'What will the reader ask?', o: ['Did it work out?', 'What was for supper?', 'Nothing at all'],
+      pay: '*Did it work out?* A good ending *answers* that.' };
+    b.learn = [
+      { t: 'A good ending: *worked out*, *felt*, *learned*.', act: { type: 'storymap', slots: ['How it worked out', 'How he felt', 'What he learned'],
+        cards: ['The kiddush cake was saved.', 'Binyamin laughed and let out a long breath.', 'Now he holds trays with two hands.'],
+        say: 'Put each ending sentence in its *box*.', how: 'The *problem*: worked out. His *body or face*: felt. *Next time*: learned.' } },
+      { t: 'Start with how the *problem* worked out.', act: D[0] },
+      { who: { q: 'End the van story. Which is better?', o: [['Berel', 'And then they went home. The end.'], ['Dovi', 'Every challah arrived, and he learned friends help.']], a: 1,
+        why: 'Berel\'s ending *just stops*. Dovi tells how it *worked out*.' } }];
+    b.play = [D[1], Y[3], Y[2], Y[1]];
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; });
+    b.done = 'Now the reader knows it worked out. You end with what *worked out*, how he *felt*, and what he *learned*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L05.14']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
