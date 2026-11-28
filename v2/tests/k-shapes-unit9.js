@@ -82,12 +82,13 @@ module.exports = async function (browser) {
         if (!((await S()).reminders > 0)) bad(L + ': a boy who does nothing gets no reminder');
       }
       /* play every round: with mistakes, the first two tries are wrong (a wrong piece, or a right piece in the wrong box) */
-      let wrongs = 0, sawBonus = false;
+      let wrongs = 0, sawBonus = false, sawCount = false;
       for (let guard = 0; guard < 80; guard++) {
         const st0 = await S();
         if (st0.name === 'mistake') break;
         if (st0.name === 'bonus') sawBonus = true;
         if (st0.name === 'count') {   /* which box has the most: with mistakes, first a wrong box */
+          sawCount = true;
           const nb = st0.nb || 1, pick = !perfect && !st0.countWrong ? (st0.countAnswer + 1) % nb : st0.countAnswer;
           if (!perfect && !st0.countWrong) await pg.evaluate(() => { window.__shp.countWrong = 1; });
           const p = await pg.evaluate(i => window.__shp.boxPt2(i), pick); await pg.mouse.click(p.x, p.y); await pg.waitForTimeout(300); continue; }
@@ -108,6 +109,7 @@ module.exports = async function (browser) {
         const r = list.find(x => x.box >= 0);
         if (r) await into(r.id, r.box); else await pg.waitForTimeout(150);
       }
+      if (!perfect && sawCount && !(await S()).countHelp) bad(L + ': a wrong "which box has more" tap gets only words (no hand, no growing numbers)');
       if (!perfect && !(await S()).said.some(t => /^Remember|^Find the part that repeats/.test(t))) bad(L + ': after 2 mistakes the rule is not taught again');
       if (perfect && (await S()).hasBonus && !sawBonus) bad(L + ': a boy with no mistakes gets no bonus round');
       await pg.waitForFunction(() => window.__shp.name === 'mistake', null, { timeout: 20000 });

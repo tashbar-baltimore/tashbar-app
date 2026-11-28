@@ -104,6 +104,7 @@ module.exports = async function (browser) {
         const r = list.find(x => x.box >= 0);
         if (r) await into(r.id, r.box); else await pg.waitForTimeout(150);
       }
+      if (!perfect && wrongs && (await S()).game === 'where' && !(await S()).posHand) bad(L + ': a wrong drop gets no hand showing the right place');
       if (!perfect && !(await S()).said.some(t => /^Remember|^Find the part that repeats/.test(t))) bad(L + ': after 2 mistakes the rule is not taught again');
       if (perfect && (await S()).hasBonus && !sawBonus) bad(L + ': a boy with no mistakes gets no bonus round');
       await pg.waitForFunction(() => window.__shp.name === 'mistake', null, { timeout: 20000 });

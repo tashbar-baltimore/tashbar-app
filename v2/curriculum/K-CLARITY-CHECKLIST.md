@@ -223,3 +223,25 @@ More fixes (review-shapes takeover session, Units 7-12):
 | Sort by color mistake: the voice says "in the red box" while the square floats over the blue box (11) | The square floats over the red box |
 | Where is it? mistake: "behind" (beside the left block) read as "next to" | Behind the middle of the bridge, in the gap under the plank |
 | Sort by color, Big and small: a help hand was left on a box at the end | No hand on the end screen |
+
+**Round 4 fixes (after looking at the round-3 pictures, 2026-11-28 morning):**
+
+| Problem (rule) | Fix |
+|---|---|
+| Big and small: the small box's 1-2-3-4-5 numbers spilled past the box (8, 12) | The numbers fit above their own box; if they do not fit in one row they use two rows |
+| Sort by color, Big and small: a wrong "which box has more" tap got only words (16) | Each box's big number grows as it is said ("That box has three." "This box has five." "Five is more."), then the hand points at the box with more. The test checks it |
+| Sort by color: the yellow box looked pale, almost peach (11) | A real strong yellow, matte, like the yellow pieces (the colour check had never matched, so the yellow box got the darkening meant for red and blue) |
+| Fix the pattern mistake: the help only glowed the first part once (16) | The first part lights and is sung, then the same part lights and is sung again ("Again! Red, yellow, blue."), so he sees it repeat |
+| Pattern train: with two cars missing, only one empty spot showed (12) | The second empty spot shows too, plain, so he sees two cars go there |
+| Where is it? a wrong drop got a ring but no hand (16) | The hand points at the right place while the voice says "Under is here." The test checks it |
+| Where is it? "behind" sat right under the plank and looked like "under" | Farther back, past the bridge; the plank hides its top |
+| Where is it? on a phone the waiting ball sat right in front of the bridge (looked already "in front") | It waits low on the screen, well away from the bridge |
+| Line them up: the start line leaned; Mendy was cut off on a phone (9, h) | The camera looks straight down, so the line stands straight; Mendy stands fully on the phone screen |
+| Big and small mistake: the small ball floated higher and looked farther away, not smaller (e) | Both balls sit on the same line, so only their size differs |
+| Big and small: the small circle on the small box was hard to see | A little bigger (still clearly smaller than the big box's circle) |
+| Shape party 1 mistake: the curvy shape's outline lit all at once (d) | A light runs all the way round and the outline draws behind it, so he follows every curvy side |
+
+Choices made (a kindergarten teacher's call, written here as Esti asked):
+- Shape party 1 clues stay spoken only, with no picture card. A card with the shape would give the answer away; a dots card would not match clues about sides or "round".
+- Pattern train camera stays as it was: moving it closer cut off the engine and the cars he chooses from.
+- Heavy and light: the heavier side is still not glowed before he answers, since a glow would give the answer away. After a wrong answer the hand shows the side that went down.

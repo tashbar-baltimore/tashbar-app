@@ -176,9 +176,9 @@ export function startGame(cfg) {
       plank(BX.t + 0.06, 0.1, BX.d + 0.06, -BX.w / 2 + BX.t / 2, BX.h, 0, BM.rim); plank(BX.t + 0.06, 0.1, BX.d + 0.06, BX.w / 2 - BX.t / 2, BX.h, 0, BM.rim); }
     if (LK && LK.treasures.decorBox) LK.treasures.decorBox(g, BX);   /* the box belongs to the world: a farm wagon, a treasure chest, a pastry box ... */
     if (cfg.sortBy === 'color' && bc.color) {   /* sorting by colour: the whole box is painted its colour, so the boy sees at once which box is red, blue or yellow (Esti, 2026-11-27) */
-      const hsl = {}; new THREE.Color(bc.color).getHSL(hsl); const col = hsl.h > 0.1 && hsl.h < 0.2 ? '#FFEE00' : bc.color;   /* yellow stays yellow (the light would turn it orange) */
-      const cm = new THREE.MeshStandardMaterial({ color: col, roughness: 0.45, toneMapped: false }), cin = new THREE.MeshStandardMaterial({ color: col, roughness: 0.8, toneMapped: false });
-      const yel = col === '#FFEE00'; cm.color.multiplyScalar(yel ? 1 : 0.62); cin.color.multiplyScalar(yel ? 1 : 0.72); if (yel) { cm.emissive = new THREE.Color('#5A5200'); cin.emissive = new THREE.Color('#6A6000'); }   /* the bright sun lifts every colour; this keeps red red, blue blue and yellow yellow */
+      const hsl = {}; new THREE.Color(bc.color).getHSL(hsl, THREE.SRGBColorSpace); const col = hsl.h > 0.1 && hsl.h < 0.2 ? '#FFC800' : bc.color;   /* yellow stays a strong yellow, like the yellow pieces (review 3: the yellow box looked pale) */
+      const cm = new THREE.MeshStandardMaterial({ color: col, roughness: 0.7, envMapIntensity: 0.3, toneMapped: false }), cin = new THREE.MeshStandardMaterial({ color: col, roughness: 0.95, envMapIntensity: 0.2, toneMapped: false });   /* matte: the sky's shine made the yellow box look pale (review 3) */
+      const yel = col === '#FFC800'; cm.color.multiplyScalar(yel ? 0.62 : 0.62); cin.color.multiplyScalar(yel ? 0.55 : 0.72);   /* the bright sun lifts every colour; this keeps red red, blue blue and yellow yellow */
       g.children.filter(c => c.isMesh).forEach((m, i) => { if (i === 0) m.material = cin; else if (i <= 8) m.material = cm; });   /* floor, walls and rims all in the box's colour */
     }
     const paintM = new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 });
@@ -877,6 +877,7 @@ export function startGame(cfg) {
     R.seq.forEach((t, i) => { if (i < n - blanks) { const m = beadMesh(fixing && i === R.fixAt ? R.wrong : t); m.position.copy(slotAt(i, n, z)); scene.add(m); parts.push(m); beads.push(m); if (fixing && i === R.fixAt) bad = m; } });
     const holes = [], holeMat = new THREE.MeshStandardMaterial({ color: '#EFE3CF', roughness: 0.8 });   /* the later spots are plain; only the next one glows */   /* copy: every spot he will fill shows its empty place, so he sees the row is as long as Mendy's (review round 2) */
     if (R.copy) for (let i = 0; i < n; i++) { const h = ghost.clone(); h.position.copy(slotAt(i, n, z)); if (h.isGroup) h.scale.setScalar(tall ? 0.72 : 1); h.traverse(c => { if (c.isMesh) c.material = holeMat; }); h.visible = false; scene.add(h); parts.push(h); holes.push(h); }
+    else if (!fixing && blanks > 1) for (let i = n - blanks; i < n; i++) { const h = ghost.clone(); h.position.copy(slotAt(i, n, z)); if (h.isGroup) h.scale.setScalar(tall ? 0.72 : 1); h.traverse(c => { if (c.isMesh) c.material = holeMat; }); h.visible = false; scene.add(h); parts.push(h); holes[i] = h; }   /* two cars missing: the later empty spot shows too, plain, so he sees two cars go there (review 3) */
     PS = { parts, beads, model, next: fixing ? R.fixAt : n - blanks, n, z, R, bad, showRing: !fixing, holes };
     const types = R.tray; types.forEach((t, i) => makeBead('b' + (++beadN), t, trayAt(i, types.length), i));
     markNext();
@@ -910,6 +911,13 @@ export function startGame(cfg) {
   function ringsOff() { helpRings.forEach(r => { if (r.parent) r.parent.remove(r); }); helpRings = []; }
   function ringOn(target) { if (!target) return; const r = new THREE.Mesh(new THREE.TorusGeometry(tall ? 0.34 : 0.55, tall ? 0.05 : 0.075, 12, 48), new THREE.MeshBasicMaterial({ color: '#FFB000', depthTest: false, transparent: true, opacity: 1 })); r.renderOrder = 999;   /* drawn after the soft glow, so the whole ring shows */
     if (target.g) { r.position.set(0, 0.05, 0.1); target.g.add(r); } else { r.position.copy(target.position); r.position.z += 0.1; scene.add(r); } helpRings.push(r); }
+  /* light and sing one part of the pattern (a..b): the friend's-mistake help shows the first part, then the same part again (review 3) */
+  function glowRange(a, b, on) { PS.beads.slice(a, b).forEach(m => { if (m.userData.glow) { m.userData.glow(on); return; } m.material.emissive = new THREE.Color(on ? '#FFC400' : '#000000'); m.material.emissiveIntensity = on ? 0.5 : 0; }); }
+  function singRange(a, b, pre) {
+    const bounce = PS.beads.slice(a, b).reduce((p, m, j) => p.then(() => { const i = a + j, y0 = m.parent === scene ? m.position.y : 0; beadNote(PS.R.seq[i]);
+      return tween(300, k => { if (m.parent === scene) m.position.y = y0 + Math.sin(Math.PI * k) * 0.3; else m.parent.parent.position.y = slotAt(i, PS.n, PS.z).y + Math.sin(Math.PI * k) * 0.3; }); }), Promise.resolve());
+    return Promise.all([say((pre || '') + cap(PS.R.seq.slice(a, b).map(t => BEADS[t].word).join(', ')) + '.'), bounce]);
+  }
   function coreGlow(on) { const c = PS.R.core || 2; (PS.R.copy && PS.model && PS.model.length ? PS.model.slice(Math.min(PS.next, PS.model.length - 1), Math.min(PS.next, PS.model.length - 1) + 1) : PS.beads.slice(0, c)).forEach(m => { if (m.userData.glow) { m.userData.glow(on); return; } m.material.emissive = new THREE.Color(on ? '#FFC400' : '#000000'); m.material.emissiveIntensity = on ? 0.5 : 0; }); }   /* world items glow with a soft halo behind them, so their own colour never changes (a red car stays red) */
   function patternRound(R, bonus, help) {
     return new Promise(resolve => {
@@ -1146,7 +1154,7 @@ export function startGame(cfg) {
   function zoneWorld(z) { const v = ZONES[z], dz = v[2] * (tall ? 0.85 : 1);
     if (z === 'behind') {   /* behind (review 2): just behind the left block on the line from his eye, moved over so about half of it peeks out. The block hides part of it, so it is clearly BEHIND: never next to the end, never seen above the bridge like "on top" */
       const c = viewFor('wide').pos, qz = POS_Z(); let dx = -c.x, dzz = qz - c.z; const n = Math.hypot(dx, dzz) || 1; dx /= n; dzz /= n;   /* review 3: behind the MIDDLE of the bridge, in the gap between its legs, so the plank hides its top (beside the left block it read as next to) */
-      return new THREE.Vector3(dx * 1.0, 0.5, qz + dzz * 1.0); }
+      return new THREE.Vector3(dx * 2.0, 0.5, qz + dzz * 2.0); }
     return new THREE.Vector3(v[0] * (tall ? 0.8 : 1), v[1], dz + POS_Z()); }
   function zoneHit(cx, cy) { let best = null, bd = 1e9; Object.keys(ZONES).forEach(z => { const p = toScreen(zoneWorld(z)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = z; } }); return bd < Math.max(110, innerWidth * 0.1) ? best : null; }
   function showRing(z, on) { if (!BR) return; BR.ring.visible = on; if (on) { const p = zoneWorld(z); BR.ring.position.set(p.x, z === 'top' ? PLANK_Y + 0.16 : 0.1, p.z); } }
@@ -1174,7 +1182,7 @@ export function startGame(cfg) {
         }
         if (!bonus) W.misses++; chime(false);
         placeAt(o, z).then(() => {
-          const steps = ['Oops! That is ' + ZWORD[z] + ' the bridge.', () => { showRing(R.where, true); return wait(300); }, cap(ZWORD[R.where]) + ' is here.', () => goHome(o).then(() => { o.busy = false; })];
+          const steps = ['Oops! That is ' + ZWORD[z] + ' the bridge.', () => { showRing(R.where, true); showHandAt(toScreen(zoneWorld(R.where))); W.posHand = (W.posHand || 0) + 1; return wait(300); }, cap(ZWORD[R.where]) + ' is here.', () => { if (!SHOT) hand.style.display = 'none'; return goHome(o).then(() => { o.busy = false; }); }];
           if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
           steps.push(...ask);
           allow = false; play(steps).then(() => { if (onDrop) allow = true; });
@@ -1624,27 +1632,37 @@ export function startGame(cfg) {
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, toneMapped: false })); sp.renderOrder = 9; sp.scale.setScalar(big ? (tall ? 1.0 : 0.95) : (tall ? 0.5 : 0.44)); sp.position.copy(at); scene.add(sp); return sp;
   }
+  /* the small numbers fit above their own box: one row if they fit, else two rows (review 3: they spilled past the small box) */
+  function tagRows(i, n) {
+    const bc = (cfg.boxes || [])[i] || {}, w = BX.w * (bc.boxScale || 1) - 0.3, gap = tall ? 0.54 : 0.48, cap = Math.max(1, Math.floor(w / gap) + 1);
+    const per = n <= cap ? n : Math.ceil(n / 2); return { per, rows: n <= cap ? 1 : 2, st: per > 1 ? Math.min(0.5, w / (per - 1)) : 0 };
+  }
   function countBoxes() {   /* count each box together, then he taps the box with the most */
-    setName('counting'); stopIdle(); const tags = [];
+    setName('counting'); stopIdle(); const tags = [], bigTags = [];
     const counts = boxes.map((b, i) => shapes.filter(o => o.inBox && o.inBoxAt === i));
     const steps = ["Now let's count each box!"];
     counts.forEach((items, i) => { const word = cfg.boxes[i].word;
       steps.push('The ' + word + ' box.');
-      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); if (cfg.countTags) { const bx = boxAt(i), st = Math.min(0.5, (BX.w - 0.3) / Math.max(1, items.length - 1)); tags.push(numTag(j + 1, new THREE.Vector3(bx.x - st * (items.length - 1) / 2 + st * j, 1.55, bx.z + 0.3))); }   /* the numbers stand in a neat row above the box, one per thing, never on top of each other */ return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
-      if (cfg.countTags) steps.push(() => { const bx = boxAt(i); tags.push(numTag(items.length, new THREE.Vector3(bx.x, 2.45, bx.z + 0.3), true)); pop(); });   /* the last number says how many: one big number for the whole box (K-CLARITY-RULES 8, 12) */
+      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); if (cfg.countTags) { const bx = boxAt(i), L = tagRows(i, items.length), row = Math.floor(j / L.per), inRow = row ? items.length - L.per : Math.min(L.per, items.length), col = j - row * L.per; tags.push(numTag(j + 1, new THREE.Vector3(bx.x - L.st * (inRow - 1) / 2 + L.st * col, 1.55 + (L.rows - 1 - row) * 0.5, bx.z + 0.3))); }   /* the numbers stand in a neat row above the box, one per thing, never on top of each other */ return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
+      if (cfg.countTags) steps.push(() => { const bx = boxAt(i); const bt = numTag(items.length, new THREE.Vector3(bx.x, 2.45 + (tagRows(i, items.length).rows - 1) * 0.5, bx.z + 0.3), true); bigTags[i] = bt; tags.push(bt); pop(); });   /* the last number says how many: one big number for the whole box (K-CLARITY-RULES 8, 12) */
       steps.push(cap(WORDS[items.length]) + ' ' + word + '!'); });
     const most = counts.reduce((b, c, i) => (c.length > counts[b].length ? i : b), 0);
     return play(steps).then(ok => { if (!ok) return false; return new Promise(done => {
       setName('count'); W.countAnswer = most; task = [cfg.mostAsk];
       let costed = false;
-      shapeTap = (cx, cy) => {
+      const shapeTapFn = (cx, cy) => {
         let best = -1, bd = 1e9; boxes.forEach((b, i) => { const p = toScreen(boxAt(i).clone().setY(0.6)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
         if (bd > Math.max(120, innerWidth * 0.1)) return;
         if (best === most) { shapeTap = null; task = null; chime(true); burst(boxAt(best).clone().setY(1.2), 30);
           play([cfg.mostYes, () => cheer(mendy)]).then(() => { tags.forEach(t => scene.remove(t)); done(true); }); return; }
         if (!costed) { W.misses++; costed = true; } chime(false);
-        play(['That box has ' + WORDS[counts[best].length] + '.', 'Look for the box with the most.', cfg.mostAsk]);
+        /* a wrong tap SHOWS how: each box's big number grows as it is said, then the hand points at the box with more (review 3: words only) */
+        const throb = i => () => { const t = bigTags[i]; if (!t) return wait(300); const s0 = t.scale.x; return tween(700, k => t.scale.setScalar(s0 * (1 + 0.35 * Math.sin(Math.PI * k)))); };
+        const handBox = () => { const p = toScreen(boxAt(most).clone().setY(1.1)); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; hand.style.display = 'block'; W.countHelp = (W.countHelp || 0) + 1; return wait(1600).then(() => { hand.style.display = 'none'; }); };
+        shapeTap = null; const again = shapeTapFn;
+        play([throb(best), 'That box has ' + WORDS[counts[best].length] + '.', throb(most), 'This box has ' + WORDS[counts[most].length] + '.', cap(WORDS[counts[most].length]) + ' is more.', handBox, cfg.mostAsk]).then(() => { shapeTap = again; });
       };
+      shapeTap = shapeTapFn;
       play([cfg.mostAsk, 'Tap that box.']);
     }); });
   }
@@ -1687,6 +1705,7 @@ export function startGame(cfg) {
     else if (M.where || M.measure || M.balance) { friend.position.set(M.measure ? (tall ? 1.7 : 3.0) : (tall ? -1.6 : -3.4), 0, M.measure && !tall ? 0.9 : tall ? 2.6 : 1.4);   /* measuring: he stands on the right, never on the start line the question is about (review 2) */ friend.rotation.y = M.measure ? -0.5 : 0.5; friend.userData.mirror = !!M.measure;   /* on the right his picture is mirrored, so his hand points at the scarves */ friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
       if (side) d.g.position.x = M.join ? -0.1 : (tall ? 0.35 : 0.6);   /* big and small: clear of the friend */
+      if (M.alignBottoms && side) { d.g.scale.setScalar(p[2] || 1.15); side.g.scale.setScalar(M.beside[2] || 0.5); d.g.updateMatrixWorld(true); side.g.updateMatrixWorld(true); const a = new THREE.Box3().setFromObject(d.g), b = new THREE.Box3().setFromObject(side.g); side.g.position.y += a.min.y - b.min.y; d.g.scale.setScalar(0.01); side.g.scale.setScalar(0.01); }   /* big and small: both balls sit on the same line, so only their size differs (review 3: the small ball looked farther away) */
       camTo('close', 1000).then(() => tween(500, k => { d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))); if (side) side.g.scale.setScalar(Math.max(0.01, ease(k) * (M.beside[2] || 0.5))); })); }
     if (friend.userData.pose) friend.userData.pose('talk');   /* a painted friend explains with an open hand */
     const j = $('#judge'); let answered = false, costed = false;
@@ -1696,7 +1715,8 @@ export function startGame(cfg) {
     let curvyLine = null;
     const outline = o => { const pts = shapeOf(o.k).s.getSpacedPoints(90).map(p => new THREE.Vector3(p.x, p.y, 0)); const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 160, 0.045, 8, true), cornerMat); m.position.z = DEPTH / 2 + BEV + 0.06; o.mesh.add(m); return m; };
     const explain = cfg.sortBy ? [] : M.thin ? [() => tween(900, k => { d.turn.rotation.y = 0.45 + ease(k) * 0.8; })] : M.sides && d.marks ? ['Let us look at the sides.', ...keep(sideSteps(d))] : d.marks.length ? ['Let us count the corners.', ...d.marks.flatMap((m, i) => [() => lightCorner(d, i), NUMS[i]])]
-      : (d.mesh && KINDS[d.k] && !KINDS[d.k].solid && !M.thin) ? ['Look at its sides.', () => { if (!curvyLine) { curvyLine = outline(d); plink(); } return wait(600); }]   /* a shape with no corners: its outline glows, so the curvy sides are seen */
+      : (d.mesh && KINDS[d.k] && !KINDS[d.k].solid && !M.thin) ? ['Look at its sides.', () => { if (curvyLine) return wait(600); curvyLine = outline(d); plink(); const g = curvyLine.geometry, N = g.index ? g.index.count : g.attributes.position.count, path = g.parameters.path; d.mesh.add(tracer); tracer.visible = true;   /* the light runs all the way round, so he follows every curvy side (review 3) */
+        return tween(2000, k => { g.setDrawRange(0, Math.floor(N * k / 3) * 3); const q = path.getPointAt(Math.min(1, k)); tracer.position.set(q.x, q.y, DEPTH / 2 + BEV + 0.07); }).then(() => { g.setDrawRange(0, Infinity); tracer.visible = false; }); }]   /* a shape with no corners: its outline glows, so the curvy sides are seen */
       : M.balance ? [() => { const ws = BS.items.map(o => o.w), h = BS.items[ws.indexOf(Math.max(...ws))]; showHandAt(toScreen(h.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.5, 0)))); return wait(500); }]   /* the hand on the side that went down */
       : M.thin ? [() => tween(900, k => { d.turn.rotation.y = 0.45 + ease(k) * 0.8; })]   /* flat or solid: the flat piece turns, so he sees it is thin */
       : M.where ? [() => { showRing('front', true); return wait(400); }]   /* where is it: the gold ring on the empty "in front" place */
@@ -1710,7 +1730,7 @@ export function startGame(cfg) {
       if (answered) return; if (!costed) { W.misses++; costed = true; } chime(false); wrong.classList.remove('shake'); void wrong.offsetWidth; wrong.classList.add('shake');
       const per = q => { for (let k = 1; k <= q.length; k++) if (q.every((t, i) => t === q[i % k])) return k; return q.length; };
       const patShow = M.pattern && PS ? (M.pattern.bad != null ? [() => { ghost.visible = true; ghost.position.copy(slotAt(M.pattern.bad, PS.n, PS.z)); if (ghost.isGroup) ghost.scale.setScalar(tall ? 0.72 : 1); }]
-        : [() => { PS.R = { ...PS.R, core: per(M.pattern.seq) }; coreGlow(true); return sing(); }, () => wait(600), () => coreGlow(false)]) : [];   /* a friend's pattern: the wrong car gets the ring, or the part that repeats glows while it is sung (K-CLARITY-RULES 16) */
+        : (q => [() => { glowRange(0, q, true); return singRange(0, q); }, () => { glowRange(0, q, false); glowRange(q, 2 * q, true); return singRange(q, 2 * q, 'Again! '); }, () => wait(500), () => glowRange(q, 2 * q, false)])(per(M.pattern.seq))) : [];   /* a friend's pattern: the wrong car gets the ring, or the part that repeats glows while it is sung (K-CLARITY-RULES 16) */
       play([...explain, ...patShow, ...(M.join ? [() => joinSide(true)] : []), ...M.explain, ...(M.join ? [() => joinSide(false)] : []), () => { if (!SHOT) clearCorners(d); }, M.ask]);
     };
     right.onclick = () => {
