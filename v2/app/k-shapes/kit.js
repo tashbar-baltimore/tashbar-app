@@ -124,7 +124,7 @@ export function startGame(cfg) {
   /* the automatic game test (?fast=1) plays on the first plain look, so it stays quick on a test machine; look=1 (v2/tests/k-shapes-look.js) and pictures (shot=1) use the new look */
   const LOOKTEST = FAST && /[?&]look=1/.test(location.search);
   const PARENTS = /[?&]parents=1/.test(location.search);
-  const LK = cfg.world && (!FAST || SHOT || LOOKTEST || cfg.id === 'triangles') ? createLook({ renderer, scene, camera, FAST: FAST && !SHOT, world: cfg.world }) : null;
+  const LK = cfg.world && (!FAST || SHOT || LOOKTEST || cfg.id === 'triangles') ? createLook({ renderer, scene, camera, FAST: FAST && !SHOT, world: cfg.world, plainShadows: !!cfg.plain }) : null;
   if (LK) document.body.classList.add('world');
   const PAL = LK ? ['#FF3B30', '#2F80FF', '#FFC21A', '#1DC77A', '#9A5BFF', '#FF8A1F', '#00C3D6', '#FF4FA0'] : COLORS;
   if (LK) { LK.buildWorld(); const add0 = scene.add.bind(scene); scene.add = (...os) => { os.forEach(o => LK.toyify(o)); return add0(...os); }; } else {
@@ -832,14 +832,14 @@ export function startGame(cfg) {
   function beadMesh(type) {
     const B = BEADS[type];
     const TM = LK && LK.bead && !(cfg.plain && B.kind && KINDS[B.kind]) ? LK.bead(type, B, () => shapeOf(B.kind).s) : null;   /* the world's own things (bakery: cupcakes, iced cookies); cfg.plain: a shape item is a plain flat shape in one colour, never a thick cookie (K-CLARITY-RULES 1, 11) */
-    if (TM) { const hull = new THREE.Mesh(new THREE.SphereGeometry(0.46, 12, 8), new THREE.MeshBasicMaterial({ visible: false })); TM.add(hull); TM.userData.hull = hull; TM.userData.upright = true; if (tall) TM.scale.setScalar(0.72); return TM; }
+    if (TM) { const hull = new THREE.Mesh(new THREE.SphereGeometry(0.46, 12, 8), new THREE.MeshBasicMaterial({ visible: false })); TM.add(hull); TM.userData.hull = hull; TM.userData.upright = true; if (tall) TM.scale.setScalar(WRAP ? (WRAP > 3 ? 0.8 : 0.9) : 0.72); return TM; }
     const mat = new THREE.MeshPhysicalMaterial({ color: B.color, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 0.5 });
     let geo;
     if (B.kind === 'cube') geo = new RoundedBoxGeometry(0.6, 0.6, 0.6, 4, 0.12);
     else if (B.kind === 'drum') { geo = new THREE.CylinderGeometry(0.34, 0.34, 0.5, 32); geo.rotateX(Math.PI / 2); }
     else if (B.kind && KINDS[B.kind]) { geo = new THREE.ExtrudeGeometry(shapeOf(B.kind).s, { depth: 0.22, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 4, curveSegments: 32 }); geo.translate(0, 0, -0.11); geo.scale(0.52, 0.52, 1); }
     else geo = new THREE.SphereGeometry(0.37, 32, 24);
-    const m = new THREE.Mesh(geo, mat); m.castShadow = true; if (tall) m.scale.setScalar(0.72); return m;
+    const m = new THREE.Mesh(geo, mat); m.castShadow = true; if (tall) m.scale.setScalar(WRAP ? 0.9 : 0.72); return m;
   }
   function beadNote(type) { tone([BEADS[type].note || 523], BEADS[type].kind === 'drum' ? 'square' : 'triangle', 0, .28, .12); if (BEADS[type].kind === 'drum') clap(); }
   function makeBead(id, type, at, slot) {
@@ -849,10 +849,17 @@ export function startGame(cfg) {
     mesh.userData.shape = o; shapes.push(o); return o;
   }
   const STR = () => tall ? { y: 1.5, z: -0.7, sp: 0.56, copyZ: 0.5 } : { y: 1.7, z: -0.2, sp: 1.08, copyZ: 1.2 };
-  function slotAt(i, n, z) { const S = STR(), sp = tall && n > 1 ? Math.min(S.sp, 3.2 / (n - 1)) : S.sp; return new THREE.Vector3((i - (n - 1) / 2) * sp, S.y, z == null ? S.z : z); }   /* phone: a long row (8) closes up a little so its ends stay on screen (review round 2) */
+  let WRAP = 0, WRAP_ROWS = 1;   /* phone train games (review 4): a long train wraps into short rows, one repeating part per row, so every car is big enough to see and touch */
+  const WRAP_DY = 1.15, WRAP_DZ = 0.45; let WRAP_SP = 0.9; const WRAP_X = () => viewFor('wide').look.x + (WRAP > 3 ? 0.7 : 0.62);
+  function slotAt(i, n, z) { if (WRAP) { const S = STR(), r = Math.floor(i / WRAP), c = i % WRAP, up = WRAP_ROWS - 1 - r; return new THREE.Vector3((c - (WRAP - 1) / 2) * WRAP_SP + WRAP_X(), S.y + up * WRAP_DY, (z == null ? S.z : z) - up * WRAP_DZ); }
+    const S = STR(), sp = tall && n > 1 ? Math.min(S.sp, 3.2 / (n - 1)) : S.sp; return new THREE.Vector3((i - (n - 1) / 2) * sp, S.y, z == null ? S.z : z); }   /* phone: a long row (8) closes up a little so its ends stay on screen (review round 2) */
   const TRAY_S = () => (tall && cfg.world === 'traintown' ? 1.3 : 1);   /* phone, train games: the cars he drags are bigger, easy to see and grab (review 2) */
   function trayAt(i, n) { const z = tall ? 2.0 : 2.9, sp = tall ? (TRAY_S() > 1 && n <= 3 ? 1.02 : 0.95) : 1.6;   /* phone: close enough that the outer pieces stay on screen */ return new THREE.Vector3((i - (n - 1) / 2) * sp + (TRAY_S() > 1 ? viewFor('wide').look.x : 0), 0.9, z); }   /* phone train games: the tray sits in the middle of the screen */
   function stringAt(n, z) {
+    if (WRAP && LK && LK.board) { const g = new THREE.Group(), len = (WRAP - 1) * WRAP_SP + 1.2;
+      for (let r = 0; r < WRAP_ROWS; r++) { const BD = LK.board(len); if (r > 0) BD.remove(BD.children[BD.children.length - 1]);   /* the engine pulls only the first row */
+        const a = slotAt(r * WRAP, n, z), b = slotAt(r * WRAP + WRAP - 1, n, z); BD.position.set((a.x + b.x) / 2, a.y, a.z); g.add(BD); }
+      scene.add(g); return g; }
     const S = STR(), len = (n - 1) * S.sp + 1.2;
     const BD = LK && LK.board ? LK.board(len) : null;   /* bakery: a cake board instead of a bead string */
     if (BD) { if (tall) BD.scale.set(1, 0.72, 0.72); BD.position.set(0, S.y, z == null ? S.z : z); scene.add(BD); return BD; }
@@ -866,6 +873,8 @@ export function startGame(cfg) {
   function setPattern(R) {
     ringsOff(); if (PS) { PS.parts.forEach(p => scene.remove(p)); } shapes.splice(0).forEach(o => scene.remove(o.g));
     const n = R.seq.length, parts = [], beads = [];
+    const perOf = q => { let best = 3, bm = 1e9; for (let k = 2; k <= 4; k++) { const m = q.filter((t, i) => t !== q[i % k]).length; if (m < bm) { bm = m; best = k; } } return best; };   /* a friend's train with one wrong car still finds its repeating part */
+    WRAP = tall && cfg.world === 'traintown' && !R.copy && n >= 6 ? (R.core || perOf(R.seq)) : 0; WRAP_ROWS = WRAP ? Math.ceil(n / WRAP) : 1; WRAP_SP = WRAP > 3 ? 0.8 : 0.9;
     patN = R.copy ? 0 : n;
     const z = R.copy ? STR().copyZ : null;
     /* copy: Mendy's row stands well behind the row he fills, so the two rows never overlap (K-CLARITY-RULES 9: one thing to look at) */
@@ -876,8 +885,8 @@ export function startGame(cfg) {
     let bad = null;
     R.seq.forEach((t, i) => { if (i < n - blanks) { const m = beadMesh(fixing && i === R.fixAt ? R.wrong : t); m.position.copy(slotAt(i, n, z)); scene.add(m); parts.push(m); beads.push(m); if (fixing && i === R.fixAt) bad = m; } });
     const holes = [], holeMat = new THREE.MeshStandardMaterial({ color: '#EFE3CF', roughness: 0.8 });   /* the later spots are plain; only the next one glows */   /* copy: every spot he will fill shows its empty place, so he sees the row is as long as Mendy's (review round 2) */
-    if (R.copy) for (let i = 0; i < n; i++) { const h = ghost.clone(); h.position.copy(slotAt(i, n, z)); if (h.isGroup) h.scale.setScalar(tall ? 0.72 : 1); h.traverse(c => { if (c.isMesh) c.material = holeMat; }); h.visible = false; scene.add(h); parts.push(h); holes.push(h); }
-    else if (!fixing && blanks > 1) for (let i = n - blanks; i < n; i++) { const h = ghost.clone(); h.position.copy(slotAt(i, n, z)); if (h.isGroup) h.scale.setScalar(tall ? 0.72 : 1); h.traverse(c => { if (c.isMesh) c.material = holeMat; }); h.visible = false; scene.add(h); parts.push(h); holes[i] = h; }   /* two cars missing: the later empty spot shows too, plain, so he sees two cars go there (review 3) */
+    if (R.copy) for (let i = 0; i < n; i++) { const h = ghost.clone(); h.position.copy(slotAt(i, n, z)); if (h.isGroup) h.scale.setScalar(tall ? (WRAP ? (WRAP > 3 ? 0.8 : 0.9) : 0.72) : 1); h.traverse(c => { if (c.isMesh) c.material = holeMat; }); h.visible = false; scene.add(h); parts.push(h); holes.push(h); }
+    else if (!fixing && blanks > 1) for (let i = n - blanks; i < n; i++) { const h = ghost.clone(); h.position.copy(slotAt(i, n, z)); if (h.isGroup) h.scale.setScalar(tall ? (WRAP ? (WRAP > 3 ? 0.8 : 0.9) : 0.72) : 1); h.traverse(c => { if (c.isMesh) c.material = holeMat; }); h.visible = false; scene.add(h); parts.push(h); holes[i] = h; }   /* two cars missing: the later empty spot shows too, plain, so he sees two cars go there (review 3) */
     PS = { parts, beads, model, next: fixing ? R.fixAt : n - blanks, n, z, R, bad, showRing: !fixing, holes };
     const types = R.tray; types.forEach((t, i) => makeBead('b' + (++beadN), t, trayAt(i, types.length), i));
     markNext();
@@ -887,7 +896,7 @@ export function startGame(cfg) {
     if (!PS) return; const want = PS.R.seq[PS.next];
     shapes.forEach(o => { if (!o.inBox) o.box = o.type === want ? 0 : -1; });
     (PS.holes || []).forEach((h, i) => { h.visible = i > PS.next; });
-    if (PS.next < PS.n && PS.showRing) { ghost.visible = true; ghost.position.copy(slotAt(PS.next, PS.n, PS.z)); if (ghost.isGroup) ghost.scale.setScalar(tall ? 0.72 : 1); } else ghost.visible = false;
+    if (PS.next < PS.n && PS.showRing) { ghost.visible = true; ghost.position.copy(slotAt(PS.next, PS.n, PS.z)); if (ghost.isGroup) ghost.scale.setScalar(tall ? (WRAP ? (WRAP > 3 ? 0.8 : 0.9) : 0.72) : 1); } else ghost.visible = false;
   }
   function placeBead(o) {   /* the right bead slides onto the string; a fresh one appears in the tray */
     const at = slotAt(PS.next, PS.n, PS.z), type = o.type, slot = o.slot, fixAt = PS.R.fixAt;
@@ -945,7 +954,7 @@ export function startGame(cfg) {
         const rightOne = shapes.find(x => x.box === 0 && !x.inBox && x.g.visible);   /* the first miss also points at the one that fits (review round 2) */
         const steps = ['Not that one.', () => { coreGlow(true); if (R.copy && PS.model) { ringsOff(); ringOn(PS.model[Math.min(PS.next, PS.model.length - 1)]); ringOn(rightOne); } }, ...(R.copy ? ['Look at the pattern above.'] : []), () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, null), () => wait(900), () => { if (SHOT) glowHeld = true; else coreGlow(false); }];   /* the glow stays a moment after the song, so he sees the part that repeats */
         if (R.fixAt != null && !PS.showRing) steps.push(() => { PS.showRing = true; markNext(); }, 'The wrong one is in the ring.');
-        if (R.fixAt == null && rightOne) steps.push('This one fits.', () => pointAt(rightOne, true, slotAt(PS.next, PS.n, PS.z)), () => { if (!SHOT) ringsOff(); });
+        if (rightOne) steps.push('This one fits.', () => pointAt(rightOne, true, slotAt(R.fixAt != null ? R.fixAt : PS.next, PS.n, PS.z)), () => { if (!SHOT) ringsOff(); });   /* fixing too: the hand carries the right car to the ringed one (review 4) */
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember, () => coreGlow(true), () => say(wordsOf(R.seq, R.core || 2) + ' repeats.'), () => wait(600), () => coreGlow(false)); }
         steps.push(...ask);
         play(steps);
@@ -1138,7 +1147,7 @@ export function startGame(cfg) {
   const POSITIONED = cfg.mode === 'position';
   let BR = null;
   const PLANK_Y = 1.45;
-  const ZONES = { top: [0, PLANK_Y + 0.55, 0], under: [0, 0.45, 0], left: [-2.3, 0.55, 0], right: [2.3, 0.55, 0], front: [0, 0.55, 2.1], behind: [0.5, 0.55, -3.3] };   /* behind: placed by zoneWorld (half hidden behind a block) */
+  const ZONES = { top: [0, PLANK_Y + 0.55, 0], under: [0, 0.45, 0], left: [-2.3, 0.55, 0], right: [2.3, 0.55, 0], front: [0.55, 0.55, 2.0], behind: [0.5, 0.55, -3.3] };   /* behind: placed by zoneWorld (half hidden behind a block) */
   const ZWORD = { top: 'on top of', under: 'under', left: 'next to', right: 'next to', front: 'in front of', behind: 'behind' };
   function makeBridge() {
     const TB = LK && !cfg.plain && LK.treasures.bridge ? LK.treasures.bridge(PLANK_Y) : null;   /* cfg.plain: the plain block bridge (no pearls on it that look like one more ball) */   /* under the sea: a stone bridge on coral rocks (treasures.js) */
@@ -1153,8 +1162,9 @@ export function startGame(cfg) {
   const POS_Z = () => tall ? -0.6 : -0.4;
   function zoneWorld(z) { const v = ZONES[z], dz = v[2] * (tall ? 0.85 : 1);
     if (z === 'behind') {   /* behind (review 2): just behind the left block on the line from his eye, moved over so about half of it peeks out. The block hides part of it, so it is clearly BEHIND: never next to the end, never seen above the bridge like "on top" */
-      const c = viewFor('wide').pos, qz = POS_Z(); let dx = -c.x, dzz = qz - c.z; const n = Math.hypot(dx, dzz) || 1; dx /= n; dzz /= n;   /* review 3: behind the MIDDLE of the bridge, in the gap between its legs, so the plank hides its top (beside the left block it read as next to) */
-      return new THREE.Vector3(dx * 2.0, 0.5, qz + dzz * 2.0); }
+      const c = viewFor(tall ? 'tall' : 'wide').pos, qz = POS_Z(); let dx = -c.x, dzz = qz - c.z; const n = Math.hypot(dx, dzz) || 1; dx /= n; dzz /= n;   /* review 3: behind the MIDDLE of the bridge, in the gap between its legs, so the plank hides its top (beside the left block it read as next to) */
+      const lx = 1.05, d2 = 1.25, side = 0.42;   /* review 4: in the gap it read as UNDER. Now behind the near (right) leg on the line from his eye, moved right so about half peeks out: a solid leg hides part of it */
+      return new THREE.Vector3(lx + dx * d2 - dzz * side, 0.42, qz + dzz * d2 + dx * side); }
     return new THREE.Vector3(v[0] * (tall ? 0.8 : 1), v[1], dz + POS_Z()); }
   function zoneHit(cx, cy) { let best = null, bd = 1e9; Object.keys(ZONES).forEach(z => { const p = toScreen(zoneWorld(z)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = z; } }); return bd < Math.max(110, innerWidth * 0.1) ? best : null; }
   function showRing(z, on) { if (!BR) return; BR.ring.visible = on; if (on) { const p = zoneWorld(z); BR.ring.position.set(p.x, z === 'top' ? PLANK_Y + 0.16 : 0.1, p.z); } }
@@ -1517,7 +1527,10 @@ export function startGame(cfg) {
       steps.push(() => {
         if (!L.keep) { shows.forEach(s => { s.g.visible = false; }); shows.push(showcase(L.k, L.color || COLORS[li * 3 % COLORS.length], L.rot, L.scale)); return; }
         /* L.keep (big and small): the one before stays, and this one comes beside it, so he compares the two (size is only clear side by side) */
-        shows.push(showcase(L.k, L.color || COLORS[li * 3 % COLORS.length], L.rot, L.scale, new THREE.Vector3(tall ? 1.85 : 2.5, 2.05, 0.9)));
+        const prev = shows[li - 1], pl = cfg.lessons[li - 1] || {}, g0 = prev && prev.mesh && prev.mesh.geometry; if (g0 && !g0.boundingBox) g0.computeBoundingBox();
+        const half = g0 ? (g0.boundingBox.max.y - g0.boundingBox.min.y) / 2 : 0.6, bottom = 2.05 - half * (pl.scale || 1.25);   /* review 4: both stand on the same line (bottoms level), side by side with a clear gap, never one higher or further */
+        if (prev && tall) tween(400, k => { prev.g.position.x = 0.55 - 0.35 * ease(k); });   /* phone: the big one moves left, so the small one is never hidden or cut off */
+        shows.push(showcase(L.k, L.color || COLORS[li * 3 % COLORS.length], L.rot, L.scale, new THREE.Vector3(tall ? 1.62 : 2.5, bottom + half * (L.scale || 1.25), 0.9)));
       });
       steps.push(() => wait(300));
       steps.push(() => play2(lessonFor(L, shows[li])));
@@ -1567,14 +1580,36 @@ export function startGame(cfg) {
     if (/side/i.test(said)) return sideSteps(o);
     return [];
   }
+  function traceEdge(o, ms) {   /* a glowing dot runs all the way round ANY flat shape's edge (circle, oval, curvy piece) */
+    const pts = shapeOf(o.k).s.getSpacedPoints(160), z = (cfg.thinFlat ? 0.07 : DEPTH / 2 + BEV) + 0.05; o.mesh.add(tracer); tracer.visible = true; plink();
+    return tween(ms || 1600, k => { const q = pts[Math.min(pts.length - 1, Math.floor(k * (pts.length - 1)))]; tracer.position.set(q.x, q.y, z); }).then(() => { tracer.visible = false; });
+  }
+  const clueSaid = () => (cfg.mode === 'clues' && cfg.clues && cfg.clues[clueN] ? cfg.clues[clueN].say.join(' ') : '');
+  function clueWhy(o) {   /* review 4: the first wrong pick in a clue game SHOWS why it does not fit the clue, not only its name */
+    const said = clueSaid(); if (!said || !o) return null;
+    if (/\bflat\b/i.test(said) && o.solid) return ['It is solid. It is thick.', () => solidAction(o, ACT[o.solid])];
+    if (/solid/i.test(said) && !o.solid) return ['It is flat. See? It is thin.', () => solidAction(o, 'stand')];
+    if (o.solid) return [() => solidAction(o, ACT[o.solid])];
+    if (!o.marks.length) {
+      if (o.k === 'curvy') return ['Look. Its sides are curvy.', () => traceEdge(o, 2000)];
+      if (o.k === 'oval') return ['It is round, but squished.', () => traceEdge(o, 1600)];
+      return [/corner/i.test(said) ? 'It has no corners.' : /squish/i.test(said) ? 'It is round. Not squished.' : 'It is round.', () => traceEdge(o, 1600)];
+    }
+    if (/round/i.test(said) && !/corner|side/i.test(said)) return ['It has corners.', ...o.marks.flatMap((m, i) => [() => lightCorner(o, i), NUMS[i]]), () => wait(300), () => clearCorners(o)];
+    return null;
+  }
   function teachAgain(t) {
     if (!t) return [];
     if (cfg.sortBy) return [cfg.remember, 'Look at this one.', () => pointAt(t, true)];
-    if (t.solid || cfg.thinFlat) return [cfg.remember, 'Look at this one.', () => solidAction(t, t.solid ? ACT[t.solid] : 'stand')];
+    const said = clueSaid(), rem = !said ? cfg.remember : /corner/i.test(said) ? 'Remember: count the corners.' : /side/i.test(said) ? 'Remember: look at the sides.' : cfg.remember;   /* the reminder matches what is shown (review 4: "count the corners" then the piece only tipped over) */
+    if (t.solid) return [rem, 'Look at this one.', () => solidAction(t, ACT[t.solid])];
+    if (cfg.thinFlat && !/corner|side|round/i.test(said)) return [rem, 'Look at this one.', () => solidAction(t, 'stand')];
     if (cfg.ruleFor) return [cfg.ruleFor(t), 'Look at this one.', ...(t.marks.length ? t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]) : [() => traceRound(t, 1200)]), () => wait(300), () => clearCorners(t)];
-    if (t.marks.length && /side/i.test(cfg.remember || '')) return [cfg.remember, 'Look at this one.', ...sideSteps(t), cap(FAMILY(t.k)) + '!'];   /* the rule is about sides: the sides light (K-CLARITY-RULES 5) */
-    if (t.marks.length) return [cfg.remember, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), cap(WORDS[t.marks.length]) + ' corners! A ' + FAMILY(t.k) + '!', () => wait(300), () => clearCorners(t)];
-    return [cfg.remember, 'Look at this one.', () => traceRound(t, 1200)];
+    if (t.marks.length && (/corner/i.test(said))) return [rem, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), cap(WORDS[t.marks.length]) + ' corners! A ' + FAMILY(t.k) + '!', () => wait(300), () => clearCorners(t)];
+    if (t.marks.length && (/side/i.test(said) || (!said && /side/i.test(cfg.remember || '')))) return [rem, 'Look at this one.', ...sideSteps(t), cap(FAMILY(t.k)) + '!'];   /* the rule is about sides: the sides light (K-CLARITY-RULES 5) */
+    if (t.marks.length) return [rem, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), cap(WORDS[t.marks.length]) + ' corners! A ' + FAMILY(t.k) + '!', () => wait(300), () => clearCorners(t)];
+    if (said) return [/squish/i.test(said) && t.k === 'oval' ? 'Remember: an oval is a squished circle.' : 'Remember: round has no corners.', 'Look at this one.', () => traceEdge(t, 1400)];
+    return [rem, 'Look at this one.', () => traceRound(t, 1200)];
   }
   function find(bonus, next) {
     setName(bonus ? 'bonus' : 'find'); dots(2); allow = true;
@@ -1607,11 +1642,12 @@ export function startGame(cfg) {
       const lines = cfg.wrong(o, bi);
       goHome(o).then(() => {
         const steps = [lines[0]];
+        const why = cfg.mode === 'clues' ? clueWhy(o) : null; if (why) steps.push(...why);
         const clueNoCorners = cfg.mode === 'clues' && !/corner/i.test(cfg.clues[clueN].say.join(' '));   /* a clue about sides or round: counting corners would not show why */
-        if (clueNoCorners && o.marks.length && /side/i.test(cfg.clues[clueN].say.join(' '))) steps.push('Look at its sides.', ...sideSteps(o));   /* the clue was about sides: show its sides */
+        if (!why && clueNoCorners && o.marks.length && /side/i.test(cfg.clues[clueN].say.join(' '))) steps.push('Look at its sides.', ...sideSteps(o));   /* the clue was about sides: show its sides */
         const showSides = lines.count === false && cfg.mode !== 'clues' && o.corners && o.corners.length === 4;   /* a four-sided look-alike (rectangle, kite, leaning shape): its sides light one by one, so he SEES why (review round 2) */
         if (showSides) steps.push(...sideSteps(o));
-        if (o.marks.length && lines.count !== false && !clueNoCorners) { steps.push('Count the corners.'); o.marks.forEach((m, i) => steps.push(() => lightCorner(o, i), NUMS[i])); }
+        if (!why && o.marks.length && lines.count !== false && !clueNoCorners) { steps.push('Count the corners.'); o.marks.forEach((m, i) => steps.push(() => lightCorner(o, i), NUMS[i])); }
         steps.push(...lines.slice(1).filter(l => !(showSides && /long|pointy|corners are not/i.test(l))), () => { clearCorners(o); });
         if (o.box < 0 && !bonus) { const t = shapes.find(s => s.box >= 0 && !s.inBox && s.g.visible && !s.busy && s !== o);   /* a piece that does not belong: the hand shows one that does, going into the box */
           if (t) steps.push(() => pointAt(t, true)); }
@@ -1638,12 +1674,19 @@ export function startGame(cfg) {
     const per = n <= cap ? n : Math.ceil(n / 2); return { per, rows: n <= cap ? 1 : 2, st: per > 1 ? Math.min(0.5, w / (per - 1)) : 0 };
   }
   function countBoxes() {   /* count each box together, then he taps the box with the most */
-    setName('counting'); stopIdle(); const tags = [], bigTags = [];
+    setName('counting'); stopIdle(); const tags = [], bigTags = [], countBack = [];
     const counts = boxes.map((b, i) => shapes.filter(o => o.inBox && o.inBoxAt === i));
     const steps = ["Now let's count each box!"];
     counts.forEach((items, i) => { const word = cfg.boxes[i].word;
       steps.push('The ' + word + ' box.');
-      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); if (cfg.countTags) { const bx = boxAt(i), L = tagRows(i, items.length), row = Math.floor(j / L.per), inRow = row ? items.length - L.per : Math.min(L.per, items.length), col = j - row * L.per; tags.push(numTag(j + 1, new THREE.Vector3(bx.x - L.st * (inRow - 1) / 2 + L.st * col, 1.55 + (L.rows - 1 - row) * 0.5, bx.z + 0.3))); }   /* the numbers stand in a neat row above the box, one per thing, never on top of each other */ return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
+      items.forEach((o, j) => steps.push(() => { pop(); if (cfg.countTags) {   /* review 4: each thing comes out and stands in a row in front of its box, apart from the others, with its own number over it: one number for one thing */
+          const bx = boxAt(i), bs = (cfg.boxes[i] || {}).boxScale || 1, n = items.length, s0 = o.g.scale.x, wid = Math.max(...items.map(q => q.g.scale.x)) * 1.25;
+          const avail = BX.w * bs + (tall ? 0.2 : 0.7), sp = n > 1 ? Math.min(wid + 0.2, avail / (n - 1)) : 0, f = n > 1 && sp < wid + 0.1 ? Math.max(0.55, sp / (wid + 0.1)) : 1;
+          const sz = s0 * f, at = new THREE.Vector3(bx.x - sp * (n - 1) / 2 + sp * j, 0.62 * sz + 0.12, bx.z + BX.d * bs / 2 + 0.62 * wid * f + 0.3);
+          countBack.push([o, o.g.position.clone(), s0]); o.inBox = false; const keepBusy = o.busy; o.busy = true;
+          if (f !== 1) tween(300, k => o.g.scale.setScalar(s0 + (sz - s0) * k));
+          return moveTo(o, at, 380, 0.5).then(() => { o.busy = keepBusy; o.inBox = true; o.g.rotation.set(0, 0, 0); tags.push(numTag(j + 1, at.clone().add(new THREE.Vector3(0, 0.62 * sz + 0.42, 0)))); }); }
+        const y0 = o.g.position.y; return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
       if (cfg.countTags) steps.push(() => { const bx = boxAt(i); const bt = numTag(items.length, new THREE.Vector3(bx.x, 2.45 + (tagRows(i, items.length).rows - 1) * 0.5, bx.z + 0.3), true); bigTags[i] = bt; tags.push(bt); pop(); });   /* the last number says how many: one big number for the whole box (K-CLARITY-RULES 8, 12) */
       steps.push(cap(WORDS[items.length]) + ' ' + word + '!'); });
     const most = counts.reduce((b, c, i) => (c.length > counts[b].length ? i : b), 0);
@@ -1654,7 +1697,7 @@ export function startGame(cfg) {
         let best = -1, bd = 1e9; boxes.forEach((b, i) => { const p = toScreen(boxAt(i).clone().setY(0.6)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
         if (bd > Math.max(120, innerWidth * 0.1)) return;
         if (best === most) { shapeTap = null; task = null; chime(true); burst(boxAt(best).clone().setY(1.2), 30);
-          play([cfg.mostYes, () => cheer(mendy)]).then(() => { tags.forEach(t => scene.remove(t)); done(true); }); return; }
+          play([cfg.mostYes, () => cheer(mendy)]).then(() => { tags.forEach(t => scene.remove(t)); return Promise.all(countBack.map(([o, p, sc]) => { o.g.scale.setScalar(sc); return moveTo(o, p, 300, 0.3); })); }).then(() => done(true)); return; }   /* the things go back into their boxes */
         if (!costed) { W.misses++; costed = true; } chime(false);
         /* a wrong tap SHOWS how: each box's big number grows as it is said, then the hand points at the box with more (review 3: words only) */
         const throb = i => () => { const t = bigTags[i]; if (!t) return wait(300); const s0 = t.scale.x; return tween(700, k => t.scale.setScalar(s0 * (1 + 0.35 * Math.sin(Math.PI * k)))); };
@@ -1693,15 +1736,15 @@ export function startGame(cfg) {
       setPattern({ seq: M.pattern.seq, blanks: 0, tray: [] }); ghost.visible = false;
       if (!M.wide) PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);   /* M.wide: the long train stays where it was, seen whole */
     }
-    else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; if (p[4]) d.turn.rotation.x = p[4]; if (M.thin) d.turn.rotation.y = 0.45; }   /* M.thin: turned a little from the start, so he sees it is thin like card next to the cube (review 3) */   /* p[4]: tipped toward him, so an upside-down cone shows its round base (it never looks like a flat triangle) */
+    else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; if (p[4]) d.turn.rotation.x = p[4]; if (M.thin) { d.turn.rotation.y = 0.45; if (d.mesh) d.mesh.scale.z = 0.5; } }   /* review 4: the turned square looked like a slab; thinner, like card */   /* M.thin: turned a little from the start, so he sees it is thin like card next to the cube (review 3) */   /* p[4]: tipped toward him, so an upside-down cone shows its round base (it never looks like a flat triangle) */
     let side = null;   /* M.beside: a second piece next to it, to compare with (big and small: a ball is only big next to a small one) */
     const SX = M.join ? (tall ? 1.35 : 2.15) : M.thin ? (tall ? 1.7 : 2.2) : (tall ? 1.95 : 2.65);   /* where the second piece stands (join: the spot Build shapes was tuned for) */
-    if (M.beside) { side = makeShape('mk2', M.beside[0], M.beside[3] || '#FF7A1A', M.beside[1], 1); side.slot = null; side.busy = true; side.g.position.set(SX, 2.05, 0.9); side.g.scale.setScalar(0.01); }
+    if (M.beside) { side = makeShape('mk2', M.beside[0], M.beside[3] || '#FF7A1A', M.beside[1], 1); side.slot = null; side.busy = true; side.g.position.set(SX, 2.05, 0.9); side.g.scale.setScalar(0.01); if (M.thin && side.solid) side.turn.rotation.set(0.32, 0.62, 0); }   /* review 4: the cube stands upright, turned so two faces show (not tipped on a corner) */
     const joinSide = (on) => side ? tween(700, k => { const e = ease(k); const sx = SX; side.g.position.x = on ? sx + (d.g.position.x - sx) * e : d.g.position.x + (sx - d.g.position.x) * e; }).then(() => { pop(); return wait(on ? 600 : 0); }) : null;   /* M.join: the second piece slides onto the first (two triangles make a square), and back */
     const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
     if (!M.where && !M.measure && !M.balance && !M.wide) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
     if (cfg.sortBy && M.claimBox != null && d.g) { const b = boxAt(M.claimBox); d.g.position.x = b.x; }   /* the piece floats over the box the friend names, so the words match the picture (review 3) */
-    if (M.wide) { friend.position.copy(mendyAt()); if (PAINTED && PATTERNED) friend.position.add(new THREE.Vector3(0.75, 0, 1.9)); if (tall) friend.position.set(-0.95, 0, 2.6); friend.rotation.set(tall ? -0.6 : 0, tall ? -0.35 : 0.5, 0); friend.visible = true; mendy.visible = false; }   /* M.wide: the friend stands where Mendy stood, in front of the whole train, never hidden behind it */
+    if (M.wide) { friend.position.copy(mendyAt()); if (PAINTED && PATTERNED) friend.position.add(new THREE.Vector3(0.75, 0, 1.9)); if (tall) friend.position.set(-0.95, 0, 2.6); friend.rotation.set(tall ? -0.6 : 0, tall ? -0.35 : 0.5, 0); if (PATTERNED && !tall) { friend.position.set(4.3, 0, 1.0); friend.rotation.set(0, -0.5, 0); friend.userData.mirror = true; }   /* review 4: at the train's right end, facing it, his hand pointing at the cars (he was cut off at the edge, pointing away) */ friend.visible = true; mendy.visible = false; }   /* M.wide: the friend stands where Mendy stood, in front of the whole train, never hidden behind it */
     else if (M.where || M.measure || M.balance) { friend.position.set(M.measure ? (tall ? 1.7 : 3.0) : (tall ? -1.6 : -3.4), 0, M.measure && !tall ? 0.9 : tall ? 2.6 : 1.4);   /* measuring: he stands on the right, never on the start line the question is about (review 2) */ friend.rotation.y = M.measure ? -0.5 : 0.5; friend.userData.mirror = !!M.measure;   /* on the right his picture is mirrored, so his hand points at the scarves */ friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
       if (side) d.g.position.x = M.join ? -0.1 : (tall ? 0.35 : 0.6);   /* big and small: clear of the friend */
@@ -1712,29 +1755,35 @@ export function startGame(cfg) {
     const right = M.answer ? j.querySelector('.yesB') : j.querySelector('.noB'), wrong = M.answer ? j.querySelector('.noB') : j.querySelector('.yesB');
     W.answerSel = M.answer ? '.judge .yesB' : '.judge .noB'; W.wrongSel = M.answer ? '.judge .noB' : '.judge .yesB';
     const keep = a => (SHOT ? a.slice(0, -1) : a);   /* pictures: the lit sides stay until his next touch */
-    let curvyLine = null;
+    let curvyLine = null, fixCar = null;
     const outline = o => { const pts = shapeOf(o.k).s.getSpacedPoints(90).map(p => new THREE.Vector3(p.x, p.y, 0)); const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 160, 0.045, 8, true), cornerMat); m.position.z = DEPTH / 2 + BEV + 0.06; o.mesh.add(m); return m; };
+    const measureSlide = M.measure ? () => { const off = MS.items.filter(o => Math.abs(o.g.position.x - o.len / 2 - LINE_X()) > 0.08); if (!off.length) return wait(200);   /* review 4: the scarf that does not start on the line slides to it, stays, and slides back, so he SEES which is really longer */
+            const from = off.map(o => o.g.position.x), to = off.map(o => LINE_X() + o.len / 2); plink();
+            return tween(900, k => off.forEach((o, i) => { o.g.position.x = from[i] + (to[i] - from[i]) * ease(k); })).then(() => (SHOT ? Promise.resolve() : wait(1400).then(() => tween(700, k => off.forEach((o, i) => { o.g.position.x = to[i] + (from[i] - to[i]) * ease(k); }))))); } : null;   /* review 4: after "Line them up first!" the scarf that does not start on the line slides to it, stays, and slides back (pictures: it stays) */
     const explain = cfg.sortBy ? [] : M.thin ? [() => tween(900, k => { d.turn.rotation.y = 0.45 + ease(k) * 0.8; })] : M.sides && d.marks ? ['Let us look at the sides.', ...keep(sideSteps(d))] : d.marks.length ? ['Let us count the corners.', ...d.marks.flatMap((m, i) => [() => lightCorner(d, i), NUMS[i]])]
       : (d.mesh && KINDS[d.k] && !KINDS[d.k].solid && !M.thin) ? ['Look at its sides.', () => { if (curvyLine) return wait(600); curvyLine = outline(d); plink(); const g = curvyLine.geometry, N = g.index ? g.index.count : g.attributes.position.count, path = g.parameters.path; d.mesh.add(tracer); tracer.visible = true;   /* the light runs all the way round, so he follows every curvy side (review 3) */
         return tween(2000, k => { g.setDrawRange(0, Math.floor(N * k / 3) * 3); const q = path.getPointAt(Math.min(1, k)); tracer.position.set(q.x, q.y, DEPTH / 2 + BEV + 0.07); }).then(() => { g.setDrawRange(0, Infinity); tracer.visible = false; }); }]   /* a shape with no corners: its outline glows, so the curvy sides are seen */
       : M.balance ? [() => { const ws = BS.items.map(o => o.w), h = BS.items[ws.indexOf(Math.max(...ws))]; showHandAt(toScreen(h.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.5, 0)))); return wait(500); }]   /* the hand on the side that went down */
       : M.thin ? [() => tween(900, k => { d.turn.rotation.y = 0.45 + ease(k) * 0.8; })]   /* flat or solid: the flat piece turns, so he sees it is thin */
-      : M.where ? [() => { showRing('front', true); return wait(400); }]   /* where is it: the gold ring on the empty "in front" place */
-      : M.measure && MS ? [() => { endMarks(false); MS_ENDS = MS.items.map(o => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), cornerMat); m.position.set(o.g.position.x - o.len / 2 - 0.1, ROD_Y + 0.3, o.g.position.z); scene.add(m); return m; }); if (MS_LINE) MS_LINE.material.color.set('#F5B400'); return wait(500); }]   /* measuring: gold balls on the two starting ends, the start line gold */
+      : M.where ? [() => { showHandAt(toScreen(d.g.position.clone().add(new THREE.Vector3(0, 0.3, 0)))); return (SHOT ? new Promise(r => setTimeout(r, 900)) : wait(900)); }, () => { showRing('front', true); return wait(400); }]   /* review 4: the hand on the ball first (it is behind), then the ring on the empty "in front" place */   /* where is it: the gold ring on the empty "in front" place */
+      : M.measure && MS ? [() => { endMarks(false); MS_ENDS = MS.items.map(o => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), new THREE.MeshBasicMaterial({ color: '#F5B400', toneMapped: false })); m.position.set(o.g.position.x - o.len / 2 - 0.1, ROD_Y + 0.3, o.g.position.z); scene.add(m); return m; }); if (MS_LINE) MS_LINE.material.color.set('#F5B400'); return wait(500); }]   /* measuring: gold balls on the two starting ends, the start line gold */
       : [];
     if (M.straighten && p[1]) explain.push(() => tween(900, k => { d.turn.rotation.z = p[1] * (1 - ease(k)); }).then(() => wait(800)).then(() => tween(900, k => { d.turn.rotation.z = p[1] * ease(k); })));   /* turned square: it turns upright and back, the same four sides (review 3) */
+    if (cfg.sortBy === 'size' && side) { const throbIt = q => () => { const s0 = q.g.scale.x; plink(); return tween(900, k => q.g.scale.setScalar(s0 * (1 + 0.22 * Math.sin(Math.PI * 2 * k) * (1 - k * 0.3)))).then(() => q.g.scale.setScalar(s0)); };
+      explain.push('Look at the two balls.', throbIt(d), 'Big.', throbIt(side), 'Small.'); }   /* review 4: the two balls are compared, each one throbs as it is named, before the hand goes to the box */
     if (cfg.sortBy && M.box != null && d.mesh) explain.push(() => { const want = cfg.sortBy === 'color' ? cfg.boxes.findIndex(b => b.acceptColor === M.piece[3]) : cfg.boxes.findIndex(b => (b.acceptSize === 'big') === ((M.piece[2] || 1) >= 0.85)); if (want < 0) return; handOn = d; hand.style.display = 'block';
       const hw = ms => (SHOT ? new Promise(r => setTimeout(r, ms)) : wait(ms)); return hw(900).then(() => { showHandAt(toScreen(boxAt(want).clone().setY(1.0))); return hw(900); }); });   /* sorting: the hand goes from the piece to the box it belongs in */
     /* K-CLARITY-RULES 16: every wrong answer on the friend's mistake gets help he can SEE (review 2) */   /* M.sides: the friend's claim is about sides, so the sides light */
     wrong.onclick = () => {
       if (answered) return; if (!costed) { W.misses++; costed = true; } chime(false); wrong.classList.remove('shake'); void wrong.offsetWidth; wrong.classList.add('shake');
       const per = q => { for (let k = 1; k <= q.length; k++) if (q.every((t, i) => t === q[i % k])) return k; return q.length; };
-      const patShow = M.pattern && PS ? (M.pattern.bad != null ? [() => { ghost.visible = true; ghost.position.copy(slotAt(M.pattern.bad, PS.n, PS.z)); if (ghost.isGroup) ghost.scale.setScalar(tall ? 0.72 : 1); }]
+      const patShow = M.pattern && PS ? (M.pattern.bad != null ? [() => { ghost.visible = true; ghost.position.copy(slotAt(M.pattern.bad, PS.n, PS.z)); if (ghost.isGroup) ghost.scale.setScalar(tall ? (WRAP ? (WRAP > 3 ? 0.8 : 0.9) : 0.72) : 1);
+          if (M.pattern.fix && BEADS[M.pattern.fix] && !fixCar) { fixCar = beadMesh(M.pattern.fix); fixCar.traverse(c => { if (c.isMesh && c.material && c.material.visible !== false) { c.material = c.material.clone(); c.material.transparent = true; c.material.opacity = 0.6; } }); fixCar.position.copy(slotAt(M.pattern.bad, PS.n, PS.z)).add(new THREE.Vector3(0, tall ? 0.95 : 1.15, 0)); scene.add(fixCar); PS.parts.push(fixCar); pop(); } }]   /* review 4: a see-through car of the right colour floats over the wrong one, so he SEES what belongs there */
         : (q => [() => { glowRange(0, q, true); return singRange(0, q); }, () => { glowRange(0, q, false); glowRange(q, 2 * q, true); return singRange(q, 2 * q, 'Again! '); }, () => wait(500), () => glowRange(q, 2 * q, false)])(per(M.pattern.seq))) : [];   /* a friend's pattern: the wrong car gets the ring, or the part that repeats glows while it is sung (K-CLARITY-RULES 16) */
-      play([...explain, ...patShow, ...(M.join ? [() => joinSide(true)] : []), ...M.explain, ...(M.join ? [() => joinSide(false)] : []), () => { if (!SHOT) clearCorners(d); }, M.ask]);
+      play([...explain, ...patShow, ...(M.join ? [() => joinSide(true)] : []), ...M.explain, ...(measureSlide && MS ? [measureSlide, 'Now we can see.'] : []), ...(M.join ? [() => joinSide(false)] : []), () => { if (!SHOT) clearCorners(d); }, M.ask]);
     };
     right.onclick = () => {
-      if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d); clearBars(d); if (M.where) showRing('front', false); if (M.measure) { endMarks(false); if (MS_LINE) MS_LINE.material.color.set('#22304F'); } if (M.pattern) ghost.visible = false; if (curvyLine) { curvyLine.parent.remove(curvyLine); curvyLine = null; } if (!SHOT) hand.style.display = 'none';
+      if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d); clearBars(d); if (M.where) showRing('front', false); if (M.measure) { endMarks(false); if (MS_LINE) MS_LINE.material.color.set('#22304F'); } if (M.pattern) { ghost.visible = false; if (fixCar) fixCar.visible = false; } if (curvyLine) { curvyLine.parent.remove(curvyLine); curvyLine = null; } if (!SHOT) hand.style.display = 'none';
       const prove = M.prove && d.marks.length ? ['Show ' + F.name + ' the corners.', () => { task = ['Tap each corner.']; return tapCorners(d); }, () => { task = null; clearCorners(d); }] : [];
       const fixBad = () => { const m = PS.beads[M.pattern.bad], want = BEADS[M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t)[M.pattern.bad]];
         if (m.userData.recolor) m.userData.recolor(want.color); else m.material.color.set(want.color); PS.R = { ...PS.R, seq: M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t) }; chime(true); return sing(); };
@@ -1757,10 +1806,11 @@ export function startGame(cfg) {
     if (cfg.certificate) showCertificate();
     $('#end').classList.add('show');
     document.querySelectorAll('.star').forEach((s, i) => setTimeout(() => s.classList.add('pop'), FAST ? 0 : 250 + i * 250));
-    play([cfg.endLine, stars === 3 ? cfg.praise : 'Great work! Play again for more stars.']);
+    play([cfg.endLine, stars === 3 || cfg.certificate ? cfg.praise : 'Great work! Play again for more stars.']);   /* graduation: every boy hears the certificate line (review 4) */
   }
   function showCertificate() {   /* graduation: a certificate with a gold medal of shapes, and fireworks (no name: nothing about a real boy is shown) */
     let c = $('#cert'); if (!c) { c = document.createElement('div'); c.id = 'cert'; c.className = 'cert'; $('#end').prepend(c); }
+    $('#stars').style.display = 'none'; boxes.forEach(b => { b.g.visible = false; }); shapes.forEach(o => { o.g.visible = false; });   /* review 4: no "1 of 3 stars" on a certificate, and no shape box behind it */
     mendy.visible = false;   /* the certificate is the one thing to look at; a star covered Mendy's face (review 3) */
     c.innerHTML = '<svg viewBox="0 0 520 300" role="img" aria-label="Shape graduate certificate"><rect x="8" y="8" width="504" height="284" rx="22" fill="#FFFBEF" stroke="#C48F00" stroke-width="8"/>'
       + '<rect x="26" y="26" width="468" height="248" rx="14" fill="none" stroke="#F2D27A" stroke-width="3" stroke-dasharray="10 8"/>'
@@ -1771,9 +1821,9 @@ export function startGame(cfg) {
       + '<path d="M260 160 l9 19 21 2 -16 14 5 21 -19 -11 -19 11 5 -21 -16 -14 21 -2z" fill="#C48F00"/>'
       + '<circle cx="86" cy="180" r="30" fill="#1F6FEB"/><path d="M150 150 L182 208 L118 208Z" fill="#E03A33"/><rect x="340" y="152" width="54" height="54" rx="4" fill="#12A766"/>'
       + '<path d="M470 180 L454 208 L422 208 L406 180 L422 152 L454 152Z" fill="#F2A900"/></svg>';
-    [0, 1, 2, 3].forEach(i => setTimeout(() => { burst(new THREE.Vector3((i % 2 ? 1 : -1) * (1 + i * 0.6), 1.6 + i * 0.3, 0), 70); chime(true); }, FAST ? 0 : 400 + i * 650));
+    [0, 1, 2, 3].forEach(i => setTimeout(() => { burst(new THREE.Vector3((i % 2 ? 1 : -1) * (1 + i * 0.6), 1.6 + i * 0.3, 0), 30); chime(true); }, FAST ? 0 : 400 + i * 650));
   }
-  $('#replay').onclick = () => { hush(); learn(); };
+  $('#replay').onclick = () => { hush(); if (cfg.certificate) boxes.forEach(b => { b.g.visible = true; }); learn(); };
 
   /* Tatty and Mommy (new look): they are there to welcome him, and they come back to clap at the end */
   function placeFamily(atEnd) { const f = LK.family(false), z = tall ? (atEnd ? -1.6 : -5.2) : -5.6, x = tall ? (atEnd ? 1.75 : 1.3) : 3.0;   /* phone end: below the stars */

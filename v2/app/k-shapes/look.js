@@ -41,7 +41,8 @@ export function vivid(c) {
   col.setHSL(hsl.h, Math.min(1, hsl.s * 1.15 + 0.05), Math.min(0.62, Math.max(0.45, hsl.l))); return '#' + col.getHexString();
 }
 
-export function createLook({ renderer, scene, camera, FAST, world }) {
+export function createLook({ renderer, scene, camera, FAST, world, plainShadows }) {
+  const PLAIN_SH = !!plainShadows;
   const ANISO = Math.min(8, renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1);
   const DPR = window.devicePixelRatio || 1;
   const L = { kids: [], adults: [], springs: [], fx: [], Q: FAST ? 0 : 2 };
@@ -986,7 +987,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* Unit 12: a happy shape party at golden hour */
   function party() {
     setEnv({ bg: '#FFD6C2', fog: ['#FFD9C8', 34, 110], sun: ['#FFE2B8', 2.6, [-8, 10, 6]], hemi: ['#FFE6F2', '#8FCB6A', 0.65], rim: ['#FFB27A', 1.4], front: ['#FFE0D0', 0.4], exposure: 0.86, bloom: 0.34,
-      box: ['#B98CFF', '#FFFFFF', '#9467E8'], css: '#FFD6C2' });
+      box: ['#EDBFCB', '#FFFFFF', '#E9D9C8'], css: '#FFD6C2' });
     skyDome('#6E8CFF', '#FFB0D4', '#FFD59A', [-0.6, 0.2, -1]);
     ground(grassTex('#6AD35A', '#41AE45', '#B3EE7A', ['#FFFFFF', '#FFE14D', '#FF8FB1'], 18), '#FFFFFF', { sheen: 0.5, sheenColor: '#FFE8C8' });
     const far = group(), near = group();
@@ -1035,6 +1036,10 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     const P = PAINT[name]; if (!P || FAST) return;
     /* the painted ground under the toys (worlds/<name>-ground.jpg, seamless): same size of pattern as the drawn one */
     new THREE.TextureLoader().load(new URL('./worlds/' + name + '-ground.jpg', import.meta.url).href, gt => {
+      if (CALM) try {   /* calm (review 4): the painted ground is softer and less contrasty (leafy clover around the table pulled the eye), but keeps its colour */
+        const im = gt.image, cv = document.createElement('canvas'); cv.width = im.width; cv.height = im.height; const cx = cv.getContext('2d');
+        cx.filter = 'saturate(0.7) contrast(0.55)';   /* no blur: a blur would show seams where the ground tiles */ cx.drawImage(im, 0, 0); cx.filter = 'none'; cx.fillStyle = 'rgba(255,255,255,0.18)'; cx.fillRect(0, 0, cv.width, cv.height);
+        const t2 = new THREE.CanvasTexture(cv); gt = t2; } catch (e) {}
       gt.colorSpace = THREE.SRGBColorSpace; gt.anisotropy = ANISO; gt.wrapS = gt.wrapT = THREE.RepeatWrapping;
       const tint = { toyland: '#BFE3AE', garden: '#C6E6B4', sky: '#C2E4AE', traintown: '#C6E6B4', farm: '#C2E2AC', jungle: '#CFE8C0', party: '#A9D898', underwater: '#D4DFD2', space: '#F0E2DC', beach: '#F2E6D6', snow: '#E6EEFF' }[name] || '#FFFFFF';   /* a little deeper, so the bright sun does not wash it out */
       groundMats.forEach(m => { const old = m.map; const t = gt.clone(); if (old) { t.repeat.copy(old.repeat); t.offset.copy(old.offset); } t.needsUpdate = true; m.map = t; m.color.set(tint); m.needsUpdate = true; });
@@ -1256,6 +1261,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   function blobFor(o) {
     let b = blobs.get(o); if (b) return b;
     const c = new THREE.Color(vivid(o.color)), hsl = {}; c.getHSL(hsl); c.setHSL(hsl.h, Math.min(1, hsl.s + 0.1), 0.38);
+    if (PLAIN_SH) c.set('#6B6258');   /* plain games: a soft grey shadow, never a coloured patch on the floor (review 4) */
     b = new THREE.Mesh(blobGeo, new THREE.MeshBasicMaterial({ map: soft, color: c, transparent: true, opacity: 0.4, depthWrite: false, fog: false }));
     b.rotation.x = -Math.PI / 2; b.renderOrder = 1; scene.add(b); blobs.set(o, b); return b;
   }

@@ -163,8 +163,8 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     const b = new THREE.Mesh(new THREE.LatheGeometry(prof, 48), m); b.position.y = R0 * 1.18 + R0 * 0.16; g.add(b);
     const knot = new THREE.Mesh(new THREE.ConeGeometry(R0 * 0.16, R0 * 0.22, 16), m); knot.rotation.x = Math.PI; knot.position.y = R0 * 0.1; g.add(knot);
     const sm = new PM({ color: '#5B6170', roughness: 0.5 });   /* a dark string, easy to see on the light floor even on a small balloon (review 2) */
-    const str = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0.03, 0), new THREE.Vector3(R0 * 0.3, 0.03, R0 * 0.55), new THREE.Vector3(-R0 * 0.15, 0.03, R0 * 0.95), new THREE.Vector3(R0 * 0.3, 0.03, R0 * 1.35), new THREE.Vector3(R0 * 0.05, 0.03, R0 * 1.75)]);   /* it curls toward the boy, in front of the balloon, so he always sees the string (review 3: it hid behind) */
-    g.add(new THREE.Mesh(new THREE.TubeGeometry(str, 40, Math.max(0.035, R0 * 0.05), 8, false), sm));   /* its string lies curled on the pan */
+    const SY = 0.09, str = new THREE.CatmullRomCurve3([new THREE.Vector3(0, R0 * 0.05 + SY, 0), new THREE.Vector3(R0 * 0.3, SY, R0 * 0.55), new THREE.Vector3(-R0 * 0.15, SY, R0 * 0.95), new THREE.Vector3(R0 * 0.3, SY, R0 * 1.35), new THREE.Vector3(R0 * 0.05, SY, R0 * 1.75)]);   /* review 4: lifted a little, so the string is never hidden in the floor */   /* it curls toward the boy, in front of the balloon, so he always sees the string (review 3: it hid behind) */
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(str, 40, Math.max(0.05, R0 * 0.06), 8, false), sm));   /* its string lies curled on the pan */
     return g;
   }
   function hayBale(s) {
@@ -300,7 +300,7 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     traintown: { body: '#2F80FF', rim: '#FFFFFF', name: 'a train wagon', wheels: '#2E3440', hubs: '#E8C35A' },
     jungle: { body: '#A8743F', rim: '#4FAE4A', name: 'a wooden jungle crate', leaves: true },
     snow: { body: '#E9F4FF', rim: '#FFFFFF', name: 'a sled box with snow on top', snowcap: true },
-    party: { body: '#FF7FB3', rim: '#FFD23F', name: 'a gift box with a bow', bow: '#FFD23F' },
+    party: { body: '#EDBFCB', rim: '#E6C77E', name: 'a gift box with a bow', bow: '#FFD23F' },
     beach: { body: '#2FB7C9', rim: '#FFFFFF', name: 'a beach-toy crate', shells: true },
     sky: { body: '#F7F2E8', rim: '#9FD3FF', name: 'a balloon basket', wicker: true },
     toyland: { body: '#FF8FB1', rim: '#FFFFFF', name: 'a toy chest' }

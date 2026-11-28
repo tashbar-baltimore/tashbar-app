@@ -102,7 +102,9 @@ module.exports = async function (browser) {
             const st = await S();
             if (st.misses !== m0 + 1) bad(L + ': a wrong try was not counted as a mistake');
             if (!st.said.slice(said0).some(t => /^(That is|That shape|Look closely|This shape|Count again|Look\. It has|Too short|Too long|That stick)/.test(t))) bad(L + ': a wrong try is not explained: ' + JSON.stringify(st.said.slice(said0)));
-            await pg.waitForTimeout(300); continue;
+            await pg.waitForTimeout(1500);
+            if (/^(shape-party|graduation)/.test(game) && !(await S()).said.slice(said0).some(t => /no corners|curvy|squished|It is solid|It is flat|It has corners|Count the corners|Look at its sides|Not squished/i.test(t))) bad(L + ': a wrong pick in a clue game only names the shape; it must SHOW why it does not fit the clue (review 4)');
+            continue;
           }
         }
         const r = list.find(x => x.box >= 0);
@@ -126,6 +128,7 @@ module.exports = async function (browser) {
       const want = perfect ? 3 : 1;
       if (st.stars !== want) bad(L + ': expected ' + want + ' stars, got ' + st.stars + ' (' + st.misses + ' mistakes)');
       if (game === 'graduation' && !(await pg.$('#cert svg'))) bad(L + ': graduation shows no certificate');
+      if (game === 'graduation') { await pg.waitForTimeout(400); if (!(await S()).said.some(t => /Here is your certificate/.test(t))) bad(L + ': graduation end does not say "Here is your certificate" (every boy hears it, review 4)'); }
       if ((await pg.$$('.star')).length !== 3) bad(L + ': the end screen does not show the stars');
       await drawn('the end');
       const btns = await pg.$$eval('button', b => b.filter(x => x.offsetParent !== null).map(x => { const r = x.getBoundingClientRect(); return [r.width, r.height, r.left, r.right, r.top, r.bottom]; }));

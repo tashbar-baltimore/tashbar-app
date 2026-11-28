@@ -245,3 +245,35 @@ Choices made (a kindergarten teacher's call, written here as Esti asked):
 - Shape party 1 clues stay spoken only, with no picture card. A card with the shape would give the answer away; a dots card would not match clues about sides or "round".
 - Pattern train camera stays as it was: moving it closer cut off the engine and the cars he chooses from.
 - Heavy and light: the heavier side is still not glowed before he answers, since a glow would give the answer away. After a wrong answer the hand shows the side that went down.
+
+**Round 4 scores (two fresh reviewers, new pictures of Units 7-12, 2026-11-28 morning):** Where is it? 2, Fix the pattern 3, Pattern train 2, Sort by color 3, Big and small 2, Line them up 4, Heavy and light 4, Shape party 1 3, Shape party 2 3, Shape party 3 3, Graduation day 3.
+
+**Round 5 fixes (after the round-4 scores):**
+
+| Problem the reviewers found (rule) | Fix |
+|---|---|
+| Shape party 1, 3, Graduation: after a second miss the voice said "count the corners", but the piece only tipped over: no corner balls (4, 5) | The reminder matches the clue. A corner clue lights and counts every corner; a side clue lights every side; a flat/solid clue shows the flat piece is thin or what the solid does. "Round" clues run a light round the edge |
+| Clue games: the first wrong pick only heard the shape's name, then the hand took the right one (16) | First the wrong pick SHOWS why: a circle gets a light round its edge ("It has no corners."); the curvy shape gets a light along its curvy sides; a flat piece turns to show it is thin; a solid rolls, stacks or spins; a shape with corners has them counted. Then the hand |
+| Graduation: with 1-2 stars the boy saw his certificate beside 1 of 3 stars and never heard "Here is your certificate" (11) | Every boy hears the certificate line; no star row on the certificate; the box and pieces are gone behind it; fewer fireworks |
+| Graduation and every plain game: a coloured glow lay on the floor under every piece (10) | A soft grey shadow |
+| Party box: bright pink, the brightest thing on screen (10) | A soft dusty pink with a soft gold rim |
+| Shape party 2 mistake: the turned "flat" square looked like a slab; the cube was tipped on a corner (6) | The square is half as thick; the cube stands upright, turned so two faces show |
+| Where is it?: "behind" sat in the gap under the plank and read as "under" (7, 11) | Behind the near leg, on the line from his eye; half the ball peeks out past the leg, nowhere near the gap. The "in front" ring sits in front of the middle |
+| Where is it? mistake: a wrong answer showed only the ring (16) | The hand first points at the ball ("behind"), then the ring shows the empty "in front" place |
+| Pattern train, Fix the pattern (phone): an 8-car train was one strip of tiny cars (about 38 px), cut off at both edges (9, 13) | On a phone the train wraps into short rows, one repeating part per row (red yellow blue / red yellow blue / red yellow _), so the same colours stand in columns. The engine pulls the first row. Every car is apart and on screen |
+| Pattern train mistake: "After red comes yellow" with nothing yellow shown; the friend stood cut off at the right edge pointing away (16, 9) | A see-through yellow car floats over the wrong car; the friend stands at the train's end, facing it |
+| Fix the pattern: a wrong car showed the ring but not which car fits (16) | The hand carries the right car from the tray to the ringed car |
+| Big and small lesson: the small ball floated higher and farther right; on a phone it hid behind the big ball (7) | Both balls stand on the same line, side by side with a gap; on a phone the big ball steps left first |
+| Big and small mistake: the two balls were never compared (16) | "Look at the two balls." The big one throbs: "Big." The small one throbs: "Small." Then the hand to the box |
+| Sort by color, Big and small: while counting, the toys overlapped in the box and the numbers stood in a row on the rim (8, 12) | Each toy comes out and stands in a row in front of its box, apart, with its own number over it; after the answer they go back in |
+| Sort by color: "which box has the most" was 4 red against 3 yellow (7) | 5 red, 2 yellow, 1 blue |
+| Busy leafy ground round the table (10) | The painted ground is softer and lower in contrast in every world (no blur, so no seams) |
+| Line them up mistake: the help marked the start ends but never lined the scarves up; pale end balls on white snow (16) | After "Line them up first!" the red scarf slides to the start line, stays, and slides back ("Now we can see."); the end balls are gold |
+| Party box: a bright purple floor inside (10) | A soft cream floor |
+| Heavy and light: the balloon's string hid in the floor; the light-blue feather read as a leaf (7) | The string lies on top of the floor, thicker; the feather is grey with a dark quill |
+| (tests) | Unit 12 test: a wrong pick in a clue game must be followed by a line that shows why (no corners, curvy, solid, flat, count the corners, look at its sides); Graduation must always say "Here is your certificate" |
+
+Choices made in round 5:
+- Fix the pattern mistake keeps "Is it a good pattern?" (answered with the tick). "Is Ari right?" would make him answer about a person's words, which is harder for a 5-year-old.
+- Heavy and light: still no glow before he answers (it would give the answer away). The pan strings still go past the edge of a big balloon: moving them made the scale look broken.
+- Phone train rows with 4 cars (two green, two blue) are about 52 px per car; the drop spot he aims at takes a finger anywhere near it.
