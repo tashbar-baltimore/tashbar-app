@@ -29,7 +29,7 @@ const cap = w => w[0].toUpperCase() + w.slice(1);
 const snd = ch => echo(() => audio.letter(ch));
 export const KEYWORD = { s: 'snake', a: 'apple', t: 'tree', p: 'pinwheel', i: 'inchworm', n: 'net', m: 'mountain', d: 'drum' };
 export const START = { s: ['sun', 'sock', 'soup', 'snake'], a: ['apple', 'ant', 'alligator', 'anchor'], t: ['top', 'tent', 'turtle', 'teapot'], p: ['pot', 'pear', 'pan', 'pumpkin', 'penguin'],
-  i: ['igloo', 'inchworm', 'ink'], n: ['nest', 'nut', 'noodles'], m: ['moon', 'mop', 'mug', 'mouse', 'milk', 'mitten', 'mailbox'], d: ['dog', 'duck', 'door', 'donut', 'dish'] };
+  i: ['igloo', 'inchworm', 'ink'], n: ['nest', 'nut', 'noodles'], m: ['moon', 'mop', 'mug', 'mouse', 'milk', 'mitten', 'mailbox'], d: ['duck', 'door', 'donut', 'dish']   /* no dog (school rule 2026-11-28: no pet dogs or puppies in K-2) */ };
 export const OTHER = ['cat', 'bee', 'fish', 'hat', 'goat', 'bell', 'car', 'sun', 'sock', 'pear', 'top'];
 export const others = ch => OTHER.filter(w => !START[ch].includes(w) && WORDS[w] && WORDS[w].say[0] !== ch);
 function clearItems(G) { return Promise.all(G.items.slice().map(i => i.remove())); }
