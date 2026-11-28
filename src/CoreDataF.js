@@ -145,5 +145,9 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.12", "Snack and Swim", "Read and spell words that start with s-blends: sk, sn, sp, st, sw", { after: "READ.PHON.L02.11", std: "RF.1.2b", file: "CoreDataF2", min: 6 }],
   ["READ.PHON.L02.13", "Hand and Tent", "Read and spell words that end with -nd, -nt, -st, -mp", { after: "READ.PHON.L02.12", std: "RF.1.2b", file: "CoreDataF2", min: 6 }],
   ["READ.PA.L02.03", "Chop It Up", "Chop words with blends into every sound (4 and 5 sounds)", { after: "READ.PA.L02.02", std: "RF.1.2d", file: "CoreDataF2", min: 5 }],
-  ["WRIT.HAND.L02.02", "Spaces Between Words", "Leave a finger space between words", { after: "WRIT.HAND.L02.01", std: "L.1.1a", file: "CoreDataF2", min: 5 }]
+  ["WRIT.HAND.L02.02", "Spaces Between Words", "Leave a finger space between words", { after: "WRIT.HAND.L02.01", std: "L.1.1a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L02.14", "Puff, Bell, Kiss", "Double the f, l, s or z at the end of a short word", { after: "READ.PHON.L02.13", std: "RF.1.3", file: "CoreDataF2", min: 6 }],
+  ["READ.PHON.L02.15", "Ring and Bank", "Read and spell words with -ng and -nk", { after: "READ.PHON.L02.14", std: "RF.1.3", file: "CoreDataF2", min: 6 }],
+  ["READ.FLU.L02.04", "Heart Words: could, would", "Read the heart words there, could, would and should", { after: "READ.PHON.L02.15", std: "RF.1.3g", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L02.16", "Spell It: Blends and Endings", "Hear a word and spell it with its blend or ending", { after: "READ.FLU.L02.04", std: "L.1.2d", file: "CoreDataF2", min: 6 }]
 ];
