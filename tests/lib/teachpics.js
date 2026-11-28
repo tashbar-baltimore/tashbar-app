@@ -20,6 +20,7 @@ module.exports = async function teachPicsTests(pg) {
         const sleep = ms => new Promise(res => setTimeout(res, ms)), o = { bad: [], id: '', pass: '', shots: [] };
         if (typeof window.rtDecorate !== 'function') { o.bad.push('RealPicsTeach.html did not load (rtDecorate missing)'); return o; }
         const prevLive = window.OB_LIVE; window.OB_LIVE = 'test';   /* tests/run.js turns One Bite off for its own lesson play; a TEST- boy gets it here */
+        let lent = null;   /* a lesson lent a made-up WATCH for this test only (see below); put back in finally */
         try {
         const has = id => !!((typeof BANK_ALL !== 'undefined' && BANK_ALL[id]) || (typeof GEN !== 'undefined' && GEN[id]));
         const worldOf = id => { const pre = id.split('.')[0], map = /^(LK|HEB)$/.test(pre) ? 'LK' : /^(READ|WRIT|LANG)$/.test(pre) ? 'READ' : /^(SS|SOC|FACT)$/.test(pre) ? 'SS' : /^(COMP|VOC)$/.test(pre) ? 'COMP' : pre;
@@ -28,9 +29,15 @@ module.exports = async function teachPicsTests(pg) {
         const app = () => document.getElementById('app');
         const wide = () => document.documentElement.scrollWidth > window.innerWidth + 1;
         const figH = sel => { const f = app().querySelector(sel + ' .rpbox'); return f ? f.getBoundingClientRect().height : 0; };
-        /* a hand-written bite whose first WATCH step has no drawn model */
-        const id = Object.keys(ONE_BITE).find(k => { const b = ONE_BITE[k], w = b.watch || {}, s0 = (w.steps || [])[0]; return has(k) && b.band !== 'K1' && !w.m && s0 && typeof s0 === 'string' && /^SCI|^SS|^READ|^MATH/.test(k); });
-        if (!id) { o.bad.push('no bite to test with'); return o; } o.id = id;
+        /* a hand-written bite in the OLD shape (TODAY, WATCH ME ...) whose first WATCH step has no drawn model. A new-shape lesson (HoS 2026-11-27,
+           docs/lesson-redesign/DESIGN.md) opens on THINK and has no TODAY or WATCH screen, so it is never picked. When no old-shape lesson with such a
+           WATCH is left (lessons keep moving to the new shape), an old-shape lesson is lent a made-up WATCH for this test only; the checks are the same. */
+        const oldShape = b => !(window.OB && OB.isNF && OB.isNF(b));
+        let id = Object.keys(ONE_BITE).find(k => { const b = ONE_BITE[k], w = b.watch || {}, s0 = (w.steps || [])[0]; return has(k) && b.band !== 'K1' && oldShape(b) && !w.m && s0 && typeof s0 === 'string' && /^SCI|^SS|^READ|^MATH/.test(k); });
+        const noPics = k => !Object.keys(TL_PIC_MAP || {}).some(x => { const key = x.split('|')[0]; return key && k.indexOf(key) === 0; });   /* nothing already linked to it or its unit */
+        if (!id) { id = Object.keys(ONE_BITE).find(k => { const b = ONE_BITE[k]; return has(k) && b.band !== 'K1' && oldShape(b) && noPics(k) && /^SCI|^SS|^READ|^MATH/.test(k); });
+          if (id) { lent = { id, had: 'watch' in ONE_BITE[id], watch: ONE_BITE[id].watch }; ONE_BITE[id].watch = { q: 'Made-up example', steps: ['Made-up first step.', 'Made-up second step.'], a: '' }; } }
+        if (!id) { o.bad.push('no bite to test with'); return o; } o.id = id + (lent ? ' (made-up WATCH)' : '');
         const pic = Object.keys(TL_PICS).find(k => TL_PICS[k].w > TL_PICS[k].h * 1.3) || Object.keys(TL_PICS)[0];
         const M = TL_PIC_MAP, keys = [id + '|@today', id + '|@watch'];
         /* 1. nothing linked: as before */
@@ -70,7 +77,7 @@ module.exports = async function teachPicsTests(pg) {
           const pas = app().querySelector('aside.passage'); if (pas) pas.scrollIntoView(); yield ['passage', o]; }
         delete M['@passage|' + pk];
         return o;
-        } finally { window.OB_LIVE = prevLive; } }; window.__rtIt = window.__rtRun(); });
+        } finally { window.OB_LIVE = prevLive; if (lent) { if (lent.had) ONE_BITE[lent.id].watch = lent.watch; else delete ONE_BITE[lent.id].watch; } } }; window.__rtIt = window.__rtRun(); });
       let r = null;
       for (;;) { const st = await pg.evaluate(async () => { const n = await window.__rtIt.next(); return { done: n.done, v: n.done ? n.value : n.value[1], tag: n.done ? '' : n.value[0] }; });
         if (st.done) { r = st.v; break; }
