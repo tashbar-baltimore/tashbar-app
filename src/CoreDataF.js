@@ -154,5 +154,9 @@ CORE_SKILLS.F = [
   ["READ.LV.L02.04", "Add the E", "Add a quiet e to make a new word: cap to cape, kit to kite", { after: "READ.LV.L02.03", std: "RF.1.3c", file: "CoreDataF2", min: 6 }],
   ["READ.FLU.L02.05", "Scoop It", "Read in phrases: words that go together", { after: "READ.LV.L02.04", std: "RF.1.4b", file: "CoreDataF2", min: 6 }],
   ["READ.LV.L02.05", "Spell It: Silent E", "Hear a word and spell it with a quiet e", { after: "READ.FLU.L02.05", std: "L.1.2d", file: "CoreDataF2", min: 6 }],
-  ["WRIT.HAND.L02.03", "Capital Letters", "Write capital letters neatly, on the line", { after: "WRIT.HAND.L02.02", std: "L.1.1a", file: "CoreDataF2", min: 5 }]
+  ["WRIT.HAND.L02.03", "Capital Letters", "Write capital letters neatly, on the line", { after: "WRIT.HAND.L02.02", std: "L.1.1a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L02.17", "Jumped, Hummed, Landed", "Read -ed endings that say t, d or id", { after: "READ.PHON.L02.04", std: "RF.1.3f", file: "CoreDataF2", min: 6 }],
+  ["READ.PHON.L02.18", "Cats and Boxes", "Choose -s or -es to make more than one", { after: "READ.PHON.L02.17", std: "L.1.2d", file: "CoreDataF2", min: 6 }],
+  ["READ.FLU.L02.06", "Heart Words: some, come", "Read the heart words does, done, some and come", { after: "READ.PHON.L02.18", std: "RF.1.3g", file: "CoreDataF2", min: 5 }],
+  ["READ.FLU.L02.07", "Read It with Feeling", "Read a sentence the way its end mark says: . ? !", { after: "READ.FLU.L02.06", std: "RF.1.4b", file: "CoreDataF2", min: 6 }]
 ];
