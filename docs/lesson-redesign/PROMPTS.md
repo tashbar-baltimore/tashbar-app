@@ -1,6 +1,6 @@
 # New Lessons: prompts for builder accounts (HoS 2026-11-27)
 
-**Autopilot (HoS 2026-11-27):** the work continues all weekend, through Shabbos, with no pause. On the HoS's own account, scheduled tasks start a fresh builder every 2 hours and a fresh coordinator every 4 hours, using the prompts below. So if an account runs out of credits, the next one picks up from the board. **Any other account** can join the same way: paste the "Autopilot set-up" prompt at the end of this file into a new session on that account.
+**Autopilot (HoS 2026-11-27):** the work continues all weekend, through Shabbos, with no pause. On the HoS's own account, the coordinator session wakes itself every 3 hours, wakes its builders after a usage limit resets, starts builders for open rows, and checks the board every 6 hours. If a builder stops for good, its row goes back to OPEN after 6 hours and another builder carries on. **Any other account** can join the same way: paste the "Autopilot set-up" prompt at the end of this file into a new session on that account.
 
 Paste the **Builder prompt** into each extra Claude account, one account at a time (4–6 accounts is a good number). Each account takes the next open row on `BOARD.md`, so they never work on the same lessons. When an account finishes a row, paste the same prompt again and it takes the next row.
 
@@ -55,6 +55,8 @@ Every few hours:
 
 ## Autopilot set-up (paste into a new session on any extra account)
 
+Start the session **with the repository tashbar-baltimore/tashbar-app selected** (a scheduled task that starts brand-new sessions cannot save to GitHub, so the account's own session wakes itself instead). Paste:
+
 ```
-Set up a scheduled task on this account: every 3 hours, start a fresh session in this environment on the repository tashbar-baltimore/tashbar-app with this prompt: "Read docs/lesson-redesign/PROMPTS.md on origin/main and follow the Builder prompt in it exactly." Then run that prompt once now yourself.
+You are a New Lessons builder. Read docs/lesson-redesign/PROMPTS.md on origin/main and follow its Builder prompt exactly, starting at step 1. No person is watching; never stop to ask (anything that truly needs the HoS: pull request with the label hold and one plain line). Before you start, set up a scheduled task that fires into THIS session every 3 hours with the message: "Carry on where you stopped: merge origin/main (keep everyone's BOARD.md rows), finish and push your batch, open the pull request, then keep taking rows by the Builder prompt. If nothing is left, say so in one line." That way, when this account's usage limit resets, this session carries on by itself.
 ```
