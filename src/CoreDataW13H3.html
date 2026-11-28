@@ -224,6 +224,66 @@
         say:'Listen. Who is this letter for?', how:'Relaxed and friendly, or polite and respectful?'}] }
   };
 
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     NL(id, f): f gets the old do and your lists (good activities are kept) and returns hook, learn, play and done. X(a, o) copies a with changes. */
+  function X(a, o) { if (!a) throw new Error('W13 new lesson: missing activity'); return Object.assign({}, a, o || {}); }
+  function NL(id, f) { var b = BITE[id]; if (!b || !b.do || !b.your) return; var n = f(b.do, b.your);
+    b.hook = n.hook; b.learn = n.learn; b.play = n.play; b.done = n.done; if (n.one && b.board) b.board.one = n.one; delete b.do; delete b.your; delete b.ready; }
+
+  NL('WRIT.ESSAY.L04.05', function (D, Y) { return {
+    hook: { kind: 'mystery', pic: '🍞', t: 'Dovid’s story: “We ate the challah. Then Abba made Hamotzi.” Something is off.',
+      q: 'What is the mystery?', o: ['The order is mixed up', 'A word is spelled wrong', 'Nothing is off'],
+      pay: 'The *order* is mixed up! *Move* fixes it. *ARMS* gives four ways to revise.' },
+    learn: [
+      { t: '*ARMS*: Add, Remove, Move, Substitute. Flex!', m: { type: 'chant', lines: ['A! Add a detail!', 'R! Remove what does not belong!', 'M! Move a sentence!', 'S! Substitute a better word!'] },
+        act: X(D[1], { say: 'Match each letter of *ARMS* to its job.', how: 'Flex your arms and say the chant.' }) },
+      { t: '*Remove* what does not belong to the story.', act: X(Y[0], { say: 'Find the sentence to *Remove*.', how: 'Which one is *not about* the sukkah?' }) },
+      { t: '*Move* a sentence into the right *order*.', act: X(Y[2], { say: '*Move* the sentences into the right order.', how: 'What happens *first* on Chanukah night?' }) },
+      { who: { q: 'Revise “The game was fun.” Who really *revised* it?', o: [['Yossi', 'The game was fun. (copied neater)'], ['Shimon', 'The game was thrilling, and we won!']], a: 1,
+        why: 'Neater is *not revising*. Change the words to make it *better*.' } }],
+    play: [
+      X(D[0], { say: 'A real *revision*, or a *mistake*?', how: 'Revising makes it *better*: add, remove, move, substitute. Copying neater is not revising.' }),
+      X(Y[1], { say: '*Substitute*! Pick a sharper word for “good”.', how: 'Which word helps the reader *see* it?' }),
+      X(Y[3], { say: 'Listen. Which *ARMS* step did Avi use?', how: 'Did he put in more, take out, or change the place?' }),
+      X(Y[4], { say: 'Challenge! *Add* details. Build the better sentence.', how: 'Played what, *where*, and *when*?' })],
+    done: 'Hamotzi comes *first*! *Move* fixed it. Add, Remove, Move, *Substitute*.' }; });
+
+  NL('WRIT.ESSAY.L04.06', function (D, Y) { return {
+    hook: { kind: 'secret', pic: '🚓', t: 'Crack the code! *C-O-P-S* catches mistakes in your writing.',
+      q: 'What could the O stand for?', o: ['Order of the words', 'Orange', 'Oven'],
+      pay: '*O* is *Order of the words*! COPS: Capitals, Order, Punctuation, Spelling.' },
+    learn: [
+      { t: '*C*: Capitals for the start, names, places, special days.', act: X(D[1], { say: 'Tap every word that needs a *capital*.', how: 'Names of *people*, *places* and *special days*.' }) },
+      { t: '*O*: Order of the words. Does it *make sense*?', act: X(Y[2], { say: 'Fix the *Order*: build the sentence.', how: 'Who, did what, to what.' }) },
+      { t: '*P*: end marks. *S*: spelling. Salute like a cop!', m: { type: 'move', t: 'Salute like a police officer: C, O, P, S!' },
+        act: X(Y[4], { say: '*S* check! Spelled right, or fix the spelling?', how: 'Sound it out, then picture the word.' }) },
+      { who: { q: 'Edit “where is avi”. Who fixed *all* of it?', o: [['Eli', 'where is avi.'], ['Naftali', 'Where is Avi?']], a: 1,
+        why: 'Eli missed the *capitals* and the *question mark*.' } }],
+    play: [
+      X(D[0], { say: 'Right, or a *mistake*?', how: 'Check the *capital* at the start and the *mark* at the end.' }),
+      X(Y[0], { say: 'Find the sentence with *no mistakes*.', how: 'Check *C* and *P*: capitals, and the end mark.' }),
+      X(Y[1], { say: 'Pick the right *end mark*.', how: 'Is the sentence *asking* something?' }),
+      X(Y[3], { say: 'Challenge! Match each mistake to its *COPS* letter.', how: '*Capital*, *end mark*, or *word order*?' })],
+    done: '*O* is *Order of the words*. Capitals, Order, Punctuation, Spelling: case closed!' }; });
+
+  NL('WRIT.PARA.L04.17', function (D, Y) { return {
+    hook: { kind: 'story', pic: '✉️', t: 'Dovid wrote a letter to the menahel. He signed it: “Hey, bye!!!”',
+      q: 'How will the menahel feel?', o: ['Surprised: it is not respectful', 'Very happy', 'Hungry'],
+      pay: '*Surprised*! A letter must *fit its reader*: polite for a rebbe or the menahel.' },
+    learn: [
+      { t: 'A letter has parts: *greeting*, body, *closing*, name.', act: X(D[0], { say: 'Build Naftali’s letter, part by part.', how: '*Greeting*, body, *closing*, then the name. One card does not fit.' }) },
+      { t: 'A letter to a *grown-up* is polite and *respectful*.', act: X(D[1], { say: 'Does it fit a letter to a *rebbe*?', how: 'A letter to a rebbe is *polite* and *respectful*.' }) },
+      { t: 'Relaxed for a *friend*. Respectful for a *rebbe*.', m: { type: 'chant', lines: ['Dear, hello!', 'Say why you write,', 'close it nicely,', 'sign it right!'] },
+        act: X(Y[4], { say: 'Listen. Who is this *letter* for?', how: '*Relaxed* and friendly, or *polite* and respectful?' }) },
+      { who: { q: 'A letter to Rabbi Feld. Whose *greeting* fits?', o: [['Yossi', 'Hey Feld!'], ['Avi', 'Dear Rabbi Feld,']], a: 1,
+        why: 'A letter to a rebbe is *polite* and *respectful*.' } }],
+    play: [
+      X(Y[2], { mis: true, say: 'Pick the closing that fits. Two are *mistakes*!', how: 'The menahel is a grown-up. Be *respectful*.' }),
+      X(Y[0], { say: 'Find the best *body* sentence.', how: 'The body says *why* he is writing, clearly.' }),
+      X(Y[1], { say: 'Match each line to its *part*.', how: 'Think of the letter from top to bottom.' }),
+      X(Y[3], { say: 'Challenge! Put the letter in order.', how: 'Date, *greeting*, body, *closing*, name.' })],
+    done: 'No “Hey, bye!!!” for the menahel! Make every letter *fit its reader*.' }; });
+
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 
   /* Unit W13.U36 = Grade 3, Unit 6 "Revise, Edit, Publish". The real task: Gr 3 piece 12, a letter to a real reader, in the Writing Workshop (scored by the teacher). */
