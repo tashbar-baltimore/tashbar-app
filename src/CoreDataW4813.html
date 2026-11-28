@@ -406,6 +406,9 @@
       TEACHBACK('*Teach it back*: tell your chavrusa what a thesis needs.', 'The topic, and its main parts in the order of the body paragraphs. No "I will", and no opinion like "the best".')];
     b.play = [D[0], Y[1], Y[2], Y[3]];
     b.done = 'Your thesis is a *map*: the topic and its *parts*, in order.';
+    D[1].q = 'Paragraphs: 1) wheel 2) belt 3) dumpster. Preview them.'; D[1].w = ['Mr. Trash Wheel has', 'a wheel,', 'a belt and', 'a dumpster.']; D[1].extra = ['a dumpster,'];
+    b.play[1].q = 'Paragraphs: 1) find 2) scoop 3) unload. A thesis about skimmer boats.';
+    b.play[2].cards = b.play[2].cards.map(function (c) { return c[0] === 'A boom has a float and a curtain.' ? ['A skimmer finds, scoops and unloads trash.', c[1]] : c; });
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L07.08']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -422,6 +425,10 @@
       TEACHBACK('*Teach it back*: tell your chavrusa the five kinds.', 'Fact: a number or date. Definition: a word explained. Concrete detail: what you see or hear. Quote: exact words. Example: one case.')];
     b.play = [D[1], Y[2], Y[3], Y[4]];
     b.done = 'You develop a point with *three or more kinds* of support.';
+    D[0].how = 'Explains a word? Shows a picture? Exact words? All facts?';
+    b.play[0].cards = b.play[0].cards.map(function (c) { return c[0] === 'A conveyor belt is a moving belt.' ? ['A conveyor belt is a loop that carries things up.', c[1]] : c; });
+    b.play[2] = { type: 'tiles', q: 'Add an example.', w: ['For example,', 'one foam cup', 'rode the belt', 'to the top.'], extra: ['said'],
+      say: 'Build an *example* sentence.', how: '"For example," first. Then the one case.' };
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.06']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -438,6 +445,11 @@
       TEACHBACK('*Teach it back*: tell your chavrusa how a bridge works.', 'Name the last paragraph’s idea, then the new one: "Once the belt lifts it, the dumpster holds it." "Also," and "Next," only point forward.')];
     b.play = [D[0], D[1], Y[3], Y[4]];
     b.done = 'Your paragraphs open with a *bridge*: back, then *forward*.';
+    b.play[0] = { type: 'sort', bins: ['Points back and forward', 'Mistake: forward only'], mis: true,
+      cards: [['Once the booms steer it in, the wheel scoops it.', 0], ['Next, the wheel turns.', 1], ['After the booms gather it, the wheel lifts it.', 0], ['Also, there is a wheel.', 1]],
+      say: 'Last: the booms. New: the wheel. Sort each opener.', how: 'Does it name the *booms* paragraph? Then it points *back*.' };
+    b.play[1] = { type: 'tiles', q: 'Bridge from the wheel to the belt.', w: ['Once', 'the wheel', 'scoops it,', 'the belt', 'lifts it.'], extra: ['Next,'],
+      say: 'Build a *bridge*: back to the wheel, then the belt.', how: 'Start with *Once* and the wheel. Then forward to the belt.' };
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.07']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -454,6 +466,11 @@
       TEACHBACK('*Teach it back*: tell your chavrusa the three graphics.', 'Chart: which number is biggest. Table: several facts in rows. Diagram: parts or steps with arrows. Every caption says what it shows.')];
     b.play = [D[1], Y[0], Y[2], Y[4], Y[3]];
     b.done = 'You pick the graphic that *adds information*, with a caption that *explains* it.';
+    b.learn[2].who.q = 'Show the trash wheel’s parts. Which *graphic*?';
+    b.play[1] = { type: 'tiles', q: 'A caption for a bar chart of the can drive.', w: ['Cans collected', 'by each grade,', 'in one week'], extra: ['Wow!'],
+      say: 'Build a caption that says *what it shows*.', how: 'What is counted first. Then how it is split. Then when.' };
+    b.play[4] = { type: 'tiles', q: 'A caption for the labeled diagram.', w: ['The parts of', 'Mr. Trash Wheel,', 'labeled'], extra: ['cool'],
+      say: 'Build the caption for the *diagram*.', how: 'Say what the picture shows: its *parts*.' };
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.08']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();

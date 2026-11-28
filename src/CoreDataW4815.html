@@ -335,6 +335,7 @@
       TEACHBACK('*Teach it back*: tell your chavrusa the two voices.', 'The boy then: past tense, and he knows only what he knew. The writer now: a signal like "Looking back," or "Today," and what he sees now.')];
     b.play = [D[1], D[0], Y[3], Y[4], Y[2]];
     b.done = 'You move between the *boy then* and the *writer now*, and *signal* each cut.';
+    b.play[4].extra = ['I knew'];
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.06']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -351,6 +352,7 @@
       TEACHBACK('*Teach it back*: tell your chavrusa the three tools.', 'Word choice: exact, real words. Rhythm: mix long and short, end on a short one. Your lens: details only you would notice.')];
     b.play = [D[0], D[1], Y[3], Y[4]];
     b.done = 'You sound like a *real person*: exact words, *rhythm* and your own *lens*.';
+    b.play[3].cards = b.play[3].cards.map(function (c) { return c[0] === 'It was big. It was loud. I sat.' ? ['It was big. It was loud. It was long.', c[1]] : c; });
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.07']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -367,6 +369,9 @@
       TEACHBACK('*Teach it back*: tell your chavrusa the three steps.', 'Back then I thought… Now I understand… Today I still… Honest, not too perfect, and never a lecture to the reader.')];
     b.play = [D[0], D[1], Y[3], Y[4], Y[2]];
     b.done = 'Your memoir ends with an *honest reflection*: then, *now*, and *today*.';
+    b.learn[2].who.q = 'Akiva and Hillel each end Shmuel’s first-day memoir. Which is *honest*?';
+    b.play[2].pairs = b.play[2].pairs.map(function (p) { return p[0] === 'That was the day I used it.' ? ['That was the day I first rowed alone.', p[1]] : p; });
+    b.play[4].extra = ['The lesson is'];
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.08']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();

@@ -319,6 +319,11 @@
         say: 'Order the plot so the *stakes* climb.', how: 'Problem first. Each event makes it *worse*. The *peak* comes last.' },
       Y[3], Y[2]];
     b.done = 'You plan a plot whose *stakes* keep rising to a *late peak*.';
+    Y[1].cards = Y[1].cards.map(function (c) { return c[0] === 'Fall, mats fly, rain, late gust.' ? ['Slip, mats fly, rain, then a late gust.', c[1]] : c; });
+    b.play[1].steps[2] = 'With five minutes left, Abba’s phone dies.';
+    b.play[2].pairs = b.play[2].pairs.map(function (p) { return p[0] === 'Zaidy cannot tie.' ? ['Zaidy cannot tie.', 'a wall could fall in the wind'] : p; });
+    b.play[3] = { type: 'tiles', q: 'Add a ticking clock.', w: ['Ten minutes', 'to Yom Tov,', 'the frame', 'tipped over.'], extra: ['Also,'],
+      say: 'Build a line that shows *time running out*.', how: 'Time left first. Then what goes wrong.' };
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L08.05']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -335,6 +340,9 @@
       TEACHBACK('*Teach it back*: tell your chavrusa the three dials.', 'Word choice: his own words, like "Nu". Length: long or clipped. What he avoids: he steps around the question. Never name the trait.')];
     b.play = [D[1], Y[0], Y[2], Y[4]];
     b.done = 'You show who a character is by *how he talks*.';
+    b.hook.t = 'Shimon asks, "Are you tired, Zaidy?" Zaidy says, "Tired? Pass me the rope."';
+    b.play[3].bins = ['Shows it', 'Mistake: tells it', 'Mistake: same voice']; b.play[3].cards = b.play[3].cards.concat([['“Again,” said Rebbi. “Again,” said Yoni.', 2]]);
+    b.play[3].how = 'Do you hear the trait? Is it named? Do two people sound the *same*?';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.08']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -351,6 +359,14 @@
       TEACHBACK('*Teach it back*: tell your chavrusa the detail test.', 'Could it be in anyone’s story? Then it is general. Pick the one detail only this moment has, and cut the rest.')];
     b.play = [D[0], Y[0], Y[1], Y[2], Y[4]];
     b.done = 'You choose the *one telling detail* and cut the general ones.';
+    D[1].q = 'One telling detail.'; D[1].w = ['The pole', 'jumped', 'like a fish.']; D[1].extra = ['windy'];
+    b.play[0].cards = b.play[0].cards.filter(function (c) { return c[0] !== 'The pole jumped like a fish.'; });
+    b.play[2].bins = ['One telling detail', 'Buried in general words', 'Beside the point'];
+    b.play[3] = { type: 'tiles', q: 'Show that Shimon is worried.', w: ['I opened', 'the oven door', 'four times.'], extra: ['very worried'],
+      say: 'Build a detail that *shows* he is worried.', how: 'What does he do, again and again?' };
+    b.play[4] = { type: 'evidence', q: 'Yoni’s speech scene. Tap the telling detail.', look: 'a detail only this moment has',
+      p: ['It was a big night.', 'I was very nervous.', 'My knees knocked the shtender.', 'Everyone was there.'], a: 2,
+      say: 'Tap the one *telling* detail.', how: 'Could it be in *any* story? Then it is general.' };
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.10']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -367,6 +383,11 @@
       TEACHBACK('*Teach it back*: tell your chavrusa what makes it earned.', 'Point back to the moment. Say what you thought before. Say what you see now. The story must have shown it.')];
     b.play = [D[0], D[1], Y[3], Y[4], Y[2]];
     b.done = 'Your ending is *earned*: the moment, *before*, and *now*.';
+    Y[1].q = 'Yoni’s story: Rebbi made him say it “Again” until it was smooth.';
+    b.learn[2].who.o[0][0] = 'Tuvia'; b.learn[2].who.why = 'Tuvia shows *no change*. Zalman has a *before* and a *now*.';
+    b.play[3].q = 'Gavriel’s camera story: boys teased him for noticing small things.';
+    b.play[4] = { type: 'tiles', q: 'Show the change.', w: ['I thought', 'Zaidy was slow;', 'tonight, I', 'knew better.'], extra: ['never quit'],
+      say: 'Build a line that shows a *before* and a *now*.', how: 'What he thought first. Then what he knows now.' };
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.11']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();

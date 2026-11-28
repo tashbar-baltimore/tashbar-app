@@ -320,6 +320,8 @@
       { type: 'order', q: 'Gavriel’s library piece. From the broadest to the narrowest.', steps: ['Big idea: the library is full of readers.', 'Category: who comes.', 'Detail: about 60 boys come each day.'], extra: ['New topic: the gym needs mats.'],
         say: 'Order them from *broadest* to narrowest.', how: 'The *big idea* covers the whole piece. A *category* covers one paragraph. A *detail* is one fact.' }];
     b.done = 'You plan one piece from many sources: *one big idea*, grouped by *category*.';
+    b.hook.t = 'Akiva’s body paragraphs: the log, then Rabbi Rosen, then the fact sheet.';
+    b.learn[2].who.q = 'Shloime and Yehuda each plan Yoni’s toy drive piece. Which plan is *better*?';
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L09.04']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -336,6 +338,10 @@
       TEACHBACK('*Teach it back*: tell your chavrusa your two questions.', 'Does it prove THIS point? Is it clear, with a number or an exact example? Keep two telling facts from two sources.')];
     b.play = [D[1], Y[3], Y[1], Y[4]];
     b.done = 'You pick *telling* facts and cut the *weak* ones.';
+    b.play[3].q = 'Point: the library needs more seats. Pick two facts from two sources.';
+    b.play[3].cards = b.play[3].cards.map(function (c) { return [String(c[0]).replace('Mr. Adler’s example', 'Mr. Adler: boys read on the floor'), c[1]]; });
+    b.play.push({ type: 'order', q: 'Point: the library needs more seats. Build the paragraph.', steps: ['The library needs more seats.', 'The log counts about 60 boys a day.', 'With only 30 seats, boys read on the floor.', 'So more seats would let every boy sit.'],
+      say: 'Build the paragraph: point, facts, then what they show.', how: 'Point first. A sentence that says “With only” needs a fact before it.' });
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.03']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -352,6 +358,8 @@
       TEACHBACK('*Teach it back*: tell your chavrusa the three jobs.', 'Same fact: Similarly, or Both sources agree that. Different: However, or In contrast. A new fact on the point: Building on this.')];
     b.play = [D[1], Y[0], Y[2], Y[3], Y[4]];
     b.done = 'Your transitions show each source’s *job*: same, different, or *more*.';
+    b.learn[2].who.q = 'The log counts 60 boys. Mr. Adler counts about 60 too. Which *link*?';
+    b.play[0].cards = b.play[0].cards.map(function (c) { return [String(c[0]).replace(/^Both say history\./, 'Both sources say history.'), c[1]]; });
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.04']);
 
   (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
@@ -368,6 +376,9 @@
       TEACHBACK('*Teach it back*: tell your chavrusa the three moves.', 'Say the big idea in new words. Then "This means…". Then "This matters because…". Stay close to the facts.')];
     b.play = [D[0], D[1], Y[1], Y[3], Y[4]];
     b.done = 'You end with what the facts *mean* and why it *matters*.';
+    b.play[3] = { type: 'evidence', q: 'Benny’s toy drive ending. Tap the sentence that says what it means.', look: 'the meaning, not the facts again',
+      p: ['This year’s toy drive reached further than ever.', 'We collected 140 toys for 32 families.', 'This means our giving now touches many more homes.', 'The toys were wrapped in blue paper.'], a: 2,
+      say: 'Tap the sentence that says what the facts *mean*.', how: 'Look for "*This means*". Facts again are a summary.' };
     delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.05']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
