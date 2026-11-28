@@ -36,7 +36,7 @@ module.exports = async function (browser) {
   catch (e) { bad('build failed: ' + String(e.stderr || e).slice(0, 200)); return out; }
   let own = null;
   try { own = await require('playwright').chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] }); browser = own; } catch (e) {}
-  for (const [world, game, extra] of [...Object.entries(ONE_PER_WORLD), ['bakery (painted look)', 'what-comes-next', '&kids=painted']]) {
+  for (const [world, game, extra] of [...Object.entries(ONE_PER_WORLD), ['bakery (painted look)', 'what-comes-next', '&kids=painted'], ['snow, a tower round (painted look)', 'line-them-up', '&jump=round3']]) {
     const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, deviceScaleFactor: 1 }), pg = await ctx.newPage(), errs = [];
     pg.on('pageerror', e => errs.push(String(e).slice(0, 160)));
     await pg.route('**/*', r => { const u = new URL(r.request().url());
@@ -46,6 +46,10 @@ module.exports = async function (browser) {
       await pg.goto('http://v2.test/k-shapes/' + game + '.html?fast=1&look=1' + (extra || ''));
       if (!(await pg.waitForFunction(() => window.__shp && window.__shp.ready, null, { timeout: 30000 }).then(() => true).catch(() => false))) bad(world + ' (' + game + '): the game did not start');
       else {
+        if (/jump=/.test(extra || '')) {   /* play into that round: the calm look once crashed when it built the towers (no snow cap came back as null) */
+          await pg.click('#start', { force: true }).catch(() => {});
+          if (!(await pg.waitForFunction(() => ['find', 'count'].includes(window.__shp.name), null, { timeout: 30000 }).then(() => true).catch(() => false))) bad(world + ' (' + game + '): the round did not open');
+        }
         await pg.waitForTimeout(600);
         if (!(await pg.evaluate(() => document.body.classList.contains('world')))) bad(world + ' (' + game + '): the new look is not on');
         const n = await pg.evaluate(() => { const c = document.getElementById('view'), g = document.createElement('canvas'); g.width = 64; g.height = 64;
@@ -59,6 +63,6 @@ module.exports = async function (browser) {
   }
   if (own) await own.close();
   fs.rmSync(dist, { recursive: true, force: true });
-  if (!out.fails.length) out.oks.push('2.0 K shapes look: all 12 worlds (and the painted look) start, draw, and have no page errors; every game names a world with its painted pictures; every painted picture is there and small');
+  if (!out.fails.length) out.oks.push('2.0 K shapes look: all 12 worlds (and the painted look, and a tower round) start, draw, and have no page errors; every game names a world with its painted pictures; every painted picture is there and small');
   return out;
 };

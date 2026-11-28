@@ -163,8 +163,8 @@ export function createTreasures({ world, PM: PM0, paint, FAST, ANISO, vivid = c 
     const b = new THREE.Mesh(new THREE.LatheGeometry(prof, 48), m); b.position.y = R0 * 1.18 + R0 * 0.16; g.add(b);
     const knot = new THREE.Mesh(new THREE.ConeGeometry(R0 * 0.16, R0 * 0.22, 16), m); knot.rotation.x = Math.PI; knot.position.y = R0 * 0.1; g.add(knot);
     const sm = new PM({ color: '#5B6170', roughness: 0.5 });   /* a dark string, easy to see on the light floor even on a small balloon (review 2) */
-    const str = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0.02, 0), new THREE.Vector3(R0 * 0.35, 0.02, R0 * 0.25), new THREE.Vector3(R0 * 0.7, 0.02, -R0 * 0.1), new THREE.Vector3(R0 * 1.1, 0.02, R0 * 0.3), new THREE.Vector3(R0 * 1.5, 0.02, R0 * 0.05)]);
-    g.add(new THREE.Mesh(new THREE.TubeGeometry(str, 40, Math.max(0.022, R0 * 0.035), 6, false), sm));   /* its string lies curled on the pan */
+    const str = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0.03, 0), new THREE.Vector3(R0 * 0.3, 0.03, R0 * 0.55), new THREE.Vector3(-R0 * 0.15, 0.03, R0 * 0.95), new THREE.Vector3(R0 * 0.3, 0.03, R0 * 1.35), new THREE.Vector3(R0 * 0.05, 0.03, R0 * 1.75)]);   /* it curls toward the boy, in front of the balloon, so he always sees the string (review 3: it hid behind) */
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(str, 40, Math.max(0.035, R0 * 0.05), 8, false), sm));   /* its string lies curled on the pan */
     return g;
   }
   function hayBale(s) {

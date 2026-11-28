@@ -1048,8 +1048,8 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
           const q = x0.getImageData(Math.round(sx * W) - 4, Math.round(sy * H) - 4, 9, 9).data; let R = 0, G = 0, B = 0; for (let i = 0; i < q.length; i += 4) { R += q[i]; G += q[i + 1]; B += q[i + 2]; }
           const rgb = Math.round(R / 81) + ',' + Math.round(G / 81) + ',' + Math.round(B / 81), gr = x0.createRadialGradient(px, py, 0, px, py, r * 1.85);   /* the sky colour just beside it, soft at the edge */
           gr.addColorStop(0, 'rgb(' + rgb + ')'); gr.addColorStop(0.54, 'rgb(' + rgb + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)'); x0.fillStyle = gr; x0.fillRect(px - r * 2, py - r * 2, r * 4, r * 4); });
-        cx.filter = 'saturate(0.5) blur(' + Math.max(4, Math.round(im.width / 170 * (P.blur || 1))) + 'px)';   /* P.blur: a world whose painting is still busy behind the pieces (bakery shelves) blurs more */   /* blurred enough that small things in the painting (lollipops, planets) melt into soft colour (K-CLARITY-RULES 10) */ cx.drawImage(c0, 0, 0); cx.filter = 'none';
-        cx.fillStyle = 'rgba(255,255,255,' + (P.wash || 0.38) + ')'; cx.fillRect(0, 0, cv.width, cv.height);   /* P.wash: a paler wash (party: bright sun and balloon bunches; review 2) */
+        cx.filter = 'saturate(0.5) blur(' + Math.max(4, Math.round(im.width / 75 * (P.blur || 1))) + 'px)';   /* P.blur: a world whose painting is still busy behind the pieces (bakery shelves) blurs more */   /* blurred enough that small things in the painting (lollipops, planets) melt into soft colour (K-CLARITY-RULES 10) */ cx.drawImage(c0, 0, 0); cx.filter = 'none';
+        cx.fillStyle = 'rgba(255,255,255,' + (P.wash || 0.45) + ')'; cx.fillRect(0, 0, cv.width, cv.height);   /* P.wash: a paler wash (party: bright sun and balloon bunches; review 2) */
         const soft = new THREE.CanvasTexture(cv); tex = soft;
       } catch (e) {}
       tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = ANISO; tex.repeat.x = -1; tex.offset.x = 1;

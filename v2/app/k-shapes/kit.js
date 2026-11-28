@@ -1145,8 +1145,8 @@ export function startGame(cfg) {
   const POS_Z = () => tall ? -0.6 : -0.4;
   function zoneWorld(z) { const v = ZONES[z], dz = v[2] * (tall ? 0.85 : 1);
     if (z === 'behind') {   /* behind (review 2): just behind the left block on the line from his eye, moved over so about half of it peeks out. The block hides part of it, so it is clearly BEHIND: never next to the end, never seen above the bridge like "on top" */
-      const c = viewFor('wide').pos, qx = -1.05, qz = POS_Z(); let dx = qx - c.x, dzz = qz - c.z; const n = Math.hypot(dx, dzz) || 1; dx /= n; dzz /= n;
-      return new THREE.Vector3(qx + dx * 1.15 + dzz * 0.75, v[1], qz + dzz * 1.15 - dx * 0.75); }
+      const c = viewFor('wide').pos, qz = POS_Z(); let dx = -c.x, dzz = qz - c.z; const n = Math.hypot(dx, dzz) || 1; dx /= n; dzz /= n;   /* review 3: behind the MIDDLE of the bridge, in the gap between its legs, so the plank hides its top (beside the left block it read as next to) */
+      return new THREE.Vector3(dx * 1.0, 0.5, qz + dzz * 1.0); }
     return new THREE.Vector3(v[0] * (tall ? 0.8 : 1), v[1], dz + POS_Z()); }
   function zoneHit(cx, cy) { let best = null, bd = 1e9; Object.keys(ZONES).forEach(z => { const p = toScreen(zoneWorld(z)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = z; } }); return bd < Math.max(110, innerWidth * 0.1) ? best : null; }
   function showRing(z, on) { if (!BR) return; BR.ring.visible = on; if (on) { const p = zoneWorld(z); BR.ring.position.set(p.x, z === 'top' ? PLANK_Y + 0.16 : 0.1, p.z); } }
@@ -1239,7 +1239,7 @@ export function startGame(cfg) {
   function makeTower(id, n, color, i, x) {   /* a tower of n blocks, standing on the floor (winter: tinted ice blocks with snow on top) */
     const g = new THREE.Group(), m = LK && LK.treasures.towerMat ? LK.treasures.towerMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.35, clearcoat: 0.8 });
     for (let j = 0; j < n; j++) { const c = new THREE.Mesh(new RoundedBoxGeometry(0.7, 0.55, 0.7, 3, 0.06), m); c.position.y = 0.3 + j * 0.57; c.castShadow = true; g.add(c); }
-    if (LK && LK.treasures.towerTop) { const top = LK.treasures.towerTop(); top.position.y = 0.3 + (n - 1) * 0.57 + 0.29; g.add(top); }
+    const top = LK && LK.treasures.towerTop ? LK.treasures.towerTop() : null; if (top) { top.position.y = 0.3 + (n - 1) * 0.57 + 0.29; g.add(top); }
     const hull = new THREE.Mesh(new THREE.BoxGeometry(0.8, n * 0.57 + 0.1, 0.8), new THREE.MeshBasicMaterial({ visible: false })); hull.position.y = (n * 0.57) / 2; g.add(hull);
     g.position.set(x, 0, -0.2); scene.add(g);
     const o = { id, k: 'tower', len: n, box: -1, g, turn: g, mesh: hull, mat: m, marks: [], corners: [], scale: 1, home: g.position.clone(), still: true, slot: i, inBox: true, busy: false };
@@ -1675,13 +1675,14 @@ export function startGame(cfg) {
       setPattern({ seq: M.pattern.seq, blanks: 0, tray: [] }); ghost.visible = false;
       if (!M.wide) PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);   /* M.wide: the long train stays where it was, seen whole */
     }
-    else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; if (p[4]) d.turn.rotation.x = p[4]; }   /* p[4]: tipped toward him, so an upside-down cone shows its round base (it never looks like a flat triangle) */
+    else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; if (p[4]) d.turn.rotation.x = p[4]; if (M.thin) d.turn.rotation.y = 0.45; }   /* M.thin: turned a little from the start, so he sees it is thin like card next to the cube (review 3) */   /* p[4]: tipped toward him, so an upside-down cone shows its round base (it never looks like a flat triangle) */
     let side = null;   /* M.beside: a second piece next to it, to compare with (big and small: a ball is only big next to a small one) */
-    const SX = M.join ? (tall ? 1.35 : 2.15) : (tall ? 1.95 : 2.65);   /* where the second piece stands (join: the spot Build shapes was tuned for) */
+    const SX = M.join ? (tall ? 1.35 : 2.15) : M.thin ? (tall ? 1.7 : 2.2) : (tall ? 1.95 : 2.65);   /* where the second piece stands (join: the spot Build shapes was tuned for) */
     if (M.beside) { side = makeShape('mk2', M.beside[0], M.beside[3] || '#FF7A1A', M.beside[1], 1); side.slot = null; side.busy = true; side.g.position.set(SX, 2.05, 0.9); side.g.scale.setScalar(0.01); }
     const joinSide = (on) => side ? tween(700, k => { const e = ease(k); const sx = SX; side.g.position.x = on ? sx + (d.g.position.x - sx) * e : d.g.position.x + (sx - d.g.position.x) * e; }).then(() => { pop(); return wait(on ? 600 : 0); }) : null;   /* M.join: the second piece slides onto the first (two triangles make a square), and back */
     const sideAway = () => side ? tween(400, k => side.g.scale.setScalar(Math.max(0.001, (M.beside[2] || 0.5) * (1 - k)))).then(() => { side.g.visible = false; scene.remove(side.g); const i = shapes.indexOf(side); if (i >= 0) shapes.splice(i, 1); }) : null;
     if (!M.where && !M.measure && !M.balance && !M.wide) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
+    if (cfg.sortBy && M.claimBox != null && d.g) { const b = boxAt(M.claimBox); d.g.position.x = b.x; }   /* the piece floats over the box the friend names, so the words match the picture (review 3) */
     if (M.wide) { friend.position.copy(mendyAt()); if (PAINTED && PATTERNED) friend.position.add(new THREE.Vector3(0.75, 0, 1.9)); if (tall) friend.position.set(-0.95, 0, 2.6); friend.rotation.set(tall ? -0.6 : 0, tall ? -0.35 : 0.5, 0); friend.visible = true; mendy.visible = false; }   /* M.wide: the friend stands where Mendy stood, in front of the whole train, never hidden behind it */
     else if (M.where || M.measure || M.balance) { friend.position.set(M.measure ? (tall ? 1.7 : 3.0) : (tall ? -1.6 : -3.4), 0, M.measure && !tall ? 0.9 : tall ? 2.6 : 1.4);   /* measuring: he stands on the right, never on the start line the question is about (review 2) */ friend.rotation.y = M.measure ? -0.5 : 0.5; friend.userData.mirror = !!M.measure;   /* on the right his picture is mirrored, so his hand points at the scarves */ friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
@@ -1694,13 +1695,14 @@ export function startGame(cfg) {
     const keep = a => (SHOT ? a.slice(0, -1) : a);   /* pictures: the lit sides stay until his next touch */
     let curvyLine = null;
     const outline = o => { const pts = shapeOf(o.k).s.getSpacedPoints(90).map(p => new THREE.Vector3(p.x, p.y, 0)); const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 160, 0.045, 8, true), cornerMat); m.position.z = DEPTH / 2 + BEV + 0.06; o.mesh.add(m); return m; };
-    const explain = cfg.sortBy ? [] : M.thin ? [() => tween(900, k => { d.turn.rotation.y = ease(k) * 1.25; })] : M.sides && d.marks ? ['Let us look at the sides.', ...keep(sideSteps(d))] : d.marks.length ? ['Let us count the corners.', ...d.marks.flatMap((m, i) => [() => lightCorner(d, i), NUMS[i]])]
+    const explain = cfg.sortBy ? [] : M.thin ? [() => tween(900, k => { d.turn.rotation.y = 0.45 + ease(k) * 0.8; })] : M.sides && d.marks ? ['Let us look at the sides.', ...keep(sideSteps(d))] : d.marks.length ? ['Let us count the corners.', ...d.marks.flatMap((m, i) => [() => lightCorner(d, i), NUMS[i]])]
       : (d.mesh && KINDS[d.k] && !KINDS[d.k].solid && !M.thin) ? ['Look at its sides.', () => { if (!curvyLine) { curvyLine = outline(d); plink(); } return wait(600); }]   /* a shape with no corners: its outline glows, so the curvy sides are seen */
       : M.balance ? [() => { const ws = BS.items.map(o => o.w), h = BS.items[ws.indexOf(Math.max(...ws))]; showHandAt(toScreen(h.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.5, 0)))); return wait(500); }]   /* the hand on the side that went down */
-      : M.thin ? [() => tween(900, k => { d.turn.rotation.y = ease(k) * 1.25; })]   /* flat or solid: the flat piece turns, so he sees it is thin */
+      : M.thin ? [() => tween(900, k => { d.turn.rotation.y = 0.45 + ease(k) * 0.8; })]   /* flat or solid: the flat piece turns, so he sees it is thin */
       : M.where ? [() => { showRing('front', true); return wait(400); }]   /* where is it: the gold ring on the empty "in front" place */
       : M.measure && MS ? [() => { endMarks(false); MS_ENDS = MS.items.map(o => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), cornerMat); m.position.set(o.g.position.x - o.len / 2 - 0.1, ROD_Y + 0.3, o.g.position.z); scene.add(m); return m; }); if (MS_LINE) MS_LINE.material.color.set('#F5B400'); return wait(500); }]   /* measuring: gold balls on the two starting ends, the start line gold */
       : [];
+    if (M.straighten && p[1]) explain.push(() => tween(900, k => { d.turn.rotation.z = p[1] * (1 - ease(k)); }).then(() => wait(800)).then(() => tween(900, k => { d.turn.rotation.z = p[1] * ease(k); })));   /* turned square: it turns upright and back, the same four sides (review 3) */
     if (cfg.sortBy && M.box != null && d.mesh) explain.push(() => { const want = cfg.sortBy === 'color' ? cfg.boxes.findIndex(b => b.acceptColor === M.piece[3]) : cfg.boxes.findIndex(b => (b.acceptSize === 'big') === ((M.piece[2] || 1) >= 0.85)); if (want < 0) return; handOn = d; hand.style.display = 'block';
       const hw = ms => (SHOT ? new Promise(r => setTimeout(r, ms)) : wait(ms)); return hw(900).then(() => { showHandAt(toScreen(boxAt(want).clone().setY(1.0))); return hw(900); }); });   /* sorting: the hand goes from the piece to the box it belongs in */
     /* K-CLARITY-RULES 16: every wrong answer on the friend's mistake gets help he can SEE (review 2) */   /* M.sides: the friend's claim is about sides, so the sides light */
@@ -1727,7 +1729,7 @@ export function startGame(cfg) {
   }
   function end() {
     const m = W.misses, stars = m === 0 ? 3 : m <= 2 ? 2 : 1;
-    W.stars = stars; W.done = true; setName('end'); dots(STEPS);
+    W.stars = stars; W.done = true; setName('end'); hand.style.display = 'none'; handOn = null;   /* no help hand left on a box at the end (review 3) */ dots(STEPS);
     burst(boxAt(0).clone().setY(1.4), 60); chime(true); task = null; cheer(mendy).then(() => cheer(mendy));
     if (LK && PARENTS) { placeFamily(true); LK.family(true, true); }   /* Mommy and Tatty only at the very end, and only once Esti says yes to how they look (?parents=1 to preview) */
     const STAR = on => '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="' + (on ? '#F5B400' : '#EDE6D6') + '" stroke="' + (on ? '#C48F00' : '#D8CFBC') + '" stroke-width="4" stroke-linejoin="round"/></svg>';
@@ -1739,7 +1741,7 @@ export function startGame(cfg) {
   }
   function showCertificate() {   /* graduation: a certificate with a gold medal of shapes, and fireworks (no name: nothing about a real boy is shown) */
     let c = $('#cert'); if (!c) { c = document.createElement('div'); c.id = 'cert'; c.className = 'cert'; $('#end').prepend(c); }
-    if (tall) mendy.visible = false; else mendy.position.x -= 1.9;   /* never behind the certificate (review 2: it covered his face) */
+    mendy.visible = false;   /* the certificate is the one thing to look at; a star covered Mendy's face (review 3) */
     c.innerHTML = '<svg viewBox="0 0 520 300" role="img" aria-label="Shape graduate certificate"><rect x="8" y="8" width="504" height="284" rx="22" fill="#FFFBEF" stroke="#C48F00" stroke-width="8"/>'
       + '<rect x="26" y="26" width="468" height="248" rx="14" fill="none" stroke="#F2D27A" stroke-width="3" stroke-dasharray="10 8"/>'
       + '<text x="260" y="78" text-anchor="middle" font-family="Baloo 2, Trebuchet MS, sans-serif" font-weight="800" font-size="40" fill="#1F2A44">Shape Graduate</text>'
