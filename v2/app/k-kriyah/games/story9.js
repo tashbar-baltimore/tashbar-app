@@ -25,7 +25,7 @@ export default function setup(E, { unit }) {
       step('fei', 'feisofis', null, true),
       step('tzadik', 'tzadiksofis', null, true),
     ],
-    lookalikes: [['samech', 'memsofis', 'Samech is round at the bottom.', 'Mem Sofis is square at the bottom.'], ['vov', 'nunsofis', 'Vov stops at the line.', 'Nun Sofis has a long leg.']],
+    lookalikes: [['samech', 'memsofis', 'Samech is round at the bottom.', 'Mem Sofis is square at the bottom.'], ['vov', 'nunsofis', 'Vov is short.', 'Nun Sofis has a long leg.']],
     row: ['chaf', 'chafsofis', 'mem', 'memsofis', 'nun', 'nunsofis', 'fei', 'feisofis', 'tzadik', 'tzadiksofis'],
     chantLine: 'Let’s sing the partners!',
     endLine: 'Wonderful! You know every letter in Shabbos clothes!',

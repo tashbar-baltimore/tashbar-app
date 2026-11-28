@@ -11,7 +11,7 @@ const PLAN = {
   6: { R: [['samech', 'samech'], ['pei', 'fei'], ['ayin', 'ayin'], ['fei', 'chaf'], ['fei', 'fei'], ['chaf', 'fei']], demo: ['fei', 'pei', 'Hmm. Watch me. No dot. That is not a Pei!'] },
   7: { R: [['reish', 'reish'], ['daled', 'reish'], ['kuf', 'kuf'], ['hei', 'kuf'], ['tzadik', 'tzadik'], ['reish', 'daled']], demo: ['kuf', 'hei', 'Hmm. Watch me. A long leg! That is not a Hei!'] },   /* the demo is not one of his own questions */
   8: { bySound: true, R: [['shin', 'shin'], ['sin', 'shin'], ['tav', 'tav'], ['sav', 'tav'], ['sin', 'sin'], ['shin', 'sin']], demo: ['sav', 'tav', ['Hmm. Watch me. No dot. It does not say', { snd: 't' }, '!']] },   /* Unit 8's twist: Yaakov says the SOUND, not the name */
-  10: { both: true, R: [['gimmel', 'gimmel', 'gimmel'], ['daled', 'daled', 'reish'], ['sin', 'sin', 'shin'], ['kuf', 'kuf', 'kuf'], ['memsofis', 'samech', 'samech'], ['tav', 'tav', 'tes']], demo: ['beis', 'beis', 'veis', ['Hmm. Watch me. Beis is right, but Beis says', { snd: 'b' }, '!']] },   /* Unit 10's twist: the name AND the sound; either can be wrong */
+  10: { both: true, R: [['gimmel', 'gimmel', 'gimmel'], ['daled', 'daled', 'reish'], ['sin', 'sin', 'shin'], ['kuf', 'kuf', 'kuf'], ['memsofis', 'samech', 'samech'], ['tav', 'tav', 'tes']], demo: ['beis', 'beis', 'veis', ['Hmm. Watch me. It is Beis. But Beis says', { snd: 'b' }, '!']] },   /* Unit 10's twist: the name AND the sound; either can be wrong */
   9: { words: true, R: [['memsofis', 'memsofis', ['shin', 'lamed', 'vov'], 'Shalom'], ['mem', 'memsofis', ['lamed', 'ches'], 'Lechem, bread'], ['nunsofis', 'nunsofis', ['gimmel'], 'Gan, a garden'],
       ['tzadik', 'tzadiksofis', ['alef', 'reish'], 'Eretz, the land'], ['chafsofis', 'chafsofis', ['mem', 'lamed'], 'Melech, a king'], ['fei', 'feisofis', ['tav'], 'Tof, a drum']],
     demo: ['nun', 'nunsofis', ['alef', 'veis'], 'Even, a stone', 'Hmm. Nun at the end needs Shabbos clothes!'] },   /* Unit 9's twist: Yaakov writes a word; is its LAST letter right? */
@@ -117,12 +117,12 @@ export default function setup(E, { struggled, unit }) {
     await E.say(plan.both ? ['It says', S(E.LETTERS[sndOf].snd), '. Is he right?'] : plan.words ? 'Is the last letter right?' : plan.bySound ? ['Yaakov says this letter says', S(E.LETTERS[claim].snd), '. Is he right?'] : 'Yaakov says this is ' + an(claim) + '. Is he right?'); yak.mood('calm');
     if (help && !(plan.both && shownKey === claim) && mark(shownKey)) { await E.say(plan.words ? 'Look at the end of the word!' : ring.visible ? 'Look at the dot place!' : (E.CALM ? 'Look where the arrow points!' : 'Look carefully here!')); unmark(); }
     const sndWrong = plan.both && E.LETTERS[sndOf].snd !== E.LETTERS[shownKey].snd && shownKey === claim, right = shownKey === claim && !sndWrong; curRight = right; let saysRight;
-    if (demo) { mark(shownKey); await E.say(plan.demo[plan.words ? 4 : plan.both ? 3 : 2]); unmark(); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
+    if (demo) { if (!(E.CALM && plan.both && shownKey === claim)) mark(shownKey);   /* calm: a sound mistake is not shown on the shape */ await E.say(plan.demo[plan.words ? 4 : plan.both ? 3 : 2]); unmark(); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); if (E.CALM) await E.say('Yaakov is wrong. I tap the orange X.'); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
     else { if (plan.words && E.CALM) mark(shownKey); saysRight = await ask(); if (plan.words && E.CALM) unmark(); }   /* calm: the last letter stays marked while he decides */
     if (saysRight === right) {
       if (right) { yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say(E.LETTERS[shownKey].snd === 'ch' ? 'Yes! Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.' : ['Yes! Yaakov is right.', ...E.nameLine(shownKey)]);   /* 12 words or fewer */ yak.mood('calm'); }
-      else if (sndWrong) { E.sfx.chime(); await E.say([E.CALM ? 'Right! A mistake.' : 'Yes! A mistake.', E.LETTERS[shownKey].name + ' says', S(E.LETTERS[shownKey].snd), '!']); }   /* the name was right, the sound was not */
-      else { E.sfx.chime(); await E.say([(E.CALM ? 'Right!' : 'Yes!') + ' Yaakov made a mistake. That is', E.LETTERS[shownKey].name + '.']); await fix(claim, demo); }
+      else if (sndWrong) { E.sfx.chime(); await E.say([E.CALM ? 'Good listening! A mistake.' : 'Yes! A mistake.', E.LETTERS[shownKey].name + ' says', S(E.LETTERS[shownKey].snd), '!']); }   /* the name was right, the sound was not */
+      else { E.sfx.chime(); await E.say([(E.CALM ? 'Good job!' : 'Yes!') + ' Yaakov made a mistake. That is', E.LETTERS[shownKey].name + '.']); await fix(claim, demo); }
     } else {
       E.sfx.boop(); if (!demo && !missed) mistakes++; missed = true; yak.mood('think'); help = help || mistakes >= 2;
       if (!(plan.both && shownKey === claim)) mark(shownKey);   /* a sound round: the shape is not the mistake */
@@ -133,7 +133,8 @@ export default function setup(E, { struggled, unit }) {
         if (await ask()) { E.sfx.chime(); yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say('Yes! Yaakov is right.'); }
         else await E.say('Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.');
         yak.mood('calm'); }
-      else if (sndWrong) { await E.say(['Listen again. ' + E.LETTERS[shownKey].name + ' says', S(E.LETTERS[shownKey].snd), ', not', S(E.LETTERS[sndOf].snd), '.']); unmark(); }
+      else if (sndWrong) { await E.say(['Listen again. ' + E.LETTERS[shownKey].name + ' says', S(E.LETTERS[shownKey].snd), ', not', S(E.LETTERS[sndOf].snd), '.']); unmark();
+        if (E.CALM) { await E.say('So is Yaakov right? Try again.'); if (!(await ask())) { E.sfx.chime(); await E.say('Good listening! A mistake.'); } else await E.say('Yaakov made a mistake.'); } }   /* calm: a second try, as in the other rounds */
       else { await E.say(why(shownKey, claim)); unmark(); await fix(claim, false); }
     }
   }
@@ -145,7 +146,7 @@ export default function setup(E, { struggled, unit }) {
     await roundOf(plan.demo[0], plan.demo[1], plan.demo[2], plan.demo[3], true);
     if (E.CALM) { /* both answers are shown (K-CLARITY 15): the demo tapped the orange X; here is the green check */
       bar.style.display = 'flex'; const [yx, yy] = btnXY('#yes'); E.hand.at(yx - 20, yy - 10); await E.say('If Yaakov is right, tap the green check.'); E.hand.hide(); bar.style.display = 'none'; }
-    await E.say('Now you! Is Yaakov right? Tap yes or no.');
+    await E.say(E.CALM ? 'Now you! Green check, or orange X?' : 'Now you! Is Yaakov right? Tap yes or no.');
     mistakes = 0;
     for (let i = 0; i < R.length; i++) { const [a, b, c, d] = R[i]; await roundOf(a, b, c, d); E.setProgress(R.length, i + 1); }
     const stars = mistakes === 0 ? 3 : mistakes <= 2 ? 2 : 1;   /* Yaakov is right half the time: always tapping one button makes 3 mistakes and can't pass */

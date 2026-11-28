@@ -19,17 +19,17 @@ export default function setup(E, { struggled, unit }) {
   const bubbles = []; let want = null, active = false, caught = 0, wrong = 0, wrongHere = 0, resolveCatch = null, P = false, big = null, help = struggled;
   const glow = E.glowSprite('#fff7b0', 1.8, 0); E.scene.add(glow); const arrow = E.arrow3d(.3);
   E.onLayout(p => { P = p; if (p) { E.camBase.set(0, 2.4, 11); E.camTarget.set(0, 2.3, 0); kid.visible = false; } else { E.camBase.set(0, 2.5, 9.5); E.camTarget.set(0, 1.7, 0); kid.visible = true; kid.position.set(-4.6, 0, 1.2); } });
-  const lanes = () => P ? [1.25, 0, -1.25] : [3.1, 1.6, .1, -1.4, -2.9];   /* three wide lanes on a phone */
+  const lanes = () => P ? (E.CALM ? [.95, -.95] : [1.25, 0, -1.25]) : [3.1, 1.6, .1, -1.4, -2.9];   /* three wide lanes on a phone */
   let seq = 0, queue = [];
   function spawn() {
     if (!queue.length) return; const L0 = lanes(), free = L0.map((x, i) => i).filter(i => !bubbles.some(o => !o.userData.popping && Math.abs(o.userData.x - L0[i]) < (P ? .95 : 1.4) && o.position.y < 1.8));
     if (!free.length) return; seq = free[Math.floor(Math.random() * free.length)];   /* a lane with no bubble near the bottom: they never merge */
-    const k = queue.shift(), b = new THREE.Group(); const s = E.CALM ? new THREE.Mesh(new THREE.CircleGeometry(.78, 40), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .6 })) : new THREE.Mesh(new THREE.SphereGeometry(.62, 28, 20), bubM); if (E.CALM) s.position.z = -.12; b.add(s);   /* calm: a plain white disc behind the letter, not a see-through rainbow bubble */
+    const k = queue.shift(), b = new THREE.Group(); const s = E.CALM ? new THREE.Mesh(new THREE.CircleGeometry(P ? .62 : .78, 40), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .6 })) : new THREE.Mesh(new THREE.SphereGeometry(.62, 28, 20), bubM); if (E.CALM) s.position.z = -.12; b.add(s);   /* calm: a plain white disc behind the letter, not a see-through rainbow bubble */
     const l = E.letter(k, E.CALM ? 1.0 : .8); l.position.z = .05; b.add(l); b.userData = { key: k, l, x: lanes()[seq % lanes().length] + (Math.random() - .5) * .2, t0: performance.now(), sp: E.CALM ? (P ? .38 : .34) : P ? .55 : .5 }; b.position.set(b.userData.x, -.6, 1.2); E.scene.add(b); bubbles.push(b);
   }
   E.onFrame(t => {
-    for (const b of bubbles.slice()) { if (b.userData.popping || b.userData.hopping) continue; const y = -.6 + (performance.now() - b.userData.t0) / 1000 * b.userData.sp * (E.FAST ? 3 : 1);
-      b.position.set(b.userData.x + Math.sin(t * 1.5 + b.userData.x) * .15, y, 1.2); b.userData.l.rotation.y = E.CALM ? 0 : Math.sin(t + b.userData.x) * .25;
+    for (const b of bubbles.slice()) { if (b.userData.popping || b.userData.hopping) continue; const y = (E.CALM ? .45 : -.6) + (performance.now() - b.userData.t0) / 1000 * b.userData.sp * (E.FAST ? 3 : 1);
+      b.position.set(b.userData.x + (E.CALM ? 0 : Math.sin(t * 1.5 + b.userData.x) * .15), y, 1.2); b.userData.l.rotation.y = E.CALM ? 0 : Math.sin(t + b.userData.x) * .25;
       if (y > (E.CALM ? (P ? 4.3 : 3.6) : P ? 4.5 : 4.3)) {   /* gone before it reaches the top bar */ E.scene.remove(b); bubbles.splice(bubbles.indexOf(b), 1); if (active) queue.push(b.userData.key); } }   /* a bubble that floats away comes back later */
     const h = help && active && bubbles.find(b => b.userData.key === want && !b.userData.popping); if (h) { glow.position.copy(h.position).setZ(.8); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
@@ -70,6 +70,6 @@ export default function setup(E, { struggled, unit }) {
     for (let i = 0; i < picks.length; i++) { await letterRound(picks[i], i); E.setProgress(picks.length, i + 1); }
     const stars = wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1;
     bubbles.slice().forEach(b => E.scene.remove(b)); bubbles.length = 0;   /* no bubble left on the end screen */
-    return { stars, line: 'Great practice! Now try the champion check again.' };
+    return { stars, line: E.CALM ? 'Great practice! You know your hard letters better now.' : 'Great practice! Now try the champion check again.' };
   };
 }

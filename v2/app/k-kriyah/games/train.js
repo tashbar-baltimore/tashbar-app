@@ -138,7 +138,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   let sunObj = null, sunT0 = 0, beatSun = true, sunTick = null;
   const SUN_MS = 70000;
   function startClock() { sunObj = new THREE.Group(); sunObj.add(E.mesh(new THREE.SphereGeometry(.45, 24, 16), new THREE.MeshBasicMaterial({ color: 0xffd84a }), 0, 0, 0, false)); const g = E.glowSprite('#ffe680', 2.2, .7); sunObj.add(g); E.scene.add(sunObj); sunT0 = performance.now();
-    const f = () => { if (!sunObj) return; const q = Math.min(1, (performance.now() - sunT0) / (SUN_MS * (E.FAST ? .3 : 1))); sunObj.position.set((P ? 2.2 : 6) - q * (P ? 4.4 : 12), (E.CALM ? (P ? 5.5 : 5.7) : P ? 4.4 : 5.0) +   /* calm: the sun's path stays high above the cars, never behind a letter */ Math.sin(q * Math.PI) * (P ? .6 : 1.0) - q * q * 1.5, -3);   /* under the top bar on a phone */ if (q >= 1 && beatSun) { beatSun = false; } };
+    const f = () => { if (!sunObj) return; const q = Math.min(1, (performance.now() - sunT0) / (SUN_MS * (E.FAST ? .3 : 1))); sunObj.position.set((P ? 2.2 : 6) - q * (P ? 4.4 : 12), (E.CALM ? (P ? 5.5 : 5.7) : P ? 4.4 : 5.0) +   /* calm: the sun's path stays high above the cars, never behind a letter */ Math.sin(q * Math.PI) * (P ? .6 : 1.0) - q * q * 1.5, -3); if (E.CALM) sunObj.position.y = P ? 5.9 : 6.0;   /* calm: it only slides across, high up; it never sinks toward the cars */   /* under the top bar on a phone */ if (q >= 1 && beatSun) { beatSun = false; } };
     E.onFrame(f); sunTick = f; }
   function stopClock() { if (sunTick) E.offFrame(sunTick); }
   /* Unit 8's twist (game.swap): the full train comes back, but Yaakov mixed up some cars. He listens to the order and taps a car

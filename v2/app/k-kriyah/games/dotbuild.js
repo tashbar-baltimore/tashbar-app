@@ -23,13 +23,13 @@ export default function setup(E, { struggled, unit, game }) {
   dot.add(new THREE.Mesh(new THREE.SphereGeometry(.55, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })));
   const dotGlow = E.glowSprite('#ffe680', 1.1, .55); dot.add(dotGlow);
   /* soft rings where a dot can go; the right one glows when he needs help */
-  const ringM = () => E.CALM ? new THREE.MeshStandardMaterial({ color: 0xff8a3d, emissive: 0xff6a1a, emissiveIntensity: .5, roughness: .4 }) : new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffe9a0, emissiveIntensity: .6, transparent: true, opacity: .55 });   /* calm: clear orange rings for the dot's places */
+  const ringM = () => E.CALM ? new THREE.MeshBasicMaterial({ color: 0xff7a2a }) :   /* unlit: the same strong orange on every screen */ new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffe9a0, emissiveIntensity: .6, transparent: true, opacity: .55 });   /* calm: clear orange rings for the dot's places */
   const spotRing = () => { const r = E.mesh(new THREE.TorusGeometry(.3, .035, 10, 32), ringM(), 0, 0, 0, false); r.visible = false; E.scene.add(r); return r; };
   const rings = { right: spotRing(), left: spotRing(), in: spotRing() };
   const helpGlow = E.glowSprite('#fff7b0', 1.6, 0); E.scene.add(helpGlow);
   let P = false, H = 2.6, letterAt = new THREE.Vector3(), dishAt = new THREE.Vector3(), shape = null, L = null, want = null, at = 'dish', busy = true, enabled = false, dragging = false, mistakes = 0, wrongInRow = 0, missed = false, help = struggled, resolveTask = null, done = 0, total = 12;
   E.onLayout(p => { P = p; H = p ? 2.1 : 2.6;
-    if (p) { E.camBase.set(0, 2.4, 10.5); E.camTarget.set(0, 1.9, 0); letterAt.set(0, 1.55, .4); stand.position.set(0, 0, .2); stand.scale.setScalar(.8); dish.position.set(E.CALM ? 1.45 : 1.15, 0, E.CALM ? 1.1 : 2.2); dish.scale.setScalar(.9); kid.visible = false; }
+    if (p) { E.camBase.set(0, 2.4, 10.5); E.camTarget.set(0, 1.9, 0); letterAt.set(0, 1.55, .4); stand.position.set(0, 0, .2); stand.scale.setScalar(.8); dish.position.set(E.CALM ? 0 : 1.15, 0, E.CALM ? 2.7 : 2.2);   /* calm, on a phone: the dish in front, below the letter, never beside it */ dish.scale.setScalar(.9); kid.visible = false; }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); letterAt.set(.3, 1.62, .4); stand.position.set(.3, 0, .2); stand.scale.setScalar(1); dish.position.set(3.7, 0, 1.4); dish.scale.setScalar(1.1); kid.visible = true; kid.position.set(-4.4, 0, 1.2); }
     dishAt.copy(dish.position).add(new THREE.Vector3(0, .9 * dish.scale.x, 0));
     if (shape) { const k = shape; shape = null; setShape(k, true); }
@@ -127,8 +127,8 @@ export default function setup(E, { struggled, unit, game }) {
       total = 6; E.setProgress(total, 0); setShape('ש'); at = 'dish'; dot.position.copy(spotPos('dish'));
       await E.say('Remember the dot? Let’s build letters again!');
       await demo('sin', 'The dot is on the left head. This is Sin.'); await moveDot('dish', 400);
-      if (E.CALM) { setShape('ת'); at = 'dish'; dot.position.copy(spotPos('dish')); await E.wait(300); await demo('tav', 'The dot is inside. This is Tuf.'); }   /* calm: Tuf is shown on Tuf, not talked about over a Shin */
-      okBtn.style.display = 'grid'; { const r = okBtn.getBoundingClientRect(); E.hand.at(r.x + r.width / 2, r.y + 20, true); } await E.say(E.CALM ? 'Already right? Tap the green check!' : 'For Tuf and Suf: already right? Tap the green check!'); E.hand.hide(); okBtn.style.display = 'none'; mistakes = 0;
+      if (E.CALM) { setShape('ת'); at = 'dish'; dot.position.copy(spotPos('dish')); await E.wait(300); await demo('tav', 'The dot is inside. This is Tuf.'); await demo('sav', 'I take the dot out. No dot: this is Suf.'); }   /* calm: Tuf and Suf are shown on Tuf, not talked about over a Shin */
+      okBtn.style.display = 'grid'; { const r = okBtn.getBoundingClientRect(); E.hand.at(r.x + r.width / 2, r.y + 20, true); } if (E.CALM) { await E.say('Watch me. It is Suf already. I tap the green check.'); E.sfx.chime(); await E.wait(400); } await E.say(E.CALM ? 'Is it right already? Tap the green check!' : 'For Tuf and Suf: already right? Tap the green check!'); E.hand.hide(); okBtn.style.display = 'none'; mistakes = 0;
       for (const k of mix(['shin', 'tav', 'sin', 'sav', 'shin', 'tav'])) await task(k);
       const stars = mistakes <= 1 ? 3 : mistakes <= 2 ? 2 : 1;
       return { stars, line: stars >= 2 ? 'You still know the dots! Great!' : null };

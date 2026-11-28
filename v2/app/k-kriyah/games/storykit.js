@@ -38,8 +38,8 @@ export function makeStory(E, unit, script) {
     picObj.visible = false; float(l);
   }
   async function letterDone(k) {   /* the new letters wait in a row along the top, right to left */
-    const l = L[k]; float(l, false); const n = unit.letters.length, i = unit.letters.indexOf(k), gap = P ? (n > 4 ? .8 : n > 3 ? 1.05 : 1.45) : (n > 4 ? 1.85 : n > 3 ? 2.3 : 2.7);
-    const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? (E.CALM ? 4.2 : 4.4) + l.userData.below * .28 : 3.3), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
+    const l = L[k]; float(l, false); const n = unit.letters.length, i = unit.letters.indexOf(k), gap = P ? (n > 4 ? .8 : n > 3 ? (E.CALM ? 1.12 : 1.05) : 1.45) : (n > 4 ? 1.85 : n > 3 ? 2.3 : 2.7);
+    const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? (E.CALM ? 4.2 : 4.4) + l.userData.below * .28 : E.CALM ? 3.0 : 3.3), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
     await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? (E.CALM ? .36 : .28) : (E.CALM ? .48 : .42))));   /* calm: waiting letters big enough to read (reviewer: 25-40 px) */ glow.material.opacity = .8 * (1 - q); }); float(l);
   }
   /* a picture that stays (the Torah is never spun or shrunk away): it steps back beside the grown-up, and its letter rises out of a soft light */
@@ -63,7 +63,7 @@ export function makeStory(E, unit, script) {
     if (E.CALM && !shown) { shown = true; await E.say('Watch me. I tap ' + nm + '.'); E.handBelow(l, true); await E.wait(500); E.hop(l, .3, 350); await E.wait(400); E.hand.hide(); await E.say('Now you! Tap ' + nm + '!'); }
     else await E.say(['Tap ' + nm + '!']); }
   return async () => {
-    boy.position.set(P ? -.85 : -2.0, 0, P ? 3.0 : 1.4); if (grown) grown.position.set(P ? -1.5 : -3.9, 0, P ? 2.2 : .6); if (P) { boy.scale.setScalar(.95); if (grown) grown.scale.multiplyScalar(.9); }   /* on a phone they stand in front, big enough to see (reviewer: they were tiny) */
+    boy.position.set(P ? (E.CALM ? -1.3 : -.85) : -2.0, 0, P ? 3.0 : 1.4); if (grown) grown.position.set(P ? (E.CALM ? -1.85 : -1.5) : -3.9, 0, P ? 2.2 : .6);   /* calm, on a phone: the people stand clear of the big letter */ if (P) { boy.scale.setScalar(.95); if (grown) grown.scale.multiplyScalar(.9); }   /* on a phone they stand in front, big enough to see (reviewer: they were tiny) */
     E.setProgress(steps, 0);
     for (const line of script.intro) await say(boy, line);
     for (const [si, st] of script.steps.entries()) {
@@ -74,7 +74,7 @@ export function makeStory(E, unit, script) {
         await E.tween(650, q => { src.scale.set(1, 1 - q * .99, 1); ring.material.opacity = q * .9; });
         E.scene.remove(src); const l = L[st.letter]; l.position.copy(c); l.visible = true; l.scale.set(1, .01, 1); E.sparkle(c.clone().add(new THREE.Vector3(0, .3, .5)), 30, 1.4);
         await E.tween(650, q => { l.scale.set(1, .01 + q * .99, 1); ring.material.opacity = .9 * (1 - q); }, E.ease.back); E.scene.remove(ring); float(l);
-        let plain = null; if (E.CALM) { plain = E.letter(st.dress, 1.5); plain.position.set(c.x + (P ? 1.15 : 2.6), P ? 3.55 : 1.0, c.z); E.scene.add(plain); await E.popIn(plain, P ? .7 : 1); if (E.pointAt) E.pointAt(arrow, l, st.letter, 2.5, E.featFor ? E.featFor(st.letter, st.dress) : undefined); }   /* calm: the plain letter stays beside its Shabbos clothes, and the arrow shows what changed */
+        let plain = null; if (E.CALM) { plain = E.letter(st.dress, 1.5); plain.position.set(c.x + (P ? 1.15 : 2.6), P ? 3.55 : 2.9, c.z);   /* above the table, never behind it */ E.scene.add(plain); await E.popIn(plain, P ? .7 : 1); if (E.pointAt) E.pointAt(arrow, l, st.letter, 2.5, E.featFor ? E.featFor(st.letter, st.dress) : undefined); }   /* calm: the plain letter stays beside its Shabbos clothes, and the arrow shows what changed */
         for (const line of st.lines) await E.say(line);
         if (plain) { arrow.visible = false; E.scene.remove(plain); }
         await E.sayWithMe(st.letter);
