@@ -19,11 +19,16 @@ async function kidPage(opt) {
   const ctx = await browser.newContext({ viewport: { width: opt.width || 390, height: opt.height || 844 }, deviceScaleFactor: opt.scale || 1 });
   await ctx.addInitScript(FAKE, K); const pg = await ctx.newPage(); const errs = [];
   pg.on('pageerror', e => errs.push(String(e).slice(0, 200)));
-  await pg.route('**/*', r => r.request().url() === 'http://app.test/' ? r.fulfill({ contentType: 'text/html', body: K.page }) : r.abort());
+  /* opt.pics: serve the art library at /pics/ (the boys' world pictures), as the real site does (web/build.js). Off by default (the tests never load pictures). */
+  const ART = path.join(__dirname, '..', '..', 'art', 'pics'), TYPES = { webp: 'image/webp', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', svg: 'image/svg+xml' };
+  await pg.route('**/*', r => { const u = r.request().url(); if (u === 'http://app.test/') return r.fulfill({ contentType: 'text/html', body: K.page });
+    const m = opt.pics && /^http:\/\/app\.test\/pics\/([a-z0-9-]+\.(webp|jpe?g|png|svg))$/.exec(u); if (m && fs.existsSync(path.join(ART, m[1]))) return r.fulfill({ contentType: TYPES[m[2]], body: fs.readFileSync(path.join(ART, m[1])) });
+    return r.abort(); });
   await pg.goto('http://app.test/');
   await pg.waitForFunction(() => window.TLT && typeof BANK_ALL !== 'undefined' && Object.keys(BANK_ALL).length > 500, null, { timeout: 180000 });
   await pg.waitForTimeout(4000);
   const map = require('./kidmap.js')().map;
+  if (opt.grade != null) map.grade = opt.grade;   /* a made-up boy of this grade (the new shell is grade 2 and up) */
   await pg.evaluate(M => { SRV.token = 't'; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.session = 0; A.view = 'hub'; A.overlay = null; render(); }, map);
   await pg.waitForTimeout(800);
   return { browser, ctx, pg, errs, map };
