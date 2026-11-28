@@ -40,6 +40,9 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | L1 | Young levels (seen as bridges and by older boys filling gaps; K–1 boys play the K–1 games) | MATH.*, READ.* L01–L02 (about 70) | src/OneBiteData*.html | OPEN (last) | | | |
 
 ## Coordinator notes 
+- **2026-11-28 12:30 play-through (TEST- boy, 1366×768 and 390 px): MATH.PV.L03.02, SCI.LAND.L06.02, WRIT.PARA.L05.07.** All three play to mastered, 0 page errors, clear and warm; the science water-in-100-cups hook and the writing "wanders off" lessons are strong.
+  - **M1 (fix in the next batch):** M1 batch 1 was built before `land:true` went live, so its hops are one tap per hop. MATH.PV.L03.02 takes **64 taps**: "Hop 10 tens from 0" is 10 taps, "Hop by 100s" 6 taps. Switch every hop that is not itself the counting skill to `land:true` (DESIGN.md, "No tap-tap counting"), in MATH.PV.L03.02 and the other batch 1 lessons (e.g. "hop back 8 from 35").
+  - **All rows:** the green "+$20 YOU EARNED IT" banner can still land over the first screen of the next lesson when a boy taps Next level quickly (it starts on the Done screen). Small; noted for gap B7.
 - **2026-11-28 12:10 (for the HoS):** 9 math, 8 science, 11 Grade 5 reading and 8 Grade 4–5 writing lessons are live in the new shape, plus the 3 samples. Grammar, Grade 2 reading, Grade 7 reading, Grade 6 history and more writing are finished and waiting for their final check. This account keeps hitting its 5-hour limit, so builders work in bursts. Six jobs from other accounts went quiet overnight and are open again for any builder. Nothing for you to decide.
 
 - **Math (M1, M2):** for Grade 2 and up, use hop `land:true` (the boy taps where the frog lands), not tap-tap hopping. See DESIGN.md, "No tap-tap counting". In MATH.OPS.L03.01, "build 73" still takes about 10 taps.
