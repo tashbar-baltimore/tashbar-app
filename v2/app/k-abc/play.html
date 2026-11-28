@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kindergarten ABC</title>
+<!-- Kindergarten ABC 2.0: one page for every game (play.html?u=1&g=rhyme). The unit file (units/u1.js ...) says what each game is.
+     Big round buttons only (64 px or more), no words to read: hear it again (top left), all games (top right), play, check, thumbs up / down. -->
+<style>
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{ margin:0; height:100%; overflow:hidden; background:#8CD0FF; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; user-select:none; -webkit-user-select:none; }
+#stage{ position:fixed; inset:0; }
+.btn{ position:fixed; border:0; padding:0; border-radius:50%; cursor:pointer; display:grid; place-items:center; z-index:5; transition:transform .15s ease, opacity .35s ease;
+  box-shadow:0 8px 0 rgba(0,0,0,.18), 0 14px 28px rgba(0,40,90,.35), inset 0 -6px 0 rgba(0,0,0,.12), inset 0 6px 10px rgba(255,255,255,.55); }
+.btn:active{ transform:scale(.92); }
+.btn svg{ width:56%; height:56%; filter:drop-shadow(0 2px 0 rgba(0,0,0,.18)); }
+#again{ top:calc(16px + env(safe-area-inset-top,0px)); left:calc(16px + env(safe-area-inset-left,0px)); width:84px; height:84px; background:radial-gradient(circle at 35% 30%,#FFFFFF,#E3F1FF 60%,#B9DAFF); opacity:0; pointer-events:none; }
+#again.on{ opacity:1; pointer-events:auto; } #again.wait{ opacity:.6; }
+#home{ top:calc(16px + env(safe-area-inset-top,0px)); right:calc(16px + env(safe-area-inset-right,0px)); width:72px; height:72px; background:radial-gradient(circle at 35% 30%,#FFF6D8,#FFD36B 60%,#F5A623); }
+#play{ left:50%; top:50%; width:150px; height:150px; margin:-75px 0 0 -75px; background:radial-gradient(circle at 35% 30%,#B8FFCE,#2EDB6A 55%,#109A45); animation:bob 1.5s ease-in-out infinite; }
+#play svg{ margin-left:10%; } #play.gone{ opacity:0; pointer-events:none; transform:scale(.4); }
+.act{ left:50%; bottom:calc(22px + env(safe-area-inset-bottom,0px)); width:104px; height:104px; opacity:0; pointer-events:none; transform:translateX(-50%) scale(.5); }
+.act.on{ opacity:1; pointer-events:auto; transform:translateX(-50%) scale(1); animation:pulse 1.6s ease-in-out infinite; }
+.act:active{ transform:translateX(-50%) scale(.92); }
+#ok{ background:radial-gradient(circle at 35% 30%,#B8FFCE,#2EDB6A 55%,#109A45); }
+#yes{ margin-left:-74px; background:radial-gradient(circle at 35% 30%,#C8FFD8,#3FD97A 55%,#13A04E); }
+#no{ margin-left:74px; background:radial-gradient(circle at 35% 30%,#FFF0D0,#FFB54A 55%,#F08A1A); }
+#gtitle{ position:fixed; top:calc(12px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); z-index:4; pointer-events:none; background:rgba(255,255,255,.92); color:#1F2A44; font:800 clamp(18px,2.6vh,26px)/1.2 system-ui,sans-serif; padding:6px 18px; border-radius:999px; box-shadow:0 3px 0 rgba(30,60,120,.15); white-space:nowrap; max-width:calc(100vw - 200px); overflow:hidden; text-overflow:ellipsis; }   /* the game's name is always on screen (K-CLARITY-RULES 13) */
+#pips{ position:fixed; top:calc(58px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:4; pointer-events:none; }
+#pips i{ width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.55); box-shadow:inset 0 2px 3px rgba(0,0,0,.15); }
+#pips i.done{ background:#7FD8FF; } #pips i.star{ background:radial-gradient(circle at 35% 30%,#FFF6B0,#FFC81E 60%,#F59E0B); box-shadow:0 0 10px #FFD84A; }
+#stars{ position:fixed; left:50%; top:22%; transform:translateX(-50%); display:flex; gap:14px; z-index:6; pointer-events:none; opacity:0; transition:opacity .4s; }
+#stars.on{ opacity:1; }
+#stars i{ width:96px; height:96px; background:rgba(255,255,255,.35); clip-path:polygon(50% 2%,62% 36%,98% 37%,69% 59%,80% 95%,50% 74%,20% 95%,31% 59%,2% 37%,38% 36%); transform:scale(0); animation:pop .5s ease forwards; }
+#stars i.on{ background:radial-gradient(circle at 40% 35%,#FFF8C0,#FFCC22 55%,#F59E0B); }
+#end{ position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); display:flex; gap:28px; z-index:6; opacity:0; pointer-events:none; transition:opacity .4s; }
+#end.on{ opacity:1; pointer-events:auto; }
+#end .btn{ position:relative; width:108px; height:108px; }
+#replay{ background:radial-gradient(circle at 35% 30%,#FFFFFF,#E3F1FF 60%,#B9DAFF); }
+#next{ background:radial-gradient(circle at 35% 30%,#FFE1F1,#FF7EB9 55%,#E0408A); animation:bob 1.5s ease-in-out infinite; }
+@keyframes bob{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-8px) } }
+@keyframes pulse{ 0%,100%{ box-shadow:0 8px 0 rgba(0,0,0,.18), 0 14px 28px rgba(0,40,90,.35), 0 0 0 0 rgba(255,255,255,.7) } 50%{ box-shadow:0 8px 0 rgba(0,0,0,.18), 0 14px 28px rgba(0,40,90,.35), 0 0 0 14px rgba(255,255,255,0) } }
+@keyframes pop{ 0%{ transform:scale(0) rotate(-30deg) } 70%{ transform:scale(1.2) } 100%{ transform:scale(1) } }
+#nogl{ position:fixed; inset:0; display:none; place-items:center; background:#8CD0FF; color:#fff; font-size:22px; text-align:center; padding:24px; }
+@media (max-width:600px){ #again{ width:72px; height:72px; } #home{ width:64px; height:64px; } #play{ width:124px; height:124px; margin:-62px 0 0 -62px; } #end .btn{ width:92px; height:92px; } .act{ width:92px; height:92px; } #yes{ margin-left:-62px; } #no{ margin-left:62px; } #stars i{ width:72px; height:72px; } #pips{ top:calc(96px + env(safe-area-inset-top,0px)); } }
+</style>
+<script type="importmap">{ "imports": { "three": "./lib/three-r180/three.module.min.js" } }</script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="gtitle"></div>
+<div id="pips"></div>
+<div id="stars"></div>
+<button class="btn" id="again" aria-label="hear it again"><svg viewBox="0 0 24 24"><path fill="#1F6FD6" d="M3 9v6h4l5 4V5L7 9H3z"/><path fill="none" stroke="#1F6FD6" stroke-width="2.2" stroke-linecap="round" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+<a class="btn" id="home" href="./" aria-label="all games"><svg viewBox="0 0 24 24"><path fill="#8A4B00" d="M12 3 2 11.5h3V21h5.5v-6h3v6H19v-9.5h3z"/></svg></a>
+<button class="btn" id="play" aria-label="play"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></button>
+<button class="btn act" id="ok" aria-label="check"><svg viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+<button class="btn act" id="yes" aria-label="yes, right"><svg viewBox="0 0 24 24"><path fill="#fff" d="M2 21h4V9H2v12zm20-11a2 2 0 0 0-2-2h-6.3l1-4.6v-.3c0-.4-.2-.8-.4-1.1L13.2 1 6.6 7.6C6.2 8 6 8.5 6 9v10a2 2 0 0 0 2 2h9c.8 0 1.5-.5 1.8-1.2l3-7.1c.1-.2.2-.5.2-.7v-2z"/></svg></button>
+<button class="btn act" id="no" aria-label="no, not right"><svg viewBox="0 0 24 24"><path fill="#fff" d="M22 3h-4v12h4V3zM2 14a2 2 0 0 0 2 2h6.3l-1 4.6v.3c0 .4.2.8.4 1.1l1.1 1 6.6-6.6c.4-.4.6-.9.6-1.4V5a2 2 0 0 0-2-2H7c-.8 0-1.5.5-1.8 1.2l-3 7.1c-.1.2-.2.5-.2.7v2z"/></svg></button>
+<div id="end">
+  <button class="btn" id="replay" aria-label="play again"><svg viewBox="0 0 24 24"><path fill="none" stroke="#1F6FD6" stroke-width="2.6" stroke-linecap="round" d="M19 12a7 7 0 1 1-2.1-5"/><path fill="#1F6FD6" d="M20.5 3.5v6h-6z"/></svg></button>
+  <a class="btn" id="next" aria-label="the next game"><svg viewBox="0 0 24 24"><path fill="#fff" d="M5 10.5h9.5L11 7l2-2 7 7-7 7-2-2 3.5-3.5H5z"/></svg></a>
+</div>
+<div id="nogl">This computer cannot show the 3D world.</div>
+<script type="module">
+import { makeGame, FAST } from './game.js';
+const q = new URLSearchParams(location.search), u = q.get('u') || '1', g = q.get('g') || 'opener';
+const A = window.__abc = window.__abc || { name: 'loading' };
+let mod;
+try { mod = await import('./units/u' + encodeURIComponent(u) + '.js'); }
+catch (e) { A.name = 'nounit'; A.err = String(e); throw e; }
+const def = mod.GAMES[g]; if (!def) { A.name = 'nogame'; throw new Error('no game ' + g); }
+const TITLES = { 1: { opener: 'Ears On!', rhyme: 'Rhyme Pond', clap: 'Drum Hill', sort: 'Sound Garden', train: 'The Picture Train', paths: 'Bee Paths', fixit: 'Fix It', review: 'Listening Walk', check: 'Show Me' } };
+document.getElementById('gtitle').textContent = (mod.TITLES && mod.TITLES[g]) || (TITLES[u] && TITLES[u][g]) || 'Kindergarten ABC';
+const i = mod.ORDER.indexOf(g), nx = mod.ORDER[i + 1];
+document.getElementById('next').href = nx ? 'play.html?u=' + u + '&g=' + nx + (FAST ? '&fast=1' : '') : './';
+let G;
+try { G = makeGame(document.getElementById('stage'), { unit: u, id: g }); }
+catch (e) { const a = window.__abc || A; a.name = 'nogl'; a.err = String(e); document.getElementById('nogl').style.display = 'grid'; const help = () => { try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance('Please ask your teacher for help.')); } catch (x) {} }; help(); document.getElementById('nogl').onclick = help; throw e; }
+G.start(def.world, def.play);
+</script>
+</body>
+</html>
