@@ -1066,6 +1066,7 @@ function play(id){ if(RD.on){ rdStop(); try{ speechSynthesis.cancel(); }catch(e)
   const K=ob?null:[window.KL,window.KR,window.KK].find(x=>x&&typeof x.has==='function'&&x.has(id)&&(typeof x.on!=='function'||x.on())); if(K){ GM.sig=''; K.open(id); return; } }catch(e){}
  if(c&&typeof startMission==='function'&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))){ GM.sig=''; startMission(c,id,'skill'); return; }
  GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); }
+window.GM_PLAY=play;   /* the new shell's SHK.openLesson(id) opens a lesson exactly as the map's Play does (docs/SHELL-CONTRACT.md) */
 /* "Read it to me": tap to read, tap the square to stop. The ring follows the real audio (TL_VOICE.now from VoicePro); with the device
    voice it follows an estimate of the reading time and finishes when the voice ends. The button is found again each frame, since the home redraws. */
 const RD={on:false,t0:0,est:0,u:null,raf:0,stopAt:0};
