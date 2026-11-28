@@ -302,6 +302,7 @@ const DOORS={
  talk:{n:'Talk to my Rebbe',i:'✉️',sel:'[data-tr="open"],[data-item="message"],[data-ak="rebbe"]'},
  profile:{n:'My profile',i:'🎒',sel:'[data-gmnav="more"],[data-gmnav="me"],#pr-av,[data-gm="pfav"],[data-gm="pfavk"],[data-gm="pfavx"],[data-gm="room"],[data-gm="pftour"]',hide:'#pr-av',ov:'#gm-room,#pr-pick,#tl-tour'}
 };
+Object.keys(DOORS).forEach(k=>{ DOORS[k].sel+=',[data-shdoor="'+k+'"]'; });   /* THE NEW SHELL (docs/SHELL-CONTRACT.md): a tile or button with data-shdoor="<door>" is that door. A place with no door stays shut during class, like any other part of the app */
 window.TL_DOORS=DOORS;
 const SAFE='#ysheet,.ycw,.tmw,#tlmenu,[data-act="signout"],[data-gm="pfout"],.tl-out,.tlk-ask,#kpr,#kprb,#toast,[data-th],#tlclock';
 const FLOAT='#ohsky,#bbx-door,#clab-door,#pr-av,#tashbar-sound';   /* floating doors hidden while locked (unless opened) */
