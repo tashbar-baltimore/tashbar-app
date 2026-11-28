@@ -98,6 +98,8 @@ body.tlms-onbite #app .obm-chip{ display:none !important; }
 .tlms-ban{ position:absolute; left:0; top:0; padding:12px 30px; border-radius:22px; white-space:nowrap; text-align:center;
   background:linear-gradient(135deg,#FDE047,#F59E0B 55%,#EA580C); border:4px solid #fff; box-shadow:0 10px 0 #B45309,0 18px 40px rgba(180,83,9,.55),0 0 60px rgba(253,224,71,.8);
   font:900 clamp(30px,6.4vw,62px)/1 var(--display,system-ui),system-ui,sans-serif; color:#fff; -webkit-text-stroke:2px #92400E; text-shadow:0 4px 0 #92400E; letter-spacing:.02em; }
+.tlms-ban.top{ padding:5px 18px; border-width:3px; border-radius:16px; font-size:clamp(18px,2.6vw,30px); box-shadow:0 5px 0 #B45309,0 10px 24px rgba(180,83,9,.45),0 0 30px rgba(253,224,71,.7); -webkit-text-stroke:1px #92400E; text-shadow:0 2px 0 #92400E; }
+.tlms-ban.top small{ display:inline; margin:0 0 0 10px; font-size:.5em; }
 .tlms-ban small{ display:block; margin-top:6px; font-size:.38em; -webkit-text-stroke:0; text-shadow:none; color:#7C2D12; letter-spacing:.08em; }
 .tlms-ban.cash{ background:linear-gradient(135deg,#86EFAC,#22C55E 55%,#15803D); box-shadow:0 10px 0 #14532D,0 18px 40px rgba(21,128,61,.5),0 0 60px rgba(134,239,172,.8); -webkit-text-stroke:2px #14532D; text-shadow:0 4px 0 #14532D; }
 .tlms-ban.cash small{ color:#F0FDF4; }
@@ -217,8 +219,9 @@ function ring(x,y,size){ if(RM||full()) return; const L=fx(), r=document.createE
 function plus(x,y,txt,cls){ if(RM||full()) return; const L=fx(), p=document.createElement('div'); p.className='tlms-plus'+(cls?' '+cls:''); p.textContent=txt; L.appendChild(p); const w=p.offsetWidth||40, px=Math.max(6,Math.min(innerWidth-w-6,x-w/2));
   p.animate([{transform:'translate('+px+'px,'+(y-10)+'px) scale(.5)',opacity:0},{transform:'translate('+px+'px,'+(y-50)+'px) scale(1.2)',opacity:1,offset:.3},{transform:'translate('+px+'px,'+(y-92)+'px) scale(1)',opacity:0}],{duration:1200,easing:'ease-out',fill:'both'}).onfinish=()=>p.remove(); }
 /* a big banner sweeping across the top third (never takes a tap) */
-function banner(txt,sub,cls){ if(RM) return; const L=fx(), b=document.createElement('div'); b.className='tlms-ban'+(cls?' '+cls:''); b.innerHTML=txt+(sub?'<small>'+sub+'</small>':''); L.appendChild(b);
-  const w=b.offsetWidth, h=b.offsetHeight, x=Math.max(8,(innerWidth-w)/2), y=Math.max(60,innerHeight*.26-h/2);
+/* In a lesson (gap B7, HoS 2026-11-27 "fix what's happening"): the banner sweeps along the top strip, smaller, so it never covers the question. */
+function banner(txt,sub,cls){ if(RM) return; const L=fx(), b=document.createElement('div'), pl=playing(); b.className='tlms-ban'+(pl?' top':'')+(cls?' '+cls:''); b.innerHTML=txt+(sub?'<small>'+sub+'</small>':''); L.appendChild(b);
+  const w=b.offsetWidth, h=b.offsetHeight, x=Math.max(8,(innerWidth-w)/2), y=pl?4:Math.max(60,innerHeight*.26-h/2);
   b.animate([{transform:'translate('+(-w-40)+'px,'+y+'px) rotate(-8deg) scale(.8)',opacity:1},{transform:'translate('+(x+20)+'px,'+y+'px) rotate(-3deg) scale(1.12)',opacity:1,offset:.18,easing:'cubic-bezier(.3,1.4,.5,1)'},
     {transform:'translate('+x+'px,'+y+'px) rotate(-3deg) scale(1)',opacity:1,offset:.3},{transform:'translate('+x+'px,'+y+'px) rotate(-3deg) scale(1.04)',opacity:1,offset:.72},
     {transform:'translate('+(innerWidth+40)+'px,'+(y-30)+'px) rotate(4deg) scale(.85)',opacity:1}],{duration:1900,easing:'ease-in-out',fill:'both'}).onfinish=()=>b.remove();
