@@ -266,7 +266,7 @@ export function rbox(w, h, d, r = .08) {
   const g = new THREE.ExtrudeGeometry(s, { depth: Math.max(.001, d - 2 * r), bevelEnabled: true, bevelSize: r, bevelThickness: r, bevelSegments: 3, curveSegments: 4 }); g.translate(0, 0, -(d - 2 * r) / 2); return g;
 }
 export function glowTex(col) { const cv = document.createElement('canvas'); cv.width = cv.height = 128; const x = cv.getContext('2d'), g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, col); g.addColorStop(.4, col + 'aa'); g.addColorStop(1, col + '00'); x.fillStyle = g; x.fillRect(0, 0, 128, 128); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; }
-export function glowSprite(col = '#ffffff', size = 4, opacity = 0) { if (CALM && col === '#fff7b0') col = '#ff9a3c';   /* calm: the 'this one' glow is a clear orange, not pale yellow lost on the pale painting */ const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(col), transparent: true, depthWrite: false, depthTest: !CALM, opacity })); if (CALM) s.renderOrder = -2;   /* calm: drawn first and never cut by the floor (a glow with a hard straight bottom looked like a box) */ s.scale.set(size, size, 1); return s; }
+export function glowSprite(col = '#ffffff', size = 4, opacity = 0) { if (CALM && col === '#fff7b0') col = '#ff9a3c';   /* calm: the 'this one' glow is a clear orange, not pale yellow lost on the pale painting */ const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(col), transparent: true, depthWrite: false, opacity })); s.scale.set(size, size, 1); return s; }
 function starTex() { const cv = document.createElement('canvas'); cv.width = cv.height = 64; const x = cv.getContext('2d'); const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, '#fff'); g.addColorStop(.25, '#fff6b0'); g.addColorStop(1, '#ffd02e00'); x.fillStyle = g; x.beginPath();
   for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, r = i % 2 ? 9 : 32; x.lineTo(32 + Math.cos(a) * r, 32 + Math.sin(a) * r); } x.fill(); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; }
 
@@ -282,7 +282,7 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, 
   if (!bd && indoorWorld) return buildShul();   /* Unit 8: inside a festive shul on Simchas Torah */
   if (bd) {   /* a painted scene behind; only a see-through ground that catches shadows, so the children and letters stand in it */
     setBackdrop(bd); const w = new THREE.Group(); scene.add(w); world.group = w;
-    const g = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: .28 })); g.rotation.x = -Math.PI / 2; g.receiveShadow = true; w.add(g); return w; }
+    const g = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: .28, depthWrite: !CALM })); g.rotation.x = -Math.PI / 2;   /* calm: the see-through floor never cuts a glow into a box with a hard bottom edge */ g.receiveShadow = true; w.add(g); return w; }
   if (CALM) { document.body.style.background = 'linear-gradient(#bfe3f7 0%,#dcf0fa 55%,#f2f8f0 100%)'; scene.fog = new THREE.Fog(0xe8f4f6, 11, 34); }   /* calm: a pale sky, and the hills and trees fade softly into it (reviewer: the sukkah world was the brightest scene) */
   /* the outdoor world: green hills, a little village far away, a fence, many kinds of trees, bushes, rocks, flowers, butterflies, birds and clouds.
      Everything stays at the sides and the back, so the middle, where the letters are, stays clear. */
