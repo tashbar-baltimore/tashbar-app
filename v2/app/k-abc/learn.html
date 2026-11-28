@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kindergarten ABC</title>
+<!-- Kindergarten ABC 2.0, the calm way (Esti 2026-11-27): learn.html?l=p&g=hear. One game teaches one skill: hear it, meet it, write it, find it, read with it.
+     Painted pictures on a quiet background; Mendy shows one (I do), we do one together, then he does it alone (you do).
+     Big round buttons only (64 px or more), no words to read: hear it again (top left), all games (top right), play, check, thumbs up / down. -->
+<style>
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{ margin:0; height:100%; overflow:hidden; background:#8CD0FF; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; user-select:none; -webkit-user-select:none; }
+#stage{ position:fixed; inset:0; }
+.btn{ position:fixed; border:0; padding:0; border-radius:50%; cursor:pointer; display:grid; place-items:center; z-index:5; transition:transform .15s ease, opacity .35s ease;
+  box-shadow:0 8px 0 rgba(0,0,0,.18), 0 14px 28px rgba(0,40,90,.35), inset 0 -6px 0 rgba(0,0,0,.12), inset 0 6px 10px rgba(255,255,255,.55); }
+.btn:active{ transform:scale(.92); }
+.btn svg{ width:56%; height:56%; filter:drop-shadow(0 2px 0 rgba(0,0,0,.18)); }
+#again{ top:calc(16px + env(safe-area-inset-top,0px)); left:calc(16px + env(safe-area-inset-left,0px)); width:84px; height:84px; background:radial-gradient(circle at 35% 30%,#FFFFFF,#E3F1FF 60%,#B9DAFF); opacity:0; pointer-events:none; }
+#again.on{ opacity:1; pointer-events:auto; } #again.wait{ opacity:.6; }
+#home{ top:calc(16px + env(safe-area-inset-top,0px)); right:calc(16px + env(safe-area-inset-right,0px)); width:72px; height:72px; background:radial-gradient(circle at 35% 30%,#FFF6D8,#FFD36B 60%,#F5A623); }
+#play{ left:50%; top:50%; width:150px; height:150px; margin:-75px 0 0 -75px; background:radial-gradient(circle at 35% 30%,#B8FFCE,#2EDB6A 55%,#109A45); animation:bob 1.5s ease-in-out infinite; }
+#play svg{ margin-left:10%; } #play.gone{ opacity:0; pointer-events:none; transform:scale(.4); }
+.act{ left:50%; bottom:calc(22px + env(safe-area-inset-bottom,0px)); width:104px; height:104px; opacity:0; pointer-events:none; transform:translateX(-50%) scale(.5); }
+.act.on{ opacity:1; pointer-events:auto; transform:translateX(-50%) scale(1); animation:pulse 1.6s ease-in-out infinite; }
+.act:active{ transform:translateX(-50%) scale(.92); }
+#ok{ background:radial-gradient(circle at 35% 30%,#B8FFCE,#2EDB6A 55%,#109A45); }
+#yes{ margin-left:-74px; background:radial-gradient(circle at 35% 30%,#C8FFD8,#3FD97A 55%,#13A04E); }
+#no{ margin-left:74px; background:radial-gradient(circle at 35% 30%,#FFF0D0,#FFB54A 55%,#F08A1A); }
+#gtitle{ position:fixed; top:calc(12px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); z-index:4; pointer-events:none; background:rgba(255,255,255,.92); color:#1F2A44; font:800 clamp(18px,2.6vh,26px)/1.2 system-ui,sans-serif; padding:6px 18px; border-radius:999px; box-shadow:0 3px 0 rgba(30,60,120,.15); white-space:nowrap; }   /* the game's name is always on screen (K-CLARITY-RULES 13) */
+#pips{ position:fixed; top:calc(58px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:4; pointer-events:none; }
+#pips i{ width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.55); box-shadow:inset 0 2px 3px rgba(0,0,0,.15); }
+#pips i.done{ background:#7FD8FF; } #pips i.star{ background:radial-gradient(circle at 35% 30%,#FFF6B0,#FFC81E 60%,#F59E0B); box-shadow:0 0 10px #FFD84A; }
+#stars{ position:fixed; left:50%; top:22%; transform:translateX(-50%); display:flex; gap:14px; z-index:6; pointer-events:none; opacity:0; transition:opacity .4s; }
+#stars.on{ opacity:1; }
+#stars i{ width:96px; height:96px; background:rgba(255,255,255,.35); clip-path:polygon(50% 2%,62% 36%,98% 37%,69% 59%,80% 95%,50% 74%,20% 95%,31% 59%,2% 37%,38% 36%); transform:scale(0); animation:pop .5s ease forwards; }
+#stars i.on{ background:radial-gradient(circle at 40% 35%,#FFF8C0,#FFCC22 55%,#F59E0B); }
+#end{ position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); display:flex; gap:28px; z-index:6; opacity:0; pointer-events:none; transition:opacity .4s; }
+#end.on{ opacity:1; pointer-events:auto; }
+#end .btn{ position:relative; width:108px; height:108px; }
+#replay{ background:radial-gradient(circle at 35% 30%,#FFFFFF,#E3F1FF 60%,#B9DAFF); }
+#next{ background:radial-gradient(circle at 35% 30%,#FFE1F1,#FF7EB9 55%,#E0408A); animation:bob 1.5s ease-in-out infinite; }
+@keyframes bob{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-8px) } }
+@keyframes pulse{ 0%,100%{ box-shadow:0 8px 0 rgba(0,0,0,.18), 0 14px 28px rgba(0,40,90,.35), 0 0 0 0 rgba(255,255,255,.7) } 50%{ box-shadow:0 8px 0 rgba(0,0,0,.18), 0 14px 28px rgba(0,40,90,.35), 0 0 0 14px rgba(255,255,255,0) } }
+@keyframes pop{ 0%{ transform:scale(0) rotate(-30deg) } 70%{ transform:scale(1.2) } 100%{ transform:scale(1) } }
+#nogl{ position:fixed; inset:0; display:none; place-items:center; background:#8CD0FF; color:#fff; font-size:22px; text-align:center; padding:24px; }
+@media (max-width:600px){ #again{ width:72px; height:72px; } #home{ width:64px; height:64px; } #play{ width:124px; height:124px; margin:-62px 0 0 -62px; } #end .btn{ width:92px; height:92px; } .act{ width:92px; height:92px; } #yes{ margin-left:-62px; } #no{ margin-left:62px; } #stars i{ width:72px; height:72px; } #pips{ top:calc(96px + env(safe-area-inset-top,0px)); } }
+
+/* ---- the calm 2D look (Esti 2026-11-27: one skill per game, painted pictures, quiet screens) ---- */
+#scene{ position:fixed; inset:0; background:linear-gradient(180deg,#9ED8FF 0%,#D8F0FF 52%,#BFE7A6 52.2%,#9CD67E 100%); background-size:cover; background-position:center; }
+#scene.bg{ background-color:#BFE7A6; }
+#mendy{ position:fixed; left:2vw; bottom:0; height:min(46vh,60vw); z-index:3; pointer-events:none; transition:transform .25s; transform-origin:50% 100%; }
+#mendy.hop{ transform:translateY(-14px); }
+#board{ position:fixed; left:max(16vw,170px); right:max(6vw,40px); top:110px; bottom:150px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3vh; z-index:2; }
+.row{ display:flex; gap:4vw; align-items:center; justify-content:center; }
+.card{ width:min(28vh,24vw); height:min(28vh,24vw); border-radius:28px; background:#FFFDF6; box-shadow:0 8px 0 rgba(0,0,0,.10), 0 16px 30px rgba(20,60,20,.22); display:grid; place-items:center; cursor:pointer; transition:transform .18s, box-shadow .18s; border:5px solid #fff; }
+.card img{ width:86%; height:86%; object-fit:contain; pointer-events:none; }
+.card.big{ width:min(40vh,36vw); height:min(40vh,36vw); }
+.card:active{ transform:scale(.95); }
+.card.glow{ box-shadow:0 0 0 8px #FFE14D, 0 16px 30px rgba(20,60,20,.22); }
+.card.right{ animation:yay .6s; } .card.wrong{ animation:shake .45s; }
+.card.dim{ opacity:.35; }
+.tile{ width:min(28vh,22vw); height:min(33vh,26vw); border-radius:26px; background:#FFFBEF; box-shadow:0 8px 0 rgba(0,0,0,.10), 0 14px 26px rgba(20,60,20,.2); display:grid; place-items:center; cursor:pointer; border:5px solid #fff; transition:transform .18s; }
+.tile svg{ width:82%; height:82%; pointer-events:none; } .tile.huge{ width:min(46vh,40vw); height:min(52vh,46vw); }
+.tile.small{ width:min(15vh,17vw); height:min(18vh,20vw); border-radius:20px; }
+.tile.glow{ box-shadow:0 0 0 8px #FFE14D, 0 14px 26px rgba(20,60,20,.2); } .tile.on{ background:#E4F6FF; } .tile.right{ animation:yay .6s; } .tile.wrong{ animation:shake .45s; }
+.word{ display:inline-flex; gap:10px; padding:12px; border-radius:26px; background:rgba(255,255,255,.6); cursor:pointer; border:4px solid transparent; }
+.word.glow{ border-color:#FFE14D; } .word.right{ animation:yay .6s; } .word.wrong{ animation:shake .45s; }
+.arrow{ height:20px; width:100%; border-radius:10px; background:linear-gradient(90deg,#FFD36B,#F5A623); position:relative; cursor:pointer; margin-top:6px; }
+.arrow:after{ content:''; position:absolute; right:-14px; top:-10px; border:20px solid transparent; border-left:24px solid #F5A623; border-right:0; }
+.arrow.go{ animation:sweep .9s linear; }
+#trace{ width:min(58vh,70vw); height:min(62vh,74vw); touch-action:none; }
+.btn.glow{ box-shadow:0 0 0 9px #FFE14D, 0 8px 0 rgba(0,0,0,.18), 0 14px 28px rgba(0,40,90,.35); } .btn.demo{ pointer-events:none !important; }
+.arrow.glow{ box-shadow:0 0 0 6px #FFE14D; }
+@keyframes yay{ 0%{ transform:scale(1) } 40%{ transform:scale(1.12) } 100%{ transform:scale(1) } }
+@keyframes shake{ 0%,100%{ transform:translateX(0) } 25%{ transform:translateX(-12px) } 75%{ transform:translateX(12px) } }
+@keyframes sweep{ 0%{ filter:brightness(1) } 50%{ filter:brightness(1.4) } 100%{ filter:brightness(1) } }
+@media (max-width:600px){ #board{ left:0; right:0; top:110px; bottom:150px; } .act{ left:60%; } .word .tile{ width:24vw; height:29vw; } .word .tile.small{ width:20vw; height:24vw; } .word{ gap:6px; padding:8px; } #trace{ width:88vw; height:56vh; } .card{ width:38vw; height:38vw; } .card.big{ width:60vw; height:60vw; } .tile{ width:30vw; height:36vw; } .tile.huge{ width:62vw; height:72vw; } .tile.small{ width:22vw; height:27vw; } #mendy{ height:19vh; left:0; } .row{ gap:3vw; } .row.wrap{ flex-wrap:wrap; } }
+</style>
+<script type="importmap">{ "imports": { "three": "./lib/three-r180/three.module.min.js" } }</script>
+</head>
+<body>
+<div id="scene"></div>
+<img id="mendy" src="art/mendy-idle.webp" alt="">
+<div id="board"></div>
+<div id="gtitle"></div>
+<div id="pips"></div>
+<div id="stars"></div>
+<button class="btn" id="again" aria-label="hear it again"><svg viewBox="0 0 24 24"><path fill="#1F6FD6" d="M3 9v6h4l5 4V5L7 9H3z"/><path fill="none" stroke="#1F6FD6" stroke-width="2.2" stroke-linecap="round" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+<a class="btn" id="home" href="./" aria-label="all games"><svg viewBox="0 0 24 24"><path fill="#8A4B00" d="M12 3 2 11.5h3V21h5.5v-6h3v6H19v-9.5h3z"/></svg></a>
+<button class="btn" id="play" aria-label="play"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></button>
+<button class="btn act" id="ok" aria-label="check"><svg viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+<button class="btn act" id="yes" aria-label="yes, right"><svg viewBox="0 0 24 24"><path fill="#fff" d="M2 21h4V9H2v12zm20-11a2 2 0 0 0-2-2h-6.3l1-4.6v-.3c0-.4-.2-.8-.4-1.1L13.2 1 6.6 7.6C6.2 8 6 8.5 6 9v10a2 2 0 0 0 2 2h9c.8 0 1.5-.5 1.8-1.2l3-7.1c.1-.2.2-.5.2-.7v-2z"/></svg></button>
+<button class="btn act" id="no" aria-label="no, not right"><svg viewBox="0 0 24 24"><path fill="#fff" d="M22 3h-4v12h4V3zM2 14a2 2 0 0 0 2 2h6.3l-1 4.6v.3c0 .4.2.8.4 1.1l1.1 1 6.6-6.6c.4-.4.6-.9.6-1.4V5a2 2 0 0 0-2-2H7c-.8 0-1.5.5-1.8 1.2l-3 7.1c-.1.2-.2.5-.2.7v2z"/></svg></button>
+<div id="end">
+  <button class="btn" id="replay" aria-label="play again"><svg viewBox="0 0 24 24"><path fill="none" stroke="#1F6FD6" stroke-width="2.6" stroke-linecap="round" d="M19 12a7 7 0 1 1-2.1-5"/><path fill="#1F6FD6" d="M20.5 3.5v6h-6z"/></svg></button>
+  <a class="btn" id="next" aria-label="the next game"><svg viewBox="0 0 24 24"><path fill="#fff" d="M5 10.5h9.5L11 7l2-2 7 7-7 7-2-2 3.5-3.5H5z"/></svg></a>
+</div>
+<script type="module">
+import { start } from './learn.js';
+start();
+</script>
+</body>
+</html>
