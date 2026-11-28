@@ -133,6 +133,69 @@
         {type:'proof', text:'S.LAND5.03', q:'What happens when paint soaks into the ground?', proof:'can flow down into the water that wells draw up', look:'what soaks into the ground',
           say:PROOF, how:'Find the page about guarding the world. Look for what soaks in.'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The book, proof and best activities are kept; the learn cards build the picture as he reads. Words in *stars* are key words.
+     Hooks in this set: predict, guess, mystery, wouldyou (never the same kind twice). */
+  function nf(b, f) { if (!b || !b.do || !b.your) return; f(b, b.do, b.your); delete b.do; delete b.your; delete b.ready;
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; }); }
+  nf(BITE['SCI.LAND.L06.01'], function (b, D, Y) {
+    b.hook = { kind: 'predict', pic: '🏔️', t: 'Drop Mount Everest into the deepest part of the ocean.', q: 'What will happen?',
+      o: ['It sinks out of sight', 'Its top sticks out', 'It fills the whole hole'],
+      pay: 'It sinks out of sight! The trench is about *11 km* deep. Everest is only *9 km* tall.' };
+    b.learn = [
+      { t: 'Fly over the *world ocean*. Read the book.', act: D[0] },
+      { t: 'Now dive *down*. Less *sunlight* gets through.', act: D[1] },
+      { who: { q: 'Can thirsty sailors drink *cold* sea water?', o: [['Shalom', 'Yes, if it is cold'], ['Nosson', 'No, it is far too salty']], a: 1,
+        why: 'Cold is fine. The *salt* makes it unsafe.' } },
+      { t: 'The deepest spot is *11 km*. Everest is *9 km* tall.', act: { type: 'cloze', t: 'Drop Everest into the trench. Water over its top: ___ km.', o: ['2', '9', '20'], a: '2',
+        say: 'How much water is over Everest? Tap it in.', how: 'The trench is 11 km deep. Everest is 9 km tall. Take 9 from 11.' } }];
+    b.play = [Y[0], Y[1], Y[2], Y[3]];
+    b.done = 'The ocean is *huge*, *salty*, and deeper than Everest is tall!'; });
+  nf(BITE['SCI.LAND.L06.02'], function (b, D, Y) {
+    b.hook = { kind: 'guess', pic: '🥤', t: 'Mr. Halpern pours the earth’s water into 100 cups.', q: 'About how many cups are fresh?',
+      o: ['about 3', 'about 30', 'about 70'],
+      pay: 'Only *3*! And most of those 3 are frozen *ice*.' };
+    b.learn = [
+      { t: 'Read where our *water* comes from.', act: D[0] },
+      { t: 'Rain is *fresh*. The *salt* stays in the sea.', act: D[1] },
+      { who: { q: 'Where is most of the earth’s *fresh water*?', o: [['Avrumi', 'In rivers and lakes'], ['Tzvi', 'Frozen in ice near the poles']], a: 1,
+        why: 'Giant *ice* sheets hold far more than *rivers*.' } },
+      { t: 'Line up the water, *most* to *least*.', act: { type: 'order', steps: ['🌊 the seas', '🧊 the ice at the poles', '🏞️ every river and lake'],
+        say: 'Put the water in order, the most first.', how: '97 cups are ocean. Most of the last 3 are ice. The little left is what we use.' } }];
+    Y[1].q = 'Mistake Detective: true, or a mix-up?'; Y[1].bins = ['True', 'Mix-up'];
+    Y[1].cards = [['Rain is salty because it comes from the sea', 1], ['Salt cannot evaporate', 0], ['Glaciers are fresh water', 0], ['Most fresh water is in rivers', 1]];
+    Y[1].say = 'Mistake Detective! True, or a mix-up?'; Y[1].how = 'Think: where does the salt go? Glaciers are snow that froze over many years.';
+    Y[1].why = { q: 'Why is a glacier fresh water?', o: ['It is frozen rain and snow', 'It is frozen sea water', 'It is melted rock'], a: 'It is frozen rain and snow' };
+    b.play = [Y[1], Y[0], Y[3], Y[2]];
+    b.done = 'Only a *tiny* part of the earth’s water is *fresh* we can use!'; });
+  nf(BITE['SCI.LAND.L06.03'], function (b, D, Y) {
+    b.hook = { kind: 'mystery', pic: '🪣', t: 'Two wells stand side by side. One is *dry*.', q: 'Why is one well dry?',
+      o: ['It is not deep enough', 'It is too wide', 'Its bucket is broken'],
+      pay: 'It stops above the *water table*. Only a *deeper* well fills.' };
+    b.learn = [
+      { t: 'Read about the water *under* our feet.', act: D[0] },
+      { t: 'Follow the *rain* down to a *well*.', act: { type: 'order', steps: ['🌧️ rain lands on a field', '🟫 it sinks into the dirt', '🪨 it fills the gaps between stones', '🪣 a bucket pulls it up'],
+        say: 'Follow the rain! Put its path in order.', how: 'Rain falls, soaks in, fills the spaces. Then a well pulls it up.' } },
+      { t: 'The top of the soaked ground is the *water table*.', act: { type: 'sort', bins: ['Fills with water', 'Comes up dry'], cards: [['a well 15 m deep', 0], ['a well 5 m deep', 1], ['a well 20 m deep', 0], ['a well 8 m deep', 1]],
+        say: 'The water table is 11 m down. Which wells fill?', how: 'A well fills only if it goes deeper than 11 m. A 15 m well has 15 − 11 = 4 m below it.' } },
+      { who: { q: 'A hole is *3 m* deep. The water table is *8 m* down.', o: [['Yehuda', 'It gives water'], ['Moshe', 'It comes up dry']], a: 1,
+        why: 'Only the part *below* the water table fills.' } }];
+    b.play = [Y[2], Y[0], D[1], Y[3]];
+    b.done = 'A well must reach below the *water table* to fill!'; });
+  nf(BITE['SCI.LAND.L06.04'], function (b, D, Y) {
+    b.hook = { kind: 'wouldyou', pic: '🧥', t: 'Your jacket has a small *tear*. It still fits you well.', q: 'What would you do?',
+      o: ['Get a brand-new jacket', 'Sew it up and keep wearing it', 'Put it away in a closet forever'],
+      pay: 'Sew it! Throwing out what can be *fixed* goes against *bal tashchis*.' };
+    b.learn = [
+      { t: 'The Torah says: do not cut down *fruit trees*.', m: { type: 'scene', e: '🌳', t: 'Devarim 20:19: even in a war, do not cut down fruit trees. Chazal learn: never waste for no reason.' } },
+      { t: 'Find the *proof*: what did Hashem tell Adam?', act: D[0] },
+      { who: { q: 'Is eating an *apple* bal tashchis?', o: [['Refael', 'Yes, the apple is gone'], ['Eli', 'No, it was used properly']], a: 1,
+        why: 'Using something *properly* is fine. *Waste* is the problem.' } },
+      { t: 'Leftovers? Put the *careful* steps in order.', act: D[1] }];
+    Y[3].why = { q: 'Why turn off the tap while you brush?', o: ['So fresh water is not wasted', 'So your teeth get cleaner', 'So you finish faster'], a: 'So fresh water is not wasted' };
+    Y[3].how = 'Almost all the world’s water is salty sea. Only a tiny bit is fresh.';
+    b.play = [Y[0], Y[1], Y[2], Y[3], Y[4]];
+    b.done = '*Bal tashchis*: we never waste. We guard Hashem’s world!'; });
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
 
   var PROJECT = { id: 'S.PROJ5.01', title: 'A Water Table in a Cup', grade: 5, kind: 'information',

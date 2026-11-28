@@ -16,7 +16,7 @@
 function obkStep(wrong) {
   const p = A.play, ob = p && p.ob, kit = ob && ob.kit; if (!kit) return 'nokit';
   const d = kit.acts[kit.i], s = kit.s, app = document.getElementById('app'), S = x => String(x);
-  const q = sel => app.querySelector(sel), click = el => { if (!el || el.disabled) return false; el.click(); return true; };
+  const q = sel => app.querySelector(sel), click = el => { if (!el || el.disabled) return false; if (el.click) el.click(); else el.dispatchEvent(new MouseEvent('click', { bubbles: true })); return true; };
   if (s.over) return click(q('.ob-foot [data-ob=knext]')) ? 'next' : 'no next button';
   if (s.phase === 'why') { const j = d.why.o.map(S).indexOf(S(d.why.a)); return click(q('[data-obk=why][data-k="' + j + '"]')) ? 'why' : 'no reason button'; }
   const check = () => click(q('.ob-foot [data-obk=check]')) ? 'check' : 'check button missing or off';
@@ -24,7 +24,7 @@ function obkStep(wrong) {
   const w = wrong && !s.misses;
   switch (d.type) {
     case 'tenframe': { const f = s.cells.filter(v => v === 1 || v === 2).length; if (f < d.n) { const g = s.cells.indexOf(3); return tap('cell', g >= 0 ? g : s.cells.indexOf(0)); } if (f > d.n) return tap('cell', s.cells.lastIndexOf(1)); return check(); }
-    case 'hop': { const b = d.start + d.add; if (s.pos < b) return tap('fwd'); if (s.pos > b) return tap('back'); return check(); }
+    case 'hop': { const b = d.start + d.add; if (d.land) { if (s.pos !== b) return tap('land', w ? b + (d.unit || 1) * (d.add > 0 ? 1 : -1) : b); return check(); } if (s.pos < b) return tap('fwd'); if (s.pos > b) return tap('back'); return check(); }
     case 'count': { if (s.tap.length < d.n) { for (let i = 0; i < d.n; i++) if (s.tap.indexOf(i) < 0) return tap('obj', i); }
       const j = w ? s.o.findIndex((o, k) => o !== S(d.n) && !s.off[k]) : s.o.indexOf(S(d.n)); return tap('pick', j); }
     case 'blocks': { const T = Math.floor(d.n / 10), O = d.n % 10; if (s.t < T) return tap('ten'); if (s.t > T) return tap('rmt', 0); if (s.o < O) return tap('one'); if (s.o > O) return tap('rmo', 0); return check(); }

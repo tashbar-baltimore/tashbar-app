@@ -134,6 +134,74 @@
         {type:'evidence', q:'Which sentence shows the beach is at high tide?', p:['The sand is dry and wide.','Little crabs hide in small pools.','The water comes far up the beach.','Shells lie on the wet sand.'], a:2, look:'how high the water is',
           say:'Tap the sentence that proves it.', how:'High tide means the water is at its very highest.'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The book, proof and best activities are kept; the learn cards build the picture as he reads. Words in *stars* are key words.
+     Hooks in this set: compare, secret, riddle, whatswrong (never the same kind twice). */
+  function nf(b, f) { if (!b || !b.do || !b.your) return; f(b, b.do, b.your); delete b.do; delete b.your; delete b.ready;
+    b.learn.forEach(function (c) { if (c.act) delete c.act.why; }); }
+  nf(BITE['SCI.SKY.L05.01'], function (b, D, Y) {
+    b.hook = { kind: 'compare', pic: '⭐', t: 'The star Betelgeuse looks like a tiny dot at night.', q: 'Which is bigger: our sun, or Betelgeuse?',
+      o: ['our sun', 'Betelgeuse', 'they are the same'],
+      pay: '*Betelgeuse* is far bigger! The sun only *looks* biggest. It is the *closest*.' };
+    Y[0].steps = ['🌕 the moon', '☀️ the sun', '✨ the North Star'];
+    b.learn = [
+      { t: 'First, *read* about our star, the *sun*.', act: D[0] },
+      { t: 'A *star* makes its *own light*. Sort them.', act: D[1] },
+      { t: '*Near* things look *big*. Line them up, closest first.', act: Y[0] },
+      { who: { q: 'Why does the sun look so *big*?', o: [['Shmuel', 'It is the biggest star'], ['Dovi', 'It is the closest star']], a: 1,
+        why: 'Some stars are *bigger*. The sun is just *closer*.' } }];
+    Y[1].why = { q: 'Why does the sun seem to cross the sky?', o: ['The Earth spins', 'The sun circles the Earth', 'The wind pushes it'], a: 'The Earth spins' };
+    b.play = [Y[1], Y[2], Y[4], Y[3]];
+    b.done = 'The sun is a *star*. It looks biggest because it is *closest*.'; });
+  nf(BITE['SCI.SKY.L05.02'], function (b, D, Y) {
+    b.hook = { kind: 'secret', pic: '🪐', t: 'Mr. Halpern writes: My Very Excited Mother Just Served Us Noodles.', q: 'What is this secret code for?',
+      o: ['the planets, in order', 'the days of the week', 'a supper recipe'],
+      pay: 'Each first letter is a *planet*, in order from the *sun*!' };
+    b.learn = [
+      { t: 'Take the *tour*. Read about the *eight* planets.', act: D[0] },
+      { t: '*M, V, E, M*. Build the four *inner* planets.', act: D[1] },
+      { t: 'Then come four *giants*. *Jupiter* is the biggest.', act: { type: 'tiles', w: ['Jupiter', 'Saturn', 'Uranus', 'Neptune'], extra: ['Sun'],
+        say: 'Build the four giants, in order from the sun.', how: 'Just Served Us Noodles: J, S, U, N. The sun is a star, not a planet.' } },
+      { who: { q: 'Is the *moon* a planet?', o: [['Ari', 'Yes, it is big, round and in space'], ['Yaakov', 'No, it goes around the Earth']], a: 1,
+        why: 'Planets go around the *sun*. The moon circles *Earth*.' } }];
+    Y[2].why = { q: 'Why is Jupiter called a giant?', o: ['It is huge and made of gas', 'It is the hottest planet', 'It is the closest planet'], a: 'It is huge and made of gas' };
+    Y[4].why = { q: 'Why is Neptune so cold?', o: ['It is the farthest from the sun', 'It has no clouds', 'It is the smallest planet'], a: 'It is the farthest from the sun' };
+    b.play = [Y[2], Y[1], Y[4], Y[3]];
+    b.done = 'You know all *eight* planets, in order from the *sun*!'; });
+  nf(BITE['SCI.SKY.L05.03'], function (b, D, Y) {
+    b.hook = { kind: 'riddle', pic: '🌒', t: 'The moon is always a round *ball*. It never changes shape.', q: 'So why does it look different each night?',
+      o: ['We see more or less of its lit half', 'Clouds cover parts of it', 'The sun switches parts of it off'],
+      pay: 'The sun lights *half* the moon. We see more or less of that *lit half*!' };
+    b.learn = [
+      { t: 'Read about the *pull* of the moon.', act: D[0] },
+      { t: 'The sun lights *half* the moon. Order the *phases*.', act: D[1] },
+      { t: 'Where the moon *sits* decides what we *see*.', act: { type: 'match', pairs: [['☀️ ⚪ 🌍 the moon is between the sun and us', 'new moon: its dark side faces us'], ['☀️ 🌍 ⚪ we are between the sun and the moon', 'full moon: its lit side faces us'], ['☀️ 🌍 and ⚪ off to one side', 'half moon: we see half a circle']],
+        say: 'Match where the moon sits to what we see.', how: 'The side facing the sun is lit. Is the lit side facing us, away, or half?' } },
+      { who: { q: 'Why is the moon a thin *curve* tonight?', o: [['Chaim', 'The Earth’s shadow covers it'], ['Mendy', 'We see a sliver of its lit half']], a: 1,
+        why: 'Phases are not a *shadow*. We see part of the *lit half*.' } },
+      { t: 'Up close, the moon has *no air*. So no *wind*, no rain.', act: Y[2] }];
+    D[1].steps = ['🌑 new moon', '🌒 thin sliver', '🌓 half moon', '🌕 full moon', '🌗 half again, shrinking'];
+    D[1].how = 'Each night we see a little more of the lit half. After full, it shrinks back.';
+    Y[1].how = 'Moon gravity is weak. 36 pounds on Earth is 6 on the moon. Divide by 6.';
+    Y[1].why = { q: 'Why do you weigh less on the moon?', o: ['Its pull, gravity, is much weaker', 'It has no air', 'It is very cold'], a: 'Its pull, gravity, is much weaker' };
+    b.play = [Y[0], Y[1], Y[3], Y[4]];
+    b.done = 'You know why the moon changes *shape*, and why it has *no wind*!'; });
+  nf(BITE['SCI.SKY.L05.04'], function (b, D, Y) {
+    b.hook = { kind: 'whatswrong', pic: '🌊', t: 'Mendel says: “The *wind* pushes the tide up the beach.”', q: 'What is wrong here?',
+      o: ['The moon makes the tides', 'Nothing is wrong', 'Tides come once a week'],
+      pay: 'The *moon’s gravity* makes the tides. Wind only makes *waves*.' };
+    b.learn = [
+      { t: 'The moon’s *gravity* makes *two* bulges. One faces the moon. One is on the *far side*. 🌍 ➡️ 🌕 The moon is on the right.', act: { type: 'sort', bins: ['Water piles up', 'Water is low'], cards: [['➡️ the side facing the moon', 0], ['⬅️ the side facing away from the moon', 0], ['⬆️ the top, in this picture', 1], ['⬇️ the bottom, in this picture', 1]],
+        say: 'Where does the water pile up? Sort each side.', how: 'Picture the Earth with the moon on its right. Water piles up on the right and the left. The top and bottom are low.' } },
+      { t: 'Find the *proof*: how many bulges are there?', act: D[0] },
+      { who: { q: 'How many *high tides* does a beach get a day?', o: [['Yitzy', 'One: the side facing the moon'], ['Boruch', 'Two: there are two bulges']], a: 1,
+        why: 'The far side bulges too. Two *bulges*, two *high tides*.' } },
+      { t: 'Follow one *beach* for a day. Order its *tides*.', act: D[1] }];
+    Y[0].bins = ['Makes tides', 'Does not make tides'];
+    Y[0].how = 'Tides come from gravity. The moon pulls most; the sun pulls a little too. Wind makes waves, not tides.';
+    Y[1].pairs = Y[1].pairs.map(function (p) { return p[0] === 'bulge' ? ['bulge', 'a big swell of ocean water'] : p; });
+    b.play = [Y[0], Y[1], Y[3], Y[4]];
+    b.done = 'The *moon’s gravity* makes two bulges: *two high tides* a day!'; });
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
   /* Unit S4.1: the unit check (boss level) and test-out, and the unit project: a real investigation with a lamp and a ball, then a short write */
   var PROJECT = { id: 'S.PROJ4.01', title: 'Moon Phases with a Lamp and a Ball', grade: 4, kind: 'information',
