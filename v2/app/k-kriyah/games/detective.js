@@ -42,7 +42,7 @@ export default function setup(E, { struggled, game = {} }) {
     if (E.pickFrom(e, [card])) { dragging = true; const p = E.planePoint(e, plane()); if (p) grab.copy(card.position).sub(p); return; }
     const h = E.pickFrom(e, [HB, HV]); if (h) drop(h);              /* tapping a house works too */
   });
-  E.onPointer('move', e => { if (!dragging) return; const p = E.planePoint(e, plane()); if (p) { card.position.copy(p.add(grab)); card.rotation.z = (card.position.x - cardHome.x) * -.08; }
+  E.onPointer('move', e => { if (!dragging) return; const p = E.planePoint(e, plane()); if (p) { card.position.copy(p.add(grab)); if (!E.CALM) card.rotation.z = (card.position.x - cardHome.x) * -.08; }
     const near = nearestHouse(); [HB, HV].forEach(h => h.scale.setScalar(HS * (h === near ? 1.06 : 1))); });
   E.onPointer('up', () => { if (!dragging) return; dragging = false; [HB, HV].forEach(h => h.scale.setScalar(HS)); drop(nearestHouse()); });
 

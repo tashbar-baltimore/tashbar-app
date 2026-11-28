@@ -9,7 +9,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter) && hasPic(w)).filter((w, i, a) => a.slice(0, i).filter(x => WORDS[x].letter === WORDS[w].letter).length < 2);   /* two pictures per letter */
   words.forEach(w => PIC[w]());   /* every picture starts loading now, so no card is ever blank */
   const kid = E.unitBoy(unit.n); E.scene.add(kid);   /* the unit's boy: Shloimy, then Ari */
-  const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, E.CALM ? 0x7bd94a : 0xffcf3a];
+  const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = E.CALM ? [0x9fc3e6, 0x9fc3e6, 0x9fc3e6] : [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = E.CALM ? .68 - E.footOf(l) : 1.4 + l.userData.below;   /* calm: every letter stands on its stand */   /* Kuf's long leg stands above the stand */ p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
   const ROW1 = () => false; const SHELF = () => E.CALM && P && peds.length > 3;   /* calm, on a phone: two shelves of two, all at the same distance and facing him (one row of four was too small) */
@@ -22,7 +22,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
   E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? (ROW1() ? .9 : 1.12) : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
     if (p) { if (peds.length > 3 && !ROW1()) { E.camBase.set(0, 5.6, 11.5); E.camTarget.set(0, 1.3, .8); cardHome.set(0, 3.6, -3.4); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
-    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, E.CALM ? 2.85 : 3.15, 2.2);   /* calm: below the progress dots (the letters now stand lower) */   /* higher when a raised Kuf stands below */   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
+    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, E.CALM ? 3.0 : 3.15, 2.2);   /* calm: below the progress dots (the letters now stand lower) */   /* higher when a raised Kuf stands below */   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
     const m = peds.length, two = P && m > 3 && !ROW1() && !SHELF(); shelf.visible = SHELF(); if (SHELF()) { E.camBase.set(0, 2.9, 11.2); E.camTarget.set(0, 2.55, 0); cardHome.set(0, 4.95, 1.0); } peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -3.0 : 2.6); else if (SHELF()) pd.position.set(i % 2 ? -.72 : .72, i < 2 ? 2.08 : 0, .6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(SHELF() ? .62 : PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
@@ -47,7 +47,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
 
   async function showCard(w) {
     word = w; if (pic) card.remove(pic); pic = PIC[w](); card.add(pic); const wide = pic.userData.card && pic.userData.card.scale.x > 2.2; pic.scale.setScalar(wide ? .78 : 1); cardBack.scale.x = pic.userData.card ? Math.max(1, (pic.userData.card.scale.x * (wide ? .78 : 1) + .35) / 2.05) : 1;   /* a wide picture (the cloud) is a little smaller, on a wider card */   /* a wide picture (the cloud) gets a wider card */ card.position.copy(cardHome); card.rotation.set(0, 0, 0); missed = false;
-    await E.popIn(card, (P ? .9 : .85) * (keys.includes('kuf') && !P ? .7 : keys.includes('kuf') ? .78 : 1)); busy = false;   /* a little smaller above a raised Kuf */
+    await E.popIn(card, (P ? .9 : E.CALM ? .7 : .85) * (keys.includes('kuf') && !P ? .7 : keys.includes('kuf') ? .78 : 1)); busy = false;   /* a little smaller above a raised Kuf */
     await E.say(WORDS[w].say);
   }
   async function back() { const p0 = card.position.clone(); busy = true; await E.tween(400, k => card.position.lerpVectors(p0, cardHome, k), E.ease.out); busy = false; }

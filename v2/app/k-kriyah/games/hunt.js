@@ -28,17 +28,17 @@ export default function setup(E, { struggled, unit, game }) {
   function buildSukkah(w) {
     if (suk) E.scene.remove(suk); suk = new THREE.Group(); E.scene.add(suk); W = w; const hw = w / 2;
     suk.add(E.mesh(E.rbox(w + .4, .16, 4.2, .05), wood2, 0, .08, -.1));
-    const n = Math.round(w / .52); for (let i = 0; i < n; i++) suk.add(E.mesh(E.rbox(w / n - .03, 3.3, .14, .04), i % 2 ? wood : wood2, -hw + (i + .5) * w / n, 1.75, -1.7));   /* back wall */
+    const n = Math.round(w / .52); for (let i = 0; i < n; i++) suk.add(E.mesh(E.rbox(w / n - .03, 3.3, .14, .04), i % 2 || E.CALM ? wood : wood2, -hw + (i + .5) * w / n, 1.75, -1.7));   /* back wall */
     for (const s of [-1, 1]) for (let i = 0; i < 6; i++) suk.add(E.mesh(E.rbox(.14, 3.3, .5, .04), i % 2 ? wood : wood2, s * (hw + .05), 1.75, -1.45 + i * .52));   /* side walls */
-    for (let i = 0; i < Math.round(w * 2.2); i++) { const b = E.mesh(new THREE.CylinderGeometry(.05, .05, 4.1, 6), i % 2 ? leaf : leaf2, -hw + i / 2.2 + .1, 3.42 + (i % 3) * .04, -.1, false); b.rotation.x = Math.PI / 2; suk.add(b); }   /* schach */
+    if (E.CALM) suk.add(E.mesh(E.rbox(w + .3, .07, 4.2, .03), E.M(0x8fd07a, { roughness: .8, emissive: 0x6fb05a, emissiveIntensity: .7 }), 0, 3.45, -.1, false));   /* a soft green roof, light underneath too */ else for (let i = 0; i < Math.round(w * 2.2); i++) { const b = E.mesh(new THREE.CylinderGeometry(.05, .05, 4.1, 6), i % 2 ? leaf : leaf2, -hw + i / 2.2 + .1, 3.42 + (i % 3) * .04, -.1, false); b.rotation.x = Math.PI / 2; suk.add(b); }   /* schach */
     if (!E.CALM) for (let i = 0; i < Math.round(w * 1.6); i++) suk.add(E.mesh(new THREE.SphereGeometry(.22 + (i % 3) * .05, 10, 8), i % 2 ? leaf : leaf2, -hw + (i * .63) % w, 3.55, -1.6 + (i * 1.37) % 3.4, false));
     /* a paper chain along the back wall (not in the calm look: seen edge-on its rings looked like Vov and Zayin, K-CLARITY 10, 11) */
     if (!E.CALM) { const cc = [0xff5d8f, 0x2dbb6a, 0x2f7de1, 0x9b5de5];   /* no gold or yellow near the letters: it could look like the dagesh */ for (let i = 0; i < Math.round(w * 3); i++) { const r = E.mesh(new THREE.TorusGeometry(.1, .025, 6, 12), E.M(cc[i % 4], { roughness: .4 }), -hw + .2 + i / 3, 3.15 - Math.sin(i / 3 * 1.4) * .12, -1.55, false); r.rotation.y = i % 2 ? Math.PI / 2 : 0; suk.add(r); } }
     /* hanging fruit, only in the far top corners (not in the calm look) */
     if (!E.CALM) [[-.46, 0xe8322b], [.46, 0x8e2b8e]].forEach(([x, c]) => { const X = x * w; suk.add(E.mesh(new THREE.CylinderGeometry(.008, .008, .4, 4), E.M(0xffffff), X, 3.15, -1.2, false)); suk.add(E.mesh(new THREE.SphereGeometry(.15, 16, 12), E.M(c, { roughness: .3, clearcoat: .8 }), X, 2.92, -1.2)); });
     /* the table with a white cloth, a kiddush cup and a fruit bowl */
-    const tw = Math.min(3.2, w * .5); suk.add(E.mesh(E.rbox(tw, .12, 1.3, .05), cloth, 0, 1.0, -.2)); suk.add(E.mesh(E.rbox(tw + .05, .55, .05, .02), cloth, 0, .75, .46));
-    [[-1, -1], [1, -1]].forEach(([a]) => suk.add(E.mesh(new THREE.CylinderGeometry(.05, .05, 1, 8), wood2, a * (tw / 2 - .15), .5, -.7)));
+    const tw = Math.min(3.2, w * .5); if (!E.CALM) { suk.add(E.mesh(E.rbox(tw, .12, 1.3, .05), cloth, 0, 1.0, -.2)); suk.add(E.mesh(E.rbox(tw + .05, .55, .05, .02), cloth, 0, .75, .46)); }   /* calm: no table (its white cloth looked like one more blank tile) */
+    if (!E.CALM) [[-1, -1], [1, -1]].forEach(([a]) => suk.add(E.mesh(new THREE.CylinderGeometry(.05, .05, 1, 8), wood2, a * (tw / 2 - .15), .5, -.7)));
     if (!E.CALM) { suk.add(E.mesh(new THREE.CylinderGeometry(.09, .05, .22, 16), E.M(0xd8dde6, { metalness: .9, roughness: .15 }), -tw * .3, 1.2, -.35)); suk.add(E.mesh(new THREE.CylinderGeometry(.02, .02, .14, 8), E.M(0xd8dde6, { metalness: .9, roughness: .15 }), -tw * .3, 1.1, -.35)); }
     if (!E.CALM) { suk.add(E.mesh(new THREE.SphereGeometry(.3, 20, 10, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), E.M(0xff8a1e, { side: THREE.DoubleSide }), tw * .28, 1.33, -.35)); }
     if (!E.CALM) { [0xe8322b, 0x7bc043, 0xc0392b].forEach((c, i) => suk.add(E.mesh(new THREE.SphereGeometry(.12, 14, 10), E.M(c, { roughness: .3, clearcoat: .8 }), tw * .28 - .12 + i * .12, 1.36, -.35))); }
@@ -54,19 +54,21 @@ export default function setup(E, { struggled, unit, game }) {
     else sp = [[-1.15, 3.0, -1.5, 0], [0, 3.0, -1.5, 0], [1.15, 3.0, -1.5, 0],   /* a phone: three tidy rows, apart (the back wall, */
       [-1.15, 1.8, -.4, 0], [1.15, 1.8, -.4, 0],                                         /* beside the table, */
       [-1.15, .75, .9, 0], [0, .75, .9, 0], [1.15, .75, .9, 0]];                         /* and in front) */
+    if (E.CALM) sp = w >= 5 ? [-2.4, -.8, .8, 2.4].flatMap(x => [[x, 2.55, -1.45, 0], [x, 1.15, -1.45, 0]])   /* calm: one flat grid on the back wall, every tile the same size, none in front of another */
+      : [[-1.15, 2.7, -1.45, 0], [0, 2.7, -1.45, 0], [1.15, 2.7, -1.45, 0], [-1.15, 1.67, -1.45, 0], [1.15, 1.67, -1.45, 0], [-1.15, .64, -1.45, 0], [0, .64, -1.45, 0], [1.15, .64, -1.45, 0]];
     spots = sp.map(([x, y, z, ry]) => ({ p: new THREE.Vector3(x, y, z), ry }));
     if (letters.length) letters.forEach((l, i) => { if (l.userData.spot != null) placeAt(l, l.userData.spot); });
   }
   E.onLayout(p => {
     buildSukkah(p ? 4.2 : 7.4);
-    if (p) { E.camBase.set(0, 1.7, 9.4); E.camTarget.set(0, 1.5, 0); boy.position.set(0, 0, 4.2); boy.scale.setScalar(.5); }
-    else { E.camBase.set(0, 2.2, 9.2); E.camTarget.set(0, 1.75, 0); boy.position.set(-2.9, .16, 1.55); boy.scale.setScalar(.85); }
+    if (p) { E.camBase.set(0, 1.7, 9.4); E.camTarget.set(0, 1.5, 0); boy.position.set(E.CALM ? -.95 : 0, 0, 4.2); boy.scale.setScalar(.5); }
+    else { E.camBase.set(0, 2.2, 9.2); E.camTarget.set(0, 1.75, 0); boy.position.set(E.CALM ? -4.35 : -2.9, .16, 1.55); boy.scale.setScalar(.85); }   /* calm: the boy stands beside the sukkah, never in front of a tile */
   });
   E.setSway(.5);
   const SIZE = () => E.portrait ? .72 : .9;
-  function placeAt(l, i) { const s = spots[i]; l.userData.spot = i; l.position.copy(s.p); l.lookAt(E.cam.position); l.userData.base = s.p.clone(); }   /* every tile faces the boy, so no letter is squashed (reviewer: floor and side-wall letters looked like other letters) */
+  function placeAt(l, i) { const s = spots[i]; l.userData.spot = i; l.position.copy(s.p); if (E.CALM) l.rotation.set(0, 0, 0); else l.lookAt(E.cam.position); l.userData.base = s.p.clone(); }   /* every tile faces the boy, so no letter is squashed (reviewer: floor and side-wall letters looked like other letters) */
   E.onFrame(t => {
-    letters.forEach((l, i) => { if (l.visible && l.userData.base && !l.userData.busy) { if (E.CALM) { l.position.copy(l.userData.base); l.lookAt(E.cam.position); return; } l.position.y = l.userData.base.y + Math.sin(t * 1.6 + i) * .03; l.rotation.z = Math.sin(t * 1.3 + i) * .05;   /* calm: the letters stand still (K-CLARITY 10) */ } });
+    letters.forEach((l, i) => { if (l.visible && l.userData.base && !l.userData.busy) { if (E.CALM) { l.position.copy(l.userData.base); l.rotation.set(0, 0, 0); return; }   /* calm: flat on the wall, facing straight out */ l.position.y = l.userData.base.y + Math.sin(t * 1.6 + i) * .03; l.rotation.z = Math.sin(t * 1.3 + i) * .05;   /* calm: the letters stand still (K-CLARITY 10) */ } });
     if (helpOn && helpOn.visible) { glow.position.copy(helpOn.position).add(new THREE.Vector3(0, 0, -.2)); glow.material.opacity = .6 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
   window.__info = () => ({ rects: spots.map(x => { const a = E.toScreen(x.p.clone().add(new THREE.Vector3(-SIZE() * .6, SIZE() * .65, 0))), b = E.toScreen(x.p.clone().add(new THREE.Vector3(SIZE() * .6, -SIZE() * .65, 0))); return [a[0], a[1], b[0], b[1]]; }),   /* each tile's box on screen */ want, round, active, targets: letters.filter(l => l.visible && l.userData.key === want && !l.userData.got).map(l => E.toScreen(E.worldPos(l))),
@@ -96,7 +98,7 @@ export default function setup(E, { struggled, unit, game }) {
     if (plan.bySound) { E.noteLetter && E.noteLetter(want, false); await E.say(E.quiet(k) ? ['That is ' + NM(k) + '. It is quiet. Find', E.S(E.LETTERS[want].snd), '!'] : ['That is ' + NM(k) + '. It says', E.S(E.LETTERS[k].snd), '. Find', E.S(E.LETTERS[want].snd), '!']); }   /* a sound game answers with sounds */
     else await E.say('That is ' + NM(k) + '. ' + look);   /* 12 words or fewer */
     arrow.visible = false;
-    if (wrongInRound >= 2) showHelp();
+    if (wrongInRound >= (E.CALM ? 1 : 2)) showHelp();   /* calm: the first miss already shows a right one (K-CLARITY 16) */
   }
   function showHelp() { const t = letters.find(l => l.visible && !l.userData.got && l.userData.key === want); if (!t) return; helpOn = t; if (E.CALM) return E.handBelow(t, true); const [x, y] = E.toScreen(E.worldPos(t)); E.hand.at(x + 10, y + 10, true); }
   E.onPointer('down', async e => {

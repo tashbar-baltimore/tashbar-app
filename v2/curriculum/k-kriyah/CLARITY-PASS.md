@@ -82,3 +82,12 @@ Goal (Esti's words): "something a 5-6-year-old can figure out and learn, and it 
 | Story waiting letters | Pushed against the progress dots. | A little smaller. |
 
 Choice made for Esti: **Shloimy's Shabbos clothes are his white shirt and dark trousers** (normal Shabbos clothes); nothing extra is drawn on him.
+
+## Round 3, Units 1–2 (a new reviewer, new pictures of the current code): 11 of 15 games scored 4; what changed for the four 3s
+| Game | Finding | Change |
+|---|---|---|
+| Mendy's first day | On a phone Tatty hid Alef's leg; the waiting Alef sat on Veis's corner; "Tatty" then "Abba". | Tatty stands clear; on a phone Alef steps away while Beis and Veis are taught and comes back for the row; "Abba means Tatty. Abba starts with Alef." |
+| Letter Hunt | Tiles of different sizes, some leaning, some in front of others; a white tablecloth looked like a blank tile; bristling sticks; the first miss showed nothing. | One flat grid of same-size tiles on the back wall (two rows of four; three rows on a phone); no table; one soft green roof; plain wall; the boy beside the sukkah; the first miss already shows a right one. |
+| Sound Match | The picture card touched Gimmel's head (did it belong to Gimmel?). | A smaller card, higher, clear of every letter. |
+| Alef-Beis Train | Waiting cars stood over the train's cars; nothing marked the empty place; smoke balls beside Alef. | Waiting cars well below the track; a pale empty car marks where the next car goes; no smoke in the calm look. |
+| Shared | The dot cast a round shadow (a second dot); the hanging sign cast a floating shadow; "Show the rebbe" on a phone with no rebbe; a dragged letter leaned; multicoloured stand tops; falling letters began behind the title. | No dot shadow; no sign shadow; "Show what you know!" on a phone; letters stay upright; all stands one soft blue; letters start below the progress dots. |

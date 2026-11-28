@@ -44,8 +44,8 @@ export default function setup(E) {
     E.tween(700, k => glow.material.opacity = k * .8); await E.popIn(alef, 1, 700); float(alef);
     E.setProgress(4, 1);
     await E.say('This is Alef.');
-    const ds = dad.scale.x; dad.position.set(P ? -1.4 : -2.4, 0, 1.4); if (P) dad.scale.setScalar(ds * .68); dad.mood('wave');
-    await E.say('Abba starts with Alef.'); dad.mood('calm');
+    const ds = dad.scale.x; dad.position.set(P ? (E.CALM ? -1.95 : -1.4) : -2.4, 0, 1.4);   /* calm: on a phone Tatty stands clear of Alef's leg */ if (P) dad.scale.setScalar(ds * .68); dad.mood('wave');
+    await E.say(E.CALM ? 'Abba means Tatty. Abba starts with Alef.' : 'Abba starts with Alef.'); dad.mood('calm');
     await E.say('Alef is quiet. It waits for its nekudah.');
     await E.sayWithMe('alef');
     if (E.CALM) { await E.say('Watch me. I tap Alef.'); E.handBelow(alef, true); await E.wait(500); E.hop(alef, .3, 350); await E.wait(400); E.hand.hide(); await E.say('Now you! Tap Alef!'); }   /* the first tap is shown first (K-CLARITY 15) */
@@ -54,7 +54,7 @@ export default function setup(E) {
     await E.popOut(dad); dad.scale.setScalar(ds);
     /* 3. Beis: the house turns into Beis, and Mendy becomes the dot */
     float(alef, false); const a0 = alef.position.clone();
-    await E.tween(700, k => { alef.position.lerpVectors(a0, new THREE.Vector3(X().row, P && E.CALM ? 3.55 : 1.6, .2), k); alef.scale.setScalar(1 - k * (1 - (P && E.CALM ? .42 : X().s)));   /* on a phone Alef waits up high, so the big Beis never covers it */ glow.material.opacity = .8 * (1 - k); }); float(alef);
+    await E.tween(700, k => { alef.position.lerpVectors(a0, new THREE.Vector3(X().row, P && E.CALM ? 3.55 : 1.6, .2), k); alef.scale.setScalar(1 - k * (1 - (P && E.CALM ? .42 : X().s)));   /* on a phone Alef waits up high, so the big Beis never covers it */ glow.material.opacity = .8 * (1 - k); }); float(alef); if (P && E.CALM) alef.visible = false;   /* calm, on a phone: Alef steps away while Beis and Veis are taught (beside them it read as one strange letter), and comes back for the row */
     home.position.set(0, 0, 0); home.scale.setScalar(P ? .75 : .9); boy.scale.setScalar(1); boy.position.set(-.55, 0, 1.3); boy.visible = true; await Promise.all([E.popIn(home, P ? .75 : .9), E.popIn(boy)]);
     E.setProgress(4, 2);
     boy.mood('wave'); await E.say('This is Mendy’s house.');   /* English words only (HoS 2026-11-26) */
@@ -87,7 +87,7 @@ export default function setup(E) {
     await tapIt(veis, ['Veis says', S('v')]);
     /* 5. all three in a row (right to left: Alef, Beis, Veis), and a short chant */
     float(veis, false); const v0 = veis.position.clone();
-    if (P && E.CALM) { float(alef, false); const aa = alef.position.clone(), as = alef.scale.x; await E.tween(500, k => { alef.position.lerpVectors(aa, new THREE.Vector3(X().row, 1.6, .2), k); alef.scale.setScalar(as + (X().s - as) * k); }); float(alef); }
+    if (P && E.CALM) { alef.visible = true; float(alef, false); const aa = alef.position.clone(), as = alef.scale.x; await E.tween(500, k => { alef.position.lerpVectors(aa, new THREE.Vector3(X().row, 1.6, .2), k); alef.scale.setScalar(as + (X().s - as) * k); }); float(alef); }
     await E.tween(700, k => { veis.position.lerpVectors(v0, new THREE.Vector3(-X().row, 1.6, .2), k); veis.scale.setScalar(1 - k * (1 - X().s)); glow.material.opacity = .8 * (1 - k); }); float(veis);
     beis.position.set(0, 1.6, .2); beis.rotation.set(0, 0, 0); beis.userData.dot.visible = true; beis.userData.dot.scale.setScalar(1); await E.popIn(beis, X().s); float(beis);
     E.setProgress(4, 4);

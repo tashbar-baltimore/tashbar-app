@@ -603,7 +603,7 @@ export function letter(key, height = 2.6, color = 'blue') {
   let dot = null;
   const dp = dotAt(key);
   if (dp) {   /* the dagesh sits in the middle of the letter's open space (font units /10: Beis x 24, y 29.6 of 56.1 x 64.7) */
-    dot = mesh(new THREE.SphereGeometry(Math.max(.2 * height / 2.6, .075), 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - REF_CY) * s, CALM ? (5 / REF_H) * height + Math.max(.2 * height / 2.6, .075) * .35 : .42 * height / 2.6); grp.add(dot); dot.visible = !!(L.dagesh || L.top); }
+    dot = mesh(new THREE.SphereGeometry(Math.max(.2 * height / 2.6, .075), 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - REF_CY) * s, CALM ? (5 / REF_H) * height + Math.max(.2 * height / 2.6, .075) * .35 : .42 * height / 2.6); grp.add(dot); dot.castShadow = !CALM; dot.visible = !!(L.dagesh || L.top); }   /* calm: the dot casts no round shadow (it looked like a second dot) */
   const below = Math.max(0, -(bb.min.y + c.y) - 4) * s;   /* how far a long leg (Kuf) reaches below the line: stands and cars lift it by this much */
   grp.userData = { key, body: m, dot, hit, height, width: W * s, color, below, dotHome: dot ? dot.position.clone() : null };
   grp.setKey = k => { grp.userData.key = k; if (dot) { const d = dotAt(k); if (LETTERS[k].top) { grp.userData.dotHome.set((d[0] - c.x) * s, (d[1] - REF_CY) * s, dot.position.z); } dot.visible = !!(LETTERS[k].dagesh || LETTERS[k].top); dot.scale.setScalar(1); dot.position.copy(grp.userData.dotHome); } };   /* Shin to Sin: the dot moves to the other head */

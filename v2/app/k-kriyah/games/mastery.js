@@ -20,7 +20,7 @@ export default function setup(E, { struggled, unit, id }) {
   const { THREE, S } = E;
   const rebbe = E.rebbe(); E.scene.add(rebbe);
   const keys = [...unit.known, ...unit.letters], L = {}, peds = [];
-  const pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), pedTop = [E.M(0xff7aa8, { roughness: .25, clearcoat: 1 }), E.M(0x46c3ff, { roughness: .25, clearcoat: 1 }), E.M(E.CALM ? 0x7bd94a : 0xffcf3a, { roughness: .25, clearcoat: 1 })];   /* calm: green, not gold, under a dot letter */
+  const pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), pedTop = E.CALM ? [0, 1, 2].map(() => E.M(0x9fc3e6, { roughness: .4 })) : [E.M(0xff7aa8, { roughness: .25, clearcoat: 1 }), E.M(0x46c3ff, { roughness: .25, clearcoat: 1 }), E.M(0xffcf3a, { roughness: .25, clearcoat: 1 })];   /* calm: one soft colour, so the letter is the brightest thing */   /* calm: green, not gold, under a dot letter */
   for (let i = 0; i < 3; i++) { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), pedTop[i], 0, .55, 0)); E.scene.add(p); peds.push(p); }
   keys.forEach(k => { L[k] = E.letter(k, 1.6); E.scene.add(L[k]); L[k].visible = false; });
   const arrows = [E.arrow3d(.3), E.arrow3d(.3)];   /* on a look-alike mix-up: point at the place to look on both letters */
@@ -93,7 +93,7 @@ export default function setup(E, { struggled, unit, id }) {
   return async () => {
     E.setProgress(Qs.length, 0);
     const demoK = unit.letters[0] || 'shin'; await showSet(demoK);
-    rebbe.mood('wave'); await E.say('Show the rebbe what you know!'); rebbe.mood('calm');
+    rebbe.mood('wave'); await E.say(E.portrait && E.CALM ? 'Show what you know!' : 'Show the rebbe what you know!');   /* no rebbe on a phone screen */ rebbe.mood('calm');
     /* show, then try */
     await E.say('Watch me. Tap ' + E.LETTERS[demoK].name + '.'); let [x, y] = E.toScreen(E.worldPos(L[demoK])); if (E.CALM) E.handBelow(L[demoK]); else E.hand.at(x, y + 20); await E.wait(700); E.hand.hide();
     E.sfx.chime(); E.hop(L[demoK]); await E.say(E.nameLine(demoK));
