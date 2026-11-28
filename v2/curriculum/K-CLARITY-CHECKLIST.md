@@ -306,3 +306,15 @@ Choices made in round 5:
 Choices made in round 7:
 - Clue games keep the clue in the shape's own voice ("I have three corners. Find me!"), with Mendy on screen. It is the riddle form every K class uses; adding a card or speaker would put one more thing on the screen.
 - The party rug, the curvy piece's points, the phone scarf height and the phone triangle in Shape party 3 were scored 4 and are left as they are.
+
+**Round 7 scores (a fresh reviewer):** Where is it? 3, Big and small 3.
+
+**Round 8 fixes:**
+| What the reviewer saw (rule) | What changed |
+|---|---|
+| Where is it?: a drop was judged by the nearest of six screen points; "under" and "in front" were only 63-80 px apart, so a right drop behind the middle of the bridge was called "under" (a, e) | A drop is judged by where it lands round the bridge: over the plank = on top; on the floor behind its back edge = behind, in front of its front edge = in front, between the legs = under, past the legs = next to. Test: every place's own spot, and a drop behind the middle, count as that place |
+| Where is it? mistake: the "behind" ball showed as a sliver past the end of the plank (7) | A big ball right behind the middle of the bridge: its top shows over the plank, the plank and legs hide the rest, like a ball behind a wall. The hand points at its top; in the help it rolls out and back |
+| Where is it? lesson: "next to" was shown on the right, where "behind" also peeks out (7) | "Next to" is shown on the left, as in the rounds |
+| Where is it?: "Mendy built a bridge", but Mendy is not on screen (g) | "Here is a bridge under the sea." |
+| Big and small: pieces shrank to half size in a box, so the big ball looked hardly bigger than a loose small one (7) | Pieces keep most of their size in the box and spread to the box's own size |
+| Big and small: at "Which box has more?" one group was heaped in its box and the other stood outside (7, 12) | Both groups go back in their boxes, each with its big number; "Which box has more toys?" ... "Five is more than three." |

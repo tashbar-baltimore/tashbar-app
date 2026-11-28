@@ -75,6 +75,12 @@ module.exports = async function (browser) {
       await lesson();
       let st = await S();
       if (!st.said.some(t => /watch me/i.test(t))) bad(L + ': there is no "watch me" before he tries');
+      if (st.game === 'where' && !(await pg.evaluate(() => typeof window.__shp.zoneAt === 'function'))) bad(L + ': the drop-by-area check is missing (zoneAt)');
+      if (st.game === 'where') {   /* review 7: a drop is judged by where it lands round the bridge; every place's own spot, and a drop behind the MIDDLE of the bridge, must count as that place */
+        const zz = await pg.evaluate(() => { const W = window.__shp, r = {}; ['top', 'under', 'left', 'right', 'front', 'behind'].forEach(z => { const p = W.zonePt(z); r[z] = W.zoneAt(p.x, p.y); }); const b = W.behindMid(); r.behindMid = W.zoneAt(b.x, b.y); return r; });
+        for (const z of ['top', 'under', 'left', 'right', 'front', 'behind']) if (zz[z] !== z) bad(L + ': a drop on the "' + z + '" place counts as "' + zz[z] + '"');
+        if (zz.behindMid !== 'behind') bad(L + ': a drop behind the middle of the bridge counts as "' + zz.behindMid + '", not behind');
+      }
       if (st.hasChant && !(st.claps >= 6)) bad(L + ': the clap chant did not play');
       await drawn('the game');
       if (!perfect) {

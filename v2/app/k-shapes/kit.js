@@ -314,7 +314,7 @@ export function startGame(cfg) {
     if (mode === 'close') { mendy.visible = !friend.visible && cfg.mode !== 'pattern' && cfg.mode !== 'position'; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
     else { mendy.visible = !(NB > 1 && tall) && !(cfg.mendyAt && !cfg.mendyAt[tall ? 'tall' : 'wide']); mendy.position.copy(mendyAt()); if (PAINTED && PATTERNED) mendy.position.add(new THREE.Vector3(0.75, 0, 1.9));   /* the painted boy is wider: keep him clear of the train's engine */ mendy.rotation.set(tall ? -0.6 : 0, (NB > 1 || cfg.mendyAt) && !tall ? 0.5 : -0.35, 0); }
   }
-  function inBoxSpot(bi, n) { const b = boxAt(bi), sp = NB === 1 ? 0.75 : 0.55; return new THREE.Vector3(b.x - sp + (n % 3) * sp, 0.3 + Math.floor(n / 3) * 0.15, b.z + (n % 2 ? 0.18 : -0.18)); }
+  function inBoxSpot(bi, n) { const b = boxAt(bi), sp = (NB === 1 ? 0.75 : 0.55) * (cfg.sortBy === 'size' ? ((cfg.boxes[bi] || {}).boxScale || 1) : 1);   /* review 7: sorting by size, pieces keep most of their size in the box (a big piece always looks bigger than every small one), so they spread to the box's own size */ return new THREE.Vector3(b.x - sp + (n % 3) * sp, 0.3 + Math.floor(n / 3) * 0.15, b.z + (n % 2 ? 0.18 : -0.18)); }
   function resize() {
     const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; if (LK) LK.resize();
     const was = tall; tall = w / h < 0.95; camera.fov = tall ? 46 : 40; camera.updateProjectionMatrix();
@@ -549,7 +549,7 @@ export function startGame(cfg) {
   function dropInBox(o, bi) {
     bi = bi == null ? Math.max(0, o.box) : bi;
     clearCorners(o); o.inBox = true; o.inBoxAt = bi; o.boxN = boxes[bi].n++; W.found++;
-    const to = inBoxSpot(bi, o.boxN), s0 = o.g.scale.x, s1 = cfg.sortBy === 'size' ? (o.scale || s0) * 0.55 : Math.min(o.scale || s0, 1) * (NB === 1 ? 0.55 : 0.42);   /* sorting by size: a big piece stays big in its box (review 2: the big ball looked small once dropped) */   /* from its own size, not its size this moment (a piece still popping in stayed a speck) */
+    const to = inBoxSpot(bi, o.boxN), s0 = o.g.scale.x, s1 = cfg.sortBy === 'size' ? (o.scale || s0) * 0.78 : Math.min(o.scale || s0, 1) * (NB === 1 ? 0.55 : 0.42);   /* sorting by size: a big piece stays big in its box (review 2: the big ball looked small once dropped) */   /* from its own size, not its size this moment (a piece still popping in stayed a speck) */
     tween(520, k => o.g.scale.setScalar(s0 + (s1 - s0) * ease(k)));
     return moveTo(o, to, 520, 1.2).then(() => { o.g.rotation.set(-1.45, (o.boxN % 3 - 1) * 0.6, 0); burst(to.clone().setY(1.2)); pop(); cheer(mendy);
       if (LK) { LK.squash(o.g, s1, 0.4); LK.wiggle(boxes[bi].g); LK.sparkle(to.clone().setY(1.0)); } });
@@ -1171,7 +1171,17 @@ export function startGame(cfg) {
       const lx = 1.05, d2 = 2.1, side = tall ? 0.8 : 0.9;   /* review 6: farther back, so it sits higher than the leg's foot and the leg's edge covers part of it. review 5: at 0.42 the leg hid nearly all of it; now half clearly peeks out past the leg. review 4: in the gap it read as UNDER. Now behind the near (right) leg on the line from his eye, moved right so about half peeks out: a solid leg hides part of it */
       return new THREE.Vector3(lx + dx * d2 - dzz * side, 0.42, qz + dzz * d2 + dx * side); }
     return new THREE.Vector3(v[0] * (tall ? 0.8 : 1), v[1], dz + POS_Z()); }
-  function zoneHit(cx, cy) { let best = null, bd = 1e9; Object.keys(ZONES).forEach(z => { const p = toScreen(zoneWorld(z)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = z; } }); return bd < Math.max(110, innerWidth * 0.1) ? best : null; }
+  /* review 7: a drop is judged by WHERE it lands round the bridge (by area), not by the nearest of six screen points: "under" and "in front" were only 63-80 px apart,
+     so a right drop behind the middle of the bridge was called "under". On top = over the plank; then on the floor: behind its back edge, in front of its front edge,
+     between the legs = under, past the legs = next to. */
+  const zPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), zHit = new THREE.Vector3();
+  function zoneHit(cx, cy) {
+    ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); (syncCam(), ray.setFromCamera(ndc, camera)); const bz = POS_Z(), sx = tall ? 0.8 : 1;
+    zPlane.constant = -(PLANK_Y + 0.55); if (ray.ray.intersectPlane(zPlane, zHit) && Math.abs(zHit.x) < 1.7 && Math.abs(zHit.z - bz) < 0.9) return 'top';
+    zPlane.constant = -0.45; if (!ray.ray.intersectPlane(zPlane, zHit)) return null;
+    const lx = zHit.x, lz = zHit.z - bz; if (Math.hypot(lx / sx, lz) > 4.2) return null;   /* far from the bridge: not a place, he tries again */
+    if (lz < -0.55) return 'behind'; if (lz > 0.55) return 'front';
+    return Math.abs(lx) < 0.65 ? 'under' : lx < 0 ? 'left' : 'right'; }
   function showRing(z, on) { if (!BR) return; BR.ring.visible = on; if (on) { const p = zoneWorld(z); BR.ring.position.set(p.x, z === 'top' ? PLANK_Y + 0.16 : 0.1, p.z); } }
   let posPiece = null, posWant = null;
   function setPosRound(R) {
@@ -1206,14 +1216,14 @@ export function startGame(cfg) {
       play([R.say, ...ask].filter(Boolean));
     });
   }
-  W.zonePt = z => toScreen(zoneWorld(z)); if (POSITIONED) W.wrongBox = 1;
+  W.zonePt = z => toScreen(zoneWorld(z)); W.zoneAt = (x, y) => zoneHit(x, y); W.behindMid = () => toScreen(new THREE.Vector3(0, 0.45, POS_Z() - 1.3));   /* tests: a drop is judged by area */ if (POSITIONED) W.wrongBox = 1;
   const BW = cfg.ballWord || 'ball';   /* what the voice calls the round thing (under the sea: a pearl) */
   function posWord(k) { return k === 'sphere' && cfg.ballWord ? BW : FAMILY(k); }   /* one word for the round thing all game (K-CLARITY-RULES 11) */
   async function posLesson() {
     const L = cfg.posLesson; if (!BR) BR = makeBridge();
     const ball = makeShape('lball', 'sphere', '#7C4DFF', 0, 0.55); ball.slot = null; ball.busy = true; ball.g.position.copy(zoneWorld('left'));
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, 'Look at the ' + BW + '. Where is it?'];
-    for (const z of ['top', 'under', 'right', 'front', 'behind']) steps.push(() => placeAt(ball, z).then(() => { ball.busy = true; }), cap(ZWORD[z]) + ' the bridge!');
+    for (const z of ['top', 'under', 'left', 'front', 'behind'])   /* review 7: "next to" on the LEFT, as in the rounds, so the right side never means two words */ steps.push(() => placeAt(ball, z).then(() => { ball.busy = true; }), cap(ZWORD[z]) + ' the bridge!');
     const ball2 = () => { const b2 = makeShape('lball2', 'sphere', '#12A766', 0, 0.55); b2.slot = null; b2.busy = true; b2.g.position.copy(zoneWorld('under')); return b2; };
     let b2 = null;
     steps.push(() => placeAt(ball, 'top').then(() => { b2 = ball2(); }), 'Two ' + BW + 's. One is on top. One is under.',
@@ -1697,7 +1707,7 @@ export function startGame(cfg) {
         const y0 = o.g.position.y; return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
       if (cfg.countTags) steps.push(() => { const bx = boxAt(i); const bt = numTag(items.length, new THREE.Vector3(bx.x, 2.45 + (tagRows(i, items.length).rows - 1) * 0.5, bx.z + 0.3), true); bigTags[i] = bt; tags.push(bt); pop(); });   /* the last number says how many: one big number for the whole box (K-CLARITY-RULES 8, 12) */
       steps.push(cap(WORDS[items.length]) + ' ' + word + '!');
-      if (cfg.countTags && i < counts.length - 1) steps.push(() => wait(500), () => {   /* review 5: this box's things go back in before the next box is counted, so two count rows never crowd or hide each other (rule 8) */
+      if (cfg.countTags) steps.push(() => wait(500), () => {   /* review 7: the last box's things go back in too, so at "which box has more" both groups are in their boxes, each with its big number */   /* review 5: this box's things go back in before the next box is counted, so two count rows never crowd or hide each other (rule 8) */
         (rowTags[i] || []).forEach(t => scene.remove(t)); rowTags[i] = [];
         return Promise.all(countBack.filter(c => items.includes(c[0])).map(([o, p, s0]) => { const s1 = o.g.scale.x, b0 = o.busy; o.busy = true; if (s1 !== s0) tween(300, k => o.g.scale.setScalar(s1 + (s0 - s1) * k)); return moveTo(o, p, 360, 0.4).then(() => { o.busy = b0; }); })); }); });
     const most = counts.reduce((b, c, i) => (c.length > counts[b].length ? i : b), 0);
@@ -1741,7 +1751,8 @@ export function startGame(cfg) {
       setBalance({ items: M.balance }); BS.items.forEach((o, i) => { BS.pans[i].item = o; o.inBox = true; o.busy = true; BS.pans[i].g.add(o.g); o.g.position.set(0, 0.07, 0); o.g.scale.setScalar(1); }); tipScale(); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }
     else if (M.where) {   /* a friend says where the ball is, on the bridge scene */
-      BR = makeBridge(); const b = makeShape('mball', 'sphere', '#7C4DFF', 0, 0.6); b.slot = null; b.busy = true; b.g.position.copy(zoneWorld(M.where)); d = { g: b.g, marks: [] };
+      BR = makeBridge(); const bigB = M.where === 'behind', b = makeShape('mball', 'sphere', '#7C4DFF', 0, bigB ? 1.45 : 0.6); b.slot = null; b.busy = true; b.g.position.copy(zoneWorld(M.where)); d = { g: b.g, marks: [] };
+      if (bigB) b.g.position.set(tall ? -0.45 : -0.6, 0.9, POS_Z() - 1.7);   /* review 7: a big ball right behind the middle of the bridge: its top shows over the plank, the plank and legs hide the rest. Like a ball behind a wall: plainly BEHIND, never "next to" */
     }
     else if (M.pattern) {   /* a friend's bead string with one wrong bead */
       setPattern({ seq: M.pattern.seq, blanks: 0, tray: [] }); ghost.visible = false;
@@ -1777,8 +1788,8 @@ export function startGame(cfg) {
         return tween(2000, k => { g.setDrawRange(0, Math.floor(N * k / 3) * 3); const q = path.getPointAt(Math.min(1, k)); tracer.position.set(q.x, q.y, DEPTH / 2 + BEV + 0.07); }).then(() => { g.setDrawRange(0, Infinity); tracer.visible = false; }); }]   /* a shape with no corners: its outline glows, so the curvy sides are seen */
       : M.balance ? [() => { const ws = BS.items.map(o => o.w), h = BS.items[ws.indexOf(Math.max(...ws))]; showHandAt(toScreen(h.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.5, 0)))); return wait(500); }]   /* the hand on the side that went down */
       : M.thin ? [() => tween(900, k => { d.turn.rotation.y = 0.22 + ease(k) * 1.03; })]   /* flat or solid: the flat piece turns, so he sees it is thin */
-      : M.where ? [() => { showHandAt(toScreen(d.g.position.clone().add(new THREE.Vector3(0.1, -0.32, 0))));   /* review 5: the fingertip touches the ball's bottom, so the hand does not cover the ball */ return (SHOT ? new Promise(r => setTimeout(r, 900)) : wait(900)); },
-        ...(M.where === 'behind' && !SHOT ? [() => { hand.style.display = 'none'; const a = d.g.position.clone(), b = a.clone().add(new THREE.Vector3(0.9, 0, 0.35)); plink(); return tween(700, k => d.g.position.lerpVectors(a, b, ease(k))).then(() => wait(500)).then(() => tween(700, k => d.g.position.lerpVectors(b, a, ease(k)))); }] : []),   /* review 6: the ball rolls out from behind the leg and back, so he SEES that the bridge hides it */
+      : M.where ? [() => { showHandAt(toScreen(d.g.position.clone().add(M.where === 'behind' ? new THREE.Vector3(0, 0.82, 0) : new THREE.Vector3(0.1, -0.32, 0))));   /* review 5: the fingertip touches the ball's bottom, so the hand does not cover the ball */ return (SHOT ? new Promise(r => setTimeout(r, 900)) : wait(900)); },
+        ...(M.where === 'behind' && !SHOT ? [() => { hand.style.display = 'none'; const a = d.g.position.clone(), b = a.clone().add(new THREE.Vector3(2.6, 0, 0.2)); plink(); return tween(700, k => d.g.position.lerpVectors(a, b, ease(k))).then(() => wait(500)).then(() => tween(700, k => d.g.position.lerpVectors(b, a, ease(k)))); }] : []),   /* review 6: the ball rolls out from behind the leg and back, so he SEES that the bridge hides it */
         () => { showRing('front', true); return wait(400); }]   /* review 4: the hand on the ball first (it is behind), then the ring on the empty "in front" place */   /* where is it: the gold ring on the empty "in front" place */
       : M.measure && MS ? [() => { endMarks(false); MS_ENDS = MS.items.map(o => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), new THREE.MeshBasicMaterial({ color: '#F5B400', toneMapped: false })); m.position.set(o.g.position.x - o.len / 2 - 0.1, ROD_Y + 0.3, o.g.position.z); scene.add(m); return m; }); if (MS_LINE) MS_LINE.material.color.set('#F5B400'); return wait(500); }]   /* measuring: gold balls on the two starting ends, the start line gold */
       : [];
