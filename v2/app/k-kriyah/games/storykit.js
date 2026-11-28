@@ -39,7 +39,7 @@ export function makeStory(E, unit, script) {
   async function letterDone(k) {   /* the new letters wait in a row along the top, right to left */
     const l = L[k]; float(l, false); const n = unit.letters.length, i = unit.letters.indexOf(k), gap = P ? (n > 4 ? .8 : n > 3 ? 1.05 : 1.45) : (n > 4 ? 1.85 : n > 3 ? 2.3 : 2.7);
     const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? (E.CALM ? 4.2 : 4.4) + l.userData.below * .28 : 3.3), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
-    await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? (E.CALM ? .36 : .28) : (E.CALM ? .55 : .42))));   /* calm: waiting letters big enough to read (reviewer: 25-40 px) */ glow.material.opacity = .8 * (1 - q); }); float(l);
+    await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? (E.CALM ? .36 : .28) : (E.CALM ? .48 : .42))));   /* calm: waiting letters big enough to read (reviewer: 25-40 px) */ glow.material.opacity = .8 * (1 - q); }); float(l);
   }
   /* a picture that stays (the Torah is never spun or shrunk away): it steps back beside the grown-up, and its letter rises out of a soft light */
   const kept = [];

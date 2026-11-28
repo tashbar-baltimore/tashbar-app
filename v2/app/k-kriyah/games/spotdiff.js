@@ -16,16 +16,16 @@ export default function setup(E, { struggled, unit }) {
   const { THREE, S } = E, NM = k => E.LETTERS[k].name;
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   const H = 2.3, arrows = [E.arrow3d(.45), E.arrow3d(.45)], marks = [E.glowSprite('#ffe680', 1.4, 0), E.glowSprite('#ffe680', 1.4, 0)], hint = [E.glowSprite('#fff7b0', 1.5, 0), E.glowSprite('#fff7b0', 1.5, 0)];
-  const pads = [0, 1].map(() => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(1.25, 1.35, .25, 40), E.M(0xfff6e4, { roughness: .4, clearcoat: .6 }), 0, .12, 0)); { const rg = E.mesh(new THREE.TorusGeometry(1.3, .05, 10, 48), E.M(0xf2c14e, { metalness: .5, roughness: .3 }), 0, .26, 0); rg.rotation.x = Math.PI / 2; p.add(rg); } E.scene.add(p); return p; });
+  const pads = [0, 1].map(() => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(1.25, 1.35, .25, 40), E.M(0xfff6e4, { roughness: .4, clearcoat: .6 }), 0, .12, 0)); { const rg = E.mesh(new THREE.TorusGeometry(1.3, .05, 10, 48), E.M(E.CALM ? 0xd8dde6 : 0xf2c14e, { metalness: E.CALM ? 0 : .5, roughness: .3 }), 0, .26, 0); rg.rotation.x = Math.PI / 2; p.add(rg); } E.scene.add(p); return p; });
   /* the line where ordinary letters stop: a long leg goes below it */
-  const lines = [0, 1].map(() => { const g = new THREE.Group(); g.add(E.mesh(E.rbox(2.6, .14, .1, .05), new THREE.MeshStandardMaterial({ color: 0xffd23a, emissive: 0xff9a00, emissiveIntensity: .55, roughness: .3 }), 0, 0, 0, false)); E.scene.add(g); return g; });
+  const lines = [0, 1].map(() => { const g = new THREE.Group(); g.add(E.mesh(E.rbox(2.6, .14, .1, .05), new THREE.MeshStandardMaterial(E.CALM ? { color: 0x8a96a8, roughness: .6 } : { color: 0xffd23a, emissive: 0xff9a00, emissiveIntensity: .55, roughness: .3 }), 0, 0, 0, false)); E.scene.add(g); return g; });
   let hintUntil = 0, P = false, A = null, B = null, R = null, busy = true, active = false, misses = 0, mistakes = 0, help = struggled, resolveFind = null, card = null, cardHome = new THREE.Vector3(), drag = null, grab = new THREE.Vector3(), resolveCard = null, cardMissed = false;
   const X = () => P ? 1.15 : 2.0, Y = () => P ? 2.9 : 1.95, S2 = () => P ? .62 : 1;
   E.onLayout(p => { P = p;
     if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.4, 0); kid.visible = false; cardHome.set(0, .95, 2.2); } else { E.camBase.set(0, 2.5, 9.5); E.camTarget.set(0, 1.6, 0); kid.visible = true; kid.position.set(-4.9, 0, 1.2); cardHome.set(0, .7, 2.6); }
     const drop = H * S2() * .42;   /* room under the line for a long leg */
     pads.forEach((pd, i) => { pd.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .35 - drop, 0); pd.scale.setScalar(S2()); });
-    lines.forEach((ln, i) => { ln.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .1 * S2(), .45); ln.scale.setScalar(S2()); });   /* where ordinary letters really end (with their bevel), in front */
+    lines.forEach((ln, i) => { ln.position.set(i ? -X() : X(), Y() - H * S2() / 2 - .1 * S2(), E.CALM ? .05 : .45); ln.scale.setScalar(S2()); if (E.CALM) ln.scale.y = S2() * .45; });   /* calm: a thin grey line BEHIND the letter (in front, a yellow bar cut the long leg and looked like a vowel) */   /* where ordinary letters really end (with their bevel), in front */
     if (A) { A.position.set(X(), Y(), .3); A.scale.setScalar(S2()); } if (B) { B.position.set(-X(), Y(), .3); B.scale.setScalar(S2()); }   /* both on the gold line; a long leg hangs below it, above the stand */
     if (card && !drag) card.position.copy(cardHome);
   });
@@ -64,20 +64,21 @@ export default function setup(E, { struggled, unit }) {
     if (l && l.userData.key === k) { const p0 = card.position.clone(), to = E.worldPos(l).add(new THREE.Vector3(0, 0, .6)); await E.tween(350, q => card.position.lerpVectors(p0, to, q)); E.scene.remove(card); card = null; cardReady = false;
       E.joy(to); E.hop(l, .3); await E.say(['Yes! ' + NM(k) + '!']); const r = resolveCard; resolveCard = null; r && r(); }
     else { const p0 = card.position.clone(); card.userData.busy = true; await E.tween(350, q => card.position.lerpVectors(p0, cardHome, q), E.ease.out); card.userData.busy = false;
-      if (l) { E.sfx.boop(); if (!cardMissed) mistakes++; cardMissed = true; await E.say('Look! ' + (k === R.a ? R.la : R.lb)); } busy = false; }
+      if (l) { E.sfx.boop(); if (!cardMissed) mistakes++; cardMissed = true; await E.say('Look! ' + (k === R.a ? R.la : R.lb)); const T = [A, B].find(x => x && x.userData.key === k); if (E.CALM && T && card) { /* show how (K-CLARITY 16): the hand carries it halfway, then he does it */ const a = card.position.clone(), b = a.clone().lerp(E.worldPos(T).add(new THREE.Vector3(0, 0, .6)), .5); card.userData.busy = true;
+        await E.tween(700, q => { card.position.lerpVectors(a, b, q); const [x, y] = E.toScreen(card.position); E.hand.at(x, y); }); await E.wait(250); E.hand.hide(); await E.tween(350, q => card.position.lerpVectors(b, a, q)); card.userData.busy = false; await E.say('Now you!'); } } busy = false; }
   }
   async function playRound(r, demo) {
     R = r; [A, B].forEach(l => l && E.scene.remove(l)); A = E.letter(r.a, H); B = E.letter(r.b, H); A.position.set(X(), Y(), .3); B.position.set(-X(), Y(), .3); A.scale.setScalar(S2()); B.scale.setScalar(S2()); E.scene.add(A, B); await Promise.all([E.popIn(A, S2()), E.popIn(B, S2())]);
     await E.say(['This is ' + NM(r.a) + '. This is ' + NM(r.b) + '.']);
     if (demo) { await E.say('Watch me. I look carefully at the bottom.'); const [x, y] = E.toScreen(spot(r.b, r.a, B)); E.hand.at(x, y, true); await E.wait(900); E.hand.hide(); E.sfx.chime(); await showDiff(); await E.say(r.la); await E.say(r.lb); hideDiff();
       card = E.letter(r.b, 1.3); card.position.copy(cardHome); card.scale.setScalar(P ? .75 : 1); E.scene.add(card); await E.popIn(card, P ? .75 : 1);   /* show, then try: the hand puts a card with its twin */
-      await E.say(['Watch me. I put ' + NM(r.b) + ' with its twin.']); let [hx, hy] = E.toScreen(card.position); E.hand.at(hx, hy); await E.wait(400);
+      await E.say(['Watch me. I put ' + NM(r.b) + ' with the one just like it.']); let [hx, hy] = E.toScreen(card.position); E.hand.at(hx, hy); await E.wait(400);
       const c0 = card.position.clone(), c1 = E.worldPos(B).add(new THREE.Vector3(0, 0, .6)); await E.tween(1100, q => { card.position.lerpVectors(c0, c1, q); const [a, b] = E.toScreen(card.position); E.hand.at(a, b); }); E.hand.hide();
       E.scene.remove(card); card = null; E.joy(c1); E.hop(B, .3); return; }
     await E.say('Find what is different! Tap it.'); await find();
     /* use it: one card comes, he puts it with its twin */
     const k = Math.random() < .5 ? r.a : r.b; card = E.letter(k, 1.3); card.position.copy(cardHome); card.scale.setScalar(P ? .75 : 1); E.scene.add(card); await E.popIn(card, P ? .75 : 1); cardMissed = false;
-    await E.say(['Put ' + NM(k) + ' with its twin!']); const p = new Promise(res => resolveCard = res); cardReady = true; busy = false; document.body.dataset.cardReady = (document.body.dataset.cardReady | 0) + 1; await p;
+    await E.say(['Put ' + NM(k) + ' with the one just like it!']); const p = new Promise(res => resolveCard = res); cardReady = true; busy = false; document.body.dataset.cardReady = (document.body.dataset.cardReady | 0) + 1; await p;
   }
   return async () => {
     E.setProgress(ROUNDS.length - 1, 0);

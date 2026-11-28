@@ -39,7 +39,7 @@ export default function setup(E, { struggled, unit }) {
   E.onFrame(t => {
     endStar.rotation.y = E.CALM ? 0 : Math.sin(t * 1.5) * .5; endStar.scale.setScalar(P ? 1.45 : 1);   /* it rocks gently, never edge-on; bigger on a phone */
     const fl = performance.now() < slotFlash; slotM.opacity = fl ? 1 : .45 + Math.sin(t * 3) * .15; slot.scale.setScalar(fl ? 1.3 : 1 + Math.sin(t * 3) * .04);
-    cards.forEach((c, i) => { if (c !== drag && !c.userData.busy) c.position.y = cardHome(i).y + Math.sin(t * 2 + i) * .05; });
+    cards.forEach((c, i) => { if (c !== drag && !c.userData.busy) c.position.y = cardHome(i).y + (E.CALM ? 0 : Math.sin(t * 2 + i) * .05); });
     const g = help && enabled && cards.find(c => word && c.userData.key === word.keys[word.gap]); if (g) { glow.position.copy(g.position).setZ(g.position.z - .3); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
   const slotWorld = () => E.worldPos(slot);
@@ -74,6 +74,8 @@ export default function setup(E, { struggled, unit }) {
       E.hop(endStar, .4, 500); slotFlash = performance.now() + 2500 * E.F;   /* the star and the empty place light up */
       await E.say(E.LETTERS[k].partner ? NM(k) + ' goes only at the end of a word.' : 'This is the end of the word!');
       await E.say(atEnd() ? 'At the end, ' + NM(plainOf(k)) + ' wears Shabbos clothes.' : 'Here we need plain ' + NM(want) + '.');
+      { const r = cards.find(x => x.userData.key === want && x.visible); if (E.CALM && r) { /* show how (K-CLARITY 16): the hand carries it halfway, then he does it */ const a = r.position.clone(), b = a.clone().lerp(slotWorld(), .5); r.userData.busy = true;
+        await E.tween(700, q => { r.position.lerpVectors(a, b, q); const [x, y] = E.toScreen(r.position); E.hand.at(x, y); }); await E.wait(250); E.hand.hide(); await E.tween(350, q => r.position.lerpVectors(b, a, q)); r.userData.busy = false; await E.say('Now you!'); } }
       if (wrongInRow >= 2 || mistakes >= 3) help = true; kid.mood('calm'); busy = false;
     }
   }
@@ -91,7 +93,7 @@ export default function setup(E, { struggled, unit }) {
     const list = WORDS.slice(1).sort(() => Math.random() - .5); E.setProgress(list.length, 0);
     await E.say('The star shows the end of the word.');
     await task(WORDS[0], true);
-    await E.say('Now you! Is it the end, or not?'); mistakes = 0;
+    await E.say(E.CALM ? 'Now you! Drag the right one to the empty place.' : 'Now you! Is it the end, or not?'); mistakes = 0;
     for (let i = 0; i < list.length; i++) { await task(list[i]); E.setProgress(list.length, i + 1); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'You know where Shabbos clothes go: at the end!' : null };

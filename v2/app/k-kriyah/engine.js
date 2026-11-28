@@ -377,14 +377,14 @@ export function buildShul() {
   const bench = (x, z, ry) => { const b = new THREE.Group(); b.add(mesh(rbox(2.6, .12, .55, .04), woodL, 0, .5, 0)); b.add(mesh(rbox(2.6, .6, .1, .04), wood, 0, .85, -.25)); [-1.1, 1.1].forEach(lx => b.add(mesh(new THREE.BoxGeometry(.1, .5, .5), wood, lx, .25, 0)));
     b.position.set(x, 0, z); b.rotation.y = ry; w.add(b); };
   bench(-7.6, -2.4, .25); bench(7.6, -2.4, -.25); bench(-8.4, .6, .35); bench(8.4, .6, -.35);
-  /* two warm hanging lamps */
-  [[-3.4, 5.4, -3.5], [3.4, 5.4, -3.5]].forEach(([x, y, z]) => { const l = new THREE.Group(); l.add(mesh(new THREE.CylinderGeometry(.015, .015, 3, 6), gold, 0, 1.6, 0, false));
+  /* two warm hanging lamps (not in the calm look) */
+  if (!CALM) [[-3.4, 5.4, -3.5], [3.4, 5.4, -3.5]].forEach(([x, y, z]) => { const l = new THREE.Group(); l.add(mesh(new THREE.CylinderGeometry(.015, .015, 3, 6), gold, 0, 1.6, 0, false));
     l.add(mesh(new THREE.SphereGeometry(.32, 20, 14), new THREE.MeshStandardMaterial({ color: 0xfff1c8, emissive: 0xffd98a, emissiveIntensity: 1 }), 0, 0, 0, false)); l.add(mesh(new THREE.CylinderGeometry(.18, .26, .14, 16), gold, 0, .3, 0, false));
     const g = glowSprite('#ffe3a0', 2.2, .55); l.add(g); l.position.set(x, y, z); w.add(l); });
   /* strings of little Simchas Torah flags (plain colours, no writing), gently swaying */
   const flagCols = [0xe8322b, 0xffcf3a, 0x2f7de1, 0x2dbb6a, 0xff7aa8, 0xff9f1a, 0x9b5de5];
   const strings = [];
-  [[-9, 6.2, 0, 5.0, -5.6], [0, 5.0, 9, 6.2, -5.6], [-9, 7.4, 9, 7.4, -6.6]].forEach(([x0, y0, x1, y1, z], si) => { const st = new THREE.Group(); w.add(st); const n = 14;
+  if (!CALM) [[-9, 6.2, 0, 5.0, -5.6], [0, 5.0, 9, 6.2, -5.6], [-9, 7.4, 9, 7.4, -6.6]].forEach(([x0, y0, x1, y1, z], si) => { const st = new THREE.Group(); w.add(st); const n = 14;
     const pts = []; for (let i = 0; i <= n; i++) { const t = i / n; pts.push(new THREE.Vector3(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t - Math.sin(t * Math.PI) * .7, z)); }
     st.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .012, 5), M(0xffffff), 0, 0, 0, false));
     for (let i = 1; i < n; i++) { const tri = new THREE.Shape(); tri.moveTo(-.17, 0); tri.lineTo(.17, 0); tri.lineTo(0, -.38); tri.closePath();
@@ -619,7 +619,7 @@ export function tick3d(r = .22) { const sh = new THREE.Shape(); sh.moveTo(-r, 0)
   const g = new THREE.ExtrudeGeometry(sh, { depth: r * .15, bevelEnabled: false }); g.center(); return mesh(g, new THREE.MeshStandardMaterial({ color: 0x1fae5a, emissive: 0x0d6b33, emissiveIntensity: .3, roughness: .4 }), 0, 0, 0, false); }
 /* a glossy gold 3D star (used as a "done" mark above a letter, never below it, so it can't look like a nekudah) */
 export function star3d(r = .22) { const sh = new THREE.Shape(); for (let i = 0; i < 10; i++) { const a = Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; const x = Math.cos(a) * rr, y = Math.sin(a) * rr; i ? sh.lineTo(x, y) : sh.moveTo(x, y); } sh.closePath();
-  const g = new THREE.ExtrudeGeometry(sh, { depth: r * .25, bevelEnabled: true, bevelThickness: r * .12, bevelSize: r * .1, bevelSegments: 3 }); g.center(); return mesh(g, goldDot(), 0, 0, 0, false); }
+  const g = new THREE.ExtrudeGeometry(sh, { depth: r * .25, bevelEnabled: true, bevelThickness: r * .12, bevelSize: r * .1, bevelSegments: 3 }); g.center(); return mesh(g, CALM ? M(0xff6a2a, { roughness: .4 }) : goldDot(), 0, 0, 0, false); }   /* calm: an orange star (only the dot is gold) */
 /* an orange arrow that points at the part to notice, without covering it (never round, so it can't look like a dot).
    dir: 'down' (points down at a crown or roof), 'right' (points right at a leg or gap), 'left' or 'up' */
 export function arrow3d(size = .35, dir = 'down') {
@@ -652,7 +652,7 @@ export function noticeRing(r = .42) { const ring = mesh(new THREE.TorusGeometry(
 let sparkTex; const sparks = [], confs = []; let confGeo; const confCols = [0xff5d8f, 0xffc21a, 0x2dbb6a, 0x2f7de1, 0x9b5de5, 0x00c2d1];
 export function sparkle(pos, n = 18, spread = 1) { sparkTex = sparkTex || starTex(); if (CALM) return;   /* calm: no sparkles at all; white specks on a letter looked like a dot (reviewer, round 2) */ for (let i = 0; i < n; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sparkTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
   s.position.copy(pos); const v = new THREE.Vector3((Math.random() - .5), (Math.random() - .2), (Math.random() - .5)).normalize().multiplyScalar(.03 + Math.random() * .06 * spread); s.userData = { v, life: 50 + Math.random() * 30 }; s.scale.setScalar(.12 + Math.random() * .16); scene.add(s); sparks.push(s); } }
-export function confetti(pos, n = 60) { confGeo = confGeo || new THREE.PlaneGeometry(.12, .07); for (let i = 0; i < n; i++) { const m = new THREE.Mesh(confGeo, new THREE.MeshStandardMaterial({ color: confCols[i % 6], side: THREE.DoubleSide, roughness: .4, metalness: .3 }));
+export function confetti(pos, n = 60, end = false) { if (CALM && !end) return;   /* calm: confetti only for the end of the game */ confGeo = confGeo || new THREE.PlaneGeometry(.12, .07); for (let i = 0; i < n; i++) { const m = new THREE.Mesh(confGeo, new THREE.MeshStandardMaterial({ color: confCols[i % 6], side: THREE.DoubleSide, roughness: .4, metalness: .3 }));
   m.position.copy(pos); m.userData = { v: new THREE.Vector3((Math.random() - .5) * .16, .08 + Math.random() * .14, (Math.random() - .5) * .1), r: new THREE.Vector3(Math.random() * .3, Math.random() * .3, Math.random() * .3), life: 80 }; scene.add(m); confs.push(m); } }
 function stepParticles() {
   for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.position.add(s.userData.v); s.userData.v.multiplyScalar(.96); s.material.opacity = Math.min(1, s.userData.life / 25); s.material.rotation += .05; if (--s.userData.life <= 0) { scene.remove(s); s.material.dispose(); sparks.splice(i, 1); } }
@@ -690,7 +690,7 @@ const starSvg = (k, on) => `<svg viewBox="0 0 24 24"><defs><radialGradient id="s
 export async function finish(id, stars, line) {
   record(id, stars); document.body.dataset.stars = stars;
   const y = $('#yay'); y.querySelector('.stars').innerHTML = [0, 1, 2].map(k => starSvg(k, k < stars)).join('');
-  y.classList.add('show'); sfx.fanfare(); for (let k = 0; k < 4; k++) setTimeout(() => confetti(new THREE.Vector3((Math.random() - .5) * 6, 4, 1), 50), k * 200 * F);
+  y.classList.add('show'); sfx.fanfare(); for (let k = 0; k < 4; k++) setTimeout(() => confetti(new THREE.Vector3((Math.random() - .5) * 6, 4, 1), 50, true), k * 200 * F);
   const passed = stars >= PASS;
   const gi = GAMES.findIndex(g => g.id === id);
   const practice = GAMES[gi].mastery && unitOf(id).gate && stars < 3 ? GAMES.find(g => g.afterTry && g.unit === GAMES[gi].unit) : null;   /* the champion check: not 3 stars yet, so practise his hard letters next */
@@ -730,7 +730,7 @@ export const sameSound = (a, b) => a !== b && ((LETTERS[a].quiet && LETTERS[b].q
 /* what to look for when he mixes up a look-alike pair: "want/tapped" */
 const REV_CLUE = { 'beis/veis': 'Beis has a dot.', 'veis/beis': 'Veis has no dot.', 'beis/kaf': 'Beis has a tail at the bottom.', 'kaf/beis': 'Kaf is round at the bottom.',
   'kaf/chaf': 'Kaf has a dot.', 'chaf/kaf': 'Chaf has no dot.', 'vov/zayin': 'Vov has no crown.', 'zayin/vov': 'Zayin has a crown.', 'hei/ches': 'Hei\u2019s leg doesn\u2019t touch the roof.', 'ches/hei': 'Ches\u2019s leg touches the roof.',
-  'gimmel/nun': 'Gimmel has a foot.', 'nun/gimmel': 'Nun is flat at the bottom.', 'tes/mem': 'Tes is closed at the bottom.', 'mem/tes': 'Mem has an opening at the bottom.',
+  'gimmel/nun': 'Gimmel has a foot.', 'nun/gimmel': 'Nun has no foot.', 'tes/mem': 'Tes is closed at the bottom.', 'mem/tes': 'Mem has an opening at the bottom.',
   'pei/kaf': 'Pei has a little tongue inside.', 'kaf/pei': 'Kaf has no little tongue.', 'pei/fei': 'Pei has a dot.', 'fei/pei': 'Fei has no dot.', 'daled/reish': 'Daled has a corner.', 'reish/daled': 'Reish is round on top.', 'hei/kuf': 'Hei has a short leg.', 'kuf/hei': 'Kuf has a long leg.',
   'shin/sin': 'Shin\u2019s dot is on the right.', 'sin/shin': 'Sin\u2019s dot is on the left.', 'tav/sav': 'Tuf has a dot.', 'sav/tav': 'Suf has no dot.', 'tav/ches': 'Tuf has a little foot.', 'ches/tav': 'Ches has no foot.' };
 export function reviewPicks(known, n = 3, skip = []) {
@@ -764,7 +764,7 @@ export async function quickReview(unit, game) {
       const bySound = !after[k] && qi === 1 && LETTERS[k].snd && !set.some(c => c !== k && LETTERS[c].snd === LETTERS[k].snd);   /* one question by its sound, never with a same-sound letter beside it */
       const ask = after[k] ? 'What comes after ' + LETTERS[after[k]].name + '? Tap it.' : bySound ? ['Which letter says', S(LETTERS[k].snd), '? Tap it.'] : 'Tap ' + LETTERS[k].name + '.';
       let busy = true;
-      (async () => { if (qi === 0 && firstEver) { await say('Watch me. Tap ' + LETTERS[k].name + '.'); const r = btns.find(x => x.dataset.k === k).getBoundingClientRect(); hand.at(r.x + r.width / 2, r.y + r.height / 2 + 20, true); await wait(900); hand.hide(); await say('Now you!'); }
+      (async () => { if (qi === 0 && firstEver) { const dk = CALM ? (set.find(c => c !== k) || k) : k;   /* calm: the demo taps a different letter, so the first question is his own */ await say('Watch me. Tap ' + LETTERS[dk].name + '.'); const r = btns.find(x => x.dataset.k === dk).getBoundingClientRect(); hand.at(r.x + r.width / 2, r.y + r.height / 2 + 20, true); await wait(900); hand.hide(); await say('Now you!'); }
         await say(ask); busy = false; window.__review.ready = 1; })();
       btns.forEach(b => b.onclick = async () => { if (busy) return; const c = b.dataset.k;
         if (c === k) { busy = true; b.classList.add('right'); sfx.chime(); if (firstTry) noteLetter(k, true); dots.children[qi].classList.add('on'); if (qi === picks.length - 1) sfx.fanfare && sfx.fanfare();

@@ -17,6 +17,6 @@ export default function setup(E, { unit }) {
       { pic: 'mountain', lines: ['Eli sees a big mountain far away.'], letter: 'mem', after: [['Mountain starts with', S('m'), '.'], ['Mem says', S('m'), ', like mountain!']] },
       { pic: 'nut', near: 'grown', lines: ['Bubby brings nuts for a snack.'], letter: 'nun', after: [['Nut starts with', S('n'), '.'], ['Nun says', S('n'), ', like nut!']] },
     ],
-    lookalikes: [['gimmel', 'nun', 'Gimmel has a foot.', 'Nun is flat at the bottom.'], ['tes', 'mem', 'Tes is closed at the bottom.', 'Mem has an opening at the bottom.']],
+    lookalikes: [['gimmel', 'nun', 'Gimmel has a foot.', 'Nun has no foot.'], ['tes', 'mem', 'Tes is closed at the bottom.', 'Mem has an opening at the bottom.']],
   });
 }

@@ -9,7 +9,7 @@ export default function setup(E, { struggled, unit }) {
   const { THREE, S } = E, NM = k => E.LETTERS[k].name;
   const FIN = ['chafsofis', 'memsofis', 'nunsofis', 'feisofis', 'tzadiksofis'], REG = FIN.map(f => E.LETTERS[f].partner);
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
-  const shelfM = E.M(0xc68a52, { roughness: .55 }), placeM = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff0b0, emissiveIntensity: .5, transparent: true, opacity: .55 });
+  const shelfM = E.M(0xc68a52, { roughness: .55 }), placeM = E.CALM ? new THREE.MeshStandardMaterial({ color: 0xff8a3d, emissive: 0xff6a1a, emissiveIntensity: .45, roughness: .4 }) : new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff0b0, emissiveIntensity: .5, transparent: true, opacity: .55 });   /* calm: a clear orange ring for each place */
   const shelf = E.mesh(E.rbox(8.6, .18, 1.0, .06), shelfM, 0, 0, 0); E.scene.add(shelf);
   const tops = [], places = [], links = [], cards = [];
   const glow = E.glowSprite('#fff7b0', 2.0, 0); E.scene.add(glow); const arrow = E.arrow3d(.35);
@@ -37,7 +37,7 @@ export default function setup(E, { struggled, unit }) {
     placed = 0; lay();
   }
   E.onFrame(t => {
-    cards.forEach((c, i) => { if (c.userData.done == null && c !== drag && !c.userData.busy) c.position.y = homePos(c.userData.home).y + Math.sin(t * 2 + i) * .05; c.rotation.y = c.userData.done == null ? Math.sin(t * 1.2 + i) * .2 : 0; });
+    cards.forEach((c, i) => { if (c.userData.done == null && c !== drag && !c.userData.busy) c.position.y = homePos(c.userData.home).y + (E.CALM ? 0 : Math.sin(t * 2 + i) * .05); c.rotation.y = c.userData.done == null && !E.CALM ? Math.sin(t * 1.2 + i) * .2 : 0; });
     places.forEach((p, i) => { p.material.opacity = .45 + Math.sin(t * 3 + i) * .12; p.visible = !cards.some(c => c.userData.done === i); });
     if (performance.now() < flash.until) { glow.position.copy(placePos(flash.i)).setZ(-.1); glow.position.y = topPos(flash.i).y; glow.material.opacity = .85; return; }   /* the plain partner lights up after a wrong drop */
     const want = help && enabled && cards.find(c => c.userData.done == null && (!missedKey || c.userData.key === missedKey));
@@ -57,7 +57,7 @@ export default function setup(E, { struggled, unit }) {
     if (order[i] === partner) {
       c.userData.done = i; wrongInRow = 0; missedKey = null; const p0 = c.position.clone(), to = placePos(i);
       await E.tween(380, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * .4; c.scale.setScalar(HC + (H / 1.3 - HC) * q); });
-      const link = E.mesh(new THREE.CylinderGeometry(.05, .05, 1, 10), E.goldDot(), 0, 0, -.2, false); link.userData.i = i; link.scale.setScalar(H / 1.3); link.position.copy(topPos(i)).lerp(placePos(i), .5).setZ(-.25); link.scale.y = 1; E.scene.add(link); links.push(link);
+      const link = E.mesh(new THREE.CylinderGeometry(.05, .05, 1, 10), E.CALM ? E.M(0x9aa7b8, { roughness: .5 }) : E.goldDot(), 0, 0, -.2, false); link.userData.i = i; link.scale.setScalar(H / 1.3); link.position.copy(topPos(i)).lerp(placePos(i), .5).setZ(-.25); link.scale.y = 1; E.scene.add(link); links.push(link);
       E.joy(to.clone().add(new THREE.Vector3(0, .5, .5))); E.hop(c, .3); E.hop(tops[i], .3); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F);
       await E.say([NM(partner) + ' and ' + NM(k) + '! Both say', S(E.LETTERS[k].snd), '!']);
       placed++; busy = false; if (placed === FIN.length && resolveRound) { const r = resolveRound; resolveRound = null; r(); }
@@ -68,6 +68,8 @@ export default function setup(E, { struggled, unit }) {
       await E.say(DESC[k]); await E.say('Find its partner!');
       flash = { i: order.indexOf(partner), until: performance.now() + 2200 * E.F };   /* its plain partner lights up while he hears why */
       if (wrongInRow >= 2) { const j = order.indexOf(partner); E.hop(tops[j], .35); }   /* only after two tries does the partner hop */
+      if (E.CALM) { /* show how (K-CLARITY 16): the hand carries it halfway, then he does it */ const a = c.position.clone(), b = a.clone().lerp(placePos(order.indexOf(partner)), .5); c.userData.busy = true;
+        await E.tween(700, q => { c.position.lerpVectors(a, b, q); const [x, y] = E.toScreen(c.position); E.hand.at(x, y); }); await E.wait(250); E.hand.hide(); await E.tween(350, q => c.position.lerpVectors(b, a, q)); c.userData.busy = false; await E.say('Now you!'); }
       if (wrongInRow >= 2 || mistakes >= 3) help = true; kid.mood('calm'); busy = false;
     }
   }

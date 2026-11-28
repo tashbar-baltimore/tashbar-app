@@ -7,7 +7,7 @@
       bubble with this letter (three of them). A wrong pop is answered kindly, with what to look for. */
 const TIP = { beis: 'It has a dot.', veis: 'No dot.', kaf: 'It has a dot.', chaf: 'No dot.', pei: 'It has a dot.', fei: 'No dot.', tav: 'It has a dot.', sav: 'No dot.',
   shin: 'Its dot is on the right.', sin: 'Its dot is on the left.', vov: 'No crown.', zayin: 'It has a crown.', hei: 'Its leg doesn’t touch the roof.', ches: 'Its leg touches the roof.',
-  daled: 'It has a corner.', reish: 'It is round on top.', gimmel: 'It has a foot.', nun: 'It is flat at the bottom.', tes: 'It is closed at the bottom.', mem: 'It has an opening at the bottom.',
+  daled: 'It has a corner.', reish: 'It is round on top.', gimmel: 'It has a foot.', nun: 'It has no foot.', tes: 'It is closed at the bottom.', mem: 'It has an opening at the bottom.',
   kuf: 'It has a long leg.', yud: 'It is the little one.', lamed: 'It is the tall one.', tzadik: 'It has a little arm up.', feisofis: 'It has a long leg.', tzadiksofis: 'It has a long leg.', samech: 'It is round all around.', memsofis: 'It is square at the bottom.', nunsofis: 'It has a long leg.', chafsofis: 'It has a long leg.', alef: 'It has a slanted line.', ayin: 'It has two arms up.' };
 const LOOKS = { beis: ['veis', 'kaf'], veis: ['beis'], kaf: ['chaf', 'beis'], chaf: ['kaf'], pei: ['fei', 'kaf'], fei: ['pei'], tav: ['sav', 'ches'], sav: ['tav'], shin: ['sin'], sin: ['shin'], vov: ['zayin', 'nunsofis'], zayin: ['vov'],
   hei: ['ches', 'kuf'], ches: ['hei', 'tav'], daled: ['reish'], reish: ['daled', 'chafsofis'], gimmel: ['nun'], nun: ['gimmel'], tes: ['mem'], mem: ['tes'], kuf: ['hei'], samech: ['memsofis'], memsofis: ['samech'], nunsofis: ['vov'], chafsofis: ['reish'] };

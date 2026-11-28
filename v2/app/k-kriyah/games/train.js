@@ -6,7 +6,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const { THREE } = E;
   const ORDER = game.order || [...unit.known, ...unit.letters];   /* a later unit's train carries the newest six letters, in order */          /* Alef, Beis, Veis, Gimmel, Daled, Hei */
   const n = ORDER.length, carCols = [0xff7aa8, 0x46c3ff, 0xffcf3a, 0x7bd94a, 0xb388ff, 0xff9f1a, 0x00c2d1];
-  const dark = E.M(0x26324a, { roughness: .4 }), red = E.M(0xe8322b, { roughness: .3, clearcoat: .8 }), gold = E.M(0xffd43b, { metalness: .5, roughness: .3 });
+  const dark = E.M(0x26324a, { roughness: .4 }), red = E.M(0xe8322b, { roughness: .3, clearcoat: .8 }), gold = E.M(E.CALM ? 0x5a6578 : 0xffd43b, { metalness: E.CALM ? 0 : .5, roughness: .3 });
   /* the track */
   const track = new THREE.Group(); E.scene.add(track);
   [-.32, .32].forEach(z => track.add(E.mesh(new THREE.BoxGeometry(14, .06, .08), E.M(0x9aa7b8, { metalness: .6, roughness: .3 }), 0, .05, z, false)));
@@ -31,7 +31,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
     const lx = p ? (ORDER.length >= 7 ? 2.0 : ORDER.length >= 6 ? 1.85 : ORDER.length === 5 ? 1.75 : 1.68) : 4.6, step = p ? (ORDER.length >= 7 ? .53 : ORDER.length >= 6 ? .6 : ORDER.length === 5 ? .68 : .55) : 1.22;   /* seven cars: a little closer, so the last car stays on a phone screen */   /* on a phone the whole train fits the width */ LX = lx; loco.position.set(lx, 0, .2); loco.scale.setScalar(S); track.scale.set(1, 1, S); track.position.z = .2;
     slotX = ORDER.map((_, i) => lx - (p ? .67 : 1.35) - i * step);
     const top = Math.ceil(ORDER.length / 2), per = ORDER.length > 6 ? [top, ORDER.length - top] : [3, 3];   /* seven cars: four on top, three below, none on top of another */
-    homes = ORDER.map((_, i) => p ? (() => { const r = i < per[0] ? 0 : 1, j = r ? i - per[0] : i, n = per[r], gap = n > 3 ? 1.05 : 1.3; return new THREE.Vector3(((n - 1) / 2 - j) * gap, r ? 1.6 : 3.2, .6); })() : new THREE.Vector3(ORDER.length > 6 ? ((ORDER.length - 1) / 2 - i) * .76 : E.CALM ? ((ORDER.length - 1) / 2 - i) * 1.3 : 2.25 - i * .98, 0, ORDER.length > 6 ? 3.7 : 4.2));   /* calm: the waiting cars stand well apart, so they never look like a train already made */   /* seven cars: centred and a little closer, so none leaves the screen */   /* all inside the screen: on a phone, two rows above the train */   /* waiting on the grass in front of the track */
+    homes = ORDER.map((_, i) => p ? (() => { const r = i < per[0] ? 0 : 1, j = r ? i - per[0] : i, n = per[r], gap = n > 3 ? 1.05 : 1.3; return new THREE.Vector3(((n - 1) / 2 - j) * gap, r ? 1.6 : 3.2, .6); })() : new THREE.Vector3(ORDER.length > 6 ? ((ORDER.length - 1) / 2 - i) * .76 : E.CALM ? ((ORDER.length - 1) / 2 - i) * 1.08 : 2.25 - i * .98, 0, ORDER.length > 6 ? 3.7 : E.CALM ? 3.6 : 4.2));   /* calm: the waiting cars stand well apart, so they never look like a train already made */   /* seven cars: centred and a little closer, so none leaves the screen */   /* all inside the screen: on a phone, two rows above the train */   /* waiting on the grass in front of the track */
     cars.forEach(c => c.userData.letter.scale.setScalar(p ? 1.45 : 1));   /* much bigger letters on a phone (reviewer: Kaf's dot hardly showed) */
     cars.forEach(c => { c.scale.setScalar(c.userData.on ? S : (p ? .75 : .7)); if (c.userData.on) c.position.copy(slotPos(c.userData.slot)); else if (c !== drag) c.position.copy(homes[c.userData.home ?? c.userData.i]); });
     if (p) { E.camBase.set(0, 2.3, 11); E.camTarget.set(0, 1.8, 0); } else { E.camBase.set(0, 2.7, 10.2); E.camTarget.set(0, 1.5, 0); }
@@ -70,8 +70,10 @@ export default function setup(E, { struggled, unit, game = {} }) {
     } else {
       E.sfx.boop(); wrong++; wrongInRow++; c.userData.busy = true; await E.tween(380, q => c.position.lerpVectors(p0, home, q), E.ease.out); await E.shake(c, .12); c.userData.busy = false;
       const need = gaps ? slot : nextNeeded();
-      await E.say('That is ' + E.LETTERS[c.userData.key].name + '. Listen.');
-      await chant(need, true);
+      if (E.CALM && E.sameShape(c.userData.key, ORDER[need])) { const nk = ORDER[need], dk = E.LETTERS[nk].dagesh ? nk : c.userData.key, nd = dk === nk ? c.userData.key : nk;   /* Kaf and Chaf: the chant can't help, the dot can */
+        await E.say(E.LETTERS[dk].name + ' has a dot. ' + E.LETTERS[nd].name + ' has none.'); }
+      else { await E.say('That is ' + E.LETTERS[c.userData.key].name + '. Listen.');
+      await chant(need, true); }
       await E.say(E.LETTERS[ORDER[need]].name + ' goes here!');
       { const r = cars.find(x => x.userData.key === ORDER[need] && !x.userData.on);   /* show how (K-CLARITY 16): the hand moves the right car halfway, then he does it */
         if (r) { r.userData.busy = true; const a = r.position.clone(), b = a.clone().lerp(slotPos(need).add(new THREE.Vector3(0, .6, .3)), .5);
