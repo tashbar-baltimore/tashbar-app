@@ -130,4 +130,4 @@ Choice made for Esti: **Shloimy's Shabbos clothes are his white shirt and dark t
 | My hard letters | Small letters in moving see-through rainbow bubbles; a bubble left on the end screen; bubbles under the title. | Bigger letters on plain white discs, rising slower, gone below the title; none left at the end; the first miss lights a right one. |
 | Beat the sun | The sun-clock passed behind Pei and its dot; only 1 of 2 progress dots filled. | The sun's path stays high above the cars; both dots fill; "You finished the train! Champion!". |
 
-Not changed (left for the next round's eyes): Partner Match's phone shelf is tight (five letters on one shelf); Find the Mistake (Unit 10) has no separate "Watch me" for a wrong-name round.
+Partner Match (phone): the five plain letters now stand in two rows (3 + 2), bigger and apart, with their drop rings under them. Not changed (left for the next round): Find the Mistake (Unit 10) has no separate "Watch me" for a wrong-name round.
