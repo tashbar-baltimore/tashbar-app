@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Find the squares</title>
+<!-- Kindergarten Shapes, Unit 1 "Meet the flat shapes" (v2/curriculum/k-shapes/MAP.md): know a square (4 sides the same, 4 corners) even when turned on its corner; tell it from a rectangle and leaning shapes. K.G.2, K.G.4.
+     Built on the shared 3D kit (kit.js): learn -> he taps / claps -> watch me -> he sorts -> find the mistake -> stars. ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame, wrongFor, FAMILY } from './kit.js';
+
+const PI = Math.PI;
+startGame({
+  id: 'squares', world: 'toyland', plain: true,
+  boxes: [{ paint: 'square', color: '#12A766', accept: ['square'] }],
+  intro: ['Mendy is cleaning up his toys.', 'He needs all the squares.', "Let's learn about squares!"],
+  lessons: [{ k: 'square', word: 'square', color: '#12A766', sideColors: ['#FFD23F', '#FFD23F', '#FFD23F', '#FFD23F'], sidesLine: ['Look! All four sides are the same.'], rule: [],
+    chant: [['Four sides!', 4, 'sides'], ['Four corners!', 4], ['Square!', 2]], turn: PI / 4, turnLine: 'Watch. I turn it on its corner.' }],
+  set: [['s1', 'square', 0, 1], ['re', 'rect', 0, 1], ['s2', 'square', PI / 4, 1], ['le', 'lean', 0, 1],
+        ['s3', 'square', 0.2, 0.72], ['tr', 'tri', 0, 1], ['s4', 'square', -0.3, 1.2], ['ki', 'kite', 0, 0.95]],
+  watchLine: "Here are Mendy's shapes. Watch me find a square.", yourTurn: 'Now you. Find all the other squares!',
+  ask: 'Drag every square into the box.', hint: 'Look for four sides the same.', remember: 'Remember: a square has four sides the same.',
+  yes: { s2: 'Yes! Turned on its corner, still a square!', s3: 'Yes! Small, but still a square!', s4: 'Yes! Big, and still a square!',
+    b1: 'Yes! Tipped over, still a square!', b3: 'Yes! Tipped over, still a square!' },
+  yesDefault: () => 'Yes! A square!', allDone: 'You found all the squares!', wrong: wrongFor('square'),
+  bonus: [['b1', 'square', 0.6, 0.75, 0], ['b2', 'rectFat', 0, 1, 2], ['b3', 'square', -0.7, 1, 4]], bonusAsk: 'Find the real squares. Drag them in.',
+  mistake: { friend: { name: 'Ari', shirt: '#9C2F2F', hair: '#4A2C17' }, icon: 'square', piece: ['square', PI / 4, 1.1, '#12A766'],
+    claim: ['Ari says this is not a square.', 'He says it is turned on its corner.'], ask: 'Is it a square?', answer: true, prove: true,
+    explain: ['Four sides the same. It is a square.'], right: ['Yes! It is a square.', 'Turned on its corner, it is still a square.'] },
+  endLine: 'You found every square!', praise: 'Four sides the same, four corners. You are a square expert!'
+});
+</script>
+</body>
+</html>

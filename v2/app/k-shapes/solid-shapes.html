@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>The solid shapes</title>
+<!-- Kindergarten Shapes, Unit 5 "Solid shapes" (v2/curriculum/k-shapes/MAP.md): meet the sphere, cube, cylinder and cone (a ball rolls, a block stacks); sort them in any turn or size. K.G.2.
+     Built on the shared 3D kit (kit.js). ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame, FAMILY } from './kit.js';
+const PI = Math.PI, fam = k => FAMILY(k), nc = a => { a.count = false; return a; };
+startGame({
+  id: 'solids', world: 'space', plain: true,   /* first meeting with the solids: plain one-colour solids, no planets or gift boxes (K-CLARITY-RULES 6) */
+  boxes: [{ solid: 'sphere', solidScale: 1.6, color: '#2B3A6B', accept: ['sphere'] }, { solid: 'cube', solidScale: 1.6, color: '#2B3A6B', accept: ['cube'] }, { solid: 'cyl', solidScale: 1.6, color: '#2B3A6B', accept: ['cyl'] }, { solid: 'cone', solidScale: 1.6, color: '#2B3A6B', accept: ['cone'] }],   /* big solids on the boxes: what he matches is easy to see (K-CLARITY-RULES 9) */
+  intro: ['Mendy found new things in space.', 'They are not flat. They are solid!', "Let's meet the solid shapes!"],
+  lessons: [
+    { k: 'sphere', kind: 'solid', word: 'sphere', color: '#1F6FEB', like: 'It is round all over, like a ball.', action: 'roll', rule: ['A sphere rolls!'], tap: 'Tap the sphere to roll it.', tapSay: 'Roll, roll!' },
+    { k: 'cube', kind: 'solid', word: 'cube', color: '#E03A33', like: 'It is like a block.', action: 'stack', rule: ['Every face is a square. It stacks!'], tap: 'Tap the cube to stack it.', tapSay: 'Stack!' },
+    { k: 'cyl', kind: 'solid', word: 'cylinder', color: '#12A766', like: 'It is like a can.', action: 'roll', rule: ['It rolls on its side.', 'Its ends are circles.'], tap: 'Tap the cylinder to roll it.', tapSay: 'Roll!' },
+    { k: 'cone', kind: 'solid', word: 'cone', color: '#F2A900', like: 'It has a point on top.', action: 'spin', rule: ['Its bottom is a circle.'], tap: 'Tap the cone to spin it.', tapSay: 'Spin!',
+      chant: [['Sphere!', 2], ['Cube!', 2], ['Cylinder!', 3], ['Cone!', 2]] }],
+  set: [['s1', 'sphere', 0, 1], ['c1', 'cube', 0.3, 0.9], ['y1', 'cyl', PI / 2, 0.9], ['n1', 'cone', 0, 1],
+        ['s2', 'sphere', 0, 0.85], ['c2', 'cube', 0, 0.85], ['y2', 'cyl', 0, 1], ['n2', 'cone', 0, 0.9]],
+  watchLine: 'Watch me put a solid in its box.', watchDone: 'A sphere goes in the sphere box!', yourTurn: 'Now you. Put each solid in its box!',
+  ask: 'Drag each solid into its box.', hint: 'Look at the shape on each box.', hint2: 'This one goes in its box.', remember: 'Remember: a sphere rolls, a cube stacks.',
+  yes: { y1: 'Yes! Lying down, still a cylinder!', b2: 'Yes! Lying down, still a cone!' },
+  yesDefault: o => 'Yes! ' + (/^[aeiou]/.test(fam(o.k)) ? 'An ' : 'A ') + fam(o.k) + '!', allDone: 'Every solid is in its box!',
+  wrong: o => nc(['That is ' + (/^[aeiou]/.test(fam(o.k)) ? 'an ' : 'a ') + fam(o.k) + '.', 'It goes in the ' + fam(o.k) + ' box.']),
+  bonus: [['b1', 'cyl', 0.6, 0.8, 0], ['b2', 'cone', PI / 2, 0.9, 2], ['b3', 'cube', 0.8, 1.1, 4]], bonusAsk: 'Sort the tricky ones too.',
+  mistake: { friend: { name: 'Yossi', shirt: '#5E7C3A', hair: '#2A1A12' }, icon: 'cone', piece: ['cone', PI, 1.0, '#F2A900', 0.45], box: 3,
+    claim: ['Yossi says this is not a cone.', 'He says it is upside down.'], ask: 'Is it a cone?', answer: true,
+    explain: ['It has a point and a circle bottom.', 'Upside down, it is still a cone.'], right: ['Yes! It is a cone.', 'Upside down, it is still a cone.'] },
+  endLine: 'Every solid is in its box!', praise: 'Sphere, cube, cylinder, cone. Solid shape expert!'
+});
+</script>
+</body>
+</html>

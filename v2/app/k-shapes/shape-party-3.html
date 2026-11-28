@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Shape party 3</title>
+<!-- Kindergarten Shapes, Review 3 (v2/curriculum/k-shapes/MAP.md): the whole year mixed: flat and solid, turned and in every size.
+     Research: mixed review of old skills makes them last (Cepeda et al., 2006; Rohrer & Taylor, 2007). Built on the shared 3D kit ("clues" mode). ?fast=1 for the test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame, FAMILY } from './kit.js';
+const PI = Math.PI;
+startGame({
+  id: 'party3', world: 'party', mode: 'clues', plain: true, thinFlat: true,   /* flat and solid in one game: flat pieces are thin like card, so a flat square never looks like a tile (review 3) */
+  boxes: [{ paint: 'none', accept: [] }],   /* a plain party box: no star on it, so "find me" never means a star */
+  intro: ['The big shape party!', 'Every shape from this year came.', 'Listen to each clue, then find it!'],
+  lessons: [{ k: 'tri', word: 'triangle', short: true, color: '#E03A33' },
+            { k: 'rect', word: 'rectangle', short: true, color: '#F0458E', rule: ['Two long sides, two short sides.'] },
+            { k: 'cyl', kind: 'solid', word: 'cylinder', color: '#12A766', like: 'It is like a can.', action: 'roll', rule: ['It rolls on its side.', 'Its ends are circles.'], tap: 'Tap the cylinder to roll it.', tapSay: 'Roll!' },
+            { k: 'cone', kind: 'solid', word: 'cone', color: '#F2A900', like: 'It has a point on top.', action: 'spin', rule: ['Its bottom is a circle.'], tap: 'Tap the cone to spin it.', tapSay: 'Spin!',
+              chant: [['Triangle!', 3], ['Rectangle!', 4], ['Cylinder!', 3], ['Cone!', 1]] }],
+  set: [['r1', 'triWide', 0.4, 0.95], ['r2', 'rect', 0, 0.95], ['r3', 'cone', 0, 0.9], ['r4', 'oval', PI / 2, 0.9],
+        ['r5', 'cyl', 0, 0.85], ['r6', 'hex', 0.5, 0.75], ['r7', 'sphere', 0, 0.7], ['r8', 'square', 0.2, 0.95]],
+  clues: [
+    { say: ['I am solid.', 'I have a point on top.'], accept: ['cone'] },
+    { say: ['I am flat.', 'I have three corners.'], accept: ['triWide', 'tri'] },
+    { say: ['I am solid.', 'I am round all over, like a ball.'], accept: ['sphere'] },
+    { say: ['I am flat.', 'Two long sides, two short sides.'], accept: ['rectFat', 'rect'] },
+    { say: ['I am flat.', 'Six sides, six corners.'], accept: ['hex'] },
+    { say: ['I am solid, like a can.'], accept: ['cyl'] },
+    { say: ['I am flat.', 'Four sides the same.'], accept: ['square'] }
+  ],
+  watchLine: 'Watch me. Listen to the clue.', watchDone: 'The cone! Solid, with a point on top.', yourTurn: 'Now you. Listen to each clue!',
+  ask: 'Listen to the clue.', hint: 'Listen to the clue again.', hint2: 'Here I am!', remember: 'Remember: count the corners and the sides.',
+  yesDefault: o => 'Yes! I am the ' + FAMILY(o.k) + '!', allDone: 'You found every party shape!',
+  wrong: o => ['That is ' + (/^[aeiou]/.test(FAMILY(o.k)) ? 'an ' : 'a ') + FAMILY(o.k) + '.', 'Listen to the clue again.'],
+  mistake: { friend: { name: 'Leibel', shirt: '#4A6B8A', hair: '#2A1A12' }, icon: 'square', piece: ['square', PI / 4, 1.15, '#12A766'],
+    claim: ['Leibel says this is not a square.', 'He says it is turned.'], ask: 'Is it a square?', answer: true, sides: true, straighten: true,
+    explain: ['Turned, it is still a square.'], right: ['Yes! It is a square.', 'Turned, it is still a square.'] },
+  endLine: 'The best shape party ever!', praise: 'You know every shape this year!'
+});
+</script>
+</body>
+</html>

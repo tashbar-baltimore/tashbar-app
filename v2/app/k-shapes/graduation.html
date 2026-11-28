@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Graduation day</title>
+<!-- Kindergarten Shapes, Unit 12 "Graduation" (v2/curriculum/k-shapes/MAP.md): a celebration review of the year, then his certificate.
+     Research: mixed review of old skills makes them last (Cepeda et al., 2006; Rohrer & Taylor, 2007). Built on the shared 3D kit ("clues" mode). ?fast=1 for the test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame, FAMILY } from './kit.js';
+const PI = Math.PI;
+startGame({
+  id: 'graduation', world: 'party', mode: 'clues', plain: true, thinFlat: true, certificate: true,   /* flat pieces thin like card next to the solids (review 3) */
+  boxes: [{ paint: 'none', accept: [] }],   /* a plain party box: no star on it, so "find me" never means a star */
+  intro: ['Mazel tov! It is graduation day!', 'You learned so many shapes this year.', 'One last game. Then your certificate!'],
+  lessons: [{ k: 'hex', word: 'hexagon', short: true, tapCorners: true, color: '#F2A900' },
+            { k: 'sphere', kind: 'solid', word: 'sphere', color: '#1F6FEB', like: 'It is round all over, like a ball.', action: 'roll', rule: ['A sphere rolls!'], tap: 'Tap the sphere to roll it.', tapSay: 'Roll, roll!',
+              chant: [['Circle, square!', 2], ['Triangle, rectangle!', 2], ['Hexagon!', 3], ['Sphere, cube, cylinder, cone!', 4]] }],
+  set: [['g1', 'circle', 0, 0.75], ['g2', 'triTall', 0.15, 1.05], ['g3', 'cube', 0.5, 0.8], ['g4', 'rectLong', 0.4, 0.9],
+        ['g5', 'cone', 0, 0.85], ['g6', 'square', PI / 4, 0.8], ['g7', 'hex', 0, 1.05], ['g8', 'oval', PI / 2, 0.9]],
+  clues: [
+    { say: ['I am flat.', 'I have four sides the same.'], accept: ['square'] },   /* not "I am turned": other pieces are turned too (review 2) */
+    { say: ['I am flat.', 'I have three corners.'], accept: ['triTall', 'triSkinny', 'tri'] },   /* review 5: a normal tall triangle, not a needle: all three corners are easy to see */   /* not "very thin": every flat shape is thin (Shape party 2) */
+    { say: ['I am solid, like a block.'], accept: ['cube'] },
+    { say: ['I am flat.', 'I am round. Not squished.'], accept: ['circle'] },
+    { say: ['I am solid.', 'I have a point on top.'], accept: ['cone'] },
+    { say: ['I am flat.', 'Two long sides, two short sides.'], accept: ['rectLong', 'rect'] },
+    { say: ['I am flat.', 'I have six corners.'], accept: ['hex'] }
+  ],
+  watchLine: 'Watch me. Listen to the clue.', watchDone: 'The square! Turned, it is still a square.', yourTurn: 'Now you. Listen to each clue!',
+  ask: 'Listen to the clue.', hint: 'Listen to the clue again.', hint2: 'Here I am!', remember: 'Remember: count the corners and the sides.',
+  yesDefault: o => 'Yes! I am the ' + FAMILY(o.k) + '!', allDone: 'You found every shape!',
+  wrong: o => ['That is ' + (/^[aeiou]/.test(FAMILY(o.k)) ? 'an ' : 'a ') + FAMILY(o.k) + '.', 'Listen to the clue again.'],
+  mistake: { friend: { name: 'Tzvi', shirt: '#3E6B48', hair: '#2A1A12' }, icon: 'dots6', piece: ['hex', 0.4, 1.15, '#F2A900'],
+    claim: ['Tzvi says this shape has five corners.'], ask: 'Does it have five corners?', answer: false, prove: true,
+    explain: ['Six corners! Not five.'], right: ['Right! It has six corners.', 'It is a hexagon.'] },
+  endLine: 'Mazel tov! You are a shape graduate!', praise: 'Here is your certificate. Show Tatty and Mommy!'
+});
+</script>
+</body>
+</html>

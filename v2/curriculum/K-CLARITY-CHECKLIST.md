@@ -1,0 +1,320 @@
+# Kindergarten clarity checklist (Shapes)
+
+One line per game: what was wrong, what changed, and the pictures (before and after, Chromebook 1366×768 and phone 390×844) in `v2/screens/k-clarity/<game>/`.
+Rules: `v2/curriculum/K-CLARITY-RULES.md`. Each session adds its own section; keep the other sections as they are.
+
+## shapes-a: Find the circles, Find the triangles, Find the squares, Find the rectangles, The shape sorter, Count the corners
+
+Shared kit changes made in this piece (every game gets them): the game's title is always on screen (whole name on a phone too); calm worlds have no little blocks, balls or gifts scattered round the stage, and the painting behind is paler and softer; the "tap each corner" dots are solid blue, bigger and always in front of the lit sides, and lit corner balls are bigger; when one shape's corners are counted, no other shape keeps lit corners (one thing at a time); the yes / no buttons for a friend's mistake carry a green check and a red X; the reward burst after a right piece is small and stays near the box; a box's shape label stands out in front of the box (a circle was half hidden and looked like a half circle), and on a phone the two rows of boxes are further apart so no label hides; plain first-meeting shapes are thin, so they read as flat. New test `v2/tests/k-shapes-clarity.js`: every game shows its title and a Play button of 64 px or more at both sizes, every corner has its marker, and first-meeting games paint nothing on a piece.
+
+| Game | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| Find the circles | First meeting with the circle, but every circle was a red-and-gold toy drum; the oval and half circle were drums too, and the square was a Lego brick, the hexagon a wooden puzzle piece (1, 9). The circle on the box showed only its bottom half, so the box looked like a half-circle box (11). Little toy blocks were scattered round the stage; the castle and lollipop painting behind was loud (10). No title on screen (13). In "Is it a circle?" the yes button was a green circle, easy to read as "the circle" (16). | Plain flat one-colour shapes (`plain: true`): the lesson shows one plain blue circle, the ball traces round it. The whole circle shows on the box. No scattered blocks; softer painting. Title on top. Yes has a green check, no has a red X. | `find-circles/` (before/after, lesson, mistake, wrong move, end) |
+| Find the triangles | The lesson triangle was a red-and-white striped sail; the "tap each corner" dots were faint white blobs hidden behind the yellow side bars (1, 4). During the wrong-move help, a triangle kept its lit corners from the hint while the square was counted: two shapes lit at once (9). | Plain red triangle; three solid blue balls, one on every corner, each turns gold and is counted as he taps it. Only the shape being counted has lit corners. After a wrong square: "That is a square. Count the corners. One, two, three, four. A triangle has only three." then a hand shows a real triangle. | `find-triangles/` |
+| Find the squares | Squares were Lego bricks; the rectangle and leaning shape were bricks too (1). The help for the leaning shape said "A square has corners like a box", which a child can argue with, since a square turned on its corner also leans (7, 11). | Plain shapes. Help: "This shape leans over. Two corners are pointy. Two are wide. A square has four corners all the same." (only in square and rectangle games; elsewhere it counts the corners). Kite: "Its corners are not all the same." | `find-squares/` |
+| Find the rectangles | Rectangles were Lego bricks, the circle and oval drums (1). | Plain shapes; the lesson lights the two long sides blue and the two short sides yellow, then a blue ball on every corner. | `find-rectangles/` |
+| The shape sorter | The unit check mixed drums, striped sails and Lego bricks (a Lego "square" and a tall Lego "rectangle") (1, 9). On a phone the circle label on the top box was half hidden by the box in front (11). | Plain shapes in many colours, sizes and turns; four clear labels (circle, triangle, square, rectangle) above each box's rim, all visible on a phone. | `shape-sorter/` |
+| Count the corners | Pieces were polka-dot garden flags, sunflowers and planters (1, 9). The dot cards on the boxes (what he matches) were small. A bonus piece was a half circle with "two corners" and no box: a trick a child could argue about (7). | Plain shapes; dot cards 40% bigger, standing in front of each box. The half circle is replaced by a tipped oval (no corners: the empty-ring box). | `count-corners/` |
+
+**Decided for Esti (a teacher's choice):** the first games for each shape (Unit 1 and Count the corners) use plain shapes all game, not only in the lesson: the whole unit is the "first meeting", and real things ("a tire is a circle") belong to the later games that teach shapes in the world.
+
+## shapes-b: Fix the shape, Find the hexagons, Mystery shape, What comes next?, Copy and sing, The solid shapes
+
+| Game | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| Find the hexagons | First meeting with the hexagon, but it was painted with clouds on a cloudy sky; the corner balls were white on white clouds; in the sort round the square was a woven basket and the circle a rainbow target; the lesson said "like a honeycomb" with no honeycomb shown (rules 1, 4, 9, 11) | Plain flat one-colour shapes all game (`plain: true`): a yellow hexagon with a bright marker on each of its 6 corners; the pentagon and octagon non-examples are plain too, so he can count and compare; "Six sides, six corners. A hexagon!" | `v2/screens/k-clarity/find-hexagons/` |
+| Mystery shape | He listens to clues and counts corners, but the shapes were woven baskets, rainbows and blue stripes; a clue said "I look like a honeycomb" (rules 1, 9, 11) | Plain one-colour shapes (`plain: true`), so the corners and sides are the only thing to see; the clue is now "I have six straight sides." | `v2/screens/k-clarity/mystery-shape/` |
+| Fix the shape | The gap was shown only by a floating yellow ring, not where the missing side goes. The sticks to choose from were three different colours and lay at other angles nearer the camera, so on screen the "right" stick looked about 130% as long as the gap: even an adult could not see which one fits (rules 7, 9) | The gap is a dashed ghost of the missing side, in the shape's colour. Every stick is the shape's colour and lies the same way as the gap, and each is sized with the real camera so the right one LOOKS exactly as long as the gap; short and long ones look clearly different. On a phone, lying-down sticks go in rows and no stick is off the screen. The unit 2 test now checks all of this in every round | `v2/screens/k-clarity/fix-shape/` |
+| What comes next? | Clear and calm already. The shape items were thick pink cookies; the round one, seen at an angle, looked like a can (one unit before solids), while the voice says "triangle, square, circle" (rules 1, 11). On a phone the title was cut to "What comes ..." (rule 13) | Shape items are plain flat shapes in one colour each (purple triangle, orange square, blue circle); the cupcakes stay cupcakes. The title wraps onto two lines on a phone | `v2/screens/k-clarity/what-comes-next/` |
+| Copy and sing | The empty row he fills sat just in front of Mendy's row, so his cupcakes covered Mendy's and the two rows ran together (rule 9). Same cookie shapes as above | Mendy's row stands well behind the row he fills: two clear rows, "Make the same pattern below." Plain flat shapes, as above | `v2/screens/k-clarity/copy-and-sing/` |
+| The solid shapes | First meeting with the solids, but the sphere was a striped planet and the others space things (rule 6). The four sorting boxes were the same purple with a tiny gold solid on each (about 20 px), so what he matches was the hardest thing to see; the cone on its box was tipped into a yellow blob (rule 9). In find-the-mistake the upside-down cone was seen side-on and dark: it looked like a flat brown triangle, so "Is it a cone?" was arguable (rules 6, 7) | Plain one-colour solids (`plain: true`). Big solids on the boxes; the cone and cylinder stand upright, the cube is turned to show three faces. The upside-down cone is tipped toward him so its round base shows on top | `v2/screens/k-clarity/solid-shapes/` |
+
+Shared kit changes from shapes-b (only the game that asks is affected): `plain` also makes pattern shape items plain flat shapes; a mistake piece may take a 5th value, a tilt toward the boy; fix mode (only Fix the shape) as above. A long title wraps on a phone (all games). Clarity test: Mystery shape and The solid shapes must keep plain pieces.
+
+Choices made without asking (as a kindergarten teacher would): the cupcakes stay in the pattern games (the words say cupcakes and a child knows them); "like a can" and "like a block" stay in the solid lessons (they compare to a known thing; nothing claims a can is shown).
+
+## shapes-c: Flat or solid?, Build with shapes, Where is it?, Fix the pattern, Pattern train, Sort by color
+
+| Game | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| Flat or solid? | The "flat" shapes were thick riveted space panels and the solids were a striped planet, a swirly ball, a traffic cone and a striped can: a child could not see flat vs solid (1, 6, 9). Box labels were a tiny white square and a small yellow cube. | Plain one-colour pieces (`plain: true`; kit now also keeps solids plain): flat ones are thin like card, solids are smooth shaded solids. Box labels are big: a flat blue square, and a solid blue cube turned so three faces show (from the front a cube looked like a square). | `flat-or-solid/` |
+| Build with shapes | Lesson triangles were striped beach-towel cloth with white edges; pieces were sand-textured, sand on sand (1, 9). The holes were faint dashed lines on a pale board (9). Dovi said "two triangles cannot make a square" while the screen showed one ready-made square (11). | Plain bright pieces in different colours. Each hole is a deeper colour with its own dark border inside it, so two square holes side by side read as two squares, not one rectangle (the hint flashes the border gold). Dovi's mistake shows a red and a blue triangle, and they slide together into a square when the boy answers (and when he is helped after a wrong answer). | `build-shapes/` |
+| Where is it? | Moving light lines (caustics) danced over the whole sea floor (10). The bridge legs were studded with little pearls that looked like more balls (8, 11). The voice said "pearl" in the lesson and "sphere" in the game for the same ball (11). The ball to drag sat in the screen corner, stretched (9). | No moving light lines (calm). The plain block bridge (red legs, blue top). The round thing is always "the ball". The ball starts in from the corner and is purple (yellow and orange rendered mustard and brown). Seen from the front, a ball "behind" was hidden by the bridge, and from above it looked "on top": the camera now looks a little from the side, so behind is clearly behind (and on the phone the two places are far apart). A wrong drop shows a gold ring at the right place (already there; kept). **(decided: "ball", not "sphere" or "pearl": the game teaches position words, so every other word is the most familiar one.)** | `where-is-it/` |
+| Sort by color | Every piece had carved-leaf texture; the yellow box looked orange; the busy leafy mat under the shapes (9, 10, 11). Bonus round had a teal piece with no box: wrong drop said "It goes in the a new color box." | Plain one-colour pieces; a lemon yellow; the painted stage mat (all worlds) is paler and less colourful, like the painting behind. Every bonus piece now has its box (new shapes, same three colours: "New shapes! Look only at the color."). When the boxes are counted, the toys sat half hidden inside each box (8): now a big number stands above each box for every toy as it is counted (the number row Big and small uses), so "which box has the most?" is plain to see. | `sort-colors/` |
+| Fix the pattern | The train world is already calm and the cars are plain toy cars in one colour each (good). In the friend's mistake, Ari stood hidden behind the train cars, and the close camera cut the train off (9). | The friend's mistake is seen from the normal view: the whole train shows and Ari stands in front of it, where Mendy stood. The yes/no buttons have the green tick and red cross. | `fix-the-pattern/` |
+| Pattern train | Same hidden-friend problem in Shloimy's mistake (9). In the shape round the circle, triangle and square signs on the cars were small (9). | Shloimy stands in front of the whole train. The shape signs are bigger and stand higher. The sound round (drum, bell) is kept: the drum and bell are sound makers in a sound pattern, not shapes. **(decided: keep it; Esti's "no drum" was about a drum used as a circle.)** | `pattern-train/` |
+
+Phone checks (390×844): the ball in Where is it waited half off the left edge and Mendy seemed to stand on the bridge; the second triangle in Build with shapes (lesson and Dovi's mistake) was cut off on the right; the friend in the pattern games was cut off on the left. All moved in. Seen, not changed: on a phone the pattern train (8 cars) is small, because the whole train must fit across the screen; the cars he drags are bigger than the ones on the track.
+Picture sheets: `v2/screens/k-clarity/<game>/after-chromebook.jpg` and `after-phone.jpg` (start, lesson, find, wrong move, friend's mistake, end; taken just before the last small phone moves above). "Before" phone sheets, and the Pattern train "before" Chromebook sheet, are the previous round's sheets from `v2/screens/k-shapes-graphics/` (the state before this pass).
+
+
+## shapes-d: Big and small, Line them up, Heavy and light, Shape party 1, 2 and 3, Graduation day
+
+Played each game as a made-up boy in the full look at Chromebook and phone size, with wrong moves (the unit tests' player, `shoot.js`), and looked at every picture. Teacher's choices made without asking are marked *(choice)*.
+
+| Game | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| Big and small | The "big" and "small" pieces were all different things (a big cube, a small hexagon, a big cone...), only 1.8 times apart, so with the camera's depth a small piece could look as big as a big one (7). The lesson showed the big ball alone, then the small ball alone, up close, so the small ball looked big (7, 11). The friend's mistake showed one big ball alone: big compared with what? (7). When counting, the pieces lay in a heap in the box (8). Carved-wood and leaf paint on the pieces (9). | Every kind comes as a big and a small one of the same thing in the same colour (ball, cube, triangle), the big one 2.5 times the small, plain one colour; 3 big, 5 small. In the lesson the small ball comes beside the big one. In the mistake a small blue ball sits beside the big yellow one ("Is the yellow ball small?"). As each thing is counted it hops and its number appears in a neat row above its box (1 2 3, 1 2 3 4 5), and the numbers stay until he answers which box has more. *(choice: balls, cubes and triangles, things every child knows)* | `v2/screens/k-clarity/big-and-small/` |
+| Line them up | The start line was white on white snow: he could not see where to line up (9, 12). Everything sat small in the top corner; on the phone the start of the scarves was cut off and Mendy was off screen (9). In the lesson "the red one looks longer" was not true in the picture (11). Bonus: two scarves were too close to tell (1.8 and 2.4) (7). | A thick dark start line and a real green flag on a pole. The camera looks at the scarves and towers, so they fill the screen at both sizes. In the lesson and the mistake the shorter scarf sticks out clearly further. Bonus scarves 1.4, 2.4, 3.4. | `v2/screens/k-clarity/line-them-up/` |
+| Heavy and light | The scale and the things were small and far up the screen with a big empty mat (9). The rock and hay bale were tiny (9). The lesson said "Now the big ball... the ball is light" while showing a balloon (11). Bonus: rock 5 against balloon 2 was not a big difference (7). | Camera closer at both sizes; bigger rock and hay bale (still much smaller than the big balloon, so "big is not always heavy" is plain). The lesson says the names of what is on the scale ("the big balloon"). On the phone the two things sit closer together, so neither is cut off. He can grab a thing anywhere on it (before, the top of a big balloon could not be grabbed). Every pair is 3 times or more apart; the light one is always a balloon or a feather. | `v2/screens/k-clarity/heavy-and-light/` |
+| Shape party 1 | Every piece had party paper on it (polka dots, gingham, a lace doily circle), so the shape was hard to see (1, 9). | Plain one-colour flat shapes (`plain: true`). The look-alikes (oval, kite, curvy triangle) stay as close non-examples (2). | `v2/screens/k-clarity/shape-party-1/` |
+| Shape party 2 | Party paper on the flat shapes; the sphere was a party balloon, the cube a gift box, the cone a party hat (6, 11: "a sphere is like a ball" while showing a balloon). | Plain flat shapes and plain solids (a real ball-sphere, cube, cylinder, cone). | `v2/screens/k-clarity/shape-party-2/` |
+| Shape party 3 | Same party paper and balloon-sphere (6). Two clues a child could argue: "I am a small solid" and "I am flat and big" (size is not a shape clue) (7). | Plain shapes and solids. Clues: "I am solid. I am round all over, like a ball." and "I am flat. Four sides the same." | `v2/screens/k-clarity/shape-party-3/` |
+| Graduation day | The sphere in the lesson was a balloon with a knot; party paper on the shapes (6, 9). | Plain shapes and solids; the lesson shows a plain blue sphere. The mistake (hexagon "five corners?") marks and counts all six corners. | `v2/screens/k-clarity/graduation/` |
+
+Shared kit changes (only games that ask for them are affected): `keep` (a lesson piece stays beside the one before), `mistake.beside` (a second piece to compare with), `countTags` (a number over each counted thing); the measuring start line and flag (only Line them up measures); the balance lesson's words use the names of its things (only Heavy and light weighs).
+New test: `v2/tests/k-shapes-compare.js` checks rule 7 for the three comparing games.
+
+## other-622: Kindergarten Kriyah, Units 1–10 (tashbar-baltimore/tashbar-app#622)
+
+| What | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| Every Kriyah game (shared engine) | Painted scenes at full colour behind the letters; in the 3D hills world butterflies and birds flew, clouds drifted, shul flags swayed, light specks floated (10). Each right answer threw 22 to 45 confetti bits over the letters (9). No game name on screen (13). | Paler, softer painted picture; nothing moving that is not the game; small joy bursts; the game's name at the top. New test `k-kriyah-clarity` (all 80 games). Notes: `v2/curriculum/k-kriyah/CLARITY-PASS.md` on that branch. | `v2/screens/k-clarity/kriyah/` on claude/v2-k-kriyah-all |
+| Champion Day (Unit 10) | The red stage top flickered in red and brown stripes. | Fixed. | same |
+| Seen, not changed | Unit 8 story: the shofar sits across the rebbe's face for a moment. Gallery pictures for Units 1–7 still show the older 3D people (the games use painted people). | Left for the Kriyah builder (written in CLARITY-PASS.md). | |
+
+**Other K pull requests looked at (other-<PR>):** the old K ABC unit pull requests (tashbar-baltimore/tashbar-app#595, #603, #610, #612) are being replaced by the calm ABC rebuild (tashbar-baltimore/tashbar-app#620, Esti's own request, a session working on it now), so a separate clarity pass on them would be thrown away. #620 had commits in the last 2 hours, so it was left alone.
+
+## other-612: K ABC Review week A (tashbar-baltimore/tashbar-app#612)
+
+| What | What was wrong (rule) | What changed | Pictures |
+|---|---|---|---|
+| All 7 review games (shared ABC world) | A field of thousands of grass blades, floating sparkles and butterflies behind every game (10); a big confetti storm after each right answer (9); no game name on screen (13). | The same calm world as the Unit 1 pass (#595): no grass blades, butterflies or sparkles, a few flowers; a small burst near the answer; the name on top (Sound Parade, Sound Bingo, Chalkboard, Rhyme Catch, Word Bridge, Speed Slide, Show Me). Review-week test passes. | `v2/screens/k-clarity/abc-ra-*` on claude/v2-k-abc-reviewa |
+| Seen, not changed | Sound Bingo's 3×3 board holds 8 letters, so one letter (t) is on it twice; when he hears /t/ either stone is right, but a child may wonder which. | Left for the ABC builder (the calm rebuild in #620 may replace this game). | |
+
+
+## review-shapes: independent review of all 25 Shapes games
+
+**Round 1** (three fresh reviewers who did not build the games; each looked at every after-picture and read each game's lines and code). Score = "Would a 5-year-old know exactly what to do and what is taught, without an adult, and does it meet every rule?"
+Find the triangles 4, Find the hexagons 4, What comes next? 4, Heavy and light 4; the other 21 games 3. No game scored below 3.
+
+**What was fixed after round 1** (shared engine fixes help every game):
+| Problem the reviewers found (rule) | Fix |
+|---|---|
+| Yes/no buttons showed a topic icon (a square, a ball) with a tiny tick or cross: "Is it flat?" answered with a square (11) | One plain big green tick and one big red X in every game; "The tick means yes. The X means no." |
+| Pieces at the side of the screen and box labels looked slanted or squashed (a circle label became an oval on a phone; a skinny triangle seen edge-on) (9) | Flat pieces, lesson pieces, the friend's pieces and box labels all face the camera straight on |
+| The first wrong move only got words; showing came on the second miss (16) | First miss: the hand goes from the piece to its right box; in pattern games the part that repeats glows and (fixing) a ring sits on the wrong car |
+| The voice talked about sides while nothing lit (5) | Every side lights one by one whenever a line talks about sides (lessons, teaching again, clue games, the friend's proof); long sides blue, short sides yellow, equal sides green |
+| Copy and sing never sang Mendy's row (a bug: the voice said "." and nothing bounced) | Mendy's row is sung and bounces; its repeating part glows |
+| The kite fits "two long sides, two short sides" (Mystery shape, Shape party 1); the leaning shape fits it too (Find the rectangles) and was almost "four sides the same" (Find the squares) (7) | Kite replaced by a pentagon; the leaning shape is not in Find the rectangles and is clearly long and short |
+| Star on the clue games' box: "Find me!" sounded like "find a star" (11) | Plain box |
+| Upside-down and lying cones looked like a circle or a flat triangle (6) | Cones stand up in every game |
+| "That is a oval"; clue help counted corners when the clue was about sides | "an oval"; the help shows what the clue was about |
+| Shape party 2: the friend's "flat" square looked like a block | Face-on and thin, with a real cube beside it |
+| Shape party 3: the proof said sides but tapped corners | The sides light |
+| Sort by color: a gold ring round the red circle in a colour game; the friend's words did not match the picture | No ring in colour games; "Tzvi says this blue square goes in the red box." |
+| Big and small: two small pieces looked as big as others; the small box sign was 10 px | Every small piece clearly small; box signs bigger |
+| Line them up: the start line slanted, so lined-up ends did not look lined up; thin scarves (7, 9) | Seen from above: the start line stands straight, scarves are big; Mendy fits on both screens |
+| Heavy and light: the balloon looked like an egg; a hay bale is not known heavy (7) | A real balloon with a knot and a string; rocks |
+| Fix the shape: "This triangle has a gap" vs "an open shape is not a square"; the friend's gap was drawn closed; a hexagon before its own game | "This shape has a gap. Make a triangle!"; a real gap; a square in the bonus |
+| Flat or solid: the solid label (a cube from above) looked like a flat diamond | A ball on the solid box |
+| The shape sorter: label colours matched other boxes' pieces; phone lesson boxes cut off; the lesson circle looked like a drum | One dark blue for every label; boxes hidden in the phone close-up; pieces face the camera |
+| Phone: pattern cars 25 px and the engine cut off; the empty next spot faint; tray pieces cut off (9) | Pattern trains twice as big with a gold outline on the next spot; trays and Mendy fit |
+| Busy painted backdrops (butterflies, lollipops, planets) behind lessons; celebration bits floating among pieces (10) | Backdrops blurred into soft colour; celebration gone in under a second |
+| Count the corners: "same dots"; the "no corners" card looked like one dot | "Put it in the box with that many dots"; an empty card |
+
+**Round 2 (review-shapes takeover, 2026-11-27 evening).** First I looked at new full-look pictures myself and fixed what I saw (pictures in `v2/screens/k-clarity/<game>/`):
+| Problem I saw (rule) | Fix |
+|---|---|
+| Garden painting: four butterflies still showed through the blur; jungle painting: two flying parrots (10) | They are painted over with the sky right beside them before the blur (look.js FLYERS). The art file is unchanged. Test: every painting must be listed as checked, with its flyers painted out |
+| Boxes were decorated: a woven checked basket (sky), wheels, rivets, leaves, shells, bows (9, 10; Esti: "no basket") | Calm boxes are plain: one colour and a coloured rim, nothing on them |
+| Count the corners: the empty "no corners" card was a round disc, so it read as a circle label (11) | Every dot card is a rounded dice card; the empty one is clearly an empty card. Test checks it is not a disc |
+| Every circle (and oval) had a tiny notch on its right edge where its outline started: a "corner" on a circle (1) | Round shapes are drawn with no repeated start point; no notch |
+| Sort by color: flat yellow and red pieces looked pale yellow and salmon in the light (11) | Colour games use matte pieces: full red, blue, yellow |
+| Sort by color: every colour box had a white circle on it, which reads as "circles go here" (11) | Plain red, blue and yellow boxes; nothing on them |
+| Build with shapes: a wrong piece only made the hole flash for under a second (16) | The hole flashes slowly; then "Watch. This one goes here." and the hand moves from the piece to its own hole while that hole flashes |
+| Pattern games: the glow on the part that repeats went off the moment the song ended (16) | It stays a moment after the song |
+
+**Round 2, independent scores (3 fresh reviewers, 2026-11-27 evening; new full-look pictures of all 25 games: Chromebook play-through, phone lesson and first round, wrong-move help).** The two sessions on this piece split the fixes: Units 1-6 by the first session, Units 7-12 by the takeover session.
+
+| Game | Score | Game | Score | Game | Score |
+|---|---|---|---|---|---|
+| Find the circles | 4 | Mystery shape | 4 | Big and small | 4 |
+| Find the triangles | 4 | What comes next? | 4 | Line them up | 3 |
+| Find the squares | 3 | Copy and sing | 3 | Heavy and light | 4 |
+| Find the rectangles | 4 | The solid shapes | 3 | Shape party 1 | 4 |
+| The shape sorter | 4 | Flat or solid? | 4 | Shape party 2 | 4 |
+| Count the corners | 4 | Build with shapes | 4 | Shape party 3 | 3 |
+| Fix the shape | 4 | Where is it? | 4 | Graduation day | 4 |
+| Find the hexagons | 4 | Fix the pattern | 4 | Pattern train | 4 |
+| | | | | Sort by color | 4 |
+
+Fixed after round 2 (Units 1-6, and shared):
+| Problem (rule) | Fix |
+|---|---|
+| After a wrong piece the help was only words in Find the... games (16) | The hand shows a right piece going into the box. A wrong rectangle, kite or leaning shape lights its sides one by one (long sides blue, short sides yellow) |
+| Mendy's demo piece shrank to a speck in the box (it was still popping in when he picked it up) (9) | It keeps its real size in the box, so he sees it went in |
+| Bits of pieces poked up behind the yes / no buttons in the friend's mistake (9) | Pieces in a hidden box hide with it |
+| Copy and sing never showed copying: the "Watch me" round was a "what comes next" round (2, 15) | Mendy copies a whole row, one cupcake at a time, naming each ("Red. Green. Red. Green."). Every empty spot shows under his row |
+| What comes next / Copy and sing: the friend stood behind the cupcakes; "Put it on the tray" with no tray (9, 11); a wrong cupcake got only a song (16) | The friend stands clear of the row; "Put it in the empty spot."; the hand also shows the one that fits |
+| The solid shapes: "Upside down, still a cone!" for an upright cone; "its sides are squares" (a cube's faces); pale labels; the small sphere tiny; on a phone the cylinder and cone labels looked like circles from above (6, 11, 12) | "Yes! A cone!"; "Every face is a square."; strong navy labels; bigger small pieces; on a phone the cylinder label lies on its side and the cone tips its point up |
+| Box labels the same colour as some pieces (circle, hexagon, rectangle) (9) | Navy labels, a colour no piece has |
+| Find the squares: the kite looked like a square on its corner (3) | The kite is clearly longer at the bottom |
+| "Round, like a plate" with no plate (3, 11); "a triangle has three corners" also fits the curvy shape (3) | "Round all the way. No corners."; "Remember: three straight sides, three corners." |
+| Shape party 1 / Find the triangles: the curvy look-alike had a straight bottom (3) | It bulges on every side |
+| Where is it? painting ended in a hard edge; Line them up flag read as a slanted stick from above (10) | Wider sea painting; flag hidden |
+
+**(decided: in The solid shapes the word "face" is used for a cube's flat sides: it is the Common Core K.G word, and "side" stays the word for a flat shape's edge, so the two never clash.)**
+
+**Re-scores after the round-2 fixes (Units 1-6; a new fresh reviewer each time, pictures and game file only):** Find the squares 4; The solid shapes 4; Copy and sing 3, then 3, then **4** (round 3; wrong-move help 5). Units 1-6 are now all 4 or 5.
+| Copy and sing problem (rule) | Fix |
+|---|---|
+| On a phone a row of 6-8 ran off both edges (9, 13) | A long row closes up a little on a phone; the camera steps back less |
+| The reminder sang his half-made row; the glow lit the start of the row, not the one he needed (16) | The reminder sings Mendy's row; the glow lights only the cupcake he copies now |
+| After a wrong cupcake he saw where to put it but not which one (16) | A thick gold ring on the cupcake to copy in Mendy's row AND on the same cupcake in the tray, then the hand. Phone ring smaller so it circles one cupcake |
+| The drum rounds started with no word that the game changed (2) | "Now we finish a pattern. Listen to the drum and bell." |
+Not done (small, reviewer said not blockers): the phone lesson row is a thin strip with empty space below (decided: keep it. The six cupcakes already fill the phone's width edge to edge; making them bigger cut off both ends, and two rows would break "a pattern is a row"). Done later: the bakery painting behind the Unit 4 pattern games is blurred more (look.js PAINT bakery blur), so its shelves are soft colour only.
+
+More fixes (review-shapes takeover session, Units 7-12):
+| Problem (rule) | Fix |
+|---|---|
+| Graduation: the skinny triangle's clue said "I am very thin", but Shape party 2 teaches "flat is thin", so every flat shape is thin (11) | The clue is "I am flat. I have three corners." (only one triangle is there) |
+| Shape party 2: the cube's "sides are squares" (sides are the lines of flat shapes) | "Every face is a square", the same words as The solid shapes |
+| Where is it?: the "behind" ball sat past the right end of the bridge, fully seen, so it looked "next to" (friend's mistake picture) (9, 11) | "Behind" is now just behind the left block on the boy's line of sight: the block hides half the ball, so it is clearly behind (placed from the camera, so phone and Chromebook both work) |
+| Sort by color, Big and small: counting each box put small 1 2 3 4 tags in a row (about 20 px) and no total (8, 12) | After each box is counted, one big number for the whole box stands above it ("the last number says how many") |
+| Big and small: the small pieces were tiny (a 20 px ball), hard to see and to grab (9, 13) | Small pieces bigger (0.56-0.6); every big piece is still more than twice as big |
+| Pattern games: the glow on the part that repeats was a pale yellow disc on a light floor; it hardly showed (16) | A clear gold glow, a little bigger |
+| Pattern train, Fix the pattern (phone): the engine was off the left edge and the gold "next" spot touched the right edge (9) | Phone camera centred on the whole train and a little further back; it steps back more for an 8-car train |
+| Pattern train, Fix the pattern (Chromebook): Mendy stood in front of the engine, covering it; steam puffs drifted across the sky (9, 10) | Mendy stands to the right of the train's end; no steam in the calm look |
+| Shape party 1-3, Graduation (and every world): the painted mat under the pieces had sharp petals and round striped lanterns (like extra balls) (8, 10) | In the calm look every mat is softly blurred like the painting behind: soft colour, only the pieces are sharp |
+| Line them up: a wrong drop and a wrong "which is longer" tap got words only (16) | Wrong drop: "Watch." the start line flashes gold and the hand moves from the scarf's end to the line. Wrong tap: a gold ball sits on the far end of each scarf (top of each tower) while he hears "Look at the other ends" |
+| Heavy and light: a wrong drop and a wrong "which is heavier" tap got words only (16) | Wrong drop: the hand goes from the thing to the empty pan. Wrong tap: the hand points at the side that went down (or up) while he hears "The heavy side goes down" |
+| Line them up, friend's mistake: the friend stood on the start line, hiding what the question is about (9) | He stands on the right, turned so his hand points at the scarves |
+| Shape party 3: the rectangle for "two long sides, two short sides" was the near-square one, beside a real square (2, 7) | The clearly long rectangle |
+| Fix the pattern: the ring on the wrong car was gold, like the yellow cars; "Put this car on the wrong car"; the lesson was a 3-colour pattern but the first round is red-blue (round-2 reviewers) | A thick bright magenta outline, a colour no car has (also the "next spot" in Pattern train; navy vanished on a blue car); "Put this car where the wrong one is."; the lesson is the same red-blue pattern |
+| Pattern train / Fix the pattern: engine cut off in the lesson (Chromebook and phone) and in Fix the pattern's phone rounds; friend's mistake: a wrong answer got words only | Lesson and phone cameras fit the whole train; in the friend's mistake the wrong car gets the outline (or the part that repeats glows while it is sung) |
+| Where is it?: Mendy stood just behind-left of the bridge and pulled the eye to "behind" (round-2 reviewers) | On Chromebook rounds Mendy is not near the bridge (he still teaches in the lesson close-up, as on the phone) |
+| Sort by color: the lesson said "All the red toys go together" with only one red disc, spun so it looked thick (round-2 reviewers) | A red square comes and slides next to the red circle; a blue triangle stays apart ("Watch. Red goes with red." "Blue does not go with red."); the circle stays face-on |
+| Sort by color, Big and small, friend's mistake: the box in the friend's words was cut off; the yes/no buttons sat on a box | The camera steps back: every box whole, the piece above them, the buttons on empty floor |
+| Big and small: the two boxes were the same size, only the label disc differed, and the big disc covered the box (7, 9) | The big box is big and the small box is small; smaller labels. (The small green circle and yellow square have no big twin on purpose: every BIG piece has a small twin to compare with, which the test checks) |
+| Line them up: the tower ("taller") rounds used the straight-down camera, so the heights could not be seen; "measuring in the snow" (round-2 reviewers) | Tower rounds are seen from the side; "Mendy is measuring his scarves." (The Play button covers the scarves only on the start screen, before the game; it is the same start screen in every game, so left as it is.) |
+| Heavy and light: the feather was brown, big and leaf-shaped (looked bigger than the rock); on a phone the scale filled only the top third (round-2 reviewers) | A small light-blue feather drawn barb by barb, with fluffy down at the quill; phone camera closer, the scale fills the width |
+| Shape party 1-3, Graduation (and Mystery shape, same clue code): finding the shape for "three corners" or "six sides" marked nothing (4, 5) | Before it goes in the box, its corners light and are counted ("One. Two. Three corners!"), or its sides light one by one; also in Mendy's "Watch me" |
+| Graduation: "I am turned" fits several pieces; the certificate covered Mendy's face | That clue line is gone (only one square is there); Mendy steps aside for the certificate (hidden on a phone) |
+| Phone: the camera looks down steeply, so a cone looked like a flat disc (6) | On a phone each spinning solid leans so its side faces the camera: a cone shows its point, a cube and a cylinder their sides |
+
+**Round 2 re-score (two fresh reviewers, final pictures of Units 7-12, 2026-11-27 late):** Where is it? 3, Fix the pattern 2, Pattern train 2, Sort by color 3, Big and small 2, Line them up 3, Heavy and light 3, Shape party 1 3, Shape party 2 2, Shape party 3 3, Graduation 3. Stricter than before; fixes from their lists:
+| Problem (rule) | Fix |
+|---|---|
+| Friend's mistake: after a wrong answer, the help was the voice only in most games, and lit corners or sides were cleared before he could look (16) | Every wrong answer now shows something: corners or sides stay lit; a curvy shape's outline glows; the flat square turns so he sees it is thin (next to a cube of the same colour); the hand goes to the side of the scale that went down; the hand moves the piece to the box it belongs in; gold balls on the scarves' starting ends; the gold ring on the empty "in front" place |
+| Pattern games: the engine was blue with a red boiler, like one more car in a red-blue pattern; on 8-car trains the last spot fell beside Mendy | A dark grey engine; Mendy stands lower right, clear of the track |
+| Big and small: a big ball shrank in its box; a small circle and square had no big twin | Pieces keep their true size in the box; every small piece has a big piece of the same kind |
+| Sort by color: cut-off boxes in the lesson close-up; on a phone the lesson pieces overlapped or fell off the edge; title "bins" while the voice says "boxes" | No boxes in lesson close-ups; on a phone the red square slides under the red circle and the blue triangle waits apart; "Clean-up boxes" |
+| Line them up: snow caps made a tower look taller than its blocks; on a phone Mendy stood where the scarves go | No caps in the calm look; on a phone Mendy stands bottom right, below every scarf row |
+| Heavy and light: "The heavy side goes down!" was said with only the rock on (one thing alone always tips a scale); a small balloon's white string vanished, so it looked like an egg | The rule is said once both are on; a dark string, easy to see |
+| Shape party 1, Graduation: a long review lesson with nothing to tap | "Your turn! Tap each corner." on the hexagon |
+| Shape party 3 (and every solid lesson): a level camera hid the cylinder's circle ends while the voice said "Its ends are circles" | Cylinders and cubes lean their top toward him in the lesson |
+| Party world: the painting behind lessons and mistakes had a bright sun and balloon bunches | Paler and softer than the other worlds |
+| Where is it? (phone): the ball waits in front of the bridge before he moves it | Left as is: every waiting spot near a bridge is "somewhere"; the game checks the place he drops it, and the ring shows the right place after a wrong move |
+| Pattern train, Fix the pattern (phone): cars to drag were small (about 50 px) | The cars in the tray are a third bigger and sit in the middle of the screen; they shrink to train size as they go on. (The train itself stays in one row so the pattern reads left to right; cars on a phone train are about 40 px) |
+
+**Round 3 (two fresh reviewers, final pictures of Units 7-12, 2026-11-28 early):** Where is it? 3, Fix the pattern 3, Pattern train 3, Sort by color 3, Big and small 3, Line them up 4, Heavy and light 4, Shape party 1 3, Shape party 2 2, Shape party 3 3, Graduation 3. Fixes after it:
+
+| Problem (rule) | Fix |
+|---|---|
+| Line them up: the "which tower is taller" round froze (the calm look has no snow cap, and the code did not expect that). The game tests use the plain test look, so they missed it | Fixed; the look test now plays into a tower round with the calm look |
+| Shape party 2, 3, Graduation: flat pieces had thick rims and looked like coins or tiles next to the solids; in Shape party 2's mistake the "thin and flat" square turned into a thick slab (3, 6) | Flat pieces are thin like card in every game that mixes flat and solid; the mistake square starts a little turned, next to a cube of the same size |
+| Shape party 1 and 3: the oval leaned back and looked like a circle lying down; the circle was the smallest piece (9) | The oval stands upright (long up and down); the circle is a normal size; thin pieces (no coin rim) |
+| Shape party 1: a wrong tap on the pentagon said "That is a pentagon" (a word never taught) | "That shape has five corners." |
+| Shape party 3 mistake: the sides lit, but he never saw the turned square turned back | After the sides, it turns upright and back |
+| Graduation end: a star covered Mendy's face | Mendy steps away on the certificate screen. (Stars still count mistakes, as on every game; the test checks that) |
+| Heavy and light: the balloon string hid behind the balloon; on a phone the scale sat high with the bottom half empty | The string curls toward him, thicker; the phone picture sits lower |
+| Lesson screens (patterns, colours, sizes, towers): painted villages and waterfalls showed behind the lesson (10) | Every painted backdrop is blurred and washed much more |
+| Sort by color mistake: the voice says "in the red box" while the square floats over the blue box (11) | The square floats over the red box |
+| Where is it? mistake: "behind" (beside the left block) read as "next to" | Behind the middle of the bridge, in the gap under the plank |
+| Sort by color, Big and small: a help hand was left on a box at the end | No hand on the end screen |
+
+**Round 4 fixes (after looking at the round-3 pictures, 2026-11-28 morning):**
+
+| Problem (rule) | Fix |
+|---|---|
+| Big and small: the small box's 1-2-3-4-5 numbers spilled past the box (8, 12) | The numbers fit above their own box; if they do not fit in one row they use two rows |
+| Sort by color, Big and small: a wrong "which box has more" tap got only words (16) | Each box's big number grows as it is said ("That box has three." "This box has five." "Five is more."), then the hand points at the box with more. The test checks it |
+| Sort by color: the yellow box looked pale, almost peach (11) | A real strong yellow, matte, like the yellow pieces (the colour check had never matched, so the yellow box got the darkening meant for red and blue) |
+| Fix the pattern mistake: the help only glowed the first part once (16) | The first part lights and is sung, then the same part lights and is sung again ("Again! Red, yellow, blue."), so he sees it repeat |
+| Pattern train: with two cars missing, only one empty spot showed (12) | The second empty spot shows too, plain, so he sees two cars go there |
+| Where is it? a wrong drop got a ring but no hand (16) | The hand points at the right place while the voice says "Under is here." The test checks it |
+| Where is it? "behind" sat right under the plank and looked like "under" | Farther back, past the bridge; the plank hides its top |
+| Where is it? on a phone the waiting ball sat right in front of the bridge (looked already "in front") | It waits low on the screen, well away from the bridge |
+| Line them up: the start line leaned; Mendy was cut off on a phone (9, h) | The camera looks straight down, so the line stands straight; Mendy stands fully on the phone screen |
+| Big and small mistake: the small ball floated higher and looked farther away, not smaller (e) | Both balls sit on the same line, so only their size differs |
+| Big and small: the small circle on the small box was hard to see | A little bigger (still clearly smaller than the big box's circle) |
+| Shape party 1 mistake: the curvy shape's outline lit all at once (d) | A light runs all the way round and the outline draws behind it, so he follows every curvy side |
+
+Choices made (a kindergarten teacher's call, written here as Esti asked):
+- Shape party 1 clues stay spoken only, with no picture card. A card with the shape would give the answer away; a dots card would not match clues about sides or "round".
+- Pattern train camera stays as it was: moving it closer cut off the engine and the cars he chooses from.
+- Heavy and light: the heavier side is still not glowed before he answers, since a glow would give the answer away. After a wrong answer the hand shows the side that went down.
+
+**Round 4 scores (two fresh reviewers, new pictures of Units 7-12, 2026-11-28 morning):** Where is it? 2, Fix the pattern 3, Pattern train 2, Sort by color 3, Big and small 2, Line them up 4, Heavy and light 4, Shape party 1 3, Shape party 2 3, Shape party 3 3, Graduation day 3.
+
+**Round 5 fixes (after the round-4 scores):**
+
+| Problem the reviewers found (rule) | Fix |
+|---|---|
+| Shape party 1, 3, Graduation: after a second miss the voice said "count the corners", but the piece only tipped over: no corner balls (4, 5) | The reminder matches the clue. A corner clue lights and counts every corner; a side clue lights every side; a flat/solid clue shows the flat piece is thin or what the solid does. "Round" clues run a light round the edge |
+| Clue games: the first wrong pick only heard the shape's name, then the hand took the right one (16) | First the wrong pick SHOWS why: a circle gets a light round its edge ("It has no corners."); the curvy shape gets a light along its curvy sides; a flat piece turns to show it is thin; a solid rolls, stacks or spins; a shape with corners has them counted. Then the hand |
+| Graduation: with 1-2 stars the boy saw his certificate beside 1 of 3 stars and never heard "Here is your certificate" (11) | Every boy hears the certificate line; no star row on the certificate; the box and pieces are gone behind it; fewer fireworks |
+| Graduation and every plain game: a coloured glow lay on the floor under every piece (10) | A soft grey shadow |
+| Party box: bright pink, the brightest thing on screen (10) | A soft dusty pink with a soft gold rim |
+| Shape party 2 mistake: the turned "flat" square looked like a slab; the cube was tipped on a corner (6) | The square is half as thick; the cube stands upright, turned so two faces show |
+| Where is it?: "behind" sat in the gap under the plank and read as "under" (7, 11) | Behind the near leg, on the line from his eye; half the ball peeks out past the leg, nowhere near the gap. The "in front" ring sits in front of the middle |
+| Where is it? mistake: a wrong answer showed only the ring (16) | The hand first points at the ball ("behind"), then the ring shows the empty "in front" place |
+| Pattern train, Fix the pattern (phone): an 8-car train was one strip of tiny cars (about 38 px), cut off at both edges (9, 13) | On a phone the train wraps into short rows, one repeating part per row (red yellow blue / red yellow blue / red yellow _), so the same colours stand in columns. The engine pulls the first row. Every car is apart and on screen |
+| Pattern train mistake: "After red comes yellow" with nothing yellow shown; the friend stood cut off at the right edge pointing away (16, 9) | A see-through yellow car floats over the wrong car; the friend stands at the train's end, facing it |
+| Fix the pattern: a wrong car showed the ring but not which car fits (16) | The hand carries the right car from the tray to the ringed car |
+| Big and small lesson: the small ball floated higher and farther right; on a phone it hid behind the big ball (7) | Both balls stand on the same line, side by side with a gap; on a phone the big ball steps left first |
+| Big and small mistake: the two balls were never compared (16) | "Look at the two balls." The big one throbs: "Big." The small one throbs: "Small." Then the hand to the box |
+| Sort by color, Big and small: while counting, the toys overlapped in the box and the numbers stood in a row on the rim (8, 12) | Each toy comes out and stands in a row in front of its box, apart, with its own number over it; after the answer they go back in |
+| Sort by color: "which box has the most" was 4 red against 3 yellow (7) | 5 red, 2 yellow, 1 blue |
+| Busy leafy ground round the table (10) | The painted ground is softer and lower in contrast in every world (no blur, so no seams) |
+| Line them up mistake: the help marked the start ends but never lined the scarves up; pale end balls on white snow (16) | After "Line them up first!" the red scarf slides to the start line, stays, and slides back ("Now we can see."); the end balls are gold |
+| Party box: a bright purple floor inside (10) | A soft cream floor |
+| Heavy and light: the balloon's string hid in the floor; the light-blue feather read as a leaf (7) | The string lies on top of the floor, thicker; the feather is grey with a dark quill |
+| (tests) | Unit 12 test: a wrong pick in a clue game must be followed by a line that shows why (no corners, curvy, solid, flat, count the corners, look at its sides); Graduation must always say "Here is your certificate" |
+
+Choices made in round 5:
+- Fix the pattern mistake keeps "Is it a good pattern?" (answered with the tick). "Is Ari right?" would make him answer about a person's words, which is harder for a 5-year-old.
+- Heavy and light: still no glow before he answers (it would give the answer away). The pan strings still go past the edge of a big balloon: moving them made the scale look broken.
+- Phone train rows with 4 cars (two green, two blue) are about 52 px per car; the drop spot he aims at takes a finger anywhere near it.
+
+**Round 5 scores (two fresh reviewers, new pictures, 2026-11-28 midday):** Where is it? 2, Fix the pattern 4, Pattern train 4, Sort by color 4, Big and small 3, Line them up 3, Heavy and light 4, Shape party 1 4, Shape party 2 4, Shape party 3 4, Graduation day 4.
+
+**Round 6 fixes (after the round-5 scores):**
+| What the reviewer saw (rule) | What changed |
+|---|---|
+| Where is it?: "behind" still hid almost all of the ball behind the leg, so the help hand pointed at nothing (7, 16) | The ball sits farther out: half of it clearly peeks out past the leg, at Chromebook and phone size. The help hand touches the ball's bottom so it does not cover it |
+| Where is it?: the first reminder was words only (16) | The first reminder also flashes the gold ring on the right place |
+| Big and small: while counting, the purple circle labels looked like one more thing to count, and the two count rows crowded together (one ball half hidden) (8, 12) | No labels on the boxes (the boxes themselves are big and small; the hint says "Look at the boxes. One box is big. One box is small."). Each box's things go back in before the next box is counted, so only one row is out at a time |
+| Line them up mistake: the gold start ball stayed behind when the red scarf slid to the line, so it marked the wrong end (7) | Each gold ball rides with its scarf |
+| Shape party 1/2/3, Graduation: gold corner balls on a yellow hexagon, and green side bars on a green square, could hardly be seen (4, 5) | A lit corner on a yellow or orange piece is deep pink; a lit side never has the piece's own colour |
+| Graduation: the only triangle was a needle; its bottom corners were hard to see (4, 13) | A normal tall triangle |
+| (tests) | k-shapes-clarity: lit corners and sides must pick a colour that stands out from the piece; big-and-small boxes carry no painted labels |
+
+**Round 6 scores (a fresh reviewer, the 7 changed games):** Where is it? 3, Big and small 4, Line them up 4, Shape party 1 4, Shape party 2 4, Shape party 3 4, Graduation day 4.
+
+**Round 7 fixes:**
+| What the reviewer saw (rule) | What changed |
+|---|---|
+| Where is it?: the "behind" ball, beside the leg at the same depth, read as "next to" (7) | It sits farther back, higher than the leg's foot, and the leg's edge covers part of it. In the help after a wrong answer, the ball rolls out from behind the leg and back, so he sees the bridge hides it |
+| Where is it?: the "in front" ring sat low left and touched the tick button (13) | The ring sits in front of the middle of the bridge, clear of the buttons |
+| Where is it? (phone): the ball waited straight in front of the bridge, so it already looked "in front"; Chromebook: small at the far left (7, 13) | Phone: it waits low and to the right, off to the side. Chromebook: nearer and bigger, at the left |
+| Big and small count: the first small thing in the row touched the big box (8) | A count row never starts under the box next door |
+| Big and small end: a help hand was left on a box (10) | A late timer can never bring the hand back once the game has ended |
+| Shape party 2 mistake: the turned flat square looked like a tall rectangle (7) | Nearly face-on, so it looks square; the help still turns it edge-on |
+
+Choices made in round 7:
+- Clue games keep the clue in the shape's own voice ("I have three corners. Find me!"), with Mendy on screen. It is the riddle form every K class uses; adding a card or speaker would put one more thing on the screen.
+- The party rug, the curvy piece's points, the phone scarf height and the phone triangle in Shape party 3 were scored 4 and are left as they are.
+
+**Round 7 scores (a fresh reviewer):** Where is it? 3, Big and small 3.
+
+**Round 8 fixes:**
+| What the reviewer saw (rule) | What changed |
+|---|---|
+| Where is it?: a drop was judged by the nearest of six screen points; "under" and "in front" were only 63-80 px apart, so a right drop behind the middle of the bridge was called "under" (a, e) | A drop is judged by where it lands round the bridge: over the plank = on top; on the floor behind its back edge = behind, in front of its front edge = in front, between the legs = under, past the legs = next to. Test: every place's own spot, and a drop behind the middle, count as that place |
+| Where is it? mistake: the "behind" ball showed as a sliver past the end of the plank (7) | A big ball right behind the middle of the bridge: its top shows over the plank, the plank and legs hide the rest, like a ball behind a wall. The hand points at its top; in the help it rolls out and back |
+| Where is it? lesson: "next to" was shown on the right, where "behind" also peeks out (7) | "Next to" is shown on the left, as in the rounds |
+| Where is it?: "Mendy built a bridge", but Mendy is not on screen (g) | "Here is a bridge under the sea." |
+| Big and small: pieces shrank to half size in a box, so the big ball looked hardly bigger than a loose small one (7) | Pieces keep most of their size in the box and spread to the box's own size |
+| Big and small: at "Which box has more?" one group was heaped in its box and the other stood outside (7, 12) | Both groups go back in their boxes, each with its big number; "Which box has more toys?" ... "Five is more than three." |

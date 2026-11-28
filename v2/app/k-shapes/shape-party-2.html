@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Shape party 2</title>
+<!-- Kindergarten Shapes, Review 2 (v2/curriculum/k-shapes/MAP.md): units 1-6 mixed: flat shapes and solid shapes.
+     Research: mixed review of old skills makes them last (Cepeda et al., 2006; Rohrer & Taylor, 2007). Built on the shared 3D kit ("clues" mode). ?fast=1 for the test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame, FAMILY } from './kit.js';
+const PI = Math.PI;
+startGame({
+  id: 'party2', world: 'party', mode: 'clues', plain: true, thinFlat: true,   /* flat and solid in one game: flat pieces are thin like card, so a flat square never looks like a tile (review 3) */
+  boxes: [{ paint: 'none', accept: [] }],   /* a plain party box: no star on it, so "find me" never means a star */
+  intro: ['Shape party, number two!', 'Flat shapes and solid shapes came.', 'Listen to each clue, then find it!'],
+  lessons: [{ k: 'square', word: 'square', short: true, color: '#12A766', rule: ['Four sides the same.'] },
+            { k: 'hex', word: 'hexagon', short: true, color: '#F2A900' },
+            { k: 'sphere', kind: 'solid', word: 'sphere', color: '#1F6FEB', like: 'It is round all over, like a ball.', action: 'roll', rule: ['A sphere rolls!'], tap: 'Tap the sphere to roll it.', tapSay: 'Roll, roll!' },
+            { k: 'cube', kind: 'solid', word: 'cube', color: '#E03A33', like: 'It is like a block.', action: 'stack', rule: ['Every face is a square. It stacks!'], tap: 'Tap the cube to stack it.', tapSay: 'Stack!',
+              chant: [['Flat!', 1], ['Solid!', 2], ['Sphere!', 2], ['Cube!', 1]] }],
+  set: [['q1', 'sphere', 0, 0.9], ['q2', 'square', 0.3, 0.9], ['q3', 'cube', 0.4, 0.85], ['q4', 'circle', 0, 0.9],
+        ['q5', 'cyl', PI / 2, 0.85], ['q6', 'tri', PI, 1], ['q7', 'cone', 0, 0.9], ['q8', 'hex', 0, 0.9]],
+  clues: [
+    { say: ['I am solid.', 'I am round all over, like a ball.'], accept: ['sphere'] },
+    { say: ['I am flat.', 'I am round, with no corners.'], accept: ['circle'] },
+    { say: ['I am solid, like a block.', 'Every face is a square.'], accept: ['cube'] },   /* the same words as The solid shapes ('sides' are lines on flat shapes) */
+    { say: ['I am flat.', 'I have four sides the same.'], accept: ['square'] },
+    { say: ['I am solid, like a can.', 'My ends are circles.'], accept: ['cyl'] },
+    { say: ['I am solid.', 'I have a point on top.'], accept: ['cone'] },
+    { say: ['I am flat.', 'I have six corners.'], accept: ['hex'] }
+  ],
+  watchLine: 'Watch me. Listen to the clue.', watchDone: 'The sphere! Solid and round, like a ball.', yourTurn: 'Now you. Listen to each clue!',
+  ask: 'Listen to the clue.', hint: 'Listen to the clue again.', hint2: 'Here I am!', remember: 'Remember: flat is thin, solid is thick.',
+  yesDefault: o => 'Yes! I am the ' + FAMILY(o.k) + '!', allDone: 'You found every party shape!',
+  wrong: o => ['That is ' + (/^[aeiou]/.test(FAMILY(o.k)) ? 'an ' : 'a ') + FAMILY(o.k) + '.', 'Listen to the clue again.'],
+  mistake: { friend: { name: 'Nachum', shirt: '#8C4A2F', hair: '#2A1A12' }, icon: 'cube', piece: ['square', 0, 0.85, '#12A766'], beside: ['cube', 0, 0.85, '#12A766'], thin: true,   /* same colour, so only flat vs solid differs; a wrong answer turns the square so he sees it is thin */   /* the flat square face-on, a real cube beside it to compare */
+    claim: ['The clue was: I am a solid block.', 'Nachum picked this one.'], ask: 'Is it a solid block?', answer: false,
+    explain: ['It is thin and flat.', 'It is a square, not a cube.'], right: ['Right! It is flat.', 'A square is flat. A cube is solid.'] },
+  endLine: 'What a shape party!', praise: 'Flat and solid. Shape party star!'
+});
+</script>
+</body>
+</html>

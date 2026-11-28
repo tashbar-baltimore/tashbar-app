@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Count the corners</title>
+<!-- Kindergarten Shapes, Unit 2 "Shape rules" (v2/curriculum/k-shapes/MAP.md): count the corners of any shape (none, three or four),
+     including new shapes (a kite, a leaning shape), and sort by that number: boxes marked with 0, 3 and 4 dots. K.G.4.
+     Built on the shared 3D kit (kit.js). ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame, KINDS } from './kit.js';
+const PI = Math.PI;
+const W = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+const n = k => (KINDS[k].pts ? KINDS[k].pts.length : KINDS[k].semi ? 2 : 0);
+startGame({
+  id: 'corners', world: 'garden', plain: true,
+  boxes: [{ dots: 0, accept: ['circle', 'oval'] }, { dots: 3, accept: ['tri', 'triTall', 'triRight', 'triWide', 'triSkinny'] },
+          { dots: 4, accept: ['square', 'rect', 'rectLong', 'rectFat', 'kite', 'lean'] }],
+  intro: ['Mendy sorts his shapes.', 'He counts the corners!', "Let's count corners together!"],
+  lessons: [{ k: 'kite', first: 'Look at this new shape.', word: 'shape', color: '#7C4DFF', noTurn: true,
+    rule: ['Four corners! It goes with four dots.'], chant: [['Count the corners!', 4], ['One, two, three, four!', 4]] }],
+  set: [['k1', 'tri', 0, 1], ['ci', 'circle', 0, 1], ['q1', 'kite', 0, 1], ['q2', 'lean', 0.2, 1],
+        ['t2', 'triTall', PI, 1], ['ov', 'oval', 0.3, 0.95], ['q3', 'square', PI / 4, 0.85], ['t3', 'triWide', 0.4, 0.9]],
+  watchLine: 'Watch me. I count the corners first.', watchDone: 'Three corners go with three dots!', yourTurn: 'Now you. Count the corners, then find the box!',
+  ask: 'Count the corners. Put it in the box with that many dots.', hint: 'Count the corners first.', hint2: 'Count this one.', remember: 'Remember: count each corner.',
+  yesDefault: o => ['Yes! No corners!', 'Yes! Three corners!', 'Yes! Four corners!'][o.box], allDone: 'Every shape is in the right box!',
+  wrong: o => { const c = n(o.k);
+    if (!c) { const a = ['Look. It has no corners.', 'It goes in the box with no dots.']; a.count = false; return a; }
+    return ['Count again.', W[c][0].toUpperCase() + W[c].slice(1) + ' corners! ' + ([0, 3, 4].includes(c) ? 'It goes with ' + W[c] + ' dots.' : 'No box has ' + W[c] + ' dots.')]; },
+  bonus: [['b1', 'rectLong', 0.9, 0.9, 0], ['b2', 'oval', 1.2, 0.9, 2], ['b3', 'triSkinny', 0.3, 1, 4]], bonusAsk: 'Count these tricky ones. Find their boxes.',
+  mistake: { friend: { name: 'Moshe', shirt: '#4B5D9A', hair: '#1E1712' }, icon: 'dots3', piece: ['lean', 0.2, 1.1, '#12A766'], box: 2,
+    claim: ['Moshe put this in the three-dot box.', 'He says it has three corners.'], ask: 'Does it have three corners?', answer: false, prove: true,
+    explain: ['Four corners! It goes with four dots.'], right: ['Right! It does not have three.', 'Four corners! It goes with four dots.'] },
+  endLine: 'You counted every corner!', praise: 'Count the corners, find the box. Corner counting expert!'
+});
+</script>
+</body>
+</html>
