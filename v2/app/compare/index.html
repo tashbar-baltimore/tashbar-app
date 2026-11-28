@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review 1.0 and 2.0</title>
+<!-- The review page (HoS 2026-11-22: "two sides ... 1.0 is in it, and then 2.0 is on the other side ... a very easy way for them to pull up
+     what they're changing"). Left: today's app (1.0). Right: this 2.0 (on a look link, the version being reviewed). Each side signs in
+     on its own with a TEST boy code. ?a= and ?b= open a page inside each side (for example ?b=compare is not allowed; ?a=staff/ opens 1.0 staff). -->
+<style>
+:root{ --bg:#F4F1EA; --ink:#1F2A44; --soft:#5B6478; --line:#DDD5C4; --old:#8A6D3B; --oldbg:#FFF3DC; --new:#17834F; --newbg:#E3F6EA; --card:#fff; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#15181F; --ink:#ECEFF5; --soft:#A7AFC0; --line:#2C3240; --old:#E2B868; --oldbg:#2E2716; --new:#5FD39A; --newbg:#14291E; --card:#1C2029; } }
+:root[data-theme="dark"]{ --bg:#15181F; --ink:#ECEFF5; --soft:#A7AFC0; --line:#2C3240; --old:#E2B868; --oldbg:#2E2716; --new:#5FD39A; --newbg:#14291E; --card:#1C2029; }
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+body{ display:flex; flex-direction:column; }
+header{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; padding:8px 16px; border-bottom:1px solid var(--line); background:var(--card); }
+header h1{ font-size:17px; margin:0 8px 0 0; white-space:nowrap; }
+.group{ display:inline-flex; border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+.group button{ border:0; background:transparent; color:var(--ink); padding:7px 12px; font:inherit; font-size:14px; cursor:pointer; }
+.group button + button{ border-left:1px solid var(--line); }
+.group button[aria-pressed="true"]{ background:var(--ink); color:var(--card); }
+.tool{ border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:10px; padding:7px 12px; font:inherit; font-size:14px; cursor:pointer; text-decoration:none; }
+.hint{ color:var(--soft); font-size:13px; margin-left:auto; }
+main{ flex:1; display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:12px 16px 16px; min-height:0; }
+main.one{ grid-template-columns:1fr; }
+.side{ display:flex; flex-direction:column; min-height:0; min-width:0; }
+.side[hidden]{ display:none; }
+.label{ display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px; padding:6px 10px; border-radius:10px 10px 0 0; }
+.label .tag{ font-size:12px; font-weight:800; letter-spacing:.04em; padding:2px 8px; border-radius:999px; background:var(--card); }
+.label .open{ margin-left:auto; font-weight:500; font-size:13px; color:inherit; }
+.tip{ font-size:13px; padding:6px 10px; background:var(--oldbg); color:var(--old); border-top:1px solid var(--line); } .tip a{ color:inherit; font-weight:700; }
+.old .label{ background:var(--oldbg); color:var(--old); } .new .label{ background:var(--newbg); color:var(--new); }
+.frame{ flex:1; min-height:0; display:flex; justify-content:center; background:var(--card); border:1px solid var(--line); border-top:0; border-radius:0 0 10px 10px; overflow:auto; }
+.frame iframe{ width:100%; height:100%; border:0; background:#fff; }
+.phone .frame{ padding:12px 0; } .phone .frame iframe{ width:390px; max-width:100%; height:100%; min-height:600px; border:1px solid var(--line); border-radius:18px; }
+@media (max-width:900px){
+  main{ grid-template-columns:1fr; } .hint{ display:none; }
+  [data-show="both"], [aria-label="Size"]{ display:none !important; }   /* small screens: one side at a time, the 1.0 / 2.0 tabs choose */
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Review: 1.0 and 2.0</h1>
+  <div class="group" role="group" aria-label="Show">
+    <button type="button" data-show="both" aria-pressed="true">Side by side</button>
+    <button type="button" data-show="old" aria-pressed="false">1.0 only</button>
+    <button type="button" data-show="new" aria-pressed="false">2.0 only</button>
+  </div>
+  <div class="group" role="group" aria-label="Size">
+    <button type="button" data-size="cb" aria-pressed="true">Chromebook</button>
+    <button type="button" data-size="phone" aria-pressed="false">Phone</button>
+  </div>
+  <button type="button" class="tool" data-act="reload">↻ Start both again</button>
+  <span class="hint">Sign in on each side with a TEST boy code.</span>
+</header>
+<main id="m">
+  <section class="side old" aria-label="1.0, today's app">
+    <div class="label"><span class="tag">1.0</span> Today's app <a class="open" id="oa" target="_blank" rel="noopener">Open alone ↗</a></div>
+    <div class="tip">1.0 white or stuck in here? Today's app was not built to run inside another page. <a id="oa2" target="_blank" rel="noopener">Open 1.0 in its own tab ↗</a></div>
+    <div class="frame"><iframe id="fa" title="1.0, today's app" allow="autoplay; fullscreen"></iframe></div>
+  </section>
+  <section class="side new" aria-label="2.0, the new version">
+    <div class="label"><span class="tag">2.0</span> New version <a class="open" id="ob" target="_blank" rel="noopener">Open alone ↗</a></div>
+    <div class="frame"><iframe id="fb" title="2.0, the new version" allow="autoplay; fullscreen"></iframe></div>
+  </section>
+</main>
+<script>
+(function () {
+  var OLD = 'https:' + '/' + '/' + 'tashbar-learning-live.web.app/';
+  var NEW = location.origin + '/';
+  var q = new URLSearchParams(location.search);
+  function safe(p) { p = String(p || '').replace(/^\/+/, ''); return /^[A-Za-z0-9_\-\/?=&.]*$/.test(p) && p.indexOf('compare') !== 0 && p.indexOf('..') < 0 ? p : ''; }
+  var a = OLD + safe(q.get('a')), b = NEW + safe(q.get('b'));
+  var fa = document.getElementById('fa'), fb = document.getElementById('fb'), m = document.getElementById('m');
+  document.getElementById('oa').href = a; document.getElementById('oa2').href = a; document.getElementById('ob').href = b;
+  function load() { fa.src = a; fb.src = b; }
+  load();
+  if (window.matchMedia && matchMedia('(max-width:900px)').matches) setTimeout(function () { var t = document.querySelector('[data-show="new"]'); if (t) t.click(); }, 0);
+  function press(sel, val, attr) { [].forEach.call(document.querySelectorAll('[' + attr + ']'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute(attr) === val)); }); }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('button'); if (!t) return;
+    var s = t.getAttribute('data-show'), z = t.getAttribute('data-size');
+    if (s) { press(null, s, 'data-show'); m.classList.toggle('one', s !== 'both');
+      document.querySelector('.side.old').hidden = s === 'new'; document.querySelector('.side.new').hidden = s === 'old'; }
+    if (z) { press(null, z, 'data-size'); document.body.classList.toggle('phone', z === 'phone'); }
+    if (t.getAttribute('data-act') === 'reload') { fa.src = 'about:blank'; fb.src = 'about:blank'; setTimeout(load, 50); }
+  });
+})();
+</script>
+</body>
+</html>
