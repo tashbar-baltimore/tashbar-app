@@ -12,7 +12,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4 + l.userData.below;   /* Kuf's long leg stands above the stand */ p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
-  const ROW1 = () => E.CALM;   /* calm: on a phone four stands stand in ONE row, all the same size (two rows seen from above made the back letters tiny) */
+  const ROW1 = () => false; const SHELF = () => E.CALM && P && peds.length > 3;   /* calm, on a phone: two shelves of two, all at the same distance and facing him (one row of four was too small) */
+  const shelf = E.mesh(E.rbox(2.9, .12, 1.3, .04), E.M(0xd9a066, { roughness: .6 }), 0, 2.02, .6); shelf.visible = false; E.scene.add(shelf);   /* calm: on a phone four stands stand in ONE row, all the same size (two rows seen from above made the back letters tiny) */
   const PS = () => P ? (peds.length > 3 ? (ROW1() ? .5 : .74) : .62) : (peds.length > 3 ? .88 : 1);
   const card = new THREE.Group(); E.scene.add(card); card.visible = false;
   const cardGlow = E.glowSprite('#ffffff', 2.6, .7); cardGlow.position.z = -.4; card.add(cardGlow);
@@ -22,7 +23,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? (ROW1() ? .9 : 1.12) : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
     if (p) { if (peds.length > 3 && !ROW1()) { E.camBase.set(0, 5.6, 11.5); E.camTarget.set(0, 1.3, .8); cardHome.set(0, 3.6, -3.4); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.15, 2.2);   /* higher when a raised Kuf stands below */   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
-    const m = peds.length, two = P && m > 3 && !ROW1(); peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -3.0 : 2.6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */
+    const m = peds.length, two = P && m > 3 && !ROW1() && !SHELF(); shelf.visible = SHELF(); if (SHELF()) { E.camBase.set(0, 2.9, 11.2); E.camTarget.set(0, 2.55, 0); cardHome.set(0, 5.15, 1.0); } peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -3.0 : 2.6); else if (SHELF()) pd.position.set(i % 2 ? -.72 : .72, i < 2 ? 2.08 : 0, .6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(SHELF() ? .62 : PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
   E.onFrame(t => {

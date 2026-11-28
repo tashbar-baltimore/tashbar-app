@@ -40,7 +40,7 @@ export default function setup(E, { unit, game }) {
   const done = []; let cur = null, beads = [], next = 0, demo = false, active = false, lastHelp = 0, wander = 0, offTries = 0;
   /* the path is a soft glowing road along the letter (never dots: a dot on Beis means the dagesh); the part he has felt
      turns gold, and a pulsing ring shows where to go next */
-  const roadM = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xbfe4ff, emissiveIntensity: .7, roughness: .3, transparent: true, opacity: .55 });
+  const roadM = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xbfe4ff, emissiveIntensity: E.CALM ? 1 : .7, roughness: .3, transparent: true, opacity: E.CALM ? .92 : .55 });   /* calm: a road that clearly glows */
   const goldM = new THREE.MeshStandardMaterial({ color: 0xffe066, emissive: 0xffb300, emissiveIntensity: 1.0, roughness: .3 });
   const target = new THREE.Mesh(new THREE.TorusGeometry(1, .22, 12, 32), new THREE.MeshStandardMaterial({ color: 0xff4d1a, emissive: 0xff3d00, emissiveIntensity: 1.1 }));   /* clearly orange-red, not gold */
   let roads = [], golds = [];
@@ -59,7 +59,7 @@ export default function setup(E, { unit, game }) {
   });
   function makeBeads(key) {
     beads = []; roads.forEach(r => r.parent && r.parent.remove(r)); golds.forEach(r => r.parent && r.parent.remove(r)); roads = []; golds = [];
-    const z = 20 / 2 * (H / 64.7) + .06;
+    const z = (E.CALM ? 5 : 10) * (H / 64.7) + .06;   /* just on the letter's face (the calm letters are flatter) */
     PATHS[key].forEach((st, si) => {
       const pts = st.map(([x, y]) => { const p = E.fontToLocal(key, H, x, y); p.z = z; return p; });
       pts.forEach((p, i) => { const b = new THREE.Object3D(); b.position.copy(p); b.userData = { stroke: si, first: i === 0, idx: i, lit: false }; cur.add(b); beads.push(b); });
@@ -99,8 +99,10 @@ export default function setup(E, { unit, game }) {
     if (showsPlace) { await E.wait(500); arrow.visible = false; }
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');
-      const st = PATHS[key][0].length; let [x, y] = beadScreen(0); E.hand.at(x, y); await E.wait(300);
-      for (let i = 0; i < st; i++) { const [a, b] = beadScreen(i); await E.tween(260, k => E.hand.at(x + (a - x) * k, y + (b - y) * k), E.ease.lin); x = a; y = b; light(i); }
+      const strokes = E.CALM ? PATHS[key].length : 1; let [x, y] = beadScreen(0); E.hand.at(x, y); await E.wait(300);   /* calm: the hand shows EVERY piece of the road, lifting between pieces (reviewer: Alef's two short pieces were never shown) */
+      for (let si = 0; si < strokes; si++) { const ids = beads.map((b, i) => b.userData.stroke === si ? i : -1).filter(i => i >= 0);
+        if (si) { E.hand.hide(); await E.wait(250); [x, y] = beadScreen(ids[0]); E.hand.at(x, y); await E.wait(250); }
+        for (const i of ids) { const [a, b] = beadScreen(i); await E.tween(si ? 200 : 260, k => E.hand.at(x + (a - x) * k, y + (b - y) * k), E.ease.lin); x = a; y = b; light(i); } }
       E.hand.hide(); await E.wait(300); beads.forEach(b => b.userData.lit = false); next = 0; paintGold(); glow.material.opacity = .12; demo = false;
       await E.say('Now you! Feel the whole glowing road.');
     } else await E.say('Feel the whole glowing road!');

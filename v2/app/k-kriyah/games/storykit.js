@@ -25,7 +25,7 @@ export function makeStory(E, unit, script) {
     showHand(l); document.body.dataset.tapReady = l.userData.key;
     await E.waitTap([l]); delete document.body.dataset.tapReady; E.hand.hide();
     E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .2, .6)), 26, 1.2);
-    float(l, false); const r0 = l.rotation.y, y0 = l.position.y; await E.tween(800, k => { l.rotation.y = r0 + Math.sin(k * Math.PI * 2) * .5; l.position.y = y0 + Math.sin(k * Math.PI) * .6; }, E.ease.out);   /* a happy wobble, never turned round to show the letter backwards */ l.position.y = y0; float(l);
+    float(l, false); const r0 = l.rotation.y, y0 = l.position.y; await E.tween(800, k => { if (!E.CALM) l.rotation.y = r0 + Math.sin(k * Math.PI * 2) * .5; l.position.y = y0 + Math.sin(k * Math.PI) * .6; }, E.ease.out);   /* a happy wobble, never turned round to show the letter backwards */ l.position.y = y0; float(l);
     await E.say(line);
   }
   window.__info = () => Object.assign({ tap: document.body.dataset.tapReady || null }, Object.fromEntries(Object.entries(L).map(([k, l]) => [k, E.toScreen(E.worldPos(l))])),
@@ -38,8 +38,8 @@ export function makeStory(E, unit, script) {
   }
   async function letterDone(k) {   /* the new letters wait in a row along the top, right to left */
     const l = L[k]; float(l, false); const n = unit.letters.length, i = unit.letters.indexOf(k), gap = P ? (n > 4 ? .8 : n > 3 ? 1.05 : 1.45) : (n > 4 ? 1.85 : n > 3 ? 2.3 : 2.7);
-    const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? 4.4 + l.userData.below * .28 : 3.3), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
-    await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? .28 : .42))); glow.material.opacity = .8 * (1 - q); }); float(l);
+    const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? (E.CALM ? 4.2 : 4.4) + l.userData.below * .28 : 3.3), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
+    await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? (E.CALM ? .36 : .28) : (E.CALM ? .55 : .42))));   /* calm: waiting letters big enough to read (reviewer: 25-40 px) */ glow.material.opacity = .8 * (1 - q); }); float(l);
   }
   /* a picture that stays (the Torah is never spun or shrunk away): it steps back beside the grown-up, and its letter rises out of a soft light */
   const kept = [];
@@ -85,7 +85,7 @@ export function makeStory(E, unit, script) {
         src.visible = true; src.position.copy(kp); float(src); await letterDone(st.fromDot); await letterDone(st.letter);
       } else {
         const has = hasPic(st.pic), pic = has ? PIC[st.pic]() : new THREE.Group(); const who = st.near === 'grown' && grown ? grown : boy;   /* a painting not here yet: the letter appears on its own */
-        const [dx, py] = st.at || [.9, 2.0]; pic.position.set(who.position.x + dx, py, who.position.z + .4);   /* st.at: a picture that needs more room beside the face */ pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
+        const [dx, py] = st.at || [.9, 2.0]; pic.position.set(who.position.x + dx, py, who.position.z + .4); if (P && E.CALM) pic.position.set(.6, 2.9, .9);   /* calm, on a phone: the picture shows on its own, beside and above the people, never on a head */   /* st.at: a picture that needs more room beside the face */ pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
         if (st.act) st.act(E, pic, boy, grown);
         for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);   /* the story is told even before its painting comes */
         if (st.keep) await rise(pic, st.letter); else { await toCentre(pic); await morph(pic, st.letter); }

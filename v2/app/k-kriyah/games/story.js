@@ -23,7 +23,7 @@ export default function setup(E) {
     showHand(l); document.body.dataset.tapReady = l.userData.key;
     await E.waitTap([l]); delete document.body.dataset.tapReady; E.hand.hide();
     E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .2, .6)), 26, 1.2);
-    float(l, false); const r0 = l.rotation.y, y0 = l.position.y; await E.tween(800, k => { l.rotation.y = r0 + k * Math.PI * 2; l.position.y = y0 + Math.sin(k * Math.PI) * .6; }, E.ease.out); l.position.y = y0; float(l);
+    float(l, false); const r0 = l.rotation.y, y0 = l.position.y; await E.tween(800, k => { if (!E.CALM) l.rotation.y = r0 + k * Math.PI * 2; l.position.y = y0 + Math.sin(k * Math.PI) * .6; }, E.ease.out); l.position.y = y0; float(l);
     await E.say(line);
   }
   window.__info = () => ({ alef: E.toScreen(E.worldPos(alef)), beis: E.toScreen(E.worldPos(beis)), veis: E.toScreen(E.worldPos(veis)), tap: document.body.dataset.tapReady || null });
@@ -48,12 +48,13 @@ export default function setup(E) {
     await E.say('Abba starts with Alef.'); dad.mood('calm');
     await E.say('Alef is quiet. It waits for its nekudah.');
     await E.sayWithMe('alef');
-    await E.say('Tap Alef!');
+    if (E.CALM) { await E.say('Watch me. I tap Alef.'); const [hx, hy] = E.toScreen(E.worldPos(alef)); E.hand.at(hx, hy, true); await E.wait(500); E.hop(alef, .3, 350); await E.wait(400); E.hand.hide(); await E.say('Now you! Tap Alef!'); }   /* the first tap is shown first (K-CLARITY 15) */
+    else await E.say('Tap Alef!');
     await tapIt(alef, 'Alef. Alef is quiet. Shh!');
     await E.popOut(dad); dad.scale.setScalar(ds);
     /* 3. Beis: the house turns into Beis, and Mendy becomes the dot */
     float(alef, false); const a0 = alef.position.clone();
-    await E.tween(700, k => { alef.position.lerpVectors(a0, new THREE.Vector3(X().row, P && E.CALM ? 3.55 : 1.6, .2), k); alef.scale.setScalar(1 - k * (1 - (P && E.CALM ? .3 : X().s)));   /* on a phone Alef waits up high, so the big Beis never covers it */ glow.material.opacity = .8 * (1 - k); }); float(alef);
+    await E.tween(700, k => { alef.position.lerpVectors(a0, new THREE.Vector3(X().row, P && E.CALM ? 3.55 : 1.6, .2), k); alef.scale.setScalar(1 - k * (1 - (P && E.CALM ? .42 : X().s)));   /* on a phone Alef waits up high, so the big Beis never covers it */ glow.material.opacity = .8 * (1 - k); }); float(alef);
     home.position.set(0, 0, 0); home.scale.setScalar(P ? .75 : .9); boy.scale.setScalar(1); boy.position.set(-.55, 0, 1.3); boy.visible = true; await Promise.all([E.popIn(home, P ? .75 : .9), E.popIn(boy)]);
     E.setProgress(4, 2);
     boy.mood('wave'); await E.say('This is Mendy’s house.');   /* English words only (HoS 2026-11-26) */

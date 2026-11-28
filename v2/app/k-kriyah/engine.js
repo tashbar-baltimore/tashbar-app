@@ -317,7 +317,7 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, 
       const pm = M(cols[k % 4], { roughness: .35 }); for (let j = 0; j < 5; j++) { const a = j * Math.PI * 2 / 5, p = mesh(new THREE.SphereGeometry(.055, 10, 8), pm, Math.cos(a) * .065, .29 + Math.sin(a) * .065, 0, false); p.scale.set(1, 1, .5); f.add(p); }
       f.add(mesh(new THREE.SphereGeometry(.04, 10, 8), M(0xff9f1a, { roughness: .4 }), 0, .29, .02, false)); f.position.set(x, 0, z); f.rotation.y = (rnd() - .5) * .6; w.add(f); } }   /* five petals and a middle */
   const sunBall = mesh(new THREE.SphereGeometry(1.6, 32, 20), new THREE.MeshBasicMaterial({ color: 0xffe066 }), 9, 9, -25, false); w.add(sunBall);
-  const halo = glowSprite('#fff3a0', 9, .9); halo.position.copy(sunBall.position); w.add(halo); world.sun = new THREE.Group(); w.add(world.sun); world.sun.add(sunBall, halo);   /* a game can hide the sky's sun (Unit 10's sun-clock) */
+  const halo = glowSprite('#fff3a0', 9, .9); halo.position.copy(sunBall.position); w.add(halo); world.sun = new THREE.Group(); w.add(world.sun); world.sun.add(sunBall, halo); if (CALM) world.sun.visible = false;   /* calm: no big gold ball in the sky above the letters */   /* a game can hide the sky's sun (Unit 10's sun-clock) */
   const cm = M(0xffffff, { roughness: .9, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .15 });
   for (let k = 0; k < 5; k++) { const c = new THREE.Group(); [[0, 0, 0, 1], [.9, -.1, .1, .75], [-.9, -.15, 0, .7], [.4, .5, 0, .7], [-.35, .4, .1, .6]].forEach(([a, b, d, r]) => c.add(mesh(new THREE.SphereGeometry(r, 18, 12), cm, a, b, d, false)));
     c.position.set(-16 + k * 8, 6 + (k * 37 % 10) / 4, -14 - (k * 53 % 6)); c.scale.setScalar(.8 + (k % 3) * .25); w.add(c); world.clouds.push(c); }
@@ -408,7 +408,7 @@ export function house({ lit = true, wall = 0xffa552, roof = 0xe8322b, bushes = t
   h.add(mesh(rg, roofM, 0, 1.9, 0));
   h.add(mesh(new THREE.BoxGeometry(.38, .7, .38), M(0xc0473f), .7, 2.5, -.2));
   h.add(mesh(rbox(.62, 1.08, .14, .06), M(0x8a5a3c, { roughness: .6 }), -.58, .56, 1.02));
-  h.add(mesh(new THREE.SphereGeometry(.05, 12, 10), M(0xffd43b, { metalness: .8, roughness: .2 }), -.39, .56, 1.11));
+  h.add(mesh(new THREE.SphereGeometry(.05, 12, 10), M(CALM ? 0x6b4a2e : 0xffd43b, { metalness: CALM ? 0 : .8, roughness: .2 }), -.39, .56, 1.11));   /* calm: a brown doorknob (only the dot is gold) */
   const mez = mesh(new THREE.BoxGeometry(.07, .26, .07), M(0xd9a520, { metalness: .7, roughness: .25 }), -.17, .95, 1.06); mez.rotation.z = -.35; h.add(mez);   /* the mezuzah */
   h.add(mesh(rbox(.86, .82, .12, .06), white, .45, 1.12, 1.02));
   const glass = mesh(new THREE.BoxGeometry(.66, .62, .06), new THREE.MeshStandardMaterial({ color: 0xfff1a8, emissive: 0xffd36a, emissiveIntensity: .9 }), .45, 1.12, 1.07, false);
@@ -589,7 +589,7 @@ export const sameShape = (a, b) => LETTERS[a].ch === LETTERS[b].ch;
 export const AB = k => Object.keys(LETTERS).indexOf(k);
 export function letter(key, height = 2.6, color = 'blue') {
   const L = LETTERS[key], { g: geo, c } = letterGeo(L.ch); const bb = geo.boundingBox, W = bb.max.x - bb.min.x, s = height / REF_H, oy = (c.y - REF_CY) * s;   /* every letter on the same lines: Yud stays small, up at the top */
-  const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = true; m.receiveShadow = true; m.scale.setScalar(s); m.position.y = oy; grp.add(m);
+  const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = !CALM;   /* calm: no letter-shaped shadows (a row of them looked like mirrored letters) */ m.receiveShadow = true; m.scale.setScalar(s); m.position.y = oy; grp.add(m);
   const Hs = (bb.max.y - bb.min.y) * s, hit = new THREE.Mesh(new THREE.BoxGeometry(Math.max(W * s, height * .45) * 1.15, Math.max(Hs, height * .45) * 1.15, height * .5), hitMat); hit.position.y = oy; hit.castShadow = false; grp.add(hit);
   let dot = null;
   const dp = dotAt(key);
@@ -641,7 +641,7 @@ export function noticeRing(r = .42) { const ring = mesh(new THREE.TorusGeometry(
 
 /* ---------------- sparkles and confetti ---------------- */
 let sparkTex; const sparks = [], confs = []; let confGeo; const confCols = [0xff5d8f, 0xffc21a, 0x2dbb6a, 0x2f7de1, 0x9b5de5, 0x00c2d1];
-export function sparkle(pos, n = 18, spread = 1) { sparkTex = sparkTex || starTex(); if (CALM) { n = Math.min(n, 8); spread = Math.min(spread, .7); }   /* calm: a few small sparkles, never a cloud over the letter */ for (let i = 0; i < n; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sparkTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+export function sparkle(pos, n = 18, spread = 1) { sparkTex = sparkTex || starTex(); if (CALM) return;   /* calm: no sparkles at all; white specks on a letter looked like a dot (reviewer, round 2) */ for (let i = 0; i < n; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sparkTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
   s.position.copy(pos); const v = new THREE.Vector3((Math.random() - .5), (Math.random() - .2), (Math.random() - .5)).normalize().multiplyScalar(.03 + Math.random() * .06 * spread); s.userData = { v, life: 50 + Math.random() * 30 }; s.scale.setScalar(.12 + Math.random() * .16); scene.add(s); sparks.push(s); } }
 export function confetti(pos, n = 60) { confGeo = confGeo || new THREE.PlaneGeometry(.12, .07); for (let i = 0; i < n; i++) { const m = new THREE.Mesh(confGeo, new THREE.MeshStandardMaterial({ color: confCols[i % 6], side: THREE.DoubleSide, roughness: .4, metalness: .3 }));
   m.position.copy(pos); m.userData = { v: new THREE.Vector3((Math.random() - .5) * .16, .08 + Math.random() * .14, (Math.random() - .5) * .1), r: new THREE.Vector3(Math.random() * .3, Math.random() * .3, Math.random() * .3), life: 80 }; scene.add(m); confs.push(m); } }
@@ -650,7 +650,7 @@ function stepParticles() {
   for (let i = confs.length - 1; i >= 0; i--) { const c = confs[i]; c.position.add(c.userData.v); c.userData.v.y -= .004; c.userData.v.x *= .99; c.rotation.x += c.userData.r.x; c.rotation.y += c.userData.r.y; if (--c.userData.life <= 0) { scene.remove(c); c.material.dispose(); confs.splice(i, 1); } }
 }
 /* joy: chime, sparkles, confetti (well under 2 seconds) */
-export function joy(pos, big = false) { sfx.chime(); if (CALM) { sparkle(pos.clone().add(new THREE.Vector3(0, .85, .4)), big ? 8 : 5, .5); return; } sparkle(pos, big ? 14 : 8, 1.2); confetti(pos, big ? 45 : 22); }   /* short and light, so his eyes come back to the letter */
+export function joy(pos, big = false) { sfx.chime(); if (CALM) return;   /* calm: the chime and the letter's own hop are the joy */ sparkle(pos, big ? 14 : 8, 1.2); confetti(pos, big ? 45 : 22); }   /* short and light, so his eyes come back to the letter */
 
 /* ---------------- tweens ---------------- */
 const tweens = []; export const ease = { lin: t => t, out: t => 1 - Math.pow(1 - t, 3), inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, back: t => { const c = 1.7; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); } };

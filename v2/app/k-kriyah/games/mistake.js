@@ -26,7 +26,7 @@ export default function setup(E, { struggled, unit }) {
   const { THREE, S, ICON } = E;
   const yak = E.yaakov(); E.scene.add(yak);
   const board = new THREE.Group(); E.scene.add(board);
-  board.add(E.mesh(E.rbox(1.9, 2.0, .16, .1), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0));
+  board.add(E.mesh(E.rbox(1.9, 2.0, .16, .1), E.M(E.CALM ? 0xb9784a : 0xffd43b, { metalness: E.CALM ? 0 : .4, roughness: .3 }), 0, 0, 0));
   board.add(E.mesh(E.rbox(1.62, 1.72, .1, .06), E.M(0xfffaf0, { roughness: .4 }), 0, 0, .06));
   board.add(E.mesh(new THREE.CylinderGeometry(.07, .07, 2.4, 10), E.M(0x8a5a3c), 0, -2.1, -.05));
   let shown = null; const ring = E.noticeRing(.36); const tiles = [];
@@ -55,7 +55,7 @@ export default function setup(E, { struggled, unit }) {
 
   /* Unit 9: a word on a wide sign; the letter in question is the last one (the left end) */
   let prefix = null, prefixL = [];
-  const wideBack = E.mesh(E.rbox(4.2, 2.0, .16, .1), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0), wideFace = E.mesh(E.rbox(3.92, 1.72, .1, .06), E.M(0xfffaf0, { roughness: .4 }), 0, 0, .06);
+  const wideBack = E.mesh(E.rbox(4.2, 2.0, .16, .1), E.M(E.CALM ? 0xb9784a : 0xffd43b, { metalness: E.CALM ? 0 : .4, roughness: .3 }), 0, 0, 0), wideFace = E.mesh(E.rbox(3.92, 1.72, .1, .06), E.M(0xfffaf0, { roughness: .4 }), 0, 0, .06);
   wideBack.visible = wideFace.visible = false; board.add(wideBack, wideFace);
   function showWord(k) { prefixL.forEach(l => board.remove(l)); prefixL = []; const all = [...prefix, k], n = all.length, x = i => ((n - 1) / 2 - i) * 1.0;
     board.children.slice(0, 2).forEach(m => m.visible = false); wideBack.visible = wideFace.visible = true;

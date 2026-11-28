@@ -40,7 +40,11 @@ P.hunt = async (pg, shot, log) => {
       i.rects.forEach((b, y) => { if (x < y && a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3]) bad.push(x + '&' + y); }); });
     (bad.length ? log.fails : log.oks).push(bad.length ? 'hiding places touch on screen: ' + bad.join(', ') : 'no two hiding places touch on screen');
     (off.length ? log.fails : log.oks).push(off.length ? 'hiding places off the screen: ' + off.join(', ') : 'every hiding place is fully on screen');
-    (small >= 60 ? log.oks : log.fails).push('the smallest letter tile is ' + Math.round(small) + 'px'); } await pg.mouse.click(...i.others[0]); await pg.waitForTimeout(500); await shot('3-wrong');
+    (small >= 60 ? log.oks : log.fails).push('the smallest letter tile is ' + Math.round(small) + 'px'); }
+  { /* every letter can be SEEN on its tile (reviewer: on a phone the tiles once covered the letters): blue letter paint near each letter's middle */
+    const pts = [...i.targets, ...i.others], seen = await pg.evaluate(pts => { const c = document.querySelector('#c'), g = c.getContext('webgl2') || c.getContext('webgl'), k = g.drawingBufferWidth / c.clientWidth, px = new Uint8Array(4);
+      return pts.map(([x, y]) => { for (let dx = -36; dx <= 36; dx += 6) for (let dy = -36; dy <= 36; dy += 6) { g.readPixels(Math.round((x + dx) * k), Math.round(g.drawingBufferHeight - (y + dy) * k), 1, 1, g.RGBA, g.UNSIGNED_BYTE, px); if (px[2] > px[0] + 60 && px[2] > px[1] + 25) return true; } return false; }); }, pts);
+    const hid = seen.filter(v => !v).length; (hid ? log.fails : log.oks).push(hid ? hid + ' of ' + pts.length + ' letters cannot be seen on their tiles' : 'every letter shows on its tile'); } await pg.mouse.click(...i.others[0]); await pg.waitForTimeout(500); await shot('3-wrong');
   await pg.waitForTimeout(1500); log.wrongHandled = (await pg.evaluate(() => window.__lines.join(' '))).includes('That is'); let r2 = false;
   await loop(pg, async () => { i = await K.info(pg); if (!i || !i.active || !i.targets.length) return false; await pg.mouse.click(...i.targets[0]); await pg.waitForTimeout(350);
     if (i.round === 1 && !r2) { r2 = true; await shot('2-middle'); } return true; });

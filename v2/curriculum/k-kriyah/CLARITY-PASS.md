@@ -40,3 +40,15 @@ Goal (Esti's words): "something a 5-6-year-old can figure out and learn, and it 
 - **No speech bubble for Yaakov's claim.** A bubble showing the letter he claims would turn "is the name right?" into "do the shapes match?". He hears the claim, and the speaker button says it again.
 - **Letter rain keeps the Home button hidden while letters fall** (so he doesn't leave by accident with a tap meant for a letter); it is back between rounds.
 - **On a phone, Yaakov steps aside while the boy drags the fix** (no room beside the tiles); he comes back when it is fixed.
+
+## Round 2 (a new reviewer, Units 1–2, after the fixes above): what was still wrong, and what changed
+| Game(s) | Round-2 finding | Change |
+|---|---|---|
+| Letter Hunt (scored 1) | On a phone the tiles covered the letters: only the gold dots showed (the flatter calm letters plus the hunt's own extra flattening left them paper-thin against the tile). The sukkah was still busy (fruit bowl, cup, chairs, picture, leaf balls, sun). | No extra flattening; the tile sits a little behind the letter. **New test:** every hidden letter must show blue letter paint on screen (it fails on the old code, passes now). No bowl, cup, chairs, picture, leaf balls or sun in the calm look. Phone letters a little bigger, three tidy rows that never touch (checked by the test, three runs). |
+| Every game (shared) | White sparkles still landed on letters (inside Veis, where the dot goes); letters cast letter-shaped shadows that looked like a mirrored second row; gold doorknobs and gold sign frames sat next to letters. | Calm look: no sparkles at all (the chime and the letter's hop are the joy); letters cast no shadow; doorknobs brown, sign frames wood. Only the dot is gold. |
+| Feel the Shape | "Watch me" traced only one piece of Alef; the road was faint; the road sat in front of the (now flatter) letter. | The hand traces every piece of the road, lifting between pieces; the road is bright and sits on the letter's face. |
+| Mendy's first day | No "Watch me" before the first "Tap Alef!"; on a phone Alef waited very small. | "Watch me. I tap Alef." (hand taps, Alef hops), then "Now you! Tap Alef!"; Alef waits bigger on a phone; a tapped letter hops, never spins. |
+| Shloimy at the zoo (and every later story) | "Let's see the animals!" with no animals; on a phone the picture sat on Shloimy's head; waiting letters 25–40 px. | "Let's see what we find!"; on a phone the picture shows on its own beside the people; waiting letters bigger. |
+| Sound Match (phone) | Four letters in one row were about 45 px. | Two shelves of two, all at the same distance, about twice as big. |
+| Alef-Beis Train | The waiting cars stood in a line that looked like a finished train. | They stand well apart. |
+| Letter rain | A wrong tap pushed the letter back up onto the one above it (two letters became one blob on a phone); letters small; help shown too briefly while letters kept falling. | The tapped letter keeps its place; letters bigger; the rain stops longer while the arrow shows the difference; wooden sign frame. |
