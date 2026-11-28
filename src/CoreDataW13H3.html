@@ -34,7 +34,7 @@
   check:[
     {q:'Naftali wrote: “We built a sukkah. My dog barked at a cat. We hung the decorations.” Which ARMS step fixes it?', o:['Remove the sentence about the dog.','Add a sentence about the dog.','Substitute “sukkah”.'], h:'Which sentence does not belong in a sukkah story?'},
     {q:'Dovid wrote: “The esrog smelled nice.” Which revision uses Substitute?', o:['The esrog smelled lemony.','The esrog smelled nice and nice.','Esrog.'], h:'Swap the tired word for a sharper one.'},
-    {q:'Avi wrote: “We said Havdalah. We ate seudah shlishis.” What is wrong, and which ARMS step fixes it?', o:['The order is wrong: Move a sentence.','A word is tired: Substitute.','Nothing is wrong.'], h:'Which comes first on Shabbos afternoon?'}
+    {q:'Avi wrote: “We said Havdalah. We ate seudah shlishis.” What is wrong, and which ARMS step fixes it?', o:['The order is wrong: Move a sentence.','A word is tired: Substitute.','Nothing is wrong.'], h:'Which comes first: seudah shlishis or Havdalah?'}
   ],
   re:[
     {how:'A new way: ARMS makes your writing strong, like strong arms. Flex: Add, Remove, Move, Substitute!', q:'To revise means to…', o:['make the writing better','copy it neater','throw it away']},
@@ -238,7 +238,7 @@
       { t: '*ARMS*: Add, Remove, Move, Substitute. Flex!', m: { type: 'chant', lines: ['A! Add a detail!', 'R! Remove what does not belong!', 'M! Move a sentence!', 'S! Substitute a better word!'] },
         act: X(D[1], { say: 'Match each letter of *ARMS* to its job.', how: 'Flex your arms and say the chant.' }) },
       { t: '*Remove* what does not belong to the story.', act: X(Y[0], { say: 'Find the sentence to *Remove*.', how: 'Which one is *not about* the sukkah?' }) },
-      { t: '*Move* a sentence into the right *order*.', act: X(Y[2], { say: '*Move* the sentences into the right order.', how: 'What happens *first* on Chanukah night?' }) },
+      { t: '*Move* a sentence into the right *order*.', act: X(Y[2], { steps: ['Zeidy lit the menorah.', 'We sang Maoz Tzur.', 'We ate crispy latkes.'], say: '*Move* the sentences into the right order.', how: 'What happens *first* on Chanukah night?' }) },
       { who: { q: 'Revise “The game was fun.” Who really *revised* it?', o: [['Yossi', 'The game was fun. (copied neater)'], ['Shimon', 'The game was thrilling, and we won!']], a: 1,
         why: 'Neater is *not revising*. Change the words to make it *better*.' } }],
     play: [
@@ -250,7 +250,7 @@
 
   NL('WRIT.ESSAY.L04.06', function (D, Y) { return {
     hook: { kind: 'secret', pic: '🚓', t: 'Crack the code! *C-O-P-S* catches mistakes in your writing.',
-      q: 'What could the O stand for?', o: ['Order of the words', 'Orange', 'Oven'],
+      q: 'What could the O stand for?', o: ['Order of the words', 'Overall neatness', 'Oops, nothing'],
       pay: '*O* is *Order of the words*! COPS: Capitals, Order, Punctuation, Spelling.' },
     learn: [
       { t: '*C*: Capitals for the start, names, places, special days.', act: X(D[1], { say: 'Tap every word that needs a *capital*.', how: 'Names of *people*, *places* and *special days*.' }) },
@@ -268,13 +268,13 @@
 
   NL('WRIT.PARA.L04.17', function (D, Y) { return {
     hook: { kind: 'story', pic: '✉️', t: 'Dovid wrote a letter to the menahel. He signed it: “Hey, bye!!!”',
-      q: 'How will the menahel feel?', o: ['Surprised: it is not respectful', 'Very happy', 'Hungry'],
+      q: 'How will the menahel feel?', o: ['Surprised: it is not respectful', 'Very happy', 'Bored: it is too long'],
       pay: '*Surprised*! A letter must *fit its reader*: polite for a rebbe or the menahel.' },
     learn: [
-      { t: 'A letter has parts: *greeting*, body, *closing*, name.', act: X(D[0], { say: 'Build Naftali’s letter, part by part.', how: '*Greeting*, body, *closing*, then the name. One card does not fit.' }) },
+      { t: 'A letter has parts: *date*, *greeting*, body, *closing*, name.', act: X(D[0], { slots: ['Date', 'Greeting', 'Body', 'Closing', 'Signature'], cards: ['November 26', 'Dear Zeidy,', 'Thank you for showing us your clock.', 'With love,', 'Naftali'], say: 'Build Naftali’s letter, part by part.', how: '*Date*, *greeting*, body, *closing*, then the name. One card does not fit.' }) },
       { t: 'A letter to a *grown-up* is polite and *respectful*.', act: X(D[1], { say: 'Does it fit a letter to a *rebbe*?', how: 'A letter to a rebbe is *polite* and *respectful*.' }) },
       { t: 'Relaxed for a *friend*. Respectful for a *rebbe*.', m: { type: 'chant', lines: ['Dear, hello!', 'Say why you write,', 'close it nicely,', 'sign it right!'] },
-        act: X(Y[4], { say: 'Listen. Who is this *letter* for?', how: '*Relaxed* and friendly, or *polite* and respectful?' }) },
+        act: X(Y[4], { q: 'Who is this letter for?', say: 'Listen. Who is this *letter* for?', how: '*Relaxed* and friendly, or *polite* and respectful?' }) },
       { who: { q: 'A letter to Rabbi Feld. Whose *greeting* fits?', o: [['Yossi', 'Hey Feld!'], ['Avi', 'Dear Rabbi Feld,']], a: 1,
         why: 'A letter to a rebbe is *polite* and *respectful*.' } }],
     play: [

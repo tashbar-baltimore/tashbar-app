@@ -300,16 +300,16 @@
       q: 'Which one would you ask?', o: ['Is snow cold?', 'How do squirrels get ready?'],
       pay: 'The *how* question! It gives you lots to *find out* and write.' },
     learn: [
-      { t: 'A *research question* asks *how* or *why*.', act: X(Y[4], { say: 'Tap every good way to start a *research question*.', how: 'Which ones ask *how* or *why*?' }) },
+      { t: 'A good *research question* often asks *how* or *why*.', act: X(Y[4], { say: 'Tap every good way to start a *research question*.', how: 'Which ones ask *how* or *why*?' }) },
       { t: 'Weak questions: *yes or no*, an *opinion*, or *too big*.', act: X(D[1], { say: 'Match each *weak question* to its problem.', how: '*Too small* (yes or no), only an *opinion*, or *too big*?' }) },
       { t: 'Ask like a reporter: *How*? *Why*?', m: { type: 'chant', lines: ['How? Why?', 'A book can tell!', 'No yes-or-no,', 'no “which is best”!'] },
         act: X(Y[2], { say: 'Build a *research question*.', how: 'Start with *how*, then who, then what.' }) },
       { who: { q: 'Research about the moon. Who asked a *research question*?', o: [['Shmuli', 'Which moon is the prettiest?'], ['Chaim', 'Why does the moon change shape?']], a: 1,
         why: '“Prettiest” is only an *opinion*. A book can answer *why*.' } }],
     play: [
-      X(D[0], { say: 'Good research question, or a *mistake*?', how: 'Can a book answer it with lots of facts? *Yes or no* and *opinions* are mistakes.' }),
+      X(D[0], { cards: [['How do frogs breathe underwater?', 0], ['Why does the moon look different each night?', 0], ['Do you like the fall?', 1], ['Is grass green?', 1]], say: 'Good research question, or a *mistake*?', how: 'Can a book answer it with lots of facts? *Yes or no* and *opinions* are mistakes.' }),
       X(Y[0], { say: 'Find Avi’s best *research question*.', how: '*How* or *why*? Can a book answer it?' }),
-      X(Y[3], { say: 'Listen. What kind of question is it?', how: 'Can it be answered in *one word*?' }),
+      X(Y[3], { q: 'What kind of question did you hear?', say: 'Listen. What kind of question is it?', how: 'Can it be answered in *one word*?' }),
       X(Y[1], { say: 'Challenge! Pick the words that make a *research question*.', how: 'Yes or no? Only an opinion? Or *how* or *why*?' })],
     done: 'You picked the *how* question! Ask *how* or *why*, so a book can answer.' }; });
 
@@ -319,7 +319,7 @@
       pay: '*Note A*! A note is a few *key words*, in *your own way*.' },
     learn: [
       { t: 'Read the article. Look for *key facts*.', act: X(D[0], { say: 'Read the *article*. Why do leaves change color?', how: 'Read every page. Tap a word to see what it means.' }) },
-      { t: 'A *note* keeps the *key words*. A *copy* takes it all.', act: X(Y[2], { say: 'Match each sentence to its *note*.', how: 'Which few words hold the *same fact*?' }) },
+      { t: 'A *note* keeps the *key words*. A *copy* takes it all.', act: X(Y[2], { pairs: [['The green material in a leaf catches sunlight.', 'green stuff catches sun'], ['The leaf cannot get water anymore.', 'no water, leaf dries'], ['Yellow and orange were there the whole time!', 'yellow was hiding']], say: 'Match each sentence to its *note*.', how: 'Which few words hold the *same fact*?' }) },
       { t: 'Snip the little words! Keep the *fact*.', m: { type: 'move', t: 'Snip, snip with two fingers: cut the little words!' },
         act: X(Y[4], { say: 'Build a *short note*, not a copy.', how: 'Use only the *key words*.' }) },
       { who: { q: 'Question: Why do leaves change color? Who kept a *useful note*?', o: [['Yossi', 'Avi rakes the leaves'], ['Dovid', 'yellow was hiding']], a: 1,
@@ -328,7 +328,7 @@
       X(D[1], { say: 'A good note, or a *copy* (a mistake)?', how: 'A note is a few *key words*. A whole sentence is a *copy*.' }),
       X(Y[1], { say: 'Tap the *best note*.', how: 'A few *key words* that keep the fact. Not the whole sentence, not just one word.' }),
       X(Y[0], { say: 'Find the fact in the *article*.', how: 'Read page 1. Look for the word *green*.' }),
-      X(Y[3], { say: 'Challenge! Finish Naftali’s *note*.', how: 'Which *key word* holds the fact?' })],
+      X(Y[3], { o: ['shorter', 'longer', 'warmer'], say: 'Challenge! Finish Naftali’s *note*.', how: 'Which *key word* holds the fact?' })],
     done: 'Note A wins! A few *key words*, in *your own way*, that *answer* your question.' }; });
 
   NL('WRIT.RES.L04.03', function (D, Y) { return {
@@ -337,7 +337,7 @@
       pay: '“My cousin saw one” does not *answer the question*. Leave it out. Sort the rest into *groups*.' },
     learn: [
       { t: 'Each *heading* names one group of notes.', act: X(D[0], { say: 'Put each note under its *heading*.', how: 'Which *heading* does each note answer? One note fits nowhere.' }) },
-      { t: 'A note that does not *answer the question*? Leave it out.', act: X(Y[1], { say: 'Tap every note about why leaves *fall*.', how: 'Which notes tell why the leaf comes off?' }) },
+      { t: 'Pick only notes that *answer* the heading.', act: X(Y[1], { say: 'Tap every note about why leaves *fall*.', how: 'Which notes tell why the leaf comes off?' }) },
       { t: 'Sort with me! One group becomes one *paragraph*.', m: { type: 'chant', lines: ['Notes!', 'Groups!', 'Headings!', 'Paragraphs!'] },
         act: X(Y[3], { say: 'Put the *research steps* in order.', how: 'Notes, *groups*, *headings*, then paragraphs.' }) },
       { who: { q: 'Question: How do birds get ready for winter? Heading: *Food*. Who picked the right note?', o: [['Eli', 'fly south in flocks'], ['Moshe', 'eat extra seeds']], a: 1,
@@ -345,7 +345,7 @@
     play: [
       X(D[1], { say: 'Right group, or a *mistake*?', how: 'Read the *heading*. Does the note answer it?' }),
       X(Y[0], { say: 'Find the note for the *heading*.', how: 'Which note is about *eating*?' }),
-      X(Y[2], { say: 'Match each note to its *heading*.', how: 'Which *heading* does each note answer?' }),
+      X(Y[2], { pairs: [['visit flowers', 'Food'], ['huddle together', 'Staying warm'], ['seal the hive', 'Home']], q: 'Question: How do bees get ready for winter?', say: 'Match each note to its *heading*.', how: 'Which *heading* does each note answer?' }),
       X(Y[4], { say: 'Challenge! Finish the sentence.', how: 'What does each *group* of notes become?' })],
     done: 'The cousin note is out! Sort notes under *headings*. Each group is a *paragraph*.' }; });
 
@@ -354,15 +354,15 @@
       q: 'What two things do they name?', o: ['The title and the author', 'The color and the size', 'The page and the price'],
       pay: 'The *title* and the *author*! That is a *source line*.' },
     learn: [
-      { t: 'The *title* names the book. The *author* wrote it.', act: X(D[0], { say: 'Match each word to what it *means*.', how: '*Title*, *author*, *by*: which is which?' }) },
+      { t: 'Name the *title* and *author* at your report’s *end*.', act: X(D[0], { say: 'Match each word to what it *means*.', how: '*Title*, *author*, *by*: which is which?' }) },
       { t: 'The *author* comes right after *by*.', act: X(Y[0], { say: 'Find the *author*.', how: 'Who comes after “*by*”?' }) },
       { t: 'Say it with me: the *title*, *by* the author!', m: { type: 'chant', lines: ['I found my facts', 'in the title,', 'by the author!'] },
         act: X(Y[2], { say: 'Build the club’s *source line*.', how: 'I found my facts in, the *title*, then *by* the author.' }) },
       { who: { q: 'Who wrote a full *source line*?', o: [['Avi', 'I found my facts in “Owls at Night”.'], ['Naftali', 'I found my facts in “Owls at Night” by Rabbi Moshe Stern.']], a: 1,
         why: 'Avi *left out the author*. Name the *title* and *author*.' } }],
     play: [
-      X(D[1], { say: 'Good *source line*, or a *mistake*?', how: 'A good source line names the *title* and the *author*.' }),
-      X(Y[1], { say: 'Pick the word that comes before the *author*.', how: 'Which word tells who *wrote* it?' }),
+      X(D[1], { cards: [['I found my facts in “Bees at Work” by Mr. Dan Weiss.', 0], ['I found my facts in “Trains Long Ago” by Mr. Shimon Katz.', 0], ['I found my facts in a book.', 1], ['I just know it.', 1]], say: 'Good *source line*, or a *mistake*?', how: 'A good source line names the *title* and the *author*.' }),
+      X(Y[1], { t: 'I found my facts in “Snow Days” ___ Rabbi Aron Lev.', say: 'Pick the word that comes before the *author*.', how: 'Which word tells who *wrote* it?' }),
       X(Y[3], { say: 'Listen. Is this a good *source line*?', how: 'Can a reader find that book? Is the *title* there? The *author*?' }),
       X(Y[4], { say: 'Challenge! Put the parts of a *report* in order.', how: 'Ask, tell, then name the *source*.' })],
     done: 'Like a real researcher! Name the *title*, then *by* the *author*.' }; });
