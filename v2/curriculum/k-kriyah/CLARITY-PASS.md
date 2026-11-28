@@ -131,3 +131,14 @@ Choice made for Esti: **Shloimy's Shabbos clothes are his white shirt and dark t
 | Beat the sun | The sun-clock passed behind Pei and its dot; only 1 of 2 progress dots filled. | The sun's path stays high above the cars; both dots fill; "You finished the train! Champion!". |
 
 Partner Match (phone): the five plain letters now stand in two rows (3 + 2), bigger and apart, with their drop rings under them. Not changed (left for the next round): Find the Mistake (Unit 10) has no separate "Watch me" for a wrong-name round.
+
+## Round 4 (new reviewers, the games that scored 3; part 1: 19 games, 9 now score 4): what changed for the rest
+| Where | Finding | Change |
+|---|---|---|
+| Look-Alike (Hei, Ches, Tuf) — scored 2 | With Suf left out, only Tuf had a gold dot, so the dot answered the question instead of the foot (round 3's fix made it worse). | Suf is back in Tuf's box, and that box's label shows **Tuf and Suf side by side**: the little foot is the clue. |
+| Alef-Beis Train (Units 2, 5, 8) — Unit 8 scored 2 | Seven waiting cars overlapped and stood over the track; the empty place was nearly invisible; stray shadows on the phone track. | Waiting cars in one row, apart, well below the train; a clear orange empty car marks the next place; cars cast no shadows. |
+| Letter Hunt | The hand under a tile covered the tile below. | The right tile glows; no hand over the grid. |
+| Feel the Shape | Yud came in high and ran under the title. | Every letter is centred on its own shape. |
+| Letter rain | A wrong tap showed no right letter; a tall letter could fall close above another. | While the rain is still, the hand shows one to catch; more room between letters in the lane. |
+| Dot Builder | Taking the dot out (Suf) was only told; the check button only hovered; faint grey rings. | "Watch me … I take the dot out"; "Watch me. It is Suf already. I tap the green check."; clear orange rings. |
+| Many progress dots | 13–15 dots wrapped into two rows on a phone. | Smaller dots in one row. |
