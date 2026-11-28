@@ -446,6 +446,122 @@
         say:'Listen. What kind of ending is it?', how:'Does it tell a lesson for next time?'}] }
   };
 
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     NL(id, f): f gets the old do and your lists (good activities are kept) and returns hook, learn, play and done. X(a, o) copies a with changes. */
+  function X(a, o) { if (!a) throw new Error('W13 new lesson: missing activity'); return Object.assign({}, a, o || {}); }
+  function NL(id, f) { var b = BITE[id]; if (!b || !b.do || !b.your) return; var n = f(b.do, b.your);
+    b.hook = n.hook; b.learn = n.learn; b.play = n.play; b.done = n.done; if (n.one && b.board) b.board.one = n.one; delete b.do; delete b.your; delete b.ready; }
+
+  NL('WRIT.ESSAY.L04.01', function (D, Y) { return {
+    hook: { kind: 'riddle', pic: '🚢', t: 'I ask who, when and where. I ask what he wants and how it ends.',
+      q: 'What am I?', o: ['A story plan', 'A grocery list', 'A clock'],
+      pay: 'A *story plan*! *POW* plus the *W-W-W* questions.' },
+    learn: [
+      { t: '*POW*: Pick, Organize, Write. Plan a *story* too!', m: { type: 'chant', lines: ['Who? When? Where?', 'What does he want?', 'What happens?', 'How does it end?'] },
+        act: X(Y[1], { say: 'Put the steps of *POW* in order.', how: 'Pick my idea, *Organize* my notes, *Write* and say more.' }) },
+      { t: 'Organize notes with *W-W-W*: who, *when*, *where*.', act: X(Y[2], { say: 'Match each question to Dovid’s *note*.', how: 'Is the note a *time*, a *place*, or a *feeling*?' }) },
+      { t: 'Then: what he *wants*, what happens, how it *ends*.', act: X(D[0], { say: 'Fill in Saba’s *W-W-W* notes.', how: 'Who, when, where first. Then what he *wants*, what *happens*, how it *ends*.' }) },
+      { who: { q: 'Chaim’s notes: “Chaim, Sunday, the library, wants a train book.” What is still *missing*?', o: [['Yossi', 'Where?'], ['Avi', 'How does it end?']], a: 1,
+        why: 'The library *is* where. No note tells *how it ends*.' } }],
+    play: [
+      X(D[1], { say: 'Good *note*, or a *mistake*?', how: 'A note is a few words that answer a *W-W-W* question. Long or off topic is a mistake.' }),
+      X(Y[0], { say: 'Find the note that tells what he *wants*.', how: 'What is Chaim *hoping* for?' }),
+      X(Y[4], { say: 'Listen. Which *W-W-W* question does it answer?', how: 'Is it a time, a place, or a *feeling*?' }),
+      X(Y[3], { say: 'Challenge! Finish Naftali’s *Where* note.', how: '“*Where*?” answers with a *place*.' })],
+    done: 'You solved the riddle: a *story plan*! POW and *W-W-W* get every story ready.' }; });
+
+  NL('WRIT.PARA.L04.05', function (D, Y) { return {
+    hook: { kind: 'story', pic: '🗺️', t: 'Avi stared at the map. Half of it was torn away!',
+      q: 'What do you want to know next?', o: ['How will he find the way?', 'What color is the map?'],
+      pay: 'You want to *read on*! A strong opening sets *who*, *where*, and the *problem*.' },
+    learn: [
+      { t: 'Set the scene: *who*, *where*, and the *problem*.', act: X(Y[0], { say: 'Match each part of the *scene*.', how: 'Is it a *person*, a *place*, or what went *wrong*?' }) },
+      { t: 'The *problem* is what goes *wrong*.', act: X(D[1], { say: 'Tap the sentence that shows the *problem*.', how: 'Which sentence tells what went *wrong*?' }) },
+      { t: 'Clap it out: who, where, *problem*!', m: { type: 'move', t: 'Clap three times: who, where, problem!' },
+        act: X(Y[2], { say: 'Build Saba’s *opening* sentence.', how: '*Who*, then *where*, then the *problem*.' }) },
+      { who: { q: 'Who wrote the better *opening*?', o: [['Shmuli', 'This story is about a clock.'], ['Naftali', 'Naftali knelt by Zeidy’s clock. Its hands had stopped.']], a: 1,
+        why: 'Shmuli just *announces* it. Naftali shows *who*, *where*, a *problem*.' } }],
+    play: [
+      X(D[0], { say: 'Strong opening, or a *mistake*?', how: 'A strong opening shows *who*, *where* and a *problem*. “This story is about” is a mistake.' }),
+      X(Y[4], { say: 'Find the opening that *sets the scene*.', how: 'Look for *who*, *where* and a *problem*.' }),
+      X(Y[1], { say: 'Finish Dovid’s *problem*.', how: 'Why can’t Dovid get the book?' }),
+      X(Y[3], { say: 'Challenge! Which part of the *scene* is it?', how: 'Is it a person, or something going *wrong*?' })],
+    done: 'The torn map made you *read on*! Start with *who*, *where*, and the *problem*.' }; });
+
+  NL('WRIT.PARA.L04.06', function (D, Y) { return {
+    hook: { kind: 'mystery', pic: '💬', t: 'Zeidy smiled and said, “Every gear has a job.”',
+      q: 'Which words did Zeidy say out loud?', o: ['Every gear has a job', 'Zeidy smiled and said'],
+      pay: 'The words *inside the quotation marks*! Those are his *exact words*.' },
+    learn: [
+      { t: '*Quotation marks* hug the *exact words* someone says.', act: X(D[1], { say: 'Tap every word Zeidy said *out loud*.', how: 'Look *inside* the quotation marks.' }) },
+      { t: 'The comma or *?* goes *inside* the marks.', act: X(Y[3], { say: 'Pick the right marks for Saba’s *question*.', how: 'The *?* goes *inside* the closing mark.' }) },
+      { t: 'Make talking marks with your fingers! *Hug* the words.', m: { type: 'move', t: 'Wiggle two fingers up high, like quotation marks!' },
+        act: X(Y[1], { say: 'Build Avi’s *talking* sentence.', how: '*Spoken words* first, inside the marks. Then *who* said it.' }) },
+      { who: { q: 'Who wrote Abba’s words the *right way*?', o: [['Yossi', '“Time for Maariv, said Abba.”'], ['Chaim', '“Time for Maariv,” said Abba.']], a: 1,
+        why: 'Only the *spoken words* go inside the marks.' } }],
+    play: [
+      X(D[0], { say: 'Written right, or a *mistake*?', how: 'Marks around *only* the spoken words. The comma or *?* goes inside.' }),
+      X(Y[0], { say: 'Find the sentence written the *right way*.', how: 'Marks around *only* the spoken words, comma *inside*.' }),
+      X(Y[4], { say: '*Exact words*, or not? Sort them.', how: 'Are these the *exact words* he said? Then they need *quotation marks*.' }),
+      X(Y[2], { say: 'Challenge! Match each kind of *talking*.', how: 'Look at the *end mark* and the talking word.' })],
+    done: '“Every gear has a job.” *Quotation marks* hug the *exact words*.' }; });
+
+  NL('WRIT.PARA.L04.07', function (D, Y) { return {
+    hook: { kind: 'notice', pic: '😮', t: 'Line 1: “Dovid was scared.” Line 2: “Dovid’s hands shook on the rail.”',
+      q: 'What do you notice about line 2?', o: ['You can see the feeling', 'It is shorter', 'It has no feeling'],
+      pay: 'You can *see* it! *Show* a feeling with what he *does* and *thinks*.' },
+    learn: [
+      { t: '*Telling*: “He was sad.” *Showing*: what he *does*.', act: X(Y[0], { say: 'Find the line that *shows* the feeling.', how: 'Which one lets you *see* it? Look for something he *does*.' }) },
+      { t: 'Picture each action. What *feeling* do you see?', act: X(D[1], { pairs: [['proud', 'He stood up tall and grinned.'], ['nervous', 'He bit his lip and checked the clock.'], ['tired', 'His eyes kept closing over his Chumash.'], ['impatient', 'He drummed his fingers and sighed, “When?”']],
+        say: 'Match each *feeling* to the line that shows it.', how: 'Picture each line. What *feeling* do you see?' }) },
+      { t: 'A *thought* can show a feeling too. Act it out!', m: { type: 'move', t: 'Show me nervous: twist your fingers and check the clock!' },
+        act: X(Y[3], { say: 'Listen to his *thought*. What feeling does it show?', how: 'Is he happy, mad, or *worried*?' }) },
+      { who: { q: 'Ari wrote “I was excited.” Who *showed* it?', o: [['Eli', 'I was very, very excited.'], ['Moshe', 'I bounced up and down.']], a: 1,
+        why: '“Very, very” still *only tells*. Moshe shows an *action*.' } }],
+    play: [
+      X(D[0], { say: '*Shows* it, or a mistake that only *tells*?', how: 'Showing is what he *does*, *feels in his body*, or *thinks*.' }),
+      X(Y[4], { say: 'Tap every line that *shows* excited.', how: 'Which ones let you *see* it? “Was” and “felt” only tell.' }),
+      X(Y[2], { say: 'Pick the action that shows *excited*.', how: 'What does an *excited* boy do?' }),
+      X(Y[1], { say: 'Challenge! Join the *action* and the *thought*.', how: 'He did it, *and* he thought it. Which word adds?' })],
+    done: 'Shaking hands show *scared*! Show feelings with what he *does* and *thinks*.' }; });
+
+  NL('WRIT.PARA.L04.08', function (D, Y) { return {
+    hook: { kind: 'puzzle', pic: '🕰️', t: 'Read this: “Finally, Avi woke up. First, he ate breakfast.”',
+      q: 'What is the puzzle?', o: ['The order is backwards', 'A word is spelled wrong', 'Nothing is wrong'],
+      pay: '*Backwards*! *Time words* keep a story *in order*.' },
+    learn: [
+      { t: '*Time words* tell *when*: first, next, after that.', act: X(Y[3], { say: 'Tap every *time word*.', how: 'Which words tell *when*?' }) },
+      { t: 'Some go at the *start*. Some go at the *end*.', act: X(Y[1], { say: 'Match each *time word* to its part of the story.', how: 'When would you use it: *beginning*, middle, or *end*?' }) },
+      { t: 'Some time words *jump ahead*: two hours later!', m: { type: 'chant', lines: ['First!', 'Then!', 'Later!', 'At last!'] },
+        act: X(Y[0], { say: 'Pick the time words that *jump ahead*.', how: 'Which words mean some *time has passed*?' }) },
+      { who: { q: 'Which story is *in order*?', o: [['Yossi', 'Finally, Avi woke up. First, he ate.'], ['Chaim', 'Avi woke up. After that, he ate breakfast.']], a: 1,
+        why: '*Finally* goes at the *end*, not the start.' } }],
+    play: [
+      X(D[1], { say: 'Does the time word *fit*, or is it a *mistake*?', how: '*First* is for the start, *finally* for the end. Then, then, then is a mistake.' }),
+      X(D[0], { say: 'Put Saba’s trip in *order*.', how: 'Follow the *time words*: First, Next, That night, Finally.' }),
+      X(Y[4], { say: 'Build a sentence that starts with a *time word*.', how: 'The *time words* go first, then a comma.' }),
+      { type: 'cloze', t: 'The club looked all day. ___, they found the key under the mat.', o: ['At last', 'First', 'Before that'], a: 'At last',
+        say: 'Challenge! Pick the time words for the *end*.', how: 'Which words tell the search is *over*?' }],
+    done: 'Puzzle solved! *First*, then *after that*, and *at last*: time words keep order.' }; });
+
+  NL('WRIT.PARA.L04.09', function (D, Y) { return {
+    hook: { kind: 'predict', pic: '📕', t: 'Dovid can’t reach the book on the top shelf.',
+      q: 'How should the story end?', o: ['Someone helps, and he gets it', 'A storm comes', 'It was a dream'],
+      pay: 'The *problem gets solved*! A good ending *wraps up* the story.' },
+    learn: [
+      { t: 'A strong ending *solves the problem*.', act: X(Y[0], { say: 'Find the ending that *wraps it up*.', how: 'Which ending *solves* the problem?' }) },
+      { t: 'Weak endings *stop*, *trick*, or start a *new problem*.', act: X(Y[1], { say: 'Match each *weak ending* to what is wrong.', how: 'Does it *stop*, *trick*, or start something *new*?' }) },
+      { t: 'Tie the bow! *Solved*, then how he *feels*.', m: { type: 'move', t: 'Wrap it up and tie a big bow!' },
+        act: X(D[1], { say: 'Build the story *ending*, one part in each box.', how: 'The *problem*, how it is *solved*, how he *feels*. One card does not fit.' }) },
+      { who: { q: 'Shimon’s kite got stuck in a tree. Whose *ending* wraps it up?', o: [['Yossi', 'Then it started to snow.'], ['Shimon', 'Abba’s long rake freed it, and Shimon cheered.']], a: 1,
+        why: 'Snow starts a *new problem*. Shimon’s ending *solves* it.' } }],
+    play: [
+      X(D[0], { say: '*Strong* ending, or a *weak* mistake?', how: 'Strong *solves* it or tells a *feeling*. “The end” and “a dream” are weak.' }),
+      X(Y[2], { say: 'Finish what Naftali *learned*.', how: 'What do tiny gears *need*?' }),
+      X(Y[4], { say: 'Listen. What kind of *ending* is it?', how: '*From then on* tells what he *learned*.' }),
+      X(Y[3], { say: 'Challenge! Put Naftali’s story in order, *ending* last.', how: 'Problem, fixing, *solved*, then the *feeling*.' })],
+    done: 'Dovid got his book! A strong ending *solves the problem* and shows a *feeling*.' }; });
+
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 
   /* Unit W13.U32 = Grade 3, Unit 2 "Real Stories". The real task (map: Gr 3 pieces 3, 4 and 5): ONE Writing Workshop piece, scored by the
@@ -853,6 +969,104 @@
       {type:'order', steps:['Our club should paint the clubhouse.','One reason is that the old paint is peeling off.','Another reason is that fresh paint would make it look new.','So grab a brush and help us paint!'],
         say:'Put the opinion piece in order.', how:'Opinion, reasons, then the ending.'}] }
   };
+
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): THINK, LEARN, TRY IT, SHOW ME, DONE. Words in *stars* are key words.
+     NL(id, f): f gets the old do and your lists (good activities are kept) and returns hook, learn, play and done. X(a, o) copies a with changes. */
+  function X(a, o) { if (!a) throw new Error('W13 new lesson: missing activity'); return Object.assign({}, a, o || {}); }
+  function NL(id, f) { var b = BITE[id]; if (!b || !b.do || !b.your) return; var n = f(b.do, b.your);
+    b.hook = n.hook; b.learn = n.learn; b.play = n.play; b.done = n.done; if (n.one && b.board) b.board.one = n.one; delete b.do; delete b.your; delete b.ready; }
+
+  NL('WRIT.ESSAY.L04.02', function (D, Y) { return {
+    hook: { kind: 'whatswrong', pic: '🔥', t: 'Chaim’s plan: “Our street should have a bonfire. My cousin lives in Toronto.”',
+      q: 'What is wrong?', o: ['The reason does not support it', 'It is too short', 'Nothing is wrong'],
+      pay: '*Toronto* is not a reason! *TREE* plans an opinion: Topic, Reasons, Explain, Ending.' },
+    learn: [
+      { t: '*T*: Topic sentence. It tells your *opinion*.', m: { type: 'chant', lines: ['T! Topic sentence!', 'R! Reasons!', 'E! Explain!', 'E! Ending!'] },
+        act: X(Y[0], { say: 'Find Dovid’s *topic sentence*.', how: 'Which line tells his *opinion*?' }) },
+      { t: '*R*: Reasons. Each one *supports* your opinion.', act: X(D[1], { say: 'Does it fit Chaim’s plan, or is it a *mistake*?', how: 'A *reason* tells *why* we need a bonfire.' }) },
+      { t: '*E*: Explain each reason. *E*: Ending wraps up.', act: X(Y[2], { say: 'Match each *reason* to the line that *explains* it.', how: 'Which line *says more* about that reason?' }) },
+      { who: { q: 'Opinion: Every boy should learn to swim. Which line is a *reason*?', o: [['Moshe', 'The pool opens at nine.'], ['Avi', 'Swimming keeps you safe near water.']], a: 1,
+        why: 'Opening time does not *support* the opinion.' } }],
+    play: [
+      X(D[0], { say: 'Build the *TREE* plan. One card is a mistake.', how: 'Topic, *Reason*, *Explain*, Ending. Leave out the card that does not fit.' }),
+      X(Y[3], { say: 'Which *TREE* part is the last line?', how: 'Does it *explain* the reason with more?' }),
+      X(Y[4], { say: 'Listen. Which part of *TREE* is it?', how: 'Does it start, give a reason, or *wrap up*?' }),
+      X(Y[1], { say: 'Challenge! Put Zevi’s *TREE* plan in order.', how: '*Opinion*, reason, *explain*, then the ending.' })],
+    done: 'No more Toronto! *TREE*: Topic, *Reasons*, *Explain*, Ending.' }; });
+
+  NL('WRIT.PARA.L04.10', function (D, Y) { return {
+    hook: { kind: 'guess', pic: '📣', t: '“Recess is too short.”',
+      q: 'Guess: is it a fact or an opinion?', o: ['A fact', 'An opinion'],
+      pay: 'An *opinion*! Someone could *disagree*. Start your piece with one.' },
+    learn: [
+      { t: 'A *fact* can be checked. Someone could *disagree* with an *opinion*.', act: X(Y[0], { say: '*Fact* or *opinion*? Sort them.', how: 'Can you *check* it? Or could someone *disagree*?' }) },
+      { t: 'Opinion words: *I think*, *should*, *the best*.', act: X(D[1], { say: 'Tap every *opinion word*.', how: 'Which words show what someone *thinks*?' }) },
+      { t: 'Speak up! Topic and *opinion* in one line.', m: { type: 'move', t: 'Stand up and say it proud: I believe!' },
+        act: X(Y[2], { say: 'Build Chaim’s *opening* sentence.', how: '*Opinion words* first, then the *topic*.' }) },
+      { who: { q: 'Who *introduced the topic* and an opinion?', o: [['Yossi', 'I am going to write about the sukkah.'], ['Dovid', 'Every boy should help set up the sukkah.']], a: 1,
+        why: 'Yossi only *announces*. Dovid tells what he *thinks*.' } }],
+    play: [
+      X(D[0], { say: 'Clear *opinion*, or a *mistake*?', how: 'A clear opening names the *topic* and what you *think*.' }),
+      X(Y[3], { say: 'Pick the word that makes it an *opinion*.', how: 'Which word tells what the writer *wants*?' }),
+      X(Y[4], { say: 'Listen. Is it a *fact* or an *opinion*?', how: 'Listen for “*the best*”.' }),
+      { type: 'evidence', q: 'Which line is an opinion about the library?', p: ['The library has six shelves.', 'Our library should open on Sunday.', 'The library is next to the shul.'], a: 1,
+        look: 'something someone could disagree with', say: 'Challenge! Tap the *opinion*.', how: 'Could someone *disagree*? Look for *should*.' }],
+    done: 'Recess: an *opinion*! Start with your *topic* and what you *think*.' }; });
+
+  NL('WRIT.PARA.L04.11', function (D, Y) { return {
+    hook: { kind: 'oddone', pic: '🚲', t: 'Opinion: the shul needs a bike rack. Reasons: boys could ride to davening. Bikes won’t block the door. Avi likes red bikes.',
+      q: 'Which reason is the odd one out?', o: ['Ride to davening', 'Won’t block the door', 'Avi likes red bikes'],
+      pay: '*Red bikes* do not support it. A reason must *support* the opinion.' },
+    learn: [
+      { t: 'A *reason* tells *why* your opinion is right.', act: X(Y[0], { say: 'Match each opinion to its *reason*.', how: 'Which one tells *why*?' }) },
+      { t: 'Repeating the opinion is *not* a reason.', act: X(Y[3], { say: 'Listen. What is wrong with this *reason*?', how: '“Good because it is good” just *repeats*.' }) },
+      { t: 'Reasons hold up your opinion, like *table legs*!', m: { type: 'move', t: 'Stand strong like a table: four legs hold it up!' },
+        act: X(Y[1], { say: 'Tap the reason that *supports* it.', how: 'Which one tells *why* the roof needs fixing?' }) },
+      { who: { q: 'Opinion: our club should get a first-aid kit. Who gave a *real reason*?', o: [['Yossi', 'We need a kit because we need one.'], ['Shimon', 'We could fix small cuts right away.']], a: 1,
+        why: 'Yossi *repeats* the opinion. Shimon tells *why*.' } }],
+    play: [
+      X(D[0], { say: 'Real *reason*, or a *mistake*?', how: 'A real reason tells *why*. Repeating or off topic is a mistake.' }),
+      X(D[1], { say: 'Open the book. Find the *proof*.', how: 'Look for what Avi says about the *map*.' }),
+      X(Y[2], { say: 'Finish the *reason*.', how: 'Which one tells a real *reason*?' }),
+      X(Y[4], { say: 'Challenge! Put Dovid’s piece in order.', how: '*Opinion* first, then the *reasons*, then the ending.' })],
+    done: 'Red bikes are out! Every *reason* must *support* your opinion.' }; });
+
+  NL('WRIT.PARA.L04.12', function (D, Y) { return {
+    hook: { kind: 'secret', pic: '🌉', t: 'Three secret helpers link reasons: *because*, *therefore*, *for example*.',
+      q: 'Which one means “so”?', o: ['therefore', 'because', 'for example'],
+      pay: '*Therefore* means *so*! *Because* gives the why. *For example* shows one.' },
+    learn: [
+      { t: 'Each *linking word* has a *job*.', act: X(Y[0], { say: 'Match each *linking word* to its job.', how: 'Does it tell *why*, *show*, or tell what *follows*?' }) },
+      { t: '*Because* and *since* give the *reason*.', act: X(D[0], { say: 'Join the opinion to its *reason*.', how: 'The second part tells *why*. Which word gives the why?' }) },
+      { t: '*For example* shows one. Build a *bridge*!', m: { type: 'chant', lines: ['Because tells why,', 'for example shows,', 'therefore means so,', 'and on it goes!'] },
+        act: X(Y[1], { say: 'Pick the *linking words*.', how: 'Apples are one fruit. Is that an *example*?' }) },
+      { who: { q: '“The roof leaks. ___, we need a new one.” Who picked the right word?', o: [['Eli', 'For example'], ['Naftali', 'Therefore']], a: 1,
+        why: 'A new roof is *what follows*. *Therefore* means *so*.' } }],
+    play: [
+      X(D[1], { say: '*Linking word* right, or a *mistake*?', how: '*Because* gives a why. *Therefore* means so. *For example* shows one.' }),
+      X(Y[3], { say: 'Listen. What does “*since*” do here?', how: 'Does it tell *why*?' }),
+      X(Y[2], { say: 'Which sentence uses “*therefore*” the right way?', how: 'First the reason, then *therefore* and what follows.' }),
+      X(Y[4], { say: 'Challenge! Put the *linked* paragraph in order.', how: 'Opinion, reason, *for example*, then *therefore*.' })],
+    done: 'You cracked it: *therefore* means *so*! Link reasons with *because* and *for example*.' }; });
+
+  NL('WRIT.PARA.L04.13', function (D, Y) { return {
+    hook: { kind: 'riddle', pic: '🚪', t: 'I come last. I say your opinion again, in new words.',
+      q: 'What am I?', o: ['The concluding statement', 'The topic sentence', 'A reason'],
+      pay: 'The *concluding statement*! It *wraps up*, and it may ask the reader to *act*.' },
+    learn: [
+      { t: 'Weak endings *stop*, *copy*, or add a *new reason*.', act: X(D[1], { say: 'Match each *weak ending* to what is wrong.', how: 'Does it *stop*, *add*, or *copy*?' }) },
+      { t: 'Strong: say it again in *new words*. *That is why*…', act: X(Y[1], { say: 'Finish the *concluding statement*.', how: 'Which words *wrap up* the piece?' }) },
+      { t: 'Or ask the reader to *act*! Close the door.', m: { type: 'move', t: 'Swing the door shut: That is why!' },
+        act: X(Y[3], { say: 'Listen. What kind of *ending* is it?', how: 'Does it ask the reader to *do* something?' }) },
+      { who: { q: 'Opinion: every boy should learn to swim. Who wrote a *strong ending*?', o: [['Yossi', 'Also, pools have slides.'], ['Ari', 'So sign up for swim lessons this summer!']], a: 1,
+        why: 'Yossi added something *new*. Ari asks the reader to *act*.' } }],
+    play: [
+      X(D[0], { say: '*Strong* ending, or a *weak* mistake?', how: 'Strong says it again in *new words*, or asks the reader to *act*.' }),
+      X(Y[2], { say: 'Build the *TREE* piece, ending last.', how: 'Which card *wraps it up*? One card does not fit.' }),
+      X(Y[4], { say: 'Put the opinion piece in order.', how: 'Opinion, *reasons*, then the *ending*.' }),
+      { type: 'evidence', q: 'Opinion: our shul should have a coat rack. Which ending says it again in new words?', p: ['Our shul should have a coat rack.', 'Also, coats can be blue.', 'That is why our shul needs a place for coats.'], a: 2,
+        look: 'the opinion again, in new words', say: 'Challenge! Tap the ending in *new words*.', how: 'A *copy* is not new. *Also* adds something new.' }],
+    done: 'The riddle answer: the *concluding statement*! Say it again in *new words*, or ask him to *act*.' }; });
 
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 
