@@ -68,7 +68,7 @@
         act: { type: 'match', pairs: [['in', 'short i'], ['vite', 'long i']], say: 'Read each part of *invite*. Match its sound.', how: '*In* is closed: short. *Vite* has a quiet e: long.' } },
       { who: { q: 'How do you read *inside*?', o: [['Moishe', 'in-sid'], ['Eli', 'in-side']], a: 1, why: '*Side* ends with a quiet e. The i is *long*.' } }],
     play: [
-      { type: 'cloze', mis: true, t: 'Chaim read "sunrise" as "sun-riss". The right way: sun-___.', o: ['rise, long i', 'riss, short i'], a: 'rise, long i',
+      { type: 'cloze', mis: true, t: 'Chaim read "sunrise" as "sun-riss". The right way: sun-___.', o: ['rise, long i', 'riss, short i', 'rees, long e'], a: 'rise, long i',
         say: 'Fix Chaim\'s mistake! How does the last part sound?', how: '*Rise* ends with a quiet e. The i is *long*.' },
       { type: 'findall', grid: ['vite', 'vit', 'shine', 'shin', 'cake', 'cak', 'bone', 'bon'], find: ['vite', 'shine', 'cake', 'bone'], findSay: 'part with a long vowel',
         say: 'Tap every part with a *long* vowel.', how: 'A *quiet e* at the end makes the vowel say its name.' },
@@ -136,13 +136,13 @@
           say: 'Read *circle*. What do the two c\'s say?', how: 'First c is before *i*: sss. Second c is before *l*: kuh.' } },
       { who: { q: 'How do you read *city*?', o: [['Avi', 'kitty'], ['Mendy', 'sit-ee']], a: 1, why: 'C before *i* says sss. City!' } }],
     play: [
-      { type: 'findall', mis: true, grid: ['cent = sent', 'cell = kell', 'cup = kup', 'city = kitty', 'cot = kot', 'ice = ike'], find: ['cell = kell', 'city = kitty', 'ice = ike'], findSay: 'word Eli misread',
-        say: 'Eli read these. Tap every word he misread!', how: 'Look at the letter *after* c. E, i or y: *sss*.' },
+      { type: 'listen', mis: true, q: 'Eli read "cell" as "kell".', hear: 'What should c say?', o: ['sss, like city', 'kuh, like cat', 'chuh, like chin'], a: 'sss, like city',
+        say: 'Eli made a mistake. What should c say?', how: 'Look at the letter *after* c. E, i or y: *sss*.' },
       { type: 'tiles', w: ['d', 'a', 'n', 'c', 'e'], extra: ['s'], hear: 'dance', say: 'Build *dance*. Which letter says sss?', how: 'Before *e*, c says sss. Use *c*, not s.' },
       { type: 'match', pairs: [['pencil', '✏️'], ['cake', '🎂'], ['circle', '⭕'], ['carrot', '🥕']],
         say: 'Read each c word. Which picture is it?', how: 'Check the letter *after* each c. Then read.' },
-      { type: 'findall', grid: ['face', 'cap', 'icy', 'cut', 'mice', 'cot', 'rice', 'cave'], find: ['face', 'icy', 'mice', 'rice'], findSay: 'c that says sss',
-        say: 'Challenge! Tap every word where c says *sss*.', how: 'Is the letter after c an *e*, *i* or *y*?' }],
+      { type: 'sort', bins: ['sss, like city', 'kuh, like cat'], cards: [['icy', 0], ['camp', 1], ['bouncy', 0], ['cave', 1], ['juicy', 0], ['cub', 1]],
+        say: 'Last one! Sort by the c sound.', how: 'Is the letter after c an *e*, *i* or *y*? Then *sss*.' }],
     done: 'You noticed it: *e, i, y* make c *soft*. City, cent, ice!' });
 
   NL('READ.PHON.L03.10', {
@@ -198,14 +198,14 @@
       { t: 'Two small words? Then *no fff*. Up + hill!', m: { type: 'tiles', w: ['up', 'hill'], hi: [0, 1] },
         act: { type: 'sort', bins: ['Ph says fff', 'P and h in two parts'], cards: [['photo', 0], ['uphill', 1], ['trophy', 0]],
           say: 'Does *ph* say fff here?', how: 'Two small words, like *up* + *hill*? Then no fff.' } },
-      { who: { q: 'How do you spell *phone*?', o: [['Chaim', 'fone'], ['Dovid', 'phone']], a: 1, why: 'Phone spells fff with *ph*. Learn how it looks.' } }],
+      { who: { q: 'How do you spell *phone*?', o: [['Chaim', 'fone'], ['Dovid', 'phone']], a: 1, why: '*Phone* hides inside *telephone*. Both spell fff with ph.' } }],
     play: [
       { type: 'listen', mis: true, q: 'Chaim read "graph" as "grap-huh".', hear: 'What went wrong?', o: ['Ph says fff, as one sound', 'He forgot the r', 'Nothing is wrong'], a: 'Ph says fff, as one sound',
         say: 'What went wrong when Chaim read it?', how: '*P* and *h* side by side make *one* sound: fff.' },
       { type: 'cloze', t: 'Dovid can say the whole ___ from A to Z.', o: ['alphabet', 'alfabet', 'alpabet'], a: 'alphabet',
         say: 'Tap the right spelling into the gap.', how: 'This word spells fff with *ph*.' },
       { type: 'tiles', w: ['el', 'e', 'ph', 'ant'], extra: ['f'], hear: 'elephant', pic: '🐘', say: 'Build *elephant* part by part.', how: 'Say it slowly. Which two letters spell *fff*?' },
-      { type: 'dictation', hear: 'The dolphin can see the elephant.', w: ['The', 'dolphin', 'can', 'see', 'the', 'elephant.'], extra: ['dolfin'],
+      { type: 'dictation', hear: 'The dolphin can hear the telephone.', w: ['The', 'dolphin', 'can', 'hear', 'the', 'telephone.'], extra: ['telefone.'],
         say: 'Listen. Build the sentence you hear.', how: 'Both long words spell fff with *ph*.' }],
     done: '*Ph* fit all three: dolphin, elephant, phone. *P* and *h* say *fff*!' });
 
@@ -281,7 +281,7 @@
     done: 'One baby, two *babies*: consonant + y? *Change y to i*!' });
 
   NL('READ.PHON.L03.16', {
-    hook: { kind: 'compare', pic: '🥚', t: 'One boy is *careful*. One boy is *careless*. Same base word!', q: 'Who should carry the eggs?',
+    hook: { kind: 'wouldyou', pic: '🥚', t: 'One boy is *careful*. One boy is *careless*. Same base word!', q: 'Who should carry the eggs?',
       o: ['the careful boy', 'the careless boy'], pay: 'The *careful* one! -ful means *full of*. -less means *without*.' },
     learn: [
       { t: '*Cover* the ending. Read the *base word*.', m: { type: 'tiles', w: ['help', 'ful'], hi: [1] },
@@ -300,8 +300,8 @@
       { type: 'match', pairs: [['gladly', 'in a glad way'], ['darkness', 'being dark'], ['careless', 'without care'], ['hopeful', 'full of hope']],
         say: 'Match each word to what it means.', how: 'Cover the ending. Read the base. What does the ending *add*?' },
       { type: 'tiles', w: ['fear', 'less'], extra: ['ful'], hear: 'fearless', say: 'Build *fearless*. Which ending do you hear?', how: 'Hear the base word. Then: *full of*, or *without*?' },
-      { type: 'listen', q: 'Read the word: slowly.', hear: 'What does -ly say at the end?', o: ['lee, like see', 'lie, like pie', 'lay, like day'], a: 'lee, like see',
-        say: 'What does *-ly* say at the end?', how: '*-ly* says lee, like *see*. Slow-lee!' },
+      { type: 'listen', q: 'Read the word: slowly.', hear: 'What does -ly say at the end?', o: ['lee, like bee', 'lie, like tie', 'lay, like hay'], a: 'lee, like bee',
+        say: 'What does *-ly* say at the end?', how: '*-ly* says lee, like *bee*. Slow-lee!' },
       { type: 'parts', q: 'Build the word that means in a careless way.', parts: ['care', 'less', 'ly'], roles: ['root', 'suffix', 'suffix'], extra: ['ful'], mean: 'in a careless way',
         say: 'Snap three parts together.', how: 'Base word first. Then *-less*. Then *-ly*.' }],
     done: 'The *careful* boy carried the eggs! Cover the ending, read the base, add its meaning.' });
