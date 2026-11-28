@@ -290,3 +290,19 @@ Choices made in round 5:
 | Shape party 1/2/3, Graduation: gold corner balls on a yellow hexagon, and green side bars on a green square, could hardly be seen (4, 5) | A lit corner on a yellow or orange piece is deep pink; a lit side never has the piece's own colour |
 | Graduation: the only triangle was a needle; its bottom corners were hard to see (4, 13) | A normal tall triangle |
 | (tests) | k-shapes-clarity: lit corners and sides must pick a colour that stands out from the piece; big-and-small boxes carry no painted labels |
+
+**Round 6 scores (a fresh reviewer, the 7 changed games):** Where is it? 3, Big and small 4, Line them up 4, Shape party 1 4, Shape party 2 4, Shape party 3 4, Graduation day 4.
+
+**Round 7 fixes:**
+| What the reviewer saw (rule) | What changed |
+|---|---|
+| Where is it?: the "behind" ball, beside the leg at the same depth, read as "next to" (7) | It sits farther back, higher than the leg's foot, and the leg's edge covers part of it. In the help after a wrong answer, the ball rolls out from behind the leg and back, so he sees the bridge hides it |
+| Where is it?: the "in front" ring sat low left and touched the tick button (13) | The ring sits in front of the middle of the bridge, clear of the buttons |
+| Where is it? (phone): the ball waited straight in front of the bridge, so it already looked "in front"; Chromebook: small at the far left (7, 13) | Phone: it waits low and to the right, off to the side. Chromebook: nearer and bigger, at the left |
+| Big and small count: the first small thing in the row touched the big box (8) | A count row never starts under the box next door |
+| Big and small end: a help hand was left on a box (10) | A late timer can never bring the hand back once the game has ended |
+| Shape party 2 mistake: the turned flat square looked like a tall rectangle (7) | Nearly face-on, so it looks square; the help still turns it edge-on |
+
+Choices made in round 7:
+- Clue games keep the clue in the shape's own voice ("I have three corners. Find me!"), with Mendy on screen. It is the riddle form every K class uses; adding a card or speaker would put one more thing on the screen.
+- The party rug, the curvy piece's points, the phone scarf height and the phone triangle in Shape party 3 were scored 4 and are left as they are.
