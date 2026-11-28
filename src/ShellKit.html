@@ -1,0 +1,147 @@
+<script>
+/* ShellKit.html — THE NEW SHELL'S KIT (shell overhaul, 2026-11-27; docs/SHELL-OVERHAUL.md, the rules in docs/SHELL-CONTRACT.md).
+   One small shared kit that every new shell file uses (ShHome, ShMoney, ShProfile, ShWork, ShCity, ShPlaces), so every place looks and moves
+   like one world (docs/WORLD.md): the Mountain Kingdom (world 'k', his work) and the Golden City in the Clouds (world 'c', free time).
+   - SHK.page(o) a full page (house top left), SHK.pop(o) a pop-up (round x top right; outside tap and Escape close it). Both stand on a
+     picture scene that drifts gently by CSS only: nothing is drawn by script at rest.
+   - SHK.fly(world, open) the short flight (about 2 s; tap skips; reduce motion fades). SHK.go(id) flies to a place from the registry.
+   - SHK.place(def) adds a place to the registry; SHK.tile(id) draws its tile (the button kit's tlk-tile, with data-shdoor for the class lock).
+   - SHK.openLesson(id) opens a lesson exactly as the map's Play does (the seam: startMission, docs/SHELL-AND-LESSONS.md).
+   Buttons come ONLY from the button kit (window.TLK, src/UiKit.html). No money is ever set here: the server sets every amount. */
+(function(){
+if(window.SHK) return;
+/* Pictures in the art library (art/CATALOG.md): name -> number of side-by-side slices (each at most 1,100 px wide). A name not listed shows a calm painted stand-in. */
+const ART={
+ 'ycw-k-sky':3,'ycw-k-far':3,'ycw-k-mid':3,'ycw-k-near':3,'ycw-k-hall':3,'ycw-k-spring':3,'ycw-k-terrace':3,'ycw-k-gate':3,'ycw-k-library':3,'ycw-k-summit':3,'ycw-k-nook':3,'ycw-k-trail':4,
+ 'ycw-c-sky':3,'ycw-c-far':3,'ycw-c-mid':3,'ycw-c-near':3,'ycw-c-square':3,'ycw-c-skygate':3,'ycw-c-canteen':3,'ycw-c-market':3,'ycw-c-arena':3,'ycw-c-pavilion':3,'ycw-c-workshop':3,'ycw-c-calm':3,
+ 'ycw-fx-cloudwall':3,'ycw-fx-rays':3,'ycw-fx-mist':3,'ycw-k-birds':1,'ycw-k-bridge':1,'ycw-k-waterfall':1,'ycw-k-stop':1,'ycw-k-fortress':1,'ycw-k-gate-doors':1,'ycw-c-gondola':1,'ycw-fx-trail':1,
+ 'ycw-ui-plaque-kingdom':1,'ycw-ui-plaque-city':1,'ycw-ui-ring':1,'ycw-ui-coin':1,'ycw-ui-star':1,
+ 'ycb-cloud-1':1,'ycb-cloud-2':1,'ycb-cloud-3':1,'ycb-cloud-4':1,'ycb-confetti':1,'ycb-sparkles':1,
+ 'ycb-ic-math':1,'ycb-ic-reading':1,'ycb-ic-writing':1,'ycb-ic-chumash':1,'ycb-ic-science':1,'ycb-ic-trades':1,'ycb-ic-electives':1,'ycb-ic-canteen':1,'ycb-ic-duels':1,'ycb-ic-store':1,'ycb-ic-lock':1,'ycb-ic-worksheet':1,
+ 'ycw-ic-trail':1,'ycw-ic-work':1,'ycw-ic-profile':1,'ycw-ic-library':1,'ycw-ic-music':1,'ycw-ic-calm':1,'ycw-ic-blocks':1,'ycw-ic-lab':1,'ycw-ic-games':1,'ycw-ic-detective':1,'ycw-ic-tracks':1,'ycw-ic-talk':1
+};
+let REDUCE=false; try{ REDUCE=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const has=n=>!!ART[n];
+const img=(n,cls,alt)=>ART[n]?`<img class="${cls||''}" src="/pics/${n}.webp" alt="${esc(alt||'')}" draggable="false" decoding="async">`:'';
+function pic(n,cls){ const k=ART[n]; if(!k) return ''; let h=''; for(let i=0;i<k;i++) h+=`<img src="/pics/${n}${k>1?'-'+(i+1):''}.webp" alt="" draggable="false" decoding="async">`; return `<div class="shk-pic ${cls||''}">${h}</div>`; }
+const W=w=>w==='c'?'c':'k';
+/* A scene: the place picture (or sky + far + middle layers), drifting clouds, the light, a soft veil so words stay easy to read. */
+function scene(name,world,o){ const w=W(world); o=o||{};
+ const place=name&&has(name)?`<div class="shk-l shk-drift">${pic(name)}</div>`:`<div class="shk-l">${pic('ycw-'+w+'-sky')}</div><div class="shk-l shk-drift">${pic('ycw-'+w+'-far')}</div><div class="shk-l shk-drift2">${pic('ycw-'+w+'-mid')}</div>`;
+ const clouds=has('ycb-cloud-3')?`<div class="shk-l shk-clouds">${img('ycb-cloud-3','shk-cl shk-cl1')}${img('ycb-cloud-2','shk-cl shk-cl2')}</div>`:'';
+ const light=w==='k'?(has('ycw-fx-rays')?`<div class="shk-l shk-rays">${pic('ycw-fx-rays')}</div>`:''):(has('ycb-sparkles')?`<div class="shk-l shk-glow">${img('ycb-sparkles','shk-sp')}</div>`:'');
+ return `<div class="shk-bg shk-w-${w}" aria-hidden="true"><div class="shk-paint"></div>${place}${clouds}${light}<div class="shk-veil${o.veil===false?' shk-noveil':''}"></div></div>`; }
+function css(){ if(document.getElementById('shk-css')) return; const s=document.createElement('style'); s.id='shk-css'; s.textContent=`
+.shk-page,.shk-pop,.shk-fly{position:fixed;inset:0;box-sizing:border-box;font-family:inherit;color:#1E1B4B}
+.shk-page{z-index:2147481000;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.shk-pop{z-index:2147481500;display:grid;place-items:center;padding:16px}
+.shk-fly{z-index:2147481900;overflow:hidden;cursor:pointer}
+.shk-bg{position:fixed;inset:0;overflow:hidden;pointer-events:none}
+.shk-paint{position:absolute;inset:0;background:linear-gradient(180deg,#8FD3FF 0%,#CFEFFF 45%,#BDE8B0 75%,#8CCB7A 100%)}
+.shk-w-c .shk-paint{background:linear-gradient(180deg,#9BD8FF 0%,#FFF3D6 55%,#FFE1A8 80%,#FFD27A 100%)}
+.shk-l{position:absolute;inset:0}
+.shk-pic{position:absolute;left:50%;top:50%;width:max(100vw,177.78vh);height:max(100vh,56.25vw);transform:translate(-50%,-50%);display:flex}
+.shk-pic img{flex:1 1 0;min-width:0;height:100%;object-fit:fill;margin-right:-1px;user-select:none}
+.shk-drift{animation:shk-drift 46s ease-in-out infinite alternate}
+.shk-drift2{animation:shk-drift 30s ease-in-out infinite alternate-reverse}
+@keyframes shk-drift{from{transform:scale(1.05) translate3d(-1.2%,0,0)}to{transform:scale(1.1) translate3d(1.2%,-1%,0)}}
+.shk-cl{position:absolute;width:38vw;max-width:620px;opacity:.85;animation:shk-cloud 140s linear infinite}
+.shk-cl1{top:6%;left:-40vw}.shk-cl2{top:22%;left:-40vw;width:52vw;animation-duration:190s;animation-delay:-80s;opacity:.7}
+@keyframes shk-cloud{to{transform:translate3d(180vw,0,0)}}
+.shk-rays{mix-blend-mode:screen;opacity:.55;animation:shk-breathe 9s ease-in-out infinite alternate}
+.shk-sp{position:absolute;inset:-10%;width:120%;height:120%;object-fit:cover;opacity:.5;animation:shk-breathe 7s ease-in-out infinite alternate}
+@keyframes shk-breathe{from{opacity:.35}to{opacity:.65}}
+.shk-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.30) 45%,rgba(255,255,255,.50) 100%)}
+.shk-w-c .shk-veil{background:linear-gradient(180deg,rgba(255,250,235,.10),rgba(255,250,235,.42))}.shk-noveil{display:none}
+.shk-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:14px 16px 6px}
+.shk-plaque{display:inline-flex;align-items:center;gap:10px;padding:10px 26px;border-radius:999px;background:rgba(255,253,245,.9);box-shadow:0 6px 22px rgba(80,60,10,.18);border:2px solid #E9C46A}
+.shk-plaque img{width:40px;height:40px;object-fit:contain}.shk-plaque h1,.shk-plaque h2{margin:0;font-size:clamp(20px,2.6vw,30px);font-weight:900;letter-spacing:.2px}
+.shk-body{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:8px 16px 40px;box-sizing:border-box}
+.shk-card{position:relative;background:rgba(255,255,255,.88);border-radius:22px;box-shadow:0 10px 34px rgba(30,27,75,.16);padding:18px;box-sizing:border-box;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.shk-pop .shk-card{width:100%;max-width:560px;max-height:calc(100vh - 32px);overflow:auto;padding-top:22px}
+.shk-pop .shk-plaque{margin:0 52px 12px 0}
+.shk-scrim{position:absolute;inset:0;background:rgba(30,27,75,.28)}
+.shk-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.tlk.tlk-tile.shk-tile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;min-height:140px;padding:14px 16px;box-sizing:border-box}
+.shk-tile .shk-ic{width:64px;height:64px;object-fit:contain;font-size:46px;line-height:64px;filter:drop-shadow(0 4px 6px rgba(30,27,75,.18))}
+body.shk-on #tl-tourhint,body.shk-on #bbx-door,body.shk-on #clab-door,body.shk-on #pr-av,body.shk-on #ohsky{display:none!important}
+.shk-tile b{font-size:19px}.shk-tile small{font-size:14px;opacity:.85}
+.shk-fly .shk-l{transform-origin:50% 55%}
+.shk-fly.go .shk-f1{animation:shk-f1 var(--d) cubic-bezier(.45,0,.25,1) both}
+.shk-fly.go .shk-f2{animation:shk-f2 var(--d) cubic-bezier(.45,0,.25,1) both}
+.shk-fly.go .shk-f3{animation:shk-f3 var(--d) cubic-bezier(.45,0,.25,1) both}
+.shk-fly.go .shk-fc{animation:shk-fc var(--d) ease-in-out both}
+@keyframes shk-f1{from{transform:scale(1)}to{transform:scale(1.18)}}
+@keyframes shk-f2{from{transform:scale(1)}to{transform:scale(1.7)}}
+@keyframes shk-f3{0%{transform:scale(1);opacity:1}70%{opacity:1}100%{transform:scale(3.2);opacity:0}}
+@keyframes shk-fc{0%,100%{opacity:0}45%,60%{opacity:var(--cl)}}
+.shk-fc{opacity:0;background:radial-gradient(ellipse at center,rgba(255,255,255,.96) 30%,rgba(255,255,255,.75) 70%,rgba(255,255,255,0) 100%)}
+.shk-fly.out{transition:opacity .35s ease;opacity:0}
+.shk-fly.fade{background:#fff;animation:shk-fade .5s ease both}
+@keyframes shk-fade{0%{opacity:0}40%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.shk-drift,.shk-drift2,.shk-cl,.shk-rays,.shk-sp{animation:none!important}}
+@media (max-width:600px){.shk-tiles{grid-template-columns:1fr 1fr;gap:10px}.shk-tile{min-height:104px}.shk-top{padding:10px 12px 4px}.shk-plaque{padding:8px 16px}}`; document.head.appendChild(s); }
+css();
+/* Who he is: grade from his own map (the same rule ClassMode uses); the shell is for grade 2 and up, never under a K-1 game. */
+function grade(){ try{ const m=window.TL_MAP; if(m&&typeof A!=='undefined'&&A.st&&String(m.sid||'')===String(A.st.id)) return m.grade; }catch(e){} return null; }
+function on(){ const g=grade(); return g!=null&&g!==''&&Number(g)>=2&&!document.body.classList.contains('k1-home'); }
+const young=()=>!!(window.TLK&&TLK.young(grade()));
+function money(){ try{ return '$'+(Number(A.st&&A.st.balance)||0).toFixed(2); }catch(e){ return '$0.00'; } }
+/* Server calls go through the page's own run(): the same calls, the same token. */
+function call(fn,...a){ if(typeof run!=='function'||typeof SRV==='undefined'||!SRV||!SRV.token) return Promise.reject(new Error('not signed in')); return run(fn,SRV.token,...a); }
+/* PAGES AND POP-UPS */
+const stack=[];
+/* body.shk-on while a shell page or the new home is showing: the old floating doors and hints step aside (set only when a page opens or closes, never on a timer) */
+function mark(){ const v=stack.length>0||!!document.getElementById('sh-home'), b=document.body.classList; if(b.contains('shk-on')!==v) b.toggle('shk-on',v); }
+function mount(el,o){ const old=document.getElementById(el.id); if(old) old.remove(); document.body.appendChild(el); stack.push({id:el.id,o:o}); mark(); return el; }
+function page(o){ o=o||{}; const K=window.TLK, w=W(o.world), el=document.createElement('div'); el.id='shk-'+o.id; el.className='shk-page shk-w-'+w+(o.cls?' '+o.cls:'');
+ el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label',o.title||'');
+ const top=`<div class="shk-top">${o.back&&K?K.back('data-shk="back"','',young()):''}${K?K.home('data-shk="home"','',young()):''}<div class="shk-plaque">${o.icon?ic(o.icon):''}<h1>${esc(o.title||'')}</h1></div>${o.right||''}</div>`;
+ el.innerHTML=scene(o.scene,w,o)+top+`<div class="shk-body">${o.body||''}</div>`; return mount(el,o); }
+function pop(o){ o=o||{}; const K=window.TLK, w=W(o.world), el=document.createElement('div'); el.id='shk-'+o.id; el.className='shk-pop shk-w-'+w+(o.cls?' '+o.cls:'');
+ el.innerHTML=`<div class="shk-scrim" data-shk="x"></div><div class="shk-card" role="dialog" aria-modal="true" aria-label="${esc(o.title||'')}">${K?K.x('data-shk="x"','tr'):''}<div class="shk-plaque">${o.icon?ic(o.icon):''}<h2>${esc(o.title||'')}</h2></div><div class="shk-body" style="padding:0">${o.body||''}</div></div>`;
+ return mount(el,o); }
+function body(id,html){ const el=document.getElementById('shk-'+id); const b=el&&el.querySelector('.shk-body'); if(b) b.innerHTML=html; return b; }
+function close(id,how){ const i=id?stack.map(s=>s.id).lastIndexOf('shk-'+id):stack.length-1; if(i<0) return; const s=stack.splice(i,1)[0], el=document.getElementById(s.id);
+ const fin=()=>{ if(el) el.remove(); mark(); try{ s.o.onClose&&s.o.onClose(how||''); }catch(e){ console.error('SHK close',e); } };
+ if(how==='home'&&el&&el.classList.contains('shk-page')) fly('k',fin); else fin(); }
+function closeAll(){ while(stack.length){ const s=stack.pop(), el=document.getElementById(s.id); if(el) el.remove(); try{ s.o.onClose&&s.o.onClose('all'); }catch(e){} } mark(); }
+/* an icon: the picture when it is in the library; a picture still on order shows the place's emoji (fb) instead of its name */
+const ic=(n,fb)=>has(n)?img(n,'shk-ic'):`<span class="shk-ic" aria-hidden="true">${esc(/^yc[bw]-/.test(String(n))?(fb||'⭐'):n)}</span>`;
+/* THE FLIGHT: open the place at once (under the flight), then about 2 s of camera push through the world's layers and a cloud; tap skips.
+   Up into the Golden City takes a little longer and goes through a thicker cloud. Reduce motion: a soft white fade. Removed when done. */
+let flying=null;
+function fly(world,open,o){ o=o||{}; const w=W(world); if(flying){ flying.end(); }
+ try{ open&&open(); }catch(e){ console.error('SHK open',e); }
+ if(o.skip||(!on()&&!o.force)) return;
+ const f=document.createElement('div'); f.className='shk-fly shk-w-'+w; f.setAttribute('aria-hidden','true');
+ const up=!!o.up||(w==='c'&&o.from!=='c'), d=up?2600:1900;
+ if(REDUCE){ f.classList.add('fade'); document.body.appendChild(f); setTimeout(()=>f.remove(),520); return; }
+ f.style.setProperty('--d',d+'ms'); f.style.setProperty('--cl',up?'1':'.55');
+ f.innerHTML=`<div class="shk-paint"></div><div class="shk-l shk-f1">${pic('ycw-'+w+'-sky')}</div><div class="shk-l shk-f1">${pic('ycw-'+w+'-far')}</div><div class="shk-l shk-f2">${pic('ycw-'+w+'-mid')}</div><div class="shk-l shk-f3">${pic('ycw-'+w+'-near')}</div><div class="shk-l shk-fc">${pic('ycw-fx-cloudwall')}</div>`;
+ document.body.appendChild(f); void f.offsetWidth; f.classList.add('go');
+ let done=false; const end=()=>{ if(done) return; done=true; flying=null; f.classList.add('out'); setTimeout(()=>f.remove(),360); };
+ flying={end}; f.addEventListener('click',e=>{ e.stopPropagation(); end(); }); setTimeout(end,d);
+ try{ window.SND&&SND.whoosh&&SND.whoosh(); }catch(e){} }
+/* THE PLACES: each shell file adds its places here. def = {id, name, world:'k'|'c', icon, scene, door, order, sub(), pill(), show(), open()} */
+const PL=[];
+function place(d){ if(!d||!d.id) return; const i=PL.findIndex(x=>x.id===d.id); if(i>=0) PL.splice(i,1); PL.push(d); PL.sort((a,b)=>(a.order||50)-(b.order||50)); }
+const val=(f,d)=>{ try{ return typeof f==='function'?f():f; }catch(e){ return d; } };
+function unplace(id){ const i=PL.findIndex(x=>x.id===id); if(i>=0) PL.splice(i,1); }
+function places(world){ return PL.filter(d=>(!world||W(d.world)===world)&&val(d.show,true)!==false); }
+function tile(id,extra){ const d=PL.find(x=>x.id===id); if(!d) return ''; const sub=val(d.sub,''), pl=val(d.pill,'');
+ return `<button type="button" class="tlk tlk-tile shk-tile${extra?' '+extra:''}" data-shgo="${esc(d.id)}"${d.door?` data-shdoor="${esc(d.door)}"`:''}>${ic(d.icon||'⭐',d.emoji)}<b>${esc(d.name)}</b>${sub?`<small>${esc(sub)}</small>`:''}${pl||''}</button>`; }
+function go(id){ const d=PL.find(x=>x.id===id); if(!d) return false; const from=stack.length?(document.getElementById(stack[stack.length-1].id)||{}).className||'':'';
+ fly(d.world,()=>d.open(d),{from:/shk-w-c/.test(from)?'c':'k'}); return true; }
+/* THE SEAM: lessons open only through startMission (via the map's own Play). The shell's pages close first; the lesson draws its own frame. */
+function openLesson(id){ closeAll(); if(typeof window.GM_PLAY==='function') return window.GM_PLAY(id); }
+document.addEventListener('click',e=>{ const t=e.target; if(!t||!t.closest) return;
+ const g=t.closest('[data-shgo]'); if(g){ e.preventDefault(); go(g.getAttribute('data-shgo')); return; }
+ const a=t.closest('[data-shk]'); if(!a) return; const box=a.closest('.shk-page,.shk-pop'); if(!box) return; const id=box.id.replace(/^shk-/,''), k=a.getAttribute('data-shk');
+ const s=stack.find(x=>x.id===box.id); if(k==='back'&&s&&s.o.onBack){ s.o.onBack(); return; }
+ if(k==='home'||k==='x'||k==='back') close(id,k); });
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape'||!stack.length) return; const top=document.getElementById(stack[stack.length-1].id); if(top&&top.classList.contains('shk-pop')) close(stack[stack.length-1].id.replace(/^shk-/,''),'x'); });
+window.SHK={ART,has,img,pic,scene,esc,page,pop,body,close,closeAll,fly,place,unplace,places,tile,go,mark,openLesson,on,grade,young,money,call,ic,get reduce(){ return REDUCE; },get open(){ return stack.map(s=>s.id.replace(/^shk-/,'')); }};
+})();
+</script>
