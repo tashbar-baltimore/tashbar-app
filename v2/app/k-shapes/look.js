@@ -1027,7 +1027,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* painted backdrops (v2/app/k-shapes/worlds/*.jpg, painted for us, ground cut away): a big curved picture far behind the 3D world,
      softly blurred like an animated film background. The 3D things in front give depth; far 3D scenery steps aside for the painting.
      g: where its ground line is (0 top .. 1 bottom); y: the height of that line; R / span: how far away and how wide; cut: 3D things wholly behind this line (z) hide. */
-  const PAINT = { toyland: {}, garden: {}, sky: { g: 1, y: -7, haze: false }, bakery: { R: 14, span: 2.3, y: -0.4, cut: -7.9 }, space: {}, beach: {}, underwater: { span: 2.9 }, traintown: {}, jungle: {}, snow: {}, farm: { cut: -11 }, party: {} };
+  const PAINT = { toyland: {}, garden: {}, sky: { g: 1, y: -7, haze: false }, bakery: { R: 14, span: 2.3, y: -0.4, cut: -7.9, blur: 1.8 }, space: {}, beach: {}, underwater: { span: 2.9 }, traintown: {}, jungle: {}, snow: {}, farm: { cut: -11 }, party: {} };
   /* flying creatures in the paintings: [x, y, radius, sky x, sky y] as parts of the painting's width / height (radius: of the width), found by looking at worlds/*.jpg; the sky point is plain sky right beside it */
   const FLYERS = { garden: [[0.2113, 0.3113, 0.022, 0.2406, 0.3304], [0.2644, 0.4426, 0.022, 0.2938, 0.4348], [0.7244, 0.3270, 0.024, 0.7231, 0.4087], [0.6644, 0.4904, 0.021, 0.6938, 0.4957]],
     jungle: [[0.7613, 0.1878, 0.030, 0.7875, 0.2435], [0.7125, 0.2487, 0.017, 0.7188, 0.3043]] };
@@ -1048,7 +1048,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
           const q = x0.getImageData(Math.round(sx * W) - 4, Math.round(sy * H) - 4, 9, 9).data; let R = 0, G = 0, B = 0; for (let i = 0; i < q.length; i += 4) { R += q[i]; G += q[i + 1]; B += q[i + 2]; }
           const rgb = Math.round(R / 81) + ',' + Math.round(G / 81) + ',' + Math.round(B / 81), gr = x0.createRadialGradient(px, py, 0, px, py, r * 1.85);   /* the sky colour just beside it, soft at the edge */
           gr.addColorStop(0, 'rgb(' + rgb + ')'); gr.addColorStop(0.54, 'rgb(' + rgb + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)'); x0.fillStyle = gr; x0.fillRect(px - r * 2, py - r * 2, r * 4, r * 4); });
-        cx.filter = 'saturate(0.5) blur(' + Math.max(4, Math.round(im.width / 170)) + 'px)';   /* blurred enough that small things in the painting (lollipops, planets) melt into soft colour (K-CLARITY-RULES 10) */ cx.drawImage(c0, 0, 0); cx.filter = 'none';
+        cx.filter = 'saturate(0.5) blur(' + Math.max(4, Math.round(im.width / 170 * (P.blur || 1))) + 'px)';   /* P.blur: a world whose painting is still busy behind the pieces (bakery shelves) blurs more */   /* blurred enough that small things in the painting (lollipops, planets) melt into soft colour (K-CLARITY-RULES 10) */ cx.drawImage(c0, 0, 0); cx.filter = 'none';
         cx.fillStyle = 'rgba(255,255,255,0.38)'; cx.fillRect(0, 0, cv.width, cv.height);
         const soft = new THREE.CanvasTexture(cv); tex = soft;
       } catch (e) {}
