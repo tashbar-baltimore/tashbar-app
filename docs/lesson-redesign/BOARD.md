@@ -30,7 +30,7 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | R6 | F Grade 2 fluency + C23 | 39 + 3 lessons (L03) | src/CoreDataF*.html, src/CoreDataFH*.html, src/CoreDataC23*.html | OPEN | | | |
 | R7 | Other reading, language, writing (not in a job) | READ.*, LANG.*, WRIT.* in OneBiteData*.html, L03+ (about 40) | src/OneBiteDataRead*.html, src/OneBiteDataWrit.html, src/OneBiteDataUpper.html | TAKEN | https://claude.ai/code/session_011PPoh5KFjyQeYYkHhgWn5e | 2026-11-27 19:00 | Claimed; listing the lessons, batch 1 next |
 | G1 | Grammar Grades 2–4 | G lessons L03–L05 (49) | src/CoreDataG*.html | OPEN | | | |
-| G2 | Grammar Grades 5–8 | G lessons L06–L09 (53) | src/CoreDataG*.html | OPEN | | | |
+| G2 | Grammar Grades 5–8 | G lessons L06–L09 (53) | src/CoreDataG*.html | TAKEN | https://claude.ai/code/session_015qpxB9VcPo74ZQ8fKvNuAY | 2026-11-28 07:10 | All 53 drafted on branch claude/newlessons-G2-1; 40 passed independent review (all 4–5), the rest in re-review. Batch pull requests next. |
 | W1 | Writing Grades 2–3 (W13) | 37 lessons (L03–L04) | src/CoreDataW13*.html | OPEN | | | |
 | W2 | Writing Grades 4–5 (W48) | 50 lessons (L05–L06) | src/CoreDataW48*.html | OPEN | | | |
 | W3 | Writing Grades 6–8 (W48) | 57 lessons (L07–L09) | src/CoreDataW48*.html | TAKEN | https://claude.ai/code/session_015qpxB94YmCQzBn7jqxa8Qk | 2026-11-27 18:45 | Claimed; reading the lessons, batch 1 next |
