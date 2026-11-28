@@ -117,3 +117,17 @@ Choice made for Esti: **Shloimy's Shabbos clothes are his white shirt and dark t
 | Letter Hunt (Unit 8 review) | Tall Kuf tiles overlapped the tile below. | Kuf is smaller, so every tile is the same size. |
 | Sound Match (phone) | Kuf's roof hid behind the top shelf; the white tzitzis was hard to see. | More room under the shelf; a deeper blue card. |
 | Train (phone) | The train he builds was the smallest thing on screen. | The waiting cars are smaller than the train. |
+
+## Round 3, Units 9–10 (a new reviewer): 6 of 17 games scored 4; what changed for the 3s
+| Where | Finding | Change |
+|---|---|---|
+| Shabbos clothes (Unit 9 story) | The plain letter vanished as its Shabbos-clothes letter appeared, so he never saw them side by side. | The plain letter stays beside it while the lines play, and the arrow shows what changed (the long leg, the closed bottom). |
+| Spot the Difference | A wrong tap showed nothing; plates under the letters. | The hand shows the place to look on the first miss; no plates, only the grey line. |
+| Dot Builder review (Unit 9) | "For Tuf and Suf …" was said over a Shin; Suf misses showed nothing. | Tuf is shown on Tuf ("Watch me … the dot is inside"), then the green check; a miss shows the move, or the check when it is already right. |
+| Champion Day | Round coloured balloons under the letters looked like nekudos (at the nekudos gate); the phone wall was squeezed; the warm-up hand came only after two misses. | No balloons in the calm look (the stage and the gate stay); six letters to a phone line with room between; the hand on the first miss. |
+| Sound Match: mixed (phone) | Lamed reached into the shelf above. | More room under the shelf. |
+| Champion check (phone) | 15 progress dots ran off both edges; wide letters touched. | Smaller dots when there are many; each wide letter shrinks to fit its stand. |
+| My hard letters | Small letters in moving see-through rainbow bubbles; a bubble left on the end screen; bubbles under the title. | Bigger letters on plain white discs, rising slower, gone below the title; none left at the end; the first miss lights a right one. |
+| Beat the sun | The sun-clock passed behind Pei and its dot; only 1 of 2 progress dots filled. | The sun's path stays high above the cars; both dots fill; "You finished the train! Champion!". |
+
+Not changed (left for the next round's eyes): Partner Match's phone shelf is tight (five letters on one shelf); Find the Mistake (Unit 10) has no separate "Watch me" for a wrong-name round.
