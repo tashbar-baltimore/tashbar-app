@@ -207,3 +207,19 @@ More fixes (review-shapes takeover session, Units 7-12):
 | Party world: the painting behind lessons and mistakes had a bright sun and balloon bunches | Paler and softer than the other worlds |
 | Where is it? (phone): the ball waits in front of the bridge before he moves it | Left as is: every waiting spot near a bridge is "somewhere"; the game checks the place he drops it, and the ring shows the right place after a wrong move |
 | Pattern train, Fix the pattern (phone): cars to drag were small (about 50 px) | The cars in the tray are a third bigger and sit in the middle of the screen; they shrink to train size as they go on. (The train itself stays in one row so the pattern reads left to right; cars on a phone train are about 40 px) |
+
+**Round 3 (two fresh reviewers, final pictures of Units 7-12, 2026-11-28 early):** Where is it? 3, Fix the pattern 3, Pattern train 3, Sort by color 3, Big and small 3, Line them up 4, Heavy and light 4, Shape party 1 3, Shape party 2 2, Shape party 3 3, Graduation 3. Fixes after it:
+
+| Problem (rule) | Fix |
+|---|---|
+| Line them up: the "which tower is taller" round froze (the calm look has no snow cap, and the code did not expect that). The game tests use the plain test look, so they missed it | Fixed; the look test now plays into a tower round with the calm look |
+| Shape party 2, 3, Graduation: flat pieces had thick rims and looked like coins or tiles next to the solids; in Shape party 2's mistake the "thin and flat" square turned into a thick slab (3, 6) | Flat pieces are thin like card in every game that mixes flat and solid; the mistake square starts a little turned, next to a cube of the same size |
+| Shape party 1 and 3: the oval leaned back and looked like a circle lying down; the circle was the smallest piece (9) | The oval stands upright (long up and down); the circle is a normal size; thin pieces (no coin rim) |
+| Shape party 1: a wrong tap on the pentagon said "That is a pentagon" (a word never taught) | "That shape has five corners." |
+| Shape party 3 mistake: the sides lit, but he never saw the turned square turned back | After the sides, it turns upright and back |
+| Graduation end: a star covered Mendy's face | Mendy steps away on the certificate screen. (Stars still count mistakes, as on every game; the test checks that) |
+| Heavy and light: the balloon string hid behind the balloon; on a phone the scale sat high with the bottom half empty | The string curls toward him, thicker; the phone picture sits lower |
+| Lesson screens (patterns, colours, sizes, towers): painted villages and waterfalls showed behind the lesson (10) | Every painted backdrop is blurred and washed much more |
+| Sort by color mistake: the voice says "in the red box" while the square floats over the blue box (11) | The square floats over the red box |
+| Where is it? mistake: "behind" (beside the left block) read as "next to" | Behind the middle of the bridge, in the gap under the plank |
+| Sort by color, Big and small: a help hand was left on a box at the end | No hand on the end screen |
