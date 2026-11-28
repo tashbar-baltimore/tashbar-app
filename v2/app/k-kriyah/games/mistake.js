@@ -28,7 +28,7 @@ export default function setup(E, { struggled, unit }) {
   const board = new THREE.Group(); E.scene.add(board);
   board.add(E.mesh(E.rbox(1.9, 2.0, .16, .1), E.M(E.CALM ? 0xb9784a : 0xffd43b, { metalness: E.CALM ? 0 : .4, roughness: .3 }), 0, 0, 0));
   board.add(E.mesh(E.rbox(1.62, 1.72, .1, .06), E.M(0xfffaf0, { roughness: .4 }), 0, 0, .06));
-  board.add(E.mesh(new THREE.CylinderGeometry(.07, .07, 2.4, 10), E.M(0x8a5a3c), 0, -2.1, -.05));
+  if (!E.CALM) board.add(E.mesh(new THREE.CylinderGeometry(.07, .07, 2.4, 10), E.M(0x8a5a3c), 0, -2.1, -.05));   /* calm: the sign hangs on its own; its pole ran between the answer tiles and the buttons */
   let shown = null; const ring = E.noticeRing(.36); const tiles = [];
   const glowT = E.glowSprite('#fff7b0', 2.2, 0); E.scene.add(glowT);
   let P = false, help = struggled, mistakes = 0, missed = false, dragT = null, grab = new THREE.Vector3(), fixKey = null, resolveFix = null, busy = false;

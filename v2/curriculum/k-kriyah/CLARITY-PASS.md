@@ -66,3 +66,19 @@ Goal (Esti's words): "something a 5-6-year-old can figure out and learn, and it 
 | Feel the Shape | The felt road turned gold right beside Pei's dot; "Yud, the little one" while Yud filled the screen. | The felt road turns green; "This is Yud. Feel it!". |
 | Letter rain | On a phone letters landed on each other (Tzadik on Kuf), close to the sign; "Catch every Chaf, like challah!" (challah is Ches); "Be quick!". | A new letter falls only into a lane whose last letter is well clear, never while help shows; lanes clear of a smaller sign; "Catch every Chaf! No dot."; "Now you! Catch them!". |
 | Letter Hunt sky | The brightest scene of all. | A pale sky; far hills and trees fade softly. |
+
+## Round 2, Units 5 and 9 (two new reviewers): what changed
+| Where | Finding | Change |
+|---|---|---|
+| Every game that teaches Nun (story, sorter, Find the Mistake, Show what you know, Practice, rain, review) | "Nun is flat at the bottom" does not tell Nun from Gimmel: Gimmel's base is flat too; the difference is Gimmel's foot. | "Nun has no foot." everywhere (the arrow already points at that corner). |
+| Shared | Confetti could still be called during play; the end-of-word star, the partner links, stand rims, the dot dish and the train couplers were gold. | Confetti only at the end of a game; the star is orange, links grey, rims and dish wood or grey, couplers dark. Only the dot is gold. |
+| Partner Match, End of the Word, Spot the Difference, Find the Mistake (fix step) | A wrong drop got words and a short glow. Drop places were faint; cards turned and bobbed. | The hand carries the right piece halfway, then "Now you!". Partner places are clear orange rings; cards stand still. |
+| End of the Word | "Now you! Is it the end, or not?" while he must drag. | "Now you! Drag the right one to the empty place." |
+| Spot the Difference | A yellow bar in front cut the long legs (and looked like a vowel); "its twin". | A thin grey line behind the letters; "the one just like it". |
+| Find the Mistake (Unit 9 words) | Shalom's Shin touched the frame; on a phone the sign ran off the screen; "Watch me" said twice; he could judge the wrong letter. The pole ran between the answer tiles and the buttons (every unit). | Letters closer so the word fits; on a phone the sign is centred and smaller; one "Watch me"; the last letter is marked while he decides; the sign hangs without a pole. |
+| Dot Builder in the shul (Unit 9 review) | Flags and lamps everywhere; on a phone the dish stood in front of Shin's foot. | No flags or lamps in the calm look; the dish stands clear. |
+| Alef-Beis Train | Waiting cars ran off the screen edge; Kaf/Chaf mix-up got the chant, which can't help. | Cars below the track, all on screen; "Kaf has a dot. Chaf has none." |
+| Remember these? | The demo tapped the very letter of the first question. | The demo taps a different letter. |
+| Story waiting letters | Pushed against the progress dots. | A little smaller. |
+
+Choice made for Esti: **Shloimy's Shabbos clothes are his white shirt and dark trousers** (normal Shabbos clothes); nothing extra is drawn on him.
