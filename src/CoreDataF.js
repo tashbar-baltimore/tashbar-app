@@ -149,5 +149,10 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.14", "Puff, Bell, Kiss", "Double the f, l, s or z at the end of a short word", { after: "READ.PHON.L02.13", std: "RF.1.3", file: "CoreDataF2", min: 6 }],
   ["READ.PHON.L02.15", "Ring and Bank", "Read and spell words with -ng and -nk", { after: "READ.PHON.L02.14", std: "RF.1.3", file: "CoreDataF2", min: 6 }],
   ["READ.FLU.L02.04", "Heart Words: could, would", "Read the heart words there, could, would and should", { after: "READ.PHON.L02.15", std: "RF.1.3g", file: "CoreDataF2", min: 5 }],
-  ["READ.PHON.L02.16", "Spell It: Blends and Endings", "Hear a word and spell it with its blend or ending", { after: "READ.FLU.L02.04", std: "L.1.2d", file: "CoreDataF2", min: 6 }]
+  ["READ.PHON.L02.16", "Spell It: Blends and Endings", "Hear a word and spell it with its blend or ending", { after: "READ.FLU.L02.04", std: "L.1.2d", file: "CoreDataF2", min: 6 }],
+  ["READ.LV.L02.03", "Bone, Cube, These", "Read words with o_e, u_e and e_e", { after: "READ.LV.L02.01", std: "RF.1.3c", file: "CoreDataF2", min: 6 }],
+  ["READ.LV.L02.04", "Add the E", "Add a quiet e to make a new word: cap to cape, kit to kite", { after: "READ.LV.L02.03", std: "RF.1.3c", file: "CoreDataF2", min: 6 }],
+  ["READ.FLU.L02.05", "Scoop It", "Read in phrases: words that go together", { after: "READ.LV.L02.04", std: "RF.1.4b", file: "CoreDataF2", min: 6 }],
+  ["READ.LV.L02.05", "Spell It: Silent E", "Hear a word and spell it with a quiet e", { after: "READ.FLU.L02.05", std: "L.1.2d", file: "CoreDataF2", min: 6 }],
+  ["WRIT.HAND.L02.03", "Capital Letters", "Write capital letters neatly, on the line", { after: "WRIT.HAND.L02.02", std: "L.1.1a", file: "CoreDataF2", min: 5 }]
 ];
