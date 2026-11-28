@@ -17,7 +17,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const PS = () => P ? (peds.length > 3 ? (ROW1() ? .5 : .74) : .62) : (peds.length > 3 ? .88 : 1);
   const card = new THREE.Group(); E.scene.add(card); card.visible = false;
   const cardGlow = E.glowSprite('#ffffff', 2.6, .7); cardGlow.position.z = -.4; card.add(cardGlow);
-  const cardBack = E.mesh(E.rbox(2.05, 2.05, .08, .2), E.M(E.CALM ? 0xa9cbef : 0xffe9b8, { roughness: .4, clearcoat: .6, depthWrite: false }), 0, 0, -.35, false); cardBack.renderOrder = -1; card.add(cardBack);   /* a white card behind the picture, so it never melts into the painting */
+  const cardBack = E.mesh(E.rbox(2.05, 2.05, .08, .2), E.M(E.CALM ? 0x86acd9 : 0xffe9b8, { roughness: .4, clearcoat: .6, depthWrite: false }), 0, 0, -.35, false); cardBack.renderOrder = -1; card.add(cardBack);   /* a white card behind the picture, so it never melts into the painting */
   const hint = E.glowSprite('#fff7b0', 2.8, 0); E.scene.add(hint);
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
   E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? (ROW1() ? .9 : 1.12) : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */

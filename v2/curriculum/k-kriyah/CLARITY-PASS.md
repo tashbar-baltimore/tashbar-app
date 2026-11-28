@@ -104,3 +104,16 @@ Choice made for Esti: **Shloimy's Shabbos clothes are his white shirt and dark t
 | Show what you know (phone) | Small letters low on the screen. | Bigger letters in the middle of the screen. |
 
 **Question for Esti (picture rule, not a clarity rule):** the stories in Units 3 and 7 show **Mommy**, and Unit 5 shows **Bubby** (modest, drawn in code). The picture rules (`docs/HANDOFF-PICS.md`) say boys and men only in 1.0 and 2.0 unless the lesson's creator allows a picture after seeing it. These stories were your choice ("Ari plays in the garden with Mommy", "Eli's picnic with Bubby"), so they were left as they are and are shown to you here: please say "keep" (written as an exception) or "change" (Tatty/Zeidy instead).
+
+## Round 3, Units 7–8 (a new reviewer): 7 of 16 games scored 4; what changed for the 3s
+| Where | Finding | Change |
+|---|---|---|
+| Letter rain (phone) | Two lanes: falling letters touched (Kuf and Tzadik, Sin beside Tuf). | One lane on a phone, never two letters side by side; a bigger sign. |
+| The shul (Unit 8) | Sharp and busy: red carpet with gold trim, coloured seforim, a round window like a target ring. | Calm look: the back of the shul fades softly; a pale carpet, no gold trim, no bookshelf or round window. |
+| Simchas Torah story | The 4th line of the Alef-Beis sank into the floor; the big letter looked pale under a glow. | The grid starts lower and closer; the glow is gone before every tap. |
+| Dot Builder | A wrong dot got words only. | The hand carries the dot halfway to its place, then "Now you! Make it Sin." |
+| Look-Alike (Hei, Ches, Tuf) | The Tuf box showed Tuf with a dot, but Suf cards went in it too. | Suf is left out here (the lesson is the foot); "Great job! Leg off the roof, no foot, or a little foot!" |
+| Find the Mistake (phone) | Shin, Sin and Tuf cards touched; Sin's dot sat on a seam; Shin's dot on the sign's frame. | Smaller, evenly spaced cards; a wide letter shrinks to fit inside the sign. |
+| Letter Hunt (Unit 8 review) | Tall Kuf tiles overlapped the tile below. | Kuf is smaller, so every tile is the same size. |
+| Sound Match (phone) | Kuf's roof hid behind the top shelf; the white tzitzis was hard to see. | More room under the shelf; a deeper blue card. |
+| Train (phone) | The train he builds was the smallest thing on screen. | The waiting cars are smaller than the train. |
