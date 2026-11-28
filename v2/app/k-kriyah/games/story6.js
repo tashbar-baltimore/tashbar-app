@@ -13,6 +13,6 @@ export default function setup(E, { unit }) {
       { pic: 'pear', near: 'grown', lines: ['Zeidy picks a pear from the tree.'], letter: 'pei', after: [['Pear starts with', S('p'), '. Pei has a dot.'], ['Pei says', S('p'), ', like pear!']] },
       { fromDot: 'pei', letter: 'fei', lines: ['No dot. This is Fei!', ['Fei says', S('f')]] },
     ],
-    lookalikes: [['kaf', 'pei', 'Kaf has no little tongue.', 'Pei has a little tongue inside.'], ['pei', 'fei', 'Pei has a dot.', 'Fei has no dot.']],
+    lookalikes: [['chaf', 'fei', 'Chaf has no little tongue.', 'Fei has a little tongue inside.'], ['pei', 'fei', 'Pei has a dot.', 'Fei has no dot.']],
   });
 }

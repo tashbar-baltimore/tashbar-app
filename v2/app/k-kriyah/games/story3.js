@@ -14,9 +14,9 @@ export default function setup(E, { unit }) {
       const sp = E.mesh(new THREE.CylinderGeometry(.03, .045, .4, 8), cm, .25, .3, 0); sp.rotation.z = -.9; can.add(sp); can.position.set(-2.9, 0, 1.6); g.add(can); },
     intro: ['This is Ari. He plays in the garden.', 'Look at all the flowers!'],
     steps: [
-      { pic: 'vase', near: 'grown', lines: ['Mommy puts flowers in a vase.'], letter: 'vov', after: [['Vase starts with', S('v'), '.'], ['Vov says', S('v'), ', like vase!'], 'Vov says v, just like Veis!'] },
+      { pic: 'vase', near: 'grown', lines: ['Mommy puts flowers in a vase.'], letter: 'vov', after: [['Vase starts with', S('v'), '.'], ['Vov says', S('v'), ', like vase!'], ['Vov says', S('v'), '.']] },
       { pic: 'zipper', lines: ['Ari zips up. Zzzip!'], letter: 'zayin', after: [['Zipper starts with', S('z'), '.'], ['Zayin says', S('z'), ', like zipper!']] },
-      { pic: 'challah', near: 'grown', lines: ['Mommy brings out a warm challah.'], letter: 'ches', after: ['Challah starts with Ches.', ['Ches says', S('ch')]] },
+      { pic: 'challah', near: 'grown', lines: ['Mommy brings out a warm challah.'], letter: 'ches', after: [['Challah starts with', S('ch'), '.'], ['Ches says', S('ch')]] },
     ],
     lookalikes: [['vov', 'zayin', 'Vov has no crown.', 'Zayin has a crown on top.'], ['hei', 'ches', 'Hei’s little leg doesn’t touch the roof.', 'Ches’s leg touches the roof.']],
   });

@@ -60,7 +60,7 @@ export const UNITS = [
     games: [
       { id: 'u6g0', name: 'Avi on the farm', kind: 'story6', icon: 'horse' },
       { id: 'u6g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
-      { id: 'u6g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['kaf', 'pei'], ['pei', 'fei']] },
+      { id: 'u6g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['chaf', 'fei'], ['pei', 'fei']] },   /* K clarity: the little tongue is taught on Chaf and Fei (no dots); Kaf's dot sat where Pei's tongue is */
       { id: 'u6g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },
       { id: 'u6g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
       { id: 'u6g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
@@ -75,7 +75,7 @@ export const UNITS = [
       { id: 'u7g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },   /* Beis comes back; Kaf is never a stand beside Kuf (both say k): it joins Kuf at the end */
       { id: 'u7g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
       { id: 'u7g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
-      { id: 'u7g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['kaf', 'pei'], ['pei', 'fei']] },   /* Unit 6's look-alikes come back */
+      { id: 'u7g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['chaf', 'fei'], ['pei', 'fei']] },   /* Unit 6's look-alikes come back */
       { id: 'u7g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
   { n: 8, letters: ['shin', 'sin', 'tav', 'sav'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches', 'tes', 'yud', 'kaf', 'chaf', 'lamed', 'mem', 'nun', 'samech', 'ayin', 'pei', 'fei', 'tzadik', 'kuf', 'reish'],

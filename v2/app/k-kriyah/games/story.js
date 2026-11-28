@@ -101,7 +101,7 @@ export default function setup(E) {
       showHand(left[0]); document.body.dataset.tapReady = left.map(l => l.userData.key).join(',');
       const l = await E.waitTap(left); left.splice(left.indexOf(l), 1); E.hand.hide();
       E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .3, .6)), 22, 1.1); E.hop(l, .5);
-      const tk = E.CALM ? E.tick3d(.26) : E.star3d(.26); tk.position.copy(l.position).add(new THREE.Vector3(0, 1.75 * X().s, .3)); if (!E.CALM) E.onFrame(t => tk.rotation.y = t * 2); E.scene.add(tk); E.popIn(tk); ticks[l.userData.key] = tk;
+      const tk = E.CALM ? E.tick3d(.26) : E.star3d(.26); tk.position.copy(l.position).add(new THREE.Vector3(0, (E.CALM ? -1.6 : 1.75) * X().s, .3));   /* calm: the tick sits under the letter, never above it like a mark */ if (!E.CALM) E.onFrame(t => tk.rotation.y = t * 2); E.scene.add(tk); E.popIn(tk); ticks[l.userData.key] = tk;
       await E.say(E.nameLine(l.userData.key));
     }
     delete document.body.dataset.tapReady;

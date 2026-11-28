@@ -25,7 +25,7 @@ export default function setup(E, { struggled, unit, id }) {
   keys.forEach(k => { L[k] = E.letter(k, 1.6); E.scene.add(L[k]); L[k].visible = false; });
   const arrows = [E.arrow3d(.3), E.arrow3d(.3)];   /* on a look-alike mix-up: point at the place to look on both letters */
   const feat = (k, other) => E.featFor(k, other);
-  const LS = () => E.portrait ? .55 : .86;   /* letter size: small enough that wide letters (Mem, Nun) never touch */
+  const LS = () => E.portrait ? (E.CALM ? .64 : .55) : .86;   /* letter size: small enough that wide letters (Mem, Nun) never touch */
   const glow = E.glowSprite('#fff7b0', 3, 0); E.scene.add(glow);
   /* a basket that fills up: every letter he gets right jumps in and stays, so he can watch his letters pile up */
   const basket = new THREE.Group(), wick = E.M(0xc68a52, { roughness: .7 }); basket.add(E.mesh(new THREE.CylinderGeometry(.75, .55, .7, 28, 1, true), wick, 0, .35, 0)); basket.children[0].material.side = THREE.DoubleSide;
@@ -39,7 +39,7 @@ export default function setup(E, { struggled, unit, id }) {
   E.onLayout(p => {
     gap = p ? (E.CALM ? 1.3 : 1.5) : 2.55;   /* calm: on a phone the outer letters stay clear of the edges */ keys.forEach(k => L[k].scale.setScalar(LS()));
     basket.position.set(p ? .9 : 4.3, 0, p ? 3.3 : .4); basket.scale.setScalar(p ? .5 : 1);   /* on a phone it sits on the grass in front */
-    if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, 1.9, 0); rebbe.visible = false;   /* a phone has no room for him beside the letters */ peds.forEach(x => x.scale.setScalar(.62)); }
+    if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, E.CALM ? 1.25 : 1.9, 0);   /* calm: the letters sit in the middle of a phone screen */ rebbe.visible = false;   /* a phone has no room for him beside the letters */ peds.forEach(x => x.scale.setScalar(.62)); }
     else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.visible = true; rebbe.position.set(-4.8, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
     place(false);
   });
@@ -92,7 +92,7 @@ export default function setup(E, { struggled, unit, id }) {
   }
   return async () => {
     E.setProgress(Qs.length, 0);
-    const demoK = unit.letters[0] || 'shin'; await showSet(demoK);
+    const demoK = (E.CALM && unit.letters.find(k => k !== Qs[0].k)) || unit.letters[0] || 'shin';   /* calm: the demo letter is never the first question */ await showSet(demoK);
     rebbe.mood('wave'); await E.say(E.portrait && E.CALM ? 'Show what you know!' : 'Show the rebbe what you know!');   /* no rebbe on a phone screen */ rebbe.mood('calm');
     /* show, then try */
     await E.say('Watch me. Tap ' + E.LETTERS[demoK].name + '.'); let [x, y] = E.toScreen(E.worldPos(L[demoK])); if (E.CALM) E.handBelow(L[demoK]); else E.hand.at(x, y + 20); await E.wait(700); E.hand.hide();
