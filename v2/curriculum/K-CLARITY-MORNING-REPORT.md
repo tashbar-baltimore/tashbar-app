@@ -48,6 +48,8 @@ Fresh reviewers who built none of the games score each one 1–5: "Would a 5-yea
 
 ## Could not fix, or needs your decision
 
+- **No pet dogs (new school rule, 2026-11-28, from the 1.0 change #683: "no pet dogs or puppies" in K–2).** A kindergarten teacher's choice: ABC Units 2–3 and Review week A no longer show a dog (the d words are duck, door, donut; rhyme choices use a sun). Still there, for you to decide: Kriyah's Sound Match uses a dog for Daled (its review session was working on that branch, so it was left), and the "calm way" ABC sample (#620) has "dog" as a reading word.
+
 - ABC is also being rebuilt "the calm way" (#620, a sample). The 3D ABC units stay until you decide which way to go.
 - ABC Unit 3, the i hunt: one picture is an iguana, which many children call a "lizard". The other choice (a fish) is clearly wrong, so it can still be solved. Tell us if you want a different i picture.
 - Kriyah and ABC notes "seen, not changed" are listed in each checklist.
