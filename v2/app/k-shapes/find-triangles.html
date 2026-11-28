@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Find the triangles</title>
+<!-- Kindergarten Shapes: "Find the triangles" (a 3D SAMPLE for Esti). Standards K.G.2 (name shapes in any turn or size) and K.G.4 (sides and corners).
+     One skill: know a triangle by its rule (3 straight sides, 3 corners), even when it is turned, tall, or small; tell it from shapes that are not triangles.
+     Show, then try: a big 3D triangle; count its sides and corners together; turn it and shrink it ("still a triangle!") ->
+     "Watch me" (a hand drags one triangle into Mendy's toy box) -> he drags every triangle into the box; a wrong shape is explained
+     (its corners light up and are counted) and goes back -> find the mistake (Dovid says an upside-down triangle is not a triangle) -> stars.
+     No reading needed: every instruction is spoken; the "hear it again" button repeats it. All shapes and the room are drawn here in 3D (three.js, MIT licence, lib/).
+     Add ?fast=1 for the automatic test (no waiting for the voice or the motion). -->
+<style>
+:root{ --bg:#F6F1E7; --ink:#1F2A44; --card:#FFFFFF; --line:#E4DCCB; --green:#1E9E5A; --gold:#F5B400; }
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow:hidden; user-select:none; -webkit-user-select:none; touch-action:none; }
+#view{ position:fixed; inset:0; display:block; width:100%; height:100%; touch-action:none; }
+.hud{ position:fixed; left:0; right:0; top:0; display:grid; grid-template-columns:96px 1fr 96px; justify-items:center; align-items:center; padding:10px 16px; pointer-events:none; }
+.hud > *{ pointer-events:auto; }
+.btn{ border:0; cursor:pointer; display:grid; place-items:center; border-radius:999px; min-width:72px; min-height:72px; background:var(--card); box-shadow:0 4px 0 var(--line), 0 6px 18px rgba(31,42,68,.12); }
+.btn:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--line); }
+#again{ width:84px; height:84px; visibility:hidden; transition:opacity .25s; }
+#again svg{ width:40px; height:40px; }
+#again.wait{ opacity:.45; }
+.dots{ display:flex; gap:7px; background:rgba(255,255,255,.75); padding:8px 12px; border-radius:999px; }
+.dots i{ width:12px; height:12px; border-radius:50%; background:var(--line); display:block; transition:background .3s; }
+.dots i.on{ background:var(--green); }
+#start{ position:fixed; left:50%; top:50%; width:170px; height:170px; margin:-85px 0 0 -85px; background:var(--green); box-shadow:0 8px 0 #157A45, 0 14px 34px rgba(30,158,90,.4); animation:pulse 1.4s ease-in-out infinite; }
+#start svg{ width:84px; height:84px; }
+@keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.07);} }
+#hand{ position:fixed; width:84px; height:84px; margin:-6px 0 0 -26px; pointer-events:none; display:none; filter:drop-shadow(0 6px 6px rgba(0,0,0,.25)); z-index:5; }
+.judge{ position:fixed; left:0; right:0; bottom:22px; display:none; justify-content:center; gap:32px; z-index:4; }
+.judge.show{ display:flex; }
+.judge button{ width:116px; height:116px; }
+.judge svg{ width:64px; height:64px; }
+.shake{ animation:shake .45s; }
+@keyframes shake{ 0%,100%{ transform:none;} 20%,60%{ transform:translateX(-10px);} 40%,80%{ transform:translateX(10px);} }
+.end{ position:fixed; left:0; right:0; top:104px; display:none; flex-direction:column; align-items:center; gap:16px; z-index:4; }
+.end.show{ display:flex; }
+.stars{ display:flex; gap:14px; }
+.stars svg{ width:min(18vmin,104px); height:min(18vmin,104px); }
+.star{ transform:scale(0); }
+.star.pop{ animation:pops .45s cubic-bezier(.3,1.6,.5,1) forwards; }
+@keyframes pops{ to{ transform:scale(1);} }
+#replay{ width:92px; height:92px; }
+#replay svg{ width:44px; height:44px; }
+#clapBtn{ position:fixed; left:50%; bottom:28px; width:132px; height:132px; margin-left:-66px; display:none; background:#FFF4D6; box-shadow:0 6px 0 #E8C36A, 0 10px 24px rgba(0,0,0,.12); z-index:4; }
+#clapBtn.show{ display:grid; }
+#clapBtn.beat{ animation:beat .25s ease-out; }
+@keyframes beat{ 0%{ transform:scale(1.18);} 100%{ transform:scale(1);} }
+#clapBtn svg{ width:84px; height:84px; }
+#nogl{ position:fixed; inset:0; display:none; place-items:center; text-align:center; padding:24px; font-size:22px; }
+.fast *{ animation-duration:.01s !important; transition-duration:.01s !important; animation-iteration-count:1 !important; }
+</style>
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<canvas id="view"></canvas>
+<div class="hud">
+  <button class="btn" id="again" aria-label="Hear it again"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#1F2A44"/><path d="M33 16c3 2 5 5 5 8s-2 6-5 8M37 10c5 3 8 8 8 14s-3 11-8 14" stroke="#1F2A44" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></button>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+  <div style="width:84px"></div>
+</div>
+<button class="btn" id="start" aria-label="Start"><svg viewBox="0 0 48 48"><path d="M16 10 L38 24 L16 38Z" fill="#fff" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg></button>
+<svg id="hand" viewBox="-50 -60 100 110"><path d="M-10 0 L-10 -46 C-10 -56 6 -56 6 -46 L6 -22 L6 -26 C6 -34 20 -34 20 -26 L20 -20 C20 -28 34 -28 34 -20 L34 -14 C34 -22 46 -22 46 -14 L46 14 C46 36 30 46 12 46 L0 46 C-12 46 -18 38 -24 30 L-40 6 C-46 -2 -36 -10 -28 -4 L-10 10Z" fill="#FFFFFF" stroke="#1F2A44" stroke-width="4" stroke-linejoin="round"/></svg>
+<div class="judge" id="judge">
+  <button class="btn istri" aria-label="it is a triangle" style="background:#E3F6EA;box-shadow:0 6px 0 #9ED9B5"><svg viewBox="0 0 64 64"><path d="M32 10 L56 52 L8 52Z" fill="#1E9E5A" stroke="#157A45" stroke-width="3" stroke-linejoin="round"/></svg></button>
+  <button class="btn nottri" aria-label="it is not a triangle" style="background:#FDE8E6;box-shadow:0 6px 0 #F2B8B2"><svg viewBox="0 0 64 64"><path d="M32 10 L56 52 L8 52Z" fill="#F2B8B2" stroke="#C9776F" stroke-width="3" stroke-linejoin="round"/><path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/></svg></button>
+</div>
+<div class="end" id="end"><div class="stars" id="stars"></div>
+  <button class="btn" id="replay" aria-label="Play again"><svg viewBox="0 0 48 48"><path d="M36 16 A14 14 0 1 0 38 28" stroke="#1F2A44" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M30 8 L38 16 L28 20Z" fill="#1F2A44"/></svg></button></div>
+<button class="btn" id="clapBtn" aria-label="Clap"><svg viewBox="0 0 64 64"><g fill="#F2C9A0" stroke="#B5742A" stroke-width="2.5" stroke-linejoin="round"><path d="M18 52 C10 44 8 34 12 24 L20 12 C22 9 26 10 25 14 L22 22 L30 8 C32 5 36 7 34 11 L28 24 L36 10 C38 7 42 9 40 13 L33 27 L39 18 C41 15 45 17 43 21 L36 36 C34 44 28 52 18 52Z"/></g><path d="M46 8 l4 -4 M52 14 l6 -2 M50 22 l6 2" stroke="#F5B400" stroke-width="3.5" stroke-linecap="round"/></svg></button>
+<div id="nogl">This computer cannot show the 3D game.</div>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from './lib/RoomEnvironment.js';
+import { RoundedBoxGeometry } from './lib/RoundedBoxGeometry.js';
+
+const FAST = /[?&]fast=1/.test(location.search);
+if (FAST) document.documentElement.classList.add('fast');
+const $ = s => document.querySelector(s);
+const W = window.__shp = { name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
+const wait = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
+
+/* ---------------- the 3D world ---------------- */
+const canvas = $('#view');
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: FAST }); }
+catch (e) { $('#nogl').style.display = 'grid'; $('#start').style.display = 'none'; throw e; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#F6EBDA');
+scene.fog = new THREE.Fog('#F6EBDA', 22, 48);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+
+scene.add(new THREE.HemisphereLight('#FFF6E8', '#C9B48E', 0.7));
+const sun = new THREE.DirectionalLight('#FFF1DC', 2.2);
+sun.position.set(-5, 11, 7); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 6; sun.shadow.bias = -0.0004;
+Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 30 });
+scene.add(sun);
+
+/* floor, a round play rug, and Mendy's wooden toy box */
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), new THREE.MeshStandardMaterial({ color: '#E9D7B6', roughness: 0.95 }));
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+const rug = new THREE.Mesh(new THREE.CylinderGeometry(6.4, 6.4, 0.06, 96), new THREE.MeshStandardMaterial({ color: '#BFE0D2', roughness: 0.9 }));
+rug.position.y = 0.03; rug.receiveShadow = true; scene.add(rug);
+const rugRing = new THREE.Mesh(new THREE.TorusGeometry(5.9, 0.08, 12, 128), new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.8 }));
+rugRing.rotation.x = Math.PI / 2; rugRing.position.y = 0.07; scene.add(rugRing);
+
+{ const wall = new THREE.Mesh(new THREE.PlaneGeometry(60, 14), new THREE.MeshStandardMaterial({ color: '#F4E3C6', roughness: 0.95 }));
+  wall.position.set(0, 7, -8.5); wall.receiveShadow = true; scene.add(wall);
+  const base = new THREE.Mesh(new THREE.BoxGeometry(60, 0.5, 0.2), new THREE.MeshStandardMaterial({ color: '#C99A67', roughness: 0.7 })); base.position.set(0, 0.25, -8.4); scene.add(base);
+  const frame = new THREE.Mesh(new RoundedBoxGeometry(4.6, 3.4, 0.3, 3, 0.1), new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.5 })); frame.position.set(-4.5, 4.4, -8.4); scene.add(frame);
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(4.0, 2.8), new THREE.MeshStandardMaterial({ color: '#BFE3FF', emissive: '#CFEAFF', emissiveIntensity: 0.6 })); glass.position.set(-4.5, 4.4, -8.24); scene.add(glass);
+  const bar = new THREE.MeshStandardMaterial({ color: '#FFFFFF' });
+  const b1 = new THREE.Mesh(new THREE.BoxGeometry(0.14, 2.8, 0.1), bar); b1.position.set(-4.5, 4.4, -8.2); scene.add(b1);
+  const b2 = new THREE.Mesh(new THREE.BoxGeometry(4.0, 0.14, 0.1), bar); b2.position.set(-4.5, 4.4, -8.2); scene.add(b2);
+  const shelfM = new THREE.MeshStandardMaterial({ color: '#B87842', roughness: 0.6 });
+  [1.6, 3.2].forEach(y => { const sh = new THREE.Mesh(new RoundedBoxGeometry(4.2, 0.16, 0.9, 2, 0.05), shelfM); sh.position.set(4.5, y, -8.0); sh.castShadow = true; scene.add(sh); });
+  const spines = ['#7A1F2B', '#1F3A6B', '#2E5D3A', '#5B2A6E', '#8A5A1E', '#1F3A6B', '#7A1F2B', '#2E5D3A'];
+  [1.68, 3.28].forEach((y, r) => { let x = 2.7; spines.forEach((c, i) => { const h = 0.95 + ((i * 7 + r * 3) % 4) * 0.08, w = 0.28 + (i % 3) * 0.05;
+    const bk = new THREE.Mesh(new RoundedBoxGeometry(w, h, 0.7, 2, 0.03), new THREE.MeshStandardMaterial({ color: c, roughness: 0.6 })); bk.position.set(x + w / 2, y + h / 2, -8.0); bk.castShadow = true; scene.add(bk);
+    const gold = new THREE.Mesh(new THREE.BoxGeometry(w * 0.7, 0.05, 0.01), new THREE.MeshStandardMaterial({ color: '#E8C36A', metalness: 0.6, roughness: 0.3 })); gold.position.set(x + w / 2, y + h * 0.7, -7.64); scene.add(gold);
+    x += w + 0.04; }); }); }
+
+const box = new THREE.Group(); scene.add(box);
+const wood = new THREE.MeshStandardMaterial({ color: '#D49A5E', roughness: 0.55 });
+const woodDark = new THREE.MeshStandardMaterial({ color: '#8A5A33', roughness: 0.7 });
+const BX = { w: 3.0, d: 1.9, h: 0.95, t: 0.16 };
+function plank(w, h, d, x, y, z, m) { const p = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 3, 0.05), m || wood); p.position.set(x, y, z); p.castShadow = true; p.receiveShadow = true; box.add(p); return p; }
+plank(BX.w, 0.14, BX.d, 0, 0.07, 0, woodDark);
+plank(BX.w, BX.h, BX.t, 0, BX.h / 2, -BX.d / 2 + BX.t / 2);
+plank(BX.w, BX.h * 0.8, BX.t, 0, BX.h * 0.4, BX.d / 2 - BX.t / 2);
+plank(BX.t, BX.h, BX.d, -BX.w / 2 + BX.t / 2, BX.h / 2, 0);
+plank(BX.t, BX.h, BX.d, BX.w / 2 - BX.t / 2, BX.h / 2, 0);
+/* a triangle painted on the front of the box: it is the triangle box */
+{ const s = new THREE.Shape(); s.moveTo(-0.32, -0.24); s.lineTo(0.32, -0.24); s.lineTo(0, 0.3); s.closePath();
+  const m = new THREE.Mesh(new THREE.ShapeGeometry(s), new THREE.MeshStandardMaterial({ color: '#FFFFFF', roughness: 0.6 }));
+  m.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); box.add(m); }
+
+/* ---------------- the boys: Mendy (by his toy box) and Dovid, simple friendly 3D figures ---------------- */
+function makeKid(shirt, hair, glasses) {
+  const k = new THREE.Group(), skin = new THREE.MeshStandardMaterial({ color: '#F2C9A0', roughness: 0.6 });
+  const pants = new THREE.MeshStandardMaterial({ color: '#2E3650', roughness: 0.7 }), top = new THREE.MeshStandardMaterial({ color: shirt, roughness: 0.55 });
+  const add = (geo, m, x, y, z) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.castShadow = true; k.add(o); return o; };
+  add(new THREE.CapsuleGeometry(0.17, 0.55, 6, 16), pants, -0.2, 0.45, 0); add(new THREE.CapsuleGeometry(0.17, 0.55, 6, 16), pants, 0.2, 0.45, 0);
+  add(new THREE.SphereGeometry(0.2, 16, 12), new THREE.MeshStandardMaterial({ color: '#1A1E29' }), -0.2, 0.12, 0.08).scale.set(1, 0.6, 1.4);
+  add(new THREE.SphereGeometry(0.2, 16, 12), new THREE.MeshStandardMaterial({ color: '#1A1E29' }), 0.2, 0.12, 0.08).scale.set(1, 0.6, 1.4);
+  add(new THREE.CapsuleGeometry(0.42, 0.55, 8, 24), top, 0, 1.25, 0);
+  const tz = new THREE.MeshStandardMaterial({ color: '#FFFFFF' });
+  [-0.36, -0.3, 0.3, 0.36].forEach(x => add(new THREE.CylinderGeometry(0.015, 0.015, 0.45, 6), tz, x, 0.72, 0.18));
+  const armL = new THREE.Group(), armR = new THREE.Group(); armL.position.set(-0.5, 1.55, 0); armR.position.set(0.5, 1.55, 0); k.add(armL, armR);
+  [armL, armR].forEach(a => { const s1 = new THREE.Mesh(new THREE.CapsuleGeometry(0.12, 0.5, 6, 12), top); s1.position.y = -0.3; s1.castShadow = true; a.add(s1);
+    const h = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 12), skin); h.position.y = -0.65; a.add(h); });
+  armL.rotation.z = -0.15; armR.rotation.z = 0.15;
+  add(new THREE.SphereGeometry(0.5, 32, 24), skin, 0, 2.3, 0);
+  add(new THREE.SphereGeometry(0.52, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.42), new THREE.MeshStandardMaterial({ color: hair, roughness: 0.8 }), 0, 2.32, -0.04);
+  add(new THREE.SphereGeometry(0.4, 32, 12, 0, Math.PI * 2, 0, Math.PI * 0.28), new THREE.MeshStandardMaterial({ color: '#1F2A44', roughness: 0.5 }), 0, 2.5, -0.06);
+  const eye = new THREE.MeshStandardMaterial({ color: '#1F2A44' });
+  add(new THREE.SphereGeometry(0.06, 12, 8), eye, -0.17, 2.36, 0.45); add(new THREE.SphereGeometry(0.06, 12, 8), eye, 0.17, 2.36, 0.45);
+  const smile = add(new THREE.TorusGeometry(0.14, 0.025, 8, 24, Math.PI), new THREE.MeshStandardMaterial({ color: '#B5533A' }), 0, 2.2, 0.45); smile.rotation.z = Math.PI;
+  const cheek = new THREE.MeshStandardMaterial({ color: '#F4A9A0', transparent: true, opacity: 0.6 });
+  add(new THREE.SphereGeometry(0.08, 12, 8), cheek, -0.3, 2.2, 0.38); add(new THREE.SphereGeometry(0.08, 12, 8), cheek, 0.3, 2.2, 0.38);
+  [-0.47, 0.47].forEach(x => add(new THREE.TorusGeometry(0.07, 0.025, 6, 12), new THREE.MeshStandardMaterial({ color: hair }), x, 2.15, 0.05).rotation.y = Math.PI / 2);
+  if (glasses) { const gm = new THREE.MeshStandardMaterial({ color: '#1F2A44', roughness: 0.4 });
+    [-0.17, 0.17].forEach(x => add(new THREE.TorusGeometry(0.12, 0.022, 8, 24), gm, x, 2.36, 0.47));
+    add(new THREE.BoxGeometry(0.12, 0.025, 0.02), gm, 0, 2.38, 0.5); }
+  k.userData = { armL, armR }; scene.add(k); return k;
+}
+function cheer(kid) {   /* a happy jump with both arms up */
+  const { armL, armR } = kid.userData, y0 = kid.position.y;
+  return tween(700, t => { const e = Math.sin(Math.PI * t); kid.position.y = y0 + e * 0.5; armL.rotation.z = -0.15 - e * 2.4; armR.rotation.z = 0.15 + e * 2.4; }).then(() => { kid.position.y = y0; });
+}
+const mendy = makeKid('#FFFFFF', '#B5773E'), dovid = makeKid('#2F4A8A', '#1E1712', true); dovid.visible = false;
+function placeMendy(mode) {
+  if (mode === 'close') { mendy.visible = !dovid.visible; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
+  else { mendy.visible = true; mendy.position.copy(mendyAt()); mendy.rotation.set(tall ? -0.6 : 0, -0.35, 0); }
+}
+function mendyAt() { const b = boxAt(); return tall ? new THREE.Vector3(b.x + 2.1, 0, b.z + 0.35) : new THREE.Vector3(b.x + 3.0, 0, b.z + 2.0); }
+
+/* ---------------- shapes: chunky glossy toy pieces ---------------- */
+const KINDS = {
+  tri:     { pts: [[-0.78, -0.62], [0.78, -0.62], [0, 0.72]], name: 'triangle', tri: true },
+  triTall: { pts: [[-0.42, -0.82], [0.42, -0.82], [0.05, 0.86]], name: 'triangle', tri: true },
+  triRight:{ pts: [[-0.62, -0.62], [0.66, -0.62], [-0.62, 0.66]], name: 'triangle', tri: true },
+  square:  { pts: [[-0.6, -0.6], [0.6, -0.6], [0.6, 0.6], [-0.6, 0.6]], name: 'square' },
+  rect:    { pts: [[-0.92, -0.46], [0.92, -0.46], [0.92, 0.46], [-0.92, 0.46]], name: 'rectangle' },
+  circle:  { circle: 0.66, name: 'circle' },
+  curvy:   { curvy: true, name: 'curvy' },
+  triWide: { pts: [[-0.95, -0.38], [0.95, -0.38], [0.32, 0.46]], name: 'triangle', tri: true },
+  triSkinny:{ pts: [[-0.3, -0.85], [0.28, -0.85], [0.62, 0.85]], name: 'triangle', tri: true },
+  hex:     { pts: [[0.68, 0], [0.34, 0.59], [-0.34, 0.59], [-0.68, 0], [-0.34, -0.59], [0.34, -0.59]], name: 'hexagon' }
+};
+const COLORS = ['#E03A33', '#1F6FEB', '#F2A900', '#12A766', '#7C4DFF', '#FF7A1A', '#00A3B8', '#F0458E'];
+function shapeOf(k) {
+  const K = KINDS[k], s = new THREE.Shape();
+  if (K.circle) { s.absarc(0, 0, K.circle, 0, Math.PI * 2, false); return { s, corners: [] }; }
+  if (K.curvy) {   /* looks like a triangle, but its sides bulge out: NOT a triangle */
+    const a = [-0.78, -0.62], b = [0.78, -0.62], c = [0, 0.74];
+    s.moveTo(a[0], a[1]); s.quadraticCurveTo(0, -1.0, b[0], b[1]); s.quadraticCurveTo(0.78, 0.25, c[0], c[1]); s.quadraticCurveTo(-0.78, 0.25, a[0], a[1]);
+    return { s, corners: [] };
+  }
+  /* center the piece on its middle (the average of its corners), so a finger on its middle always grabs it */
+  const cx = K.pts.reduce((t, p) => t + p[0], 0) / K.pts.length, cy = K.pts.reduce((t, p) => t + p[1], 0) / K.pts.length;
+  const pts = K.pts.map(p => [p[0] - cx, p[1] - cy]);
+  pts.forEach((p, i) => i ? s.lineTo(p[0], p[1]) : s.moveTo(p[0], p[1])); s.closePath();
+  return { s, corners: pts };
+}
+const DEPTH = 0.34, BEV = 0.09;
+const shapes = [];
+const cornerGeo = new THREE.SphereGeometry(0.11, 24, 16);
+const cornerMat = new THREE.MeshStandardMaterial({ color: '#FFD23F', emissive: '#FFB000', emissiveIntensity: 1.4, roughness: 0.3 });
+const cornerFaint = new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 0.5, transparent: true, opacity: 0.75 });
+function makeShape(id, k, color, rotZ, scale) {
+  const { s, corners } = shapeOf(k);
+  const geo = new THREE.ExtrudeGeometry(s, { depth: DEPTH, bevelEnabled: true, bevelThickness: BEV, bevelSize: BEV, bevelSegments: 5, curveSegments: 48 });
+  geo.translate(0, 0, -DEPTH / 2);
+  const mat = new THREE.MeshPhysicalMaterial({ color, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.15, envMapIntensity: 0.45, emissive: '#FFC400', emissiveIntensity: 0 });
+  const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
+  const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
+  const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
+  const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], DEPTH / 2 + BEV + 0.02); m.scale.setScalar(0); mesh.add(m); return m; });
+  const o = { id, k, isTri: !!KINDS[k].tri, g, turn, mesh, mat, marks, corners, scale, home: new THREE.Vector3(), phase: Math.random() * 6, inBox: false, busy: false, glow: false };
+  mesh.userData.shape = o; shapes.push(o); return o;
+}
+
+/* ---------------- layout: wide screen = 2 rows of 4, tall phone = 3 rows of 3 ---------------- */
+let tall = false;
+const SLOTS_WIDE = [[-3.9, -2.6], [-1.3, -2.9], [1.3, -2.9], [3.9, -2.6], [-4.7, -0.2], [-2.3, 0.1], [2.3, 0.1], [4.7, -0.2]];
+const SLOTS_TALL = [[-1.8, -4.7], [0, -5.0], [1.8, -4.7], [-1.8, -2.4], [0, -2.5], [1.8, -2.4], [-1.8, -0.1], [0, -0.2], [1.8, -0.1]];
+const BOX_WIDE = new THREE.Vector3(0, 0, 2.3), BOX_TALL = new THREE.Vector3(0, 0, 2.6);
+const VIEW = { wide: { pos: new THREE.Vector3(0, 8.6, 11.6), look: new THREE.Vector3(0, 0.2, -0.4) }, tall: { pos: new THREE.Vector3(0, 15.6, 7.0), look: new THREE.Vector3(0, 0, -1.4) },
+  close: { pos: new THREE.Vector3(0, 2.7, 6.4), look: new THREE.Vector3(0, 2.05, 0.9) } };
+let camMode = 'wide';
+const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
+function viewFor(m) { if (m === 'close') { const v = VIEW.close; return tall ? { pos: v.pos.clone().multiplyScalar(1.95), look: v.look } : v; } return tall ? VIEW.tall : VIEW.wide; }
+function boxAt() { return tall ? BOX_TALL : BOX_WIDE; }
+function homeFor(i) { const s = (tall ? SLOTS_TALL : SLOTS_WIDE)[i]; return new THREE.Vector3(s[0], 0.92, s[1]); }
+function resize() {
+  const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h;
+  const was = tall; tall = w / h < 0.95; camera.fov = tall ? 46 : 40; camera.updateProjectionMatrix();
+  box.position.copy(boxAt());
+  if (was !== tall) shapes.forEach(o => { if (o.inBox && o.boxN != null && !o.busy) o.g.position.copy(inBoxSpot(o.boxN)); else if (o.slot != null) { o.home.copy(homeFor(o.slot)); if (!o.busy && !o.inBox) o.g.position.copy(o.home); } });
+  placeMendy(camMode);
+  const v = viewFor(camMode); camPos.copy(v.pos); camLook.copy(v.look);
+}
+addEventListener('resize', resize);
+
+/* ---------------- motion ---------------- */
+const tweens = [];
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+function tween(ms, fn) { return new Promise(res => { if (FAST) { fn(1); return res(); } tweens.push({ t0: performance.now(), ms, fn, res }); }); }
+function moveTo(o, to, ms, hop) {
+  const a = o.g.position.clone(); o.busy = true;
+  return tween(ms, k => { const e = ease(k); o.g.position.lerpVectors(a, to, e); if (hop) o.g.position.y += Math.sin(Math.PI * e) * hop; }).then(() => { o.busy = false; });
+}
+function camTo(mode, ms) {
+  camMode = mode; const v = viewFor(mode), p0 = camPos.clone(), l0 = camLook.clone(); placeMendy(mode);
+  return tween(ms, k => { const e = ease(k); camPos.lerpVectors(p0, v.pos, e); camLook.lerpVectors(l0, v.look, e); });
+}
+/* sparkles: little gold stars burst up and fade */
+const sparks = [];
+const sparkGeo = new THREE.OctahedronGeometry(0.09);
+function burst(at, n) {
+  if (FAST) return;
+  for (let i = 0; i < (n || 22); i++) {
+    const m = new THREE.Mesh(sparkGeo, new THREE.MeshStandardMaterial({ color: COLORS[i % COLORS.length], emissive: COLORS[i % COLORS.length], emissiveIntensity: .5, transparent: true }));
+    m.position.copy(at); scene.add(m);
+    sparks.push({ m, v: new THREE.Vector3((Math.random() - .5) * 5, 3 + Math.random() * 4, (Math.random() - .5) * 5), life: 1 });
+  }
+}
+
+const clock = new THREE.Clock();
+function frame() {
+  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime, now = performance.now();
+  for (let i = tweens.length - 1; i >= 0; i--) { const tw = tweens[i], k = Math.min(1, (now - tw.t0) / tw.ms); tw.fn(k); if (k >= 1) { tweens.splice(i, 1); tw.res(); } }
+  shapes.forEach(o => {
+    if (o.inBox || o.busy || o === dragging) return;
+    if (!o.g.visible) return;
+    o.g.position.y = o.home.y + Math.sin(t * 1.6 + o.phase) * 0.06;
+    o.g.rotation.y = Math.sin(t * 0.7 + o.phase) * 0.28; o.g.rotation.x = -(tall ? 0.85 : 0.42);
+    o.g.position.x = o.home.x; o.g.position.z = o.home.z;
+  });
+  shapes.forEach(o => { o.mat.emissiveIntensity = o.glow ? 0.4 + Math.sin(t * 5) * 0.25 : 0; });
+  for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.v.y -= 9 * dt; s.m.position.addScaledVector(s.v, dt); s.m.rotation.x += dt * 6; s.life -= dt * 0.9; s.m.material.opacity = Math.max(0, s.life); if (s.life <= 0) { scene.remove(s.m); sparks.splice(i, 1); } }
+  const sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25;
+  camera.position.set(camPos.x + sway, camPos.y, camPos.z); camera.lookAt(camLook);
+  if (handOn) placeHand();
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+/* screen <-> world */
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+function toScreen(v) { const p = v.clone().project(camera); return { x: (p.x + 1) / 2 * innerWidth, y: (1 - p.y) / 2 * innerHeight }; }
+function pick(cx, cy) {
+  ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
+  const hits = ray.intersectObjects(shapes.filter(o => o.g.visible && !o.inBox).map(o => o.mesh), false);
+  return hits.length ? hits[0].object.userData.shape : null;
+}
+const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.25), hitP = new THREE.Vector3();
+function onPlane(cx, cy) { ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.ray.intersectPlane(dragPlane, hitP) ? hitP.clone() : null; }
+function overBox(p) { const b = boxAt(); return Math.abs(p.x - b.x) < BX.w / 2 + 0.35 && Math.abs(p.z - b.z) < BX.d / 2 + 0.45; }
+/* for the automatic test */
+W.shapePt = id => { const o = shapes.find(s => s.id === id); return toScreen(o.g.position); };
+W.boxPt = () => toScreen(boxAt().clone().setY(1.25));
+W.list = () => shapes.filter(o => o.g.visible && !o.inBox && o.slot != null).map(o => ({ id: o.id, k: o.k, tri: o.isTri, busy: o.busy }));
+
+/* ---------------- sound ---------------- */
+let AC = null;
+function ac() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
+function tone(freqs, type, gap, len, vol) {
+  const c = ac(); if (!c || FAST) return; const t = c.currentTime;
+  freqs.forEach((f, i) => { const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t + i * gap); g.gain.linearRampToValueAtTime(vol, t + i * gap + .02); g.gain.exponentialRampToValueAtTime(.001, t + i * gap + len);
+    o.connect(g); g.connect(c.destination); o.start(t + i * gap); o.stop(t + i * gap + len + .05); });
+}
+const chime = ok => ok ? tone([660, 880, 1320], 'sine', .1, .35, .14) : tone([330, 262], 'sine', .14, .3, .14);
+const plink = () => tone([1046], 'triangle', 0, .18, .12);
+const pop = () => tone([520, 780], 'triangle', .05, .12, .1);
+function clap() {   /* a short hand-clap sound for the chant */
+  const c = ac(); if (!c || FAST) return; const len = c.sampleRate * .12, b = c.createBuffer(1, len, c.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
+  const src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); src.buffer = b; f.type = 'bandpass'; f.frequency.value = 1400; f.Q.value = .8; g.gain.value = .5;
+  src.connect(f); f.connect(g); g.connect(c.destination); src.start();
+}
+/* the chant: three claps while the three corners bounce */
+const clapBtn = $('#clapBtn');
+const BEAT = [523, 659, 784];   /* do, mi, sol: the chant is sung on three notes */
+function boyClap() { clap(); W.boyClaps = (W.boyClaps || 0) + 1; if (clapWaiter) clapWaiter(); clapBtn.classList.remove('beat'); void clapBtn.offsetWidth; clapBtn.classList.add('beat'); }
+clapBtn.onclick = () => { ac(); if (chantOn) boyClap(); };
+function chant(on) { chantOn = on; clapBtn.classList.toggle('show', on); }
+let clapWaiter = null;
+function waitClap(ms) { return new Promise(r => { if (FAST) return r(); const t = setTimeout(() => { clapWaiter = null; r(); }, ms); clapWaiter = () => { clearTimeout(t); clapWaiter = null; r('boy'); }; }); }
+function claps(o) { W.claps = (W.claps || 0) + 3; return [0, 1, 2].reduce((p, i) => p.then(() => waitClap(1600)).then(by => { if (by !== 'boy') clap(); tone([BEAT[i]], 'triangle', 0, .3, .12); clapBtn.classList.remove('beat'); void clapBtn.offsetWidth; clapBtn.classList.add('beat'); const m = o.marks[i]; m.scale.setScalar(1.6); return tween(320, k => m.scale.setScalar(1.6 - k * 0.45)); }), Promise.resolve()); }
+
+/* ---------------- the voice: the school's teacher voice, else the device voice ---------------- */
+const TTS = 'https:' + '/' + '/' + 'tts-q26c275eaa-uk.a.run.app', vcache = {}; let vtok = 0, audio = null;
+function hush() { vtok++; try { if (audio) audio.pause(); } catch (e) {} audio = null; try { speechSynthesis.cancel(); } catch (e) {} }
+function say(t) {
+  W.said.push(t); if (FAST) return Promise.resolve();
+  const my = vtok;
+  return new Promise(done => {
+    let fin = false; const end = () => { if (!fin) { fin = true; done(); } };
+    setTimeout(end, t.length * 85 + 2500);
+    const dev = () => { if (my !== vtok) return end(); try { const u = new SpeechSynthesisUtterance(t); u.rate = 0.9; u.pitch = 1.1; u.onend = end; u.onerror = end; speechSynthesis.speak(u); } catch (e) { end(); } };
+    const playUrl = url => { if (my !== vtok) return end(); const a = new Audio(url); audio = a; a.onended = end; a.onerror = dev; const p = a.play(); if (p && p.catch) p.catch(dev); };
+    if (vcache[t]) return playUrl(vcache[t]);
+    Promise.race([
+      fetch(TTS, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: t, voice: 'teacher' }) })
+        .then(r => r.json()).then(j => { if (j && j.ok && j.url) { vcache[t] = j.url; return j.url; } throw new Error('tts'); }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('slow')), 1800))
+    ]).then(playUrl).catch(dev);
+  });
+}
+function preload(lines) { if (FAST) return; lines.forEach(t => { if (!vcache[t]) fetch(TTS, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: t, voice: 'teacher' }) }).then(r => r.json()).then(j => { if (j && j.ok && j.url) vcache[t] = j.url; }).catch(() => {}); }); }
+/* a script is a list of: "spoken line" | {wait:ms} | function */
+let cur = [], runTok = 0, echoTok = 0, busy = false;
+const againBtn = $('#again');
+function play(script) {
+  const my = ++runTok; echoTok++; cur = script; busy = true; againBtn.classList.add('wait'); hush();
+  return script.reduce((p, s) => p.then(() => {
+    if (my !== runTok) return;
+    if (typeof s === 'string') return say(s);
+    if (typeof s === 'function') return s();
+    if (s.wait) return wait(s.wait);
+  }), Promise.resolve()).then(() => { if (my === runTok) { busy = false; againBtn.classList.remove('wait'); if (againLater) setTimeout(() => againBtn.onclick(), 50); } return my === runTok; });
+}
+let task = null, againLater = false;
+againBtn.onclick = () => {
+  W.again++; if (busy && !task) return; againLater = false; const my = ++echoTok; hush();
+  (task || cur.filter(s => typeof s === 'string')).reduce((p, s) => p.then(() => my === echoTok ? say(s) : null), Promise.resolve());
+};
+
+/* ---------------- progress dots ---------------- */
+const STEPS = 4;   /* learn, watch, find, the mistake */
+function dots(n) { $('#dots').innerHTML = Array.from({ length: STEPS }, (_, i) => '<i' + (i < n ? ' class="on"' : '') + '></i>').join(''); }
+
+/* ---------------- the hand for "watch me" ---------------- */
+const hand = $('#hand'); let handOn = null;
+function placeHand() { const p = toScreen(handOn.g.position); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; }
+
+/* ---------------- corner and side counting ---------------- */
+function lightCorner(o, i) { plink(); const m = o.marks[i]; m.material = cornerMat; return tween(260, k => m.scale.setScalar(k * 1.15)); }
+function clearCorners(o) { o.marks.forEach(m => { m.scale.setScalar(0); m.material = cornerMat; }); }
+/* HE counts: faint dots sit on the corners; he taps each one, it lights up gold and the voice counts */
+let cornerTap = null;
+const NUM = ['One!', 'Two!', 'Three!'];
+function tapCorners(o) {
+  return new Promise(done => {
+    o.marks.forEach(m => { m.material = cornerFaint; m.scale.setScalar(1.25); });
+    const got = new Set(); let nag = null;
+    const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (cornerTap) { say('Tap each corner.'); remind(); } }, FAST ? 1e9 : 9000); };
+    cornerTap = (cx, cy) => {
+      let best = -1, bd = 1e9;
+      o.marks.forEach((m, i) => { if (got.has(i)) return; const p = toScreen(m.getWorldPosition(new THREE.Vector3())); const d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
+      if (best < 0 || bd > Math.max(56, innerWidth * 0.05)) return;
+      got.add(best); W.cornerTaps = (W.cornerTaps || 0) + 1; lightCorner(o, best); hush(); say(NUM[got.size - 1]); remind();
+      if (got.size === o.marks.length) { cornerTap = null; clearTimeout(nag); setTimeout(done, FAST ? 0 : 900); }
+    };
+    remind();
+  });
+}
+W.cornerPts = () => { const o = shapes.find(s => s.marks.length && s.marks.some(m => m.material === cornerFaint)); return o ? o.marks.filter(m => m.material === cornerFaint).map(m => toScreen(m.getWorldPosition(new THREE.Vector3()))) : []; };
+let chantOn = false;
+const tracer = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 16), new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 1 }));
+tracer.visible = false;
+function traceSide(o, i) {   /* a glowing dot runs along one side */
+  const a = o.corners[i], b = o.corners[(i + 1) % o.corners.length]; o.mesh.add(tracer); tracer.visible = true; plink();
+  return tween(700, k => tracer.position.set(a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, DEPTH / 2 + BEV + 0.05));
+}
+
+/* ---------------- the pieces on the rug ---------------- */
+/* slot 0 is the triangle he meets first; the rest are mixed: turned, tall, small triangles and shapes that are NOT triangles */
+const SET = [
+  ['t1', 'tri', 0, 1],              // the first triangle (shown, then the hand puts it away)
+  ['sq', 'square', Math.PI / 4, 1], // a turned square: still a square, not a triangle
+  ['t2', 'tri', Math.PI, 1],        // upside down
+  ['cv', 'curvy', 0, 1],            // looks close, but curvy sides
+  ['t3', 'triTall', 0.35, 1],       // tall and thin, tipped
+  ['ci', 'circle', 0, 1],
+  ['t4', 'triWide', -0.2, 0.72],    // small and wide
+  ['re', 'rect', 0.18, 0.95]
+];
+const BONUS = [['tw', 'triRight', 0.6, 1, 0], ['hx', 'hex', 0.3, 0.95, 2], ['tk', 'triSkinny', -0.5, 1, 4]];
+const LOOK = { hex: ['That is not a triangle.', 'Six corners! A triangle has only three.'], square: ['That is a square.', 'Four corners! A triangle has only three.'],
+  rect: ['That is a rectangle.', 'Four corners! A triangle has only three.'],
+  circle: ['That is a circle.', 'A circle has no corners at all.'],
+  curvy: ['Look closely. These sides are curvy.', 'A triangle has straight sides.'] };
+const YES = { t2: 'Yes! Upside down is still a triangle!', t3: 'Yes! Tall and thin, still a triangle!', t4: 'Yes! Small and wide, still a triangle!',
+  tw: 'Yes! Tipped over, still a triangle!', tk: 'Yes! Skinny and tipped, still a triangle!' };
+
+let allow = false, dragging = null, down = null;
+function buildSet() {
+  shapes.splice(0).forEach(o => scene.remove(o.g)); dovid.visible = false;
+  SET.forEach((s, i) => { const o = makeShape(s[0], s[1], COLORS[i], s[2], s[3]); o.slot = i; o.home.copy(homeFor(i)); o.g.position.copy(o.home); o.g.visible = false; });
+}
+function inBoxSpot(n) { const b = boxAt(); return new THREE.Vector3(b.x - 0.75 + (n % 3) * 0.75, 0.32 + Math.floor(n / 3) * 0.16, b.z + (n % 2 ? 0.2 : -0.2)); }
+function dropInBox(o) {
+  clearCorners(o); o.inBox = true; o.boxN = W.found; const to = inBoxSpot(W.found++);
+  const s0 = o.g.scale.x, s1 = Math.min(s0, 1) * 0.55;
+  tween(520, k => o.g.scale.setScalar(s0 + (s1 - s0) * ease(k)));
+  return moveTo(o, to, 520, 1.2).then(() => { o.g.rotation.set(-1.45, (W.found % 3 - 1) * 0.6, 0); burst(to.clone().setY(1.2)); pop(); cheer(mendy); });
+}
+
+/* dragging pieces */
+canvas.addEventListener('pointerdown', e => {
+  ac();
+  if (cornerTap) { cornerTap(e.clientX, e.clientY); return; }
+  if (chantOn) { boyClap(); return; }
+  if (!allow || down) return;
+  const o = pick(e.clientX, e.clientY); if (!o || o.busy) return;
+  down = { o, x: e.clientX, y: e.clientY, moved: false, id: e.pointerId }; try { canvas.setPointerCapture(e.pointerId); } catch (x) {}
+});
+canvas.addEventListener('pointermove', e => {
+  if (!down || e.pointerId !== down.id) return;
+  if (!down.moved && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) { down.moved = true; dragging = down.o; pop(); }
+  if (dragging) { const p = onPlane(e.clientX, e.clientY); if (p) { dragging.g.position.set(p.x, 1.25, p.z); dragging.g.rotation.y = 0; } }
+});
+function release(e) {
+  if (!down || (e && e.pointerId !== down.id)) return; const d = down; down = null;
+  if (!d.moved) {   /* a tap sends the piece to the box, the same as dragging it there */
+    if (!d.o.busy && onDrop && allow) { idle(); const o = d.o; o.busy = true; moveTo(o, boxAt().clone().setY(1.25), 450, 0.8).then(() => { if (onDrop && allow) onDrop(o, true); else goHome(o); }); }
+    return;
+  }
+  idle();
+  const o = dragging; dragging = null;
+  if (!o) return;
+  if (onDrop && allow) onDrop(o, overBox(o.g.position)); else goHome(o);
+}
+canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
+let onDrop = null;
+function goHome(o) { return moveTo(o, o.home, 420, 0.4); }
+
+/* ---------------- the game ---------------- */
+function setName(n) { W.name = n; }
+async function learn() {
+  setName('learn'); dots(0); W.misses = 0; W.found = 0; allow = false; onDrop = null; task = null; W.bonus = false; chant(false); stopIdle();
+  $('#end').classList.remove('show');
+  buildSet(); resize();
+  const t1 = shapes[0]; t1.g.visible = true; t1.busy = true;
+  const stagePos = new THREE.Vector3(0.55, 2.05, 0.9); t1.g.position.copy(stagePos); t1.g.rotation.set(0, 0, 0); t1.g.scale.setScalar(0.01);
+  camTo('close', 10);
+  tween(700, k => t1.g.scale.setScalar(Math.max(0.01, ease(k) * 1.25)));
+  const ok = await play([
+    () => { cheer(mendy); }, 'Mendy is cleaning up his toys.', 'He needs all the triangles.', "Let's learn about triangles!", { wait: 200 },
+    'This is a triangle.', 'Count the sides with me.',
+    () => traceSide(t1, 0), 'One.', () => traceSide(t1, 1), 'Two.', () => traceSide(t1, 2), 'Three sides!', () => { tracer.visible = false; },
+    'Now count the corners.', () => lightCorner(t1, 0), 'One.', () => lightCorner(t1, 1), 'Two.', () => lightCorner(t1, 2), 'Three corners!',
+    () => { clearCorners(t1); return wait(300); }, 'Your turn! Tap each corner and count.', () => { setName('tap'); task = ['Tap each corner.']; return tapCorners(t1); },
+    () => { setName('learn'); task = null; }, 'Three corners! Great counting!', () => clearCorners(t1),
+    'Three straight sides, three corners. A triangle!',
+    () => { chant(true); t1.marks.forEach(m => { m.material = cornerMat; m.scale.setScalar(1.15); }); }, 'Clap it with me! Tap the hands.', 'Three sides!', () => claps(t1), 'Three corners!', () => claps(t1), 'Tri-an-gle!', () => claps(t1), () => { chant(false); burst(t1.g.position, 30); chime(true); clearCorners(t1); return cheer(mendy); },
+    'Watch. I turn it upside down.', () => tween(1100, k => { t1.turn.rotation.z = ease(k) * Math.PI; }), 'Still a triangle!',
+    'Now I make it small.', () => tween(800, k => t1.g.scale.setScalar(1.25 - ease(k) * 0.7)), 'Small, but still a triangle!',
+    () => tween(600, k => { t1.turn.rotation.z = Math.PI * (1 - ease(k)); t1.g.scale.setScalar(0.55 + ease(k) * 0.45); })
+  ]);
+  if (ok) watch();
+}
+async function watch() {
+  setName('watch'); dots(1);
+  const t1 = shapes[0];
+  await Promise.all([camTo('wide', 1300), moveTo(t1, t1.home, 1100, 0.6)]);
+  t1.busy = false;
+  shapes.slice(1).forEach((o, i) => { o.g.visible = true; o.g.scale.setScalar(0.01); setTimeout(() => { pop(); tween(420, k => o.g.scale.setScalar(Math.max(0.01, o.scale * ease(k)))); }, FAST ? 0 : i * 140); });
+  await wait(1200);
+  const ok = await play([
+    "Here are Mendy's toys. Watch me find a triangle.",
+    () => { handOn = t1; hand.style.display = 'block'; return wait(500); },
+    () => { t1.busy = true; return moveTo(t1, new THREE.Vector3(t1.g.position.x, 1.25, t1.g.position.z), 400); },
+    () => moveTo(t1, boxAt().clone().setY(1.25), 1300),
+    () => { hand.style.display = 'none'; handOn = null; chime(true); return dropInBox(t1); },
+    'Into the box!', 'Now you. Find all the other triangles!'
+  ]);
+  if (ok) find();
+}
+let idleT = null, idleN = 0, idleFn = null;
+function idle() { clearTimeout(idleT); if (!idleFn) return; idleT = setTimeout(() => { if (!busy && allow) idleFn(++idleN); idle(); }, FAST ? 1e9 : 11000); }
+function stopIdle() { clearTimeout(idleT); idleFn = null; idleN = 0; }
+function pointAt(o) { handOn = o; hand.style.display = 'block'; return wait(1800).then(() => { hand.style.display = 'none'; handOn = null; }); }
+W.idleNow = () => { if (idleFn) idleFn(++idleN); };
+function find(bonus) {
+  setName(bonus ? 'bonus' : 'find'); dots(2); allow = true; let left = shapes.filter(o => o.isTri && !o.inBox && o.g.visible).length;
+  const ask = [bonus ? 'Find the tricky triangles. Drag them in.' : 'Drag every triangle into the box.']; task = ask;
+  let helped = false;
+  idleFn = n => { const t = shapes.find(x => x.isTri && !x.inBox && x.g.visible && !x.busy); if (!t) return;
+    W.reminders = (W.reminders || 0) + 1;
+    if (n === 1) play([...ask, 'Look for three straight sides.', () => pointAt(t)]);
+    else play(['Here is a triangle. Count its corners.', () => pointAt(t), ...[0, 1, 2].flatMap(i => [() => lightCorner(t, i), NUM[i]]), () => clearCorners(t), 'Drag it into the box.']); };
+  idle();
+  onDrop = (o, inBox) => {
+    idle();
+    if (!inBox) { goHome(o); play(['Put it in the box.']); return; }
+    if (o.isTri) {
+      chime(true); left--;
+      if (left === 0) { allow = false; onDrop = null; stopIdle(); }
+      dropInBox(o).then(() => {
+        if (left === 0) {
+          const quick = !bonus && W.misses <= 1;
+          play([YES[o.id] || 'Yes! A triangle!', 'You found all the triangles!', { wait: 300 }]).then(ok => { if (!ok) return; if (quick) bonusRound(); else mistake(); });
+        } else play([YES[o.id] || 'Yes! A triangle!']);
+      });
+      return;
+    }
+    if (!bonus) W.misses++; chime(false);
+    const lines = LOOK[o.k];
+    goHome(o).then(() => {
+      const steps = [lines[0]];
+      if (o.marks.length) { steps.push('Count the corners.'); o.marks.forEach((m, i) => steps.push(() => lightCorner(o, i), ['One.', 'Two.', 'Three.', 'Four.', 'Five.', 'Six.'][i])); }
+      steps.push(...lines.slice(1), () => { clearCorners(o); });
+      /* struggling (2 misses): teach the rule again on a real triangle: count its corners together */
+      if (W.misses >= 2 && !helped && !bonus) { const t = shapes.find(s => s.isTri && !s.inBox && s.g.visible); if (t) { helped = true;
+        steps.push('Remember: a triangle has three corners.', 'Look at this one.', ...[0, 1, 2].flatMap(i => [() => lightCorner(t, i), NUM[i]]), () => wait(500), () => clearCorners(t)); } }
+      steps.push(...ask);
+      play(steps);
+    });
+  };
+  play(ask);
+}
+/* quick learners: a bonus round of tricky pieces (not counted against the stars) */
+function bonusRound() {
+  W.bonus = true; setName('bonus');
+  const BONUS_COLORS = ['#E03A33', '#00A3B8', '#F2A900'];
+  const news = BONUS.map((b, i) => { const o = makeShape(b[0], b[1], BONUS_COLORS[i], b[2], b[3]); o.slot = b[4]; o.home.copy(homeFor(b[4])); o.g.position.copy(o.home); o.g.scale.setScalar(0.01); return o; });
+  news.forEach((o, i) => setTimeout(() => { pop(); tween(420, k => o.g.scale.setScalar(Math.max(0.01, o.scale * ease(k)))); }, FAST ? 0 : 300 + i * 200));
+  play(['Bonus round! You are so good at this.', 'Here come some tricky ones.', { wait: 500 }]).then(ok => { if (ok) find(true); });
+}
+function mistake() {
+  setName('mistake'); dots(3); task = null; stopIdle(); shapes.forEach(clearCorners);
+  shapes.forEach(o => { if (!o.inBox) tween(300, k => o.g.scale.setScalar(Math.max(0.001, o.scale * (1 - k)))).then(() => { o.g.visible = false; }); });
+  const d = makeShape('dv', 'tri', '#FF7A1A', Math.PI, 1.5); d.slot = null; d.busy = true;
+  d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01);
+  dovid.position.set(-1.3, 0, 0.6); dovid.rotation.y = 0.35; dovid.visible = true;
+  camTo('close', 1000).then(() => tween(500, k => d.g.scale.setScalar(Math.max(0.01, ease(k) * 1.15))));
+  const j = $('#judge'); let answered = false;
+  const yes = j.querySelector('.nottri'), no = j.querySelector('.istri'); delete yes.dataset.cost;
+  yes.onclick = () => {
+    if (answered) return; if (!yes.dataset.cost) { W.misses++; yes.dataset.cost = '1'; } chime(false); yes.classList.remove('shake'); void yes.offsetWidth; yes.classList.add('shake');
+    play(['Let us count the corners.', () => lightCorner(d, 0), 'One.', () => lightCorner(d, 1), 'Two.', () => lightCorner(d, 2), 'Three. It is a triangle!', 'Is it a triangle?']);
+  };
+  no.onclick = () => {
+    if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d);
+    play(['Yes! It is a triangle. Show Dovid the corners.', () => { task = ['Tap each corner.']; return tapCorners(d); }, () => { task = null; clearCorners(d); },
+      'Turned around, it is still a triangle.', () => cheer(dovid),
+      () => tween(900, k => { d.turn.rotation.z = Math.PI * (1 - ease(k)); }),
+      () => { dovid.visible = false; return camTo('wide', 1000); }, () => dropInBox(d), { wait: 300 }]).then(ok => { if (ok) end(); });
+  };
+  play(['This is Dovid.', 'Dovid says this shape is not a triangle.', 'He says it is upside down.', 'What do you think? Is it a triangle?', () => { task = ['Is it a triangle? Tap your answer.']; j.classList.add('show'); }]);
+  setTimeout(() => { if (!answered) j.classList.add('show'); }, FAST ? 0 : 14000);
+  const nudge = () => setTimeout(() => { if (answered || W.name !== 'mistake') return; if (!busy) play(['Is it a triangle? Tap your answer.']); nudge(); }, FAST ? 1e9 : 13000); nudge();
+}
+function end() {
+  const m = W.misses, stars = m === 0 ? 3 : m <= 2 ? 2 : 1;
+  W.stars = stars; W.done = true; setName('end'); dots(STEPS);
+  burst(boxAt().clone().setY(1.4), 60); chime(true); task = null; cheer(mendy).then(() => cheer(mendy));
+  const STAR = on => '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="' + (on ? '#F5B400' : '#EDE6D6') + '" stroke="' + (on ? '#C48F00' : '#D8CFBC') + '" stroke-width="4" stroke-linejoin="round"/></svg>';
+  $('#stars').innerHTML = [0, 1, 2].map(i => '<div class="star">' + STAR(i < stars) + '</div>').join('');
+  $('#end').classList.add('show');
+  document.querySelectorAll('.star').forEach((s, i) => setTimeout(() => s.classList.add('pop'), FAST ? 0 : 250 + i * 250));
+  play(['You found every triangle!', stars === 3 ? 'Three sides, three corners. You are a triangle expert!' : 'Great work! Play again for more stars.']);
+}
+$('#replay').onclick = () => { hush(); learn(); };
+
+/* ---------------- start: the 3D room is already moving behind the play button ---------------- */
+buildSet(); resize();
+shapes.forEach(o => { o.g.visible = true; });
+dots(0); frame(); W.ready = true;
+preload(['Your turn! Tap each corner and count.', 'One!', 'Two!', 'Three!', 'Three corners! Great counting!', 'Three straight sides, three corners. A triangle!', 'Clap it with me! Tap the hands.', 'Tri-an-gle!', 'Watch. I turn it upside down.', 'Still a triangle!', 'Now I make it small.', 'Small, but still a triangle!', "Here are Mendy's toys. Watch me find a triangle.", 'Into the box!', 'Now you. Find all the other triangles!', 'Drag every triangle into the box.', 'Yes! A triangle!', 'That is a square.', 'Count the corners.', 'Four.', 'Four corners! A triangle has only three.', 'Mendy is cleaning up his toys.', 'He needs all the triangles.', "Let's learn about triangles!", 'This is a triangle.', 'Count the sides with me.', 'One.', 'Two.', 'Three sides!', 'Now count the corners.', 'Three corners!']);
+$('#start').onclick = () => { ac(); $('#start').style.display = 'none'; againBtn.style.visibility = 'visible'; learn(); };
+</script>
+</body>
+</html>
