@@ -23,7 +23,7 @@ export default function setup(E, { struggled, unit, game }) {
   dot.add(new THREE.Mesh(new THREE.SphereGeometry(.55, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })));
   const dotGlow = E.glowSprite('#ffe680', 1.1, .55); dot.add(dotGlow);
   /* soft rings where a dot can go; the right one glows when he needs help */
-  const ringM = () => new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffe9a0, emissiveIntensity: .6, transparent: true, opacity: .55 });
+  const ringM = () => E.CALM ? new THREE.MeshStandardMaterial({ color: 0xff8a3d, emissive: 0xff6a1a, emissiveIntensity: .5, roughness: .4 }) : new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffe9a0, emissiveIntensity: .6, transparent: true, opacity: .55 });   /* calm: clear orange rings for the dot's places */
   const spotRing = () => { const r = E.mesh(new THREE.TorusGeometry(.3, .035, 10, 32), ringM(), 0, 0, 0, false); r.visible = false; E.scene.add(r); return r; };
   const rings = { right: spotRing(), left: spotRing(), in: spotRing() };
   const helpGlow = E.glowSprite('#fff7b0', 1.6, 0); E.scene.add(helpGlow);
@@ -142,9 +142,11 @@ export default function setup(E, { struggled, unit, game }) {
     await E.say('Great! Now Tuf and Suf.');
     setShape('ת'); at = 'dish'; dot.position.copy(spotPos('dish')); await E.wait(300);
     await demo('tav', 'The dot goes inside. This is Tuf.');
-    await E.say('Suf has no dot at all.'); await moveDot('dish', 400);
+    if (E.CALM) { await demo('sav', 'I take the dot out. No dot: this is Suf.'); }   /* calm: taking the dot out is shown, not only told */
+    else { await E.say('Suf has no dot at all.'); await moveDot('dish', 400); }
     okBtn.style.display = 'grid'; { const r = okBtn.getBoundingClientRect(); E.hand.at(r.x + r.width / 2, r.y + 20, true); }
-    await E.say('Already right? Tap the green check!'); E.hand.hide(); okBtn.style.display = 'none';
+    if (E.CALM) { await E.say('Watch me. It is Suf already. I tap the green check.'); okBtn.classList.add('press'); E.sfx.chime(); await E.wait(400); okBtn.classList.remove('press'); }
+    await E.say(E.CALM ? 'Is it right already? Tap the green check!' : 'Already right? Tap the green check!'); E.hand.hide(); okBtn.style.display = 'none';
     for (const k of ['sav', 'tav', 'sav', 'tav']) await task(k);
     await E.say('Now all four, mixed up!');
     for (const k of mix(['sin', 'sav', 'shin', 'tav'])) await task(k);

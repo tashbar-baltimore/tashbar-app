@@ -100,7 +100,7 @@ export default function setup(E, { struggled, unit, game }) {
     arrow.visible = false;
     if (wrongInRound >= (E.CALM ? 1 : 2)) showHelp();   /* calm: the first miss already shows a right one (K-CLARITY 16) */
   }
-  function showHelp() { const t = letters.find(l => l.visible && !l.userData.got && l.userData.key === want); if (!t) return; helpOn = t; if (E.CALM) return E.handBelow(t, true); const [x, y] = E.toScreen(E.worldPos(t)); E.hand.at(x + 10, y + 10, true); }
+  function showHelp() { const t = letters.find(l => l.visible && !l.userData.got && l.userData.key === want); if (!t) return; helpOn = t; if (E.CALM) return;   /* calm: the right tile glows; a hand under it covered the tile below */ const [x, y] = E.toScreen(E.worldPos(t)); E.hand.at(x + 10, y + 10, true); }
   E.onPointer('down', async e => {
     if (!active) return; const l = E.pickFrom(e, letters.filter(x => !x.userData.got)); if (!l || l.userData.busy) return; lastAct = performance.now();
     if (l.userData.key === want) got(l); else { active = false; await miss(l); active = true; }

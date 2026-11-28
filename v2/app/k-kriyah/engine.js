@@ -132,7 +132,7 @@ body.calmbg::before{content:'';position:fixed;inset:0;pointer-events:none;backdr
 #again{left:16px;top:16px}
 #home{right:16px;top:16px}
 #prog{left:50%;top:22px;transform:translateX(-50%);display:flex;gap:10px;padding:10px 14px;border-radius:40px;background:linear-gradient(#ffffffd0,#ffffff90);box-shadow:0 6px 18px #0b3a6626,inset 0 -3px 0 #0001}
-#prog:empty{display:none}#prog.many{gap:4px;padding:8px 10px;max-width:calc(100vw - 40px);flex-wrap:wrap;justify-content:center}#prog.many i{width:14px;height:14px}
+#prog:empty{display:none}#prog.many{gap:3px;padding:7px 9px}#prog.many i{width:12px;height:12px}
 #prog i{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#d6e4f0);box-shadow:inset 0 -3px 4px #0002;transition:all .3s}
 #prog i.on{background:radial-gradient(circle at 35% 30%,#fff9d0,#ffd02e 45%,#f0a000);box-shadow:inset 0 -3px 4px #b4730055,0 0 14px #ffd02e}
 .green{background:radial-gradient(circle at 34% 26%,#d6ffe5 0 10%,#5be08f 35%,#1fa857 75%,#137a3e);
