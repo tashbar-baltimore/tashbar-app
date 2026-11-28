@@ -158,5 +158,11 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.17", "Jumped, Hummed, Landed", "Read -ed endings that say t, d or id", { after: "READ.PHON.L02.04", std: "RF.1.3f", file: "CoreDataF2", min: 6 }],
   ["READ.PHON.L02.18", "Cats and Boxes", "Choose -s or -es to make more than one", { after: "READ.PHON.L02.17", std: "L.1.2d", file: "CoreDataF2", min: 6 }],
   ["READ.FLU.L02.06", "Heart Words: some, come", "Read the heart words does, done, some and come", { after: "READ.PHON.L02.18", std: "RF.1.3g", file: "CoreDataF2", min: 5 }],
-  ["READ.FLU.L02.07", "Read It with Feeling", "Read a sentence the way its end mark says: . ? !", { after: "READ.FLU.L02.06", std: "RF.1.4b", file: "CoreDataF2", min: 6 }]
+  ["READ.FLU.L02.07", "Read It with Feeling", "Read a sentence the way its end mark says: . ? !", { after: "READ.FLU.L02.06", std: "RF.1.4b", file: "CoreDataF2", min: 6 }],
+  ["WRIT.HAND.L01.07", "Write c, o, d", "Say it, trace it, write it: c, o and d (the round letters)", { after: "WRIT.HAND.L01.06", std: "L.K.1a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L01.14", "Goat and Hat", "Know the sounds of g (goat) and h (hat)", { after: "READ.FLU.L01.04", std: "RF.K.3a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L01.15", "Egg Sound", "Know the sound of e, the first sound in egg", { after: "READ.PHON.L01.14", std: "RF.K.3b", file: "CoreDataF2", min: 4 }],
+  ["READ.PA.L01.11", "Middle Sound", "Hear the middle sound in a word", { after: "READ.PA.L01.10", std: "RF.K.2d", file: "CoreDataF2", min: 4 }],
+  ["READ.FLU.L01.05", "Heart Words: we, he, me", "Read the heart words we, he and me by sight", { after: "READ.PHON.L01.15", std: "RF.K.3c", file: "CoreDataF2", min: 4 }],
+  ["WRIT.HAND.L01.08", "Write g, h, e", "Say it, trace it, write it: g, h and e", { after: "WRIT.HAND.L01.07", std: "L.K.1a", file: "CoreDataF2", min: 5 }]
 ];
