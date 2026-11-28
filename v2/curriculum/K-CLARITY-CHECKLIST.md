@@ -192,3 +192,8 @@ More fixes (review-shapes takeover session, Units 7-12):
 | Shape party 1-3, Graduation (and Mystery shape, same clue code): finding the shape for "three corners" or "six sides" marked nothing (4, 5) | Before it goes in the box, its corners light and are counted ("One. Two. Three corners!"), or its sides light one by one; also in Mendy's "Watch me" |
 | Graduation: "I am turned" fits several pieces; the certificate covered Mendy's face | That clue line is gone (only one square is there); Mendy steps aside for the certificate (hidden on a phone) |
 | Phone: the camera looks down steeply, so a cone looked like a flat disc (6) | On a phone each spinning solid leans so its side faces the camera: a cone shows its point, a cube and a cylinder their sides |
+
+**Round 2 re-score (two fresh reviewers, final pictures of Units 7-12, 2026-11-27 late):** Where is it? 3, Fix the pattern 2, Pattern train 2, Sort by color 3, Big and small 2, Line them up 3, Heavy and light 3, Shape party 1 3, Shape party 2 2, Shape party 3 3, Graduation 3. Stricter than before; fixes from their lists:
+| Problem (rule) | Fix |
+|---|---|
+| Friend's mistake: after a wrong answer, the help was the voice only in most games, and lit corners or sides were cleared before he could look (16) | Every wrong answer now shows something: corners or sides stay lit; a curvy shape's outline glows; the flat square turns so he sees it is thin (next to a cube of the same colour); the hand goes to the side of the scale that went down; the hand moves the piece to the box it belongs in; gold balls on the scarves' starting ends; the gold ring on the empty "in front" place |

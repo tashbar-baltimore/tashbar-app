@@ -1685,16 +1685,28 @@ export function startGame(cfg) {
     const j = $('#judge'); let answered = false, costed = false;
     const right = M.answer ? j.querySelector('.yesB') : j.querySelector('.noB'), wrong = M.answer ? j.querySelector('.noB') : j.querySelector('.yesB');
     W.answerSel = M.answer ? '.judge .yesB' : '.judge .noB'; W.wrongSel = M.answer ? '.judge .noB' : '.judge .yesB';
-    const explain = M.sides && d.marks ? ['Let us look at the sides.', ...sideSteps(d)] : d.marks.length ? ['Let us count the corners.', ...d.marks.flatMap((m, i) => [() => lightCorner(d, i), NUMS[i]])] : [];   /* M.sides: the friend's claim is about sides, so the sides light */
+    const keep = a => (SHOT ? a.slice(0, -1) : a);   /* pictures: the lit sides stay until his next touch */
+    let curvyLine = null;
+    const outline = o => { const pts = shapeOf(o.k).s.getSpacedPoints(90).map(p => new THREE.Vector3(p.x, p.y, 0)); const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 160, 0.045, 8, true), cornerMat); m.position.z = DEPTH / 2 + BEV + 0.06; o.mesh.add(m); return m; };
+    const explain = cfg.sortBy ? [] : M.thin ? [() => tween(900, k => { d.turn.rotation.y = ease(k) * 1.25; })] : M.sides && d.marks ? ['Let us look at the sides.', ...keep(sideSteps(d))] : d.marks.length ? ['Let us count the corners.', ...d.marks.flatMap((m, i) => [() => lightCorner(d, i), NUMS[i]])]
+      : (d.mesh && KINDS[d.k] && !KINDS[d.k].solid && !M.thin) ? ['Look at its sides.', () => { if (!curvyLine) { curvyLine = outline(d); plink(); } return wait(600); }]   /* a shape with no corners: its outline glows, so the curvy sides are seen */
+      : M.balance ? [() => { const ws = BS.items.map(o => o.w), h = BS.items[ws.indexOf(Math.max(...ws))]; showHandAt(toScreen(h.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.5, 0)))); return wait(500); }]   /* the hand on the side that went down */
+      : M.thin ? [() => tween(900, k => { d.turn.rotation.y = ease(k) * 1.25; })]   /* flat or solid: the flat piece turns, so he sees it is thin */
+      : M.where ? [() => { showRing('front', true); return wait(400); }]   /* where is it: the gold ring on the empty "in front" place */
+      : M.measure && MS ? [() => { endMarks(false); MS_ENDS = MS.items.map(o => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), cornerMat); m.position.set(o.g.position.x - o.len / 2 - 0.1, ROD_Y + 0.3, o.g.position.z); scene.add(m); return m; }); if (MS_LINE) MS_LINE.material.color.set('#F5B400'); return wait(500); }]   /* measuring: gold balls on the two starting ends, the start line gold */
+      : [];
+    if (cfg.sortBy && M.box != null && d.mesh) explain.push(() => { const want = cfg.sortBy === 'color' ? cfg.boxes.findIndex(b => b.acceptColor === M.piece[3]) : cfg.boxes.findIndex(b => (b.acceptSize === 'big') === ((M.piece[2] || 1) >= 0.85)); if (want < 0) return; handOn = d; hand.style.display = 'block';
+      const hw = ms => (SHOT ? new Promise(r => setTimeout(r, ms)) : wait(ms)); return hw(900).then(() => { showHandAt(toScreen(boxAt(want).clone().setY(1.0))); return hw(900); }); });   /* sorting: the hand goes from the piece to the box it belongs in */
+    /* K-CLARITY-RULES 16: every wrong answer on the friend's mistake gets help he can SEE (review 2) */   /* M.sides: the friend's claim is about sides, so the sides light */
     wrong.onclick = () => {
       if (answered) return; if (!costed) { W.misses++; costed = true; } chime(false); wrong.classList.remove('shake'); void wrong.offsetWidth; wrong.classList.add('shake');
       const per = q => { for (let k = 1; k <= q.length; k++) if (q.every((t, i) => t === q[i % k])) return k; return q.length; };
       const patShow = M.pattern && PS ? (M.pattern.bad != null ? [() => { ghost.visible = true; ghost.position.copy(slotAt(M.pattern.bad, PS.n, PS.z)); if (ghost.isGroup) ghost.scale.setScalar(tall ? 0.72 : 1); }]
         : [() => { PS.R = { ...PS.R, core: per(M.pattern.seq) }; coreGlow(true); return sing(); }, () => wait(600), () => coreGlow(false)]) : [];   /* a friend's pattern: the wrong car gets the ring, or the part that repeats glows while it is sung (K-CLARITY-RULES 16) */
-      play([...explain, ...patShow, ...(M.join ? [() => joinSide(true)] : []), ...M.explain, ...(M.join ? [() => joinSide(false)] : []), () => clearCorners(d), M.ask]);
+      play([...explain, ...patShow, ...(M.join ? [() => joinSide(true)] : []), ...M.explain, ...(M.join ? [() => joinSide(false)] : []), () => { if (!SHOT) clearCorners(d); }, M.ask]);
     };
     right.onclick = () => {
-      if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d); if (M.pattern) ghost.visible = false;
+      if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d); clearBars(d); if (M.where) showRing('front', false); if (M.measure) { endMarks(false); if (MS_LINE) MS_LINE.material.color.set('#22304F'); } if (M.pattern) ghost.visible = false; if (curvyLine) { curvyLine.parent.remove(curvyLine); curvyLine = null; } if (!SHOT) hand.style.display = 'none';
       const prove = M.prove && d.marks.length ? ['Show ' + F.name + ' the corners.', () => { task = ['Tap each corner.']; return tapCorners(d); }, () => { task = null; clearCorners(d); }] : [];
       const fixBad = () => { const m = PS.beads[M.pattern.bad], want = BEADS[M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t)[M.pattern.bad]];
         if (m.userData.recolor) m.userData.recolor(want.color); else m.material.color.set(want.color); PS.R = { ...PS.R, seq: M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t) }; chime(true); return sing(); };
