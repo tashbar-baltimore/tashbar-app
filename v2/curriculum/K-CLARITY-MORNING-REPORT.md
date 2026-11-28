@@ -42,10 +42,7 @@ Fresh reviewers who built none of the games score each one 1–5: "Would a 5-yea
 
 **Shapes (25 games).** Round 1: Find the triangles, Find the hexagons, What comes next? and Heavy and light scored 4; the other 21 scored 3, none lower. Every problem they named was fixed (plain tick and X buttons, every side lights when the voice says "sides", the first wrong move shows how, cones stand up, a real balloon against rocks, no kite that fits the rectangle clue, calmer backdrops, bigger phone pieces). Round 2 fixes are going in now (a wrong piece gets a hand showing the right box; the copy rounds show every empty spot; the curvy "not a triangle" bulges on every side). Round 2 scores follow here when they are in.
 
-**Numbers (Units 1–8).** Round 1: most games 4, some 3, one 2 (Unit 6 review). Round 2: Units 1–5 and 8 all 4 or 5; seven games 3, all fixed. Round 3 (a new, stricter reviewer): every game 4 except 15 that scored 3. Being fixed now, most important first:
-- Unit 7 (the orchard): the camera now looks straight down at both blankets, so the near blanket no longer looks bigger. "The same" always looks the same, and Show me lines the apples up in rows. (Done, Friday 17:50 UTC.)
-- Still in progress: Unit 6 spinner dots stay until he answers; Unit 7 see-saw and find-the-mistake simpler; a "Watch me" before every new kind of round (count3, check5, review8); review4 and review5 with fewer kinds of task; Unit 8 calmer tablecloth and bigger number tiles.
-Then a fourth fresh reviewer scores all of Units 1–8.
+**Numbers (Units 1–8): done, every game 4 or 5.** Round 1: most 4, some 3, one 2. Round 2: Units 1–5 and 8 all 4 or 5. Round 3 (three more fresh reviewers, every round pictured): the last seven 3s and Unit 8's Review time (a 2: its ten-frame rounds sat off the screen) were fixed and re-scored until each was 4. What changed most: wrong-move help now SHOWS how (Shmuel gets Dovid's apples and one drops in; Avi's hops are counted "one hop, two hops"), a pointing hand that stayed on screen is gone, the ten-frame and hands fill the screen, and the voice never says a number a stone does not show. Full tables in the Numbers checklist and #618's description.
 
 (This section is updated as each round finishes.)
 

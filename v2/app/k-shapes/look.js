@@ -1198,7 +1198,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     pose('idle');
     const dummy = () => new THREE.Object3D();
     k.userData = { armL: dummy(), armR: dummy(), head: dummy(), body, eyes: [], blink: 9e9, kind: 'kid', painted: true, pose, card, cheerN: 0 };
-    card.onBeforeRender = () => { k.updateMatrixWorld(); const q = new THREE.Quaternion(); body.getWorldQuaternion(q); card.quaternion.copy(q.invert().multiply(camera.quaternion)); };
+    card.onBeforeRender = () => { k.updateMatrixWorld(); const q = new THREE.Quaternion(); body.getWorldQuaternion(q); card.quaternion.copy(q.invert().multiply(camera.quaternion)); card.scale.x = Math.abs(card.scale.x) * (k.userData.mirror ? -1 : 1); };   /* userData.mirror: the picture faces the other way */
     scene.add(k); L.kids.push(k); return k;
   };
   /* Tatty and Mommy: kind grown-ups who come to see and clap */
