@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Big and small</title>
+<!-- Kindergarten Shapes, Unit 9 "Sorting and counting groups" (v2/curriculum/k-shapes/MAP.md): sort toys by size into a big box and a small box; count each box; find the box with more.
+     Sort by one rule, count each group, say which group has more. K.MD.3. Built on the shared 3D kit (kit.js). ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+const nc = a => { a.count = false; return a; };
+const P = '#7C4DFF';
+const BOXES = [{ paint: 'circle', color: P, paintScale: 1.3, acceptSize: 'big', word: 'big' }, { paint: 'circle', color: P, paintScale: 0.55, acceptSize: 'small', word: 'small' }];
+const word = o => BOXES[o.box].word;
+startGame({
+  id: 'sortsize', sortBy: 'size', boxes: BOXES, countAfter: true,
+  intro: ['Mendy has big toys and small toys.', 'Let us sort them by size.', 'Big with big, small with small!'],
+  lessons: [{ k: 'sphere', kind: 'solid', word: 'big ball', color: '#F2A900', scale: 1.5, like: 'It takes up lots of room.', action: 'roll' },
+            { k: 'sphere', kind: 'solid', word: 'small ball', color: '#F2A900', scale: 0.6, like: 'It takes up a little room.', action: 'roll',
+              tap: 'Tap the small ball.', tapSay: 'Small!', chant: [['Big!', 2], ['Small!', 2], ['Big and small!', 3]] }],
+  set: [['a1', 'cube', 0.2, 1.1, '#E03A33'], ['a2', 'tri', 0, 0.62, '#1F6FEB'], ['a3', 'circle', 0, 0.65, '#12A766'], ['a4', 'square', 0.3, 1.1, '#F2A900'],
+        ['a5', 'sphere', 0, 0.6, '#FF7A1A'], ['a6', 'rect', 0.2, 0.62, '#00A3B8'], ['a7', 'cone', 0, 1.05, '#7C4DFF'], ['a8', 'hex', 0, 0.6, '#F0458E']],
+  watchLine: 'Watch me sort by size.', watchDone: 'Big goes with big!', yourTurn: 'Now you. Big or small?',
+  ask: 'Is it big or small? Put it in its box.', hint: 'Look at the big circle and the small circle.', hint2: 'This one goes in its box.', remember: 'Remember: big with big, small with small.',
+  yesDefault: o => 'Yes! ' + word(o)[0].toUpperCase() + word(o).slice(1) + '!', allDone: 'Everything is sorted!',
+  wrong: o => nc(['That one is ' + word(o) + '.', 'It goes in the ' + word(o) + ' box.']),
+  mostAsk: 'Which box has more?', mostYes: 'Yes! The small box has more!',
+  bonus: [['b1', 'cyl', 0, 1.1, 0], ['b2', 'kite', 0.3, 0.6, 2], ['b3', 'oval', 0.4, 1.1, 4]], bonusAsk: 'Big or small? Sort these too.',
+  mistake: { friend: { name: 'Avi', shirt: '#3C7A89', hair: '#5A3A22' }, icon: 'sphere', piece: ['sphere', 0, 1.3, '#F2A900'], box: 0,
+    claim: ['Avi says this ball is small.'], ask: 'Is it small?', answer: false,
+    explain: ['Look how big it is!', 'It takes up lots of room.'], right: ['Right! It is big.', 'It goes in the big box.'] },
+  endLine: 'You sorted by size!', praise: 'Big with big, small with small. Great sorting and counting!'
+});
+</script>
+</body>
+</html>

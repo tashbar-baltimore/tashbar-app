@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Build with shapes</title>
+<!-- Kindergarten Shapes, Unit 6 "Building with shapes" (v2/curriculum/k-shapes/MAP.md): put shapes together to make new shapes and pictures
+     (two triangles make a square, two squares make a rectangle, a house, a tree, a rocket). K.G.5, K.G.6.
+     Research: putting shapes together grows spatial skill (Clements & Sarama; Levine et al., 2012). Built on the shared 3D kit (kit.js). ?fast=1 for the test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+const PI = Math.PI;
+startGame({
+  id: 'build', mode: 'puzzle', boxes: [],
+  view: { wide: [[0, 4.8, 9.4], [0, 1.7, 1.4]], tall: [[0, 6.4, 11.4], [0, 1.5, 1.6]] }, mendyAt: { wide: [-4.8, 0, 1.0] },
+  intro: ['Mendy loves to build with shapes.', 'Shapes can make new shapes!', "Let's build together!"],
+  puzzleLesson: { k: 'halfSq', rotA: 0, rotB: PI, first: 'Look at these two triangles.', made: 'Two triangles make a square!', again: 'Let me pull them apart.',
+    rule: ['Shapes can make new shapes!'], chant: [['Two triangles!', 2], ['Make a square!', 3]] },
+  rounds: [
+    { w: 3.0, h: 3.0, slots: [{ k: 'halfSq', rot: 0, off: [0, 0] }, { k: 'halfSq', rot: PI, off: [0, 0] }], extra: ['circle'], done: 'Two triangles make a square!' },
+    { w: 3.4, h: 2.2, slots: [{ k: 'square', off: [-0.6, 0] }, { k: 'square', off: [0.6, 0] }], extra: ['tri'], say: 'Two squares. What will they make?', done: 'Two squares make a rectangle!' },
+    { w: 3.0, h: 3.6, slots: [{ k: 'square', s: 1.2, off: [0, -0.55] }, { k: 'tri', s: 1.2, off: [0, 0.914] }, { k: 'rect', rot: PI / 2, s: 0.35, off: [0, -0.95], z: 0.25 }],
+      extra: ['circle', 'hex'], say: 'Build a house!', done: 'A house! Shapes make a house!' },
+    { w: 3.0, h: 3.6, slots: [{ k: 'tri', s: 1.3, off: [0, 0.2] }, { k: 'tri', s: 1.0, off: [0, 0.95], z: 0.2 }, { k: 'rect', rot: PI / 2, s: 0.4, off: [0, -1.0] }],
+      extra: ['square'], say: 'Build a tree!', done: 'A tree! Two triangles and a rectangle.' }
+  ],
+  bonusRounds: [{ w: 2.8, h: 3.4, slots: [{ k: 'rect', rot: PI / 2, s: 0.75, off: [0, -0.2] }, { k: 'tri', s: 0.6, off: [0, 0.862] },
+      { k: 'halfSq', rot: PI / 2, s: 0.45, off: [-0.615, -0.62] }, { k: 'halfSq', rot: 0, s: 0.45, off: [0.615, -0.62] }], extra: ['circle'], say: 'Build a rocket!', done: 'A rocket! Look what shapes can make!' }],
+  ask: 'Drag each shape into its hole.', hint: 'Look at the shape of each hole.', hint2: 'This one fits here.', remember: 'Remember: look at the hole. Find the same shape.',
+  watchLine: 'Watch me build.', yourTurn: 'Now you. Build with shapes!',
+  mistake: { friend: { name: 'Dovi', shirt: '#7D5BA6', hair: '#4A2C17' }, icon: 'square', piece: ['square', 0, 1.1, '#12A766'],
+    claim: ['Dovi says two triangles cannot make a square.'], ask: 'Can two triangles make a square?', answer: true,
+    explain: ['We saw it! Two triangles slide together.', 'They make a square.'], right: ['Yes! Two triangles make a square.', 'Shapes can make new shapes.'] },
+  endLine: 'You built every picture!', praise: 'Shapes make new shapes. Master builder!'
+});
+</script>
+</body>
+</html>

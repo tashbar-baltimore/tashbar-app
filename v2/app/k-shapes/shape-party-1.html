@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Shape party</title>
+<!-- Kindergarten Shapes, Review 1 (v2/curriculum/k-shapes/MAP.md): units 1-3 mixed: circle, triangle, square, rectangle, hexagon, and the look-alikes.
+     Research: mixed review of old skills makes them last (Cepeda et al., 2006; Rohrer & Taylor, 2007). Built on the shared 3D kit ("clues" mode). ?fast=1 for the test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame, FAMILY } from './kit.js';
+const PI = Math.PI;
+startGame({
+  id: 'party1', mode: 'clues',
+  boxes: [{ paint: 'star', accept: [], color: '#F5B400' }],
+  intro: ['It is a shape party!', 'All your shapes came to play.', 'Listen to each clue, then find it!'],
+  lessons: [{ k: 'circle', word: 'circle', short: true, color: '#1F6FEB', rule: ['Round, no corners.'] },
+            { k: 'tri', word: 'triangle', short: true, color: '#E03A33' },
+            { k: 'square', word: 'square', short: true, color: '#12A766', rule: ['Four sides the same.'] },
+            { k: 'rect', word: 'rectangle', short: true, color: '#F0458E', rule: ['Two long sides, two short sides.'] },
+            { k: 'hex', word: 'hexagon', short: true, color: '#F2A900', chant: [['Circle!', 2], ['Triangle!', 3], ['Square!', 1], ['Hexagon!', 3]] }],
+  set: [['p1', 'circle', 0, 0.8], ['p2', 'triTall', 0.5, 1], ['p3', 'oval', 0.3, 1], ['p4', 'square', PI / 4, 0.85],
+        ['p5', 'hex', 0.3, 0.9], ['p6', 'curvy', 0, 1], ['p7', 'rectLong', PI / 2, 0.9], ['p8', 'kite', 0, 1]],
+  clues: [
+    { say: ['I have three corners.', 'My sides are straight.'], accept: ['tri', 'triTall', 'triRight', 'triWide', 'triSkinny'] },
+    { say: ['I am round.', 'I have no corners.', 'I am not squished.'], accept: ['circle'] },
+    { say: ['I have four sides.', 'All my sides are the same.'], accept: ['square'] },
+    { say: ['I have six corners.'], accept: ['hex'] },
+    { say: ['I have two long sides.', 'And two short sides.'], accept: ['rect', 'rectLong', 'rectFat'] },
+    { say: ['I am round, but squished.'], accept: ['oval'] }
+  ],
+  watchLine: 'Watch me. Listen to the clue.', watchDone: 'The triangle! Three corners, straight sides.', yourTurn: 'Now you. Listen to each clue!',
+  ask: 'Listen to the clue.', hint: 'Listen to the clue again.', hint2: 'Here I am!', remember: 'Remember: count the corners.',
+  yesDefault: o => 'Yes! I am the ' + FAMILY(o.k) + '!', allDone: 'You found every party shape!',
+  wrong: o => ['That is a ' + FAMILY(o.k) + '.', 'Listen to the clue again.'],
+  mistake: { friend: { name: 'Shmuel', shirt: '#2F6690', hair: '#3B2416' }, icon: 'dots3', piece: ['curvy', 0, 1.15, '#E03A33'],
+    claim: ['The clue was: three straight sides.', 'Shmuel picked this one.'], ask: 'Are its sides straight?', answer: false,
+    explain: ['Look. Its sides are curvy.', 'A triangle has straight sides.'], right: ['Right! Its sides are curvy.', 'It is not a triangle.'] },
+  endLine: 'What a shape party!', praise: 'You know all your shapes. Hooray!'
+});
+</script>
+</body>
+</html>

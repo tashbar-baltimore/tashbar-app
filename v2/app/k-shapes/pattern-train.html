@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Pattern train</title>
+<!-- Kindergarten Shapes, Unit 8 "Patterns, part 2" (v2/curriculum/k-shapes/MAP.md): continue longer patterns: ABC, AABB, shapes and sounds, with blocks.
+     Research: find the part that repeats (the core); fixing a broken pattern and continuing longer ones deepens it (Rittle-Johnson and colleagues).
+     Built on the shared 3D kit (kit.js), pattern mode. ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+const BEADS = {
+  red: { color: '#E03A33', word: 'red', note: 523 }, blue: { color: '#1F6FEB', word: 'blue', note: 659 },
+  yellow: { color: '#F2A900', word: 'yellow', note: 784 }, green: { color: '#12A766', word: 'green', note: 587 },
+  triB: { color: '#7C4DFF', word: 'triangle', note: 698, kind: 'tri' }, sqB: { color: '#FF7A1A', word: 'square', note: 523, kind: 'square' },
+  ciB: { color: '#00A3B8', word: 'circle', note: 880, kind: 'circle' },
+  drum: { color: '#C0392B', word: 'drum', note: 196, kind: 'drum' }, bell: { color: '#F5C542', word: 'bell', note: 1046 },
+  rC: { color: '#E03A33', word: 'red', note: 523, kind: 'cube' }, yC: { color: '#F2A900', word: 'yellow', note: 784, kind: 'cube' },
+  bC: { color: '#1F6FEB', word: 'blue', note: 659, kind: 'cube' }, gC: { color: '#12A766', word: 'green', note: 587, kind: 'cube' }
+};
+const VIEW = { wide: [[0, 5.2, 8.6], [0, 1.2, 0.9]], tall: [[0, 7.6, 9.6], [0, 1.0, 0.6]] }, MENDY = { wide: [-4.6, 0, 0.6] };
+const LESSON = { seq: ['red', 'yellow', 'blue', 'red', 'yellow', 'blue'], first: 'Look at these beads.', say: 'Red, yellow, blue, red, yellow, blue.',
+  coreLine: 'Red, yellow, blue. That part repeats!', chant: [['Red, yellow, blue!', 3], ['Red, yellow, blue!', 3], ['A pattern!', 3]] };
+startGame({
+  id: 'train', mode: 'pattern', boxes: [], beads: BEADS, view: VIEW, mendyAt: MENDY, patternLesson: LESSON,
+  intro: ['Mendy is building a block train.', 'The blocks make a pattern!', "Let's build the pattern train!"],
+  rounds: [
+    { seq: ['rC', 'yC', 'bC', 'rC', 'yC', 'bC'], blanks: 1, tray: ['bC', 'rC', 'gC'], core: 3, watchDone: 'Blue comes next!' },
+    { seq: ['rC', 'yC', 'bC', 'rC', 'yC', 'bC', 'rC', 'yC'], blanks: 2, tray: ['yC', 'bC', 'rC'], core: 3, say: 'Red, yellow, blue. Keep going!' },
+    { seq: ['gC', 'gC', 'bC', 'bC', 'gC', 'gC', 'bC', 'bC'], blanks: 2, tray: ['bC', 'gC', 'yC'], core: 4, say: 'Two green, two blue. Listen.' },
+    { seq: ['ciB', 'triB', 'sqB', 'ciB', 'triB', 'sqB', 'ciB', 'triB'], blanks: 2, tray: ['sqB', 'ciB', 'triB'], core: 3, say: 'Circle, triangle, square. Keep going!' },
+    { seq: ['drum', 'bell', 'bell', 'drum', 'bell', 'bell', 'drum', 'bell'], blanks: 2, tray: ['drum', 'bell'], core: 3, say: 'Drum, bell, bell. Listen.' }
+  ],
+  bonusRounds: [{ seq: ['rC', 'rC', 'yC', 'bC', 'rC', 'rC', 'yC', 'bC'], blanks: 3, tray: ['bC', 'yC', 'rC', 'gC'], core: 4, say: 'A tricky one! Listen carefully.' }],
+  watchLine: 'Watch me. I sing the blocks.', watchDone: 'That comes next!', yourTurn: 'Now you. Build the pattern train!',
+  hint2: 'This block comes next.', remember: 'Find the part that repeats.',
+  mistake: { friend: { name: 'Shloimy', shirt: '#3B6E4F', hair: '#B8642A' }, icon: 'beads',
+    pattern: { seq: ['red', 'yellow', 'blue', 'red', 'blue', 'blue'], bad: 4, fix: 'yellow' },
+    claim: ['Shloimy made a pattern.', 'Red, yellow, blue, red, blue, blue.'], ask: 'Is it a good pattern?', answer: false,
+    explain: ['After red comes yellow.', 'Not blue.'], right: ['Right! One bead is wrong.', 'After red comes yellow.'] },
+  endLine: 'The pattern train is done!', praise: 'You kept every pattern going. Pattern expert!'
+});
+</script>
+</body>
+</html>
