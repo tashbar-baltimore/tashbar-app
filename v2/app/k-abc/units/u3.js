@@ -246,7 +246,7 @@ const review = {
     const tapOne = (its, good, ask, fix) => new Promise(res => { G.expect({ kind: 'tap', at: good }); G.A.wrongMove = { kind: 'tap', at: its.find(i => i !== good) };
       its.forEach(it => it.onTap = async () => { it.poke(); await it.say(); if (it === good) { its.forEach(x => x.onTap = () => x.say()); await G.right(it.obj.position); res(); } else await G.wrong(fix, it); }); });
     /* 1. rhyme (Unit 1) */
-    G.newRound(); { const its = row(shuffle(['cake', 'dog', 'mop'])); await G.say('Tap the picture that rhymes with snake.'); await tapOne(its, its.find(i => i.name === 'cake'), [], ['Snake... listen to the end.']); await clearItems(G); }
+    G.newRound(); { const its = row(shuffle(['cake', 'sun', 'mop'])); await G.say('Tap the picture that rhymes with snake.'); await tapOne(its, its.find(i => i.name === 'cake'), [], ['Snake... listen to the end.']); await clearItems(G); }
     /* 2. first sound d (Unit 3) */
     G.newRound(); { const its = row(shuffle(['duck', 'sun', 'pear'])); await G.say('Tap the one that starts with this sound.', snd('d')); await tapOne(its, its.find(i => i.name === 'duck'), [], ['Listen for this sound.', snd('d')]); await clearItems(G); }
     /* 3. read the word (Units 2–3): tap its picture */

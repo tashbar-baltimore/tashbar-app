@@ -111,7 +111,7 @@ const chalk = {
 };
 
 /* =========================================================== catch: rhyme catch =========================================================== */
-const RH = [['cat', ['hat', 'sun', 'mop']], ['bee', ['tree', 'dog', 'cake']], ['goat', ['boat', 'pin', 'sock']], ['moon', ['spoon', 'map', 'duck']], ['clock', ['sock', 'bell', 'nest']]];
+const RH = [['cat', ['hat', 'sun', 'mop']], ['bee', ['tree', 'sun', 'cake']], ['goat', ['boat', 'pin', 'sock']], ['moon', ['spoon', 'map', 'duck']], ['clock', ['sock', 'bell', 'nest']]];
 const catchG = {
   world(G) { const W = base(G.S, 'garden', { clearW: 7 }); G.big = tree(G.S, 0, -3.2, { s: 1.9, c1: 0x16883A, c2: 0x8EDB4A, puffs: 12 }); tree(G.S, -9, -6, { s: 1.4 }); tree(G.S, 9, -6, { s: 1.5 });
     G.view({ wide: [0, 2.8, 11.6, 6.6, 0.15], narrow: [0, 3.0, 5.4, 8.6, 0.18] }); return W; },
@@ -166,7 +166,7 @@ const check = {
     G.view({ wide: [-0.3, 2.0, 11.2, 5.6, 0.17], narrow: [0, 2.0, 5.2, 7.8, 0.2] }); return W; },
   async play(G) {
     const S = G.S, n = () => G.narrow(); const missed = new Set();
-    const Q = [...shuffle(LET).slice(0, 4).map(ch => ({ k: 'sound', ch })), { k: 'pic', w: 'mat' }, { k: 'pic', w: 'pan' }, { k: 'first', ch: 'd', goal: 'duck', opts: ['duck', 'sun', 'pin'] }, { k: 'rhyme', w: 'goat', goal: 'boat', opts: ['boat', 'dog', 'pin'] }];
+    const Q = [...shuffle(LET).slice(0, 4).map(ch => ({ k: 'sound', ch })), { k: 'pic', w: 'mat' }, { k: 'pic', w: 'pan' }, { k: 'first', ch: 'd', goal: 'duck', opts: ['duck', 'sun', 'pin'] }, { k: 'rhyme', w: 'goat', goal: 'boat', opts: ['boat', 'sun', 'pin'] }];
     G.rounds(Q.length); await G.say('Show me what you know!', 'Tap the right one each time.');
     const pos = (i, m) => n() ? (m > 3 ? V(-0.75 + (i % 2) * 1.5, 2.3 - Math.floor(i / 2) * 1.5, 1.0) : V((i - (m - 1) / 2) * 1.6, 0.85, 1.4)) : V((i - (m - 1) / 2) * (m > 3 ? 2.2 : 2.9), 0.85, 1.0);
     for (const q of Q) {
