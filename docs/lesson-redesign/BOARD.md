@@ -19,22 +19,22 @@ _Lessons in the new shape: the test prints `newShapeLessons` (tests/lib/obqualit
 | Row | Job | Lessons (levels) | Files | Status | Owner (session link) | Last update (UTC) | Where I am / pull requests |
 |---|---|---|---|---|---|---|---|
 | P0 | Engine + 3 sample lessons | MATH.OPS.L03.01, READ.COMP.L05.05, SS.GEO.L07.01 | src/OneBite.html, src/UiKit.html, tests | DONE when live | https://claude.ai/code/session_015qpxB9anh6EkNUEJ97DHM5 | 2026-11-27 | This pull request |
-| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | TAKEN | https://claude.ai/code/session_01Cri5bRC4HsP9vYnMCURp1S | 2026-11-27 17:04 | Claimed; reading the lessons, batch 1 next |
+| M1 | Math Grades 2–3 | MATH.* L03–L04 (about 40) | src/OneBiteDataMath*.html | TAKEN | https://claude.ai/code/session_01Cri5bRC4HsP9vYnMCURp1S | 2026-11-27 | Batch 1 (9 of 40): MATH.OPS.L03.02–.06 and MATH.PV.L03.01–.04 in the "New Lessons M1 batch 1" pull request (11 fresh reviews; final all 4–5). Next: batch 2 = MATH.MEAS.L03.01–.04, NUM.L03.01–.02, GEO.L03.01, STAT.L03.01 (drafted, not yet reviewed). Then the 23 L04 lessons. |
 | M2 | Math Grades 4–8 | MATH.* L05–L09 (about 22) | src/OneBiteDataMath*.html, src/OneBiteDataUpper.html | OPEN | | | |
 | R1 | C45 Grade 4 reading, part 1 | READ.* L05 in C45 (first 30) | src/CoreDataC45*.html | TAKEN | https://claude.ai/code/session_01JPKZXGrA39PYd4bzsQc36i | 2026-11-27 17:10 | Claimed; starting batch 1 (first 6-10 lessons) |
 | R2 | C45 Grade 4 reading, part 2 | READ.* L05 in C45 (other 30) | src/CoreDataC45*.html | OPEN | | | |
 | R3 | C45 Grade 5 reading, part 1 | READ.* L06 in C45 (first 31) | src/CoreDataC45*.html | OPEN | | | |
 | R4 | C45 Grade 5 reading, part 2 | READ.* L06 in C45 (other 31) | src/CoreDataC45*.html | TAKEN | https://claude.ai/code/session_01HB2X6azif4KsNBt5xr8e8K | 2026-11-27 17:18 | Claimed. My 31 = rows 32–62 of the C45 teaching order (src/CoreDataC45.js): READ.LIT.L06.31–41 (Lighthouse 2–12) and READ.FLU.L06.11–30 (Read It 3 Times). Batch 1 (Lighthouse) next |
-| R5 | C68 Grades 6–8 reading | 37 lessons (L07–L09) | src/CoreDataC68*.html | OPEN | | | |
+| R5 | C68 Grades 6–8 reading | 37 lessons (L07–L09) | src/CoreDataC68*.html | TAKEN | https://claude.ai/code/session_01NmKrTiVHqa1LEMS62zP9mn | 2026-11-27 19:40 | 14 of 37 done. Batch 1 (READ.COMP.L08.10–15, READ.LIT.L08.09) in tashbar-baltimore/tashbar-app#667; batch 2 (READ.COMP.L08.16–19, READ.LIT.L08.10–12, now in src/CoreDataC68H8.html) in tashbar-baltimore/tashbar-app#671. Not started: Grade 8 (C68H2: 10, C68H3: 4) and Grade 6 (C68H7: 9). Lessons: keep every tile 2–4 words (phone), no quote marks in cloze options. |
 | R6 | F Grade 2 fluency + C23 | 39 + 3 lessons (L03) | src/CoreDataF*.html, src/CoreDataFH*.html, src/CoreDataC23*.html | OPEN | | | |
-| R7 | Other reading, language, writing (not in a job) | READ.*, LANG.*, WRIT.* in OneBiteData*.html, L03+ (about 40) | src/OneBiteDataRead*.html, src/OneBiteDataWrit.html, src/OneBiteDataUpper.html | OPEN | | | |
+| R7 | Other reading, language, writing (not in a job) | READ.*, LANG.*, WRIT.* in OneBiteData*.html, L03+ (about 40) | src/OneBiteDataRead*.html, src/OneBiteDataWrit.html, src/OneBiteDataUpper.html | TAKEN | https://claude.ai/code/session_011PPoh5KFjyQeYYkHhgWn5e | 2026-11-27 19:00 | Claimed; listing the lessons, batch 1 next |
 | G1 | Grammar Grades 2–4 | G lessons L03–L05 (49) | src/CoreDataG*.html | OPEN | | | |
 | G2 | Grammar Grades 5–8 | G lessons L06–L09 (53) | src/CoreDataG*.html | OPEN | | | |
 | W1 | Writing Grades 2–3 (W13) | 37 lessons (L03–L04) | src/CoreDataW13*.html | OPEN | | | |
 | W2 | Writing Grades 4–5 (W48) | 50 lessons (L05–L06) | src/CoreDataW48*.html | OPEN | | | |
-| W3 | Writing Grades 6–8 (W48) | 57 lessons (L07–L09) | src/CoreDataW48*.html | OPEN | | | |
+| W3 | Writing Grades 6–8 (W48) | 57 lessons (L07–L09) | src/CoreDataW48*.html | TAKEN | https://claude.ai/code/session_015qpxB94YmCQzBn7jqxa8Qk | 2026-11-27 18:45 | Claimed; reading the lessons, batch 1 next |
 | S1 | Social Studies | SS.* (about 30) | src/CoreDataS*.html, src/OneBiteData*.html | OPEN | | | |
-| S2 | Science | SCI.* (20) | src/CoreDataS2.html, src/CoreDataS3.html and the other src/CoreDataS*.html | OPEN | | | |
+| S2 | Science | SCI.* (20) | src/CoreDataS2.html, src/CoreDataS3.html and the other src/CoreDataS*.html | TAKEN | https://claude.ai/code/session_016cU9PXYjBvSiqu8FzyhB3z | 2026-11-27 20:40 | Batch 1 (8 of 20): SCI.SKY.L05.01-04 + SCI.LAND.L06.01-04, pull request "New Lessons S2 batch 1". Next: batch 2 = SCI.LAND.L07.01-04, SCI.PLANT.L08.01-04, SCI.MATT.L09.01-04 (S3, S4, S5) |
 | K1 | Kodesh (Chumash, Kriah, Halacha, Tefillah, Navi, Mishnah) | LK.* (65) | src/OneBiteDataKodesh.html (and src/KriyahMore.html) | OPEN | | | Kodesh: REBBE review after live |
 | L1 | Young levels (seen as bridges and by older boys filling gaps; K–1 boys play the K–1 games) | MATH.*, READ.* L01–L02 (about 70) | src/OneBiteData*.html | OPEN (last) | | | |
 
