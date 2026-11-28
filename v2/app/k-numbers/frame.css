@@ -1,0 +1,162 @@
+/* Kindergarten Numbers: the shared look for every Numbers game (glossy 3D cartoon). Used with frame.js. */
+
+:root{ --ink:#2B2350; --soft:#5B6478; --green:#22B45E; --green-l:#6BE38F; --green-d:#138048; --blue:#2FB5E8; --blue-l:#8BE0FF; --blue-d:#1679B0; --sun:#FFC93D; --sun-l:#FFF09A; --sun-d:#D98200;
+  --sky1:#6EC8FF; --sky2:#BFEBFF; --sand:#FFF1CC; --wood1:#F2C483; --wood2:#D9954D; --wood3:#A2642C; --wood4:#7A451A; }
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; overflow:hidden; color:var(--ink); font-family:'Fredoka','Nunito',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; user-select:none; -webkit-user-select:none; touch-action:manipulation;
+  background:
+    radial-gradient(ellipse 22% 9% at 12% 16%, rgba(255,255,255,.95) 60%, transparent 62%),
+    radial-gradient(ellipse 14% 8% at 20% 12%, rgba(255,255,255,.95) 60%, transparent 62%),
+    radial-gradient(ellipse 20% 8% at 84% 22%, rgba(255,255,255,.9) 60%, transparent 62%),
+    radial-gradient(ellipse 12% 7% at 91% 18%, rgba(255,255,255,.9) 60%, transparent 62%),
+    radial-gradient(circle at 50% -10%, #fff 0, rgba(255,255,255,0) 40%),
+    linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 50%,var(--sand) 100%); }
+button{ font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; border:0; position:relative; }
+svg{ display:block; }
+#game{ height:100%; }
+
+/* glossy 3D buttons: a light top, a dark base, a shine */
+.btn3d{ border:5px solid #fff; box-shadow:0 8px 0 var(--b-d), 0 14px 18px rgba(30,40,90,.25), inset 0 -8px 0 rgba(0,0,0,.12); background:radial-gradient(circle at 50% 28%, var(--b-l), var(--b) 62%); }
+.btn3d::before{ content:''; position:absolute; left:18%; right:18%; top:7%; height:30%; border-radius:50%; background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,0)); pointer-events:none; }
+.btn3d:active{ transform:translateY(6px); box-shadow:0 2px 0 var(--b-d), 0 4px 8px rgba(30,40,90,.2), inset 0 -6px 0 rgba(0,0,0,.12); }
+.btn3d svg{ filter:drop-shadow(0 3px 0 rgba(0,0,0,.18)); }
+.b-green{ --b:var(--green); --b-l:var(--green-l); --b-d:var(--green-d); } .b-blue{ --b:var(--blue); --b-l:var(--blue-l); --b-d:var(--blue-d); }
+.b-sun{ --b:var(--sun); --b-l:var(--sun-l); --b-d:var(--sun-d); } .b-white{ --b:#EEF4FF; --b-l:#fff; --b-d:#B9C7E6; }
+
+/* top bar */
+.top{ height:92px; display:flex; align-items:center; gap:16px; padding:8px clamp(12px,3vw,32px); }
+.rb{ width:76px; height:76px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; }
+.rb svg{ width:42px; height:42px; position:relative; }
+#home{ width:70px; height:70px; }
+#again.talk{ animation:talk 1s infinite; } @keyframes talk{ 50%{ transform:scale(1.09); } }
+.mid{ flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:5px; }   /* the title above the round dots: always on screen (K-CLARITY-RULES 13) */
+.mid .dots{ flex:none; }
+.gtitle{ font:800 clamp(15px,2vw,22px)/1.15 system-ui,-apple-system,'Segoe UI',sans-serif; color:#2B2350; background:rgba(255,255,255,.88); padding:4px 14px; border-radius:999px; text-align:center; max-width:100%; box-shadow:0 3px 10px rgba(30,60,120,.12); }
+.dots{ flex:1; display:flex; justify-content:center; gap:clamp(6px,1.2vw,14px); }
+.dots i{ width:clamp(18px,2.4vw,28px); height:clamp(18px,2.4vw,28px); border-radius:50%; background:radial-gradient(circle at 40% 35%,#fff,#DDEBFA); border:3px solid #fff; box-shadow:0 3px 0 rgba(30,60,120,.18); transition:all .3s; }
+.dots i.now{ background:radial-gradient(circle at 40% 35%,var(--sun-l),var(--sun) 65%); box-shadow:0 3px 0 var(--sun-d),0 0 0 5px rgba(255,201,61,.35); transform:scale(1.25); }
+.dots i.ok{ background:radial-gradient(circle at 40% 35%,var(--green-l),var(--green) 65%); box-shadow:0 3px 0 var(--green-d); }
+.dots i.fix{ background:radial-gradient(circle at 40% 35%,#D6F5E0,#8FD3A8 65%); box-shadow:0 3px 0 #5FAE7E; }
+
+.card{ position:relative; border-radius:36px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); overflow:hidden; }
+.dish{ position:absolute; inset:0; border-radius:50%;
+  background:radial-gradient(ellipse at 50% 42%, #fff 0 50%, #EEF5FC 54%, #DDE9F6 60%, #fff 63%, #F4F8FD 69%, #C7D9EE 86%, #A9C1DE 100%);
+  box-shadow:0 12px 0 rgba(120,70,20,.25), 0 20px 26px rgba(90,50,10,.28), inset 0 -6px 10px rgba(90,120,170,.25); }
+.dish::after{ content:''; position:absolute; left:16%; top:7%; width:38%; height:14%; border-radius:50%; border-top:5px solid rgba(255,255,255,.95); transform:rotate(-12deg); }
+.plate .ta{ position:absolute; width:22%; transform:translate(-50%,-50%) rotate(var(--r,0deg)); transition:transform .25s; }
+.plate .ta.hi{ transform:translate(-50%,-50%) scale(1.28); filter:drop-shadow(0 0 8px #FFD23D) drop-shadow(0 0 16px #FFB000); }
+.plate .ta.hi2{ transform:translate(-50%,-50%) scale(1.28); filter:drop-shadow(0 0 8px #5FD0FF) drop-shadow(0 0 16px #1E9CE8); }
+#clap{ position:fixed; inset:0; z-index:30; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer; touch-action:none; background:radial-gradient(circle, rgba(255,255,255,.85), rgba(190,232,255,.75)); }
+#clap[hidden]{ display:none; }
+/* clapping hands picture */
+.claphands{ width:clamp(200px,40vh,340px); pointer-events:none; transition:transform .12s; filter:drop-shadow(0 12px 10px rgba(0,0,0,.25)); }
+#clap.hit .claphands{ transform:scale(1.15) rotate(-4deg); }
+#clap svg{ pointer-events:none;  width:clamp(120px,22vh,190px); height:clamp(120px,22vh,190px); transition:transform .12s; filter:drop-shadow(0 10px 6px rgba(0,0,0,.2)); }
+#clap svg:first-child{ transform:rotate(30deg) scaleX(-1); } #clap svg:last-child{ transform:rotate(-30deg); }
+#clap.hit svg:first-child{ transform:translateX(28px) rotate(16deg) scaleX(-1) scale(1.08); } #clap.hit svg:last-child{ transform:translateX(-28px) rotate(-16deg) scale(1.08); }
+#clap::after{ content:''; position:absolute; width:70px; height:70px; border-radius:50%; border:8px solid var(--sun); opacity:0; }
+#clap.hit::after{ animation:ring .35s ease-out; } @keyframes ring{ from{ opacity:1; transform:scale(.4); } to{ opacity:0; transform:scale(2.4); } }
+#check{ width:clamp(100px,14vh,132px); flex:none; align-self:center; aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+#check svg{ width:56%; height:56%; position:relative; }
+#check.dim{ filter:saturate(.25) brightness(1.05); }
+#check.ready{ animation:pulse 1.2s infinite; } @keyframes pulse{ 50%{ transform:scale(1.08); } }
+.fly{ position:fixed; z-index:50; pointer-events:none; filter:drop-shadow(0 12px 8px rgba(0,0,0,.25)); }
+.ghosted{ opacity:.25; }
+.locked .pa, .locked .ba{ cursor:default; }
+
+/* demo hand */
+#hand{ position:fixed; width:96px; height:96px; z-index:60; pointer-events:none; left:50%; top:110%; transition:left .6s ease-in-out, top .6s ease-in-out, transform .15s; filter:drop-shadow(0 10px 6px rgba(0,0,0,.28)); }
+#hand.tap{ transform:scale(.85); }
+/* start and end screens: a sunburst behind */
+.over{ position:fixed; inset:0; z-index:40; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(12px,3vh,28px); padding:24px 16px; text-align:center; overflow:hidden;
+  background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 50%,var(--sand) 100%); }
+.over::before{ content:''; position:absolute; left:50%; top:46%; width:220vmax; height:220vmax; margin:-110vmax 0 0 -110vmax; z-index:-1;
+  background:repeating-conic-gradient(from 0deg, rgba(255,255,255,.32) 0 9deg, rgba(255,255,255,0) 9deg 18deg); animation:spin 60s linear infinite;
+  -webkit-mask:radial-gradient(circle, #000 0, transparent 38%); mask:radial-gradient(circle, #000 0, transparent 38%); }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.over[hidden]{ display:none; }
+.title{ font-size:clamp(40px,min(11vh,13vw),104px); font-weight:900; letter-spacing:.02em; margin:0; color:#FFD23D; line-height:1;
+  -webkit-text-stroke:7px #3B2A7A; paint-order:stroke fill; text-shadow:0 7px 0 #3B2A7A, 0 14px 18px rgba(30,20,90,.35); transform:rotate(-4deg); animation:bob 2.4s ease-in-out infinite; }
+@keyframes bob{ 50%{ transform:rotate(-4deg) translateY(-6px); } }
+.hero{ position:relative; width:min(74vw,380px); aspect-ratio:1.25; }
+.hero svg.ta{ position:absolute; width:26%; transform:translate(-50%,-50%); }
+.play{ width:clamp(130px,21vh,170px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; animation:pulse 1.4s infinite; border-width:7px; }
+.play svg{ width:50%; height:50%; margin-left:8%; position:relative; }
+.stars{ display:flex; gap:clamp(8px,2vw,22px); align-items:flex-end; }
+.stars svg{ width:clamp(90px,min(21vh,27vw),180px); height:clamp(90px,min(21vh,27vw),180px); transform:scale(0) rotate(-180deg); transition:transform .5s cubic-bezier(.4,1.6,.6,1); filter:drop-shadow(0 10px 8px rgba(160,90,0,.35)); }
+.stars svg:nth-child(2){ margin-bottom:22px; }
+.stars svg.on{ transform:scale(1) rotate(0); }
+.stars svg.off{ opacity:.45; filter:grayscale(1) brightness(1.6); }
+.row{ display:flex; gap:28px; }
+.big{ width:clamp(108px,16vh,136px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.big svg{ width:52%; height:52%; position:relative; }
+.big[hidden]{ display:none; }
+.burst i{ position:fixed; width:16px; height:22px; border-radius:5px; z-index:45; animation:fall 1.7s cubic-bezier(.2,.7,.4,1) forwards; box-shadow:inset 0 -4px 0 rgba(0,0,0,.15); }
+@keyframes fall{ to{ transform:translate(var(--dx),var(--dy)) rotate(720deg); opacity:0; } }
+
+
+/* the play area: each game lays out its own grid inside .stage */
+.stage{ height:calc(100% - 92px); padding:4px clamp(12px,3vw,32px) clamp(14px,2.6vh,26px); display:grid; gap:clamp(12px,2.2vw,28px); }
+.yesbadge{ position:fixed; z-index:55; width:clamp(90px,15vh,130px); height:clamp(90px,15vh,130px); pointer-events:none; transform:scale(0) rotate(-30deg); transition:transform .3s cubic-bezier(.4,1.7,.6,1); filter:drop-shadow(0 8px 6px rgba(160,90,0,.35)); }
+.yesbadge.on{ transform:scale(1) rotate(0); }
+.shake{ animation:shake .45s; } @keyframes shake{ 25%{ transform:translateX(-10px); } 75%{ transform:translateX(10px); } }
+.glow{ box-shadow:0 0 0 7px rgba(255,201,61,.6), 0 10px 0 rgba(40,70,140,.14) !important; border-color:var(--sun) !important; }
+.good{ box-shadow:0 0 0 7px rgba(34,180,94,.45), 0 10px 0 rgba(40,70,140,.14) !important; border-color:#7BE0A4 !important; }
+
+/* a card that shows an amount: dots, fruit, candles or fingers */
+.qcard{ position:relative; aspect-ratio:1; border-radius:28px; border:5px solid #fff; background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); box-shadow:0 8px 0 rgba(40,70,140,.16), 0 14px 22px rgba(40,70,140,.18); touch-action:none; }
+.qcard svg.q{ position:absolute; width:29%; height:29%; transform:translate(-50%,-50%); pointer-events:none; }
+.qcard .dot{ position:absolute; width:19%; height:19%; border-radius:50%; transform:translate(-50%,-50%); background:radial-gradient(circle at 35% 30%,#FF9B8A,#E5322D 55%,#8E0E17); box-shadow:0 3px 0 rgba(90,0,10,.35), inset 0 -3px 0 rgba(0,0,0,.15); pointer-events:none; }
+.qcard .dot::after{ content:''; position:absolute; left:20%; top:16%; width:30%; height:26%; border-radius:50%; background:rgba(255,255,255,.8); }
+.qcard.dice{ background:radial-gradient(circle at 40% 30%,#FFFFFF,#F2F6FF 60%,#D9E4F7); }
+.qcard .fh{ position:absolute; inset:6%; pointer-events:none; }
+.qcard.hi .q, .qcard.hi .dot{ filter:drop-shadow(0 0 6px #FFD23D); }
+.qcard.lift{ transform:translateY(-6px) scale(1.04); box-shadow:0 14px 0 rgba(40,70,140,.16), 0 22px 26px rgba(40,70,140,.22); }
+.qcard.picked{ border-color:var(--sun); box-shadow:0 0 0 6px rgba(255,201,61,.6), 0 8px 0 rgba(40,70,140,.16); }
+.qcard.done{ border-color:#7BE0A4; }
+
+/* the big finger hand: tap a finger to raise or fold it */
+.fhand{ position:relative; touch-action:none; }
+.fhand .fgs{ display:none; }
+.fhand .hpics{ position:relative; width:100%; height:100%; }
+.fhand .hpic{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:50% 100%; opacity:0; user-select:none; -webkit-user-drag:none; pointer-events:none; filter:drop-shadow(0 8px 10px rgba(30,40,90,.22)); }
+.fhand .hpic.on{ opacity:1; }
+.fhand.bump .hpics{ animation:hbump .24s cubic-bezier(.3,1.6,.5,1); }
+@keyframes hbump{ 0%{ transform:scale(.94); } 100%{ transform:scale(1); } }
+
+/* thumbs */
+.thumbs{ display:flex; gap:clamp(16px,4vw,40px); justify-content:center; }
+.thumbs button{ width:clamp(96px,15vh,128px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0; }
+.thumbs button svg{ width:62%; height:62%; position:relative; }
+
+/* map page link-free footer note area is not used; phone sizes: */
+@media (max-width:760px), (max-aspect-ratio:4/5){
+  .top{ height:80px; gap:10px; } .rb{ width:64px; height:64px; } #home{ width:64px; height:64px; } .rb svg{ width:34px; height:34px; }
+  .stage{ height:calc(100% - 80px); gap:12px; }
+  #check{ width:98px; }
+}
+.fast *{ transition-duration:0s !important; }
+@media (prefers-reduced-motion:reduce){ #check.ready,.play,#again.talk,.title,.over::before{ animation:none; } }
+
+/* a flash card with a checkered cloth over it (lifts for a quick peek) */
+.flash{ position:relative; overflow:hidden; }
+.flash .cloth{ position:absolute; inset:-4px; z-index:3; border-radius:inherit; transition:transform .34s cubic-bezier(.4,1.4,.6,1); display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 18%, rgba(0,30,80,0) 75%, rgba(0,30,80,.22)), repeating-linear-gradient(0deg, rgba(36,110,215,.62) 0 24px, transparent 24px 48px), repeating-linear-gradient(90deg, rgba(36,110,215,.62) 0 24px, transparent 24px 48px), #fff;
+  box-shadow:inset 0 0 0 8px rgba(255,255,255,.55), inset 0 0 0 11px rgba(36,110,215,.35); }
+.flash .cloth .eyes{ display:none !important; /* K clarity: no faces on objects */ gap:12px; padding:10px 16px; border-radius:999px; background:#fff; box-shadow:0 6px 0 rgba(20,60,140,.18); }
+.flash .cloth .eyes i{ width:34px; height:38px; border-radius:50%; border:4px solid var(--ink); position:relative; background:#fff; }
+.flash .cloth .eyes i::after{ content:''; position:absolute; width:16px; height:18px; border-radius:50%; left:6px; top:9px; background:radial-gradient(circle at 35% 30%, #fff 0 3px, var(--ink) 4px); }
+.flash.open .cloth{ transform:translateY(-104%) rotate(-3deg); }
+
+/* the big "put one down" button on the finger hand */
+.fhand .fdown{ position:absolute; right:-10px; bottom:-8px; width:84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:2; }
+.fhand .fdown svg{ width:60% !important; height:60% !important; position:relative; }
+.fhand.locked .fdown{ opacity:.45; }
+.fhand.empty:not(.locked) .hpics{ animation:tapme 1.1s ease-in-out infinite; transform-origin:50% 80%; }
+@keyframes tapme{ 50%{ transform:scale(1.06); filter:drop-shadow(0 0 12px #FFD23D); } }
+.fhand.empty .fdown{ opacity:.45; }
+
+/* a pointing hand on the start screen (sound can't play before his first tap) */
+.playwrap{ position:relative; }
+.starthand{ position:absolute; right:-58px; bottom:-48px; width:88px; height:88px; pointer-events:none; filter:drop-shadow(0 8px 6px rgba(0,0,0,.25)); transform:rotate(-20deg); animation:poke 1.1s ease-in-out infinite; }
+@keyframes poke{ 50%{ transform:rotate(-20deg) translate(-10px,-10px) scale(.92); } }

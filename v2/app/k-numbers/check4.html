@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me 0 to 5 — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 4 MASTERY CHECK (MAP.md: "for each of 0-5: build it, show it on fingers, and drag the numeral to its group").
+     12 quick items, each number 0-5 twice: READ IT (the written number is shown and NOT said; one job per round: he builds it on the
+     five-frame OR shows it on the fingers, in turn, then presses check) and MATCH IT (he drags the right written number of three onto a group).
+     No hints during the check; after a miss we look at the right answer together and go on. 11 of 12 = Unit 4 is done. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit4.css">
+<style>
+.stage{ grid-template-columns:.7fr 1.5fr; align-items:center; }
+.col{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; height:100%; }
+.both{ display:flex; align-items:center; gap:18px; }
+#prompt .numcard{ width:min(19vw,42vh,230px); }
+#prompt .qcard{ width:min(28vw,46vh,320px); }
+#work .ff{ width:min(34vw,62vh,420px); }
+.bighand{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:30px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14); padding:6px; }
+.bighand .fhand{ width:min(17vw,34vh,210px); aspect-ratio:170/230; }
+.srcs{ display:flex; gap:clamp(12px,3vw,40px); }
+.srcs .numcard{ width:min(15vw,24vh,170px); cursor:grab; }
+#check[hidden]{ display:none; }
+/* one tool alone on the screen: draw it bigger */
+@media (min-width:761px) and (min-aspect-ratio:4/5){ #work .both > .ff:only-child{ width:min(46vw,76vh,560px); }
+  #work .both > .bighand:only-child .fhand{ width:min(24vw,44vh,280px); } }
+.hero{ display:flex; align-items:center; justify-content:center; }
+.hero svg{ width:60%; height:auto; }
+@media (max-width:760px), (max-aspect-ratio:4/5){
+  .stage{ grid-template-columns:1fr; grid-template-rows:auto 1fr; gap:8px; }
+  #prompt .numcard{ width:min(28vw,15vh); } #prompt .qcard{ width:min(48vw,24vh); }
+  .both{ flex-direction:column; gap:10px; } #work .ff{ width:96vw; } .bighand .fhand{ width:min(36vw,24vh); }
+  .srcs .numcard{ width:26vw; }
+  .dots{ gap:3px !important; min-width:0; } .dots i{ width:13px !important; height:13px !important; border-width:2px !important; }
+  .row2{ display:flex; align-items:center; gap:14px; }
+}
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="col" id="prompt"></div>
+  <div class="col"><div id="work"></div>
+    <button id="check" class="btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit4.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var KINDS = ['apple', 'dots', 'orange', 'candle', 'pear', 'dots'], plan, R, done, FF, H;
+  /* K clarity review (2026-11-27): one job per round. A "read" round shows the number and ONE tool: the five-frame (build it)
+     or the hand (show it on fingers); the other tool is not on the screen. */
+  function readLayout(n, tool) {
+    $('prompt').innerHTML = ''; $('work').innerHTML = ''; $('prompt').appendChild(U4.numCard(n, true)); FF = null; H = null;
+    var both = document.createElement('div'); both.className = 'both';
+    if (tool === 'build') { FF = U4.frame5(0, true); both.appendChild(FF.el); }
+    else { var b2 = document.createElement('div'); b2.className = 'bighand'; H = FR.fingers(0, true); b2.appendChild(H.el); both.appendChild(b2); }
+    $('work').appendChild(both);
+  }
+  function have() { return FF ? FF.count() : H.count(); }
+  function end(right) { var d = done; done = null; d(right); }
+  async function missed() {
+    FR.oops($('work')); await FR.say("Let's look.");
+    if (R.task === 'read') { if (FF) FF.set(R.n); else H.set(R.n); await FR.say(R.n === 0 ? 'This is zero. None.' : 'This is ' + FR.word(R.n) + '.'); }
+    else await FR.say('That group has ' + FR.word(R.n) + '.');
+    end(false);
+  }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer' || R.task !== 'read') return; GAME.phase = 'busy'; FR.lock(true); if (FF) FF.lock(true); if (H) H.lock(true);
+    if (have() === R.n) { await FR.yes($('work'), FR.pick(['Yes!', 'Right!', 'Good reading!'])); end(true); } else await missed();
+  }
+  async function drop(s, t) {
+    if (GAME.phase !== 'answer' || R.task !== 'match') return; GAME.phase = 'busy'; FR.lock(true);
+    if (+s.dataset.n === R.n) { s.classList.add('done'); await FR.yes(t, FR.pick(['Yes!', 'Right!'])); end(true); } else await missed();
+  }
+  function hooks() {
+    if (R.task === 'match') {
+      var cs = [].slice.call(document.querySelectorAll('.srcs .numcard')), good = cs.filter(function (c) { return +c.dataset.n === R.n; })[0], bad = cs.filter(function (c) { return +c.dataset.n !== R.n; })[0];
+      GAME.right = function () { return [{ drag: ['#' + good.id, '#target'] }]; }; GAME.wrong = function () { return [{ drag: ['#' + bad.id, '#target'] }]; }; return;
+    }
+    function moves(m) { return FF ? FF.moves(m).map(function (i) { return { tap: '#work .box[data-b="' + i + '"]' }; }) : U4.fingerTaps(H, m, '#work'); }
+    GAME.right = function () { return moves(R.n).concat([{ tap: '#check' }]); };
+    GAME.wrong = function () { return moves(R.n === 5 ? 4 : R.n + 1).concat([{ tap: '#check' }]); };
+  }
+  FR.game({
+    id: 'u4-check', title: 'Show Me 0 to 5', rounds: 12,
+    hero: '<svg viewBox="0 0 100 100"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><path d="M30 20H18c0 12 6 18 14 18M70 20h12c0 12-6 18-14 18" fill="none" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><circle cx="42" cy="26" r="4" fill="#fff" opacity=".9"/></svg>',
+    init: function (F) { $('check').addEventListener('click', check); F.dragTap({ sources: '.srcs .numcard', targets: '#target', drop: drop }); },
+    reset: function (F) {   /* each number 0-5 once to read (build it, or show it on fingers, in turn) and once to match, mixed */
+      var a = F.shuffle([0, 1, 2, 3, 4, 5]), b = F.shuffle([0, 1, 2, 3, 4, 5]); plan = [];
+      for (var k = 0; k < 6; k++) { plan.push(['read', a[k], k % 2 ? 'fingers' : 'build']); plan.push(['match', b[k]]); }
+    },
+    demo: async function (F) {
+      await F.say("Let's show what you know! Watch me first.");
+      readLayout(2, 'build'); $('check').hidden = false;
+      await F.say('This says two. I build two.');
+      for (var k = 0; k < 2; k++) { await F.handTo(FF.box(k)); await F.handTap(); FF.box(k).innerHTML = '<i class="ctr"></i>'; NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('work'), 'Two. Yes!');
+      readLayout(3, 'fingers');
+      await F.say('This says three. I show three on fingers.');
+      for (k = 0; k < 3; k++) { await F.handTo(H.el, .5, .7); await F.handTap(); H.set(H.count() + 1); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('work'), 'Three. Yes!');
+      $('prompt').innerHTML = ''; $('work').innerHTML = '';
+    },
+    endSay: function (s) { return s >= 2 ? 'Unit four is done! You know zero to five!' : 'Good try! Let\'s practice and try again.'; },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var task = plan[i][0], n = plan[i][1]; R = { n: n, task: task }; GAME.phase = 'busy'; F.lock(true);
+        $('prompt').innerHTML = ''; $('work').innerHTML = ''; $('check').hidden = task === 'match';
+        if (task === 'match') {
+          var g = F.card(n, KINDS[i % KINDS.length]); g.id = 'target'; $('prompt').appendChild(g);
+          var others = F.shuffle([0, 1, 2, 3, 4, 5].filter(function (x) { return x !== n; })).slice(0, 2), opts = F.shuffle([n].concat(others)), box = document.createElement('div'); box.className = 'srcs';
+          opts.forEach(function (x, k) { var c = U4.numCard(x, true); c.id = 'o' + k; box.appendChild(c); }); $('work').appendChild(box);
+          done = res; GAME.phase = 'answer'; F.lock(false); hooks();
+          await F.say('Drag the number that tells how many.', { repeat: 'Drag the number that tells how many.' });
+          return;
+        }
+        /* read it: the written number is shown and NOT said */
+        var tool = plan[i][2]; readLayout(n, tool);
+        done = res; GAME.phase = 'answer'; F.lock(false); hooks();
+        var line = tool === 'build' ? 'Read this number. Build it.' : 'Read this number. Show it on fingers.';
+        await F.say(line, { repeat: line });
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Review time — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 8 REVIEW (Units 5-7 come back in Bubby's kitchen), three kinds in turn:
+     1. Which plate has more kugel, or the same? He taps the plate, or the "same" button (Unit 7).
+     2. A ten-frame: five and some more. He shows it on two hands (Unit 5).
+     3. "One more than six": a ten-frame shows six, with the next spot marked; he shows one more on two hands (Units 6-7).
+     The first frame round and the first one-more round start with a short "Watch me" (round 3 review 2026-11-27).
+     K clarity (review 2026-11-27): in a plates round both plates and the "same" button glow, so he sees the three things he may tap. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="kitchen8.css">
+<style>#show{ display:flex; align-items:center; } #show .tf{ width:min(28vw,220px); } #hh .hands2{ width:min(30vw,40vh,230px); } #hh .fhand{ margin-right:0; }
+#same svg{ width:94%; height:94%; }   /* "the same": a kugel slice, equals, a kugel slice (like apple = apple in Line them up) */
+/* round 3 review: a ten-frame or two-hands round has no plates, so the kitchen steps away and the frame and hands are big in the middle */
+.stage.s6.big{ justify-content:center; width:100%; box-sizing:border-box; } .big #show, .big #hh{ flex:none; } .big #panel{ gap:clamp(24px,4vw,56px); padding:18px 28px; }
+.big #show .tf{ width:min(42vw,60vh,520px); } .big #hh .hands2{ width:min(34vw,48vh,400px); } .big #check{ width:clamp(110px,15vh,140px); }
+#show[hidden], #hh[hidden], #same[hidden], #check[hidden]{ display:none; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ui{ flex-wrap:wrap; } #show{ width:100%; justify-content:center; } #show .tf{ width:150px; } #hh .hands2{ width:180px; }
+  .big #panel{ flex-direction:column; } .big #show .tf{ width:min(86vw,330px); } .big #hh .hands2{ width:min(80vw,300px); } }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div id="show"></div>
+    <div id="hh"></div>
+    <button id="same" class="bigbtn btn3d b-white eq" aria-label="The same"><svg viewBox="0 0 56 40"><rect x="2" y="13" width="17" height="13" rx="2" fill="#F6D585"/><rect x="2" y="11" width="17" height="5" rx="2" fill="#D9892E"/><path d="M23 16h10M23 25h10" stroke="#2B2350" stroke-width="5" stroke-linecap="round"/><rect x="37" y="13" width="17" height="13" rx="2" fill="#F6D585"/><rect x="37" y="11" width="17" height="5" rx="2" fill="#D9892E"/></svg></button>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './kitchen8.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function more() { return R.a === R.b ? -1 : R.a > R.b ? 0 : 1; }
+function hooks() {
+  if (R.kind === 'plates') { const m = more(), ok = m < 0 ? '#same' : '.tspot[data-id="plate' + m + '"]', bad = m < 0 ? '.tspot[data-id="plate0"]' : '.tspot[data-id="plate' + (1 - m) + '"]'; GAME.right = () => [{ tap: ok }]; GAME.wrong = () => [{ tap: bad }]; return; }
+  GAME.right = () => H.moves(R.n, '#hh').concat([{ tap: '#check' }]); GAME.wrong = () => H.moves(R.n + 1, '#hh').concat([{ tap: '#check' }]);
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks(); }
+/* the plates round: both plates and the "same" button glow until he taps one */
+function marks(on) { document.querySelectorAll('.tspot[data-id^="plate"]').forEach(s => s.classList.toggle('hint', on)); $('same').classList.toggle('glow', on); }
+/* the next empty spot of a ten-frame, marked so "one more" goes there */
+function spotOn(t, i) { t.cell(i).classList.add('nextspot'); } function spotOff(t) { t.el.querySelectorAll('.nextspot').forEach(c => c.classList.remove('nextspot')); }
+function frameOf(n, next) { $('show').innerHTML = ''; const t = U5.frame(n, false); $('show').appendChild(t.el); if (next) spotOn(t, n); return t; }
+/* "Watch me" the first time a kind comes: a different number, shown on the hands */
+async function watch(F, n, lines) { GAME.phase = 'busy'; F.lock(true); H.lock(true); for (const l of lines) await F.say(l);
+  await F.handTo(H.el, .5, .6); await F.handTap(); H.set(n); NK.sound.pop(); await F.say(F.Word(n) + '!'); F.handHide(); await F.wait(300); H.set(0); await F.say('Now you!'); }
+function fin(el, line) { return FR.yes(el, line).then(() => { const d = done; done = null; d(R.misses === 0); }); }
+async function plate(k, el) {
+  if (GAME.phase !== 'answer' || R.kind !== 'plates') return; GAME.phase = 'busy'; FR.lock(true); marks(false); const m = more();
+  if (k === m) return fin(el, m < 0 ? 'Yes! The same.' : 'Yes! That plate has more.');
+  FR.oops(el); R.misses++; await FR.say("Let's look. Count each plate."); for (const p of K.plates) await K.bumpAll(p.children, i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true }));
+  await FR.say(m < 0 ? 'Both have ' + FR.word(R.a) + '. The same!' : FR.Word(Math.max(R.a, R.b)) + ' is more.'); open(); marks(true);
+}
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.kind === 'plates') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true); const have = H.count();
+  if (have === R.n) { if (R.kind === 'next' && R.view) { R.view.set(R.n); spotOff(R.view); NK.sound.pop(); }   /* the one more drops into the marked spot as we say it */
+    return fin($('check'), R.kind === 'frame' ? 'Yes! Five and ' + FR.word(R.n - 5) + ' more. ' + FR.Word(R.n) + '!' : 'Yes! One more than ' + FR.word(R.n - 1) + ' is ' + FR.word(R.n) + '.'); }
+  FR.oops($('check')); R.misses++;
+  if (R.kind === 'frame') { R.view.glow(true); await FR.say("Let's look. A full row is five, and " + FR.word(R.n - 5) + ' more.'); R.view.glow(false); }
+  else { R.view.set(R.n); spotOff(R.view); NK.sound.pop(); await FR.say("Let's look. " + FR.Word(R.n - 1) + ', then one more: ' + FR.word(R.n) + '.'); }
+  await FR.say(have < R.n ? 'Put up ' + FR.word(R.n - have) + ' more.' : 'Put ' + FR.word(have - R.n) + ' down.'); open();
+}
+const SEEN = {};
+const PLAN = [{ kind: 'plates', a: 4, b: 2 }, { kind: 'frame', n: 7 }, { kind: 'next', n: 6 }, { kind: 'plates', a: 3, b: 3 }, { kind: 'frame', n: 9 }, { kind: 'next', n: 9 }];
+function play(F, i) {
+  return new Promise(async res => {
+    R = Object.assign({ misses: 0, seen: SEEN }, PLAN[i]); done = res; GAME.phase = 'busy'; F.lock(true); H.set(0);
+    const pl = R.kind === 'plates'; $('stage').classList.toggle('big', !pl); $('world').style.visibility = pl ? '' : 'hidden'; $('same').hidden = !pl; $('hh').hidden = $('check').hidden = pl; $('show').hidden = pl; $('show').innerHTML = '';
+    if (pl) { K.setPlates(R.a, R.b); K.spot('plate0', K.plates[0], { cls: 'plate', r: 1.35, y: 0.1 }); K.spot('plate1', K.plates[1], { cls: 'plate', r: 1.35, y: 0.1 }); open(); marks(true);
+      await F.say('Which plate has more? Or the same?', { repeat: 'Tap the plate with more, or tap the same.' }); return; }
+    marks(false); K.unspot('plate0'); K.unspot('plate1'); K.hidePlates(); K.setKugel(0);
+    if (R.kind === 'frame') {
+      if (!R.seen.frame) { R.seen.frame = 1; frameOf(6); await watch(F, 6, ['Watch me. A full row is five.', 'Five and one more.']); }
+      R.view = frameOf(R.n); open(); await F.say('How many? Show me on two hands.', { repeat: 'Count the frame. Show it on two hands.' }); }
+    else {
+      if (!R.seen.next) { R.seen.next = 1; frameOf(4, true); await watch(F, 5, ['Watch me. Four in the frame.', 'One more goes in the empty spot.']); }
+      R.view = frameOf(R.n - 1, true); open(); await F.say(F.Word(R.n - 1) + ' in the frame. One more?', { repeat: 'One more than ' + F.word(R.n - 1) + '. Show it on two hands.' }); }
+  });
+}
+FR.game({
+  id: 'u8-review', title: 'Review Time', rounds: 6,
+  hero: '<div class="hero6"><img src="art/mendy-happy.png" alt=""></div>',
+  init() {
+    K = mount($('world'), { band }); H = U5.hands(0, true); $('hh').appendChild(H.el);
+    K.onTap = (id, el) => { if (id.startsWith('plate')) plate(+id[5], el); }; $('same').addEventListener('click', () => { NK.unlock(); plate(-1, $('same')); }); $('check').addEventListener('click', check);
+  },
+  demo: async F => {
+    R = { kind: 'demo' }; K.setPlates(1, 3); K.spot('plate1', K.plates[1], { cls: 'plate', r: 1.35, y: 0.1 }); $('same').hidden = false; $('hh').hidden = $('check').hidden = true;
+    marks(true); await F.say('Review time! Watch me. One or three?'); await F.say('Three is more. I tap that plate.');
+    await F.handTo(document.querySelector('.tspot[data-id="plate1"]')); await F.handTap(); marks(false); K.unspot('plate1');
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You remember so much!' : 'Good work! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

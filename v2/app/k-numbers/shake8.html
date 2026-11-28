@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shake and Spill — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 8 "Parts of 5": SHAKE AND SPILL (number bonds, Singapore style). Bubby's blue cup holds counters,
+     red on one side and yellow on the other. He taps the cup: it shakes, and the counters spill onto the table.
+     He shows the red part on the red hand and the yellow part on the yellow hand, then taps the check: "Three and two make five!"
+     A slip: we count the reds together, then the yellows.
+     K clarity (review 2026-11-27): each hand stands on a big card of its colour (red, yellow); touching a hand makes the counters of that colour glow. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css"><link rel="stylesheet" href="kitchen8.css">
+<style>.hcol{ display:flex; flex-direction:column; align-items:center; } #hands[hidden], #check[hidden]{ display:none; } #hands{ display:flex; gap:14px; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div id="hands" hidden><div class="hcol" id="h0" aria-label="Red"></div><div class="hcol" id="h1" aria-label="Yellow"></div></div>
+    <button id="check" class="bigbtn btn3d b-sun" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './kitchen8.js';
+const $ = id => document.getElementById(id);
+let K, H, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function hooks() {
+  if (R.stage === 'shake') { GAME.right = () => [{ tap: '.tspot[data-id="cup"]' }]; GAME.wrong = null; return; }
+  const y = R.n - R.r;
+  GAME.right = () => FR.fingerTaps(H[0], R.r, '#h0').concat(FR.fingerTaps(H[1], y, '#h1'), [{ tap: '#check' }]);
+  GAME.wrong = () => FR.fingerTaps(H[0], R.r, '#h0').concat(FR.fingerTaps(H[1], y + 1, '#h1'), [{ tap: '#check' }]);   /* one too many yellow */
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); H.forEach(h => h.lock(false)); hooks(); }
+/* he touches a hand: the counters of its colour glow, so he knows which ones this hand shows */
+function light(k) { $('h0').classList.toggle('on', k === 0); $('h1').classList.toggle('on', k === 1); K.glowCounters(k === 0 ? 'red' : k === 1 ? 'yellow' : null); }
+async function shake() {
+  if (GAME.phase !== 'answer' || R.stage !== 'shake') return; GAME.phase = 'busy'; FR.lock(true);
+  await K.shake(); await K.spill(R.n, R.r); R.stage = 'parts'; $('hands').hidden = $('check').hidden = false;
+  open(); await FR.say('Show the red part and the yellow part.', { repeat: 'How many red? How many yellow? Show them on the hands.' });
+}
+async function check() {
+  NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'parts') return; GAME.phase = 'busy'; FR.lock(true); H.forEach(h => h.lock(true)); light(-1);
+  const y = R.n - R.r;
+  if (H[0].count() === R.r && H[1].count() === y) { K.sparkle(0, 0.5); await FR.yes($('check'), FR.Word(R.r) + ' and ' + FR.word(y) + ' make ' + FR.word(R.n) + '!'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops($('check')); R.misses++; const cs = K.counters();
+  await FR.say("Let's count the red ones."); light(0); await K.bumpAll(cs.filter(c => c.userData.red), i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true }));
+  await FR.say('Now the yellow ones.'); light(1); await K.bumpAll(cs.filter(c => !c.userData.red), i => FR.say(FR.Word(i + 1) + ',', { noRepeat: true }));
+  light(-1); await FR.say(FR.Word(R.r) + ' red, ' + FR.word(y) + ' yellow. Fix the hands.'); open();
+}
+const PLAN = [[5, 3], [5, 1], [4, 2], [5, 4], [3, 2], [5, 2]];
+function play(F, i) {
+  return new Promise(async res => {
+    const [n, r] = PLAN[i]; R = { n, r, misses: 0, stage: 'shake' }; done = res; GAME.phase = 'busy'; F.lock(true);
+    K.clearCounters(); light(-1); H.forEach(h => h.set(0)); $('hands').hidden = $('check').hidden = true;
+    await F.say(n === 5 ? 'Five counters in the cup.' : F.Word(n) + ' counters this time.');
+    open(); await F.say(i === 0 ? 'Tap the cup to shake and spill!' : F.pick(['Shake and spill!', 'Shake it!']), { repeat: 'Tap the cup.' });
+  });
+}
+FR.game({
+  id: 'u8-shake', title: 'Shake and Spill', rounds: 6,
+  hero: '<div class="hero6"><img src="art/dovid-happy.png" alt=""></div>',
+  init() {
+    K = mount($('world'), { band }); K.showCup(true); K.cupSpot();
+    H = [FR.fingers(0, true), FR.fingers(0, true)]; $('h0').appendChild(H[0].el); $('h1').appendChild(H[1].el); H[0].el.classList.add('mirror');
+    K.onTap = id => { if (id === 'cup') shake(); };
+    [0, 1].forEach(k => $('h' + k).addEventListener('pointerdown', () => { if (GAME.phase === 'answer' && R && R.stage === 'parts') light(k); })); $('check').addEventListener('click', check);
+  },
+  demo: async F => {
+    R = { n: 5, r: 2, stage: 'demo' }; await F.say('Watch me shake and spill.');
+    await F.handTo(document.querySelector('.tspot[data-id="cup"]')); await F.handTap(); await K.shake(); await K.spill(5, 2);
+    $('hands').hidden = $('check').hidden = false; await F.say('Two red. Three yellow.');
+    await F.handTo(H[0].el, .5, .6); light(0); for (let t = 1; t <= 2; t++) { await F.handTap(); H[0].set(t); NK.sound.pop(); }
+    await F.handTo(H[1].el, .5, .6); light(1); for (let t = 1; t <= 3; t++) { await F.handTap(); H[1].set(t); NK.sound.pop(); }
+    light(-1); await F.say('Two and three make five!'); H.forEach(h => h.set(0)); K.clearCounters();
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You found the parts every time!' : 'Good shaking! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

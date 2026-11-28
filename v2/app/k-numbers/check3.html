@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me! Counting — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 3 MASTERY CHECK (MAP.md): "Give me" 3, 5, 7 and 9 challah rolls, and count a loose bunch of 7
+     and of 9 (tap each, then show how many on the hands). No counting voice and no hints during the check; after a miss we count
+     together once and go on. Five of six (one slip) = Unit 3 is done. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit3.css">
+<style>.hero svg{ width:50%; }</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="scene" id="scene"></div>
+  <div class="panel"><div id="hands"></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit3.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, U = U3, H;
+  var PLAN = [['give', 3], ['give', 5], ['count', 7], ['give', 7], ['count', 9], ['give', 9]];
+  FR.game({
+    id: 'u3-check', title: 'Show Me!', rounds: PLAN.length,
+    hero: '<svg viewBox="0 0 100 100"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><path d="M30 20H18c0 12 6 18 14 18M70 20h12c0 12-6 18-14 18" fill="none" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><circle cx="42" cy="26" r="4" fill="#fff" opacity=".9"/></svg>',
+    init: function () { U.addArt(); H = U.hands($('hands')); H.lock(true); },
+    /* one silent example before the silent check: touch each one, count in your head, show it */
+    demo: async function (F) {
+      await F.say("Let's show what you learned!");
+      U.clear(); $('hands').hidden = false; H.set(0);
+      var els = U.line(3, 70).map(function (p, i) { return U.put('siddur', p, U.itemW(3), i); });
+      await F.say('Watch. I count in my head. No voice.');
+      for (var i = 0; i < 3; i++) { await F.handTo(els[i]); await F.handTap(); els[i].classList.add('counted'); NK.sound.pop(); await F.wait(350); }
+      await F.say('I counted three. I show three.');
+      for (i = 0; i < 3; i++) { var f = H.a.finger(i); await F.handTo(H.a.el, .5, .62);   /* point at the hand: the finger marks are hidden (no screen spot) */
+      await F.handTap(); f.classList.remove('down'); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('hands'), 'Three!'); H.set(0);
+      await F.say('Count carefully. Touch each one once.');
+    },
+    endSay: function (s) { return s >= 2 ? 'Unit three is done! You can count things!' : 'Good try! Let\'s practice and try again.'; },
+    round: function (F, i) {
+      var p = PLAN[i];
+      return p[0] === 'give' ? U.giveRound(F, { n: p[1], check: true }) : U.countRound(F, { n: p[1], kind: i === 2 ? 'siddur' : 'roll', line: false, H: H, check: true, quiet: true });
+    }
+  });
+})();
+</script>
+</body>
+</html>

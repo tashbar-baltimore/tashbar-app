@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Numbers — Kindergarten</title>
+<!-- Kindergarten Numbers: the map. One unit at a time, its stops in skill order (units.js). The next stop shines;
+     a stop opens when the one before it is passed (2+ stars); later units open when the unit before is done.
+     Everything is spoken: tapping a stop says its name and opens it; tapping a locked one says what to do first. -->
+<link rel="stylesheet" href="frame.css">
+<style>
+.stage{ height:calc(100% - 92px); grid-template-rows:auto 1fr; gap:6px; }
+.uhead{ display:flex; align-items:center; justify-content:center; gap:14px; }
+.uchips{ display:flex; gap:8px; justify-content:flex-start; overflow-x:auto; padding:6px 10px 10px; max-width:100%; scrollbar-width:none; }
+.uhead{ overflow:hidden; }
+.uchip{ width:64px; height:64px; flex:none; border-radius:50%; font-size:24px; font-weight:900; color:#fff; display:flex; align-items:center; justify-content:center; }
+.uchip.lock{ filter:saturate(.15) brightness(1.15); }
+.uchip.cur{ transform:scale(1.18); }
+.path{ position:relative; width:min(100%,1100px); margin:0 auto; height:100%; }
+.path svg.line{ position:absolute; inset:0; width:100%; height:100%; }
+.stop{ position:absolute; translate:-50% -50%; width:clamp(104px,17vh,150px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.stop svg.ic{ width:62%; height:62%; position:relative; }
+.stop.lock{ filter:saturate(.1) brightness(1.15); }
+.stop.now{ animation:pulse 1.2s infinite; box-shadow:0 0 0 10px rgba(255,201,61,.55), 0 8px 0 var(--b-d), 0 14px 18px rgba(30,40,90,.25) !important; }
+.stop .st{ position:absolute; bottom:-22px; display:flex; gap:2px; }
+.stop .st svg{ width:30px; height:30px; }
+.stop .lk{ position:absolute; right:-6px; top:-6px; width:42px; height:42px; }
+.trophy{ position:absolute; right:3%; top:2%; width:110px; display:none; }
+.trophy.on{ display:block; animation:bob 2.4s ease-in-out infinite; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ height:calc(100% - 80px); } .uchip{ width:64px; height:64px; font-size:22px; } .stop{ width:clamp(88px,13vh,112px); } .stop .st svg{ width:24px; height:24px; } }
+</style>
+</head>
+<body>
+<div id="game"><div class="stage" id="stage">
+  <div class="uhead"><div class="uchips" id="chips"></div></div>
+  <div class="path" id="path"></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="units.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var art = document.createElement('div'); art.innerHTML = NK.ART; document.body.insertBefore(art, document.body.firstChild);
+  var top = document.createElement('div'); top.className = 'top';
+  top.innerHTML = '<button id="again" class="rb btn3d b-blue" aria-label="Hear it again"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#fff"/><path d="M32 17c3 2 5 4.5 5 7s-2 5-5 7M36 11c5 3.5 8 8 8 13s-3 9.5-8 13" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg></button>' +
+    '<div class="dots"><h1 class="title" style="font-size:clamp(34px,6vh,56px);animation:none">Numbers</h1></div><span style="width:70px"></span>';
+  $('game').insertBefore(top, $('game').firstChild);
+
+  var ICON = {
+    book: '<path d="M50 22 C 38 14, 16 14, 8 18 V 78 C 16 74, 38 74, 50 82 Z" fill="#FFF8E8" stroke="#3B2A7A" stroke-width="5" stroke-linejoin="round"/><path d="M50 22 C 62 14, 84 14, 92 18 V 78 C 84 74, 62 74, 50 82 Z" fill="#fff" stroke="#3B2A7A" stroke-width="5" stroke-linejoin="round"/><circle cx="28" cy="40" r="6" fill="#E5322D"/><circle cx="34" cy="56" r="6" fill="#E5322D"/><circle cx="66" cy="40" r="6" fill="#22B45E"/><circle cx="76" cy="52" r="6" fill="#22B45E"/>',
+    towel: '<rect x="10" y="18" width="80" height="66" rx="12" fill="#fff" stroke="#3B2A7A" stroke-width="5"/><path d="M10 40h80M10 62h80M32 18v66M54 18v66M76 18v66" stroke="#4E8BE0" stroke-width="7" opacity=".7"/>',
+    cards: '<rect x="8" y="16" width="44" height="52" rx="10" fill="#fff" stroke="#3B2A7A" stroke-width="5" transform="rotate(-8 30 42)"/><rect x="48" y="30" width="44" height="52" rx="10" fill="#fff" stroke="#3B2A7A" stroke-width="5" transform="rotate(8 70 56)"/><circle cx="24" cy="34" r="6" fill="#E5322D"/><circle cx="36" cy="50" r="6" fill="#E5322D"/><circle cx="64" cy="48" r="6" fill="#E5322D"/><circle cx="76" cy="64" r="6" fill="#E5322D"/>',
+    hand: '<image href="img/hand-5.webp" x="10" y="4" width="80" height="92"/>',
+    glass: '<circle cx="42" cy="42" r="26" fill="#DFF3FF" stroke="#3B2A7A" stroke-width="7"/><path d="M62 62l22 22" stroke="#3B2A7A" stroke-width="12" stroke-linecap="round"/><path d="M28 36c2-8 8-12 14-12" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>',
+    trophy: '<path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><path d="M30 20H18c0 12 6 18 14 18M70 20h12c0 12-6 18-14 18" fill="none" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/>'
+  };
+  var LOCK = '<svg class="lk" viewBox="0 0 48 48"><rect x="10" y="20" width="28" height="22" rx="6" fill="#8A93A8" stroke="#fff" stroke-width="3"/><path d="M16 20v-6a8 8 0 0 1 16 0v6" stroke="#8A93A8" stroke-width="5" fill="none"/></svg>';
+  var STAR = '<svg viewBox="0 0 100 100"><use href="#nkStar"/></svg>';
+  var COLORS = ['b-sun', 'b-blue', 'b-green', 'b-sun', 'b-blue', 'b-green', 'b-sun', 'b-blue'];
+  var SPOTS = [[10, 22], [29, 52], [48, 22], [67, 52], [88, 22], [88, 80], [62, 84], [36, 84]];   /* K clarity: no stop sits on another */
+  var SPOTS_TALL = [[26, 9], [72, 21], [28, 33], [72, 44], [28, 56], [72, 68], [28, 80], [72, 91]];   /* K clarity: 8 stops fit a phone, none on top of another */
+  addEventListener('resize', function () { draw(); });
+
+  var P = NK.load().games, U = window.NK_UNITS;
+  function passed(id) { return P[id] && P[id].passed; }
+  function unitDone(u) { return u.stops.length > 0 && u.stops.every(function (s) { return passed(s[0]); }); }
+  var LOOK = /[?&]look=1/.test(location.search);   /* teachers and approvers: ?look=1 opens every unit and stop; boys never get this link */
+  function unitOpen(i) { return LOOK || i === 0 || unitDone(U[i - 1]); }
+  var cur = 0; for (var i = 0; i < U.length; i++) if (unitOpen(i) && U[i].stops.length && !unitDone(U[i])) { cur = i; break; } else if (unitOpen(i) && U[i].stops.length) cur = i;
+
+  function draw() {
+    var h = ''; U.forEach(function (u, i) { h += '<button class="uchip btn3d ' + (i === cur ? 'b-green cur' : 'b-blue') + (unitOpen(i) && u.stops.length ? '' : ' lock') + '" data-u="' + i + '" aria-label="Unit ' + u.n + '">' + (u.n === 15 ? '★' : u.n) + '</button>'; });
+    $('chips').innerHTML = h;
+    var tall = innerWidth < 760 || innerHeight > innerWidth * 1.25, u = U[cur], pts = (tall ? SPOTS_TALL : SPOTS).slice(0, u.stops.length), line = '<svg class="line" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M' + pts.map(function (p) { return p[0] + ' ' + p[1]; }).join(' L ') + '" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-dasharray="1 3" vector-effect="non-scaling-stroke" style="stroke-width:14px"/></svg>';
+    var s = '', nowSet = false;
+    u.stops.forEach(function (st, k) {
+      var open = LOOK || (unitOpen(cur) && (k === 0 || passed(u.stops[k - 1][0]))), done = passed(st[0]), now = open && !done && !nowSet; if (now) nowSet = true;
+      var stars = P[st[0]] ? P[st[0]].best : 0, st3 = ''; for (var j = 0; j < 3; j++) st3 += j < stars ? STAR : '';
+      s += '<button class="stop btn3d ' + COLORS[k] + (open ? '' : ' lock') + (now ? ' now' : '') + '" data-k="' + k + '" style="left:' + pts[k][0] + '%;top:' + pts[k][1] + '%" aria-label="' + st[3] + '">' +
+        '<svg class="ic" viewBox="0 0 100 100">' + ICON[st[2]] + '</svg>' + (open ? '' : LOCK) + (st3 ? '<span class="st">' + st3 + '</span>' : '') + '</button>';
+    });
+    $('path').innerHTML = line + s + '<svg class="trophy' + (unitDone(u) ? ' on' : '') + '" viewBox="0 0 100 100">' + ICON.trophy + '</svg>';
+    NK.last = u.say + ' Tap the shining one!';
+  }
+  document.addEventListener('click', function (e) {
+    var c = e.target.closest('.uchip'), st = e.target.closest('.stop'); NK.unlock();
+    if (c) { var i = +c.dataset.u, u = U[i];
+      if (!u.stops.length) { NK.hush(); NK.say(u.say + ' Coming soon!', { noRepeat: true }); return; }
+      if (!unitOpen(i)) { NK.hush(); NK.say('Finish unit ' + NK.word(i) + ' first.', { noRepeat: true }); c.classList.add('shake'); return; }
+      cur = i; draw(); NK.hush(); NK.say(u.say); return; }
+    if (st) { var k = +st.dataset.k, s = U[cur].stops[k];
+      if (st.classList.contains('lock')) { NK.hush(); NK.say('Do the shining one first.'); st.classList.remove('shake'); void st.offsetWidth; st.classList.add('shake'); return; }
+      NK.hush(); NK.sound.pop(); NK.say(s[3] + '!').then(function () { location.href = s[1] + (LOOK ? '?look=1' : ''); }); }
+  });
+  $('again').classList.add('talk');   /* the speaker pulses until he taps it: then he hears where to go */
+  $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.remove('talk'); NK.again(); });
+  draw();
+  window.MAP = { cur: function () { return cur; }, draw: draw };
+})();
+</script>
+</body>
+</html>

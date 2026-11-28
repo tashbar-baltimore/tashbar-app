@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn it: Counting things — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 3 OPENER: a short, warm lesson that shows and tells what we learn this unit:
+     touch each thing once, say the numbers in order, and the last number tells how many. The unit chant
+     "Touch it, say it, move it away!" (stand up and clap along), then "in a line or mixed up, still the same".
+     He taps the big arrow to go on. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit3.css">
+<style>
+#go{ width:clamp(110px,16vh,140px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; visibility:hidden; animation:pulse 1.2s infinite; }
+#go.on{ visibility:visible; } #go svg{ width:52%; height:52%; position:relative; }
+.hero svg{ width:56%; }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="scene" id="scene"></div>
+  <div class="panel"><div id="hands" hidden></div>
+    <button id="go" class="btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit3.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, U = U3, done;
+  var SLIDES = [
+    async function (F) {
+      U.clear(); var sh = document.createElement('div'); sh.className = 'shelf'; $('scene').appendChild(sh);
+      var pts = U.line(3, 72), slots = U.line(3, 25), els = pts.map(function (p, i) { return U.put('siddur', p, 13, i); });
+      await F.say('Hi! This unit we count things.');
+      await F.say('Touch it, say it, move it away.');
+      for (var i = 0; i < 3; i++) { await F.handTo(els[i]); await F.handTap(); U.place(els[i], slots[i]); NK.sound.pop(); await F.say(F.Word(i + 1) + '!', { noRepeat: true }); }
+      F.handHide(); await F.say('Each one gets one touch. Only one!');
+    },
+    async function (F) {
+      U.clear(); var els = U.line(4, 64).map(function (p, i) { return U.put('roll', p, 14, i); });
+      await F.say('Bubby baked challah rolls. Count with me!');
+      await U.countAlong(els, { keep: true });
+      await F.say('The last number tells how many. Four rolls!');
+      els.forEach(function (e) { e.classList.remove('lit'); });
+    },
+    /* his turn: he taps each roll and counts with the voice */
+    async function (F) {
+      U.clear(); var els = U.table(3, 64).map(function (p, i) { return U.put('roll', p, U.itemW(3), i); });
+      await F.say('Your turn! Tap each roll with me.');
+      await new Promise(function (res) {
+        var k = 0, busy = false;
+        function hooks() { var rest = els.filter(function (e) { return !e.classList.contains('counted'); }); GAME.right = rest.length ? function () { return [{ tap: '#scene .it[data-i="' + rest[0].dataset.i + '"]' }]; } : null; GAME.wrong = null; }
+        async function tap(e) {
+          var it = e.target.closest('.it'); if (!it || busy || GAME.phase !== 'answer') return;
+          if (it.classList.contains('counted')) { busy = true; await F.say('That one is counted.', { noRepeat: true }); busy = false; return; }
+          busy = true; GAME.phase = 'busy'; it.classList.add('counted', 'lit'); k++; NK.sound.pop();
+          await F.say(F.Word(k) + (k === els.length ? '!' : ''), { noRepeat: true }); it.classList.remove('lit'); busy = false;
+          if (k < els.length) { GAME.phase = 'answer'; hooks(); return; }
+          $('scene').removeEventListener('pointerdown', tap); res();
+        }
+        $('scene').addEventListener('pointerdown', tap); GAME.phase = 'answer'; F.lock(false); hooks();
+      });
+      GAME.phase = 'busy'; F.lock(true); await F.say('Three rolls! You did it.');
+    },
+    async function (F) { U.clear(); await F.chant('Touch it, say it, move it away!', true); },
+    async function (F) {
+      U.clear(); var els = U.line(4, 64).map(function (p, i) { return U.put('apple', p, 13, i); });
+      await F.say('Four apples in a line.');
+      var m = U.spots(4, [10, 90, 54, 95], 13).p;   /* mixed up, but still on the table */ els.forEach(function (e, i) { U.place(e, m[i]); }); NK.sound.cloth(); await F.wait(600);
+      await F.say('Mixed up? Still four! Moving does not change how many.');
+    },
+    async function (F) { U.clear(); await F.say("Now you count! Let's play."); }
+  ];
+  FR.game({
+    id: 'u3-opener', title: 'Counting!', rounds: SLIDES.length, stars: function () { return 3; },
+    hero: '<svg viewBox="0 0 100 100"><use href="#u3Roll"/></svg>',
+    endSay: function () { return "Great! Now let's touch and count!"; },
+    init: function () { U.addArt(); $('go').addEventListener('click', function () { if (GAME.phase !== 'answer') return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; var d = done; done = null; d(true); }); },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on');
+        await SLIDES[i](F);
+        done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#go' }]; }; GAME.wrong = null; F.lock(false); $('go').classList.add('on');
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

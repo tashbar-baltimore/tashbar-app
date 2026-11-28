@@ -1,0 +1,57 @@
+/* Kindergarten Numbers, Unit 6: the 3D garden path (path6.js) fills the screen; the game's buttons float over it. With frame.css. */
+#world{ position:fixed; inset:0; z-index:0; overflow:hidden; }
+.p6canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+.p6layer{ position:absolute; inset:0; pointer-events:none; }
+.p6layer .stone{ position:absolute; pointer-events:auto; border-radius:50%; cursor:pointer; touch-action:none; -webkit-tap-highlight-color:transparent; }
+.p6layer .stone.hint{ box-shadow:0 0 0 6px rgba(255,210,61,.9), 0 0 26px 8px rgba(255,210,61,.7); }
+.p6layer .stone.good{ box-shadow:0 0 0 6px rgba(34,180,94,.9), 0 0 26px 8px rgba(34,180,94,.6); }
+.p6layer .stone.shake{ animation:shake .45s; }
+#game{ position:relative; z-index:2; pointer-events:none; }
+#game .top, #game .ui, #game button, #game .numcard{ pointer-events:auto; }
+.stage.s6{ display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:12px; }
+/* a floating panel at the bottom: soft glass over the garden */
+.ui{ display:flex; align-items:center; justify-content:center; gap:clamp(12px,2.4vw,30px); padding:10px 18px; border-radius:28px;
+  background:rgba(255,255,255,.72); box-shadow:0 10px 26px rgba(40,80,40,.25), inset 0 2px 0 #fff; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); max-width:100%; }
+.ui[hidden]{ display:none; }
+.bigbtn{ width:clamp(84px,12vh,112px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.bigbtn svg{ width:56%; height:56%; position:relative; }
+.bigbtn.dim{ filter:grayscale(.6); opacity:.55; } .bigbtn.ready{ animation:pulse 1.2s infinite; }
+/* the target number, shown big in a cloud card */
+.goal{ min-width:clamp(84px,12vh,112px); height:clamp(84px,12vh,112px); border-radius:24px; background:#fff; display:flex; align-items:center; justify-content:center; padding:8px 12px;
+  box-shadow:0 6px 0 #C9D8EE, 0 10px 18px rgba(30,40,90,.2); }
+.goal svg{ height:86%; width:auto; }
+.goal .dotsrow{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; max-width:170px; } .goal .dotsrow i{ width:20px; height:20px; border-radius:50%; background:#3B2A7A; }
+/* numeral tiles he drags onto the path */
+.srcs{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.numcard{ width:clamp(70px,10vh,92px); height:clamp(70px,10vh,92px); border-radius:20px; background:linear-gradient(180deg,#fff,#F3F7FF); display:flex; align-items:center; justify-content:center; padding:8px;
+  box-shadow:0 6px 0 #B9C7E6, 0 10px 16px rgba(30,40,90,.2); border:4px solid #fff; cursor:grab; touch-action:none; }
+.numcard svg{ height:100%; width:auto; } .numcard.picked{ outline:5px solid #FFC93D; transform:translateY(-6px); } .numcard.done{ visibility:hidden; }
+/* the spinner */
+.spin6{ position:relative; width:clamp(108px,18vh,150px); aspect-ratio:1; border-radius:50%; cursor:pointer; filter:drop-shadow(0 8px 0 rgba(20,90,140,.35)) drop-shadow(0 12px 14px rgba(0,0,0,.2)); }
+.spin6 svg{ position:absolute; inset:0; width:100%; height:100%; } .spin6.glow{ animation:pulse 1.2s infinite; } .spin6.landed{ transform:scale(1.08); transition:transform .15s; }
+/* the race board: who is ahead (two small faces on a bar) */
+.who{ display:flex; align-items:center; gap:10px; }
+.who img{ height:clamp(64px,9vh,84px); width:auto; filter:drop-shadow(0 4px 4px rgba(0,0,0,.2)); }
+.hero6{ position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center; gap:2%; }   /* the start picture stays inside its frame, so the title and Play show (Esti, 2026-11-27) */
+.hero6 img{ height:92%; max-height:100%; max-width:49%; width:auto; object-fit:contain; position:relative; z-index:1; filter:drop-shadow(0 8px 8px rgba(0,0,0,.18)); }
+.hero6 .path{ position:absolute; left:0; right:0; bottom:4%; height:30%; }
+@media (max-width:760px), (max-aspect-ratio:4/5){
+  .ui{ padding:8px 10px; gap:10px; border-radius:22px; } .bigbtn{ width:80px; } .goal{ min-width:80px; height:80px; } .numcard{ width:68px; height:68px; } .spin6{ width:96px; }
+}
+.bigbtn[hidden], .goal[hidden], .spin6[hidden], .srcs[hidden]{ display:none; }
+.spin6 .wheelpic{ position:absolute; inset:0; width:100%; height:100%; }
+/* Unit 7 (orchard7.js): tap spots over apples, blankets, the tree and the see-saw */
+.p6layer .tspot{ position:absolute; pointer-events:auto; border-radius:50%; cursor:pointer; touch-action:none; -webkit-tap-highlight-color:transparent; }
+.p6layer .tspot.side{ border-radius:28px; z-index:2; }   /* a blanket answer sits above its apples */
+.p6layer .tspot.hint{ box-shadow:0 0 0 6px rgba(255,210,61,.9), 0 0 26px 8px rgba(255,210,61,.7); }
+.p6layer .tspot.good{ box-shadow:0 0 0 6px rgba(34,180,94,.9), 0 0 26px 8px rgba(34,180,94,.6); }
+.p6layer .tspot.picked{ box-shadow:0 0 0 6px #fff, 0 0 0 11px #FFC93D; }
+.p6layer .tspot.shake{ animation:shake .45s; }
+.eq svg{ width:60%; height:60%; position:relative; }
+.spin6 img.arrow{ position:absolute; left:22%; top:22%; width:56%; height:56%; transform-origin:50% 50%; }
+/* Unit 8: the finger hands in the panel. The "put one down" button sits beside the hand, never over its middle. */
+.hcol .fhand, #hp .fhand{ width:clamp(96px,14vh,122px) !important; aspect-ratio:170/230; margin-right:34px; }
+.hcol .fhand .fdown, #hp .fhand .fdown{ width:64px; height:64px; right:-38px; bottom:-6px; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .hcol .fhand, #hp .fhand{ width:90px !important; } }
+/* K clarity 9: a panel with nothing showing in it is not drawn (it looked like an empty white bar) */
+.s6 > .ui:not(:has(> :not([hidden]))){ visibility:hidden; }

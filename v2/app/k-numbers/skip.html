@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Find the Mistake — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 2, game 4: FIND THE MISTAKE. Skill: hear when the counting words are out of order.
+     A boy counts along the stones (the ball hops with each word); under each stone a big bubble keeps what he said, in dots.
+     K clarity review r2 (2026-11-27): the path stones show their own dots only faintly (r3) and light up as each word is said, so the bright dots are
+     the words he heard: he listens for the mistake instead of matching two rows of dot pictures. A marked stone gets its right dots.
+     Did he skip a number, say one twice, or mix two up? He taps a stone where it went wrong, or thumbs up if he counted right.
+     A wrong tap says why ("Mendy said three here. That is right."), then he tries again; the second time we show it and count it right. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="u2.css">
+<style>
+.stage{ grid-template-rows:auto auto auto; }
+.okrow{ display:flex; justify-content:center; margin-top:clamp(80px,22vh,180px); }
+/* K clarity r3: the thumbs-up is smaller, and plain (grey, faded) while he counts, so the stones are the brightest thing */
+#ok.wait{ filter:saturate(.15) brightness(1.05); opacity:.55; transform:scale(.85); }
+.u2stone .faint{ position:absolute; inset:0; opacity:.3; }   /* each stone's own dots, faint: what the stone is, next to what was said */
+#ok{ transition:filter .3s, opacity .3s, transform .3s; width:clamp(96px,14vh,120px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+#ok svg{ width:60%; height:60%; position:relative; }
+@media (max-width:760px){ #ok{ width:80px; } }   /* round 3 review: on a phone the thumbs-up is no bigger than a stone */
+.u2stone .okmark{ position:absolute; right:-8%; top:-8%; width:42%; aspect-ratio:1; border-radius:50%; background:#2EAA4F; color:#fff; font:900 clamp(18px,3vh,30px)/1 system-ui,sans-serif; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 0 #1E7A37; z-index:3; }
+#path .u2stone.tapme{ cursor:pointer; }
+#path .u2path{ row-gap:clamp(60px,9vh,80px); max-width:min(1240px,120vh); }
+/* K clarity review (2026-11-27): what he said is BIG (at least 70% of the stone), and the stone and its bubble glow together
+   while the voice says the word, so he sees which word goes with which stone */
+.said{ position:absolute; left:50%; top:100%; width:88%; aspect-ratio:1.12; transform:translate(-50%,14%); border-radius:16px; background:#fff; box-shadow:0 4px 0 rgba(40,70,140,.18); pointer-events:none; }
+.said::before{ content:''; position:absolute; left:50%; top:-9px; margin-left:-9px; border:9px solid transparent; border-top:0; border-bottom:10px solid #fff; }
+.said .u2mini{ position:absolute; inset:6%; }
+.said .u2mini .dd, .said .u2mini .dice{ inset:0; }
+.said.now{ background:#FFF6C8; box-shadow:0 4px 0 #C98A00, 0 0 0 6px rgba(255,201,61,.85), 0 0 22px 8px rgba(255,201,61,.6); }
+.said.now::before{ border-bottom-color:#FFF6C8; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ #path .u2path{ row-gap:clamp(110px,16vh,140px); } #path .u2path.long{ --cols:5 !important; } .okrow{ margin-top:clamp(80px,12vh,110px); } }
+.said.off{ background:#FFE9E6; box-shadow:0 4px 0 rgba(192,57,43,.35), 0 0 0 3px rgba(255,90,78,.55); }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="carrow" id="carrow"></div>
+  <div id="path"></div>
+  <div class="okrow"><button class="btn3d b-green" id="ok" aria-label="He counted right"><svg viewBox="0 0 64 64"><path d="M14 30h9v24h-9z" fill="#fff"/><path d="M27 30l9-17c2-4 9-3 8 3l-2 10h11c4 0 6 3 5 7l-4 17c-1 3-3 4-6 4H27z" fill="#fff"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit2.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var P, R, done, lastEasy = 0;
+  /* what he says on each stone: one mistake (or none) */
+  function words(len, kind, at) {
+    var w = []; for (var i = 1; i <= len; i++) w.push(i);
+    if (kind === 'skip') for (i = at; i < len; i++) w[i] = i + 2;
+    if (kind === 'twice') { for (i = len - 1; i > at; i--) w[i] = w[i - 1]; w[at] = at; }
+    if (kind === 'swap') { var t = w[at]; w[at] = w[at + 1]; w[at + 1] = t; }
+    return w;
+  }
+  /* island rule: only mistakes the demo showed (skipping a number, saying one twice); the first two rounds are skips */
+  var PLAN = [{ len: 5, kind: 'skip', at: 3 }, { len: 5, kind: 'skip', at: 2 }, { len: 5, kind: 'twice', at: 3 }, { len: 5, kind: 'none' }];
+  function bubble(i) { var b = document.createElement('div'); b.className = 'said'; b.innerHTML = '<span class="u2mini">' + U2.dots(R.w[i]) + '</span>'; P.stones[i].appendChild(b); }
+  function glow(i) { P.stones.forEach(function (s, k) { var b = s.querySelector('.said'); if (b) b.classList.toggle('now', k === i); }); }
+  function plain() { P.stones.forEach(function (s, i) { s.innerHTML = '<span class="faint">' + U2.dots(i + 1) + '</span>'; }); }
+  async function count(F) {
+    $('ok').classList.add('wait'); P.reset(); plain(); P.stones.forEach(function (s) { s.classList.add('tapme'); });
+    for (var i = 0; i < R.w.length; i++) { P.place(i, true); bubble(i); glow(i); await F.say(U2.Word(R.w[i]) + (i === R.w.length - 1 ? '.' : ','), { noRepeat: true }); }
+    glow(-1); P.place(-1); P.stones.forEach(function (s) { s.classList.remove('lit'); }); $('ok').classList.remove('wait');   /* counting done: no stone stays bright, the ball goes, the thumbs-up is bright again */   /* counting done: the thumbs-up is bright again */
+  }
+  /* a stone counts as "found" if the word there is wrong, or (said twice) it is either of the two same words */
+  function isFound(i) { if (i < 0) return R.bad < 0; if (R.w[i] !== i + 1) return true; return R.kind === 'twice' && R.w[i] === R.w[R.bad]; }
+  function hooks() {
+    GAME.right = function () { return [{ tap: R.bad < 0 ? '#ok' : '#st' + R.bad }]; };
+    GAME.wrong = function () { return [{ tap: R.bad < 0 ? '#st1' : '#st0' }]; };
+  }
+  async function showRight(F, at) {   /* short: mark the stone (the one he tapped, or the first mistake), say why, count up to just past it */
+    var b = at != null && at >= 0 ? at : R.bad, sd = P.stones[b].querySelector('.said'); if (sd) sd.classList.add('off'); P.stones[b].classList.add('redmark'); var fa = P.stones[b].querySelector('.faint'); if (fa) fa.remove(); P.stones[b].insertAdjacentHTML('afterbegin', U2.dots(b + 1));   /* the right amount, shown on the marked stone */
+    await F.say(R.who + ' said ' + U2.word(R.w[b]) + ' here.'); await F.say('This stone is ' + U2.word(b + 1) + '.');
+    P.lo = 0; await U2.countAlong(P, 0, Math.min(R.w.length - 1, b + 1));   /* the bubbles and the red mark stay on screen */
+  }
+  async function pick(where) {
+    NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
+    if (isFound(where)) {
+      var d = done; done = null;
+      if (R.bad < 0) { await FR.yes($('ok'), 'Yes! ' + R.who + ' counted right!'); d(R.misses === 0); return; }
+      NK.sound.yes(); await FR.say('Yes! You found it!'); await showRight(FR, where); await FR.yes(P.stones[where], 'Now it is right!'); d(R.misses === 0); return;
+    }
+    FR.oops(where < 0 ? $('ok') : P.stones[where]); R.misses++;
+    function tick() { if (where >= 0 && !P.stones[where].querySelector('.okmark')) P.stones[where].insertAdjacentHTML('beforeend', '<span class="okmark">✓</span>'); }   /* a green tick: this stone was counted right */
+    if (where >= 0) { tick(); await FR.say(R.who + ' said ' + U2.word(R.w[where]) + ' here. That is right.'); }
+    else await FR.say('Listen. ' + R.who + ' made a mistake.');
+    if (R.misses === 1) {
+      if (where < 0) { await count(FR); await FR.say("Look again. Tap where he went wrong."); }
+      else { await FR.say('Look and listen again. Did he make a mistake?'); await count(FR); tick(); }
+      GAME.phase = 'answer'; FR.lock(false); hooks(); return; }
+    var d2 = done; done = null;
+    if (R.bad < 0) await FR.say(R.who + ' counted right this time.'); else await showRight(FR);
+    d2(false);
+  }
+  function play(F, pl, who) {
+    return new Promise(async function (res) {
+      GAME.phase = 'busy'; F.lock(true);
+      P = U2.path($('path'), { from: 1, to: pl.len }); plain();
+      R = { who: who, kind: pl.kind, w: words(pl.len, pl.kind, pl.at), bad: pl.kind === 'none' ? -1 : pl.at, misses: 0 };
+      await F.say(who + ' counts. Listen!'); await count(F);
+      await F.say('Did ' + who + ' make a mistake? Tap the stone where he went wrong.', { repeat: who + ' said: ' + R.w.map(U2.word).join(', ') + '.' });
+      await F.say('No mistake? Tap thumbs up.', { repeat: who + ' said: ' + R.w.map(U2.word).join(', ') + '.' });
+      done = res; GAME.phase = 'answer'; F.lock(false); hooks();   /* he taps only after the instructions */
+    });
+  }
+  FR.game({
+    id: 'u2-mistake', title: 'Find the Mistake', rounds: 4, bonusSay: 'Bonus! A long count. Listen hard!',
+    hero: '<div class="u2stone" style="width:26%">' + U2.dots(3) + '</div><div class="u2stone" style="width:26%;box-shadow:0 7px 0 #C0392B,0 0 0 6px rgba(255,90,78,.45)">' + U2.dots(4) + '</div>',
+    init: function () {
+      document.addEventListener('pointerdown', function (e) { var s = e.target.closest('#path .u2stone'); if (s) { e.preventDefault(); pick(+s.dataset.i); } });
+      $('ok').addEventListener('click', function () { pick(-1); });
+    },
+    demo: async function (F) {
+      P = U2.path($('path'), { from: 1, to: 4 }); plain(); R = { who: 'Mendy', kind: 'skip', w: words(4, 'skip', 2), bad: 2, misses: 0 };
+      await F.say('Watch me. Mendy counts. Did he make a mistake?'); await count(F);
+      await F.say('Look! He said four on the three stone.');
+      await F.handTo(P.stones[2]); await F.handTap(); NK.sound.yes();
+      await showRight(F);
+      /* the second kind of mistake: saying a number twice */
+      P = U2.path($('path'), { from: 1, to: 4 }); plain(); R = { who: 'Mendy', kind: 'twice', w: words(4, 'twice', 2), bad: 2, misses: 0 };
+      await F.say('Now Mendy says a number twice. Listen!'); await count(F);
+      await F.say('Two, two! He said two twice.');
+      await F.handTo(P.stones[2]); await F.handTap(); NK.sound.yes();
+      await showRight(F);
+      /* the third case, its own short demo: he counts right, so thumbs up */
+      P = U2.path($('path'), { from: 1, to: 4 }); plain(); R = { who: 'Mendy', kind: 'none', w: words(4, 'none', 0), bad: -1, misses: 0 };
+      await F.say('Now Mendy counts right. Listen!'); await count(F);
+      await F.say('No mistake! I tap thumbs up.'); await F.handTo($('ok')); await F.handTap(); await F.yes($('ok'), 'Thumbs up!');
+    },
+    bonus: function (F) { return play(F, { len: 9, kind: 'skip', at: 7 }, 'Moshe'); },
+    /* a missed round adds a short, easier round right after it; the main rounds stay the same */
+    round: async function (F, i) {
+      var r = await play(F, PLAN[i], F.NAMES[(i * 3) % F.NAMES.length]);
+      if (!r) { var at; do { at = 2 + Math.floor(Math.random() * 2); } while (at === lastEasy); lastEasy = at;
+        await F.say("Let's try a short one."); await play(F, { len: 5, kind: 'skip', at: at }, 'Eli'); }
+      return r;
+    }
+  });
+})();
+</script>
+</body>
+</html>

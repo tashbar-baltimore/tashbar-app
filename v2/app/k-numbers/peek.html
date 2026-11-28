@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peek! — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 1 "How many? Look and say", game 1: PEEK!
+     Skill: sees 1-3, then 1-5 at a glance without counting (subitizing; Clements 1999).
+     Apples show for a moment under Bubby's towel; he puts the same number in the basket (drag or tap), then presses the check.
+     Show, then try: a demo hand plays one round first. Mistakes teach: the towel lifts, we look again, and the basket shows
+     the empty spots (or the extra apples). Struggling: the peek gets longer and the numbers smaller. Quick: a bonus round in two colors. -->
+<style>
+:root{ --ink:#2B2350; --soft:#5B6478; --green:#22B45E; --green-l:#6BE38F; --green-d:#138048; --blue:#2FB5E8; --blue-l:#8BE0FF; --blue-d:#1679B0; --sun:#FFC93D; --sun-l:#FFF09A; --sun-d:#D98200;
+  --sky1:#6EC8FF; --sky2:#BFEBFF; --sand:#FFF1CC; --wood1:#F2C483; --wood2:#D9954D; --wood3:#A2642C; --wood4:#7A451A; }
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; overflow:hidden; color:var(--ink); font-family:'Fredoka','Nunito',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; user-select:none; -webkit-user-select:none; touch-action:manipulation;
+  background:
+    radial-gradient(ellipse 22% 9% at 12% 16%, rgba(255,255,255,.95) 60%, transparent 62%),
+    radial-gradient(ellipse 14% 8% at 20% 12%, rgba(255,255,255,.95) 60%, transparent 62%),
+    radial-gradient(ellipse 20% 8% at 84% 22%, rgba(255,255,255,.9) 60%, transparent 62%),
+    radial-gradient(ellipse 12% 7% at 91% 18%, rgba(255,255,255,.9) 60%, transparent 62%),
+    radial-gradient(circle at 50% -10%, #fff 0, rgba(255,255,255,0) 40%),
+    linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 50%,var(--sand) 100%); }
+button{ font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; border:0; position:relative; }
+svg{ display:block; }
+#game{ height:100%; }
+
+/* glossy 3D buttons: a light top, a dark base, a shine */
+.btn3d{ border:5px solid #fff; box-shadow:0 8px 0 var(--b-d), 0 14px 18px rgba(30,40,90,.25), inset 0 -8px 0 rgba(0,0,0,.12); background:radial-gradient(circle at 50% 28%, var(--b-l), var(--b) 62%); }
+.btn3d::before{ content:''; position:absolute; left:18%; right:18%; top:7%; height:30%; border-radius:50%; background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,0)); pointer-events:none; }
+.btn3d:active{ transform:translateY(6px); box-shadow:0 2px 0 var(--b-d), 0 4px 8px rgba(30,40,90,.2), inset 0 -6px 0 rgba(0,0,0,.12); }
+.btn3d svg{ filter:drop-shadow(0 3px 0 rgba(0,0,0,.18)); }
+.b-green{ --b:var(--green); --b-l:var(--green-l); --b-d:var(--green-d); } .b-blue{ --b:var(--blue); --b-l:var(--blue-l); --b-d:var(--blue-d); }
+.b-sun{ --b:var(--sun); --b-l:var(--sun-l); --b-d:var(--sun-d); } .b-white{ --b:#EEF4FF; --b-l:#fff; --b-d:#B9C7E6; }
+
+/* top bar */
+.top{ height:92px; display:flex; align-items:center; gap:16px; padding:8px clamp(12px,3vw,32px); }
+.rb{ width:76px; height:76px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; }
+.rb svg{ width:42px; height:42px; position:relative; }
+#home{ width:70px; height:70px; }
+#again.talk{ animation:talk 1s infinite; } @keyframes talk{ 50%{ transform:scale(1.09); } }
+.dots{ flex:1; display:flex; justify-content:center; gap:clamp(6px,1.2vw,14px); }
+.mid{ flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:5px; }   /* the title above the round dots: always on screen (K-CLARITY-RULES 13), as in frame.css */
+.mid .dots{ flex:none; }
+.gtitle{ font:800 clamp(15px,2vw,22px)/1.15 system-ui,-apple-system,'Segoe UI',sans-serif; color:#2B2350; background:rgba(255,255,255,.88); padding:4px 14px; border-radius:999px; text-align:center; max-width:100%; box-shadow:0 3px 10px rgba(40,70,140,.12); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dots i{ width:clamp(18px,2.4vw,28px); height:clamp(18px,2.4vw,28px); border-radius:50%; background:radial-gradient(circle at 40% 35%,#fff,#DDEBFA); border:3px solid #fff; box-shadow:0 3px 0 rgba(30,60,120,.18); transition:all .3s; }
+.dots i.now{ background:radial-gradient(circle at 40% 35%,var(--sun-l),var(--sun) 65%); box-shadow:0 3px 0 var(--sun-d),0 0 0 5px rgba(255,201,61,.35); transform:scale(1.25); }
+.dots i.ok{ background:radial-gradient(circle at 40% 35%,var(--green-l),var(--green) 65%); box-shadow:0 3px 0 var(--green-d); }
+.dots i.fix{ background:radial-gradient(circle at 40% 35%,#D6F5E0,#8FD3A8 65%); box-shadow:0 3px 0 #5FAE7E; }
+
+/* the play area */
+.stage{ height:calc(100% - 92px); display:grid; grid-template-columns:1.05fr 1fr; gap:clamp(14px,2.4vw,32px); padding:4px clamp(12px,3vw,32px) clamp(14px,2.6vh,26px); }
+.card{ position:relative; border-radius:36px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); overflow:hidden; }
+
+/* Bubby's kitchen: wall, table, plate, towel */
+.peek{ display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at 50% 40%,#FFFFFF,#EAF3FF 70%,#DCE8F7); /* K clarity: calm, plain, nothing behind the plate */ }
+.plate{ position:relative; width:min(88%, 62vh); aspect-ratio:1.25; z-index:1; }
+.dish{ position:absolute; inset:-6% -4%; background:url(img/plate.webp) center/contain no-repeat; filter:drop-shadow(0 14px 10px rgba(90,50,10,.35)); }
+.plate .ta{ position:absolute; width:27%; transform:translate(-50%,-50%) rotate(var(--r,0deg)); transition:transform .25s; }
+.plate .ta.hi{ transform:translate(-50%,-50%) scale(1.28); filter:drop-shadow(0 0 8px #FFD23D) drop-shadow(0 0 16px #FFB000); }
+.plate .ta.hi2{ transform:translate(-50%,-50%) scale(1.28); filter:drop-shadow(0 0 8px #5FD0FF) drop-shadow(0 0 16px #1E9CE8); }
+#clap{ position:fixed; inset:0; z-index:30; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer; touch-action:none; background:radial-gradient(circle, rgba(255,255,255,.85), rgba(190,232,255,.75)); }
+#clap[hidden]{ display:none; }
+.claphands{ width:clamp(200px,40vh,340px); pointer-events:none; transition:transform .12s; filter:drop-shadow(0 12px 10px rgba(0,0,0,.25)); }
+#clap.hit .claphands{ transform:scale(1.15) rotate(-4deg); }
+#clap svg{ pointer-events:none;  width:clamp(120px,22vh,190px); height:clamp(120px,22vh,190px); transition:transform .12s; filter:drop-shadow(0 10px 6px rgba(0,0,0,.2)); }
+#clap svg:first-child{ transform:rotate(30deg) scaleX(-1); } #clap svg:last-child{ transform:rotate(-30deg); }
+#clap.hit svg:first-child{ transform:translateX(28px) rotate(16deg) scaleX(-1) scale(1.08); } #clap.hit svg:last-child{ transform:translateX(-28px) rotate(-16deg) scale(1.08); }
+#clap::after{ content:''; position:absolute; width:70px; height:70px; border-radius:50%; border:8px solid var(--sun); opacity:0; }
+#clap.hit::after{ animation:ring .35s ease-out; } @keyframes ring{ from{ opacity:1; transform:scale(.4); } to{ opacity:0; transform:scale(2.4); } }
+.towel{ position:absolute; inset:-4px; z-index:3; border-radius:30px; transition:transform .34s cubic-bezier(.4,1.4,.6,1); display:flex; align-items:center; justify-content:center;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 18%, rgba(0,30,80,0) 75%, rgba(0,30,80,.22)),
+    linear-gradient(100deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.28) 42%, rgba(255,255,255,0) 54%),
+    repeating-linear-gradient(0deg, rgba(36,110,215,.62) 0 30px, transparent 30px 60px),
+    repeating-linear-gradient(90deg, rgba(36,110,215,.62) 0 30px, transparent 30px 60px), #fff;
+  box-shadow:inset 0 0 0 10px rgba(255,255,255,.55), inset 0 0 0 13px rgba(36,110,215,.35), inset 0 -18px 0 rgba(0,40,100,.12); }
+.towel .eyes{ display:none !important; /* K clarity: no faces on objects */ gap:20px; padding:16px 24px; border-radius:999px; background:radial-gradient(ellipse at 50% 30%,#fff,#EAF2FF); box-shadow:0 8px 0 rgba(20,60,140,.18), 0 14px 20px rgba(20,60,140,.22); }
+.towel .eyes i{ width:56px; height:62px; border-radius:50%; background:radial-gradient(circle at 50% 40%,#fff 55%,#E3ECFA); border:5px solid var(--ink); position:relative; animation:look 3.2s infinite; }
+.towel .eyes i::after{ content:''; position:absolute; width:26px; height:28px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #fff 0 4px, var(--ink) 5px); left:12px; top:16px; }
+@keyframes look{ 0%,40%{ transform:none; } 45%{ transform:scaleY(.1); } 50%,100%{ transform:none; } }
+.peek.open .towel{ transform:translateY(-104%) rotate(-3deg); }
+.peek.look{ border-color:var(--sun); box-shadow:0 0 0 7px rgba(255,201,61,.55), 0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); }
+
+/* right side: basket, crate, check */
+.right{ display:grid; grid-template-rows:1.15fr .85fr; gap:clamp(12px,2vh,22px); min-height:0; }
+.basket{ display:flex; align-items:flex-end; justify-content:center; padding-bottom:6px; background:radial-gradient(ellipse at 50% 100%, #FFF3D6 0, rgba(255,243,214,0) 60%), linear-gradient(180deg,#E9F7FF,#D3EEFF); }
+.bwrap{ position:relative; width:min(94%, 450px); height:94%; }
+.bwrap .back{ position:absolute; left:0; top:0; width:100%; height:100%; }
+.bwrap .front{ position:absolute; left:0; bottom:0; width:100%; height:46%; z-index:2; filter:drop-shadow(0 10px 8px rgba(90,50,10,.28)); }
+.inb{ position:absolute; left:3%; right:3%; bottom:30%; z-index:3; display:flex; flex-wrap:wrap-reverse; justify-content:center; align-items:flex-end; gap:0 2px; }
+.ba, .slot{ width:19.5%; max-width:96px; height:auto; aspect-ratio:1; margin:0 0 -14px; }
+.ba{ cursor:grab; touch-action:none; }
+.ba.land{ animation:land .38s cubic-bezier(.3,1.6,.5,1); transform-origin:50% 90%; } @keyframes land{ 0%{ transform:scale(1.2,.75); } 50%{ transform:scale(.9,1.12); } 100%{ transform:none; } }
+.ba.extra{ filter:drop-shadow(0 0 6px #FF5A4E) drop-shadow(0 0 12px #FF8A80); opacity:.6; }
+.slot{ border:5px dashed #1E9E5A; border-radius:50%; background:radial-gradient(circle,#fff,rgba(220,255,233,.8)); transform:scale(.84); animation:slotp 1s infinite; } @keyframes slotp{ 50%{ transform:scale(.92); } }
+.basket.good{ border-color:#7BE0A4; background:radial-gradient(ellipse at 50% 100%, #FFF3D6 0, rgba(255,243,214,0) 60%), linear-gradient(180deg,#E6FFEF,#C8F5D9); }
+.basket.shake{ animation:shake .45s; } @keyframes shake{ 25%{ transform:translateX(-10px); } 75%{ transform:translateX(10px); } }
+.yes{ position:absolute; left:14px; top:12px; width:clamp(84px,14vh,120px); height:clamp(84px,14vh,120px); z-index:5; filter:drop-shadow(0 8px 6px rgba(160,90,0,.35)); display:flex; align-items:center; justify-content:center; transform:scale(0) rotate(-30deg); transition:transform .3s cubic-bezier(.4,1.7,.6,1); }
+.yes.on{ transform:scale(1) rotate(0); }
+
+.low{ display:flex; gap:clamp(12px,2vw,22px); min-height:0; }
+.crate{ flex:1; border-color:#FFE3B8; display:grid; grid-template-columns:repeat(6,1fr); align-items:center; justify-items:center; padding:10px clamp(8px,1.2vw,16px);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 30%),
+    repeating-linear-gradient(180deg, rgba(0,0,0,0) 0 31%, rgba(110,55,15,.45) 31% 33%, rgba(0,0,0,0) 33% 66%, rgba(110,55,15,.45) 66% 68%),
+    repeating-linear-gradient(90deg, rgba(150,80,20,.0) 0 60px, rgba(150,80,20,.12) 60px 62px, rgba(150,80,20,0) 62px 130px),
+    linear-gradient(180deg,var(--wood1),var(--wood2) 60%,var(--wood3));
+  box-shadow:inset 0 0 0 5px rgba(122,69,26,.35), 0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); }
+.hole{ width:100%; max-width:98px; aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 50% 38%, #5E3313 0, #7A451A 45%, #A2642C 72%, #C98544 100%); box-shadow:inset 0 8px 12px rgba(40,15,0,.55), 0 2px 0 rgba(255,230,190,.6); }
+.pa{ width:100%; height:100%; cursor:grab; touch-action:none; transition:transform .15s cubic-bezier(.3,1.6,.5,1); margin-top:-8%; }
+.pa:hover{ transform:translateY(-4px) scale(1.06); } .pa:active{ transform:scale(.9); }
+#check{ width:clamp(100px,14vh,132px); flex:none; align-self:center; aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+#check svg{ width:56%; height:56%; position:relative; }
+#check.dim{ filter:saturate(.25) brightness(1.05); }
+#check.ready{ animation:pulse 1.2s infinite; } @keyframes pulse{ 50%{ transform:scale(1.08); } }
+.fly{ position:fixed; z-index:50; pointer-events:none; filter:drop-shadow(0 12px 8px rgba(0,0,0,.25)); }
+.ghosted{ opacity:.25; }
+.locked .pa, .locked .ba{ cursor:default; }
+
+/* demo hand */
+#hand{ position:fixed; width:96px; height:96px; z-index:60; pointer-events:none; left:50%; top:110%; transition:left .6s ease-in-out, top .6s ease-in-out, transform .15s; filter:drop-shadow(0 10px 6px rgba(0,0,0,.28)); }
+#hand.tap{ transform:scale(.85); }
+
+/* start and end screens: a sunburst behind */
+.over{ position:fixed; inset:0; z-index:40; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(12px,3vh,28px); padding:24px 16px; text-align:center; overflow:hidden;
+  background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 50%,var(--sand) 100%); }
+.over::before{ content:''; position:absolute; left:50%; top:46%; width:220vmax; height:220vmax; margin:-110vmax 0 0 -110vmax; z-index:-1;
+  background:repeating-conic-gradient(from 0deg, rgba(255,255,255,.32) 0 9deg, rgba(255,255,255,0) 9deg 18deg); animation:spin 60s linear infinite;
+  -webkit-mask:radial-gradient(circle, #000 0, transparent 38%); mask:radial-gradient(circle, #000 0, transparent 38%); }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.over[hidden]{ display:none; }
+.title{ font-size:clamp(56px,11vh,104px); font-weight:900; letter-spacing:.02em; margin:0; color:#FFD23D; line-height:1;
+  -webkit-text-stroke:7px #3B2A7A; paint-order:stroke fill; text-shadow:0 7px 0 #3B2A7A, 0 14px 18px rgba(30,20,90,.35); transform:rotate(-4deg); animation:bob 2.4s ease-in-out infinite; }
+@keyframes bob{ 50%{ transform:rotate(-4deg) translateY(-6px); } }
+.hero{ position:relative; width:min(74vw,380px); aspect-ratio:1.25; }
+.hero svg.ta{ position:absolute; width:26%; transform:translate(-50%,-50%); }
+.hero .corner{ position:absolute; right:-8%; top:4%; width:62%; height:70%; border-radius:26px; transform:rotate(14deg);
+  background:linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 30%, rgba(0,30,80,.2)), repeating-linear-gradient(0deg, rgba(36,110,215,.62) 0 20px, transparent 20px 40px), repeating-linear-gradient(90deg, rgba(36,110,215,.62) 0 20px, transparent 20px 40px), #fff;
+  box-shadow:inset 0 0 0 7px rgba(255,255,255,.55), inset 0 0 0 9px rgba(36,110,215,.35), 0 10px 0 rgba(20,60,140,.18), 0 16px 22px rgba(20,60,140,.25); }
+.play{ width:clamp(130px,21vh,170px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; animation:pulse 1.4s infinite; border-width:7px; }
+.play svg{ width:50%; height:50%; margin-left:8%; position:relative; }
+.stars{ display:flex; gap:clamp(8px,2vw,22px); align-items:flex-end; }
+.stars svg{ width:clamp(90px,min(21vh,27vw),180px); height:clamp(90px,min(21vh,27vw),180px); transform:scale(0) rotate(-180deg); transition:transform .5s cubic-bezier(.4,1.6,.6,1); filter:drop-shadow(0 10px 8px rgba(160,90,0,.35)); }
+.stars svg:nth-child(2){ margin-bottom:22px; }
+.stars svg.on{ transform:scale(1) rotate(0); }
+.stars svg.off{ opacity:.45; filter:grayscale(1) brightness(1.6); }
+.row{ display:flex; gap:28px; }
+.big{ width:clamp(108px,16vh,136px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.big svg{ width:52%; height:52%; position:relative; }
+.big[hidden]{ display:none; }
+.burst i{ position:fixed; width:16px; height:22px; border-radius:5px; z-index:45; animation:fall 1.7s cubic-bezier(.2,.7,.4,1) forwards; box-shadow:inset 0 -4px 0 rgba(0,0,0,.15); }
+@keyframes fall{ to{ transform:translate(var(--dx),var(--dy)) rotate(720deg); opacity:0; } }
+
+/* phone and tall screens: one column */
+@media (max-width:760px), (max-aspect-ratio:4/5){
+  .top{ height:80px; gap:10px; } .rb{ width:64px; height:64px; } #home{ width:64px; height:64px; } .rb svg{ width:34px; height:34px; }
+  .stage{ height:calc(100% - 80px); grid-template-columns:1fr; grid-template-rows:1fr 1.25fr; gap:12px; }
+  .plate{ width:min(84%, 44vh); }
+  .towel .eyes{ padding:10px 16px; gap:12px; } .towel .eyes i{ width:40px; height:44px; border-width:4px; } .towel .eyes i::after{ width:18px; height:20px; left:8px; top:11px; }
+  .right{ grid-template-rows:1fr .9fr; gap:12px; }
+  .crate{ grid-template-columns:repeat(3,1fr); gap:4px; }
+  .hole{ max-width:72px; }
+  .ba,.slot{ width:19.5%; height:auto; }
+  .bwrap{ width:98%; }
+  #check{ width:98px; }
+}
+.fast .towel{ transition:none !important; }
+@media (prefers-reduced-motion:reduce){ #check.ready,.play,#again.talk,.title,.over::before,.towel .eyes i,.slot{ animation:none; } }
+.playwrap{ position:relative; }
+.starthand{ position:absolute; right:-58px; bottom:-48px; width:88px; height:88px; pointer-events:none; filter:drop-shadow(0 8px 6px rgba(0,0,0,.25)); transform:rotate(-20deg); animation:poke 1.1s ease-in-out infinite; }
+@keyframes poke{ 50%{ transform:rotate(-20deg) translate(-10px,-10px) scale(.92); } }
+</style>
+</head>
+<body>
+<div id="art"></div>
+
+<div id="game" class="locked">
+  <div class="top">
+    <button id="again" class="rb btn3d b-blue" aria-label="Hear it again"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#fff"/><path d="M32 17c3 2 5 4.5 5 7s-2 5-5 7M36 11c5 3.5 8 8 8 13s-3 9.5-8 13" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg></button>
+    <div class="mid"><div class="gtitle" id="gtitle">Peek!</div><div class="dots" id="dots"></div></div>
+    <button id="home" class="rb btn3d b-white" aria-label="Back"><svg viewBox="0 0 48 48"><path d="M6 24 24 8l18 16" stroke="#2B2350" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22v18h9V30h6v10h9V22" fill="#FFC940" stroke="#2B2350" stroke-width="4" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div class="stage">
+    <div class="card peek" id="peek"><div class="plate" id="plate"><div class="dish"></div></div><div class="towel"><div class="eyes"><i></i><i></i></div></div></div>
+    <div class="right">
+      <div class="card basket" id="basket">
+        <div class="bwrap" id="bwrap">
+          <svg class="back" viewBox="0 0 400 300" preserveAspectRatio="none"><defs>
+            <linearGradient id="hdl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4C07A"/><stop offset=".5" stop-color="#C9843E"/><stop offset="1" stop-color="#8A5220"/></linearGradient></defs>
+            <path d="M70 200 C 70 30, 330 30, 330 200" stroke="#6E3D14" stroke-width="30" fill="none" stroke-linecap="round"/>
+            <path d="M70 200 C 70 30, 330 30, 330 200" stroke="url(#hdl)" stroke-width="22" fill="none" stroke-linecap="round"/>
+            <path d="M84 160 C 90 82, 180 64, 250 70" stroke="#FFE7B8" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>
+            <ellipse cx="200" cy="208" rx="180" ry="26" fill="#5A300F" opacity=".55"/></svg>
+          <div class="inb" id="inb"></div>
+          <svg class="front" viewBox="0 0 400 150" preserveAspectRatio="none"><defs>
+            <linearGradient id="bk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0B565"/><stop offset="1" stop-color="#B8742F"/></linearGradient>
+            <linearGradient id="bkSide" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5A300F" stop-opacity=".45"/><stop offset=".18" stop-color="#5A300F" stop-opacity="0"/><stop offset=".82" stop-color="#5A300F" stop-opacity="0"/><stop offset="1" stop-color="#5A300F" stop-opacity=".5"/></linearGradient>
+            <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD596"/><stop offset=".45" stop-color="#D38A42"/><stop offset="1" stop-color="#8A4E1C"/></linearGradient>
+            <clipPath id="bkc"><path d="M10 20 H390 L354 146 H46 Z"/></clipPath></defs>
+            <path d="M10 20 H390 L354 146 H46 Z" fill="url(#bk)" stroke="#6E3D14" stroke-width="5" stroke-linejoin="round"/>
+            <g clip-path="url(#bkc)">
+              <g fill="#FFD08A" opacity=".55"><rect x="20" y="38" width="62" height="20" rx="10"/><rect x="104" y="38" width="62" height="20" rx="10"/><rect x="188" y="38" width="62" height="20" rx="10"/><rect x="272" y="38" width="62" height="20" rx="10"/><rect x="356" y="38" width="62" height="20" rx="10"/>
+                <rect x="-20" y="72" width="62" height="20" rx="10"/><rect x="62" y="72" width="62" height="20" rx="10"/><rect x="146" y="72" width="62" height="20" rx="10"/><rect x="230" y="72" width="62" height="20" rx="10"/><rect x="314" y="72" width="62" height="20" rx="10"/>
+                <rect x="20" y="106" width="62" height="20" rx="10"/><rect x="104" y="106" width="62" height="20" rx="10"/><rect x="188" y="106" width="62" height="20" rx="10"/><rect x="272" y="106" width="62" height="20" rx="10"/></g>
+              <g stroke="#8A5220" stroke-width="4" opacity=".55"><path d="M0 64 H400"/><path d="M0 98 H400"/><path d="M0 132 H400"/></g>
+              <rect width="400" height="150" fill="url(#bkSide)"/></g>
+            <rect x="0" y="4" width="400" height="30" rx="15" fill="url(#rim)" stroke="#6E3D14" stroke-width="4"/>
+            <path d="M22 13 H378" stroke="#FFF0D0" stroke-width="4" stroke-linecap="round" opacity=".8"/></svg>
+        </div>
+        <div class="yes" id="yes"><svg viewBox="0 0 100 100" style="width:100%;height:100%"><use href="#nkStar"/></svg></div>
+      </div>
+      <div class="low">
+        <div class="card crate" id="crate"></div>
+        <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="clap" hidden><img src="img/clapping-hands.webp" alt="" class="claphands"></div>
+<svg id="hand" viewBox="0 0 100 100" aria-hidden="true"><use href="#nkHand"/></svg>
+
+<div class="over" id="start">
+  <h1 class="title">Peek!</h1>
+  <div class="hero" id="hero"><div class="dish"></div><div class="corner"></div></div>
+  <div class="playwrap"><button class="play btn3d b-green" id="play" aria-label="Play"><svg viewBox="0 0 48 48"><path d="M12 6 42 24 12 42z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg></button><svg class="starthand" viewBox="0 0 100 100" aria-hidden="true"><use href="#nkHand"/></svg></div>
+</div>
+
+<div class="over" id="end" hidden>
+  <div class="stars" id="stars"></div>
+  <div class="row">
+    <button class="big btn3d b-sun" id="replay" aria-label="Play again"><svg viewBox="0 0 48 48"><path d="M38 24a14 14 0 1 1-4.1-9.9" stroke="#2B2350" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M36 6v10H26" stroke="#2B2350" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="big btn3d b-green" id="next" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div>
+
+<script src="kit.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  $('art').innerHTML = NK.ART;
+  var STAR = '<svg viewBox="0 0 100 100"><use href="#nkStar"/></svg>';
+  var STAR_OFF = '<svg class="off" viewBox="0 0 100 100"><use href="#nkStar"/></svg>';
+
+  /* ---------- the plan ---------- */
+  var ROUNDS = 8, PILE = 6;
+  /* each layout: where the fruit sit, the two groups the eye sees, and how we say the shape */
+  var LAYOUTS = {
+    1: [{ p: [[50, 50]], g: [[0]], say: 'Just one, all alone.' }],
+    2: [{ p: [[35, 50], [65, 50]], g: [[0], [1]], say: 'One and one. Two!' }, { p: [[38, 34], [62, 66]], g: [[0], [1]], say: 'One and one. Two!' }, { p: [[50, 30], [50, 70]], g: [[0], [1]], say: 'One on top, one below. Two!' }],
+    3: [{ p: [[27, 50], [50, 50], [73, 50]], g: [[0, 1], [2]], say: 'Two and one. Three!' }, { p: [[50, 30], [32, 66], [68, 66]], g: [[0], [1, 2]], say: 'One on top, two below. Three!' }, { p: [[28, 28], [50, 50], [72, 72]], g: [[0, 1], [2]], say: 'Two and one. Three!' }],
+    4: [{ p: [[35, 32], [65, 32], [35, 68], [65, 68]], g: [[0, 1], [2, 3]], say: 'Two on top, two below. Four!' }, { p: [[50, 23], [27, 50], [73, 50], [50, 77]], g: [[0, 3], [1, 2]], say: 'Two and two. Four!' }],
+    5: [{ p: [[27, 27], [73, 27], [50, 50], [27, 73], [73, 73]], g: [[0, 1, 3, 4], [2]], say: 'Four corners, one in the middle. Five!' }, { p: [[27, 34], [50, 34], [73, 34], [38, 68], [62, 68]], g: [[0, 1, 2], [3, 4]], say: 'Three on top, two below. Five!' }]
+  };
+  /* scattered: fruit in a loose bunch, seen as a small group and the rest */
+  function scattered(n) {
+    var pts = [], tries = 0;
+    while (pts.length < n && tries++ < 500) { var x = 22 + Math.random() * 56, y = 24 + Math.random() * 52;
+      if (pts.every(function (q) { return Math.hypot(q[0] - x, (q[1] - y) * 1.25) > 23; })) pts.push([x, y]); }
+    if (pts.length < n) return pick(LAYOUTS[n]);
+    pts.sort(function (a, b) { return a[0] - b[0]; });
+    var k = n <= 3 ? n - 1 : 2, A = [], B = []; for (var i = 0; i < n; i++) (i < k ? A : B).push(i);
+    return { p: pts, g: [A, B], say: NK.Word(k) + ' and ' + NK.word(n - k) + '. ' + NK.Word(n) + '!' };
+  }
+  function cluster(n, cx) { return n === 1 ? [[cx, 50]] : n === 2 ? [[cx, 34], [cx, 66]] : [[cx - 10, 34], [cx + 10, 34], [cx, 67]]; }
+  var BONUS = [[3, 2], [2, 2], [2, 3], [1, 3]];
+  var FRUIT = [{ id: 'nkApple', one: 'apple', many: 'apples' }, { id: 'nkOrange', one: 'orange', many: 'oranges' }, { id: 'nkPear', one: 'pear', many: 'pears' }];
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function flashFor(n) { return (n <= 3 ? 1100 : 1300) + S.flashAdj; }   /* short: he must SEE, not count */
+
+  var S = window.PEEK = { phase: 'start', round: 0, target: 0, basket: 0, holes: [], firstTry: 0, missed: false, flashAdj: 0, missStreak: 0, hitStreak: 0, easy: 0, easyJust: false,
+    bonus: false, bonusRight: 0, prev: 0, results: [], fruit: FRUIT[0], layout: null };
+  function fruitSvg(cls, extra) { return '<svg class="' + cls + '"' + (extra || '') + ' viewBox="0 0 100 100"><use href="#' + S.fruit.id + '"/></svg>'; }
+  function many(n) { return n === 1 ? S.fruit.one : S.fruit.many; }
+
+  function nextTarget() {
+    var pool = S.easy > 0 ? (S.round < 4 ? [1, 2] : [1, 2, 3]) : S.round < 4 ? [1, 2, 3] : [3, 4, 5, 4, 5];
+    if (S.round === 0) pool = [1, 2];
+    var t; do { t = pick(pool); } while (t === S.prev && pool.length > 1);
+    S.prev = t; return t;
+  }
+
+  /* ---------- drawing ---------- */
+  function drawDots() {
+    var h = ''; for (var i = 0; i < ROUNDS; i++) h += '<i class="' + (S.results[i] === 'ok' ? 'ok' : S.results[i] === 'fix' ? 'fix' : (i === S.round && S.phase !== 'start' && !S.bonus ? 'now' : '')) + '"></i>';
+    $('dots').innerHTML = h;
+  }
+  function drawPlate(spots) {
+    var h = '<div class="dish"></div>';
+    spots.forEach(function (p, i) { var j = function () { return +(Math.random() * 4 - 2).toFixed(1); };
+      h += '<svg class="ta" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + (p[0] + j()) + '%;top:' + (p[1] + j()) + '%;--r:' + Math.round(Math.random() * 24 - 12) + 'deg' + (p[2] ? ';--apple:url(#nkGreen);--appleEdge:#2C5E0E' : '') + '"><use href="#' + S.fruit.id + '"/></svg>'; });
+    $('plate').innerHTML = h;
+  }
+  function drawBasket(hint) {
+    var h = '', i;
+    for (i = 0; i < S.basket; i++) h += fruitSvg('ba' + (hint && i >= S.target ? ' extra' : ''), ' data-i="' + i + '"');
+    if (hint) for (i = S.basket; i < S.target; i++) h += '<div class="slot"></div>';
+    $('inb').innerHTML = h;
+    var c = $('check'); c.classList.toggle('dim', S.basket === 0);
+    c.classList.toggle('ready', S.basket > 0 && (S.phase === 'answer' || S.phase === 'fix'));
+  }
+  function drawCrate() {
+    var h = ''; for (var i = 0; i < PILE; i++) h += '<div class="hole">' + (S.holes[i] ? fruitSvg('pa', ' data-i="' + i + '"') : '') + '</div>';
+    $('crate').innerHTML = h;
+  }
+  function fillCrate() { S.holes = []; for (var i = 0; i < PILE; i++) S.holes.push(true); }
+  function draw() { drawBasket(S.phase === 'fix' && S.showHint); drawCrate(); drawDots(); }
+  function towel(open) { $('peek').classList.toggle('open', open); if (open) NK.sound.cloth(); }
+  function lock(on) { $('game').classList.toggle('locked', on); }
+
+  /* a fruit flies from one place to another */
+  function fly(rect, toEl) {
+    if (!rect || !toEl) return NK.wait(1);
+    var b = toEl.getBoundingClientRect(), f = document.createElement('div');
+    f.className = 'fly'; f.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%"><use href="#' + S.fruit.id + '"/></svg>';
+    f.style.cssText = 'left:' + rect.left + 'px;top:' + rect.top + 'px;width:' + rect.width + 'px;height:' + rect.height + 'px;transition:all ' + (NK.fast ? 20 : 260) + 'ms ease-out';
+    document.body.appendChild(f); toEl.style.visibility = 'hidden';
+    requestAnimationFrame(function () { requestAnimationFrame(function () { f.style.left = b.left + 'px'; f.style.top = b.top + 'px'; f.style.width = b.width + 'px'; f.style.height = b.height + 'px'; }); });
+    return NK.wait(280).then(function () { f.remove(); toEl.style.visibility = ''; });
+  }
+  function addOne(fromEl, rectEl) {   /* fromEl: the crate fruit he took; rectEl: where it is now (when dragged) */
+    if (S.basket >= PILE || !fromEl) return; var i = +fromEl.dataset.i; if (!S.holes[i]) return;
+    var from = (rectEl || fromEl).getBoundingClientRect(); S.holes[i] = false;
+    S.basket++; NK.sound.pop(); draw();
+    var to = $('inb').querySelectorAll('.ba')[S.basket - 1]; fly(from, to).then(function () { if (to) { to.classList.add('land'); setTimeout(function () { to.classList.remove('land'); }, 400); } });
+  }
+  function removeOne(fromEl) {
+    if (S.basket <= 0) return; var from = fromEl ? fromEl.getBoundingClientRect() : null, i = S.holes.indexOf(false);
+    S.holes[i] = true; S.basket--; NK.sound.back(); draw();
+    fly(from, $('crate').querySelector('.pa[data-i="' + i + '"]'));
+  }
+  S.add = function () { addOne($('crate').querySelector('.pa')); };
+  S.remove = function () { var b = $('inb').querySelectorAll('.ba'); removeOne(b[b.length - 1]); };
+
+  /* ---------- drag or tap ---------- */
+  var drag = null;
+  function canPlay() { return S.phase === 'answer' || S.phase === 'fix'; }
+  document.addEventListener('pointerdown', function (e) {
+    if (!canPlay()) return; var el = e.target.closest('.pa, .ba'); if (!el) return;
+    e.preventDefault(); drag = { el: el, from: el.classList.contains('pa') ? 'pile' : 'basket', x: e.clientX, y: e.clientY, ghost: null, id: e.pointerId };
+  });
+  function makeGhost(el) {
+    var r = el.getBoundingClientRect(), g = document.createElement('div'); g.className = 'fly';
+    g.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%"><use href="#' + S.fruit.id + '"/></svg>';
+    g.style.cssText = 'width:' + r.width * 1.15 + 'px;height:' + r.width * 1.15 + 'px;left:' + r.left + 'px;top:' + r.top + 'px'; document.body.appendChild(g); el.classList.add('ghosted');
+    return { g: g, w: r.width };
+  }
+  document.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.ghost && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 10) { var m = makeGhost(drag.el); drag.ghost = m.g; drag.w = m.w; }
+    if (drag.ghost) { drag.ghost.style.left = (e.clientX - drag.w * .57) + 'px'; drag.ghost.style.top = (e.clientY - drag.w * .57) + 'px'; }
+  });
+  function inside(el, x, y, pad) { var r = el.getBoundingClientRect(); return x > r.left - pad && x < r.right + pad && y > r.top - pad && y < r.bottom + pad; }
+  function endDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return; var d = drag; drag = null;
+    if (!d.ghost) { if (d.from === 'pile') addOne(d.el); else removeOne(d.el); return; }   /* a tap */
+    var overBasket = inside($('basket'), e.clientX, e.clientY, 30), g = d.ghost; d.el.classList.remove('ghosted');
+    if (d.from === 'pile' && overBasket) addOne(d.el, g); else if (d.from === 'basket' && !overBasket) removeOne(g);
+    g.remove();
+  }
+  document.addEventListener('pointerup', endDrag); document.addEventListener('pointercancel', function () { if (drag && drag.ghost) { drag.ghost.remove(); drag.el.classList.remove('ghosted'); } drag = null; });
+
+  /* ---------- talking ---------- */
+  function say(t, o) { $('again').classList.add('talk'); return NK.say(t, o).then(function () { $('again').classList.remove('talk'); }); }
+  $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.add('talk'); NK.again(); setTimeout(function () { $('again').classList.remove('talk'); }, 1800); });
+  $('home').addEventListener('click', function () { NK.hush(); location.href = './' + (/[?&]look=1/.test(location.search) ? '?look=1' : ''); });   /* back to the Numbers map */
+  function ask() { return 'How many ' + S.fruit.many + '? Put them in the basket.'; }
+
+  /* ---------- the chant: "Peek, peek, peek and see!" with claps ---------- */
+  function hit() { var c = $('clap'); NK.sound.clap(); c.classList.add('hit'); setTimeout(function () { c.classList.remove('hit'); }, 140); }
+  $('clap').addEventListener('pointerdown', function (e) { e.preventDefault(); NK.unlock(); S.claps = (S.claps || 0) + 1; hit(); });
+  async function chant(first) {
+    var c = $('clap'); c.hidden = false;
+    await say(first ? 'Tap and clap with me!' : 'Stand up! Tap and clap with me!');
+    for (var line = 0; line < 2; line++) {
+      await say('Peek, peek, peek and see!', { noRepeat: true });
+      for (var b = 0; b < 3; b++) { hit(); await NK.wait(420); }
+    }
+    await NK.wait(200); c.hidden = true;
+  }
+
+  /* ---------- show: the demo (a tap, then a drag) ---------- */
+  var hand = $('hand');
+  function handTo(el, dx, dy) { var r = el.getBoundingClientRect(); hand.style.left = (r.left + r.width * (dx || .5) - 20) + 'px'; hand.style.top = (r.top + r.height * (dy || .5) - 8) + 'px'; return NK.wait(650); }
+  function handTap() { hand.classList.add('tap'); return NK.wait(160).then(function () { hand.classList.remove('tap'); return NK.wait(120); }); }
+  async function demo() {
+    S.phase = 'demo'; S.target = 2; S.basket = 0; S.fruit = FRUIT[0]; fillCrate(); draw(); S.layout = LAYOUTS[2][0]; drawPlate(S.layout.p); lock(true);
+    await say('Bubby hid some fruit under her towel.');
+    await say('Peek fast! How many apples? Watch me first.');
+    await say('Peek!'); towel(true); await NK.wait(1200); towel(false); await NK.wait(400);
+    await say('I saw two apples. One and one.');
+    var a = $('crate').querySelectorAll('.pa')[2]; await handTo(a); await handTap(); addOne(a); await NK.wait(400);
+    /* now carry one over */
+    a = $('crate').querySelectorAll('.pa')[3]; await handTo(a); hand.classList.add('tap');
+    var m = makeGhost(a), r = a.getBoundingClientRect(), br = $('basket').getBoundingClientRect();
+    m.g.style.transition = 'left .65s ease-in-out, top .65s ease-in-out';
+    var tx = br.left + br.width / 2 - m.w * .57, ty = br.top + br.height * .45 - m.w * .57;
+    requestAnimationFrame(function () { m.g.style.left = tx + 'px'; m.g.style.top = ty + 'px'; hand.style.left = (tx + m.w * .5 - 20) + 'px'; hand.style.top = (ty + m.w * .5) + 'px'; });
+    await NK.wait(700); hand.classList.remove('tap'); a.classList.remove('ghosted'); addOne(a, m.g); m.g.remove(); await NK.wait(350);
+    await say('Two in the basket. Now I press check.');
+    await handTo($('check')); await handTap(); towel(true); $('basket').classList.add('good'); $('yes').classList.add('on'); NK.sound.yes();
+    await say('Yes! Two apples!');
+    hand.style.top = '110%'; $('yes').classList.remove('on'); $('basket').classList.remove('good');
+    S.basket = 0; fillCrate(); draw(); towel(false); await NK.wait(450);
+    await say('Now you!');
+  }
+
+  /* ---------- try: the rounds ---------- */
+  async function round() {
+    if (!S.bonus) { S.target = nextTarget(); S.fruit = FRUIT[S.round % FRUIT.length]; } else S.fruit = FRUIT[0];
+    if (!S.bonus && S.round === 4) { towel(false); $('peek').classList.remove('look'); S.basket = 0; fillCrate(); draw(); await NK.wait(420); await chant(false); await bigTeach(); }   /* halfway: stand up, clap, then bigger numbers */
+    S.missed = false; S.misses = 0; S.showHint = false; S.basket = 0; fillCrate(); S.phase = 'flash'; lock(true);
+    if ($('peek').classList.contains('open')) { towel(false); await NK.wait(420); }   /* cover first: new fruit are never seen before the peek */
+    $('peek').classList.remove('look'); draw();
+    if (S.bonus) { var b = BONUS[S.bonusAt]; S.parts = b; S.target = b[0] + b[1];
+      var A = cluster(b[0], 22), B = cluster(b[1], 78), gA = [], gB = [], i;
+      for (i = 0; i < A.length; i++) gA.push(i); for (i = 0; i < B.length; i++) gB.push(A.length + i);
+      S.layout = { p: A.concat(B), g: [gA, gB], say: NK.Word(b[0]) + ' here and ' + NK.word(b[1]) + ' there. ' + NK.Word(S.target) + '!' };
+    } else S.layout = (S.round >= 6 && S.target >= 3 && Math.random() < .5) ? scattered(S.target) : pick(LAYOUTS[S.target]);
+    drawPlate(S.layout.p);
+    await say(S.round === 0 && !S.bonus ? 'Ready? Peek!' : 'Peek!', { repeat: ask() });
+    towel(true); await NK.wait(S.bonus ? 900 : flashFor(S.target)); towel(false); await NK.wait(380);
+    S.phase = 'answer'; lock(false); draw();
+    if (S.round < 3 && !S.bonus) await say(ask());
+    else if (!S.bonus) await say('How many ' + S.fruit.many + '?', { repeat: ask() });
+    else NK.last = ask();
+  }
+
+  /* before the bigger numbers: see 4 as two and two, 5 as three and two */
+  async function bigTeach() {
+    var keep = S.fruit; S.fruit = FRUIT[0];
+    var four = LAYOUTS[4][0], five = LAYOUTS[5][1];
+    for (var k = 0; k < 2; k++) {
+      var L = k === 0 ? four : five; S.layout = L; drawPlate(L.p); towel(true); $('peek').classList.add('look');
+      await NK.wait(300); await showShape(true); towel(false); $('peek').classList.remove('look'); await NK.wait(450);
+    }
+    S.fruit = keep;
+  }
+
+  /* show the shape: light up the two groups the eye sees, and say it */
+  function parts(L) { var m = L.say.match(/^(.*\.) (\w+!)$/); return m ? m[1] : L.say; }
+  async function showShape(whole) {
+    var ta = $('plate').querySelectorAll('.ta'), L = S.layout;
+    (L.g[0] || []).forEach(function (i) { ta[i] && ta[i].classList.add('hi'); });
+    (L.g[1] || []).forEach(function (i) { ta[i] && ta[i].classList.add('hi2'); });
+    await Promise.all([NK.wait(1400), say(whole ? L.say : parts(L), { noRepeat: true })]);
+    ta.forEach(function (t) { t.classList.remove('hi', 'hi2'); });
+  }
+
+  async function check() {
+    NK.unlock();
+    if (!canPlay()) return;
+    if (S.basket === 0) { say('Put some in the basket first.'); return; }
+    var wasFix = S.phase === 'fix'; S.phase = 'checking'; lock(true);
+    if (S.basket === S.target) {
+      towel(true); $('basket').classList.add('good'); $('yes').classList.add('on'); NK.sound.yes();
+      if (S.bonus) { var ta = $('plate').querySelectorAll('.ta'); S.layout.g[0].forEach(function (i) { ta[i].classList.add('hi'); }); S.layout.g[1].forEach(function (i) { ta[i].classList.add('hi2'); }); }
+      if (!S.missed) { S.hitStreak++; S.missStreak = 0; if (S.bonus) S.bonusRight++; else S.firstTry++; if (S.hitStreak >= 2) S.flashAdj = Math.max(-300, S.flashAdj - 100); }
+      if (!S.bonus) S.results[S.round] = S.missed ? 'fix' : 'ok';
+      drawDots();
+      var n = NK.word(S.target);
+      await Promise.all([NK.wait(1000), say(S.bonus ? NK.Word(S.parts[0]) + ' and ' + NK.word(S.parts[1]) + ' make ' + n + '!' : wasFix ? 'Yes! Now you have ' + n + '.' : pick(['Yes! ' + NK.Word(S.target) + ' ' + many(S.target) + '!', 'Right! You saw ' + n + '!', 'Good eyes! ' + NK.Word(S.target) + '!']))]);
+      $('yes').classList.remove('on'); $('basket').classList.remove('good'); $('peek').classList.remove('look');
+      await NK.wait(250);
+      return advance();
+    }
+    /* a mistake: look again at the SHAPE, then fix the basket */
+    NK.sound.oops(); $('basket').classList.add('shake'); setTimeout(function () { $('basket').classList.remove('shake'); }, 500);
+    if (!S.missed) { S.missed = true; S.missStreak++; S.hitStreak = 0; S.flashAdj = Math.min(300, S.flashAdj + 150);
+      if (S.missStreak >= 2 && !S.bonus) { S.easy = 4; S.easyJust = true; S.missStreak = 0; } }
+    S.misses++;
+    towel(true); $('peek').classList.add('look');
+    await say("Let's look again.", { noRepeat: true });
+    await showShape(S.misses >= 2);
+    towel(false); $('peek').classList.remove('look'); await NK.wait(350);
+    S.phase = 'fix'; S.showHint = S.misses >= 2; draw(); lock(false);
+    if (!S.showHint) { await say('How many? Fix your basket.'); return; }
+    var d = S.target - S.basket, hint = d > 0 ? 'Put ' + NK.word(d) + ' more in.' : 'Take ' + NK.word(-d) + ' out.';
+    await say('You put ' + NK.word(S.basket) + '. ' + hint);
+  }
+  $('check').addEventListener('click', check);
+  S.check = check;
+
+  async function advance() {
+    if (!S.bonus) { if (S.easy > 0 && !S.easyJust) S.easy--; S.easyJust = false; }
+    if (S.bonus) { S.bonusAt++; if (S.bonusAt < 2) return round(); return finish(); }
+    S.round++; drawDots();
+    if (S.round < ROUNDS) return round();
+    if (S.firstTry >= ROUNDS - 1) { S.bonus = true; S.bonusAt = 0; S.hitStreak = 0; var rest = [[2, 2], [2, 3], [1, 3]]; BONUS = [[3, 2], rest[Math.floor(Math.random() * 3)]]; await say('Bonus! Super quick peek!'); return round(); }
+    return finish();
+  }
+
+  /* ---------- the end: 2 seconds of joy, then on ---------- */
+  async function finish() {
+    S.phase = 'end'; lock(true);
+    var stars = S.stars = NK.starsFor(S.firstTry, ROUNDS), g = NK.save('peek', stars); S.saved = g;
+    var h = ''; for (var i = 0; i < 3; i++) h += i < stars ? STAR : STAR_OFF; $('stars').innerHTML = h;
+    $('next').hidden = stars < 2; $('end').hidden = false; NK.sound.win(); burst();
+    $('stars').querySelectorAll('svg').forEach(function (s, i) { setTimeout(function () { s.classList.add('on'); }, 150 + i * 250); });
+    await say(stars === 3 ? 'Wow! Three stars! Peek and see!' : stars === 2 ? 'You did it! Two stars!' : 'Nice try! Let\'s peek once more.');
+    S.phase = 'done';
+  }
+  function burst() {
+    var cols = ['#FFC93D', '#22B45E', '#2FB5E8', '#FF4D3D', '#FF8FB1', '#A779FF'];
+    for (var i = 0; i < 28; i++) { var c = document.createElement('i'); c.style.cssText = 'left:50%;top:40%;background:' + cols[i % 6] + ';--dx:' + Math.round(Math.random() * 700 - 350) + 'px;--dy:' + Math.round(Math.random() * 500 - 150) + 'px';
+      var w = document.createElement('div'); w.className = 'burst'; w.appendChild(c); document.body.appendChild(w); setTimeout(function (x) { x.remove(); }.bind(null, w), 1700); }
+  }
+  $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; var slow = S.stars < 2, adj = S.flashAdj; reset(); if (slow) { S.easy = 8; S.flashAdj = Math.max(250, adj); } S.round = 0; drawDots(); round(); });
+  $('next').addEventListener('click', function () { NK.hush(); location.href = './' + (/[?&]look=1/.test(location.search) ? '?look=1' : ''); });   /* on to the Numbers map: the next stop shines */
+  function reset() { S.firstTry = 0; S.bonusRight = 0; S.results = []; S.flashAdj = 0; S.missStreak = S.hitStreak = S.easy = 0; S.easyJust = false; S.bonus = false; S.prev = 0; }
+
+  /* ---------- start ---------- */
+  (function hero() { var h = '<div class="dish"></div>'; [[30, 52], [52, 66], [42, 38]].forEach(function (p) { h += '<svg class="ta" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%"><use href="#nkApple"/></svg>'; }); $('hero').innerHTML = h + '<div class="corner"></div>'; })();
+  if (NK.fast) document.body.classList.add('fast');
+  fillCrate(); draw();
+  $('play').addEventListener('click', async function () {
+    NK.unlock(); $('start').hidden = true; reset(); S.round = 0;
+    await chant(true); await demo(); await round();
+  });
+})();
+</script>
+</body>
+</html>

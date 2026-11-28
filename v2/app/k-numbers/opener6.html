@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn it: The number path — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 6 OPENER: a short, warm lesson in the 3D garden. Numbers live on a path, in order, from zero to ten.
+     Mendy walks it, one stone at a time, and we say each number as he steps (the unit chant: stand up, step and say).
+     One step forward is one more. One step back is one less. He taps the big arrow to go on; on one slide he taps a stone himself. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>
+#go{ visibility:hidden; animation:pulse 1.2s infinite; } #go.on{ visibility:visible; }
+#panel:not(:has(#go.on)):has(#goal[hidden]){ visibility:hidden; }   /* no empty box on screen when there is nothing in it (K clarity 9) */
+</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="goal" id="goal" hidden></div>
+    <button id="go" class="bigbtn btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './path6.js';
+const $ = id => document.getElementById(id);
+let P, M, done, want = null;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+const say = (n, last) => FR.say(FR.Word(n) + (last ? '!' : ','), { noRepeat: true });
+const SLIDES = [
+  async F => { M.place(0); P.focus(0); P.showAll(true); await F.say('Hi! Welcome to the number path.'); await F.say('Numbers live on this path, in order.'); },
+  async F => { await F.say('Mendy walks the path. Say each number with him!');
+    M.pose('happy'); await M.hop(5, n => { P.glow(n, true); return say(n, false).then(() => P.glow(n, false)); }); M.pose('idle'); },
+  async F => { await F.chant('Step and say, step and say!', true); M.pose('happy'); await M.hop(10, n => { P.glow(n, true); return say(n, n === 10).then(() => P.glow(n, false)); }); M.pose('idle'); P.petals(10); await F.say('Ten! The flag!'); },
+  async F => { M.place(3); P.focus(4); await F.say('Mendy is on three.'); M.pose('happy'); await M.hop(4); M.pose('idle'); P.glow(4, true);
+    await F.say('One step forward. Four! One more.'); P.glow(4, false);
+    await F.say("Count the hops, not Mendy's own stone."); },
+  async F => { M.place(7); P.focus(6); await F.say('Mendy is on seven.'); await M.hop(6); P.glow(6, true); await F.say('One step back. Six! One less.'); P.glow(6, false); },
+  async F => { M.place(5); P.focus(5.5); await F.say('Your turn! Mendy is on five.'); await F.say('One step forward. Tap that stone!', { repeat: 'Mendy is on five. Tap one more.' }); want = 6; }
+];
+FR.game({
+  id: 'u6-opener', title: 'The Number Path', rounds: SLIDES.length, stars: () => 3,
+  hero: '<div class="hero6"><img src="art/mendy-point.png" alt=""></div>',
+  endSay: () => "Great! Now let's race on the path!",
+  init() {
+    P = mount($('world'), { kids: ['mendy'], band }); M = P.kids.mendy;
+    $('go').addEventListener('click', () => { if (GAME.phase !== 'answer' || want != null) return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; const d = done; done = null; d(true); });
+    P.onStone = async (n, el) => {
+      if (GAME.phase !== 'answer' || want == null) return; GAME.phase = 'busy';
+      if (n !== want) { FR.oops(el); await FR.say("Let's look. After five comes six."); P.el(6).classList.add('hint'); GAME.phase = 'answer'; return; }
+      P.el(6).classList.remove('hint'); want = null; M.pose('happy'); await M.hop(6); P.petals(6); await FR.yes(el, 'Six! One more than five!'); M.pose('idle');
+      const d = done; done = null; d(true);
+    };
+  },
+  round: (F, i) => new Promise(async res => {
+    GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on'); await SLIDES[i](F); done = res;
+    GAME.phase = 'answer'; F.lock(false);
+    if (want != null) { GAME.right = () => { P.focus(5.5, true); return [{ tap: '.stone[data-n="6"]' }]; }; GAME.wrong = () => { P.focus(5.5, true); return [{ tap: '.stone[data-n="4"]' }]; }; }
+    else { GAME.right = () => [{ tap: '#go' }]; GAME.wrong = null; $('go').classList.add('on'); }
+  })
+});
+</script>
+</body>
+</html>

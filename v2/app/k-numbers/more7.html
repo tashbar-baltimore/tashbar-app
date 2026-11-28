@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Which Is More? — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 7 "More, less, the same": WHICH IS MORE? Only numbers this time. Dovid and Shmuel each hold up a number card.
+     He taps the bigger number. Then we check: their apples come down in two lines, one behind the other, and the longer line
+     is more. "When we count, the later number is more." A slip: the lines show it, and we count to the smaller one together. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>.cardrow{ display:flex; gap:clamp(18px,5vw,60px); align-items:center; } .cardrow .who{ flex-direction:column; gap:4px; } /* K clarity (rule 9): the numbers he taps are the biggest thing on the screen */
+.cardrow .who img{ height:clamp(56px,8vh,84px); }
+/* each boy's number card has his blanket's colour: Dovid orange, Shmuel blue */
+#c0{ border:6px solid #FF8A3D; } #c1{ border:6px solid #3D8FE0; }
+.cardrow .numcard{ cursor:pointer; width:clamp(120px,min(24vh,38vw),180px); height:clamp(120px,min(24vh,38vw),180px); } .numcard.good{ box-shadow:0 0 0 6px #22B45E, 0 10px 16px rgba(30,40,90,.2); } .numcard.shake{ animation:shake .45s; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel"><div class="cardrow">
+    <div class="who"><img src="art/dovid-idle.png" alt=""><div class="numcard" id="c0" role="button"></div></div>
+    <div class="who"><img src="art/shmuel-idle.png" alt=""><div class="numcard" id="c1" role="button"></div></div>
+  </div></div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount } from './orchard7.js';
+const $ = id => document.getElementById(id);
+let O, R, done;
+const NAME = ['Dovid', 'Shmuel'];
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function hooks() { const m = R.n[0] > R.n[1] ? 0 : 1; GAME.right = () => [{ tap: '#c' + m }]; GAME.wrong = () => [{ tap: '#c' + (1 - m) }]; }
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+/* the apples wait under a cloth: they are there, but he answers from the numbers; then the cloth comes off to check */
+function hide() { O.cover(0, true); O.cover(1, true); O.setApples(0, R.n[0], 'row'); O.setApples(1, R.n[1], 'row'); }
+async function show() { O.cover(0, false); O.cover(1, false); await FR.wait(NK.fast ? 30 : 500); }
+async function pick(k) {
+  NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
+  const m = R.n[0] > R.n[1] ? 0 : 1, el = $('c' + k);
+  if (k === m) { el.classList.add('good'); await FR.say(FR.Word(R.n[m]) + ' is more. Let\'s check!'); await show(); O.glowSide(m, true); O.sparkle(O.sides[m].g.position);
+    await FR.yes(el, NAME[m] + "'s line is longer. " + FR.Word(R.n[m]) + ' is more!'); O.glowSide(m, false); el.classList.remove('good'); const d = done; done = null; d(R.misses === 0); return; }
+  FR.oops(el); R.misses++; await show();
+  /* count the short line together, then the extra apples on the long line are "more" */
+  const lo = Math.min(...R.n), short = 1 - m; await FR.say("Let's look. Count with me.");
+  for (let k = 0; k < lo; k++) { await O.bump(O.sides[short].apples[k]); await FR.say(FR.Word(k + 1) + (k === lo - 1 ? '.' : ','), { noRepeat: true }); }
+  O.glowSide(m, true); for (let k = lo; k < R.n[m]; k++) await O.bump(O.sides[m].apples[k]);
+  await FR.say(NAME[m] + ' has more. ' + FR.Word(R.n[m]) + ' is more!'); O.glowSide(m, false);
+  hide(); open(); await FR.say('Tap the number that is more.');
+}
+const PLAN = [[3, 5], [8, 6], [2, 7], [9, 4], [5, 6], [10, 8]];
+function play(F, i) {
+  return new Promise(async res => {
+    R = { n: PLAN[i], misses: 0 }; done = res; GAME.phase = 'busy'; F.lock(true);
+    hide(); $('c0').innerHTML = U5.num(R.n[0]); $('c1').innerHTML = U5.num(R.n[1]);
+    O.glowSide(0, true); await F.say('Dovid has ' + F.word(R.n[0]) + '.'); O.glowSide(0, false);
+    O.glowSide(1, true); await F.say('Shmuel has ' + F.word(R.n[1]) + '.'); O.glowSide(1, false);
+    open(); await F.say('Which number is more? Tap it.', { repeat: F.Word(R.n[0]) + ' or ' + F.word(R.n[1]) + '. Which is more?' });
+  });
+}
+FR.game({
+  id: 'u7-more', title: 'Which Is More?', rounds: 6,
+  hero: '<div class="hero6"><img src="art/shmuel-happy.png" alt=""></div>',
+  init() {
+    O = mount($('world'), { kids: ['dovid', 'shmuel'], band, stack: true });
+    $('c0').addEventListener('click', () => pick(0)); $('c1').addEventListener('click', () => pick(1));
+  },
+  demo: async F => {
+    R = { n: [4, 2], misses: 0 }; $('c0').innerHTML = U5.num(4); $('c1').innerHTML = U5.num(2); hide();
+    await F.say('Dovid has the orange blanket. Shmuel has the blue one.'); await F.say('Apples are under the cloths. Four or two? Watch me.'); await F.say('When we count, four comes later. Four is more!');
+    await F.handTo($('c0')); await F.handTap(); await show(); O.glowSide(0, true); await F.say('See? Dovid\'s line is longer.'); O.glowSide(0, false);
+    hide();
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'You know which number is more!' : 'Good thinking! Let\'s play once more.'
+});
+</script>
+</body>
+</html>

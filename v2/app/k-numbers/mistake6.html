@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Find the Mistake — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 6 "The path game": FIND THE MISTAKE. Avi is learning too, and he makes mistakes. Two kinds take turns:
+     1. Avi spins and hops, but lands on the wrong stone. He taps where Avi should be, and Avi hops there.
+     2. Avi put the numbers on the path, but two of them swapped places. He taps the two wrong stones and they swap back.
+     A wrong tap: "Let's look" and we count along the path together. -->
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit6.css">
+<style>#panel .who img{ height:clamp(84px,13vh,120px); }
+/* round 3 review: where Avi started stays marked until he answers */
+.stone.startmark{ outline:6px dashed #7A4FD0; outline-offset:6px; }</style>
+</head>
+<body>
+<div id="world"></div>
+<div id="game" class="locked"><div class="stage s6" id="stage">
+  <div class="ui" id="panel">
+    <div class="who"><img src="art/avi-talk.png" alt="" id="whoimg"></div>
+    <div class="spin6" id="spin" aria-hidden="true"></div>
+  </div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script type="module">
+import { mount, spinner } from './path6.js';
+const $ = id => document.getElementById(id);
+let P, A, SP, R, done;
+const band = () => [innerWidth < 760 ? 80 : 92, $('panel').getBoundingClientRect().top - 8];
+function hooks() {
+  if (R.kind === 'hop') { const ok = R.at + R.k, bad = R.wrongAt;
+    GAME.right = () => { P.focus(ok, true); return [{ tap: '.stone[data-n="' + ok + '"]' }]; }; GAME.wrong = () => { P.focus(bad, true); return [{ tap: '.stone[data-n="' + bad + '"]' }]; }; return; }
+  const next = R.picked == null ? R.a : R.picked === R.a ? R.b : R.a, fine = [R.a - 1, R.b + 1, R.a + 1].find(n => n >= 0 && n <= 10 && n !== R.a && n !== R.b);
+  GAME.right = () => { P.focus(next, true); return [{ tap: '.stone[data-n="' + next + '"]' }]; };
+  GAME.wrong = R.picked == null ? () => { P.focus(fine, true); return [{ tap: '.stone[data-n="' + fine + '"]' }]; } : null;
+}
+function open() { GAME.phase = 'answer'; FR.lock(false); hooks(); }
+async function walkAlong(from, to, keep) {   /* we count along the path together: each stone shines as we say it (keep: the camera stays there, so start and end are both on screen) */
+  if (keep != null) P.focus(keep);
+  for (let n = from; n <= to; n++) { if (keep == null) P.focus(n); P.glow(n, true); await FR.say(FR.Word(n) + (n === to ? '.' : ','), { noRepeat: true }); P.glow(n, false); } stretch(R.kind === 'swap');
+}
+/* the swap rounds: the mix-up is always two numbers side by side, from zero to five, and those six stones shine */
+function stretch(on) { P.glow(null); if (on) for (let n = 0; n <= 5; n++) P.glow(n, true); }
+/* Avi's hop: he taps the stone where Avi should be, and Avi hops back there */
+async function moveAvi(stone) {
+  if (GAME.phase !== 'answer' || R.kind !== 'hop') return; GAME.phase = 'busy'; FR.lock(true); const n = +stone.dataset.n, ok = R.at + R.k;
+  if (n === ok) { P.el(R.at).classList.remove('startmark'); P.el(ok).classList.remove('hint'); P.glow(null); $('spin').hidden = true; A.pose('happy'); A.place(R.at); await A.hop(ok); P.petals(ok); await FR.yes(stone, FR.pick(['Thank you! Avi is on ' + FR.word(ok) + ' now.', 'Yes! You moved him right!'])); A.pose('idle'); return finish(); }
+  FR.oops(stone); R.misses++;
+  await FR.say("Let's look. Avi started on " + FR.word(R.at) + '. ' + (R.k === 1 ? 'One hop.' : 'Two hops.'));
+  P.focus((R.at + ok) / 2);
+  for (let h = 1; h <= R.k; h++) { P.glow(R.at + h, true); await FR.say(h === 1 ? 'One hop,' : 'two hops.', { noRepeat: true }); P.glow(R.at + h, false); }   /* count the hops, not the stones (round 3 review) */
+  await FR.say('Avi goes on ' + FR.word(ok) + '.'); P.glow(null); P.el(ok).classList.add('hint');   /* round 3 review: the start stone stays in view, and only the right stone shines */
+  await FR.say('Tap that stone for Avi.'); open();
+}
+async function tap(n, el) {
+  if (GAME.phase === 'answer' && R.kind === 'hop') return moveAvi(el);
+  if (GAME.phase !== 'answer' || R.kind !== 'swap') return; GAME.phase = 'busy'; FR.lock(true);
+  /* swapped numbers */
+  if (n === R.a || n === R.b) {
+    if (R.picked == null) { R.picked = n; el.classList.add('hint'); NK.sound.pop(); await FR.say(FR.pick(['Yes, that one is wrong!', 'Good eyes!']) + ' Now the other one.', { repeat: 'Tap the other wrong stone.' }); open(); return; }
+    if (n === R.picked) { open(); return; }
+    P.el(R.a).classList.remove('hint'); P.el(R.b).classList.remove('hint'); P.lift(R.a); P.lift(R.b); P.label(R.a, R.a); P.label(R.b, R.b); P.petals((R.a + R.b) / 2);
+    await FR.yes(el, 'Swapped back! Now they go in order.'); return finish();
+  }
+  FR.oops(el); R.misses++;
+  await FR.say('That one is right. Count with me.'); stretch(false);
+  for (let n = Math.max(0, R.a - 1); n <= Math.min(5, R.b + 1); n++) { const says = n === R.a ? R.b : n === R.b ? R.a : n; P.focus(n); P.glow(n, true);   /* on the mixed-up stones the voice says what the stone shows, and where it belongs */
+    await FR.say(says === n ? FR.Word(n) + ',' : FR.Word(n) + ' goes here. This says ' + FR.word(says) + '!', { noRepeat: true }); P.glow(n, false); }
+  P.glow(null); P.glow(R.a, true); P.glow(R.b, true); P.focus((R.a + R.b) / 2);   /* the two mixed-up stones shine while we say why */
+  await FR.say(FR.Word(R.b) + " can't come before " + FR.word(R.a) + '.'); stretch(true);
+  if (R.misses > 1) { P.el(R.a).classList.add('hint'); P.el(R.b).classList.add('hint'); await FR.say('Find the two mixed-up numbers.'); setTimeout(() => { if (R.picked == null) { P.el(R.a).classList.remove('hint'); P.el(R.b).classList.remove('hint'); } }, 2500); }
+  else await FR.say('Find the two mixed-up numbers.');
+  open();
+}
+function finish() { stretch(false); P.showAll(true); for (let n = 0; n <= 10; n++) P.el(n).classList.remove('hint'); const d = done; done = null; d(R.misses === 0); }
+const KINDS = ['hop', 'swap', 'hop', 'swap', 'hop', 'swap'];
+function play(F, i) {
+  return new Promise(async res => {
+    done = res; GAME.phase = 'busy'; F.lock(true); P.showAll(true); A.show(true);
+    { const who = document.querySelector('#panel .who'); who.hidden = KINDS[i] === 'hop'; who.style.display = who.hidden ? 'none' : ''; }   /* one Avi on screen: in hop rounds he is on the path */
+    if (KINDS[i] === 'hop') {
+      /* Avi's slips: counting his own stone (lands one short), or one hop too many */
+      const at = [1, 3, 5][i / 2], k = 2, far = i === 4, wrongAt = at + k + (far ? 1 : -1);
+      R = { kind: 'hop', at, k, wrongAt, misses: 0 }; A.place(at); P.focus(at + 1.5); $('spin').hidden = false;
+      await F.say("Avi's turn. Watch Avi!"); await SP.spin(k); P.el(at).classList.add('startmark'); A.pose('happy'); await A.hop(wrongAt); P.focus((at + wrongAt) / 2, true); A.pose('talk');   /* the spinner keeps its two dots on screen; the camera holds the start and the landing stone (phone) */
+      await F.say('Avi was on ' + F.word(at) + '. Two dots, two hops.');
+      await F.say(far ? 'Oops! He hopped too far.' : 'Oops! He did not hop far enough.');
+      open();
+      await F.say('Where should Avi be? Tap that stone.', { repeat: 'Avi was on ' + F.word(at) + '. Two hops. Tap where Avi should be.' });
+    } else {
+      const a = FR.pick(i === 1 ? [1, 2] : i === 3 ? [3, 4] : [0, 2, 4]), b = a + 1;   /* two neighbours, inside zero to five */
+      R = { kind: 'swap', a, b, picked: null, misses: 0 }; A.place(0); A.show(false); $('spin').hidden = true;
+      P.label(a, b); P.label(b, a); P.focus(P.narrow() ? (a + b) / 2 : 5); stretch(true);
+      await F.say('Avi mixed up two numbers here.'); open();
+      await F.say('Look at the stones. Two numbers are mixed up. Tap them.', { repeat: 'Two numbers swapped places. Tap them both.' });
+    }
+  });
+}
+FR.game({
+  id: 'u6-mistake', title: 'Find the Mistake', rounds: 6,
+  hero: '<div class="hero6"><img src="art/avi-talk.png" alt=""></div>',
+  init() {
+    P = mount($('world'), { kids: ['avi'], band }); A = P.kids.avi; SP = spinner($('spin'));
+    P.onStone = (n, el) => tap(n, el);
+  },
+  demo: async F => {
+    /* the demo shows what he will do (round 3 review): a marked start, two dots, Avi lands short, count the hops, tap */
+    R = { kind: 'demo' }; A.place(2); P.focus(3); $('spin').hidden = false;
+    await F.say('Avi is on two. He spins. Watch me check.'); await SP.spin(2); P.el(2).classList.add('startmark'); await A.hop(3); A.pose('talk');
+    await F.say('Avi was on two. Two dots, two hops.');
+    for (let h = 1; h <= 2; h++) { P.glow(2 + h, true); await F.say(h === 1 ? 'One hop,' : 'two hops.', { noRepeat: true }); P.glow(2 + h, false); }
+    await F.handTo(P.el(4)); await F.handTap(); P.el(2).classList.remove('startmark'); $('spin').hidden = true; A.place(2); A.pose('happy'); await A.hop(4); P.petals(4); await F.say('From two, two hops is four!'); A.pose('idle');
+    /* the other kind of mistake: two numbers mixed up */
+    A.show(false); P.focus(P.narrow() ? 1.5 : 5); P.label(1, 2); P.label(2, 1); stretch(true);
+    await F.say('Look! Two and one are mixed up.'); await F.handTo(P.el(1)); await F.handTap(); P.el(1).classList.add('hint');
+    await F.handTo(P.el(2)); await F.handTap(); P.el(1).classList.remove('hint'); P.label(1, 1); P.label(2, 2); P.lift(1); P.lift(2);
+    await F.say('I tap both. Now they go in order!'); stretch(false); A.show(true);
+  },
+  round: (F, i) => play(F, i),
+  endSay: s => s >= 2 ? 'Avi says thank you! You found every mistake!' : 'Good looking! Let\'s play once more.'
+});
+</script>
+</body>
+</html>
