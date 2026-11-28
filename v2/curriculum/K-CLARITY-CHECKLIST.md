@@ -197,3 +197,6 @@ More fixes (review-shapes takeover session, Units 7-12):
 | Problem (rule) | Fix |
 |---|---|
 | Friend's mistake: after a wrong answer, the help was the voice only in most games, and lit corners or sides were cleared before he could look (16) | Every wrong answer now shows something: corners or sides stay lit; a curvy shape's outline glows; the flat square turns so he sees it is thin (next to a cube of the same colour); the hand goes to the side of the scale that went down; the hand moves the piece to the box it belongs in; gold balls on the scarves' starting ends; the gold ring on the empty "in front" place |
+| Pattern games: the engine was blue with a red boiler, like one more car in a red-blue pattern; on 8-car trains the last spot fell beside Mendy | A dark grey engine; Mendy stands lower right, clear of the track |
+| Big and small: a big ball shrank in its box; a small circle and square had no big twin | Pieces keep their true size in the box; every small piece has a big piece of the same kind |
+| Sort by color: cut-off boxes in the lesson close-up; on a phone the lesson pieces overlapped or fell off the edge; title "bins" while the voice says "boxes" | No boxes in lesson close-ups; on a phone the red square slides under the red circle and the blue triangle waits apart; "Clean-up boxes" |

@@ -333,7 +333,7 @@ export function startGame(cfg) {
   }
   function camTo(mode, ms) {
     camMode = mode; const v = viewFor(mode), p0 = camPos.clone(), l0 = camLook.clone(); placeMendy(mode);
-    if (typeof boxes !== 'undefined') boxes.forEach(b => { b.g.visible = !(mode === 'close' && !(cfg.sortBy && (W.name === 'mistake' || !tall))); });   /* close-ups show only the piece and the boy (sorting games keep the boxes they talk about); before: the boxes would only show cut off at the bottom */
+    if (typeof boxes !== 'undefined') boxes.forEach(b => { b.g.visible = !(mode === 'close' && !(cfg.sortBy && W.name === 'mistake'));   /* review 2: lesson close-ups show no cut-off boxes */ });   /* close-ups show only the piece and the boy (sorting games keep the boxes they talk about); before: the boxes would only show cut off at the bottom */
     if (typeof boxes !== 'undefined' && typeof shapes !== 'undefined') shapes.forEach(o => { if (o.inBox && o.inBoxAt != null && boxes[o.inBoxAt]) o.g.visible = boxes[o.inBoxAt].g.visible; });   /* pieces in a hidden box hide with it (no stray edges under the yes/no buttons) */
     return tween(ms, k => { const e = ease(k); camPos.lerpVectors(p0, v.pos, e); camLook.lerpVectors(l0, v.look, e); });
   }
@@ -610,10 +610,11 @@ export function startGame(cfg) {
     if (a === 'stand') return tween(1200, k => { o.turn.rotation.x = Math.sin(Math.PI * k) * 1.57; });
     if (a === 'gather' && o.extra) return tween(500, k => { o.g.position.y += Math.sin(Math.PI * k) * 0.01; });   /* the second time (his tap): a little hop only */
     if (a === 'gather') {   /* colour lesson: a red square and a blue triangle come; the red square slides next to the red circle, the blue one stays apart (review 2: "red goes together" needs more than one red thing) */
-      const p0 = o.g.position, dx = tall ? 1.35 : 2.4, dy = tall ? 0.75 : 0.85;
-      const same = showcase('square', o.color, 0, 0.6, p0.clone().add(new THREE.Vector3(dx, dy, 0))), other = showcase('tri', '#1F6FEB', 0, 0.6, p0.clone().add(new THREE.Vector3(dx, -dy, 0)));
+      const p0 = o.g.position, dx = tall ? 1.7 : 2.4, dy = tall ? 1.05 : 0.85;
+      const at = (x, y) => p0.clone().add(new THREE.Vector3(x, y, 0));   /* phone: below the circle (a narrow screen); Chromebook: beside it */
+      const same = showcase('square', o.color, 0, 0.6, tall ? at(1.15, -1.6) : at(dx, dy)), other = showcase('tri', '#1F6FEB', 0, 0.6, tall ? at(1.0, 1.5) : at(dx, -dy));
       o.extra = [same, other];
-      const from = same.g.position.clone(), to = p0.clone().add(new THREE.Vector3(tall ? 1.0 : 1.4, 0, 0.1));
+      const from = same.g.position.clone(), to = tall ? at(0, -1.6) : p0.clone().add(new THREE.Vector3(1.4, 0, 0.1));
       return wait(700).then(() => tween(900, k => { same.g.position.lerpVectors(from, to, ease(k)); })).then(() => { pop(); return wait(1600); });
     }
     return tween(1400, k => { o.turn.rotation.y = ease(k) * Math.PI * 2; });
