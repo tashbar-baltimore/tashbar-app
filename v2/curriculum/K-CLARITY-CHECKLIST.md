@@ -141,3 +141,11 @@ The first numbers-b session (claim `numbers-b`) played every Unit 3 and 4 game t
 
 **Every Numbers game, Units 1–8, now scores 4 or 5** (Units 1–5 and 8 from round 2, the rest from round 3). Tests: every changed game's test and the Numbers clarity checks pass.
 **Team choices (written down for Esti):** 6–10 stay drawn as a full row of five and the rest (ten-frame structure) rather than dice patterns; mistake6 keeps both kinds of slip (hops and swapped numbers), each with its own "Watch me".
+
+### polish-numbers (small points the round 3 reviewers listed for games already at 4)
+| Game | Point | Change |
+|---|---|---|
+| How many hiding (hide8), Show me (check8) | The question never said to answer on his fingers | "How many hide? Show me on your fingers." |
+| Review time (review7) | On a phone, nobody says what the arrows do | Round 1 on a phone: "Tap the arrows to see more stones." |
+| Find the mistake (skip) | A code note still said the stones are plain | Note updated (they show their own dots faintly) |
+| Seen, not changed | steps6 Mendy stands beside stone 0 (the path's way of showing where he is, in every Unit 6 game); skip's 6–10 bubbles are small on a phone (five stones must fit a row); the finger-down button fades when the hand is empty (nothing to put down) | Left as is (team choice) |

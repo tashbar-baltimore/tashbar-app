@@ -50,6 +50,7 @@ function play(F, i) {
     P.showAll(false); ANCHORS.forEach(n => P.shown(n, true)); M.show(true); M.pose('idle'); M.place(nearest(R.n)); $('nchip').innerHTML = U5.num(R.n); $('nchip').classList.remove('done');
     P.focus(P.narrow() ? (R.n + nearest(R.n)) / 2 : 5);
     await F.say(i === 0 ? 'Back on the number path! Only some numbers show.' : F.pick(['A new number!', 'Where does this number live?', 'Look at this number.']));
+    if (i === 0 && P.narrow()) await F.say('Tap the arrows to see more stones.');   /* phone: say once what the arrows do (review round 3) */
     open(); await F.say('Put this number on its stone. Mendy will hop there!', { repeat: 'Drag ' + F.word(R.n) + ' to its stone. Count from the numbers that show.' });
   });
 }
