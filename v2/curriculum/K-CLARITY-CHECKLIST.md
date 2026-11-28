@@ -163,7 +163,7 @@ Fixed after round 2 (Units 1-6, and shared):
 | The reminder sang his half-made row; the glow lit the start of the row, not the one he needed (16) | The reminder sings Mendy's row; the glow lights only the cupcake he copies now |
 | After a wrong cupcake he saw where to put it but not which one (16) | A thick gold ring on the cupcake to copy in Mendy's row AND on the same cupcake in the tray, then the hand. Phone ring smaller so it circles one cupcake |
 | The drum rounds started with no word that the game changed (2) | "Now we finish a pattern. Listen to the drum and bell." |
-Not done (small, reviewer said not blockers): the phone lesson row is a thin strip with empty space below (decided: keep it. The six cupcakes already fill the phone's width edge to edge; making them bigger cut off both ends, and two rows would break "a pattern is a row"); the bakery shelves behind could be softer.
+Not done (small, reviewer said not blockers): the phone lesson row is a thin strip with empty space below (decided: keep it. The six cupcakes already fill the phone's width edge to edge; making them bigger cut off both ends, and two rows would break "a pattern is a row"). Done later: the bakery painting behind the Unit 4 pattern games is blurred more (look.js PAINT bakery blur), so its shelves are soft colour only.
 
 More fixes (review-shapes takeover session, Units 7-12):
 | Problem (rule) | Fix |
