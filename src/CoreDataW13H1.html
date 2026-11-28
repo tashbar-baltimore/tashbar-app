@@ -395,8 +395,9 @@
       pay: '*Dust it gently* is about *taking care* of it. Each fact goes under its *heading*.' },
     learn: [
       { t: 'Facts that go together share one *heading*.', act: X(D[1], { say: 'Put each fact under its *heading*.', how: 'Which *heading* does each fact answer?' }) },
-      { t: 'Check each fact: does it *answer its heading*?', act: X(Y[0], { say: 'Which fact fits *Taking Care of It*?', how: 'Which one tells what you must *do* to keep it safe?' }) },
-      { t: 'Point left, point right! *Sort* each fact into its group.', m: { type: 'move', t: 'Point left for one group, point right for the other!' },
+      { t: 'A *caption* tells what a *picture shows*.', act: { type: 'evidence', q: 'Picture: Zeidy winds the clock with a key. Which caption fits?', p: ['I like clocks.', 'Zeidy winds the clock with a key.', 'Clocks are old.', 'It chimes at noon.'], a: 1,
+        look: 'the line that tells what the picture shows', say: 'Tap the *caption* that fits.', how: 'Look at the picture. Which line *tells what it shows*?' } },
+      { t: 'Tap, tap, tap! Find every *part* of the clock.', m: { type: 'move', t: 'Tap your head, your nose, your chin: find the parts!' },
         act: X(Y[3], { say: 'Tap every word that names a *part*.', how: 'Which ones are *pieces* of the clock?' }) },
       { who: { q: 'A *caption* is the line under a picture. Picture: gears turning inside a clock. Whose caption fits?', o: [['Eli', 'I like clocks.'], ['Shimon', 'The gears turn inside the clock.']], a: 1,
         why: 'A *caption* tells what the *picture shows*.' } }],
@@ -405,7 +406,7 @@
       X(Y[1], { say: 'Match each picture to its *caption*.', how: 'A *caption* tells what the picture shows.' }),
       { type: 'sort', q: 'Facts about a bike.', bins: ['The Parts', 'How It Works'], cards: [['It has two wheels.', 0], ['It has a chain.', 0], ['Pedals turn the chain.', 1], ['The chain turns the back wheel.', 1]],
         say: 'Sort each bike fact under its *heading*.', how: '*Parts* are pieces. *How It Works* tells what *moves* what.' },
-      X(Y[4], { extra: ['I like clocks', 'the front'], say: 'Challenge! Picture: Zeidy’s hands open a clock. Build its *caption*.', how: 'Who, does what, to what.' })],
+      X(Y[4], { extra: ['I like clocks', 'is fun'], say: 'Challenge! Picture: Zeidy’s hands open a clock. Build its *caption*.', how: 'Who, does what, to what.' })],
     done: '“Dust it gently” moved to *Taking Care of It*! Group facts, then add a *caption*.' }; });
 
   NL('WRIT.PARA.L04.14', function (D, Y) { return {
@@ -452,14 +453,14 @@
     learn: [
       { t: 'Weak endings *stop*, *copy*, or add a *new fact*.', act: X(Y[2], { say: 'Match each *weak ending* to what is wrong.', how: 'Does it *stop*, *add*, or *copy*?' }) },
       { t: 'Strong: *sum up* the big idea in new words.', act: X(D[1], { say: 'Find the *strong ending*.', how: 'Which one *sums up* the big idea in new words?' }) },
-      { t: 'Or tell the reader *what to do*. Tie the bow!', m: { type: 'move', t: 'Wrap it up like a gift, and tie the bow!' },
+      { t: 'Or tell the reader *what to do*. Say the *ending chant*!', m: { type: 'chant', lines: ['Stop? No!', 'Copy? No!', 'New fact? No!', 'Sum it up, let’s go!'] },
         act: X(Y[4], { say: 'Listen. What kind of *ending* is it?', how: 'Does it tell why, tell *what to do*, or add a fact?' }) },
       { who: { q: 'Piece: how a bell rings. Who wrote the *strong ending*?', o: [['Eli', 'Also, bells are old.'], ['Dovid', 'So every ding comes from one tiny hammer.']], a: 1,
         why: 'Eli added a *new fact*. Dovid *summed it up*.' } }],
     play: [
       X(D[0], { cards: [['So ring your bell, and everyone will know you are coming.', 0], ['The end.', 1], ['Also, bells can be made of brass.', 1], ['So one small push makes a big ding.', 0]], say: '*Strong* ending, or *weak* mistake?', how: 'Weak endings *stop*, *copy*, or add a *new fact*.' }),
       X(Y[1], { say: 'Put the piece in order. The *ending* goes last.', how: 'Topic, details, then the *ending*.' }),
-      X(Y[3], { say: 'Build the piece: topic, detail, then the *ending*.', how: 'Which card *wraps it up*? One card does not fit.' }),
+      X(Y[3], { slots: ['Topic', 'Important detail', 'Ending'], say: 'Build the piece: topic, detail, then the *ending*.', how: 'Which card *wraps it up*? One card does not fit.' }),
       X(Y[0], { t: 'Piece: how a clock keeps time. So the next time you hear a tick, think of the ___ turning inside.', o: ['gears', 'numbers', 'face'], say: 'Challenge! Finish the *ending*.', how: 'What is the piece *about*?' })],
     done: 'No new facts at the end! *Sum it up*, or tell the reader *what to do*.' }; });
 
