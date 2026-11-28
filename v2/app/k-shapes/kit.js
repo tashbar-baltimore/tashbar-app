@@ -845,11 +845,13 @@ export function startGame(cfg) {
   function makeBead(id, type, at, slot) {
     const vis = beadMesh(type), mesh = vis.userData.hull || vis, turn = new THREE.Group(); turn.add(vis); const g = new THREE.Group(); g.add(turn); scene.add(g); g.position.copy(at);
     const o = { id, k: type, type, box: -1, g, turn, mesh, vis, mat: vis.material, marks: [], corners: [], scale: 1, home: at.clone(), phase: (shapes.length * 1.3) % 6.28, inBox: false, busy: false, slot, upright: !!vis.userData.upright };
+    if (slot != null && TRAY_S() !== 1) { g.scale.setScalar(TRAY_S()); o.scale = TRAY_S(); }
     mesh.userData.shape = o; shapes.push(o); return o;
   }
   const STR = () => tall ? { y: 1.5, z: -0.7, sp: 0.56, copyZ: 0.5 } : { y: 1.7, z: -0.2, sp: 1.08, copyZ: 1.2 };
   function slotAt(i, n, z) { const S = STR(), sp = tall && n > 1 ? Math.min(S.sp, 3.2 / (n - 1)) : S.sp; return new THREE.Vector3((i - (n - 1) / 2) * sp, S.y, z == null ? S.z : z); }   /* phone: a long row (8) closes up a little so its ends stay on screen (review round 2) */
-  function trayAt(i, n) { const z = tall ? 2.0 : 2.9, sp = tall ? 0.95 : 1.6;   /* phone: close enough that the outer pieces stay on screen */ return new THREE.Vector3((i - (n - 1) / 2) * sp, 0.9, z); }
+  const TRAY_S = () => (tall && cfg.world === 'traintown' ? 1.3 : 1);   /* phone, train games: the cars he drags are bigger, easy to see and grab (review 2) */
+  function trayAt(i, n) { const z = tall ? 2.0 : 2.9, sp = tall ? (TRAY_S() > 1 && n <= 3 ? 1.02 : 0.95) : 1.6;   /* phone: close enough that the outer pieces stay on screen */ return new THREE.Vector3((i - (n - 1) / 2) * sp + (TRAY_S() > 1 ? viewFor('wide').look.x : 0), 0.9, z); }   /* phone train games: the tray sits in the middle of the screen */
   function stringAt(n, z) {
     const S = STR(), len = (n - 1) * S.sp + 1.2;
     const BD = LK && LK.board ? LK.board(len) : null;   /* bakery: a cake board instead of a bead string */
@@ -890,8 +892,9 @@ export function startGame(cfg) {
     const at = slotAt(PS.next, PS.n, PS.z), type = o.type, slot = o.slot, fixAt = PS.R.fixAt;
     o.inBox = true; o.box = -1; PS.next = fixAt != null ? PS.n : PS.next + 1;
     if (fixAt != null && PS.bad) { const b = PS.bad; PS.bad = null; tween(250, k => b.scale.setScalar(Math.max(0.001, 1 - k))).then(() => scene.remove(b)); }
+    if (o.scale !== 1) { const s0 = o.g.scale.x; tween(380, k => o.g.scale.setScalar(s0 + (1 - s0) * k)); o.scale = 1; }   /* train size once on the train */
     return moveTo(o, at, 380, 0.5).then(() => { o.g.rotation.set(0, 0, 0); if (fixAt != null) PS.beads.splice(fixAt, 1, o.vis || o.mesh); else PS.beads.push(o.vis || o.mesh); beadNote(type); pop();
-      const fresh = makeBead('b' + (++beadN), type, trayAt(slot, PS.R.tray.length), slot); fresh.g.scale.setScalar(0.01); tween(300, k => fresh.g.scale.setScalar(Math.max(0.01, k)));
+      const fresh = makeBead('b' + (++beadN), type, trayAt(slot, PS.R.tray.length), slot); fresh.g.scale.setScalar(0.01); tween(300, k => fresh.g.scale.setScalar(Math.max(0.01, k * TRAY_S())));
       markNext(); });
   }
   function sing(upto, line) {   /* the beads bounce in order with a note each, while the voice says the pattern */

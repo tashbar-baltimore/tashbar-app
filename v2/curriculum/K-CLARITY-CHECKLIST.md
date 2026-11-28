@@ -206,3 +206,4 @@ More fixes (review-shapes takeover session, Units 7-12):
 | Shape party 3 (and every solid lesson): a level camera hid the cylinder's circle ends while the voice said "Its ends are circles" | Cylinders and cubes lean their top toward him in the lesson |
 | Party world: the painting behind lessons and mistakes had a bright sun and balloon bunches | Paler and softer than the other worlds |
 | Where is it? (phone): the ball waits in front of the bridge before he moves it | Left as is: every waiting spot near a bridge is "somewhere"; the game checks the place he drops it, and the ring shows the right place after a wrong move |
+| Pattern train, Fix the pattern (phone): cars to drag were small (about 50 px) | The cars in the tray are a third bigger and sit in the middle of the screen; they shrink to train size as they go on. (The train itself stays in one row so the pattern reads left to right; cars on a phone train are about 40 px) |
