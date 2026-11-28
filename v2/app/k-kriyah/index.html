@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Kindergarten Kriyah</title>
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js"}}</script>
+</head><body>
+<script type="module">
+/* Kindergarten Kriyah: the path of one unit's games, in skill order (index.html?u=2 for Unit 2).
+   One glowing stone is his next game; a game opens when the one before it has 2 stars. Until the shared 2.0 path is in,
+   this is where Unit 1 starts (stars are kept on this device and also sent to the shared path, see engine.js). */
+import * as E from './engine.js';
+const { THREE } = E;
+E.buildPage({ home: false });
+/* which unit's path: ?u=N, or the unit where his next game is */
+const asked = Number(new URLSearchParams(location.search).get('u'));
+const nextUp = E.GAMES.find(g => !g.bonus && E.unlocked(g.id) && E.best(g.id) < E.PASS) || E.GAMES.filter(g => !g.bonus && E.unlocked(g.id)).pop();
+let U = E.UNITS.find(u => u.n === asked && E.unlocked(u.games[0].id)) || E.unitOf(nextUp.id);
+E.setUnit(U.n);
+let ok = true;
+try { E.initRenderer(); } catch (e) { ok = false; E.flatFallback([...U.known, ...U.letters]); }
+if (ok) {
+  E.buildWorld(Object.assign({ backdrop: 'park' }, { flowers: true })); E.initPointer(); E.setSway(.6);
+  const save = E.loadSave();
+  const stops = [], colors = [0xff7aa8, 0x46c3ff, 0xffcf3a, 0x7bd94a, 0xb388ff, 0xff9f1a, 0x00c2d1, 0xff6b6b];
+  const greyM = E.M(0xc9d2dc, { roughness: .4 }), greyIcon = E.M(0xaab4c0, { roughness: .5, clearcoat: .2 }), edgeM = E.M(0xffffff, { roughness: .3, clearcoat: .8 });
+  const pebM = E.M(0xf1dcb0, { roughness: .7, clearcoat: 0 });
+  /* little 3D pictures that say what each game is */
+  function icon(G) { const g = new THREE.Group(), kind = G.kind;
+    if (kind === 'story2') { const b = E.mesh(new THREE.SphereGeometry(.32, 20, 16), E.M(0xe8322b, { roughness: .25, clearcoat: 1 }), 0, .15, 0); b.scale.set(1, 1.15, 1); g.add(b); g.add(E.mesh(new THREE.CylinderGeometry(.01, .01, .5, 4), E.M(0x555555), 0, -.35, 0)); }   /* a balloon */
+    else if (kind === 'soundmatch') { const b = E.mesh(new THREE.SphereGeometry(.3, 20, 14), E.M(0xff8a1e, { roughness: .3, clearcoat: .8 })); b.scale.set(1.4, .8, .6); g.add(b); const t = E.mesh(new THREE.ConeGeometry(.22, .3, 3), E.M(0xff8a1e)); t.rotation.z = -Math.PI / 2; t.position.x = -.5; g.add(t); g.add(E.mesh(new THREE.SphereGeometry(.05, 8, 6), E.M(0x1d2b3a), .24, .06, .16)); }
+    else if (kind === 'train') { const r = E.M(0xe8322b, { roughness: .3, clearcoat: .8 }), dk = E.M(0x26324a); g.add(E.mesh(E.rbox(.7, .35, .4, .06), r, 0, -.1, 0)); g.add(E.mesh(E.rbox(.3, .35, .4, .05), r, -.2, .22, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.06, .08, .22, 12), dk, .2, .2, 0)); [-.22, .22].forEach(x => { const w = E.mesh(new THREE.CylinderGeometry(.11, .11, .44, 16), dk, x, -.3, 0); w.rotation.x = Math.PI / 2; g.add(w); }); }
+    else if (kind === 'story3') { for (let k = 0; k < 5; k++) { const a = k * Math.PI * 2 / 5; g.add(E.mesh(new THREE.SphereGeometry(.15, 12, 10), E.M(0xff6fa5, { roughness: .3 }), Math.cos(a) * .2, .1 + Math.sin(a) * .2, 0)); } g.add(E.mesh(new THREE.SphereGeometry(.12, 12, 10), E.M(0xffd43b), 0, .1, .06)); }   /* a flower */
+    else if (kind === 'story4') { [0xe8322b, 0xffffff, 0x2f7de1, 0xffd43b, 0xffffff, 0x2dbb6a].forEach((c, i) => g.add(E.mesh(new THREE.SphereGeometry(.36, 20, 14, i * Math.PI / 3, Math.PI / 3), E.M(c, { roughness: .25, clearcoat: 1 }), 0, .1, 0))); }   /* a beach ball */
+    else if (kind === 'story5') { const l = E.mesh(new THREE.SphereGeometry(.3, 20, 16), E.M(0xffe23b, { roughness: .35, clearcoat: .6 }), 0, .1, 0); l.scale.set(1.35, 1, 1); g.add(l); }   /* a lemon */
+    else if (kind === 'story6') { const b = E.mesh(new THREE.SphereGeometry(.3, 18, 12), E.M(0x8a5a32, { roughness: .6 }), 0, 0, 0); b.scale.set(1.5, .8, .8); g.add(b); g.add(E.mesh(new THREE.SphereGeometry(.17, 14, 10), E.M(0x8a5a32), .42, .25, 0)); }   /* a horse */
+    else if (kind === 'story7') { g.add(E.mesh(E.rbox(.6, .32, .3, .06), E.M(0x2f7de1, { roughness: .3, clearcoat: .8 }), 0, .1, 0)); g.add(E.mesh(E.rbox(.26, .3, .3, .05), E.M(0xffd43b, { roughness: .3, clearcoat: .8 }), .2, .38, 0)); [-.2, .02, .22].forEach(x => { const w = E.mesh(new THREE.CylinderGeometry(.1, .1, .32, 16), E.M(0xe8322b, { roughness: .3 }), x, -.1, 0); w.rotation.x = Math.PI / 2; g.add(w); }); }   /* a toy train */
+    else if (kind === 'story8') { g.add(E.mesh(new THREE.CylinderGeometry(.03, .03, .9, 8), E.M(0xc68a52), -.25, -.05, 0)); g.add(E.mesh(new THREE.SphereGeometry(.12, 16, 12), E.M(0xe8322b, { roughness: .25, clearcoat: 1 }), -.25, .45, 0)); [[0x2f7de1, 0], [0xffffff, 1], [0x2f7de1, 2], [0xffcf3a, 3]].forEach(([c, i]) => g.add(E.mesh(new THREE.BoxGeometry(.5, .1, .03), E.M(c), .02, .3 - i * .1, 0))); }   /* a Simchas Torah flag */
+    else if (kind === 'story10') { const st = E.star3d(.4); g.add(st); }   /* a champion star */
+    else if (kind === 'practice') { g.add(E.mesh(new THREE.SphereGeometry(.36, 24, 16), new THREE.MeshPhysicalMaterial({ color: 0xbfe8ff, transparent: true, opacity: .5, roughness: 0, clearcoat: 1 }))); const l = E.letter('veis', .4); g.add(l); }   /* a bubble with a letter */
+    else if (kind === 'story9') { const sh = E.M(0xffffff, { roughness: .4 }); g.add(E.mesh(E.rbox(.62, .6, .2, .08), sh, 0, -.05, 0)); [-1, 1].forEach(s => { const sl = E.mesh(E.rbox(.22, .4, .18, .06), sh, s * .38, .08, 0); sl.rotation.z = s * .6; g.add(sl); }); g.add(E.mesh(new THREE.BoxGeometry(.1, .1, .05), E.M(0x1f3c88), 0, .2, .12)); }   /* a white Shabbos shirt */
+    else if (kind === 'partners') { const a = E.letter('mem', .55), b = E.letter('memsofis', .55); a.position.x = .3; b.position.x = -.3; g.add(a, b); }
+    else if (kind === 'endword') { g.add(E.mesh(E.rbox(.9, .45, .08, .05), E.M(0xc68a52), 0, 0, -.05)); const l = E.letter('memsofis', .35); l.position.set(-.22, 0, .05); g.add(l); const st = E.star3d(.1); st.position.set(-.36, .3, .1); g.add(st); }
+    else if (kind === 'spotdiff') { const a = E.letter('vov', .6), b = E.letter('nunsofis', .6); a.position.x = .25; b.position.x = -.25; g.add(a, b); }
+    else if (kind === 'dotbuild') { const l = E.letter('shin', .75); g.add(l); }   /* Shin with its golden dot */
+    else if (kind === 'sorter') { const pr = (G.pairs || [U.letters])[0], a = E.letter(pr[0], .6), b = E.letter(pr[1] || pr[0], .6); a.position.x = .3; b.position.x = -.3; g.add(a, b); }
+    else if (kind === 'story') { const h = E.house({ bushes: false }); h.scale.setScalar(.32); h.position.y = -.35; g.add(h); }
+    else if (kind === 'detective') { const l = E.letter('beis', .85); g.add(l); }
+    else if (kind === 'feel') { const l = E.letter((G.letters || U.letters)[0], .85, 'orange'); g.add(l); }
+    else if (kind === 'hunt') { const lens = E.mesh(new THREE.TorusGeometry(.3, .07, 14, 32), E.M(0x2f7de1, { roughness: .2, clearcoat: 1 })); g.add(lens); g.add(E.mesh(new THREE.CircleGeometry(.3, 32), new THREE.MeshPhysicalMaterial({ color: 0xcfefff, transparent: true, opacity: .45, roughness: 0, clearcoat: 1 }), 0, 0, 0, false)); const hd = E.mesh(new THREE.CylinderGeometry(.06, .07, .45, 12), E.M(0x8a5a3c), .33, -.33, 0); hd.rotation.z = Math.PI / 4; g.add(hd); }
+    else if (kind === 'mistake') { g.add(E.mesh(E.rbox(.8, .85, .08, .06), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); const l = E.letter('veis', .55); l.position.z = .12; g.add(l); }
+    else if (kind === 'mastery') { const gold = E.goldDot(); g.add(E.mesh(new THREE.CylinderGeometry(.3, .12, .42, 24), gold, 0, .1, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.08, .08, .2, 12), gold, 0, -.2, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.22, .22, .08, 24), gold, 0, -.32, 0)); [-1, 1].forEach(s => { const h = E.mesh(new THREE.TorusGeometry(.12, .035, 8, 16, Math.PI), gold, s * .3, .14, 0); h.rotation.z = s * -Math.PI / 2; g.add(h); }); }
+    else if (kind === 'bonus') { const cm = E.M(0xffffff, { roughness: .9, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .15 }); [[0, .15, .3], [.28, .1, .22], [-.28, .1, .22]].forEach(([x, y, r]) => g.add(E.mesh(new THREE.SphereGeometry(r, 16, 12), cm, x, y, 0))); const l = E.letter(U.letters[0] || 'alef', .4); l.position.set(0, -.35, .1); g.add(l); }
+    return g; }
+  U.games.forEach((G, i) => {
+    const open = E.unlocked(G.id), stars = E.best(G.id), s = new THREE.Group();
+    const disc = E.mesh(new THREE.CylinderGeometry(.78, .86, .28, 40), open ? E.M(colors[i], { roughness: .25, clearcoat: 1 }) : greyM, 0, .14, 0); s.add(disc);
+    s.add(E.mesh(new THREE.TorusGeometry(.8, .05, 10, 40), edgeM, 0, .29, 0)).rotation.x = 0; s.children[1].rotation.x = Math.PI / 2;
+    const ic = icon(G); if (!open) ic.traverse(o => { if (o.isMesh && o.material && o.material.opacity !== 0) o.material = greyIcon; }); ic.position.y = 1.05; s.add(ic);   /* a locked game shows its picture in grey */
+    if (G.bonus && open) { const b = E.star3d(.18); b.position.set(.55, 1.5, 0); s.add(b); }
+    const st = []; if (stars || (open && E.loadSave().games[G.id])) for (let k = 0; k < 3; k++) { const m = E.star3d(.14); m.material = k < stars ? E.goldDot() : E.M(0xdde6ee); m.position.set((k - 1) * .36, .55, .55); s.add(m); st.push(m); }
+    s.userData = { G, open, stars, ic, disc };
+    E.scene.add(s); stops.push(s);
+  });
+  const gateCheck = U.gate && stops.find(s => s.userData.G.mastery), gateG = gateCheck && (E.loadSave().games[gateCheck.userData.G.id] || {}), gatePractice = gateCheck && stops.find(s => s.userData.G.afterTry);
+  const gateCur = !gateCheck || !gateG.plays ? null : E.gateOpen(gateCheck.userData.G.id) ? null : (gateG.days3 || []).includes(E.today()) ? null : (gateG.last || 0) < 3 && gatePractice && gatePractice.userData.open && !(((E.loadSave().games[gatePractice.userData.G.id] || {}).at || 0) > (gateG.at || 0)) ? gatePractice : gateCheck;   /* the champion gate: practise after a check under 3 stars, then the check again (another day) */
+  if (gateCheck) {   /* the champion gate's signpost: one gold star for each champion day, out of two */
+    const days = Math.min(E.GATE_DAYS, E.gateDays(gateCheck.userData.G.id));
+    for (let k = 0; k < E.GATE_DAYS; k++) { const st = E.star3d(.2); if (k >= days) st.material = new THREE.MeshStandardMaterial({ color: 0xc9d3dd, roughness: .6 }); st.position.set((k - .5) * .5, 1.95, .2); gateCheck.add(st); E.onFrame(t => st.rotation.y = Math.sin(t + k) * .4); } }
+  const cur = gateCur || stops.find(s => s.userData.open && s.userData.stars < E.PASS && !s.userData.G.bonus) || stops.slice().reverse().find(s => s.userData.open && !s.userData.G.bonus);
+  const boy = E.mendy(); E.scene.add(boy);
+  const ring = E.glowSprite('#fff7b0', 3.2, 0); E.scene.add(ring);
+  const banner = new THREE.Group(); if (!U.letters.length) { const st = E.star3d(.6); banner.add(st); E.onFrame(t => st.rotation.y = t); }   /* the champion unit: a gold star */
+  U.letters.forEach((k, i) => { const l = E.letter(k, 1.25); l.position.x = ((U.letters.length - 1) / 2 - i) * 1.35; banner.add(l); }); E.scene.add(banner);   /* the unit's letters, right to left */
+  let pebbles = [];
+  E.onLayout(p => {
+    const N = stops.length, P = stops.map((_, i) => p ? [i % 2 ? -.9 : .95, 3.4 - i * (7.8 / (N - 1))] : [4.6 - i * 9.2 / (N - 1), i % 2 ? 1.2 : 2.5]);   /* right to left, zig-zag */
+    stops.forEach((s, i) => { s.position.set(P[i][0], 0, P[i][1]); s.scale.setScalar(p ? .85 : N > 7 ? .9 : 1); });
+    pebbles.forEach(m => E.scene.remove(m)); pebbles = [];
+    for (let i = 0; i < P.length - 1; i++) for (let k = 1; k < 4; k++) { const a = P[i], b = P[i + 1], q = k / 4; const m = E.mesh(new THREE.CylinderGeometry(.16, .18, .06, 16), pebM, a[0] + (b[0] - a[0]) * q, .03, a[1] + (b[1] - a[1]) * q + Math.sin(q * Math.PI) * .25, false); E.scene.add(m); pebbles.push(m); }
+    if (p) { E.camBase.set(0, 7.2, 10.8); E.camTarget.set(0, .4, -1.2); banner.position.set(0, 3.0, -5.6); banner.scale.setScalar(.8); }
+    else { E.camBase.set(0, 6.4, 13.2); E.camTarget.set(0, .9, .4); banner.position.set(0, 2.9, -2.6); banner.scale.setScalar(1); }
+    if (cur) { boy.position.copy(cur.position).add(new THREE.Vector3(p ? -.95 : -1.05, 0, .35)); boy.scale.setScalar(p ? .75 : .85); ring.position.copy(cur.position).add(new THREE.Vector3(0, .35, 0)); }
+  });
+  E.onFrame(t => {
+    stops.forEach((s, i) => { const ic = s.userData.ic; ic.rotation.y = Math.sin(t * 1.2 + i) * .4; ic.position.y = 1.05 + Math.sin(t * 2 + i) * .06; });
+    if (cur) { ring.material.opacity = .55 + Math.sin(t * 4) * .3; cur.userData.disc.scale.setScalar(1 + Math.sin(t * 4) * .04); boy.position.y = Math.abs(Math.sin(t * 3)) * .12; }
+    banner.children.forEach((l, i) => l.rotation.y = Math.sin(t * .9 + i) * .25);
+  });
+  window.__info = () => ({ unit: U.n, stops: stops.map(s => ({ id: s.userData.G.id, open: s.userData.open, stars: s.userData.stars, xy: E.toScreen(s.position.clone().add(new THREE.Vector3(0, .6, 0))) })), cur: cur && cur.userData.G.id });
+  E.onPointer('down', async e => {
+    const s = E.pickFrom(e, stops); if (!s) return;
+    if (s.userData.open) { E.sfx.chime(); E.sparkle(s.position.clone().add(new THREE.Vector3(0, 1, .5)), 20); E.hop(s.userData.ic, .4); await E.wait(450); E.goGame(s.userData.G.id); }
+    else { E.sfx.boop(); E.shake(s.userData.ic, .15); E.say('First play the glowing one!'); }
+  });
+  /* big buttons to the unit before (right, as Hebrew reads) and the next unit (left), when it is open */
+  const unitBtn = (u, side) => { const b = document.createElement('button'); b.className = 'ui btn'; b.id = 'unit' + u.n; b.setAttribute('aria-label', 'Unit ' + u.n);
+    b.style.cssText = `${side}:16px;bottom:44px;width:96px;height:96px;font:800 34px/1 "Noto Serif Hebrew","Times New Roman",serif;color:#1f5fff;direction:rtl`;
+    b.textContent = u.letters.length ? E.FLAT[u.letters[0]] + '\u2013' + E.FLAT[u.letters[u.letters.length - 1]] : '\u2605';   /* the champion unit: a star */ b.onclick = () => { E.sfx.pop(); E.goPath(u.n); }; document.body.appendChild(b); };
+  const before = E.UNITS.find(u => u.n === U.n - 1), after = E.UNITS.find(u => u.n === U.n + 1);
+  if (before) unitBtn(before, 'right'); if (after && E.unlocked(after.games[0].id)) unitBtn(after, 'left');
+  document.body.dataset.ready = 1;
+  const firstTime = !Object.keys(save.games).length;
+  const champToday = gateCheck && !E.gateOpen(gateCheck.userData.G.id) && (gateG.days3 || []).includes(E.today());
+  E.say(champToday ? 'Champion today! Come back tomorrow for day two.' : firstTime ? 'Hi! Tap the glowing stone to start.' : cur && E.best(cur.userData.G.id) ? 'Play it again, or tap the next stone!' : 'Tap the glowing stone!');
+}
+</script>
+</body></html>

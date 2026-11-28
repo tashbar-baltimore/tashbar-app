@@ -1,0 +1,407 @@
+# Unit 10: every spoken line (from the made-up boy's test runs)
+
+## Champion Day
+- Champion Day! All your friends came to cheer!
+- You learned the whole Alef-Beis! Let’s see it.
+- Let’s sing it together!
+- Alef,
+- Beis,
+- Veis,
+- Gimmel,
+- Daled,
+- Hei,
+- Vov,
+- Zayin,
+- Ches,
+- Your turn! Sing it with me!
+- Tes,
+- Yud,
+- Kaf,
+- Chaf,
+- Lamed,
+- Mem,
+- Nun,
+- Samech,
+- Ayin,
+- Your turn!
+- Pei,
+- Fei,
+- Tzadik,
+- Kuf,
+- Reish,
+- Shin,
+- Sin,
+- Tuf,
+- Suf,
+- And the letters in Shabbos clothes!
+- Chaf Sofis,
+- Mem Sofis,
+- Nun Sofis,
+- Fei Sofis,
+- Tzadik Sofis,
+- Now you! Listen, and tap the letter.
+- Say it with me: Gimmel!
+- Gimmel! g
+- Tap Gimmel!
+- Gimmel says g
+- Say it with me: Shin!
+- Shin! sh
+- Tap Shin!
+- Shin says sh
+- Say it with me: Mem Sofis!
+- Mem Sofis! m
+- Tap Mem Sofis!
+- Mem Sofis says m
+- Tap Tzadik!
+- Tzadik says tz
+- Tap Pei!
+- Pei says p
+- This golden gate leads to the nekudos!
+- Get three stars on the champion check.
+- Do it on two different days.
+- Then the gate opens!
+- Let’s practice and become Alef-Beis champions!
+- Tap the green arrow for the next game!
+
+## Look-Alike Lightning
+- Look-alike letters! Each one goes in its own box.
+- Beis has a dot.
+- Veis has no dot.
+- Watch me. No dot. That is Veis.
+- Yes! Veis says v
+- Now you! Put each letter in its box.
+- Look! A dot! That is Beis.
+- Try again!
+- Yes! Beis says b
+- Next! Hei and Ches!
+- Hei’s leg doesn’t touch the roof.
+- Ches’s leg touches the roof.
+- Yes! Ches says ch
+- Yes! Hei says h
+- Next! Daled and Reish!
+- Daled has a corner.
+- Reish is round on top.
+- Yes! Daled says d
+- Yes! Reish says r
+- Next! Gimmel and Nun!
+- Gimmel has a foot.
+- Nun is flat at the bottom.
+- Yes! Gimmel says g
+- Yes! Nun says n
+- Next! Samech and Mem Sofis!
+- Samech is round at the bottom.
+- Mem Sofis is square at the bottom.
+- Yes! Mem Sofis says m
+- Yes! Samech says s
+- Next! Shin and Sin!
+- Shin’s dot is on the right.
+- Sin’s dot is on the left.
+- Yes! Shin says sh
+- Yes! Sin says s
+- Remember these?
+- Watch me. Tap Chaf.
+- Now you!
+- Tap Chaf.
+- Chaf! Chaf says ch
+- Which letter says t ? Tap it.
+- Tes! Tes says t
+- Tap Zayin.
+- Zayin! Zayin says z
+- Champion detective! You know every look-alike!
+- Tap the green arrow for the next game!
+- Look! No dot. That is Veis.
+- Watch me. Tap Pei.
+- Tap Pei.
+- Pei! Pei says p
+- Tap Alef.
+- Alef! Alef is quiet.
+
+## Feel the Shape: mixed
+- This is Tes. Let’s feel its shape.
+- Watch me. I follow the glowing road.
+- Now you! Feel the whole glowing road.
+- Put your finger on the glowing road.
+- Tes! Tes says t
+- Say it with me: Tes!
+- Tes! t
+- This is Lamed, the tall one. Feel it!
+- Feel the whole glowing road!
+- Lamed! Lamed says l
+- Say it with me: Lamed!
+- Lamed! l
+- This is Ayin. Feel its two arms!
+- Ayin! Ayin is quiet.
+- Say it with me: Ayin!
+- Ayin! Quiet!
+- This is Tzadik. Feel its little arm up on top!
+- Tzadik! Tzadik says tz
+- Say it with me: Tzadik!
+- Tzadik! tz
+- Remember these?
+- Watch me. Tap Alef.
+- Now you!
+- Tap Alef.
+- Alef! Alef is quiet.
+- Which letter says k ? Tap it.
+- Kuf! Kuf says k
+- Tap Tes.
+- You felt Tes, Lamed, Ayin and Tzadik!
+- Tap the green arrow for the next game!
+- Which letter says n ? Tap it.
+- Nun! Nun says n
+- Tap Fei.
+- Fei! Fei says f
+
+## Sound Match: mixed
+- Each picture goes to the letter it starts with.
+- A bear!
+- Watch me. Bear starts with b .
+- Yes! Bear starts with b . Beis!
+- A lemon!
+- Now you! Drag each picture to its letter.
+- Listen. Lemon. Lemon starts with l .
+- Lamed says l . Try again!
+- Yes! Lemon starts with l . Lamed!
+- A rose!
+- Yes! Rose starts with r . Reish!
+- A rabbit!
+- Yes! Rabbit starts with r . Reish!
+- A donkey!
+- Yes! Donkey starts with d . Daled!
+- A dog!
+- Yes! Dog starts with d . Daled!
+- A balloon!
+- Yes! Balloon starts with b . Beis!
+- A lamb!
+- Yes! Lamb starts with l . Lamed!
+- Remember these?
+- Watch me. Tap Pei.
+- Now you!
+- Tap Pei.
+- Pei! Pei says p
+- Which letter says v ? Tap it.
+- Veis! Veis says v
+- Tap Mem Sofis.
+- Mem Sofis! Mem Sofis says m
+- Great matching! Every picture found its letter.
+- Tap the green arrow for the next game!
+- Watch me. Tap Tuf.
+- Tap Tuf.
+- Tuf! Tuf says t
+- Which letter says p ? Tap it.
+- Tap Shin.
+- Shin! Shin says sh
+
+## Sound Hunt
+- Mendy is in the sukkah. Letters are hiding!
+- Watch me. I find the letter that says sh .
+- A Shin! sh
+- Now you! Find every letter that says sh .
+- Find the letter that says sh !
+- That is Sin. It says s . Find sh !
+- You found every Shin!
+- Now find every letter that says g .
+- A Gimmel! g
+- Find the letter that says g !
+- Remember these?
+- Watch me. Tap Shin.
+- Now you!
+- Tap Shin.
+- Shin! Shin says sh
+- Which letter says k ? Tap it.
+- Kaf! Kaf says k
+- Tap Daled.
+- Daled! Daled says d
+- Great hunting! You found every Shin and Gimmel.
+- Tap the green arrow for the next game!
+- Which letter says m ? Tap it.
+- Mem! Mem says m
+- Tap Tzadik.
+- Tzadik! Tzadik says tz
+
+## Find the Mistake
+- This is Yaakov. Sometimes he makes a mistake.
+- Watch me find his mistake.
+- Yaakov says: this is Beis.
+- It says v . Is he right?
+- Hmm. Watch me. Beis is right, but Beis says b !
+- Yes! A mistake. Beis says b !
+- Now you! Is Yaakov right? Tap yes or no.
+- Yaakov says: this is Gimmel.
+- It says g . Is he right?
+- Yes! Yaakov is right. Gimmel says g
+- Yaakov says: this is Daled.
+- It says r . Is he right?
+- Listen again. Daled says d , not r .
+- Yaakov says: this is Sin.
+- It says sh . Is he right?
+- Yes! A mistake. Sin says s !
+- Yaakov says: this is Kuf.
+- It says k . Is he right?
+- Yes! Yaakov is right. Kuf says k
+- Yaakov says: this is Samech.
+- It says s . Is he right?
+- Yes! Yaakov made a mistake. That is Mem Sofis.
+- Yaakov wanted a Samech. Drag Samech onto the sign!
+- That is Pei. Find Samech, the round one!
+- Now Yaakov has his Samech! Samech says s
+- Yaakov says: this is Tuf.
+- It says t . Is he right?
+- Yes! Yaakov is right. Tuf says t
+- Remember these?
+- Watch me. Tap Veis.
+- Now you!
+- Tap Veis.
+- Veis! Veis says v
+- Which letter says sh ? Tap it.
+- Shin! Shin says sh
+- Tap Fei Sofis.
+- Fei Sofis! Fei Sofis says f
+- You found all of Yaakov’s mistakes!
+- Tap the green arrow for the next game!
+- That is Shin. Find Samech, the round one!
+- Watch me. Tap Vov.
+- Tap Vov.
+- Vov! Vov says v
+- Which letter says f ? Tap it.
+- Tap Nun.
+- Nun! Nun says n
+
+## Champion check
+- Show the rebbe what you know!
+- Watch me. Tap Shin.
+- Shin says sh
+- Now you! Listen, then tap.
+- Tap Yud.
+- Yes! Yud says y
+- Which letter says k ? Tap it.
+- That is Hei. Hei says h
+- Kuf has a long leg.
+- Here is Kuf. Kuf says k
+- Tap Nun.
+- Yes! Nun says n
+- Which letter says z ? Tap it.
+- Yes! Zayin says z
+- Which letter is quiet? Tap it.
+- Yes! Ayin. Ayin is quiet.
+- Which letter says g ? Tap it.
+- Yes! Gimmel says g
+- Tap Beis.
+- Yes! Beis says b
+- Which letter says m ? Tap it.
+- Yes! Mem Sofis says m
+- Tap Samech.
+- Yes! Samech says s
+- Which letter says tz ? Tap it.
+- Yes! Tzadik says tz
+- Tap Tuf.
+- Yes! Tuf says t
+- Tap Chaf.
+- Yes! Chaf says ch
+- Tap Pei.
+- Yes! Pei says p
+- Which letter says f ? Tap it.
+- Yes! Fei says f
+- Tap Hei.
+- Yes! Hei says h
+- Yes! Kuf says k
+- Champion today! Come back another day for the nekudos.
+- Tap the green arrow for the next game!
+- Tap Lamed.
+- Yes! Lamed says l
+- That is Alef. Alef is quiet.
+- Here is Zayin. Zayin says z
+- Tap Ches.
+- Yes! Ches says ch
+- Tap Tes.
+- Yes! Tes says t
+- Which letter says y ? Tap it.
+- Yes! Alef. Alef is quiet.
+- Yes! Tzadik Sofis says tz
+- Tap Sin.
+- Yes! Sin says s
+- Which letter says v ? Tap it.
+- Yes! Veis says v
+- Tap Kaf.
+- Yes! Kaf says k
+- Tap Shin.
+- Yes! Shin says sh
+
+## My hard letters
+- Let’s practice the letters that are hard for you.
+- This is Hei.
+- Its leg doesn’t touch the roof.
+- Hei says h
+- Say it with me: Hei!
+- Hei! h
+- Pop every bubble with Hei!
+- Watch me.
+- Hei! Now you!
+- Hei!
+- You know Hei!
+- This is Kaf.
+- It has a dot.
+- Kaf says k
+- Say it with me: Kaf!
+- Kaf! k
+- Pop every bubble with Kaf!
+- Kaf!
+- That is Tes. Find Kaf. It has a dot.
+- You know Kaf!
+- This is Chaf.
+- No dot.
+- Chaf says ch
+- Say it with me: Chaf!
+- Chaf! ch
+- Pop every bubble with Chaf!
+- Chaf!
+- That is Alef. Find Chaf. No dot.
+- You know Chaf!
+- This is Daled.
+- It has a corner.
+- Daled says d
+- Say it with me: Daled!
+- Daled! d
+- Pop every bubble with Daled!
+- Daled!
+- You know Daled!
+- Remember these?
+- Watch me. Tap Kaf.
+- Now you!
+- Tap Kaf.
+- Kaf! Kaf says k
+- Which letter says ch ? Tap it.
+- Chaf! Chaf says ch
+- Tap Mem.
+- Mem! Mem says m
+- Great practice! Now try the champion check again.
+- A bonus game! Tap the green arrow.
+
+## Bonus: beat the sun
+- All aboard the Alef-Beis train!
+- After Chaf comes Lamed! This train starts there.
+- Listen to the order.
+- Lamed,
+- Mem,
+- Nun,
+- Samech,
+- Ayin,
+- Pei,
+- Fei!
+- Watch me. Lamed goes first.
+- Lamed! l
+- Can you finish before the sun goes down?
+- Now you! Which car comes next?
+- That is Nun. Listen.
+- Mem!
+- Mem goes here!
+- Mem! m
+- Nun! n
+- Samech! s
+- Ayin!
+- Pei! p
+- Fei! f
+- The sun went down, and you finished it! Great!
+- Choo choo! You know the Alef-Beis order!
+- Tap the green button to go back.
+
