@@ -1309,5 +1309,152 @@ B['MATH.STAT.L04.01']={ band:'B23', pic:'⭐', today:'Read graphs where a pictur
     {type:'count', n:3, pic:'✖️', q:'Pencils longer than 3 inches', o:['2','3','4'], say:'Each ✖️ is one pencil longer than 3 inches. Count.', how:'Each ✖️ on a line plot is 1 thing.'},
     {type:'sort', bins:['= 10','= 20'], cards:[['⭐⭐ (5)',0],['⭐⭐ (10)',1],['⭐ (10)',0],['⭐⭐⭐⭐ (5)',1]], say:'Read each key. Sort by the total.', how:'Multiply the stars by the key: 2 × 5 = 10.'},
     {type:'listen', hear:'Sunday 20, Monday 60, Tuesday 20. How many in all?', o:['100','80','60'], a:'100', say:'Listen. Add them up. Tap the total.', how:'20 + 60 + 20 = 100.'}] };
+/* NEW LESSONS, row M1 batch 1 (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): Grade 2 adding, subtracting and place value in the new shape. */
+N('MATH.OPS.L03.02',{ today:'Regroup 3-digit numbers: carry a ten up, borrow down',
+  hook:{ kind:'mystery', pic:'📚', t:'The shul library had *524* seforim. Boys took *168* home.', q:'How many seforim are still on the shelf?', o:['about 260','about 360','about 460'],
+    pay:'*356* stay! Borrowing *twice* cracked the case.' },
+  learn:[
+    { t:'Add the *ones* first. 8 + 4 = 12.', act:{type:'blocks', n:12, q:'368 + 254: the ones are 8 + 4', say:'Build the *ones*: 8 + 4.', how:'12 ones is *1 ten* and 2 ones. Write 2. Carry the ten.'} },
+    { t:'Next the *tens*. Add the *carry* too!', m:{type:'chant', lines:['Ten ones? Carry the ten!','Too few on top? Borrow, my friend!']}, act:{type:'cloze', t:'Tens: 6 + 5 + 1 carried = ___', o:['11','12','13'], a:'12', say:'Add the *tens*. Don\'t forget the *carry*.', how:'6 + 5 = 11. Then add the *carried 1*. Hundreds: 3 + 2 + 1 = 6. Total: *622*.'} },
+    { t:'Take away: 580 − 347. *0 − 7*? *Borrow* from the 80.', m:{type:'blocks', tens:7, ones:10},
+      act:{type:'tenframe', n:3, start:10, say:'The 0 became *10* ones. Take *7* away.', how:'*Borrow* means trade 1 ten for *10 ones*. Tap 7 dots off: *3* left. Tens: 7 − 4 = 3. Hundreds: 5 − 3 = 2. *233*.'} },
+    { t:'Too small *twice*? *Borrow twice*: a ten, then a hundred.', act:{type:'order', steps:['Ones: 4 − 8? Borrow a ten. 14 − 8 = 6.','Tens: 2 became 1. 1 − 6? Borrow a hundred. 11 − 6 = 5.','Hundreds: 5 became 4. 4 − 1 = 3.','524 − 168 = 356'], extra:['Tens: 6 − 1 = 5.'], say:'Solve the library mystery: *524 − 168*. Order the steps.', how:'*Ones*, then *tens*, then *hundreds*. Borrow each time a top digit is *too small*.'} },
+    { who:{ q:'524 − 168 = ?', o:[['Ari','444'],['Shimon','356']], a:1, why:'Ari *flipped* the ones and the tens. Shimon *borrowed twice*.' } } ],
+  play:[
+    {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['363',0],['443',1],['463',1]], q:'635 − 272 = ?', say:'One answer is right. Find the two *mistakes*.', how:'443 *flipped* 7 − 3 in the tens. 463 borrowed but kept 6 hundreds. *363* is right.'},
+    {type:'match', pairs:[['457 + 376','833'],['286 + 147','433'],['199 + 199','398']], say:'*Carry* where you need to. Match each answer.', how:'457 + 376: ones 13, *carry 1*. Tens 5 + 7 + 1 = 13, *carry 1*. Hundreds 8.'},
+    {type:'cloze', t:'612 cans. They give away 275. ___ cans are left.', o:['337','463','347'], a:'337', q:'612 − 275', say:'*Borrow twice* if you need to. Fill the gap.', how:'Ones 2 − 5: borrow, *12 − 5 = 7*. Tens are now 0: borrow, 10 − 7 = 3. Hundreds: 6 became 5. 5 − 2 = 3.'},
+    {type:'order', steps:['Ones: 2 − 5? The tens are 0. Borrow a hundred first.','Now 10 tens. Borrow one: 9 tens, 12 ones. 12 − 5 = 7.','Tens: 9 − 7 = 2.','Hundreds: 4 became 3. 3 − 1 = 2.','402 − 175 = 227'], extra:['Tens: 0 − 7? Write 7.'], q:'402 − 175', say:'A zero in the tens! Put the steps in *order*.', how:'The tens are *0*. Borrow a *hundred* first, then a ten.'} ],
+  done:'You add and subtract 3-digit numbers: *carry* up, *borrow* down.' });
+
+N('MATH.OPS.L03.03',{ today:'Know your facts to 20 fast',
+  hook:{ kind:'challenge', pic:'⚡', t:'Challenge! Quick: *8 + 6*.', q:'Which way is fastest?', o:['count on my fingers','make a ten','just guess'],
+    pay:'*Make a ten*: 8 + 2 = 10, then 4 more. *14*!' },
+  learn:[
+    { t:'*Make a ten*. 8 needs *2* to fill the frame.', act:{type:'tenframe', n:14, start:8, say:'8 + 6. Fill the *ten*, then the rest.', how:'8 needs *2* to make 10. *4* are left: 14.'} },
+    { t:'*Doubles* are fast. 6 + 6 = 12. So 6 + 7 is *1 more*.', act:{type:'match', pairs:[['6 + 7','13'],['8 + 9','17'],['5 + 6','11']], say:'Use the *double*, then 1 more. Match.', how:'6 + 7 is 6 + 6 + *1*: 12, then 13.'} },
+    { t:'Subtract? *Think addition*. 17 − 9? Ask: 9 + *what* = 17?', act:{type:'cloze', t:'9 + ___ = 17. So 17 − 9 is the same.', o:['7','8','9'], a:'8', say:'*Think addition* to subtract. Fill the gap.', how:'What plus 9 makes 17? *Count up* from 9 to 17.'} },
+    { t:'Sing it! *Make a ten*, or use a *double*.', m:{type:'chant', lines:['Make a ten, or use a double,','facts come fast without trouble!']} },
+    { who:{ q:'13 − 5 = ?', o:[['Dovi','9'],['Yanky','8']], a:1, why:'Dovi counted 13 too. Think addition: 5 + *8* = 13.' } } ],
+  play:[
+    {type:'tenframe', n:8, start:15, q:'15 − 7', say:'Take *5* to get to 10. Then *2* more.', how:'15 − 5 = 10. 10 − 2 = *8*. Check: 7 + 8 = 15.'},
+    {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['8',0],['9',1],['7',1]], q:'14 − 6 = ?', say:'One answer is right. Which ones are *mistakes*?', how:'9 counted *14* too. 7 took away one too many. Think *6 + 8 = 14*.'},
+    {type:'findall', grid:['6 + 6','7 + 5','8 + 5','9 + 3','4 + 7','3 + 9'], find:['6 + 6','7 + 5','9 + 3','3 + 9'], findSay:'fact that makes 12', say:'Tap every fact that makes *12*.', how:'Use a *double* or *make a ten*. 7 + 5: 7 + 3 = 10, 2 more is 12.'},
+    {type:'sort', bins:['Makes 8','Not 8'], cards:[['15 − 7',0],['16 − 8',0],['13 − 6',1],['17 − 9',0],['14 − 5',1]], say:'Challenge! *Think addition*. Which ones make 8?', how:'15 − 7: what plus 7 is 15? *8*. 13 − 6 is 7, not 8.'} ],
+  done:'Facts come fast: *make a ten*, use a *double*, *think addition*.' });
+
+N('MATH.OPS.L03.04',{ today:'Count arrays: equal rows',
+  hook:{ kind:'wouldyou', pic:'🪑', t:'The shul has *3 rows* of chairs. *5* in each row.', q:'Would you count one by one, or row by row?', o:['one by one','row by row','I would guess'],
+    pay:'*Row by row* is fast: 5, 10, *15* chairs!' },
+  learn:[
+    { t:'An *array* has *equal rows*. Count this one.', m:{type:'emoji', e:'🪑', n:10, group:5, rows:true}, act:{type:'cloze', t:'2 rows of 5 chairs is ___ chairs.', o:['7','10','12'], a:'10', say:'Look at the *rows*. How many chairs?', how:'Each *row* has 5. Add one 5 for *each row*. Not 2 + 5.'} },
+    { t:'*Skip count* the rows. One hop for each row.', m:{type:'emoji', e:'🪑', n:15, group:5, rows:true}, act:{type:'hop', start:0, add:15, unit:5, from:0, to:25, q:'3 rows of 5', say:'3 rows of 5. Hop by *5s*, once a row.', how:'5, 10, *15*. So 5 + 5 + 5 = 15.'} },
+    { t:'Clap each *row* with me: *5, 10, 15*!', m:{type:'move', t:'Clap once for each row of 5: 5, 10, 15!'} },
+    { t:'Write it as *adding*: one row, again and again.', m:{type:'emoji', e:'🍪', n:12, group:4, rows:true}, act:{type:'match', pairs:[['2 rows of 4','4 + 4'],['3 rows of 4','4 + 4 + 4'],['4 rows of 2','2 + 2 + 2 + 2']], say:'Each row adds the same. Match rows to *adding*.', how:'Write one row\'s number *once for every row*.'} },
+    { who:{ q:'3 rows of 5 = ?', o:[['Moshe','8'],['Tzvi','15']], a:1, why:'Moshe did *3 + 5*. Tzvi added *5 three times*.' } } ],
+  play:[
+    {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['5 + 5',0],['2 + 5',1],['5 + 5 + 5',1]], q:'2 rows of 5 chairs', say:'2 rows of 5 chairs. Which way is *right*?', how:'Each row has 5, and there are 2 rows: *5 + 5*. Not 2 + 5. 5 + 5 + 5 has one row too many.'},
+    {type:'hop', start:0, add:12, unit:3, from:0, to:15, q:'4 rows of 3 seforim', say:'4 rows of 3. Hop by *3s*, once a row.', how:'3, 6, 9, *12*. So 3 + 3 + 3 + 3 = 12.'},
+    {type:'match', pairs:[['2 + 2 + 2 + 2 + 2','10'],['4 + 4 + 4','12'],['5 + 5 + 5 + 5','20']], say:'Add the *equal rows*. Match each total.', how:'*Skip count*: 2, 4, 6, 8, 10.'},
+    {type:'listen', q:'Bubby\'s cookie tray', hear:'Bubby puts 4 rows of cookies on the tray. Each row has 4. How many cookies?', o:['8','16','12'], a:'16', say:'Listen. Picture the rows. Tap how many.', how:'4 rows of 4: *4, 8, 12, 16*. Not 4 + 4 = 8.'} ],
+  done:'*Equal rows*: add the same number once for *every row*.' });
+
+N('MATH.OPS.L03.05',{ today:'Add many numbers in a column',
+  hook:{ kind:'puzzle', pic:'📖', t:'Three boys learned *27*, *18* and *36* mishnayos.', q:'All together: more or less than 100?', o:['more than 100','less than 100','exactly 100'],
+    pay:'It is *81*: less than 100. Ones first, then *carry*!' },
+  learn:[
+    { t:'Stack them. Add the *ones*: 7 + 8 + 6.', act:{type:'blocks', n:21, q:'27 + 18 + 36: the ones are 7 + 8 + 6', say:'Build the *ones*: 7 + 8 + 6.', how:'7 + 8 = 15. 15 + 6 = *21*. That is 2 tens and 1 one.'} },
+    { t:'Write the *1*. *Carry* the 2 tens up.', act:{type:'sort', bins:['Carry 1','Carry 2','Carry 3'], cards:[['7 + 8 + 4',0],['9 + 8 + 7',1],['6 + 6',0],['8 + 9 + 5 + 9',2]], q:'The ones column', say:'Add the *ones*. How many tens do you *carry*?', how:'7 + 8 + 4 = 19: *1 ten* and 9 ones. Carry 1.'} },
+    { t:'Tens: 2 + 1 + 3 = 6. Add the *2 carried*: 8. So *81*.', m:{type:'blocks', tens:8, ones:1} },
+    { t:'Sing it! *Ones* go first, then *carry*.', m:{type:'chant', lines:['Ones go first, then carry the ten,','tens go next, then add again!']} },
+    { who:{ q:'27 + 18 + 10 = ?', o:[['Eli','45'],['Avi','55']], a:1, why:'Eli *dropped the carried ten*. Avi kept it.' } } ],
+  play:[
+    {type:'match', pairs:[['23 + 19 + 36','78'],['27 + 38 + 16','81'],['14 + 25 + 29','68'],['38 + 45 + 29','112']], say:'Add each tower: *ones*, *carry*, then tens. Match.', how:'38 + 45 + 29: ones 22, *carry 2*. Tens 3 + 4 + 2 + 2 = 11. 11 tens is *110*, so 112.'},
+    {type:'sort', mis:true, bins:['Right','Dropped the ten','Extra ten'], cards:[['77',0],['67',1],['87',2]], q:'36 + 17 + 24 = ?', say:'One is right. Which *ten* went wrong?', how:'Ones 6 + 7 + 4 = 17: *carry 1*. Tens 3 + 1 + 2 + 1 = 7. *77*.'},
+    {type:'tiles', w:['Ones: 30','Write 0, carry 3','Tens: 7 + 3 = 10','10 tens = 100'], extra:['Tens: 7. Write 7.'], q:'16 + 27 + 19 + 38', say:'Four numbers! Put the steps in order.', how:'Ones 30: write 0, *carry 3* tens. Tens 1 + 2 + 1 + 3 + 3 = 10 tens. *100*.'},
+    {type:'cloze', t:'Nissim learned 28 pages, Avi 35, Shmuel 19. In all: ___ pages.', o:['82','72','92'], a:'82', say:'Stack them. Add the *ones*, carry, then tens.', how:'Ones 8 + 5 + 9 = 22: write 2, *carry 2*. Tens 2 + 3 + 1 + 2 = 8. *82*.'} ],
+  done:'You add a tower: *ones* first, *carry*, then the tens.' });
+
+N('MATH.OPS.L03.06',{ today:'Solve two-step stories: scene 1, then use it',
+  hook:{ kind:'story', pic:'🗂️', t:'Dovid had *20* rebbe cards. He got *15*. Then he gave *8* away.', q:'How many cards does he have at the end?', o:['35','27','43'],
+    pay:'*27*! Scene 1 made 35. Scene 2 took 8 away.' },
+  learn:[
+    { t:'Scene 1: he *got* more. Add 15.', act:{type:'hop', start:20, add:15, unit:5, from:0, to:50, say:'Scene 1: hop *15* from 20.', how:'Each hop is 5. 20 + 15 = *35*. Keep 35 for scene 2.'} },
+    { t:'Scene 2 *starts at 35*. He gave 8 away.', act:{type:'hop', start:35, add:-8, unit:1, from:25, to:40, say:'Scene 2: hop back *8* from 35.', how:'Each hop back is 1. 35 − 8 = *27*. Scene 2 is done.'}, m:{type:'chant', lines:['Scene one, then scene two,','the first answer helps you through!']} },
+    { t:'Story words tell you: *add* or *subtract*.', act:{type:'sort', bins:['Add','Subtract'], cards:[['5 more came',0],['3 went home',1],['got 4 more',0],['gave 2 away',1],['ate 6',1]], say:'Story words: *add* or *subtract*? Sort them.', how:'*Got* more or *came*: add. *Gave* away, went or ate: subtract.'} },
+    { t:'*More than* Avi? Find Ari first. Then add *both*.', act:{type:'cloze', t:'Avi read 12. Ari read 5 more than Avi. Together: 12 + ___ = 29.', o:['5','17','29'], a:'17', say:'Find *Ari* first, then add *both*.', how:'Ari read 12 + 5 pages. Put *Ari\'s pages* in the gap.'} },
+    { who:{ q:'Baruch read 17. Moshe read 5 more than Baruch. Together?', o:[['Chaim','22'],['Yossi','39']], a:1, why:'Chaim found *Moshe* only. Yossi added *both boys*.' } } ],
+  play:[
+    {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['34',0],['24',1],['70',1]], q:'Eli had 42. He gave 18. He got 10.', say:'Find the right answer. Which ones are *mistakes*?', how:'24 *stopped after scene 1*. 70 added everything. 42 − 18 = 24, then 24 + 10 = 34.'},
+    {type:'tiles', w:['Ari: 14 + 6 = 20','Both: 14 + 20 = 34'], extra:['Both: 14 + 6 = 20','Ari: 14 − 6 = 8'], q:'Avi read 14 pages. Ari read 6 more than Avi.', say:'How many pages *together*? Put the steps in order.', how:'First find *Ari*: 14 + 6 = 20. Then add *both*: 14 + 20 = 34.'},
+    {type:'match', pairs:[['52 boys. 10 came. 25 went.','37'],['40 boys. 16 went. 8 came.','32'],['Avi 15. Ari 4 more. Together?','34'],['18 boys. 9 came. 18 more came.','45']], say:'Do scene 1, then scene 2. Match each answer.', how:'52 + 10 = 62. Then 62 − 25 = *37*. Ari: 15 + 4 = 19. Together: 15 + 19 = *34*.'},
+    {type:'listen', q:'Chaim\'s stickers: 47', hear:'Chaim had 47 stickers. He gave 19 to Ari, then got 8 more. How many now?', o:['36','28','74'], a:'36', say:'Listen. Two scenes! Tap the answer.', how:'Scene 1: 47 − 19 = *28*. Scene 2: 28 + 8 = *36*.'} ],
+  done:'Two-step stories: finish *scene one*, then use it in *scene two*.' });
+
+N('MATH.PV.L03.01',{ today:'Know each digit\'s place, then compare',
+  hook:{ kind:'compare', pic:'🥫', t:'Rebbe Katz\'s class collected *482* cans. Rebbe Stern\'s collected *428*.', q:'Which class collected more?', o:['Rebbe Katz\'s','Rebbe Stern\'s','the same'],
+    pay:'Rebbe Katz\'s class! *8 tens* beats 2 tens. 482 > 428.' },
+  learn:[
+    { t:'Each digit has a *place*: hundreds, tens, ones.', act:{type:'match', pairs:[['4 in 482','hundreds'],['8 in 482','tens'],['2 in 482','ones']], say:'482. Which *place* is each digit in?', how:'From the left: *hundreds*, *tens*, *ones*.'} },
+    { t:'A *0* holds a place. No tens? Write *0*.', act:{type:'cloze', t:'4 hundreds, 0 tens and 6 ones is ___.', o:['46','406','460'], a:'406', say:'Build the number. Watch the *0*.', how:'4 in the hundreds, *0* in the tens, 6 in the ones.'} },
+    { t:'To compare, start at the *biggest place*. > means *greater*.', act:{type:'match', pairs:[['756 ☐ 754','>'],['319 ☐ 391','<'],['507 ☐ 507','=']], say:'Which *sign* goes in each box? Match.', how:'*Hundreds* first, then tens, then ones. The open side faces the *bigger* number.'} },
+    { t:'Sing it! *Hundreds first*, then tens, then ones.', m:{type:'chant', lines:['Hundreds first,','then the tens,','then the ones!']} },
+    { who:{ q:'199 ☐ 201', o:[['Yehuda','199 > 201'],['Mendel','199 < 201']], a:1, why:'Yehuda looked at the *9s*. Mendel checked *hundreds* first.' } } ],
+  play:[
+    {type:'findall', grid:['442','424','244','402','847','412'], find:['442','244','847'], findSay:'number with 4 tens', say:'Tap every number with *4 tens*.', how:'The *tens* digit is the middle one. Is it 4?'},
+    {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['299 < 301',0],['299 > 301',1],['408 < 480',0],['408 > 480',1]], q:'Right sign, or a mistake?', say:'Right, or a *mistake*? Sort them.', how:'*Hundreds* first! 3 hundreds beats 2 hundreds, even with two 9s. 408 < 480: *0 tens* is less than 8 tens.'},
+    {type:'tiles', w:['298','389','398','893'], q:'Tzedakah dollars raised by four classes', say:'Challenge! Line them up, *smallest* first.', how:'*Hundreds* first. 389 and 398 tie: 8 tens is less than 9 tens.'},
+    {type:'sort', bins:['>','<'], cards:[['673 ☐ 637',0],['481 ☐ 418',0],['299 ☐ 302',1],['550 ☐ 505',0],['714 ☐ 741',1]], q:'Which sign goes in the box?', say:'Bigger or smaller? Sort by the *sign*.', how:'*Hundreds* first. A tie? Then the *tens*. 673 beats 637: 7 tens beats 3.'} ],
+  done:'Compare big numbers: *hundreds first*, then tens, then ones.' });
+
+N('MATH.PV.L03.02',{ today:'Build numbers: 10 tens make a hundred',
+  hook:{ kind:'secret', pic:'🔐', t:'Crack the lock! *4* hundreds, *13* tens, *2* ones.', q:'What is the secret number?', o:['4132','532','442'],
+    pay:'The code is *532*! *13 tens* is 1 hundred and 3 tens.' },
+  learn:[
+    { t:'*6 hundreds* is 600. Hop by *100s*.', act:{type:'hop', start:0, add:600, unit:100, from:0, to:1000, say:'627 has *6 hundreds*. Hop by 100s.', how:'Each hop is *100*. 6 hops land on 600.'} },
+    { t:'Then *2 tens* and *7 ones*. That makes 627.', act:{type:'blocks', n:27, q:'627: you hopped 600. Now build 27.', say:'Build the *2 tens* and *7 ones* of 627.', how:'2 tall *tens*, then 7 small *ones*.'} },
+    { t:'Point left to right: *hundreds*, *tens*, *ones*! No tens? Write *0*.', m:{type:'move', t:'Point left to right and say: hundreds, tens, ones!'} },
+    { t:'*10 tens* make *1 hundred*.', act:{type:'hop', start:0, add:100, unit:10, from:0, to:100, say:'Hop *10 tens* from 0. Where do you land?', how:'Each hop is 10. Count them: 10, 20, 30 ... How many *hundreds* is that?'} },
+    { who:{ q:'3 hundreds and 12 tens = ?', o:[['Levi','3120'],['Akiva','420']], a:1, why:'*12 tens* is 1 hundred and 2 tens. 300 + 120 = *420*.' } } ],
+  play:[
+    {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['508',0],['58',1],['580',1]], q:'5 hundreds and 8 ones', say:'5 hundreds and 8 ones. Find the *mistakes*.', how:'58 lost the *0* in the tens. 580 put the 8 in the tens. *508* is right.'},
+    {type:'match', pairs:[['7 ones, 2 tens, 4 hundreds','427'],['4 tens, 7 hundreds, 2 ones','742'],['2 hundreds, 7 ones, 4 tens','247']], say:'The places are mixed up! *Build* each number.', how:'Find the *hundreds* first, then *tens*, then *ones*.'},
+    {type:'listen', q:'Hear the number', hear:'six hundred nine', o:['609','690','6009'], a:'609', say:'Listen to the *number words*. Tap the number.', how:'Six hundred is *6 hundreds*. Nine is 9 ones. No tens? Write *0*.'},
+    {type:'match', pairs:[['3 hundreds, 12 tens','420'],['2 hundreds, 15 tens','350'],['14 tens, 6 ones','146'],['5 hundreds, 10 tens','600']], say:'Too many *tens*? Make a *hundred*. Match.', how:'*10 tens* make 1 hundred. 12 tens is 100 + 20.'} ],
+  done:'*10 tens* make *1 hundred*. You can build any number.' });
+
+N('MATH.PV.L03.03',{ today:'Stretch a number into parts, and squeeze it back',
+  hook:{ kind:'riddle', pic:'🤸', t:'Riddle: I am *200 + 50 + 6*. Squeeze me tight!', q:'What number am I?', o:['256','2506','13'],
+    pay:'*256*! Stretch it out, then *squeeze* it back.' },
+  learn:[
+    { t:'Hands together: *256*. Arms out: *200 + 50 + 6*!', m:{type:'move', t:'Hands together: 256! Arms out wide: 200 + 50 + 6!'} },
+    { t:'Each digit has a *worth*. 2 hundreds is *200*.', act:{type:'match', pairs:[['2 hundreds','200'],['5 tens','50'],['6 ones','6']], say:'*Stretch* 256. Match each digit to its worth.', how:'2 hundreds is *200*. 5 tens is *50*. 6 ones is 6.'} },
+    { t:'A part is missing? Look at its *place*.', act:{type:'cloze', t:'264 = 200 + ___ + 4', o:['6','60','600'], a:'60', say:'Find the *missing part*.', how:'The 6 is in the *tens*. How much are *6 tens*?'} },
+    { t:'Now you stretch *445*. *Biggest part* first.', act:{type:'cloze', t:'445 = ___ + 40 + 5', o:['4','40','400'], a:'400', say:'Stretch 445. Find the *biggest part*.', how:'The 4 on the left is *4 hundreds*.'} },
+    { who:{ q:'Stretch 312', o:[['Shloimy','3 + 1 + 2'],['Gavriel','300 + 10 + 2']], a:1, why:'The 3 is in the hundreds. It is worth *300*.' } } ],
+  play:[
+    {type:'match', pairs:[['600 + 40 + 7','647'],['300 + 90 + 8','398'],['100 + 60 + 5','165']], say:'*Squeeze* each one back together. Match.', how:'6 hundreds, 4 tens, 7 ones: *647*.'},
+    {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['500 + 7',0],['500 + 0 + 7',0],['5 + 0 + 7',1],['500 + 70',1]], q:'Stretch 507', say:'Which ones stretch 507 right? Find the *mistakes*.', how:'5 hundreds is *500*. 0 tens adds *nothing*, so 0 may stay or go. 7 *ones* is 7.'},
+    {type:'listen', q:'Napkins for the sukkah', hear:'Tatty buys 7 boxes of 100 napkins for the sukkah, 2 packs of 10, and 8 more. How many?', o:['728','7208','782'], a:'728', say:'Listen. *Squeeze* the parts into one number.', how:'700 + 20 + 8 = *728*.'},
+    {type:'findall', grid:['500','50','5','60','600','3'], find:['500','60','3'], findSay:'part of 563', say:'Challenge! Tap every *part* of 563.', how:'5 hundreds is *500*. 6 tens is *60*. 3 ones is 3.'} ],
+  done:'*Stretch* a number into parts, and *squeeze* it back.' });
+
+N('MATH.PV.L03.04',{ today:'Jump 10 or 100 in your head',
+  hook:{ kind:'predict', pic:'🔢', t:'Look at *456*. We add *100*.', q:'Which digit will change?', o:['the 4','the 5','the 6'],
+    pay:'The *4* became 5: *556*. Only the hundreds moved!' },
+  learn:[
+    { t:'Add or take 100s? Only the *hundreds* move.', act:{type:'hop', start:456, add:300, unit:100, from:356, to:856, say:'Hop *3 hundreds* from 456. Watch the 4.', how:'556, 656, *756*. Only the *hundreds* digit moves.'} },
+    { t:'Take 10s away? Only the *tens* go *down*.', act:{type:'hop', start:258, add:-30, unit:10, from:188, to:268, say:'Hop back *3 tens* from 258. Watch the 5.', how:'248, 238, *228*. Only the *tens* digit moves.'}, m:{type:'chant', lines:['Plus 10? The tens go up.','Minus 10? The tens go down!']} },
+    { t:'Plus 10 at *9 tens*? You get *a new hundred*.', act:{type:'cloze', t:'295 + 10 = ___', o:['2105','305','395'], a:'305', say:'Careful at *9 tens*! Fill the gap.', how:'9 tens + 1 ten = *10 tens*. That makes *a new hundred*.'} },
+    { t:'Minus 10 at *0 tens*? *Borrow* a hundred.', act:{type:'cloze', t:'301 − 10 = ___', o:['201','291','300'], a:'291', say:'*0 tens*! Fill the gap.', how:'301 is *30 tens* and 1. Take 1 ten: *29 tens* and 1.'} },
+    { who:{ q:'10 less than 602 = ?', o:[['Nachum','502'],['Binyomin','592']], a:1, why:'Nachum took 100. 602 is 60 tens and 2. One ten less: *592*.' } } ],
+  play:[
+    {type:'match', pairs:[['10 more than 179','189'],['100 more than 179','279'],['10 less than 179','169'],['100 less than 165','65']], say:'Which digit moves? Match each answer.', how:'± 10: the *tens* move. ± 100: the *hundreds* move.'},
+    {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['206',0],['1106',1],['296',1]], q:'196 + 10 = ?', say:'196 + 10. Find the right one and the *mistakes*.', how:'9 tens + 1 ten = *a new hundred*: 206. 1106 wrote 10 tens as 10. 296 added 100.'},
+    {type:'listen', q:'Stickers for the first grade', hear:'The class has 590 stickers. They give 10 to the first grade. How many are left?', o:['580','490','589'], a:'580', say:'Listen. Which digit goes down? Tap the answer.', how:'10 less: the *tens* go down. 9 tens become 8: *580*.'},
+    {type:'sort', bins:['+ 10','− 10','− 100'], cards:[['179 → 189',0],['403 → 393',1],['613 → 513',2],['738 → 638',2],['569 → 559',1]], say:'Which jump was it? Sort them.', how:'Is it *10* or *100* apart? 403 → 393 is 10 less: *40 tens* became 39 tens.'} ],
+  done:'Plus or minus 10 moves the *tens*. 100 moves the *hundreds*.' });
+/* Row M1: a lesson in the new shape plays THINK, LEARN, TRY IT, SHOW ME, DONE, so its old Watch Me steps and Mistake screen are dropped too (nothing reads them). */
+['MATH.OPS.L03.02','MATH.OPS.L03.03','MATH.OPS.L03.04','MATH.OPS.L03.05','MATH.OPS.L03.06','MATH.PV.L03.01','MATH.PV.L03.02','MATH.PV.L03.03','MATH.PV.L03.04'].forEach(function(id){ var b=B[id]; if(b&&b.hook){ delete b.watch; delete b.oops; } });
 })(window.ONE_BITE);
 </script>

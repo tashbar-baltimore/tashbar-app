@@ -201,3 +201,58 @@ Every boy-facing button stays the kit's (`src/UiKit.html`): the same kinds, word
 | 11 | `ycw-btn-ic-speak.png` | Read it to me | 800 x 800, TRANSPARENT | A 3D speaker icon in gold and white with three soft sound waves to the right, on its own. |
 | 12 | `ycw-btn-ic-hint.png` | Hint | 800 x 800, TRANSPARENT | A 3D glowing light bulb icon, warm golden light inside, on its own. |
 | 13 | `ycw-btn-ic-music.png` | Music | 800 x 800, TRANSPARENT | A 3D pair of eighth notes in polished gold with a soft glow, on its own. |
+
+## Order YCB-4 (2026-11-27) · the shell overhaul: his places · status: SENT, waiting
+Asked for (Esti, with the Head of School, 2026-11-27): "Delete all the old layers and build a new, simple, quick, upgraded one ... with incredible pictures, immersive 3D-like pictures and movement." Checklist: `docs/SHELL-OVERHAUL.md`. These are the places that still have no picture in the world (YCB-1 to YCB-3 cover the rest), plus a few layers for flying into a place.
+
+**Style for every picture:** EXACTLY the same world as orders YCB-1, YCB-2 and YCB-3: top-quality 3D animated-film look, bright late-morning sun from the upper right, rich detail, soft glow, vivid but not neon. Happy, calm, stunning and inspiring; cool for boys 9 to 14; never babyish, never dark or scary. Kingdom colours: sky blue, meadow green, warm stone, sunrise gold, waterfall white. City colours: gold, cream, sky blue, soft rose, sparkle white.
+
+**Rules:** the same as YCB-2: no words, letters, numbers or symbols anywhere (coins, books, banners, cups, calendars and papers stay blank); no people; no logos; no crosses or X shapes or other religions' symbols (window bars single panes only, railings plain vertical bars only); no domes, spires or towers that look like a house of worship; no fantasy creatures. TRANSPARENT pictures are PNG with a truly transparent background and soft natural edges. Full-screen places: keep the middle third calm and fairly open (the app puts its cards there).
+
+**Kingdom places (one full screen each)**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 1 | `ycw-k-vault.jpg` | The Treasury: his bank (My money, paychecks, deposits, the $1,000 Club) | 3200 x 1800, JPG | Inside the mountain, a bright, warm, round treasury room carved from golden stone, lit by sunlight through a tall single-pane window with a waterfall view. A huge round vault door of polished gold and steel stands wide open on the left. Neat stacks of plain gold coins (blank faces) glow on carved stone shelves; a few small treasure chests with the lids open. Safe, proud, calm, never dark. |
+| 2 | `ycw-k-vault-door.png` | The vault door alone (it swings open as he arrives) | 3200 x 1800, TRANSPARENT | EXACTLY the same vault door, angle and size as in ycw-k-vault.jpg, but CLOSED, filling the doorway: thick round polished gold and steel door with a big plain spoked wheel handle (spokes not forming a cross: use five or six spokes) and heavy round bolts. Everything else transparent. |
+| 3 | `ycw-k-trophies.jpg` | The Trophy Hall: his trophies, ranks and streaks | 3200 x 1800, JPG | A tall, bright gallery of warm timber and stone with sunlight streaming in, rows of glowing stone alcoves and pedestals, some holding shining golden cups, medals on ribbons and crystal stars (all blank, no writing), many still empty and softly lit, waiting to be earned. Blank banners hang from the beams. |
+| 4 | `ycw-k-room.jpg` | His room: My profile (his picture, his lessons, his skill tree, his week) | 3200 x 1800, JPG | A cozy, tidy boy's room in a mountain timber chalet: a big single-pane window with a sunny mountain and waterfall view, a neatly made bed with a warm blanket, a wooden desk with a lamp, shelves with blank-spined books, a globe, a backpack and a hiking jacket on a hook, an empty picture frame on the wall. Warm, personal, calm. |
+| 5 | `ycw-k-post.jpg` | The Message Tower: Talk to my Rebbe | 3200 x 1800, JPG | A sunny round stone room at the top of a small tower: a wooden writing desk with blank paper and a pen, a wall of wooden pigeonholes holding sealed envelopes, two white doves on the open single-pane window sill, a mountain view outside. Quiet, warm, safe. |
+| 6 | `ycw-k-study.jpg` | My work: his plan for today | 3200 x 1800, JPG | A bright study loft with a big wooden table, a cork board with a few blank papers pinned to it, a neat stack of blank books, a crystal jar of pencils, a small potted plant, and a wide single-pane window over the valley with waterfalls. Focused, fresh, calm. |
+
+**City places (one full screen each)**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 7 | `ycw-c-music.jpg` | The Music Pavilion: his music | 3200 x 1800, JPG | An open-air golden bandstand on a floating cloud platform, with a violin, a guitar, a drum set, a keyboard and a trumpet resting on stands, soft golden lights and a few floating music notes made of light. No people. Joyful and calm. |
+
+**Layers for flying into a place**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 8 | `ycw-k-arch.png` | The camera flies through a stone arch into each kingdom place | 3200 x 1800, TRANSPARENT | A grand round-topped archway of warm stone with a gold keystone and climbing flowers, seen straight on and filling the whole picture; the opening in the middle (about two thirds of the picture) is completely transparent. |
+| 9 | `ycw-c-arch.png` | The camera flies through a golden arch into each city place | 3200 x 1800, TRANSPARENT | The same shape as #8 but made of glowing gold and cream with small sky-blue gems and soft cloud swirls at its feet; the opening in the middle is completely transparent. |
+| 10 | `ycw-fx-petals.png` | Petals drifting across the screen (gentle movement) | 3200 x 1800, TRANSPARENT | A light scatter of soft pink and white blossom petals and a few small green leaves floating in the air, spread loosely across the whole picture, mostly empty space. |
+| 11 | `ycw-fx-glints.png` | Sparkles drifting in the city | 3200 x 1800, TRANSPARENT | A light scatter of tiny golden sparkles and soft glowing light motes spread loosely across the whole picture, mostly empty space. |
+
+**Pieces for his places**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 12 | `ycw-k-passport.png` | His Torah Tracks passport (the book opens) | 1600 x 1200, TRANSPARENT | An open adventure passport book with a deep-blue leather cover and gold corners, both pages blank cream paper, seen from slightly above. |
+| 13 | `ycw-k-seal.png` | A stamp in his passport (one per track done) | 800 x 800, TRANSPARENT | A round raised gold seal with a simple engraved mountain and sun in the middle and a plain ring around it. No letters or numbers. |
+| 14 | `ycw-k-chest.png` | His money growing (bank) | 1200 x 1200, TRANSPARENT | A small sturdy wooden treasure chest with gold bands, lid open, filled with plain gold coins (blank faces) and a soft glow. |
+| 15 | `ycw-k-cup.png` | One trophy | 1024 x 1024, TRANSPARENT | A shining golden trophy cup with two handles on a small stone base, completely blank. |
+
+**Icons (glossy 3D, matching the YCB-1 and YCB-2 icon sets)**
+
+| # | File | Screen | Size | Prompt |
+|---|---|---|---|---|
+| 16 | `ycw-ic-bank.png` | My money (the Treasury) | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a small round golden vault door, slightly open, with a gold coin peeking out. |
+| 17 | `ycw-ic-trophy.png` | My trophies | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a golden trophy cup with a small glowing star above it. |
+| 18 | `ycw-ic-passport.png` | My passport | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a deep-blue passport book with a round gold seal on the cover (no writing). |
+| 19 | `ycw-ic-kodesh.png` | Kodesh Quest | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a golden compass resting on an open sefer with blank pages. |
+| 20 | `ycw-ic-week.png` | My week | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a small wooden calendar board with seven blank squares, one glowing gold. |
+| 21 | `ycw-ic-skills.png` | Skill tree | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a small round tree with golden glowing leaves in a stone pot. |
+| 22 | `ycw-ic-lessons.png` | All my lessons | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a neat stack of three books with blank colourful covers and a gold ribbon bookmark. |
+| 23 | `ycw-ic-arena.png` | Chavrusa Arena | 1024 x 1024, TRANSPARENT | A glossy 3D icon: a small round golden arena with two glowing podiums facing each other. |
