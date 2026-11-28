@@ -152,8 +152,9 @@ P.spotdiff = async (pg, shot, log) => {
 P.story10 = P.story;
 /* My hard letters (Unit 10): pop every bubble with the letter; one wrong bubble first */
 P.practice = async (pg, shot, log) => {
-  await pg.waitForSelector('body[data-pop-ready]', { timeout: 180000 }); await shot('1-start'); let wrong = false, n = 0;
+  await pg.waitForSelector('body[data-pop-ready]', { timeout: 180000 }); await shot('1-start'); let wrong = false, n = 0; const t0 = Date.now();
   await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready) return false;
+    if (!wrong && !i.others.length && Date.now() - t0 < 20000) return false;   /* first wait for a wrong bubble to float up (the calm bubbles rise slowly), so the miss is really tried */
     if (!wrong && i.others.length) { wrong = true; await pg.mouse.click(...i.others[0]); await pg.waitForTimeout(500); await shot('3-wrong');
       log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('That is'), 15000)); return true; }
     if (!i.targets.length) return false; await pg.mouse.click(...i.targets[0]); if (++n === 4) await shot('2-middle'); await pg.waitForTimeout(250); return true; });
