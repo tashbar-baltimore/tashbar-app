@@ -26,6 +26,13 @@ module.exports = async function (browser) {
   }
   /* the "no corners" card must not look like a circle (review 1): dot cards are rounded dice cards, never a disc */
   if (/CircleGeometry\(0\.37/.test(fs.readFileSync(path.join(R, 'v2', 'app', 'k-shapes', 'kit.js'), 'utf8'))) bad('the dot cards on the corner boxes are round discs again (an empty one looks like a circle label)');
+  /* review 5 (round 5 of the clarity pass): a lit corner or side must stand out from the piece. Gold balls on a yellow hexagon and green bars on a green square could not be seen */
+  { const K = fs.readFileSync(path.join(R, 'v2', 'app', 'k-shapes', 'kit.js'), 'utf8');
+    if (!/m\.material = cMat\(o\)/.test(K) || !/const cMat = o =>/.test(K)) bad('lit corners no longer pick a colour that stands out from the piece (kit.js cMat): gold on a yellow hexagon cannot be seen');
+    if (!/const pick = \(hex, alt\) => \(near\(o\.color, hex\)/.test(K)) bad('lit sides no longer avoid the piece\'s own colour (kit.js sideSteps pick): green bars on a green square cannot be seen');
+    /* rule 8: a label on a box must never look like one more thing to count */
+    const BS = fs.readFileSync(path.join(R, 'v2', 'app', 'k-shapes', 'big-and-small.html'), 'utf8');
+    if (/paint: '(?!none)/.test(BS)) bad('big-and-small has a picture painted on a box again (it looked like one more thing to count; the boxes themselves are big and small)'); }
   const dist = fs.mkdtempSync(path.join(os.tmpdir(), 'v2kclar-'));
   try { cp.execFileSync(process.execPath, [path.join(R, 'v2', 'build.js')], { env: Object.assign({}, process.env, { V2_OUT: dist }), stdio: 'pipe' }); }
   catch (e) { bad('build failed: ' + String(e.stderr || e).slice(0, 200)); return out; }

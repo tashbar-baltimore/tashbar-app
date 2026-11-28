@@ -277,3 +277,16 @@ Choices made in round 5:
 - Fix the pattern mistake keeps "Is it a good pattern?" (answered with the tick). "Is Ari right?" would make him answer about a person's words, which is harder for a 5-year-old.
 - Heavy and light: still no glow before he answers (it would give the answer away). The pan strings still go past the edge of a big balloon: moving them made the scale look broken.
 - Phone train rows with 4 cars (two green, two blue) are about 52 px per car; the drop spot he aims at takes a finger anywhere near it.
+
+**Round 5 scores (two fresh reviewers, new pictures, 2026-11-28 midday):** Where is it? 2, Fix the pattern 4, Pattern train 4, Sort by color 4, Big and small 3, Line them up 3, Heavy and light 4, Shape party 1 4, Shape party 2 4, Shape party 3 4, Graduation day 4.
+
+**Round 6 fixes (after the round-5 scores):**
+| What the reviewer saw (rule) | What changed |
+|---|---|
+| Where is it?: "behind" still hid almost all of the ball behind the leg, so the help hand pointed at nothing (7, 16) | The ball sits farther out: half of it clearly peeks out past the leg, at Chromebook and phone size. The help hand touches the ball's bottom so it does not cover it |
+| Where is it?: the first reminder was words only (16) | The first reminder also flashes the gold ring on the right place |
+| Big and small: while counting, the purple circle labels looked like one more thing to count, and the two count rows crowded together (one ball half hidden) (8, 12) | No labels on the boxes (the boxes themselves are big and small; the hint says "Look at the boxes. One box is big. One box is small."). Each box's things go back in before the next box is counted, so only one row is out at a time |
+| Line them up mistake: the gold start ball stayed behind when the red scarf slid to the line, so it marked the wrong end (7) | Each gold ball rides with its scarf |
+| Shape party 1/2/3, Graduation: gold corner balls on a yellow hexagon, and green side bars on a green square, could hardly be seen (4, 5) | A lit corner on a yellow or orange piece is deep pink; a lit side never has the piece's own colour |
+| Graduation: the only triangle was a needle; its bottom corners were hard to see (4, 13) | A normal tall triangle |
+| (tests) | k-shapes-clarity: lit corners and sides must pick a colour that stands out from the piece; big-and-small boxes carry no painted labels |

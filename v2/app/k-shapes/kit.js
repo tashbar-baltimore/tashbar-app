@@ -247,6 +247,10 @@ export function startGame(cfg) {
   const DEPTH = 0.34, BEV = 0.09, shapes = [];
   const cornerGeo = new THREE.SphereGeometry(0.11, 24, 16);
   const cornerMat = new THREE.MeshStandardMaterial({ color: '#FFD23F', emissive: '#FFB000', emissiveIntensity: 1.4, roughness: 0.3 });
+  const cornerAlt = new THREE.MeshStandardMaterial({ color: '#E8336B', emissive: '#C2185B', emissiveIntensity: 0.9, roughness: 0.3 });   /* review 5: on a yellow or orange piece a gold ball almost disappears, so lit corners there are deep pink */
+  const hueOf = c => { if (!c) return null; const k = new THREE.Color(c), h = {}; k.getHSL(h); return h; };
+  const near = (c, hex) => { const a = hueOf(c), b = hueOf(hex); if (!a || !b || a.s < 0.3) return false; const dh = Math.min(Math.abs(a.h - b.h), 1 - Math.abs(a.h - b.h)); return dh < 0.07; };   /* two colours a child would call the same */
+  const cMat = o => (o && near(o.color, '#FFC21A') ? cornerAlt : cornerMat);   /* the lit-corner colour that stands out on this piece */
   const cornerFaint = new THREE.MeshStandardMaterial({ color: '#1F6FEB', emissive: '#1F6FEB', emissiveIntensity: 0.45, roughness: 0.35 });   /* 'tap me' dots: solid blue, easy to see on any shape; a tapped one turns gold */
   function solidGeo(kind) {
     if (kind === 'sphere') return new THREE.SphereGeometry(0.62, 48, 32);
@@ -457,9 +461,9 @@ export function startGame(cfg) {
   const NUMS = ['One.', 'Two.', 'Three.', 'Four.', 'Five.', 'Six.', 'Seven.', 'Eight.'], NUMX = ['One!', 'Two!', 'Three!', 'Four!', 'Five!', 'Six!', 'Seven!', 'Eight!'];
   const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
   const cap = s => s[0].toUpperCase() + s.slice(1);
-  function lightCorner(o, i) { if (i === 0) shapes.forEach(x => { if (x !== o && x.marks.length && x.marks.some(q => q.scale.x > 0 && q.material === cornerMat)) clearCorners(x); });   /* one thing at a time: only the shape being counted has lit corners */
-    plink(); const m = o.marks[i]; m.material = cornerMat; return tween(260, k => m.scale.setScalar(k * 1.45)); }
-  function clearCorners(o) { o.marks.forEach(m => { m.scale.setScalar(0); m.material = cornerMat; }); }
+  function lightCorner(o, i) { if (i === 0) shapes.forEach(x => { if (x !== o && x.marks.length && x.marks.some(q => q.scale.x > 0 && q.material !== cornerFaint)) clearCorners(x); });   /* one thing at a time: only the shape being counted has lit corners */
+    plink(); const m = o.marks[i]; m.material = cMat(o); return tween(260, k => m.scale.setScalar(k * 1.45)); }
+  function clearCorners(o) { o.marks.forEach(m => { m.scale.setScalar(0); m.material = cMat(o); }); }
   let cornerTap = null, shapeTap = null;
   function tapCorners(o) {   /* HE counts: faint dots on the corners; each tap lights one and the voice counts */
     return new Promise(done => {
@@ -495,7 +499,8 @@ export function startGame(cfg) {
   function sideSteps(o) {
     const c = o.corners, n = c.length; if (!n) return [];
     const len = c.map((a, i) => { const b = c[(i + 1) % n]; return Math.hypot(b[0] - a[0], b[1] - a[1]); }), lo = Math.min(...len), hi = Math.max(...len), same = hi - lo < 0.05 * hi;
-    const col = i => same ? '#12A766' : (len[i] > (lo + hi) / 2 ? '#1F6FEB' : '#F2A900');
+    const pick = (hex, alt) => (near(o.color, hex) ? alt : hex);   /* review 5: a lit side never has the piece's own colour (green on a green square could not be seen) */
+    const col = i => same ? pick('#12A766', '#7C4DFF') : (len[i] > (lo + hi) / 2 ? pick('#1F6FEB', '#7C4DFF') : pick('#F2A900', '#E8336B'));
     const st = [];
     for (let i = 0; i < n; i++) st.push(() => traceSide(o, i, col(i)), i < n - 1 ? NUMS[i] : cap(WORDS[n]) + ' sides!');
     st.push(() => { tracer.visible = false; }, same ? 'All the sides are the same.' : (n === 4 ? 'Two long sides. Two short sides.' : 'Some long, some short.'), () => wait(400), () => clearBars(o));
@@ -669,7 +674,7 @@ export function startGame(cfg) {
       steps.push(() => { clearCorners(o); return wait(300); }, 'Your turn! Tap each corner and count.', () => { setName('tap'); task = ['Tap each corner.']; return tapCorners(o); },
         () => { setName('learn'); task = null; }, cap(WORDS[n]) + ' corners! Great counting!', () => clearCorners(o), ...(L.rule || []));
     }
-    steps.push(() => { chant(true); o.marks.forEach(m => { m.material = cornerMat; m.scale.setScalar(1.15); }); }, 'Clap it with me! Tap the hands.');
+    steps.push(() => { chant(true); o.marks.forEach(m => { m.material = cMat(o); m.scale.setScalar(1.15); }); }, 'Clap it with me! Tap the hands.');
     L.chant.forEach(c => steps.push(c[0], () => claps(o, c[1], c[2])));
     steps.push(() => { chant(false); burst(o.g.position, 30); chime(true); clearCorners(o); clearBars(o); return cheer(mendy); });
     if (L.noTurn) { steps.push(() => glowOutline(o, false)); return steps; }
@@ -1163,7 +1168,7 @@ export function startGame(cfg) {
   function zoneWorld(z) { const v = ZONES[z], dz = v[2] * (tall ? 0.85 : 1);
     if (z === 'behind') {   /* behind (review 2): just behind the left block on the line from his eye, moved over so about half of it peeks out. The block hides part of it, so it is clearly BEHIND: never next to the end, never seen above the bridge like "on top" */
       const c = viewFor(tall ? 'tall' : 'wide').pos, qz = POS_Z(); let dx = -c.x, dzz = qz - c.z; const n = Math.hypot(dx, dzz) || 1; dx /= n; dzz /= n;   /* review 3: behind the MIDDLE of the bridge, in the gap between its legs, so the plank hides its top (beside the left block it read as next to) */
-      const lx = 1.05, d2 = 1.25, side = 0.42;   /* review 4: in the gap it read as UNDER. Now behind the near (right) leg on the line from his eye, moved right so about half peeks out: a solid leg hides part of it */
+      const lx = 1.05, d2 = 1.25, side = tall ? 0.86 : 0.98;   /* review 5: at 0.42 the leg hid nearly all of it; now half clearly peeks out past the leg. review 4: in the gap it read as UNDER. Now behind the near (right) leg on the line from his eye, moved right so about half peeks out: a solid leg hides part of it */
       return new THREE.Vector3(lx + dx * d2 - dzz * side, 0.42, qz + dzz * d2 + dx * side); }
     return new THREE.Vector3(v[0] * (tall ? 0.8 : 1), v[1], dz + POS_Z()); }
   function zoneHit(cx, cy) { let best = null, bd = 1e9; Object.keys(ZONES).forEach(z => { const p = toScreen(zoneWorld(z)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = z; } }); return bd < Math.max(110, innerWidth * 0.1) ? best : null; }
@@ -1180,7 +1185,7 @@ export function startGame(cfg) {
     return new Promise(resolve => {
       setName(bonus ? 'bonus' : 'find'); dots(2); setPosRound(R); allow = true;
       const ask = ['Put the ' + posWord(R.k) + ' ' + ZWORD[R.where] + ' the bridge.']; task = ask;
-      idleFn = n => { W.reminders = (W.reminders || 0) + 1; play(n === 1 ? [...ask, () => pointAt(posPiece)] : [cfg.hint2, () => { showRing(R.where, true); return wait(1500); }, ...ask]); };
+      idleFn = n => { W.reminders = (W.reminders || 0) + 1; play(n === 1 ? [...ask, () => pointAt(posPiece), () => { showRing(R.where, true); return wait(1200); }, () => { showRing(R.where, false); }] :   /* review 5: the first reminder also SHOWS the place (the ring flashes), not words only */ [cfg.hint2, () => { showRing(R.where, true); return wait(1500); }, ...ask]); };
       idle();
       onDrop = (o, z) => {
         idle();
@@ -1674,7 +1679,7 @@ export function startGame(cfg) {
     const per = n <= cap ? n : Math.ceil(n / 2); return { per, rows: n <= cap ? 1 : 2, st: per > 1 ? Math.min(0.5, w / (per - 1)) : 0 };
   }
   function countBoxes() {   /* count each box together, then he taps the box with the most */
-    setName('counting'); stopIdle(); const tags = [], bigTags = [], countBack = [];
+    setName('counting'); stopIdle(); const tags = [], bigTags = [], countBack = [], rowTags = [];
     const counts = boxes.map((b, i) => shapes.filter(o => o.inBox && o.inBoxAt === i));
     const steps = ["Now let's count each box!"];
     counts.forEach((items, i) => { const word = cfg.boxes[i].word;
@@ -1685,10 +1690,13 @@ export function startGame(cfg) {
           const sz = s0 * f, at = new THREE.Vector3(bx.x - sp * (n - 1) / 2 + sp * j, 0.62 * sz + 0.12, bx.z + BX.d * bs / 2 + 0.62 * wid * f + 0.3);
           countBack.push([o, o.g.position.clone(), s0]); o.inBox = false; const keepBusy = o.busy; o.busy = true;
           if (f !== 1) tween(300, k => o.g.scale.setScalar(s0 + (sz - s0) * k));
-          return moveTo(o, at, 380, 0.5).then(() => { o.busy = keepBusy; o.inBox = true; o.g.rotation.set(0, 0, 0); tags.push(numTag(j + 1, at.clone().add(new THREE.Vector3(0, 0.62 * sz + 0.42, 0)))); }); }
+          return moveTo(o, at, 380, 0.5).then(() => { o.busy = keepBusy; o.inBox = true; o.g.rotation.set(0, 0, 0); const t = numTag(j + 1, at.clone().add(new THREE.Vector3(0, 0.62 * sz + 0.42, 0))); tags.push(t); (rowTags[i] = rowTags[i] || []).push(t); }); }
         const y0 = o.g.position.y; return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
       if (cfg.countTags) steps.push(() => { const bx = boxAt(i); const bt = numTag(items.length, new THREE.Vector3(bx.x, 2.45 + (tagRows(i, items.length).rows - 1) * 0.5, bx.z + 0.3), true); bigTags[i] = bt; tags.push(bt); pop(); });   /* the last number says how many: one big number for the whole box (K-CLARITY-RULES 8, 12) */
-      steps.push(cap(WORDS[items.length]) + ' ' + word + '!'); });
+      steps.push(cap(WORDS[items.length]) + ' ' + word + '!');
+      if (cfg.countTags && i < counts.length - 1) steps.push(() => wait(500), () => {   /* review 5: this box's things go back in before the next box is counted, so two count rows never crowd or hide each other (rule 8) */
+        (rowTags[i] || []).forEach(t => scene.remove(t)); rowTags[i] = [];
+        return Promise.all(countBack.filter(c => items.includes(c[0])).map(([o, p, s0]) => { const s1 = o.g.scale.x, b0 = o.busy; o.busy = true; if (s1 !== s0) tween(300, k => o.g.scale.setScalar(s1 + (s0 - s1) * k)); return moveTo(o, p, 360, 0.4).then(() => { o.busy = b0; }); })); }); });
     const most = counts.reduce((b, c, i) => (c.length > counts[b].length ? i : b), 0);
     return play(steps).then(ok => { if (!ok) return false; return new Promise(done => {
       setName('count'); W.countAnswer = most; task = [cfg.mostAsk];
@@ -1759,13 +1767,14 @@ export function startGame(cfg) {
     const outline = o => { const pts = shapeOf(o.k).s.getSpacedPoints(90).map(p => new THREE.Vector3(p.x, p.y, 0)); const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 160, 0.045, 8, true), cornerMat); m.position.z = DEPTH / 2 + BEV + 0.06; o.mesh.add(m); return m; };
     const measureSlide = M.measure ? () => { const off = MS.items.filter(o => Math.abs(o.g.position.x - o.len / 2 - LINE_X()) > 0.08); if (!off.length) return wait(200);   /* review 4: the scarf that does not start on the line slides to it, stays, and slides back, so he SEES which is really longer */
             const from = off.map(o => o.g.position.x), to = off.map(o => LINE_X() + o.len / 2); plink();
-            return tween(900, k => off.forEach((o, i) => { o.g.position.x = from[i] + (to[i] - from[i]) * ease(k); })).then(() => (SHOT ? Promise.resolve() : wait(1400).then(() => tween(700, k => off.forEach((o, i) => { o.g.position.x = to[i] + (from[i] - to[i]) * ease(k); }))))); } : null;   /* review 4: after "Line them up first!" the scarf that does not start on the line slides to it, stays, and slides back (pictures: it stays) */
+            const endOf = o => { const m = MS_ENDS && MS_ENDS[MS.items.indexOf(o)]; if (m) m.position.x = o.g.position.x - o.len / 2 - 0.1; };   /* review 5: each gold start ball rides with its scarf, so it always marks where that scarf starts */
+            return tween(900, k => off.forEach((o, i) => { o.g.position.x = from[i] + (to[i] - from[i]) * ease(k); endOf(o); })).then(() => (SHOT ? Promise.resolve() : wait(1400).then(() => tween(700, k => off.forEach((o, i) => { o.g.position.x = to[i] + (from[i] - to[i]) * ease(k); endOf(o); }))))); } : null;   /* review 4: after "Line them up first!" the scarf that does not start on the line slides to it, stays, and slides back (pictures: it stays) */
     const explain = cfg.sortBy ? [] : M.thin ? [() => tween(900, k => { d.turn.rotation.y = 0.45 + ease(k) * 0.8; })] : M.sides && d.marks ? ['Let us look at the sides.', ...keep(sideSteps(d))] : d.marks.length ? ['Let us count the corners.', ...d.marks.flatMap((m, i) => [() => lightCorner(d, i), NUMS[i]])]
       : (d.mesh && KINDS[d.k] && !KINDS[d.k].solid && !M.thin) ? ['Look at its sides.', () => { if (curvyLine) return wait(600); curvyLine = outline(d); plink(); const g = curvyLine.geometry, N = g.index ? g.index.count : g.attributes.position.count, path = g.parameters.path; d.mesh.add(tracer); tracer.visible = true;   /* the light runs all the way round, so he follows every curvy side (review 3) */
         return tween(2000, k => { g.setDrawRange(0, Math.floor(N * k / 3) * 3); const q = path.getPointAt(Math.min(1, k)); tracer.position.set(q.x, q.y, DEPTH / 2 + BEV + 0.07); }).then(() => { g.setDrawRange(0, Infinity); tracer.visible = false; }); }]   /* a shape with no corners: its outline glows, so the curvy sides are seen */
       : M.balance ? [() => { const ws = BS.items.map(o => o.w), h = BS.items[ws.indexOf(Math.max(...ws))]; showHandAt(toScreen(h.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.5, 0)))); return wait(500); }]   /* the hand on the side that went down */
       : M.thin ? [() => tween(900, k => { d.turn.rotation.y = 0.45 + ease(k) * 0.8; })]   /* flat or solid: the flat piece turns, so he sees it is thin */
-      : M.where ? [() => { showHandAt(toScreen(d.g.position.clone().add(new THREE.Vector3(0, 0.3, 0)))); return (SHOT ? new Promise(r => setTimeout(r, 900)) : wait(900)); }, () => { showRing('front', true); return wait(400); }]   /* review 4: the hand on the ball first (it is behind), then the ring on the empty "in front" place */   /* where is it: the gold ring on the empty "in front" place */
+      : M.where ? [() => { showHandAt(toScreen(d.g.position.clone().add(new THREE.Vector3(0.1, -0.32, 0))));   /* review 5: the fingertip touches the ball's bottom, so the hand does not cover the ball */ return (SHOT ? new Promise(r => setTimeout(r, 900)) : wait(900)); }, () => { showRing('front', true); return wait(400); }]   /* review 4: the hand on the ball first (it is behind), then the ring on the empty "in front" place */   /* where is it: the gold ring on the empty "in front" place */
       : M.measure && MS ? [() => { endMarks(false); MS_ENDS = MS.items.map(o => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.22, 20, 14), new THREE.MeshBasicMaterial({ color: '#F5B400', toneMapped: false })); m.position.set(o.g.position.x - o.len / 2 - 0.1, ROD_Y + 0.3, o.g.position.z); scene.add(m); return m; }); if (MS_LINE) MS_LINE.material.color.set('#F5B400'); return wait(500); }]   /* measuring: gold balls on the two starting ends, the start line gold */
       : [];
     if (M.straighten && p[1]) explain.push(() => tween(900, k => { d.turn.rotation.z = p[1] * (1 - ease(k)); }).then(() => wait(800)).then(() => tween(900, k => { d.turn.rotation.z = p[1] * ease(k); })));   /* turned square: it turns upright and back, the same four sides (review 3) */
