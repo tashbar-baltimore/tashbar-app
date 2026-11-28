@@ -301,6 +301,74 @@
       {type:'sort', q:'Toy drive endings.', bins:['An implication','A summary list','A new topic'], cards:[['More families had a brighter Chanukah.',0],['140 toys, 32 families, a full lobby.',1],['The lobby needs new chairs.',2],['The drive can plan for more next year.',0]],
         say:'Implication, summary list, or a new topic?', how:'Meaning, repeating, or leaving the topic?'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
+  var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'whatswrong', pic: '🗂️', t: 'Akiva’s plan: the log, then Rabbi Rosen, then the fact sheet.',
+      q: 'What is wrong with this plan?', o: ['The reader must join the sources himself', 'It has too few paragraphs', 'Nothing is wrong'],
+      pay: 'Three *summaries*! Group details by *idea*, so the sources work *together*.' };
+    Y[1].say = '*Big idea*, one detail, or a new topic?';
+    Y[2].say = 'Match each detail to its *category*.';
+    b.learn = [
+      { t: 'Many sources, but *one big idea*.', act: Y[1] },
+      { t: 'Group details by *category*, not by *source*.', act: Y[2] },
+      { who: { q: 'Yoni plans his toy drive piece. Which plan is *better*?', o: [['Shloime', 'The tally, then the chart, then Rabbi Rosen'], ['Yehuda', 'The toys, then the helpers, then the families']], a: 1,
+        why: 'Shloime goes *source by source*. Yehuda groups by *category*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa why *not* by source.', 'Source by source makes three summaries, and the reader must join them. Group by idea, so the sources work together in every paragraph.')];
+    b.play = [D[0], Y[4], Y[3],
+      { type: 'order', q: 'Gavriel’s library piece. From the broadest to the narrowest.', steps: ['Big idea: the library is full of readers.', 'Category: who comes.', 'Detail: about 60 boys come each day.'], extra: ['New topic: the gym needs mats.'],
+        say: 'Order them from *broadest* to narrowest.', how: 'The *big idea* covers the whole piece. A *category* covers one paragraph. A *detail* is one fact.' }];
+    b.done = 'You plan one piece from many sources: *one big idea*, grouped by *category*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L09.04']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'oddone', pic: '🎯', t: 'Point: the bike rack is too small. Here are three facts.',
+      q: 'Which fact does NOT belong?', o: ['40 bikes, only 12 spaces', 'The rack is painted green', 'Bikes chained to the fence'],
+      pay: '*The rack is green*: true, but *off the point*. Keep only *telling* facts.' };
+    D[0].say = 'Match each *label* to what it means.';
+    Y[2].say = '*Telling*, weak, or off the point? Sort each.';
+    b.learn = [
+      { t: 'A fact is *telling*, *weak*, or *off the point*.', act: D[0] },
+      { t: 'Ask two questions: *this point*? *Clear*?', act: Y[2] },
+      { who: { q: 'Point: the lunch line is too slow. Which fact *tells*?', o: [['Avi', '"The line feels long."'], ['Ari', '"It took 20 minutes, ten days running."']], a: 1,
+        why: 'Avi’s fact is true but *weak*. Ari’s has a *number*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa your two questions.', 'Does it prove THIS point? Is it clear, with a number or an exact example? Keep two telling facts from two sources.')];
+    b.play = [D[1], Y[3], Y[1], Y[4]];
+    b.done = 'You pick *telling* facts and cut the *weak* ones.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.03']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'story', pic: '🧵', t: 'Akiva’s draft says "also" four times. Eli frowns at it.',
+      q: 'What will Eli tell him?', o: ['Show each link’s job', 'Add a fifth "also"', 'Cut two sources'],
+      pay: 'Each link has a *job*: *same*, *different*, or *more*.' };
+    Y[1].say = 'Match each pair of sources to its *transition*.';
+    D[0].say = 'Build a link for a fact that *pulls the other way*.';
+    b.learn = [
+      { t: 'Each link has a *job*: same, different, or more.', act: Y[1] },
+      { t: 'Pick the word by its *job* first.', act: D[0] },
+      { who: { q: 'The log counts 60 boys. Mr. Adler counts about 60 too.', o: [['Mendy', '"Similarly,"'], ['Yanky', '"In contrast,"']], a: 0,
+        why: 'Both give the *same fact*. "*Similarly*" shows they agree.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three jobs.', 'Same fact: Similarly, or Both sources agree that. Different: However, or In contrast. A new fact on the point: Building on this.')];
+    b.play = [D[1], Y[0], Y[2], Y[3], Y[4]];
+    b.done = 'Your transitions show each source’s *job*: same, different, or *more*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.04']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'predict', pic: '💡', t: 'Akiva ends his piece: "60 boys, 30 seats, history books."',
+      q: 'What will the reader ask?', o: ['"So what?"', '"Tell me more numbers."', '"Who is Akiva?"'],
+      pay: '"*So what?*" An ending must say what the facts *mean*.' };
+    Y[0].say = 'Match each *ending* to its name.';
+    Y[2].say = 'Build the conclusion in *three moves*. Skip the wild guess.';
+    b.learn = [
+      { t: 'An ending can *list*, *mean*, or *guess wildly*.', act: Y[0] },
+      { t: 'Three moves: *big idea*, *this means*, *this matters*.', act: Y[2] },
+      { who: { q: 'Bike rack piece. Which ending says what it *means*?', o: [['Shaya', '"40 bikes, 12 spaces, a full fence."'], ['Dov', '"Some boys may stop riding to school."']], a: 1,
+        why: 'Shaya just *lists* facts. Dov says what they *mean*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three moves.', 'Say the big idea in new words. Then "This means…". Then "This matters because…". Stay close to the facts.')];
+    b.play = [D[0], D[1], Y[1], Y[3], Y[4]];
+    b.done = 'You end with what the facts *mean* and why it *matters*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.05']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>

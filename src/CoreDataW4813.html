@@ -370,6 +370,91 @@
       {type:'sort', bins:['Adds information','Decoration only'], cards:[['a chart of the trash count',0],['a smiling fish',1],['a diagram of the wheel’s parts',0],['a border of stars',1],['a table: wheel and boat',0]],
         say:'Does each graphic add information?', how:'What would the reader learn from it?'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
+  var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'secret', pic: '🧩', t: 'Every question hides a clue. "What kinds of trash float?"',
+      q: 'Which words crack the code?', o: ['"What kinds"', '"trash"', '"float"'],
+      pay: '"*What kinds*" means *classification*: one paragraph for each kind.' };
+    D[0].say = 'Match each *question clue* to its pattern.';
+    Y[1].say = 'Sort each question by the *pattern* that fits.';
+    b.learn = [
+      { t: 'The question’s *first words* pick the *pattern*.', act: D[0] },
+      { t: 'Now *sort* real questions by pattern.', act: Y[1] },
+      { who: { q: 'Question: "Why does rain bring trash?" Which *plan* fits?', o: [['Zevi', 'Bottles, then cups, then bags'], ['Hillel', 'The cause, then the effect']], a: 1,
+        why: '"*Why*" asks for *cause and effect*, not kinds.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the four clues.', 'What is: definition. What kinds: classification. How alike and different: compare and contrast. Why: cause and effect.')];
+    b.play = [D[1],
+      { type: 'tiles', q: 'Question: "What kinds of jobs keep the harbor clean?"', w: ['The question asks', '“what kinds,”', 'so I will use', 'classification.'], extra: ['definition.'],
+        say: 'Build the *planning sentence*.', how: 'The *clue words* first. Then the *pattern* they ask for.' },
+      Y[2], Y[4]];
+    b.done = 'You read the *clue words* and pick the *pattern* that fits.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L07.07']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'guess', pic: '🗺️', t: 'Thesis: "A trash wheel has a wheel, a belt and a dumpster."',
+      q: 'Guess: how many body paragraphs will follow?', o: ['2', '3', '5'],
+      pay: '*Three*! A good thesis *previews* each part, in order.' };
+    Y[0].say = 'Match each *label* to a thesis.';
+    D[1].say = 'Preview the parts in the *same order*.';
+    b.learn = [
+      { t: 'A thesis can *preview*, *announce*, or give an *opinion*.', act: Y[0] },
+      { t: 'Preview the parts in the *same order*.', act: D[1] },
+      { who: { q: 'Which is a real *thesis*?', o: [['Moshe', '"In this essay I will tell about booms."'], ['Gedalya', '"A boom has a float and a curtain."']], a: 1,
+        why: 'Moshe *announces*. Gedalya *previews* the parts.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa what a thesis needs.', 'The topic, and its main parts in the order of the body paragraphs. No "I will", and no opinion like "the best".')];
+    b.play = [D[0], Y[1], Y[2], Y[3]];
+    b.done = 'Your thesis is a *map*: the topic and its *parts*, in order.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L07.08']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'challenge', pic: '🧱', t: 'Point: "The belt lifts trash." Three sentences try to support it.',
+      q: 'Which one adds nothing new?', o: ['"The belt really does lift trash."', '"Dripping bottles ride up the belt."', '"For example, one bottle rode it up."'],
+      pay: 'Saying it *again* proves nothing. Use different *kinds* of support.' };
+    D[0].say = 'Match each *kind* of support to its meaning.';
+    Y[1].say = 'Sort each sentence by its *kind*.';
+    b.learn = [
+      { t: 'Support comes in *kinds*: fact, definition, detail, quote, example.', act: D[0] },
+      { t: 'Name each sentence’s *kind*.', act: Y[1] },
+      { who: { q: 'Point: the barge is huge. Support: 40 feet, 9 tons, 2 cranes.', o: [['Avi', 'Great: three facts'], ['Baruch', 'One kind only: mix in more']], a: 1,
+        why: 'All three are *facts*. Add a *detail* or a *quote*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the five kinds.', 'Fact: a number or date. Definition: a word explained. Concrete detail: what you see or hear. Quote: exact words. Example: one case.')];
+    b.play = [D[1], Y[2], Y[3], Y[4]];
+    b.done = 'You develop a point with *three or more kinds* of support.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.06']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'whatswrong', pic: '🌉', t: 'Paragraph 1: the belt. Paragraph 2 begins: "Also, there is a dumpster."',
+      q: 'What is wrong with that opener?', o: ['It never points back', 'It is too short', 'It has no number'],
+      pay: 'It points only *forward*. A *bridge* points *back* and *forward*.' };
+    Y[0].say = 'Match each *label* to a first sentence.';
+    Y[1].say = 'Which openers *point back*?';
+    b.learn = [
+      { t: 'A good opener is a *bridge*: back and forward.', act: Y[0] },
+      { t: 'Some openers *name* what came before.', act: Y[1] },
+      { who: { q: 'Last: the belt. Next: the dumpster. Which *bridge*?', o: [['Eli', '"Next, a dumpster sits on a barge."'], ['Shmuel', '"After its ride up the belt, the trash drops into a dumpster."']], a: 1,
+        why: 'Eli points only *forward*. Shmuel names the *belt* too.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa how a bridge works.', 'Name the last paragraph’s idea, then the new one: "Once the belt lifts it, the dumpster holds it." "Also," and "Next," only point forward.')];
+    b.play = [D[0], D[1], Y[3], Y[4]];
+    b.done = 'Your paragraphs open with a *bridge*: back, then *forward*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.07']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'compare', pic: '📊', t: 'Two captions sit under the same bar chart.',
+      q: 'Which helps the reader more?', o: ['"Look at this!"', '"Trash picked up in one hour, by kind"'],
+      pay: 'The *second*. A caption says *what it shows*.' };
+    D[0].say = 'Match each *graphic* to its job.';
+    Y[1].say = 'Which *graphic* fits each piece of information?';
+    b.learn = [
+      { t: 'Each graphic has a *job*: chart, table, diagram.', act: D[0] },
+      { t: 'Pick the graphic that *fits* the information.', act: Y[1] },
+      { who: { q: 'Show the trash wheel’s parts, with arrows. Which *graphic*?', o: [['Yitzchok', 'A chart'], ['Nachman', 'A diagram']], a: 1,
+        why: '*Parts* and *steps* go in a *diagram*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three graphics.', 'Chart: which number is biggest. Table: several facts in rows. Diagram: parts or steps with arrows. Every caption says what it shows.')];
+    b.play = [D[1], Y[0], Y[2], Y[4], Y[3]];
+    b.done = 'You pick the graphic that *adds information*, with a caption that *explains* it.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.08']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>

@@ -299,6 +299,75 @@
       {type:'sort', q:'Gavriel’s camera story.', bins:['Earned reflection','Mistake'], cards:[['They teased me. Noticing saved me.',0],['I am good at noticing things.',1],['I hid what I notice. Not anymore.',0],['I should eat more vegetables.',1]],
         say:'Test each ending of Gavriel’s story.', how:'Does it grow out of finding the camera?'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
+  var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'predict', pic: '🌬️', t: 'Shimon builds the sukkah with Zaidy. A gust knocks the mats loose.',
+      q: 'What should happen next in the story?', o: ['Something worse: a wall cracks', 'His sister wants a snack', 'Zaidy fixes it at once'],
+      pay: 'Something *worse*! In a good plot, the *stakes* keep *rising*.' };
+    Y[0].say = 'Match each word to its *job* in a plot.';
+    Y[1].say = 'Which *plan* is each one? Sort it.';
+    b.learn = [
+      { t: '*Stakes* are what he could *lose*.', act: Y[0] },
+      { t: 'The *peak* comes *late*, never too soon.', act: Y[1] },
+      { who: { q: 'Yoni lost his speech. Which next event *raises the stakes*?', o: [['Gedalya', '"The printer is out of ink."'], ['Shalom', '"The hall smells of cake."']], a: 0,
+        why: 'The cake changes *nothing*. No ink makes it *worse*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa how stakes climb.', 'Start with the problem. Each event makes losing worse. Add a ticking clock. Save the peak for last, and do not solve it too soon.')];
+    b.play = [D[0],
+      { type: 'order', q: 'Yoni’s bar mitzvah speech story.', steps: ['Yoni’s speech is missing.', 'The printer at home is broken.', 'Abba’s phone is dead too.', 'The rav calls Yoni’s name.'], extra: ['Yoni’s tie is blue.'],
+        say: 'Order the plot so the *stakes* climb.', how: 'Problem first. Each event makes it *worse*. The *peak* comes last.' },
+      Y[3], Y[2]];
+    b.done = 'You plan a plot whose *stakes* keep rising to a *late peak*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L08.05']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'notice', pic: '🗣️', t: '"Tired? Pass me the rope," Zaidy said.',
+      q: 'What do you notice about Zaidy?', o: ['He dodges the question', 'He is very tired', 'He talks a lot'],
+      pay: 'He *dodges*! How a man *speaks* shows who he *is*.' };
+    D[0].say = 'Match each *dial* to a line from the story.';
+    Y[1].say = 'Who is talking? Listen for each *voice*.';
+    b.learn = [
+      { t: 'Three *dials*: word choice, length, what he *avoids*.', act: D[0] },
+      { t: 'Each character needs his *own voice*.', act: Y[1] },
+      { who: { q: 'Which line *shows* that Mr. Gross is impatient?', o: [['Ari', '"Mr. Gross was impatient."'], ['Yaakov', '"Done? Next," Mr. Gross said.']], a: 1,
+        why: 'Ari *tells* the trait. Yaakov lets us *hear* it.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three dials.', 'Word choice: his own words, like "Nu". Length: long or clipped. What he avoids: he steps around the question. Never name the trait.')];
+    b.play = [D[1], Y[0], Y[2], Y[4]];
+    b.done = 'You show who a character is by *how he talks*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.08']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'compare', pic: '🎯', t: 'Two lines about the same windy moment.',
+      q: 'Which one do you really feel?', o: ['"It was very windy."', '"The mat flew over the fence."'],
+      pay: 'The *mat*! One *telling detail* beats general words.' };
+    Y[3].say = 'Match each *kind* of detail to an example.';
+    D[1].say = 'Build *one* sharp detail.';
+    b.learn = [
+      { t: 'A detail is *telling*, *general*, or *beside the point*.', act: Y[3] },
+      { t: 'Build *one* sharp detail.', act: D[1] },
+      { who: { q: 'Show that Shimon is *nervous*.', o: [['Mordechai', '"I was very, very nervous."'], ['Pesach', '"My pencil tapped the table nonstop."']], a: 1,
+        why: 'Mordechai *tells* it. Pesach *shows* it with one *detail*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the detail test.', 'Could it be in anyone’s story? Then it is general. Pick the one detail only this moment has, and cut the rest.')];
+    b.play = [D[0], Y[0], Y[1], Y[2], Y[4]];
+    b.done = 'You choose the *one telling detail* and cut the general ones.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.10']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'story', pic: '🌱', t: 'Shimon mocked Zaidy’s slow knots. Then the storm came. One knot held.',
+      q: 'What might Shimon think at the end?', o: ['"Now I see why he took his time."', '"I should eat more vegetables."', '"It was a windy night."'],
+      pay: 'That ending is *earned*. It grows out of the *knot*.' };
+    Y[0].say = 'Match each *part* of the ending.';
+    Y[1].say = '*Earned*, no change, or out of nowhere?';
+    b.learn = [
+      { t: 'An earned ending: the *moment*, *before*, and *now*.', act: Y[0] },
+      { t: 'Test each ending: *earned*, *no change*, or *out of nowhere*.', act: Y[1] },
+      { who: { q: 'Mendy tripped in the race, then helped a boy up. Which *ending*?', o: [['Shimon', '"I am a fast runner."'], ['Zalman', '"I ran to win. I learned to stop."']], a: 1,
+        why: 'Shimon shows *no change*. Zalman has a *before* and a *now*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa what makes it earned.', 'Point back to the moment. Say what you thought before. Say what you see now. The story must have shown it.')];
+    b.play = [D[0], D[1], Y[3], Y[4], Y[2]];
+    b.done = 'Your ending is *earned*: the moment, *before*, and *now*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.11']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>

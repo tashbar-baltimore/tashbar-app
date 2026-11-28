@@ -299,6 +299,75 @@
       {type:'sort', q:'Honest, or too perfect?', bins:['Honest','Too perfect'], cards:[['Some days I still rush.',0],['I never rush again, ever.',1],['I am still learning to wait.',0],['Now I am perfectly patient.',1]],
         say:'Honest, or too perfect? Sort each.', how:'Could a real boy truly say this?'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
+  var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'oddone', pic: '📷', t: 'Gavriel has three ideas for his memoir.',
+      q: 'Which one is NOT a memoir moment?', o: ['All of Sukkos that year', 'Zeidy steadying my hands', 'My first camera click'],
+      pay: '*All of Sukkos* is too *big*. A memoir *zooms in* on minutes.' };
+    D[1].say = 'Match each *memoir* word to what it means.';
+    Y[1].say = '*Memoir moment*, too big, or no meaning?';
+    b.learn = [
+      { t: 'A memoir moment is *small*, *true*, and it *matters*.', act: D[1] },
+      { t: 'Test each idea: *too big*? *No meaning*?', act: Y[1] },
+      { who: { q: 'Big topic: learning to ride a bike. Which *moment*?', o: [['Tzvi', '"That whole summer of falling"'], ['Yisroel', '"The second Abba let go"']], a: 1,
+        why: 'Tzvi’s idea is too *big*. Yisroel *zooms in* on one moment.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the two questions.', 'Can it happen in a few minutes? Did it change me? Then zoom in: spend most words on those minutes, and sum up the rest in one line.')];
+    b.play = [D[0], Y[2],
+      { type: 'order', q: 'Shloime’s memoir ideas.', steps: ['My whole summer with Zeidy', 'The day we rowed on the lake', 'The second Zeidy let go of the oars'],
+        say: 'Zoom in: from the *biggest* to the *moment*.', how: 'A summer is *big*. A day is smaller. A *second* is the memoir moment.' },
+      Y[3], Y[4]];
+    b.done = 'You choose a *small, true moment* and *zoom in*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L09.05']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'mystery', pic: '🕰️', t: 'Benny writes: "At nine, I knew he’d be my best friend."',
+      q: 'How could a nine-year-old know that?', o: ['He could not: the writer now knows it', 'Nine-year-olds know everything', 'Someone told him'],
+      pay: 'He *could not*! Only the *writer now* knows. Signal the *cut*.' };
+    Y[0].say = 'Match each *signal* to its job.';
+    Y[1].say = 'The *boy then*, or the *writer now*?';
+    b.learn = [
+      { t: 'Two voices: the *boy then* and the *writer now*.', act: Y[0] },
+      { t: 'Signal each *cut* between then and now.', act: Y[1] },
+      { who: { q: 'Gavriel at nine, in the scene. Which line *fits*?', o: [['Aharon', '"I knew it would shape my life."'], ['Binyamin', '"My hands shook on the camera."']], a: 1,
+        why: 'At nine he could not *know* that. Keep the *boy then* real.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the two voices.', 'The boy then: past tense, and he knows only what he knew. The writer now: a signal like "Looking back," or "Today," and what he sees now.')];
+    b.play = [D[1], D[0], Y[3], Y[4], Y[2]];
+    b.done = 'You move between the *boy then* and the *writer now*, and *signal* each cut.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.06']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'wouldyou', pic: '🗣️', t: 'Two boys tell the same camera moment.',
+      q: 'Which one would you rather read?', o: ['"It was a nice camera."', '"It smelled like old leather. Click."'],
+      pay: 'The *second*! Exact words and *rhythm* make a *real voice*.' };
+    Y[0].say = 'Match each *tool* of voice to what it means.';
+    Y[1].say = '*Real*, flat, or trying too hard?';
+    b.learn = [
+      { t: 'Voice has three *tools*: words, *rhythm*, your *lens*.', act: Y[0] },
+      { t: 'Not *flat*, and not *trying too hard*.', act: Y[1] },
+      { who: { q: 'Eli’s father is a sofer. Which line shows Eli’s *lens*?', o: [['Doniel', '"The Torah looked very nice."'], ['Elchanan', '"One letter’s crown was thicker."']], a: 1,
+        why: 'A sofer’s son notices *crowns*. That is his *lens*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three tools.', 'Word choice: exact, real words. Rhythm: mix long and short, end on a short one. Your lens: details only you would notice.')];
+    b.play = [D[0], D[1], Y[3], Y[4]];
+    b.done = 'You sound like a *real person*: exact words, *rhythm* and your own *lens*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.07']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'riddle', pic: '💭', t: 'I am the last lines of a memoir. I start with "Now I understand."',
+      q: 'What am I?', o: ['A reflection', 'A pasted-on moral', 'A summary'],
+      pay: 'A *reflection*: what the writer *understands now*, not a lecture.' };
+    Y[0].say = 'Match each *starter* to its job.';
+    Y[1].say = '*Reflection*, summary, or a pasted-on moral?';
+    b.learn = [
+      { t: 'Three starters: *back then*, *now I understand*, *today*.', act: Y[0] },
+      { t: 'Not a *summary*, and not a *lecture*.', act: Y[1] },
+      { who: { q: 'Shmuel ends his first-day memoir. Which ending is *honest*?', o: [['Akiva', '"Now I am never shy, ever."'], ['Hillel', '"Some days I am still shy. I say hello anyway."']], a: 1,
+        why: 'Akiva’s ending is *too perfect*. Hillel’s is *honest*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three steps.', 'Back then I thought… Now I understand… Today I still… Honest, not too perfect, and never a lecture to the reader.')];
+    b.play = [D[0], D[1], Y[3], Y[4], Y[2]];
+    b.done = 'Your memoir ends with an *honest reflection*: then, *now*, and *today*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L09.08']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
