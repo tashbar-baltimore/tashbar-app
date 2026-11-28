@@ -139,5 +139,11 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.07", "Thumb and Whale", "Read and spell words with th and wh", { after: "READ.PHON.L02.06", std: "RF.1.3a", file: "CoreDataF2", min: 6 }],
   ["READ.PHON.L02.08", "Duck at the Back", "Use ck at the end of a word after a short vowel", { after: "READ.PHON.L02.07", std: "RF.1.3a", file: "CoreDataF2", min: 6 }],
   ["READ.PHON.L02.09", "Spell It: sh, ch, th", "Hear a word and spell it with the right two-letter sound", { after: "READ.PHON.L02.08", std: "L.1.2d", file: "CoreDataF2", min: 6 }],
-  ["READ.FLU.L02.03", "Heart Words: what, where", "Read the heart words what, where, when and who", { after: "READ.PHON.L02.09", std: "RF.1.3g", file: "CoreDataF2", min: 5 }]
+  ["READ.FLU.L02.03", "Heart Words: what, where", "Read the heart words what, where, when and who", { after: "READ.PHON.L02.09", std: "RF.1.3g", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L02.10", "Flag and Clap", "Read and spell words that start with l-blends: bl, cl, fl, pl, sl", { after: "READ.PHON.L02.02", std: "RF.1.2b", file: "CoreDataF2", min: 6 }],
+  ["READ.PHON.L02.11", "Drum and Frog", "Read and spell words that start with r-blends: br, cr, dr, fr, gr, tr", { after: "READ.PHON.L02.10", std: "RF.1.2b", file: "CoreDataF2", min: 6 }],
+  ["READ.PHON.L02.12", "Snack and Swim", "Read and spell words that start with s-blends: sk, sn, sp, st, sw", { after: "READ.PHON.L02.11", std: "RF.1.2b", file: "CoreDataF2", min: 6 }],
+  ["READ.PHON.L02.13", "Hand and Tent", "Read and spell words that end with -nd, -nt, -st, -mp", { after: "READ.PHON.L02.12", std: "RF.1.2b", file: "CoreDataF2", min: 6 }],
+  ["READ.PA.L02.03", "Chop It Up", "Chop words with blends into every sound (4 and 5 sounds)", { after: "READ.PA.L02.02", std: "RF.1.2d", file: "CoreDataF2", min: 5 }],
+  ["WRIT.HAND.L02.02", "Spaces Between Words", "Leave a finger space between words", { after: "WRIT.HAND.L02.01", std: "L.1.1a", file: "CoreDataF2", min: 5 }]
 ];
