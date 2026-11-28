@@ -31,7 +31,7 @@
   ],
   check:[
     {q:'Benny writes: “The four boys I asked at lunch want a longer recess, so most boys in the school want one.” Which gap is it?', o:['a small sample','a hidden assumption','happened after, so caused by'], h:'Ask: does the reason really support THIS conclusion, and is the conclusion no bigger than the reason?'},
-    {q:'Yoni writes: “The road to the park is closed for repairs, so the trip bus will take a different road to the park.” Does it follow logically, or which gap is it?', o:['follows logically','a hidden assumption','happened after, so caused by'], h:'Ask: does the reason really support THIS conclusion, and is the conclusion no bigger than the reason?'},
+    {q:'Yoni writes: “The road to the park is closed for repairs, so the trip bus will take Park Avenue, the other open road.” Does it follow logically, or which gap is it?', o:['follows logically','a hidden assumption','happened after, so caused by'], h:'Ask: does the reason really support THIS conclusion, and is the conclusion no bigger than the reason?'},
     {t:'order', q:'Build a reasoning chain: fact, link, therefore. Tap the sentences in order.', tiles:['The trip starts at 8:00.','But the bus comes at 9:00.','Therefore, we need an earlier bus.'], extra:['Also, the bus is new.'], h:'Fact first. Then the link that causes a problem. Then "Therefore".'}
   ],
   re:[
@@ -193,17 +193,17 @@
     ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can build a reasoning chain and spot a gap.',
     board:{ one:'Does the reason support THIS conclusion, and is the conclusion no bigger? If not, it is a gap.', activity:'Chavrusas lay out chain cards (fact, link, therefore), then slip in a "gap" card for the partner to catch and name.', mistakes:['A hidden assumption','Happened after, so caused by','A small sample turned into "most boys"'] },
     do:[
-      {type:'sort', q:'Claim: our school needs a chesed club.', bins:['Follows logically','Mistake: a gap'], cards:[['Old Mr. Fine asked for visitors, so visits would help him.',0],['Three boys want it, so most boys do.',1],['Rabbi Rosen needs helpers on Sundays, and a club gives a set time.',0],['A club started, then grades rose, so it did it.',1]], mis:true,
+      {type:'sort', q:'Claim: our school needs a chesed club.', bins:['Follows logically','Mistake: a gap'], cards:[['Old Mr. Fine asked for visitors, so visits would help him.',0],['Three boys want it, so most boys do.',1],['Rabbi Rosen needs helpers on Sundays, and a club gives a set time.',0],['A club started, then grades rose, so the club raised them.',1],['Two boys visited once, so the club will surely last all year.',1]], mis:true,
         say:'Does each step follow? Sort each card.', how:'Does the reason support THIS end, and is the end no bigger?',
         why:{q:'Teach it back: your chavrusa asks, "What are the three kinds of gaps?"', o:['A small sample, happened after, a hidden assumption','A fact, a link, and therefore','A claim, a reason, and proof'], a:'A small sample, happened after, a hidden assumption'}},
       {type:'order', q:'Eli’s case for a bigger room. Build the chain: fact, link, therefore.', steps:['Thirty boys joined the debate club.','But the room seats only twenty.','Therefore, the club needs a bigger room.'], extra:['So every boy in the yeshiva wants to debate.'],
         say:'Build the chain. Leave out the jump.', how:'Fact first. "But" brings the link. "Therefore" ends it. The extra is a small-sample jump.'}],
     your:[
-      {type:'match', pairs:[['New camera, then a prize, so the camera won it.','happened after, so caused by'],['Four boys said so, so most do.','a small sample'],['The bus was late: he overslept.','a hidden assumption']],
+      {type:'match', pairs:[['New camera, then a prize, so the camera won it.','happened after, so caused by'],['Four boys said so, so most do.','a small sample'],['He was late, so he must have overslept.','a hidden assumption']],
         say:'Match each gap to its name.', how:'One thing after another? A few for many? An unchecked idea?'},
       {type:'sort', bins:['Follows logically','A gap in the reasoning'], cards:[['It rained, so the game moved inside.',0],['Four boys said so, so most agree.',1],['The heater broke, so the room was cold.',0],['The bus was late, so the driver overslept.',1]],
         say:'Follows, or a gap? Sort each one.', how:'Does the reason support this end, with nothing hidden?'},
-      {type:'tiles', q:'Eli won one round. Fix the jump: make the conclusion smaller.', w:['He won once,','so he has','a good shot','next round.'], extra:['will win'],
+      {type:'tiles', q:'Eli won one round. Fix the jump: make the conclusion smaller.', w:['He won once,','so he has','a chance','next round.'], extra:['will win'],
         say:'Build a step that does not jump.', how:'One win gives a chance, not a promise.'},
       {type:'match', pairs:[['A small sample','Ask more, or make it smaller.'],['A hidden assumption','Add the missing step.'],['Happened after','Show it really caused it.']],
         say:'Match each gap to its fix.', how:'What would make the step follow?'},
@@ -301,6 +301,80 @@
       {type:'sort', bins:['Keeps the claim','Gives in'], cards:[['Most boys came, so add a day.',0],['Five did not come, so forget it.',1],['For boys who stay, supper helps.',0],['Some bring food, so never mind.',1]],
         say:'Did the writer keep his claim? Sort each.', how:'An honest limit keeps the claim. Giving in drops it.'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
+  var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'mystery', pic: '🕵️', t: 'Eli put up a debate poster. The next day, ten boys joined.',
+      q: 'Did the poster bring them?', o: ['Yes, for sure', 'Maybe, we need more proof', 'No, never'],
+      pay: '*Maybe*. "*Happened after*" is not proof that it *caused* it.' };
+    D[1].say = 'Build the *chain*. Leave out the jump.';
+    Y[0].say = 'Match each *gap* to its name.';
+    b.learn = [
+      { t: 'A chain goes *fact*, *link*, *therefore*.', act: D[1] },
+      { t: 'Some steps hide a *gap*. Name each one.', act: Y[0] },
+      { who: { q: '"Four boys at lunch want it, so most boys do."', o: [['Chaim', 'It follows'], ['Yossi', 'A small sample']], a: 1,
+        why: 'Four boys cannot speak for a *whole school*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three gaps.', 'A small sample: a few stand for many. Happened after: one thing came first. A hidden assumption: an unchecked idea in the middle.')];
+    b.play = [D[0], Y[4], Y[2], Y[3]];
+    b.done = 'You build *chains* with no *gaps*, and you spot the jumps.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.01']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'oddone', pic: '🗂️', t: 'Three sources give the food pantry’s hours.',
+      q: 'Which one would you NOT trust?', o: ['A flyer from 2018', 'This month’s city list', 'The pantry director'],
+      pay: 'The *2018 flyer*. Hours change, so it is *out of date*.' };
+    D[0].say = 'Match each *check* to the question it asks.';
+    Y[1].say = 'Sort each source into its *group*.';
+    b.learn = [
+      { t: 'Every source gets *three checks*.', act: D[0] },
+      { t: 'A failed check has a *name*.', act: Y[1] },
+      { who: { q: 'The trip committee quotes only boys who *want* the trip.', o: [['Eli', 'Credible: it is official'], ['Gavriel', 'One-sided: it gains']], a: 1,
+        why: 'The committee *gains*. It shows only *one side*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three checks.', 'Who wrote it: does he know, does he gain? When: is it still true? A second source: does it agree?')];
+    b.play = [D[1], Y[0],
+      { type: 'evidence', q: 'Yoni’s notes on the pantry. Which source is out of date?', look: 'a source that is too old',
+        p: ['This month’s city list says 9 to 5.', 'The pantry director also says 9 to 5.', 'A flyer from 2018 says it closes at 3.', 'Yoni writes the hours as 9 to 5.'], a: 2,
+        say: 'Tap the source that is too *old*.', how: 'Find the *date*. Is it still true today?' },
+      Y[2]];
+    b.done = 'You check every source: *who*, *when*, and *who agrees*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.02']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'predict', pic: '🔄', t: 'Benny’s editorial never mentions the other side.',
+      q: 'What will a doubting reader think?', o: ['"He missed my worry."', '"He convinced me."', '"Nice handwriting."'],
+      pay: 'He *missed the worry*! Bring it in *fairly*, then *answer* it.' };
+    D[0].say = 'Build a *fair* sentence for the other side.';
+    Y[2].say = 'Bring in, or *answer*? Sort each phrase.';
+    b.learn = [
+      { t: 'Bring in the other side *fairly*.', act: D[0] },
+      { t: 'Some words *bring in*. Some words *answer*.', act: Y[2] },
+      { who: { q: 'Benny wants a class Purim fair. Which objection should he *answer*?', o: [['Moshe', '"The tables are the wrong color."'], ['Dovid', '"Setup takes a whole week."']], a: 1,
+        why: 'Pick the *strongest* worry. An easy one proves nothing.' } },
+      TEACHBACK('*Teach it back*: give your chavrusa *bring-in* and *answer* words.', 'Bring in: Some people argue that, Although, While it is true that. Answer: However, Even so. Be fair, never silly.')];
+    b.play = [D[1], Y[0], Y[1],
+      { type: 'evidence', q: 'Read Shmuli’s paragraph about the class trip to the zoo.', look: 'the reply to the worry',
+        p: ['Our class should visit the zoo.', 'Some parents worry it costs too much.', 'Even so, the zoo gives schools half price.', 'The boys will see animals from every continent.'], a: 2,
+        say: 'Tap the sentence that *answers* the worry.', how: 'Find the worry first. The *answer* turns back with "Even so".' }];
+    b.done = 'You bring in the *strongest* objection *fairly*, then *answer* it.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.03']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'whatswrong', pic: '📏', t: '45 of 50 boys came to chesed day. Gavriel writes: "Every boy loves it!"',
+      q: 'What is wrong with his claim?', o: ['It is too big', 'It is too small', 'Nothing is wrong'],
+      pay: 'Too *big*! Five did not come. "*Most* boys" fits the evidence.' };
+    D[0].say = 'Qualified, or a *mistake*? Sort each claim.';
+    D[1].say = 'Match each big word to an *honest limit*.';
+    b.learn = [
+      { t: 'A claim comes in *three sizes*.', act: D[0] },
+      { t: 'Swap big words for *honest limits*.', act: D[1] },
+      { who: { q: 'Evidence: the bus was late 12 of 15 days.', o: [['Ari', '"The bus is always late."'], ['Shmuli', '"The bus is usually late."']], a: 1,
+        why: '12 of 15 is *most* days, not *always*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three sizes.', 'Too big: always, every, never. Right size: most, many, for boys who. Given up: dropping the claim at the first objection.')];
+    Y[1].mis = true; Y[1].say = 'Qualified, or too big? Watch for sneaky words.';
+    b.play = [Y[1], Y[2], Y[3], Y[4]];
+    b.done = 'Your claim is *as big as* your evidence. No bigger.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.04']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>

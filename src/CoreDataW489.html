@@ -201,7 +201,7 @@
     your:[
       {type:'match', pairs:[['the cause','what makes it happen'],['the effect','what happens because of it'],['a chain','each effect causes the next']],
         say:'Match each word to what it means.', how:'Did it make something happen, or did it happen?'},
-      {type:'sort', bins:['One cause, many effects','A chain'], cards:[['Drought: low lake, brown lawns, small crops.',0],['Yeast made gas, which made bubbles, which raised dough.',1],['Heat wave: dry garden, warm rooms, full pool.',0],['Snow led to ice, which led to cancelled buses.',1]],
+      {type:'sort', bins:['One cause, many effects','A chain'], cards:[['Drought: low lake, brown lawns, small crops.',0],['Yeast made gas, which made bubbles, which raised dough.',1],['Heat wave: dry garden, warm rooms, crowded pool.',0],['Snow led to ice, which led to cancelled buses.',1]],
         say:'Which plan is each one? Sort it.', how:'Straight from one cause, or each causing the next?'},
       {type:'evidence', q:'Benny’s explainer on why bread rises. Tap the flipped link.', p:['Here is how yeast makes bread rise.','Yeast eats the sugar in the dough.','This makes a gas called carbon dioxide.','The dough rose, which led to the gas forming bubbles.','As a result, the baked loaf is light and soft.'], a:3, look:'an effect written as if it were the cause', mis:true,
         say:'Tap the link that is written backwards.', how:'Ask of each link: which really made the other happen?'},
@@ -303,6 +303,74 @@
       {type:'sort', q:'Akiva’s water ending.', bins:['Brings it home','Mistake'], cards:[['In short, our tap water is rain that was stored and cleaned.',0],['Also, some reservoirs have fish.',1],['Water is the most amazing thing!',1],['Knowing this, save water in dry years.',0]],
         say:'Test each line of Akiva’s ending.', how:'A new fact or a feeling? Then it is a mistake.'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
+  var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'puzzle', pic: '⛓️', t: '"School closed, which led to snow." Something here is backwards.',
+      q: 'What is backwards?', o: ['The cause and the effect', 'The spelling', 'Nothing at all'],
+      pay: '*Flipped*! Snow *caused* the closing. The *cause* goes first.' };
+    Y[0].say = 'Match each word to what it means: *cause*, *effect*, *chain*.';
+    Y[1].say = 'Which *plan* is each one? Sort it.';
+    b.learn = [
+      { t: 'The *cause* makes it happen. The *effect* follows.', act: Y[0] },
+      { t: 'Two plans: *one cause, many effects*, or a *chain*.', act: Y[1] },
+      { who: { q: '"The lights went out, which led to the storm."', o: [['Ari', 'Fine: it is a chain'], ['Yossi', 'Flipped: the storm came first']], a: 1,
+        why: 'The *storm* caused the dark. The *cause* goes first.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the two plans.', 'One cause, many effects: each effect comes straight from it. A chain: each effect causes the next. Never flip them.')];
+    b.play = [D[0], Y[2], D[1], Y[3]];
+    b.done = 'You explain *why things happen*: cause first, then each *effect*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L08.04']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'fact', pic: '🔬', t: 'Did you know? Bakers call the stretchy part of dough *gluten*.',
+      q: 'How should a writer use a word like that?', o: ['Explain it the first time', 'Never use it', 'Say "the stretchy stuff"'],
+      pay: '*Explain it* the first time. Then keep the *same word*.' };
+    D[0].say = 'Match each *vague* phrase to its topic word.';
+    Y[0].say = 'Build a sentence that *explains* a flurry.';
+    b.learn = [
+      { t: 'Swap *vague* phrases for the exact *topic word*.', act: D[0] },
+      { t: 'Explain a new word with a *comma* or *which is*.', act: Y[0] },
+      { who: { q: 'Benny already explained *reservoir*. Now it comes again.', o: [['Shimon', '"The reservoir feeds the pipes."'], ['Levi', '"The big water lake feeds the pipes."']], a: 0,
+        why: 'Keep the *same word*. Explain it only *once*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa how to *explain* words.', 'Use the exact topic word. The first time, explain it with a comma, "called", or "which is". After that, keep the same word.')];
+    b.play = [D[1], Y[1], Y[2], Y[3],
+      { type: 'cloze', t: 'Benny explained "gluten" already. Later: The ___ traps the gas.', o: ['gluten', 'stretchy stuff', 'dough part'], a: 'gluten',
+        say: 'Second time: which words fit?', how: 'Explain it *once*. Then keep the *same word*.' }];
+    b.done = 'You use the *exact* word, *explain* it once, and *keep* it.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.05']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'secret', pic: '🕵️', t: '"The plows finally crawled in." One word hides an opinion.',
+      q: 'Can you crack it?', o: ['"finally"', '"plows"', '"in"'],
+      pay: '*Finally* judges quietly, and so does *crawled*. Those are *loaded words*.' };
+    Y[2].say = '*Fact* or feeling? Sort each sentence.';
+    D[0].say = 'Cut the *loaded words*. Build the fact.';
+    b.learn = [
+      { t: '*Objective* means facts the reader can *check*.', act: Y[2] },
+      { t: 'Cut *loaded words*. Keep the *fact*.', act: D[0] },
+      { who: { q: '"Everyone agrees the drill went well." Is it *objective*?', o: [['Moshe', 'Yes: everyone agrees'], ['Eli', 'No: whose view is it?']], a: 1,
+        why: 'An *unnamed view* hides who said it. *Name* the person.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa three opinion clues.', 'Feeling words like "I think". Loaded words that judge quietly, like "finally" or "only". Views with no name, like "everyone agrees".')];
+    b.play = [D[1], Y[4], Y[1], Y[0]];
+    b.done = 'Your report is *objective*: facts, and views with a *name*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.06']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'wouldyou', pic: '🏠', t: 'Two endings for a piece on black ice.',
+      q: 'Which would you want to read last?', o: ['"In short, black ice hides, so drive slowly."', '"Also, hail can be as big as golf balls."'],
+      pay: 'The *first*! One *takeaway*, then *why it matters*.' };
+    Y[2].say = 'Match each *move* to its job.';
+    Y[1].say = '*One takeaway*, or just a list? Sort each.';
+    b.learn = [
+      { t: 'An ending makes *two moves*.', act: Y[2] },
+      { t: 'Move 1: join the points into *one takeaway*.', act: Y[1] },
+      { who: { q: 'A piece opens: "Heat can dry a garden." Which ending?', o: [['Dovid', '"In conclusion, heat can dry a garden."'], ['Avi', '"In short, heat steals water, so water at dawn."']], a: 1,
+        why: 'Dovid just *copies* the opening. Avi *brings it home*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the two moves.', 'Move 1: "In short," and one takeaway that joins the points. Move 2: "Knowing this," and why it matters. No new fact, no copy, no rant.')];
+    b.play = [D[0], Y[3], Y[0], D[1], Y[4]];
+    b.done = 'You *bring it home*: one *takeaway*, then *why it matters*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L08.07']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>

@@ -210,7 +210,7 @@
       {type:'sort', bins:['A reason to care','No reason to care'], cards:[['his notes are lost, and the debate starts in a minute',0],['his zeidy is waiting to read it',0],['the walls are beige',1],['it was a Tuesday',1]],
         say:'Does each detail give the reader a reason to care?', how:'Does he want something, or could he lose something?'}] },
 
-  'WRIT.ESSAY.L07.06':{ band:'M68', pic:'👁️', today:'Choose a point of view and keep it', why:'When the eyes of a story wobble, the reader stops trusting the narrator.',
+  'WRIT.ESSAY.L07.06':{ band:'M68', pic:'👁️', today:'Keep one point of view all the way', why:'When the eyes of a story wobble, the reader stops trusting the narrator.',
     ready:[{q:'Which sentence SHOWS that Eli is nervous?', o:['Eli’s hands shook on his notes.','Eli was nervous.','Eli was a boy.','Eli liked debates.'], a:'Eli’s hands shook on his notes.'}],
     bridge:'WRIT.ESSAY.L07.03', bridgeName:'Show, Don\'t Tell',
     watch:{ q:'Gavriel tells the story of the cover photo.', m:{type:'scene', e:'📷', t:'Gavriel is on the roof at sunrise, shooting The Beacon’s cover.'}, steps:[
@@ -303,6 +303,76 @@
       {type:'sort', q:'Gavriel’s blurry siyum photo story.', bins:['Lands','Pasted-on moral','Just stops'], cards:[['Gavriel pinned the photo above his desk.',0],['The lesson: every photo is special.',1],['And then everyone went home.',2],['Always try your best, boys!',1],['The end.',2]],
         say:'Sort each ending of Gavriel’s story.', how:'Inside the story, a lecture, or a sudden stop?'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
+  var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'compare', pic: '🎣', t: 'Two story openings. Read them both.',
+      q: 'Which one makes you keep reading?', o: ['"One day I went to an interview."', '"Yoni’s pen died outside the menahel’s office."'],
+      pay: 'The *second*! It *hooks* you, then tells *who* and *where*.' };
+    Y[2].say = 'Match each kind of *opening* to an example.';
+    Y[1].say = 'Sort each detail: *who*, *where*, or *why care*?';
+    b.learn = [
+      { t: 'An opening has *two jobs*: *hook*, then *orient*.', act: Y[2] },
+      { t: 'Orient means *who*, *where*, and *why care*.', act: Y[1] },
+      { who: { q: '"Eli was twelve. He lived in Baltimore." A good opening?', o: [['Mendy', 'Yes: it says who and where'], ['Shaya', 'No: it is facts only']], a: 1,
+        why: 'No *hook* and no reason to *care*. Facts alone are dull.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the two jobs.', 'Hook him: start at the trouble. Orient him: who, where, and why he should care.')];
+    b.play = [D[0], Y[3], Y[0], Y[4],
+      { type: 'tiles', q: 'Open with where, then who and the trouble.', w: ['In the newsroom,', 'Akiva saw', 'the front page', 'was blank.'], extra: ['One day,'],
+        say: 'Build an opening: *where*, *who*, then the trouble.', how: 'Place first. Then the person. Then what is at *stake*.' }];
+    b.done = 'Your opening *hooks* the reader and tells *who*, *where* and *why care*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L07.05']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'riddle', pic: '👁️', t: 'I see through one boy’s eyes only. I say "I" and "my".',
+      q: 'What am I?', o: ['First person', 'Third person', 'A flashback'],
+      pay: '*First person*! The narrator is *I*, and knows only *his own* mind.' };
+    D[0].say = 'Match each *point of view* term to its meaning.';
+    D[1].say = 'Could Yoni really *know* this? Sort each line.';
+    b.learn = [
+      { t: 'Who tells it? *First person* or *third person*.', act: D[0] },
+      { t: 'An "I" narrator knows only *his own* thoughts.', act: D[1] },
+      { who: { q: 'Told by Gavriel: "I knelt. Gavriel raised his camera."', o: [['Yitzy', 'Fine: it is all Gavriel'], ['Zevi', 'A slip: it switches person']], a: 1,
+        why: 'Gavriel is *I*. "Gavriel raised *his*" switches to *third person*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the two slips.', 'Slip 1: switching person, I becomes he. Slip 2: knowing too much, like someone else’s secret thoughts.')];
+    Y[0].mis = true; Y[0].why = D[1].why; delete D[1].why;
+    Y[4].pairs = [['I smelled the cholent.', 'He could smell it.'], ['The chazzan’s voice rose.', 'He could hear it.'], ['Benny was secretly afraid.', 'He could not know it.']];
+    b.play = [Y[0], Y[2], Y[3], Y[4]];
+    b.done = 'You pick a *point of view* and *keep* it all the way.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L07.06']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'mystery', pic: '🎬', t: 'Printing day. Gavriel’s camera is cracked. Nobody saw it happen.',
+      q: 'How can the story show what happened?', o: ['Jump back in time', 'Skip it', 'Buy a new camera'],
+      pay: 'Jump *back*! A *flashback* shows the past, then *returns* to now.' };
+    D[0].say = 'Order it: *now*, the flashback, then *now* again.';
+    Y[1].say = 'Sort each *signal* by its job.';
+    b.learn = [
+      { t: 'Go *back* with a signal and *had*. Return with *Now*.', act: D[0] },
+      { t: 'Signals move the *clock* or the *place*.', act: Y[1] },
+      { who: { q: 'Gavriel held the broken camera. Which next line shows the *past*?', o: [['Nachum', '"He left it outside."'], ['Pinny', '"The day before, he had left it outside."']], a: 1,
+        why: 'Without a *signal* and *had*, it sounds like *now*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa how to *return*.', 'Go back: a signal like "The day before," and "had". Come back: "Now," and no "had".')];
+    b.play = [D[1], Y[4], Y[2], Y[3]];
+    b.done = 'You *signal* a flashback and the *return* to now.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.04']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'predict', pic: '🔁', t: 'Gavriel’s story opens on a cracked camera lens.',
+      q: 'What will a great ending show?', o: ['The lens again, changed', '"The lesson is: be careful."', '"The end."'],
+      pay: 'The *lens again*! A good ending *ties back* to the opening.' };
+    Y[1].say = 'Something that *happens*, or a *thought*? Sort each.';
+    Y[3].say = 'Match each opening to the ending that *ties back*.';
+    b.learn = [
+      { t: 'An ending can *resolve* or *reflect*.', act: Y[1] },
+      { t: 'A strong ending *ties back* to the opening.', act: Y[3] },
+      { who: { q: 'Which ending *lands*?', o: [['Eli', '"So, boys, always save your work!"'], ['Moshe', '"Benny reread his rewrite and smiled."']], a: 1,
+        why: 'Eli *lectures* the reader. That is a *pasted-on moral*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa how endings *tie back*.', 'Show the opening image again, now changed. Resolve what happens, or reflect on what he learned. No lecture, no sudden stop.')];
+    b.play = [D[0], D[1], Y[0], Y[2], Y[4]];
+    b.done = 'Your ending *lands*: it *ties back*, with no lecture.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.05']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>

@@ -298,6 +298,99 @@
       {type:'tiles', q:'A call to action.', w:['Please bring','a warm coat','to the office.'], extra:['maybe'],
         say:'Build a call to action.', how:'Tell the reader politely what to bring, and where.'}] }
   };
+  /* NEW LESSONS (HoS 2026-11-27, docs/lesson-redesign/DESIGN.md): these lessons play THINK, LEARN, TRY IT, SHOW ME, DONE.
+     The good old activities are kept and sharpened; words in *stars* are key words; the check questions are unchanged. */
+  var TEACHBACK = function (t, s) { return { t: t, m: { type: 'scene', e: '🗣️', t: s } }; };
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'whatswrong', pic: '♻️', t: 'Akiva wants a school recycling program. His proof: "Plastic was first made over 100 years ago."',
+      q: 'What is wrong with his proof?', o: ['It does not prove his claim', 'It has a spelling mistake', 'Nothing is wrong'],
+      pay: 'It is about plastic, not *his claim*. Proof must pass *two tests*.' };
+    D[1].say = 'Match each source to how much you can *trust* it.';
+    b.learn = [
+      { t: 'Test 1: *relevant*. Does it prove *this* claim?', act: { type: 'sort', q: 'Claim: our school should start recycling.', bins: ['Relevant', 'Not relevant'],
+        cards: [['Recycling cuts school trash by a third.', 0], ['Plastic was first made over 100 years ago.', 1], ['Recycling trucks are green.', 1], ['Our lunchroom fills 9 trash bags a day.', 0]],
+        say: 'Does each fact prove *this* claim? Sort it.', how: 'Ask: if it is true, is the claim *stronger*? Same topic is not enough.' } },
+      { t: 'Test 2: *credible*. Can you *trust* the source?', act: D[1] },
+      { who: { q: 'Claim: boys should drink more water. Proof: an ad from a water company.', o: [['Eli', 'Strong: it is about water'], ['Moshe', 'Weak: the ad wants to sell']], a: 1,
+        why: 'It is *relevant*, but not *credible*. The ad sells water.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the *two tests*.', 'Relevant: it proves THIS claim. Credible: you can trust who said it. Strong evidence passes both.')];
+    b.play = [
+      { type: 'sort', q: 'Claim: our yeshiva should add a second recess.', bins: ['Strong', 'Not relevant', 'Not credible'], mis: true,
+        cards: [['A study: short breaks help boys focus.', 0], ['Recess began in the 1800s.', 1], ['My friend heard breaks help.', 2], ['The office counted fewer interruptions on days with two breaks.', 0], ['A history book: recess was longer long ago.', 1], ['A toy company ad says boys need recess.', 2]],
+        say: 'Sneaky mistakes! Which test does each card pass or fail?', how: 'Not about *this* claim? Not relevant. No trusted source? Not credible.' },
+      { type: 'evidence', q: 'Akiva’s editorial. Tap the evidence that is not credible.', look: 'proof with no source you can check',
+        p: ['Our school should start recycling.', 'The city says recycling cuts school trash by a third.', 'The custodian counts nine bags of trash a day.', 'Everyone knows recycling is the best thing ever.', 'So recycling would make a real difference here.'], a: 3,
+        say: 'Tap the proof nobody can check.', how: 'Who said it? "*Everyone knows*" names no source.' },
+      Y[0],
+      { type: 'cloze', t: 'An ad wants to sell you something, so it is not ___.', o: ['credible', 'relevant', 'formal'], a: 'credible',
+        say: 'Which word fits the gap?', how: 'An ad *gains* if you believe it. Can you *trust* it?' }];
+    b.done = 'Strong evidence passes *two tests*: *relevant* and *credible*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.ESSAY.L07.04']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'puzzle', pic: '🧩', t: '"We collected 200 cans. ___, ten families ate." One glue word is missing.',
+      q: 'Which glue word fits the gap?', o: ['As a result,', 'However,', 'For example,'],
+      pay: '*As a result*! The families ate *because of* the cans.' };
+    D[0].say = 'Match each *connection* to the glue that fits.';
+    Y[1].say = 'Sort each glue word by its *job*.';
+    b.learn = [
+      { t: 'Glue has *three jobs*: add, result, proof.', act: D[0] },
+      { t: 'Now sort the glue by its *job*.', act: Y[1] },
+      { who: { q: '"The bell rang. ___, the boys lined up."', o: [['Dovid', 'However,'], ['Shimon', 'As a result,']], a: 1,
+        why: '"*However*" turns to the other side. Lining up is a *result*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three glue jobs.', 'Add a reason: In addition. Show a result: As a result. Point to proof: For example. "However" only turns to the other side.')];
+    b.play = [D[1], Y[2],
+      { type: 'tiles', q: 'Point to proof.', w: ['The club works.', 'For instance,', 'it fed', 'ten families.'], extra: ['However,'],
+        say: 'Build it: claim, proof glue, then the proof.', how: 'Claim first. Then *For instance*. Then the evidence.' },
+      { type: 'cloze', t: 'Chess teaches patience. ___ it teaches planning.', o: ['In addition,', 'As a result,', 'For example,'], a: 'In addition,',
+        say: 'One more reason. Which glue fits?', how: 'Planning is a *second reason*, not a result of patience.' }];
+    b.done = 'You pick glue by its *job*: add, result or proof.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.01']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'wouldyou', pic: '📨', t: 'Two letters reach Rabbi Rosen about the small gym.',
+      q: 'Which one would you take seriously?', o: ['"The gym is too small for two classes."', '"The gym is, like, SO tiny, you guys!!!"'],
+      pay: 'The *formal* one! Exact, *respectful* words get heard.' };
+    D[0].say = '*Formal* or informal? Sort each sentence.';
+    Y[0].say = 'Match each *slang* phrase to its formal fix.';
+    b.learn = [
+      { t: '*Formal* voice is serious, exact and *respectful*.', act: D[0] },
+      { t: 'Swap *slang* for *exact* words.', act: Y[0] },
+      { who: { q: '"The lunchroom has a lot of stuff to fix." Formal?', o: [['Ari', 'Yes, it sounds fine'], ['Yehuda', 'No, "stuff" is vague']], a: 1,
+        why: '*Stuff* is vague. Name it exactly: *tables*, *lights*.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa three formal fixes.', 'Cut the slang and "you guys". Cut the shouting and "!!!". Swap "the worst ever" for an exact fact.')];
+    Y[1].mis = true; Y[1].say = 'Good formal fix, or a mistake? Sort each.';
+    b.play = [Y[1],
+      { type: 'evidence', q: 'Gavriel’s letter to Rabbi Rosen. Tap the sentence that is not formal.', look: 'slang and shouting',
+        p: ['I respectfully write about the gym.', 'Two classes share it every afternoon.', 'It is, like, way too crowded, you guys!!!', 'For these reasons, we request a second gym time.'], a: 2,
+        say: 'Tap the sentence that breaks the formal voice.', how: 'Look for *slang*, "you guys" and "!!!".' },
+      { type: 'tiles', q: 'A formal request.', w: ['For these reasons,', 'our class', 'requests', 'a later bus.'], extra: ['totally'],
+        say: 'Build a formal request from the tiles.', how: 'Linking words first. Then who asks. Then what.' },
+      { type: 'cloze', t: 'Students waited ___ for lunch.', o: ['twenty minutes', 'forever!!!', 'like, ages'], a: 'twenty minutes',
+        say: 'Pick the formal, *exact* words.', how: 'An *exact fact* beats "forever".' }];
+    b.done = 'You write *formal*: no slang, no shouting, *exact* facts.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.02']);
+
+  (function (b) { if (!b || !b.do || !b.your) return; var D = b.do, Y = b.your;
+    b.hook = { kind: 'story', pic: '📚', t: 'Yoni argued well for longer library hours. Then he ended: "But maybe it does not matter."',
+      q: 'What happens to his argument?', o: ['It gets stronger', 'It falls apart', 'Nothing changes'],
+      pay: 'It *falls apart*. The *last words* stay with the reader.' };
+    D[1].say = 'Follows, *new argument*, or *weakens*? Sort each.';
+    b.learn = [
+      { t: 'A strong close has *three jobs*.', act: { type: 'storymap', slots: ['Claim with force', 'Strongest reason', 'Call to action'],
+        cards: ['Our school must recycle.', 'It cuts our trash by a third.', 'Use the blue bins today.'], extra: ['Also, paint the bins.'],
+        say: 'Put each sentence in its *job* box.', how: '*Claim* first. Then the best *reason*. Then what to *do*. One card is extra.' } },
+      { t: 'Watch out for *new arguments* and *doubt*.', act: D[1] },
+      { who: { q: 'Which last line closes the *case*?', o: [['Benny', '"For these reasons, recycle now."'], ['Avi', '"But maybe it does not matter."']], a: 0,
+        why: 'Avi *doubts* his own claim. That *weakens* it.' } },
+      TEACHBACK('*Teach it back*: tell your chavrusa the three jobs.', 'Say the claim with force. Recall the strongest reason. Tell the reader what to do. No new argument, no doubt.')];
+    Y[1].mis = true; Y[1].say = 'Strong close, or a mistake? Sort each.';
+    b.play = [Y[1],
+      { type: 'order', q: 'Argument: our class should visit the old-age home before Pesach.', steps: ['Therefore, our class should visit the old-age home.', 'The residents said our visit was their happiest day.', 'Sign up with Mr. Gross by Friday.'],
+        extra: ['Also, the home has a garden.', 'But maybe it is too far.'], say: 'Put the close in order. Leave out the extras.', how: '*Claim*, then strongest *reason*, then the *action*. "Also" brings something new; "But maybe" doubts.' },
+      Y[2], Y[0]];
+    b.done = 'You close the case: *claim*, best *reason*, *action*.';
+    delete b.do; delete b.your; delete b.ready; })(BITE['WRIT.PARA.L07.03']);
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
