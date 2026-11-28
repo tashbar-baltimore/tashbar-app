@@ -1,0 +1,361 @@
+/* BLOCK BUILDERS WORKBOOK, the pages (HoS 2026-11-22). Transcribed word for word from the Khaver family's
+   "My Block Math Builders Workbook" (Block_Builders_Workbook_Color.pdf): Getting Ready to Add (10 jobs), Carrying
+   (23 jobs, Sheets A and B), Getting Ready to Subtract (12 jobs), Borrowing (26 jobs, A and B) and Putting It All
+   Together (8 jobs, A and B).
+   All 137 pages (the family's compressed PDF, 2026-11-22): every picture uses the printed page's own numbers.
+   The player is BlockBuildersUI.html. No double slash in this file. */
+(function(){
+ const V=(a,b,o)=>Object.assign({t:'v',a,b},o||{});
+ const VS=(a,b,o)=>Object.assign({t:'v',a,b,op:'-'},o||{});
+ const L=(s,o)=>Object.assign({t:'L',s},o||{});
+ const vs=(list,o)=>list.map(p=>Array.isArray(p)?(p.length>2?V(p[0],p[1],Object.assign({c:p[2]},o||{})):V(p[0],p[1],o)):p);
+ const vss=(list,o)=>list.map(p=>VS(p[0],p[1],o));
+ const spot=(list,op)=>list.map(p=>({t:'spot',a:p[0],b:p[1],op:op||'+'}));
+ const g4=(list,op)=>list.map(p=>({t:'g4',a:p[0],b:p[1],op:op||'+'}));
+ const help=list=>list.map(p=>({t:'help',a:p[0],b:p[1]}));
+ const blk=list=>list.map(p=>({t:'blk',a:p[0],b:p[1]}));
+ const S=(s,a,b,unit,o)=>Object.assign({t:'story',s,a,b,unit},o||{});
+ const facts=list=>list.map(f=>{ const m=f.match(/^(\d+) ([+−]) (\d+)$/); const a=+m[1],b=+m[3]; return L(f+' = {'+(m[2]==='+'?a+b:a-b)+'}'); });
+ const tens=(t,o,s,x)=>L(s,Object.assign({pic:{k:'blocks',t,o}},x||{}));
+ const SEC=[
+  {k:'R',name:'Getting Ready to Add',sub:'Place value, renaming, and making ten',pages:'pages 2 to 11',of:10,color:'#2a6fdb',ico:'🧱'},
+  {k:'C',name:'Carrying',sub:'Adding with regrouping',pages:'pages 12 to 57',of:23,color:'#f08a24',ico:'➕'},
+  {k:'S',name:'Getting Ready to Subtract',sub:'What subtraction means, and facts to 20',pages:'pages 58 to 69',of:12,color:'#1f9d55',ico:'🔢'},
+  {k:'B',name:'Borrowing',sub:'Subtracting with regrouping',pages:'pages 70 to 121',of:26,color:'#d64545',ico:'➖'},
+  {k:'P',name:'Putting It All Together',sub:'Adding and subtracting, mixed + −',pages:'pages 122 to 137',of:8,color:'#7b4fd6',ico:'🏆'}
+ ];
+ const J=[];
+ const job=(o)=>{ J.push(o); };
+ const TZ='tenzi', DT='dot';
+
+ /* ================= 1. GETTING READY TO ADD ================= */
+ job({id:'R01',sec:'R',n:1,tag:'Tens and ones',title:'Count the Blocks',who:TZ,says:'I am a ten. Dot is a one. Count the tall tens first, then the little ones.',
+  parts:[{L:'A',d:'Count the tens and ones. Write the number.',cols:2,items:[[2,5],[4,2],[7,8],[1,9],[5,0],[3,7],[0,6],[9,1]].map(p=>tens(p[0],p[1],'{'+p[0]+'} tens {'+p[1]+'} ones → {'+(p[0]*10+p[1])+'}'))},
+   {L:'B',d:'Circle the digit in the tens place.',cols:4,items:[64,39,80,17].map(n=>L('{'+String(n)[0]+'*|'+String(n)[1]+'}'))}]});
+ job({id:'R02',sec:'R',n:2,tag:'Tens and ones',title:'What Does the Digit Mean?',who:DT,says:'Every digit has a job. The tens digit tells how many tens. The ones digit tells how many ones.',
+  ex:{t:'text',lines:['Example: 32 is 3 tens and 2 ones.','In 63, the 6 means 6 tens, or 60.']},
+  parts:[{L:'A',d:'Draw each number with tens and ones. Look at the example first.',cols:3,items:[23,46,58,71,90,15].map(n=>({t:'build',n}))},
+   {L:'B',d:'Fill in the boxes. The first one is done for you.',cols:1,items:[L('In 54, the 5 means {5} tens, or {50}'),L('In 48, the 4 means {4} tens, or {40}'),L('In 92, the 9 means {9} tens, or {90}'),L('In 35, the 5 means {5} ones, or {5}'),L('In 27, the 2 means {2} tens, or {20}')]},
+   {L:'C',d:'Write the parts, or write the number.',cols:3,items:[L('74 = {70} + {4}'),L('59 = {50} + {9}'),L('86 = {80} + {6}'),L('40 + 3 = {43}'),L('20 + 8 = {28}'),L('60 + 0 = {60}')]}]});
+ job({id:'R03',sec:'R',n:3,tag:'Tens and ones',title:'Trade Ten Ones for a Ten',who:TZ,says:'Ten loose ones can snap together into one ten. That is a trade! It works the other way too.',
+  parts:[{L:'A',d:'Trade.',cols:3,items:[L('10 ones = {1} ten'),L('20 ones = {2} tens'),L('30 ones = {3} tens'),L('1 ten = {10} ones'),L('4 tens = {40} ones'),L('6 tens = {60} ones')]},
+   {L:'B',d:'Snap the loose ones into groups of 10. Each group of 10 is one ten. Count the tens, count the ones left over, and write the number.',cols:1,
+    ex:'Example: 12 ones → 1 ten, 2 ones left over. So the number is 12.',items:[17,25,31,40,48,36].map(n=>L(n+' ones → snap {'+Math.floor(n/10)+'} tens, {'+n%10+'} ones left over. So the number is {'+n+'}'))},
+   {L:'C',d:'Solve.',cols:1,items:[L('Rivky has 3 bags with 10 marbles in each. She also has 6 loose marbles. How many marbles in all? {36} marbles'),L('Mendy has 52 stickers. Each sheet holds 10. How many sheets can he fill? How many are left over? {5} sheets {2} left')]}]});
+ job({id:'R04',sec:'R',n:4,tag:'Renaming',title:'Same Number, New Name',who:DT,says:'34 is 3 tens and 4 ones. Break one ten, and it becomes 2 tens and 14 ones. Same amount, new name!',
+  parts:[{L:'A',d:'Fill in the missing ones.',cols:2,items:[L('34 = 2 tens {14} ones'),L('45 = 3 tens {15} ones'),L('52 = 4 tens {12} ones'),L('61 = 5 tens {11} ones'),L('70 = 6 tens {10} ones'),L('83 = 7 tens {13} ones'),L('26 = 1 ten {16} ones'),L('90 = 8 tens {20} ones')]},
+   {L:'B',d:'Count carefully. Does the picture show the number? Circle yes or no.',cols:2,items:[tens(3,12,'Is this 42? {yes*|no}'),tens(2,16,'Is this 36? {yes*|no}'),tens(4,10,'Is this 40? {yes|no*}'),tens(1,11,'Is this 21? {yes*|no}')]}]});
+ job({id:'R05',sec:'R',n:5,tag:'Renaming',title:'Renaming Practice',who:DT,says:'To check, remember: each ten is worth 10 and each one is worth 1. Add them up. You should get the number.',
+  parts:[{L:'A',d:'Fill in the box.',cols:2,items:[L('5 tens 7 ones = 4 tens {17} ones'),L('3 tens 15 ones = {45}'),L('6 tens 12 ones = {72}'),L('2 tens 19 ones = {39}'),L('1 ten 20 ones = {30}'),L('{5} tens 14 ones = 64'),L('7 tens {11} ones = 81'),L('4 tens {10} ones = 50')]},
+   {L:'B',d:'Is it true? Circle T for true or F for false.',cols:2,items:[L('38 = 2 tens 18 ones {T*|F}'),L('65 = 5 tens 5 ones {T|F*}'),L('4 tens 13 ones = 53 {T*|F}'),L('90 = 9 tens 10 ones {T|F*}')]},
+   {L:'C',d:'Builder challenge! Build 47 in as many ways as you can. The first one is done: 4 tens 7 ones.',cols:2,items:[1,2,3,4].map(r=>({t:'ways',n:47,r,grp:'R05C'}))}]});
+ job({id:'R06',sec:'R',n:6,tag:'Zero',title:'Zero Holds the Place',who:TZ,says:'A zero means none in that place. In 40, there are no ones, but the 0 keeps the 4 in the tens place.',
+  parts:[{L:'A',d:'Count the tens and ones. Write the number.',cols:2,items:[[4,0],[7,0],[0,5],[10,0]].map(p=>tens(p[0],p[1],'{'+p[0]+'} tens {'+p[1]+'} ones → {'+(p[0]*10+p[1])+'}'))},
+   {L:'B',d:'What does the zero mean?',cols:1,items:[L('In 60, the 0 means there are {0} ones.'),L('In 207, the 0 means there are {0} tens.')]},
+   {L:'C',d:'Careful! These look alike. Write each number.',cols:2,items:[L('4 tens 0 ones = {40}'),L('0 tens 4 ones = {4}'),L('3 hundreds 0 tens 6 ones = {306}'),L('3 hundreds 6 tens 0 ones = {360}')]},
+   {L:'D',d:'Rename numbers that have zeros.',cols:2,items:[L('40 = 3 tens {10} ones'),L('60 = 5 tens {10} ones'),L('100 = 9 tens {10} ones'),L('100 = {10} tens')]}]});
+ job({id:'R07',sec:'R',n:7,tag:'Teen numbers',title:'Ten and Some More',who:TZ,says:'Every teen number has one ten hiding inside it. 13 is a full ten and 3 more!',
+  parts:[{L:'A',d:'Every teen number is 10 and some more.',cols:4,items:[13,16,11,19,14,18,12,17].map(n=>L(n+' = 10 + {'+(n-10)+'}'))},
+   {L:'B',d:'Write the number.',cols:3,items:[5,9,0,7,2,6].map(n=>L('10 + '+n+' = {'+(10+n)+'}'))},
+   {L:'C',d:'The top frame is full: that is 10. Count the dots in the bottom frame. Write the number.',cols:2,items:[4,8,1,5].map(n=>L('= {'+(10+n)+'}',{pic:{k:'teen',n}}))}]});
+ job({id:'R08',sec:'R',n:8,tag:'Teen numbers',title:'Too Many Ones!',who:DT,says:'When the ones add up to 10 or more, we have too many ones! Snap 10 of us together to make a new ten.',
+  parts:[{L:'A',d:'Add. Then write the answer as tens and ones.',cols:2,items:[[6,7],[8,5],[9,9],[7,4],[5,5],[8,8],[9,6],[7,7]].map(p=>{ const s=p[0]+p[1]; return L(p[0]+' + '+p[1]+' = {'+s+'} = {1} ten {'+(s-10)+'} ones'); })},
+   {L:'B',d:'Trade 10 ones for 1 ten. Write what you have now.',cols:1,items:[[2,15],[4,12],[1,18],[6,11],[3,10]].map(p=>{ const t=p[0]+1,o=p[1]-10; return L(p[0]+(p[0]===1?' ten ':' tens ')+p[1]+' ones → {'+t+'} tens {'+o+'} ones = {'+(t*10+o)+'}'); })}]});
+ job({id:'R09',sec:'R',n:9,tag:'Facts within 20',title:'Make a Ten to Add',who:TZ,says:'Fill up the ten first! For 8 + 5, move 2 from the 5 to the 8 to make 10. Then 10 + 3 = 13.',
+  ex:{t:'text',lines:['8 + 5: move 2 from the 5 to the 8.','8 + 2 = 10.','10 + 3 = 13.']},
+  parts:[{L:'A',d:'How many more to make 10? Draw dots to fill the frame.',cols:2,items:[3,6,1,8,5].map(n=>L(n+' + {'+(10-n)+'} = 10',{pic:{k:'frame',n},fill:1})).concat([L('{10} + 0 = 10',{pic:{k:'frame',n:0},fill:1})])},
+   {L:'B',d:'Make a ten to add.',cols:2,items:[[9,4],[8,6],[7,5],[9,7],[8,4],[6,5],[7,8],[9,8]].map(p=>{ const m=10-p[0]; return L(p[0]+' + '+p[1]+' = '+p[0]+' + {'+m+'} + {'+(p[1]-m)+'} = {'+(p[0]+p[1])+'}'); })}]});
+ job({id:'R10',sec:'R',n:10,tag:'Two-digit numbers, no carrying',title:'Stack and Add',who:DT,says:'Stack the numbers so tens sit over tens and ones sit over ones. Always start with the ones!',
+  parts:[{L:'A',d:'Add the ones first. Then add the tens.',cols:4,items:vs([[34,25],[42,36],[51,27],[63,14],[20,45],[71,18],[33,33],[46,52]])},
+   {L:'B',d:'Solve.',cols:2,items:[S('Shira read 23 pages on Sunday and 14 pages on Monday. How many pages did she read?',23,14,'pages'),S('The library has 40 books on one shelf and 25 books on another. How many books in all?',40,25,'books')]}]});
+
+ /* ================= 2. CARRYING (Sheets A and B) ================= */
+ const C=(n,step,title,who,says,A,B,o)=>{ ['A','B'].forEach(sh=>{ const d=sh==='A'?A:B; job(Object.assign({id:'C'+String(n).padStart(2,'0')+sh,sec:'C',n,sheet:sh,tag:step,title,who,says},typeof d==='function'?d():d,o||{})); }); };
+ const SAYC1='Always add the ones first. If the ones make 10 or more, you will need to trade 10 ones for a ten!';
+ const spotPart=(list,fill)=>[{L:'A',d:'Add only the boxed ones digits. Circle trade if they make 10 or more.',cols:3,items:spot(list)},
+   {L:'B',d:'Fill in a ones digit so this problem will need a trade.',cols:4,items:fill.map(p=>({t:'fill',a:p[0],b:p[1],op:'+'}))}];
+ C(1,'Step 1: Spot the trade','Do I Need to Trade?',TZ,SAYC1,
+  {parts:spotPart([[34,25],[47,36],[52,18],[61,27],[45,45],[73,14],[29,33],[56,23],[68,24],[41,38],[17,19],[82,16]],[[3,47],[5,26],[2,68],[6,15]])},
+  {parts:spotPart([[26,38],[51,34],[47,43],[65,22],[39,29],[72,15],[58,36],[44,44],[17,28],[63,31],[85,16],[26,52]],[[4,38],[7,19],[1,65],[3,24]])});
+ const SAYC2='Here are the four steps for carrying, written with numbers. When the ones make 10 or more, the new ten goes in the little carry box.';
+ C(2,'Step 2: Carrying with a one-digit number','Watch Me Carry',DT,SAYC2,
+  {ex:{t:'carry',a:36,b:7},parts:[{L:'A',d:'Your turn. Follow the four steps.',cols:2,items:g4([[58,4],[19,6]])}]},
+  {ex:{t:'carry',a:47,b:5},parts:[{L:'A',d:'Your turn. Follow the four steps.',cols:2,items:g4([[38,7],[64,9]])}]});
+ const SAYC3='Meet the carry box: the little dashed box above the tens. When you make a new ten, it goes there!';
+ C(3,'Step 2: Carrying with a one-digit number','Carry on the Mat',DT,SAYC3,
+  {ex:{t:'carry',a:26,b:9},parts:[{L:'A',d:'Add. Write the ones, carry the 1, then add the tens.',cols:4,items:vs([[48,5],[27,9],[59,4],[64,8],[15,6],[78,3],[45,9],[89,2]])}]},
+  {ex:{t:'carry',a:29,b:6},parts:[{L:'A',d:'Add. Write the ones, carry the 1, then add the tens.',cols:4,items:vs([[33,8],[56,6],[67,7],[24,9],[38,5],[79,4],[16,8],[47,6]])}]});
+ const SAYC4='Count all the ones together. Circle 10 of them: that circle is a new ten! Then count the tens, including the new one.';
+ C(4,'Step 2: Carrying with a one-digit number','Build It with Blocks',TZ,SAYC4,
+  {ex:{t:'carry',a:27,b:5,blocks:1},parts:[{L:'A',d:'Circle 10 ones to trade. Write the total tens and ones.',cols:2,items:blk([[36,7],[48,5],[19,6],[57,8],[25,9],[64,7]])}]},
+  {ex:{t:'carry',a:38,b:6,blocks:1},parts:[{L:'A',d:'Circle 10 ones to trade. Write the total tens and ones.',cols:2,items:blk([[27,6],[38,4],[45,9],[16,8],[73,9],[59,5]])}]});
+ const SAYC5='Fill in the helper lines, then write the same numbers on the mat. Ones, write, carry, tens!';
+ C(5,'Step 2: Carrying with a one-digit number','The Carry Box: Step by Step',TZ,SAYC5,
+  {parts:[{L:'A',d:'Use the helper lines to carry.',cols:2,items:help([[26,8],[47,5],[18,9],[39,4],[55,7],[68,6]])}]},
+  {parts:[{L:'A',d:'Use the helper lines to carry.',cols:2,items:help([[35,9],[17,6],[49,3],[66,8],[28,7],[74,9]])}]});
+ const SAYC6='Now both numbers have tens! The four steps are the same. In step 4, add the tens of both numbers plus the carried 1.';
+ C(6,'Step 3: Carrying with two-digit numbers','Watch Me Carry: Both Have Tens',DT,SAYC6,
+  {ex:{t:'carry',a:47,b:36},parts:[{L:'A',d:'Your turn. Follow the four steps.',cols:2,items:g4([[58,27],[36,48]])}]},
+  {ex:{t:'carry',a:29,b:46},parts:[{L:'A',d:'Your turn. Follow the four steps.',cols:2,items:g4([[67,18],[35,27]])}]});
+ C(7,'Step 3: Carrying with two-digit numbers','Build It: Both Have Tens',TZ,'Count all the ones together. Circle 10 of them: that circle is a new ten! Then count all the tens, including the new one.',
+  {parts:[{L:'A',d:'Circle 10 ones to trade. Write the total tens and ones.',cols:2,items:blk([[26,17],[38,24],[15,29],[47,35],[19,19],[54,28]])}]},
+  {parts:[{L:'A',d:'Circle 10 ones to trade. Write the total tens and ones.',cols:2,items:blk([[28,15],[36,26],[17,47],[49,23],[25,38],[58,18]])}]});
+ C(8,'Step 3: Carrying with two-digit numbers','Draw and Trade',DT,'Draw tens as tall sticks and ones as little squares. Circle 10 ones and trade them for one more ten.',
+  {ex:{t:'text',lines:['Example: 27 + 15','2 tens + 1 ten = 3 tens. 7 + 5 = 12 ones.','Circle 10 and trade: 4 tens 2 ones. 42']},parts:[{L:'A',d:'Draw both numbers. Circle 10 ones. Write the answer.',cols:2,items:[[34,28],[45,37],[18,46],[57,26]].map(p=>({t:'draw',a:p[0],b:p[1]}))}]},
+  {ex:{t:'text',lines:['Example: 36 + 16','3 tens + 1 ten = 4 tens. 6 + 6 = 12 ones.','Circle 10 and trade: 5 tens 2 ones. 52']},parts:[{L:'A',d:'Draw both numbers. Circle 10 ones. Write the answer.',cols:2,items:[[23,39],[46,29],[15,58],[67,24]].map(p=>({t:'draw',a:p[0],b:p[1]}))}]});
+ C(9,'Step 4: The written method','The Carry Box: Step by Step',TZ,SAYC5,
+  {parts:[{L:'A',d:'Use the helper lines to carry.',cols:2,items:help([[28,35],[46,29],[57,16],[39,44],[16,65],[25,49]])}]},
+  {parts:[{L:'A',d:'Use the helper lines to carry.',cols:2,items:help([[37,26],[48,35],[19,56],[64,28],[27,45],[58,17]])}]});
+ C(10,'Step 4: The written method','Carry Box Practice',DT,'Every problem on this page needs a carry. Say the steps quietly as you work: ones, write, carry, tens.',
+  {parts:[{L:'A',d:'Add. Carry the 1 every time.',cols:4,items:vs([[37,45],[28,48],[59,33],[64,19],[15,27],[46,46],[73,18],[38,29],[54,37],[26,68],[47,25],[69,14]])}]},
+  {parts:[{L:'A',d:'Add. Carry the 1 every time.',cols:4,items:vs([[26,57],[39,24],[45,18],[67,25],[18,38],[54,29],[36,36],[77,16],[29,49],[63,28],[15,65],[48,43]])}]});
+ const SAYC11='Careful, builder! Some of these need a carry and some do not. Check the ones first. Leave the carry box empty if you don’t need it.';
+ C(11,'Step 5: Mixed practice','Carry or Not?',TZ,SAYC11,
+  {parts:[{L:'A',d:'Add. Only carry when the ones make 10 or more.',cols:4,items:vs([[43,25],[36,47],[52,34],[28,56],[61,29],[45,32],[17,66],[70,18],[39,39],[24,53],[58,35],[81,16]])}]},
+  {parts:[{L:'A',d:'Add. Only carry when the ones make 10 or more.',cols:4,items:vs([[34,52],[28,45],[61,37],[46,38],[53,26],[19,72],[40,35],[67,27],[25,43],[38,48],[72,14],[56,35]])}]});
+ C(12,'Step 5: Mixed Carry practice','No Mat: Practice',TZ,'No mat this time! The tens are on the left and the ones are on the right. Use the little box on top when you carry.',
+  {parts:[{L:'A',d:'Add. Every problem needs a carry.',cols:4,items:vs([[38,47],[26,59],[47,35],[68,24],[19,73],[55,28],[36,46],[74,18],[29,29],[63,27],[45,38],[57,36]],{nomat:1})}]},
+  {parts:[{L:'A',d:'Add. Every problem needs a carry.',cols:4,items:vs([[27,48],[39,35],[58,26],[16,67],[44,38],[65,29],[37,37],[49,42],[18,56],[73,19],[28,64],[56,25]],{nomat:1})}]});
+ C(13,'Step 5: Mixed Carry practice','No Mat: Carry or Not?',DT,'Look at the ones first. Only carry when the ones make 10 or more. Leave the box empty when you don’t need it.',
+  {parts:[{L:'A',d:'Add. Carry only when you need to.',cols:4,items:vs([[34,25],[48,37],[52,16],[27,46],[61,28],[39,44],[45,32],[58,35],[47,8],[63,5],[29,7],[71,24],[36,56],[15,42],[68,27]],{nomat:1})}]},
+  {parts:[{L:'A',d:'Add. Carry only when you need to.',cols:4,items:vs([[43,26],[37,48],[24,53],[56,29],[72,15],[18,65],[38,9],[82,6],[46,7],[51,37],[64,28],[27,31],[49,36],[33,44],[17,58]],{nomat:1})}]});
+ C(14,'Step 5: Mixed practice','When the Ones Make Exactly 10',DT,'6 + 4 = 10 ones. That is 1 ten and 0 ones. Write a 0 in the ones place and carry the 1.',
+  {parts:[{L:'A',d:'Make 10.',cols:3,items:[4,7,1,3,6,9].map(n=>L(n+' + {'+(10-n)+'} = 10'))},{L:'B',d:'Add. Remember to write the 0!',cols:4,items:vs([[36,24],[47,13],[58,32],[25,45],[19,41],[63,27],[34,16],[72,18]])}]},
+  {parts:[{L:'A',d:'Make 10.',cols:3,items:[8,2,5,7,3,1].map(n=>L(n+' + {'+(10-n)+'} = 10'))},{L:'B',d:'Add. Remember to write the 0!',cols:4,items:vs([[27,33],[48,22],[15,35],[64,26],[39,11],[56,14],[23,47],[52,38]])}]});
+ C(15,'Step 5: Mixed practice','Stack It Yourself',TZ,'Write each number in the boxes: tens under tens, ones under ones. A one-digit number goes in the ones column only.',
+  {parts:[{L:'A',d:'Copy each problem onto the mat. Then add.',cols:4,items:[[45,38],[67,26],[9,54],[38,47],[76,8],[29,29],[55,36],[18,73]].map(p=>({t:'stack',a:p[0],b:p[1]}))},
+   {L:'B',d:'Which is right?',cols:1,items:[{t:'which',a:46,b:7,right:'A'}]}]},
+  {parts:[{L:'A',d:'Copy each problem onto the mat. Then add.',cols:4,items:[[37,46],[8,65],[59,24],[44,7],[26,38],[63,29],[5,48],[17,56]].map(p=>({t:'stack',a:p[0],b:p[1]}))},
+   {L:'B',d:'Which is right?',cols:1,items:[{t:'which',a:35,b:8,right:'B'}]}]});
+ const SAYC16='Read the story. Find the two numbers. Stack them on the little mat, then add. Don’t forget the label!';
+ C(16,'Step 6: Use it','Story Problems',DT,SAYC16,
+  {parts:[{L:'A',d:'Solve each story.',cols:2,items:[S('Shmuel found 38 shells on Sunday and 45 shells on Monday. How many shells did he find?',38,45,'shells'),S('The class read 27 books in Cheshvan and 36 books in Kislev. How many books did they read?',27,36,'books'),S('There are 46 girls and 39 boys at the assembly. How many children are there?',46,39,'children'),S('Bubby baked 24 challah rolls. Then she baked 18 more. How many rolls did she bake in all?',24,18,'rolls'),S('A bus has 37 seats upstairs and 28 seats downstairs. How many seats in all?',37,28,'seats'),S('Yaakov had 56 marbles. His brother gave him 26 more. How many does he have now?',56,26,'marbles')]}]},
+  {parts:[{L:'A',d:'Solve each story.',cols:2,items:[S('Leah picked 29 apples. Chana picked 34 apples. How many apples did they pick?',29,34,'apples'),S('One room has 47 chairs. Another room has 38 chairs. How many chairs in all?',47,38,'chairs'),S('Dovid read 18 pages in the morning and 25 pages at night. How many pages did he read?',18,25,'pages'),S('There were 36 cars in the parking lot. Then 27 more came. How many cars are there now?',36,27,'cars'),S('Mommy set out 45 plates and 45 cups for the seudah. How many things did she set out?',45,45,'things'),S('Avi scored 58 points. Moshe scored 26 points. How many points did they score together?',58,26,'points')]}]});
+ const SAYC17='Another builder did these problems in pencil. Some are right and some are wrong. Check each one. If it is wrong, write the right answer.';
+ const det=list=>list.map(p=>({t:'det',a:p[0],b:p[1],shown:p[2],carry:p[3]}));
+ C(17,'Step 6: Use it','Builder Detective',TZ,SAYC17,
+  {parts:[{L:'A',d:'Check the work. Circle right or wrong. Fix the wrong ones.',cols:3,items:det([[47,38,'75'],[26,35,'61',1],[36,29,'5 15'],[58,24,'82',1],[19,64,'73',1],[45,27,'72']])},{L:'B',d:'Explain.',cols:1,items:[{t:'open',s:'Pick one wrong answer. What mistake did the builder make?'}]}]},
+  {parts:[{L:'A',d:'Check the work. Circle right or wrong. Fix the wrong ones.',cols:3,items:det([[28,35,'53'],[47,26,'73',1],[39,18,'4 17'],[56,27,'83',1],[65,19,'74',1],[38,44,'82']])},{L:'B',d:'Explain.',cols:1,items:[{t:'open',s:'Pick one wrong answer. What mistake did the builder make?'}]}]});
+ const SAYC18='The answer is already there, but a digit is missing! Think about the ones first. Was there a carry?';
+ const miss=list=>list.map(p=>({t:'miss',a:p[0],b:p[1],sum:p[2]}));
+ C(18,'Step 6: Use it','Missing Digits',DT,SAYC18,
+  {parts:[{L:'A',d:'Find the missing digit.',cols:4,items:miss([['4_','27','73'],['38','_5','63'],['5_','18','75'],['29','3_','64'],['_6','47','83'],['64','1_','82'],['2_','2_','54'],['55','_9','84']])},
+   {L:'B',d:'Builder’s choice. Find two numbers that add up to 72 and need a carry. Try 3 ways!',cols:1,items:[1,2,3].map(r=>({t:'pair',n:72,r,grp:'C18A'}))}]},
+  {parts:[{L:'A',d:'Find the missing digit.',cols:4,items:miss([['3_','48','84'],['57','_6','83'],['6_','29','94'],['18','4_','65'],['_9','35','74'],['46','2_','72'],['3_','3_','76'],['27','_8','65']])},
+   {L:'B',d:'Builder’s choice. Find two numbers that add up to 81 and need a carry. Try 3 ways!',cols:1,items:[1,2,3].map(r=>({t:'pair',n:81,r,grp:'C18B'}))}]});
+ C(19,'Step 6: Use it','Three Numbers',TZ,'Add the ones of all three numbers. Look for two ones digits that make 10! If the ones make 10 or more, carry.',
+  {parts:[{L:'A',d:'Find a ten to make adding the ones easy.',cols:3,items:[[8,5,2],[7,6,3],[4,9,6]].map(p=>L(p.join(' + ')+' = {'+(p[0]+p[1]+p[2])+'}'))},
+   {L:'B',d:'Add three numbers.',cols:4,items:vs([[14,23,35],[26,31,18],[12,45,27],[33,16,29],[21,24,38],[15,15,15],[42,17,19],[36,22,25]])}]},
+  {parts:[{L:'A',d:'Find a ten to make adding the ones easy.',cols:3,items:[[6,7,4],[9,5,1],[3,8,7]].map(p=>L(p.join(' + ')+' = {'+(p[0]+p[1]+p[2])+'}'))},
+   {L:'B',d:'Add three numbers.',cols:4,items:vs([[13,25,32],[24,16,37],[11,38,29],[27,23,14],[35,12,28],[16,16,16],[43,25,19],[21,34,27]])}]});
+ const SAYC20='Solve each problem. Find your answer in the code key. Write its letter in the box with the same number. What is the secret message?';
+ C(20,'Step 7: Have fun with it','Code Breaker',DT,SAYC20,
+  {parts:[{L:'A',d:'Solve.',cols:4,items:vs([[37,25],[46,35],[48,25],[19,54],[56,34],[29,25],[38,27],[57,35],[18,25],[44,27],[64,28]])},
+   {L:'C',d:'The secret message:',cols:1,items:[{t:'code',key:{43:'O',52:'S',54:'T',61:'B',62:'C',65:'H',71:'N',73:'R',81:'A',83:'M',90:'Y',92:'E'},words:[5,3,3]}]}]},
+  {parts:[{L:'A',d:'Solve.',cols:4,items:vs([[37,14],[46,27],[54,28],[29,35],[63,28],[16,29],[38,34],[47,46],[19,37],[55,25],[66,16],[58,15]])},
+   {L:'C',d:'The secret message:',cols:1,items:[{t:'code',key:{45:'B',51:'G',56:'L',62:'S',64:'A',72:'U',73:'R',80:'D',82:'E',85:'M',91:'T',93:'I'},words:[5,7]}]}]});
+ C(21,'Step 7: Have fun with it','Speed Build',TZ,'Mixed problems! Some need a carry and some don’t. Work carefully, then check your time.',
+  {timed:1,score:15,parts:[{L:'A',d:'Add.',cols:4,items:vs([[38,46],[57,29],[64,8],[25,65],[49,33],[16,75],[43,36],[68,17],[27,27],[35,58],[76,15],[9,83],[44,39],[52,28],[19,67]])}]},
+  {timed:1,score:15,parts:[{L:'A',d:'Add.',cols:4,items:vs([[47,38],[26,59],[73,9],[35,45],[58,24],[61,28],[19,66],[44,27],[36,36],[8,77],[52,39],[25,34],[68,23],[17,75],[39,42]])}]});
+ C(22,'Bonus challenge','Challenge: Over 100',DT,'Sometimes the tens make 10 or more too. Then you carry again: 10 tens make 1 hundred!',
+  {ex:{t:'carry',a:68,b:57},parts:[{L:'A',d:'Add. You may need to carry twice! (H = hundreds, T = tens, O = ones)',cols:4,items:vs([[75,48],[87,56],[69,64],[58,79],[94,18],[66,66],[49,57],[83,38]],{hto:1})}]},
+  {ex:{t:'carry',a:79,b:46},parts:[{L:'A',d:'Add. You may need to carry twice! (H = hundreds, T = tens, O = ones)',cols:4,items:vs([[76,59],[88,45],[67,68],[95,27],[59,73],[84,39],[78,78],[47,65]],{hto:1})}]});
+ C(23,'Final inspection','Carrying Check',TZ,'Show what you know! Take your time and check every answer.',
+  {inspect:10,parts:[{L:'',d:'',cols:3,items:vs([[36,27],[48,35],[59,6],[24,68],[45,45],[17,56],[63,29],[38,38]]).concat([{t:'det',a:57,b:26,shown:'7 13',s:'Is this right?'},S('Esti has 28 stickers. Dina has 45 stickers. How many stickers do they have in all?',28,45,'stickers')])}]},
+  {inspect:10,says:'Here is another check. Show what you know and check every answer!',parts:[{L:'',d:'',cols:3,items:vs([[46,37],[28,55],[67,8],[39,52],[35,35],[18,64],[54,28],[47,47]]).concat([{t:'det',a:39,b:45,shown:'7 14',s:'Is this right?'},S('Rivka has 37 beads. Shira has 26 beads. How many beads do they have in all?',37,26,'beads')])}]});
+
+ /* ================= 3. GETTING READY TO SUBTRACT ================= */
+ job({id:'S01',sec:'S',n:1,tag:'Meet subtraction',title:'What Subtraction Means',who:DT,says:'Subtraction helps us find out how many. Here are three ways to think about it. Read each one with your teacher.',
+  ex:{t:'text',lines:['1. Take away. There are 8 cubes. Take away 3. Cross them out. How many are left? 8 − 3 = 5','2. Compare. Line them up. Leah has 7. Esti has 4. How many more does Leah have? 7 − 4 = 3','3. Missing part. There are 9 in all. 5 are here. How many are missing? Think: 5 + ? = 9. 9 − 5 = 4']},
+  parts:[{L:'A',d:'Take away. Cross out cubes, then count what is left.',cols:3,items:[[9,4],[7,2],[10,6]].map(p=>L('Cross out '+p[1]+'. '+p[0]+' − '+p[1]+' = {'+(p[0]-p[1])+'}',{pic:{k:'cubes',n:p[0],x:p[1]}}))},
+   {L:'B',d:'Compare. How many more?',cols:2,items:[L('Avi has {4} more',{pic:{k:'cmp',a:['Avi',6],b:['Moshe',2]}}),L('Rina has {3} more',{pic:{k:'cmp',a:['Rina',8],b:['Tova',5]}})]},
+   {L:'C',d:'Find the missing part.',cols:1,items:[L('3 + {5} = 8, so 8 − 3 = {5}'),L('6 + {4} = 10, so 10 − 6 = {4}')]}]});
+ job({id:'S02',sec:'S',n:2,tag:'Meet subtraction',title:'Take Away or Compare?',who:DT,says:'Subtraction can mean taking some away. It can also mean finding how many more one group has than another.',
+  parts:[{L:'A',d:'Solve each story. Write the number sentence.',cols:2,items:[L('Dovi had 15 pretzels. He ate 6. How many pretzels are left? Take away: {15} − {6} = {9}'),L('There were 12 birds on a fence. Then 5 flew away. How many birds are still there? Take away: {12} − {5} = {7}'),L('Leah has 14 beads. Esti has 9 beads. How many more beads does Leah have? Compare: {14} − {9} = {5}'),L('The red tower is 17 blocks tall. The blue tower is 8 blocks tall. How much taller is the red tower? Compare: {17} − {8} = {9}')]},
+   {L:'B',d:'Do you add or subtract? Circle + or −. Then write the answer.',cols:1,items:[L('Avi had 8 apples. He picked 7 more. How many apples does he have now? {+*|−} {15}'),L('Mommy baked 16 cookies. She gave 8 to a neighbor. How many are left? {+|−*} {8}'),L('There are 11 boys. 4 boys are wearing hats. How many boys are not wearing hats? {+|−*} {7}')]},
+   {L:'C',d:'Story time!',cols:1,items:[L('Write your own story for 13 − 5. The answer is {8}'),{t:'open',s:'My story for 13 − 5:'}]}]});
+ job({id:'S03',sec:'S',n:3,tag:'Facts within 20',title:'Back to Ten to Subtract',who:DT,says:'For 13 − 5, hop back 3 to land on 10. Then hop back 2 more. You land on 8!',
+  ex:{t:'text',lines:['13 − 5: hop back 3 to land on 10.','Then hop back 2 more.','You land on 8!'],line:[5,15,13,10,8]},
+  parts:[{L:'A',d:'Go back to ten to subtract.',cols:2,items:[[15,7],[16,9],[11,3],[17,8],[13,6],[12,5],[14,9],[18,9]].map(p=>{ const f=p[0]-10; return L(p[0]+' − '+p[1]+' = '+p[0]+' − '+f+' − {'+(p[1]-f)+'} = {'+(p[0]-p[1])+'}'); })},
+   {L:'B',d:'Each fact family lives in one house. Finish the subtraction facts.',cols:3,items:[[12,7,5],[14,8,6],[12,9,3]].map(p=>L(p[1]+' + '+p[2]+' = '+p[0]+' · '+p[0]+' − '+p[2]+' = {'+p[1]+'} · '+p[0]+' − '+p[1]+' = {'+p[2]+'}',{house:p[0]}))}]});
+ job({id:'S04',sec:'S',n:4,tag:'Facts within 20',title:'Subtraction Fact Builder',who:DT,says:'To subtract, start with the whole amount and take some away. Cross out the dots you take away, then count what is left.',
+  parts:[{L:'A',d:'Cross out dots to take them away. Count what is left.',cols:2,items:[[12,4],[15,6],[11,5],[14,7],[16,9],[13,8]].map(p=>L(p[0]+' − '+p[1]+' = {'+(p[0]-p[1])+'}',{pic:{k:'dots',n:p[0],x:p[1]}}))},
+   {L:'B',d:'Use an addition fact to subtract.',cols:2,items:[[8,13],[9,15],[7,12],[6,14],[9,11],[8,17]].map(p=>L(p[0]+' + {'+(p[1]-p[0])+'} = '+p[1]+', so '+p[1]+' − '+p[0]+' = {'+(p[1]-p[0])+'}'))},
+   {L:'C',d:'Subtraction facts.',cols:4,items:facts(['13 − 6','11 − 4','16 − 7','12 − 9','15 − 9','14 − 5','17 − 8','12 − 7','11 − 8','13 − 7','15 − 7','14 − 6'])}]});
+ job({id:'S05',sec:'S',n:5,tag:'Facts within 20',title:'Speed Build',who:TZ,says:'Work carefully, not just fast. Stuck on one? Skip it and come back at the end.',timed:1,score:34,
+  parts:[{L:'A',d:'Solve as quickly and carefully as you can.',cols:6,items:facts(['7 + 6','9 + 5','8 + 3','6 + 6','4 + 9','5 + 8','15 − 8','12 − 3','14 − 7','11 − 5','16 − 8','13 − 4','8 + 7','9 + 9','3 + 8','7 + 7','6 + 9','5 + 7','17 − 9','13 − 8','12 − 6','15 − 6','11 − 7','18 − 9','9 + 2','4 + 7','8 + 8','6 + 8','7 + 9','5 + 6'])},
+   {L:'B',d:'Find the missing number.',cols:4,items:[L('{8} + 7 = 15'),L('9 + {4} = 13'),L('6 + {8} = 14'),L('{7} + 5 = 12')]}]});
+ job({id:'S06',sec:'S',n:6,tag:'Two-digit numbers, no borrowing',title:'Tens',who:TZ,says:'3 tens and 2 tens make 5 tens. So 30 + 20 = 50. Adding or taking away 10 changes only the tens digit!',
+  parts:[{L:'A',d:'Add or subtract the tens.',cols:2,items:facts(['30 + 20','40 + 50','60 + 10','20 + 70','80 − 30','90 − 60','70 − 20','50 − 50'])},
+   {L:'B',d:'Write 10 less and 10 more.',cols:1,items:[34,67,80,15,52].map(n=>L('10 less: {'+(n-10)+'} · '+n+' · 10 more: {'+(n+10)+'}'))}]});
+ job({id:'S07',sec:'S',n:7,tag:'Renaming',title:'Break a Ten',who:TZ,says:'When you need more ones, break me open! I turn into 10 ones. You have one less ten and 10 more ones.',
+  ex:{t:'text',lines:['53 is 5 tens and 3 ones.','Break one ten: 5 tens become 4 tens,','and 3 ones + 10 ones = 13 ones.']},
+  parts:[{L:'A',d:'Break one ten into 10 ones. Follow the example all the way across.',cols:2,items:[67,80,25,91,38,44,70,62].map(n=>{ const t=Math.floor(n/10),o=n%10; return L(n+': {'+t+'} tens {'+o+'} ones → {'+(t-1)+'} tens {'+(o+10)+'} ones'); })},
+   {L:'B',d:'Rename the number.',cols:2,items:[[56,50,6,40],[72,70,2,60],[35,30,5,20],[81,80,1,70],[60,60,0,50]].map(p=>L(p[0]+' = '+p[1]+' + '+p[2]+' = '+p[3]+' + {'+(p[0]-p[3])+'}'))},
+   {L:'C',d:'Solve.',cols:1,items:[L('Chaim has 4 packs of 10 cards and 2 loose cards. He opens one pack to give his friend 7 loose cards. Full packs now: {3} · Loose cards now: {12} · Left after he gives 7: {5}')]}]});
+ job({id:'S08',sec:'S',n:8,tag:'Two-digit numbers, no borrowing',title:'Stack and Subtract',who:TZ,says:'Same plan for subtracting: ones first, then tens. You can check by adding your answer back!',
+  parts:[{L:'A',d:'Subtract the ones first. Then subtract the tens.',cols:4,items:vss([[58,23],[79,46],[87,52],[96,45],[47,15],[68,60],[75,34],[89,27]])},
+   {L:'B',d:'Check by adding.',cols:1,items:[L('58 − 23 = 35. Check: 35 + 23 = {58}'),L('79 − 46 = 33. Check: 33 + 46 = {79}')]},
+   {L:'C',d:'Solve.',cols:2,items:[S('There were 48 children at the siyum. Then 16 went home. How many are still there?',48,16,'children',{op:'-'}),S('A baker made 65 rolls. He sold 42 rolls. How many rolls are left?',65,42,'rolls',{op:'-'})]}]});
+ job({id:'S09',sec:'S',n:9,tag:'Two-digit numbers, no borrowing',title:'Take Away the Blocks',who:TZ,says:'The picture shows the first number. Cross out the tens and ones you take away. Count the blocks that are left.',
+  ex:{t:'text',lines:['Example: 46 − 23','Cross out 2 tens and 3 ones.','Left: 2 tens and 3 ones. 23']},
+  parts:[{L:'A',d:'Cross out blocks to subtract. Write how many are left.',cols:2,items:[[57,24],[39,16],[74,32],[85,41],[66,25],[48,17]].map(p=>L(p[0]+' − '+p[1]+' = {'+(p[0]-p[1])+'}',{pic:{k:'xblocks',t:Math.floor(p[0]/10),o:p[0]%10,xt:Math.floor(p[1]/10),xo:p[1]%10}}))}]});
+ job({id:'S10',sec:'S',n:10,tag:'Two-digit numbers, no borrowing',title:'Subtraction Mix',who:DT,says:'Lots of ways to practice today! Remember: ones first, then tens. Check by adding your answer back.',
+  parts:[{L:'A',d:'Subtract.',cols:4,items:facts(['47 − 5','68 − 7','59 − 30','86 − 40','75 − 23','99 − 56','64 − 21','38 − 18'])},
+   {L:'B',d:'Stack and subtract.',cols:4,items:vss([[77,35],[58,14],[96,73],[49,29]])},
+   {L:'C',d:'Find the missing number.',cols:4,items:[L('45 − {20} = 25'),L('{42} − 12 = 30'),L('67 − {33} = 34'),L('80 − {30} = 50')]},
+   {L:'D',d:'Solve.',cols:2,items:[S('Sara had 57 stickers. She gave 24 to her sister. How many stickers does Sara have now?',57,24,'stickers',{op:'-'}),S('A box has 38 crayons. 15 crayons are broken. How many crayons are not broken?',38,15,'crayons',{op:'-'})]}]});
+ job({id:'S11',sec:'S',n:11,tag:'Meet subtraction',title:'Are There Enough Ones?',who:DT,says:'Look at the ones on top. Are there enough to take away the ones on the bottom? If not, you will need to borrow a ten. You will learn how soon!',
+  parts:[{L:'A',d:'Look only at the boxed ones digits. Enough ones to subtract? Circle yes or no.',cols:2,items:[[47,23],[52,18],[63,41],[70,25],[84,36],[39,17],[91,50],[45,29],[66,66],[33,14]].map(p=>({t:'enough',a:p[0],b:p[1]}))},
+   {L:'B',d:'Write <, >, or = in the circle.',cols:2,items:[['47','74','<'],['58','52','>'],['30','3 tens','='],['2 tens 15 ones','35','='],['61','16','>'],['89','98','<']].map(p=>L(p[0]+' {'+['<','>','='].map(c=>c+(c===p[2]?'*':'')).join('|')+'} '+p[1]))},
+   {L:'C',d:'Builder detective!',cols:1,items:[{t:'open',s:'52 − 18 = 46. Ari got 46. He said, “8 take away 2 is 6.” What mistake did Ari make?'}]}]});
+ job({id:'S12',sec:'S',n:12,tag:'Final inspection',title:'Readiness Check',who:TZ,says:'This is your last job before borrowing! Show everything you know. You can do it, builder!',inspect:10,
+  parts:[{L:'',d:'',cols:2,items:[tens(4,6,'= {46}'),L('In 72, the 7 means {70}'),L('58 = 4 tens {18} ones'),L('3 tens 14 ones = {44}'),L('9 + 6 = {15}'),L('14 − 8 = {6}'),L('36 + 42 = {78}'),L('85 − 31 = {54}'),{t:'build',n:52,max:4,s:'Draw 52 using no more than 4 tens.'},L('In 63 − 27, are there enough ones to take 7 from 3 without borrowing? {yes|no*}')]}]});
+
+ /* ================= 4. BORROWING (Sheets A and B) ================= */
+ const Bj=(n,step,title,who,says,A,Bd,o)=>{ ['A','B'].forEach(sh=>{ const d=sh==='A'?A:Bd; if(!d) return; job(Object.assign({id:'B'+String(n).padStart(2,'0')+sh,sec:'B',n,sheet:sh,tag:step,title,who,says},d,o||{})); }); };
+ const pv=(pics,dig,parts,nums)=>({parts:[{L:'A',d:'Count the tens and ones. Write the number.',cols:2,items:pics.map(n=>tens(Math.floor(n/10),n%10,'{'+Math.floor(n/10)+'} tens {'+n%10+'} ones → {'+n+'}'))},
+  {L:'B',d:'What does the digit mean?',cols:1,items:dig.map(p=>L('In '+p[0]+', the '+p[1]+' means {'+p[1]+'} '+(p[2]?'ones':'tens')+', or {'+(p[2]?p[1]:p[1]*10)+'}'))},
+  {L:'C',d:'Write the parts, or write the number.',cols:3,items:parts.map(n=>L(n+' = {'+(n-n%10)+'} + {'+n%10+'}')).concat(nums.map(p=>L(p[0]+' + '+p[1]+' = {'+(p[0]+p[1])+'}')))}]});
+ Bj(1,'Warm-up: Tens and ones','Place Value Review',TZ,'Before we borrow, let’s remember: a tall stick is 1 ten, and a little cube is 1 one.',
+  pv([34,60,27,61,18,45],[[47,4],[83,8],[26,6,1],[59,5]],[63,28,91],[[40,7],[70,5],[30,0]]),
+  pv([43,29,70,15,56,82],[[62,6],[35,3],[74,4,1],[18,1]],[52,37,84],[[60,9],[20,4],[50,5]]));
+ const brk=(rows,fill)=>({parts:[{L:'A',d:'Break one ten. Write the tens and ones before and after.',cols:2,items:rows.map(n=>{ const t=Math.floor(n/10),o=n%10; return L(n+': {'+t+'} tens {'+o+'} ones → {'+(t-1)+'} tens {'+(o+10)+'} ones'); })},
+  {L:'B',d:'Fill in the ones.',cols:2,items:fill.map(n=>{ const t=Math.floor(n/10)-1; return L(n+' = '+t+(t===1?' ten':' tens')+' {'+(n-t*10)+'} ones'); })}]});
+ Bj(2,'Warm-up: Tens and ones','Break a Ten Review',DT,'This is the secret of borrowing! A ten can break into 10 ones, and the number stays the same.',
+  Object.assign({ex:{t:'text',lines:['4 tens 2 ones → 3 tens 12 ones','Break 1 ten into 10 ones. Now there is 1 less ten and 10 more ones.','It is still 42!']}},brk([53,61,74,35,80,26],[64,52,87,30,45,71,96,23])),
+  Object.assign({ex:{t:'text',lines:['3 tens 6 ones → 2 tens 16 ones','Break 1 ten into 10 ones. Now there is 1 less ten and 10 more ones.','It is still 36!']}},brk([72,45,93,60,38,57],[43,81,56,90,24,75,62,37])));
+ const bspot=(list,fill)=>({parts:[{L:'A',d:'Look at the boxed ones digits. Circle borrow if the top one is too small.',cols:3,items:spot(list,'-')},
+  {L:'B',d:'Fill in a ones digit so this problem will need a borrow.',cols:4,items:fill.map(p=>({t:'fill',a:p[0],b:p[1],op:'-'}))}]});
+ Bj(3,'Step 1: Spot the borrow','Do I Need to Borrow?',TZ,'Look at the ones. Is the top one big enough to take away the bottom one? If not, you need to borrow a ten!',
+  bspot([[54,21],[63,28],[72,35],[86,43],[41,17],[95,62],[38,19],[67,24],[50,26],[79,58],[82,47],[46,13]],[[43,2],[61,3],[75,1],[52,4]]),
+  bspot([[58,32],[44,27],[91,36],[77,25],[62,48],[83,51],[35,18],[96,74],[70,33],[59,26],[24,17],[68,45]],[[54,3],[72,1],[36,2],[81,5]]));
+ Bj(4,'Step 2: Taking away a one-digit number','Watch Me Borrow',DT,'Here are the four steps for borrowing. Read them from 1 to 4. The little boxes on top hold the new numbers after you borrow.',
+  {ex:{t:'borrow',a:42,b:7},parts:[{L:'A',d:'Your turn. Follow the four steps, from 1 to 4.',cols:2,items:g4([[53,8],[71,4]],'-')}]},
+  {ex:{t:'borrow',a:34,b:6},parts:[{L:'A',d:'Your turn. Follow the four steps, from 1 to 4.',cols:2,items:g4([[62,9],[85,7]],'-')}]});
+ Bj(5,'Step 2: Taking away a one-digit number','Borrow on the Mat',TZ,'Use the little boxes on top. Write the new tens and the new ones there, then subtract.',
+  {ex:{t:'borrow',a:51,b:6},parts:[{L:'A',d:'Subtract. Borrow a ten every time.',cols:4,items:vss([[32,5],[64,7],[23,8],[75,9],[46,8],[81,3],[57,9],[93,6]])}]},
+  {ex:{t:'borrow',a:43,b:9},parts:[{L:'A',d:'Subtract. Borrow a ten every time.',cols:4,items:vss([[22,4],[56,8],[71,2],[34,7],[65,9],[90,6],[47,8],[83,5]])}]});
+ const bb=list=>list.map(p=>({t:'bblk',a:p[0],b:p[1]}));
+ const SAYB6='First break one ten into 10 ones. Then cross out the blocks you take away. Count what is left.';
+ Bj(6,'Step 2: Taking away a one-digit number','Break a Ten with Blocks',DT,SAYB6,
+  {ex:{t:'borrow',a:42,b:7,blocks:1},parts:[{L:'A',d:'Look at both pictures. Do 1, 2, 3, 4 in order.',cols:2,items:bb([[31,5],[54,8],[23,6],[45,9]])}]},
+  {ex:{t:'borrow',a:36,b:8,blocks:1},parts:[{L:'A',d:'Look at both pictures. Do 1, 2, 3, 4 in order.',cols:2,items:bb([[33,6],[62,7],[41,9],[25,8]])}]});
+ const bh=list=>list.map(p=>({t:'help',a:p[0],b:p[1],op:'-'}));
+ const SAYB7='Fill in the helper lines from 1 to 4. Then write the same numbers on the mat.';
+ Bj(7,'Step 2: Taking away a one-digit number','The Borrow Box: Step by Step',TZ,SAYB7,
+  {parts:[{L:'A',d:'Use the helper lines to borrow.',cols:2,items:bh([[32,6],[51,8],[74,5],[43,9],[65,7],[26,8]])}]},
+  {parts:[{L:'A',d:'Use the helper lines to borrow.',cols:2,items:bh([[41,3],[63,9],[52,4],[85,6],[34,5],[72,8]])}]});
+ const SAYB8='Now both numbers have tens! The four steps are the same. In step 4, take away the bottom tens too.';
+ Bj(8,'Step 3: Two-digit numbers','Watch Me Borrow: Both Have Tens',DT,SAYB8,
+  {ex:{t:'borrow',a:52,b:27},parts:[{L:'A',d:'Your turn. Follow the four steps, from 1 to 4.',cols:2,items:g4([[63,28],[81,45]],'-')}]},
+  {ex:{t:'borrow',a:74,b:38},parts:[{L:'A',d:'Your turn. Follow the four steps, from 1 to 4.',cols:2,items:g4([[52,16],[90,37]],'-')}]});
+ Bj(9,'Step 3: Two-digit numbers','Break a Ten: Both Have Tens',DT,SAYB6,
+  {ex:{t:'borrow',a:52,b:27,blocks:1},parts:[{L:'A',d:'Look at both pictures. Do 1, 2, 3, 4 in order.',cols:2,items:bb([[43,18],[61,25],[54,36],[32,14]])}]},
+  {ex:{t:'borrow',a:45,b:19,blocks:1},parts:[{L:'A',d:'Look at both pictures. Do 1, 2, 3, 4 in order.',cols:2,items:bb([[72,36],[63,27],[51,24],[34,17]])}]});
+ const SAYB10='Draw tens as tall sticks and ones as little squares. Break one ten into 10 ones, then cross out what you take away.';
+ Bj(10,'Step 3: Two-digit numbers','Draw and Borrow',DT,SAYB10,
+  {ex:{t:'text',lines:['Example: 43 − 18','Draw 43, but break one ten: 3 tens and 13 ones.','Cross out 1 ten and 8 ones. Count what is left: 25']},parts:[{L:'A',d:'Draw, break a ten, cross out, and write the answer.',cols:2,items:[[52,26],[64,38],[71,45],[35,17]].map(p=>({t:'draw',a:p[0],b:p[1],op:'-'}))}]},
+  {ex:{t:'text',lines:['Example: 61 − 24','Draw 61, but break one ten: 5 tens and 11 ones.','Cross out 2 tens and 4 ones. Count what is left: 37']},parts:[{L:'A',d:'Draw, break a ten, cross out, and write the answer.',cols:2,items:[[43,27],[82,46],[54,18],[73,39]].map(p=>({t:'draw',a:p[0],b:p[1],op:'-'}))}]});
+ Bj(11,'Step 3: Two-digit numbers','The Borrow Box: Step by Step',TZ,SAYB7,
+  {parts:[{L:'A',d:'Use the helper lines to borrow.',cols:2,items:bh([[53,27],[72,38],[64,45],[81,36],[45,18],[92,57]])}]},
+  {parts:[{L:'A',d:'Use the helper lines to borrow.',cols:2,items:bh([[61,29],[43,16],[75,48],[52,34],[84,59],[33,17]])}]});
+ const SAYB12='Every problem on this page needs a borrow. Say the steps as you work: look, borrow, ones, tens.';
+ Bj(12,'Step 4: Practice','Borrow Box Practice',DT,SAYB12,
+  {parts:[{L:'A',d:'Subtract. Borrow every time.',cols:4,items:vss([[42,17],[63,29],[51,36],[74,48],[85,37],[32,15],[93,56],[61,44],[76,39],[54,28],[82,65],[45,26]])}]},
+  {parts:[{L:'A',d:'Subtract. Borrow every time.',cols:4,items:vss([[53,18],[71,34],[62,27],[94,59],[43,25],[86,48],[35,19],[72,45],[64,37],[91,63],[57,39],[83,46]])}]});
+ const SAYB13='Careful! Some of these need a borrow and some do not. Check the ones first. Leave the little boxes empty if you don’t need them.';
+ Bj(13,'Step 4: Practice','Borrow or Not?',TZ,SAYB13,
+  {parts:[{L:'A',d:'Subtract. Only borrow when the top ones are too small.',cols:4,items:vss([[58,23],[62,37],[79,45],[84,56],[46,21],[53,29],[97,64],[71,38],[65,32],[42,17],[88,54],[93,48]])}]},
+  {parts:[{L:'A',d:'Subtract. Only borrow when the top ones are too small.',cols:4,items:vss([[47,12],[51,26],[86,43],[73,48],[69,35],[92,57],[38,14],[64,29],[75,41],[81,36],[57,23],[44,18]])}]});
+ Bj(14,'Step 4: Practice','No Mat: Borrow Practice',TZ,'No mat this time! The tens are on the left and the ones are on the right. Use the little boxes on top when you borrow.',
+  {parts:[{L:'A',d:'Subtract. Every problem needs a borrow.',cols:4,items:vss([[52,27],[63,38],[41,16],[74,49],[85,58],[32,17],[90,46],[61,35],[73,28],[44,19],[82,55],[56,37]],{nomat:1})}]},
+  {parts:[{L:'A',d:'Subtract. Every problem needs a borrow.',cols:4,items:vss([[43,18],[71,36],[62,45],[54,29],[83,47],[35,16],[60,24],[92,58],[46,27],[75,38],[81,63],[67,49]],{nomat:1})}]});
+ Bj(15,'Step 4: Practice','No Mat: Borrow or Not?',DT,'Look at the ones first. Only borrow when the top ones are too small. Leave the boxes empty when you don’t need them.',
+  {parts:[{L:'A',d:'Subtract. Borrow only when you need to.',cols:5,items:vss([[58,23],[62,37],[47,8],[79,45],[84,56],[53,6],[96,42],[71,38],[65,32],[42,17],[88,54],[93,48],[36,9],[57,24],[80,35]],{nomat:1})}]},
+  {parts:[{L:'A',d:'Subtract. Borrow only when you need to.',cols:5,items:vss([[47,12],[51,26],[63,7],[86,43],[73,48],[92,5],[69,35],[38,14],[64,29],[75,41],[81,36],[44,8],[57,23],[90,54],[48,19]],{nomat:1})}]});
+ Bj(16,'Step 4: Practice','When the Ones Are 0',DT,'40 − 17: you can’t take 7 from 0! Borrow a ten. The 0 ones become 10 ones. 10 − 7 = 3.',
+  {parts:[{L:'A',d:'Warm up: take away from 10.',cols:3,items:facts(['10 − 3','10 − 7','10 − 1','10 − 6','10 − 9','10 − 4'])},{L:'B',d:'Subtract. The 0 ones become 10 ones.',cols:4,items:vss([[40,17],[60,24],[30,12],[80,35],[50,28],[70,46],[90,53],[20,8]])}]},
+  {parts:[{L:'A',d:'Warm up: take away from 10.',cols:3,items:facts(['10 − 2','10 − 8','10 − 5','10 − 1','10 − 9','10 − 4'])},{L:'B',d:'Subtract. The 0 ones become 10 ones.',cols:4,items:vss([[50,16],[30,18],[70,25],[40,23],[90,37],[60,42],[80,49],[20,7]])}]});
+ const SAYB17='The first number goes on top. Tens under tens, ones under ones. A one-digit number goes in the ones column only.';
+ const st=list=>list.map(p=>({t:'stack',a:p[0],b:p[1],op:'-'}));
+ Bj(17,'Step 4: Practice','Stack It Yourself',TZ,SAYB17,
+  {parts:[{L:'A',d:'Copy each problem onto the mat. Then subtract.',cols:4,items:st([[52,7],[63,28],[80,34],[45,9],[71,46],[94,58],[36,8],[82,57]])},{L:'B',d:'Which is right?',cols:1,items:[{t:'which',a:52,b:8,op:'-',right:'A'}]}]},
+  {parts:[{L:'A',d:'Copy each problem onto the mat. Then subtract.',cols:4,items:st([[61,5],[74,39],[50,23],[43,8],[92,65],[85,47],[27,9],[66,38]])},{L:'B',d:'Which is right?',cols:1,items:[{t:'which',a:43,b:7,op:'-',right:'B'}]}]});
+ const SAYB18='Subtraction and addition are partners. Add your answer back to the number you took away. You should get the top number!';
+ const chk=(list,k)=>list.map(p=>({t:'chk',a:p[0],b:p[1],op:p[2]||'-',k}));
+ Bj(18,'Step 5: Use it','Check by Adding',DT,SAYB18,
+  {ex:{t:'text',lines:['53 − 28 = 25.','Check: add the answer and the number you took away.','25 + 28 = 53. It matches the top number, so the answer is right!']},parts:[{L:'A',d:'Subtract. Then check by adding.',cols:2,items:chk([[72,36],[81,47],[64,19],[90,58],[45,27],[62,34]],'b18')}]},
+  {ex:{t:'text',lines:['62 − 37 = 25.','Check: add the answer and the number you took away.','25 + 37 = 62. It matches the top number, so the answer is right!']},parts:[{L:'A',d:'Subtract. Then check by adding.',cols:2,items:chk([[84,49],[71,26],[53,18],[70,44],[96,69],[41,15]],'b18')}]});
+ const SM=(s,a,b,unit,o)=>S(s,a,b,unit,Object.assign({op:'-'},o||{}));
+ Bj(19,'Step 5: Use it','Story Problems',TZ,'Read the story. Put the bigger number on top. Questions like How many are left? and How many more? tell you to subtract.',
+  {parts:[{L:'A',d:'Solve each story.',cols:2,items:[SM('Shmuel had 42 stickers. He gave 17 to his brother. How many stickers does he have left?',42,17,'stickers'),SM('There were 53 birds in a tree. Then 26 flew away. How many birds are still in the tree?',53,26,'birds'),SM('Leah has 61 beads. Esti has 35 beads. How many more beads does Leah have?',61,35,'beads'),SM('The class needs 80 cups. They have 46 cups. How many more cups do they need?',80,46,'cups'),SM('A book has 72 pages. Dovid read 48 pages. How many pages are left?',72,48,'pages'),SM('Bubby baked 45 rolls. The family ate 19. How many rolls are left?',45,19,'rolls')]}]},
+  {parts:[{L:'A',d:'Solve each story.',cols:2,items:[SM('Rivky had 51 marbles. She lost 23 marbles. How many marbles are left?',51,23,'marbles'),SM('There are 64 children in the lunchroom. 37 go outside. How many are still inside?',64,37,'children'),SM('Avi read 82 pages. Moshe read 46 pages. How many more pages did Avi read?',82,46,'pages'),SM('Mommy needs 70 napkins. She has 38. How many more napkins does she need?',70,38,'napkins'),SM('A box had 93 crayons. 57 crayons were used up. How many crayons are left?',93,57,'crayons'),SM('Chana has 34 cards. Sara has 16 cards. How many more cards does Chana have?',34,16,'cards')]}]});
+ const dets=list=>list.map(p=>({t:'det',a:p[0],b:p[1],op:'-',shown:p[2],marks:p[3]||null}));
+ const SAYB20='Another builder did these in pencil. Some are right and some are wrong. Watch for two tricks: flipping the ones, and forgetting to make the tens 1 less.';
+ Bj(20,'Step 5: Use it','Builder Detective',TZ,SAYB20,
+  {parts:[{L:'A',d:'Check the work. Circle right or wrong. Fix the wrong ones.',cols:3,items:dets([[52,27,'35'],[63,28,'35',{nt:'5',no:'13'}],[74,39,'45',{no:'14'}],[81,46,'35',{nt:'7',no:'11'}],[45,18,'33'],[90,54,'36',{nt:'8',no:'10'}]])},{L:'B',d:'Explain.',cols:1,items:[{t:'open',s:'Pick one wrong answer. What mistake did the builder make?'}]}]},
+  {parts:[{L:'A',d:'Check the work. Circle right or wrong. Fix the wrong ones.',cols:3,items:dets([[62,38,'36'],[53,17,'36',{nt:'4',no:'13'}],[85,49,'46',{no:'15'}],[71,25,'46',{nt:'6',no:'11'}],[34,16,'22'],[60,23,'37',{nt:'5',no:'10'}]])},{L:'B',d:'Explain.',cols:1,items:[{t:'open',s:'Pick one wrong answer. What mistake did the builder make?'}]}]});
+ const missm=list=>list.map(p=>({t:'miss',a:p[0],b:p[1],sum:p[2],op:'-'}));
+ const SAYB21='The answer is already there, but a digit is missing! Try a number in the box, then check: does it give the answer?';
+ Bj(21,'Step 5: Use it','Missing Digits',DT,SAYB21,
+  {parts:[{L:'A',d:'Find the missing digit.',cols:4,items:missm([['5_','27','26'],['64','_8','26'],['7_','39','35'],['_2','45','37'],['91','5_','35'],['43','1_','25'],['80','_4','26'],['55','2_','26']])},
+   {L:'B',d:'Builder’s choice. Make a subtraction problem that needs a borrow and has an answer of 25. Try 3 ways!',cols:1,items:[1,2,3].map(r=>({t:'pair',n:25,r,op:'-',grp:'B21A'}))}]},
+  {parts:[{L:'A',d:'Find the missing digit.',cols:4,items:missm([['6_','28','35'],['72','_6','46'],['8_','47','36'],['_4','19','35'],['50','2_','28'],['36','1_','17'],['9_','58','34'],['47','_9','18']])},
+   {L:'B',d:'Builder’s choice. Make a subtraction problem that needs a borrow and has an answer of 18. Try 3 ways!',cols:1,items:[1,2,3].map(r=>({t:'pair',n:18,r,op:'-',grp:'B21B'}))}]});
+ Bj(22,'Step 6: Have fun with it','Code Breaker',DT,SAYC20,
+  {parts:[{L:'A',d:'Solve.',cols:5,items:vss([[52,26],[61,24],[83,45],[64,26],[75,38],[90,42],[73,56],[45,17],[82,37],[56,38]])},
+   {L:'C',d:'The secret message:',cols:1,items:[{t:'code',key:{17:'A',18:'N',19:'L',26:'B',27:'S',28:'T',36:'M',37:'O',38:'R',45:'E',48:'W'},words:[6,1,3]}]}]},
+  {parts:[{L:'A',d:'Solve.',cols:4,items:vss([[61,27],[93,46],[54,25],[43,27],[85,27],[52,36],[74,16],[65,26]])},
+   {L:'C',d:'The secret message:',cols:1,items:[{t:'code',key:{16:'D',25:'K',29:'U',34:'Y',37:'S',39:'T',44:'P',47:'O',58:'I'},words:[3,3,2]}]}]});
+ Bj(23,'Step 6: Have fun with it','Speed Build',TZ,'Mixed problems! Some need a borrow and some don’t. Work carefully, then check your time.',
+  {timed:1,score:15,parts:[{L:'A',d:'Subtract.',cols:5,items:vss([[52,8],[63,27],[48,25],[71,36],[90,44],[35,17],[66,31],[84,59],[27,9],[53,18],[79,42],[62,35],[40,13],[95,67],[58,29]])}]},
+  {timed:1,score:15,parts:[{L:'A',d:'Subtract.',cols:5,items:vss([[43,6],[72,38],[57,24],[81,45],[60,27],[46,19],[88,53],[93,68],[34,7],[61,26],[75,41],[52,37],[30,16],[84,58],[67,39]])}]});
+ Bj(24,'Step 6: Have fun with it','Subtract and Check',DT,'Be your own checker! Subtract. Then add your answer to the number you took away. You should get the top number.',
+  {parts:[{L:'A',d:'Subtract. Then check by adding.',cols:2,items:chk([[54,28],[71,46],[83,37],[60,32],[92,57],[45,18],[36,8],[75,39]],'b24')}]},
+  {parts:[{L:'A',d:'Subtract. Then check by adding.',cols:2,items:chk([[63,27],[82,45],[51,24],[70,43],[94,66],[37,19],[42,6],[86,58]],'b24')}]});
+ Bj(25,'Bonus challenge','Three-Digit Challenge',DT,'Big numbers use the same steps! Start with the ones, borrow if you need to, then do the tens and the hundreds.',
+  {ex:{t:'text',lines:['243 − 118','Ones: You can’t take 8 from 3. Borrow a ten: the tens go from 4 to 3, the ones become 13. 13 − 8 = 5.','Tens: 3 − 1 = 2.','Hundreds: 2 − 1 = 1. The answer is 125.']},parts:[{L:'A',d:'Subtract. (H = hundreds, T = tens, O = ones)',cols:4,items:vss([[352,127],[461,238],[574,359],[683,447],[290,164],[735,418],[846,527],[963,746]])}]},
+  {ex:{t:'text',lines:['372 − 145','Ones: You can’t take 5 from 2. Borrow a ten: the tens go from 7 to 6, the ones become 12. 12 − 5 = 7.','Tens: 6 − 4 = 2.','Hundreds: 3 − 1 = 2. The answer is 227.']},parts:[{L:'A',d:'Subtract. (H = hundreds, T = tens, O = ones)',cols:4,items:vss([[481,256],[593,367],[650,234],[764,538],[885,459],[931,715],[542,316],[870,443]])}]});
+ Bj(26,'Final inspection','Borrowing Check',TZ,'Show what you know! Take your time and check every answer.',
+  {inspect:10,parts:[{L:'',d:'',cols:3,items:vss([[52,27],[63,8],[40,16],[74,38],[85,9],[91,47],[36,19],[70,45]]).concat(dets([[62,35,'33']]).map(x=>Object.assign(x,{s:'Is this right?'})),[SM('Esti had 54 stickers. She gave away 28. How many stickers does she have left?',54,28,'stickers')])}]},
+  {inspect:10,says:'Here is another check. Show what you know and check every answer!',parts:[{L:'',d:'',cols:3,items:vss([[43,18],[72,6],[50,24],[83,47],[64,9],[91,56],[45,27],[80,32]]).concat(dets([[71,38,'47']]).map(x=>Object.assign(x,{s:'Is this right?'})),[SM('Yossi had 63 marbles. He gave 25 to a friend. How many marbles does he have left?',63,25,'marbles')])}]});
+
+ /* ================= 5. PUTTING IT ALL TOGETHER (Sheets A and B) ================= */
+ const Pj=(n,step,title,who,says,A,Bd,o)=>{ ['A','B'].forEach(sh=>{ const d=sh==='A'?A:Bd; job(Object.assign({id:'P'+String(n).padStart(2,'0')+sh,sec:'P',n,sheet:sh,tag:step,title,who,says},d,o||{})); }); };
+ const mx=(list,o)=>list.map(p=>p[2]==='-'?VS(p[0],p[1],o):V(p[0],p[1],o));
+ Pj(1,'Mixed practice','Watch the Sign',TZ,'Adding and taking away are mixed up on this page! Before you start, circle the sign. + means add. − means take away.',
+  {parts:[{L:'A',d:'Circle the sign. Then solve.',cols:4,items:mx([[47,36],[82,45,'-'],[53,24],[96,52,'-'],[28,57],[61,29,'-'],[35,43],[74,38,'-'],[66,19],[58,23,'-'],[49,38],[70,26,'-']])}]},
+  {parts:[{L:'A',d:'Circle the sign. Then solve.',cols:4,items:mx([[38,45],[64,27,'-'],[42,35],[87,53,'-'],[19,66],[50,18,'-'],[26,52],[93,58,'-'],[57,28],[79,44,'-'],[63,29],[81,36,'-']])}]});
+ const cbn=list=>list.map(p=>({t:'cbn',a:p[0],b:p[1],op:p[2]}));
+ Pj(2,'Mixed practice','Carry, Borrow, or Neither?',DT,'Look at the sign, then look at the boxed ones digits. Adding and the ones make 10 or more? Carry. Taking away and the top one is too small? Borrow. If not, neither!',
+  {parts:[{L:'A',d:'Circle carry, borrow, or neither. You do not need to solve these.',cols:3,items:cbn([[34,28,'+'],[52,17,'-'],[41,36,'+'],[76,43,'-'],[65,38,'-'],[27,45,'+'],[83,29,'-'],[58,31,'+'],[46,37,'+'],[92,61,'-'],[71,24,'-'],[39,29,'+']])},{L:'B',d:'Now solve these.',cols:4,items:mx([[36,48],[72,35,'-'],[54,23],[91,47,'-']])}]},
+  {parts:[{L:'A',d:'Circle carry, borrow, or neither. You do not need to solve these.',cols:3,items:cbn([[47,25,'+'],[63,28,'-'],[52,34,'+'],[87,42,'-'],[74,39,'-'],[18,57,'+'],[91,46,'-'],[63,26,'+'],[29,44,'+'],[85,51,'-'],[60,27,'-'],[48,36,'+']])},{L:'B',d:'Now solve these.',cols:4,items:mx([[27,56],[83,46,'-'],[42,35],[64,29,'-']])}]});
+ Pj(3,'Mixed practice','Mixed on the Mat',TZ,'Check the sign first. Then use the boxes on top only if you need to carry or borrow.',
+  {parts:[{L:'A',d:'Add or subtract.',cols:4,items:mx([[56,27],[73,48,'-'],[34,52],[85,41,'-'],[68,25],[92,37,'-'],[45,45],[60,24,'-'],[29,63],[77,35,'-'],[38,47],[54,26,'-']])}]},
+  {parts:[{L:'A',d:'Add or subtract.',cols:4,items:mx([[47,38],[81,56,'-'],[23,64],[96,42,'-'],[59,34],[72,45,'-'],[36,36],[50,17,'-'],[18,75],[88,53,'-'],[66,27],[63,38,'-']])}]});
+ Pj(4,'Mixed practice','No Mat: Mixed',DT,'No mat and mixed signs! Look at the sign, then the ones. Use the little boxes on top when you carry or borrow.',
+  {parts:[{L:'A',d:'Add or subtract.',cols:5,items:mx([[39,46],[64,28,'-'],[52,37],[83,46,'-'],[27,58],[75,32,'-'],[48,44],[91,65,'-'],[16,73],[57,29,'-'],[65,26],[80,43,'-'],[34,35],[46,18,'-'],[72,19]],{nomat:1})}]},
+  {parts:[{L:'A',d:'Add or subtract.',cols:5,items:mx([[28,57],[73,46,'-'],[41,48],[92,37,'-'],[36,56],[84,51,'-'],[57,37],[61,28,'-'],[25,64],[75,49,'-'],[18,78],[90,36,'-'],[43,36],[52,27,'-'],[69,23]],{nomat:1})}]});
+ const SP=(s,a,b,op,unit)=>({t:'story',s,a,b,op,unit,pick:1});
+ const SAYP5='Read the story. Are things being put together? Add. Are some being taken away, or are you finding how many more? Subtract.';
+ Pj(5,'Mixed practice','Add or Subtract?',TZ,SAYP5,
+  {parts:[{L:'A',d:'Circle + or −. Write the sign on the mat, then solve.',cols:2,items:[SP('Rivky has 36 stickers. She gets 27 more. How many stickers does she have now?',36,27,'+','stickers'),SP('There were 52 apples in a box. 25 were eaten. How many apples are left?',52,25,'-','apples'),SP('Dovid has 48 marbles. Moshe has 29 marbles. How many more marbles does Dovid have?',48,29,'-','marbles'),SP('The class read 34 books in Teves and 47 books in Shevat. How many books did they read in all?',34,47,'+','books'),SP('A tray had 60 cookies. The children ate 38. How many cookies are left?',60,38,'-','cookies'),SP('Leah picked 45 flowers. Chana picked 39 flowers. How many flowers did they pick together?',45,39,'+','flowers')]}]},
+  {parts:[{L:'A',d:'Circle + or −. Write the sign on the mat, then solve.',cols:2,items:[SP('Avi had 54 cards. He gave 26 to his friend. How many cards does he have left?',54,26,'-','cards'),SP('There are 38 boys and 46 girls on the trip. How many children are on the trip?',38,46,'+','children'),SP('Esti read 72 pages. Shira read 45 pages. How many more pages did Esti read?',72,45,'-','pages'),SP('Mommy baked 29 rolls. Then she baked 35 more. How many rolls did she bake in all?',29,35,'+','rolls'),SP('A bus has 81 seats. 47 seats are full. How many seats are empty?',81,47,'-','seats'),SP('Yaakov has 57 coins. His sister gives him 18 more. How many coins does he have now?',57,18,'+','coins')]}]});
+ const SAYP6='Adding and subtracting are partners. Use one to check the other! Start with your answer and undo the problem.';
+ const P6ex={t:'text',lines:['Check adding by subtracting: 47 + 36 = 83, so 83 − 36 should be 47.','Check subtracting by adding: 82 − 45 = 37, so 37 + 45 should be 82.']};
+ Pj(6,'Mixed practice','Check It the Other Way',DT,SAYP6,
+  {ex:P6ex,parts:[{L:'A',d:'Solve. Then check it the other way.',cols:2,items:chk([[47,36,'+'],[82,45,'-'],[29,54,'+'],[71,38,'-'],[56,28,'+'],[64,27,'-'],[38,45,'+'],[90,46,'-']],'p6')}]},
+  {ex:P6ex,parts:[{L:'A',d:'Solve. Then check it the other way.',cols:2,items:chk([[58,27,'+'],[73,49,'-'],[36,47,'+'],[62,35,'-'],[19,66,'+'],[85,58,'-'],[44,38,'+'],[70,34,'-']],'p6')}]});
+ Pj(7,'Have fun with it','Mixed Code Breaker',DT,'Watch the signs! Solve each problem. Find your answer in the code key, and write its letter in the box with the same number.',
+  {parts:[{L:'A',d:'Solve.',cols:4,items:mx([[36,27],[82,37,'-'],[44,27],[65,27,'-'],[57,35],[90,19,'-'],[19,26],[54,28,'-']])},
+   {L:'C',d:'The secret message:',cols:1,items:[{t:'code',key:{26:'R',38:'H',45:'A',54:'E',63:'M',71:'T',83:'N',92:'S'},words:[4,4]}]}]},
+  {parts:[{L:'A',d:'Solve.',cols:4,items:mx([[47,35],[71,35,'-'],[28,36],[63,34,'-'],[56,35],[85,38,'-'],[27,28],[42,24,'-']])},
+   {L:'C',d:'The secret message:',cols:1,items:[{t:'code',key:{18:'B',29:'E',36:'U',40:'L',47:'J',55:'O',64:'P',73:'K',82:'S',91:'R'},words:[5,3]}]}]});
+ Pj(8,'Final inspection','Final Check',TZ,'This is the last job in the whole book! Watch every sign, and check every answer. You can do it, builder!',
+  {inspect:10,parts:[{L:'',d:'',cols:4,items:mx([[46,38],[73,29,'-'],[52,36],[85,42,'-'],[27,55],[60,37,'-'],[39,39],[91,58,'-']]).concat([SP('Sara had 45 beads. She found 28 more. How many beads does she have now?',45,28,'+','beads'),SP('There were 62 birds on a roof. 27 flew away. How many birds are left?',62,27,'-','birds')])}]},
+  {inspect:10,says:'Here is another final check. Watch every sign, and check every answer!',parts:[{L:'',d:'',cols:4,items:mx([[38,47],[81,36,'-'],[43,25],[77,34,'-'],[19,64],[50,23,'-'],[58,26],[92,65,'-']]).concat([SP('Moshe had 73 stickers. He gave away 38. How many stickers does he have left?',73,38,'-','stickers'),SP('Chana has 46 shells. Rivka has 37 shells. How many shells do they have in all?',46,37,'+','shells')])}]});
+
+ const BOOK=window.BB_BOOK={ v:1, title:'My Block Math Builders Workbook', sub:'Getting ready, carrying, borrowing, and mixing it up', sections:SEC, jobs:J, byId:{} };
+ J.forEach(j=>{ BOOK.byId[j.id]=j; });
+})();
