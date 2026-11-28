@@ -40,7 +40,7 @@ export default function setup(E, { struggled, unit, game }) {
     if (card.visible && !dragging && !busy) card.position.copy(cardHome); }
   E.onLayout(p => { P = p; CS = p ? 1.05 : 1; lay(); });
   function setPair(pr) { crates.forEach(c => { c.children.filter(o => o.userData && o.userData.inPile).forEach(o => c.remove(o)); c.userData.inCrate = 0; });   /* right crate: the first letter of the pair (as Hebrew reads), left crate: the second */
-    pair = pr; lay(); crates.forEach(c => c.userData.key = null); arrows.forEach(a => a.visible = false); labels.forEach(l => l.parent && l.parent.remove(l)); labels = pr.map((k, i) => { const l = E.letter(k, 1.15); l.position.set(0, 1.95, .62); const lo = Math.max(...pr.map(x => E.letter(x, 1.15).userData.below)); if (lo) { l.scale.setScalar(.72); l.position.y += lo * .72 + .05; }   /* beside Kuf both letters are smaller and higher, so the long leg shows on the white label */ crates[i].add(l); crates[i].userData.key = k; return l; });
+    pair = pr; lay(); crates.forEach(c => c.userData.key = null); arrows.forEach(a => a.visible = false); labels.forEach(l => l.parent && l.parent.remove(l)); labels = pr.map((k, i) => { const l = E.letter(k, 1.15); l.position.set(0, 1.95, .62); const lo = Math.max(...pr.map(x => E.letter(x, 1.15).userData.below)); if (lo) { l.scale.setScalar(.72); l.position.y += lo * .72 + .05; } if (E.CALM) { const sc = lo ? .72 : .82; l.scale.setScalar(sc); l.position.y = 1.36 - E.footOf(l) * sc; }   /* calm: white below every letter on its label, so Nun's flat bottom and Gimmel's foot show */   /* beside Kuf both letters are smaller and higher, so the long leg shows on the white label */ crates[i].add(l); crates[i].userData.key = k; return l; });
     pr.forEach((k, i) => E.pointAt(arrows[i], labels[i], k, 1.3, feat(k, pr)));
   }
   E.onFrame(t => {
@@ -62,7 +62,7 @@ export default function setup(E, { struggled, unit, game }) {
     if (c.userData.key === boxOf(k)) {
       busy = true; enabled = false; wrongInRow = 0; const p0 = card.position.clone(), to = centre(c);
       await E.tween(420, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar(CS * (1 - q * .85)); });
-      card.visible = false; { const m = E.letter(k, .42); const n = c.userData.inCrate = (c.userData.inCrate || 0) + 1; m.position.set(((n - 1) % 4 - 1.5) * .42, .24 + Math.floor((n - 1) / 4) * .46, 1.0); m.userData.inPile = true; c.add(m); E.popIn(m, 1, 250); }   /* the crate fills up: he sees his sorted letters pile in (reviewer: more fun) */ E.joy(to); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F); E.hop(c, .15, 300);
+      card.visible = false; { const m = E.letter(k, .42); const n = c.userData.inCrate = (c.userData.inCrate || 0) + 1; m.position.set(((n - 1) % 4 - 1.5) * .42, .24 + Math.floor((n - 1) / 4) * .46, 1.0); m.userData.inPile = true; m.visible = !E.CALM; c.add(m); if (!E.CALM) E.popIn(m, 1, 250); }   /* calm: no pile of little letters; the dots count */   /* the crate fills up: he sees his sorted letters pile in (reviewer: more fun) */ E.joy(to); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F); E.hop(c, .15, 300);
       idx++; E.setProgress(deck.length, idx);
       await E.say(['Yes! ' + E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd)]);
       if (idx < deck.length) { busy = true; await setCard(deck[idx]); busy = false; enabled = true; } else onDone();
@@ -71,7 +71,10 @@ export default function setup(E, { struggled, unit, game }) {
       E.pointAt(cardArrow, card, k, 1.9, feat(k, pair));
       await E.say('Look! ' + say(LOOK, k, pair)); cardArrow.visible = false; busy = false; kid.mood('calm');
       if (wrongInRow >= 2 || mistakes >= 3) help = true;
-      await E.say('Try again!');
+      if (E.CALM) { /* show how (K-CLARITY 16): the hand carries the card halfway to its box, then he does it */
+        const box = crates.find(x => x.visible && x.userData.key === boxOf(k)); busy = true; const a = card.position.clone(), b = a.clone().lerp(centre(box), .5);
+        await E.tween(700, q => { card.position.lerpVectors(a, b, q); const [x, y] = E.toScreen(card.position); E.hand.at(x, y); }); await E.wait(250); E.hand.hide(); await back(); busy = false; await E.say('Now you!'); }
+      else await E.say('Try again!');
     }
   }
   let cardsAll = 0;

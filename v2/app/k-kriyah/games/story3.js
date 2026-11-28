@@ -12,10 +12,10 @@ export default function setup(E, { unit }) {
         for (let i = 0; i < 7; i++) { const fx = x + (i - 3) * .35; g.add(E.mesh(new THREE.CylinderGeometry(.02, .02, .45, 5), E.M(0x2f8f3a), fx, .45, z)); g.add(E.mesh(new THREE.SphereGeometry(.1, 10, 8), E.M(cols[i % 4], { roughness: .3 }), fx, .7, z)); } });
       const can = new THREE.Group(), cm = E.M(0x46c3ff, { roughness: .3, clearcoat: 1 }); can.add(E.mesh(new THREE.CylinderGeometry(.18, .2, .32, 18), cm, 0, .16, 0));
       const sp = E.mesh(new THREE.CylinderGeometry(.03, .045, .4, 8), cm, .25, .3, 0); sp.rotation.z = -.9; can.add(sp); can.position.set(-2.9, 0, 1.6); g.add(can); },
-    intro: ['This is Ari. He plays in the garden.', 'Mommy is watering the flowers.'],
+    intro: ['This is Ari. He plays in the garden.', 'Look at all the flowers!'],
     steps: [
       { pic: 'vase', near: 'grown', lines: ['Mommy puts flowers in a vase.'], letter: 'vov', after: [['Vase starts with', S('v'), '.'], ['Vov says', S('v'), ', like vase!'], 'Vov says v, just like Veis!'] },
-      { pic: 'zipper', lines: ['Ari zips up his jacket. Zzzip!'], letter: 'zayin', after: [['Zipper starts with', S('z'), '.'], ['Zayin says', S('z'), ', like zipper!']] },
+      { pic: 'zipper', lines: ['Ari zips up. Zzzip!'], letter: 'zayin', after: [['Zipper starts with', S('z'), '.'], ['Zayin says', S('z'), ', like zipper!']] },
       { pic: 'challah', near: 'grown', lines: ['Mommy brings out a warm challah.'], letter: 'ches', after: ['Challah starts with Ches.', ['Ches says', S('ch')]] },
     ],
     lookalikes: [['vov', 'zayin', 'Vov has no crown.', 'Zayin has a crown on top.'], ['hei', 'ches', 'Hei’s little leg doesn’t touch the roof.', 'Ches’s leg touches the roof.']],

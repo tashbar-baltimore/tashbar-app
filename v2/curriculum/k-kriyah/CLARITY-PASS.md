@@ -52,3 +52,17 @@ Goal (Esti's words): "something a 5-6-year-old can figure out and learn, and it 
 | Sound Match (phone) | Four letters in one row were about 45 px. | Two shelves of two, all at the same distance, about twice as big. |
 | Alef-Beis Train | The waiting cars stood in a line that looked like a finished train. | They stand well apart. |
 | Letter rain | A wrong tap pushed the letter back up onto the one above it (two letters became one blob on a phone); letters small; help shown too briefly while letters kept falling. | The tapped letter keeps its place; letters bigger; the rain stops longer while the arrow shows the difference; wooden sign frame. |
+
+## Round 2, Units 3–4 and 6–7 (two new reviewers): what changed
+| Where | Finding | Change |
+|---|---|---|
+| Every game where a hand points at a letter (stories, Show what you know, Letter Hunt) | The hand sat on the letter and hid the very part he was told to look at (Nun's flat bottom, Pei's tongue). | A shared helper puts the hand just below the letter, pointing up at it. |
+| Every "this one" glow | Pale yellow, invisible on the pale painting. | A clear orange glow. |
+| Show what you know, Sound Match | Yud floated high above an empty-looking stand; one stand top was gold under a dot letter. | Every letter stands on its stand; that stand top is green. |
+| Sound Match | The picture card covered the progress dots; Chaf, Fei or Kaf appeared over the stands at the end; a white tzitzis vanished on the cream card. | Card lower; the extra letter shows on its own where the pictures show; light-blue card. |
+| Stories (Units 2–10) | On a Chromebook the picture sat on the boy's head (turtle on Dovid); no "Watch me" before the first tap; at the end nine letters ran off a phone and 23 letters ran into the progress dots, the last line touching. Lines named things not shown (watering the flowers, a jacket, a pond). | The picture shows beside the people; "Watch me. I tap …" then "Now you!"; the chant row breaks into lines on a phone, starts lower, letters spaced; "Look at all the flowers!", "Ari zips up. Zzzip!", "walks in the park". |
+| Look-Alike sorter (Units 3–8) | Label letters sat on the box edge, so the bottom (the whole clue for Nun/Gimmel, Mem/Tes) was hidden; little letters piled off the box; a wrong drop never showed the right box. | White space under every label letter; no piles; the hand carries the card halfway to its box, then "Now you!". |
+| Find the Mistake | Thin Vov/Zayin/Yud tiles were hard to grab on a phone; "Look carefully here!" named nothing. | Each tile is a white card (a big target); "Look where the arrow points!". |
+| Feel the Shape | The felt road turned gold right beside Pei's dot; "Yud, the little one" while Yud filled the screen. | The felt road turns green; "This is Yud. Feel it!". |
+| Letter rain | On a phone letters landed on each other (Tzadik on Kuf), close to the sign; "Catch every Chaf, like challah!" (challah is Ches); "Be quick!". | A new letter falls only into a lane whose last letter is well clear, never while help shows; lanes clear of a smaller sign; "Catch every Chaf! No dot."; "Now you! Catch them!". |
+| Letter Hunt sky | The brightest scene of all. | A pale sky; far hills and trees fade softly. |

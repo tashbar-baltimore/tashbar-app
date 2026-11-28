@@ -30,7 +30,7 @@ export default function setup(E, { unit }) {
     const lines = []; for (let i = 0; i < BASE.length; i += per) lines.push(BASE.slice(i, i + per)); lines.push(FINALS);
     lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)); made.forEach((l, i) => { l.position.set(((ks.length - 1) / 2 - i) * gap, top - li * dy, .2); l.userData.base = l.position.y; l.visible = false; E.scene.add(l); all.push(l); }); rows.push(made); });
   }
-  const showHand = l => { const [x, y] = E.toScreen(E.worldPos(l).add(new THREE.Vector3(.15, -.3, .4))); E.hand.at(x, y, true); };
+  const showHand = l => { if (E.CALM) return E.handBelow(l, true); const [x, y] = E.toScreen(E.worldPos(l).add(new THREE.Vector3(.15, -.3, .4))); E.hand.at(x, y, true); };
   window.__info = () => Object.assign({ tap: document.body.dataset.tapReady || null }, Object.fromEntries(all.filter(l => l.visible).map(l => [l.userData.key, E.toScreen(E.worldPos(l))])));
   return async () => {
     E.setProgress(4, 0);

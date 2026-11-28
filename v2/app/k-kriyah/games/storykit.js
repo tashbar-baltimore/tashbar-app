@@ -20,7 +20,7 @@ export function makeStory(E, unit, script) {
   });
   E.onFrame(t => floaters.forEach(l => { if (!l.userData.base) return; if (E.CALM) { l.rotation.y = 0; return; }   /* calm: still, face-on */ l.position.y = l.userData.base.y + Math.sin(t * 2 + l.position.x) * .07; l.rotation.y = Math.sin(t * .9 + l.position.x) * .3; }));
   const float = (l, on = true) => { if (on) { l.userData.base = l.position.clone(); floaters.add(l); } else floaters.delete(l); };
-  const showHand = obj => { const [x, y] = E.toScreen(E.worldPos(obj).add(new THREE.Vector3(.5, -.6, .6))); E.hand.at(x, y, true); };
+  const showHand = obj => { if (E.CALM) return E.handBelow(obj, true); const [x, y] = E.toScreen(E.worldPos(obj).add(new THREE.Vector3(.5, -.6, .6))); E.hand.at(x, y, true); };
   async function tapIt(l, line) {
     showHand(l); document.body.dataset.tapReady = l.userData.key;
     await E.waitTap([l]); delete document.body.dataset.tapReady; E.hand.hide();
@@ -57,6 +57,10 @@ export function makeStory(E, unit, script) {
     await E.tween(450, q => mats.forEach(m => m.opacity = 1 - q)); o.visible = false; }
   const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6), q)); };
   const say = async (who, line) => { if (who) { who.mood('wave'); setTimeout(() => who.mood('calm'), 1100 * E.F); } await E.say(line); };
+  let shown = false;   /* the first tap is shown first (K-CLARITY 15): "Watch me. I tap Gimmel." then "Now you!" */
+  async function askTap(l, k) { const nm = E.LETTERS[k].name;
+    if (E.CALM && !shown) { shown = true; await E.say('Watch me. I tap ' + nm + '.'); E.handBelow(l, true); await E.wait(500); E.hop(l, .3, 350); await E.wait(400); E.hand.hide(); await E.say('Now you! Tap ' + nm + '!'); }
+    else await E.say(['Tap ' + nm + '!']); }
   return async () => {
     boy.position.set(P ? -.85 : -2.0, 0, P ? 3.0 : 1.4); if (grown) grown.position.set(P ? -1.5 : -3.9, 0, P ? 2.2 : .6); if (P) { boy.scale.setScalar(.95); if (grown) grown.scale.multiplyScalar(.9); }   /* on a phone they stand in front, big enough to see (reviewer: they were tiny) */
     E.setProgress(steps, 0);
@@ -71,7 +75,7 @@ export function makeStory(E, unit, script) {
         await E.tween(650, q => { l.scale.set(1, .01 + q * .99, 1); ring.material.opacity = .9 * (1 - q); }, E.ease.back); E.scene.remove(ring); float(l);
         for (const line of st.lines) await E.say(line);
         await E.sayWithMe(st.letter);
-        await E.say(['Tap ' + E.LETTERS[st.letter].name + '!']); await tapIt(l, E.nameLine(st.letter));
+        await askTap(l, st.letter); await tapIt(l, E.nameLine(st.letter));
         await letterDone(st.letter);
       } else if (st.fromDot) {   /* this letter is the last one without its dot (Chaf from Kaf) */
         const src = L[st.fromDot]; float(src, false); const kp = src.position.clone(), ch = L[st.letter]; ch.position.copy(kp); ch.rotation.copy(src.rotation); ch.visible = true; ch.userData.dot.visible = true; src.visible = false;
@@ -81,17 +85,17 @@ export function makeStory(E, unit, script) {
         E.sparkle(E.worldPos(ch).add(new THREE.Vector3(1.4, 2.4, .5)), 14); float(ch);
         for (const line of st.lines) await E.say(line);
         await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
-        await E.say('Tap ' + E.LETTERS[st.letter].name + '!'); await tapIt(ch, E.nameLine(st.letter));
+        await askTap(ch, st.letter); await tapIt(ch, E.nameLine(st.letter));
         src.visible = true; src.position.copy(kp); float(src); await letterDone(st.fromDot); await letterDone(st.letter);
       } else {
         const has = hasPic(st.pic), pic = has ? PIC[st.pic]() : new THREE.Group(); const who = st.near === 'grown' && grown ? grown : boy;   /* a painting not here yet: the letter appears on its own */
-        const [dx, py] = st.at || [.9, 2.0]; pic.position.set(who.position.x + dx, py, who.position.z + .4); if (P && E.CALM) pic.position.set(.6, 2.9, .9);   /* calm, on a phone: the picture shows on its own, beside and above the people, never on a head */   /* st.at: a picture that needs more room beside the face */ pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
+        const [dx, py] = st.at || [.9, 2.0]; pic.position.set(who.position.x + dx, py, who.position.z + .4); if (E.CALM) { if (P) pic.position.set(.6, 2.9, .9); else pic.position.set(who.position.x + 2.0, 2.7, who.position.z + .2); }   /* calm, on a phone: the picture shows on its own, beside and above the people, never on a head */   /* st.at: a picture that needs more room beside the face */ pic.scale.setScalar(st.size || 1.1); E.scene.add(pic); await E.popIn(pic, st.size || 1.1, 450);
         if (st.act) st.act(E, pic, boy, grown);
         for (const line of st.lines) await say(st.near === 'grown' ? grown : boy, line);   /* the story is told even before its painting comes */
         if (st.keep) await rise(pic, st.letter); else { await toCentre(pic); await morph(pic, st.letter); }
         for (const line of st.after) await E.say(line);
         await E.sayWithMe(st.letter);   /* he says it out loud too (RESEARCH.md) */
-        await E.say(['Tap ' + E.LETTERS[st.letter].name + '!']); await tapIt(L[st.letter], E.nameLine(st.letter));
+        await askTap(L[st.letter], st.letter); await tapIt(L[st.letter], E.nameLine(st.letter));
         if (!(script.steps[si + 1] && script.steps[si + 1].fromDot)) await letterDone(st.letter);
       }
       E.setProgress(steps, si + 1);
@@ -108,10 +112,10 @@ export function makeStory(E, unit, script) {
     }
     E.setProgress(steps, steps - 1);
     /* every letter so far, right to left (two lines on a phone when there are many), and the chant */
-    const all = script.row || [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .66 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (script.row ? .52 : many ? .4 : .46) : (all.length > 20 ? 1.0 : many ? .62 : .82);   /* a wide gap when there are many, so no two letters touch (reviewer) */
+    const all = script.row || [...unit.known, ...unit.letters], many = all.length > (P && E.CALM ? 6 : 9),   /* calm: on a phone, more than six letters break into lines (nine in one row ran off both edges) */ sz = P ? .5 : (all.length > 20 ? .66 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (script.row ? .52 : many ? .4 : .46) : (all.length > 20 ? 1.0 : many ? .62 : .82);   /* a wide gap when there are many, so no two letters touch (reviewer) */
     const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 4 : all.length > 12 ? 2 : 1, per = script.row ? Math.ceil(Math.ceil(all.length / nl) / 2) * 2 : Math.ceil(all.length / nl),   /* partners in pairs never split across two lines */ lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
-    lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (ks.length - 1);
-      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 3 ? 3.45 - li * 1.05 : lines.length > 2 ? 3.15 - li * 1.3 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
+    lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * (E.CALM ? .6 : .45) * (ks.length - 1);
+      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 3 ? (E.CALM ? 3.1 : 3.45) - li * 1.05 : lines.length > 2 ? 3.15 - li * 1.3 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * (E.CALM ? .6 : .45); l.visible = false; E.scene.add(l); row.push(l); }); });
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
     E.setProgress(steps, steps);
     await E.say(script.chantLine || 'Let’s sing the Alef-Beis so far!');
@@ -120,7 +124,7 @@ export function makeStory(E, unit, script) {
     await E.say(script.tapLine || 'Now you! Tap ' + list + '.');
     const left = row.filter(l => unit.letters.includes(l.userData.key));
     while (left.length) {
-      const target = left[0]; const [hx, hy] = E.toScreen(E.worldPos(target).add(new THREE.Vector3(.15, -.35, .5))); E.hand.at(hx, hy, true);
+      const target = left[0]; if (E.CALM) E.handBelow(target, true); else { const [hx, hy] = E.toScreen(E.worldPos(target).add(new THREE.Vector3(.15, -.35, .5))); E.hand.at(hx, hy, true); }
       document.body.dataset.tapReady = left.map(l => 'row-' + l.userData.key).join(',');
       const l = await E.waitTap(row); E.hand.hide();
       const finOf = left.find(x => E.LETTERS[x.userData.key].partner === l.userData.key);   /* he tapped the plain partner of a letter in Shabbos clothes */

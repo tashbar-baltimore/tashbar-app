@@ -20,7 +20,7 @@ export default function setup(E, { struggled, unit, id }) {
   const { THREE, S } = E;
   const rebbe = E.rebbe(); E.scene.add(rebbe);
   const keys = [...unit.known, ...unit.letters], L = {}, peds = [];
-  const pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), pedTop = [E.M(0xff7aa8, { roughness: .25, clearcoat: 1 }), E.M(0x46c3ff, { roughness: .25, clearcoat: 1 }), E.M(0xffcf3a, { roughness: .25, clearcoat: 1 })];
+  const pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), pedTop = [E.M(0xff7aa8, { roughness: .25, clearcoat: 1 }), E.M(0x46c3ff, { roughness: .25, clearcoat: 1 }), E.M(E.CALM ? 0x7bd94a : 0xffcf3a, { roughness: .25, clearcoat: 1 })];   /* calm: green, not gold, under a dot letter */
   for (let i = 0; i < 3; i++) { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), pedTop[i], 0, .55, 0)); E.scene.add(p); peds.push(p); }
   keys.forEach(k => { L[k] = E.letter(k, 1.6); E.scene.add(L[k]); L[k].visible = false; });
   const arrows = [E.arrow3d(.3), E.arrow3d(.3)];   /* on a look-alike mix-up: point at the place to look on both letters */
@@ -47,7 +47,7 @@ export default function setup(E, { struggled, unit, id }) {
     peds.forEach((p, i) => p.position.copy(slotPos(i)));
     const ps = [];
     keys.forEach(k => { const l = L[k]; if (!set.includes(k)) { l.visible = false; l.userData.base = null; return; }
-      const to = slotPos(slot[k]).add(new THREE.Vector3(0, (E.portrait ? .38 : .61) + .5 * 1.6 * LS() + .12 + l.userData.below * LS(), 0));   /* just above the pedestal top, Kuf's leg too */   /* Kuf's long leg above the pedestal */
+      const to = slotPos(slot[k]).add(new THREE.Vector3(0, E.CALM ? (E.portrait ? .38 : .61) + .08 - (l.userData.foot ??= E.footOf(l)) * LS() : (E.portrait ? .38 : .61) + .5 * 1.6 * LS() + .12 + l.userData.below * LS(), 0));   /* calm: every letter stands ON its stand (Yud floated above it) */   /* just above the pedestal top, Kuf's leg too */   /* Kuf's long leg above the pedestal */
       if (!animate || !l.visible) { l.visible = true; l.position.copy(to); l.userData.base = to.clone(); if (animate) ps.push(E.popIn(l, LS(), 400)); return; }
       const from = l.position.clone(); l.userData.base = null; ps.push(E.tween(600, q => { l.position.lerpVectors(from, to, q); l.position.y += Math.sin(q * Math.PI) * 1.0; }).then(() => { l.userData.base = to.clone(); })); });
     return Promise.all(ps);
@@ -95,7 +95,7 @@ export default function setup(E, { struggled, unit, id }) {
     const demoK = unit.letters[0] || 'shin'; await showSet(demoK);
     rebbe.mood('wave'); await E.say('Show the rebbe what you know!'); rebbe.mood('calm');
     /* show, then try */
-    await E.say('Watch me. Tap ' + E.LETTERS[demoK].name + '.'); let [x, y] = E.toScreen(E.worldPos(L[demoK])); E.hand.at(x, y + 20); await E.wait(700); E.hand.hide();
+    await E.say('Watch me. Tap ' + E.LETTERS[demoK].name + '.'); let [x, y] = E.toScreen(E.worldPos(L[demoK])); if (E.CALM) E.handBelow(L[demoK]); else E.hand.at(x, y + 20); await E.wait(700); E.hand.hide();
     E.sfx.chime(); E.hop(L[demoK]); await E.say(E.nameLine(demoK));
     await E.say('Now you! Listen, then tap.');
     const queue = Qs.map((q, i) => ({ ...q, i, first: true })); let right = 0, done = 0, inRow = 0;
@@ -111,7 +111,7 @@ export default function setup(E, { struggled, unit, id }) {
           [got, q.k].forEach((k, i) => E.pointAt(arrows[i], L[k], k, 1.6, feat(k, i ? got : q.k))); await E.say(clue(q.k, got)); arrows.forEach(a => a.visible = false); }
         glowOn = L[q.k]; E.hop(L[q.k]); await E.say(E.quiet(q.k) ? 'Here is ' + E.LETTERS[q.k].name + ', the quiet one.' : ['Here is ' + E.LETTERS[q.k].name + '.', ...E.nameLine(q.k)]); glowOn = null; rebbe.mood('calm');
         { /* shown, then he does it himself (K-CLARITY 16): the hand points at the right letter and he taps it */
-          glowOn = L[q.k]; const [hx, hy] = E.toScreen(E.worldPos(L[q.k])); E.hand.at(hx, hy + 20); await E.say('Now you tap ' + E.LETTERS[q.k].name + '.'); active = true; document.body.dataset.askReady = 1;
+          glowOn = L[q.k]; E.handBelow(L[q.k]); await E.say('Now you tap ' + E.LETTERS[q.k].name + '.'); active = true; document.body.dataset.askReady = 1;
           for (let g = null; g !== q.k;) g = await new Promise(r => resolveQ = r);
           active = false; delete document.body.dataset.askReady; E.hand.hide(); glowOn = null; E.sfx.chime(); E.hop(L[q.k]); }
         if (q.first) queue.push({ ...q, first: false }); }

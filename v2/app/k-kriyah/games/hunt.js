@@ -98,7 +98,7 @@ export default function setup(E, { struggled, unit, game }) {
     arrow.visible = false;
     if (wrongInRound >= 2) showHelp();
   }
-  function showHelp() { const t = letters.find(l => l.visible && !l.userData.got && l.userData.key === want); if (!t) return; helpOn = t; const [x, y] = E.toScreen(E.worldPos(t)); E.hand.at(x + 10, y + 10, true); }
+  function showHelp() { const t = letters.find(l => l.visible && !l.userData.got && l.userData.key === want); if (!t) return; helpOn = t; if (E.CALM) return E.handBelow(t, true); const [x, y] = E.toScreen(E.worldPos(t)); E.hand.at(x + 10, y + 10, true); }
   E.onPointer('down', async e => {
     if (!active) return; const l = E.pickFrom(e, letters.filter(x => !x.userData.got)); if (!l || l.userData.busy) return; lastAct = performance.now();
     if (l.userData.key === want) got(l); else { active = false; await miss(l); active = true; }
@@ -113,7 +113,7 @@ export default function setup(E, { struggled, unit, game }) {
     await E.say(boyName + ' is in the sukkah. Letters are hiding!');
     await showAll();
     await E.say(plan.bySound ? ['Watch me. I find the letter that says', E.S(E.LETTERS[r1[0]].snd), '.'] : 'Watch me. I find ' + E.an(r1[0]) + '. ' + (NOTE[r1[0]] || ''));
-    const first = letters.find(l => l.userData.key === r1[0]); let [x, y] = E.toScreen(E.worldPos(first)); E.hand.at(x + 10, y + 10); await E.wait(700);
+    const first = letters.find(l => l.userData.key === r1[0]); let [x, y] = E.toScreen(E.worldPos(first)); if (E.CALM) E.handBelow(first); else E.hand.at(x + 10, y + 10); await E.wait(700);
     const fin1 = new Promise(r => resolveRound = r);
     await got(first); await E.wait(300);
     await E.say(plan.bySound ? ['Now you! Find every letter that says', E.S(E.LETTERS[r1[0]].snd), '.'] : 'Now you! Find every ' + NM(r1[0]) + '.'); active = true; lastAct = performance.now(); document.body.dataset.huntReady = r1[0];

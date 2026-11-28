@@ -18,7 +18,7 @@ export default function setup(E) {
   });
   E.onFrame(t => { floaters.forEach(l => { if (!l.userData.base) return; if (E.CALM) { l.rotation.y = 0; return; }   /* calm: learned letters stand still, face-on */ l.position.y = l.userData.base.y + Math.sin(t * 2 + l.position.x) * .07; l.rotation.y = Math.sin(t * .9 + l.position.x) * .3; }); });
   const float = (l, on = true) => { if (on) { l.userData.base = l.position.clone(); floaters.add(l); } else floaters.delete(l); };
-  const showHand = (obj, dy = -.6) => { const [x, y] = E.toScreen(E.worldPos(obj).add(new THREE.Vector3(.5, dy, .6))); E.hand.at(x, y, true); };
+  const showHand = (obj, dy = -.6) => { if (E.CALM) return E.handBelow(obj, true); const [x, y] = E.toScreen(E.worldPos(obj).add(new THREE.Vector3(.5, dy, .6))); E.hand.at(x, y, true); };
   async function tapIt(l, line) {
     showHand(l); document.body.dataset.tapReady = l.userData.key;
     await E.waitTap([l]); delete document.body.dataset.tapReady; E.hand.hide();
@@ -48,7 +48,7 @@ export default function setup(E) {
     await E.say('Abba starts with Alef.'); dad.mood('calm');
     await E.say('Alef is quiet. It waits for its nekudah.');
     await E.sayWithMe('alef');
-    if (E.CALM) { await E.say('Watch me. I tap Alef.'); const [hx, hy] = E.toScreen(E.worldPos(alef)); E.hand.at(hx, hy, true); await E.wait(500); E.hop(alef, .3, 350); await E.wait(400); E.hand.hide(); await E.say('Now you! Tap Alef!'); }   /* the first tap is shown first (K-CLARITY 15) */
+    if (E.CALM) { await E.say('Watch me. I tap Alef.'); E.handBelow(alef, true); await E.wait(500); E.hop(alef, .3, 350); await E.wait(400); E.hand.hide(); await E.say('Now you! Tap Alef!'); }   /* the first tap is shown first (K-CLARITY 15) */
     else await E.say('Tap Alef!');
     await tapIt(alef, 'Alef. Alef is quiet. Shh!');
     await E.popOut(dad); dad.scale.setScalar(ds);

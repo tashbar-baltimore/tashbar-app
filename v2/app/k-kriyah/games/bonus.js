@@ -14,7 +14,7 @@ export default function setup(E, { unit, game }) {
   const basket = new THREE.Group(); basket.add(E.mesh(new THREE.CylinderGeometry(.55, .4, .45, 24, 1, true), E.M(0xc68a52, { side: THREE.DoubleSide, roughness: .6 }), 0, .23, 0)); E.scene.add(basket);
   let X = 4;
   E.onLayout(p => { X = p ? 1.6 : 4;
-    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.6, 0); boy.position.set(-1.35, 0, 1.6); boy.scale.setScalar(.75); sign.position.set(-1.35, 2.55, 1.0); sign.scale.setScalar(.8); basket.position.set(-.75, 0, 1.9); basket.scale.setScalar(.6); }
+    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.6, 0); boy.position.set(-1.35, 0, 1.6); boy.scale.setScalar(.75); sign.position.set(E.CALM ? -1.5 : -1.35, 2.55, 1.0); sign.scale.setScalar(E.CALM ? .7 : .8); basket.position.set(-.75, 0, 1.9); basket.scale.setScalar(.6); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); boy.position.set(-4.3, 0, 1.2); boy.scale.setScalar(1); sign.position.set(-4.3, 3.35, .6); sign.scale.setScalar(.9); basket.position.set(-3.5, 0, 1.6); basket.scale.setScalar(1); }
   });
   E.onFrame((t) => { if (signL && !E.CALM) signL.rotation.y = Math.sin(t * 1.4) * .25;
@@ -28,7 +28,7 @@ export default function setup(E, { unit, game }) {
   const FALL_F = E.FAST ? (E.LITE ? 1.4 : 2.5) : 1;    /* quick test runs draw very few frames a second, so letters fall slower there to stay tappable */
   let pauseUntil = 0, lastNow = performance.now(); E.onFrame(() => { const now = performance.now(); if (now < pauseUntil) falling.forEach(l => { l.userData.t0 += now - lastNow; }); lastNow = now; });   /* the rain stops while he hears the correction (reviewer) */
   function drop(k, ms) {
-    const l = E.letter(k, E.CALM ? 1.25 : 1.0); let x; if (E.portrait) { const top = lx => Math.max(-9, ...falling.filter(f => !f.userData.busy && !f.userData.gone && Math.abs(f.userData.x - lx) < .5).map(f => f.position.y)); x = [-.25, 1.2].sort((a, b) => top(a) - top(b))[0]; }   /* a phone has two lanes: the one whose last letter is lowest */
+    const l = E.letter(k, E.CALM ? (E.portrait ? 1.1 : 1.25) : 1.0); let x; if (E.portrait) { const top = lx => Math.max(-9, ...falling.filter(f => !f.userData.busy && !f.userData.gone && Math.abs(f.userData.x - lx) < .5).map(f => f.position.y)); x = (E.CALM ? [.05, 1.2] : [-.25, 1.2]).sort((a, b) => top(a) - top(b))[0]; }   /* a phone has two lanes: the one whose last letter is lowest */
     else { const free = c => !falling.some(f => !f.userData.busy && !f.userData.gone && f.position.y > 1.6 && Math.abs(f.userData.x - c) < 1.5); let best = null, bd = -1;   /* a free lane: never on top of another falling letter */
       for (let t = 0; t < 40; t++) { const c = Math.max(-2.0, (Math.random() * 2 - 1) * X * .85 + .6); if (free(c)) { best = c; break; } const d = Math.min(9, ...falling.filter(f => !f.userData.gone).map(f => Math.abs(f.userData.x - c))); if (d > bd) { bd = d; best = c; } } x = best; }
     l.userData = Object.assign(l.userData, { t0: performance.now(), ms: ms * FALL_F * (missRound >= 2 ? 1.5 : 1),   /* gentler after two misses in a round (reviewer) */ y0: E.portrait ? 5.0 : 4.0, y1: .5, x }); l.position.set(x, l.userData.y0, .8); E.scene.add(l); falling.push(l); E.popIn(l, 1, 250);   /* appears inside the sky, below the top buttons */
@@ -45,11 +45,13 @@ export default function setup(E, { unit, game }) {
   });
   async function round(k, n, every, ms) {
     want = k; missRound = 0; setSign(k); E.hop(boy, .3); if (unit.n >= 9 && E.sayWithMe) await E.sayWithMe(k);   /* he says it out loud first */
-    await E.say(E.quiet(k) ? 'Catch every ' + E.LETTERS[k].name + ', the quiet one!' : E.LETTERS[k].snd === 'ch' ? 'Catch every ' + E.LETTERS[k].name + ', like challah!' : ['Catch every ' + E.LETTERS[k].name + '!', S(E.LETTERS[k].snd)]);
+    await E.say(E.quiet(k) ? 'Catch every ' + E.LETTERS[k].name + ', the quiet one!' : E.LETTERS[k].snd === 'ch' ? (k === 'ches' ? 'Catch every Ches, like challah!' : 'Catch every ' + E.LETTERS[k].name + '! ' + (E.LETTERS[k].dagesh || k === 'chaf' ? 'No dot.' : '')).trim() : ['Catch every ' + E.LETTERS[k].name + '!', S(E.LETTERS[k].snd)]);
     active = true; document.body.dataset.rainReady = k; homeBtn(false);   /* no leaving by accident while letters fall */
     const others = keysBut(k).filter(x => !(E.LETTERS[k].partner && E.LETTERS[x].partner && x !== 'memsofis' && k !== 'memsofis')), near =   /* two long-leg finals never in one round: the leg would not tell them apart */ others.filter(x => unit.letters.includes(x) || x === ({ beis: 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', ches: 'hei', hei: 'ches', kaf: 'beis', chaf: 'kaf', nun: 'gimmel', mem: 'tes', pei: 'fei', fei: 'pei', reish: 'daled', kuf: 'hei', tzadik: 'ayin', shin: 'sin', sin: 'shin', tav: 'sav', sav: 'tav', memsofis: 'samech', nunsofis: 'vov', chafsofis: 'reish', feisofis: 'pei', tzadiksofis: 'ayin' })[k]), far = others.filter(x => !near.includes(x));
     const mix = Array.from({ length: n }, (_, i) => i % 2 === 0 ? k : (i % 6 === 5 && far.length ? far[(i / 6 | 0) % far.length] : near[(i / 2 | 0) % near.length])).sort(() => Math.random() - .5);   /* mostly this unit's letters, a few older ones */
-    for (const m of mix) { drop(m, ms); await new Promise(r => setTimeout(r, every)); }   /* real time, even in test runs */
+    const laneTop = x => Math.max(-9, ...falling.filter(f => !f.userData.busy && !f.userData.gone && Math.abs(f.userData.x - x) < .5).map(f => f.position.y));
+    const clear = () => performance.now() >= pauseUntil && (!E.portrait || [.05, 1.2].some(x => laneTop(x) < (E.portrait ? 5.0 : 4.0) - 1.1 * 1.4));   /* calm: no new letter while the help shows, and on a phone only into a lane whose last letter has fallen well clear (letters once landed on each other) */
+    for (const m of mix) { if (E.CALM) for (let w = 0; w < 60 && !clear(); w++) await new Promise(r => setTimeout(r, 100)); drop(m, ms); await new Promise(r => setTimeout(r, every)); }   /* real time, even in test runs */
     while (falling.length) await new Promise(r => setTimeout(r, 200));
     active = false; delete document.body.dataset.rainReady; homeBtn(true);
   }
@@ -63,7 +65,7 @@ export default function setup(E, { unit, game }) {
     const [hx, hy] = E.toScreen(demo.position); E.hand.at(hx, hy); await E.wait(400); E.hand.hide();
     active = true; await new Promise(r => { const iv = setInterval(() => { if (demo.userData.busy || demo.userData.gone) { clearInterval(iv); r(); } }, 50); E.$('#c').dispatchEvent(new PointerEvent('pointerdown', { clientX: E.toScreen(demo.position)[0], clientY: E.toScreen(demo.position)[1], bubbles: true, pointerId: 1 })); });
     active = false; caught = 0; wrong = 0; missRound = 0; await E.wait(600);
-    await E.say('Now you! Be quick!');
+    await E.say(E.CALM ? 'Now you! Catch them!' : 'Now you! Be quick!');
     const SP = R.length > 4 ? [[6, 1500, 4600], [7, 1450, 4400], [7, 1350, 4100], [8, 1250, 3900], [8, 1150, 3600]] : R.length > 3 ? [[7, 1500, 4600], [8, 1400, 4300], [9, 1250, 3900], [10, 1100, 3500]] : [[8, 1500, 4600], [9, 1300, 4000], [10, 1100, 3500]];   /* each round a little faster */
     const quick = ([n, every, ms]) => E.FAST ? [Math.max(4, Math.ceil(n * .5)), every * .6, ms * .75] : [n, every, ms];   /* the automatic test run only: fewer letters, so the check stays inside its time (a boy's game is unchanged) */
     for (let i = 0; i < R.length; i++) { await round(R[i], ...quick(SP[i])); E.setProgress(R.length, i + 1); }

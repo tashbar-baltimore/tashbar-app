@@ -14,7 +14,7 @@ export default function setup(E, { unit }) {
       const path = E.mesh(new THREE.PlaneGeometry(2.2, 14), E.M(0xe9d3a0, { roughness: .9 }), 6.8, .015, -2, false); path.rotation.x = -Math.PI / 2; path.rotation.z = .5; g.add(path); },
     intro: ['This is Dovid. He goes to the park with Tatty.'],
     steps: [
-      { pic: 'turtle', lines: ['A little turtle walks by the pond.'], letter: 'tes', after: [['Turtle starts with', S('t'), '.'], ['Tes says', S('t'), ', like turtle!']] },
+      { pic: 'turtle', lines: ['A little turtle walks in the park.'], letter: 'tes', after: [['Turtle starts with', S('t'), '.'], ['Tes says', S('t'), ', like turtle!']] },
       { pic: 'yoyo', near: 'grown', lines: ['Tatty gives him a yo-yo. Up and down!'], letter: 'yud', after: [['Yo-yo starts with', S('y'), '. Yud is the little letter.'], ['Yud says', S('y'), ', like yo-yo!']] },
       { pic: 'cat', lines: ['A cat naps on the bench.'], letter: 'kaf', after: [['Cat starts with', S('k'), '. Kaf has a dot.'], ['Kaf says', S('k'), ', like cat!']] },
       { fromDot: 'kaf', letter: 'chaf', lines: ['No dot. This is Chaf!', ['Chaf says', S('ch')], 'Chaf sounds just like Ches!'] },

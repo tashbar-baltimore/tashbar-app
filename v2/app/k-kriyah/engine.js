@@ -247,6 +247,14 @@ export function initRenderer() {
   requestAnimationFrame(loop);
 }
 function resize() { const w = innerWidth, h = innerHeight; R.setSize(w, h, false); cam.aspect = w / h; portrait = w / h < .9; cam.fov = portrait ? 52 : 38; cam.updateProjectionMatrix(); layoutFns.forEach(f => f(portrait)); }
+/* the box an object covers on screen: [left, top, right, bottom] in px */
+export function screenBox(o) { const b = new THREE.Box3().setFromObject((o.userData && o.userData.body) || o); let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  for (const x of [b.min.x, b.max.x]) for (const y of [b.min.y, b.max.y]) for (const z of [b.min.z, b.max.z]) { const [sx, sy] = toScreen(new THREE.Vector3(x, y, z)); x0 = Math.min(x0, sx); y0 = Math.min(y0, sy); x1 = Math.max(x1, sx); y1 = Math.max(y1, sy); }
+  return [x0, y0, x1, y1]; }
+/* the hand points UP at a letter from just below it, so it never covers the letter (reviewer: the hand hid Nun's flat bottom and Pei's tongue) */
+/* how far a letter's lowest point is below its own centre (for standing a letter ON something: Yud floated above its stand) */
+export function footOf(l) { const p = l.position.clone(), r = l.rotation.clone(), sc = l.scale.clone(); l.position.set(0, 0, 0); l.rotation.set(0, 0, 0); l.scale.set(1, 1, 1); l.updateMatrixWorld(true); const y = new THREE.Box3().setFromObject(l.userData.body).min.y; l.position.copy(p); l.rotation.copy(r); l.scale.copy(sc); l.updateMatrixWorld(true); return y; }
+export function handBelow(o, bob = false) { const [x0, , x1, y1] = screenBox(o); hand.at((x0 + x1) / 2 - 39, Math.min(innerHeight - 90, y1 + 4) - 9, bob); }
 export function toScreen(v) { const p = v.clone().project(cam); return [(p.x + 1) / 2 * innerWidth, (1 - p.y) / 2 * innerHeight]; }
 export const worldPos = o => o.getWorldPosition(new THREE.Vector3());
 
@@ -258,7 +266,7 @@ export function rbox(w, h, d, r = .08) {
   const g = new THREE.ExtrudeGeometry(s, { depth: Math.max(.001, d - 2 * r), bevelEnabled: true, bevelSize: r, bevelThickness: r, bevelSegments: 3, curveSegments: 4 }); g.translate(0, 0, -(d - 2 * r) / 2); return g;
 }
 export function glowTex(col) { const cv = document.createElement('canvas'); cv.width = cv.height = 128; const x = cv.getContext('2d'), g = x.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, col); g.addColorStop(.4, col + 'aa'); g.addColorStop(1, col + '00'); x.fillStyle = g; x.fillRect(0, 0, 128, 128); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; }
-export function glowSprite(col = '#ffffff', size = 4, opacity = 0) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(col), transparent: true, depthWrite: false, opacity })); s.scale.set(size, size, 1); return s; }
+export function glowSprite(col = '#ffffff', size = 4, opacity = 0) { if (CALM && col === '#fff7b0') col = '#ff9a3c';   /* calm: the 'this one' glow is a clear orange, not pale yellow lost on the pale painting */ const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(col), transparent: true, depthWrite: false, opacity })); s.scale.set(size, size, 1); return s; }
 function starTex() { const cv = document.createElement('canvas'); cv.width = cv.height = 64; const x = cv.getContext('2d'); const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, '#fff'); g.addColorStop(.25, '#fff6b0'); g.addColorStop(1, '#ffd02e00'); x.fillStyle = g; x.beginPath();
   for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, r = i % 2 ? 9 : 32; x.lineTo(32 + Math.cos(a) * r, 32 + Math.sin(a) * r); } x.fill(); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; }
 
@@ -275,6 +283,7 @@ export function buildWorld({ trees = true, flowers = true, backdrop: bd = null, 
   if (bd) {   /* a painted scene behind; only a see-through ground that catches shadows, so the children and letters stand in it */
     setBackdrop(bd); const w = new THREE.Group(); scene.add(w); world.group = w;
     const g = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: .28 })); g.rotation.x = -Math.PI / 2; g.receiveShadow = true; w.add(g); return w; }
+  if (CALM) { document.body.style.background = 'linear-gradient(#bfe3f7 0%,#dcf0fa 55%,#f2f8f0 100%)'; scene.fog = new THREE.Fog(0xe8f4f6, 11, 34); }   /* calm: a pale sky, and the hills and trees fade softly into it (reviewer: the sukkah world was the brightest scene) */
   /* the outdoor world: green hills, a little village far away, a fence, many kinds of trees, bushes, rocks, flowers, butterflies, birds and clouds.
      Everything stays at the sides and the back, so the middle, where the letters are, stays clear. */
   const w = new THREE.Group(); scene.add(w); world.group = w;
