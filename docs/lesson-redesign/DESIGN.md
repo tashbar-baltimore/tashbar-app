@@ -11,12 +11,14 @@ A live lesson takes 39–48 taps. About 4 in 10 are "Next" taps that only show m
 | Dot | Boy sees | What happens | Rule |
 |---|---|---|---|
 | 1 | **🤔 THINK** | **The hook.** A picture, puzzle, mystery, "what's wrong here?", guess, odd one out, riddle, challenge, story moment... He taps a guess. No right or wrong yet: "Let's find out!" | A different hook kind from the lesson before it. Never the same three kinds over and over. |
-| 2 | **💡 LEARN** | **Learn by doing.** 2–4 short cards that build on the screen as he goes. Each card has one or two short sentences with the **key words highlighted**, and a picture he works with (blocks, number line, map, timeline, sentence parts...). Most cards ask him to DO the step (drag, build, tap), and the next card appears by itself when he gets it. One card is **Who's right?**: two boys, two answers, he picks who is right and sees why. | At least half the cards are hands-on. No card is just text. |
+| 2 | **💡 LEARN** | **Learn by doing.** 2–5 short cards that build on the screen as he goes. Each card has one or two short sentences with the **key words highlighted**, and a picture he works with (blocks, number line, map, timeline, sentence parts...). Most cards ask him to DO the step (drag, build, tap), and the next card appears by itself when he gets it. One card is **Who's right?**: two boys, two answers, he picks who is right and sees why. | At least half the cards are hands-on. No card is just text. |
 | 3 | **🎮 TRY IT** | **3–5 deep activities**, all different kinds, mixed among: build it, fix the mistake, sort, put in order, find the proof, map, word parts, hop the number line, explain why... | 3+ kinds, no kind twice in a row, one is built on a likely mistake. |
 | 4 | **⭐ SHOW ME** | 3 check questions, one try each. Mastery is earned here (unchanged). | Unchanged. |
 | 5 | **🌟 DONE** | The hook comes back: "Remember the puzzle? The answer was **83**!" plus what he learned and the next level. | Pays off the hook. |
 
 About **20–25 taps** a lesson instead of 40+, and almost every one is a thinking tap.
+
+**No tap-tap counting (coordinator, HoS 2026-11-27 "fix what's happening").** One answer should not take a row of the same tap. For Grade 2 and up, a number-line hop uses `land:true`: the boy taps the number where the frog lands (the hops then draw themselves and he can count them), not "Hop" seven times. Keep one-hop-at-a-time only where counting each hop *is* the skill (K–1, first counting-on). Number lines for tap-to-land: 12 marks or fewer, so phone targets stay big enough.
 
 ## Text that pops
 - Write `*word*` around the words that matter. They show highlighted (the kit's `TLK.key` look: bold, a warm marker behind the word). 1–3 per card; never a whole sentence.
@@ -53,7 +55,7 @@ B['MATH.OPS.L03.01'] = { band:'B23', pic:'🧱',
 ## The new quality gate (`tests/lib/obquality.js`)
 For a new-shape lesson (has `hook`, `learn`, `play`), the build fails unless:
 - **hook**: a kind from the list, a short line (`t`, 12 words or fewer per sentence), a question with 2–4 guesses, and a `pay` line.
-- **learn**: 2–4 cards; at least half hands-on (`act` or `who`); every card has a key word (`*word*`); every sentence 10 words or fewer; exactly one `who` card.
+- **learn**: 2–5 cards; at least half hands-on (`act` or `who`); every card has a key word (`*word*`); every sentence 10 words or fewer; exactly one `who` card.
 - **play**: 3–5 activities, 3+ kinds, no kind twice in a row, one mistake activity (`mis:true` or a mistake bin) in the first 3, no digit-typing tiles, every activity has a `say` of 12 words or fewer and a `how`.
 - **band**: song or move (K1, B23) · 2+ "tap the reason" (E45) · teach-it-back (M68).
 - **hook variety** (see above). **No word "bite".**
